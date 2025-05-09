@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Vicente Vera Parra <vicentemvp@gmail.com>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -2453,23 +2453,25 @@ multivariate case.")
 (define-public r-tclust
   (package
     (name "r-tclust")
-    (version "2.0-5")
+    (version "2.1-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tclust" version))
        (sha256
         (base32
-         "1gx8avqpy5m69h5a3pxy23dwnvy5pbi2ih6sxacs4lmsahpivj0p"))))
+         "1vx9nbm20hclf54js2ip09h6fhqhkn0gq90a08hhn5b1n25gvvxk"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-cluster" "r-mclust" "r-sn"))))
     (build-system r-build-system)
     ;; These are all suggested packages, not build dependencies.
     (propagated-inputs
      (list r-doparallel
-           r-ellipsis
            r-foreach
            r-mass
            r-rcpp
-           r-rcpparmadillo))
+           r-rcpparmadillo
+           r-rlang))
     (native-inputs (list r-cluster r-mclust r-sn))
     (home-page "https://cran.r-project.org/web/packages/tclust")
     (synopsis "Robust trimmed clustering")
