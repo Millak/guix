@@ -4039,14 +4039,14 @@ including:
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "0vv8g0h5fkpna5b3fqrj6dkdxpqr0ws5sdmzgysb17gw4vviq39b"))))
+         "0dj7xzvmkl82c8ghm4p7km1f13a34zm4nlhx4yj4ipmjqxalkrzd"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -4056,7 +4056,7 @@ including:
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list pkg-config r-testthat))
+     (list pkg-config r-gfonts r-testthat))
     (inputs
      (list cairo fontconfig freetype zlib))
     (propagated-inputs
