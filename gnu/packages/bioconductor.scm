@@ -7290,17 +7290,17 @@ pseudo-cells, and downsampling of the count matrix.")
 (define-public r-dsb
   (package
     (name "r-dsb")
-    (version "1.0.4")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dsb" version))
        (sha256
-        (base32 "16y0l3nmg88ihsr03f5n151jirypf7pxy6q0cgx2vpmdnqynlh61"))))
+        (base32 "1c4734q7xh772hy1wmyifp9mzd4d13laf79zf1s650zn364apqvz"))))
     (properties `((upstream-name . "dsb")))
     (build-system r-build-system)
     (propagated-inputs (list r-limma r-magrittr r-mclust))
-    (native-inputs (list r-knitr r-rmarkdown r-testthat))
+    (native-inputs (list r-knitr r-rmarkdown r-spelling r-testthat))
     (home-page "https://github.com/niaid/dsb")
     (synopsis
      "Normalize & denoise droplet single cell protein data (CITE-Seq)")
