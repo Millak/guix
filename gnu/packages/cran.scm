@@ -37270,14 +37270,14 @@ provides tools to compute this metric.")
 (define-public r-lintr
   (package
     (name "r-lintr")
-    (version "3.1.2")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lintr" version))
        (sha256
         (base32
-         "0xska080wnifvibywmwalmp4a0xdnsgpn0k3m5ahjbqckfcpklrm"))))
+         "13mzwbg7k52finb0qp0xs1c1mp79f92cxlpfkc6h064s529czk20"))))
     (properties `((upstream-name . "lintr")))
     (build-system r-build-system)
     (arguments
@@ -37294,14 +37294,15 @@ provides tools to compute this metric.")
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-backports
+           r-cli
            r-codetools
-           r-cyclocomp
            r-digest
            r-glue
            r-knitr
            r-rex
            r-xml2
            r-xmlparsedata))
+    ;; The importer adds a lot of inputs that we don't need.
     (native-inputs (list r-knitr r-patrick r-testthat))
     (home-page "https://github.com/jimhester/lintr")
     (synopsis "Linter for R code")
