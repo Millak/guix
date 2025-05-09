@@ -2203,16 +2203,16 @@ through Simulated Annealing\" @url{doi:10.1145/3025453.3025912}.")
 (define-public r-data-table
   (package
     (name "r-data-table")
-    (version "1.16.4")
+    (version "1.17.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "data.table" version))
               (sha256
                (base32
-                "1pww4qq7zsvq1k9gdrx1wf0p190ic4mv7kr30bk1s4dwmsrlnxkj"))))
+                "1smwp4xrhy9y2hf4vngv1zmqm3rgj83zwa1dbf4j0g2qz9adv9w2"))))
     (properties
      `((upstream-name . "data.table")
-       (updater-extra-native-inputs . ("tzdata-for-tests"))))
+       (updater-extra-native-inputs . ("r-r-utils" "tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -2229,7 +2229,7 @@ through Simulated Annealing\" @url{doi:10.1145/3025453.3025912}.")
     (inputs
      (list zlib))
     (native-inputs
-     (list pkg-config r-knitr tzdata-for-tests))
+     (list pkg-config r-knitr r-r-utils tzdata-for-tests))
     (home-page "https://github.com/Rdatatable/data.table/wiki")
     (synopsis "Enhanced version of data.frame R object")
     (description
