@@ -26906,21 +26906,16 @@ Make (2015, ISBN:978-9881443519) and drake (2018,
 (define-public r-tidygeocoder
   (package
     (name "r-tidygeocoder")
-    (version "1.0.5")
+    (version "1.0.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tidygeocoder" version))
               (sha256
                (base32
-                "1ffj8ka5miv3jnds7fdrkcqdc3m2w1ab724z9m10biky213skqka"))))
+                "1x8040rkrw56bdy5wg9cr38hvx1myxmzpwxdrs85v39w9vjf0aqz"))))
     (properties `((upstream-name . "tidygeocoder")))
     (build-system r-build-system)
-    (propagated-inputs (list r-dplyr
-                             r-httr
-                             r-jsonlite
-                             r-lifecycle
-                             r-progress
-                             r-tibble))
+    (propagated-inputs (list r-dplyr r-httr r-jsonlite r-progress r-tibble))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://jessecambon.github.io/tidygeocoder/")
     (synopsis
