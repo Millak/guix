@@ -17026,13 +17026,13 @@ Template.")
 (define-public r-dreamerr
   (package
     (name "r-dreamerr")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dreamerr" version))
        (sha256
-        (base32 "11va0bwi8r3qv7cw5zjci0i7876lh02bzf5rdfn6sfv223yllpiy"))))
+        (base32 "0y010ki78kvnm0mb9wmf1a3i6p3gh1kw1c33sd5d1j5s168602sr"))))
     (properties `((upstream-name . "dreamerr")))
     (build-system r-build-system)
     (propagated-inputs (list r-formula r-stringmagic))
