@@ -53270,14 +53270,14 @@ more.")
 (define-public r-paws-analytics
   (package
     (name "r-paws-analytics")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.analytics" version))
        (sha256
         (base32
-         "1scs1kafhcjz1f0nkdxd3d27ywilkkrizdwm6saqf4hi3v2y5wlh"))))
+         "0l53k9n78wb0w6fhgmk1z3yqpijb0f162a8bz90b14jmx3fsdsa0"))))
     (properties
      '((upstream-name . "paws.analytics")
        (updater-ignored-native-inputs . ("r-paws"))))
