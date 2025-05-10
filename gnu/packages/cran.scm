@@ -19636,14 +19636,14 @@ estimated from a given sample.")
 (define-public r-pillar
   (package
     (name "r-pillar")
-    (version "1.10.1")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pillar" version))
        (sha256
         (base32
-         "17a4mwcar89flag3k5630iawriq1snyz634fnmb04wnhh7l2ppxf"))))
+         "0ifnarggd1anxslf2yknc18dvq3lr31nzchai0q2bdi83gzf7nrc"))))
     (properties
      ;; Avoid dependency cycles.
      '((updater-ignored-native-inputs . ("r-ggplot2" "r-tibble"))
