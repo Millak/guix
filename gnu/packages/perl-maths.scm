@@ -172,6 +172,7 @@ Perl Data Language.")
 (define-public perl-pdl
   (package
     (inherit perl-pdl-2.019)
+    (name "perl-pdl")
     (version "2.100")
     (source
      (origin
@@ -179,6 +180,7 @@ Perl Data Language.")
        (uri (git-reference
              (url "https://github.com/PDLPorters/pdl.git")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0nkvjb4l8r2l2piz0s9jifpm0kr6g7fy9krky130s82vq8bz19sc"))
        (patches
