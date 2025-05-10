@@ -38532,13 +38532,13 @@ OpenMP.")
 (define-public r-rhub
   (package
     (name "r-rhub")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rhub" version))
        (sha256
-        (base32 "05q1jv7c2l09ssb72d17hhcisvzqmcd3d1njc1j6w8lhvc5kqs47"))))
+        (base32 "0fc291gy7zpx6mcpfw5sjjmx4y7lxhzh6n61mwwmz96nn4qb2m1q"))))
     (properties
      '((upstream-name . "rhub")
        (updater-extra-native-inputs . ("r-knitr"))))
