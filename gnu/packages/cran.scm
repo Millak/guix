@@ -47053,14 +47053,14 @@ sampler).")
 (define-public r-spatstat
   (package
     (name "r-spatstat")
-    (version "3.3-1")
+    (version "3.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat" version))
        (sha256
         (base32
-         "09nrbvqyp5fvsdkix9wxjz48d68k979k9jkraqbkvrj153ynbq3x"))))
+         "0pxy5b6x3bwsqbvnqk6righ2fp41r28hpwcyipjmijlnxcs6slnb"))))
     (properties `((upstream-name . "spatstat")))
     (build-system r-build-system)
     (propagated-inputs
