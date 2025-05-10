@@ -18260,7 +18260,7 @@ in an easily configurable manner.")
            pandoc
            python-wrapper
            python-pyyaml
-           snakemake
+           snakemake-7
            bismark
            bowtie
            bwa-meth
