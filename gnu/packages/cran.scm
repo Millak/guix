@@ -25754,14 +25754,14 @@ both to consistency and asymptotic normality.")
 (define-public r-dofuture
   (package
     (name "r-dofuture")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doFuture" version))
        (sha256
         (base32
-         "1avv5kv1c43gmvbh5iwxlwk7yl6prndpcgy0blkwarl3nsgcq4cm"))))
+         "125pawl9vp6jaf5v8jrbryychha2hl0hibymxdv6iaarsya50y89"))))
     (properties `((upstream-name . "doFuture")))
     (build-system r-build-system)
     (arguments
@@ -25773,8 +25773,7 @@ both to consistency and asymptotic normality.")
     (propagated-inputs
      (list r-foreach r-future r-future-apply r-globals r-iterators))
     (native-inputs
-     (list r-markdown                   ;check phase requires markdown package
-           r-r-rsp))                    ;vignette builder
+     (list r-r-rsp))                    ;vignette builder
     (home-page "https://github.com/HenrikBengtsson/doFuture")
     (synopsis "Foreach parallel adapter using the future API")
     (description
