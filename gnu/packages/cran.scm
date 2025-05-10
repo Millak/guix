@@ -8320,13 +8320,13 @@ existing BioConductor packages.")
 (define-public r-oompabase
   (package
     (name "r-oompabase")
-    (version "3.2.9")
+    (version "3.2.10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "oompaBase" version))
               (sha256
                (base32
-                "1cmw2s5dznmv675484jgvkzgvi6vhg0zbxsq6zhpqsisf672pjhl"))))
+                "026jd50ypwxxq29nfwx337s4x8rx8rmkjqv027apz4zqpsn94l95"))))
     (properties `((upstream-name . "oompaBase")))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster))
