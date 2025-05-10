@@ -9133,13 +9133,13 @@ around your functions.")
 (define-public r-polychrome
   (package
     (name "r-polychrome")
-    (version "1.5.1")
+    (version "1.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Polychrome" version))
        (sha256
-        (base32 "0hyi02m2jpdhk1ky6ihz6dv5pwqwjwk4csjim2qr8ywx8midmrvg"))))
+        (base32 "18lxkdfw37ci0y0l0wya7kr57hwn3yh2r88gjimpp4x1z833vxrw"))))
     (properties `((upstream-name . "Polychrome")))
     (build-system r-build-system)
     (propagated-inputs
