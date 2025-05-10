@@ -26129,15 +26129,24 @@ implement its GUI part.")
 (define-public r-abe
   (package
     (name "r-abe")
-    (version "3.0.1")
+    (version "5.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abe" version))
        (sha256
         (base32
-         "1f19h3xzzmjhvwc1rrb8z0rai3ip03y4gdi2gg9bfr5sg2nfklk6"))))
+         "0i1ziyydma5vgr2c3qmi53cximvj2hqpfz2vzxkfby1n4cyc50y2"))))
     (build-system r-build-system)
+    (propagated-inputs
+     (list r-foreach
+           r-ggplot2
+           r-lifecycle
+           r-reshape2
+           r-survival
+           r-tidytext))
+    (native-inputs
+     (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/abe/")
     (synopsis "Augmented backward elimination")
     (description
