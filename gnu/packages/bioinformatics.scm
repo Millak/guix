@@ -18081,7 +18081,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
      (list coreutils
            sed
            gzip
-           snakemake
+           snakemake-7
            megadepth
            multiqc
            star-for-pigx
