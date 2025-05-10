@@ -24533,21 +24533,22 @@ documents.")
 (define-public r-writexl
   (package
     (name "r-writexl")
-    (version "1.5.1")
+    (version "1.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "writexl" version))
        (sha256
         (base32
-         "14wv9l927bh57jbdxcf8wb429mz85x5bnsm31i2j3m0db0ikf4ax"))))
-    (properties
-     '((updater-extra-native-inputs
-        . ("r-bit64" "r-nycflights13" "r-readxl"))))
+         "1lv0fr333scllranvqi1agv3c071qqiwvishbxw7ig92x8lllmyh"))))
     (build-system r-build-system)
     (inputs (list zlib))
     (native-inputs
-     (list r-bit64 r-nycflights13 r-readxl r-spelling r-testthat))
+     (list r-bit64
+           r-nycflights13
+           r-readxl
+           r-spelling
+           r-testthat))
     (home-page "https://github.com/ropensci/writexl")
     (synopsis "Export data frames to xlsx format")
     (description
