@@ -30482,13 +30482,13 @@ the first time as the statistic.")
 (define-public r-splines2
   (package
     (name "r-splines2")
-    (version "0.5.3")
+    (version "0.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "splines2" version))
        (sha256
-        (base32 "1p0xl3k33b539j6fifxaack956z3p4yfvhglcpvral315p8pnzn2"))))
+        (base32 "0izjcpcwi35b7m4i9yp2frk1nfij9nw338w7z1fwpkw75c7ac4av"))))
     (properties `((upstream-name . "splines2")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcpparmadillo))
