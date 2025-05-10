@@ -42963,20 +42963,25 @@ automatically show a loader when the output is (re)calculating.")
 (define-public r-rsvg
   (package
     (name "r-rsvg")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsvg" version))
        (sha256
         (base32
-         "0mf9916jnrhpqccz7qnybz0qp74q0yjcrpagyis21yipbilb0sky"))))
+         "0syp6awq9p8x50d16csjnwv4jyi5dm5j6sy58s6r898hflf2c2ib"))))
     (properties `((upstream-name . "rsvg")))
     (build-system r-build-system)
     (inputs
      (list (librsvg-for-system) pcre2 zlib))
     (native-inputs
-     (list pkg-config r-knitr r-spelling r-testthat))
+     (list pkg-config
+           r-knitr
+           r-magick
+           r-png
+           r-spelling
+           r-testthat))
     (home-page "https://github.com/jeroen/rsvg#readme")
     (synopsis "Render SVG images into PDF, PNG, PostScript, or Bitmap arrays")
     (description
