@@ -89,6 +89,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023-2025 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8147,39 +8148,37 @@ abilities and powers.")
 (define-public torcs
   (package
     (name "torcs")
-    (version "1.3.7")
+    (version "1.3.8")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://sourceforge.net/projects/" name
-                           "/files/all-in-one/" version "/"
-                           name "-" version ".tar.bz2/download"))
-       (file-name (string-append name "-" version ".tar.bz2"))
+       (uri (string-append "mirror://sourceforge/" name
+                           "/all-in-one/" version "/"
+                           name "-" version ".tar.bz2"))
+       ;; Source archive is in fact in gzip format, rename it.
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0kdq0sc7dsfzlr0ggbxggcbkivc6yp30nqwjwcaxg9295s3b06wa"))
-       (patches (search-patches "torcs-isnan.patch"
-                                "torcs-nullptr.patch"
-                                "torcs-glibc-default-source.patch"))
+         "1bx7i67b01yfy9lyak4x4xrdb3zb0mr8kwx6h8cl2dpv8lspg5jb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (ice-9 regex)
+                  (srfi srfi-26)))
        (snippet
-        '(begin
-           (use-modules (guix build utils)
-                        (ice-9 ftw)
-                        (ice-9 regex)
-                        (srfi srfi-26))
-           ;; Delete Windows-specific sources and pre-built binaries.
-           (delete-file-recursively "src/windows")
-           ;; The license of the kw-* and pw-* car models includes a
-           ;; non-commercial clause, hence does not comply with the GNU FSDG.
-           (with-directory-excursion "data/cars/models"
-             (for-each delete-file-recursively
-                       (scandir "." (cut string-match "^(kc|pw)-" <>))))
-           ;; Delete extraneous CVS directories.
-           (for-each delete-file-recursively
-                     (find-files "." (lambda (file stat)
-                                       (and (eq? 'directory (stat:type stat))
-                                            (string=? "CVS" (basename file))))
-                                 #:directories? #t))))))
+        #~(begin
+            ;; Delete Windows-specific sources and pre-built binaries.
+            (delete-file-recursively "src/windows")
+            ;; The license of the kw-* and pw-* car models includes a
+            ;; non-commercial clause, hence does not comply with the GNU FSDG.
+            (with-directory-excursion "data/cars/models"
+              (for-each delete-file-recursively
+                        (scandir "." (cut string-match "^(kc|pw)-" <>))))
+            ;; Delete extraneous CVS directories.
+            (for-each delete-file-recursively
+                      (find-files "." (lambda (file stat)
+                                        (and (eq? 'directory (stat:type stat))
+                                             (string=? "CVS" (basename file))))
+                                  #:directories? #t))))))
     (build-system gnu-build-system)
     (arguments
      ;; Building in parallel fails due to a race where include files have not
@@ -8229,7 +8228,7 @@ abilities and powers.")
                  ;; ownership or permission on /gnu/store/xxx-torcs-1.3.7',
                  ;; rejecting this build output".
                  (lambda _
-                   (chmod #$output #o744))))))
+                   (chmod #$output #o755))))))
     (inputs
      (list bash-minimal
            freealut
