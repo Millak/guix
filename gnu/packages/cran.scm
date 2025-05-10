@@ -9999,13 +9999,13 @@ the execution time of R expressions.")
 (define-public r-mime
   (package
     (name "r-mime")
-    (version "0.12")
+    (version "0.13")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mime" version))
               (sha256
                (base32
-                "0j9qbq9jfsp61h2d0xmb87pa2wi8nhb1h2wih7l5drf1sr8i0059"))))
+                "1szkqzily5sr1qlnrlrprid2gy5wkzb7dlxs2bzqwf63yd686cki"))))
     (build-system r-build-system)
     (home-page "https://github.com/yihui/mime")
     (synopsis "R package to map filenames to MIME types")
