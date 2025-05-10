@@ -37183,14 +37183,14 @@ on, for a performance vs accuracy trade-off.")
 (define-public r-rsparse
   (package
     (name "r-rsparse")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsparse" version))
        (sha256
         (base32
-         "0a40mhbzlakjsf6wj00p8pqr6slhn7gxsgq2rycp3yg478ajwqyp"))))
+         "0yzijxgd82h0yzqzpyfix5fd840clmms1nagl1161ngfdwd4kqb9"))))
     (properties `((upstream-name . "rsparse")))
     (build-system r-build-system)
     (propagated-inputs
@@ -37202,7 +37202,7 @@ on, for a performance vs accuracy trade-off.")
            r-rcpp
            r-rcpparmadillo
            r-rhpcblasctl))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-glmnet r-testthat))
     (home-page "https://github.com/rexyai/rsparse")
     (synopsis "Statistical learning on sparse matrices")
     (description
