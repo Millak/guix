@@ -33755,16 +33755,17 @@ several formats and MIME types.")
 (define-public r-irace
   (package
     (name "r-irace")
-    (version "4.1")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "irace" version))
        (sha256
-        (base32 "0383gw288nps1lb0zawbxqdb18hcdl59x8vav26c6fg15vr8n9x2"))))
+        (base32 "1cd7wjpshl2fvmqrla1nbahzryhz0q4yfmqm85wim621f54fdksq"))))
     (properties `((upstream-name . "irace")))
     (build-system r-build-system)
-    (propagated-inputs (list r-data-table
+    (propagated-inputs (list r-codetools
+                             r-data-table
                              r-fs
                              r-matrixstats
                              r-r6
