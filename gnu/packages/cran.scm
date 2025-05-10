@@ -18574,13 +18574,13 @@ and density estimation")
 (define-public r-smd
   (package
     (name "r-smd")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "smd" version))
        (sha256
-        (base32 "15npiffznxlvd8rih0z63vdxykhh8fcdsgbrjkjgnakd9fi5xad5"))))
+        (base32 "1f5pph3728jb15bmyv0xdanww490gjm5ixz9dbvdv27av02p12js"))))
     (properties `((upstream-name . "smd")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
