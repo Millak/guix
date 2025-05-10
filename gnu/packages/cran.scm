@@ -19152,14 +19152,14 @@ multivariate function estimation using smoothing splines.")
 (define-public r-cli
   (package
     (name "r-cli")
-    (version "3.6.3")
+    (version "3.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cli" version))
        (sha256
         (base32
-         "0ha8mijnzlz1cxsjk502j2gzspd8fnk3j79bvnqm871225ghi5a2"))))
+         "0ycn8px9ac7iigfpzknzkiyfm44p59zgikyxss55sa3awr333glf"))))
     (properties
      ;; We can't have r-testthat among the inputs, because that would lead to
      ;; a dependency cycle.
