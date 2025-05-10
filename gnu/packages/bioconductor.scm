@@ -13327,6 +13327,10 @@ different experiment.")
                 (string-append m "skip('guix')\n")))
              (substitute* "tests/testthat/test-combineContigs.R"
                ((".*combineBCR works.*" m)
+                (string-append m "skip('guix')\n")));
+             ;; Small, Rare, and None are not included in the data.
+             (substitute* "tests/testthat/test-utils.R"
+               ((".*filteringNA.*works.*" m)
                 (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-assertthat
