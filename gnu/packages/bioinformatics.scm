@@ -18317,7 +18317,7 @@ methylation and segmentation.")
            python-loompy
            pandoc
            samtools
-           snakemake
+           snakemake-7
            star-for-pigx
            r-minimal
            r-argparser
