@@ -28360,14 +28360,14 @@ of the individual checks.")
 (define-public r-rapportools
   (package
     (name "r-rapportools")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rapportools" version))
        (sha256
         (base32
-         "0qr86idng12g6hdd764j0wmli700v7rjhw7jdjxj0ka8xm5v7ymm"))))
+         "0yxj7kll7583hp7fpr5y3krbymw354gmb5qz8hv122yr3g2kj2sj"))))
     (build-system r-build-system)
     ;; Tests fail: could not find function "context"
     (arguments (list #:tests? #false))
