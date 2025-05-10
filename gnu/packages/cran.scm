@@ -48151,14 +48151,14 @@ object sizes.")
 (define-public r-gpfit
   (package
     (name "r-gpfit")
-    (version "1.0-8")
+    (version "1.0-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GPfit" version))
        (sha256
         (base32
-         "05mpiyi2vxv0wqp422n1mnxa8msc4daq40cwpnpngbcwqhlgqkby"))))
+         "0g38llkzyg6dv1mnq39c0ifb6hkrfwphrbgydlrqkqxy212701v3"))))
     (properties `((upstream-name . "GPfit")))
     (build-system r-build-system)
     (propagated-inputs
