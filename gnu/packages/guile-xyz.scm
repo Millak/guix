@@ -1096,17 +1096,17 @@ that augment Guile's support for handling files and their names.")
 (define-public guile-swayer
   (package
     (name "guile-swayer")
-    (version "0.4.1")
+    (version "0.4.2")
     (home-page "https://github.com/ebeem/guile-swayer")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ebeem/guile-swayer")
-             (commit (string-append "v" version))))
+             (commit (string-append "V" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14w126444jsbpqyhic1ibg1zwzmai9hlnzdk4gg1cj7fclq6vxpb"))))
+        (base32 "03wg904mqi3x1fsgj9blhr509gyqndsdzi9m4vik5n7mgvv14y32"))))
     (native-inputs (list autoconf automake guile-3.0 pkg-config))
     (build-system gnu-build-system)
     (synopsis "Extensible Guile bindings for SwayWM")
