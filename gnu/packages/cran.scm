@@ -37470,16 +37470,16 @@ the graph, and propagating graph labels.")
 (define-public r-scs
   (package
     (name "r-scs")
-    (version "3.2.4")
+    (version "3.2.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "scs" version))
               (sha256
                (base32
-                "13r944b9ip078hqwdpzn3jv21zm47d9l2b1f5y6glcj5pxs9iwy3"))))
+                "1jmag5s79vg7lvgv6h3ns72zaw2nl2hcbfbq5vi17xv5agwh8h7q"))))
     (properties `((upstream-name . "scs")))
     (build-system r-build-system)
-    (native-inputs (list r-matrix r-slam))
+    (native-inputs (list r-matrix r-slam r-tinytest))
     (home-page "https://github.com/FlorianSchwendinger/scs")
     (synopsis "Splitting conic solver")
     (description
