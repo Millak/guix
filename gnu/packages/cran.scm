@@ -9581,13 +9581,13 @@ inference.  Details can be found in Arel-Bundock, Greifer, and Heiss (2024)
 (define-public r-markdown
   (package
     (name "r-markdown")
-    (version "1.13")
+    (version "2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "markdown" version))
               (sha256
                (base32
-                "1nfgngskgb4r34r3cnkm0gn7p1axpcb7rpyi0jxg4nygfk322m1q"))))
+                "0hcmpy4x2rwq061ybq1xyqxbc76jm0zfzgzy70g90y38zdsxwq55"))))
     (build-system r-build-system)
     ;; Skip check phase because the tests require the r-knitr package to be
     ;; installed. This prevents installation failures. Knitr normally
@@ -9595,7 +9595,7 @@ inference.  Details can be found in Arel-Bundock, Greifer, and Heiss (2024)
     ;; package.
     (arguments `(#:tests? #f))
     (propagated-inputs
-     (list r-commonmark r-xfun))
+     (list r-litedown r-xfun))
     (home-page "https://github.com/rstudio/markdown")
     (synopsis "Markdown rendering for R")
     (description
