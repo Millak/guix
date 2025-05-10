@@ -24117,14 +24117,14 @@ reduced-bias estimates.")
 (define-public r-entropy
   (package
     (name "r-entropy")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "entropy" version))
        (sha256
         (base32
-         "1f0j8jsn6pzf4gi5g0akixx6x5vc69ci5f4m2vnwp40frvsqjnkg"))))
+         "19bnml9dlm5pgfc37pl1pi377vxyjb3jzg4cjifc9c4rizg2l6lh"))))
     (properties `((upstream-name . "entropy")))
     (build-system r-build-system)
     (home-page "https://www.strimmerlab.org/software/entropy/")
