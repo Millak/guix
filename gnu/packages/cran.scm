@@ -49360,14 +49360,14 @@ data to rasters.  It speeds up plotting of data with millions of points.")
 (define-public r-seuratobject
   (package
     (name "r-seuratobject")
-    (version "5.0.2")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SeuratObject" version))
        (sha256
         (base32
-         "1kx0icqzjck7vynxj5962sz9zlassia4j32azr9y7ds5yhhhvlyy"))))
+         "0aphlg1x4jcgj7s23zv5zil89xkn799gp62x0v8zayi61gjaxm6x"))))
     (properties `((upstream-name . "SeuratObject")))
     (build-system r-build-system)
     (propagated-inputs
