@@ -4486,13 +4486,13 @@ box plot and range frame.")
 (define-public r-ggupset
   (package
     (name "r-ggupset")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggupset" version))
        (sha256
-        (base32 "0cycnnycn1qazy35s4w746zlfraayf109bq40fglklmick6kfwsz"))))
+        (base32 "08kk3hc0ipkpkwr90kkjfgz6r8rjjfbdmrzawrkg8j51a8h0lyp8"))))
     (properties `((upstream-name . "ggupset")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-gtable r-rlang r-scales r-tibble))
