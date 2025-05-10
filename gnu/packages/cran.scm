@@ -30801,17 +30801,17 @@ substitutions, amongst other features.")
 (define-public r-reportr
   (package
     (name "r-reportr")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reportr" version))
        (sha256
         (base32
-         "0zynplxqvbmf23cm2rsz3wz2jx6mv55z94mn1k44ny3lx625cnpw"))))
+         "01grnwhgz7ff796fra3320i0bpvwi8ja0hqsvl0s0jlbq9rxb9az"))))
     (build-system r-build-system)
     (propagated-inputs (list r-ore))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-tinytest))
     (home-page "https://github.com/jonclayden/reportr")
     (synopsis "General message and error reporting system")
     (description
