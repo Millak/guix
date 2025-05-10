@@ -36924,20 +36924,20 @@ compatibility of dependent packages for some time.")
 (define-public r-downloader
   (package
     (name "r-downloader")
-    (version "0.4")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "downloader" version))
        (sha256
         (base32
-         "1axggnsc27zzgr7snf41j3zd1vp3nfpmq4zj4d01axc709dyg40q"))))
+         "0xai0dp0hchsnrijx8dfxawzlw67xvrdm8jzwaxy604ngvv5ynbl"))))
     (build-system r-build-system)
     ;; FIXME Tests fail with: could not find function "context"
     (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-digest))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-devtools r-testthat))
     (home-page "https://github.com/wch/downloader")
     (synopsis "Download files over HTTP and HTTPS")
     (description
