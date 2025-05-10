@@ -242,3 +242,31 @@ Perl Data Language.")
     (description "This package provides modules to do 3D graphics in PDL.")
     (home-page "https://github.com/PDLPorters/")
     (license license:perl-license)))
+
+(define-public perl-pgplot
+  (package
+    (name "perl-pgplot")
+    (version "2.35")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PDLPorters/perl5-PGPLOT.git")
+             (commit version)))
+       (sha256
+        (base32 "0i9bi52pwbi3qnalm288ihdlwsvn9wwi5rhmspqbna3pfqjhc29c"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+        (add-after 'unpack 'setenv
+         (lambda* (#:key inputs #:allow-other-keys)
+           (setenv "PGPLOT_DIR" (string-append (assoc-ref inputs "giza") "/lib")))))))
+    (inputs (list giza libx11))
+    (native-inputs (list perl-devel-checklib perl-extutils-f77 gfortran perl-pdl))
+    (home-page "https://metacpan.org/release/PGPLOT")
+    (synopsis "Scientific plotting library (using giza)")
+    (description "This package provides PGPLOT bindings for Perl.  It uses
+giza instead of PGPLOT for the implementation, though.")
+    ;; Since giza is GPL2+, so is this.
+    (license license:gpl2+)))
