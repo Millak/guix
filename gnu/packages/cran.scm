@@ -18121,13 +18121,13 @@ or between integer vectors representing generic sequences.")
 (define-public r-stringmagic
   (package
     (name "r-stringmagic")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringmagic" version))
        (sha256
-        (base32 "134g9c358d3730fvkhcwcrhy4w7ig614jcnxrygakrcvm55c1lgf"))))
+        (base32 "180kzm9gbl4jr9vwh58r9qyp78svmakh68zkhxfb43bxk3zq20m6"))))
     (properties `((upstream-name . "stringmagic")))
     (build-system r-build-system)
     ;; There are no tests in the ./tests/ directory.
