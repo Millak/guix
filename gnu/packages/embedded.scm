@@ -1863,7 +1863,7 @@ debugging them, and more.")
 (define-public ebusd
   (package
     (name "ebusd")
-    (version "23.2")
+    (version "25.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1872,12 +1872,18 @@ debugging them, and more.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1zqnxk6vgszlf410pypsjjliiy9wawy585fm7v25mka47i6iqafq"))))
+                "1k85vzjhhya7r41nid5yylr7jyvl09455hpny6wrjkipz68icgdf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--localstatedir=/var")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/ebusd/main.h"
+              (("#define CONFIG_PATH .*")
+               (string-append "#define CONFIG_PATH \"" (assoc-ref inputs "config")
+                              "/ebusd-2.1.x/\"\n")))))
          (add-after 'install 'install-config
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((config-destination
