@@ -46671,14 +46671,14 @@ simple interface for all functions.")
 (define-public r-iml
   (package
     (name "r-iml")
-    (version "0.11.3")
+    (version "0.11.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iml" version))
        (sha256
         (base32
-         "1d0p41byqpw7niyyyqcj00y43dmhqrm2csmbarcy8mz7n0i1842b"))))
+         "0r8p1s3mixzp9vsxwwksg3kc358cwkv0msydrjn6j8vl2kkjm6vd"))))
     (properties `((upstream-name . "iml")))
     (build-system r-build-system)
     (propagated-inputs
@@ -46690,7 +46690,7 @@ simple interface for all functions.")
            r-ggplot2
            r-metrics
            r-r6))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/christophM/iml")
     (synopsis "Interpretable machine learning")
     (description
