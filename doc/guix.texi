@@ -31247,6 +31247,8 @@ and Error.
 @end table
 @end deftp
 
+@subsubheading Snuik Service
+
 @cindex irc-bot
 @cindex snuik
 The @uref{https://gitlab.com/janneke/snuik, Snuik IRC bot} can be run as
@@ -31301,68 +31303,6 @@ The channels for snuik to join, a list of strings.
 Extra options will be passed to @command{snuik}, please run
 @command{snuik --help } for more information.
 
-@end table
-@end deftp
-
-@subsubheading Mosquitto Service
-
-@url{https://mosquitto.org/,Mosquitto} is a lightweight message broker
-that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1.  It is
-suitable for use on all devices from low power single board computers to
-full servers.
-
-@defvar mosquitto-service-type
-This is the service type for the @url{https://mosquitto.org/,Mosquitto}
-MQTT broker.  Its value is a @code{mosquitto-configuration} (see below).
-@end defvar
-
-@deftp {Data Type} mosquitto-configuration
-This is the configuration for Mosquitto, with the following fields:
-
-@table @asis
-@item @code{package} (default: @code{mosquitto})
-The Mosquitto package to use.
-
-@item @code{config-file} (default: @code{#f})
-The Mosquitto configuration file as a file-like object or the value
-@code{#f} to use the default configuration.
-
-@item @code{user} (default: @code{"mosquitto"})
-Owner of the broker process.
-
-@item @code{group} (default: @code{"mosquitto"})
-Owner's group of the broker process.
-@end table
-@end deftp
-
-@subsubheading Mosquitto Service
-
-@url{https://mosquitto.org/,Mosquitto} is a lightweight message broker
-that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1.  It is
-suitable for use on all devices from low power single board computers to
-full servers.
-
-@defvar mosquitto-service-type
-This is the service type for the @url{https://mosquitto.org/,Mosquitto}
-MQTT broker.  Its value is a @code{mosquitto-configuration} (see below).
-@end defvar
-
-@deftp {Data Type} mosquitto-configuration
-This is the configuration for Mosquitto, with the following fields:
-
-@table @asis
-@item @code{package} (default: @code{mosquitto})
-The Mosquitto package to use.
-
-@item @code{config-file} (default: @code{#f})
-The Mosquitto configuration file as a file-like object or the value
-@code{#f} to use the default configuration.
-
-@item @code{user} (default: @code{"mosquitto"})
-Owner of the broker process.
-
-@item @code{group} (default: @code{"mosquitto"})
-Owner's group of the broker process.
 @end table
 @end deftp
 
