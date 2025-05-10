@@ -40,11 +40,15 @@
 
  (entry (commit "6e8ffdf3c5afac265e540027c2332573b25461ae")
         (title
-         (en "Linux-libre 6.13 removed from Guix"))
+         (en "Linux-libre 6.13 removed from Guix")
+         (de "Linux-libre 6.13 wurde aus Guix entfernt"))
         (body
          (en "The 6.13 linux-libre kernel series has been removed from GNU Guix,
 because it is no longer supported upstream.  The 6.14 kernel series is now the
-default.")))
+default.")
+         (de "Die Versionsreihe 6.13 des Linux-libre-Kernels wurde aus GNU Guix
+entfernt, weil sie von dessen Anbieter nicht mehr unterstützt wird.
+Kernel-Versionsreihe 6.14 ist jetzt vorgegeben.")))
 
  (entry (commit "ce363c1dc7bd63a74dcf7788d340819f6d5db89f")
         (title
