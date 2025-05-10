@@ -10039,14 +10039,14 @@ M. J. D. Powell.")
 (define-public r-mixtools
   (package
     (name "r-mixtools")
-    (version "2.0.0")
+    (version "2.0.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mixtools" version))
        (sha256
         (base32
-         "03by64xi7yka0hzc1qyz1jdqzah6isvr3cdsc7g5v6hb4f178kl5"))))
+         "1hcpijmddibhfxhq6d8lgi7m1x6ylf97y9ns0l8li3a1bvc438ws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-kernlab
