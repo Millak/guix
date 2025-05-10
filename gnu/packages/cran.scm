@@ -43502,13 +43502,13 @@ analysis and natural language processing.")
 (define-public r-storr
   (package
     (name "r-storr")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "storr" version))
        (sha256
-        (base32 "0qszdq16bf0dbss33zi63ciwmkgjsyc0c3akrr2kl14w3ncw6922"))))
+        (base32 "1spfnizyjdn1idl293k07zcgb32h2wi444vas8hwvm7ngbc6m9y5"))))
     (properties
      `((upstream-name . "storr")
        ;; Avoid dependency cycle.
