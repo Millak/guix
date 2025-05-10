@@ -50812,21 +50812,22 @@ chunks.")
 (define-public r-highs
   (package
     (name "r-highs")
-    (version "1.9.0-1")
+    (version "1.10.0-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "highs" version))
        (sha256
-        (base32 "1q54qd4s6abadn99dv1fywphc9qcnrfql3n63f5p9nlr4y17c2v6"))))
+        (base32 "1vga07m9pf8ckm593n0hvmcv6hi3vbxcdc553dbd0f0m7cwf29xp"))))
     (properties
      '((upstream-name . "highs")
        (updater-extra-native-inputs . ("cmake-minimal" "which"))))
     (build-system r-build-system)
+    (arguments (list #:configure-flags '(list "--configure-args=\"-nostdinc++\"")))
     (propagated-inputs (list r-checkmate r-rcpp))
-    (native-inputs (list cmake-minimal which))
+    (native-inputs (list cmake-minimal gfortran which))
     (home-page "https://gitlab.com/roigrp/solver/highs")
-    (synopsis "'HiGHS' Optimization Solver")
+    (synopsis "HiGHS optimization solver")
     (description
      "This package provides an R interface to @code{HiGHS}, an optimization
 solver.  It is designed for solving mixed-integer optimization problems with
