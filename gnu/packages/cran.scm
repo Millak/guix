@@ -22716,13 +22716,13 @@ Assessment (FSA) package.")
 (define-public r-fstcore
   (package
     (name "r-fstcore")
-    (version "0.9.18")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fstcore" version))
        (sha256
-        (base32 "00wzpr2i7s9pc3alvn4b8f1wgmfqplpwdif9rh9x8qqnylbixiqq"))))
+        (base32 "1k6rm3vq26v8by1wwdrw7m0d2dlxrdjhc43x79bdmk2x55nrg7hy"))))
     (properties `((upstream-name . "fstcore")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
