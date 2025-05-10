@@ -124,6 +124,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/sway.scm			\
   %D%/home/services/syncthing.scm		\
   %D%/home/services/mcron.scm			\
+  %D%/home/services/upnp.scm			\
   %D%/home/services/utils.scm			\
   %D%/home/services/xdg.scm			\
   %D%/image.scm					\

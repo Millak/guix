@@ -44990,6 +44990,12 @@ specified in @code{media-directories}.  The @code{media-directories}
 field is mandatory.  All other fields (such as network ports and the
 server name) come with a predefined default and can be omitted.
 
+@quotation Note
+This service is also available for Guix Home, where it runs directly
+with your user privileges (@pxref{Miscellaneous Home Services,
+@code{home-readymedia-service-type}}).
+@end quotation
+
 @c %start of fragment
 
 @deftp {Data Type} readymedia-configuration
@@ -51768,6 +51774,8 @@ mouse bindings.
 This section lists services somewhat networking-related that you may use
 with Guix Home.
 
+@subheading Syncthing Service
+
 @cindex Syncthing, file synchronization service
 @cindex backup service, Syncthing
 The @code{(gnu home services syncthing)} module provides a service to
@@ -51869,6 +51877,43 @@ You may specify a custom configuration by providing a
          (for-home
           (dicod-configuration @dots{})))
 @end lisp
+
+@subheading ReadyMedia Service
+
+@cindex ReadyMedia, DLNA/UPnP Service
+The @code{(gnu home services upnp)} module provides a service to set up
+the @uref{https://minidlna.sourceforge.net/, ReadyMedia} @acronym{DLNA,
+Digital Living Network Alliance} @acronym{UPnP, Universal Plug and Play}
+media server.
+
+@defvar home-readymedia-service-type
+This is the service type for the @command{minidlnad} daemon; it is the
+Home counterpart of the @code{readymedia-service-type} system service
+(@pxref{Miscellaneous Services, @code{readymedia-service-type}}).  The value
+for this service type is a @code{readymedia-configuration}.
+@end defvar
+
+The service can be used with a @code{readymedia-configuration} wrapped in
+@code{for-home} like this:
+
+@lisp
+(service home-readymedia-service-type
+         (for-home
+          (readymedia-configuration
+            (media-directories
+             (list (readymedia-directory
+                     (path "/path/to/media/audio")
+                     (types '(A)))
+                   (readymedia-directory
+                     (path "/path/to/media/video")
+                     (types '(V)))
+                   (readymedia-directory
+                     (path "/path/to/media/misc")))))))
+@end lisp
+
+For details about @code{readymedia-configuration}, check out the
+documentation of the system service (@pxref{Miscellaneous Services,
+@code{readymedia-service-type}}).
 
 @node Invoking guix home
 @section Invoking @command{guix home}

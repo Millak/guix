@@ -33,7 +33,6 @@
   #:use-module (ice-9 match)
   #:export (%readymedia-default-cache-directory
             %readymedia-default-log-directory
-            %readymedia-default-port
             %readymedia-log-file
             %readymedia-user-account
             %readymedia-user-group
@@ -50,7 +49,9 @@
             readymedia-media-directory-path
             readymedia-media-directory-types
             readymedia-media-directory?
-            readymedia-service-type))
+            readymedia-service-type
+            readymedia-activation
+            readymedia-shepherd-service))
 
 ;;; Commentary:
 ;;;
@@ -72,14 +73,27 @@
   (port readymedia-configuration-port
         (default #f))
   (cache-directory readymedia-configuration-cache-directory
-                   (default %readymedia-default-cache-directory))
+                   (default (if for-home?
+                                (string-append (or (getenv "XDG_CACHE_HOME")
+                                                   (string-append
+                                                    (getenv "HOME") "/.cache"))
+                                               "/readymedia")
+                              %readymedia-default-cache-directory)))
   (log-directory readymedia-configuration-log-directory
-                 (default %readymedia-default-log-directory))
+                 (default (if for-home?
+                              (string-append (or (getenv "XDG_STATE_HOME")
+                                                 (string-append
+                                                  (getenv "HOME")
+                                                  "/.local/state"))
+                                             "/readymedia")
+                            %readymedia-default-log-directory)))
   (friendly-name readymedia-configuration-friendly-name
                  (default #f))
   (media-directories readymedia-configuration-media-directories)
   (extra-config readymedia-configuration-extra-config
-                (default '())))
+                (default '()))
+  (home-service? syncthing-configuration-home-service?
+                 (default for-home?) (innate)))
 
 ;; READYMEDIA-MEDIA-DIR is a record that indicates the path of a media folder
 ;; and the types of media included within it. Allowed individual types are the
@@ -96,9 +110,13 @@
 (define (readymedia-configuration->config-file config)
   "Return the ReadyMedia/MiniDLNA configuration file corresponding to CONFIG."
   (match-record config <readymedia-configuration>
-    (port friendly-name cache-directory log-directory media-directories extra-config)
+    (port friendly-name cache-directory log-directory media-directories
+     extra-config home-service?)
     (apply mixed-text-file
            "minidlna.conf"
+           (if home-service?
+               (string-append "user=" (number->string (getuid)) "\n")
+               "")
            "db_dir=" cache-directory "\n"
            "log_dir=" log-directory "\n"
            (if friendly-name
@@ -125,12 +143,12 @@
 (define (readymedia-shepherd-service config)
   "Return a least-authority ReadyMedia/MiniDLNA Shepherd service."
   (match-record config <readymedia-configuration>
-    (cache-directory log-directory media-directories)
+    (cache-directory log-directory media-directories home-service?)
     (let ((minidlna-conf (readymedia-configuration->config-file config)))
       (shepherd-service
        (documentation "Run the ReadyMedia/MiniDLNA daemon.")
        (provision '(readymedia))
-       (requirement '(networking user-processes))
+       (requirement (if home-service? '() '(networking user-processes)))
        (start
         #~(make-forkexec-constructor
            (list #$(least-authority-wrapper
@@ -159,8 +177,8 @@
                  #$minidlna-conf
                  "-S")
            #:log-file #$(string-append log-directory "/" %readymedia-log-file)
-           #:user #$%readymedia-user-account
-           #:group #$%readymedia-user-group))
+           #:user #$(if home-service? #f %readymedia-user-account)
+           #:group #$(if home-service? #f %readymedia-user-group)))
        (stop #~(make-kill-destructor))))))
 
 (define readymedia-accounts
@@ -178,7 +196,7 @@
 (define (readymedia-activation config)
   "Set up directories for ReadyMedia/MiniDLNA."
   (match-record config <readymedia-configuration>
-    (cache-directory log-directory media-directories)
+    (cache-directory log-directory media-directories home-service?)
     (with-imported-modules (source-module-closure '((gnu build activation)))
       #~(begin
           (use-modules (gnu build activation))
@@ -186,14 +204,18 @@
           (for-each (lambda (directory)
                       (unless (file-exists? directory)
                         (mkdir-p/perms directory
-                                       (getpw #$%readymedia-user-account)
-                                       #o775)))
+                                       (getpw #$(if home-service?
+                                                    #~(getuid)
+                                                    %readymedia-user-account))
+                                       #$(if home-service? #o755 #o775))))
                     (list #$@(map readymedia-media-directory-path
                                   media-directories)))
           (for-each (lambda (directory)
                       (unless (file-exists? directory)
                         (mkdir-p/perms directory
-                                       (getpw #$%readymedia-user-account)
+                                       (getpw #$(if home-service?
+                                                    #~(getuid)
+                                                    %readymedia-user-account))
                                        #o755)))
                     (list #$cache-directory #$log-directory))))))
 

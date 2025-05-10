@@ -38,6 +38,7 @@
 (define %readymedia-media-directory "/media")
 (define %readymedia-configuration-test
   (readymedia-configuration
+   (port %readymedia-default-port)
    (media-directories
     (list (readymedia-media-directory (path %readymedia-media-directory)
                                       (types '(A V)))))))
