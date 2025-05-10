@@ -2733,6 +2733,13 @@ $ guix shell -D guix
 [env]$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -2
 @end example
 
+To generate a @file{CODEOWNERS} file, which Forgejo uses to determine
+which team or person should review changes to a given set of files, run:
+
+@example
+./etc/teams.scm codeowners > CODEOWNERS
+@end example
+
 @node Making Decisions
 @section Making Decisions
 
