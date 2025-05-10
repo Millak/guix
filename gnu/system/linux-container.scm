@@ -312,6 +312,10 @@ Run the container with the given options."))
                 #:namespaces (if #$shared-network?
                                  (delq 'net %namespaces)
                                  %namespaces)
+
+                ;; XXX: Work around <https://issues.guix.gnu.org/78356>.
+                #:lock-mounts? #f
+
                 #:writable-root? #t
                 #:process-spawned-hook explain)))))
 
