@@ -54351,13 +54351,13 @@ be efficient and easy to use.")
 (define-public r-vgam
   (package
     (name "r-vgam")
-    (version "1.1-12")
+    (version "1.1-13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "VGAM" version))
        (sha256
-        (base32 "05pgznwb0bwppq9mslvg197iyp0ln0npapd4r0zc6c2k6ikq4xsa"))))
+        (base32 "17qibarkf6a0snsggrnmkjp9l7dmybyzb2j2pgjzlx39vdi8sf5y"))))
     (properties `((upstream-name . "VGAM")))
     (build-system r-build-system)
     (native-inputs
