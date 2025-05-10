@@ -52239,14 +52239,14 @@ manipulating and visualizing complex functions.")
 (define-public r-hypergeo
   (package
     (name "r-hypergeo")
-    (version "1.2-13")
+    (version "1.2-14")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "hypergeo" version))
         (sha256
           (base32
-            "13jdiy216znwhr91iqnh03mvkmyscw439syb3h4i67dd78sphnvd"))))
+            "1r3hcmp44qf1fqk7ipxs3918zfd30ksmb5bpmjvj1jj3amfrldxz"))))
     (properties `((upstream-name . "hypergeo")))
     (build-system r-build-system)
     (propagated-inputs
