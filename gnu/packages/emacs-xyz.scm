@@ -375,11 +375,18 @@ buffer, a file on your disk, or a string from the kill ring.")
       (list
        #:phases
        #~(modify-phases %standard-phases
-                        (add-after 'install 'install-python-module
-                                   (lambda* (#:key inputs outputs #:allow-other-keys)
-                                            (let ((destination (elpa-directory (assoc-ref outputs "out"))))
-                                              (install-file "elisp-autofmt.py" destination)
-                                              (install-file "elisp-autofmt.overrides.json" destination)))))))
+           (add-after 'unpack 'patch-dependencies
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "elisp-autofmt.el"
+                (("\"python\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/python3")
+                                "\"")))))
+           (add-after 'install 'install-python-module
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((destination (elpa-directory (assoc-ref outputs "out"))))
+                 (install-file "elisp-autofmt.py" destination)
+                 (install-file "elisp-autofmt.overrides.json" destination)))))))
      (home-page "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
      (synopsis "Auto-format Emacs lisp")
      (description "This is a package to auto-format Emacs lisp.")
