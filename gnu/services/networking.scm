@@ -10,7 +10,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2019, 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
@@ -80,6 +80,7 @@
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-43)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 string-fun)
   #:use-module (json)
@@ -258,6 +259,7 @@
             nftables-configuration
             nftables-configuration?
             nftables-configuration-package
+            nftables-configuration-debug-levels
             nftables-configuration-ruleset
             %default-nftables-ruleset
 
@@ -2279,12 +2281,12 @@ COMMIT
                              (compose list iptables-shepherd-service))))))
 
 ;;;
-;;; nftables
+;;; nftables.
 ;;;
 
 (define %default-nftables-ruleset
-  (plain-file "nftables.conf"
-              "# A simple and safe firewall
+  (plain-file "nftables.conf" "\
+# A simple and safe firewall
 table inet filter {
   chain input {
     type filter hook input priority 0; policy drop;
@@ -2320,25 +2322,44 @@ table inet filter {
 }
 "))
 
-(define-record-type* <nftables-configuration>
-  nftables-configuration
-  make-nftables-configuration
-  nftables-configuration?
-  (package nftables-configuration-package
-           (default nftables))
-  (ruleset nftables-configuration-ruleset ; file-like object
-           (default %default-nftables-ruleset)))
+(define (debug-level? x)
+  (member x '(scanner parser eval netlink mnl proto-ctx segtree all)))
+
+(define list-of-debug-levels?
+  (list-of debug-level?))
+
+(define-maybe/no-serialization list-of-debug-levels)
+
+(define-configuration/no-serialization nftables-configuration
+  (package
+    (file-like nftables)
+    "The @code{nftables} package to use.")
+  (debug-levels
+   maybe-list-of-debug-levels
+   "A list of debug levels, for enabling debugging output.  Valid debug level values
+are the @samp{scanner}, @samp{parser}, @samp{eval}, @samp{netlink},
+@samp{mnl}, @samp{proto-ctx}, @samp{segtree} or @samp{all} symbols.")
+  (ruleset
+   (file-like %default-nftables-ruleset)
+   "A file-like object containing the complete nftables ruleset.  The default
+ruleset rejects all incoming connections except those to TCP port 22, with
+connections from the loopback interface are allowed."))
 
 (define (nftables-shepherd-service config)
   (match-record config <nftables-configuration>
-    (package ruleset)
+                (package debug-levels ruleset)
     (let ((nft (file-append package "/sbin/nft")))
       (shepherd-service
        (documentation "Packet filtering and classification")
        (actions (list (shepherd-configuration-action ruleset)))
        (provision '(nftables))
        (start #~(lambda _
-                  (invoke #$nft "--file" #$ruleset)))
+                  (invoke #$nft
+                          #$@(if (maybe-value-set? debug-levels)
+                                 (list (format #f "--debug=~{~a~^,~}"
+                                               debug-levels))
+                                 #~())
+                          "--file" #$ruleset)))
        (stop #~(lambda _
                  (invoke #$nft "flush" "ruleset")))))))
 

@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (gnu services base)
   #:use-module (gnu services dns)
   #:use-module (gnu services networking)
+  #:use-module (gnu services ssh)
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix monads)
@@ -50,6 +52,7 @@
             %test-dnsmasq
             %test-tor
             %test-iptables
+            %test-nftables
             %test-ipfs))
 
 
@@ -968,6 +971,8 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
    (description "Test a running Tor daemon configuration.")
    (value (run-tor-test))))
 
+(define %inetd-echo-port 7)
+
 (define* (run-iptables-test)
   "Run tests of 'iptables-service-type'."
   (define iptables-rules
@@ -987,8 +992,6 @@ COMMIT
 -A INPUT -p tcp -m tcp --dport 7 -j REJECT --reject-with icmp6-port-unreachable
 COMMIT
 ")
-
-  (define inetd-echo-port 7)
 
   (define os
     (marionette-operating-system
@@ -1065,7 +1068,8 @@ COMMIT
 
           (test-error "iptables firewall blocks access to inetd echo service"
                       'misc-error
-                      (wait-for-tcp-port inetd-echo-port marionette #:timeout 5))
+                      (wait-for-tcp-port #$%inetd-echo-port marionette
+                                         #:timeout 5))
 
           ;; TODO: This test freezes up at the login prompt without any
           ;; relevant messages on the console. Perhaps it is waiting for some
@@ -1077,7 +1081,7 @@ COMMIT
           ;;         (use-modules (gnu services herd))
           ;;         (stop-service 'iptables))
           ;;      marionette)
-          ;;     (wait-for-tcp-port inetd-echo-port marionette #:timeout 5)))
+          ;;     (wait-for-tcp-port #$%inetd-echo-port marionette #:timeout 5)))
 
           (test-end))))
 
@@ -1088,6 +1092,107 @@ COMMIT
    (name "iptables")
    (description "Test a running iptables daemon.")
    (value (run-iptables-test))))
+
+
+;;;
+;;; nftables.
+;;;
+
+(define (make-nftables-os ruleset)
+  (simple-operating-system
+   (service dhcp-client-service-type)
+   (service inetd-service-type
+            (inetd-configuration
+             (entries (list
+                       (inetd-entry
+                        (name "echo")
+                        (socket-type 'stream)
+                        (protocol "tcp")
+                        (wait? #f)
+                        (user "root"))))))
+   (service openssh-service-type)
+   (service nftables-service-type
+            (nftables-configuration
+             (debug-levels '(all))
+             (ruleset ruleset)))))
+
+(define %default-nftables-ruleset-for-tests
+  ;; This is like the %default-nftables-ruleset, but without allowing any
+  ;; connections from the loopback interface.
+  (plain-file "nftables.conf" "\
+table inet filter {
+  chain input {
+    type filter hook input priority 0; policy drop;
+
+    # early drop of invalid connections
+    ct state invalid drop
+
+    # allow established/related connections
+    ct state { established, related } accept
+
+    # allow from loopback
+    # iif lo accept   # COMMENTED OUT FOR TESTS
+    # drop connections to lo not coming from lo
+    iif != lo ip daddr 127.0.0.1/8 drop
+    iif != lo ip6 daddr ::1/128 drop
+
+    # allow icmp
+    ip protocol icmp accept
+    ip6 nexthdr icmpv6 accept
+
+    # allow ssh
+    tcp dport ssh accept
+
+    # reject everything else
+    reject with icmpx type port-unreachable
+  }
+  chain forward {
+    type filter hook forward priority 0; policy drop;
+  }
+  chain output {
+    type filter hook output priority 0; policy accept;
+  }
+}"))
+
+(define %nftables-os
+  (make-nftables-os %default-nftables-ruleset-for-tests))
+
+(define (run-nftables-test)
+  (define os
+    (marionette-operating-system
+     %nftables-os
+     #:imported-modules '((gnu services herd))
+     #:requirements '(inetd nftables ssh)))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (srfi srfi-64))
+          (define marionette
+            (make-marionette (list #$(virtual-machine os))))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "nftables")
+
+          (test-error "nftables blocks access to inetd echo service"
+                      'misc-error
+                      (wait-for-tcp-port #$%inetd-echo-port marionette
+                                         #:timeout 5))
+
+          (test-assert "nftables allows access to SSH TCP port 22"
+            (wait-for-tcp-port 22 marionette))
+
+          (test-end))))
+
+  (gexp->derivation "nftables-test" test))
+
+(define %test-nftables
+  (system-test
+   (name "nftables")
+   (description "Test the nftables service properly allow or block
+connection to ports.")
+   (value (run-nftables-test))))
 
 
 ;;;
