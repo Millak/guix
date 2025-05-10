@@ -5892,6 +5892,33 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
     (license (license:fsf-free "https://github.com/mstorsjo/fdk-aac/blob/master/NOTICE"
                                "https://www.gnu.org/licenses/license-list.html#fdk"))))
 
+(define-public fdkaac
+  (package
+    (name "fdkaac")
+    (version "1.0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/nu774/fdkaac.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16af0l46qdr907dxkk3yjy02znxj72zb72n30vzykqzd9ri5wmcx"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake pkg-config))
+    (inputs
+     (list libfdk))
+    (synopsis "Command-line AAC encoder")
+    (description "This package provides a command-line AAC-encoder.")
+    (home-page "https://github.com/nu774/fdkaac")
+    ;; Most files are zlib.
+    ;; Files missings/getopt.* are BSD-4-clause.
+    ;; Files src/parson.* are Expat.
+    ;; Files src/lpc.* are BSD.
+    (license license:zlib)))
+
 (define-public libfreeaptx
   (package
     (name "libfreeaptx")
