@@ -32138,13 +32138,13 @@ handling in messages and custom formatting.")
 (define-public r-logistf
   (package
     (name "r-logistf")
-    (version "1.26.0")
+    (version "1.26.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "logistf" version))
               (sha256
                (base32
-                "02qrh07c13khlpz3z3f6qq827h37j91i88n7jn3c8ky6r1lfa5pr"))))
+                "14l5gvrya6pfhbbj70ibnw7v7nkhawzkm9dxkkigzh1jlby0y7im"))))
     (properties `((upstream-name . "logistf")))
     (build-system r-build-system)
     (propagated-inputs (list r-formula-tools r-matrix r-mgcv r-mice))
