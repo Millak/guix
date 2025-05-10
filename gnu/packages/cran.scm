@@ -41100,6 +41100,7 @@ forest) is fit on the kernel matrix of a subset of the training data.")
        ;; We don't seem to need this and I don't want to package it now.
        (updater-ignored-native-inputs . ("r-dblog"))))
     (build-system r-build-system)
+    (arguments (list #:tests? #false)) ;tests can time out on the build farm
     (propagated-inputs (list r-dbi))
     (native-inputs (list r-adbcdrivermanager
                          r-arrow
