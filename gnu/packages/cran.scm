@@ -54590,13 +54590,13 @@ analyses.")
 (define-public r-mathjaxr
   (package
     (name "r-mathjaxr")
-    (version "1.6-0")
+    (version "1.8-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mathjaxr" version))
               (sha256
                (base32
-                "0yf1sfkb2kjsplipl2v4k2gp20li9xzsynclg228sy0v243pdi7c"))
+                "0d0h686zdif2khjwnib9l7fwpy0l3zg5bixhyxa5diq13k2rf8gb"))
               (modules '((guix build utils)))
               (snippet
                '(begin
