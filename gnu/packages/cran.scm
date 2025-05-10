@@ -35320,13 +35320,13 @@ which has the same usage and output as @code{optim()}.  Using
 (define-public r-options
   (package
     (name "r-options")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "options" version))
        (sha256
-        (base32 "0xngadnr0swdd40wm15mgb9vx4bmcfk8ay4vg1g4w44p2hp3lw80"))))
+        (base32 "1n0xy433plxqgqy3s3gdvxxvzw8hxzqzwi56y61hrg4dqvaamd21"))))
     (properties `((upstream-name . "options")))
     (build-system r-build-system)
     (arguments
