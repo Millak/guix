@@ -20718,13 +20718,13 @@ moderation, mediation and estimating power.")
 (define-public r-quantreg
   (package
     (name "r-quantreg")
-    (version "6.00")
+    (version "6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantreg" version))
        (sha256
-        (base32 "1avx7d2zlpsjlqpqyzagazkz0xwa0varjbl3qq5mcn4kdhk40pwb"))))
+        (base32 "16hnw2kynr4s75iybzgf17z95wgyx8fkk4sv54wmz895mg2r48pl"))))
     (build-system r-build-system)
     (arguments
      (list
