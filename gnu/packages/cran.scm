@@ -20045,13 +20045,13 @@ Institute of Standards and Technology}, USA.")
 (define-public r-nlme
   (package
     (name "r-nlme")
-    (version "3.1-167")
+    (version "3.1-168")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nlme" version))
        (sha256
-        (base32 "0jca5a7z82rrwy0imwb5jc2hx6m2av9fsdvlahrsb290kg5rrp6s"))))
+        (base32 "0qkki4x49808cmvj1fmsivq68b836f0rq3ayxrfpgdjc6il89dr3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
