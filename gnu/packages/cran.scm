@@ -27628,14 +27628,14 @@ data, fixed and random effects with bootstrapping.")
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
-    (version "1.1.10")
+    (version "1.1.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glmmTMB" version))
        (sha256
         (base32
-         "189awpihhy6k677swwss7zcnz6rprmiwmyicc2679p5n8f3ccr7n"))))
+         "0qkwskjb5ciwj1pcfgrpxhna1f7l9mbzgls72kvcd8i7y11mpl1c"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
     ;; TODO: tests take forever and eventually the build times out.
