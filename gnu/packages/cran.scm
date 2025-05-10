@@ -12300,14 +12300,14 @@ weights.")
 (define-public r-sass
   (package
     (name "r-sass")
-    (version "0.4.9")
+    (version "0.4.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sass" version))
        (sha256
         (base32
-         "1lnl2xssz33vg7p6a8ij55hg6j1p1d3y2mq22pvf0r3rmnd08cz1"))))
+         "0c4vnx3jqpy8iwh3gf7vvclcwjq6mbg4dqr9clki3n3l7wj4rnsa"))))
     (properties `((upstream-name . "sass")))
     (build-system r-build-system)
     (arguments
@@ -12319,7 +12319,7 @@ weights.")
            (lambda _ (setenv "LC_ALL" "en_US.UTF-8"))))))
     (propagated-inputs
      (list r-fs r-htmltools r-r6 r-rappdirs r-rlang))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-withr))
     (home-page "https://github.com/rstudio/sass")
     (synopsis "Syntactically Awesome Style Sheets (SASS)")
     (description
