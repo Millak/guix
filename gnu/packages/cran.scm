@@ -12868,13 +12868,13 @@ valid.")
 (define-public r-shinydashboard
   (package
     (name "r-shinydashboard")
-    (version "0.7.2")
+    (version "0.7.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "shinydashboard" version))
               (sha256
                (base32
-                "0hrqkwlpb8rnmp5j74p134g4c4cl16icmwc2ip6k1634fa2y8vm5"))))
+                "0k0llpzbys0qrzv37paihibhzn2riqgl0sqj7gzfqn3ahi8yh734"))))
     (build-system r-build-system)
     ;; The directory inst/AdminLTE/ contains a minified JavaScript file.
     ;; Regenerate it from the included sources.
