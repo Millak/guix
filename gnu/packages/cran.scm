@@ -35757,24 +35757,25 @@ compiled by the HGNC Comparison of Orthology Predictions (HCOP).")
 (define-public r-msigdbr
   (package
     (name "r-msigdbr")
-    (version "7.5.1")
+    (version "10.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "msigdbr" version))
        (sha256
         (base32
-         "1jna9bkq0a7r6f8nhxziyiw75kfhsyh1rv7sx5d4551mvxxlhc6w"))))
+         "00pf6s688zskrwciddd520ns8zqkvkgbyn7gib2lr5ns6pszwvcj"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-babelgene
+     (list r-assertthat
+           r-babelgene
            r-dplyr
-           r-magrittr
+           r-lifecycle
            r-rlang
            r-tibble
            r-tidyselect))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-testthat))
     (home-page "https://github.com/igordot/msigdbr")
     (synopsis "MSigDB gene sets for multiple organisms")
     (description
