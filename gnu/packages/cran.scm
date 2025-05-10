@@ -7931,14 +7931,14 @@ between a set of landmarks and the samples are calculated.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-36")
+    (version "1.1-37")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "0vyqmbz1zv3xh45ivfjl9dxpr5n8b48g1k70r58952hd994h7q5l"))))
+         "037hprzv9skjcp07lhgdy9ymaihnms6pjibr61ls1paz8in7bnyg"))))
     (build-system r-build-system)
     (properties
      '((updater-ignored-native-inputs . ("r-car" "r-gamm4"))))
