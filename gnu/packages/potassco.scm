@@ -49,8 +49,8 @@
 
 (define-public libpotassco
   ;; No public release, update together with clasp
-  (let ((revision "2")
-        (commit "69b677f026c53d5a0a794db17691a1eb8bce8c6b"))
+  (let ((revision "3")
+        (commit "2eecf5f066fe1f77c9122547f7e07ba1e8c1dcdf"))
     (package
       (name "libpotassco")
       (version (git-version "0.0" revision commit))
@@ -68,7 +68,7 @@
                        (("\"catch.hpp\"") "<catch/catch.hpp>"))))
                 (sha256
                  (base32
-                  "1c69njg30dha1zy6j17gghjg3lgambz0pipxkgxadmrkvsb20z2k"))))
+                  "0l502qcpwnnpa84hg7vynicpqp3mvivw150jlywqdp1g1irwnh7j"))))
       (arguments
        `(#:configure-flags '("-DLIB_POTASSCO_BUILD_TESTS=on"
                              "-DLIB_POTASSCO_INSTALL_LIB=on"
