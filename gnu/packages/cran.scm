@@ -39955,14 +39955,14 @@ included.")
 (define-public r-qgam
   (package
     (name "r-qgam")
-    (version "1.3.4")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qgam" version))
        (sha256
         (base32
-         "1jyamamdffaks89rspyhmg18b4iik0nb1j0vgqzvfnm890514cvn"))))
+         "1s5cg6jjlr1m26ap4qh3aq7z5f7pqvgsdyg45bipb9mxvx2lh6jf"))))
     (properties `((upstream-name . "qgam")))
     (build-system r-build-system)
     (propagated-inputs
