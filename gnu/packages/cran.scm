@@ -28146,14 +28146,14 @@ user credentials.")
 (define-public r-gert
   (package
     (name "r-gert")
-    (version "2.1.4")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gert" version))
        (sha256
         (base32
-         "0vbpycxn5gzygbsjhdzy5f7yz49hl4rl5savl6cglf688qr2m61d"))))
+         "066r59czxqad00ab160nsyfsy7dr87zax0c5ya6cq46bkk5pdhrx"))))
     (properties `((upstream-name . "gert")))
     (build-system r-build-system)
     (inputs
@@ -28166,7 +28166,7 @@ user credentials.")
            r-sys
            r-zip))
     (native-inputs
-     (list pkg-config r-knitr r-testthat))
+     (list pkg-config r-knitr r-spelling r-testthat))
     (home-page "https://docs.ropensci.org/gert/")
     (synopsis "Simple Git client for R")
     (description
