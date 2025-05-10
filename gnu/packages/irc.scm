@@ -694,14 +694,26 @@ all RFC 2812 commands, and customized color scheme definitions.")
 (define-public limnoria
   (package
     (name "limnoria")
-    (version "2019.11.22")
+    (version "2025.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "limnoria" version))
        (sha256
-        (base32 "0853xk1ps3v6lkmfx50wv56vynnzpl84v66hxnhl8i34zl36kk3c"))))
-    (build-system python-build-system)
+        (base32 "0azwakngdksmi86i0yd00gqzkakqxcagldzksl6cbpphz58kd7hi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PATH" (string-append #$output "/bin:" (getenv "PATH")))
+                (invoke "supybot-test" "test" "-v" "--no-network")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list python-pytz
            python-chardet
@@ -711,13 +723,6 @@ all RFC 2812 commands, and customized color scheme definitions.")
            python-sqlalchemy
            python-socksipy-branch
            python-ecdsa))
-    (native-inputs
-     (list python-mock))
-    ;; Despite the existence of a test folder there is no test phase.
-    ;; We need to package https://github.com/ProgVal/irctest and write
-    ;; our own testphase.
-    (arguments
-     `(#:tests? #f))
     (home-page "https://github.com/ProgVal/Limnoria")
     (synopsis "Modified version of Supybot (an IRC bot and framework)")
     (description
