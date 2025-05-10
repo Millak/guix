@@ -9546,23 +9546,25 @@ un pipe.\"")
 (define-public r-marginaleffects
   (package
     (name "r-marginaleffects")
-    (version "0.25.0")
+    (version "0.25.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "marginaleffects" version))
        (sha256
-        (base32 "0b5z3i4dmsgnw4945mss1gsw09hmqblqa0l2mdkj9fmrf11yf7d0"))))
+        (base32 "11kb423z4096w0dpl93d0sgsq746giab25cj8c532zbra1bvbmx4"))))
     (properties `((upstream-name . "marginaleffects")))
     (build-system r-build-system)
-    (propagated-inputs (list r-checkmate
+    (propagated-inputs (list r-backports
+                             r-checkmate
                              r-data-table
+                             r-formula
                              r-generics
                              r-insight
                              r-rcpp
                              r-rcppeigen
                              r-rlang))
-    (native-inputs (list r-here r-knitr r-quarto r-spelling r-tinytest))
+    (native-inputs (list r-knitr r-quarto r-spelling r-tinytest))
     (home-page "https://marginaleffects.com/")
     (synopsis
      "Predictions, comparisons, slopes, marginal means, and hypothesis tests")
