@@ -30057,14 +30057,14 @@ the topic.")
 (define-public r-docopt
   (package
     (name "r-docopt")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "docopt" version))
        (sha256
         (base32
-         "1zxhwizs916qm5by7nfslqnarl2q5202xc2azlhrnzk0wj3khiwz"))))
+         "05z90kkm3qwyhrm20p0f0kyhb2rjidz6zh8chv44q1s6fc8r4dkq"))))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
     (home-page "https://github.com/docopt/docopt.R")
