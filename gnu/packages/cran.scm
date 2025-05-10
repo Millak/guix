@@ -6808,22 +6808,23 @@ larger than memory.")
 (define-public r-bipartite
   (package
     (name "r-bipartite")
-    (version "2.20")
+    (version "2.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bipartite" version))
        (sha256
-        (base32 "0wgx695r5knlrzg0wv5h2sivh3xzjsb50lafmb08j1fvg3hnrxl6"))))
+        (base32 "191jr9675fjjhsrk5kvs0qngq7sg6yr8wsh78g5zk0g4qi6rbrwx"))))
     (properties `((upstream-name . "bipartite")))
     (build-system r-build-system)
-    (propagated-inputs (list r-fields
+    (propagated-inputs (list r-corpcor
+                             r-fields
                              r-igraph
                              r-mass
                              r-permute
                              r-sna
                              r-vegan))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-devtools r-hmisc r-knitr))
     (home-page "https://github.com/biometry/bipartite")
     (synopsis
      "Visualising bipartite networks and calculating ecological indices")
