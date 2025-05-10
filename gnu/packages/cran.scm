@@ -53320,14 +53320,14 @@ natural language processing, speech recognition, translation, and more.")
 (define-public r-paws-management
   (package
     (name "r-paws-management")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.management" version))
        (sha256
         (base32
-         "1n3m1jw30sv9fi3gjzsz20rbb941xkiz7a8650i0sx20fh5id1sh"))))
+         "0lc4dq1nyawlfxnab22fzcdpg67h57lk32l5kvf2b89kil6pzn2k"))))
     (properties
      '((upstream-name . "paws.management")
        (updater-ignored-native-inputs . ("r-paws"))))
