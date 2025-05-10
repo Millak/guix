@@ -7373,14 +7373,14 @@ are needed.")
 (define-public r-foreign
   (package
     (name "r-foreign")
-    (version "0.8-88")
+    (version "0.8-90")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "foreign" version))
        (sha256
         (base32
-         "10csyqkw46yclyjj9ywg9y9xvmr9v6h1wjd2cilpjw6irbp37fph"))))
+         "15m1g7khwv73psrs194ip7zfc3s5qb020bbs48a902x50a07kihx"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/foreign")
     (synopsis "Read data stored by other statistics software")
