@@ -10771,13 +10771,13 @@ both binary and text-mode serialisation is supported.")
 (define-public r-relations
   (package
     (name "r-relations")
-    (version "0.6-14")
+    (version "0.6-15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "relations" version))
        (sha256
-        (base32 "176qybc6pl2lvrbqyvy6xwxhan5jdsdrpjly25vqf0bjynsv4kq2"))))
+        (base32 "1qm1z4cv1m7hvq4icvdyb8n026jr1550ibazpbmqwp5qk7mf73qp"))))
     (properties `((upstream-name . "relations")))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster r-sets r-slam))
