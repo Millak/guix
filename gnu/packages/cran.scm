@@ -48065,14 +48065,14 @@ more.")
 (define-public r-workflows
   (package
     (name "r-workflows")
-    (version "1.1.4")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "workflows" version))
        (sha256
         (base32
-         "120xfm12w8pfqjbmmzsyc01qnffbb1n514dgw9v9gmqdy5l70i6s"))))
+         "0bf1qx3xdpf5bvdjc4zz2ybb42jz2dzwvidb8b5gjrybkaqdrs67"))))
     (properties
      '((upstream-name . "workflows")
        (updater-extra-native-inputs . ("r-dials"))))
@@ -48085,11 +48085,20 @@ more.")
            r-lifecycle
            r-modelenv
            r-parsnip
+           r-recipes
            r-rlang
+           r-sparsevctrs
            r-tidyselect
-           r-vctrs))
+           r-vctrs
+           r-withr))
     (native-inputs
-     (list r-dials r-knitr r-modeldata r-recipes r-testthat))
+     (list r-butcher
+           r-dials
+           r-dials
+           r-knitr
+           r-matrix
+           r-modeldata
+           r-testthat))
     (home-page "https://github.com/tidymodels/workflows")
     (synopsis "Modeling workflows")
     (description
