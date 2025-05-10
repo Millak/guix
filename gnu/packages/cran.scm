@@ -34355,21 +34355,28 @@ interface for asynchronous rendering of R graphics.")
 (define-public r-units
   (package
     (name "r-units")
-    (version "0.8-5")
+    (version "0.8-7")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "units" version))
         (sha256
           (base32
-            "1c836qazrs8z9p1xkcfl9gl882i8q7qf2g73l483w18bfspq0pnr"))))
+            "0r3vja9f031ij3k0rjp5j4zw1zmkfnh0s9mhi4amwfjr1dnxpg9q"))))
     (build-system r-build-system)
     (inputs
      (list udunits))
     (propagated-inputs
      (list r-rcpp))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-dplyr
+           r-ggplot2
+           r-knitr
+           r-magrittr
+           r-pillar
+           r-testthat
+           r-vctrs
+           r-vdiffr))
     (home-page "https://github.com/r-quantities/units/")
     (synopsis "Measurement Units for R Vectors")
     (description
