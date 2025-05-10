@@ -46601,13 +46601,13 @@ sensitivity analysis for certain parametric models.")
 (define-public r-memisc
   (package
     (name "r-memisc")
-    (version "0.99.31.8.1")
+    (version "0.99.31.8.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "memisc" version))
               (sha256
                (base32
-                "03qk4393xsvsa6mw67nx2y906sn704j448q8y82am33pwggmg7aj"))))
+                "14mf01abhww2d2z1xyfz96cy0hai374dlzc5vnb9s7n4gpgigm8d"))))
     (properties `((upstream-name . "memisc")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-jsonlite r-lattice r-mass r-yaml))
