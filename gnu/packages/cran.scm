@@ -13623,14 +13623,14 @@ named elements: the @code{status}, the @code{headers}, and the @code{body}.")
 (define-public r-miniui
   (package
     (name "r-miniui")
-    (version "0.1.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "miniUI" version))
        (sha256
         (base32
-         "1h5h2sc57h95d6bsgs95l26911g38hvjc1v50bc31xl9689l2as5"))))
+         "0by2g7wfn4jwzz79hw2y72nxsdl67cr6ix902wj8blw4flglhyh1"))))
     (properties `((upstream-name . "miniUI")))
     (build-system r-build-system)
     (propagated-inputs
