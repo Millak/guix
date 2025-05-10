@@ -17669,13 +17669,13 @@ and 4PL models and generalized partial credit models.")
 (define-public r-generalizedhyperbolic
   (package
     (name "r-generalizedhyperbolic")
-    (version "0.8-6")
+    (version "0.8-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GeneralizedHyperbolic" version))
        (sha256
-        (base32 "1a9n9hb6cxp9silcpskhp67l7p1azm72y4dngj48nngcavrm8i4r"))))
+        (base32 "08z4jz9lzyc0afvxqw6m2p9h54lqk6hn1a8mva5lrddxlxf04qbv"))))
     (properties `((upstream-name . "GeneralizedHyperbolic")))
     (build-system r-build-system)
     (propagated-inputs (list r-distributionutils r-mass))
