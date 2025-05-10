@@ -25,6 +25,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system perl)
   #:use-module (gnu packages)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gl)
@@ -146,6 +147,7 @@ using a list of (X, Y) pairs.")
                          perl-extutils-depends
                          perl-extutils-f77
                          gfortran
+                         sharutils
                          perl-file-which
                          perl-pod-parser
                          perl-test-deep
