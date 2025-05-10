@@ -219,3 +219,26 @@ Perl Data Language.")
     (description "This package provides a library and simple REPL for the
 Perl Data Language.")
     (license license:perl-license)))
+
+(define-public perl-pdl-graphics-trid
+  (package
+    (name "perl-pdl-graphics-trid")
+    (version "2.102")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/PDLPorters/PDL-Graphics-TriD.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c66337l3dkw70mqgldbih1xkyg082lalmaldb9k5058hq4jhqzl"))))
+    (build-system perl-build-system)
+    (inputs
+     (list mesa))
+    (propagated-inputs
+     (list perl-pdl))
+    (synopsis "3D graphics in Perl Data Language")
+    (description "This package provides modules to do 3D graphics in PDL.")
+    (home-page "https://github.com/PDLPorters/")
+    (license license:perl-license)))
