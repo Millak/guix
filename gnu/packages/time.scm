@@ -118,6 +118,46 @@ program uses.  The display output of the program can be customized or saved
 to a file.")
     (license gpl3+)))
 
+(define-public pps-tools
+  ;; Last tagged release was in 2021
+  (let ((commit "e5083fe1481a34373dee2acfabb63001ee9c40e0")
+        (revision "1"))
+    (package
+      (name "pps-tools")
+      (version (git-version "1.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/redlab-i/pps-tools")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1q3yvkwgqzafpx940cgqjn0harziv9gix1k3r3ymidmip0i5z1cp"))))
+      (arguments
+       (list
+        #:tests? #f ;There is no test suite.
+        #:make-flags
+        #~(list "CC=gcc"
+                (string-append "DESTDIR=" %output))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; No configure script
+            (delete 'configure)
+            (add-after 'unpack 'patch-makefile
+              (lambda _
+                (substitute* "Makefile"
+                  (("/usr/")
+                   "/")))))))
+      (build-system gnu-build-system)
+      (home-page "https://github.com/redlab-i/pps-tools")
+      (synopsis "User-space tools and headers for LinuxPPS")
+      (description
+       "This package includes the necessary headers for using
+@url{http://linuxpps.org/, LinuxPPS} PPSAPI kernel interface in user-space
+applications, and several support tools.")
+      (license gpl2+))))
+
 (define-public python-pytimeparse
   (package
     (name "python-pytimeparse")
