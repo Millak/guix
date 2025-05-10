@@ -28423,15 +28423,18 @@ ways.")
 (define-public r-summarytools
   (package
     (name "r-summarytools")
-    (version "1.0.1")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "summarytools" version))
        (sha256
         (base32
-         "0gr95cd1ja8di6s0xghk6w7nj3bh3z4g7j7ixdy7f88q681aixgx"))))
+         "0xp80mh6y5n3rq0bci6kvfd2maf378k9ghldhf8ap7f6c8s0w9r3"))))
     (build-system r-build-system)
+    ;; TODO
+    ;; inst/includes/scripts/bootstrap.min.js
+    ;; inst/includes/scripts/jquery-3.7.0.slim.min.js
     (propagated-inputs
      (list r-base64enc
            r-checkmate
@@ -28446,7 +28449,7 @@ ways.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list esbuild r-knitr))
     (home-page "https://github.com/dcomtois/summarytools")
     (synopsis "Tools to quickly and neatly summarize data")
     (description
