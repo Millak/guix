@@ -19892,19 +19892,20 @@ explored with minimal deviation from the common work patterns of
 (define-public r-nestedcv
   (package
     (name "r-nestedcv")
-    (version "0.7.12")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nestedcv" version))
        (sha256
-        (base32 "0f5wmnd8q1zq1xpp05n245v7zag63wwblh5rhi9qfw8069lpyp1p"))))
+        (base32 "1cymz961bcc9ga2dk2fnqi8iiz9da95fxw242l0brp3w0ymdcx4q"))))
     (properties `((upstream-name . "nestedcv")))
     (build-system r-build-system)
     (propagated-inputs (list r-caret
                              r-data-table
                              r-doparallel
                              r-foreach
+                             r-future-apply
                              r-ggplot2
                              r-glmnet
                              r-matrixstats
