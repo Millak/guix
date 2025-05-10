@@ -16766,13 +16766,13 @@ from knitr Rmarkdown.")
 (define-public r-kit
   (package
     (name "r-kit")
-    (version "0.0.19")
+    (version "0.0.20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kit" version))
        (sha256
-        (base32 "0a0q57q3c5kfjd2c3vz1918hgzsh2ik1rwkr7kdrmzn45xs1nmdy"))))
+        (base32 "11sy1j6k20fxx7fbbdsaqzm9ax74m62534zqi6jafq643fnnzng6"))))
     (properties `((upstream-name . "kit")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=kit")
