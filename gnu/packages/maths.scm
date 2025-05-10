@@ -1426,14 +1426,15 @@ in the terminal or with an external viewer.")
 (define-public perl-pgplot
   (package
     (name "perl-pgplot")
-    (version "2.34")
+    (version "2.35")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/E/ET/ETJ/PGPLOT-" version
-                           ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PDLPorters/perl5-PGPLOT.git")
+             (commit version)))
        (sha256
-        (base32 "1j0hjnhi0rkihviab2s6ninwfm71s73zh89pds1mpg9kf3c1w97z"))))
+        (base32 "0i9bi52pwbi3qnalm288ihdlwsvn9wwi5rhmspqbna3pfqjhc29c"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases
