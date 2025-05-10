@@ -52890,19 +52890,19 @@ carrying out economic experiments.")
 (define-public r-distributionutils
   (package
     (name "r-distributionutils")
-    (version "0.6-1")
+    (version "0.6-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DistributionUtils" version))
        (sha256
         (base32
-         "1mv3p7hm02q3mhrw5165gc2d77ighnykyfn6ibxvkc3ii2m9xrri"))))
+         "01fand751znsv519naldrii598yw3jlgjkws0v8h3mggr4jib3l0"))))
     (properties
      `((upstream-name . "DistributionUtils")))
     (build-system r-build-system)
     (native-inputs
-     (list gfortran r-runit))
+     (list gfortran))
     (home-page "https://cran.r-project.org/package=DistributionUtils")
     (synopsis "Distribution utilities")
     (description
