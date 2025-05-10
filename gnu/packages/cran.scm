@@ -11028,19 +11028,19 @@ it has been in the first iteration.")
 (define-public r-readxl
   (package
     (name "r-readxl")
-    (version "1.4.3")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "readxl" version))
        (sha256
         (base32
-         "0j2rkb012h0kvcm8n3817lgfir52dvmkwaxn7mij71gbxz6vpzky"))))
+         "1pyy3g65zcq0b98xqc2v400z5l5ryvdl71vvd372kqgvp9xhvmq9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cellranger r-cpp11 r-progress r-tibble))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-withr r-writexls))
     (home-page "https://readxl.tidyverse.org")
     (synopsis "Read Excel files")
     (description
