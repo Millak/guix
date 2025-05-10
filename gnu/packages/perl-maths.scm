@@ -256,6 +256,7 @@ Perl Data Language.")
        (uri (git-reference
              (url "https://github.com/PDLPorters/perl5-PGPLOT.git")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0i9bi52pwbi3qnalm288ihdlwsvn9wwi5rhmspqbna3pfqjhc29c"))))
     (build-system perl-build-system)
