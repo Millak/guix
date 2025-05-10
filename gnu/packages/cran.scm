@@ -16692,14 +16692,14 @@ George Marsaglia are included.")
 (define-public r-kknn
   (package
     (name "r-kknn")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kknn" version))
        (sha256
         (base32
-         "1nzkg3dxaiqp87p56wm895qx5xn86hv5hjr73qvl1yiaxiq0x112"))))
+         "0yddb0zxn32ndhq20aigdf2y3hwd8s7vv916hnik9bqzm0hs6gcm"))))
     (properties `((upstream-name . "kknn")))
     (build-system r-build-system)
     (propagated-inputs
