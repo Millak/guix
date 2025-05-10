@@ -150,7 +150,7 @@ satisfiability checking (SAT).")
 (define-public clingo
   (package
     (name "clingo")
-    (version "5.7.1")
+    (version "5.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -166,7 +166,7 @@ satisfiability checking (SAT).")
                    (delete-file "libpyclingo/_clingo.c")))
               (sha256
                (base32
-                "1mxl3gwx55sf2ifcb92mfy989c50yqpnq0d0r2mxdqr0riy40hjb"))))
+                "08jpjz2fgq59d78xpwq03dxrdcxwzf5z6crqwn6qdarb0wcdc5sn"))))
     (build-system cmake-build-system)
     (arguments
      (list
