@@ -9607,14 +9607,14 @@ syntax that can be converted to XHTML or other formats.")
 (define-public r-mass
   (package
     (name "r-mass")
-    (version "7.3-64")
+    (version "7.3-65")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MASS" version))
        (sha256
         (base32
-         "0zxvrnl7dk41f6saldjz16lvy4m6ks4707vdv3z6kkvzp4jkfcdz"))))
+         "0bqp73z8qmxv6ws2k4agamvci1wzricpg2jakck5dkk4qgiz2zmh"))))
     (properties `((upstream-name . "MASS")))
     (build-system r-build-system)
     (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
