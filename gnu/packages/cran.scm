@@ -14598,18 +14598,18 @@ C++ code.")
 (define-public r-rcppde
   (package
     (name "r-rcppde")
-    (version "0.1.7")
+    (version "0.1.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppDE" version))
               (sha256
                (base32
-                "1846pl9gxikycdvwfgy1gw41z0fx4ycjp5p4295v8k2pgvlqw8sa"))))
+                "07hrfvpkddc2yzs6bq52vmdymyry250pgizfxyb6mw47lcb7jjlf"))))
     (properties `((upstream-name . "RcppDE")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcpparmadillo))
-    (native-inputs (list r-lattice))
+    (native-inputs (list r-deoptim r-lattice))
     (home-page "https://cran.r-project.org/package=RcppDE")
     (synopsis "Global optimization by differential evolution in C++")
     (description
