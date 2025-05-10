@@ -16466,13 +16466,13 @@ linear (in)equalities.")
 (define-public r-litedown
   (package
     (name "r-litedown")
-    (version "0.5")
+    (version "0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "litedown" version))
        (sha256
-        (base32 "13avh951vihks6n2lfg70xaq052qx6ivxmxjsipf63bb0fwkmn7q"))))
+        (base32 "0wdlplwiww0fb343ckmhikbk469fdwz8dj9vx0hx4sgjkmrb8b77"))))
     (properties `((upstream-name . "litedown")))
     (build-system r-build-system)
     ;; Building the vignettes requires internet access.
