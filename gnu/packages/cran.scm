@@ -52315,14 +52315,14 @@ in order to customise how it should change with time.")
 (define-public r-tzdb
  (package
     (name "r-tzdb")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "tzdb" version))
         (sha256
           (base32
-            "08rskp7kv2w5pfnrxzswgkdsrg1g0pq3n64q7i3gvpdx85hccls2"))))
+            "1ns7ygy35lyya0cdaxxvvcqn7cm2422svnfinzfjywpsvcvm439q"))))
     (properties `((upstream-name . "tzdb")))
     (build-system r-build-system)
     (propagated-inputs (list r-cpp11))
