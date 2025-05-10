@@ -50192,13 +50192,13 @@ the comparison of different learning algorithms.")
 (define-public r-mlr3mbo
   (package
     (name "r-mlr3mbo")
-    (version "0.2.8")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3mbo" version))
        (sha256
-        (base32 "0q3rr4dq13sjalsjm27ggn6g2kqxlnr2rdq2gbawxglnad50ws0n"))))
+        (base32 "1wgf3ikywczpkddqpjf3cmvqr083p4l75ifv60mlxkg7fhpnm61g"))))
     (properties
      '((upstream-name . "mlr3mbo")
        (updater-extra-native-inputs
