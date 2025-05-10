@@ -54189,14 +54189,14 @@ replacement for the now deprecated @code{testthat::with_mock()} and
 (define-public r-zoltr
   (package
     (name "r-zoltr")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zoltr" version))
        (sha256
         (base32
-         "0j1zyclfhl1njwyg7x4jg4vqaphiikplqa8b4ch9hrzlvjjw7zk8"))))
+         "0qpkrxq527vcgwbvg5b5p1xmzwcz73i426jkb1pp1wixj9z823n3"))))
     (properties `((upstream-name . "zoltr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -54210,7 +54210,7 @@ replacement for the now deprecated @code{testthat::with_mock()} and
            r-mmwrweek
            r-readr
            r-rlang))
-    (native-inputs (list r-knitr r-mockery r-testthat r-webmockr))
+    (native-inputs (list r-devtools r-knitr r-mockery r-testthat r-webmockr))
     (home-page "https://github.com/reichlab/zoltr")
     (synopsis "Interface to the Zoltar forecast repository API")
     (description
