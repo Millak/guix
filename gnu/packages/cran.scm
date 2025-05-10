@@ -27584,13 +27584,13 @@ models.")
 (define-public r-glmmadaptive
   (package
     (name "r-glmmadaptive")
-    (version "0.9-1")
+    (version "0.9-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GLMMadaptive" version))
        (sha256
-        (base32 "1gzm61a7qy4mvw1zaa4n01a5si7vawq2w0ppwk6pfsd06ffh5g2r"))))
+        (base32 "0g71ysa1g4pk59v0m9s2l45f0ik5h3dc23hjv8513lcrj3jc471z"))))
     (properties `((upstream-name . "GLMMadaptive")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-matrixstats r-nlme))
