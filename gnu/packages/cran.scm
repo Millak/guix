@@ -16714,13 +16714,13 @@ classification, regression and clustering.")
 (define-public r-knitr
   (package
     (name "r-knitr")
-    (version "1.49")
+    (version "1.50")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "knitr" version))
               (sha256
                (base32
-                "1lx2k2gg14pmpbh8i884mdaqx0zaf0x07x1001z3hja6cmwwali9"))))
+                "0h9girrcwkswa786gy02hzpi539nrsrpqy3ap6a6qxmd4225wpqh"))))
     (properties
      ;; We can't have r-litedown among the inputs here to avoid a dependency
      ;; cycle.
