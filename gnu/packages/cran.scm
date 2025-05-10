@@ -48318,14 +48318,14 @@ pipeline friendly so that data processing with lists can be chained.")
 (define-public r-rsample
   (package
     (name "r-rsample")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsample" version))
        (sha256
         (base32
-         "1igdcicympnbrypb5c47bmf4q997q6s98i1lzb4x29x53vr3gx73"))))
+         "14f9m82c0j3r3z0wdk4jialfi4khnpznhfxca4cj64qgj5wxzx7k"))))
     (properties `((upstream-name . "rsample")))
     (build-system r-build-system)
     (propagated-inputs
@@ -48344,7 +48344,7 @@ pipeline friendly so that data processing with lists can be chained.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-broom r-knitr r-modeldata r-testthat r-withr))
     (home-page "https://rsample.tidymodels.org")
     (synopsis "General resampling infrastructure")
     (description
