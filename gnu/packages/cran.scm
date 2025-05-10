@@ -53699,14 +53699,14 @@ and analyze zooarchaeological data.")
 (define-public r-zonebuilder
   (package
     (name "r-zonebuilder")
-    (version "0.0.2")
+    (version "0.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zonebuilder" version))
        (sha256
         (base32
-         "0mxf3dz0d6bi5wwjilqivdxhy5ypnq5svky8zygha0clv45l4dmn"))))
+         "1m58bhk2hfpm2n35af506plyapgsak31q1z0wp0jc7v7447bvzyx"))))
     (properties `((upstream-name . "zonebuilder")))
     (build-system r-build-system)
     (propagated-inputs
