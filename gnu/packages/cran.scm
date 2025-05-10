@@ -51098,14 +51098,14 @@ visualized at any level of the experiment's design.")
 (define-public r-qdapregex
   (package
     (name "r-qdapregex")
-    (version "0.7.8")
+    (version "0.7.10")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "qdapRegex" version))
         (sha256
           (base32
-            "1pf1cz03i6sn83d1aaj4cv4jfavs6k81nn5sy7b0aw4i1hpkyiwz"))))
+            "126zh9gm7hqa1yb20pb16qy36ixs6sdslvlxqjh55cw9y0wfhgdh"))))
     (properties `((upstream-name . "qdapRegex")))
     (build-system r-build-system)
     (propagated-inputs (list r-stringi))
