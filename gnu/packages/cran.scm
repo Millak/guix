@@ -24263,13 +24263,13 @@ other add-on packages.")
 (define-public r-prettygraphs
   (package
     (name "r-prettygraphs")
-    (version "2.1.6")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "prettyGraphs" version))
               (sha256
                (base32
-                "0yjpwxdy9mkj2k33zvd5klyv4ava46i19yls87n0bvf79y90ikpy"))))
+                "0va69qqgbn8fxzlm5dkzmaqv1xq5zb1s79wv1f065p61akx0ma16"))))
     (properties `((upstream-name . "prettyGraphs")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=prettyGraphs")
