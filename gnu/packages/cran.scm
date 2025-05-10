@@ -30671,13 +30671,13 @@ useful for building large phylogenies using multiple markers.")
 (define-public r-rnetcdf
   (package
     (name "r-rnetcdf")
-    (version "2.9-2")
+    (version "2.11-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RNetCDF" version))
        (sha256
-        (base32 "0cdksiaai9wc4dyk3k01f9q9ki19r94p77rwpy4kr55hvwnrqx8m"))))
+        (base32 "0n3zc7i59cr3qms2x2spn948wl9imd7yiajwwyn6mac0q0wrbb18"))))
     (properties `((upstream-name . "RNetCDF")))
     (build-system r-build-system)
     (inputs (list netcdf udunits))
