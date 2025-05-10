@@ -9664,14 +9664,14 @@ and operations on them using LAPACK and SuiteSparse.")
 (define-public r-matrixmodels
   (package
     (name "r-matrixmodels")
-    (version "0.5-3")
+    (version "0.5-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MatrixModels" version))
        (sha256
         (base32
-         "03zjfxjk4l2dl1117slz163w0ky675d23sjfni4d7fdhqq359ny2"))))
+         "0g7k3kag492rbacnm6d11q6xxiy6h9j88ihfg5vylgsslghgjypm"))))
     (properties `((upstream-name . "MatrixModels")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix))
