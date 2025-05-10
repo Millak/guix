@@ -106,7 +106,7 @@ between aspif and smodels format or to a human-readable text format.")
 (define-public clasp
   (package
     (name "clasp")
-    (version "3.3.10")
+    (version "3.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -116,7 +116,7 @@ between aspif and smodels format or to a human-readable text format.")
               (patches (search-patches "clasp-hide-event-ids.patch"))
               (sha256
                (base32
-                "0qap7rar8a5mkqz28n2hnvr4cfv5x0rh4zs3wdp919dw4d034chr"))))
+                "0sid9wks19h5slrpkm8qw0gsxlyq1g2vf4aznqapr777rws9d9b6"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCLASP_BUILD_TESTS=on"
