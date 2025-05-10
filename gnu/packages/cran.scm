@@ -27426,13 +27426,13 @@ and permutation inference in the framework of Strasser and Weber (1999).")
 (define-public r-libgeos
   (package
     (name "r-libgeos")
-    (version "3.11.1-2")
+    (version "3.11.1-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "libgeos" version))
        (sha256
-        (base32 "0d4gfcll0z4f57sv8vax2bbc4fvs4da4510qwisd7wf5ghjhsbb0"))))
+        (base32 "1w83i5afbvgjhj64y6ml5x9dd8g803rs44r792kdirm8njzfa3g1"))))
     (properties `((upstream-name . "libgeos")))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
