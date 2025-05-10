@@ -12701,13 +12701,13 @@ separately.")
 (define-public r-shinymeta
   (package
     (name "r-shinymeta")
-    (version "0.2.0.3")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinymeta" version))
        (sha256
-        (base32 "1lizg5sjg0f2axr9vk8z4w43lbyim83gd4dzx91dygknv3kgyp89"))))
+        (base32 "0jq4ifk59xyvjgmccgx9nhqc0pn2kbd9w1wdsr2470xdhmypvra5"))))
     (properties
      '((upstream-name . "shinymeta")
        (updater-extra-native-inputs
@@ -12730,7 +12730,14 @@ separately.")
                              r-shiny
                              r-sourcetools
                              r-styler))
-    (native-inputs (list r-knitr r-rmarkdown r-stringr r-testthat zip))
+    (native-inputs (list r-dplyr
+                         r-knitr
+                         r-knitr
+                         r-rmarkdown
+                         r-rmarkdown
+                         r-stringr
+                         r-testthat
+                         zip))
     (home-page "https://rstudio.github.io/shinymeta/")
     (synopsis "Export domain logic from Shiny using meta-programming")
     (description
