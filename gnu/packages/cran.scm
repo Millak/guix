@@ -47149,13 +47149,13 @@ semantics and supports interaction with @code{ALTREP} vectors.")
 (define-public r-rcpptoml
   (package
     (name "r-rcpptoml")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppTOML" version))
        (sha256
-        (base32 "1ak3dwzdrmq9kd30i12fy582rsn5xfljw214liv1w8l2rbwr24rp"))))
+        (base32 "0vwjyn68cildb6rs21jjahg246znjw8pjzg6cmqfyasn7hjr9m9f"))))
     (properties `((upstream-name . "RcppTOML")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
