@@ -16668,14 +16668,14 @@ and renewable energy.")
 (define-public r-suppdists
   (package
     (name "r-suppdists")
-    (version "1.1-9.8")
+    (version "1.1-9.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SuppDists" version))
        (sha256
         (base32
-         "07k8sdw7qmbzflpsr1zrn8bm42qp936sm3bwpi8q7mjb7h8y40k5"))))
+         "09m9vsrzr8c5ird9avfscnib2rs12scbkmawj78vwhc8jj0hig3z"))))
     (properties `((upstream-name . "SuppDists")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/SuppDists")
