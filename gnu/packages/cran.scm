@@ -53219,14 +53219,14 @@ and more.")
 (define-public r-paws-application-integration
   (package
     (name "r-paws-application-integration")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.application.integration" version))
        (sha256
         (base32
-         "04mi8wbhzacl1wwhdn67bz67r9nj0s68s2w1bm0ryqv3khjknqsa"))))
+         "0j72ly19khlzvxxg2i5dg15dka78khwsiiwg4vp1czwvvy7lldy6"))))
     (properties
      '((upstream-name . "paws.application.integration")
        (updater-ignored-native-inputs . ("r-paws"))))
