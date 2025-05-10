@@ -16389,13 +16389,13 @@ transportation problems.")
 (define-public r-lpsolveapi
   (package
     (name "r-lpsolveapi")
-    (version "5.5.2.0-17.12")
+    (version "5.5.2.0-17.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lpSolveAPI" version))
        (sha256
-        (base32 "1vvhbgd54k0ynzh1zsrcdy8ry6w642vjk9dhlkig7pamf39aj02g"))))
+        (base32 "0kxxqiiwb1aqq7pk9kv1j7m7bjbyyqrf7jnrllag8najd735nh2n"))))
     (properties `((upstream-name . "lpSolveAPI")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=lpSolveAPI")
