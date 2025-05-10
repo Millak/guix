@@ -19740,16 +19740,15 @@ their own grammars and easily expose them in R packages.")
 (define-public r-tinylabels
   (package
     (name "r-tinylabels")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tinylabels" version))
        (sha256
-        (base32 "01pvnirma3wzfqnnz8zvyqajjyysjm3sd6813bgdhz199lcg7hhz"))))
+        (base32 "0jplsnqjrr0y8rbin4i3yxgv3cvb6pbmh2y2in1smmy5ywsyyz3d"))))
     (properties
-     '((upstream-name . "tinylabels")
-       (updater-extra-native-inputs . ("r-vctrs"))))
+     '((upstream-name . "tinylabels")))
     (build-system r-build-system)
     (native-inputs (list r-knitr r-testthat r-vctrs))
     (home-page "https://github.com/mariusbarth/tinylabels")
