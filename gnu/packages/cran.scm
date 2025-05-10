@@ -43419,14 +43419,14 @@ well as extracting and replacing names and symbols from these objects.")
 (define-public r-proxyc
   (package
     (name "r-proxyc")
-    (version "0.4.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "proxyC" version))
        (sha256
         (base32
-         "1a124nzxldc6687kvgkg41dqfbqb7yqdgm9dj5fj8g4bax9qcgg8"))))
+         "1847iz54pg4mp3s4sd8rmzarc8rciz477k4sm324ykmh9l758lbj"))))
     (properties `((upstream-name . "proxyC")))
     (build-system r-build-system)
     (arguments
@@ -43440,7 +43440,7 @@ well as extracting and replacing names and symbols from these objects.")
                             "tests/testthat/test-simil.R")
                ((".*use_nan is working.*" m)
                 (string-append m "skip('skip');\n"))))))))
-    (native-inputs (list r-entropy r-knitr r-testthat))
+    (native-inputs (list r-entropy r-knitr r-proxy r-testthat))
     (inputs (list tbb))
     (propagated-inputs
      (list r-matrix r-rcpp r-rcpparmadillo))
