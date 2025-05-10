@@ -17075,21 +17075,23 @@ regression using Kernel Ridge Regression.")
 (define-public r-prodlim
   (package
     (name "r-prodlim")
-    (version "2024.06.25")
+    (version "2025.04.28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "prodlim" version))
        (sha256
         (base32
-         "0r3780j04wy3ihrhvfm3qcwa9xjrxl43bcllzzq7xaki85jiz5j6"))))
+         "0fpw443s38893rh456cc3d3bf3p5388hq8fb3i7xazclxfd09dv2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table
            r-diagram
+           r-ggplot2
            r-kernsmooth
            r-lava
            r-rcpp
+           r-rlang
            r-survival))
     (home-page "https://cran.r-project.org/web/packages/prodlim")
     (synopsis "Product-limit estimation for censored event history analysis")
