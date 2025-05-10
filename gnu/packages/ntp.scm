@@ -32,14 +32,20 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages gps)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system waf)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -186,6 +192,93 @@ computers over a network.")
               "https://www.eecis.udel.edu/~mills/ntp/html/copyright.html"
               "A non-copyleft free licence from the University of Delaware"))
     (home-page "https://www.ntp.org")))
+
+(define-public ntpsec
+  (package
+    (name "ntpsec")
+    (version "1.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/NTPsec/ntpsec.git")
+             (commit (string-append "NTPsec_"
+                                    (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m23mzsj3iq36d14ncj0w74hy152blv61nxd8w4xcs52vsh48mps"))))
+    (native-inputs (list bison
+                         m4
+                         pkg-config
+                         pps-tools
+                         python-waf
+                         ruby-asciidoctor))
+    (inputs (cons* gpsd openssl
+                   ;; Build with POSIX capabilities and syscall filtering
+                   ;; support on GNU/Linux, for extra security features.
+                   (if (target-linux?)
+                       (list libcap libseccomp)
+                       '())))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--refclock=all"
+              "--enable-manpage"
+              "--disable-doc"
+              #$@(if (target-linux?)
+                     '("--enable-seccomp")
+                     '())
+              "--enable-mssntp")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-network-test
+            (lambda _
+              (substitute* "tests/wscript"
+                (("\"libntp/decodenetnum.c\",")
+                 ""))
+              (substitute* "tests/common/tests_main.c"
+                (("RUN_TEST_GROUP\\(decodenetnum\\);")
+                 ""))))
+          ;; Tests fail without this. PYTHONPATH is ignored, unfortunately.
+          (add-before 'build 'symlink-python-gps
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "build/main/tests/pylib")
+              (let ((python-version #$(version-major+minor (package-version
+                                                            python))))
+                (symlink (string-append (assoc-ref inputs "gpsd")
+                                        "/lib/python" python-version
+                                        "/site-packages/gps")
+                         "build/main/tests/pylib/gps")))))))
+    (build-system waf-build-system)
+    (synopsis "Real time clock synchronization system and utilities")
+    (description
+     "@acronym{NTP, Network Time Protocol}, the protocol, is used to keep
+computer clocks accurate by synchronizing them over the Internet or a
+local network, or by following an accurate hardware receiver that interprets
+GPS, DCF-77, or similar time signals.
+
+NTPsec is a hardened and improved implementation derived from the original
+@url{https://www.ntp.org, NTP project}.  NTPsec supports
+@acronym{NTS, Network Time Security} which provides cryptographically
+authenticated time.
+
+This package contains the NTP daemon and utility programs.  An NTP daemon
+needs to be running on each host that is to have its clock accuracy controlled
+by NTP.  The same NTP daemon is also used to provide NTP service to other hosts.")
+    ;; All licenses are in file://LICENSES/
+    (license (list l:bsd-2
+                   l:bsd-3
+                   l:bsd-4
+                   l:isc
+                   l:expat
+                   l:asl2.0
+                   l:cc-by4.0
+                   (l:non-copyleft "file://LICENSES/Beerware.txt"
+                    "See LICENSES/Beerware.txt in the distribution.")
+                   (l:x11-style
+                    "https://www.eecis.udel.edu/~mills/ntp/html/copyright.html"
+                    "A non-copyleft free licence from the University of Delaware")))
+    (home-page "https://www.ntpsec.org")))
 
 (define-public openntpd
   (package
