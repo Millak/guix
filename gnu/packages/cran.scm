@@ -21965,14 +21965,14 @@ extracting and replacing data in arrays.")
 (define-public r-prroc
   (package
     (name "r-prroc")
-    (version "1.3.1")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PRROC" version))
        (sha256
         (base32
-         "1m28h8pcd78049lz2qixhkcr9h5b3jik3maqzfbvq9y58z71i4a7"))))
+         "1dlknj6q67iq4xmxj7lz8mz1hsy9qiiy4px0h7raidgckdx4mfwx"))))
     (properties `((upstream-name . "PRROC")))
     (build-system r-build-system)
     (native-inputs (list r-ggplot2 r-testthat))
