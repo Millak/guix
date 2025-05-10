@@ -17829,7 +17829,9 @@ assumptions.")
        (sha256
         (base32
          "19kz0ivv9qypq7jg33rds5rcjr1mmqd19j3fsj842c5h3bydssph"))))
-    (properties `((upstream-name . "scDD")))
+    (properties
+     '((upstream-name . "scDD")
+       (updater-extra-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-arm
@@ -17844,7 +17846,7 @@ assumptions.")
            r-singlecellexperiment
            r-summarizedexperiment))
     (native-inputs
-     (list r-gridextra r-knitr))
+     (list r-gridextra r-knitr r-testthat))
     (home-page "https://github.com/kdkorthauer/scDD")
     (synopsis "Mixture modeling of single-cell RNA-seq data")
     (description
