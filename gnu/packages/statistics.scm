@@ -1328,6 +1328,47 @@ independence and others)
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-zeus-mcmc
+  (package
+    (name "python-zeus-mcmc")
+    (version "2.5.4")
+    (source
+     (origin
+       (method git-fetch)        ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/minaskar/zeus")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sci442fx2bkkj8169hwnx6psl7m2r8y1cicn1xjxxgqaby5j8pi"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-setuptools
+           python-tqdm))
+    (home-page "https://github.com/minaskar/zeus")
+    (synopsis "Deep learning energy measurement and optimization framework")
+    (description
+     "This package provides an implementation of the Ensemble Slice Sampling method.
+Features:
+@itemize
+@item fast & Robust Bayesian Inference
+@item efficient Markov Chain Monte Carlo (MCMC)
+@item black-box inference, no hand-tuning
+@item excellent performance in terms of autocorrelation time and convergence rate
+@item scale to multiple CPUs without any extra effort
+@item automated Convergence diagnostics
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public r-rversions
   (package
     (name "r-rversions")
