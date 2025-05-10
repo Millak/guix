@@ -6909,13 +6909,13 @@ WebAssembly engine.")
 (define-public r-vcr
   (package
     (name "r-vcr")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vcr" version))
        (sha256
-        (base32 "0jp6p9k6y2rshxyq5hb3gv3idk2l426cizy1j2aqcz3s503axsxf"))))
+        (base32 "0spz4wfglj7gd3fh1cv4bc1lf98m1ialay3vzyhzb1n2fq6812k7"))))
     (properties '((upstream-name . "vcr")))
     (build-system r-build-system)
     ;; Some tests require Internet access.
@@ -6929,7 +6929,12 @@ WebAssembly engine.")
                              r-urltools
                              r-webmockr
                              r-yaml))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-curl
+                         r-jsonlite
+                         r-knitr
+                         r-testthat
+                         r-webfakes
+                         r-withr))
     (home-page "https://github.com/ropensci/vcr/")
     (synopsis "Record HTTP calls to disk")
     (description
