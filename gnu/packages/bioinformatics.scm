@@ -18148,7 +18148,11 @@ expression report comparing samples in an easily configurable manner.")
        (modify-phases %standard-phases
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
-             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
+             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Needed for tests
+             (setenv "HOME" "/tmp"))))))
     (inputs
      (list grep
            coreutils
