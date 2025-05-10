@@ -37156,18 +37156,18 @@ industry for machine learning tasks.")
 (define-public r-float
   (package
     (name "r-float")
-    (version "0.3-2")
+    (version "0.3-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "float" version))
        (sha256
         (base32
-         "149affr0swb1vqnhkzm5lr4knfsh78ygswy123j1qj823zbhsfi3"))))
+         "1lbjafz23m38il8mjwns8mnprryafzd3am6nw9xz5ivsf18n7flp"))))
     (properties `((upstream-name . "float")))
     (build-system r-build-system)
     (native-inputs
-     (list gfortran))
+     (list gfortran r-rbenchmark))
     (home-page "https://github.com/wrathematics/float")
     (synopsis "32-bit floats")
     (description
