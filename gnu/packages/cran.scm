@@ -21052,13 +21052,13 @@ exponential, logarithm, square root, and related quantities.")
 (define-public r-exposition
   (package
     (name "r-exposition")
-    (version "2.8.23")
+    (version "2.11.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ExPosition" version))
               (sha256
                (base32
-                "0x9400ggmgrnaish0cfgnyvw549g4ibfv9aj6vzq7j68n58vq405"))))
+                "1lqbvqbzzy6lxdfaaayrw5slqm3ry9p4annvx405f2sbp6dg9jgr"))))
     (properties `((upstream-name . "ExPosition")))
     (build-system r-build-system)
     (propagated-inputs (list r-prettygraphs))
