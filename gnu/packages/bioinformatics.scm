@@ -18076,7 +18076,11 @@ once.  This package provides tools to perform Drop-seq analyses.")
              (setenv "TZ" "UTC+1")
              (setenv "TZDIR"
                      (search-input-directory inputs
-                                             "share/zoneinfo")))))))
+                                             "share/zoneinfo"))))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Needed for tests
+             (setenv "HOME" "/tmp"))))))
     (inputs
      (list coreutils
            sed
