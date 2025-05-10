@@ -47170,19 +47170,19 @@ This package provides Rcpp bindings to a TOML parser.")
 (define-public r-rcppziggurat
   (package
     (name "r-rcppziggurat")
-    (version "0.1.6")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppZiggurat" version))
        (sha256
         (base32
-         "0wgd1v2p7zajnbrjf3hfi56p3pk3ld6iwkanbb04bjbnlif2ay4w"))))
+         "041ynqr8hkr59is5az6i53pzcvp6y7vpcix4kw4jylq1x9s9rc1f"))))
     (properties `((upstream-name . "RcppZiggurat")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcppgsl))
-    (native-inputs (list r-knitr))
+    (native-inputs (list pkg-config))
     (home-page "https://cran.r-project.org/web/packages/RcppZiggurat/")
     (synopsis "Rcpp integration of different \"Ziggurat\" normal RNG implementations")
     (description
