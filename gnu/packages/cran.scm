@@ -28728,27 +28728,24 @@ tests of linear contrasts of fixed effects are also available.")
 (define-public r-r2glmm
   (package
     (name "r-r2glmm")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "r2glmm" version))
        (sha256
         (base32
-         "0iim92blpa59vgz97c2pi05yhbjjmaffdbkbmk5kplfb2vmazgiy"))))
+         "0sdyiashyi332yxnimggrlglbsgad4b7wc7wyvvk1ayx9wb5lvrj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-afex
-           r-data-table
-           r-dplyr
            r-ggplot2
            r-gridextra
-           r-lmertest
            r-mass
            r-matrix
            r-mgcv
            r-pbkrtest))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-lme4 r-nlme r-testthat))
     (home-page "https://github.com/bcjaeger/r2glmm")
     (synopsis "Compute R squared for mixed (multilevel) models")
     (description
