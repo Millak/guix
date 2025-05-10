@@ -45720,14 +45720,14 @@ included in this package as well.")
 (define-public r-gamm4
   (package
     (name "r-gamm4")
-    (version "0.2-6")
+    (version "0.2-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gamm4" version))
        (sha256
         (base32
-         "128c725y9s07c1m9cvd9hgi9hldrymcs5divd8pw7bdjh9jvdiap"))))
+         "1pxfmkja2vpzbqmsybh2rvldilidxsi48lrabzj58prr34y39k5s"))))
     (properties `((upstream-name . "gamm4")))
     (build-system r-build-system)
     (propagated-inputs
