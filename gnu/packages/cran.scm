@@ -26821,13 +26821,13 @@ handle data from simple random samples as well as complex surveys.")
 (define-public r-tarchetypes
   (package
     (name "r-tarchetypes")
-    (version "0.12.0")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tarchetypes" version))
               (sha256
                (base32
-                "1j5j9bxnqm9i8mlbmh60wlcjqdy6r79dmwvadgrq48lgb5sizhik"))))
+                "05h0cgz6j45d4spzddlb5p68i0q9yflln1rpfn1aim7ck1rrxp16"))))
     (properties `((upstream-name . "tarchetypes")))
     (build-system r-build-system)
     ;; Many tests fail, because r-targets looks up the system's partitions,
