@@ -21457,16 +21457,16 @@ based on transcript counts obtained with unique molecular identifies.")
 (define-public r-rafalib
   (package
     (name "r-rafalib")
-    (version "1.0.0")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rafalib" version))
        (sha256
-        (base32 "1dmxjl66bfdgrybhwyaa8d4i460liqcdw8b29a6w7shgksh29m0k"))))
+        (base32 "04s4xyngki6szlmg0njic97z9g80nfkh2v8g79cck9g2a5x1mbg0"))))
     (properties `((upstream-name . "rafalib")))
     (build-system r-build-system)
-    (propagated-inputs (list r-rcolorbrewer))
+    (propagated-inputs (list r-biocmanager r-rcolorbrewer))
     (home-page "https://cran.r-project.org/package=rafalib")
     (synopsis "Convenience functions for routine data exploration")
     (description
