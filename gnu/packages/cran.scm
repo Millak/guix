@@ -4320,13 +4320,13 @@ aesthetic attributes.")
 (define-public r-ggstats
   (package
     (name "r-ggstats")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggstats" version))
        (sha256
-        (base32 "08wwhvpagifzv6yanyflv8rkmcbza0wflp6p08mx2ddcsksc4lva"))))
+        (base32 "110c9xcrc7rvn4lw8z0lnza3zi327biqbkg90idpjj7gzmwkf3v1"))))
     (properties
      '((upstream-name . "ggstats")
        (updater-extra-native-inputs . ("r-broom-helpers"))))
@@ -4342,8 +4342,7 @@ aesthetic attributes.")
                              r-scales
                              r-stringr
                              r-tidyr))
-    (native-inputs (list r-betareg
-                         r-broom
+    (native-inputs (list r-broom
                          r-broom-helpers
                          r-knitr
                          r-labelled
