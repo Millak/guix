@@ -18310,6 +18310,8 @@ methylation and segmentation.")
       '(modify-phases %standard-phases
          (add-before 'configure 'set-additional-environment-variables
            (lambda _
+             ;; Needed for tests
+             (setenv "HOME" "/tmp")
              ;; Needed because of loompy
              (setenv "NUMBA_CACHE_DIR" "/tmp")
              ;; Needed to capture environment
@@ -18329,7 +18331,7 @@ methylation and segmentation.")
            python-loompy
            pandoc
            samtools
-           snakemake-7
+           snakemake-5
            star-for-pigx
            r-minimal
            r-argparser
