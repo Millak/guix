@@ -48394,14 +48394,14 @@ prediction of kriging models.")
 (define-public r-dials
   (package
     (name "r-dials")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dials" version))
        (sha256
         (base32
-         "08q18cl187n98q72hnx3ildd0jk7qmrcdpcrmz7z1l0rb5iyjjj2"))))
+         "0klkk0jydm2q1l77k4ilvn2n984a6vnaz62r8dn9vkppmg64mw73"))))
     (properties `((upstream-name . "dials")))
     (build-system r-build-system)
     (propagated-inputs
@@ -48419,7 +48419,7 @@ prediction of kriging models.")
            r-tibble
            r-vctrs
            r-withr))
-    (native-inputs (list r-kernlab r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://dials.tidymodels.org/")
     (synopsis "Tools for creating tuning parameter values")
     (description
