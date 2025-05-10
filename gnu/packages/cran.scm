@@ -8297,13 +8297,13 @@ higher.")
 (define-public r-oompadata
   (package
     (name "r-oompadata")
-    (version "3.1.4")
+    (version "3.1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "oompaData" version))
               (sha256
                (base32
-                "0g9d551djqa67y2l9nmajnsgf7kys4jcvgi3yx7az7jgm44j8986"))))
+                "1rx5k1mgb0wsibiirfni5p143688h9nybl7sgp146zn0gg7983g4"))))
     (properties `((upstream-name . "oompaData")))
     (build-system r-build-system)
     (home-page "https://oompa.r-forge.r-project.org/")
