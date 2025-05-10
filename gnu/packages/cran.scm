@@ -32353,13 +32353,13 @@ profiling R code.")
 (define-public r-prospectr
   (package
     (name "r-prospectr")
-    (version "0.2.7")
+    (version "0.2.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "prospectr" version))
               (sha256
                (base32
-                "0hg2afw5aixx0xdwwr6g0wi8sksn7r21hz8diyqxg2345rwnzbg4"))))
+                "0hwiwlhz994mrhxr8billcrrpg79zl7b8hijfkxlb0sx2rvidy0l"))))
     (properties `((upstream-name . "prospectr")))
     (build-system r-build-system)
     (propagated-inputs
