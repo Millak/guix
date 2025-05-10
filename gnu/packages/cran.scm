@@ -15802,19 +15802,19 @@ multi-part to single-part geometries.")
 (define-public r-rmariadb
   (package
     (name "r-rmariadb")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RMariaDB" version))
        (sha256
-        (base32 "0b8qqg4pgz5fm21zp3jslrgmx0100rhg27lxpia3yl514pdnyvy6"))))
+        (base32 "157qkqv3a4p3dz4l0ah4h47wdsp8z8pm6magfgm63dg6xjsrkhgp"))))
     (properties
      `((upstream-name . "RMariaDB")
        (updater-extra-inputs . ("mariadb"))))
     (build-system r-build-system)
     (inputs (list `(,mariadb "lib") `(,mariadb "dev") openssl zlib))
-    (native-inputs (list r-testthat))
+    (native-inputs (list pkg-config r-dbitest r-testthat r-withr))
     (propagated-inputs (list r-bit64
                              r-blob
                              r-cpp11
