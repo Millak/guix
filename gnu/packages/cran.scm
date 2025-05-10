@@ -15529,13 +15529,13 @@ way.")
 (define-public r-restrserve
   (package
     (name "r-restrserve")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RestRserve" version))
        (sha256
-        (base32 "0d5ppgasaqpgvdi1spxlhp4ywpafbphlhkqfcfvgxrdm6y9igl2c"))))
+        (base32 "13yl7638prglpqi4jq5vad5mw940k15b3n9svwmd92wmbh9ycsix"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
@@ -15547,7 +15547,7 @@ way.")
            r-rserve
            r-uuid))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-tinytest))
     (home-page "https://restrserve.org")
     (synopsis "R web API framework")
     (description
