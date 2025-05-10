@@ -32233,14 +32233,14 @@ dynamical correlation and dynamical covariance.")
 (define-public r-genenet
   (package
     (name "r-genenet")
-    (version "1.2.16")
+    (version "1.2.17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GeneNet" version))
        (sha256
         (base32
-         "1r1khga3nxxjghs4vnbymzp0cwb1q17zw2v3a94qz8fsrirq1sf1"))))
+         "0pvws2savl0jdq4zz5p9j9pv86k5qwylcskybj2gf50rvs83f258"))))
     (properties `((upstream-name . "GeneNet")))
     (build-system r-build-system)
     (propagated-inputs
