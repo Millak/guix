@@ -34139,19 +34139,19 @@ customizable sets, and intervals.")
 (define-public r-partitions
   (package
     (name "r-partitions")
-    (version "1.10-7")
+    (version "1.10-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "partitions" version))
        (sha256
         (base32
-         "1kxiy1wl7dr39kyfg2y9hd67s32knd83r2jsb7j9p3vg8iqq7yqb"))))
+         "088wmm14lih7gs85rmcd2bggs8fdd8xj7m9q469hh9arcbnwsb8s"))))
     (build-system r-build-system)
     ;; Vignettes fail because of a missing file.
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
-     (list r-gmp r-mathjaxr r-polynom r-rdpack r-sets))
+     (list r-gmp r-polynom r-rdpack r-sets))
     (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/partitions")
     (synopsis "Additive partitions of integers")
