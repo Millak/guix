@@ -4215,16 +4215,15 @@ cluster diagrams.")
 (define-public r-ggdist
   (package
     (name "r-ggdist")
-    (version "3.3.2")
+    (version "3.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggdist" version))
        (sha256
-        (base32 "1wc3pqnf2r0324jm0vv1872smriv25h0lx0mni7qp93wrf8k0mpn"))))
+        (base32 "0wrnzl6m221k2h7rv5vf88va83yc6hsdm45fp5yz96cpmfr66mgk"))))
     (properties
-     '((upstream-name . "ggdist")
-       (updater-extra-native-inputs . ("r-posterior"))))
+     '((upstream-name . "ggdist")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-distributional
@@ -4240,7 +4239,12 @@ cluster diagrams.")
                              r-vctrs
                              r-withr))
     (native-inputs
-     (list r-dplyr r-knitr r-posterior r-testthat r-tidyr r-vdiffr))
+     (list r-dplyr
+           r-knitr
+           r-posterior
+           r-testthat
+           r-tidyr
+           r-vdiffr))
     (home-page "https://mjskay.github.io/ggdist/")
     (synopsis "Visualizations of distributions and uncertainty")
     (description
