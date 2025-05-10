@@ -30,7 +30,8 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages perl-check))
+  #:use-module (gnu packages perl-check)
+  #:use-module (gnu packages xorg))
 
 (define-public perl-math-cephes
   (package
@@ -156,7 +157,6 @@ using a list of (X, Y) pairs.")
                              perl-inline-c
                              perl-list-moreutils
                              perl-opengl
-                             perl-pgplot
                              perl-pod-parser
                              perl-sys-sigaction
                              perl-termreadkey))
@@ -210,7 +210,6 @@ Perl Data Language.")
                              perl-inline-c
                              perl-list-moreutils
                              perl-opengl
-                             perl-pgplot
                              perl-pod-parser
                              perl-sys-sigaction
                              perl-termreadkey))
