@@ -9079,24 +9079,19 @@ residuals and other information on the model.")
 (define-public r-plumber
   (package
     (name "r-plumber")
-    (version "1.2.2")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plumber" version))
               (sha256
                (base32
-                "1ycq3kjkrlx66h05g5ncvmq2cr051609xs4bzs8n49c70h6p0bpr"))))
+                "0z9dzlmvsbqn1cykia07kpa88w5lcgrp39bqqm2d3bhnzkr5kj1s"))))
     (properties
      '((upstream-name . "plumber")
        (updater-extra-native-inputs
-        . ("r-geojsonsf"
-           "r-htmlwidgets"
-           "r-readr"
-           "r-rmarkdown"
-           "r-yaml"))))
+        . ("r-htmlwidgets" "r-readxl"))))
     (build-system r-build-system)
     (propagated-inputs (list r-crayon
-                             r-ellipsis
                              r-httpuv
                              r-jsonlite
                              r-lifecycle
@@ -9110,11 +9105,22 @@ residuals and other information on the model.")
                              r-swagger
                              r-webutils))
     (native-inputs
-     (list r-geojsonsf
+     (list r-arrow
+           r-base64enc
+           r-covr
+           r-geojsonsf
            r-htmlwidgets
+           r-knitr
+           r-later
+           r-mockery
            r-readr
+           r-readxl
            r-rmarkdown
+           r-sf
+           r-spelling
            r-testthat
+           r-visnetwork
+           r-writexl
            r-yaml))
     (home-page "https://www.rplumber.io")
     (synopsis "API generator for R")
