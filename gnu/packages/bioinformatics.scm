@@ -18244,7 +18244,11 @@ in an easily configurable manner.")
              (setenv "TZ" "UTC+1")
              (setenv "TZDIR"
                      (search-input-directory inputs
-                                             "share/zoneinfo")))))))
+                                             "share/zoneinfo"))))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Needed for tests
+             (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list tzdata-for-tests))
     (inputs
