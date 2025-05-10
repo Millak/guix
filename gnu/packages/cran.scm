@@ -14574,13 +14574,13 @@ time zone.  The CCTZ source code is included in this package.")
 (define-public r-rcppdate
   (package
     (name "r-rcppdate")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppDate" version))
        (sha256
-        (base32 "1cnhvbgqfcjrwm1rx6bhhj4yf4dipcp6g1hjv1qa86pmxzyjp3dn"))))
+        (base32 "0n2pif79jbdivrippffafy1mqrzn6wwyjip6bknz4wxr2jkpblly"))))
     (properties `((upstream-name . "RcppDate")))
     (build-system r-build-system)
     (home-page "https://github.com/eddelbuettel/rcppdate")
