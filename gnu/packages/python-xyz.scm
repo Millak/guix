@@ -37569,7 +37569,7 @@ these linters: @code{pycodestlye}, @code{pyflakes}")
             python-pytest
             python-setuptools
             python-wheel))
-    (propagated-inputs
+    (inputs
       (list python-babel
             python-blinker
             python-dateutil
