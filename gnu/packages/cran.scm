@@ -14416,13 +14416,13 @@ processes.  Most of its code is based on the @code{psutil} Python package.")
 (define-public r-pkgbuild
   (package
     (name "r-pkgbuild")
-    (version "1.4.6")
+    (version "1.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgbuild" version))
        (sha256
-        (base32 "1gwgs4y0mswyzf5kwgxf356yfvd6m2xjm7apn1ir0igz1lfv6zq5"))))
+        (base32 "1zllip5mkfx5gzq9vahmakl6iz7vdnl7xnsfcr0hhfbznf43i801"))))
     (properties
      ;; We can't have r-testthat among the inputs, because that would lead to
      ;; a dependency cycle.
