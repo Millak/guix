@@ -10156,13 +10156,13 @@ estimates.")
 (define-public r-mumin
   (package
     (name "r-mumin")
-    (version "1.48.4")
+    (version "1.48.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "MuMIn" version))
               (sha256
                (base32
-                "04zn63snv218c44nllfh8bqh5xg0gamd9fcpwxisvi9gwb3f20i0"))))
+                "1rzsngmnyfscr42rkb9cm85s3xisgjrax2swcab7qzzkjh355wy1"))))
     (properties `((upstream-name . "MuMIn")))
     (build-system r-build-system)
     (propagated-inputs (list r-insight r-matrix r-nlme))
