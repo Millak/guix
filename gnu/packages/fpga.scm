@@ -183,7 +183,7 @@ For synthesis, the compiler generates netlists in the desired format.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.52")
+    (version "0.53")
     (source
      (origin
        (method git-fetch)
@@ -191,7 +191,7 @@ For synthesis, the compiler generates netlists in the desired format.")
              (url "https://github.com/YosysHQ/yosys")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1wf7z3fwfy00kng8hmdjy8zpj4hqqznjjk6wha10ij0sy1y1fwhm"))
+        (base32 "01pcf20dpm0gjfzr9bvw4w7cgc390gqg3xfnir9d6x0nr8k6lljh"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
