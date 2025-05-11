@@ -39203,7 +39203,7 @@ and @code{bspatch4}.")
 (define-public python-mpv
   (package
     (name "python-mpv")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
      (origin
        ;; python-mpv from pypi does not include the tests directory.
@@ -39213,7 +39213,7 @@ and @code{bspatch4}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "102fajzrcgxapsanh0phlqmk9q2v95bvix6mrkg8rypv717idins"))))
+        (base32 "04azy5wa2n8pa21z6lz1p1p0vy7flaqm8ypy46jb77gig2g50xrh"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
