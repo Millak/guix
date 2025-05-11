@@ -10151,6 +10151,33 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
     (description "This package provides the complete NumPy documentation in
 the Texinfo, HTML, and PDF formats.")))
 
+(define-public python-numpy-stl
+  (package
+    (name "python-numpy-stl")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "numpy_stl" version))
+       (sha256
+        (base32 "0kgxhghl9j5caydb2a9g2n44zvffd94gb6abday0manxkkvw682s"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-utils))
+    (home-page "https://github.com/WoLpH/numpy-stl/")
+    (synopsis "Read, write and modify binary/ASCII STL files library")
+    (description
+     "Library to make reading, writing and modifying both binary and ascii STL
+files, file format native to the stereolithography CAD software created by 3D
+Systems, easy.")
+    (license license:bsd-3)))
+
 (define-public python-npx
   (package
     (name "python-npx")
