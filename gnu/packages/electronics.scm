@@ -423,50 +423,48 @@ such as:
     (license license:expat)))
 
 (define-public prjtrellis
-  (package
-    (name "prjtrellis")
-    (version "1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/YosysHQ/prjtrellis/")
-             (commit version)
-             ;; Pull the bitstream database for ECP5 devices; this is useful
-             ;; only by prjtrellis: there is no need to package it separately.
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove bundled source code for which Guix has packages.
-        '(with-directory-excursion "libtrellis/3rdparty"
-           (for-each delete-file-recursively
-                     '("pybind11"))))
-       (sha256
-        (base32 "0c3asdfrjmnc6q3vawn3nfghgg43iajwy2zb8kck9d3wrypbhlmc"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      ;; The examples test directory requires nextpnr, using this package as a
-      ;; backend, which is provided by nextpnr-ecp5: the tests are to be run
-      ;; in this later package.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "libtrellis")))
-          ;; point to pybind11 include dir
-          (add-after 'chdir 'setenv-pybind11
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "PYBIND11_INCLUDE_DIR"
-                      (string-append #$(this-package-input "pybind11")
-                                     "/include/pybind11")))))))
-    (native-inputs (list python))
-    (inputs (list openocd boost pybind11))
-    (synopsis "Placement and routing for ECP5 FPGAs")
-    (description
-     "Project Trellis is a Nextpnr backend compatible with ECP5 FPGAs.
+  ;; The last release is 2 years old; use the latest commit for now.
+  (let ((commit "898329dddf6ce6463299973081f109d645b9c55f")
+        (revision "0"))
+    (package
+      (name "prjtrellis")
+      (version (git-version "1.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/YosysHQ/prjtrellis/")
+               (commit commit)
+               ;; Pull the bitstream database for ECP5 devices; this is useful
+               ;; only by prjtrellis: there is no need to package it separately.
+               (recursive? #t)))
+         (file-name (git-file-name name version))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Remove bundled source code for which Guix has packages.
+          '(with-directory-excursion "libtrellis/3rdparty"
+             (for-each delete-file-recursively
+                       '("pybind11"))))
+         (sha256
+          (base32 "1qljgn7rxz114vki21rms70zi9rgr4gw7crdfihxx1n68zgv60gg"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:configure-flags
+        #~(list (string-append "-DPYBIND11_INCLUDE_DIR="
+                               (search-input-directory %build-inputs
+                                                       "include/pybind11")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "libtrellis"))))))
+      (native-inputs (list python))
+      (inputs (list openocd boost pybind11))
+      (synopsis "Placement and routing for ECP5 FPGAs")
+      (description
+       "Project Trellis is a Nextpnr backend compatible with ECP5 FPGAs.
 The following features are currently available:
 @itemize
 @item logic slice functionality, including carries
@@ -478,8 +476,8 @@ The following features are currently available:
 @item global networks and PLLs
 @item transcievers (DCUs.)
 @end itemize")
-    (home-page "https://github.com/YosysHQ/prjtrellis/")
-    (license license:expat)))
+      (home-page "https://github.com/YosysHQ/prjtrellis/")
+      (license license:expat))))
 
 (define-public opensta
   ;; There are no releases, we use last commit.
