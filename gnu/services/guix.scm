@@ -51,6 +51,7 @@
             guix-build-coordinator-configuration-listen-repl
             guix-build-coordinator-configuration-guile
             guix-build-coordinator-configuration-extra-environment-variables
+            guix-build-coordinator-configuration-extra-build-coordinator-arguments
 
             guix-build-coordinator-service-type
 
@@ -183,6 +184,9 @@
                                    (default guile-next))
   (extra-environment-variables
    guix-build-coordinator-configuration-extra-environment-variables
+   (default '()))
+  (extra-build-coordinator-arguments
+   guix-build-coordinator-configuration-extra-build-coordinator-arguments
    (default '())))
 
 (define-record-type* <guix-build-coordinator-agent-configuration>
@@ -259,7 +263,9 @@
                                                    (hooks '())
                                                    (parallel-hooks '())
                                                    (guile guile-next)
-                                                   listen-repl)
+                                                   listen-repl
+                                                   (extra-build-coordinator-arguments
+                                                    '()))
   (program-file
    "start-guix-build-coordinator"
    (with-extensions (cons guix-build-coordinator-package
@@ -302,7 +308,8 @@
                                     #:database-uri-string #$database-uri-string
                                     #:hooks hooks-with-defaults
                                     #:allocation-strategy #$allocation-strategy
-                                    #:timestamp-log-output? #f)))
+                                    #:timestamp-log-output? #f
+                                    #$@extra-build-coordinator-arguments)))
 
            (run-coordinator-service
             build-coordinator
@@ -329,7 +336,8 @@
              parallel-hooks
              listen-repl
              guile
-             extra-environment-variables)
+             extra-environment-variables
+             extra-build-coordinator-arguments)
     (list
      (shepherd-service
       (documentation "Guix Build Coordinator")
@@ -351,7 +359,9 @@
                               #:hooks hooks
                               #:parallel-hooks parallel-hooks
                               #:listen-repl listen-repl
-                              #:guile guile))
+                              #:guile guile
+                              #:extra-build-coordinator-arguments
+                              extra-build-coordinator-arguments))
                      #:user #$user
                      #:group #$group
                      #:directory "/var/lib/guix-build-coordinator"
