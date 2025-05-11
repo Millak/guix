@@ -3103,7 +3103,9 @@ of a Plasma shell.")
                 "18vx02nwd7fq3r3smrq3yviz6x4n17b8kidrnfkmkdycfxi2dsn0"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
-    (inputs (list kauth
+    (inputs (list kaccounts-integration
+                  kaccounts-providers
+                  kauth
                   kcrash
                   kitemviews
                   kitemmodels
@@ -3125,7 +3127,8 @@ of a Plasma shell.")
                   knotifications
                   krunner
                   plasma-workspace
-                  qtdeclarative))
+                  qtdeclarative
+                  qtwebengine))
     (arguments (list #:qtbase qtbase))
     (synopsis "Control center to configure Plasma Desktop")
     (description "This package provides configuration UI for Plasma Desktop.")
