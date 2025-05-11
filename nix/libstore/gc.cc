@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <queue>
+#include <random>
 #include <algorithm>
 
 #include <sys/types.h>
@@ -745,7 +746,9 @@ void LocalStore::collectGarbage(const GCOptions & options, GCResults & results)
                alphabetically first (e.g. /nix/store/000...).  This
                matters when using --max-freed etc. */
             vector<Path> entries_(entries.begin(), entries.end());
-            random_shuffle(entries_.begin(), entries_.end());
+            std::random_device seeder;
+            std::default_random_engine generator(seeder());
+            std::shuffle(entries_.begin(), entries_.end(), generator);
 
             foreach (vector<Path>::iterator, i, entries_)
                 tryToDelete(state, *i);
