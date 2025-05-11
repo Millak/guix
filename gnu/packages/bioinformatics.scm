@@ -13024,8 +13024,8 @@ tasks.")
       (license license:expat))))
 
 (define-public r-chromunity
-  (let ((commit "712e56ccba64e8881dbb203546379a5c3c639bb2")
-        (revision "1"))
+  (let ((commit "101e30aafef23b4d8a4fba40375bf7d13a7c0b11")
+        (revision "2"))
     (package
       (name "r-chromunity")
       (version (git-version "0.0.2" revision commit))
@@ -13037,9 +13037,19 @@ tasks.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0sdja11l7bg5rmcbp2cl226cq9qrj3r8kq5lg49zbin83hya27vh"))))
+                  "1fq6l9xn6zl1nqr6ny2575r3iqmhf8dgsd7rxaglm6a7fy3r8zx7"))))
       (properties `((upstream-name . "chromunity")))
       (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'disable-bad-tests
+             (lambda _
+               ;; This test operates on a NULL object.
+               (substitute* "tests/testthat/test_chromunity.R"
+                 ((".*synergy.*" m)
+                  (string-append m "skip('guix')\n"))))))))
       (propagated-inputs
        (list r-arrow
              r-biocgenerics
