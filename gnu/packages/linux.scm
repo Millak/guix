@@ -2775,7 +2775,12 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                    ;; Install completions where our bash-completion package
                    ;; expects them.
                    (string-append "--with-bashcompletiondir=" #$output
-                                  "/etc/bash_completion.d"))
+                                  "/etc/bash_completion.d")
+                   ;; XXX: 32-bit Hurd platforms don't support 64bit time_t
+                   #$@(if (and (target-hurd?)
+                               (not (target-64bit?)))
+                          '("--disable-year2038")
+                          '()))
 
            ;; FIXME: For now we cannot reliably run tests on GNU/Hurd:
            ;; <https://bugs.gnu.org/47791>.
