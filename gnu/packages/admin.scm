@@ -4703,7 +4703,7 @@ hard-coded.")
 (define-public thermald
   (package
     (name "thermald")
-    (version "2.5.3")
+    (version "2.5.9")
     (source
      (origin
       (method git-fetch)
@@ -4712,22 +4712,22 @@ hard-coded.")
              (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0hpk7pjlrnj62m5zdmih7gf3nihhyphyslh5xakdjb64cvx5z25d"))))
+       (base32 "07rnf5xy2y7nmhwfcdv0vd08x5l25hflnnrgirahrngbkp0zmny9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "--with-dbus-sys-dir="
-                              out "/etc/dbus-1/system.d")
-               "--localstatedir=/var"
-               "--disable-werror"))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-dbus-sys-dir="
+                             #$output "/etc/dbus-1/system.d")
+                "--localstatedir=/var"
+                "--disable-werror")
        #:make-flags
-       (list "V=1")                     ; log build commands
+       #~(list "V=1")                     ; log build commands
        #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'no-early-./configure
-           (lambda _
-             (setenv "NO_CONFIGURE" "yet"))))))
+       #~(modify-phases %standard-phases
+           (add-before 'bootstrap 'no-early-./configure
+             (lambda _
+               (setenv "NO_CONFIGURE" "yet"))))))
     (native-inputs
      (list autoconf
            autoconf-archive
