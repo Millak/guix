@@ -4183,14 +4183,15 @@ and multipart/form-data.")
 (define-public perl-http-cookiejar
   (package
     (name "perl-http-cookiejar")
-    (version "0.012")
+    (version "0.014")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/D/DA/DAGOLDEN/"
                            "HTTP-CookieJar-" version ".tar.gz"))
        (sha256
-        (base32 "0jk0ps4i67dhhhwaxwwa9nkv3n6n5w44xlnwyzvk59735pwvyjh0"))))
+        (base32
+          "0wvyqh69ryjkwp58xq4c83212glnk97ap0syp1ix4dpmj5ffm53h"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-test-deep perl-test-requires perl-time-mock perl-uri))
@@ -4198,8 +4199,9 @@ and multipart/form-data.")
      (list perl-time-local perl-http-date))
     (home-page "https://metacpan.org/release/HTTP-CookieJar")
     (synopsis "Minimalist HTTP user agent cookie jar")
-    (description "This module implements a minimalist HTTP user agent cookie
-jar in conformance with RFC 6265 <http://tools.ietf.org/html/rfc6265>.")
+    (description "This module (@code{HTTP::CookieJar::LWP}) implements a minimalist
+HTTP user agent cookie jar in conformance with
+@uref{http://tools.ietf.org/html/rfc6265, RFC 6265}.")
     (license license:asl2.0)))
 
 (define-public perl-http-cookies
