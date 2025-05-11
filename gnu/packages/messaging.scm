@@ -2955,26 +2955,25 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
 (define-public mosquitto
   (package
     (name "mosquitto")
-    (version "2.0.15")
+    (version "2.0.21")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mosquitto.org/files/source/mosquitto-"
                            version ".tar.gz"))
        (sha256
-        (base32
-         "1ils0ckxz86gvr37k2gfl4q9gs12625dhhb7i6lcg49z5v9v2da7"))))
+        (base32 "17c9gf2xncxsi3v8fbgq3abfyb84lyr18in0s1pbplmqmr6fimbs"))))
     (build-system cmake-build-system)
-    (inputs
-     (list openssl libxslt))
+    (inputs (list openssl libxslt))
     (synopsis "Message broker")
-    (description "This package provides Eclipse Mosquitto, a message broker
+    (description
+     "This package provides Eclipse Mosquitto, a message broker
 that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1.  Mosquitto
 is lightweight and is suitable for use on all devices from low power single
 board computers to full servers.
 
 The MQTT protocol provides a lightweight method of carrying out messaging
-using a publish/subscribe model. This makes it suitable for Internet of
+using a publish/subscribe model.  This makes it suitable for Internet of
 Things messaging such as with low power sensors or mobile devices such
 as phones, embedded computers or microcontrollers.")
     (home-page "https://mosquitto.org/")
