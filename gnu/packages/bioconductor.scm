@@ -26810,34 +26810,6 @@ integrates with pathway and gene set (enrichment) analysis tools for
 large-scale and fully automated analysis.")
     (license license:gpl3+)))
 
-(define-public r-snapcgh
-  (package
-    (name "r-snapcgh")
-    (version "1.72.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "snapCGH" version))
-              (sha256
-               (base32
-                "0knjspxzc3z5dhx0a6kx9rkic85w65l84vy552x5bv8jzxkcwrsj"))))
-    (properties `((upstream-name . "snapCGH")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-acgh
-           r-cluster
-           r-dnacopy
-           r-glad
-           r-limma
-           r-tilingarray))
-    (home-page "https://bioconductor.org/packages/snapCGH")
-    (synopsis "Segmentation, normalisation and processing of the aCGH data")
-    (description
-     "This package provides methods for segmenting, normalising and processing
-aCGH data.  snapCGH also includes plotting functions for visualising raw and
-segmented data for individual and multiple arrays.")
-    ;; Expanded from GPL
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-snprelate
   (package
     (name "r-snprelate")
