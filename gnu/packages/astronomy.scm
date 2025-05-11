@@ -2428,6 +2428,36 @@ celestial-to-terrestrial coordinate transformations.")
        (delete python-matplotlib
                python-scipy)))))
 
+(define-public python-baseband
+  (package
+    (name "python-baseband")
+    (version "4.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "baseband" version))
+       (sha256
+        (base32 "1yzgzdf8ri4blcpmnz5f3dv6in076vgbhbcqp37kjidlp4f4w05r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Tests are broken during collection phase, see
+      ;; <https://github.com/mhvk/baseband/issues/539>.
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy))
+    (home-page "https://github.com/mhvk/baseband")
+    (synopsis "Radio baseband I/O")
+    (description
+     "Baseband is a package for reading and writing @acronym{VLBI,
+Very-long-baseline interferometry} and other radio baseband files, with the
+aim of simplifying and streamlining data conversion and standardization.")
+    (license license:gpl3+)))
+
 (define-public python-bayesicfitting
   (package
     (name "python-bayesicfitting")
