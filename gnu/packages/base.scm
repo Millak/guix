@@ -268,6 +268,11 @@ implementation offers several extensions over the standard utility.")
           ((not (target-64bit?))
            '(#:make-flags (list "TESTSUITEFLAGS= -k '!tricky time stamps'")))
           (else '()))
+      ;; XXX: 32-bit Hurd platforms don't support 64bit time_t
+      ,@(if (and (target-hurd?)
+                 (not (target-64bit?)))
+            (list #:configure-flags ''("--disable-year2038"))
+            '())
       #:phases (modify-phases %standard-phases
                  (add-before 'build 'set-shell-file-name
                    (lambda* (#:key inputs #:allow-other-keys)
