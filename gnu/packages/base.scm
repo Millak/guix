@@ -417,6 +417,11 @@ interactive means to merge two files.")
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags (list
+                         ;; XXX: 32-bit Hurd platforms don't support 64bit time_t
+                         ,@(if (and (target-hurd?)
+                                    (not (target-64bit?)))
+                               '("--disable-year2038")
+                               '())
                          ;; Tell 'updatedb' to write to /var.
                          "--localstatedir=/var")
       #:phases (modify-phases %standard-phases
