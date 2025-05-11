@@ -125,7 +125,7 @@ formal verification.")
   (package
     (inherit abc)
     (name "abc-yosyshq")
-    (version "0.52")
+    (version "0.53")
     (source (origin
               (method git-fetch)
               (uri (git-reference
