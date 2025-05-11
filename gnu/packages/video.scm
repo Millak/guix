@@ -3886,6 +3886,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
     (arguments
      (list
       #:tests? #f                       ;requires "Kwalify"
+      #:configure-flags #~(list "-DSWIG_PYTHON=On")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-executable
@@ -3930,7 +3931,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
            sox
            vidstab))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python-minimal swig))
     (home-page "https://www.mltframework.org/")
     (synopsis "Author, manage, and run multitrack audio/video compositions")
     (description
