@@ -4896,6 +4896,7 @@ to the in-kernel OOM killer.")
               (method git-fetch)
               (uri (git-reference (url "https://github.com/eudev-project/eudev")
                                   (commit (string-append "v" version))))
+              (patches (search-patches "eudev-removable-devices-polling.patch"))
               (file-name (git-file-name name version))
               (sha256
                (base32
