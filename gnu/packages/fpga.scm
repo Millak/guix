@@ -12,6 +12,7 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -356,9 +358,9 @@ Lattice iCE40 FPGAs and providing simple tools for analyzing and creating bitstr
 files.")
       (license license:isc))))
 
-(define-public nextpnr-ice40
+(define-public nextpnr
   (package
-    (name "nextpnr-ice40")
+    (name "nextpnr")
     (version "0.8")
     (source
      (origin
@@ -406,7 +408,7 @@ files.")
      (list
       #:cmake cmake                     ;CMake 3.25 or higher is required.
       #:configure-flags
-      #~(list "-DARCH=ice40"
+      #~(list "-DARCH=generic;ice40"    ;TODO: enable more architectures?
               "-DBUILD_GUI=ON"
               "-DUSE_OPENMP=ON"
               "-DBUILD_TESTS=ON"
@@ -431,6 +433,7 @@ files.")
            sanitizers-cmake))
     (inputs
      (list boost
+           corrosion
            eigen
            icestorm
            pybind11
@@ -443,6 +446,9 @@ files.")
     (description "Nextpnr is a portable FPGA place and route tool.")
     (home-page "https://github.com/YosysHQ/nextpnr/")
     (license license:isc)))
+
+(define-public nextpnr-ice40
+  (deprecated-package "nextpnr-ice40" nextpnr))
 
 (define-public gtkwave
   (package
