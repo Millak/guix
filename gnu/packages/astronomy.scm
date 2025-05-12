@@ -7327,8 +7327,7 @@ and @code{astropy}.")
            python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
-     (list parfive
-           python-asdf
+     (list python-asdf
            python-asdf-astropy
            python-astropy
            python-beautifulsoup4
@@ -7344,6 +7343,7 @@ and @code{astropy}.")
            python-mpl-animators
            python-numpy
            python-pandas
+           python-parfive
            python-pyerfa
            python-reproject
            python-scikit-image
@@ -7372,10 +7372,10 @@ to the SolarSoft data analysis environment.")
             python-setuptools-scm-next
             python-wheel))
      (propagated-inputs
-      (list parfive
-            python-astropy-minimal
+      (list python-astropy-minimal
             python-fsspec
             python-mpl-animators
+            python-parfive
             python-pyerfa)))))
 
 (define-public python-sunpy-soar

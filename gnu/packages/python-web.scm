@@ -2338,9 +2338,9 @@ HTTP servers, RESTful APIs, and web services.")
     (properties `((lint-hidden-cve . ("CVE-2019-10751"))))
     (license license:bsd-3)))
 
-(define-public parfive
+(define-public python-parfive
   (package
-    (name "parfive")
+    (name "python-parfive")
     (version "2.2.0")
     (source
      (origin
