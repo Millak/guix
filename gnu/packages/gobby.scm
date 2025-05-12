@@ -189,7 +189,8 @@ together over the internet in real-time.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "17i3g61hxz9pzl3ryd1yr15142r25m06jfzjrpdy7ic1b8vjjw3f"))))
+         "17i3g61hxz9pzl3ryd1yr15142r25m06jfzjrpdy7ic1b8vjjw3f"))
+       (patches (search-patches "libinfinity-renew-test-certificate.patch"))))
     (build-system gnu-build-system)
     (inputs
      (list glib gsasl gtk+ libxml2))

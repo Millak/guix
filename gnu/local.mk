@@ -1666,6 +1666,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.3.1.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-on-i386.patch	\
   %D%/packages/patches/libguestfs-syms.patch            	\
+  %D%/packages/patches/libinfinity-renew-test-certificate.patch \
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
   %D%/packages/patches/libretro-dolphin-emu-data.patch		\
   %D%/packages/patches/librewolf-neuter-locale-download.patch	\
