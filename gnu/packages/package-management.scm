@@ -1608,7 +1608,7 @@ environments.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix/build-coordinator.git")
+                      (url "https://codeberg.org/guix/build-coordinator.git")
                       (commit commit)))
                 (sha256
                  (base32
