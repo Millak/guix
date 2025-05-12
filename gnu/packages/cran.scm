@@ -27051,15 +27051,27 @@ were influenced by the drake R package by Will Landau (2018)
 (define-public r-targets
   (package
     (name "r-targets")
-    (version "1.11.1")
+    (version "1.11.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "targets" version))
               (sha256
                (base32
-                "0ahzfd22k1la6zbgqdqvidqihgfpc5lmzd2aam9cgy31rql0l1qv"))))
-    (properties `((upstream-name . "targets")))
+                "1i99gl0ynfwckyq3ib6r3rscwpi91grj1k8w4z76k7djy7gyg5y9"))))
+    (properties
+     '((upstream-name . "targets")
+       (updater-extra-native-inputs . ("r-crew"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These tests fail with "Could not determine local IP".
+             (substitute* "tests/testthat/test-class_builder.R"
+               ((".*long chain of rev.*dep.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs (list r-base64url
                              r-callr
                              r-cli
@@ -27078,7 +27090,7 @@ were influenced by the drake R package by Will Landau (2018)
                              r-yaml))
     ;; The importer adds a large number of test inputs, but we really don't
     ;; need to add them.
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-crew r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/targets/")
     (synopsis "Dynamic function-oriented Make-like declarative pipelines")
     (description
