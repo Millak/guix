@@ -4597,7 +4597,8 @@ This package provides the Python bindings.")))
                  '("libqt_imgui_quick.so" "libqt_imgui_widgets.so")))))
         #:tests? #f))                   ; no test suite
       (inputs
-       (list imgui-1.86 implot qtbase-5 qtdeclarative-5))
+       (list implot qtbase-5 qtdeclarative-5))
+      (propagated-inputs (list imgui-1.86)) ;#included in ImGuiRenderer.h
       (home-page "https://github.com/seanchas116/qtimgui")
       (synopsis "Qt backend for the ImGui GUI library")
       (description "QtImGui allows the ImGui C++ GUI library to be used by Qt
