@@ -1076,7 +1076,7 @@ set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) "))))
            qtmultimedia-5
            qtsvg-5
            qtx11extras
-           quazip-0
+           quazip-5
            sdl2
            xsimd
            zlib
