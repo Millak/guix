@@ -99,6 +99,7 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -3307,27 +3308,42 @@ models in the STL and OFF file formats.")
       (home-page "https://openscad.org/")
       (license license:gpl2+))))
 
-
-
 (define-public emacs-scad-mode
   (package
-    (inherit openscad)
     (name "emacs-scad-mode")
-    (native-inputs '())
-    (inputs '())
+    (version "96.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openscad/emacs-scad-mode")
+             (commit version)))
+       (sha256
+        (base32 "0vsidz3qws89z8blq5nng7mvzn3kj06lw9417aymhykyjgjn5f8m"))
+       (file-name (git-file-name name version))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir-elisp
-           ;; Elisp directory is not in root of the source.
-           (lambda _
-             (chdir "contrib")
-             #t)))))
-    (synopsis "Emacs major mode for editing editing OpenSCAD code")
-    (description "@code{scad-mode} provides an Emacs major mode for editing
-OpenSCAD code.  It supports syntax highlighting, indenting and refilling of
-comments.")))
+    (inputs (list emacs-compat))
+    (synopsis "Emacs mode to edit OpenSCAD files")
+    (description
+     "@code{scad-mode} provides an Emacs major mode for editing
+OpenSCAD code.  Features:
+@itemize
+@item Syntax highlighting
+@item
+Basic completion function (press @kbd{M-TAB})
+@item
+Preview rendered model in separate window (press @kbd{C-c C-c})
+@item
+Open buffer in OpenSCAD (press @kbd{C-c C-o})
+@item
+Export buffer with OpenSCAD (press @kbd{C-c C-e})
+@item
+Flymake support (enable flymake-mode in scad-mode buffers)
+@item
+Org Babel support (@code{scad} source blocks)
+@end itemize")
+    (home-page "https://openscad.org/")
+    (license license:gpl3+)))
 
 (define-public ondsel-solver
   (let ((commit "2e3659c4bce3e6885269e0cb3d640261b2a91108")
