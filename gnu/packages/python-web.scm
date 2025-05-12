@@ -552,6 +552,48 @@ The event dispatch is implicit, which means you can easily use @code{Eventlet}
 from the Python interpreter, or as a small part of a larger application.")
     (license license:expat)))
 
+(define-public python-globus-sdk
+  (package
+    (name "python-globus-sdk")
+    (version "3.56.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/globus/globus-sdk-python")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11nljda2ir4gna4xa5vkj5nzxnjwadkh97qplkk9nrj44szphnzw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-flaky
+           python-pytest
+           python-pytest-randomly
+           python-pytest-xdist
+           python-responses
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-cryptography
+           python-importlib-resources
+           python-pyjwt
+           python-requests))
+    (home-page "https://github.com/globus/globus-sdk-python")
+    (synopsis "Globus SDK for Python")
+    (description
+     "This package provides a SDK for convenient Pythonic interface to
+@url{https://www.globus.org/, Globus} APIs.")
+    (license license:asl2.0)))
+
 (define-public python-hookdns
   (package
     (name "python-hookdns")
