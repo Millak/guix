@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2015, 2018-2019, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -33,7 +33,7 @@
     (origin
       (method git-fetch)
       (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/guix/guix-artwork.git")
+             (url "https://codeberg.org/guix/artwork.git")
              (commit commit)))
       (file-name (string-append "guix-artwork-" (string-take commit 7)
                                 "-checkout"))
