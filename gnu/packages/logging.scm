@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Meiyo Peng <meiyo@riseup.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
+  #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages c)
@@ -93,6 +95,27 @@ IDSA and other destinations.  It is modeled after the Log4j Java library,
 staying as close to their API as is reasonable.")
     (home-page "https://log4cpp.sourceforge.net/")
     (license license:lgpl2.1+)))
+
+(define-public log4cxx
+  (package
+    (name "log4cxx")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://apache/logging/log4cxx/" version
+                           "/apache-log4cxx-" version ".tar.gz"))
+       (sha256
+        (base32 "15kgxmqpbg8brf7zd8mmzr7rvm9zrigz3ak34xb18v2ld8siyb9x"))))
+    (build-system cmake-build-system)
+    (native-inputs (list apr apr-util pkg-config zip))
+    (home-page "https://logging.apache.org/log4cxx/")
+    (synopsis "C++ logging library patterned after Apache log4j")
+    (description
+     "The log4cxx packages provides a C++ logging framework patterned
+after Apache log4j which uses the Apache Portable Runtime for most
+platform-specific code.")
+    (license license:asl2.0)))
 
 (define-public glog
   (package
