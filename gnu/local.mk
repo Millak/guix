@@ -1905,6 +1905,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/netsurf-system-utf8proc.patch		\
   %D%/packages/patches/netsurf-y2038-tests.patch		\
   %D%/packages/patches/netsurf-longer-test-timeout.patch	\
+  %D%/packages/patches/nextpnr-gtest.patch			\
+  %D%/packages/patches/nextpnr-imgui.patch			\
   %D%/packages/patches/nhc98-c-update.patch			\
   %D%/packages/patches/nix-dont-build-html-doc.diff		\
   %D%/packages/patches/nfs4-acl-tools-0.3.7-fixpaths.patch	\

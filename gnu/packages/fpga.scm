@@ -357,101 +357,92 @@ files.")
       (license license:isc))))
 
 (define-public nextpnr-ice40
-  (let* ((version "0.7")
-         (tag (string-append "nextpnr-" version)))
-    (package
-      (name "nextpnr-ice40")
-      (version version)
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/YosysHQ/nextpnr")
-               (commit tag)
-               (recursive? #t)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0sbhqscgmlk4q2207rsqsw99qx4fyrxx1hsd669lrk42gmk3s9lm"))
-         (modules '((guix build utils)))
-         (snippet
-          #~(begin
-              ;; Remove bundled source code for which Guix has packages.
-              ;; Note the bundled copies of json11 and python-console contain
-              ;; modifications, while QtPropertyBrowser appears to be
-              ;; abandoned and without an official source.
-              ;; fpga-interchange-schema is used only by the
-              ;; "fpga_interchange" architecture target, which this package
-              ;; doesn't build.
-              (with-directory-excursion "3rdparty"
-                (for-each delete-file-recursively
-                          '("googletest" "imgui" "pybind11" "qtimgui"
-                            "sanitizers-cmake")))
-
-              ;; Remove references to unbundled code and link against external
-              ;; libraries instead.
+  (package
+    (name "nextpnr-ice40")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/YosysHQ/nextpnr/")
+             (commit (string-append "nextpnr-" version))
+             ;; XXX: Fetch some bundled libraries such as QtPropertyBrowser,
+             ;; json11 and python-console, which have custom modifications or
+             ;; no longer have their original upstream.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        '(begin
+           ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+           (define (delete-all-but directory . preserve)
+             (define (directory? x)
+               (and=> (stat x #f)
+                      (compose (cut eq? 'directory <>) stat:type)))
+             (with-directory-excursion directory
+               (let* ((pred
+                       (negate (cut member <> (append '("." "..") preserve))))
+                      (items (scandir "." pred)))
+                 (for-each (lambda (item)
+                             (if (directory? item)
+                                 (delete-file-recursively item)
+                                 (delete-file item)))
+                           items))))
+           (delete-all-but "3rdparty"
+                           ;; The following sources have all been patched, so
+                           ;; cannot easily be unbundled.
+                           "QtPropertyBrowser"
+                           "json11"
+                           "python-console"
+                           "oourafft")))
+       (patches (search-patches "nextpnr-gtest.patch"
+                                "nextpnr-imgui.patch"))
+       (sha256
+        (base32 "0p53a2gl89hf3hfwdxs6pykxyrk82j4lqpwd1fqia2y0c9r2gjlm"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:cmake cmake                     ;CMake 3.25 or higher is required.
+      #:configure-flags
+      #~(list "-DARCH=ice40"
+              "-DBUILD_GUI=ON"
+              "-DUSE_OPENMP=ON"
+              "-DBUILD_TESTS=ON"
+              (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
+              (string-append "-DICESTORM_INSTALL_PREFIX="
+                             #$(this-package-input "icestorm"))
+              "-DUSE_IPO=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-sanitizers-cmake
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "CMakeLists.txt"
-                (("^\\s+add_subdirectory\\(3rdparty/googletest.*") "")
-                (("^(\\s+target_link_libraries.*)( gtest_main\\))"
-                  _ prefix suffix)
-                 (string-append prefix " gtest" suffix)))
-              (substitute* "gui/CMakeLists.txt"
-                (("^\\s+../3rdparty/(qt)?imgui.*") "")
-                (("^(target_link_libraries.*)\\)" _ prefix)
-                 (string-append prefix " imgui qt_imgui_widgets)")))))))
-      (native-inputs
-       (list googletest sanitizers-cmake))
-      (inputs
-       (list boost
-             eigen
-             icestorm
-             imgui-1.86
-             pybind11
-             python
-             qtbase-5
-             qtwayland-5
-             qtimgui
-             yosys))
-      (build-system qt-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list "-DARCH=ice40"
-                "-DBUILD_GUI=ON"
-                "-DBUILD_TESTS=ON"
-                (string-append "-DCURRENT_GIT_VERSION=" #$tag)
-                (string-append "-DICESTORM_INSTALL_PREFIX="
-                               #$(this-package-input "icestorm"))
-                "-DUSE_IPO=OFF")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-source
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "CMakeLists.txt"
-                  ;; Use the system sanitizers-cmake module.
-                  (("\\$\\{CMAKE_SOURCE_DIR\\}/3rdparty/sanitizers-cmake/cmake")
-                   (string-append
-                    #$(this-package-native-input "sanitizers-cmake")
-                    "/share/sanitizers-cmake/cmake")))
-                (substitute* "gui/CMakeLists.txt"
-                  ;; Compile with system imgui and qtimgui headers.
-                  (("^(target_include_directories.*)../3rdparty/imgui(.*)$"
-                    _ prefix suffix)
-                   (string-append prefix
-                                  (search-input-directory inputs
-                                                          "include/imgui")
-                                  suffix))
-                  (("^(target_include_directories.*)../3rdparty/qtimgui/(.*)$"
-                    _ prefix suffix)
-                   (string-append prefix
-                                  (search-input-directory inputs
-                                                          "include/qtimgui")
-                                  suffix))))))))
-      (synopsis "Place-and-Route tool for FPGAs")
-      (description "Nextpnr aims to be a vendor neutral, timing driven, FOSS
-FPGA place and route tool.")
-      (home-page "https://github.com/YosysHQ/nextpnr")
-      (license license:expat))))
+                ;; Use the system sanitizers-cmake module.  This is made
+                ;; necessary 'sanitizers-cmake' installing a FindPackage
+                ;; module but no CMake config file.
+                (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
+                 (string-append
+                  #$(this-package-native-input "sanitizers-cmake")
+                  "/share/sanitizers-cmake/cmake"))))))))
+    (native-inputs
+     (list googletest
+           sanitizers-cmake))
+    (inputs
+     (list boost
+           eigen
+           icestorm
+           pybind11
+           python
+           qtbase-5
+           qtwayland-5
+           qtimgui
+           yosys))
+    (synopsis "Place-and-Route tool for FPGAs")
+    (description "Nextpnr is a portable FPGA place and route tool.")
+    (home-page "https://github.com/YosysHQ/nextpnr/")
+    (license license:isc)))
 
 (define-public gtkwave
   (package
