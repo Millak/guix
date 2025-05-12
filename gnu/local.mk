@@ -113,6 +113,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/mail.scm			\
   %D%/home/services/media.scm			\
   %D%/home/services/messaging.scm		\
+  %D%/home/services/mpv.scm     		\
   %D%/home/services/music.scm			\
   %D%/home/services/pm.scm			\
   %D%/home/services/shells.scm			\

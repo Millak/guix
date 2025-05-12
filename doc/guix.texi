@@ -50781,6 +50781,435 @@ kodi} for more information.
 @end table
 @end deftp
 
+@c This is ugly, but upstream does *not* capitalize the ``m'' even when
+@c at the beginning of a sentence.  So let us follow the branding.
+@node mpv Media Player
+@subsection mpv Media Player
+
+@cindex mpv, Home Service
+@cindex mpv, configuration
+Configuring the @uref{https://mpv.io/, mpv media player} can be somewhat
+daunting task, due to the sheer amount of options available, especially
+if one wants to be able to inherit the configuration in their code.  The
+@code{home-mpv-service-type} is provided to help with that problem.
+When the service is added to your home environment, file based on the
+passed configuration is generated and placed into the correct location.
+
+Due to the bug #74748, it does not use Guix Records to represent the
+configuration, but uses keyword arguments to achieve similar result.
+Example follows:
+
+@lisp
+(service home-mpv-service-type
+         (make-home-mpv-configuration
+          #:global (make-mpv-profile-configuration
+                    #:fullscreen? #t
+                    #:alang '("jpn" "eng"))))
+@end lisp
+
+@defvar home-mpv-service-type
+This is the type of the mpv home service, whose value is a
+@code{home-mpv-configuration} object.
+@end defvar
+
+@deffn {Procedure} make-home-mpv-configuration
+Return a new instance of @code{home-mpv-configuration}.  Available
+keyword arguments are:
+
+@table @asis
+@item @code{inherit} (default: @code{#t})
+Inherit fields from an another instance.
+
+@item @code{global} (default: @code{(make-mpv-profile-configuration)})
+The global configuration preceding all profiles.
+
+@item @code{profiles} (default: @code{()})
+An alist containing configuration for any additional profiles to include
+in the configuration file.
+
+@lisp
+(make-home-mpv-configuration
+ #:profiles `((fullscreen . ,(make-mpv-profile-configuration
+                              #:fullscreen? #t))))
+@end lisp
+
+@item @code{extra-config} (default: @code{#f})
+Additional content to include in the configuration file.  It is placed
+at the end of the file.
+
+@end table
+@end deffn
+
+@deffn {Procedure} make-mpv-profile-configuration
+Return a new instance of @code{mpv-profile-configuration}.  As above, it
+also supports the @code{#:inherit} argument.  Additionally it supports
+keyword arguments named after the options of @command{mpv}.  Hence
+@option{--fullscreen} (or @code{fullscreen} in the configuration file)
+becomes @code{#:fullscreen?}.
+
+Few options are using their aliases instead.  @option{audio} instead of
+@option{aid}, @option{video} instead of @option{vid}, @option{sub}
+instead of @option{sid}, @option{screenshot-directory} instead of
+@option{screenshot-dir} and @option{watch-later-directory} instead of
+@option{watch-later-dir}.
+
+Valid values for the fields depend on their type.
+
+@table @asis
+@item Flags
+The value should be @code{#f} or @code{#t}.
+
+@item Numerical fields
+Integer and integer64 fields are validated by @code{integer?}, float and
+double fields by @code{real?}.  Ranges are checked when applicable.
+
+@item Aspect
+Same as integer.
+
+@item ByteSize
+Same as integer64.
+
+@item Choice
+The value should be a symbol representing member of the enumeration.  If
+the choice has @samp{or ...} part, it can also be value of that
+alternative type.
+
+@item @var{type} list
+The value should be a list of the @var{type}.
+
+@end table
+
+Other types accept strings, with validation of the values where possible
+(e.g. type @samp{Color} is validated, but type @samp{Audio channels or
+channel map} is not).
+
+The full list of currently supported keyword arguments is below.  For
+the types, allowed values and full description please refer to the
+@command{mpv --list-options} and
+@uref{https://mpv.io/manual/stable/#options, mpv manual}.
+
+Only set fields are outputted to the configuration file.  Accessors are
+provided for every field, returning either their value or a sentinel
+object @code{%unset-value} (from @code{(gnu services configuration)}).
+
+@code{ab-loop-a}, @code{ab-loop-b}, @code{ab-loop-count},
+@code{access-references?}, @code{ad}, @code{ad-lavc-ac3drc},
+@code{ad-lavc-downmix?}, @code{ad-lavc-o}, @code{ad-lavc-threads},
+@code{ad-queue-enable?}, @code{ad-queue-max-bytes},
+@code{ad-queue-max-samples}, @code{ad-queue-max-secs}, @code{af},
+@code{audio}, @code{alang}, @code{allow-delayed-peak-detect?},
+@code{alsa-buffer-time}, @code{alsa-ignore-chmap?},
+@code{alsa-mixer-device}, @code{alsa-mixer-index},
+@code{alsa-mixer-name}, @code{alsa-non-interleaved?},
+@code{alsa-periods}, @code{alsa-resample?}, @code{ao},
+@code{ao-null-broken-delay?}, @code{ao-null-broken-eof?},
+@code{ao-null-buffer}, @code{ao-null-channel-layouts},
+@code{ao-null-format}, @code{ao-null-latency}, @code{ao-null-outburst},
+@code{ao-null-speed}, @code{ao-null-untimed?}, @code{ao-pcm-append?},
+@code{ao-pcm-file}, @code{ao-pcm-waveheader?},
+@code{audio-backward-batch}, @code{audio-backward-overlap},
+@code{audio-buffer}, @code{audio-channels}, @code{audio-client-name},
+@code{audio-delay}, @code{audio-demuxer}, @code{audio-device},
+@code{audio-display}, @code{audio-exclusive?}, @code{audio-exts},
+@code{audio-fallback-to-null?}, @code{audio-file-auto},
+@code{audio-file-paths}, @code{audio-files}, @code{audio-format},
+@code{audio-normalize-downmix?}, @code{audio-pitch-correction?},
+@code{audio-resample-cutoff}, @code{audio-resample-filter-size},
+@code{audio-resample-linear?}, @code{audio-resample-max-output-size},
+@code{audio-resample-phase-shift}, @code{audio-reversal-buffer},
+@code{audio-samplerate}, @code{audio-spdif},
+@code{audio-stream-silence?}, @code{audio-swresample-o},
+@code{audio-wait-open}, @code{auto-window-resize?},
+@code{autocreate-playlist}, @code{autofit}, @code{autofit-larger},
+@code{autofit-smaller}, @code{autoload-files?}, @code{autosync},
+@code{background}, @code{background-color}, @code{blend-subtitles},
+@code{bluray-device}, @code{border?}, @code{border-background},
+@code{brightness}, @code{cache}, @code{cache-on-disk?},
+@code{cache-pause?}, @code{cache-pause-initial?},
+@code{cache-pause-wait}, @code{cache-secs}, @code{cdda-cdtext?},
+@code{cdda-device}, @code{cdda-overlap}, @code{cdda-paranoia},
+@code{cdda-sector-size}, @code{cdda-skip?}, @code{cdda-span-a},
+@code{cdda-span-b}, @code{cdda-speed}, @code{cdda-toc-offset},
+@code{chapter-merge-threshold}, @code{chapter-seek-threshold},
+@code{chapters-file}, @code{config?}, @code{container-fps-override},
+@code{contrast}, @code{cookies?}, @code{cookies-file},
+@code{corner-rounding}, @code{correct-downscaling?},
+@code{correct-pts?}, @code{cover-art-auto}, @code{cover-art-files},
+@code{cover-art-whitelist}, @code{cscale}, @code{cscale-antiring},
+@code{cscale-blur}, @code{cscale-clamp}, @code{cscale-param1},
+@code{cscale-param2}, @code{cscale-radius}, @code{cscale-taper},
+@code{cscale-window}, @code{cscale-wparam}, @code{cscale-wtaper},
+@code{cursor-autohide}, @code{cursor-autohide-fs-only?}, @code{deband?},
+@code{deband-grain}, @code{deband-iterations}, @code{deband-range},
+@code{deband-threshold}, @code{deinterlace},
+@code{deinterlace-field-parity}, @code{demuxer},
+@code{demuxer-backward-playback-step}, @code{demuxer-cache-dir},
+@code{demuxer-cache-unlink-files}, @code{demuxer-cache-wait?},
+@code{demuxer-donate-buffer?}, @code{demuxer-hysteresis-secs},
+@code{demuxer-lavf-allow-mimetype?},
+@code{demuxer-lavf-analyzeduration}, @code{demuxer-lavf-buffersize},
+@code{demuxer-lavf-format}, @code{demuxer-lavf-hacks?},
+@code{demuxer-lavf-linearize-timestamps}, @code{demuxer-lavf-o},
+@code{demuxer-lavf-probe-info}, @code{demuxer-lavf-probescore},
+@code{demuxer-lavf-probesize}, @code{demuxer-lavf-propagate-opts?},
+@code{demuxer-max-back-bytes}, @code{demuxer-max-bytes},
+@code{demuxer-mkv-probe-start-time?},
+@code{demuxer-mkv-probe-video-duration},
+@code{demuxer-mkv-subtitle-preroll},
+@code{demuxer-mkv-subtitle-preroll-secs},
+@code{demuxer-mkv-subtitle-preroll-secs-index},
+@code{demuxer-rawaudio-channels}, @code{demuxer-rawaudio-format},
+@code{demuxer-rawaudio-rate}, @code{demuxer-rawvideo-codec},
+@code{demuxer-rawvideo-format}, @code{demuxer-rawvideo-fps},
+@code{demuxer-rawvideo-h}, @code{demuxer-rawvideo-mp-format},
+@code{demuxer-rawvideo-size}, @code{demuxer-rawvideo-w},
+@code{demuxer-readahead-secs}, @code{demuxer-seekable-cache},
+@code{demuxer-termination-timeout}, @code{demuxer-thread?},
+@code{directory-filter-types}, @code{directory-mode},
+@code{display-fps-override}, @code{display-tags}, @code{dither},
+@code{dither-depth}, @code{dither-size-fruit}, @code{drag-and-drop},
+@code{drm-connector}, @code{drm-device}, @code{drm-draw-plane},
+@code{drm-draw-surface-size}, @code{drm-drmprime-video-plane},
+@code{drm-format}, @code{drm-mode}, @code{drm-vrr-enabled},
+@code{dscale}, @code{dscale-antiring}, @code{dscale-blur},
+@code{dscale-clamp}, @code{dscale-param1}, @code{dscale-param2},
+@code{dscale-radius}, @code{dscale-taper}, @code{dscale-window},
+@code{dscale-wparam}, @code{dscale-wtaper}, @code{dump-stats},
+@code{dvbin-card}, @code{dvbin-channel-switch-offset},
+@code{dvbin-file}, @code{dvbin-full-transponder?}, @code{dvbin-prog},
+@code{dvbin-timeout}, @code{dvd-angle}, @code{dvd-device},
+@code{dvd-speed}, @code{edition}, @code{egl-config-id},
+@code{egl-output-format}, @code{embeddedfonts?}, @code{end},
+@code{error-diffusion}, @code{external-files}, @code{fbo-format},
+@code{focus-on}, @code{force-media-title}, @code{force-render?},
+@code{force-rgba-osd-rendering?}, @code{force-seekable?},
+@code{force-window}, @code{force-window-position?}, @code{framedrop},
+@code{frames}, @code{fs-screen}, @code{fs-screen-name},
+@code{fullscreen?}, @code{gamma}, @code{gamma-auto?},
+@code{gamma-factor}, @code{gamut-mapping-mode}, @code{gapless-audio},
+@code{geometry}, @code{glsl-shader-opts}, @code{glsl-shaders},
+@code{gpu-api}, @code{gpu-context}, @code{gpu-debug?},
+@code{gpu-dumb-mode}, @code{gpu-hwdec-interop},
+@code{gpu-shader-cache?}, @code{gpu-shader-cache-dir}, @code{gpu-sw?},
+@code{gpu-tex-pad-x}, @code{gpu-tex-pad-y}, @code{hdr-compute-peak},
+@code{hdr-contrast-recovery}, @code{hdr-contrast-smoothness},
+@code{hdr-peak-decay-rate}, @code{hdr-peak-percentile},
+@code{hdr-scene-threshold-high}, @code{hdr-scene-threshold-low},
+@code{hidpi-window-scale?}, @code{hls-bitrate}, @code{hr-seek},
+@code{hr-seek-demuxer-offset}, @code{hr-seek-framedrop?},
+@code{http-header-fields}, @code{http-proxy}, @code{hue}, @code{hwdec},
+@code{hwdec-codecs}, @code{hwdec-extra-frames},
+@code{hwdec-image-format}, @code{icc-3dlut-size}, @code{icc-cache?},
+@code{icc-cache-dir}, @code{icc-force-contrast}, @code{icc-intent},
+@code{icc-profile}, @code{icc-profile-auto?}, @code{icc-use-luma?},
+@code{idle}, @code{ignore-path-in-watch-later-config?},
+@code{image-display-duration}, @code{image-exts}, @code{image-lut},
+@code{image-lut-type}, @code{image-subs-video-resolution?},
+@code{include}, @code{index}, @code{initial-audio-sync?},
+@code{input-ar-delay}, @code{input-ar-rate},
+@code{input-builtin-bindings?}, @code{input-builtin-dragging?},
+@code{input-commands}, @code{input-conf}, @code{input-cursor?},
+@code{input-cursor-passthrough?}, @code{input-default-bindings?},
+@code{input-doubleclick-time}, @code{input-dragging-deadzone},
+@code{input-ipc-client}, @code{input-ipc-server},
+@code{input-key-fifo-size}, @code{input-media-keys?},
+@code{input-preprocess-wheel?}, @code{input-right-alt-gr?},
+@code{input-terminal?}, @code{input-test?},
+@code{input-touch-emulate-mouse?}, @code{input-vo-keyboard?},
+@code{interpolation?}, @code{interpolation-preserve?},
+@code{interpolation-threshold}, @code{inverse-tone-mapping?},
+@code{jack-autostart?}, @code{jack-connect?}, @code{jack-name},
+@code{jack-port}, @code{jack-std-channel-layout}, @code{keep-open},
+@code{keep-open-pause?}, @code{keepaspect?}, @code{keepaspect-window?},
+@code{lavfi-complex}, @code{length}, @code{libplacebo-opts},
+@code{linear-downscaling?}, @code{linear-upscaling?},
+@code{load-auto-profiles}, @code{load-osd-console?},
+@code{load-scripts?}, @code{load-select?}, @code{load-stats-overlay?},
+@code{load-unsafe-playlists?}, @code{log-file}, @code{loop-file},
+@code{loop-playlist}, @code{lut}, @code{lut-type}, @code{mc},
+@code{media-controls}, @code{merge-files?}, @code{metadata-codepage},
+@code{mf-fps}, @code{mf-type}, @code{monitoraspect},
+@code{monitorpixelaspect}, @code{msg-color?}, @code{msg-level},
+@code{msg-module?}, @code{msg-time?}, @code{mute?}, @code{native-fs?},
+@code{native-keyrepeat?}, @code{native-touch?}, @code{network-timeout},
+@code{oac}, @code{oacopts}, @code{ocopy-metadata?}, @code{of},
+@code{ofopts}, @code{on-all-workspaces?}, @code{ontop?},
+@code{ontop-level}, @code{opengl-check-pattern-a},
+@code{opengl-check-pattern-b}, @code{opengl-early-flush},
+@code{opengl-es}, @code{opengl-glfinish?}, @code{opengl-pbo?},
+@code{opengl-rectangle-textures?}, @code{opengl-swapinterval},
+@code{opengl-waitvsync?}, @code{orawts?}, @code{ordered-chapters?},
+@code{ordered-chapters-files}, @code{oremove-metadata}, @code{osc?},
+@code{osd-align-x}, @code{osd-align-y}, @code{osd-back-color},
+@code{osd-bar?}, @code{osd-bar-align-x}, @code{osd-bar-align-y},
+@code{osd-bar-h}, @code{osd-bar-outline-size}, @code{osd-bar-w},
+@code{osd-blur}, @code{osd-bold?}, @code{osd-border-style},
+@code{osd-color}, @code{osd-duration}, @code{osd-font},
+@code{osd-font-provider}, @code{osd-font-size}, @code{osd-fonts-dir},
+@code{osd-fractions?}, @code{osd-italic?}, @code{osd-justify},
+@code{osd-level}, @code{osd-margin-x}, @code{osd-margin-y},
+@code{osd-msg1}, @code{osd-msg2}, @code{osd-msg3}, @code{osd-on-seek},
+@code{osd-outline-color}, @code{osd-outline-size},
+@code{osd-playing-msg}, @code{osd-playing-msg-duration},
+@code{osd-playlist-entry}, @code{osd-scale},
+@code{osd-scale-by-window?}, @code{osd-shadow-offset},
+@code{osd-spacing}, @code{osd-status-msg}, @code{oset-metadata},
+@code{ovc}, @code{ovcopts}, @code{panscan}, @code{pause?},
+@code{pipewire-buffer}, @code{pipewire-remote},
+@code{pipewire-volume-mode}, @code{pitch}, @code{play-direction},
+@code{player-operation-mode}, @code{playlist-start},
+@code{prefetch-playlist?}, @code{profile},
+@code{pulse-allow-suspended?}, @code{pulse-buffer}, @code{pulse-host},
+@code{pulse-latency-hacks?}, @code{quiet?}, @code{really-quiet?},
+@code{rebase-start-time?}, @code{referrer}, @code{replaygain},
+@code{replaygain-clip?}, @code{replaygain-fallback},
+@code{replaygain-preamp}, @code{reset-on-next-file},
+@code{resume-playback?}, @code{resume-playback-check-mtime?},
+@code{rtsp-transport}, @code{saturation}, @code{save-position-on-quit?},
+@code{scale}, @code{scale-antiring}, @code{scale-blur},
+@code{scale-clamp}, @code{scale-param1}, @code{scale-param2},
+@code{scale-radius}, @code{scale-taper}, @code{scale-window},
+@code{scale-wparam}, @code{scale-wtaper}, @code{scaler-resizes-only?},
+@code{screen}, @code{screen-name}, @code{screenshot-avif-encoder},
+@code{screenshot-avif-opts}, @code{screenshot-avif-pixfmt},
+@code{screenshot-directory}, @code{screenshot-format},
+@code{screenshot-high-bit-depth?}, @code{screenshot-jpeg-quality},
+@code{screenshot-jpeg-source-chroma?}, @code{screenshot-jxl-distance},
+@code{screenshot-jxl-effort}, @code{screenshot-png-compression},
+@code{screenshot-png-filter}, @code{screenshot-sw?},
+@code{screenshot-tag-colorspace?}, @code{screenshot-template},
+@code{screenshot-webp-compression}, @code{screenshot-webp-lossless?},
+@code{screenshot-webp-quality}, @code{script-opts}, @code{scripts},
+@code{secondary-sid}, @code{secondary-sub-ass-override},
+@code{secondary-sub-delay}, @code{secondary-sub-pos},
+@code{secondary-sub-visibility?}, @code{sharpen},
+@code{show-in-taskbar?}, @code{shuffle?}, @code{sub},
+@code{sigmoid-center}, @code{sigmoid-slope}, @code{sigmoid-upscaling?},
+@code{slang}, @code{snap-window?}, @code{speed}, @code{spirv-compiler},
+@code{sstep}, @code{start}, @code{stop-playback-on-init-failure?},
+@code{stop-screensaver}, @code{stream-buffer-size}, @code{stream-dump},
+@code{stream-lavf-o}, @code{stream-record}, @code{stretch-dvd-subs?},
+@code{stretch-image-subs-to-screen?}, @code{sub-align-x},
+@code{sub-align-y}, @code{sub-ass?}, @code{sub-ass-force-margins?},
+@code{sub-ass-hinting}, @code{sub-ass-justify?},
+@code{sub-ass-line-spacing}, @code{sub-ass-override},
+@code{sub-ass-scale-with-window?}, @code{sub-ass-shaper},
+@code{sub-ass-style-overrides}, @code{sub-ass-styles},
+@code{sub-ass-use-video-data}, @code{sub-ass-video-aspect-override},
+@code{sub-ass-vsfilter-color-compat}, @code{sub-auto},
+@code{sub-auto-exts}, @code{sub-back-color}, @code{sub-blur},
+@code{sub-bold?}, @code{sub-border-style}, @code{sub-clear-on-seek?},
+@code{sub-codepage}, @code{sub-color}, @code{sub-create-cc-track?},
+@code{sub-delay}, @code{sub-demuxer}, @code{sub-file-paths},
+@code{sub-files}, @code{sub-filter-jsre}, @code{sub-filter-regex},
+@code{sub-filter-regex-enable?}, @code{sub-filter-regex-plain?},
+@code{sub-filter-regex-warn?}, @code{sub-filter-sdh?},
+@code{sub-filter-sdh-enclosures}, @code{sub-filter-sdh-harder?},
+@code{sub-fix-timing?}, @code{sub-font}, @code{sub-font-provider},
+@code{sub-font-size}, @code{sub-fonts-dir},
+@code{sub-forced-events-only?}, @code{sub-fps}, @code{sub-gauss},
+@code{sub-gray?}, @code{sub-italic?}, @code{sub-justify},
+@code{sub-lavc-o}, @code{sub-margin-x}, @code{sub-margin-y},
+@code{sub-outline-color}, @code{sub-outline-size},
+@code{sub-past-video-end?}, @code{sub-pos}, @code{sub-scale},
+@code{sub-scale-by-window?}, @code{sub-scale-with-window?},
+@code{sub-shadow-offset}, @code{sub-spacing}, @code{sub-speed},
+@code{sub-stretch-durations?}, @code{sub-use-margins?},
+@code{sub-visibility?}, @code{sub-vsfilter-bidi-compat?},
+@code{subs-fallback}, @code{subs-fallback-forced},
+@code{subs-match-os-language?}, @code{subs-with-matching-audio},
+@code{swapchain-depth}, @code{sws-allow-zimg?}, @code{sws-bitexact?},
+@code{sws-cgb}, @code{sws-chs}, @code{sws-cs}, @code{sws-cvs},
+@code{sws-fast?}, @code{sws-lgb}, @code{sws-ls}, @code{sws-scaler},
+@code{target-colorspace-hint?}, @code{target-contrast},
+@code{target-gamut}, @code{target-lut}, @code{target-peak},
+@code{target-prim}, @code{target-trc}, @code{taskbar-progress?},
+@code{teletext-page}, @code{temporal-dither?},
+@code{temporal-dither-period}, @code{term-osd}, @code{term-osd-bar?},
+@code{term-osd-bar-chars}, @code{term-playing-msg},
+@code{term-status-msg}, @code{term-title}, @code{terminal?},
+@code{title}, @code{title-bar?}, @code{tls-ca-file},
+@code{tls-cert-file}, @code{tls-key-file}, @code{tls-verify?},
+@code{tone-mapping}, @code{tone-mapping-max-boost},
+@code{tone-mapping-param}, @code{tone-mapping-visualize?},
+@code{track-auto-selection?}, @code{tscale}, @code{tscale-antiring},
+@code{tscale-blur}, @code{tscale-clamp}, @code{tscale-param1},
+@code{tscale-param2}, @code{tscale-radius}, @code{tscale-taper},
+@code{tscale-window}, @code{tscale-wparam}, @code{tscale-wtaper},
+@code{untimed?}, @code{use-embedded-icc-profile?},
+@code{use-filedir-conf?}, @code{user-agent}, @code{vaapi-device},
+@code{vd}, @code{vd-apply-cropping?}, @code{vd-lavc-assume-old-x264?},
+@code{vd-lavc-bitexact?}, @code{vd-lavc-check-hw-profile?},
+@code{vd-lavc-dr}, @code{vd-lavc-fast?}, @code{vd-lavc-film-grain},
+@code{vd-lavc-framedrop}, @code{vd-lavc-o}, @code{vd-lavc-show-all?},
+@code{vd-lavc-skipframe}, @code{vd-lavc-skipidct},
+@code{vd-lavc-skiploopfilter}, @code{vd-lavc-software-fallback},
+@code{vd-lavc-threads}, @code{vd-queue-enable?},
+@code{vd-queue-max-bytes}, @code{vd-queue-max-samples},
+@code{vd-queue-max-secs}, @code{vf}, @code{video}, @code{video-align-x},
+@code{video-align-y}, @code{video-aspect-method},
+@code{video-aspect-override}, @code{video-backward-batch},
+@code{video-backward-overlap}, @code{video-crop}, @code{video-exts},
+@code{video-latency-hacks?}, @code{video-margin-ratio-bottom},
+@code{video-margin-ratio-left}, @code{video-margin-ratio-right},
+@code{video-margin-ratio-top}, @code{video-osd?},
+@code{video-output-levels}, @code{video-pan-x}, @code{video-pan-y},
+@code{video-reversal-buffer}, @code{video-rotate}, @code{video-scale-x},
+@code{video-scale-y}, @code{video-sync},
+@code{video-sync-max-audio-change}, @code{video-sync-max-factor},
+@code{video-sync-max-video-change}, @code{video-timing-offset},
+@code{video-unscaled}, @code{video-zoom}, @code{vlang}, @code{vo},
+@code{vo-image-avif-encoder}, @code{vo-image-avif-opts},
+@code{vo-image-avif-pixfmt}, @code{vo-image-format},
+@code{vo-image-high-bit-depth?}, @code{vo-image-jpeg-quality},
+@code{vo-image-jpeg-source-chroma?}, @code{vo-image-jxl-distance},
+@code{vo-image-jxl-effort}, @code{vo-image-outdir},
+@code{vo-image-png-compression}, @code{vo-image-png-filter},
+@code{vo-image-tag-colorspace?}, @code{vo-image-webp-compression},
+@code{vo-image-webp-lossless?}, @code{vo-image-webp-quality},
+@code{vo-kitty-alt-screen?}, @code{vo-kitty-cols},
+@code{vo-kitty-config-clear?}, @code{vo-kitty-height},
+@code{vo-kitty-left}, @code{vo-kitty-rows}, @code{vo-kitty-top},
+@code{vo-kitty-use-shm?}, @code{vo-kitty-width}, @code{vo-null-fps},
+@code{vo-sixel-alt-screen?}, @code{vo-sixel-buffered?},
+@code{vo-sixel-cols}, @code{vo-sixel-config-clear?},
+@code{vo-sixel-dither}, @code{vo-sixel-fixedpalette?},
+@code{vo-sixel-height}, @code{vo-sixel-left}, @code{vo-sixel-pad-x},
+@code{vo-sixel-pad-y}, @code{vo-sixel-reqcolors}, @code{vo-sixel-rows},
+@code{vo-sixel-threshold}, @code{vo-sixel-top}, @code{vo-sixel-width},
+@code{vo-tct-256?}, @code{vo-tct-algo}, @code{vo-tct-buffering},
+@code{vo-tct-height}, @code{vo-tct-width}, @code{vo-vaapi-scaled-osd?},
+@code{vo-vaapi-scaling}, @code{vo-vdpau-chroma-deint?},
+@code{vo-vdpau-colorkey}, @code{vo-vdpau-composite-detect?},
+@code{vo-vdpau-denoise}, @code{vo-vdpau-force-yuv?},
+@code{vo-vdpau-fps}, @code{vo-vdpau-hqscaling},
+@code{vo-vdpau-output-surfaces}, @code{vo-vdpau-pullup?},
+@code{vo-vdpau-queuetime-fs}, @code{vo-vdpau-queuetime-windowed},
+@code{vo-vdpau-sharpen}, @code{volume}, @code{volume-gain},
+@code{volume-gain-max}, @code{volume-gain-min}, @code{volume-max},
+@code{vulkan-async-compute?}, @code{vulkan-async-transfer?},
+@code{vulkan-device}, @code{vulkan-display-display},
+@code{vulkan-display-mode}, @code{vulkan-display-plane},
+@code{vulkan-queue-count}, @code{vulkan-swap-mode},
+@code{watch-later-directory}, @code{watch-later-options},
+@code{wayland-app-id}, @code{wayland-configure-bounds},
+@code{wayland-content-type}, @code{wayland-disable-vsync?},
+@code{wayland-edge-pixels-pointer}, @code{wayland-edge-pixels-touch},
+@code{wayland-present?}, @code{wid}, @code{window-dragging?},
+@code{window-maximized?}, @code{window-minimized?}, @code{window-scale},
+@code{write-filename-in-watch-later-config?},
+@code{x11-bypass-compositor}, @code{x11-name}, @code{x11-netwm},
+@code{x11-present}, @code{x11-wid-title?}, @code{xv-adaptor},
+@code{xv-buffers}, @code{xv-ck}, @code{xv-ck-method},
+@code{xv-colorkey}, @code{xv-port}, @code{ytdl?}, @code{ytdl-format},
+@code{ytdl-raw-options}, @code{zimg-dither}, @code{zimg-fast?},
+@code{zimg-scaler}, @code{zimg-scaler-chroma},
+@code{zimg-scaler-chroma-param-a}, @code{zimg-scaler-chroma-param-b},
+@code{zimg-scaler-param-a}, @code{zimg-scaler-param-b}, and
+@code{zimg-threads}.
+
+@end deffn
+
 @node Sway window manager
 @subsection Sway window manager
 
