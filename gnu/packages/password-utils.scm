@@ -305,7 +305,6 @@ human.")
            qtsvg-5
            qtwayland-5
            qtx11extras
-           quazip-0                     ; XC_KEESHARE
            readline
            wl-clipboard                 ;for 'wl-copy'
            xclip                        ;for 'xclip'
