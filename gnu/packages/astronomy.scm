@@ -2949,6 +2949,66 @@ a time-dynamic graphical scene, primarily for display in a web browser running
 Cesium.")
     (license license:bsd-3)))
 
+(define-public python-dkist
+  (package
+    (name "python-dkist")
+    (version "1.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dkist" version))
+       (sha256
+        (base32 "07mnm9fl6igbhblg4dihg5w187n6ily5aglg40qjxl6yvxr63b2x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Network access is required.
+              "--deselect=dkist/net/tests/test_client.py::test_fetch_with_headers")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pydot
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-filter-subpackage
+           python-pytest-httpserver
+           python-pytest-lazy-fixtures
+           python-pytest-xdist
+           python-pytest-mock
+           python-pytest-mpl
+           python-pytest-remotedata
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-aiohttp
+           python-asdf
+           python-astropy
+           python-dask
+           python-globus-sdk
+           python-gwcs
+           python-matplotlib
+           python-ndcube
+           python-numpy
+           python-parfive
+           python-platformdirs
+           python-sunpy
+           python-tqdm))
+    (home-page "https://github.com/DKISTDC/dkist")
+    (synopsis "Library for obtaining, processing and interacting with calibrated DKIST data")
+    (description
+     "The @acronym{DKIST, Daniel K. Inouye Solar Telescope} package aims to
+help you search, obtain and use DKIST data as part of your Python software.")
+    (license license:bsd-3)))
+
 (define-public python-drizzle
   (package
     (name "python-drizzle")
