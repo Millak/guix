@@ -534,7 +534,9 @@ specialized device.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "OpenBoard.pro"
                 (("/usr/include/quazip5")
-                 (search-input-directory inputs "/include/quazip5"))
+                 (search-input-directory inputs "/include/QuaZip-Qt5-1.4/quazip"))
+                (("-lquazip5")
+                 "-lquazip1-qt5")
                 (("/usr/include/poppler")
                  (search-input-directory inputs "/include/poppler")))))
           (replace 'configure
@@ -600,7 +602,7 @@ specialized device.")
            qtwebchannel-5
            qtwebengine-5
            qtxmlpatterns
-           quazip-0
+           quazip-5
            sdl
            zlib))
     (home-page "https://openboard.ch/")
