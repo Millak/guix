@@ -2341,32 +2341,37 @@ HTTP servers, RESTful APIs, and web services.")
 (define-public parfive
   (package
     (name "parfive")
-    (version "2.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "parfive" version))
-              (sha256
-               (base32
-                "13nw2y7wjzj6w049av6ff4d0zxgbhkrgck0xyh676c114hcv8v6d"))))
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "parfive" version))
+       (sha256
+        (base32 "16rf02jhjr9lij8s2gqmvs01vx8kiv9f2535dnnziqwqv14d21yy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disable tests requiring network access.
       #:test-flags
-      #~(list "-k" (string-append
-                    "not test_ftp"
-                    " and not test_ftp_pasv_command"
-                    " and not test_ftp_http"))))
-    (propagated-inputs (list python-aiofiles python-aioftp python-aiohttp
-                             python-tqdm))
-    (native-inputs (list python-pytest
-                         python-pytest-asyncio
-                         python-pytest-cov
-                         python-pytest-localserver
-                         python-pytest-socket
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
+      ;; Disable tests requiring network access.
+      #~(list "-k" (string-join
+                    (list "not test_ftp"
+                          "test_ftp_pasv_command"
+                          "test_ftp_http")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-localserver
+           python-pytest-socket
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-aiofiles
+           python-aioftp
+           python-aiohttp
+           python-tqdm))
     (home-page "https://parfive.readthedocs.io/")
     (synopsis "HTTP and FTP parallel file downloader")
     (description
