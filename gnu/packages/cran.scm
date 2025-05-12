@@ -22664,6 +22664,27 @@ promises, but with a syntax that is idiomatic R.")
 using the @code{snow} package.")
     (license license:gpl2)))
 
+(define-public r-flexparamcurve
+  (package
+    (name "r-flexparamcurve")
+    (version "1.5-6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "FlexParamCurve" version))
+       (sha256
+        (base32 "0p0c949cdb05r6xnjc7k1i47z809g4mda1l94q7f4dikpnl1h2zd"))))
+    (properties `((upstream-name . "FlexParamCurve")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-nlme))
+    (home-page "https://pennstate.academia.edu:443/SteveOswald")
+    (synopsis "Tools to fit flexible parametric curves")
+    (description
+     "This package provides model selection tools and @code{selfStart}
+functions to fit parametric curves in the nls, @code{nlsList} and nlme
+frameworks.")
+    (license license:gpl2)))
+
 (define-public r-fsa
   (package
     (name "r-fsa")
