@@ -14302,13 +14302,15 @@ initiative to bring PASSTEC 2000 functionalities to R.")
 (define-public r-partykit
   (package
    (name "r-partykit")
-   (version "1.2-23")
+   (version "1.2-24")
    (source (origin
              (method url-fetch)
              (uri (cran-uri "partykit" version))
              (sha256
               (base32
-               "0lxbz3rr9iv1x26584i11jvghmzlmmd4bix9zzkxw9dcaxv16cqf"))))
+               "1zy92iwhl9979mqa5bxz50k66vxysn07zd1z40z0y44g8msnph20"))))
+   (properties
+    '((updater-extra-native-inputs . ("r-mlbench")))) ;for tests
    (build-system r-build-system)
    ;; Vignettes require r-psychotree, which depends on this package.
    (arguments (list #:test-types '(list "tests")))
@@ -14325,7 +14327,8 @@ initiative to bring PASSTEC 2000 functionalities to R.")
                         r-pmml
                         r-psychotools
                         r-sandwich
-                        r-strucchange))
+                        r-strucchange
+                        r-xml))
    (home-page "https://partykit.R-Forge.R-project.org/partykit")
    (synopsis "Toolkit for recursive partytioning")
    (description
