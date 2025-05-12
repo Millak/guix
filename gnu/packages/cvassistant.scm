@@ -45,31 +45,25 @@
            ;; the INSTALL file.
            (lambda _
              (substitute* "controllers/mainwindow.cpp"
-               (("//(#define NO_DONATION_PROMPT)" _ line) line))
-             #t))
-         (add-after 'unpack 'fix-quazip-directory
-           (lambda _
-             (substitute* "models/resumedocument.h"
-               (("quazip(/quazipfile\\.h)" _ suffix)
-                (string-append "quazip5" suffix)))
-             #t))
-         (add-after 'fix-quazip-directory 'fix-quazip-link
-           (lambda _
-             (substitute* "CVAssistant.pro"
-               (("lquazip-qt5")
-                "lquazip5"))
-             #t))
-         (add-after 'fix-quazip-directory 'fix-install-root
+               (("//(#define NO_DONATION_PROMPT)" _ line) line))))
+         (add-after 'unpack 'fix-quazip
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((quazip
+                    (search-input-directory inputs "/include/QuaZip-Qt5-1.4")))
+
+               (substitute* "CVAssistant.pro"
+                 (("-lquazip-qt5")
+                  (format #f "-lquazip1-qt5~%INCLUDEPATH += ~a~%" quazip))))))
+         (add-after 'fix-quazip 'fix-install-root
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (substitute* "CVAssistant.pro"
                  (("/usr/(bin|share/)" _ suffix)
-                  (string-append out "/" suffix)))
-               #t)))
+                  (string-append out "/" suffix))))))
          (replace 'configure
            (lambda _ (invoke "qmake"))))))
     (inputs
-     (list qtbase-5 quazip-0 zlib))
+     (list qtbase-5 quazip-5 zlib))
     (home-page "https://cvassistant.sourceforge.io/")
     (synopsis "Job application organizer")
     (description "Whether you're looking for a job or trying to help
