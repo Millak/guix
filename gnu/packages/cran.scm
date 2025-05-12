@@ -22688,19 +22688,23 @@ frameworks.")
 (define-public r-fsa
   (package
     (name "r-fsa")
-    (version "0.9.6")
+    (version "0.10.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "FSA" version))
               (sha256
                (base32
-                "1qpc2rywkbz3l197b1fhbx7mid7ddjyq98w8b28if6gn9g6ary3g"))))
+                "0hdmg4wjrrmng2bnr7h1x39iand34navl34vvngbcfcyjy5li407"))))
     (properties
-     '((upstream-name . "FSA")
-       (updater-extra-native-inputs
-        . ("r-fishmethods" "r-fsadata"))))
+     '((upstream-name . "FSA")))
     (build-system r-build-system)
-    (propagated-inputs (list r-car r-dunn-test r-lmtest r-plotrix r-withr))
+    (propagated-inputs (list r-car
+                             r-dunn-test
+                             r-flexparamcurve
+                             r-lmtest
+                             r-plotrix
+                             r-purrr
+                             r-withr))
     (native-inputs (list r-desctools
                          r-fishmethods
                          r-fsadata
