@@ -88,6 +88,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -3477,6 +3478,53 @@ across many files.")
     (synopsis "Multidimensional data visualization across files")
     (description "Multidimensional data visualization across files.")
     (license license:bsd-3)))
+
+(define-public python-glue-vispy-viewers
+  (package
+    (name "python-glue-vispy-viewers")
+    (version "1.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "glue_vispy_viewers" version))
+       (sha256
+        (base32 "0i9539h55b95c1f2p79qbr0xgvg3c7mddykzqij939r0b5jabwbj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "glue_vispy_viewers")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-x
+            (lambda _
+              (system "Xvfb :99 -screen 0 1024x768x24 &")
+              (setenv "DISPLAY" ":99.0")
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-mock
+           python-objgraph
+           python-pytest
+           python-pytest-cov
+           ;; python-pytest-faulthandler
+           python-setuptools
+           python-wheel
+           xorg-server-for-tests))
+    (propagated-inputs
+     (list python-echo
+           python-glfw
+           python-glue-core
+           python-imageio
+           python-matplotlib
+           python-numpy
+           python-pyopengl
+           python-scipy
+           python-vispy))
+    (home-page "https://github.com/glue-viz/glue-vispy-viewers")
+    (synopsis "Vispy-based viewers for Glue")
+    (description
+     "This package provides a Glue plugin which adds a 3D scatter plot viewer
+and a 3D volume rendering viewer.")
+    (license license:bsd-2)))
 
 (define-public python-gw-sky
   (package
