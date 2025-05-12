@@ -2499,26 +2499,26 @@ download times, and other distribution and storage costs.")
     (properties `((lint-hidden-cve . ("CVE-2023-23456" "CVE-2023-23457"))))
     (license license:gpl2+)))
 
-(define-public quazip-0
+(define-public quazip
   (package
     (name "quazip")
-    (version "0.9.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/stachenov/quazip")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "11icgwv2xyxhd1hm1add51xv54zwkcqkg85d1xqlgiigvbm196iq"))))
+    (version "1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stachenov/quazip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jsw4xm5wyaqcj1pma5zzd8f5xbgd5lcjh18ah3kg36xz5i69yi4"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ;no test
     (native-inputs
      (list doxygen))
     (inputs
-     (list qtbase-5 zlib))
+     (list qtbase qt5compat zlib))
     (home-page "https://stachenov.github.io/quazip/index.html")
     (synopsis "Qt/C++ wrapper for Minizip")
     (description "QuaZIP is a simple C++ wrapper over Gilles Vollant's
@@ -2535,20 +2535,27 @@ reading from and writing to ZIP archives.")
     ;; distributed under zlib terms.
     (license (list license:lgpl2.1+ license:zlib))))
 
-(define-public quazip
+(define-public quazip-5
   (package
-    (inherit quazip-0)
-    (name "quazip")
+    (inherit quazip)
+    (name "quazip-qt5")
     (version "1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/stachenov/quazip")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1jsw4xm5wyaqcj1pma5zzd8f5xbgd5lcjh18ah3kg36xz5i69yi4"))))))
+    (inputs (list qtbase-5 zlib))))
+
+(define-public quazip-0
+  (package
+    (inherit quazip-5)
+    (name "quazip")
+    (version "0.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stachenov/quazip")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11icgwv2xyxhd1hm1add51xv54zwkcqkg85d1xqlgiigvbm196iq"))))))
 
 (define-public zchunk
   (package

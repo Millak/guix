@@ -530,7 +530,7 @@ support.")
       (inputs (list qtbase-5
                     zlib
                     libdbusmenu-qt
-                    quazip
+                    quazip-5
                     pulseaudio
                     libxcb
                     xcb-util-wm

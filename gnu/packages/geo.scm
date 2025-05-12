@@ -3011,7 +3011,7 @@ data.")
            qtlocation-5
            qtwebchannel-5
            qtwebengine-5
-           quazip
+           quazip-5
            routino
            sqlite ; See wrap phase
            zlib))

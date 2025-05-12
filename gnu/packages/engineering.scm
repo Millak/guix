@@ -2670,7 +2670,7 @@ parallel computing platforms.  It also supports serial execution.")
            qtdeclarative-5
            qtquickcontrols2-5
            qtsvg-5
-           quazip
+           quazip-5
            zlib))
     (native-inputs
      (list googletest

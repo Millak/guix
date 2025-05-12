@@ -235,7 +235,7 @@ default.  To add support for more languages, the
            sane-backends
            qtbase-5
            qtspell
-           quazip
+           quazip-5
            tesseract-ocr))
     (home-page "https://github.com/manisandro/gImageReader")
     (synopsis "Qt front-end to tesseract-ocr")

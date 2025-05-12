@@ -3495,7 +3495,7 @@ limits.")
                   qtquickcontrols2-5
                   qtsvg-5
                   qtwayland-5
-                  quazip
+                  quazip-5
                   spdlog
                   trompeloeil
                   units
