@@ -2625,7 +2625,8 @@ exec " gcc "/bin/" program
            (_
             '(#:configure-flags '("gl_cv_func_posix_spawn_works=no"))))
 
-       ,@(package-arguments bison)))))
+       ,@(strip-keyword-arguments '(#:configure-flags)
+				  (package-arguments bison))))))
 
 (define flex-boot0
   ;; This Flex is needed to build MiG as well as Linux-Libre headers.
