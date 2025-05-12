@@ -1863,7 +1863,7 @@ in an isolated environment, in separate namespaces.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix/nar-herder.git")
+                      (url "https://codeberg.org/guix/nar-herder.git")
                       (commit commit)))
                 (sha256
                  (base32
