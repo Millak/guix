@@ -28025,14 +28025,14 @@ help unravel disease regulatory trajectory.")
 (define-public r-biotmle
   (package
     (name "r-biotmle")
-    (version "1.32.0")
+    (version "1.32.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biotmle" version))
        (sha256
         (base32
-         "1rlza8x6dc0493ygz69f7cg36zl256nr4yrjmqwwl64spc9ldjxv"))))
+         "0wic1c2h0bf6r2yv98xcl665lg549gvc1l6av8b2ad6cs13a5fms"))))
     (properties `((upstream-name . "biotmle")))
     (build-system r-build-system)
     ;; Two tests fail with "BiocParallel errors".
