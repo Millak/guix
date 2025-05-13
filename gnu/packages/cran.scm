@@ -54385,13 +54385,13 @@ present in the @code{testthat} package.")
 (define-public r-mockr
   (package
     (name "r-mockr")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mockr" version))
        (sha256
-        (base32 "0n3syab3dq1am562vnjpkgmx3v06liafyy0fcyvj0spdxr0mkvr3"))))
+        (base32 "0bbrsgw4nb9265zrb45nxjk0xgmxkykvyv2ygcq1j3jrqqh9a688"))))
     (properties `((upstream-name . "mockr")))
     (build-system r-build-system)
     ;; One test failure because of an unexpected warning.
