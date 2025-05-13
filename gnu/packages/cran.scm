@@ -8665,13 +8665,13 @@ curves, Cox models, and parametric accelerated failure time models.")
 (define-public r-svglite
   (package
     (name "r-svglite")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svglite" version))
        (sha256
-        (base32 "0aqpslxybikl0gag1rgbf99gxzy7x6g5md6583gamzvfv5kaxnv2"))))
+        (base32 "1hbgad7cgkyl6swxx69wgkva46px43fqfw9562f1g77sgi4sbvb4"))))
     (properties `((upstream-name . "svglite")))
     (build-system r-build-system)
     (inputs (list libpng zlib))
