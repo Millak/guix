@@ -15170,13 +15170,13 @@ graphics packages that comes with the base installation.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.22.0")
+    (version "1.22.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "06yb9gxf2vcgcbl45dccrms90f5zh2v3wqnffy83a8kr2hxirlc2"))
+                "108fjy2grbr51ky2l24cgv0c3bd32q6lj3bn3dmalpkk8kfpyczs"))
               ;; TODO: we should also replace these other files:
               ;; inst/htmlwidgets/lib/jstree/dist/jstree.min.js
               ;; inst/js/bundle.js (generated from inst/js/euctr2ndjson.js)
