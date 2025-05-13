@@ -776,6 +776,47 @@ also provides some convenient wrappers around @code{fread()} and
 @code{fwrite()} from package @code{data.table}.")
     (license license:gpl3)))
 
+(define-public r-bigstatsr
+  (package
+    (name "r-bigstatsr")
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bigstatsr" version))
+       (sha256
+        (base32 "1c445mm11gsvs2sqmrblig1d3456vwb1n3rz08mhkpxghjaf4dci"))))
+    (properties `((upstream-name . "bigstatsr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bigassertr
+                             r-bigparallelr
+                             r-cowplot
+                             r-foreach
+                             r-ggplot2
+                             r-ps
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rmio
+                             r-rspectra
+                             r-tibble))
+    (native-inputs (list r-bigmemory
+                         r-bigreadr
+                         r-dplyr
+                         r-modelmetrics
+                         r-ppcor
+                         r-psychometric
+                         r-spelling
+                         r-testthat))
+    (home-page "https://privefl.github.io/bigstatsr/")
+    (synopsis "Statistical tools for file-backed big matrices")
+    (description
+     "This package aims to provide easy-to-use, efficient, flexible and
+scalable statistical tools.  It provides and uses file-backed big matrices via
+memory-mapping.  It provides for instance matrix operations, Principal
+Component Analysis, sparse linear supervised models, utility functions and
+more.")
+    (license license:gpl3)))
+
 (define-public r-binom
   (package
     (name "r-binom")
