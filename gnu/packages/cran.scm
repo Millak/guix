@@ -17830,14 +17830,14 @@ data.  Linear models with hyperbolic errors may be fitted using
 (define-public r-generics
   (package
     (name "r-generics")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "generics" version))
        (sha256
         (base32
-         "0lyhhwik0w7m5h3fbwl2f52gc1v2g6g6h6sc47sa9f58pxin213m"))))
+         "0088il4adipaicxy65shbvm6cnxry6576xz6nz1qzlwjfw4mmsdv"))))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/generics")
