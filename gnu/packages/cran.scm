@@ -8664,17 +8664,23 @@ curves, Cox models, and parametric accelerated failure time models.")
 (define-public r-svglite
   (package
     (name "r-svglite")
-    (version "2.1.3")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svglite" version))
        (sha256
-        (base32 "0m0axxrkiih4wmrp9qh803p4l92fdgrsbxaww38z89widx75da7h"))))
+        (base32 "0aqpslxybikl0gag1rgbf99gxzy7x6g5md6583gamzvfv5kaxnv2"))))
     (properties `((upstream-name . "svglite")))
     (build-system r-build-system)
     (inputs (list libpng zlib))
-    (propagated-inputs (list r-cpp11 r-systemfonts))
+    (propagated-inputs (list r-base64enc
+                             r-cli
+                             r-cpp11
+                             r-lifecycle
+                             r-rlang
+                             r-systemfonts
+                             r-textshaping))
     (native-inputs (list r-fontquiver r-knitr r-testthat r-xml2))
     (home-page "https://svglite.r-lib.org")
     (synopsis "SVG graphics device")
