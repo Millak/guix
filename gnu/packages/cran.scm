@@ -42674,14 +42674,14 @@ spherical depths are supported.")
 (define-public r-archetypes
   (package
     (name "r-archetypes")
-    (version "2.2-0.1")
+    (version "2.2-0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "archetypes" version))
        (sha256
         (base32
-         "0ibxsr173ib77gjhid91m85s8gjii4mi2w3d52q5301igv20p7r0"))))
+         "1cj0pb0998h1xyz3b6470a294lrzxlc1hd2ac0lq24i5ak4357fg"))))
     (properties `((upstream-name . "archetypes")))
     (build-system r-build-system)
     (propagated-inputs
