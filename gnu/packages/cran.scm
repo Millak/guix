@@ -39634,15 +39634,16 @@ are noisy or are discontinuous at the solution.")
 (define-public r-txtplot
   (package
     (name "r-txtplot")
-    (version "1.0-4")
+    (version "1.0-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "txtplot" version))
        (sha256
         (base32
-         "00sriml48y70j18jz235dsfm5x3a81bnzskfp3hnv6cbjwwsmca4"))))
+         "01djrb9nz39bd470c8bgy1xi24nav12j9j44xzzdv5rbag4lkfyf"))))
     (build-system r-build-system)
+    (propagated-inputs (list r-matrix))
     (home-page "https://cran.r-project.org/web/packages/txtplot/")
     (synopsis "Text-based plotting")
     (description "This package provides functions to produce rudimentary ASCII
