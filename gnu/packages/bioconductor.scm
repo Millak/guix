@@ -9074,18 +9074,18 @@ distribution.")
 (define-public r-deseq2
   (package
     (name "r-deseq2")
-    (version "1.48.0")
+    (version "1.48.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DESeq2" version))
        (sha256
         (base32
-         "1qcp16dhvwv41jg1497ibcznimminc9rfaf2halqiaakmhf3rw95"))))
+         "1gk5kk9yjjwa2laiamwcn8n1j2497gbrhzczgsfg58fnwfxcbs1q"))))
     (properties
      '((upstream-name . "DESeq2")
        (updater-extra-native-inputs
-        . ("r-apeglm" "r-ashr" "r-glmgampoi" "r-tximport" "r-tximportdata"))))
+        . ("r-apeglm" "r-ashr" "r-glmgampoi"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
