@@ -19664,17 +19664,22 @@ packages maintained by Yihui Xie.")
 (define-public r-utf8
   (package
     (name "r-utf8")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "utf8" version))
        (sha256
         (base32
-         "0zbv2s5dkzxim3ydyk12479m28f68mak9m50v396in4wpm5q53s1"))))
+         "091xj6vhikxadqbvswx6zhnvh5yvzgpqk2kn1dcp9v8rq5iq5gig"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr r-rmarkdown r-testthat)) ; for vignettes
+     (list r-cli
+           r-knitr
+           r-rlang
+           r-rmarkdown
+           r-testthat
+           r-withr)) ; for vignettes
     (home-page "https://github.com/patperry/r-utf8")
     (synopsis "Unicode text processing")
     (description
