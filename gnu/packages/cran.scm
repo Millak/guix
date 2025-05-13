@@ -21149,14 +21149,14 @@ applied econometric analysis.")
 (define-public r-cubature
   (package
     (name "r-cubature")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cubature" version))
        (sha256
         (base32
-         "1156gv8ca3k034f34h50g0a4dg65dpv9d676i7h11rpl6gkj0wmk"))))
+         "05i003v7rny57fjxzygzz2hv0n5h85cqdyl33rl8fkn5k713fcml"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
