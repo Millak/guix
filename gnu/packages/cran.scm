@@ -349,6 +349,35 @@ transform of usual parameterization).  There are also random effects versions
 of these models.")
     (license license:expat)))
 
+(define-public r-autometric
+  (package
+    (name "r-autometric")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "autometric" version))
+       (sha256
+        (base32 "1dk2k78niqx9n8pq95cyx4qw00cmic47lyrg5ac0ghr25539jrld"))))
+    (properties `((upstream-name . "autometric")))
+    (build-system r-build-system)
+    (native-inputs (list r-callr r-ps r-tinytest))
+    (home-page "https://wlandau.github.io/autometric/")
+    (synopsis "Background resource logging")
+    (description
+     "Intense parallel workloads can be difficult to monitor.  Packages
+@code{crew.cluster}, @code{clustermq}, and @code{future.batchtools} distribute
+hundreds of worker processes over multiple computers.  If a worker process
+exhausts its available memory, it may terminate silently, leaving the
+underlying problem difficult to detect or troubleshoot.  Using the autometric
+package, a worker can proactively monitor itself in a detached background
+thread.  The worker process itself runs normally, and the thread writes to a
+log every few seconds.  If the worker terminates unexpectedly, autometric can
+read and visualize the log file to reveal potential resource-related reasons
+for the crash.  The autometric package borrows heavily from the methods of
+packages @code{ps} and @code{psutil}.")
+    (license license:expat)))
+
 (define-public r-backports
   (package
     (name "r-backports")
