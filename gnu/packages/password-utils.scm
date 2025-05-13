@@ -64,6 +64,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -111,6 +112,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rdesktop)
@@ -1269,6 +1272,50 @@ winner of the 2015 Password Hashing Competition.")
     ;; Argon2 is dual licensed under CC0 and ASL 2.0.  Some of the source
     ;; files are CC0 only; see README.md and LICENSE for details.
     (license (list license:cc0 license:asl2.0))))
+
+(define-public secretsd
+  ;; there are neither tags nor releases in the repository
+  (let ((commit "4ea56226b8f7c8739eea7fc8d1ffca8e18cf58c9")
+        (revision "0"))
+    (package
+      (name "secretsd")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/grawity/secretsd")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ka21vmvm25kal3sa8zmrifh4zac878hk24y7y3jj3ig8dkv0vfy"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; don't install platform dependencies
+          #~(substitute* "setup.py" ((".*install_requires.*") "")))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'create-entrypoints 'wrap-program
+              (lambda _
+                (wrap-program (string-append #$output "/bin/secretsd")
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH")))))))))
+      (inputs (list python-dbus python-platformdirs python-cryptography
+                    python-xdg python-pygobject))
+      (native-inputs (list bash-minimal python-setuptools python-wheel))
+      (home-page "https://github.com/grawity/secretsd")
+      (synopsis "Basic FreeDesktop.org Secret Service backend")
+      (description
+       "@code{secretsd} is a generic backend for the @code{libsecret} @acronym{API,
+application programming interface} to use on headless systems or minimal desktop
+environments.  It stores secrets in a @code{sqlite} database, encrypted using a
+@acronym{AES, Advanced Encryption Standard} key.  The database key is stored in a
+regular file next to the database by default, but can be read from an external
+program.")
+      (license license:expat))))
 
 (define-public pass-git-helper
   (package
