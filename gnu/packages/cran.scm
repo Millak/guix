@@ -29903,14 +29903,14 @@ after it was discovered that the NSA had backdoored Dual EC DRBG.")
 (define-public r-softimpute
   (package
     (name "r-softimpute")
-    (version "1.4-1")
+    (version "1.4-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "softImpute" version))
        (sha256
         (base32
-         "1v2a4d688ij5zcvkzpra9yx40xckdfnllnfnyq2450zf3n1kjk7a"))))
+         "0q94c8xwb9q7rnd3qvdnmp6bgg3d1a45jaqsd0v498f1lwrg74fh"))))
     (properties `((upstream-name . "softImpute")))
     (build-system r-build-system)
     (propagated-inputs
