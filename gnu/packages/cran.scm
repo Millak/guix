@@ -2280,13 +2280,13 @@ through Simulated Annealing\" @url{doi:10.1145/3025453.3025912}.")
 (define-public r-data-table
   (package
     (name "r-data-table")
-    (version "1.17.0")
+    (version "1.17.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "data.table" version))
               (sha256
                (base32
-                "1smwp4xrhy9y2hf4vngv1zmqm3rgj83zwa1dbf4j0g2qz9adv9w2"))))
+                "0nqwkxkkw6n7pzsyxhyijdl1jjbkvgzzqwqzz4gbzgn957c3fh01"))))
     (properties
      `((upstream-name . "data.table")
        (updater-extra-native-inputs . ("r-r-utils" "tzdata-for-tests"))))
