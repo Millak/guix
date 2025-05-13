@@ -27565,14 +27565,14 @@ the differences were not significantly different.")
 (define-public r-emmeans
   (package
     (name "r-emmeans")
-    (version "1.11.0")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emmeans" version))
        (sha256
         (base32
-         "0gwcj47ar52n90xr499sibf1ac8fz84b37hk0v6g99n8x0mj2j6f"))))
+         "1iw4rf24al6bcg818b38iag0k947f32y2ipwrrzpaykxd68nyfv8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-estimability r-mvtnorm r-numderiv))
