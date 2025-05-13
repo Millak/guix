@@ -10036,6 +10036,35 @@ approximation based on an interface to Fortran implementations by
 M. J. D. Powell.")
     (license license:gpl2)))
 
+(define-public r-mirai
+  (package
+    (name "r-mirai")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mirai" version))
+       (sha256
+        (base32 "17jiabwijcbs1qnvyc2jdnzi3hynlakfl878z5726857c1xqsv42"))))
+    (properties `((upstream-name . "mirai")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-nanonext))
+    (native-inputs (list r-litedown r-promises))
+    (home-page "https://shikokuchuo.net/mirai/")
+    (synopsis "Minimalist async evaluation framework for R")
+    (description
+     "Designed for simplicity, a mirai evaluates an R expression
+asynchronously in a parallel process, locally or distributed over the network.
+The result is automatically available upon completion.  Modern networking and
+concurrency, built on nanonext and NNG (Nanomsg Next Gen), ensures reliable
+and efficient scheduling over fast inter-process communications or TCP/IP
+secured by TLS.  Distributed computing can launch remote resources via SSH or
+cluster managers.  An inherently queued architecture handles many more tasks
+than available processes, and requires no storage on the file system.
+Innovative features include support for otherwise non-exportable reference
+objects, event-driven promises, and asynchronous parallel map.")
+    (license license:gpl3+)))
+
 (define-public r-mixtools
   (package
     (name "r-mixtools")
