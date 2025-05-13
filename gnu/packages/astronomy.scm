@@ -3855,6 +3855,53 @@ semi-analytic models, to cosmological hydrodynamic simulations, and even
 observationally-derived galaxy merger catalogs.")
     (license license:expat)))
 
+(define-public python-irispy-lmsal
+  (package
+    (name "python-irispy-lmsal")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "irispy_lmsal" version))
+       (sha256
+        (base32 "0m5rjhz89235kmn30qib27w16qd3g78ygi4n1n5fpfb4rmr4y04m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Expected:
+      ;;     np.float64(0.33)
+      ;; Got:
+      ;;     0.33
+      #~(list "--deselect=irispy/obsid.py::irispy.obsid.ObsID")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; E PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list ffmpeg
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-dkist
+           python-ndcube
+           python-pandas
+           python-scipy
+           python-sunpy
+           python-sunraster))
+    (home-page "https://iris.lmsal.com/")
+    (synopsis "Tools to read and analyze data from the IRIS solar-observing satellite")
+    (description
+     "This package provides tools to read and analyze data from the
+@acronym{IRIS, Interface Region Imaging Spectrograph} solar-observing
+satellite.")
+    (license license:bsd-3)))
+
 (define-public python-jwst
   (package
     (name "python-jwst")
