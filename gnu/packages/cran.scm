@@ -6176,13 +6176,13 @@ highlight styles are supported.")
 (define-public r-profmem
   (package
     (name "r-profmem")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "profmem" version))
        (sha256
-        (base32 "0gg6ja0ifwn9jj42rw1gnyil55sl9r2y5rjb6yjcvqwd5arajp3l"))))
+        (base32 "1jy3d7sxmy4nqlrcrqqahgiy0lf0cb7pmh2iknf92y2b7zqwbvqn"))))
     (properties `((upstream-name . "profmem")))
     (build-system r-build-system)
     (arguments
@@ -6194,7 +6194,7 @@ highlight styles are supported.")
              ;; Needed for building vignettes
              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list r-r-rsp r-markdown)) ;for vignettes
+     (list r-r-rsp)) ;for vignettes
     (home-page "https://github.com/HenrikBengtsson/profmem")
     (synopsis "Simple memory profiling for R")
     (description
