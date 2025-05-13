@@ -13929,6 +13929,27 @@ applications.  That is, compute distances and related measures for angular
 (longitude/latitude) locations.")
     (license license:gpl3+)))
 
+(define-public r-getip
+  (package
+    (name "r-getip")
+    (version "0.1-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "getip" version))
+       (sha256
+        (base32 "0qyld6sy1i7kmbvcyg3vdv31qdyj81n54v6gvknb7nrqwwl8bgv3"))))
+    (properties `((upstream-name . "getip")))
+    (build-system r-build-system)
+    (arguments (list #:tests? #false))  ;tests net networking
+    (home-page "https://cran.r-project.org/package=getip")
+    (synopsis "IP address lookup")
+    (description
+     "This package is a micro-package for getting your IP address,
+either the local/internal or the public/external one.  Currently only IPv4
+addresses are supported.")
+    (license license:bsd-2)))
+
 (define-public r-jpeg
   (package
     (name "r-jpeg")
