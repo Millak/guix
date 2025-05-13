@@ -19892,6 +19892,43 @@ explored with minimal deviation from the common work patterns of
 @code{ggplot2} and tidy data.")
     (license license:expat)))
 
+(define-public r-nanonext
+  (package
+    (name "r-nanonext")
+    (version "1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nanonext" version))
+       (sha256
+        (base32 "1lymdjach4gyd4xd3isql0vm8r120ck57vhg91lm6c7f5kxd7mvx"))))
+    (properties `((upstream-name . "nanonext")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;some tests require Internet access
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'find-libraries
+           (lambda _
+             (setenv "INCLUDE_DIR" (getenv "C_INCLUDE_PATH"))
+             (setenv "LIB_DIR" (getenv "LIBRARY_PATH")))))))
+    (inputs (list mbedtls-lts nng-1.10))
+    (native-inputs (list r-later r-litedown r-promises))
+    (home-page "https://shikokuchuo.net/nanonext/")
+    (synopsis "NNG (Nanomsg Next Gen) lightweight messaging library")
+    (description
+     "This package provides R bindings for NNG (Nanomsg Next Gen), a successor
+to ZeroMQ.  NNG is a socket library for reliable, high-performance messaging
+over in-process, IPC, TCP, WebSocket and secure TLS transports.  It implements
+Scalability Protocols, a standard for common communications patterns including
+publish/subscribe, request/reply and service discovery.  As its own threaded
+concurrency framework, it provides a toolkit for asynchronous programming and
+distributed computing.  Intuitive @code{aio} objects resolve automatically
+when asynchronous operations complete, and synchronisation primitives allow R
+to wait upon events signalled by concurrent threads.")
+    (license license:gpl3+)))
+
 (define-public r-nestedcv
   (package
     (name "r-nestedcv")
