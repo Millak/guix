@@ -651,6 +651,28 @@ noncentral hypergeometric distribution (also called extended hypergeometric
 distribution).")
    (license license:gpl3+)))
 
+(define-public r-bigassertr
+  (package
+    (name "r-bigassertr")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bigassertr" version))
+       (sha256
+        (base32 "0bk11jinlc1cvm6aaq9mccs9i328b8s2lbwq63a42fgf1qng103p"))))
+    (properties `((upstream-name . "bigassertr")))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/privefl/bigassertr")
+    (synopsis "Assertion and message functions")
+    (description
+     "This package provides enhanced message functions @code{(cat()} /
+@code{message()} / @code{warning()} / @code{error()}) using wrappers around
+@code{sprintf()}.  It also provides multiple assertion functions (e.g. to
+check class, length, values, files, arguments, etc.).")
+    (license license:gpl3)))
+
 (define-public r-bigmemory
   (package
     (name "r-bigmemory")
