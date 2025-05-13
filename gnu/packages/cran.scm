@@ -725,6 +725,34 @@ bigmemory and synchronicity packages.")
     ;; Users can choose either LGPLv3 or ASL2.0.
     (license (list license:lgpl3 license:asl2.0))))
 
+(define-public r-bigparallelr
+  (package
+    (name "r-bigparallelr")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bigparallelr" version))
+       (sha256
+        (base32 "14rkcig4j93c231sfm43331ykmvxjx2fiz5nhblj2rfzkxli4css"))))
+    (properties `((upstream-name . "bigparallelr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bigassertr
+                             r-doparallel
+                             r-flock
+                             r-foreach
+                             r-parallelly
+                             r-rhpcblasctl))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/privefl/bigparallelr")
+    (synopsis "Easy parallel tools")
+    (description
+     "This package provides utility functions for easy parallelism in R.  This
+includes some reexports from other packages, utility functions for splitting
+and parallelizing over blocks, and choosing and setting the number of cores
+used.")
+    (license license:gpl3)))
+
 (define-public r-bigreadr
   (package
     (name "r-bigreadr")
