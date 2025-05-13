@@ -10221,14 +10221,14 @@ metrics for evaluating models.")
 (define-public r-modeltools
   (package
     (name "r-modeltools")
-    (version "0.2-23")
+    (version "0.2-24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "modeltools" version))
        (sha256
         (base32
-         "1vqh69256h344sbj5affm0kmc77dakrxp6442xfdnfd0y5d8sgkb"))))
+         "1bqyrslar36ja8gjdj3y5b82vqc2y5kbyw3vqgr2cmakgj4qbcpq"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/modeltools")
     (synopsis "Tools and classes for statistical models")
