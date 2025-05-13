@@ -22391,14 +22391,14 @@ accessibility data.")
 (define-public r-circrnaprofiler
   (package
     (name "r-circrnaprofiler")
-    (version "1.22.0")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "circRNAprofiler" version))
        (sha256
         (base32
-         "115hzanh0bs45qbk1j854jvpd8242aabzpwjzd0hk79k5ng8yqnm"))))
+         "0c30bzlmbfn05d6j5wvcdww5hn0mkcl9ydb4z3rf7hl58xp62s0g"))))
     (properties
      `((upstream-name . "circRNAprofiler")))
     (build-system r-build-system)
