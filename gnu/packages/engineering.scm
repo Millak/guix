@@ -3185,8 +3185,8 @@ ontinuous-time and discret-time expressions.")
     (license license:lgpl2.1+)))
 
 (define-public openscad
-  (let ((commit "d1351d6282abfd239cdd0c657f755d8c4a123ff8")
-        (version "2025.05.02")
+  (let ((commit "72c9919d63116f8e711f3566ae34e9eb63a2d6e6")
+        (version "2025.05.08")
         (revision "0"))
     (package
       (name "openscad")
@@ -3199,7 +3199,7 @@ ontinuous-time and discret-time expressions.")
                (commit commit)
                (recursive? #t)))
          (sha256
-          (base32 "0cgls75dk9hjfym8rp0vpnnlz1fdawd746nnw3343gvhljqv36cn"))
+          (base32 "077x7s3z65mz6rnrzan3qn06045d2fkqnd6ss6ibw1fhlaypzfbf"))
          (file-name (git-file-name name version))))
       (build-system qt-build-system)
       (arguments
@@ -3212,6 +3212,7 @@ ontinuous-time and discret-time expressions.")
                 "-DENABLE_TESTS=OFF"
                 "-DEXPERIMENTAL=ON"
                 "-DSNAPSHOT=ON"
+                "-DENABLE_PYTHON=ON"
                 "-DUSE_BUILTIN_CLIPPER2=OFF"
                 (string-append "-DOPENSCAD_VERSION="
                                #$version)
@@ -3263,6 +3264,10 @@ ontinuous-time and discret-time expressions.")
                     mimalloc
                     mpfr
                     opencsg
+                    python
+                    python-numpy
+                    python-pillow
+                    python-pip
                     qscintilla
                     qtbase-5
                     qtmultimedia-5
@@ -3281,9 +3286,6 @@ ontinuous-time and discret-time expressions.")
                            imagemagick
                            ghostscript
                            procps
-                           python-numpy
-                           python-pillow
-                           python
                            xorg-server-for-tests))
       (synopsis "Script-based 3D modeling application")
       (description
