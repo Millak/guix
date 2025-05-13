@@ -10261,6 +10261,34 @@ models.  The functionality is experimental and the user interface is likely to
 change in the future.")
     (license license:gpl2)))
 
+(define-public r-multilevel
+  (package
+    (name "r-multilevel")
+    (version "2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "multilevel" version))
+       (sha256
+        (base32 "0ds7q3q2ncldb4iik24xisyxyyv1yv8l1yz7zd7cy036bna1yp5i"))))
+    (properties `((upstream-name . "multilevel")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass r-nlme))
+    (home-page "https://www.r-project.org")
+    (synopsis "Multilevel functions")
+    (description
+     "This package provides tools used by organizational researchers for the
+analysis of multilevel data.  It includes four broad sets of tools.
+
+@enumerate
+@item functions for estimating within-group agreement and reliability indices.
+@item functions for manipulating multilevel and longitudinal (panel) data.
+@item simulations for estimating power and generating multilevel data.
+@item miscellaneous functions for estimating reliability and performing simple
+  calculations and data transformations.
+@end enumerate")
+    (license license:gpl2+)))
+
 (define-public r-multitaper
   (package
     (name "r-multitaper")
