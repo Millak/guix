@@ -274,8 +274,8 @@
       "1p563a11w8jrid96xf03dg6j39ciz28n5f4r6g28lxhiphbqzfym"))))
 
 (define-public webrtc-for-telegram-desktop
-  (let ((commit "c425281150317753d7bc5182c6572abe20f9a784")
-        (revision "456"))
+  (let ((commit "8c233a4c12d6ec1f2aa87991564ac28cc996c57a")
+        (revision "489"))
     (hidden-package
      (package
        (name "webrtc-for-telegram-desktop")
@@ -291,11 +291,7 @@
           (file-name
            (git-file-name name version))
           (sha256
-           (base32 "1fj48iq56awnrckncy1qc3zhdzifl725hbb6an7wg2v3zmagvrwn"))
-          (patches
-           (search-patches
-            ;; https://github.com/desktop-app/tg_owt/pull/123
-            "webrtc-for-telegram-desktop-unbundle-libsrtp.patch"))
+           (base32 "0d1nglf8irxgavw0p1d23wffmzyzbwapnli45ssgmrn1czzri4gw"))
           (modules '((guix build utils)
                      (ice-9 ftw)
                      (srfi srfi-1)))
