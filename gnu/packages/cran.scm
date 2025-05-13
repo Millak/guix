@@ -25103,13 +25103,13 @@ splice site positions.")
 (define-public r-reformulas
   (package
     (name "r-reformulas")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reformulas" version))
        (sha256
-        (base32 "0d5zda1a355xl935kgbqzbk1mpsdfafa92pgfqhfrap8wnwxjkq4"))))
+        (base32 "1pph0g306rkm5fyimbd6c0cz5wdwza1srvn6s3wg7lwihzpqbib0"))))
     (properties `((upstream-name . "reformulas")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-rdpack))
