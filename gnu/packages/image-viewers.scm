@@ -1041,7 +1041,7 @@ archives.")
 (define-public nomacs
   (package
     (name "nomacs")
-    (version "3.16.224")
+    (version "3.21.1")
     (source
      (origin
        (method git-fetch)
@@ -1051,12 +1051,13 @@ archives.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05d4hqg0gl3g9s2xf1hr7mc7g4cqarcap4nzxxa51fsphw2b8x16"))))
+         "1by62r1g1clji7g539zyhm5z7h1ssp8pcb6vrm33p2gvz3vba5j5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:build-type "Release" ; fails to build with debug info
        #:configure-flags (list "-DENABLE_TRANSLATIONS=true"
                                "-DUSE_SYSTEM_QUAZIP=true"
+                               "-DENABLE_QUAZIP=true"
                                "-DENABLE_OPENCV=true")
        #:tests? #f ; no rule for target 'test'
        #:phases
@@ -1072,22 +1073,26 @@ archives.")
         ,(origin
            (method git-fetch)
            (uri (git-reference
-                 (url "https://github.com/nomacs/nomacs-plugins")
-                 (commit "3.16")))
+                 ;; The original git repository at
+                 ;; https://github.com/novomesk/nomacs-plugins
+                 ;; is not updated any more, use a maintained fork.
+                 (url "https://github.com/novomesk/nomacs-plugins")
+                 (commit "20101da282f13d3184ece873388e1c234a79b5e7")))
            (sha256
             (base32
-             "1cpdwhfvaxm970nwdc1hc13848a85pqqi176m9xpa3krla9qskml"))))
+             "0nbrsxhggy15idvm5dlhxh2z14gvki7vljxqi90hw98nmbh5ri41"))))
        ("exiv2" ,exiv2)
        ("libraw" ,libraw)
        ("libtiff" ,libtiff)
        ("opencv" ,opencv)
-       ("python" ,python-wrapper)
-       ("quazip" ,quazip-0)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg-5" ,qtsvg-5)))
+       ("quazip" ,quazip)
+       ("qtimageformats" ,qtimageformats)
+       ("qtbase" ,qtbase)
+       ("qt5compat" ,qt5compat)
+       ("qtsvg" ,qtsvg)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools-5)))
+       ("qttools" ,qttools)))
     (synopsis "Image viewer supporting all common formats")
     (description "Nomacs is a simple to use image lounge featuring
 semi-transparent widgets that display additional information such as metadata,
