@@ -9825,14 +9825,14 @@ extracting the desired features in a convenient format.")
 (define-public r-genomicfiles
   (package
     (name "r-genomicfiles")
-    (version "1.44.0")
+    (version "1.44.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicFiles" version))
        (sha256
         (base32
-         "0ylhag6ic1lcs59vjrpr6yny4hbcfxya9zf1s3hzn33wzz7xmv5q"))))
+         "1k18kjsg15iw3vcpjjd4w04qkv1vfwajbrs0qr2fdxxbwsqq83yn"))))
     (properties `((upstream-name . "GenomicFiles")))
     (build-system r-build-system)
     (propagated-inputs
