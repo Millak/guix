@@ -29486,13 +29486,13 @@ validation.  It can be run in parallel to save computation time.")
 (define-public r-ks
   (package
     (name "r-ks")
-    (version "1.15.0")
+    (version "1.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ks" version))
        (sha256
-        (base32 "1wm1hzjffr8gsh1k2nig27h2q7v34bisd0hsqmiia1qm82ra6nys"))))
+        (base32 "0wsyhcqsrmmd1bpqp8faj6d70dpnph4q9r90950wds22pbsz9mvv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fnn
