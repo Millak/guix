@@ -2542,21 +2542,6 @@ reading from and writing to ZIP archives.")
     (version "1.4")
     (inputs (list qtbase-5 zlib))))
 
-(define-public quazip-0
-  (package
-    (inherit quazip-5)
-    (name "quazip")
-    (version "0.9.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/stachenov/quazip")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "11icgwv2xyxhd1hm1add51xv54zwkcqkg85d1xqlgiigvbm196iq"))))))
-
 (define-public zchunk
   (package
     (name "zchunk")
