@@ -725,6 +725,29 @@ bigmemory and synchronicity packages.")
     ;; Users can choose either LGPLv3 or ASL2.0.
     (license (list license:lgpl3 license:asl2.0))))
 
+(define-public r-bigreadr
+  (package
+    (name "r-bigreadr")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bigreadr" version))
+       (sha256
+        (base32 "15wy5rphk2l59k8fk68a15xsvy8nxj1srnc2c86i7y5ym04a856k"))))
+    (properties `((upstream-name . "bigreadr")))
+    (build-system r-build-system)
+    (arguments (list #:tests? #false)) ;tests attempt to read from GitHub.
+    (propagated-inputs (list r-bigassertr r-data-table r-parallelly r-rcpp))
+    (native-inputs (list r-spelling r-testthat))
+    (home-page "https://github.com/privefl/bigreadr")
+    (synopsis "Read large text files")
+    (description
+     "Read large text files by splitting them in smaller files.  This package
+also provides some convenient wrappers around @code{fread()} and
+@code{fwrite()} from package @code{data.table}.")
+    (license license:gpl3)))
+
 (define-public r-binom
   (package
     (name "r-binom")
