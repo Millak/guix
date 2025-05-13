@@ -11085,16 +11085,16 @@ efficiency.")
 (define-public r-depmixs4
   (package
     (name "r-depmixs4")
-    (version "1.5-0")
+    (version "1.5-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "depmixS4" version))
               (sha256
                (base32
-                "1pacvhw5m4fsk3ysbal50fdqbvlaz8ywyqp6bn1wh42wipqbb2i8"))))
+                "0dim05r9q97gamr2kviz2q4f67fhpvw5j8gf0prcg8nn64d3nw8j"))))
     (propagated-inputs
      (list r-mass r-nlme r-nnet r-rsolnp))
-    (native-inputs (list r-gamlss))
+    (native-inputs (list r-gamlss r-gamlss-dist))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/depmixS4/")
     (synopsis "Dependent Mixture Models")
