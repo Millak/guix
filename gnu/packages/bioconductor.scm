@@ -26250,14 +26250,14 @@ preprocessing of cytometry data, including:
 (define-public r-erma
   (package
     (name "r-erma")
-    (version "1.24.0")
+    (version "1.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "erma" version))
        (sha256
         (base32
-         "1ybrjfwiwypnc7mdibkbs30scz3fyc11md9338w192vs7aggrhgp"))))
+         "1s3b2a0iv3rl3sxq1sbqscq2h2gjz4d3vsg9phhnbk1xdhbhqi4d"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
