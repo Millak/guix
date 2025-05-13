@@ -16010,6 +16010,27 @@ functionality of R Markdown templates (e.g., count words or post-process
 citations).")
     (license license:expat)))
 
+(define-public r-rmio
+  (package
+    (name "r-rmio")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rmio" version))
+       (sha256
+        (base32 "1gkd8nkqyfpkp6nvqb7c698difak5ymih3vy6njzqd3gwdp09mhy"))))
+    (properties `((upstream-name . "rmio")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bigassertr r-ff))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/privefl/rmio")
+    (synopsis "Provides mio C++11 header files for R")
+    (description
+     "This package provides the header files of mio, a cross-platform C++11
+header-only library for memory mapped file IO.")
+    (license license:gpl3)))
+
 (define-public r-rmtstat
   (package
     (name "r-rmtstat")
