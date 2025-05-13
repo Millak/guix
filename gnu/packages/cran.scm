@@ -44187,20 +44187,25 @@ and analyze Stan models.")
 (define-public r-rpf
   (package
     (name "r-rpf")
-    (version "1.0.14")
+    (version "1.0.15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rpf" version))
        (sha256
         (base32
-         "15pp6fdqxngsmcibxfzv72g25q3ww3hrazsl4c5fgi0fh450kfz4"))))
+         "1pmwzdz1lhms80ycvmq907kzc9aabm56j6zfkvlxy980zsmjxhaz"))))
     (properties `((upstream-name . "rpf")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lifecycle r-mvtnorm r-rcpp r-rcppeigen))
     (native-inputs
-     (list r-knitr r-mirt r-numderiv r-testthat))
+     (list r-ggplot2
+           r-knitr
+           r-mirt
+           r-numderiv
+           r-reshape2
+           r-testthat))
     (home-page "https://github.com/jpritikin/rpf")
     (synopsis "Response probability functions")
     (description
