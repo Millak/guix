@@ -73,6 +73,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -34789,17 +34790,20 @@ high-performance functions are provided here.")
 (define-public r-s2
   (package
     (name "r-s2")
-    (version "1.1.7")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "s2" version))
        (sha256
         (base32
-         "0y38g1zy19m7xsipns3m6avmjb9vnyw683nmlgsf4wnxa1qjqxih"))))
+         "14c15a8zjidb3yb1d0s60p1wzj93dlh0bd0s9g9l85a7b05c0rj3"))))
     (properties
      '((upstream-name . "s2")
-       (updater-extra-native-inputs . ("r-bit64" "r-vctrs"))))
+       (updater-extra-inputs . ("abseil-cpp"))
+       ;; Avoid a dependency cycle by ignoring r-sf.  As for rgeography, I
+       ;; haven't found it on CRAN or Bioconductor.
+       (updater-ignored-native-inputs . ("r-sf" "r-rgeography"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -34815,9 +34819,13 @@ high-performance functions are provided here.")
     (propagated-inputs
      (list r-rcpp r-wk))
     (inputs
-     (list openssl zlib))
+     (list abseil-cpp openssl zlib))
     (native-inputs
-     (list pkg-config r-bit64 r-testthat r-vctrs))
+     (list pkg-config
+           r-bit64
+           r-geos
+           r-testthat
+           r-vctrs))
     (home-page "https://r-spatial.github.io/s2/")
     (synopsis "Spherical geometry operators using the S2 geometry library")
     (description
