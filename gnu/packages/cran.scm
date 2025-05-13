@@ -48021,14 +48021,14 @@ implementation of the Shift-Algorithm by Streitberg & Roehmel.")
 (define-public r-maxstat
   (package
     (name "r-maxstat")
-    (version "0.7-25")
+    (version "0.7-26")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "maxstat" version))
        (sha256
         (base32
-         "114z1rwxwvk05ijjhdppzm148n1h192fp0w12ky10zkrhf6kphbg"))))
+         "02wbq8gkiw0jb5d86v9zsjh506mszbh20ycm7fds1v730fxw4n74"))))
     (properties `((upstream-name . "maxstat")))
     (build-system r-build-system)
     (propagated-inputs
