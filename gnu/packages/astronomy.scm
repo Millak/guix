@@ -1633,6 +1633,47 @@ model-fitting photometry or morphological analyses.")
 @acronym{Astrophysics Data System,ADS}.")
     (license license:expat)))
 
+(define-public python-aiapy
+  (package
+    (name "python-aiapy")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiapy" version))
+       (sha256
+        (base32 "009zj20jcqlw2i8llx0pnxyz8416h4ng9avpqjrqszlhcq9xavrn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; E PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-sunpy))
+    (home-page "https://aia.lmsal.com/")
+    (synopsis "Library for AIA data analysis")
+    (description
+     "aiapy is a Python package for analyzing data from the @acronym{AIA,
+Atmospheric Imaging Assembly} instrument onboard NASA's @acronym{SDO, Solar
+Dynamics Observatory} spacecraft.")
+    (license license:bsd-3)))
+
 (define-public python-aplpy
   (package
     (name "python-aplpy")
