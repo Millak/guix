@@ -2057,6 +2057,52 @@ New styles can also be created easily.  This package was inspired by the
 \"chalk\" JavaScript project.")
     (license license:expat)))
 
+(define-public r-crew
+  (package
+    (name "r-crew")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "crew" version))
+       (sha256
+        (base32 "03ygyvwh418mp0vx98vdavyr6xdwi9qcb7pyj56xxba06cymdgch"))))
+    (properties `((upstream-name . "crew")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; Some tests use "ip_internal", which fails in the build
+             ;; container.
+             (delete-file "tests/testthat/test-crew_controller_sequential.R"))))))
+    (propagated-inputs (list r-cli
+                             r-data-table
+                             r-getip
+                             r-later
+                             r-mirai
+                             r-nanonext
+                             r-processx
+                             r-promises
+                             r-ps
+                             r-r6
+                             r-rlang
+                             r-tibble
+                             r-tidyselect))
+    (native-inputs (list r-autometric r-dplyr r-knitr r-testthat))
+    (home-page "https://wlandau.github.io/crew/")
+    (synopsis "Distributed worker launcher framework")
+    (description
+     "In computationally demanding analysis projects, statisticians and data
+scientists asynchronously deploy long-running tasks to distributed systems,
+ranging from traditional clusters to cloud services.  The NNG-powered mirai R
+package by Gao (2023) <doi:10.5281/zenodo.7912722> is a scheduler that
+efficiently processes these intense workloads.  The crew package extends mirai
+with a unifying interface for third-party worker launchers.")
+    (license license:expat)))
+
 (define-public r-cubelyr
   (package
     (name "r-cubelyr")
