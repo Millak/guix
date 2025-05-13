@@ -731,6 +731,48 @@ alignment-free, it runs much faster and also easier to use.")
 and utilities for PacBio C++ applications.")
     (license license:bsd-3)))
 
+(define-public r-anglemania
+  (let ((commit "f27399fb947adfa0de6134493e737658ca591af5")
+        (revision "1"))
+    (package
+      (name "r-anglemania")
+      (version (git-version "0.99.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/anglemania/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05s60wba5jbg81lflifaz9yykl86f3is1y4b63c7rp6vmd5jf5y3"))))
+      (properties `((upstream-name . "anglemania")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-bigparallelr
+                               r-bigstatsr
+                               r-checkmate
+                               r-digest
+                               r-dplyr
+                               r-magrittr
+                               r-matrix
+                               r-pbapply
+                               r-rcpp
+                               r-rmio
+                               r-s4vectors
+                               r-seurat
+                               r-seuratobject
+                               r-singlecellexperiment
+                               r-tidyr
+                               r-withr))
+      (native-inputs (list r-knitr r-testthat))
+      (home-page "https://github.com/BIMSBbioinfo/anglemania/")
+      (synopsis "Feature extraction for scRNA-seq dataset integration")
+      (description
+       "Anglemania extracts genes from multi-batch @code{scRNA-seq}
+experiments for downstream dataset integration.  It improves conventional
+usage of highly-variable genes for integration tasks.")
+      (license license:gpl3+))))
+
 (define-public r-anndatar
   (let ((commit "5c3eb7e498d0d9bf1c522ad66f4eb8ad277238b6")
         (revision "1"))
