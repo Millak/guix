@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015-2017, 2019-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -413,11 +413,17 @@ empty list when the FIELD cannot be found."
         "c99"
         "getopt::long"
         "gnu"
+        "package"
+        "pkg"
+        "pkg2"
         "posix.1-2001"
         "linux"
         "libR"
         "none"
         "rtools"
+        "somepkg"
+        "std"
+        "table"
         "unix"
         "use_c17"
         "windows"
