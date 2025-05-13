@@ -325,7 +325,7 @@ setup(name='pendulum',
     (home-page "https://github.com/sdispater/pendulum")
     (synopsis "Alternate API for Python datetimes")
     (description "Pendulum is a drop-in replacement for the standard
-@{datetime} class, providing an alternative API.  As it inherits from the
+@code{datetime} class, providing an alternative API.  As it inherits from the
 standard @code{datetime} all @code{datetime} instances can be replaced by
 Pendulum instances.")
     (license expat)))

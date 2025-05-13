@@ -1825,7 +1825,7 @@ images.  It can resize (or thumbnail) and rotate thousands of images in a go
 while saving significantly on storage.
 
 This package may optionally be built with @code{python-pillow-simd} in place
-of @{python-pillow} for SIMD parallelism.")
+of @code{python-pillow} for SIMD parallelism.")
     (license license:gpl3+)))
 
 (define-public pngsuite

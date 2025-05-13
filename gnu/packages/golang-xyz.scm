@@ -13857,7 +13857,7 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
     (home-page "https://github.com/songmu/gitconfig")
     (synopsis "Go library to get configuration values from gitconfig")
     (description
-     "@{gitconfig} is a package to get configuration values from gitconfig.")
+     "@code{gitconfig} is a package to get configuration values from gitconfig.")
     (license license:expat)))
 
 (define-public go-github-com-soniakeys-quant

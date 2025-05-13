@@ -253,7 +253,7 @@ libraries GMO, MPFR and MPC.")
     (home-page "https://github.com/sagemath/memory_allocator")
     (synopsis "Extension class to allocate memory easily with Cython")
     (description "This package provides a single extension class
- @code{MemoryAllocator} with @{cdef} methods
+ @code{MemoryAllocator} with @code{cdef} methods
 
 @itemize
 @item @code{malloc}
@@ -264,7 +264,8 @@ libraries GMO, MPFR and MPC.")
 @item @code{aligned_malloc}
 @item @code{aligned_malloc}
 @item @code{aligned_calloc}
-@item @code{aligned_allocarray}")
+@item @code{aligned_allocarray}
+@end itemize")
     (license license:gpl3+)))
 
 (define-public python-pplpy

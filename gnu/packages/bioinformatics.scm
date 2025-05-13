@@ -21733,7 +21733,7 @@ Molecular Identifiers} (UMIs) and @dfn{Random Molecular Tags} (RMTs) in
 genetic sequences.  There are six tools: the @code{extract} and
 @code{whitelist} commands are used to prepare a fastq containing UMIs @code{+/-}
 cell barcodes for alignment.  The remaining commands, @code{group},
-@code{dedup}, and @{count}/@code{count_tab}, are used to identify PCR
+@code{dedup}, and @code{count}/@code{count_tab}, are used to identify PCR
 duplicates using the UMIs and perform different levels of analysis depending
 on the needs of the user.")
     (license license:expat)))

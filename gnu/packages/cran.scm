@@ -8363,7 +8363,7 @@ respecting the grammar of its graphics paradigm.")
     (synopsis "Side grammar graphics that extends @code{ggplot2}")
     (description
      "The grammar of graphics as shown in @code{ggplot2} has provided an
-expressive API for users to build plots.  This package @{ggside} extends
+expressive API for users to build plots.  This package @code{ggside} extends
 @code{ggplot2} by allowing users to add graphical information about one of the
 main panel's axis using a familiar @code{ggplot2} style API with tidy data.
 This package is particularly useful for visualizing metadata on a discrete

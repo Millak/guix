@@ -11239,7 +11239,7 @@ used to create both network servers and clients.")
     (description
      "@code{ruby_engine} provides an RubyEngine class that can be used to
 check which implementation of Ruby is in use.  It can provide the interpreter
-name and provides query methods such as @{RubyEngine.mri?}.")
+name and provides query methods such as @code{RubyEngine.mri?}.")
     (home-page "https://github.com/janlelis/ruby_engine")
     (license license:expat)))
 
@@ -12153,7 +12153,7 @@ It has built-in support for the legacy @code{cookies.txt} and
      "Make HTTP requests with support for HTTPS, Cookies, authentication and more")
     (description
      "The @code{httpclient} ruby library provides functionality related to
-HTTP.  Compared to the @code{net/http} library, @{httpclient} also provides
+HTTP.  Compared to the @code{net/http} library, @code{httpclient} also provides
 Cookie, multithreading and authentication (digest, NTLM) support.
 
 Also provided is a @command{httpclient} command, which can perform HTTP

@@ -6896,7 +6896,7 @@ diff, and patch JSON and JSON-like structures in Python.")
     (propagated-inputs (list python-pyparsing))
     (home-page "https://github.com/shinichi-takii/ddlparse")
     (synopsis "Parses and converts DDL to BigQuery JSON schema")
-    (description "This package provides @{ddlparse}, a Python library to parse
+    (description "This package provides @code{ddlparse}, a Python library to parse
 and convert DDL to BigQuery JSON schema.")
     (license license:bsd-3)))
 
@@ -9560,7 +9560,7 @@ and integrated feature-set for programming Python effectively.")
     (home-page "https://github.com/wbolster/black-macchiato")
     (synopsis "Partial @code{python-black} formatting")
     (description
-     "This package is built on top the @{python-black} code formatter to
+     "This package is built on top the @code{python-black} code formatter to
 enable formatting of partial files.")
     (license license:bsd-3)))
 
@@ -17007,7 +17007,7 @@ add functionality and customization to your projects with their own plugins.")
                          (invoke "make" "test")))))))
     (home-page "https://github.com/giampaolo/pysendfile")
     (synopsis "Python interface to sendfile(2)")
-    (description "The @{pysendfile} Python library provides an interface to
+    (description "The @code{pysendfile} Python library provides an interface to
 the @code{sendfile(2)} system call.")
     (license license:expat)))
 

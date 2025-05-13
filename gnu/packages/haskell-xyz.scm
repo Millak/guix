@@ -8549,7 +8549,7 @@ to how @code{ShortByteString} relates to @code{ByteString}.
 The main difference between @code{Text} and @code{ShortText} is that
 @code{ShortText} uses UTF-8 instead of UTF-16 internally and also doesn't
 support zero-copy slicing (thereby saving 2 words).  Consequently, the memory
-footprint of a (boxed) @{ShortText} value is 4 words (2 words when unboxed)
+footprint of a (boxed) @code{ShortText} value is 4 words (2 words when unboxed)
 plus the length of the UTF-8 encoded payload.")
     (license license:bsd-3)))
 
@@ -13891,7 +13891,7 @@ their similarities.
 The @code{Validation} data type is isomorphic to @code{Either}, but has an
 instance of @code{Applicative} that accumulates on the error side.  That is to
 say, if two (or more) errors are encountered, they are appended using a
-@{Semigroup} operation.
+@code{Semigroup} operation.
 
 As a consequence of this @code{Applicative} instance, there is no
 corresponding @code{Bind} or @code{Monad} instance.  @code{Validation} is an

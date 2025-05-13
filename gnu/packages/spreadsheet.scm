@@ -92,7 +92,7 @@
       (synopsis "Spreadsheet program with vim-like keybindings")
       (description
  "@code{sc-im} is a highly configurable spreadsheet program
- providing a vim-like experience.  @code{sc-im} supports @{gnuplot} interaction,
+ providing a vim-like experience.  @code{sc-im} supports @code{gnuplot} interaction,
  functions for sorting and filtering, 256 color support, and much more.")
       (license bsd-4)))
 

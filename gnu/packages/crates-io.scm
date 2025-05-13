@@ -45108,7 +45108,7 @@ for @code{ndarray}.")
     (synopsis "Constructors for randomized arrays")
     (description
      "This package provides constructors for randomized arrays.  It provides
-@{rand} integration for @{ndarray}.")
+@code{rand} integration for @code{ndarray}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-ndk-0.9

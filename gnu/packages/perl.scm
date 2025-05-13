@@ -2010,7 +2010,7 @@ and objects.")
     (propagated-inputs (list perl-cgi perl-uri))
     (home-page "https://metacpan.org/release/Clipboard")
     (synopsis "Copy and paste with any OS")
-    (description "@{Clipboard} provides functionality to copy and
+    (description "@code{Clipboard} provides functionality to copy and
 paste with any OS.")
     (license license:perl-license)))
 
@@ -13588,7 +13588,7 @@ system---most of the @code{Module::Build} code is pure-Perl.")
     (native-inputs (list perl-path-class perl-module-install))
     (home-page "https://metacpan.org/release/Module-Refresh")
     (synopsis "Refresh %INC files when updated on disk")
-    (description "@{Module::Refresh} provides ways to refresh %INC files
+    (description "@code{Module::Refresh} provides ways to refresh %INC files
 when updated on disk.")
     (license license:perl-license)))
 

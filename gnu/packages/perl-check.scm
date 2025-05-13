@@ -662,7 +662,7 @@ attributes.")
     (home-page "https://metacpan.org/release/Test-File-Contents")
     (synopsis "Test routines for examining the contents of files")
     (description
-     "@{Test::File::Contents} provides functions for testing the contents of
+     "@code{Test::File::Contents} provides functions for testing the contents of
 files.")
     (license perl-license)))
 

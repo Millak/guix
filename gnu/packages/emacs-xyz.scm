@@ -14658,7 +14658,7 @@ test tags.  It supports both interactive and non-interactive use.")
     (description
      "Provides functions which facilitate writing multi-file Emacs packages
 and running from the source tree without having to \"install\" code or fiddle
-with @{load-path}.
+with @code{load-path}.
 
 The main function, @code{load-relative}, loads an Emacs Lisp file relative to
 another (presumably currently running) Emacs Lisp file.")
@@ -16736,7 +16736,7 @@ feed subscriptions.")
              #t)))))
     (home-page "https://github.com/sigma/el-x")
     (synopsis "Emacs Lisp extensions")
-    (description "command@{emacs-el-x} defines the @code{dflet} macro to
+    (description "@command{emacs-el-x} defines the @code{dflet} macro to
 provide the historic behavior of @code{flet}, as well as
 @code{declare-function} stub for older Emacs.")
     (license license:gpl2+)))
@@ -26577,7 +26577,7 @@ files, allowing for actions to be performed based on search criteria.")
            emacs-s))
     (synopsis "Helm commands for @code{emacs-org-ql}")
     (description "This package provides @code{emacs-helm} commands for
-@{emacs-org-ql}, a Lispy query language for Org files, allowing for actions to
+@code{emacs-org-ql}, a Lispy query language for Org files, allowing for actions to
 be performed based on search criteria.")))
 
 (define-public emacs-bing-dict
@@ -43064,7 +43064,7 @@ can bind a popon to a specific buffer to only show on that buffer.")
     (synopsis "LSP mode and Consult helping each other")
     (description
 "@code{emacs-consult-lsp} provides helpers for interactively selecting LSP
-workspace diagnostics, symbols, and file symbols from @{emacs-lsp-mode}
+workspace diagnostics, symbols, and file symbols from @code{emacs-lsp-mode}
 by leveraging @code{emacs-consult} APIs.")
     (license license:expat)))
 

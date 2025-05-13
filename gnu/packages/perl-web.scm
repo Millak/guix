@@ -84,7 +84,7 @@ endeavor to implement this idea using modern technologies.")
     (home-page "https://metacpan.org/release/URI-db")
     (synopsis "Handle database URIs")
     (description
-     "This module defines a format for database URIs, and provides a @{URI}
+     "This module defines a format for database URIs, and provides a @code{URI}
 class to handle these.")
     (license license:perl-license)))
 

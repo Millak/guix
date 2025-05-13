@@ -389,7 +389,7 @@ extension of blocks.")
          ("rust-commoncrypto-sys" ,rust-commoncrypto-sys-0.2))))
     (home-page "https://github.com/malept/rust-commoncrypto")
     (synopsis "Idiomatic Rust wrappers for Mac OS X's CommonCrypto library")
-    (description "The @{commoncrypto} library provides Rust FFI bindings and
+    (description "The @code{commoncrypto} library provides Rust FFI bindings and
 idiomatic wrappers for Mac OS X's CommonCrypto library.")
     (license license:expat)))
 

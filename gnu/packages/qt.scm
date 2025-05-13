@@ -1263,7 +1263,7 @@ HostData=lib/qt5"
     (description "The @code{qt5compat} package includes application
 programming interfaces (APIs) from Qt 5 that were ported to Qt 6, to ease
 migration.  It provides for example the @code{GraphicalEffects} module that
-came with the @{qtgraphicaleffects} Qt 5 package.")
+came with the @code{qtgraphicaleffects} Qt 5 package.")
     (license (list license:gpl2+ license:lgpl3+)))) ;dual licensed
 
 (define-public qtsvg-5
