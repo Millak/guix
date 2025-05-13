@@ -3244,7 +3244,6 @@ is designed to be used in interactive 3D graphics applications.")
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_DOCUMENTATION=ON"
-                           "-DBUILD_TESTING=ON"
                            "-DENABLE_DOUBLE_PRECISION=ON")))
     (native-inputs
      (list python-sphinx))

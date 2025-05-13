@@ -4142,7 +4142,6 @@ A very simple IM client working over the DHT.
        (list
         #:configure-flags #~(list "-DBUILD_DEPENDENCIES=OFF"
                                   "-DBUILD_SHARED_LIBS=ON"
-                                  "-DBUILD_TESTING=ON"
                                   "-DDNC_SYSTEMD=OFF")
         #:phases
         #~(modify-phases %standard-phases

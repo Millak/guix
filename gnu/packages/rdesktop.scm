@@ -163,7 +163,6 @@ to remotely control a user's Windows desktop.")
                      #~())
               "-DWITH_PULSE=ON"
               "-DWITH_CUPS=ON"
-              "-DBUILD_TESTING=ON"
               "-DWITH_SERVER=ON" ;build servers
               "-DWITH_SHADOW=ON" ;build shadow server
               "-DWITH_PROXY=ON")))

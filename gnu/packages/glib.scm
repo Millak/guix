@@ -1269,8 +1269,7 @@ programming language.  It also provides the @command{dbusxx-xml2cpp} and
               (snippet '(delete-file-recursively "tools/libcppgenerate"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTING=ON"
-                                     "-DENABLE_TOOLS=ON"
+     (list #:configure-flags #~(list "-DENABLE_TOOLS=ON"
                                      "-DENABLE_GLIB_SUPPORT=ON"
                                      "-DTOOLS_BUNDLED_CPPGENERATE=OFF")
            ;; There is no /etc/machine-id file in the build environment.

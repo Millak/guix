@@ -559,7 +559,6 @@ photographic equipment.")
      (list
       #:configure-flags
       #~(list "-DBINARY_PACKAGE_BUILD=On"
-              "-DBUILD_TESTING=On"
               "-DDONT_USE_INTERNAL_LIBRAW=On")
       #:phases
       #~(modify-phases %standard-phases

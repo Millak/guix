@@ -240,8 +240,7 @@ of categories with some of the activities available in that category.
                    (setenv "DISPLAY" ":1")
                    ;; The test suite wants to write to /homeless-shelter
                    (setenv "HOME" (getcwd)))))
-           #:configure-flags #~(list "-DQML_BOX2D_MODULE=disabled"
-                                     "-DBUILD_TESTING=TRUE")))
+           #:configure-flags #~(list "-DQML_BOX2D_MODULE=disabled")))
     (native-inputs
      (list extra-cmake-modules
            gettext-minimal

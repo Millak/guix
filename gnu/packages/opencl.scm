@@ -115,9 +115,7 @@
     (arguments
      (list #:tests? #f  ;The regression tests require a lot more dependencies.
            #:configure-flags
-           #~(list "-DBUILD_EXAMPLES=OFF" "-DBUILD_TESTS=OFF"
-                   ;; CTest needs this to be turned off.
-                   "-DBUILD_TESTING=OFF")))
+           #~(list "-DBUILD_EXAMPLES=OFF" "-DBUILD_TESTS=OFF")))
     (native-inputs (list python-wrapper))
     (propagated-inputs (list opencl-headers))
     (home-page "https://github.khronos.org/OpenCL-CLHPP/")

@@ -54,8 +54,7 @@
       #:configure-flags
       #~(list (string-append "-S" #$source "/build")
               "-DWITH_UPNP=ON"
-              "-DBUILD_SHARED_LIBS=ON"
-              "-DBUILD_TESTING=ON")))
+              "-DBUILD_SHARED_LIBS=ON")))
     (home-page "https://i2pd.website/")
     (synopsis "Router for an end-to-end encrypted and anonymous internet")
     (description "i2pd is a client for the anonymous I2P network, upon which

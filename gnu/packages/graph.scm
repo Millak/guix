@@ -539,8 +539,7 @@ intuitive way.")
     (arguments
      (list #:configure-flags
            #~'("-DFAISS_ENABLE_GPU=OFF"     ; thanks, but no thanks, CUDA.
-               "-DFAISS_ENABLE_PYTHON=OFF"
-               "-DBUILD_TESTING=ON")))
+               "-DFAISS_ENABLE_PYTHON=OFF")))
     (inputs
      (list openblas))
     (native-inputs

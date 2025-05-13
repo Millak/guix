@@ -67,8 +67,6 @@
     (arguments
      (list #:qtbase qtbase
            ;; XXX: 26/164 tests fail.
-           #:configure-flags
-           #~(list "-DBUILD_TESTING=OFF")
            #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools perl pkg-config))
@@ -166,8 +164,7 @@ Advanced plugins:
     (arguments
      (list #:qtbase qtbase
            #:configure-flags
-           #~(list "-DQT_MAJOR_VERSION=6"
-                   "-DBUILD_TESTING=ON")))
+           #~(list "-DQT_MAJOR_VERSION=6")))
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config qttools))
     (inputs

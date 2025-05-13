@@ -290,8 +290,6 @@ text-based approach to terminal recording.")
              (delete-file-recursively "external/xkbcommon")
              #t))))
       (build-system cmake-build-system)
-      (arguments
-       `(#:configure-flags '("-DBUILD_TESTING=ON")))
       (native-inputs
        (list check libxkbcommon ; for xkbcommon-keysyms.h
              pkg-config))

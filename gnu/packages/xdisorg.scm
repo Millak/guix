@@ -3410,8 +3410,7 @@ virtual-pointer (pointer command) protocols.")
         (base32 "14gnkz18dipsa2v24f4nm9syxaa7g21iqjm7y65jn849ka2jr1h8"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTING=ON")
-           #:phases #~(modify-phases %standard-phases
+     (list #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'disable-problematic-tests
                           (lambda _
                             (substitute* "config_parser_test.cc"

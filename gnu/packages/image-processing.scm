@@ -366,8 +366,7 @@ many popular formats.")
     (arguments
      (list #:build-type "Release"           ;Build without '-g' to save space.
            #:configure-flags
-           #~'( ;;"-DBUILD_TESTING:BOOL=TRUE"  ;not honored
-               "-DVTK_USE_EXTERNAL=OFF"           ;default
+           #~'("-DVTK_USE_EXTERNAL=OFF"           ;default
                "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
                "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
                "-DVTK_MODULE_USE_EXTERNAL_VTK_expat=ON"

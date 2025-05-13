@@ -747,10 +747,9 @@ files.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f
+      #:tests? #f ;; XXX: insists on using bundled googletest
       #:configure-flags
-      #~(list "-DBUILD_TESTING=off" ;; XXX: insists on using bundled googletest
-              "-DBUILD_SHARED_LIBS=ON"
+      #~(list "-DBUILD_SHARED_LIBS=ON"
               #$@(let ((target (%current-target-system)))
                    (if target
                        (cond ((string-prefix? "arm" target)

@@ -121,7 +121,6 @@ environments.")
                 ;; Lower the minimum tuning ratio from 6 to 4, as suggested
                 ;; upstream to avoid the s2k_iteration_tuning failing.
                 "-DS2K_MINIMUM_TUNING_RATIO=4"
-                "-DBUILD_TESTING=on"
                 "-DDOWNLOAD_GTEST=off"
                 "-DDOWNLOAD_RUBYRNP=off")
         #:phases

@@ -61,8 +61,7 @@
       #:configure-flags #~(list #$@(if (target-64bit?)
                                        '("-DMOLD_USE_SYSTEM_MIMALLOC=ON")
                                        '("-DMOLD_USE_MIMALLOC=OFF"))
-                                "-DMOLD_USE_SYSTEM_TBB=ON"
-                                "-DBUILD_TESTING=ON")
+                                "-DMOLD_USE_SYSTEM_TBB=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'force-system-xxhash

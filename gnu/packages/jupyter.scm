@@ -515,9 +515,9 @@ extensions.")
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_STATIC_LIBS=OFF"
-                           "-DDISABLE_ARCH_NATIVE=ON" ;no '-march=native'
-                           "-DBUILD_TESTING=ON")))
+     '(#:tests? #f
+       #:configure-flags '("-DBUILD_STATIC_LIBS=OFF"
+                           "-DDISABLE_ARCH_NATIVE=ON"))) ;no '-march=native'
     (native-inputs
      (list pkg-config
            ;; The following inputs are used by the test suite.

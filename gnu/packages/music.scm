@@ -6005,10 +6005,7 @@ the electronic or dubstep genre.")
                 "0zn9v4lxjpnpdlpnv2px8ch3z0xagmqlvff5pd39pss3mxfp32g0"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags
-           (if (%current-target-system)
-               #~(list "-DBUILD_TESTING=OFF")
-               #~(list "-DBUILD_TESTING=ON"))))
+     (list #:tests? (not (%current-target-system)))) ; run unless cross-compiling
     (native-inputs
      (list googletest))
     (home-page "https://github.com/pedrolcl/sonivox")

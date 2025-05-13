@@ -135,8 +135,7 @@ similar to getopt(3), it contains a number of enhancements, including:
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
-                           "-DBUILD_TESTING=ON")))
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (home-page "https://gflags.github.io/gflags/")
     (synopsis "C++ library for command-line argument parsing")
     (description

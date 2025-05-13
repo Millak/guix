@@ -3069,7 +3069,6 @@ generated discrete signed distance field using the cubic spline kernel.
                    (string-append "-DCMAKE_INSTALL_MANDIR=" #$output "/share/man")
                    "-DBUILD_SHARED_LIBS=ON"
                    "-DBUILD_DOC=ON"
-                   "-DBUILD_TESTING=ON"
                    ;; The longer tests are for continuous integration and
                    ;; depend on input data which must be downloaded.
                    "-DONLY_VERY_SHORT_TESTS=ON"
@@ -3295,7 +3294,6 @@ desired local properties.")
       #:configure-flags
       #~(list (string-append "-DCMAKE_INSTALL_DOCDIR=" #$output
                              "/share/doc/" #$name "-" #$version)
-              "-DBUILD_TESTING=OFF"
               "-DF3D_LINUX_GENERATE_MAN=ON"
               "-DF3D_USE_EXTERNAL_CXXOPTS=ON"
               "-DF3D_USE_EXTERNAL_NLOHMANN_JSON=ON"

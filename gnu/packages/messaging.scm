@@ -569,8 +569,8 @@ your private keys, no previous conversation is compromised.")
              (base32
               "0z5p03vk15i6h870azfjgyfgxhv31q2vq6rfhnybrnkxq2wqzwhk"))))
    (arguments
-    `(;; Required for proper linking and for tests to run.
-      #:configure-flags '("-DBUILD_SHARED_LIBS=on" "-DBUILD_TESTING=1")))
+    `(;; Required for proper linking.
+      #:configure-flags '("-DBUILD_SHARED_LIBS=on")))
    (build-system cmake-build-system)
    (inputs (list ;; Required for tests:
                  check openssl))

@@ -974,8 +974,6 @@ to the @code{python-yubikey-manager} package.")
                (base32
                 "0z39f8w0zvra874az0f67ck1al9kbpaidpilggbl8jnfs05010ck"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags (list "-DBUILD_TESTING=on")))
     (native-inputs (list pkg-config qttools-5))
     (inputs (list catch2))
     (home-page "https://github.com/tplgy/cppcodec")

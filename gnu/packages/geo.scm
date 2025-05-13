@@ -4144,7 +4144,6 @@ and 2D images (photos taken using a 3D imaging system).")
       #:configure-flags #~(list
                            ;; Options
                            "-DOPTION_BUILD_CCVIEWER=NO"
-                           "-DBUILD_TESTING=ON"
                            "-DOPTION_USE_SHAPE_LIB=YES"
                            "-DOPTION_USE_DXF_LIB=YES"
                            "-DOPTION_USE_GDAL=YES"

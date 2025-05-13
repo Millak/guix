@@ -481,8 +481,7 @@ enough to be used effectively as a scientific calculator.")
                 "0csy4pjw1p8rp6g5qxi2h0ychhhp1fldv7gb761627fs2mclw9gv"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
-                           "-DBUILD_TESTING=ON")))
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (synopsis "Conversion routines for IEEE doubles")
     (description
      "The double-conversion library provides binary-decimal and decimal-binary
@@ -1199,8 +1198,7 @@ large scale eigenvalue problems.")
                           "-DCBLAS=ON"
                           "-DLAPACKE=ON"
                           ;; Build the 'LAPACKE_clatms' functions.
-                          "-DLAPACKE_WITH_TMG=ON"
-                          "-DBUILD_TESTING=ON")))
+                          "-DLAPACKE_WITH_TMG=ON")))
     (synopsis "Library for numerical linear algebra")
     (description
      "LAPACK is a Fortran 90 library for solving the most commonly occurring
@@ -3252,8 +3250,6 @@ includes a complete LAPACK implementation.")
               (sha256
                (base32
                 "0xxqjz4lba57vn65m2k5jxrz0v7y6jwnhxwg6njd4vrafv5w17yv"))))
-    (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTING=ON")))
     (native-inputs
      (list catch2-3.8))
     (build-system cmake-build-system)
@@ -8116,8 +8112,7 @@ supports compressed MAT files, as well as newer (version 7.3) MAT files.")
     (arguments
      (list
       #:configure-flags
-      #~(list "-DBUILD_TESTING=ON"
-              ;; By default, Vc will optimize for the CPU of the build machine.
+      #~(list ;; By default, Vc will optimize for the CPU of the build machine.
               ;; Setting this to "none" makes it create portable binaries.  See
               ;; "cmake/OptimizeForArchitecture.cmake".
               "-DTARGET_ARCHITECTURE=none")
@@ -10647,8 +10642,7 @@ projects up to the certification of critical software.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DBUILD_DOC=ON"
-                                "-DBUILD_TESTING=ON")
+      #:configure-flags #~(list "-DBUILD_DOC=ON")
       #:modules '((guix build cmake-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))

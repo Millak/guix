@@ -292,8 +292,7 @@ setting @env{LUA_PATH} and @env{LUA_CPATH} in glirc's run-time environment.")
     (arguments
       ;; The three binaries are not mutually exlusive, and are all built
       ;; by default.
-     '(#:configure-flags '("-DBUILD_TESTING=ON"
-                           ;;"-DWANT_QTCLIENT=OFF"
+     '(#:configure-flags '(;;"-DWANT_QTCLIENT=OFF"
                            ;;"-DWANT_CORE=OFF"
                            ;;"-DWANT_MONO=OFF"
                            "-DWITH_KDE=OFF"

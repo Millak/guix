@@ -781,8 +781,7 @@ jmacs, joe, jpico, jstar, and rjoe.")
                   (delete-file-recursively "lib/json")))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTING=ON")
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-tiny-process-library
                  (lambda* (#:key native-inputs inputs #:allow-other-keys)

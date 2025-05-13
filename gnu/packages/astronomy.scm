@@ -436,7 +436,6 @@ rendering of the atmosphere model and examine its properties.
       #:configure-flags
       #~(list "-DBUILD_PYTHON3=ON"
               "-DBUILD_PYTHON=OFF"
-              "-DBUILD_TESTING=TRUE"
               "-DUSE_HDF5=ON"
               "-DUSE_OPENMP=OFF"
               "-DUSE_THREADS=ON"

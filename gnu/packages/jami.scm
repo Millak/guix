@@ -251,7 +251,6 @@ QSortFilterProxyModel conveniently exposed for QML.")
       #:qtbase qtbase
       #:configure-flags
       #~(list "-DWITH_DAEMON_SUBMODULE=OFF"
-              "-DBUILD_TESTING=ON"
               (string-append "-DBUILD_VERSION=" #$version)
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.

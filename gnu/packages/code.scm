@@ -711,8 +711,7 @@ possible to collect coverage information without special compiler switches.")
     (arguments
      '(#:build-type "RelWithDebInfo"
        #:configure-flags
-       '("-DRTAGS_NO_ELISP_FILES=1"
-         "-DBUILD_TESTING=FALSE")
+       '("-DRTAGS_NO_ELISP_FILES=1")
        #:tests? #f))
     (native-inputs
      (list pkg-config))

@@ -1036,7 +1036,6 @@ test suite, including conformance tests (following Rec. ITU-T T.803 | ISO/IEC
        (list
         "-DBUILD_STATIC_LIBS=OFF"
         "-DBUILD_UNIT_TESTS=ON"
-        "-DBUILD_TESTING=ON"
         (string-append "-DOPJ_DATA_ROOT="
                        (assoc-ref %build-inputs "openjpeg-data")))
        #:phases
