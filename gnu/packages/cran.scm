@@ -14598,6 +14598,27 @@ print, summary, plot, update, etc.
 processes.  Most of its code is based on the @code{psutil} Python package.")
     (license license:bsd-3)))
 
+(define-public r-psychometric
+  (package
+    (name "r-psychometric")
+    (version "2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "psychometric" version))
+       (sha256
+        (base32 "1mlggzw80pb7kfykva1s4ic726l8dckrgik2519njh32ycvk9x1s"))))
+    (properties `((upstream-name . "psychometric")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-multilevel r-nlme r-purrr))
+    (home-page "https://cran.r-project.org/package=psychometric")
+    (synopsis "Applied psychometric theory")
+    (description
+     "This package contains functions useful for correlation theory,
+meta-analysis (validity-generalization), reliability, item analysis,
+inter-rater reliability, and classical utility.")
+    (license license:gpl2+)))
+
 (define-public r-pkgbuild
   (package
     (name "r-pkgbuild")
