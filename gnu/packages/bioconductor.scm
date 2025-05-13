@@ -11295,13 +11295,13 @@ location information (and the reverse operation) is implemented as well.")
 (define-public r-mosdef
   (package
     (name "r-mosdef")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mosdef" version))
        (sha256
-        (base32 "1djl0sl9yr3kpz5mbrs23gwz2dc8cz3g7sv1ians804r53aalirz"))))
+        (base32 "1grj51fvandhmh9kgaiwf9mryim2snfrw1bbi8v214r14v86s9gz"))))
     (properties
      `((upstream-name . "mosdef")
        ;; Avoid dependency cycle.
