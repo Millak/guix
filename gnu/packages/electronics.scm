@@ -610,6 +610,33 @@ perhaps a couple of Verilog `defines, some top-level parameters/generics or
 some tool-specific options are set.")
     (license license:bsd-2)))
 
+(define-public python-pydigitalwavetools
+  (package
+    (name "python-pydigitalwavetools")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nic30/pyDigitalWaveTools/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fll8anz3i1j1nngsij1psp8766kvdfpls655lbxn2ykypv3633m"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/Nic30/pyDigitalWaveTools/")
+    (synopsis "Library to manipulate digital wave files")
+    (description
+     "Pydigitalwavetools is a Python library to parse, write and format digital
+wave files in @acronym{VCD, Value Change Dump} format, a standardized ASCII
+format used to store simulation data from Verilog and other hardware description
+languages.")
+    (license license:expat)))
+
 (define-public python-surf
   (package
     (name "python-surf")
