@@ -22219,14 +22219,14 @@ data, to only emphasize the data that actually matters.")
 (define-public r-rcistarget
   (package
     (name "r-rcistarget")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RcisTarget" version))
        (sha256
         (base32
-         "1rfk1z9mnla8d8wj50ajvyr7bwnsl49ragjcbxdckzix6v276l9p"))))
+         "0w6ix0w8ns7yjzyri3dfl6m67hqvszlnczfj4i5w5yr0dp4k181b"))))
     (properties
      '((upstream-name . "RcisTarget")
        (updater-extra-native-inputs
