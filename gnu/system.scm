@@ -208,12 +208,21 @@ VERSION is the target version of the boot-parameters record."
   (let ((root (file-system-device->string root-device
                                           #:uuid-type 'dce)))
     (append
-     (if (string=? root "none")
-         '() ;  Ignore the case where the root is "none" (typically tmpfs).
-         ;; Note: Always use the DCE format because that's what
-         ;; (gnu build linux-boot) expects for the 'root'
-         ;; kernel command-line option.
-         (list (string-append (if version>0? "root=" "--root=") root)))
+     (cond
+      ((string=? root "tmpfs")
+       ;; Required when using tmpfs as root file system.
+       ;; TODO: Include file system information in boot parameters, so that we
+       ;; can detect tmpfs by file system type instead of device name here.
+       '("rootfstype=tmpfs"))
+      ((string=? root "none")
+       ;; Ignore unhandled cases where the root is "none".  This requires the
+       ;; user to set correct arguments.
+      '())
+      (else
+       ;; Note: Always use the DCE format because that's what
+       ;; (gnu build linux-boot) expects for the 'root'
+       ;; kernel command-line option.
+       (list (string-append (if version>0? "root=" "--root=") root))))
      (list #~(string-append (if #$version>0? "gnu.system=" "--system=") #$system)
            #~(string-append (if #$version>0? "gnu.load=" "--load=")
                             #$system "/boot")))))
