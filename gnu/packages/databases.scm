@@ -5294,9 +5294,9 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
            python-pandas
            python-six))
     (native-inputs
-     (list cmake-minimal
+     (list cmake ;needs 3.25
            pkg-config
-           python-cython
+           python-cython-3
            python-pytest
            python-pytest-runner
            python-setuptools-scm))
