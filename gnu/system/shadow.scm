@@ -130,7 +130,8 @@
           (system-group (name "floppy"))
           (system-group (name "cdrom"))
           (system-group (name "tape"))
-          (system-group (name "kvm")))))          ; for /dev/kvm
+          (system-group (name "kvm"))          ; for /dev/kvm
+          (system-group (name "sgx")))))
 
 (define %base-user-accounts
   ;; List of standard user accounts.  Note that "root" is a special case, so
