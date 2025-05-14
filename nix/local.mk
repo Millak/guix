@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2016, 2018-2020, 2024 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2016, 2018-2020, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 #
@@ -171,7 +171,8 @@ etc/%.mount: etc/%.mount.in	\
 etc/guix-%.service: etc/guix-%.service.in	\
 			 $(top_builddir)/config.status
 	$(AM_V_GEN)$(MKDIR_P) "`dirname $@`";	\
-	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|' \
+	$(SED) -e 's|@''localstatedir''@|$(localstatedir)|g' \
+	       -e 's|@''storedir''@|$(storedir)|g' \
 	       -e 's|@''GUIX_SUBSTITUTE_URLS''@|$(GUIX_SUBSTITUTE_URLS)|' \
 	       < "$<" > "$@.tmp";		\
 	mv "$@.tmp" "$@"
