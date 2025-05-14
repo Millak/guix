@@ -1515,7 +1515,6 @@ KDE Frameworks components.")
                   lcms
                   libcap
                   libepoxy
-                  libglvnd ; For OpenGLES
                   libinput
                   libxkbcommon
                   pipewire
