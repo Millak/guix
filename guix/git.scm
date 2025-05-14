@@ -211,15 +211,9 @@ to verify X.509 host certificates."
 when talking to remote Git servers.
 
 If one of them is #f, the corresponding default setting is kept unchanged."
-  ;; 'set-server-timeout!' & co. were added in Guile-Git 0.9.0.
-  (define (defined? variable)
-    (module-defined? (resolve-interface '(git)) variable))
-
-  (when (and (defined? 'set-server-connection-timeout!)
-             connection-timeout)
+  (when connection-timeout
     (set-server-connection-timeout! connection-timeout))
-  (when (and (defined? 'set-server-timeout!)
-             read-timeout)
+  (when read-timeout
     (set-server-timeout! read-timeout)))
 
 (define* (clone* url directory #:key (verify-certificate? #t))
@@ -374,13 +368,7 @@ dynamic extent of EXP."
 
 (define (report-git-error error)
   "Report the given Guile-Git error."
-  ;; Prior to Guile-Git commit b6b2760c2fd6dfaa5c0fedb43eeaff06166b3134,
-  ;; errors would be represented by integers.
-  (match error
-    ((? integer? error)                           ;old Guile-Git
-     (leave (G_ "Git error ~a~%") error))
-    ((? git-error? error)                         ;new Guile-Git
-     (leave (G_ "Git error: ~a~%") (git-error-message error)))))
+  (leave (G_ "Git error: ~a~%") (git-error-message error)))
 
 (define-syntax-rule (with-git-error-handling body ...)
   (catch 'git-error
@@ -769,60 +757,30 @@ that of OLD."
                  (cons head result)
                  (set-insert head visited)))))))
 
-(define commit-relation
-  (if (resolve-module '(git graph) #:ensure #f)   ;Guile-Git >= 0.10.0
-      (lambda (old new)
-        "Return a symbol denoting the relation between OLD and NEW, two commit
+(define (commit-relation old new)
+  "Return a symbol denoting the relation between OLD and NEW, two commit
 objects: 'ancestor (meaning that OLD is an ancestor of NEW), 'descendant, or
 'unrelated, or 'self (OLD and NEW are the same commit)."
-        (let ((repository (commit-owner old))
-              (old (commit-id old))
-              (new (commit-id new)))
-          (cond ((graph-descendant? repository new old)
-                 'ancestor)
-                ((oid=? old new)
-                 'self)
-                ((graph-descendant? repository old new)
-                 'descendant)
-                (else 'unrelated))))
-      (lambda (old new)            ;remove when Guile-Git 0.10.0 is widespread
-        (if (eq? old new)
-            'self
-            (let ((newest (commit-closure new)))
-              (if (set-contains? newest old)
-                  'ancestor
-                  (let* ((seen   (list->setq (commit-parents new)))
-                         (oldest (commit-closure old seen)))
-                    (if (set-contains? oldest new)
-                        'descendant
-                        'unrelated))))))))
+  (let ((repository (commit-owner old))
+        (old (commit-id old))
+        (new (commit-id new)))
+    (cond ((graph-descendant? repository new old)
+           'ancestor)
+          ((oid=? old new)
+           'self)
+          ((graph-descendant? repository old new)
+           'descendant)
+          (else 'unrelated))))
 
-(define commit-descendant?
-  (if (resolve-module '(git graph) #:ensure #f)   ;Guile-Git >= 0.10.0
-      (lambda (new old)
-        "Return true if NEW is the descendant of one of OLD, a list of
-commits."
-        (let ((repository (commit-owner new))
-              (new (commit-id new)))
-          (any (lambda (old)
-                 (let ((old (commit-id old)))
-                   (or (graph-descendant? repository new old)
-                       (oid=? old new))))
-               old)))
-      (lambda (new old)            ;remove when Guile-Git 0.10.0 is widespread
-        (let ((old (list->setq old)))
-          (let loop ((commits (list new))
-                     (visited (setq)))
-            (match commits
-              (()
-               #f)
-              (_
-               ;; Perform a breadth-first search as this is likely going to
-               ;; terminate more quickly than a depth-first search.
-               (let ((commits (remove (cut set-contains? visited <>) commits)))
-                 (or (any (cut set-contains? old <>) commits)
-                     (loop (append-map commit-parents commits)
-                           (fold set-insert visited commits)))))))))))
+(define (commit-descendant? new old)
+  "Return true if NEW is the descendant of one of OLD, a list of commits."
+  (let ((repository (commit-owner new))
+        (new (commit-id new)))
+    (any (lambda (old)
+           (let ((old (commit-id old)))
+             (or (graph-descendant? repository new old)
+                 (oid=? old new))))
+         old)))
 
 
 ;;
