@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2018, 2020, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2019, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2019, 2023-2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
@@ -673,7 +673,8 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                       (libc (libc-for-target target))
                       (xgcc (cross-gcc target))
                       (xbinutils (cross-binutils target))
-                      (xheaders (cross-kernel-headers target)))
+                      (xheaders (cross-kernel-headers target))
+                      (with-winpthreads? #t))
   "Return LIBC cross-built for TARGET, a GNU triplet. Use XGCC and XBINUTILS
 and the cross tool chain.  If TARGET doesn't have a standard C library #f is
 returned."
@@ -682,7 +683,8 @@ returned."
     (let ((machine (substring target 0 (string-index target #\-))))
       (make-mingw-w64 machine
                       #:xgcc xgcc
-                      #:xbinutils xbinutils)))
+                      #:xbinutils xbinutils
+                      #:with-winpthreads? #t)))
    ((or (? target-linux?) (? target-hurd?))
     (package
       (inherit libc)
@@ -787,10 +789,12 @@ returned."
                                              #:key
                                              (base-gcc %xgcc)
                                              (xbinutils (cross-binutils target))
+                                             (with-winpthreads? #t)
                                              (libc (cross-libc
                                                      target
                                                      #:xgcc (cross-gcc target #:xgcc base-gcc)
-                                                     #:xbinutils xbinutils))
+                                                     #:xbinutils xbinutils
+                                                     #:with-winpthreads? with-winpthreads?))
                                              (xgcc (cross-gcc target
                                                               #:xgcc base-gcc
                                                               #:libc libc
