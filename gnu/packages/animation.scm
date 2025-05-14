@@ -380,37 +380,6 @@ lets you create traditional hand-drawn animations (cartoons) using both bitmap
 and vector graphics.")
     (license license:gpl2)))
 
-(define-public tgs2png
-  (let ((commit "25c15b7c2ca3b1a580a383d9d3cb13bf8531d04a")
-        (revision "0"))
-    (package
-      (name "tgs2png")
-      (version (git-version "0.3.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/zevlg/tgs2png")
-               (commit commit)))
-         (sha256
-          (base32 "0camvzapkfvr9v0nkk96n26rdmw0g8wbpv41i5l03j6bzdgm4myl"))
-         (file-name (git-file-name "tgs2png" version))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             (delete-file-recursively "rlottie")
-             #t))))
-      (arguments '(#:tests? #f))
-      (build-system cmake-build-system)
-      (inputs
-       (list rlottie libpng))
-      (native-inputs
-       (list pkg-config))
-      (home-page "https://github.com/zevlg/tgs2png")
-      (synopsis "Convert Telegram's animated stickers to PNG")
-      (description "Convert Telegram's animated stickers in TGS format into series of PNG images.")
-      (license license:gpl3+))))
-
 (define-public swftools
   ;; Last release of swftools was 0.9.2 on 2012-04-21 - it is really old and
   ;; does not compile with what's available in guix, master on the other hand
