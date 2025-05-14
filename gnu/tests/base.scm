@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016-2020, 2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;;
@@ -545,6 +545,19 @@ info --version")
                                       "root@"
                                       #$(operating-system-host-name os)))))
              #:ocr #$(file-append ocrad "/bin/ocrad")))
+
+          (test-equal "block devices have correct default polling value"
+            "2000"
+            ;; This tests that the 'udevadm trigger' correctly creates the
+            ;; subsystems nodes, by checking that the standard 60-block.rules
+            ;; udev rules was applied.
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 textual-ports))
+                (call-with-input-file
+                    "/sys/module/block/parameters/events_dfl_poll_msecs"
+                  (compose string-trim-right get-string-all)))
+             marionette))
 
           (test-end))))
 

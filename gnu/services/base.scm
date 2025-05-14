@@ -2740,19 +2740,22 @@ item of PACKAGES."
                          (cons*
                           (string-append "LINUX_MODULE_DIRECTORY="
                                          (getenv "LINUX_MODULE_DIRECTORY"))
-                          (default-environment-variables)))))
+                          (default-environment-variables))))
+                   (udevadm #$(file-append udev "/bin/udevadm")))
                ;; Wait until udevd is up and running.  This appears to
                ;; be needed so that the events triggered below are
                ;; actually handled.
                (wait-for-udevd)
 
-               ;; Trigger device node creation.
-               (system* #$(file-append udev "/bin/udevadm")
-                        "trigger" "--action=add")
+               ;; Trigger device and subsystem nodes creation.  Note that as
+               ;; of eudev v3.2.14, it is missing the '--type=all' found in
+               ;; systemd.
+               (system* udevadm "trigger" "--action=add" "--type=devices")
+               (system* udevadm "trigger" "--action=add" "--type=subsystems")
 
                ;; Wait for things to settle down.
-               (system* #$(file-append udev "/bin/udevadm")
-                        "settle")
+               (system* udevadm "settle")
+
                pid))))
       (stop #~(make-kill-destructor))
 
