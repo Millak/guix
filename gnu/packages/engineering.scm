@@ -137,6 +137,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages openkinect)
   #:use-module (gnu packages parallel)
@@ -3236,6 +3237,9 @@ ontinuous-time and discret-time expressions.")
       list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
       find_package(EGL REQUIRED)
       target_link_libraries(OpenSCAD PRIVATE EGL::EGL)")
+                  ;; <https://github.com/openscad/openscad/issues/5897>
+                  (("find_package\\(Nettle 3.4\\)")
+                   "find_package(Nettle 3.4 REQUIRED)")
                   ;; Use the system sanitizers-cmake module.
                   (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
                    (string-append (assoc-ref inputs "sanitizers-cmake")
@@ -3263,6 +3267,7 @@ ontinuous-time and discret-time expressions.")
                     mesa ; or libglvnd if we had mesa-glvnd, too
                     mimalloc
                     mpfr
+                    nettle
                     opencsg
                     python
                     python-numpy
