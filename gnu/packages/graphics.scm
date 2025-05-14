@@ -804,6 +804,18 @@ and export to various formats including the format used by Magicavoxel.")
               (sha256
                (base32
                 "097fxq0frb2nl6bp8wz7kjx6vq4i4117wwq9fnxzkiij9xwv3cq9"))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'enable-testing
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("IF \\( ASSIMP_BUILD_TESTS \\)" all)
+                      (string-append all "\n    enable_testing()")))
+                   (substitute* "test/CMakeLists.txt"
+                     ;; Leave the test binary where ctest will look for it.
+                     (("TARGET_USE_COMMON_OUTPUT_DIRECTORY\\(unit\\)")
+                      "")))))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
