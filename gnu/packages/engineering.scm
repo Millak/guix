@@ -2081,7 +2081,7 @@ bindings for Python, Java, OCaml and more.")
 (define-public python-platypush
   (package
     (name "python-platypush")
-    (version "1.3.5")
+    (version "1.3.6")
     (source
      (origin
        (method git-fetch)
@@ -2090,7 +2090,7 @@ bindings for Python, Java, OCaml and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1chd60r4misz2i368435yb6hhnm97v8kncjnchxj8mg3mglw9gy0"))))
+        (base32 "1957xkh7n5dhjb1kwhfpncfp6g1g6zgszwcrbj3l9h0gcrxlx8p0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
