@@ -1429,10 +1429,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
-       #:tests? #f ;no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
+       #:tests? #f)) ;no test suite
     (native-inputs (list asciidoc
                          gettext-minimal
                          git-minimal
