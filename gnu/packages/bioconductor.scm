@@ -9244,7 +9244,12 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
               (sha256
                (base32
                 "013m2fhczxmq1jk05fjyih2aphaqylpmvfby7z8wk91g51221q48"))))
-    (properties `((upstream-name . "dittoSeq")))
+    (properties
+     '((upstream-name . "dittoSeq")
+       (updater-extra-native-inputs
+        . ("r-complexheatmap"
+           "r-ggplot-multistats"
+           "r-ggrastr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace
@@ -9259,7 +9264,14 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
            r-singlecellexperiment
            r-summarizedexperiment))
     (native-inputs
-     (list r-deseq2 r-edger r-knitr r-seurat r-testthat))
+     (list r-complexheatmap
+           r-deseq2
+           r-edger
+           r-ggplot-multistats
+           r-ggrastr
+           r-knitr
+           r-seurat
+           r-testthat))
     (home-page "https://bioconductor.org/packages/dittoSeq")
     (synopsis "Single-cell and bulk RNA sequencing visualization")
     (description
