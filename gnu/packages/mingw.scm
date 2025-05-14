@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
@@ -132,10 +132,10 @@ several new APIs such as DirectX and DDK, and 64-bit support.")
 (define make-mingw-w64
   (memoize make-mingw-w64/implementation))
 
-(define-public mingw-w64-i686
+(define-public mingw-w64-i686-sans-winpthreads
   (make-mingw-w64 "i686"))
 
-(define-public mingw-w64-x86_64
+(define-public mingw-w64-x86_64-sans-winpthreads
   (make-mingw-w64 "x86_64"))
 
 (define-public mingw-w64-i686-winpthreads
@@ -146,6 +146,8 @@ several new APIs such as DirectX and DDK, and 64-bit support.")
   (make-mingw-w64 "x86_64"
                   #:with-winpthreads? #t))
 
+(define-public mingw-w64-i686 mingw-w64-i686-winpthreads)
+(define-public mingw-w64-x86_64 mingw-w64-x86_64-winpthreads)
 (define-public mingw-w64 mingw-w64-i686)
 
 (define-public mingw-w64-tools
