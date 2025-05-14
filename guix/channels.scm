@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -31,7 +31,7 @@
   #:autoload   (git structs) (git-error-code)
   #:autoload   (guix git) (update-cached-checkout
                            url+commit->name
-                           commit-difference
+                           commit-descendant?
                            repository-info
                            commit-short-id
                            tag->commit
@@ -48,7 +48,6 @@
   #:use-module (guix progress)
   #:use-module (guix derivations)
   #:use-module (guix diagnostics)
-  #:use-module (guix sets)
   #:use-module (guix store)
   #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
@@ -1237,15 +1236,16 @@ NEW.  When OLD is omitted or is #f, return all the news entries of CHANNEL."
                                                                      entry))
                                    (channel-news-entries news))))
                 (if old
-                    (let* ((new     (commit-lookup repository (string->oid new)))
-                           (old     (commit-lookup repository (string->oid old)))
-                           (commits (list->set
-                                     (map (compose oid->string commit-id)
-                                          (commit-difference new old)))))
-                      (filter (lambda (entry)
-                                (set-contains? commits
-                                               (channel-news-entry-commit entry)))
-                              entries))
+                    (let ((new (commit-lookup repository (string->oid new)))
+                          (old (commit-lookup repository (string->oid old))))
+                      (take-while (lambda (entry)
+                                    (let ((entry (commit-lookup
+                                                  repository
+                                                  (string->oid
+                                                   (channel-news-entry-commit entry)))))
+                                      (and (commit-descendant? new (list entry))
+                                           (not (commit-descendant? old (list entry))))))
+                                  entries))
                     entries)))
             '())))
     (lambda (key error . rest)
