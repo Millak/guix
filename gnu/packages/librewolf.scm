@@ -191,7 +191,7 @@
                           #$output)))))
       (patches
        (search-patches
-        "torbrowser-compare-paths.patch"
+        "librewolf-compare-paths.patch"
         "librewolf-use-system-wide-dir.patch"
         "librewolf-add-store-to-rdd-allowlist.patch")))))
 
@@ -207,17 +207,17 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20250416062358")
+(define %librewolf-build-id "20250502155055")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "137.0.2-1")
+    (version "138.0.3-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "01yd5cq6qgww6w2kq1bchy9j81blim15kdz7bvx8n512m2x3mz06"
-      #:librewolf-hash "0vy1xvjwgc4vd9q3laakx6lrsy4ghpdr98vm9lmx86amg9gak5ix"
+      #:firefox-hash "1r0kam26cz5rz39n6zcc2hrbav6dxlfrsa0qhhfjlnv33ns3lzx2"
+      #:librewolf-hash "1bf9sa5radjr7g6ng7kqy2ss13c0q6vkq9dfzj5y998ifxw19s4c"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -639,7 +639,7 @@
                   libxt
                   mesa
                   mit-krb5
-                  nspr
+                  nspr-4.36
                   nss-rapid
                   pango
                   pciutils
@@ -665,7 +665,7 @@
                          pkg-config
                          python
                          rust-librewolf
-                         rust-cbindgen-0.26
+                         rust-cbindgen-0.28
                          which
                          yasm))
     (native-search-paths
