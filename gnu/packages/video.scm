@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -1950,6 +1950,32 @@ audio/video codec library.")
                  "--disable-shared"
                  "--enable-static"))))
      (inputs '()))))
+
+(define-public ffmpeg-for-friction
+  (package
+    (inherit ffmpeg-4)
+    (version "4.2.10")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
+                                 version ".tar.xz"))
+             (sha256
+              (base32
+               "01jc8ygbazk37wbb7qj24zi9sbfrxrvzhyk527bbas19gxpdrk64"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments ffmpeg-4)
+       ((#:modules modules %default-gnu-modules)
+        `((srfi srfi-1) ,@modules))
+       ((#:configure-flags flags ''())
+        #~(fold delete #$flags
+                '("--enable-avresample"
+                  "--enable-libaom"
+                  "--enable-libdav1d"
+                  "--enable-librav1e"
+                  "--enable-libsrt"
+                  "--enable-libsvtav1")))))
+    (inputs (modify-inputs (package-inputs ffmpeg-4)
+              (delete "dav1d" "libaom" "rav1e" "srt")))))
 
 ;;; Custom ffmpeg package used by Jami, which incorporates custom patches.
 (define-public ffmpeg-jami
