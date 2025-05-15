@@ -71,17 +71,18 @@
     (inputs
      (list libxcrypt linux-pam ncurses perl))
     (arguments
-     `(#:configure-flags
-         ;; GNU_SOURCE must be defined for mallocmock_reset() to be defined
-         '("CFLAGS=-O2 -g -D_GNU_SOURCE=1"
+     (list
+       #:configure-flags
+       ;; GNU_SOURCE must be defined for mallocmock_reset() to be defined
+       #~(list "CFLAGS=-O2 -g -D_GNU_SOURCE=1"
 
-       ;; By default, screen supports 16 colors, but we want 256 when
-       ;; ~/.screenrc contains 'term xterm-256color'.
-           "--enable-colors256")
+               ;; By default, screen supports 16 colors, but we want 256 when
+               ;; ~/.screenrc contains 'term xterm-256color'.
+               "--enable-colors256")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "src"))))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'chdir
+             (lambda _ (chdir "src"))))))
     (home-page "https://www.gnu.org/software/screen/")
     (synopsis "Full-screen window manager providing multiple terminals")
     (description
