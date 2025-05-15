@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2016, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2019, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2018, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
@@ -2473,6 +2473,73 @@ It supports:
 @item subpixel text
 @end itemize")
   (license license:bsd-3))))
+
+(define-public skia-for-friction
+  (let ((version "112")
+        (revision "0")
+        (commit "c4284e9bdd1f794e1c72328924ad519fd0d736cf"))
+    (package
+      (inherit skia)
+      (name "skia")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/friction2d/skia")
+                      (commit commit)
+                      (recursive? #true)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15mbqz7kg23xgy46ijm8p5wnj4q8xipyr7ckwz8kpa5v3lxssyf3"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments skia)
+         ;; gn/find_headers.py fails to decode some JSON, probably because of
+         ;; a warning.
+         ((#:tests? _ #false) #false)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'configure
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "BUILD.gn"
+                    ;; Workaround a bug in the zlib third_party definition, that
+                    ;; fails the build even when zlib is found from the system.
+                    (("deps = \\[ \"//third_party/zlib\" ]")
+                     "deps = []")
+                    (("set_sources_assignment_filter\\(\\[\\]\\)") "")
+                    (("visibility = \\[ \":\\*\" \\]")
+                     "visibility = [ \"*\" ]"))
+                  (invoke "gn" "gen" "build"
+                          (string-append
+                           ;;
+                           "--args="
+                           "cc=\"gcc\" "              ;defaults to 'cc'
+                           "is_official_build=true "  ;to use system libraries
+                           "skia_use_system_zlib=true " ; use system zlib library
+                           "skia_use_system_expat=true "
+                           "skia_use_system_libjpeg_turbo=true "
+                           "skia_use_system_libpng=true "
+                           "skia_use_system_libwebp=true "
+                           "skia_use_system_icu=true "
+                           "skia_use_system_harfbuzz=true "
+                           "skia_use_system_freetype2=true "
+                           "skia_enable_pdf=false "
+                           "skia_enable_skottie=false "
+                           "skia_enable_tools=false "
+                           "skia_use_dng_sdk=false "
+
+                           ;; Specify where locate the harfbuzz and freetype
+                           ;; includes.
+                           (format #f "extra_cflags=[\"-I~a\",\"-I~a\"] "
+                                   (search-input-directory inputs
+                                                           "include/harfbuzz")
+                                   (search-input-directory inputs
+                                                           "include/freetype2"))
+                           ;; Otherwise the validate-runpath phase fails.
+                           "extra_ldflags=[\"-Wl,-rpath=" #$output "/lib\"] "
+                           ;; Wuffs is a google language that may improve performance
+                           ;; disabled while unpackaged
+                           "skia_use_wuffs=false ")))))))))))
 
 (define-public superfamiconv
   (package
