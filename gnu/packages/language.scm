@@ -12,6 +12,7 @@
 ;;; Copyright © 2024 Charles <charles@charje.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1206,3 +1207,36 @@ analysis with the morphological analyser MeCab, where the short units exported
 from the database are used as entries (heading terms).")
     ;; triple-licensed (at the user’s choice)
     (license (list license:gpl2+ license:lgpl2.1 license:bsd-3))))
+
+(define-public dparser
+  (package
+    (name "dparser")
+    (version "1.33a")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jplevyak/dparser/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vzfi7d573qsmfxkgnzqkalhv06i2zc8hm0pwcgrgj8382g01zg1"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list
+                           (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))
+           #:test-target "test"))
+    (synopsis "Scannerless GLR parser generator")
+    (description
+     "DParser is scannerless GLR parser generator.  The form of the text to be
+parsed can be specified using a combination of regular expressions and grammar
+productions.  Because of the parsing technique, a scannerless GLR parser based
+on the Tomita algorithm the grammar can be ambiguous, right or left recursive,
+have any number of null productions, and because there is no separate
+tokenizer, can include whitespace in terminals and have terminals which are
+prefixes of other terminals.")
+    (home-page "https://dparser.sourceforge.net/")
+    (license (list license:bsd-3))))
