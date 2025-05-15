@@ -22753,14 +22753,14 @@ misclassification probabilities of different models.")
 (define-public r-zip
   (package
     (name "r-zip")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zip" version))
        (sha256
         (base32
-         "14954fb5zikmr6vy306199nybj9fkw6vx2n8l72figfg5cmycxcn"))))
+         "0lls4hllimjnl9bhr31y9x3fj8vdszxbaj6p781kgfdpz0j0nifh"))))
     (build-system r-build-system)
     (native-inputs (list r-testthat r-withr))
     (home-page "https://github.com/gaborcsardi/zip")
