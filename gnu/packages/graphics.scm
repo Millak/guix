@@ -94,6 +94,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
@@ -394,6 +395,99 @@ such as status line help, and tooltips.  Tooltips may even be used for 3D
 objects!")
     (home-page "http://www.fox-toolkit.org")
     (license license:lgpl2.1+)))
+
+(define-public friction
+  (package
+    (name "friction")
+    (version "0.9.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/friction2d/friction")
+             (commit (string-append "v" version))
+             (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ndg9f4m3zmdn89llchfnc4dmhckms3cx8vm6pqr8fvd7w95ak37"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "src/engine/skia")
+           (delete-file-recursively "src/gperftools")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there is no test target
+      #:configure-flags
+      '(list "-DCMAKE_CXX_COMPILER=clang++"
+             "-DCMAKE_C_COMPILER=clang")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-libraries
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(src/engine\\)") "")
+                (("add_dependencies\\(frictioncore Engine\\)") "")
+                (("add_subdirectory\\(src/gperftools\\)") ""))
+              (substitute* "src/app/CMakeLists.txt"
+                (("\\$\\{GPERF_LIBRARIES\\}") "-ltcmalloc_and_profiler")
+                (("\\$\\{GPERF_INCLUDE_DIRS\\}")
+                 (string-append #$(this-package-input "gperftools") "/include")))
+              (substitute* "src/app/memorychecker.cpp"
+                (("../gperftools/include/") ""))
+              (substitute* '("src/app/CMakeLists.txt"
+                             "src/core/CMakeLists.txt"
+                             "src/ui/CMakeLists.txt")
+                (("\\$\\{CMAKE_CURRENT_BINARY_DIR\\}/../engine/skia")
+                 (string-append #$(this-package-input "skia") "/lib/"))
+                (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/../engine/skia")
+                 (string-append #$(this-package-input "skia") "/include/skia")))))
+          ;; Ensure that all required Qt plugins are found at runtime.
+          (add-after 'install 'wrap-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((qt '("qtbase" "qtdeclarative" "qtmultimedia")))
+                (wrap-program (string-append #$output "/bin/friction")
+                  `("QT_PLUGIN_PATH" ":" prefix
+                    ,(map (lambda (label)
+                            (string-append (assoc-ref inputs label)
+                                           "/lib/qt5/plugins/"))
+                          qt)))))))))
+    (inputs
+     (list expat
+           ffmpeg-for-friction ;version 4.2 is recommended; does not work with version 7+.
+           fontconfig
+           freetype
+           gperftools-for-friction
+           harfbuzz
+           icu4c
+           libjpeg-turbo
+           libpng
+           libunwind
+           libwebp
+           python
+           qscintilla
+           qtbase-5
+           qtdeclarative-5
+           qtmultimedia-5
+           skia-for-friction
+           zlib))
+    (native-inputs (list clang-15 llvm-15 pkg-config))
+    (home-page "https://friction.graphics")
+    (synopsis "Create vector and raster animations for web and video")
+    (description "Friction is a versatile motion graphics application that
+allows you to create vector and raster animations for web and video.
+
+Motion graphics has a wide variety of uses, including:
+
+@itemize
+@item Television and film: Title sequences, commercials, and visual effects
+@item Web design: Animated logos, banners, and interactive elements
+@item Social media: Animated posts and stories
+@item Presentations: Animated infographics and slideshows
+@end itemize
+")
+    (license license:gpl3+)))
 
 (define-public autotrace
   (package
