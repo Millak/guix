@@ -1545,6 +1545,24 @@ tools:
 @end itemize\n")
     (license license:bsd-3)))
 
+(define-public gperftools-for-friction
+  (let ((commit "b97c293c812c7ec3cdeccd50a89769e746c01377")
+        (revision "0")
+        (base-version "0.9.6"))
+    (package
+      (inherit gperftools)
+      (name "gperftools")
+      (version (git-version base-version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/friction2d/gperftools")
+               (commit (string-append "friction-" base-version))))
+         (sha256
+          (base32 "1ffkzlsdpcjjq8md21kr7a1q10bia77xriga6far2608rplmwsk8"))
+         (file-name (git-file-name name version)))))))
+
 (define-public cpp-httplib
   ;; this package is not graftable, as everything is implemented in a single
   ;; header
