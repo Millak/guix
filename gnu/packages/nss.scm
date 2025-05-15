@@ -95,6 +95,19 @@ platform-neutral API for system level and libc-like functions.  It is used
 in the Mozilla clients.")
     (license license:mpl2.0)))
 
+(define-public nspr-4.36
+  (package
+    (inherit nspr)
+    (version "4.36")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
+                    version "/src/nspr-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15b83ipjxrmw0909l5qqz13pbarhp50d6i58vgjx4720y4bw7pjm"))))))
+
 (define-public nspr-4.32
   (package
     (inherit nspr)
