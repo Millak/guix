@@ -2541,6 +2541,48 @@ encompassing software system for the operations and analysis of the ESA satellit
 Herschel.")
     (license license:gpl3+)))
 
+(define-public python-camb
+  (package
+    (name "python-camb")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "camb" version))
+       (sha256
+        (base32 "1aqafmc7qf11jwc3y418hsx27m48gd9mb98097kr3db0gylkvxxb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-m" "unittest" "camb.tests.camb_test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" test-flags)))))))
+    (native-inputs
+     (list gfortran
+           python-packaging
+           python-setuptools
+           python-wheel
+           which)) ; for fortran/Makefile
+    (propagated-inputs
+     (list python-numpy
+           python-packaging
+           python-scipy
+           python-sympy))
+    (home-page "https://camb.info/")
+    (synopsis "Code for Anisotropies in the Microwave Background")
+    (description
+     "CAMB is a cosmology code for calculating cosmological observables,
+including @acronym{CMB, Cosmic microwave background}, lensing, source count
+and 21cm angular power spectra, matter power spectra, transfer functions and
+background evolution.  The code is in Python, with numerical code implemented
+in fast modern Fortran.")
+    (license license:gpl3+)))
+
 (define-public python-casa-formats-io
   (package
     (name "python-casa-formats-io")
