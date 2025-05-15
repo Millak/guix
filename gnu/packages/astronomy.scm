@@ -4080,6 +4080,40 @@ individual exposures and high-level data products (mosaics, extracted spectra,
 etc.).")
     (license license:bsd-3)))
 
+(define-public python-jwst-backgrounds
+  (package
+    (name "python-jwst-backgrounds")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jwst_backgrounds" version))
+       (sha256
+        (base32 "14m1a6z884vg2n5ndwwhpnzpb5h28hh58a53dfjwwbjakwmixb0p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI tarball, tests requir networking
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-healpy
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/spacetelescope/jwst_backgrounds")
+    (synopsis "Retrieve and plot JWST background information")
+    (description
+     "This package provides a a simple program to predict the levels of
+background emission in JWST observations, for use in proposal planning.
+
+It accesses a precompiled background cache prepared by Space Telescope Science
+Institute.  The background cache is hosted by the Mikulski Archive for Space
+Telescopes (MAST), so you need internet access to run the tool with the remote
+cache.  It is possible to download the full background cache to your local
+machine.")
+    (license license:bsd-3)))
+
 (define-public python-libstempo
   (package
     (name "python-libstempo")
