@@ -347,7 +347,7 @@ security standards.")
   (package
    (inherit nss)
    (name "nss-rapid")
-   (version "3.109")
+   (version "3.110")
    (source (origin
              (inherit (package-source nss))
              (uri (let ((version-with-underscores
@@ -358,11 +358,19 @@ security standards.")
                      "nss-" version ".tar.gz")))
              (sha256
               (base32
-               "12y156frnhaqvwkla1c07gqr2lnp4yb3619g4088kk8qc4jnr95y"))))
+               "09xfndqj07wy28l7jnk01gqa4bh55nz6cldlp5qpg8120k211mlw"))))
    (arguments
     (substitute-keyword-arguments (package-arguments nss)
       ((#:phases phases)
        #~(modify-phases #$phases
+           (add-after 'unpack 'neutralize-network-test
+             ;; Test tries to resolve `wrong.host.badssl.com' which fails due
+             ;; to no networking in the build environment.
+             ;; Behavior changed as of 3.110.
+             (lambda _
+               (substitute* "nss/tests/ssl/ssl.sh"
+                 ((" ssl_policy_pkix_ocsp" all)
+                  (string-append "#" all)))))
            (replace 'check
              (lambda* (#:key tests? #:allow-other-keys)
                (if tests?
@@ -390,8 +398,12 @@ security standards.")
                      ;; leading to test failures:
                      ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                      ;; work around that, set the time to roughly the release date.
-                     (invoke "faketime" "2025-03-01" "./nss/tests/all.sh"))
+                     (invoke #$(if (target-64bit?) "faketime" "datefudge")
+                            "2025-03-28" "./nss/tests/all.sh"))
                    (format #t "test suite not run~%"))))))))
+   (propagated-inputs
+        (modify-inputs (package-propagated-inputs nss)
+          (replace "nspr" nspr-4.36)))
    (synopsis "Network Security Services (Rapid Release)")
    (description
     "Network Security Services (@dfn{NSS}) is a set of libraries designed to
