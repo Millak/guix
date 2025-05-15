@@ -36162,18 +36162,38 @@ compiled by the HGNC Comparison of Orthology Predictions (HCOP).")
 (define-public r-msigdbr
   (package
     (name "r-msigdbr")
-    (version "10.0.2")
+    (version "24.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "msigdbr" version))
        (sha256
         (base32
-         "00pf6s688zskrwciddd520ns8zqkvkgbyn7gib2lr5ns6pszwvcj"))))
+         "0rii1fmwg09in67s2f6cw482093n320703si6ksjjlda5d8p0i1a"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These tests attempt to download a data file.
+             (substitute* "tests/testthat/test-msigdbr-collections.R"
+               ((".*msigdbr_collections\\(\\).*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test-msigdbr.R"
+               ((".*collections and subcollections.*" m)
+                (string-append m "skip('skip');\n"))
+               ((".*msigdbr\\(\\) subcollection partial match.*" m)
+                (string-append m "skip('skip');\n"))
+               ((".*deprecated parameters.*" m)
+                (string-append m "skip('skip');\n"))
+               ((".*species.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-assertthat
            r-babelgene
+           r-curl
            r-dplyr
            r-lifecycle
            r-rlang
