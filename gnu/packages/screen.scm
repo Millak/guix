@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -47,17 +47,27 @@
 (define-public screen
   (package
     (name "screen")
-    (version "5.0.0")
+    (version "5.0.1")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/screen/screen-"
-                                 version ".tar.gz"))
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://git.savannah.gnu.org/git/screen.git")
+                   (commit (string-append "v." version))))
+             (file-name (git-file-name name version))
              (patches (search-patches "screen-hurd-path-max.patch"))
              (sha256
-              (base32 "0wa9v6p7cna2scpimpvk9pgxaah80f4q0f2kln37qp0f1b83jjph"))))
+              (base32 "1km6qbczlvzwcaagb8fy65k5z6ywn2whw57wdkfxg9dh9kg39hg7"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       ;; Fixes https://savannah.gnu.org/bugs/?67126.
+                       ;; Can be removed with 5.0.2?
+                       (with-fluids ((%default-port-encoding #f))
+                         (substitute* "src/doc/screen.texinfo"
+                           (("alexander_naumov@opensuse.org")
+                            "alexander_naumov@@opensuse.org")))))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake texinfo))
+     (list autoconf-2.71 automake texinfo))
     (inputs
      (list libxcrypt linux-pam ncurses perl))
     (arguments
@@ -67,7 +77,11 @@
 
        ;; By default, screen supports 16 colors, but we want 256 when
        ;; ~/.screenrc contains 'term xterm-256color'.
-           "--enable-colors256")))
+           "--enable-colors256")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "src"))))))
     (home-page "https://www.gnu.org/software/screen/")
     (synopsis "Full-screen window manager providing multiple terminals")
     (description
