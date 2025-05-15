@@ -294,44 +294,37 @@ language.")
                 (snippet
                  '(begin
                     (delete-file-recursively "libsndfile_1.0.19")
-                    (delete-file-recursively "libsndfile_1.0.25")
-                    #t))))
+                    (delete-file-recursively "libsndfile_1.0.25")))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((libsndfile (assoc-ref inputs "libsndfile")))
-                 ;; Do not use bundled libsndfile sources
-                 (substitute* "Papagayo.pro"
-                   (("else \\{")
-                    (string-append "\nINCLUDEPATH += " libsndfile
-                                   "/include"
-                                   "\nLIBS +=" libsndfile
-                                   "/lib/libsndfile.so\n"
-                                   "win32 {"))))
-               (invoke "qmake"
-                       (string-append "DESTDIR="
-                                      (assoc-ref outputs "out")
-                                      "/bin"))))
-           ;; Ensure that all required Qt plugins are found at runtime.
-           (add-after 'install 'wrap-executable
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (qt '("qt" "qtmultimedia-5")))
-                 (wrap-program (string-append out "/bin/Papagayo")
-                   `("QT_PLUGIN_PATH" ":" prefix
-                     ,(map (lambda (label)
-                             (string-append (assoc-ref inputs label)
-                                            "/lib/qt5/plugins/"))
-                           qt)))
-                 #t))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((libsndfile (assoc-ref inputs "libsndfile")))
+                  ;; Do not use bundled libsndfile sources
+                  (substitute* "Papagayo.pro"
+                    (("else \\{")
+                     (string-append "\nINCLUDEPATH += " libsndfile
+                                    "/include"
+                                    "\nLIBS +=" libsndfile
+                                    "/lib/libsndfile.so\n"
+                                    "win32 {"))))
+                (invoke "qmake"
+                        (string-append "DESTDIR=" #$output "/bin"))))
+            ;; Ensure that all required Qt plugins are found at runtime.
+            (add-after 'install 'wrap-executable
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((qt '("qtbase" "qtmultimedia")))
+                  (wrap-program (string-append #$output "/bin/Papagayo")
+                    `("QT_PLUGIN_PATH" ":" prefix
+                      ,(map (lambda (label)
+                              (string-append (assoc-ref inputs label)
+                                             "/lib/qt5/plugins/"))
+                            qt)))))))))
       (inputs
-       `(("bash" ,bash-minimal)
-         ("qt" ,qtbase-5)
-         ("qtmultimedia-5" ,qtmultimedia-5)
-         ("libsndfile" ,libsndfile)))
+       (list bash-minimal qtbase-5 qtmultimedia-5 libsndfile))
       (native-inputs
        (list qttools-5))
       (home-page "https://www.lostmarble.com/papagayo/")
