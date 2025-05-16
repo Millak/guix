@@ -42811,6 +42811,36 @@ and text properties.  The package styles headlines, keywords, tables and
 source blocks.")
     (license license:gpl3+)))
 
+(define-public emacs-org-modern-indent
+  (package
+    (name "emacs-org-modern-indent")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jdtsmith/org-modern-indent")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09bg1shw06ddlxq678abr9q6g9wfc6b483xi0iwldxk4qbgzgpdj"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #false))            ;no tests
+    (propagated-inputs
+     ;; XXX: Bundled Org mode (as of Emacs 29.4) is too old; Org Modern
+     ;; Indent mode cannot work properly with it.
+     (list emacs-compat emacs-org))
+    (home-page "https://github.com/jdtsmith/org-modern-indent")
+    (synopsis "Modern block styling with Org Indent mode")
+    (description
+     "Org Modern mode cannot style various Org blocks properly when used in
+conjunction with Org Indent mode.  This small package approximately reproduces
+the block styling of Org Modern mode when using Org Indent mode.  It can be
+used with or without Org Modern mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-org-margin
   (let* ((commit "4013b59ff829903a7ab86b95593be71aa5c9b87d")
          (revision "0"))
