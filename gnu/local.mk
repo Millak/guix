@@ -1488,6 +1488,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-hurd-mach-print.patch		\
   %D%/packages/patches/glibc-hurd-pthread_setcancelstate.patch	\
   %D%/packages/patches/glibc-hurd-signal-sa-siginfo.patch	\
+  %D%/packages/patches/glibc-hurd-2.41-pthread-once.patch	\
+  %D%/packages/patches/glibc-hurd-2.41-pthread-sigmask.patch	\
+  %D%/packages/patches/glibc-hurd-2.41-symlink.patch		\
   %D%/packages/patches/glibc-hurd64-gcc-14.2-tls-bug.patch	\
   %D%/packages/patches/glibc-hurd64-intr-msg-clobber.patch	\
   %D%/packages/patches/glibc-ldd-powerpc.patch			\
