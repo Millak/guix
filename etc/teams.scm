@@ -416,6 +416,7 @@ and the maven-build-system."
   (team 'kernel
         #:name "Linux-libre kernel team"
         #:scope (list "gnu/build/linux-modules.scm"
+                      (make-regexp* "^gnu/packages/aux-files/linux-libre.*$")
                       "gnu/packages/linux.scm"
                       "gnu/tests/linux-modules.scm"
                       "guix/build/linux-module-build-system.scm"
