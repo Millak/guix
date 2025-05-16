@@ -879,6 +879,7 @@ the freedesktop.org XDG Base Directory specification.")
   (package
     (name "elogind")
     (version "255.17")
+    (replacement elogind/fixed)
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1064,6 +1065,20 @@ extracted out as a separate project.  Elogind integrates with PAM to provide
 the org.freedesktop.login1 interface over the system bus, allowing other parts
 of a the system to know what users are logged in, and where.")
     (license license:lgpl2.1+)))
+
+(define-public elogind/fixed
+  (hidden-package
+   (package
+     (inherit elogind)
+     (arguments
+      (substitute-keyword-arguments (package-arguments elogind)
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (replace 'fix-pkttyagent-path
+               (lambda _
+                 (substitute* "meson.build"
+                   (("bindir / 'pkttyagent'")
+                    "'/run/current-system/profile/bin/pkttyagent'")))))))))))
 
 (define-public basu
   (package
