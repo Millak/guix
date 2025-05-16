@@ -473,7 +473,7 @@ TCP sessions from existing clients.")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://lab.louiz.org/poezio/poezio.git")
+         (url "https://codeberg.org/poezio/poezio")
          (commit
           (string-append "v" version))))
        (file-name
