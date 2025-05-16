@@ -224,6 +224,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages tex)

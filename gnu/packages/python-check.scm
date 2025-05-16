@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2016, 2018, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2015, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
@@ -28,6 +28,7 @@
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
+;;; Copyright © 2024 Vincent Prat <vprat@deeplinks.com>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Florent Pruvost <florent.pruvost@inria.fr>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
@@ -1606,6 +1607,27 @@ is configurable: you can choose how you want the test output and test result
 diagnostics to end up in your TAP output (as TAP diagnostics, YAML blocks, or
 attachments).
 @end itemize")
+    (license license:expat)))
+
+(define-public python-pyflakes
+  (package
+    (name "python-pyflakes")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyflakes" version))
+       (sha256
+        (base32 "0gxgz0kg008pgmjk1dn8z3g00dfa9pc3f80pm6r1yqjly4zn0q8w"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/PyCQA/pyflakes")
+    (synopsis "Passive checker of Python programs")
+    (description
+     "Pyflakes statically checks Python source code for common errors.")
     (license license:expat)))
 
 (define-public python-pyinstrument

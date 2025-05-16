@@ -16240,27 +16240,6 @@ file (e.g. @file{PKG-INFO}).")
 use of the Meson build system.")
     (license license:expat)))
 
-(define-public python-pyflakes
-  (package
-    (name "python-pyflakes")
-    (version "3.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyflakes" version))
-       (sha256
-        (base32 "0gxgz0kg008pgmjk1dn8z3g00dfa9pc3f80pm6r1yqjly4zn0q8w"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/PyCQA/pyflakes")
-    (synopsis "Passive checker of Python programs")
-    (description
-     "Pyflakes statically checks Python source code for common errors.")
-    (license license:expat)))
-
 (define-public python-mccabe
   (package
     (name "python-mccabe")
