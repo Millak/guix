@@ -58,7 +58,6 @@
   #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages django)
-  #:use-module (gnu packages docker)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
