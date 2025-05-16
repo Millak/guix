@@ -2632,13 +2632,13 @@ is independent of and does not use @code{casacore}.")
 (define-public python-casacore
   (package
     (name "python-casacore")
-    (version "3.6.1")
+    (version "3.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python_casacore" version))
        (sha256
-        (base32 "10dva4b3mz0n885d1n91dyzmwj1gwn6mcwd2qrm678kfdccarhfx"))))
+        (base32 "1hvmlzimkz1v65zmhwg6c6vi437jjymbdd2fjjfsph3kp860ckkc"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list boost
