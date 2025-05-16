@@ -9846,12 +9846,11 @@ civilized than your own.")
                    license:public-domain))))
 
 (define-public speed-dreams-data
-  ;; Use the commit corresponding to the 'speed-dreams-data' submodule
-  ;; (https://forge.a-lec.org/speed-dreams/speed-dreams-data).
+  ;; Use the same tag version as speed-dreams package.
   (hidden-package
    (package
      (name "speed-dreams-data")
-     (version "2.4.0")
+     (version "2.4.1")
      (source
       (origin
         (method git-fetch)
@@ -9862,7 +9861,7 @@ civilized than your own.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0ki620pq5gcn10l5328qsh6jdjsgrvyb4fhvgi0s9fvflzzg6905"))))
+          "1w7j2znqy4ixsild1v0qz7hw3m42gqg1jnq7nnb48d6fc64hv3bn"))))
      (build-system cmake-build-system)
      (arguments (list #:tests? #f))   ;no test suite
      (home-page "https://www.speed-dreams.net/en")
@@ -9871,10 +9870,42 @@ civilized than your own.")
 Speed Dreams racing game.")
      (license license:gpl2+))))
 
+(define-public speed-dreams-freesolid
+  ;; Use the commit corresponding to the 'freesolid' submodule
+  ;; (https://forge.a-lec.org/speed-dreams/speed-dreams-code).
+  (hidden-package
+    (package
+      (name "speed-dreams-freesolid")
+      (version "2.1.2")
+      (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url (string-append "https://forge.a-lec.org/speed-dreams/freesolid"))
+                     (commit "2c0071923be6afb487ed4e3b84da501f0a2e7e2d")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "025ml2nzhkfki28ckjjggqpkr1gd02c2blpr4afc5175r8bfh2w4"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no test suite
+        #:build-type "Release"
+        #:configure-flags
+          #~(list "-DBUILD_SHARED_LIBS=ON"))) ;speed-dreams build system needs a shared library
+
+      (home-page "https://forge.a-lec.org/speed-dreams/freesolid")
+      (synopsis "Speed-Dreams 3D collision detection C++ library")
+      (description "Speed Dreams FreeSOLID is a fork of FreeSOLID, a library for
+collision detection of three-dimensional objects undergoing rigid motion and
+deformation. It is designed to be used in interactive 3D graphics
+applications.")
+      (license license:lgpl2.0+))))
+
 (define-public speed-dreams
   (package
     (name "speed-dreams")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -9885,14 +9916,15 @@ Speed Dreams racing game.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "150mwjdv9pmc3cjchfbkprnlbsnw2gv57350lir5vbh77xrgpn8c"))))
+         "17acjfgffw39w05rha2r89q4cb97z1qg1z5rpy8ipn0v6dipw0i7"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no test suite
+      #:tests? #f                          ;no test suite
       #:build-type "Release"
       #:configure-flags
-      #~(list "-DOPTION_3RDPARTY_EXPAT=ON" ;use system expat library
+      #~(list "-DOPTION_TRACKEDITOR=OFF"   ;not detecting jdk properly
+              "-DOPTION_3RDPARTY_EXPAT=ON" ;use system expat library
               "-DSD_BINDIR:PATH=bin"       ;install to /bin instead of /games
               (string-append "-DVERSION_LONG=" #$version))))
     (native-inputs (list pkg-config speed-dreams-data))
@@ -9902,7 +9934,7 @@ Speed Dreams racing game.")
            enet
            expat
            freeglut
-           freesolid
+           speed-dreams-freesolid
            freetype
            glm
            libjpeg-turbo
