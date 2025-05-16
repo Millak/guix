@@ -1662,6 +1662,9 @@ command.")
        (patches
         (append (origin-patches (package-source glibc))
                 (search-patches "glibc-hurd-pthread_setcancelstate.patch"
+                                "glibc-hurd-2.41-pthread-once.patch"
+                                "glibc-hurd-2.41-pthread-sigmask.patch"
+                                "glibc-hurd-2.41-symlink.patch"
                                 "glibc-hurd64-intr-msg-clobber.patch"
                                 "glibc-hurd64-gcc-14.2-tls-bug.patch")))))))
 
