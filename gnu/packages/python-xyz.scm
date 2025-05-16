@@ -2793,33 +2793,35 @@ of it like a generator that is \"reusable\" and has a length.")
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
-    (version "1.8.3")
+    (version "1.8.6") ; XXX: The latest version which does not requrie Rust
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://codeberg.org/poezio/slixmpp")
-         (commit
-          (string-append "slix-" version))))
-       (file-name
-        (git-file-name name version))
+       (uri (git-reference
+             (url "https://codeberg.org/poezio/slixmpp")
+             (commit (string-append "slix-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0cvr037qhf0fpby5dci6ckqngaly1mnjs2zpndwgmvr3dyvrd8l8"))))
-    (build-system python-build-system)
+        (base32 "0gpy6arwyk4lsx1hbcwbllxs6qbwn58adkp1rm1cfvfrjdv5kxx7"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "setup.py"
-               (("'CC', 'cc'")
-                "'CC', 'gcc'"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("'CC', 'cc'")
+                 "'CC', 'gcc'")))))))
     (native-inputs
-     `(("cython" ,python-cython)
-       ("gnupg" ,gnupg)
-       ("pkg-config" ,pkg-config)))
+     (list gnupg
+           pkg-config
+           python-cython
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list libidn
+           python)) ; We are building a Python extension.
     (propagated-inputs
      (list python-aiodns
            python-aiohttp
@@ -2828,14 +2830,13 @@ of it like a generator that is \"reusable\" and has a length.")
            python-emoji
            python-pyasn1
            python-pyasn1-modules))
-    (inputs
-     (list libidn python)) ; We are building a Python extension.
-    (synopsis "XMPP library without threads")
-    (description "Slixmpp is a XMPP library for Python 3.7+.  It is a fork of
-SleekXMPP.  Its goal is to only rewrite the core of the library (the low level
-socket handling, the timers, the events dispatching) in order to remove all
-threads.")
     (home-page "https://lab.louiz.org/poezio/slixmpp")
+    (synopsis "XMPP library without threads")
+    (description
+     "Slixmpp is a XMPP library for Python 3.7+.  It is a fork of SleekXMPP.
+Its goal is to only rewrite the core of the library (the low level socket
+handling, the timers, the events dispatching) in order to remove all
+threads.")
     (license license:expat)))
 
 (define-public python-tenacity
