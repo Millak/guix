@@ -2008,41 +2008,48 @@ astronomical images, especially when there is no WCS information available.")
 (define-public python-astrocut
   (package
     (name "python-astrocut")
-    (version "0.12.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astrocut" version))
        (sha256
-        (base32 "19smfpb3qbw9s065wx8n0xwg5x8pgj99641hr3lj71dnrfxfwa40"))))
+        (base32 "14m713y90zj3v5hhlmq79cslqlr8dz8y3zyk454qda01fkcj6za7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "-k" (string-join
                     ;; Tests requiring network access.
-                    (list "not test_cube_cut_from_footprint[SPOC]"
-                          "test_cube_cut_from_footprint[TICA]"
-                          "test_cube_cut_from_footprint_all_sequences"
-                          "test_cube_cut_from_footprint_invalid_sequence"
-                          "test_cube_cut_from_footprint_multi_sequence"
-                          "test_cube_cut_from_footprint_outside_coords"
+                    (list "not index.rst"
+                          "test_cube_cut_from_footprint"
                           "test_fits_cut[SPOC]"
                           "test_fits_cut[TICA]"
-                          "test_get_cutout_limits"
-                          "test_get_cutout_wcs"
+                          "test_fits_cutout_cloud"
                           "test_multithreading"
-                          "test_s3_cube_cut")
+                          "test_s3_cube_cut"
+                          "test_tess_cube_cutout_s3"
+                          "test_tess_cube_cutout_threads"
+                          "test_tess_footprint_cutout[SPOC]"
+                          "test_tess_footprint_cutout[TICA]"
+                          "test_tess_footprint_cutout_all_sequences"
+                          "test_tess_footprint_cutout_invalid_sequence"
+                          "test_tess_footprint_cutout_multi_sequence"
+                          "test_tess_footprint_cutout_outside_coords"
+                          "test_tess_footprint_cutout_write_as_tpf"
+                          ;; Some NumPy compatability errors during tests.
+                          "test_get_cutout_limits"
+                          "test_get_cutout_wcs")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
           ;; TODO: Report upstream: ModuleNotFoundError: No module named
           ;; 'packagename'.
-         (add-after 'unpack 'fix-setup.cfg
-           (lambda _
-             (substitute* "setup.cfg"
-               (("console_scripts =") "")
-               (("astropy-package-template-example.*") "")))))))
+          (add-after 'unpack 'fix-setup.cfg
+            (lambda _
+              (substitute* "setup.cfg"
+                (("console_scripts =") "")
+                (("astropy-package-template-example.*") "")))))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
@@ -2056,6 +2063,7 @@ astronomical images, especially when there is no WCS information available.")
            python-astropy
            python-cachetools
            python-fsspec
+           python-gwcs
            python-pillow
            python-requests-next
            python-roman-datamodels
