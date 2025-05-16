@@ -1939,7 +1939,10 @@ exec " gcc "/bin/" program
        (ensure-keyword-arguments (package-arguments pkg)
                                  ;; XXX: This fails even though the
                                  ;; actual runpaths seem fine.
-                                 `(#:validate-runpath? #f))))))
+                                 `(#:validate-runpath? #f
+                                 ;; XXX: The build gets stuck
+                                 ;; when parallel build is enabled.
+                                   #:parallel-build? #f))))))
 
 ;; We don't strictly need Tar here, but it allows us to get rid of
 ;; Bootar and Gash-Utils and continue with the standard GNU tools.
