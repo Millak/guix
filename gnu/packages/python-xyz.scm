@@ -2799,7 +2799,7 @@ of it like a generator that is \"reusable\" and has a length.")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://lab.louiz.org/poezio/slixmpp.git")
+         (url "https://codeberg.org/poezio/slixmpp")
          (commit
           (string-append "slix-" version))))
        (file-name
