@@ -3352,6 +3352,30 @@ Org Babel support (@code{scad} source blocks)
     (home-page "https://openscad.org/")
     (license license:gpl3+)))
 
+(define-public emacs-scad-dbus
+  (package
+    (name "emacs-scad-dbus")
+    (version "0.1")
+    (properties '((release-tag-prefix . "^v")
+                  (release-tag-version-delimiter . ".")))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lenbok/scad-dbus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09p1icdiwq6r5clnqljg058vn84acyf33jwqpfjkkm0l5pbvcgn0"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-scad-mode emacs-hydra emacs-compat))
+    (synopsis "Control OpenSCAD from Emacs using D-Bus")
+    (description
+     "scad-dbus allows controlling @code{OpenSCAD} from within @code{Emacs} via
+D-Bus without having to switch programs or reach for the mouse.")
+    (home-page "https://github.com/lenbok/scad-dbus")
+    (license license:gpl3+)))
+
 (define-public ondsel-solver
   (let ((commit "2e3659c4bce3e6885269e0cb3d640261b2a91108")
         (revision "1"))
