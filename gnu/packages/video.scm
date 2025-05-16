@@ -3103,7 +3103,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2025.03.31")
+    (version "2025.04.30")
     (source
      (origin
        (method git-fetch)
@@ -3115,7 +3115,7 @@ YouTube.com and many more sites.")
        (snippet '(substitute* "pyproject.toml"
                    (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
-        (base32 "0chiykjsns3xld1y0h1sflixk1ln4xn18463mqpd4qzkavakvk3j"))))
+        (base32 "0qn1x2i0qpizsbh63nx0f09p62ilcbksnhiyc5qik4xykg6idhxy"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? ,(not (%current-target-system))
