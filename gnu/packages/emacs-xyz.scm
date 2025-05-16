@@ -32048,11 +32048,11 @@ inserts it as an Org entry instead of displaying it in a new buffer.")
     (license license:gpl3+)))
 
 (define-public emacs-org-rss-publishing
-  (let ((commit "1b33dc252cfedfbb2107ea407266b168b71bebb1")
+  (let ((commit "7f7d1e0c2c777015b81362a3292a3c851b939913")
         (revision "0"))
     (package
       (name "emacs-org-rss-publishing")
-      (version (git-version "0.6" revision commit))
+      (version (git-version "0.8" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -32061,7 +32061,7 @@ inserts it as an Org entry instead of displaying it in a new buffer.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0axz3r8jw15imhfmbriljsiaxiiqhgrq77nad3kmmgpmvhhlk65f"))))
+          (base32 "067rk9wdz2cnrmzn1058knhz6p28an8ybbgkfgmr4z872f63r2yy"))))
       (build-system emacs-build-system)
       (arguments `(#:tests? #false)) ;no tests
       (home-page "https://git.sr.ht/~taingram/org-publish-rss")
