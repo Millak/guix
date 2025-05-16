@@ -3,7 +3,7 @@
 ;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2020, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
@@ -41,6 +41,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020, 2022, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -120,6 +121,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libidn)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
@@ -2761,6 +2763,55 @@ stack.  It does not provide a parsing layer, a network layer, or any rules
 about concurrency.  Instead, it's a purely in-memory solution, defined in
 terms of data actions and HTTP/2 frames.  This is one building block of a full
 Python HTTP implementation.")
+    (license license:expat)))
+
+(define-public python-slixmpp
+  (package
+    (name "python-slixmpp")
+    (version "1.8.6") ; XXX: The latest version which does not requrie Rust
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/poezio/slixmpp")
+             (commit (string-append "slix-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gpy6arwyk4lsx1hbcwbllxs6qbwn58adkp1rm1cfvfrjdv5kxx7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("'CC', 'cc'")
+                 "'CC', 'gcc'")))))))
+    (native-inputs
+     (list gnupg
+           pkg-config
+           python-cython
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list libidn
+           python)) ; We are building a Python extension.
+    (propagated-inputs
+     (list python-aiodns
+           python-aiohttp
+           python-cryptography
+           python-defusedxml
+           python-emoji
+           python-pyasn1
+           python-pyasn1-modules))
+    (home-page "https://lab.louiz.org/poezio/slixmpp")
+    (synopsis "XMPP library without threads")
+    (description
+     "Slixmpp is a XMPP library for Python 3.7+.  It is a fork of SleekXMPP.
+Its goal is to only rewrite the core of the library (the low level socket
+handling, the timers, the events dispatching) in order to remove all
+threads.")
     (license license:expat)))
 
 (define-public python-sockjs-tornado
