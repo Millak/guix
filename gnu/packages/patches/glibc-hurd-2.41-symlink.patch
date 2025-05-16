@@ -1,0 +1,32 @@
+Taken from:
+https://sourceware.org/git/?p=glibc.git;a=patch;h=39183b953c68a489cc0b9aefb8974711c834fb38
+
+From 39183b953c68a489cc0b9aefb8974711c834fb38 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Mon, 21 Apr 2025 22:21:17 +0200
+Subject: [PATCH] hurd: Make symlink return EEXIST on existing target directory
+
+8ef17919509e ("hurd: Fix EINVAL error on linking to a slash-trailing path
+[BZ #32569]) made symlink return ENOTDIR, but the gnulib testsuite does
+not recognize it for such a situation, and EEXIST is indeed more
+comprehensible to users.
+---
+ sysdeps/mach/hurd/symlinkat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sysdeps/mach/hurd/symlinkat.c b/sysdeps/mach/hurd/symlinkat.c
+index e7dfb673df..cb6250e6f0 100644
+--- a/sysdeps/mach/hurd/symlinkat.c
++++ b/sysdeps/mach/hurd/symlinkat.c
+@@ -47,7 +47,7 @@ __symlinkat (const char *from, int fd, const char *to)
+ 
+   if (! *name)
+     /* Can't link to the existing directory itself.  */
+-    err = ENOTDIR;
++    err = EEXIST;
+   else
+     /* Create a new, unlinked node in the target directory.  */
+     err = __dir_mkfile (dir, O_WRITE, 0777 & ~_hurd_umask, &node);
+-- 
+2.49.0
+
