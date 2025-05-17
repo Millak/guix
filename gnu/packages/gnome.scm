@@ -12051,7 +12051,7 @@ generic enough to work for everyone.")
 (define-public evolution
   (package
     (name "evolution")
-    (version "3.54.3")
+    (version "3.56.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/evolution/"
@@ -12059,7 +12059,7 @@ generic enough to work for everyone.")
                                   "evolution-" version ".tar.xz"))
               (sha256
                (base32
-                "1ssmp13finaa9ncxh5507nqz6q3jsr3anbrvylbsy9f3ylgghv3l"))))
+                "05mxfjpdm8v30qszz3mf05x0cmqr5idn5sd8dp2rn8wx22cybpyz"))))
     (build-system cmake-build-system)
     (arguments
      (list
