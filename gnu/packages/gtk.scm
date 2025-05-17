@@ -472,32 +472,6 @@ handling for GTK+-2.x.")
                        (("test-layout\\$\\(EXEEXT\\)") ""))
                      #t)))))))
 
-(define-public pango-1.90
-  (package
-    (inherit pango)
-    (name "pango")
-    (version "1.90.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/pango/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (patches (search-patches "pango-skip-libthai-test.patch"))
-              (sha256
-               (base32
-                "1zqif72jxa819bwi4jv2vgac574qas3w37f7qvn8l31rm1jgjf7i"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (substitute* "pango/pangocairo-font.c"
-                     (("cairo_user_font_face_set_render_color_glyph_func")
-                      "cairo_user_font_face_set_render_glyph_func"))
-                   ;; Disable a failing test
-                   (substitute* "tests/testmisc.c"
-                     (("\
-g_test_add_func \\(\"/layout/gravity-metrics2\", test_gravity_metrics2\\);")
-                      ""))))))))
-
 (define-public pangox-compat
   (package
     (name "pangox-compat")
