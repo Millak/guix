@@ -35377,27 +35377,39 @@ navigation controls.")
     (license (list license:gpl3+))))
 
 (define-public emacs-exwm-ss
-  (let ((commit "b11d3df7a50c39b4e1b92ef8a6685cf80b53912c")
-        (revision "1"))
-    (package
-      (name "emacs-exwm-ss")
-      (version (git-version "0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/emacs-weirdware/exwm-ss.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "045b0cjycf7nf52ap89w5dz16l1qyh940qxwvdi76v6al78amrap"))))
-      (build-system emacs-build-system)
-      (inputs (list emacs-exwm))
-      (home-page "https://codeberg.org/emacs-weirdware/exwm-ss")
-      (synopsis "Automatically inhibit screensaver activation in EXWM")
-      (description "This package provides a global minor mode to inhibit
+  (package
+    (name "emacs-exwm-ss")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/emacs-weirdware/exwm-ss.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0a550gph4pwdwd372migahhwcpgj1qi5w2scxai38a7yp22vqwsv"))))
+    (inputs
+     (list
+      emacs-exwm
+      xscreensaver
+      xset))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-program-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "exwm-ss.el"
+                ("exwm-ss-xset-program"
+                 (search-input-file inputs "/bin/xset"))
+                ("exwm-ss-xscreensaver-command-program"
+                 (search-input-file inputs "/bin/xscreensaver-command"))))))))
+    (home-page "https://codeberg.org/emacs-weirdware/exwm-ss")
+    (synopsis "Automatically inhibit screensaver activation in EXWM")
+    (description "This package provides a global minor mode to inhibit
 screensaver activation in EXWM.")
-      (license (list license:gpl3+)))))
+    (license (list license:gpl3+))))
 
 (define-public emacs-ert-async
   (package
