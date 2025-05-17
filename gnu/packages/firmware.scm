@@ -317,7 +317,17 @@ used in the process of installing and updating firmware.")
               (substitute* (find-files (string-append #$output "/etc")
                                        "\\.conf$")
                 (("Enabled=true")
-                 "Enabled=false")))))))
+                 "Enabled=false"))))
+          (add-after 'glib-or-gtk-wrap 'install-fwupd.efi
+            ;; fwupd looks for its .efi file within its own prefix, so link
+            ;; the directory containing the arch-specific executable here.
+            ;; If we install a symlink to the efi directory before
+            ;; 'glib-or-gtk-wrap, then the wrapping procedure mistakes the
+            ;; directory symlink for an executable and tries to wrap it.
+            (lambda _
+              (symlink (string-append #$(this-package-input "fwupd-efi")
+                                      "/libexec/fwupd/efi")
+                       (string-append #$output "/libexec/fwupd/efi")))))))
     (native-inputs (list gobject-introspection
                          python-pygobject
                          python-pillow
@@ -345,6 +355,7 @@ used in the process of installing and updating firmware.")
                    efivar
                    pango
                    protobuf-c
+                   fwupd-efi
                    mingw-w64-tools
                    gnu-efi)
              (if (supported-package? libsmbios
