@@ -65,7 +65,7 @@
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
-;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2023, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -1790,6 +1790,17 @@ and server WebSockets connections---a protocol layered above HTTP that allows
 for efficient socket-like bidirectional reliable communication channels.")
     (home-page "https://libwebsockets.org")
     (license license:expat)))
+
+(define-public libwebsockets-for-mosquitto
+  (hidden-package
+   (package
+     (inherit libwebsockets)
+     (arguments
+      (list
+       ;; Mosquitto requires some tweaks for libwebsockets, see:
+       ;; https://github.com/NixOS/nixpkgs/blob/1750f3c1c89488e2ffdd47cab9d05454dddfb734/pkgs/by-name/mo/mosquitto/package.nix#L20
+       #:configure-flags '(list "-DLWS_WITH_EXTERNAL_POLL=ON"
+                                "-DLWS_WITH_HTTP2=OFF"))))))
 
 (define-public wabt
   (package
