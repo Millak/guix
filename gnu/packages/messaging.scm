@@ -45,6 +45,7 @@
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2964,7 +2965,11 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
        (sha256
         (base32 "17c9gf2xncxsi3v8fbgq3abfyb84lyr18in0s1pbplmqmr6fimbs"))))
     (build-system cmake-build-system)
-    (inputs (list openssl libxslt))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DWITH_WEBSOCKETS=ON")))
+    (inputs (list openssl libxslt libwebsockets-for-mosquitto))
     (synopsis "Message broker")
     (description
      "This package provides Eclipse Mosquitto, a message broker
