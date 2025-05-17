@@ -4457,23 +4457,22 @@ easy-to-understand binary values.")
         (base32 "1zsgn7w6l2zh2q0j6qaw8wsx981qcr536qlz1lgb3b5zqr66qama"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)            ;there is no configure.ac file
-         (delete 'configure)            ;there is no configure script
-         (delete 'check)                ;there are no tests
-         (replace 'build
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "tunctl")))
-         ;; TODO: Requires docbook-to-man (unrelated to docbook2x and
-         ;; docbook-utils) to generate man page from SGML.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "tunctl" bin))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)            ;there is no configure.ac file
+          (delete 'configure)            ;there is no configure script
+          (delete 'check)                ;there are no tests
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "make" "tunctl")))
+          ;; TODO: Requires docbook-to-man (unrelated to docbook2x and
+          ;; docbook-utils) to generate man page from SGML.
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin")))
+                (install-file "tunctl" bin)))))))
     (home-page "https://tunctl.sourceforge.net")
     (synopsis  "Utility to set up and maintain TUN/TAP network interfaces")
     (description "Tunctl is used to set up and maintain persistent TUN/TAP
