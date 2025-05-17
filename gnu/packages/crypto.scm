@@ -27,7 +27,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1653,6 +1653,10 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
                     (invoke "patch" "--force" "-p1" "-i" patch)))))))
        ((target-ppc32?)
         (list #:tests? #f))     ; TODO: Investigate test failures.
+       ((target-mingw?)
+        (list #:configure-flags
+              #~(list "CFLAGS=-g -O2 -Wno-error=pedantic"
+                      "ac_cv_ld_no_undefined=-no-undefined")))
        (else '())))
     (synopsis
      "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
