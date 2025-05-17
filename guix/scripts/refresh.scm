@@ -231,8 +231,11 @@ SPEC lacks a version, use FALLBACK-VERSION."
   (match (string-rindex spec #\=)
     (#f  (update-spec (specification->package spec) fallback-version
                       (not (not fallback-version))))
-    (idx (update-spec (specification->package (substring spec 0 idx))
-                      (substring spec (1+ idx))))))
+    (idx (let ((version (substring spec (1+ idx)))
+               (package (specification->package (substring spec 0 idx))))
+           (if (string-prefix? "~" version)
+               (update-spec package (string-drop version 1) #t) ;partial
+               (update-spec package version))))))
 
 (define (options->update-specs opts)
   "Return the list of <update-spec> records requested by OPTS, honoring

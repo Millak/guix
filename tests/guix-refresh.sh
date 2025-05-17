@@ -126,9 +126,26 @@ case "$(guix refresh -t test guile --target-version=2.0.0 2>&1)" in
     *) false;;
 esac
 
+guix refresh -t test guile=~2.0.0 # XXX: should return non-zero?
+case "$(guix refresh -t test guile=~2.0.0 2>&1)" in
+    *"failed to find"*"2.0.0"*) true;;
+    *) false;;
+esac
+
 # Partial target version => select the newest release prefixed by it.
-guix refresh -t test guile --target-version=3 # XXX: should return non-zero?
 case "$(guix refresh -t test guile --target-version=3 2>&1)" in
+    *"would be upgraded"*"3.13.3"*) true;;
+    *) false;;
+esac
+
+# Partial spec version => select the newest release prefixed by it.
+case "$(guix refresh -t test guile=~3 2>&1)" in
+    *"would be upgraded"*"3.13.3"*) true;;
+    *) false;;
+esac
+
+# Conflicting --target-version and spec: spec wins
+case "$(guix refresh -t test guile=~3 2>&1)" in
     *"would be upgraded"*"3.13.3"*) true;;
     *) false;;
 esac

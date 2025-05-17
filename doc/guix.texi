@@ -15148,6 +15148,17 @@ gnu/packages/qt.scm:1472:13: qtdeclarative would be upgraded from 5.15.8 to 5.15
 gnu/packages/qt.scm:452:13: qtbase would be upgraded from 5.15.8 to 5.15.10
 @end example
 
+@cindex partial version specification, guix refresh
+A per-package equivalent to --target-version is made available by
+prefixing the version specification with the @samp{~} (tilde) character.
+For example:
+
+@example
+$ guix refresh bash=~5 guile=~3
+gnu/packages/guile.scm:354:13: guile would be upgraded from 3.0.9 to 3.0.10
+gnu/packages/bash.scm:150:15: bash would be upgraded from 5.1.16 to 5.2.37
+@end example
+
 Sometimes the upstream name differs from the package name used in Guix,
 and @command{guix refresh} needs a little help.  Most updaters honor the
 @code{upstream-name} property in package definitions, which can be used
