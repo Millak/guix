@@ -3744,5 +3744,12 @@ Fortran development to be installed in user profiles.  This includes
 gfortran, as well as libc (headers and binaries, plus debugging symbols
 in the @code{debug} output), and binutils.")))
 
+(define-public gm2-toolchain
+  (package (inherit (make-gcc-toolchain gm2))
+    (synopsis "Complete GCC tool chain for Modula-2 development")
+    (description "This package provides a complete GCC tool chain for
+Modula-2 development to be installed in user profiles.  This includes
+modula2, as well as libc (headers and binaries, plus debugging symbols
+in the @code{debug} output), and binutils.")))
 
 ;;; commencement.scm ends here

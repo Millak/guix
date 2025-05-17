@@ -48,6 +48,7 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages perl)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -1246,6 +1247,17 @@ as the 'native-search-paths' field."
   (hidden-package
    (custom-gcc gcc "gdc" '("d")
                %generic-search-paths)))
+
+(define-public gm2
+  (hidden-package
+   (let ((base (custom-gcc gcc-14
+               "gm2" '("m2")
+               %generic-search-paths)))
+     (package
+       (inherit base)
+       (native-inputs
+        (modify-inputs (package-native-inputs base)
+          (prepend flex)))))))
 
 (define-public (make-libgccjit gcc)
   (package
