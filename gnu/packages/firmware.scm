@@ -211,6 +211,37 @@ assembler, disassembler, and debugging tools for the Linux kernel b43 wireless
 driver.")
       (license license:gpl2))))
 
+(define-public fwupd-efi
+  (package
+    (name "fwupd-efi")
+    (version "1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fwupd/fwupd-efi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n4v6pyg8fmrasdplkb03vjklqhp2k0zn9l8hmjfgibbf6g6mi9x"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags
+       ,#~(list (string-append
+                 "-Defi-libdir=" #$(this-package-input "gnu-efi") "/lib")
+                (string-append
+                 "-Defi-includedir=" #$(this-package-input "gnu-efi") "/include/efi")
+                (string-append
+                 "-Dpython=" #+(this-package-native-input "python") "/bin/python3")
+                "-Dgenpeimg=enabled")))
+    (native-inputs (list pkg-config python mingw-w64-tools))
+    (inputs (list gnu-efi))
+    (home-page "https://fwupd.org/")
+    (synopsis "EFI Application used by uefi-capsule plugin in fwupd")
+    (description "This package provides an EFI executable for fwupd, which is
+used in the process of installing and updating firmware.")
+    (license license:lgpl2.1+)))
+
 (define-public fwupd
   (package
     (name "fwupd")
