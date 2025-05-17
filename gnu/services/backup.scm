@@ -28,6 +28,7 @@
                 #:prefix license:)
   #:use-module (guix modules)
   #:use-module (guix packages)
+  #:use-module (guix records)
   #:use-module (srfi srfi-1)
   #:export (restic-backup-job
             restic-backup-job?
@@ -47,16 +48,21 @@
             restic-backup-job-verbose?
             restic-backup-job-extra-flags
 
+            lower-restic-backup-job
+
             restic-backup-configuration
             restic-backup-configuration?
-            restic-backup-configuration-fields
             restic-backup-configuration-jobs
 
             restic-backup-job-program
-            restic-backup-job->mcron-job
+            restic-backup-job->shepherd-service
             restic-guix
             restic-guix-wrapper-package
             restic-backup-service-profile
+            restic-program
+            restic-job-log-file
+            restic-backup-job-command
+            restic-backup-job-modules
             restic-backup-service-type))
 
 (define (gexp-or-string? value)
@@ -75,6 +81,8 @@
 
 (define-maybe/no-serialization string)
 (define-maybe/no-serialization number)
+(define-maybe/no-serialization symbol)
+(define-maybe/no-serialization list-of-symbols)
 
 (define-configuration/no-serialization restic-backup-job
   (restic
@@ -90,7 +98,8 @@
    (maybe-string)
    "The file system path to the log file for this job.  By default the file will
 have be @file{/var/log/restic-backup/@var{job-name}.log}, where @var{job-name} is the
-name defined in the @code{name} field.")
+name defined in the @code{name} field.  For Guix Home services it defaults to
+@file{$XDG_STATE_HOME/shepherd/restic-backup/@var{job-name}.log}.")
   (max-duration
    (maybe-number)
    "The maximum duration in seconds that a job may last.  Past
@@ -117,8 +126,10 @@ current job.")
 evaluate to @code{calendar-event} records or to strings.  Strings must contain
 Vixie cron date lines.")
   (requirement
-   (list-of-symbols '())
-   "The list of Shepherd services that this backup job depends upon.")
+   (maybe-list-of-symbols)
+   "The list of Shepherd services that this backup job depends upon.  When unset it
+defaults to @code{'()}, for Guix Home.  Otherwise to
+@code{'(user-processes file-systems)}.")
   (files
    (list-of-lowerables '())
    "The list of files or directories to be backed up.  It must be a list of
@@ -131,15 +142,20 @@ values that can be lowered to strings.")
    "A list of values that are lowered to strings.  These will be passed as
 command-line arguments to the current job @command{restic backup} invocation."))
 
-(define list-of-restic-backup-jobs?
-  (list-of restic-backup-job?))
+;; (for-home (restic-backup-configuration ...)) is not able to replace for-home? with #t,
+;; pk prints #f. Once for-home will be able to work with (gnu services configuration) the
+;; record can be migrated back to define-configuration.
+(define-record-type* <restic-backup-configuration>
+  restic-backup-configuration
+  make-restic-backup-configuration
+  restic-backup-configuration?
+  this-restic-backup-configuration
 
-(define-configuration/no-serialization restic-backup-configuration
-  (jobs
-   (list-of-restic-backup-jobs '())
-   "The list of backup jobs for the current system."))
+  (jobs  restic-backup-configuration-jobs  (default '()))     ; list of restic-backup-job
+  (home-service? restic-backup-configuration-home-service?
+                 (default for-home?) (innate)))
 
-(define (restic-backup-job-program config)
+(define (lower-restic-backup-job config)
   (let ((restic
          (file-append (restic-backup-job-restic config) "/bin/restic"))
         (repository
@@ -150,22 +166,42 @@ command-line arguments to the current job @command{restic backup} invocation."))
          (restic-backup-job-files config))
         (extra-flags
          (restic-backup-job-extra-flags config))
-        (verbose
+        (verbose?
          (if (restic-backup-job-verbose? config)
              '("--verbose")
              '())))
-    (program-file
-     "restic-backup-job.scm"
-     #~(begin
-         (use-modules (ice-9 popen)
-                      (ice-9 rdelim))
-         (setenv "RESTIC_PASSWORD"
-                 (with-input-from-file #$password-file read-line))
+    #~(list (list #$@files) #$restic #$repository #$password-file
+            (list #$@verbose?) (list #$@extra-flags))))
 
-         (execlp #$restic #$restic #$@verbose
-                 "-r" #$repository
-                 #$@extra-flags
-                 "backup" #$@files)))))
+(define restic-program
+  #~(lambda (action action-args job-restic repository password-file verbose? extra-flags)
+      (use-modules (ice-9 format))
+      ;; This can be extended later, i.e. to have a
+      ;; centrally defined restic package.
+      ;; See https://issues.guix.gnu.org/71639
+      (define restic job-restic)
+
+      (define command
+        `(,restic ,@verbose?
+          "-r" ,repository
+          ,@extra-flags
+          ,action ,@action-args))
+
+      (setenv "RESTIC_PASSWORD_FILE" password-file)
+
+      (when (> (length verbose?) 0)
+        (format #t "Running~{ ~a~}~%" command))
+
+      (apply execlp `(,restic ,@command))))
+
+(define (restic-backup-job-program config)
+  (program-file
+   "restic-backup"
+   #~(let ((restic-exec
+            #$restic-program)
+           (job #$(lower-restic-backup-job config)))
+
+       (apply restic-exec `("backup" ,@job)))))
 
 (define (restic-guix jobs)
   (program-file
@@ -207,55 +243,89 @@ command-line arguments to the current job @command{restic backup} invocation."))
 
        (main (command-line)))))
 
-(define (restic-job-log-file job)
+(define* (restic-job-log-file job #:key (home-service? #f))
   (let ((name (restic-backup-job-name job))
         (log-file (restic-backup-job-log-file job)))
     (if (maybe-value-set? log-file)
         log-file
-        (string-append "/var/log/restic-backup/" name ".log"))))
+        (if home-service?
+            #~(begin
+                (use-modules (shepherd support))
+                (string-append %user-log-dir "/restic-backup/" #$name ".log"))
+            (string-append "/var/log/restic-backup/" name ".log")))))
 
-(define (restic-backup-job->shepherd-service config)
+(define* (restic-backup-job-command name files #:key (home-service? #f))
+  (if home-service?
+      #~(list
+         "restic-guix" "backup" #$name)
+      ;; We go through bash, instead of executing
+      ;; restic-guix directly, because the login shell
+      ;; gives us the correct user environment that some
+      ;; backends require, such as rclone.
+      #~(list
+          (string-append #$bash-minimal "/bin/bash")
+          "-l" "-c"
+          (string-append "restic-guix backup " #$name))))
+
+(define* (restic-job-requirement config #:key (home-service? #f))
+  (define maybe-requirement (restic-backup-job-requirement config))
+  (if (maybe-value-set? maybe-requirement)
+      maybe-requirement
+      (if home-service?
+          '()
+          '(user-processes file-systems))))
+
+(define* (restic-backup-job-modules #:key (home-service? #f))
+ `((shepherd service timer)
+   ,@(if home-service?
+         ;;for %user-log-dir
+         '((shepherd support))
+         '())))
+
+(define* (restic-backup-job->shepherd-service config #:key (home-service? #f))
   (let ((schedule (restic-backup-job-schedule config))
         (name (restic-backup-job-name config))
+        (files (restic-backup-job-files config))
         (user (restic-backup-job-user config))
         (group (restic-backup-job-group config))
         (max-duration (restic-backup-job-max-duration config))
         (wait-for-termination? (restic-backup-job-wait-for-termination? config))
-        (log-file (restic-job-log-file config))
-        (requirement (restic-backup-job-requirement config)))
+        (log-file (restic-job-log-file
+                   config #:home-service? home-service?))
+        (requirement
+         (restic-job-requirement config #:home-service? home-service?)))
     (shepherd-service (provision `(,(string->symbol name)))
-                      (requirement
-                       `(user-processes file-systems ,@requirement))
+                      (requirement requirement)
                       (documentation
-                       "Run @code{restic} backed backups on a regular basis.")
-                      (modules '((shepherd service timer)))
+                       "Run restic backed backups on a regular basis.")
+                      (modules (restic-backup-job-modules
+                                #:home-service? home-service?))
                       (start
                        #~(make-timer-constructor
                           (if (string? #$schedule)
                               (cron-string->calendar-event #$schedule)
                               #$schedule)
                           (command
-                           (list
-                            ;; We go through bash, instead of executing
-                            ;; restic-guix directly, because the login shell
-                            ;; gives us the correct user environment that some
-                            ;; backends require, such as rclone.
-                            (string-append #+bash-minimal "/bin/bash")
-                            "-l" "-c"
-                            (string-append "restic-guix backup " #$name))
-                           #:user #$user
-                           #:group #$group
-                           #:environment-variables
-                           (list
-                            (string-append
-                             "HOME=" (passwd:dir (getpwnam #$user)))))
+                           #$(restic-backup-job-command
+                              name files #:home-service? home-service?)
+                           #$@(if home-service? '() (list #:user user))
+                           #$@(if home-service? '() (list #:group group))
+                           #$@(if home-service? '()
+                                  (list
+                                   #:environment-variables
+                                   #~(list
+                                      (string-append
+                                       "HOME=" (passwd:dir (getpwnam #$user)))))))
                           #:log-file #$log-file
                           #:wait-for-termination? #$wait-for-termination?
                           #:max-duration #$(and (maybe-value-set? max-duration)
                                                 max-duration)))
                       (stop
                        #~(make-timer-destructor))
-                      (actions (list shepherd-trigger-action)))))
+                      (actions (list (shepherd-action
+                                      (inherit shepherd-trigger-action)
+                                      (documentation "Manually trigger a backup,
+without waiting for the scheduled time.")))))))
 
 (define (restic-guix-wrapper-package jobs)
   (package
@@ -283,26 +353,19 @@ without waiting for the scheduled job to run.")
          (restic-guix-wrapper-package jobs))
         '())))
 
-(define (restic-backup-activation config)
-  #~(for-each
-     (lambda (log-file)
-       (mkdir-p (dirname log-file)))
-     (list #$@(map restic-job-log-file
-                   (restic-backup-configuration-jobs config)))))
-
 (define restic-backup-service-type
   (service-type (name 'restic-backup)
                 (extensions
                  (list
-                  (service-extension activation-service-type
-                                     restic-backup-activation)
                   (service-extension profile-service-type
                                      restic-backup-service-profile)
                   (service-extension shepherd-root-service-type
-                                     (lambda (config)
-                                       (map restic-backup-job->shepherd-service
-                                            (restic-backup-configuration-jobs
-                                             config))))))
+                                     (match-record-lambda <restic-backup-configuration>
+                                         (jobs home-service?)
+                                       (map (lambda (job)
+                                              (restic-backup-job->shepherd-service
+                                               job #:home-service? home-service?))
+                                            jobs)))))
                 (compose concatenate)
                 (extend
                  (lambda (config jobs)

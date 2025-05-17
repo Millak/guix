@@ -466,6 +466,7 @@ Home Services
 * GPG: GNU Privacy Guard.       Setting up GPG and related tools.
 * Desktop: Desktop Home Services.  Services for graphical environments.
 * Guix: Guix Home Services.     Services for Guix.
+* Backup: Backup Home Services.   Services for backing up User's files.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
 * Mail: Mail Home Services.     Services for managing mail.
@@ -44895,7 +44896,8 @@ The group used for running the current job.
 @item @code{log-file} (type: maybe-string)
 The file system path to the log file for this job.  By default the file will
 have be @file{/var/log/restic-backup/@var{job-name}.log}, where @var{job-name} is the
-name defined in the @code{name} field.
+name defined in the @code{name} field.  For Guix Home services it defaults to
+@file{$XDG_STATE_HOME/shepherd/restic-backup/@var{job-name}.log}.
 
 @item @code{max-duration} (type: maybe-number)
 The maximum duration in seconds that a job may last.  Past
@@ -44922,8 +44924,10 @@ A string or a gexp representing the frequency of the backup.  Gexp must
 evaluate to @code{calendar-event} records or to strings.  Strings must contain
 Vixie cron date lines.
 
-@item @code{requirement} (default: @code{'()}) (type: list-of-symbols)
-The list of Shepherd services that this backup job depends upon.
+@item @code{requirement} (type: maybe-list-of-symbols)
+The list of Shepherd services that this backup job depends upon.  When unset it
+defaults to @code{'()}, for Guix Home.  Otherwise to
+@code{'(user-processes file-systems)}.
 
 @item @code{files} (default: @code{'()}) (type: list-of-lowerables)
 The list of files or directories to be backed up.  It must be a list of
@@ -48824,6 +48828,7 @@ services)}.
 * GPG: GNU Privacy Guard.       Setting up GPG and related tools.
 * Desktop: Desktop Home Services.  Services for graphical environments.
 * Guix: Guix Home Services.     Services for Guix.
+* Backup: Backup Home Services.   Services for backing up User's files.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
 * Mail: Mail Home Services.     Services for managing mail.
@@ -50413,6 +50418,77 @@ A typical extension for adding a channel might look like this:
                   (url "https://example.org/variant-packages.git"))))
 @end lisp
 @end defvar
+
+@node Backup Home Services
+@subsection Backup Services
+
+The @code{(gnu home services backup)} module offers services for backing up
+file system trees.  For now, it provides the @code{home-restic-backup-service-type}.
+
+With @code{home-restic-backup-service-type}, you can periodically back up
+directories and files with @uref{https://restic.net/, Restic}, which
+supports end-to-end encryption and deduplication.  Consider the
+following configuration:
+
+@lisp
+(use-modules (gnu home services backup) ;for 'restic-backup-job', 'home-restic-backup-service-type'
+             (gnu packages sync)        ;for 'rclone'
+             @dots{})
+
+(home-environment
+
+  (packages (list rclone    ;for use by restic
+                  @dots{}))
+  (services
+    (list
+      @dots{}
+      (simple-service 'backup-jobs
+                      home-restic-backup-service-type
+                      (list (restic-backup-job
+                              (name "remote-ftp")
+                              (repository "rclone:remote-ftp:backup/restic")
+                              (password-file "/home/alice/.restic")
+                              ;; Every day at 23.
+                              (schedule "0 23 * * *")
+                              (files '("/home/alice/.restic"
+                                       "/home/alice/.config/rclone"
+                                       "/home/alice/Pictures"))))))))
+@end lisp
+
+In general it is preferrable to extend the @code{home-restic-backup-service-type},
+as shown in the example above.  This is because it takes care of wrapping everything
+with @code{for-home}, which enables the @code{home-restic-backup-service-type} and
+@code{restic-backup-service-type} to share the same codebase.
+
+For a custom configuration, wrap your @code{restic-backup-configuration} in
+@code{for-home}, as in this example:
+
+@lisp
+(use-modules (gnu services)             ;for 'for-home'
+             (gnu services backup)      ;for 'restic-backup-job' and 'restic-backup-configuration'
+             (gnu home services backup) ;for 'home-restic-backup-service-type'
+             (gnu packages sync)        ;for 'rclone'
+             @dots{})
+
+(home-environment
+
+  (packages (list rclone    ;for use by restic
+                  @dots{}))
+  (services
+    (list
+      @dots{}
+      (service home-restic-backup-service-type
+               (for-home
+                (restic-backup-configuration
+                 (jobs (list @dots{}))))))))
+@end lisp
+
+You can refer to @pxref{Miscellaneous Services,
+@code{restic-backup-service-type}} for details about
+@code{restic-backup-configuration} and @code{restic-backup-job}.
+The only difference is that the @code{home-restic-backup-service-type}
+will ignore the @code{user} and @code{group} field of
+@code{restic-backup-job}.
 
 @node Fonts Home Services
 @subsection Fonts Home Services
