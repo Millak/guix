@@ -801,7 +801,9 @@ list available from %GNU-FILE-LIST-URI over HTTP(S)."
                              (find (cut version-prefix? version <>)
                                    (force versions)))
                         version
-                        (first (force versions))))
+                        (match (force versions)
+                          ((? null?) #f)
+                          (lst (first lst)))))
            ;; Find tarballs matching this version.
            (tarballs (filter (lambda (file)
                                (string=? version (tarball->version file)))
