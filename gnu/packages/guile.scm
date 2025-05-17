@@ -391,6 +391,12 @@ without requiring the source code to be rewritten.")
                  #$@(if (target-x86-32?)
                         #~("CFLAGS=-g -O2 -fexcess-precision=standard")
                         #~())
+                 #$@(if (target-mingw?)
+                        #~(#$(string-append
+                              "CFLAGS=-g -O2"
+                              " -Wno-error=implicit-function-declaration"
+                              " -Wno-error=incompatible-pointer-types"))
+                        #~())
                  "--enable-mini-gmp"
                  '("--disable-static")))
        ((#:phases phases)
