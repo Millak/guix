@@ -38,6 +38,34 @@
 (channel-news
  (version 0)
 
+ (entry (commit "271a8fc2499135c3f0198bf69c9f2a60f1961bf1")
+        (title
+         (en "@samp{guix refresh} can now target partial versions"))
+        (body
+         (en "While it had been possible for some time to use the
+@option{--target-version} to update to a partially defined version, this can
+now be more conveniently expressed via the package version specification
+directly, by prefixing it with the tilde (@samp{~}) character:
+
+@example
+$ guix refresh bash=~5.2
+gnu/packages/bash.scm:150:15: bash would be upgraded from 5.1.16 to 5.2.37
+@end example
+
+For more information, see (info \"(guix) Invoking guix refresh\").")
+         (de "Es war schon einige Zeit möglich, unter Angabe von
+@option{--target-version} auf eine unvollständig definierte Version zu
+aktualisieren; das lässt sich jetzt angenehmer ausdrücken, direkt in der
+Paketversionsangabe, wenn Sie ihr das Tildezeichen (@samp{~}) voranstellen:
+
+@example
+$ guix refresh bash=~5.2
+gnu/packages/bash.scm:150:15: bash würde von 5.1.16 auf 5.2.37 aktualisiert
+@end example
+
+Für mehr Informationen siehe (info \"(guix.de)Aufruf von guix
+refresh\").")))
+
  (entry (commit "6e8ffdf3c5afac265e540027c2332573b25461ae")
         (title
          (en "Linux-libre 6.13 removed from Guix")
