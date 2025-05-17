@@ -37,6 +37,39 @@
 
 (channel-news
  (version 0)
+ (entry (commit "78d4b1e52c731502b29288ab6975bd9efa91392a")
+        (title
+         (en "New services for /etc/profile.d and /etc/bashrc.d")
+         (de "Neue Dienste für /etc/profile.d und /etc/bashrc.d"))
+        (body
+         (en "Two new services, @code{etc-profile-d-service-type} and
+@code{etc-bashrc-d-service-type}, can now be used to configure and extend your
+shell.  The services accept a list of file-like objects that must have the
+@file{.sh} file name extension.  @code{etc-bashrc-d-service-type} is now used
+instead of skeleton files to provision the Guix-provided Bash
+aliases (@file{/etc/bashrc.d/aliases.sh}).  It is also used to configure the
+@code{bash-completion} package, by provisioning
+@file{/etc/bashrc.d/bash_completion.sh}.  If your @code{operating-system}
+configuration does not include the @code{%base-services} or
+@code{%desktop-services}, you may want to add
+@code{(service etc-bashrc-d-service-type)} to your services, so Bash
+completion will continue working for new users.  See @samp{info \"(guix) Service
+Reference\"} for extra information and examples.")
+         (de "Zwei neue Dienste, @code{etc-profile-d-service-type} und
+@code{etc-bashrc-d-service-type}, können jetzt benutzt werden, um Ihre Shell zu
+konfigurieren und zu erweitern.  Die Dienste nehmen eine Liste dateiartiger
+Objekte entgegen, deren Dateinamen auf die Dateinamenserweiterung @file{.sh}
+enden müssen.  @code{etc-bashrc-d-service-type} wird jetzt anstelle von
+Skeleton-Dateien benutzt, um von Guix ausgelieferte Bash-Aliasse bereitzustellen
+(@file{/etc/bashrc.d/aliases.sh}). Mit ihm wird auch das
+@code{bash-completion}-Paket eingerichtet, indem
+@file{/etc/bashrc.d/bash_completion.sh} bereitgestellt wird.  Wenn Ihre
+Betriebssystemkonfiguration @code{%base-services} oder @code{%desktop-services}
+nicht beinhaltet, möchten Sie vielleicht
+@code{(service etc-bashrc-d-service-type)} in Ihre Dienstliste aufnehmen, damit
+Bash-Komplettierung weiterhin für neue Benutzer Befehle vervollständigt.  Siehe
+@samp{info \"(guix.de) Service-Referenz\"} für weitere Informationen und
+Beispiele.")))
 
  (entry (commit "3b6e499d5e635e2189f1bf60279dbf5175c404bd")
         (title
