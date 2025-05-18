@@ -2236,6 +2236,15 @@ process, passing on the arguments as command line arguments.")
        (sha256
         (base32 "0gbrn80xcwhfav962hjv6lhx444b81jknzj22zb8d5piqfpg8rvc"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; tests rely on an older version of emacs-magit.
+           #:test-command
+           (let ((emacs-magit (this-package-input "emacs-magit")))
+             #~(list "make" "test"
+                     (string-append "MAGIT_DIR="
+                                    #$emacs-magit
+                                    "/share/emacs/site-lisp/magit-"
+                                    #$(package-version emacs-magit))))))
     (propagated-inputs (list emacs-magit))
     (home-page "https://github.com/magit/magit-annex/")
     (synopsis "Git-annex support for Magit")
