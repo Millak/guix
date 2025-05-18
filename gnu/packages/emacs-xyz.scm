@@ -10980,12 +10980,8 @@ build jobs.")
                 (("zmq-mesage-more-p") "zmq-message-more-p"))
               (invoke "make")))
           (add-after 'install 'install-shared-object
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (site-lisp (string-append out "/share/emacs/site-lisp"))
-                     (libdir (string-append site-lisp "/zmq-" #$version)))
-                (copy-file "emacs-zmq.so"
-                           (string-append libdir "/emacs-zmq.so"))))))))
+            (lambda _
+              (install-file "emacs-zmq.so" (elpa-directory #$output)))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
