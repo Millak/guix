@@ -52987,6 +52987,38 @@ and would-block I/O operations.")
 find a device path by its ID.")
     (license license:expat)))
 
+(define-public rust-pasetors-0.7
+  (package
+    (name "rust-pasetors")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pasetors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lb52kwpjhgzcxv0ikb9fcp84dw9jabpk8dy6pwqlwc03ik8qyfb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-ct-codecs" ,rust-ct-codecs-1)
+                       ("rust-ed25519-compact" ,rust-ed25519-compact-2)
+                       ("rust-getrandom" ,rust-getrandom-0.3)
+                       ("rust-orion" ,rust-orion-0.17)
+                       ("rust-p384" ,rust-p384-0.13)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/brycx/pasetors")
+    (synopsis "PASETO: Platform-Agnostic Security Tokens (in Rust)")
+    (description "PASETO: Platform-Agnostic Security Tokens (in Rust)")
+    (license license:expat)))
+
 (define-public rust-pasetors-0.6
   (package
     (name "rust-pasetors")
