@@ -16267,15 +16267,15 @@ makes unique buffer names.  Only if you want to programmatically generate
 unique file names you need this package here.")
     (license license:gpl3+)))
 
-(define-public emacs-undohist-el
+(define-public emacs-undohist
   (package
-    (name "emacs-undohist-el")
+    (name "emacs-undohist")
     (version "0.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/m2ym/undohist-el")
+             (url "https://github.com/emacsorphanage/undohist")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -16283,11 +16283,14 @@ unique file names you need this package here.")
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f))  ; No tests.
-    (home-page "https://github.com/m2ym/undohist-el")
+    (home-page "https://github.com/emacsorphanage/undohist")
     (synopsis "Save undo history between sessions")
     (description "This package allows persistent use of undo history for
 individual file buffers.")
     (license license:gpl3+)))
+
+(define-deprecated/public emacs-undohist-el emacs-undohist
+  (deprecated-package "emacs-undohist-el" emacs-undohist))
 
 (define-public emacs-eprime
   (let ((commit "17a481af26496be91c07139a9bfc05cfe722506f"))
