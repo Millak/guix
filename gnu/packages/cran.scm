@@ -50850,16 +50850,17 @@ resampled, benchmarked, and tuned.")
 (define-public r-mlr3tuningspaces
   (package
     (name "r-mlr3tuningspaces")
-    (version "0.5.2")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3tuningspaces" version))
        (sha256
-        (base32 "001bggs50h8rdsz0x7kcnd18b70bqvhn3lv34bbpgbcb24lqaidc"))))
+        (base32 "1hf1g6jqymcx4y5622s57by7p2k9dwq3xyc7s35hhxssgfqpcpv3"))))
     (properties `((upstream-name . "mlr3tuningspaces")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
+                             r-cli
                              r-data-table
                              r-mlr3
                              r-mlr3misc
