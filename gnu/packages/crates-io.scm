@@ -50537,6 +50537,31 @@ the system.")
        (("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-windows-sys" ,rust-windows-sys-0.36))))))
 
+(define-public rust-opener-0.6
+  (package
+    (name "rust-opener")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "opener" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1217aqxl8srr7v0bcc174yf5apaxjmzg0j62x8kb772g2yvdqqkc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-dbus" ,rust-dbus-0.9)
+                       ("rust-normpath" ,rust-normpath-1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/Seeker14491/opener")
+    (synopsis "Open a file or link using the system default program")
+    (description "This crate provides the ability to open a file or link with
+the default program configured on the system.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-opener-0.7
   (package
     (name "rust-opener")
