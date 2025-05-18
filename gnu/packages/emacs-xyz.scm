@@ -13853,11 +13853,9 @@ board and goal value can be customized.")
       #~(modify-phases %standard-phases
           (add-after 'install 'install-pieces
             (lambda _
-              (let ((pieces
-                     (string-append #$output "/share/emacs/site-lisp/chess-"
-                                    #$version "/pieces")))
-                (mkdir-p pieces)
-                (copy-recursively "pieces" pieces)))))))
+              (copy-recursively
+               "pieces"
+               (string-append (elpa-directory #$output) "/pieces")))))))
     (home-page "https://elpa.gnu.org/packages/chess.html")
     (synopsis "Play chess in GNU Emacs")
     (description
