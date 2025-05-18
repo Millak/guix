@@ -35609,11 +35609,11 @@ directory for only the next invoked command.  The directory selection can be
 done using Helm, Ido or Ivy.")
       (license license:gpl2+))))
 
-(define-public emacs-tco-el
+(define-public emacs-tco
   (let ((commit "482db5313f090b17ed22ccd856f0e141dc75afe6")
         (revision "1"))
     (package
-      (name "emacs-tco-el")
+      (name "emacs-tco")
       (version (git-version "0.3" revision commit))
       (source
        (origin
@@ -35635,6 +35635,9 @@ done using Helm, Ido or Ivy.")
       (description "This package provides tail-call optimization for Emacs
 Lisp functions that call themselves in tail position.")
       (license license:gpl3+))))
+
+(define-deprecated/public emacs-tco-el emacs-tco
+  (deprecated-package "emacs-tco-el" emacs-tco))
 
 (define-public emacs-equake
   ;; Upstream provides no tagged releases, but the commit below matches an
