@@ -7831,13 +7831,13 @@ variables.")
 (define-public r-ggprism
   (package
     (name "r-ggprism")
-    (version "1.0.5")
+    (version "1.0.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggprism" version))
               (sha256
                (base32
-                "0waivf6a6bk52z139xfg0apmcv0mhjqb08yb4dzv8g7g22qfwdbz"))))
+                "1jp6vxydcs1hqg2p11x3llpnrkxdky0lixsywrhyncw44y18mid3"))))
     (properties `((upstream-name . "ggprism")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7848,7 +7848,7 @@ variables.")
            r-rlang
            r-scales
            r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://csdaw.github.io/ggprism/")
     (synopsis "ggplot2 extension inspired by GraphPad Prism")
     (description
