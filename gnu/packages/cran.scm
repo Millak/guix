@@ -43427,14 +43427,14 @@ Francesca Mazzia (2012).")
 (define-public r-lim
   (package
     (name "r-lim")
-    (version "1.4.7.1")
+    (version "1.4.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "LIM" version))
        (sha256
         (base32
-         "1ygzj3mc01jfdn7y938gsnnbf358n0jpddkiyc1zmvjig37yz180"))))
+         "0yik2k09cspnacvglhfbhv2ppx3v0lh827qyz5s4y7qb155z27a6"))))
     (properties `((upstream-name . "LIM")))
     (build-system r-build-system)
     (propagated-inputs
