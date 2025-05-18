@@ -3665,7 +3665,7 @@ SNMP v3 using both IPv4 and IPv6.")
 (define-public ubridge
   (package
     (name "ubridge")
-    (version "0.9.18")
+    (version "0.9.19")
     (source
      (origin
        (method git-fetch)
@@ -3674,24 +3674,22 @@ SNMP v3 using both IPv4 and IPv6.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jg66jhhpv4c9340fsdp64hf9h253i8r81fknxa0gq241ripp3jn"))))
+        (base32 "1hjn1zxjif6kp251gxlf4a5s2lnjgx78ls74ck6cqmkly4ndgp5s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'install 'set-bindir
-           (lambda* (#:key  inputs outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out")
-                                       "/bin")))
-               (mkdir-p bin)
-               (substitute* "Makefile"
-                 (("\\$\\(BINDIR\\)") bin)
-                 (("\tsetcap cap_net.*$") "")))
-             #t)))))
+     (list
+      #:tests? #f                      ; no tests
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)            ; no configure script
+          (add-before 'install 'set-bindir
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (substitute* "Makefile"
+                  (("\\$\\(BINDIR\\)") bin)
+                  (("\tsetcap cap_net.*$") ""))))))))
     (inputs
      (list libpcap))
     (home-page "https://github.com/GNS3/ubridge/")
