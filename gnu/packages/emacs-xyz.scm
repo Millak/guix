@@ -18637,16 +18637,14 @@ inside the source file.")
                  (setenv "EMACSLOADPATH"
                          (string-append (string-join contrib ":")
                                         ":"
-                                        (getenv "EMACSLOADPATH")))
-                 #t)))
+                                        (getenv "EMACSLOADPATH"))))))
            (add-after 'install 'find-agnostic-lizard
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (file (string-append (elpa-directory out)
                                            "/slynk-stepper.lisp"))
-                      (asd (string-append
-                            (assoc-ref inputs "cl-agnostic-lizard")
-                            "/share/common-lisp/systems/agnostic-lizard.asd")))
+                      (asd (search-input-file inputs "\
+share/common-lisp/systems/agnostic-lizard.asd")))
                  ;; agnostic-lizard is found at runtime.
                  (substitute* file
                    (("\\(require :asdf\\)")
