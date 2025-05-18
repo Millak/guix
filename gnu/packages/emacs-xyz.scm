@@ -21059,26 +21059,22 @@ Yasnippet.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "13a8jpj4wwm0yjv8hnsizgjf8wi3r2ap87lyvw7g4c7snp2dydwa"))))
+               (base32 "13a8jpj4wwm0yjv8hnsizgjf8wi3r2ap87lyvw7g4c7snp2dydwa"))))
     (build-system emacs-build-system)
-    (inputs
-     (list recutils))
-    (propagated-inputs
-     (list emacs-helm))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((recutils (assoc-ref inputs "recutils")))
-               ;; Specify the absolute file names of the various
-               ;; programs so that everything works out-of-the-box.
-               (substitute* "helm-system-packages-guix.el"
-                 (("recsel") (string-append recutils "/bin/recsel")))))))))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "helm-system-packages-guix.el"
+               (("recsel")
+                (search-input-file inputs "bin/recsel"))))))))
+    (inputs (list recutils))
+    (propagated-inputs (list emacs-helm))
     (home-page "https://github.com/emacs-helm/helm-system-packages")
     (synopsis "Helm System Packages is an interface to your package manager")
-    (description "List all available packages in Helm (with installed
+    (description
+     "List all available packages in Helm (with installed
 packages displayed in their own respective face).  Fuzzy-search, mark and
 execute the desired action over any selections of packages: Install,
 uninstall, display packages details (in Org Mode) or insert details at point,
