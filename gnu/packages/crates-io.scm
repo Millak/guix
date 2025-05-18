@@ -26291,6 +26291,36 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-web-sys" ,rust-web-sys-0.3))))))
 
+(define-public rust-fern-0.7
+  (package
+    (name "rust-fern")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fern" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a9v59vcq2fgd6bwgbfl7q6b0zzgxn85y6g384z728wvf1gih5j3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-reopen" ,rust-reopen-0.3)
+                       ("rust-reopen" ,rust-reopen-1)
+                       ("rust-syslog" ,rust-syslog-3)
+                       ("rust-syslog" ,rust-syslog-4)
+                       ("rust-syslog" ,rust-syslog-6)
+                       ("rust-syslog" ,rust-syslog-7))))
+    (home-page "https://github.com/daboross/fern")
+    (synopsis "Simple, efficient logging")
+    (description
+     "This package provides a simple, efficient logging system for Rust.")
+    (license license:expat)))
+
 (define-public rust-fern-0.6
   (package
     (name "rust-fern")
