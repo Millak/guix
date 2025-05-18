@@ -16811,14 +16811,14 @@ integer/binary, semi-continuous and @acronym{SOS, special ordered sets} models."
 (define-public r-limsolve
   (package
     (name "r-limsolve")
-    (version "1.5.7.1")
+    (version "1.5.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "limSolve" version))
        (sha256
         (base32
-         "14jvx0sjjdsm6fxvdck648h12sl4cmy8sgw8jx1744pmpcbm5555"))))
+         "1pdsvynqvx43dc0zlw9k2np3wdlr5pva8gl5b387wzglh5dyarx2"))))
     (properties `((upstream-name . "limSolve")))
     (build-system r-build-system)
     (propagated-inputs
