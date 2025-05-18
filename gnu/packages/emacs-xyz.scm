@@ -32206,6 +32206,8 @@ few (like NOTE).")
           (base32
            "1lfky2nsrlndlbvk6vwbswnvbvkz1sxgg0n3r5q6xykdkjym0lrh"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))  ; No tests.
       (home-page "https://github.com/jwiegley/git-annex-el")
       (synopsis "Emacs integration for git-annex")
       (description "Enhances Dired and buffers visiting annex files with
