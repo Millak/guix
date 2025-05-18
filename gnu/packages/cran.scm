@@ -51336,20 +51336,20 @@ chunks.")
 (define-public r-highs
   (package
     (name "r-highs")
-    (version "1.10.0-1")
+    (version "1.10.0-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "highs" version))
        (sha256
-        (base32 "1vga07m9pf8ckm593n0hvmcv6hi3vbxcdc553dbd0f0m7cwf29xp"))))
+        (base32 "1mm8v3cy9c3k0b609m40gasvkkl105qrsrslxxbrskfpgph4g2pq"))))
     (properties
      '((upstream-name . "highs")
-       (updater-extra-native-inputs . ("cmake-minimal" "which"))))
+       (updater-extra-native-inputs . ("cmake-minimal" "which"))
+       (updater-ignored-native-inputs . ("gfortran"))))
     (build-system r-build-system)
-    (arguments (list #:configure-flags '(list "--configure-args=\"-nostdinc++\"")))
     (propagated-inputs (list r-checkmate r-rcpp))
-    (native-inputs (list cmake-minimal gfortran which))
+    (native-inputs (list cmake-minimal which))
     (home-page "https://gitlab.com/roigrp/solver/highs")
     (synopsis "HiGHS optimization solver")
     (description
