@@ -36107,13 +36107,13 @@ definition-jumping and type-checking on demand.")
 support JSX syntax.")
     (license license:expat)))
 
-(define-public emacs-origami-el
+(define-public emacs-origami
   (let ((commit "1f38085c8f9af7842765ed63f7d6dfe4dab59366")
         (version "1.0")
         (revision "1")
         (patch "1d9c4f120c027a5009b0424270e3aae59f1cb128"))
     (package
-      (name "emacs-origami-el")
+      (name "emacs-origami")
       (version (git-version version revision commit))
       (source
        (origin
@@ -36141,6 +36141,9 @@ support JSX syntax.")
       (description "This package provides a minor mode for collapsing and
 expanding regions of text without modifying the actual contents.")
       (license license:expat))))
+
+(define-deprecated/public emacs-origami-el emacs-origami
+  (deprecated-package "emacs-origami-el" emacs-origami))
 
 (define-public emacs-peep-dired
   (let ((commit "c88a9a3050197840edfe145f11e0bb9488de32f4")
@@ -42758,7 +42761,7 @@ and preferred services can easily be configured.")
       (native-inputs
        (list emacs-ecukes emacs-espuds emacs-undercover openjdk9))
       (propagated-inputs
-       (list emacs-origami-el emacs-s))
+       (list emacs-origami emacs-s))
       (synopsis "Major mode for viewing and managing Java keystores")
       (description
        "This package provides an Elisp wrapper around the Java
