@@ -18392,7 +18392,7 @@ CIDER).")
          (sha256
           (base32 "01gky548v3758fyr317lkwsc9aacab6m9d9vk1mrr3qyvmciwd51"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-eval-sexp-fu-el))
+      (propagated-inputs (list emacs-eval-sexp-fu))
       (home-page "https://github.com/clojure-emacs/cider-eval-sexp-fu")
       (synopsis "Eval Sexp-fu extensions for CIDER")
       (description
@@ -36859,9 +36859,9 @@ or regions to a REPL from ~a buffers.") language))))
 needing to write the result into the buffer.")
     (license license:expat)))
 
-(define-public emacs-eval-sexp-fu-el
+(define-public emacs-eval-sexp-fu
   (package
-    (name "emacs-eval-sexp-fu-el")
+    (name "emacs-eval-sexp-fu")
     (version "0.6.0")
     (source
      (origin
@@ -36880,6 +36880,9 @@ needing to write the result into the buffer.")
 @code{eval-last-sexp} that work on the containing list or s-expression, as
 well as an option for visually flashing evaluated s-expressions.")
     (license license:gpl3+)))
+
+(define-deprecated/public emacs-eval-sexp-fu-el emacs-eval-sexp-fu
+  (deprecated-package "emacs-eval-sexp-fu-el" emacs-eval-sexp-fu))
 
 (define-public emacs-counsel-tramp
   (package
