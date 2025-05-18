@@ -37040,16 +37040,27 @@ and article extracts for Wikipedia.")
   (name "emacs-webfeeder")
   (version "1.1.2")
   (source
-    (origin
-      (method url-fetch)
-      (uri (string-append
-             "https://elpa.gnu.org/packages/webfeeder-"
-             version
-             ".tar"))
-      (sha256
-        (base32
-          "1l128q424qsq9jv2wk8cv4zli71rk34q5kgwa9axdz0d27p9l6v4"))))
+   (origin
+     (method url-fetch)
+     (uri (string-append
+           "https://elpa.gnu.org/packages/webfeeder-" version ".tar"))
+     (sha256
+      (base32 "1l128q424qsq9jv2wk8cv4zli71rk34q5kgwa9axdz0d27p9l6v4"))
+     ;; Reset some timestamps for testdata.
+     (modules '((guix build utils)))
+     (snippet
+      #~(substitute* (find-files "testdata")
+          (("01:00:00 \\+0100")
+           "00:00:00 +0000")
+          (("01:00:00\\+01:00")
+           "00:00:00+00:00")
+          (("\\+0100")
+           "+0000")
+          (("\\+01:00")
+           "+00:00")))))
   (build-system emacs-build-system)
+  (arguments
+   `(#:emacs ,emacs))  ;tests require libxml
   (home-page "https://gitlab.com/Ambrevar/emacs-webfeeder")
   (synopsis "Build RSS and Atom webfeeds from HTML files")
   (description
