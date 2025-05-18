@@ -14156,6 +14156,27 @@ based on color-backtrace.")
     (description "Global override of color control")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-colored-3
+  (package
+    (name "rust-colored")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "colored" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0plizddhxc4vgkzdbzky5zggyaqfrmyim2d0n6sb7py9j3nf1q7x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/mackwic/colored")
+    (synopsis "Add colors in your terminal")
+    (description
+     "This package provides a way to add colors in your terminal.")
+    (license license:mpl2.0)))
+
 (define-public rust-colored-2
   (package
     (name "rust-colored")
