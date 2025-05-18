@@ -29566,6 +29566,32 @@ Rust.")
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-generic-array-1
+  (package
+    (name "rust-generic-array")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "generic-array" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00qpb5rxfiv5mvdb2rvqmw40h612ysvwl36car8r66ypr55l9j78"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-const-default" ,rust-const-default-1)
+                       ("rust-faster-hex" ,rust-faster-hex-0.10)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-typenum" ,rust-typenum-1)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/fizyk20/generic-array.git")
+    (synopsis
+     "Generic types implementing functionality of arrays")
+    (description
+     "Generic types implementing functionality of arrays.")
+    (license license:expat)))
+
 (define-public rust-generic-array-0.14
   (package
     (name "rust-generic-array")
