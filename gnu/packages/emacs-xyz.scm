@@ -27475,10 +27475,9 @@ orient yourself in the code, and tell which statements are at a given level.")
         #:phases #~(modify-phases %standard-phases
                      (add-after 'unpack 'patch-file-name
                        (lambda* (#:key inputs #:allow-other-keys)
-                         (let ((pulseaudio (assoc-ref inputs "pulseaudio")))
-                           (emacs-substitute-variables "pulseaudio-control.el"
-                             ("pulseaudio-control-pactl-path"
-                              (string-append pulseaudio "/bin/pactl")))))))))
+                         (emacs-substitute-variables "pulseaudio-control.el"
+                           ("pulseaudio-control-pactl-path"
+                            (search-input-file inputs "bin/pactl"))))))))
       (inputs (list pulseaudio))
       (home-page "https://git.sr.ht/~flexibeast/pulseaudio-control")
       (synopsis "Control Pulseaudio from Emacs")
