@@ -35315,11 +35315,11 @@ comfort of Magit and the rest of Emacs.")
 packages with a consistent way to use them.")
       (license license:gpl3+))))
 
-(define-public emacs-undo-propose-el
+(define-public emacs-undo-propose
   (let ((commit "f80baee566807d733fbacbab08a897bcd62579c3")
         (revision "3"))
     (package
-      (name "emacs-undo-propose-el")
+      (name "emacs-undo-propose")
       (version (git-version "3.0.0" revision commit))
       (source
        (origin
@@ -35341,6 +35341,9 @@ temporary buffer, which is read-only save for @code{undo} commands, and
 subsequent committal of a chain of @code{undo} commands as a single edit in
 the @code{undo} history.")
       (license license:gpl3+))))
+
+(define-deprecated/public emacs-undo-propose-el emacs-undo-propose
+  (deprecated-package "emacs-undo-propose-el" emacs-undo-propose))
 
 (define-public emacs-elisp-docstring-mode
   (let ((commit "f512e509dd690f65133e55563ebbfd2dede5034f")
