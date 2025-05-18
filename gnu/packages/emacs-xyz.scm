@@ -3082,11 +3082,11 @@ from within Emacs.")
 a constant work in progress as the language itself also progresses.")
       (license license:gpl3+))))
 
-(define-public emacs-unpackaged-el
+(define-public emacs-unpackaged
   (let ((commit "0c1f447dab29697d4e30806022f28657c1489375")
         (revision "4"))
     (package
-      (name "emacs-unpackaged-el")
+      (name "emacs-unpackaged")
       (version (git-version "0" revision commit))
       (source
        (origin
@@ -3112,6 +3112,9 @@ a constant work in progress as the language itself also progresses.")
 of tasks, including version control, task management, and regex-based
 replacement.")
       (license license:gpl3+))))
+
+(define-deprecated/public emacs-unpackaged-el emacs-unpackaged
+  (deprecated-package "emacs-unpackaged-el" emacs-unpackaged))
 
 (define-public emacs-haskell-mode
   (let ((commit "e9c356739310332afe59b10ffa2e6c3e76f124e3")
