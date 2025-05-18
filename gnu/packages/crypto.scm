@@ -1651,16 +1651,6 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
      (list perl))
     (arguments
      (cond
-       ((target-hurd64?)
-        (list
-          #:phases
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'apply-hurd64-patch
-                (lambda _
-                  (let ((patch
-                         #$(local-file
-                            (search-patch "libxcrypt-hurd64.patch"))))
-                    (invoke "patch" "--force" "-p1" "-i" patch)))))))
        ((target-ppc32?)
         (list #:tests? #f))     ; TODO: Investigate test failures.
        ((target-mingw?)
