@@ -12046,6 +12046,31 @@ organize results using the RStudio Jobs GUI or to test code in a clean
 environment.  Two RStudio Addins can be used to run selected code as a job.")
     (license license:expat)))
 
+(define-public r-jose
+  (package
+    (name "r-jose")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "jose" version))
+       (sha256
+        (base32 "0si1mg325fwx9zgjdbqspw9v6prl5mn3iccg7vki4bpzmwhd953q"))))
+    (properties `((upstream-name . "jose")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-jsonlite r-openssl))
+    (native-inputs (list r-knitr r-spelling r-testthat))
+    (home-page "https://r-lib.r-universe.dev/jose")
+    (synopsis "JavaScript object signing and encryption")
+    (description
+     "This package lets you read and write JSON Web Keys (JWK, rfc7517),
+generate and verify JSON Web Signatures (JWS, rfc7515) and encode/decode JSON
+Web Tokens (JWT, rfc7519).  These standards provide modern signing and
+encryption formats that are natively supported by browsers via the JavaScript
+@code{WebCryptoAPI}, and used by services like OAuth 2.0, LetsEncrypt, and
+Github Apps.")
+    (license license:expat)))
+
 (define-public r-jsonify
   (package
     (name "r-jsonify")
