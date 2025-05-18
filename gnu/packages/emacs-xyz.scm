@@ -3083,8 +3083,8 @@ a constant work in progress as the language itself also progresses.")
       (license license:gpl3+))))
 
 (define-public emacs-unpackaged-el
-  (let ((commit "746801a677ada6cd6fa076e423aa0953779f3fad")
-        (revision "3"))
+  (let ((commit "0c1f447dab29697d4e30806022f28657c1489375")
+        (revision "4"))
     (package
       (name "emacs-unpackaged-el")
       (version (git-version "0" revision commit))
@@ -3096,22 +3096,19 @@ a constant work in progress as the language itself also progresses.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0jvb2ci0h0lj368qhbff3pzkxj3nhlligpbkjzi525k9rkjgm7l8"))))
+          (base32 "042vcffg1scq6zq8rhv3f2hsl4ychr1gx6hlp23b8hfmz268fima"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash emacs-org emacs-s emacs-hydra emacs-use-package))
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'require-hydra
-              (lambda _
-                (substitute* "unpackaged.el"
-                  ((";;; Code:") ";;; Code:\n(require 'hydra)")))))))
+      (propagated-inputs (list emacs-dash
+                               emacs-esxml
+                               emacs-org
+                               emacs-s
+                               emacs-hydra
+                               emacs-use-package
+                               emacs-ts))
       (home-page "https://github.com/alphapapa/unpackaged.el")
       (synopsis "Useful snippets of Emacs Lisp code")
-      (description "This package provides Emacs Lisp utilities for a variety
+      (description
+       "This package provides Emacs Lisp utilities for a variety
 of tasks, including version control, task management, and regex-based
 replacement.")
       (license license:gpl3+))))
