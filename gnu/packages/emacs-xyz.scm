@@ -37439,21 +37439,9 @@ Emacs windows and tmux panes.")
             (add-after 'unpack 'patch-exec-paths
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "emacs-everywhere.el"
-                  (("\"xclip\"")
-                   (string-append "\""
-                                  (search-input-file inputs "/bin/xclip")
-                                  "\""))
-                  (("\"xdotool\"")
-                   (string-append "\""
-                                  (search-input-file inputs "/bin/xdotool")
-                                  "\""))
-                  (("\"xprop\"")
-                   (string-append "\""
-                                  (search-input-file inputs "/bin/xprop")
-                                  "\""))
-                  (("\"xwininfo\"")
-                   (string-append "\""
-                                  (search-input-file inputs "/bin/xwininfo")
+                  (("\"(xclip|xdotool|xprop|xwininfo)\"" all binary)
+                   (string-append "\"" (search-input-file
+                                        inputs (string-append "bin/" binary))
                                   "\""))))))))
       (inputs (list xclip xdotool xprop xwininfo))
       (build-system emacs-build-system)
