@@ -23357,13 +23357,11 @@ whitespace in the buffer was initially clean.")
          (modify-phases %standard-phases
            (add-after 'unpack 'configure
              (lambda* (#:key inputs #:allow-other-keys)
-               (let ((imagemagick (assoc-ref inputs "imagemagick")))
-                 ;; eimp.el is read-only in git.
-                 (chmod "eimp.el" #o644)
-                 (emacs-substitute-variables "eimp.el"
-                   ("eimp-mogrify-program"
-                    (string-append imagemagick "/bin/mogrify"))))
-               #t)))))
+               ;; eimp.el is read-only in git.
+               (chmod "eimp.el" #o644)
+               (emacs-substitute-variables "eimp.el"
+                 ("eimp-mogrify-program"
+                  (search-input-file inputs "bin/mogrify"))))))))
       (inputs
        (list imagemagick))
       (home-page "https://github.com/nicferrier/eimp")
