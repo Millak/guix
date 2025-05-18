@@ -4683,9 +4683,8 @@ installed on your machine and launch it.")
       #~(modify-phases %standard-phases
           (add-after 'install 'install-server
             (lambda _
-              (let ((server (string-append #$output
-                                           "/share/emacs/site-lisp/"
-                                           "alchemist-1.8.2/alchemist-server")))
+              (let ((server (string-append (elpa-directory #$output)
+                                           "/alchemist-server")))
                 (mkdir-p server)
                 (copy-recursively "alchemist-server" server)
                 (delete-file-recursively (string-append server "/test"))))))))
