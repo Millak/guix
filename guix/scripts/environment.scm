@@ -979,6 +979,12 @@ WHILE-LIST."
   "Return home directory for override user USER."
   (string-append "/home/" user))
 
+(define (file-name-equal-or-under? file-name directory)
+  "Is @var{file-name} equal to or under @var{directory}?"
+  (or (string=? directory file-name)
+      (and (string-prefix? directory file-name)
+           (char=? #\/ (string-ref file-name (string-length directory))))))
+
 (define (override-user-mappings user home mappings)
   "If a username USER is provided, rewrite each HOME prefix in file system
 mappings MAPPINGS to a home directory determined by 'override-user-dir';
@@ -987,7 +993,7 @@ otherwise, return MAPPINGS."
       mappings
       (map (lambda (mapping)
              (let ((target (file-system-mapping-target mapping)))
-               (if (string-prefix? home target)
+               (if (file-name-equal-or-under? target home)
                    (file-system-mapping
                     (inherit mapping)
                     (target (override-user-dir user home target)))
@@ -997,7 +1003,7 @@ otherwise, return MAPPINGS."
 (define (override-user-dir user home dir)
   "If username USER is provided, overwrite string prefix HOME in DIR with a
 directory determined by 'user-override-home'; otherwise, return DIR."
-  (if (and user (string-prefix? home dir))
+  (if (and user (file-name-equal-or-under? dir home))
       (string-append (user-override-home user)
                      (substring dir (string-length home)))
       dir))
