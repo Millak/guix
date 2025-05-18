@@ -3676,8 +3676,7 @@ boilerplate code from defining new Flymake backend functions.")
                (emacs-substitute-sexps "flymake-shellcheck.el"
                  ("defcustom flymake-shellcheck-path"
                   `(or (executable-find "shellcheck")
-                       ,(string-append (assoc-ref inputs "shellcheck")
-                                       "/bin/shellcheck")))))))))
+                       ,(search-input-file inputs "bin/shellcheck")))))))))
       (inputs
        (list shellcheck))
       (home-page "https://github.com/federicotdn/flymake-shellcheck")
