@@ -31206,8 +31206,8 @@ in said buffer using sxiv.")
 ;; Package has no releases or tags.  Version is extracted from "Version:"
 ;; keyword in main file.
 (define-public emacs-mu4e-dashboard
-  (let ((commit "16ffbb2a36817647e345f60acdfaac66dda28c0f")
-        (revision "0"))
+  (let ((commit "c9c09b7ed6433070de148b656ac273b7fb7cec07")
+        (revision "1"))
     (package
       (name "emacs-mu4e-dashboard")
       (version (git-version "0.1.1" revision commit))
@@ -31219,8 +31219,9 @@ in said buffer using sxiv.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1fp2f9rvh20r3advbzcgm5vv2dzcyvy1618hfykbm6ac4wjscdll"))))
+                  "164p56i6lgwgg7ina9h5qb4i31q3fngsy0ndbdva9agylk2sa9vc"))))
       (build-system emacs-build-system)
+      (native-inputs (list emacs-async))
       (propagated-inputs (list mu))
       (home-page "https://github.com/rougier/mu4e-dashboard")
       (synopsis "Build your own dashboard for mu4e using org-mode")
