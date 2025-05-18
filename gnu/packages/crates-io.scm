@@ -62770,6 +62770,29 @@ useful types and distributions, and some randomness-related algorithms.")
        #:cargo-development-inputs
        (("rust-autocfg" ,rust-autocfg-0.1))))))
 
+(define-public rust-rand-core-0.9
+  (package
+    (name "rust-rand-core")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rand_core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0f3xhf16yks5ic6kmgxcpv1ngdhp48mmfy4ag82i1wnwh8ws3ncr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-getrandom" ,rust-getrandom-0.3)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://rust-random.github.io/book")
+    (synopsis "Core random number generator traits and tools")
+    (description
+     "This package provides core random number generator traits and
+tools for implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rand-core-0.6
   (package
     (name "rust-rand-core")
