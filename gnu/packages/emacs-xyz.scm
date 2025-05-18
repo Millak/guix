@@ -5592,25 +5592,28 @@ a set of simplified face specifications and a user-supplied color palette.")
 searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
     (license license:gpl1+)))
 
-(define-public emacs-mediawiki-el
+(define-public emacs-mediawiki
   (package
-    (name "emacs-mediawiki-el")
+    (name "emacs-mediawiki")
     (version "2.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/hexmode/mediawiki-el.git")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1d05jw2sa19rgzskvavh21bfmbh07yza1drfbgypsvay3nkjfd2z"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hexmode/mediawiki-el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d05jw2sa19rgzskvavh21bfmbh07yza1drfbgypsvay3nkjfd2z"))))
     (build-system emacs-build-system)
     (synopsis "Mediawiki editor for Emacs")
     (description "This package provides a way to edit mediawiki sites from
 within emacs.")
     (home-page "https://github.com/hexmode/mediawiki-el")
     (license license:agpl3+)))
+
+(define-deprecated/public emacs-mediawiki-el emacs-mediawiki
+  (deprecated-package "emacs-mediawiki-el" emacs-mediawiki))
 
 (define-public emacs-bm
   (package
