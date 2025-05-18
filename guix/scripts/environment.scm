@@ -936,6 +936,9 @@ WHILE-LIST."
                          (setenv variable value)))
                       environ)
 
+            (unless (getenv "LANG")
+              (setenv "LANG" "C.UTF-8"))
+
             (primitive-exit/status
              ;; A container's environment is already purified, so no need to
              ;; request it be purified again.
