@@ -31214,6 +31214,13 @@ in said buffer using sxiv.")
                  (base32
                   "164p56i6lgwgg7ina9h5qb4i31q3fngsy0ndbdva9agylk2sa9vc"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        ;; XXX: tests fail with "emacs: standard input is not a tty"
+        #:tests? #f
+        #:test-command #~(list "emacs" "-Q" "-L" "."
+                               "-l" "test/regression-tests.el"
+                               "-f" "ert-run-tests-batch")))
       (native-inputs (list emacs-async))
       (propagated-inputs (list mu))
       (home-page "https://github.com/rougier/mu4e-dashboard")
