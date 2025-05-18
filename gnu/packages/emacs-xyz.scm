@@ -219,6 +219,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages idris)
@@ -35420,10 +35421,14 @@ unescaping of quotes.")
           (base32
            "10pgsbagq6qj4mshq5sypv0q0khck92b30sc793b4g1pfpsxvgjn"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:include #~(list "\\.el$" "\\.hs$")
+             #:test-command #~(list "make" "test" "CASK=")
+             #:tests? #f))  ; Several tests are failing on the haskell side.
       (propagated-inputs
        (list emacs-dash emacs-flycheck emacs-haskell-mode emacs-let-alist))
-      (arguments
-       `(#:include '("\\.el$" "\\.hs$")))
+      (native-inputs
+       (list ghc))
       (home-page "https://github.com/flycheck/flycheck-haskell")
       (synopsis "Flycheck for Haskell")
       (description "This package configures syntax-checking for Haskell
