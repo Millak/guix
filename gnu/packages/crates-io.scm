@@ -25833,6 +25833,27 @@ is defined in the HTML specification.")
     (description "This package provides a fast floating-point number parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-faster-hex-0.10
+  (package
+    (name "rust-faster-hex")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "faster-hex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wzvv4a1czxfxmh99cza2y0jps97hm3k1j6r6cs816qp5wnsw8vj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-heapless" ,rust-heapless-0.8)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/NervosFoundation/faster-hex")
+    (synopsis "Fast hex encoding")
+    (description "This package provides fast hex encoding.")
+    (license license:expat)))
+
 (define-public rust-faster-hex-0.9
   (package
     (name "rust-faster-hex")
