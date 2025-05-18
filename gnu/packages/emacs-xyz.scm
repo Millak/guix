@@ -26193,12 +26193,12 @@ object has been freed.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-executable-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((mdb (assoc-ref inputs "mariadb"))
-                    (psql (assoc-ref inputs "postgresql")))
-                (emacs-substitute-variables "emacsql-psql.el"
-                  ("emacsql-psql-executable" (string-append psql "/bin/psql")))
-                (emacs-substitute-variables "emacsql-mysql.el"
-                  ("emacsql-mysql-executable" (string-append mdb "/bin/mysql")))))))))
+              (emacs-substitute-variables "emacsql-psql.el"
+                ("emacsql-psql-executable"
+                 (search-input-file inputs "bin/psql")))
+              (emacs-substitute-variables "emacsql-mysql.el"
+                ("emacsql-mysql-executable"
+                 (search-input-file inputs "/bin/mysql"))))))))
     (inputs (list mariadb postgresql))
     (native-inputs (list emacs-sqlite3-api))
     (home-page "https://github.com/magit/emacsql")
