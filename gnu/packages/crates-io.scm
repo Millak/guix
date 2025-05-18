@@ -11488,6 +11488,35 @@ parsing with Serde.")
     (description "Miscellaneous support code used by Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-util-schemas-0.7
+  (package
+    (name "rust-cargo-util-schemas")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-util-schemas" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "014qha8zp604n7yh2scbn2jz0q2ki6jmi61db61832nbz1l5z44z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-untagged" ,rust-serde-untagged-0.1)
+                       ("rust-serde-value" ,rust-serde-value-0.7)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Deserialization schemas for Cargo")
+    (description "This package provides deserialization schemas for Cargo.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-util-schemas-0.6
   (package
     (name "rust-cargo-util-schemas")
