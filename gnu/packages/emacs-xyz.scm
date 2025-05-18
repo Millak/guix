@@ -33466,9 +33466,9 @@ asynchronous communications, the RPC response is fairly good.")
          (modify-phases %standard-phases
            (add-after 'unpack 'patch-path
              (lambda* (#:key inputs #:allow-other-keys)
-               (let ((perl (assoc-ref inputs "perl")))
+               (let ((perl (search-input-file inputs "bin/perl")))
                  (substitute* "edbi.el"
-                   (("\"perl\"") (string-append "\"" perl "/bin/perl\""))))))
+                   (("\"perl\"") (string-append "\"" perl "\""))))))
            (add-after 'install 'wrap-edbi-bridge
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
