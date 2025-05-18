@@ -62684,6 +62684,29 @@ useful types and distributions, and some randomness-related algorithms.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-rand" ,rust-rand-0.4))))))
 
+(define-public rust-rand-chacha-0.9
+  (package
+    (name "rust-rand-chacha")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rand_chacha" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jr5ygix7r60pz0s1cv3ms1f6pd1i9pcdmnxzzhjc3zn3mgjn0nk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-ppv-lite86" ,rust-ppv-lite86-0.2)
+                       ("rust-rand-core" ,rust-rand-core-0.9)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://rust-random.github.io/book")
+    (synopsis "ChaCha random number generator")
+    (description
+     "This package provides the ChaCha random number generator.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rand-chacha-0.3
   (package
     (name "rust-rand-chacha")
