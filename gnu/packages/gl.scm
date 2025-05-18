@@ -187,7 +187,8 @@ the X-Consortium license.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zjs1h9w30gajq9lndzvjsa26rsmr1081lb1fbpbj10yhcdcsc79"))))
+                "0zjs1h9w30gajq9lndzvjsa26rsmr1081lb1fbpbj10yhcdcsc79"))
+              (patches (search-patches "ftgl-ftcontour-type.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

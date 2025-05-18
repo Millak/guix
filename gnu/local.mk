@@ -1339,6 +1339,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/freesolid-autotools.patch		\
   %D%/packages/patches/freesolid-configure.patch		\
   %D%/packages/patches/freesolid-pkgconfig.patch		\
+  %D%/packages/patches/ftgl-ftcontour-type.patch		\
   %D%/packages/patches/fulcrum-1.9.1-unbundled-libraries.patch	\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
   %D%/packages/patches/fuse-overlapping-headers.patch		\
