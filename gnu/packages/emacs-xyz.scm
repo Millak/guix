@@ -35448,11 +35448,11 @@ unescaping of quotes.")
 buffers.")
       (license license:gpl3+))))
 
-(define-public emacs-js2-refactor-el
+(define-public emacs-js2-refactor
   (let ((commit "d4c40b5fc86d3edd7c6a7d83ac86483ee1cb7a28")
         (revision "2"))
     (package
-      (name "emacs-js2-refactor-el")
+      (name "emacs-js2-refactor")
       (version (git-version "0.9.0" revision commit))
       (source
        (origin
@@ -35486,6 +35486,9 @@ buffers.")
       (description "This package provides various refactoring functions for
 JavaScript.")
       (license license:gpl3+))))
+
+(define-deprecated/public emacs-js2-refactor-el emacs-js2-refactor
+  (deprecated-package "emacs-js2-refactor-el" emacs-js2-refactor))
 
 (define-public emacs-jsdoc
   (package
