@@ -11898,6 +11898,29 @@ winded @code{#[cfg()]} checks.")
        (sha256
         (base32 "17p821nc6jm830vzl2lmwz60g3a30hcm33nk6l257i1rjdqw85px"))))))
 
+(define-public rust-cfg-expr-0.18
+  (package
+    (name "rust-cfg-expr")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cfg-expr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03biza6hs2nj4pzqmr5rbvxq1zcl0vnbs21ava90z62rc4938aqs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.13))))
+    (home-page "https://github.com/EmbarkStudios/cfg-expr")
+    (synopsis "Parser and evaluator for Rust @code{cfg()} expressions")
+    (description
+     "This package provides a parser and evaluator for Rust @code{cfg()}
+expressions.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cfg-expr-0.17
   (package
     (name "rust-cfg-expr")
