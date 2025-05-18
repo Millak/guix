@@ -3540,13 +3540,13 @@ pick/FWHM, thumbnails, etc.")
 (define-public python-glue-astronomy
   (package
     (name "python-glue-astronomy")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "glue-astronomy" version))
+       (uri (pypi-uri "glue_astronomy" version))
        (sha256
-        (base32 "1bra11i55g687ykzll5clp7mf3l9kc0x11wqc3gwfi98qx8fgpqz"))))
+        (base32 "0qaaf3n69ird5b00igkxnwyh80nvwffvfmaz7gbkavxnf6km940p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
