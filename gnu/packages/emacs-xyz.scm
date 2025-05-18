@@ -3800,12 +3800,12 @@ Distributed @acronym{Source Control Management, SCM} system.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'configure
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((mpg123 (search-input-file inputs "/bin/mpg123"))
-                         (notify-send
-                          (search-input-file inputs "/bin/notify-send")))
-                     (substitute* "alarm-clock.el"
-                       (("\"mpg123\"") (string-append "\"" mpg123 "\""))
-                       (("notify-send") notify-send))))))))
+                   (substitute* "alarm-clock.el"
+                     (("\"mpg123\"")
+                      (string-append
+                       "\"" (search-input-file inputs "bin/mpg123") "\""))
+                     (("notify-send")
+                      (search-input-file inputs "bin/notify-send"))))))))
     (inputs
      (list libnotify mpg123))
     (propagated-inputs
