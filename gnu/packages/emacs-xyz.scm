@@ -41975,16 +41975,14 @@ picked up when copy-pasting text from buffer to buffer.")
          "1si0jah7n2gvlvghjy5dpannqpkxni5rczfp1x2a4z6ydalr3bn5"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-assets
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (assets
-                     (string-append out "/share/emacs/org-webring-assets")))
-               (mkdir-p assets)
-               (copy-recursively "assets" assets)
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-assets
+            (lambda _
+              (copy-recursively
+               "assets"
+               (string-append #$output "/share/emacs/org-webring-assets")))))))
     (propagated-inputs
      (list emacs-xmlgen))
     (home-page "https://sr.ht/~brettgilio/org-webring")
