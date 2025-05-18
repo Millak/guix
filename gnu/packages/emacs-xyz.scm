@@ -14898,8 +14898,11 @@ text excepting lines containing matches.")
           (add-after 'fix-autogen-script 'set-home
             (lambda _
               (setenv "HOME" (getenv "TMPDIR"))))
-          (add-before 'patch-el-files 'remove-realgud-pkg.el
+          (add-before 'patch-el-files 'patch-more-el-files
             (lambda _
+              ;; XXX: Some tests/assumptions in this file are
+              ;; not valid on Emacs@30.
+              (delete-file "test/test-regexp-perldb.el")
               ;; FIXME: `patch-el-files' crashes on this file with error:
               ;; unable to locate "bashdb".
               (delete-file "./test/test-regexp-bashdb.el"))))
