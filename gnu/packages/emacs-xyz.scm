@@ -30577,20 +30577,16 @@ cohesion with the Emacs Way.")
         (base32
          "17lqip1i1rrsvxzz4bx9rqf1fvwd3hriwg3sj6qxmfc8pylnp37q"))))
     (build-system emacs-build-system)
-    (inputs (list fish))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((fish (assoc-ref inputs "fish")))
-               ;; Specify the absolute file names of the various
-               ;; programs so that everything works out-of-the-box.
-               (make-file-writable "fish-completion.el")
-               (emacs-substitute-variables
-                   "fish-completion.el"
-                 ("fish-completion-command"
-                  (string-append fish "/bin/fish")))))))))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (make-file-writable "fish-completion.el")
+             (emacs-substitute-variables "fish-completion.el"
+               ("fish-completion-command"
+                (search-input-file inputs "bin/fish"))))))))
+    (inputs (list fish))
     (home-page
      "https://gitlab.com/Ambrevar/emacs-fish-completion")
     (synopsis "Fish completion for Emacs pcomplete")
