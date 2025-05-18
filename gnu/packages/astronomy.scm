@@ -3362,13 +3362,13 @@ all the input image headers.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "1mnhzljaqjvslqxp4wblram7g9zbn6a29ri0phcrw8l2ry4qc7h0"))
+        (base32 "1brkkfqgfwbnl1si7hppripcixmsfjs5lpbn18yrwxziafycvc1k"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio. When update the package check the
@@ -3380,6 +3380,8 @@ all the input image headers.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--pyargs" "fitsio")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-env
@@ -3390,16 +3392,15 @@ all the input image headers.")
                        #$(this-package-input "cfitsio") "/include"))
               (setenv "FITSIO_SYSTEM_FITSIO_LIBDIR"
                       (string-append
-                       #$(this-package-input "cfitsio") "/lib"))))
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+                       #$(this-package-input "cfitsio") "/lib")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
            python-wheel))
     (inputs
-     (list curl cfitsio zlib))
+     (list curl
+           cfitsio
+           zlib))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/esheldon/fitsio")
