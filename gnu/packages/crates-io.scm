@@ -44425,6 +44425,26 @@ async Rust environment e.g. any async server.")
                                    ("rust-serde" ,rust-serde-1)
                                    ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-multimap-0.10
+  (package
+    (name "rust-multimap")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "multimap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1150lf0hjfjj4ksb8s3y0hl7a2nqzqlbh0is7vdym2iyjfrfr1qx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/havarnov/multimap")
+    (synopsis "Multimap implementation")
+    (description "This package provides a multimap implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-multimap-0.8
   (package
     (name "rust-multimap")
