@@ -39,6 +39,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xml)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -1729,6 +1730,26 @@ installed.")
     (description "The Test::WriteVariants module provides for the dynamic
 generation of tests in nested combinations of contexts.")
     (license perl-license)))  ; see LICENSE
+
+(define-public perl-test-xpath
+  (package
+    (name "perl-test-xpath")
+    (version "0.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/M/MA/MANWAR/Test-XPath-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0f90i66i8flk1fj8grzp5lvvhxlrjj4gdg5md6brrba6f4g63anz"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-html-selector-xpath perl-xml-libxml))
+    (home-page "https://metacpan.org/release/Test-XPath")
+    (synopsis "Test XML and HTML content and structure with XPath expressions")
+    (description
+     "This Perl testing library focuses on testing and working with
+XPath expressions, most likely in the context of XML document processing.")
+    (license perl-license)))
 
 (define-public perl-test-yaml
   (package
