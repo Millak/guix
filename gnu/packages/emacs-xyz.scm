@@ -25448,9 +25448,9 @@ org header line at the top of the window--no matter how far down you scrolled.")
     (home-page "https://github.com/alphapapa/org-sticky-header")
     (license license:gpl3+)))
 
-(define-public emacs-scratch-el
+(define-public emacs-scratch
   (package
-    (name "emacs-scratch-el")
+    (name "emacs-scratch")
     (version "1.4")
     (source
      (origin
@@ -25482,6 +25482,9 @@ notably useful when working on code in some language; you may grab code into a
 scratch buffer, and, by virtue of this extension, do so using the Emacs
 formatting rules for that language.")
     (license license:bsd-2)))
+
+(define-deprecated/public emacs-scratch-el emacs-scratch
+  (deprecated-package "emacs-scratch-el" emacs-scratch))
 
 (define-public emacs-kv
   (package
