@@ -25462,25 +25462,26 @@ org header line at the top of the window--no matter how far down you scrolled.")
        (sha256
         (base32 "174d8ancnkgb7q62196kd6nrfib6rnwxw4visgbk1c6yd1w8kray"))))
     (build-system emacs-build-system)
-    (native-inputs
-     (list texinfo))
+    (native-inputs (list texinfo))
     (arguments
-     (list #:tests? #f ; No tests.
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-doc
-                 (lambda _
-                   (unless (invoke "makeinfo" "scratch.texi")
-                     (error "makeinfo failed"))
-                   (install-file "scratch.info"
-                                 (string-append #$output "/share/info")))))))
+     (list
+      #:tests? #f ;No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (unless (invoke "makeinfo" "scratch.texi")
+                (error "makeinfo failed"))
+              (install-file "scratch.info"
+                            (string-append #$output "/share/info")))))))
     (home-page "https://codeberg.org/emacs-weirdware/scratch")
     (synopsis "Create scratch buffers with the same mode as current buffer")
-    (description "Scratch is an extension to Emacs that enables one to create
-scratch buffers that are in the same mode as the current buffer.  This is
-notably useful when working on code in some language; you may grab code into a
-scratch buffer, and, by virtue of this extension, do so using the Emacs
-formatting rules for that language.")
+    (description
+     "Scratch is an extension to Emacs that enables one to create scratch
+buffers that are in the same mode as the current buffer.  This is notably
+useful when working on code in some language; you may grab code into a scratch
+buffer, and, by virtue of this extension, do so using the Emacs formatting
+rules for that language.")
     (license license:bsd-2)))
 
 (define-deprecated/public emacs-scratch-el emacs-scratch
