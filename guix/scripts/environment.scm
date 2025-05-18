@@ -874,7 +874,14 @@ WHILE-LIST."
                       (writable? #f)))
                    reqs)))
             (file-systems (append %container-file-systems
-                                  (list tmpfs)
+                                  (list tmpfs        ; RW /tmp
+                                        (file-system ; RW ~
+                                          (device "none")
+                                          (mount-point
+                                           (or (and=> user user-override-home)
+                                               home))
+                                          (type "tmpfs")
+                                          (check? #f)))
                                   (if network?
                                       (filter-map optional-mapping->fs
                                                   %network-file-mappings)

@@ -199,6 +199,10 @@ guix environment --bootstrap --container --ad-hoc guile-bootstrap	\
 guix environment --bootstrap --container --ad-hoc guile-bootstrap \
      -- guile -c '(mkdir "/tmp/foo")'
 
+# And so is ~.
+guix environment --bootstrap --container --ad-hoc guile-bootstrap \
+     -- guile -c '(mkdir (string-append (getenv "HOME") "/foo"))'
+
 
 # Check the exit code.
 
