@@ -31164,8 +31164,6 @@ feeding them to package.el library.")
               (sha256
                (base32
                 "0gimq172pp143jckfhhyw319n3vpjvlkadm0vhypycas9i89mcg0"))))
-    (inputs (list sxiv))
-    (propagated-inputs (list emacs-dash))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -31174,8 +31172,9 @@ feeding them to package.el library.")
              (emacs-substitute-sexps "sxiv.el"
                (":command
                   (append"
-                `(list ,(string-append (assoc-ref inputs "sxiv")
-                                       "/bin/sxiv")))))))))
+                `(list ,(search-input-file inputs "bin/sxiv")))))))))
+    (inputs (list sxiv))
+    (propagated-inputs (list emacs-dash))
     (build-system emacs-build-system)
     (home-page "https://tildegit.org/contrapunctus/sxiv")
     (synopsis "Launch sxiv from Emacs with Dired integration")
