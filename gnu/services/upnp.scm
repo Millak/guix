@@ -92,7 +92,7 @@
   (media-directories readymedia-configuration-media-directories)
   (extra-config readymedia-configuration-extra-config
                 (default '()))
-  (home-service? syncthing-configuration-home-service?
+  (home-service? readymedia-configuration-home-service?
                  (default for-home?) (innate)))
 
 ;; READYMEDIA-MEDIA-DIR is a record that indicates the path of a media folder
