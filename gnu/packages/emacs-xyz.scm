@@ -8595,12 +8595,12 @@ If you are using Guix shell with @file{manifest.scm}, the
 @code{inf-ruby-wrapper-command} customization variable could be helpful.")
     (license license:gpl3+)))
 
-(define-public emacs-chruby-el
+(define-public emacs-chruby
   (let ((version "1.0")
         (commit "42bc6d521f832eca8e2ba210f30d03ad5529788f")
         (revision "0"))
     (package
-      (name "emacs-chruby-el")
+      (name "emacs-chruby")
       (version (git-version version revision commit))
       (source (origin
                 (method git-fetch)
@@ -8614,6 +8614,9 @@ If you are using Guix shell with @file{manifest.scm}, the
       (synopsis "Emacs support for the Chruby version switcher for Ruby")
       (description "This package lets you switch Ruby versions using chruby.")
       (license license:gpl3+))))
+
+(define-deprecated/public emacs-chruby-el emacs-chruby
+  (deprecated-package "emacs-chruby-el" emacs-chruby))
 
 ;; Package has no release.  Version is extracted from "Version:" keyword in
 ;; main file.
