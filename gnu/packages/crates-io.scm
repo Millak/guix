@@ -67602,6 +67602,41 @@ suitable for financial calculations.")
     (description "Shorthand macros to assist creating Decimal types.")
     (license license:expat)))
 
+(define-public rust-rust-embed-6
+  (package
+    (name "rust-rust-embed")
+    (version "6.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-embed" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q96f3valahk4m4ir6c9vg45jhyalzn5iw90ijy4x33g4z1j8qm3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-actix-web" ,rust-actix-web-4)
+                       ("rust-axum" ,rust-axum-0.6)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-include-flate" ,rust-include-flate-0.2)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-poem" ,rust-poem-1)
+                       ("rust-rocket" ,rust-rocket-0.5)
+                       ("rust-rust-embed-impl" ,rust-rust-embed-impl-6)
+                       ("rust-rust-embed-utils" ,rust-rust-embed-utils-7)
+                       ("rust-salvo" ,rust-salvo-0.16)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-warp" ,rust-warp-0.3))))
+    (home-page "https://git.sr.ht/~pyrossh/rust-embed")
+    (synopsis "Rust custom @code{Derive} macro")
+    (description
+     "This package provides a custom @code{Derive} macro which loads files
+into the Rust binary at compile time during release and loads the file from
+the file-system during development.")
+    (license license:expat)))
+
 (define-public rust-rust-embed-8
   (package
     (name "rust-rust-embed")
