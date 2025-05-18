@@ -989,9 +989,8 @@ otherwise, return MAPPINGS."
              (let ((target (file-system-mapping-target mapping)))
                (if (string-prefix? home target)
                    (file-system-mapping
-                    (source    (file-system-mapping-source mapping))
-                    (target    (override-user-dir user home target))
-                    (writable? (file-system-mapping-writable? mapping)))
+                    (inherit mapping)
+                    (target (override-user-dir user home target)))
                    mapping)))
            mappings)))
 
