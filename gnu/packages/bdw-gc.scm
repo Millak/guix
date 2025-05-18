@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,9 @@
         #$@(if (target-hurd? (or (%current-system)
                                  (%current-target-system)))
                #~("--disable-gcj-support")
+               #~())
+        #$@(if (target-mingw?)
+               #~("--enable-threads=pthreads")
                #~())))
      (cond
        ((target-ppc64le?)
