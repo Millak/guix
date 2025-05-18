@@ -12442,6 +12442,28 @@ the chrono-tz Rust crate.")
 recovery.")
     (license license:expat)))
 
+(define-public rust-ci-info-0.14
+  (package
+    (name "rust-ci-info")
+    (version "0.14.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ci_info" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12z3qr6d4j0j1al0f6mk1anvzq04y874423b9m1lsb0zvmxvn3c4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-envmnt" ,rust-envmnt-0.10)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "http://github.com/sagiegurari/ci_info")
+    (synopsis "Provides current CI environment information")
+    (description "This package provides current CI environment information.")
+    (license license:asl2.0)))
+
 (define-public rust-ci-info-0.3
   (package
     (name "rust-ci-info")
