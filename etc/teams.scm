@@ -10,7 +10,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
@@ -301,7 +301,8 @@ ecosystem."
         #:description
         "The Gnome desktop environment, along with core technologies such as
 GLib/GIO, GTK, GStreamer and Webkit."
-        #:scope (list "gnu/packages/glib.scm"
+        #:scope (list (make-regexp* "etc/teams/gnome")
+                      "gnu/packages/glib.scm"
                       "gnu/packages/gstreamer.scm"
                       "gnu/packages/gtk.scm"
                       "gnu/packages/gnome.scm"
