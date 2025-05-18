@@ -19901,6 +19901,32 @@ strings.")
     (arguments
      `(#:cargo-inputs (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.4))))))
 
+(define-public rust-deranged-0.4
+  (package
+    (name "rust-deranged")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deranged" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13h6skwk411wzhf1l9l7d3yz5y6vg9d7s3dwhhb4a942r88nm7lw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-deranged-macros" ,rust-deranged-macros-0.2)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-powerfmt" ,rust-powerfmt-0.2)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rand" ,rust-rand-0.9)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/jhpratt/deranged")
+    (synopsis "Ranged integers")
+    (description "This package provides Ranged integers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-deranged-0.3
   (package
     (name "rust-deranged")
