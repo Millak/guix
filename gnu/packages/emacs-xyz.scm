@@ -13512,9 +13512,9 @@ the same content bi-directionally.")
 It is built on top of the custom theme support in Emacs 24 or later.")
     (license license:gpl3+)))
 
-(define-public emacs-moe-theme-el
+(define-public emacs-moe-theme
   (package
-    (name "emacs-moe-theme-el")
+    (name "emacs-moe-theme")
     (version "1.0.1")
     (source
      (origin
@@ -13532,6 +13532,9 @@ It is built on top of the custom theme support in Emacs 24 or later.")
      "This package provides vibrant color schemes with light and dark
 variants.")
     (license license:gpl3+)))
+
+(define-deprecated/public emacs-moe-theme-el emacs-moe-theme
+  (deprecated-package "emacs-moe-theme-el" emacs-moe-theme))
 
 (define-public emacs-color-theme-sanityinc-tomorrow
   (package
