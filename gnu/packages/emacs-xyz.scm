@@ -31911,12 +31911,12 @@ In addition to its predecessor, it offers the following features:
     (license (list license:expat
                    license:asl2.0))))
 
-(define-public emacs-cargo-el
+(define-public emacs-cargo
   ;; No tags since 2017, use latest commit.
   (let ((commit "7f8466063381eed05d4e222ce822b1dd44e3bf17")
         (revision "0"))
     (package
-      (name "emacs-cargo-el")
+      (name "emacs-cargo")
       (version (git-version "0.4.1" revision commit))
       (source
        (origin
@@ -31944,6 +31944,9 @@ In addition to its predecessor, it offers the following features:
        "This package defines @code{cargo-minor-mode}, which gives a set of key
 combinations to perform Cargo tasks within Rust projects.")
       (license license:gpl3+))))
+
+(define-deprecated/public emacs-cargo-el emacs-cargo
+  (deprecated-package "emacs-cargo-el" emacs-cargo))
 
 (define-public emacs-ztree
   ;; Upstream provides no tag, but the commit below matches latest release.
