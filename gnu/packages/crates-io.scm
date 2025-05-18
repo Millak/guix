@@ -23209,6 +23209,29 @@ experimentation.")
        (sha256
         (base32 "0dkggq0qwv140y2kjfd4spp77zi3v7vnpm4bfy7s7r4cla7xqi49"))))))
 
+(define-public rust-encode-unicode-1
+  (package
+    (name "rust-encode-unicode")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "encode_unicode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h5j7j7byi289by63s3w4a8b3g6l5ccdrws7a67nn07vdxj77ail"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-ascii" ,rust-ascii-1))))
+    (home-page "https://github.com/tormol/encode_unicode")
+    (synopsis
+     "UTF-8 and UTF-16 support for char, u8 and u16")
+    (description
+     "UTF-8 and UTF-16 character types, iterators and related methods for
+char, u8 and u16.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-encode-unicode-0.3
   (package
     (name "rust-encode-unicode")
