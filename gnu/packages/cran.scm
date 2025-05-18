@@ -25865,14 +25865,14 @@ visualization and candidate genes around SNPs.")
 (define-public r-precrec
   (package
     (name "r-precrec")
-    (version "0.14.4")
+    (version "0.14.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "precrec" version))
        (sha256
         (base32
-         "03hvp5h7fz4v2aswxim0mqgj9rdrhnk5xqz212161kpcrw6m67z8"))))
+         "1n13zfmbbw7y73j09wkdpzyh5z6vkczljv5pr75lphcawshdyfa1"))))
     (properties `((upstream-name . "precrec")))
     (build-system r-build-system)
     (propagated-inputs
@@ -25883,7 +25883,7 @@ visualization and candidate genes around SNPs.")
            r-rcpp
            r-rlang
            r-withr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-vdiffr))
     (home-page "https://evalclass.github.io/precrec/")
     (synopsis "Calculate accurate precision-recall and ROC curves")
     (description
