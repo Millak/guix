@@ -9290,6 +9290,24 @@ inherit from in order to allow your objects to generate unique cryptographic
 signatures.")
     (license (package-license perl))))
 
+(define-public perl-object-tiny
+  (package
+    (name "perl-object-tiny")
+    (version "1.09")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/ET/ETHER/Object-Tiny-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1gf6r99ipll1an9044rl6hpkzgh49r70h336rvjv067f33fwq6bq"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Object-Tiny")
+    (synopsis "Class building library for Perl")
+    (description "This is a minimalist Perl module for building simple classes
+with read-only accessors.")
+    (license (package-license perl))))
+
 (define-public perl-ole-storage-lite
   (package
     (name "perl-ole-storage-lite")
