@@ -29901,6 +29901,36 @@ platforms.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-getrandom-0.3
+  (package
+    (name "rust-getrandom")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "getrandom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x6jl875zp6b2b6qp9ghc84b0l76bvng2lvm8zfcmwjl7rb5w516"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-r-efi" ,rust-r-efi-5)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+                       ("rust-wasi" ,rust-wasi-0.14)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
+    (home-page "https://github.com/rust-random/getrandom")
+    (synopsis
+     "small cross-platform library for retrieving random data from system source")
+    (description
+     "This package provides a small cross-platform library for retrieving random data
+from system source.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-getrandom-0.2
   (package
     (name "rust-getrandom")
