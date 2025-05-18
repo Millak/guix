@@ -1,0 +1,120 @@
+#!/usr/bin/env -S guix repl --
+!#   ;-*- mode: scheme; -*-
+;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;;
+;;; This file is part of GNU Guix.
+;;;
+;;; GNU Guix is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; GNU Guix is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;;
+;;; This is a wrapper of 'guix refresh' that refreshes all the GNOME core
+;;; packages listed in their release engineering (releng) list to their stable
+;;; version.  Set the PARTIAL_VERSIONS environment variable to update to
+;;; compatible versions instead of exact ones.  The GNOME_RELENG_VERSIONS_URI
+;;; environment variable can also point to a different URL or file, for
+;;; example to update to a past GNOME version.  The script can be invoked as:
+;;;
+;;; $ ./pre-inst-env etc/teams/gnome/gnome-core-refresh --update
+;;; or
+;;; $ ./pre-inst-env env PARTIAL_VERSIONS=1 etc/teams/gnome/gnome-core-refresh -u
+;;;
+;;; Code:
+
+(use-modules (gnu packages)
+             (guix diagnostics)
+             (guix http-client)
+             (guix scripts refresh)
+             (guix utils)
+             (ice-9 format)
+             (ice-9 exceptions)
+             (ice-9 match)
+             (ice-9 peg)
+             (ice-9 textual-ports)
+             (srfi srfi-1))
+
+(define %gnome-releng-versions-uri
+  (make-parameter
+   (or (getenv "GNOME_RELENG_VERSIONS_URI")
+       "https://gitlab.gnome.org/GNOME/releng/-/raw/master/\
+tools/versions-stable")))
+
+(define (fetch-releng-content)
+  "Return an input port to the %GNOME-RELENG-VERSIONS-URI file."
+  (call-with-port (http-fetch/cached (%gnome-releng-versions-uri))
+    get-string-all))
+
+(define-exception-type &releng-parser-error &error
+  make-releng-parser-error releng-parser-error?)
+
+(define-peg-string-patterns "\
+releng <-- (comment / entry)* !.
+entry <-- suite C name C version C subdir NL
+suite <-- text
+name <-- text
+version <-- text
+subdir <-- text?
+text <- (!NL !C  .)*
+comment < '#' (!NL .)* NL
+C < ':'
+NL < '\n'")
+
+(define %names
+  '(("adwaita-fonts" . "font-adwaita")))
+
+(define (parse-releng data)
+  "Return DATA, a string representing the content of a GNOME releng file, and
+return the complete parse tree."
+  (let ((tree (peg:tree (match-pattern releng data))))
+    (match tree
+      (#f (raise-exception (make-releng-parser-error)))
+      (_ tree))))
+
+(define (check-package-name name)
+  "Return #t if a package corresponding to NAME exists, else #f."
+  (catch 'quit
+    (lambda ()
+      (parameterize ((guix-warning-port (%make-void-port "w")))
+        (specification->package name)
+        #t))
+    (lambda _
+      (format (current-error-port) "TODO: package ~a~%" name)
+      #f)))
+
+(define* (releng-tree->update-specs tree #:key (partial-versions?
+                                                (getenv "PARTIAL_VERSIONS")))
+  "Take TREE and return a list of package specifications.  If
+PARTIAL-VERSIONS? is true, the least significant digit in version is
+stripped and the version is prefixed with the '~' character, so that 'guix
+refresh' can automatically find the newest compatible version."
+  (match tree
+    (('releng ('entry ('suite "core") ('name name) ('version version) _) ...)
+     (filter-map (lambda (name version)
+                   (let ((name (or (assoc-ref %names name) name)))
+                     (and (check-package-name name)
+                          (if partial-versions?
+                              (let* ((parts (string-split version #\.))
+                                     (num-parts (length parts)))
+                                (if (> num-parts 1)
+                                    (format #f "~a=~~~a" name
+                                            (version-prefix version
+                                                            (1- num-parts)))
+                                    (format #f "~a=~a" name version)))
+                              (format #f "~a=~a" name version)))))
+                 name version))))
+
+(apply guix-refresh (append (cdr (command-line))
+                            (releng-tree->update-specs
+                             (parse-releng (fetch-releng-content)))))
