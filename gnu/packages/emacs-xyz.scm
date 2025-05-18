@@ -28965,9 +28965,9 @@ which makes it possible to conduct Gerrit code reviews directly from within
 Emacs.")
       (license license:gpl3+))))
 
-(define-public emacs-magit-org-todos-el
+(define-public emacs-magit-org-todos
   (package
-    (name "emacs-magit-org-todos-el")
+    (name "emacs-magit-org-todos")
     (version "0.1.2")
     (source
      (origin
@@ -28991,6 +28991,9 @@ If you have a @file{todo.org} file with @code{TODO} items in the root of your
 repository, @code{magit-org-todos} will create a section in your Magit status
 buffer with each of your todos.")
     (license license:gpl3+)))
+
+(define-deprecated/public emacs-magit-org-todos-el emacs-magit-org-todos
+  (deprecated-package "emacs-magit-org-todos-el" emacs-magit-org-todos))
 
 (define-public emacs-vcsh
   (package
