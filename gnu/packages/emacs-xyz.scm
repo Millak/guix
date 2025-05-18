@@ -7710,12 +7710,11 @@ EXWM.")
     (license license:gpl3+)))
 
 (define-public emacs-sx
-  (let ((version "20191229")
-        (revision "0")
-        (commit "e9d1093c97507a6d7b4f4710ef65200dae725e5f"))
+  (let ((revision "1")
+        (commit "8c1c28f33d714fc8869e49f5642e1a585c8c85af"))
     (package
       (name "emacs-sx")
-      (version (git-version version revision commit))
+      (version (git-version "0.3" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -7724,8 +7723,20 @@ EXWM.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0m90ddwm8j0y6d1ppqhd2gil1107k202blw6mzm5bdambn4nfqkf"))))
+          (base32 "0jkmb8x28v8jnhgm9zibyjn6q5dmssv24gq1084jwx2kzg135sjm"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'fix-emacs-30-build
+                       (lambda _
+                         (substitute* "sx-question-print.el"
+                           ((":foreground nil t")
+                            ":foreground nil 'default")))))
+        #:tests? #f  ; Tests are broken on emacs@30
+        #:test-command
+        #~(list "emacs" "--batch" "-L" "." "-l" "ert" "-l" "test/tests.el"
+                "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs
        (list emacs-markdown-mode))
       (home-page "https://github.com/vermiculus/sx.el")
