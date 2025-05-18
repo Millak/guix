@@ -6,6 +6,7 @@
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +81,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt))
 
@@ -370,25 +372,44 @@ Telegram project, for its use in telegram desktop client.")
         (revision "678"))
     (hidden-package
      (package
-       (inherit rlottie)
-       (version
-        (git-version "0.0.1" revision commit))
+       (name "rlottie-for-telegram-desktop")
+       (version (git-version "0.0.1" revision commit))
        (source
         (origin
           (method git-fetch)
-          (uri
-           (git-reference
-            (url "https://github.com/desktop-app/rlottie.git")
-            (commit commit)))
+          (uri (git-reference
+                (url "https://github.com/desktop-app/rlottie.git")
+                (commit commit)))
           (file-name
-           (git-file-name "rlottie-for-telegram-desktop" version))
+           (git-file-name name version))
           (sha256
            (base32 "14gwg3sn6xdx9ymnx5r0vfm4pk8dwk92s10a1wdvfbjpyrxll64i"))
           (modules '((guix build utils)))
           (snippet
            #~(begin
                (substitute* "meson.build"
-                 (("werror=true") "werror=false"))))))))))
+                 (("werror=true") "werror=false"))))))
+       (build-system meson-build-system)
+       (arguments
+        (list #:configure-flags #~(list
+                                   "-Dlog=true"
+                                   "-Dtest=true"
+                                   "-Dcpp_std=gnu++17")))
+       (native-inputs
+        (list googletest
+              pkg-config))
+       (synopsis "Rlottie for Telegram desktop")
+       (home-page "https://github.com/desktop-app/rlottie")
+       (description
+        "This package is an alternative fork of
+https://github.com/Samsung/rlottie with changes adopted for Telegram desktop
+and not propagated to upstream.")
+       ;; All Licenses are listed in README and provided in licenses
+       ;; directory.
+       (license (list license:bsd-3
+                      license:expat
+                      license:freetype
+                      license:lgpl2.1+))))))
 
 (define cld3-for-telegram-desktop
   (origin
