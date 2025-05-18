@@ -18620,53 +18620,44 @@ inside the source file.")
     (package
       (name "emacs-sly-stepper")
       (version (git-version "0.0.0" "2" commit))
-      (home-page "https://github.com/joaotavora/sly-stepper")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url home-page)
+               (url "https://github.com/joaotavora/sly-stepper")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "07p0k797fagn1qha191p6g2b55hsqqkcj59mh0ms9id0ildydil0"))
+          (base32 "07p0k797fagn1qha191p6g2b55hsqqkcj59mh0ms9id0ildydil0"))
          (modules '((guix build utils)))
-         (snippet
-          '(begin
-             (map delete-file (find-files "." ".*-autoloads\\.elc?$"))
-             #t))))
+         (snippet #~(for-each delete-file
+                              (find-files "." ".*-autoloads\\.elc?$")))))
       (build-system emacs-build-system)
-      (inputs
-       (list cl-agnostic-lizard))
-      (propagated-inputs
-       (list emacs-sly))
       (arguments
-       `(#:include (cons* "\\.lisp$" "\\.asd$" %default-include)
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'expand-load-path 'expand-sly-contrib
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((sly (assoc-ref inputs "emacs-sly"))
-                      (contrib (find-files sly "^contrib$" #:directories? #t)))
-                 (setenv "EMACSLOADPATH"
-                         (string-append (string-join contrib ":")
-                                        ":"
-                                        (getenv "EMACSLOADPATH"))))))
-           (add-after 'install 'find-agnostic-lizard
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (file (string-append (elpa-directory out)
-                                           "/slynk-stepper.lisp"))
-                      (asd (search-input-file inputs "\
-share/common-lisp/systems/agnostic-lizard.asd")))
-                 ;; agnostic-lizard is found at runtime.
-                 (substitute* file
-                   (("\\(require :asdf\\)")
-                    (string-append
-                     "(require :asdf)\n"
-                     "     (funcall (read-from-string \"asdf:load-asd\")\n"
-                     "              \"" asd "\")\n")))))))))
+       (list
+        #:include
+        #~(cons* "\\.lisp$" "\\.asd$" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'expand-load-path 'expand-sly-contrib
+              (lambda _
+                (setenv "EMACSLOADPATH"
+                        (string-append (elpa-directory
+                                        #$(this-package-input "emacs-sly"))
+                                       "/contrib:" (getenv "EMACSLOADPATH")))))
+            (add-after 'install 'find-agnostic-lizard
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((file (string-append (elpa-directory #$output)
+                                           "/slynk-stepper.lisp")))
+                  ;; agnostic-lizard is found at runtime.
+                  (emacs-substitute-sexps file
+                    ("(require :asdf)"
+                     `(funcall (read-from-string "asdf:load-asd")
+                               ,(search-input-file inputs "\
+share/common-lisp/systems/agnostic-lizard.asd"))))))))))
+      (inputs (list cl-agnostic-lizard))
+      (propagated-inputs (list emacs-sly))
+      (home-page "https://github.com/joaotavora/sly-stepper")
       (synopsis "Portable Common Lisp stepper interface for Emacs")
       (description
        "This package features a new, portable, visual stepping facility for
