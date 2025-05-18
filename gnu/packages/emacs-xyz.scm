@@ -34885,10 +34885,10 @@ utilities.")
             (add-after 'unpack 'substitute-libyaml-core-path
               (lambda _
                 (make-file-writable "libyaml.el")
-                (substitute* "libyaml.el"
-                  (("^\\(require 'libyaml-core\\)")
-                   (string-append "(module-load \"" #$output
-                                  "/lib/libyaml-core.so\")")))))
+                (emacs-substitute-sexps "libyaml.el"
+                  ("(require 'libyaml-core)"
+                   `(module-load
+                     ,(string-append #$output "/lib/libyaml-core.so"))))))
             (add-after 'check 'make
               ;; Run make.
               (lambda* (#:key (make-flags '()) #:allow-other-keys)
