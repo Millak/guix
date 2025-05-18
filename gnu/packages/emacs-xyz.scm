@@ -11269,14 +11269,13 @@ described on the homepage.")
     (inherit emacs-irony-mode)
     (name "emacs-irony-mode-server")
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "cmake"
-                       "server"
-                       (string-append "-DCMAKE_INSTALL_PREFIX=" out))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "cmake" "server"
+                      (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)))))))
     (inputs
      (list clang))
     (build-system cmake-build-system)
