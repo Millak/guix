@@ -4237,25 +4237,23 @@ or unexpected behavior inside an elisp configuration file (typically
               (substitute* "configure"
                 (("EMACS_FLAVOR=unsupported") "EMACS_FLAVOR=emacs"))))
           (add-before 'build 'patch-exec-paths
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (make-file-writable "w3m.el")
-                (emacs-substitute-variables "w3m.el"
-                  ("w3m-command" (search-input-file inputs "/bin/w3m"))
-                  ("w3m-touch-command" (search-input-file inputs "/bin/touch"))
-                  ("w3m-icon-directory"
-                   (string-append out "/share/images/emacs-w3m")))
-                (make-file-writable "w3m-image.el")
-                (emacs-substitute-variables "w3m-image.el"
-                  ("w3m-imagick-convert-program"
-                   (search-input-file inputs "/bin/convert"))
-                  ("w3m-imagick-identify-program"
-                   (search-input-file inputs "/bin/identify"))))))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "w3m.el")
+              (emacs-substitute-variables "w3m.el"
+                ("w3m-command" (search-input-file inputs "/bin/w3m"))
+                ("w3m-touch-command" (search-input-file inputs "/bin/touch"))
+                ("w3m-icon-directory"
+                 (string-append #$output "/share/images/emacs-w3m")))
+              (make-file-writable "w3m-image.el")
+              (emacs-substitute-variables "w3m-image.el"
+                ("w3m-imagick-convert-program"
+                 (search-input-file inputs "/bin/convert"))
+                ("w3m-imagick-identify-program"
+                 (search-input-file inputs "/bin/identify")))))
           (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (invoke "make" "install" "install-icons")
-              (with-directory-excursion
-                  (emacs:elpa-directory (assoc-ref outputs "out"))
+              (with-directory-excursion (emacs:elpa-directory #$output)
                 (for-each delete-file '("ChangeLog" "ChangeLog.1"))
                 (symlink "w3m-load.el" "w3m-autoloads.el")))))))
     (home-page "http://emacs-w3m.namazu.org/")
