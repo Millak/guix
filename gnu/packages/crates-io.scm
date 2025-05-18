@@ -40376,6 +40376,30 @@ facility.  Provides a safe interface around the raw system calls allowing
 user-space programs to perform key manipulation.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-linux-raw-sys-0.9
+  (package
+    (name "rust-linux-raw-sys")
+    (version "0.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "linux-raw-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04kyjdrq79lz9ibrf7czk6cv9d3jl597pb9738vzbsbzy1j5i56d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://github.com/sunfishcode/linux-raw-sys")
+    (synopsis "Generated bindings for Linux's userspace API")
+    (description "This package provides automatically generated bindings for
+Linux userspace APIs.")
+    ;; The user can choose either license, or a variant of ASL2.0 with
+    ;; LLVM exception.  See COPYRIGHT in the repository.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-linux-raw-sys-0.6
   (package
     (name "rust-linux-raw-sys")
