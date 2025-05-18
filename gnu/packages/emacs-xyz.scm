@@ -32659,29 +32659,29 @@ GUI and terminal, and requires a nerd font installed on your system.")
         (base32 "0lwgvgnqf7vihglm0c5bwsxbl4x7f641289cji5s7jwy2dbsqk7g"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include '("\\.el$" "^data/")
-       #:exclude '("^test/")
-       #:tests? #f                      ; XXX: duplicate tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-fonts
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((fonts (string-append (assoc-ref outputs "out")
-                                         "/share/fonts")))
-               (mkdir-p fonts)
-               (with-directory-excursion "fonts"
-                 (install-file "all-the-icons.ttf" fonts)
-                 ;; TODO: Unbundle.
-                 (install-file "file-icons.ttf" fonts)
-                 (install-file "octicons.ttf" fonts)
-                 (install-file "weathericons.ttf" fonts)))))
-         (replace 'check
-           (lambda* (#:key tests? outputs #:allow-other-keys)
-             (if tests?
-                 (apply invoke "ert-runner" "-l"
-                        (append (find-files "data" "\\.el")
-                                '("all-the-icons-faces.el")))
-                 (format #t "test suite not run~%")))))))
+     (list
+      #:include '(list "\\.el$" "^data/")
+      #:exclude '(list "^test/")
+      #:tests? #f                      ; XXX: duplicate tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-fonts
+            (lambda _
+              (let ((fonts (string-append #$output "/share/fonts")))
+                (mkdir-p fonts)
+                (with-directory-excursion "fonts"
+                  (install-file "all-the-icons.ttf" fonts)
+                  ;; TODO: Unbundle.
+                  (install-file "file-icons.ttf" fonts)
+                  (install-file "octicons.ttf" fonts)
+                  (install-file "weathericons.ttf" fonts)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (apply invoke "ert-runner" "-l"
+                         (append (find-files "data" "\\.el")
+                                 '("all-the-icons-faces.el")))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
      (list emacs-f emacs-ert-runner))
     (propagated-inputs
