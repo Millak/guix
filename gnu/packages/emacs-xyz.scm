@@ -43482,9 +43482,9 @@ data expression in Alist or Plist format to a TOML string.")
 with the ed editor.")
       (license license:gpl3+))))
 
-(define-public emacs-alsamixer-el
+(define-public emacs-alsamixer
   (package
-    (name "emacs-alsamixer-el")
+    (name "emacs-alsamixer")
     (version "0.2.1")
     (source
      (origin
@@ -43499,9 +43499,12 @@ with the ed editor.")
     (build-system emacs-build-system)
     (home-page "https://codeberg.org/rwv/alsamixer-el")
     (synopsis "Emacs interface to amixer")
-    (description "@code{emacs-alsamixer-el} provides basic commands to control
+    (description "@code{emacs-alsamixer} provides basic commands to control
 audio volume via amixer.")
     (license license:gpl3+)))
+
+(define-deprecated/public emacs-alsamixer-el emacs-alsamixer
+  (deprecated-package "emacs-alsamixer-el" emacs-alsamixer))
 
 (define-public emacs-fennel-mode
   (package
