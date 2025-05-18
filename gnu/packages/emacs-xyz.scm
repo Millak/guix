@@ -43656,11 +43656,11 @@ on the chosen style."))))
 "@code{emacs-pyimport} manages python imports from Emacs via @code{python-pyflakes}.")
       (license license:gpl3+)))) ; License is in pyimport.el
 
-(define-public emacs-straight-el
+(define-public emacs-straight
   (let ((commit "44a866f28f3ded6bcd8bc79ddc73b8b5044de835")
         (revision "4"))
     (package
-      (name "emacs-straight-el")
+      (name "emacs-straight")
       (version (git-version "0" revision commit))
       (source
        (origin
@@ -43697,9 +43697,12 @@ on the chosen style."))))
       (home-page "https://github.com/radian-software/straight.el/")
       (synopsis "Purely functional package manager for the Emacs hacker")
       (description
-       "@code{emacs-straight-el} is a purely functional package manager for the Emacs
+       "@code{emacs-straight} is a purely functional package manager for the Emacs
 hacker.")
       (license license:expat))))
+
+(define-deprecated/public emacs-straight-el emacs-straight
+  (deprecated-package "emacs-straight-el" emacs-straight))
 
 (define-public emacs-osm
   (package
