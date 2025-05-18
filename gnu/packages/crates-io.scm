@@ -26929,6 +26929,26 @@ functionality for finl.")
     (description "This package provides fixed-point numbers in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fixedbitset-0.5
+  (package
+    (name "rust-fixedbitset")
+    (version "0.5.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fixedbitset" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16fd3v9d2cms2vddf9xhlm56sz4j0zgrk3d2h6v1l7hx760lwrqx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/petgraph/fixedbitset")
+    (synopsis "Simple bitset collection")
+    (description "FixedBitSet is a simple bitset collection.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fixedbitset-0.4
   (package
     (name "rust-fixedbitset")
