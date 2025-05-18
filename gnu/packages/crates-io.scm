@@ -62502,6 +62502,31 @@ Vector Graphics.")
 @code{railroad}.")
     (license license:expat)))
 
+(define-public rust-rand-0.9
+  (package
+    (name "rust-rand")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rand" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15yxfcxbgmwba5cv7mjg9bhc1r5c9483dfcdfspg62x4jk8dkgwz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-rand-chacha" ,rust-rand-chacha-0.9)
+                       ("rust-rand-core" ,rust-rand-core-0.9)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://rust-random.github.io/book")
+    (synopsis "Random number generators and other randomness functionality")
+    (description
+     "Rand provides utilities to generate random numbers, to convert them to
+useful types and distributions, and some randomness-related algorithms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rand-0.8
   (package
     (name "rust-rand")
