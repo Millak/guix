@@ -11682,13 +11682,13 @@ supported via Andre Simon's highlight package.")
 (define-public r-hmm
   (package
     (name "r-hmm")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "HMM" version))
               (sha256
                (base32
-                "03b548bnwqpnd7zypb4gvy9chyi5li2hp99a9vrh4qszxg2ihas7"))))
+                "1rv9s058mw4sl6hvna5hdp3i2nl2z4vhgdmakbv1ldjwhhkfg5rv"))))
     (properties `((upstream-name . "HMM")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/HMM/")
