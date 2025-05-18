@@ -13224,10 +13224,9 @@ Features degrade gracefully when viewed from terminal.")
          (modify-phases %standard-phases
            (add-after 'unpack 'patch-exec-paths
              (lambda* (#:key inputs #:allow-other-keys)
-               (let ((pandoc (assoc-ref inputs "pandoc")))
-                 (substitute* "org-pandoc-import.el"
-                   (("\"pandoc\"")
-                    (string-append "\"" pandoc "/bin/pandoc\"")))))))))
+               (emacs-substitute-variables "org-pandoc-import.el"
+                 ("org-pandoc-import-executable"
+                  (search-input-file inputs "bin/pandoc"))))))))
       (inputs
        (list pandoc))
       (home-page "https://github.com/tecosaur/org-pandoc-import/")
