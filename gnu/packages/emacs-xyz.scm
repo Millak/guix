@@ -17739,12 +17739,6 @@ ack, ag, helm and pt.")
        (sha256
         (base32 "0l9p6yiv8w9s0rpa4fyrp9gw1dgwpyr9fmkhs53bhc6v9x7br8ix"))))
     (build-system emacs-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'die
-                 (lambda _
-                   (exit 1))))))
     (propagated-inputs
      (list emacs-async emacs-popup))
     (home-page "https://emacs-helm.github.io/helm/")
