@@ -1857,7 +1857,7 @@ commands.")
 (define-public lite-xl
   (package
     (name "lite-xl")
-    (version "2.1.3")
+    (version "2.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1866,7 +1866,7 @@ commands.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19wdq8w6ickyynx6r2wg2vf5isl2577zjizgwbzql9vhqdsi8ag3"))))
+                "0ykidzm2wi2ds251ngq0g02sdawajw5iy5hcp3mzr5z5347if392"))))
     (build-system meson-build-system)
     (arguments (list #:configure-flags #~'("-Duse_system_lua=true")))
     (inputs (list lua-5.4 pcre2 freetype sdl2))
