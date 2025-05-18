@@ -3329,7 +3329,7 @@ models in the STL and OFF file formats.")
         (base32 "0vsidz3qws89z8blq5nng7mvzn3kj06lw9417aymhykyjgjn5f8m"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
-    (inputs (list emacs-compat))
+    (propagated-inputs (list emacs-compat))
     (synopsis "Emacs mode to edit OpenSCAD files")
     (description
      "@code{scad-mode} provides an Emacs major mode for editing
