@@ -27780,9 +27780,9 @@ mode.")
      "This package provides an edit server to respond to requests from Emacs.")
     (license license:gpl3+)))
 
-(define-public emacs-m-buffer-el
+(define-public emacs-m-buffer
   (package
-    (name "emacs-m-buffer-el")
+    (name "emacs-m-buffer")
     (version "0.15")
     (source
      (origin
@@ -27806,6 +27806,9 @@ mode.")
     (description "@code{m-buffer} provides a set of list-orientated functions
 for operating over the contents of Emacs buffers.")
     (license license:gpl3+)))
+
+(define-deprecated/public emacs-m-buffer-el emacs-m-buffer
+  (deprecated-package "emacs-m-buffer-el" emacs-m-buffer))
 
 (define-public emacs-let-alist
   (package
@@ -28220,7 +28223,7 @@ buffer.")
            #~(list "emacs" "--batch" "--directory=."
                    "--load" "assess-discover.el"
                    "--eval" "(assess-discover-run-and-exit-batch t)")))
-    (propagated-inputs (list emacs-m-buffer-el))
+    (propagated-inputs (list emacs-m-buffer))
     (native-inputs (list emacs-load-relative))
     (home-page "https://elpa.gnu.org/packages/assess.html")
     (synopsis "Test support functions")
