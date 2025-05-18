@@ -11308,6 +11308,48 @@ supported by Cargo.")
      "This package provides a helper proc-macro for Cargo's testsuite.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-test-support-0.7
+  (package
+    (name "rust-cargo-test-support")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-test-support" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "111pfb9hjj7hvlahyx2337z0zh37wssvi1h9i20sm7fdh7vhx3rz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cargo-test-macro" ,rust-cargo-test-macro-0.4)
+                       ("rust-cargo-util" ,rust-cargo-util-0.2)
+                       ("rust-crates-io" ,rust-crates-io-0.40)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-git2" ,rust-git2-0.20)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-itertools" ,rust-itertools-0.14)
+                       ("rust-pasetors" ,rust-pasetors-0.7)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-snapbox" ,rust-snapbox-0.6)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Testing framework for Cargo's testsuite")
+    (description
+     "This package provides a testing framework for Cargo's testsuite.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-test-support-0.4
   (package
     (name "rust-cargo-test-support")
