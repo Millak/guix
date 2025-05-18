@@ -67283,6 +67283,29 @@ backwards compatibility guarantees.")
 floating-point, and complex numbers based on GMP, MPFR and MPC.")
     (license license:lgpl3+)))
 
+(define-public rust-run-script-0.11
+  (package
+    (name "rust-run-script")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "run_script" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gjwdpam82b25g4plr028j3w2pwssg2bms6qkbv2zz6nwr07q3gj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-fsio" ,rust-fsio-0.4))))
+    (home-page "http://github.com/sagiegurari/run_script")
+    (synopsis "Run shell scripts in Rust")
+    (description "This library enables to invoke shell scripts based on their
+content.  While @code{std::process::Command} works great to execute standalone
+command, you need more manual code to take a script text and execute it.  For
+this purpose, this library was created.")
+    (license license:asl2.0)))
+
 (define-public rust-run-script-0.10
   (package
     (name "rust-run-script")
