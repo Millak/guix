@@ -36110,8 +36110,7 @@ support JSX syntax.")
 (define-public emacs-origami
   (let ((commit "1f38085c8f9af7842765ed63f7d6dfe4dab59366")
         (version "1.0")
-        (revision "1")
-        (patch "1d9c4f120c027a5009b0424270e3aae59f1cb128"))
+        (revision "1"))
     (package
       (name "emacs-origami")
       (version (git-version version revision commit))
@@ -36134,11 +36133,11 @@ support JSX syntax.")
 (let ((color (face-attribute 'highlight :background)))
   (and color (not (eq color 'unspecified)) color))")))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash emacs-s))
+      (propagated-inputs (list emacs-dash emacs-s))
       (home-page "https://github.com/gregsexton/origami.el")
       (synopsis "Flexible text-folding")
-      (description "This package provides a minor mode for collapsing and
+      (description
+       "This package provides a minor mode for collapsing and
 expanding regions of text without modifying the actual contents.")
       (license license:expat))))
 
