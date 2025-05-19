@@ -68810,6 +68810,35 @@ library written in pure Rust.")
     (description "Helper macros for Rusticata.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustix-1
+  (package
+    (name "rust-rustix")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rhjh16bnxi86nrn9qwcnw5632mvd5m1vdy61s4n9zz7mzb867n7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-errno" ,rust-errno-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-linux-raw-sys" ,rust-linux-raw-sys-0.9)
+                       ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/bytecodealliance/rustix")
+    (synopsis "Safe Rust bindings to POSIX syscalls")
+    (description
+     "This package provides safe Rust bindings to POSIX syscalls.")
+    ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rustix-0.38
   (package
     (name "rust-rustix")
