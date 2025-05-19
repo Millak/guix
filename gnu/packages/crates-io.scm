@@ -80889,6 +80889,46 @@ that exposes the same functionality at the command line.")
         (base32
          "0hvd6vk4ksgg2y99498jw52ric4lxm0i6ygpzqm95gdrhvsxyynp"))))))
 
+(define-public rust-tame-index-0.18
+  (package
+    (name "rust-tame-index")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tame-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0365pyq3qp7415z1xql03763krh63779gqdgxwc8l22dq5hrxkpz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-camino" ,rust-camino-1)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-gix" ,rust-gix-0.70)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-rustc-stable-hash" ,rust-rustc-stable-hash-0.1)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-smol-str" ,rust-smol-str-0.3)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-toml-span" ,rust-toml-span-0.4)
+                       ("rust-twox-hash" ,rust-twox-hash-2))))
+    (home-page "https://github.com/EmbarkStudios/tame-index")
+    (synopsis "Provides access to local and remote cargo registry indices")
+    (description
+     "This package provides access to local and remote cargo registry indices.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-tame-index-0.13
   (package
     (name "rust-tame-index")
