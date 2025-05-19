@@ -3358,6 +3358,34 @@ command execution.")
      `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs (("rust-bstr" ,rust-bstr-1))))))
 
+(define-public rust-gix-commitgraph-0.26
+  (package
+    (name "rust-gix-commitgraph")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-commitgraph" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xs85svhri8b40paa3zjjxfqzl6g3ganxnxg1nhjcq51v318wfp2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-chunk" ,rust-gix-chunk-0.4)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Read-only access to the git commitgraph file format")
+    (description
+     "This package provides read-only access to the git commitgraph file format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-commitgraph-0.24
   (package
     (name "rust-gix-commitgraph")
