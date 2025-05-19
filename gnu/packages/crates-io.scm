@@ -30303,6 +30303,29 @@ platforms.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-r-efi-5
+  (package
+    (name "rust-r-efi")
+    (version "5.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "r-efi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ig93jvpqyi87nc5kb6dri49p56q7r7qxrn8kfizmqkfj5nmyxkl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://github.com/r-efi/r-efi/wiki")
+    (synopsis
+     "UEFI Reference Specification Protocol Constants and Definitions")
+    (description
+     "This package provides UEFI Reference Specification Protocol Constants and Definitions.")
+    (license (list license:expat license:asl2.0 license:lgpl2.1+))))
+
 (define-public rust-getrandom-0.3
   (package
     (name "rust-getrandom")
