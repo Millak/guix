@@ -29925,6 +29925,29 @@ Rust.")
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-const-default-derive-0.2
+  (package
+    (name "rust-const-default-derive")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const-default-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nh3iwba073s9vsyhr5ci0pgbnc6zavmfs7za4vj64mqrgc4v08g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/AerialX/const-default.rs")
+    (synopsis "#[derive(ConstDefault)]")
+    (description "This package provides #[derive(@code{ConstDefault})].")
+    (license license:expat)))
+
 (define-public rust-generic-array-1
   (package
     (name "rust-generic-array")
