@@ -9493,6 +9493,28 @@ provides a crate for parsing and serialization of gix-url's.")
 feature toggles.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-validate-0.10
+  (package
+    (name "rust-gix-validate")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-validate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kbdwvnbkcw6sq0mx6zis6nsc61v95n79v98ilw52nyymh6f1fbp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Validation functions for various kinds of names in Git")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package contains validation functions for various kinds of names in Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-validate-0.9
   (package
     (name "rust-gix-validate")
