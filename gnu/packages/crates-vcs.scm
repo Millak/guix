@@ -5319,6 +5319,31 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-hashtable-0.7
+  (package
+    (name "rust-gix-hashtable")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hashtable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l8jq85fkfw4inmpd6w2pk1dq67krsqmmp100lpd1k1a6yy3148q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "hashtable based data structures optimized to utilize git ObjectId keys")
+    (description
+     "This package provides hashtable based data structures optimized to
+utilize git @code{ObjectId} keys.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-hashtable-0.5
   (package
     (name "rust-gix-hashtable")
