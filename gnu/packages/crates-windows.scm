@@ -1720,6 +1720,29 @@ crate.")
                        ("rust-syn" ,rust-syn-2)
                        ("rust-windows-metadata" ,rust-windows-metadata-0.51))))))
 
+(define-public rust-windows-interface-0.59
+  (package
+    (name "rust-windows-interface")
+    (version "0.59.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-interface" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a4zr8740gyzzhq02xgl6vx8l669jwfby57xgf0zmkcdkyv134mx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "The interface macro for the windows crate")
+    (description
+     "This package provides The interface macro for the windows crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-core-0.58
   (package
     (name "rust-windows-core")
