@@ -5559,7 +5559,12 @@ keyboard shortcuts.")
                          `(,glib "bin")
                          `(,gtk "bin")
                          itstool))
-    (inputs (list gtk gtksourceview libadwaita enchant pcre2
+    (inputs (list enchant
+                  gtk
+                  gtksourceview
+                  libadwaita
+                  libspelling
+                  pcre2
                   ;; cyclic module dependency
                   (module-ref
                    (resolve-interface
@@ -11276,7 +11281,7 @@ Bluefish supports many programming and markup languages.")
 (define-public gnome-system-monitor
   (package
     (name "gnome-system-monitor")
-    (version "46.0")
+    (version "48.1")
     (source
      (origin
        (method url-fetch)
@@ -11285,13 +11290,15 @@ Bluefish supports many programming and markup languages.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "16bmai706vcc373ry51cciap5hg4m71fhwjl4l4c71n6b20j8xjk"))))
+         "0f36zkb6xxncd57krrjnwkd5xgd714j5i01dzmcycrk351p3lg0k"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
        #:configure-flags '("-Dsystemd=false")))
     (native-inputs
-     (list `(,glib "bin")               ;for glib-mkenums.
+     (list catch2-3
+           cmake
+           `(,glib "bin")               ;for glib-mkenums.
            `(,gtk+ "bin")               ;gtk-update-icon-cache
            intltool
            itstool
