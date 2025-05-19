@@ -4355,6 +4355,36 @@ directory walking.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-gix-discover-0.38
+  (package
+    (name "rust-gix-discover")
+    (version "0.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-discover" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n35pfcr4didkxswigy4lvwkqrhyvbgjk82sb87lw1h4vx5l3hnh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-gix-fs" ,rust-gix-fs-0.13)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.50)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Discover git repositories and check if a directory is a git repository")
+    (description
+     "This package provides a way to discover git repositories and to check
+if a directory is a git repository.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-discover-0.35
   (package
     (name "rust-gix-discover")
