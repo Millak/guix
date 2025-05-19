@@ -1885,6 +1885,32 @@ git ObjectId keys")
      "This package provides a crate that provides hashtable based data structures
 optimized to utilize git @code{ObjectId} keys.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-hash-0.15
+  (package
+    (name "rust-gix-hash")
+    (version "0.15.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kp4yjlkp8g4qg0r2zs0jmz19r076f2y91cjsikhxvclf70wqphb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Borrowed and owned git hash digests used to identify git objects")
+    (description
+     "This package provides borrowed and owned git hash digests used to
+identify git objects.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
