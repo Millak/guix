@@ -5786,6 +5786,28 @@ crate implements the Git index file.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-lock-16
+  (package
+    (name "rust-gix-lock")
+    (version "16.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hn696w506zwqfl9pjhijaqkshzr5lb4v0j1hjb40sgzf1982fcp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-tempfile" ,rust-gix-tempfile-16)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git-style lock-file implementation")
+    (description "This package provides a git-style lock-file implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-lock-14
   (package
     (name "rust-gix-lock")
