@@ -3322,6 +3322,30 @@ windows crate.")
                (base32
                 "17z8q25pd3dp6b84qm9nlayd3ym78sbryxlqmgcxvz9vpmy8qarz"))))))
 
+(define-public rust-winreg-0.55
+  (package
+    (name "rust-winreg")
+    (version "0.55.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winreg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15xy060vylrsp91bc0ximx3xziwipzlrn1n2ab19w3n56x9pcnnb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/gentoo90/winreg-rs")
+    (synopsis "Rust bindings to MS Windows Registry API")
+    (description
+     "This package provides Rust bindings to MS Windows Registry API.")
+    (license license:expat)))
+
 (define-public rust-winreg-0.52
   (package
     (name "rust-winreg")
