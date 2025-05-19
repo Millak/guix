@@ -1071,6 +1071,40 @@ protocols.")
      "This package implements git packs and related data structures.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-odb-0.66
+  (package
+    (name "rust-gix-odb")
+    (version "0.66.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-odb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bnhjzg360vy6f303ps7halnnkx3x81dwy4l8q2f4bipng70wy6b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-pack" ,rust-gix-pack-0.56)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implements various git object databases")
+    (description "This package implements various git object databases.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
