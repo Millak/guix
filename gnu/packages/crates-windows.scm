@@ -1766,6 +1766,31 @@ crate.")
      "This package provides The implement macro for the windows crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-core-0.61
+  (package
+    (name "rust-windows-core")
+    (version "0.61.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qsa3iw14wk4ngfl7ipcvdf9xyq456ms7cx2i9iwf406p7fx7zf0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-implement" ,rust-windows-implement-0.60)
+                       ("rust-windows-interface" ,rust-windows-interface-0.59)
+                       ("rust-windows-link" ,rust-windows-link-0.1)
+                       ("rust-windows-result" ,rust-windows-result-0.3)
+                       ("rust-windows-strings" ,rust-windows-strings-0.4))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Core type support for COM and Windows")
+    (description
+     "This package provides Core type support for COM and Windows.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-core-0.58
   (package
     (name "rust-windows-core")
