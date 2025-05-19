@@ -7312,6 +7312,50 @@ terminals prompt.")
        #:cargo-development-inputs (("rust-expectrl" ,rust-expectrl-0.7)
                                    ("rust-serial-test" ,rust-serial-test-2))))))
 
+(define-public rust-gix-protocol-0.48
+  (package
+    (name "rust-gix-protocol")
+    (version "0.48.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "145sln6g810vab9jhwiz3r1bwr61jh1i1qj168hpvdn6mxhvsqbc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.27)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-lock" ,rust-gix-lock-16)
+                       ("rust-gix-negotiate" ,rust-gix-negotiate-0.18)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-ref" ,rust-gix-ref-0.50)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.28)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.18)
+                       ("rust-gix-shallow" ,rust-gix-shallow-0.2)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-transport" ,rust-gix-transport-0.45)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-maybe-async" ,rust-maybe-async-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-winnow" ,rust-winnow-0.6))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git protocols")
+    (description
+     "This package provides a crate of the gitoxide project for implementing
+git protocols.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-protocol-0.45
   (package
     (name "rust-gix-protocol")
