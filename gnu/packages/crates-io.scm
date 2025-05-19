@@ -87942,6 +87942,25 @@ span information.")
 Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-topological-sort-0.2
+  (package
+    (name "rust-topological-sort")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "topological-sort" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gcxahg24c058izagz642vs0kfb2zja48my3qrd0kkaf2d730s7a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/gifnksm/topological-sort-rs")
+    (synopsis "Performs topological sorting")
+    (description "This package performs topological sorting.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tracing-0.1
   (package
     (name "rust-tracing")
