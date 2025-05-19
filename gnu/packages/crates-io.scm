@@ -94072,6 +94072,30 @@ result.")
     (description "Detect when another Future wants a result.")
     (license license:expat)))
 
+(define-public rust-wit-bindgen-rt-0.39
+  (package
+    (name "rust-wit-bindgen-rt")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wit-bindgen-rt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hd65pa5hp0nl664m94bg554h4zlhrzmkjsf6lsgsb7yc4734hkg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/bytecodealliance/wit-bindgen")
+    (synopsis "Internal runtime support for the `wit-bindgen` crate.")
+    (description
+     "This package provides Internal runtime support for the `wit-bindgen` crate.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-wasi-0.14
   (package
     (name "rust-wasi")
