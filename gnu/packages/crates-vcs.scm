@@ -5516,6 +5516,50 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
+(define-public rust-gix-index-0.38
+  (package
+    (name "rust-gix-index")
+    (version "0.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n45vkbmkpc4m570rdanyqz62a68mihsrqpz1wqnk4w74qv2xldc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-gix-bitmap" ,rust-gix-bitmap-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-fs" ,rust-gix-fs-0.13)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-lock" ,rust-gix-lock-16)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.44)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Handle git index file")
+    (description
+     "This package provides a crate of the gitoxide project dedicated to
+implementing the git index file.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-index-0.35
   (package
     (name "rust-gix-index")
