@@ -8773,6 +8773,37 @@ implementation of Git.")
                        ("rust-gix-url" ,rust-gix-url-0.24)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-tempfile-16
+  (package
+    (name "rust-gix-tempfile")
+    (version "16.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-tempfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00c5czgzzi3c8yxv24vh1rmkgf06vgb1ypf5521lmwjyjhiz8n15"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-dashmap" ,rust-dashmap-6)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-fs" ,rust-gix-fs-0.13)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
+                       ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "git tempfile implementation with a global registry to assure cleanup")
+    (description
+     "This package provides a git tempfile implementation with a global
+registry to assure cleanup.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-tempfile-14
   (package
     (name "rust-gix-tempfile")
