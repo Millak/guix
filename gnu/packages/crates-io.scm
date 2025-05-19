@@ -11129,14 +11129,14 @@ automatically on cargo test.")
 (define-public rust-cargo-lock-10
   (package
     (name "rust-cargo-lock")
-    (version "10.0.1")
+    (version "10.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-lock" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ldm8nd05cwyc2y0wwbdwx51g5phylkffaycpc2xa8kh01npfsb4"))))
+        (base32 "0m74y8w9wn7rl5mpzr0436r6fshf3qhm7d3wl02s4ys0f57wnsn0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gumdrop" ,rust-gumdrop-0.8)
