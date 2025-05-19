@@ -24865,6 +24865,26 @@ deserialized from environment variables.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-str-buf" ,rust-str-buf-1))))))
 
+(define-public rust-display-error-chain-0.2
+  (package
+    (name "rust-display-error-chain")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "display-error-chain" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xbcilzyfc8n60vjkmsf8v53kw855xw68jh69hpza6dwhrp19hhb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/mexus/display-error-chain.git")
+    (synopsis "Formats a standard error and its sources")
+    (description
+     "This package provides a way to format a standard error and its sources.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-escape8259-0.5
   (package
     (name "rust-escape8259")
