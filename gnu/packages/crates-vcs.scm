@@ -831,6 +831,34 @@ a blame algorithm.")
 worktree to a particular state.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-submodule-0.16
+  (package
+    (name "rust-gix-submodule")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-submodule" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p4zx1v997wjglya5xrfxdixf586scigbj43dqmbwvnb1y65yid2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-config" ,rust-gix-config-0.42)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.8)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.27)
+                       ("rust-gix-url" ,rust-gix-url-0.28)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git submodules")
+    (description
+     "This package provides a crate of the gitoxide project dealing with
+git submodules.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
