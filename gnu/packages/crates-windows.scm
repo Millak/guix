@@ -2696,6 +2696,26 @@ implementation of Windows services.")
     (description "This package provides Windows numeric types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-threading-0.1
+  (package
+    (name "rust-windows-threading")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-threading" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19jpn37zpjj2q7pn07dpq0ay300w65qx7wdp13wbp8qf5snn6r5n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-link" ,rust-windows-link-0.1))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows threading")
+    (description "This package provides Windows threading.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-strings-0.1
   (package
     (name "rust-windows-strings")
