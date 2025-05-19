@@ -742,6 +742,32 @@ specification.")
 algorithms.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-shallow-0.2
+  (package
+    (name "rust-gix-shallow")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-shallow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rjhwcjjixfy4fbzciyz5mikkvq38rwfyny86ckya0z324q58wmb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-lock" ,rust-gix-lock-16)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Handle shallow git files")
+    (description
+     "This package provides a crate of the gitoxide project dedicated to
+handling files specifying the shallow boundary.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
