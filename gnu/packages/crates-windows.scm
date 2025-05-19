@@ -2594,6 +2594,26 @@ Windows crate.")
     (description "This package provides Linking for Windows.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-result-0.3
+  (package
+    (name "rust-windows-result")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-result" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1il60l6idrc6hqsij0cal0mgva6n3w6gq4ziban8wv6c6b9jpx2n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-link" ,rust-windows-link-0.1))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows error handling")
+    (description "This package provides Windows error handling.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-result-0.2
   (package
     (name "rust-windows-result")
