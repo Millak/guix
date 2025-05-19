@@ -681,6 +681,26 @@ libcurl, which is intended to be used with the @code{git2} crate.")
      "This package provides a parser library for the Conventional Commit
 specification.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-git-info-0.1
+  (package
+    (name "rust-git-info")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git_info" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jzlqz5q6yl7d3a8nazgn5blvjci6h7mjxqab0cxwq73b51lf9cm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "http://github.com/sagiegurari/git_info")
+    (synopsis "Extracts git repository information")
+    (description "This package provides Extracts git repository information.")
+    (license license:asl2.0)))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
