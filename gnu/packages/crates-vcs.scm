@@ -7003,6 +7003,34 @@ pkt-line serialization format.")
        (("rust-async-std" ,rust-async-std-1)
         ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
+(define-public rust-gix-packetline-blocking-0.18
+  (package
+    (name "rust-gix-packetline-blocking")
+    (version "0.18.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-packetline-blocking" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1crknbdkdnh5aanpyda3dhm2c0a3hacl1h5shxay9iq5w6i3xkqy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Duplicate of @code{gix-packetline} with @code{blocking-io} selected")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package is a duplicate of @code{gix-packetline} with the @code{blocking-io}
+feature pre-selected.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-packetline-blocking-0.17
   (package
     (name "rust-gix-packetline-blocking")
