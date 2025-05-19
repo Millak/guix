@@ -1593,6 +1593,41 @@ to assure cleanup.")
     (description "This package provides a crate to handle git references.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-config-0.42
+  (package
+    (name "rust-gix-config")
+    (version "0.42.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06bgc1isbk831763ii4f1yahf7r3id301ksri4acp68zr83b8jb6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.49)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2)
+                       ("rust-winnow" ,rust-winnow-0.6))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git-config file parser and editor")
+    (description
+     "This package provides a git-config file parser and editor from the gitoxide
+project.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
