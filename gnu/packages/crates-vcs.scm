@@ -8907,20 +8907,20 @@ tempfile capability with a global registry to assure clean-up.")
 (define-public rust-gix-trace-0.1
   (package
     (name "rust-gix-trace")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-trace" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lmr5qqdk44xbz695asvwvc60ggaxrd12gjdl8izrw991h9dxg84"))))
+        (base32 "1xv54v5y91vxjx351wl3yk66fwk7ybkna2knbxlnj34j6qh6lfbw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-document-features" ,rust-document-features-0.2)
         ("rust-tracing-core" ,rust-tracing-core-0.1))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis "Crate to provide minimal `tracing` support")
     (description
      "This package provides a crate to provide minimal `tracing` support that
