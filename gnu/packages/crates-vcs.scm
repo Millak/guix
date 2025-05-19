@@ -8138,6 +8138,34 @@ handles finding names and parsing specifications.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-revwalk-0.18
+  (package
+    (name "rust-gix-revwalk")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0iv2c479w9lkjwbngdwyial6km8dllgah8wvp7r9w7jv4c6biv6l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.26)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.7)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Walk the git revision graph")
+    (description
+     "This package provides a crate providing utilities for walking the
+git revision graph.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revwalk-0.15
   (package
     (name "rust-gix-revwalk")
