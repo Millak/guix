@@ -8588,6 +8588,34 @@ Gitoxide is a pure Rust implementation of Git.")
                        ("rust-gix-pathspec" ,rust-gix-pathspec-0.3)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-submodule-0.17
+  (package
+    (name "rust-gix-submodule")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-submodule" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b532y2c7qg8axqc2nkw2mdiq8mg9hxq87mfj2aa1j3askl2z5vl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-config" ,rust-gix-config-0.43)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.9)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.28)
+                       ("rust-gix-url" ,rust-gix-url-0.29)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Deal with git submodules")
+    (description
+     "This package provides a crate of the gitoxide project for dealing with
+git submodules.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-submodule-0.14
   (package
     (name "rust-gix-submodule")
