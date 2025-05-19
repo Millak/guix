@@ -1770,6 +1770,33 @@ git revision graph.")
      "This package provides a crate of the gitoxide project implementing
 git filters.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-glob-0.17
+  (package
+    (name "rust-gix-glob")
+    (version "0.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-glob" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d9lrxas6zjia91j3m4z8rnazz1s02j9kgw4fib82d8aximrmxma"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git pattern matching")
+    (description
+     "This package provides a crate of the gitoxide project dealing with pattern
+matching.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
