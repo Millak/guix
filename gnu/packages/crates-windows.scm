@@ -2675,6 +2675,27 @@ Windows crate.")
 implementation of Windows services.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-numerics-0.2
+  (package
+    (name "rust-windows-numerics")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-numerics" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cf2j8nbqf0hqqa7chnyid91wxsl2m131kn0vl3mqk3c0rlayl4i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.61)
+                       ("rust-windows-link" ,rust-windows-link-0.1))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows numeric types")
+    (description "This package provides Windows numeric types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-strings-0.1
   (package
     (name "rust-windows-strings")
