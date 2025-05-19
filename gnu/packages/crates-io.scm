@@ -81739,6 +81739,26 @@ that exposes the same functionality at the command line.")
         (base32
          "0hvd6vk4ksgg2y99498jw52ric4lxm0i6ygpzqm95gdrhvsxyynp"))))))
 
+(define-public rust-rustc-stable-hash-0.1
+  (package
+    (name "rust-rustc-stable-hash")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustc-stable-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "026drx2ly2b8b1pp1c2v3p3ws6k0jaa5bbc5f4xwkibhj7r4453q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/rust-lang/rustc-stable-hash")
+    (synopsis "stable hashing algorithm used by rustc")
+    (description
+     "This package provides a stable hashing algorithm used by rustc.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-tame-index-0.18
   (package
     (name "rust-tame-index")
