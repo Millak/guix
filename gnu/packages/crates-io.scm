@@ -88655,6 +88655,28 @@ strings.")
        (sha256
         (base32 "1lbf64snscr3vz71jbl6i2c8zr2ndsiqbk6316z39fj1a8mipcar"))))))
 
+(define-public rust-twox-hash-2
+  (package
+    (name "rust-twox-hash")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "twox-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "022rwrv24rl6g32nqv1mywf6vdnkn7vq34fg793vll1hgccpzcg7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/shepmaster/twox-hash")
+    (synopsis "Rust implementation of the XXHash and XXH3 algorithms")
+    (description "This package provides a Rust implementation of the XXHash
+and XXH3 algorithms.")
+    (license license:expat)))
+
 (define-public rust-twox-hash-1
   (package
     (name "rust-twox-hash")
