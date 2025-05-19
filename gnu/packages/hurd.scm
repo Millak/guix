@@ -740,11 +740,11 @@ in userland processes thanks to the DDE layer.")
       (license gpl2))))
 
 (define-public rumpkernel
-  (let ((commit "f1ffd6405f225336e595a0f99f01095ed7438337")
+  (let ((commit "2aad456903b2dc2232fa18c7f286cea6d77b570f")
         (revision "0"))
     (package
       (name "rumpkernel")
-      (version (git-version "0-20211031" revision commit))
+      (version (git-version "0-20250111" revision commit))
       ;; This uses the Debian Salsa rumpkernel package git as upstream as that
       ;; is where development happens.  Once things have stabilized, upstream
       ;; may change to the NetBSD git from where Debian takes their snapshots.
@@ -755,7 +755,7 @@ in userland processes thanks to the DDE layer.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1ygn3ysji06ik3k44sf906fjpdmabznkspw70llldbk2zkrcdw7i"))
+                  "14fiv2llvd5s1vi9gigmi1vi0b9yvg2zqyc9xg67ffxl1phv7p8j"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -862,7 +862,9 @@ in userland processes thanks to the DDE layer.")
                      "-V" (string-append "TOPRUMP=" toprump)
                      "-V" "BUILDRUMP_CPPFLAGS=-Wno-error=stringop-overread"
                      "-V" "RUMPUSER_EXTERNAL_DPLIBS=pthread"
-		     "-V" (string-append
+                     ;; build.sh unsets C_INCLUDE_PATH which breaks our HOST_CC
+                     "-V" (string-append "C_INCLUDE_PATH=" (getenv "C_INCLUDE_PATH"))
+                     "-V" (string-append
                            "CPPFLAGS="
                            " -I../../obj/destdir." host-cpu "/usr/include"
                            " -D_FILE_OFFSET_BITS=64"
@@ -870,10 +872,8 @@ in userland processes thanks to the DDE layer.")
                            " -DRUMPUSER_CONFIG=yes"
                            " -DNO_PCI_MSI_MSIX=yes"
                            " -DNUSB_DMA=1"
-                           " -DPAE")
-                     "-V" (string-append
-                           "HOST_CFLAGS=-O"
-                           " -Wno-error=implicit-function-declaration")
+                           " -DPAE"
+                           " -DBUFPAGES=16")
                      "-V" (string-append
                            "CWARNFLAGS="
                            " -Wno-error=maybe-uninitialized"
@@ -936,7 +936,7 @@ in userland processes thanks to the DDE layer.")
                    (append (find-files "buildrump.sh/src" "librump.*[.](a|so.*)")
                            (find-files "obj" "librump.*[.](a|so.*)")))))))))
       (inputs
-       (list gnumach-headers libpciaccess))
+       (list gnumach-headers libpciaccess libirqhelp))
       (native-inputs
        (list autoconf
              automake
