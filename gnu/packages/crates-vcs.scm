@@ -6913,6 +6913,37 @@ Rust implementation of Git.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-uluru" ,rust-uluru-3))))))
 
+(define-public rust-gix-packetline-0.18
+  (package
+    (name "rust-gix-packetline")
+    (version "0.18.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-packetline" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "011sdpf03fp066v9q8zcjjz63vwavaqbl1nw84j3bmgl1jkl8f0j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "git pkt-line serialization format")
+    (description
+     "This package provides a crate of the gitoxide project implementing the
+git pkt-line serialization format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-packetline-0.17
   (package
     (name "rust-gix-packetline")
