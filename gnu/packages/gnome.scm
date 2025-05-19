@@ -9523,7 +9523,7 @@ like switching to windows and launching applications.")
 (define-public gtk-vnc
   (package
     (name "gtk-vnc")
-    (version "1.3.1")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
@@ -9532,7 +9532,7 @@ like switching to windows and launching applications.")
                        (version-major+minor version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1kpih1gnp3hmsx4l6pig10zn7gd3s5fwm0k6icax0n859sn669si"))))
+        (base32 "08yx6hnf1v6cv4g5fra4cbygg401d9y5dk1slhfr7b98fmsb9gn0"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
