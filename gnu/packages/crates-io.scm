@@ -68643,6 +68643,29 @@ Transforms (DCT) of any size in O(nlogn) time.")
 library written in pure Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustfix-0.9
+  (package
+    (name "rust-rustfix")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustfix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a79gyag6w459qani0a1m6asadz6vxvgvmrw4l94zzvifiniarkz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Automatically apply the suggestions made by rustc")
+    (description "Automatically apply the suggestions made by rustc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustfix-0.8
   (package
     (name "rust-rustfix")
