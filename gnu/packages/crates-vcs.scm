@@ -9333,6 +9333,36 @@ package is used to traverse Git commit graphs and trees.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-url-0.29
+  (package
+    (name "rust-gix-url")
+    (version "0.29.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-url" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04qb2p68886axrbx5gdjlhqwg55j0pn7zn25c08qzpakidv8q899"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Parsing and serialization of gix-url")
+    (description
+     "This package provides a crate of the gitoxide project implementing
+parsing and serialization of gix-url.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-url-0.27
   (package
     (name "rust-gix-url")
