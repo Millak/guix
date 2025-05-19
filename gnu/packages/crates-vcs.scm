@@ -7237,6 +7237,33 @@ part of Gitoxide, a Rust implementation of Git.")
        #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
                                    ("rust-serial-test" ,rust-serial-test-2))))))
 
+(define-public rust-gix-prompt-0.9
+  (package
+    (name "rust-gix-prompt")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-prompt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v9v9icnryhcx2z256kmm8aa1p31ipghjx80kac2nlg1b1ciiwkr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-command" ,rust-gix-command-0.4)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Handle prompts in the terminal for gitoxide")
+    (description
+     "This package provides a crate of the gitoxide project for handling
+prompts in the terminal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-prompt-0.8
   (package
     (name "rust-gix-prompt")
