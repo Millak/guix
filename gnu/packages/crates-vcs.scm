@@ -7952,6 +7952,40 @@ a pure Rust implementation of Git.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-revision-0.32
+  (package
+    (name "rust-gix-revision")
+    (version "0.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lvb7rrjjdr9h21ign5g0za2jg00nimzqvkcdvbacpd5rjy8pqiz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.26)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.7)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.18)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Find names for git revisions and parsing specifications")
+    (description
+     "This package provides a crate of the gitoxide project dealing with
+finding names for revisions and parsing specifications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revision-0.29
   (package
     (name "rust-gix-revision")
