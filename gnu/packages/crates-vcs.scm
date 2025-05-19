@@ -6677,6 +6677,43 @@ Gitoxide is a pure Rust implementation of Git.")
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-pack-0.57
+  (package
+    (name "rust-gix-pack")
+    (version "0.57.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-pack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05d57xpzk35i2cclnb9iclvm1gvrc20mzcvz04bmcwyvndss84zw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-clru" ,rust-clru-0.6)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-chunk" ,rust-gix-chunk-0.4)
+                       ("rust-gix-diff" ,rust-gix-diff-0.50)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.7)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-16)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.44)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-uluru" ,rust-uluru-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Implements git packs and related data structures")
+    (description
+     "This package implements git packs and related data structures.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-pack-0.53
   (package
     (name "rust-gix-pack")
