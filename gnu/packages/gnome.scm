@@ -14154,7 +14154,7 @@ receive calls.")
 (define-public calls
   (package
     (name "calls")
-    (version "46.0")
+    (version "48.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -14162,7 +14162,7 @@ receive calls.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0a21anz81a3pqlrmzgyb1az53wc7kyz61xafxsylpxf41cm8vm0x"))
+                "1xh3k9vhbcb44nrkfjgbxkpjgxl1x3j01fqd1zjv3zrncaavv2ni"))
               (patches
                (search-patches "calls-disable-application-test.patch"
                                "calls-disable-sip-test.patch"))))
