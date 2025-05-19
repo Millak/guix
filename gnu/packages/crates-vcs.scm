@@ -1407,6 +1407,42 @@ implementing the git index file.")
 related types and utilities.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-diff-0.49
+  (package
+    (name "rust-gix-diff")
+    (version "0.49.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xh4mac785zyvnyap5awpj2iw1kw6aqgz5hg19d21jnbxik2bsd8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-gix-command" ,rust-gix-command-0.4)
+                       ("rust-gix-filter" ,rust-gix-filter-0.16)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.43)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.38)
+                       ("rust-imara-diff" ,rust-imara-diff-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Calculate differences between various git objects")
+    (description
+     "This package provides Calculate differences between various git objects.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
