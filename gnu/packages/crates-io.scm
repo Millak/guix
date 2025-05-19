@@ -67801,6 +67801,29 @@ the file-system during development.")
     (description "This package provides utilities for @code{rust-embed}.")
     (license license:expat)))
 
+(define-public rust-rust-embed-utils-7
+  (package
+    (name "rust-rust-embed-utils")
+    (version "7.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-embed-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x7dvlmzzx0db3ra73g8h0fsfgy3c1xrzkhg22vkpp3hymmzyf4x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-globset" ,rust-globset-0.4)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://git.sr.ht/~pyrossh/rust-embed")
+    (synopsis "Utilities for @code{rust-embed}")
+    (description "This package provides utilities for @code{rust-embed}.")
+    (license license:expat)))
+
 (define-public rust-rust-embed-utils-5
   (package
     (inherit rust-rust-embed-utils-8)
