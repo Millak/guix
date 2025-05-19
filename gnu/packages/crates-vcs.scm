@@ -9518,14 +9518,14 @@ package contains validation functions for various kinds of names in Git.")
 (define-public rust-gix-validate-0.9
   (package
     (name "rust-gix-validate")
-    (version "0.9.2")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-validate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dq9flm4iz1pzsiqqjmmxxzsp2fsdarx18db695v71gmz44hslnd"))))
+        (base32 "11204daz5qlk9kqnmiq4syv0n21phkiy3xkwxmwnrnh964jz3d9l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
