@@ -1169,6 +1169,46 @@ negotiation algorithms.")
 finding names for revisions and parsing specifications.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-merge-0.2
+  (package
+    (name "rust-gix-merge")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-merge" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jf22r6bzdbpkizs3syp7fq9zlkf0y0qkl73ykgccpz5z02x5fj8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-command" ,rust-gix-command-0.4)
+                       ("rust-gix-diff" ,rust-gix-diff-0.49)
+                       ("rust-gix-filter" ,rust-gix-filter-0.16)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-index" ,rust-gix-index-0.37)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-revision" ,rust-gix-revision-0.31)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.17)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.38)
+                       ("rust-imara-diff" ,rust-imara-diff-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git merge algorithms")
+    (description
+     "This package provides a crate of the gitoxide project implementing merge
+algorithms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
