@@ -3882,33 +3882,25 @@ sensitivity or energy density
 (define-public python-healpy
   (package
     (name "python-healpy")
-    (version "1.18.0")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "healpy" version))
        (sha256
-        (base32 "12ajn55kjgnqadyamh6cw4q8i01nyv6isgf47lcnv2jch27zs4ka"))))
+        (base32 "1v7bsxz05k36cw596yyaahcx6h8blhy1qlzpwcjj5cvg4vrynnff"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Disable tests requiring network access.
-      #~(list "-k" (string-append "not test_astropy_download_file"
-                                  " and not test_pixelweights_local_datapath"
-                                  " and not test_rotate_map_polarization_alms"))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: It's not compatible with pytest-8, enable when newer version
-          ;; is available.
-          (add-after 'unpack 'disable-doctest
-            (lambda _
-            (substitute* "pyproject.toml"
-              (("--doctest-plus") ""))))
-          (add-before 'check 'pre-check
-            (lambda _
-              (delete-file "lib/healpy/conftest.py")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+      #~(list "--pyargs" "healpy"
+              "-k" (string-join
+                    ;; Tests requiring network access.
+                    (list "not test_astropy_download_file"
+                          "test_pixelweights_local_datapath"
+                          "test_rotate_map_polarization_alms")
+                    " and not ")
+              "test")))
     (native-inputs
      (list nss-certs-for-test
            pkg-config
@@ -3916,20 +3908,20 @@ sensitivity or energy density
            python-pytest
            python-pytest-astropy-header
            python-pytest-cython
-           ;python-pytest-doctestplus
+           python-pytest-doctestplus
            python-setuptools
            python-setuptools-scm
            python-wheel))
+    (inputs
+     (list cfitsio
+           healpix-cxx
+           libsharp))
     (propagated-inputs
      (list python-astropy
            python-colorlog
            python-matplotlib
            python-numpy
            python-scipy))
-    (inputs
-     (list cfitsio
-           healpix-cxx
-           libsharp))
     (home-page "http://healpy.readthedocs.org/")
     (synopsis "Healpix tools package for Python")
     (description
