@@ -7796,6 +7796,34 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-winnow" ,rust-winnow-0.5))))))
 
+(define-public rust-gix-refspec-0.28
+  (package
+    (name "rust-gix-refspec")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-refspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "140aif2nciz9j9a0h9lqsg8cb1pkzhbza9bsgy7gc4pnv0l04rar"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-revision" ,rust-gix-revision-0.32)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Handle parsing and representing git refspecs")
+    (description
+     "This package provides a crate of the gitoxide project for parsing and
+representing git refspecs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-refspec-0.25
   (package
     (name "rust-gix-refspec")
