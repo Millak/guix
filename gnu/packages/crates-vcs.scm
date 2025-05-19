@@ -1105,6 +1105,36 @@ protocols.")
     (description "This package implements various git object databases.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-negotiate-0.17
+  (package
+    (name "rust-gix-negotiate")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-negotiate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a7igqmnnk183fyibbrwdfyjpqqz4vl5p79vr3lqcls02q586zyj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.17)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "git negotiation algorithms")
+    (description
+     "This package provides a crate of the gitoxide project implementing
+negotiation algorithms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
