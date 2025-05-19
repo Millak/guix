@@ -936,6 +936,32 @@ status'-like functionality.")
      "This package implements the git transport layer.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-shallow-0.1
+  (package
+    (name "rust-gix-shallow")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-shallow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00ffhjy3lzqr6zqj0h3c635634383z0g0wgndz5r4x7888r6gll8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-lock" ,rust-gix-lock-15)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Handle shallow git files")
+    (description
+     "This package provides a crate of the gitoxide project dedicated to
+handling files specifying the shallow boundary.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
