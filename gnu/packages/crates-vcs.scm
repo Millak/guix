@@ -5402,6 +5402,34 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-hashbrown" ,rust-hashbrown-0.14)
                        ("rust-parking-lot" ,rust-parking-lot-0.12))))))
 
+(define-public rust-gix-ignore-0.13
+  (package
+    (name "rust-gix-ignore")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ignore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vyz5jfqd72b4pygwqrssr96jvfzi32hm7y4lz05b65zh35rsljg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.18)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Deal with .gitignore files")
+    (description
+     "This package provides a crate of the gitoxide project dealing with
+.gitignore files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-ignore-0.11
   (package
     (name "rust-gix-ignore")
