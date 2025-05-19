@@ -1829,6 +1829,36 @@ matching.")
      "This package provides a crate of the gitoxide project dealing with
 .gitattributes files.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-worktree-stream-0.18
+  (package
+    (name "rust-gix-worktree-stream")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree-stream" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kv9vchybbpc1y8qrgd4gq2k8vpygwqxsyz682wfx0h45jp5w01l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-attributes" ,rust-gix-attributes-0.23)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-filter" ,rust-gix-filter-0.16)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.43)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "generate a byte-stream from a git-tree")
+    (description
+     "This package provides a way to generate a byte-stream from a git-tree.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
