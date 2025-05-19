@@ -1859,6 +1859,32 @@ matching.")
     (description
      "This package provides a way to generate a byte-stream from a git-tree.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-hashtable-0.6
+  (package
+    (name "rust-gix-hashtable")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hashtable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zhqgncv6jh3x7a7a2w3qbayghmiwv230mdw6gvqw1ricqjmpxhf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Provide hashtable based data structures optimized to utilize
+git ObjectId keys")
+    (description
+     "This package provides a crate that provides hashtable based data structures
+optimized to utilize git @code{ObjectId} keys.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
