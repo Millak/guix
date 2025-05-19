@@ -7000,14 +7000,14 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
 (define-public msgraph
   (package
     (name "msgraph")
-    (version "0.2.3")
+    (version "0.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/msgraph/"
                                   (version-major+minor version) "/"
                                   "msgraph-" version ".tar.xz"))
               (sha256
-               (base32 "1c6xkxx2c1jqhy56pfbsmnk418n1rm2fgqyrgi3hf2kzrc0fhhpd"))))
+               (base32 "04j00lf0aqiccgbg95jh9sxmx48bgsrg110ilap9014r58py3mrp"))))
     (build-system meson-build-system)
     (native-inputs (list gi-docgen gobject-introspection pkg-config uhttpmock))
     (inputs (list gnome-online-accounts json-glib libsoup librest))
