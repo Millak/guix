@@ -2716,6 +2716,28 @@ implementation of Windows services.")
     (description "This package provides Windows threading.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-future-0.2
+  (package
+    (name "rust-windows-future")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-future" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13mdzcdn51ckpzp3frb8glnmkyjr1c30ym9wnzj9zc97hkll2spw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.61)
+                       ("rust-windows-link" ,rust-windows-link-0.1)
+                       ("rust-windows-threading" ,rust-windows-threading-0.1))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows async types")
+    (description "This package provides Windows async types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-strings-0.1
   (package
     (name "rust-windows-strings")
