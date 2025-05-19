@@ -8872,7 +8872,7 @@ library.")
 (define-public gdm
   (package
     (name "gdm")
-    (version "46.2")
+    (version "48.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8880,7 +8880,7 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "12r6ppsdq9f0rlhfwldwhilshb1blp6m0944rm872lqn5914bqsf"))
+                "1pqaqg8ngs8y2nwysxm03cdllix3blpgkd7c6xg7pv4ky2pnvh0v"))
               (patches
                (search-patches
                 "gdm-default-session.patch"

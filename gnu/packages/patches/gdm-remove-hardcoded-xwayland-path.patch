@@ -4,24 +4,28 @@ diff --git a/daemon/gdm-local-display-factory.c b/daemon/gdm-local-display-facto
 index 7de7b99c..065325f4 100644
 --- a/daemon/gdm-local-display-factory.c
 +++ b/daemon/gdm-local-display-factory.c
-@@ -245,9 +245,9 @@ struct GdmDisplayServerConfiguration {
+@@ -261,11 +261,11 @@ struct GdmDisplayServerConfiguration {
          const char *session_type;
  } display_server_configuration[] = {
  #ifdef ENABLE_WAYLAND_SUPPORT
 -        { "wayland", GDM_KEY_WAYLAND_ENABLE, "/usr/bin/Xwayland", "wayland" },
 +        { "wayland", GDM_KEY_WAYLAND_ENABLE, "", "wayland" },
  #endif
+ #ifdef ENABLE_X11_SUPPORT
 -        { "xorg", GDM_KEY_XORG_ENABLE, "/usr/bin/Xorg", "x11" },
 +        { "xorg", GDM_KEY_XORG_ENABLE, "", "x11" },
+ #endif
          { NULL, NULL, NULL },
  };
  
-@@ -269,9 +269,6 @@ display_server_enabled (GdmLocalDisplayFactory *factory,
-                 if (!gdm_settings_direct_get_boolean (key, &enabled) || !enabled)
+@@ -289,11 +289,6 @@ display_server_enabled (GdmLocalDisplayFactory *factory,
                          return FALSE;
+ #endif
  
+-#ifdef ENABLE_X11_SUPPORT
 -                if (!g_file_test (binary, G_FILE_TEST_IS_EXECUTABLE))
 -                        return FALSE;
+-#endif
 -
                  return TRUE;
          }

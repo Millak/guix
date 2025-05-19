@@ -55,21 +55,15 @@ diff --git a/libgdm/gdm-sessions.c b/libgdm/gdm-sessions.c
 index d8b4d5cd..7ed8de91 100644
 --- a/libgdm/gdm-sessions.c
 +++ b/libgdm/gdm-sessions.c
-@@ -275,7 +275,7 @@ collect_sessions (void)
+@@ -347,15 +347,10 @@ collect_sessions (void)
                  "/etc/X11/sessions/",
                  DMCONFDIR "/Sessions/",
                  DATADIR "/gdm/BuiltInSessions/",
 -                DATADIR "/xsessions/",
-+                "/run/current-system/profile/share/xsessions/"
++                "/run/current-system/profile/share/xsessions/",
          };
-         const gchar *supported_session_types_env = NULL;
-         g_auto (GStrv) supported_session_types = NULL;
-@@ -288,29 +288,17 @@ collect_sessions (void)
-         names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
          xorg_search_array = g_ptr_array_new_with_free_func (g_free);
  
--        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
--
 -        for (i = 0; system_data_dirs[i]; i++) {
 -                session_dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
 -                g_ptr_array_add (xorg_search_array, session_dir);
@@ -78,6 +72,7 @@ index d8b4d5cd..7ed8de91 100644
          for (i = 0; i < G_N_ELEMENTS (xorg_search_dirs); i++) {
                  g_ptr_array_add (xorg_search_array, g_strdup (xorg_search_dirs[i]));
          }
+@@ -363,16 +358,11 @@ collect_sessions (void)
  
  #ifdef ENABLE_WAYLAND_SUPPORT
          const char *wayland_search_dirs[] = {
