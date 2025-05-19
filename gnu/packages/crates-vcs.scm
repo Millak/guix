@@ -5115,6 +5115,33 @@ file system utilities for Gitoxide.")
 in the database.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-glob-0.18
+  (package
+    (name "rust-gix-glob")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-glob" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kii7bpz1vcdykb0x1k9zmhn22hynwyk4n5acfrzjy0az94p572f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git filesystem pattern matching")
+    (description
+     "This package provides a crate of the gitoxide project for dealing with
+git pattern matching.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-glob-0.16
   (package
     (name "rust-gix-glob")
