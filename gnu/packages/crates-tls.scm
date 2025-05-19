@@ -411,6 +411,35 @@
     (license (list license:expat license:asl2.0))))
 
 ;; TODO: Unbundle aws-lc-fips.
+(define-public rust-aws-lc-fips-sys-0.13
+  (package
+    (name "rust-aws-lc-fips-sys")
+    (version "0.13.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-fips-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lwvxslspq7pnwv4c7d01fyg1v65zgd6w2l7mr1ga69sg6xp97g9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fs-extra" ,rust-fs-extra-1)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/aws/aws-lc-rs")
+    (synopsis
+     "AWS-LC is a general-purpose cryptographic library (FIPS version)")
+    (description
+     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
+Cryptography team for AWS and their customers.  This is the FIPS validated
+version of AWS-LC.")
+    (license (list license:isc license:openssl license:asl2.0))))
+
 (define-public rust-aws-lc-fips-sys-0.12
   (package
     (name "rust-aws-lc-fips-sys")
