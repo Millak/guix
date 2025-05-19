@@ -343,7 +343,8 @@ unset GUIX_PROFILE PROFILE_FILE
   ;; leading to a build failure of "files.drv".
   (assert-no-duplicates files)
 
-  (file-union "files" files))
+  ;; Allow symlinks to locations outside the store.
+  (file-union "files" files #:dangling-symlinks? #t))
 
 ;; Used by symlink-manager
 (define home-files-directory "files")

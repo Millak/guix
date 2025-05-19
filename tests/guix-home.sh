@@ -73,7 +73,9 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
                    (list `(".config/test.conf"
                            ,(plain-file
                              "tmp-file.txt"
-                             "the content of ~/.config/test.conf"))))
+                             "the content of ~/.config/test.conf"))
+
+                         `("symlink" ,(symlink-to "<test_directory>"))))
 
    (service home-bash-service-type
             (home-bash-configuration
@@ -104,6 +106,7 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
                        "# the content of bashrc-test-config.sh"))))))))
 EOF
 
+    sed -i "s,<test_directory>,$test_directory," home.scm
     echo -n "# dot-bashrc test file for guix home" > "dot-bashrc"
 
     # Check whether the graph commands work as expected.
@@ -126,6 +129,7 @@ EOF
 	guix home container home.scm -- cat '~/.config/test.conf' | \
 	    grep "the content of"
 	guix home container home.scm -- test -h '~/.bashrc'
+	guix home container home.scm -- test -h '~/symlink'
 	test "$(guix home container home.scm -- id -u)" = 1000
 	guix home container home.scm -- test -f '$HOME/sample/home.scm' && false
 	guix home container home.scm --expose="$PWD=$HOME/sample" -- \
@@ -153,6 +157,8 @@ EOF
     test -d "${HOME}/.guix-home"
     test -h "${HOME}/.bash_profile"
     test -h "${HOME}/.bashrc"
+    test -h "${HOME}/symlink"
+    test "$(readlink -f $HOME/symlink)" == "$test_directory"
     grep 'alias run="guix shell"' "$HOME/.bashrc"
     grep "alias path='echo \$PATH'" "$HOME/.bashrc"
     test "$(tail -n 2 "${HOME}/.bashrc")" == "\
