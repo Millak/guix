@@ -8353,6 +8353,44 @@ Gitoxide, a pure Rust implementation of Git.")
      "This package is part of Gitoxide, it implements a shared trust model.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-status-0.17
+  (package
+    (name "rust-gix-status")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-status" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10s87zd97hvckhrq4jn7a794q5vypxwn8jmbqcrcmmvra3cc2k21"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-gix-diff" ,rust-gix-diff-0.50)
+                       ("rust-gix-dir" ,rust-gix-dir-0.12)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-filter" ,rust-gix-filter-0.17)
+                       ("rust-gix-fs" ,rust-gix-fs-0.13)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-index" ,rust-gix-index-0.38)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.9)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.39)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "'git status'-like functionality")
+    (description
+     "This package provides a crate of the gitoxide project dealing with
+'git status'-like functionality.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-status-0.13
   (package
     (name "rust-gix-status")
