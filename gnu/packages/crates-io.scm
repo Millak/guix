@@ -11362,6 +11362,24 @@ metadata}.")
 supported by Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-test-macro-0.4
+  (package
+    (name "rust-cargo-test-macro")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-test-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16pq2pvvwzbyms4bih5y5fwx7adr2fnc5cjh5fg5izy2a22gbma1"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Helper proc-macro for Cargo's testsuite")
+    (description
+     "This package provides Helper proc-macro for Cargo's testsuite.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-test-macro-0.3
   (package
     (name "rust-cargo-test-macro")
