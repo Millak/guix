@@ -3291,6 +3291,32 @@ implementing the standard git bitmap format.")
 commit-graph files.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-command-0.4
+  (package
+    (name "rust-gix-command")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-command" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wcdm6f8v28y2rv5lmz7kh4lnkdzplc92nh2c9gb8papss20nhfb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-shell-words" ,rust-shell-words-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Handle internal git command execution")
+    (description
+     "This package provides a crate of the gitoxide project for handling of
+internal git command execution.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-command-0.3
   (package
     (name "rust-gix-command")
