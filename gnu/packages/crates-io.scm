@@ -12532,6 +12532,28 @@ the chrono-tz Rust crate.")
 recovery.")
     (license license:expat)))
 
+(define-public rust-envmnt-0.10
+  (package
+    (name "rust-envmnt")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "envmnt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00am3348qp1v9cdckbsgn88m1n7kx6g7a8xwp34787l7p2i9jffp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-fsio" ,rust-fsio-0.4)
+                       ("rust-indexmap" ,rust-indexmap-1))))
+    (home-page "http://github.com/sagiegurari/envmnt")
+    (synopsis "Environment variables utility functions")
+    (description
+     "This package provides Environment variables utility functions.")
+    (license license:asl2.0)))
+
 (define-public rust-ci-info-0.14
   (package
     (name "rust-ci-info")
