@@ -768,6 +768,34 @@ algorithms.")
 handling files specifying the shallow boundary.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-blame-0.0.0
+  (package
+    (name "rust-gix-blame")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-blame" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11m9524qygdgg5zjfmww8di8ppc2jd98r2yi1sspwd5277i9bixd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-diff" ,rust-gix-diff-0.50)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.44)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.39)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Implementing a git 'blame' algorithm")
+    (description
+     "This package provides a crate of the gitoxide project dedicated to implementing
+a blame algorithm.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
