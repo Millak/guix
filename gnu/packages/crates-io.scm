@@ -75621,6 +75621,30 @@ monotone matrix.")
     (description "This package provides a proc macro for smol runtime.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-smol-str-0.3
+  (package
+    (name "rust-smol-str")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smol_str" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "039mj6lc1vkljj17ndlzzkak8kvlmw8ppi6yjdxsh433snfbhxln"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-borsh" ,rust-borsh-1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/rust-analyzer/smol_str")
+    (synopsis "Small-string optimized string type with O(1) clone")
+    (description
+     "This package provides a small-string optimized string type with O(1)
+clone.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-smol-str-0.2
   (package
     (name "rust-smol-str")
