@@ -8641,6 +8641,27 @@ Verification.")
 self-signed X.509 format for use with crates other than webpki.")
     (license license:mpl2.0)))
 
+(define-public rust-webpki-roots-1
+  (package
+    (name "rust-webpki-roots")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webpki-roots" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nyg365shpxkbazrsvh9c4cv7ar16xnfq62w48xdmwn43j6p6lr8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-rustls-pki-types" ,rust-rustls-pki-types-1))))
+    (home-page "https://github.com/rustls/webpki-roots")
+    (synopsis "Mozilla's CA root certificates for use with webpki")
+    (description "This package provides Mozilla's CA root certificates for use
+with webpki.")
+    (license license:mpl2.0)))
+
 (define-public rust-webpki-roots-0.26
   (package
     (name "rust-webpki-roots")
