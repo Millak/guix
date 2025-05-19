@@ -4023,6 +4023,46 @@ to interact with Git credentials helpers.")
        #:cargo-development-inputs
        (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-gix-diff-0.50
+  (package
+    (name "rust-gix-diff")
+    (version "0.50.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kbwn5js7qwnqxxva52hrhxrkwhvxfr6a86rvblz9k8arbsbgbv2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.24)
+                       ("rust-gix-command" ,rust-gix-command-0.4)
+                       ("rust-gix-filter" ,rust-gix-filter-0.17)
+                       ("rust-gix-fs" ,rust-gix-fs-0.13)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-index" ,rust-gix-index-0.38)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.9)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-16)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.44)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.39)
+                       ("rust-imara-diff" ,rust-imara-diff-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Calculate differences between various git objects")
+    (description
+     "This package provides a way to calculate differences between various
+git objects.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-diff-0.46
   (package
     (name "rust-gix-diff")
