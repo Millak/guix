@@ -2553,7 +2553,7 @@ GNOME Desktop.")
 (define-public gnome-keyring
   (package
     (name "gnome-keyring")
-    (version "46.2")
+    (version "48.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2561,23 +2561,20 @@ GNOME Desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "098ryv7xsnf5r58w8kdr6nahzhmrczjb72ycbqlg7dx8p1kcj9mz"))))
-    (build-system gnu-build-system)
+                "17gbzfj2rgbp1yb28mnxs3ngxmyqa26bwi4bkff3zsp9434ih1gj"))))
+    (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list
-         (string-append "--with-pkcs11-config="
+         (string-append "-Dpkcs11-config="
                         #$output "/share/p11-kit/modules/")
-         (string-append "--with-pkcs11-modules="
-                        #$output "/share/p11-kit/modules/"))
+         (string-append "-Dpkcs11-modules="
+                        #$output "/share/p11-kit/modules/")
+         "-Dsystemd=disabled")
       #:parallel-tests? #f              ; XXX: concurrency in dbus tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-/bin/sh-reference
-            (lambda _
-              (substitute* "po/Makefile.in.in"
-                (("/bin/sh") (which "sh")))))
           (delete 'check)
           (add-after 'install 'check
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
@@ -2585,7 +2582,7 @@ GNOME Desktop.")
                 (setenv "HOME" "/tmp")  ;some tests require a writable HOME
                 (setenv "XDG_DATA_DIRS" (string-append (getenv "XDG_DATA_DIRS")
                                                        ":" #$output "/share"))
-                (invoke "dbus-run-session" "make" "check" "-j"
+                (invoke "dbus-run-session" "meson" "test" "-j"
                         (if parallel-tests?
                             (number->string (parallel-job-count))
                             "1"))))))))
@@ -2603,6 +2600,7 @@ GNOME Desktop.")
            gettext-minimal
            `(,glib "bin")
            glib                         ;for m4 macros
+           libselinux
            libxslt                      ;for documentation
            pkg-config
            python-wrapper))             ;for tests
