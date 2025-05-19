@@ -5557,7 +5557,7 @@ keyboard shortcuts.")
 (define-public gnome-text-editor
   (package
     (name "gnome-text-editor")
-    (version "46.3")
+    (version "48.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-text-editor/"
@@ -5565,7 +5565,7 @@ keyboard shortcuts.")
                                   "gnome-text-editor-" version ".tar.xz"))
               (sha256
                (base32
-                "0gf74krvsmfsyr7s4mqhg09x3iq6ayyd4j3lw1mfd6wh9884hnq0"))))
+                "1fjnsm1hhxdy8ck663drs9fclgrx1chnjvf08lhlvnsf74i9g7iz"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t))
