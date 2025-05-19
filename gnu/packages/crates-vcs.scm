@@ -2913,6 +2913,37 @@ package provides a way to identify Git actors.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-gix-archive-0.19
+  (package
+    (name "rust-gix-archive")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-archive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kh725mg9hq05nhw9jx48aaln1ll898vx7hmfnln211mvgncc8ix"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree-stream" ,rust-gix-worktree-stream-0.19)
+                       ("rust-jiff" ,rust-jiff-0.1)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-zip" ,rust-zip-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "archive generation from a git worktree stream")
+    (description
+     "This package provides archive generation from a git worktree stream.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-archive-0.15
   (package
     (name "rust-gix-archive")
