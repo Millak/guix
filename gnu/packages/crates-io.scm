@@ -93124,6 +93124,31 @@ result.")
     (description "Detect when another Future wants a result.")
     (license license:expat)))
 
+(define-public rust-wasi-0.14
+  (package
+    (name "rust-wasi")
+    (version "0.14.2+wasi-0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cwcqjr3dgdq8j325awgk8a715h0hg0f7jqzsb077n4qm6jzk0wn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+                       ("rust-wit-bindgen-rt" ,rust-wit-bindgen-rt-0.39))))
+    (home-page "https://github.com/bytecodealliance/wasi-rs")
+    (synopsis "Experimental WASI API bindings for Rust")
+    (description
+     "This package provides experimental WASI API bindings for Rust.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-wasi-0.11
   (package
     (name "rust-wasi")
