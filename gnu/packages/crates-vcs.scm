@@ -5231,6 +5231,32 @@ matching.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-gix-hash-0.16
+  (package
+    (name "rust-gix-hash")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y79zcwja9b1bqlr27awndla5wcmzd7a8rnh7qdq5ca9hv25w778"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Borrowed and owned git hash digests used to identify git objects")
+    (description
+     "This package provides borrowed and owned git hash digests used to
+identify git objects.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-hash-0.14
   (package
     (name "rust-gix-hash")
