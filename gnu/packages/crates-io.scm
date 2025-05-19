@@ -77195,6 +77195,32 @@ duration parsing.")
 @code{#[derive(Readable, Writable)]} support")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-abscissa-derive-0.8
+  (package
+    (name "rust-abscissa-derive")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abscissa_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qkzz20v71y26id2sfcdfc3jhgzf4gihf6g07x1xmx1f3mi19n88"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-ident-case" ,rust-ident-case-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-synstructure" ,rust-synstructure-0.12))))
+    (home-page "https://github.com/iqlusioninc/abscissa")
+    (synopsis
+     "Custom derive support for the abscissa application microframework")
+    (description
+     "This package provides Custom derive support for the abscissa application microframework.")
+    (license license:asl2.0)))
+
 (define-public rust-spin-0.9
   (package
     (name "rust-spin")
