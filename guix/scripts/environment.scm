@@ -875,6 +875,11 @@ WHILE-LIST."
                    reqs)))
             (file-systems (append %container-file-systems
                                   (list tmpfs        ; RW /tmp
+                                        (file-system ; RW /run
+                                          (inherit tmpfs)
+                                          (mount-point
+                                           (string-append "/run/user/"
+                                                          (number->string uid))))
                                         (file-system ; RW ~
                                           (device "none")
                                           (mount-point

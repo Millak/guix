@@ -203,6 +203,9 @@ guix environment --bootstrap --container --ad-hoc guile-bootstrap \
 guix environment --bootstrap --container --ad-hoc guile-bootstrap \
      -- guile -c '(mkdir (string-append (getenv "HOME") "/foo"))'
 
+# And /run too!
+guix environment --bootstrap --container --ad-hoc guile-bootstrap \
+     -- guile -c '(mkdir "/run/user/1000/shepherd")'
 
 # Check the exit code.
 
