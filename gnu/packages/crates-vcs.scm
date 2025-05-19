@@ -1685,6 +1685,34 @@ git revision graph.")
      "This package provides read-only access to the git commitgraph file format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-traverse-0.43
+  (package
+    (name "rust-gix-traverse")
+    (version "0.43.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-traverse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12dcmf67m409ss0jjpgr9vjh048cs6hbplkiz69kxqhrhrj7vm3f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.17)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git tree traversal")
+    (description "This package provides git tree traversal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
