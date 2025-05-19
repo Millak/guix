@@ -1175,6 +1175,26 @@ color in a Windows console.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-windows-collections-0.2
+  (package
+    (name "rust-windows-collections")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-collections" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s65anr609qvsjga7w971p6iq964h87670dkfqfypnfgwnswxviv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.61))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows collection types")
+    (description "This package provides Windows collection types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-0.58
   (package
     (name "rust-windows")
