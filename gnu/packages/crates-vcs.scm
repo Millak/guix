@@ -897,6 +897,45 @@ git submodules.")
 status'-like functionality.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-transport-0.44
+  (package
+    (name "rust-gix-transport")
+    (version "0.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-transport" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bybr8741kilfvmwg71p80xfadjvsy2mm39ilb7i71vsa0gdj16x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-base64" ,rust-base64-0.22)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-curl" ,rust-curl-0.4)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-command" ,rust-gix-command-0.4)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.26)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-packetline" ,rust-gix-packetline-0.18)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-gix-url" ,rust-gix-url-0.28)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git transport layer")
+    (description
+     "This package implements the git transport layer.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
