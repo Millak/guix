@@ -337,6 +337,38 @@ dirty state into your program.")
      "This is an internal macro crate for git-version.")
     (license license:bsd-2)))
 
+(define-public rust-git2-0.20
+  (package
+    (name "rust-git2")
+    (version "0.20.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0451zzmvblvlrj6y6pgdsxrqh42hi789n3k9lp0hslmi6fhhgsrd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libgit2-sys" ,rust-libgit2-sys-0.18)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis
+     "Bindings to libgit2 for interoperating with git repositories. This library is
+both threadsafe and memory safe and allows both reading and writing git
+repositories.")
+    (description
+     "This package provides Bindings to libgit2 for interoperating with git repositories.  This library is
+both threadsafe and memory safe and allows both reading and writing git
+repositories.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-git2-0.19
   (package
     (name "rust-git2")
