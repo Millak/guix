@@ -77221,6 +77221,49 @@ duration parsing.")
      "This package provides Custom derive support for the abscissa application microframework.")
     (license license:asl2.0)))
 
+(define-public rust-abscissa-core-0.8
+  (package
+    (name "rust-abscissa-core")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abscissa_core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fvpm79dnwh1lj5kpw1bs3sfs8drcwbvbic6vrmjsh34v1x1i0rh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-abscissa-derive" ,rust-abscissa-derive-0.8)
+                       ("rust-arc-swap" ,rust-arc-swap-1)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-canonical-path" ,rust-canonical-path-2)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-color-eyre" ,rust-color-eyre-0.6)
+                       ("rust-fs-err" ,rust-fs-err-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-secrecy" ,rust-secrecy-0.10)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracing-log" ,rust-tracing-log-0.2)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+                       ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
+    (home-page "https://github.com/iqlusioninc/abscissa/")
+    (synopsis
+     "Application microframework with support for command-line option parsing,
+configuration, error handling, logging, and terminal interactions.
+This crate contains the framework's core functionality.")
+    (description
+     "This package provides Application microframework with support for command-line option parsing,
+configuration, error handling, logging, and terminal interactions.  This crate
+contains the framework's core functionality.")
+    (license license:asl2.0)))
+
 (define-public rust-spin-0.9
   (package
     (name "rust-spin")
