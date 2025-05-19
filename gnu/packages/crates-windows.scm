@@ -3698,3 +3698,28 @@ for Rust.")
     (description
      "Contains function definitions for the Windows API library ws2_32.")
     (license license:expat)))
+
+(define-public rust-pdb-0.8
+  (package
+    (name "rust-pdb")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pdb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qs8lxx3ly029c77ip2mhlf0s9fmcbzlmaq0khkydar354whl142"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
+                       ("rust-scroll" ,rust-scroll-0.11)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/willglynn/pdb")
+    (synopsis
+     "parser for Microsoft PDB (Program Database) debugging information")
+    (description
+     "This package provides a parser for Microsoft PDB (Program Database) debugging
+information.")
+    (license (list license:expat license:asl2.0))))
