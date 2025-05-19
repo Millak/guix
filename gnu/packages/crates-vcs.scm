@@ -1267,6 +1267,39 @@ git magical pathspecs.")
 directory is a git repository.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-dir-0.11
+  (package
+    (name "rust-gix-dir")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-dir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14qjgsbb1dkyyha3l68z7n84j1c7jjycqrw3ia746d5xyjygz8pv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-discover" ,rust-gix-discover-0.37)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.12)
+                       ("rust-gix-index" ,rust-gix-index-0.37)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.8)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.38)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git directory walks")
+    (description
+     "This package provides a crate of the gitoxide project dealing with
+git directory walks.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
