@@ -1713,6 +1713,29 @@ git revision graph.")
     (description "This package provides git tree traversal.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-fs-0.12
+  (package
+    (name "rust-gix-fs")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-fs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f8xifs0wkq7lhy3c8091kq2lx15qkynjb6fwnbiyqjsa2n4yg9v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "file system specific utilities for `gitoxide`")
+    (description
+     "This package provides file system specific utilities to `gitoxide`.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
