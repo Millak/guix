@@ -796,6 +796,41 @@ handling files specifying the shallow boundary.")
      "This package provides a crate of the gitoxide project dedicated to implementing
 a blame algorithm.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-worktree-state-0.16
+  (package
+    (name "rust-gix-worktree-state")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree-state" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qfbcxcka9gx9dyjzdz9v4pr6yn9w1kvyx03myh3h1g5z8b58ak7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-filter" ,rust-gix-filter-0.16)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-index" ,rust-gix-index-0.37)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.38)
+                       ("rust-io-close" ,rust-io-close-0.3)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Set the git worktree to a particular state")
+    (description
+     "This package provides a crate of the gitoxide project implementing setting the
+worktree to a particular state.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
