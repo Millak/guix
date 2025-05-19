@@ -1628,6 +1628,34 @@ to assure cleanup.")
      "This package provides a git-config file parser and editor from the gitoxide
 project.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-revwalk-0.17
+  (package
+    (name "rust-gix-revwalk")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "178hrfgigvr3a1m8mn1949ms75wb10s7rwyqczqghmpl6by2c02i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "crate providing utilities for walking the git revision graph")
+    (description
+     "This package provides a crate providing utilities for walking the
+git revision graph.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
