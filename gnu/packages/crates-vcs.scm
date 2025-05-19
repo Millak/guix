@@ -701,6 +701,47 @@ specification.")
     (synopsis "Extracts git repository information")
     (description "This package provides Extracts git repository information.")
     (license license:asl2.0)))
+
+(define-public rust-gix-merge-0.3
+  (package
+    (name "rust-gix-merge")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-merge" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15dbccdjjspg9vvfclwj87qy48k06rnykwhwl1n9aqn8d0fsh6jy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-command" ,rust-gix-command-0.4)
+                       ("rust-gix-diff" ,rust-gix-diff-0.50)
+                       ("rust-gix-filter" ,rust-gix-filter-0.17)
+                       ("rust-gix-fs" ,rust-gix-fs-0.13)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-index" ,rust-gix-index-0.38)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-revision" ,rust-gix-revision-0.32)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.18)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-16)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.39)
+                       ("rust-imara-diff" ,rust-imara-diff-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "crate of the gitoxide project implementing merge algorithms")
+    (description
+     "This package provides a crate of the gitoxide project implementing merge
+algorithms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
