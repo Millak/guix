@@ -1326,7 +1326,7 @@ a debugging tool, @command{gssdp-device-sniffer}.")
 (define-public gupnp
   (package
     (name "gupnp")
-    (version "1.6.7")
+    (version "1.6.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1334,7 +1334,7 @@ a debugging tool, @command{gssdp-device-sniffer}.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "01gqpvyqmxlgxg91hmx68pq2d8sgrihrdzlwrrh0w9x7m2jxhqaa"))))
+                "16w606l3v0q62v2y5qnl15z1n597xs53cdc7acpycn1mc7inxnrf"))))
     (build-system meson-build-system)
     (arguments
      (list
