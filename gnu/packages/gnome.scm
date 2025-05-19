@@ -5176,7 +5176,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
 (define-public libsecret
   (package
     (name "libsecret")
-    (version "0.21.4")
+    (version "0.21.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5186,7 +5186,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
               (patches (search-patches "libsecret-fix-test-paths.patch"))
               (sha256
                (base32
-                "081bj59ws08kb261cd1w1mkdkhfbzsjbbkkrm6wllvdyhgbhhg8n"))))
+                "0pnmivbbyh0w3l72bw8mvq1ljbwdy8k01i5d2xb2n2jra13jwibb"))))
     (build-system meson-build-system)
     (arguments
      (list
