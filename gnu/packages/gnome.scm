@@ -1431,7 +1431,7 @@ and implementation of UPnP A/V profiles.")
 (define-public libmediaart
   (package
     (name "libmediaart")
-    (version "1.9.6")
+    (version "1.9.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1439,7 +1439,7 @@ and implementation of UPnP A/V profiles.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05vzcxm8fqizz77qzdxlsqb5lsqzc4681sy8z63haf6vswjm1g63"))))
+                "0sqgasfaz11m702fgcmiijwxf1mb84rvip9akswd1n7hajgxshrb"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin")
