@@ -5569,12 +5569,19 @@ Services (AWS) API.")
     (arguments
      (list
       #:test-flags
-      ;; The resource leak tests use ps to check for memory consumption.
-      '(list "--ignore=functional/botocore/leak/test_resource_leaks.py"
+      '(list ;; This version of prompt-toolkit has issues with awscli-2, see
+             ;; <https://github.com/aws/aws-cli/issues/9453#issuecomment-2822186530>.
+             "--ignore=functional/autoprompt/test_prompttoolkit.py"
+             ;; The resource leak tests use ps to check for memory consumption.
+             "--ignore=functional/botocore/leak/test_resource_leaks.py"
              ;; These tests complain about unavailable TLS certs.
              "--ignore=functional/ec2instanceconnect/test_opentunnel.py"
              ;; These seem to require Internet access.
-             "--ignore=unit/botocore/test_awsrequest.py")
+             "--ignore=unit/botocore/test_awsrequest.py"
+             ;; Flaky, something to do with PATH disappearing from os.environ?
+             ;; Passes when run on its own, so maybe something else is
+             ;; modifying this during the test run.
+             "--ignore=unit/customizations/emr/test_emr_utils.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'ignore-deprecations
