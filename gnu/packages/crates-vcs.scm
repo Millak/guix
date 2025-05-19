@@ -658,6 +658,29 @@ libcurl, which is intended to be used with the @code{git2} crate.")
     (description "This crate adds git hooks support based on git2-rs.")
     (license license:expat)))
 
+(define-public rust-git-conventional-0.12
+  (package
+    (name "rust-git-conventional")
+    (version "0.12.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git-conventional" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i3vlmq0b5nrayxfgc27brbwhy3f03dwsb834qjz47f8zjvlkagn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-unicase" ,rust-unicase-2)
+                       ("rust-winnow" ,rust-winnow-0.7))))
+    (home-page "https://github.com/crate-ci/git-conventional")
+    (synopsis "parser library for the Conventional Commit specification.")
+    (description
+     "This package provides a parser library for the Conventional Commit
+specification.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
