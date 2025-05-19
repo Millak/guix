@@ -3051,7 +3051,7 @@ configuring CUPS.")
 (define-public libnotify
   (package
     (name "libnotify")
-    (version "0.8.3")
+    (version "0.8.8")
     (source
      (origin
        (method url-fetch)
@@ -3060,11 +3060,17 @@ configuring CUPS.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1h7nn9pz797bfmpz3d0s46yjv4ydppnzwifzdx0d6shm8vwkx3zf"))))
+         "1pgxbfrw8vhgshl5dl51wl3ir91g7a1g84ynpapbab6w37v0whi3"))))
     (outputs '("out" "doc"))
     (build-system meson-build-system)
     (arguments
      (list
+      ;; The recently added tests would require a notification daemon, which
+      ;; introduce a circular dependency with libnotify.
+      #:tests? #f
+      ;; Also disable tests via configure-flags, as building them requires
+      ;; gtk, which would introduce yet another circle…
+      #:configure-flags #~(list "-Dtests=false")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'move-doc
@@ -3074,7 +3080,7 @@ configuring CUPS.")
                 (mkdir-p (dirname new))
                 (rename-file old new)))))))
     (propagated-inputs (list gdk-pixbuf glib)) ;in Requires of libnotify.pc.
-    (inputs (list gtk+ libpng))
+    (inputs (list libpng))
     (native-inputs
      (list pkg-config
            `(,glib "bin")
