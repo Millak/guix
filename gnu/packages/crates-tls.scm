@@ -322,6 +322,30 @@
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-async-native-tls-0.5
+  (package
+    (name "rust-async-native-tls")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-native-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v2v82crqm4fgj1s32gik56m7cwx0ygqjdqc5pw9zrq7rxddqhwk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://docs.rs/crate/async-native-tls/")
+    (synopsis "Native TLS using futures")
+    (description "Native TLS using futures.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-native-tls-0.3
   (package
     (name "rust-async-native-tls")
