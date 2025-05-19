@@ -6215,6 +6215,43 @@ Git's negotiation algorithms.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-object-0.47
+  (package
+    (name "rust-gix-object")
+    (version "0.47.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s7xwm1nmx2zp10qnrlxh8vmw5nakjkvfzrl4bzg0i220jhb7i6x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.33)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.7)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-winnow" ,rust-winnow-0.6))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Immutable and mutable git objects with decoding and encoding support")
+    (description
+     "This package provides immutable and mutable git objects with decoding
+and encoding support.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-object-0.44
   (package
     (name "rust-gix-object")
