@@ -119,6 +119,7 @@
             file-union
             directory-union
             references-file
+            symlink-to
 
             imported-files
             imported-modules
@@ -2181,6 +2182,10 @@ or dangling symlink ~a" target source)))
                     (symlink source target)))))
               files)))))
    #:guile guile))
+
+(define (symlink-to target)
+  "Return an object that is a symlink to TARGET."
+  (computed-file "link" (gexp (symlink (ungexp target) (ungexp output)))))
 
 (define* (directory-union name things
                           #:key (copy? #f) (quiet? #f)

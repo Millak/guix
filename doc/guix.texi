@@ -12692,6 +12692,17 @@ file.  Here's an example:
 This yields an @code{etc} directory containing these two files.
 @end deffn
 
+@deffn {Procedure} symlink-to target
+Return a @code{<computed-file>} that is a symbolic link to target.
+Note, that the target does not need to exist at the build time.  One of
+uses is to put arbitrary symlinks into user's home:
+
+@lisp
+(service home-files-service-type
+  `(("Sync" ,(symlink-to "/storage/Sync"))))
+@end lisp
+@end deffn
+
 @deffn {Procedure} directory-union name things
 Return a directory that is the union of @var{things}, where @var{things} is a list of
 file-like objects denoting directories.  For example:
