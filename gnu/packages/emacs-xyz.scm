@@ -40601,7 +40601,7 @@ personal wiki.")
 (define-public emacs-org-node
   (package
     (name "emacs-org-node")
-    (version "2.4.1")
+    (version "2.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -40610,7 +40610,7 @@ personal wiki.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yvc61ydz8c8wms5pwb14v67da7w4l3xvd5w4x83qf81d9f44w9v"))))
+                "03600cxy8dr2sd49d07v61izxpvdxgfyiangjzkbma4qdpbkmjgh"))))
     (build-system emacs-build-system)
     (arguments
      '(#:tests? #f ; fails
