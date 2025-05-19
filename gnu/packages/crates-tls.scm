@@ -2008,6 +2008,29 @@ TLS certificates in rustls with the operating system verifier.")
 rustls-platform-verifier crate.  You shouldn't depend on this directly.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustls-webpki-0.103
+  (package
+    (name "rust-rustls-webpki")
+    (version "0.103.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-webpki" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ddl9qxx94iyichk05r7l30d9dxfd35ybffhsxpsr9pppki2z9z4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-untrusted" ,rust-untrusted-0.9))))
+    (home-page "https://github.com/rustls/webpki")
+    (synopsis "Web PKI X.509 Certificate Verification")
+    (description "Web PKI X.509 Certificate Verification.")
+    (license license:isc)))
+
 (define-public rust-rustls-webpki-0.102
   (package
     (name "rust-rustls-webpki")
