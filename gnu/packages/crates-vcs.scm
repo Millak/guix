@@ -1344,6 +1344,34 @@ git directory walks.")
 implementing the git index file.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-ignore-0.12
+  (package
+    (name "rust-gix-ignore")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ignore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12mv0lgq8aviy6fc4mdxr7r0ra0l1kb729wf8fkhmbx4s8jgpcdn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Handling .gitignore files")
+    (description
+     "This package provides a crate of the gitoxide project for dealing with
+.gitignore files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
