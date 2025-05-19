@@ -86843,6 +86843,30 @@ parser.")
          ("rust-pretty-assertions" ,rust-pretty-assertions-1)
          ("rust-snapbox" ,rust-snapbox-0.2))))))
 
+(define-public rust-toml-span-0.4
+  (package
+    (name "rust-toml-span")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "toml-span" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ifdm3lyqssp1zsfixy3pvm2857b1dx2ssgvv5ga5cz7j3s3czvm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-codespan-reporting" ,rust-codespan-reporting-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1))))
+    (home-page "https://github.com/EmbarkStudios/toml-span")
+    (synopsis "Toml parser and deserializer that preserves span information")
+    (description
+     "This package provides a toml parser and deserializer that preserves
+span information.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-span-0.3
   (package
     (name "rust-toml-span")
