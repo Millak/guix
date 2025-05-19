@@ -1163,7 +1163,7 @@ in particular in the GNOME desktop.")
 (define-public gnome-color-manager
   (package
    (name "gnome-color-manager")
-   (version "3.36.0")
+   (version "3.36.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1171,7 +1171,7 @@ in particular in the GNOME desktop.")
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "0fxdng74d8hwhfx1nwl1i4jx9h9f6c2hkyc12f01kqbjcimrxnwx"))))
+              "0zw87bipnk4s8qcb659gd5n3i1lz1fzq43l81ggnd9afpcmd811r"))))
    (build-system meson-build-system)
    (arguments
     `(#:glib-or-gtk? #t
