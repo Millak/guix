@@ -4783,6 +4783,40 @@ compile-time feature flags.")
        #:cargo-development-inputs
        (("rust-bstr" ,rust-bstr-1))))))
 
+(define-public rust-gix-filter-0.17
+  (package
+    (name "rust-gix-filter")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-filter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1frbjkmwrafbp7psbnh9rp9szlakcn44b1jmqc7fsqxwgp6kdk5x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.24)
+                       ("rust-gix-command" ,rust-gix-command-0.4)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-object" ,rust-gix-object-0.47)
+                       ("rust-gix-packetline-blocking" ,rust-gix-packetline-blocking-0.18)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git filters")
+    (description
+     "This package provides a crate of the gitoxide project implementing
+git filters.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-filter-0.13
   (package
     (name "rust-gix-filter")
