@@ -7294,15 +7294,16 @@ principles are simplicity and standards compliance.")
 (define-public d-spy
   (package
     (name "d-spy")
-    (version "1.10.0")
+    (version "48.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/GNOME/d-spy")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lsyw2h91z8wdmxpbqc77jwiafddh1w19s4yb7d521alqswi4n2m"))))
+                "0gp408mavzq11n9lpx86j968wfy43nnb1drm55sdqrlay0rpgdx2"))))
     (build-system meson-build-system)
     (arguments
      (list
