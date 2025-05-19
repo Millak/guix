@@ -40818,6 +40818,27 @@ C parser and toolkit developed for the GNOME project.")
     (description "This package provides an object pool manager in Rust.")
     (license license:expat)))
 
+(define-public rust-line-span-0.1
+  (package
+    (name "rust-line-span")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "line-span" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12j07vn0vnchlvlrh3cc3320jaz07sggcj42l6f0j0365wxi5z19"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/vallentin/line-span")
+    (synopsis "Find line ranges and jump between next and previous lines")
+    (description
+     "This package provides a way to find line ranges and to jump between
+next and previous lines.")
+    (license license:expat)))
+
 (define-public rust-line-col-0.2
   (package
     (name "rust-line-col")
