@@ -20152,6 +20152,25 @@ strings.")
     (arguments
      `(#:cargo-inputs (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.4))))))
 
+(define-public rust-deranged-macros-0.2
+  (package
+    (name "rust-deranged-macros")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deranged-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13xpi0bbcfnjnqj67ls8z8x94j3zrh3i85lawjral726jjh9mfqn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/jhpratt/deranged")
+    (synopsis "Ranged integers")
+    (description "This package provides Ranged integers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-deranged-0.4
   (package
     (name "rust-deranged")
