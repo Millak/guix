@@ -990,6 +990,50 @@ handling files specifying the shallow boundary.")
 representing git refspecs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-protocol-0.47
+  (package
+    (name "rust-gix-protocol")
+    (version "0.47.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rxhmvm3c1lamghxr9gp3bnb0mcw069rai6cx5f07mzynvl44in8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.26)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-lock" ,rust-gix-lock-15)
+                       ("rust-gix-negotiate" ,rust-gix-negotiate-0.17)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-ref" ,rust-gix-ref-0.49)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.27)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.17)
+                       ("rust-gix-shallow" ,rust-gix-shallow-0.1)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-transport" ,rust-gix-transport-0.44)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-maybe-async" ,rust-maybe-async-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-winnow" ,rust-winnow-0.6))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git protocols")
+    (description
+     "This package provides a crate of the gitoxide project for implementing git
+protocols.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
