@@ -2738,6 +2738,26 @@ implementation of Windows services.")
     (description "This package provides Windows async types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-strings-0.4
+  (package
+    (name "rust-windows-strings")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-strings" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mrv3plibkla4v5kaakc2rfksdd0b14plcmidhbkcfqc78zwkrjn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-link" ,rust-windows-link-0.1))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows string types")
+    (description "This package provides Windows string types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-strings-0.1
   (package
     (name "rust-windows-strings")
