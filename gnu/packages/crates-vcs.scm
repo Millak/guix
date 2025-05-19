@@ -1536,6 +1536,28 @@ git credentials helpers.")
      "This package provides a tempfile implementation with a global registry
 to assure cleanup.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-lock-15
+  (package
+    (name "rust-gix-lock")
+    (version "15.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h6r088yv5fk0d14zihssfh1zfhdyc8cpnpbygcn7nsjlilaplqw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git-style lock-file implementation")
+    (description "This package provides a git-style lock-file implementation.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
