@@ -50943,14 +50943,14 @@ CP{437,737,850}) for single byte character sets.")
 (define-public rust-once-cell-1
   (package
     (name "rust-once-cell")
-    (version "1.20.2")
+    (version "1.21.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "once_cell" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xb7rw1aqr7pa4z3b00y7786gyf8awx2gca3md73afy76dzgwq8j"))))
+        (base32 "0b9x77lb9f1j6nqgf5aka4s2qj0nly176bpbrv6f9iakk5ff3xa2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
