@@ -1372,6 +1372,41 @@ implementing the git index file.")
 .gitignore files.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-worktree-0.38
+  (package
+    (name "rust-gix-worktree")
+    (version "0.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04za9fgw10w0r0sfqnjd6sji3xcwiwgr9asy1ma25yl8a7hvnvbm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.23)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-glob" ,rust-gix-glob-0.17)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.12)
+                       ("rust-gix-index" ,rust-gix-index-0.37)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "git shared worktree-related types and utilities")
+    (description
+     "This package provides a crate of the gitoxide project for shared worktree
+related types and utilities.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
