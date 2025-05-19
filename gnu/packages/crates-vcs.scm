@@ -3504,6 +3504,42 @@ package provides read only access to Git's commitgraph file format.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-config-0.43
+  (package
+    (name "rust-gix-config")
+    (version "0.43.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sfry54k4f35ar6y0d7n52ccwyq9r192kkdkw1lx9m8l43yiwz1p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-features" ,rust-gix-features-0.40)
+                       ("rust-gix-glob" ,rust-gix-glob-0.18)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.50)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2)
+                       ("rust-winnow" ,rust-winnow-0.6))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "git-config file parser and editor")
+    (description
+     "This package provides a git-config file parser and editor from the
+gitoxide project.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-config-0.40
   (package
     (name "rust-gix-config")
