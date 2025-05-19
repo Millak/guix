@@ -11341,6 +11341,26 @@ metadata}.")
     (description "Reusable common Cargo command line options.")
     (license license:expat)))
 
+(define-public rust-cargo-platform-0.2
+  (package
+    (name "rust-cargo-platform")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-platform" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m7bk5ry59lz52kwm0xir0skflb5z7gdxrjf79d66hz319n2r644"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Cargo's representation of a target platform")
+    (description
+     "This package provides Cargo's representation of a target platform.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-platform-0.1
   (package
     (name "rust-cargo-platform")
