@@ -11362,6 +11362,27 @@ metadata}.")
 supported by Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-current-platform-0.2
+  (package
+    (name "rust-current-platform")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "current_platform" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g504i1l733bn1hyzzfvwmc8qq84dxxpscs9rcb21cj4zsy5hj57"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/Shnatsel/current_platform")
+    (synopsis "Find out what platform your code is running on")
+    (description
+     "This package provides a way to find out what platform your code is
+running on.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-cargo-test-macro-0.4
   (package
     (name "rust-cargo-test-macro")
