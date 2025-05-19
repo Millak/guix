@@ -11178,14 +11178,14 @@ manifests in @code{Cargo.toml} files.")
 (define-public rust-cargo-metadata-0.19
   (package
     (name "rust-cargo-metadata")
-    (version "0.19.1")
+    (version "0.19.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo_metadata" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "096r6ai6b8r6z42lasr16pd0zbgndvs7n6a3mwh636axmmm70sc7"))))
+        (base32 "1fkr8jp6vhva4kc3rhx13yrnl8g3zch463j20vbwa9scxlabcpnx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--"
