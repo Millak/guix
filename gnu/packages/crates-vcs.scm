@@ -1558,6 +1558,41 @@ to assure cleanup.")
     (synopsis "git-style lock-file implementation")
     (description "This package provides a git-style lock-file implementation.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-ref-0.49
+  (package
+    (name "rust-gix-ref")
+    (version "0.49.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ref" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ps8xzgkblsn3k5961ykyjkpm55hmxwi340lf4dhz7c3divn26x9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.33)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-lock" ,rust-gix-lock-15)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-15)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-winnow" ,rust-winnow-0.6))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Handle git references")
+    (description "This package provides a crate to handle git references.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
