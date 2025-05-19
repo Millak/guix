@@ -962,6 +962,34 @@ status'-like functionality.")
 handling files specifying the shallow boundary.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-refspec-0.27
+  (package
+    (name "rust-gix-refspec")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-refspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ga1dh6500q88wb0ymd2s2iqraw1j6gjqdgb1bmwfs3qfjxmdh00"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-revision" ,rust-gix-revision-0.31)
+                       ("rust-gix-validate" ,rust-gix-validate-0.9)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "parsing and representing git refspecs")
+    (description
+     "This package provides a crate of the gitoxide project for parsing and
+representing git refspecs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
