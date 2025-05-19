@@ -1443,6 +1443,36 @@ related types and utilities.")
      "This package provides Calculate differences between various git objects.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-url-0.28
+  (package
+    (name "rust-gix-url")
+    (version "0.28.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-url" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ncj6k4lk3qb0i27ida7ngi9z06qpmrbva6v0da3zgd67drzp5nh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.39)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "git parsing and serialization of gix-url")
+    (description
+     "This package provides a crate of the gitoxide project implementing
+parsing and serialization of gix-url.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
