@@ -31254,6 +31254,26 @@ timers.")
 libraries GMP, MPFR, and MPC.")
     (license license:lgpl3+)))
 
+(define-public rust-binfarce-0.2
+  (package
+    (name "rust-binfarce")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "binfarce" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18hnqqir3gk5sx1mlndzgpxs0l4rviv7dk3h1piyspayp35lqihq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/Shnatsel/binfarce")
+    (synopsis "Minimal parser for ELF, Mach-O, PE and ar")
+    (description
+     "This package provides a minimal parser for ELF, Mach-O, PE and ar.")
+    (license license:expat)))
+
 (define-public rust-goblin-0.9
   (package
     (name "rust-goblin")
