@@ -7109,6 +7109,34 @@ feature pre-selected.")
 Git.  This crate deals with paths and their conversions")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-pathspec-0.9
+  (package
+    (name "rust-gix-pathspec")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-pathspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v7q0b55fn0raaj52cg75bi5yc8pijkzl1lq05crv3n0hskd6c34"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.24)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-glob" ,rust-gix-glob-0.18)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Magical git pathspecs")
+    (description
+     "This package provides a crate of the gitoxide project for dealing with
+git magical pathspecs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-pathspec-0.7
   (package
     (name "rust-gix-pathspec")
