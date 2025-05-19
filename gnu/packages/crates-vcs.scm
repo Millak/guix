@@ -1506,6 +1506,36 @@ parsing and serialization of gix-url.")
 git credentials helpers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-tempfile-15
+  (package
+    (name "rust-gix-tempfile")
+    (version "15.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-tempfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10nvk82g7fhljg5y63dxpd8p7296wrfzxyssk957misc17pqdsrg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-dashmap" ,rust-dashmap-6)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-fs" ,rust-gix-fs-0.12)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
+                       ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "git tempfile implementation with a global registry to assure cleanup")
+    (description
+     "This package provides a tempfile implementation with a global registry
+to assure cleanup.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
