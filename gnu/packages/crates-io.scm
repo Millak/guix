@@ -67703,6 +67703,34 @@ the file-system during development.")
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-warp" ,rust-warp-0.2))))))
 
+(define-public rust-rust-embed-impl-6
+  (package
+    (name "rust-rust-embed-impl")
+    (version "6.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-embed-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b71mwb08nmwmzwhn15giiir1gii5aggp8j185l89hmjwn0lpfa9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rust-embed-utils" ,rust-rust-embed-utils-7)
+                       ("rust-shellexpand" ,rust-shellexpand-2)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://git.sr.ht/~pyrossh/rust-embed")
+    (synopsis "Rust custom @code{Derive} macro")
+    (description
+     "This package provides a custom @code{Derive} macro which loads files
+into the Rust binary at compile time during release and loads the file from
+the file-system during development.")
+    (license license:expat)))
+
 (define-public rust-rust-embed-impl-8
   (package
     (name "rust-rust-embed-impl")
