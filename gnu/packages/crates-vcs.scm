@@ -1135,6 +1135,40 @@ protocols.")
 negotiation algorithms.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-revision-0.31
+  (package
+    (name "rust-gix-revision")
+    (version "0.31.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rzrr2i5vb8yc0cffprgkyawxrigsxfp11c4rv96hnj0fk2dvqb1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.25)
+                       ("rust-gix-date" ,rust-gix-date-0.9)
+                       ("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.46)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.17)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "finding names for git revisions and parsing specifications")
+    (description
+     "This package provides a crate of the gitoxide project dealing with
+finding names for revisions and parsing specifications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-0.66
   (package
     (name "rust-gix")
