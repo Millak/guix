@@ -1195,6 +1195,30 @@ color in a Windows console.")
     (description "This package provides Windows collection types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-0.61
+  (package
+    (name "rust-windows")
+    (version "0.61.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06d4ahj0lns53cgza2w73r82fqwabyxqp1npp81cnf2p08yqzvn5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-collections" ,rust-windows-collections-0.2)
+                       ("rust-windows-core" ,rust-windows-core-0.61)
+                       ("rust-windows-future" ,rust-windows-future-0.2)
+                       ("rust-windows-link" ,rust-windows-link-0.1)
+                       ("rust-windows-numerics" ,rust-windows-numerics-0.2))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "This package provides Rust for Windows.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-0.58
   (package
     (name "rust-windows")
