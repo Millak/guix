@@ -12673,11 +12673,13 @@ as in:
 This is the declarative counterpart of @code{text-file*}.
 @end deffn
 
-@deffn {Procedure} file-union name files
-Return a @code{<computed-file>} that builds a directory containing all of @var{files}.
-Each item in @var{files} must be a two-element list where the first element is the
-file name to use in the new directory, and the second element is a gexp
-denoting the target file.  Here's an example:
+@deffn {Procedure} file-union name files [#:dangling-symlinks? #f]
+Return a @code{<computed-file>} that builds a directory containing all
+of @var{files}.  Each item in @var{files} must be a two-element list
+where the first element is the file name to use in the new directory,
+and the second element is a gexp denoting the target file.
+@code{#:dangling-symlinks?} controls if gexps must lower to an existing
+file.  Here's an example:
 
 @lisp
 (file-union "etc"

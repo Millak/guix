@@ -2144,7 +2144,7 @@ This is the declarative counterpart of 'text-file*'."
 
   (computed-file name build #:guile guile))
 
-(define* (file-union name files #:key guile)
+(define* (file-union name files #:key guile dangling-symlinks?)
   "Return a <computed-file> that builds a directory containing all of FILES.
 Each item in FILES must be a two-element list where the first element is the
 file name to use in the new directory, and the second element is a gexp
@@ -2158,28 +2158,29 @@ denoting the target file.  Here's an example:
                 (\"libvirt/qemu.conf\" ,(plain-file \"qemu.conf\" \"\"))))
 
 This yields an 'etc' directory containing these two files."
-  (computed-file name
-                 (with-imported-modules '((guix build utils))
-                   (gexp
-                    (begin
-                      (use-modules (guix build utils))
+  (computed-file
+   name
+   (with-imported-modules '((guix build utils))
+     (gexp
+      (begin
+        (use-modules (guix build utils))
 
-                      (mkdir (ungexp output))
-                      (chdir (ungexp output))
-                      (ungexp-splicing
-                       (map (match-lambda
-                              ((target source)
-                               (gexp
-                                (begin
-                                  ;; Stat the source to abort early if it does
-                                  ;; not exist.
-                                  (stat (ungexp source))
-
-                                  (mkdir-p (dirname (ungexp target)))
-                                  (symlink (ungexp source)
-                                           (ungexp target))))))
-                            files)))))
-                 #:guile guile))
+        (mkdir (ungexp output))
+        (chdir (ungexp output))
+        (ungexp-splicing
+         (map (match-lambda
+                ((target source)
+                 (gexp
+                  (let ((source (ungexp source))
+                        (target (ungexp target)))
+                    (unless (or (ungexp dangling-symlinks?)
+                                (stat source #f))
+                      (error (format #f "~a points to inexistent file \
+or dangling symlink ~a" target source)))
+                    (mkdir-p (dirname target))
+                    (symlink source target)))))
+              files)))))
+   #:guile guile))
 
 (define* (directory-union name things
                           #:key (copy? #f) (quiet? #f)
