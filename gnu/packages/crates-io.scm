@@ -71235,6 +71235,30 @@ Semantic Versioning.")
         ("rust-semver-parser" ,rust-semver-parser-0.10)
         ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-semver-0.10
+  (package
+    (name "rust-semver")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "semver" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1401i88135h2paxwvf0b51hf585rdzxa8yxg7j800gk2z8lfqk1r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-diesel" ,rust-diesel-1)
+                       ("rust-semver-parser" ,rust-semver-parser-0.7)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/dtolnay/semver")
+    (synopsis "Semantic version parsing and comparison")
+    (description
+     "This package provides the parser and evaluator for Cargo's flavor of
+Semantic Versioning.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-semver-0.9
   (package
     (name "rust-semver")
