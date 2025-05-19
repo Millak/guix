@@ -3109,6 +3109,38 @@ package provides a way to identify Git actors.")
                        ("rust-time" ,rust-time-0.3)
                        ("rust-zip" ,rust-zip-0.6))))))
 
+(define-public rust-gix-attributes-0.24
+  (package
+    (name "rust-gix-attributes")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-attributes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0f6vdp77d5z98bv3w6i71zlaqcgf8bch4qfa3rj5zvv2yq5h0lgi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.18)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-kstring" ,rust-kstring-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Deal with .gitattributes files")
+    (description
+     "This package provides a crate of the gitoxide project for dealing with
+.gitattributes files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-attributes-0.22
   (package
     (name "rust-gix-attributes")
