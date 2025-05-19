@@ -9184,7 +9184,7 @@ devices using the GNOME desktop.")
 (define-public tecla
   (package
     (name "tecla")
-    (version "46.0")
+    (version "48.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9192,7 +9192,7 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03qvb526zywhh9059adwm8iz682rckbwm4c9fl4qnnkshsmiw22a"))))
+                "00flsdil1f2x6q6rlv1a5j2j9kh9zzcxnjbna2qpxkx2s9j38gbq"))))
     (build-system meson-build-system)
     (arguments (list #:glib-or-gtk? #t))
     (inputs (list gtk libadwaita))
