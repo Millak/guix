@@ -2575,6 +2575,25 @@ Windows crate.")
     (description "This package provides Windows registry.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-link-0.1
+  (package
+    (name "rust-windows-link")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-link" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0f2cq7imbrppsmmnz8899hfhg07cp5gq6rh0bjhb1qb6nwshk13n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Linking for Windows")
+    (description "This package provides Linking for Windows.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-result-0.2
   (package
     (name "rust-windows-result")
