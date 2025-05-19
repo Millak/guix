@@ -4574,6 +4574,46 @@ This package is part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serial-test" ,rust-serial-test-2)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-features-0.40
+  (package
+    (name "rust-gix-features")
+    (version "0.40.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-features" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m6mf6f341shzs5b1iy79klkw00x84kba34z5i4bshldia1x9zcb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.16)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-jwalk" ,rust-jwalk-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-prodash" ,rust-prodash-29)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha1-smol" ,rust-sha1-smol-1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis
+     "Integrate various gix capabilities using compile-time feature flags")
+    (description
+     "This package provides a crate to integrate various gix capabilities
+using compile-time feature flags.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-features-0.38
   (package
     (name "rust-gix-features")
