@@ -2094,10 +2094,7 @@ exec " gcc "/bin/" program
                    ''("TIME_T_32_BIT_OK=yes")
                    ''())
               '("--disable-year2038")
-              ,(match (%current-system)
-                 ((or "arm-linux" "aarch64-linux")
-                  ''("--disable-dependency-tracking"))
-                 (_ ''()))
+              '()       ; XXX: List only added to prevent rebuilds!
               ,flags))
            ((#:phases phases '%standard-phases)
             `(modify-phases ,phases
