@@ -1591,7 +1591,7 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
   (package
     (inherit wayland-protocols)
     (name "wayland-protocols-next")
-    (version "1.42")
+    (version "1.43")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1600,7 +1600,7 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gx8788wgkl42x3fh4kwkfz2xy7n84slbjwqg9w5z2b7jjkwzrrq"))))))
+                "1pgjkc0gw11xb55kn8hf8adnmx3bkpgb4p0haylb2jh7irqhxhqd"))))))
 
 (define-public wayland-utils
   (package
