@@ -334,34 +334,38 @@ or musca).
     (license license:bsd-2)))
 
 (define-public hypridle
-  (package
-    (name "hypridle")
-    (version "0.1.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/hyprwm/hypridle")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1622iz8bl8mi7gj2sc2jq6z7622l7l2izj1l9ajwj2mxpwpkdhbs"))))
-    (build-system cmake-build-system)
-    (arguments (list #:tests? #f)) ;No tests.
-    (native-inputs (list gcc-14 pkg-config))
-    (inputs
-     (list hyprlang
-           hyprutils
-           sdbus-c++
-           wayland
-           wayland-protocols))
-    (home-page "https://github.com/hyprwm/hypridle")
-    (synopsis "Hyprland's idle daemon")
-    (description
-     "Hyprland's idle daemon, based on the @code{ext-idle-notify-v1} Wayland
-protocol.  Hypridle has support for D-Bus's loginctl
-commands (lock/unlock/before-sleep) and inhibit.")
-    (license license:bsd-3)))
+  ;; Go back to regular versioning on next release.
+  (let ((commit "4f1c165d3e340331de020b46b33a3edb2fd9d55e")
+        (revision "1"))
+    (package
+      (name "hypridle")
+      (version (git-version "0.1.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hyprwm/hypridle")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1f75vfd5fv8zhd7hy7lg26wmlaslxqj2knf3zi6wnv21n63m3wa1"))))
+      (build-system cmake-build-system)
+      (arguments (list #:tests? #f)) ;No tests.
+      (native-inputs (list gcc-14 pkg-config))
+      (inputs
+       (list hyprland-protocols
+             hyprlang
+             hyprutils
+             hyprwayland-scanner
+             sdbus-c++
+             wayland
+             wayland-protocols))
+      (home-page "https://github.com/hyprwm/hypridle")
+      (synopsis "Hyprland's idle daemon")
+      (description "Hyprland's idle daemon, based on the
+@code{ext-idle-notify-v1} Wayland protocol.  Hypridle has support for D-Bus's
+loginctl commands (lock/unlock/before-sleep) and inhibit.")
+      (license license:bsd-3))))
 
 (define-public hyprland
   (package
