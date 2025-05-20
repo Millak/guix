@@ -7637,26 +7637,18 @@ Telescope, HST}).")
 (define-public python-sunkit-magex
   (package
     (name "python-sunkit-magex")
-    (version "1.0.0rc1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunkit_magex" version))
        (sha256
-        (base32 "10lldb2q71q9gip9sx35zyzm34p9aj4xr2c7a21x176q90r3qyqq"))))
+        (base32 "16wraf2yrqslik4h3mhj5gcwx7fdg3x9v38swlhcgcyvkcjxbqc2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              "-k" (string-join
-                    ;; Some issue with presision in this test.
-                    (list "not test_adapt_map"
-                          ;; NotImplementedError: is_full_sun_synoptic_map is
-                          ;; only implemented for ['CEA', 'CAR'] projections
-                          ;; and not
-                          "test_car_reproject")
-                    " and not "))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -7671,7 +7663,7 @@ Telescope, HST}).")
            python-pytest-xdist
            python-reproject
            python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-streamtracer
            python-sympy
            python-wheel))
