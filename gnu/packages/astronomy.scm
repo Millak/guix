@@ -2849,6 +2849,48 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 @code{red}, and others (@code{algae}, @code{pastel}, and @code{xray}).")
     (license license:bsd-3)))
 
+(define-public python-colossus
+  ;; There is no source distribution in PyPI and no version tags, use the
+  ;; commit pointing to the version 1.3.8.
+  (let ((commit "0lz4n4i4frgsdspmka4pk6q4zq6j1z37g5xx7pr3xzgl9qfiiad2")
+        (revision "0"))
+    (package
+      (name "python-colossus")
+      (version (git-version "1.3.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://bitbucket.org/bdiemer/colossus")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mfkgfp6f0ay6kndh7vk8l0g2ijr32k55x3pmj15lp9kd8k3ln4r"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        ;; TODO: Skip test files requiring not packaged lenstronomy.
+        #~(list "--ignore=test/api/profiles/light_test.py"
+                "--ignore=test/api/profiles/mass_test.py")))
+      (native-inputs
+       (list python-astropy-minimal
+             python-jsonpickle
+             python-pytest
+             python-scikit-image
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-numpy
+             python-scipy))
+      (home-page "https://bitbucket.org/bdiemer/colossus")
+      (synopsis "Cosmology, halo, and large-scale structure tools")
+      (description
+       "@acronym{Colossus, COsmology haLO and large-Scale StrUcture toolS} is a
+Python toolkit for calculations pertaining to cosmology, the large-scale
+structure of the universe, and the properties of dark matter halos.")
+      (license license:expat))))
+
 (define-public python-coolest
   (package
     (name "python-coolest")
