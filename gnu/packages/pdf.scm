@@ -945,31 +945,6 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
                    license:silofl1.1    ;resources/fonts/{han,noto,sil,urw}
                    license:asl2.0)))) ; resources/fonts/droid
 
-(define-public mupdf-1.24 ; Needed for sioyek
-  (package
-    (inherit mupdf)
-    (name "mupdf")
-    (version "1.24.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://mupdf.com/downloads/archive/"
-                           "mupdf-" version "-source.tar.lz"))
-       (sha256
-        (base32 "0hydmp8sdnkrkpqyysa6klkxbwv9awf1xc753r27gcj7ds7375fj"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-1)))
-       (snippet
-        ;; Remove bundled software.  Keep patched variants.
-        #~(with-directory-excursion "thirdparty"
-            (let ((keep '("README" "extract" "freeglut" "lcms2")))
-              (for-each delete-file-recursively
-                        (lset-difference string=?
-                                         (scandir ".")
-                                         (cons* "." ".." keep))))))))))
-
-
 (define-public qpdf
   (package
     (name "qpdf")
