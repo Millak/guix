@@ -2127,11 +2127,8 @@ exec " gcc "/bin/" program
     (inherit (@ (gnu packages file) file))
     (arguments
      `(#:configure-flags
-       `("--disable-bzlib"
-         ,,@(match (%current-system)
-              ((or "arm-linux" "aarch64-linux")
-               '("--disable-dependency-tracking"))
-              (_ '())))))))
+       ;; XXX: List only added to prevent rebuilds!
+       `("--disable-bzlib" ,,@'())))))
 
 (define file-boot0
   (package
