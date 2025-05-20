@@ -1172,7 +1172,7 @@ files mistakenly overwritten or destroyed just a few seconds ago.")
 (define-public disorderfs
   (package
     (name "disorderfs")
-    (version "0.5.11")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1182,7 +1182,7 @@ files mistakenly overwritten or destroyed just a few seconds ago.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pnrj0h8sgqwgsc18vz3fkqsp6vhigdbi75vdj0si1r6wgslnr7z"))))
+         "14x57qnqifx6hal1yb2bnrda9l12z19vhqlq850qax23z362q53q"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
