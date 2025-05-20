@@ -3920,7 +3920,7 @@ compositors, though.")
 (define-public hyprpicker
   (package
     (name "hyprpicker")
-    (version "0.4.2")
+    (version "0.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3929,7 +3929,7 @@ compositors, though.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jnncnsrb8h3driryj27mnamh5fqs0sys6xmfwsyg4qx3dgb6s89"))))
+                "11sk2kkwqvahp0rf51mr7bax8n2ypqqgydi5hi53aagjsl4xxbdm"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
