@@ -7042,23 +7042,31 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "0xja7dpbkgbcvgqz3c3i1j5yblccjqv8g0dga16iayzcf9ni9jbg"))))
+        (base32 "07pkz0fybhpzrlch5gcw4c90rd2y2mypli23h2lz1pa7q6gyaifd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
       ;; Ignore tests requiring python-crds to break cycle:
       ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
-      #:test-flags #~(list "--ignore=tests/test_schemas.py")))
+      #~(list "--ignore=tests/test_schemas.py"
+              ;; E   git.exc.InvalidGitRepositoryError
+              "--ignore=tests/test_versioning.py"
+              ;; E TypeError: the JSON object must be str, bytes or bytearray,
+              ;; not NoneType
+              "--ignore=tests/test_latest.py")))
     (native-inputs
      (list python-pytest
+           python-pytest
            python-pytest-doctestplus
-           python-setuptools
+           python-semantic-version
+           python-setuptools-next
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
