@@ -3808,7 +3808,7 @@ This package is the fork of hsetroot by Hyriand.")
 (define-public hyprcursor
   (package
     (name "hyprcursor")
-    (version "0.1.11")
+    (version "0.1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3817,7 +3817,7 @@ This package is the fork of hsetroot by Hyriand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k050802bpgdn1hnrfgadxs54hx0zak3y3jzbjnsb69i6ayydr1c"))))
+                "1blclwsk0p0990pk1ac9kvnlpafb6kh2knimb8bm25hqpr0xxy92"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;TODO: No themes currently packaged.
     (native-inputs (list gcc-14 pkg-config))
