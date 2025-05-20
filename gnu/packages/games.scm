@@ -11461,6 +11461,39 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
 of the classic boardgame checkers (also known as draughts).")
     (license license:gpl2+)))
 
+(define-public xjump-sdl
+  (package
+    (name "xjump-sdl")
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hugomg/xjump-sdl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1macl4aq0zc93kbranzclqxh2jc40asn3bc8cpyywafzbxyha99y"))))
+    (build-system gnu-build-system)
+    (inputs (list sdl2))
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "./configure"
+                      (string-append "--prefix="
+                                     (assoc-ref outputs "out"))
+                      (string-append "CC="
+                                     #$(cc-for-target))))))))
+    (home-page "https://github.com/hugomg/xjump-sdl")
+    (synopsis "Falling tower game")
+    (description "This package provides a reimplementation of the classic
+Xjump game, using SDL instead of Xlib.")
+    (license license:gpl3)))
+
 (define-public xmoto
   (package
     (name "xmoto")
