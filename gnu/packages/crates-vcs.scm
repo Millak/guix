@@ -7080,27 +7080,27 @@ feature pre-selected.")
 (define-public rust-gix-path-0.10
   (package
     (name "rust-gix-path")
-    (version "0.10.18")
+    (version "0.10.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-path" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nxn7zzl272mb250ryg3p3kpykgx4xmg4wdfjymxy47gqkz6azsn"))))
+        (base32 "1ds5hvyjwic564jbvpy14ibrf1f8701q0877n2p41qsi3bpr5hmg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
-                       ("rust-gix-validate" ,rust-gix-validate-0.10)
                        ("rust-home" ,rust-home-0.5)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-thiserror" ,rust-thiserror-2))
-       #:cargo-development-inputs (("rust-known-folders" ,rust-known-folders-1)
-                                   ("rust-serial-test" ,rust-serial-test-3)
-                                   ("rust-windows" ,rust-windows-0.61)
-                                   ("rust-winreg" ,rust-winreg-0.55))))
+       #:cargo-development-inputs
+       (("rust-known-folders" ,rust-known-folders-1)
+        ("rust-serial-test" ,rust-serial-test-3)
+        ("rust-windows" ,rust-windows-0.58)
+        ("rust-winreg" ,rust-winreg-0.52))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis
      "Part of the Gitoxide project, this crate deals with paths and their conversions")
