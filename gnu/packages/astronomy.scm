@@ -6917,7 +6917,7 @@ install an implementation package such as gwcs.")
 (define-public python-pint-pulsar
   (package
     (name "python-pint-pulsar")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch) ; no tests data in the PyPI tarball
@@ -6926,7 +6926,7 @@ install an implementation package such as gwcs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i8vznjgbdhrfv6kcq33zvsn6q40r29sscy8fmk13vx2zfwl8nf0"))))
+        (base32 "0n66z7v30q1981hx4q5vy3mibrh453gak8dd938038r5mwddya3f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6994,7 +6994,19 @@ install an implementation package such as gwcs.")
               "tests/test_tcb2tdb.py"
               "tests/test_templates.py"
               "tests/test_variety_parfiles.py"
-              "tests/test_version.py")))
+              "tests/test_version.py")
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'remove-deprecated-scripts
+           ;; ImportError: cannot import name 'CompositeMCMCFitter' from
+           ;; 'pint.mcmc_fitter'.
+           ;;
+           ;; Removed in 1.1.3: Broken fitter class `CompositeMCMCFitter`
+           ;; (this fitter was added seemingly to deal with combined radio and
+           ;; high-energy datasets, but has since been broken for a while.)
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("event_optimize_multiple.*") "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
