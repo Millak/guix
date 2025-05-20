@@ -914,7 +914,7 @@ utilities used across the hypr* ecosystem.")
 (define-public hyprlang
   (package
     (name "hyprlang")
-    (version "0.6.0")
+    (version "0.6.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -923,7 +923,7 @@ utilities used across the hypr* ecosystem.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18f8vlg5ypw35gyi8gy0wqh5jvg1q67qywrb750bx8pk9gi1agx2"))))
+                "05p4nghkr0qpqjvcjrgxjqjwswmvg245hmhlcgdacpvdfmn38m4i"))))
     (build-system cmake-build-system)
     (arguments
      (list
