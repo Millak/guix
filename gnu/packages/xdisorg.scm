@@ -3831,7 +3831,7 @@ This package is the fork of hsetroot by Hyriand.")
 (define-public hyprlock
   (package
    (name "hyprlock")
-   (version "0.7.0")
+   (version "0.8.2")
    (source
     (origin
      (method git-fetch)
@@ -3840,7 +3840,7 @@ This package is the fork of hsetroot by Hyriand.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "03ivr5nsjwiwvpdxpjnldwawy8sx8qgwhs57242xkb0zz0w0gvsk"))))
+      (base32 "1wrndp1bkyfp741mgvjflkbq4pvdlccrh6xaz41y1f9967j8magm"))))
    (build-system cmake-build-system)
    (arguments
     `(#:cmake ,cmake-next
