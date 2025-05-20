@@ -2,7 +2,7 @@
 ;;; Copyright © 2013-2016, 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021-2025 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -243,7 +243,7 @@
 (define-public zuo
   (package
     (name "zuo")
-    (version "1.10") ; defined in racket/src/zuo/zuo.c or the following
+    (version "1.12") ; defined in racket/src/zuo/zuo.c or the following
     #;(displayln (~a (hash-ref (runtime-env) 'version) "."
                      (hash-ref (runtime-env) 'minor-version)))
     (source (origin
@@ -252,7 +252,7 @@
                     (url "https://github.com/racket/zuo")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "007bjbhxbw3dq75klaa6f6ljhri2qxi43q6n74wyy50vr9yhx4s1"))
+               (base32 "053zn230v4bgfrf7clrqcp5d614fh4sv00hr5qw3vdvnl006shh5"))
               (file-name (git-file-name name version))
               (patches (search-patches "zuo-bin-sh.patch"))))
     (outputs '("out" "debug"))
