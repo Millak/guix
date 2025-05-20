@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -8725,16 +8725,16 @@ astronomical fields.  SkyMaker is part of the
 (define-public splash
   (package
     (name "splash")
-    (version "3.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/danieljprice/splash")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "133ihsxirik7iivi1hia6wwfvilwqhw19v5mmajs36zcj914qhyc"))
-              (file-name (git-file-name name version))))
+    (version "3.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danieljprice/splash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vyshywwbk2746jdhrnn7vn1gj336zzwcifrfyf38byj41691svm"))))
     (build-system gnu-build-system)
     (arguments
      ;; FIXME: Tests failed
@@ -8754,11 +8754,17 @@ astronomical fields.  SkyMaker is part of the
                         (add-before 'install 'create-install-dirrectories
                           (lambda _
                             (mkdir-p (string-append #$output "/bin")))))))
-    (native-inputs (list gfortran pkg-config perl python-wrapper))
-    (inputs (list cairo cfitsio giza))
+    (native-inputs
+     (list gfortran
+           pkg-config
+           perl
+           python-wrapper))
+    (inputs
+     (list cairo
+           cfitsio
+           giza))
     (home-page "https://users.monash.edu.au/~dprice/splash/")
-    (synopsis
-     "Astrophysical visualisation tool for smoothed particle hydrodynamics")
+    (synopsis "Astrophysical visualisation tool for smoothed particle hydrodynamics")
     (description
      "SPLASH is visualisation tool for Smoothed Particle Hydrodynamics (SPH)
 simulations in one, two and three dimensions, developed mainly for
