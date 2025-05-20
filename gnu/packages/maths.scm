@@ -51,7 +51,7 @@
 ;;; Copyright © 2021, 2023, 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
@@ -1402,21 +1402,39 @@ in the terminal or with an external viewer.")
 (define-public giza
   (package
     (name "giza")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/danieljprice/giza")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "17h8hkhcqlvgryyp5n206fbqpals2vbnjy4f6f1zwj9jiblgi5mj"))
-       (file-name (git-file-name name version))))
+        (base32 "1qair5j6rq17hwvyxl6k2n4hkvgjw5wczmfzn7qh7kcv3qpg9p5l"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xorg-server
+            (lambda* (#:key inputs #:allow-other-keys)
+              (system "Xvfb :99 -screen 0 1920x1080x24 &")
+              (setenv "DISPLAY" ":99")))
+          ;; Tests are interactive, see
+          ;; <https://github.com/danieljprice/giza/blob/v1.5.0/.github/workflows/build.yml#L52>.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "sh" "-c" "yes '' | make check")))))))
     (native-inputs
-     (list perl pkg-config))
+     (list perl
+           pkg-config
+           xorg-server-for-tests))
     (inputs
-     (list cairo freetype gfortran))
+     (list cairo
+           freetype
+           gfortran))
     (home-page "https://danieljprice.github.io/giza/")
     (synopsis "Scientific plotting library for C/Fortran")
     (description
