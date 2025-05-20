@@ -4062,6 +4062,8 @@ satellite.")
           (add-before 'build 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
+                ;; stcal<1.13.0,>=1.12.0
+                ((">=1.12.0,<1.13.0") "") ; main branch points to the latest commit
                 ;; scipy>=1.14.1
                 (("1.14.1") "1.12.0")
                 ;; XXX: Can't detect opencv-python version. The input opencv
