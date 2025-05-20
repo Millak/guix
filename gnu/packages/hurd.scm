@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2025 Yelninei <yelninei@tutamail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -214,6 +215,25 @@ Library and other user programs.")
      "This package provides libshouldbeinlibc, libihash, libstore, libports,
 libiohelp, libfshelp, libtrivfs, and libmachdev, needed to build the GNU C
 Library, Parted and netdde for GNU/Hurd.")
+    (license gpl2+)))
+
+(define-public libirqhelp
+  (package (inherit hurd-headers)
+    (name "libirqhelp")
+    (arguments
+     (substitute-keyword-arguments (package-arguments hurd-headers)
+       ((#:make-flags flags '())
+        #~'(#$(string-append "lib-subdirs=libirqhelp")
+            "prog-subdirs="
+            "other-subdirs="
+            #$@flags))
+       ((#:phases _)
+        #~%standard-phases)))
+    (supported-systems %hurd-systems)
+    (synopsis "Hurd helper library for userspace IRQ handling")
+    (description
+     "This package provides libirqhelp, a GNU Hurd helper library to handle
+@acronym{IRQs, interrupt requests} in user space.")
     (license gpl2+)))
 
 (define-public hurd-core-headers
