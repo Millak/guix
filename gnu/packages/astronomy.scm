@@ -7217,13 +7217,13 @@ solar physics.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "roman_datamodels" version))
        (sha256
-        (base32 "1jlzfpzg13g9sq1i0dz27ymny48rwz74blp2dqhk9idynbyp5l4k"))))
+        (base32 "0sb2zpanklyh5j2rgm27lrscl51fwyny4f6c9gisj373pp7w6h2c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7240,7 +7240,7 @@ solar physics.")
            python-pytest-doctestplus
            python-pytest-env
            python-pytest-xdist
-           python-setuptools
+           python-setuptools-next
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
