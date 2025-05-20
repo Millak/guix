@@ -6057,18 +6057,19 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "1wb1rvr0p00jhhpn2szqi9dn8vzmb8v12yb96h8x24mj08p5clwk"))))
+        (base32 "00xfx7hpcadwf3dm0lddh1raw7qnr5nrg30dclmjcrxhsp27spjg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--pyargs" "stcal"
+              "--numprocesses" (number->string (parallel-job-count))
               "-k" (string-join
                     ;; Tests requiring network access.
                     (list "not test_absolute_align"
@@ -6079,7 +6080,8 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
                           "test_parse_sky_centroid"
                           "test_relative_align[False]"
                           "test_relative_align[True]")
-                    " and not "))
+                    " and not ")
+              "tests")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-slope-fitter
@@ -6093,17 +6095,11 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
             (lambda _
               (substitute* "pyproject.toml"
                 ;; Relax some requirements as all tests passed successfully.
-                ;; numpy>=1.25.0
-                (("1.25.0") "1.24.4")
                 ;; scipy>=1.14.1
                 (("1.14.1") "1.12.0")
                 ;; XXX: Can't detect opencv-python version. The input opencv
                 ;; might not set the version correctly.
-                ((".*opencv-python-headless.*") ""))))
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+                ((".*opencv-python-headless.*") "")))))))
     (native-inputs
      (list python-cython-3
            python-psutil
