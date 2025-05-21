@@ -121,7 +121,6 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -45100,36 +45099,29 @@ documents, Shiny applications, Plumber APIs, plots, and static web content.")
     (properties `((upstream-name . "dygraphs")))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1)
-                  (ice-9 popen))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'process-javascript
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "inst/htmlwidgets/lib/"
-               (call-with-values
-                   (lambda ()
-                     (unzip2
-                      `(("dygraphs/dygraph-combined-dev.js"
-                         "dygraph-combined.js")
-                        (,(assoc-ref inputs "js-jquery")
-                         "jquery/jquery.min.js")
-                        (,(assoc-ref inputs "js-fquarter")
-                         "fquarter/moment-fquarter.min.js"))))
-                 (lambda (sources targets)
-                   (for-each (lambda (source target)
-                               (format #t "Processing ~a --> ~a~%"
-                                       source target)
-                               (let ((minified (open-pipe* OPEN_READ "uglifyjs" source)))
-                                 (call-with-output-file target
-                                   (lambda (port)
-                                     (dump-port minified port)))))
-                             sources targets))))
-             #t)))))
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/htmlwidgets/lib"
+                (for-each (match-lambda
+                            ((source . target)
+                             (minify source #:target target)))
+                          `(("dygraphs/dygraph-combined-dev.js"
+                             . "dygraph-combined.js")
+                            (,(assoc-ref inputs "js-jquery")
+                             . "jquery/jquery.min.js")
+                            (,(assoc-ref inputs "js-fquarter")
+                             . "fquarter/moment-fquarter.min.js")))))))))
     (native-inputs
-     `(("uglifyjs" ,node-uglify-js)
+     `(("esbuild" ,esbuild)
        ;; They actually use version 1.11.1, but this more recent version
        ;; should be just fine.
        ("js-jquery"
