@@ -28442,14 +28442,14 @@ embeddings and functions to build new reference.")
 (define-public r-tximeta
   (package
     (name "r-tximeta")
-    (version "1.26.0")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tximeta" version))
        (sha256
         (base32
-         "1h551lrrb04gww7j6db4399p086hk6igg1q7siqvc7p3l0mxw5bc"))))
+         "0za6x4il9qqyrb0rf57vb2qahqdra9snfql6canmpw2ixwhhgq6n"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
     ;; Two tests fail because data files are not included.
