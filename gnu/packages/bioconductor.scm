@@ -16739,13 +16739,13 @@ multiplication.")
 (define-public r-scrapper
   (package
     (name "r-scrapper")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scrapper" version))
        (sha256
-        (base32 "1jy0fajpcfxjpl8r3m229k4vhzhplziifqnzb181cahlglck10ls"))))
+        (base32 "186srh8lkr7xfy2alxgqd2gg5liqwxsdrnc88wcvh2iv71gqybv4"))))
     (properties
      '((upstream-name . "scrapper")
        (updater-ignored-native-inputs . ("r-rigraphlib"))
