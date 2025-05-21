@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,8 @@
     (let ((build (assq-ref %standard-phases 'build)))
       (apply build args)))
   (format #t "building target `~a'~%" dist-target)
+  (setenv "DISTCHECK_CONFIGURE_FLAGS"
+          (string-append "SHELL=" (which "sh")))
   (apply invoke "make" dist-target make-flags))
 
 (define* (install-dist #:key outputs #:allow-other-keys)
