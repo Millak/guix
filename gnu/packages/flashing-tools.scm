@@ -33,6 +33,7 @@
 
 (define-module (gnu packages flashing-tools)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -685,6 +686,30 @@ It can be used to upload images to I.MX SoC's using at least their boot ROM.")
        "This tool is for flashing custom layouts to
 @url{https://ergodox-ez.com/,ZSA keyboards}.")
       (license license:expat))))
+
+(define-public wlink
+  (package
+    (name "wlink")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wlink" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05l6h5d4w181sg00nq0l1808l0zc4fdda6syvgm7ba31glj7xkd4"))))
+    (build-system cargo-build-system)
+    (arguments `(#:install-source? #f))
+    (native-inputs (list pkg-config))
+    (inputs (cons* eudev libusb (cargo-inputs 'wlink)))
+    (home-page "https://github.com/ch32-rs/wlink")
+    (synopsis "Unofficial WCH-Link command line tool")
+    (description
+     "This package is an unofficial command line tool for use with WCH-Link, a
+USB debbuger tool for flashing and debugging WCH RISC-V and ARM
+microcontrollers.  This tool is still in development and may not be ready for
+production use.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public qdl
   (let ((commit "13681fcb359c9f9c32a17a91d3dd20df2e413b6d")
