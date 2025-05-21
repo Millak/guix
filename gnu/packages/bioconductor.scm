@@ -5962,13 +5962,13 @@ retrieval analyses, or similar technologies.")
 (define-public r-biocmake
   (package
     (name "r-biocmake")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biocmake" version))
        (sha256
-        (base32 "136djx32fbny228jpmpqqa5r0dbzgyw4ymmi0wnpx34s4qgr6k2x"))))
+        (base32 "0ajcq62xcqc9kj8h236lkw67z72b5vkymhpn1vlspmhx005frcq3"))))
     (properties
      '((upstream-name . "biocmake")
        (updater-extra-propagated-inputs . ("cmake"))))
