@@ -21156,7 +21156,7 @@ information via a consistent and well-integrated user interface.")
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "adaptive-wrap-" version ".tar"))
        (sha256
-        (base32 "1gs1pqzywvvw4prj63vpj8abh8h14pjky11xfl23pgpk9l3ldrb0"))))
+        (base32 "1dz5mi21v2wqh969m3xggxbzq3qf78hps418rzl73bb57l837qp8"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/adaptive-wrap.html")
     (synopsis "Smart line-wrapping with wrap-prefix")
