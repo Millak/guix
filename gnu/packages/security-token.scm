@@ -356,7 +356,7 @@ website for more information about Yubico and the YubiKey.")
 (define-public opensc
   (package
     (name "opensc")
-    (version "0.26.0")
+    (version "0.26.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -364,7 +364,7 @@ website for more information about Yubico and the YubiKey.")
                     version "/opensc-" version ".tar.gz"))
               (sha256
                (base32
-                "0azqfmg9wnjry9qa8q2lsdrnxphf2mb111v8v1h54l718nnswyw3"))))
+                "1jw82r7dahmfzvri16d46wivrz7jx8srybknjh1mfvnq66h92qpi"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -393,7 +393,6 @@ facilitate the use of smart cards in security applications such as
 authentication, encryption and digital signatures.  OpenSC implements the PKCS
 #15 standard and the PKCS #11 API.")
     (license license:lgpl2.1+)))
-
 
 (define-public pkcs11-helper
   (package
