@@ -4,7 +4,7 @@
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021-2025 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -298,7 +298,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
     (name "chez-scheme-for-racket")
     ;; The version should match `(scheme-version #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.1.0-pre-release.3")
+    (version "10.2.0-pre-release.2")
     (source #f)
     (build-system gnu-build-system)
     (inputs `(,@(if (nix-system->native-chez-machine-type)
