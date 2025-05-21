@@ -1498,6 +1498,74 @@ plugins are provided.")
      "This package provides a barebones, fast LV2 bass enhancement plugin.")
     (license license:expat)))
 
+(define-public cable
+  (package
+    (name "cable")
+    (version "0.9.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/magillos/Cable")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pzafiim1cnxrngk6nzmpx9sx1lc6qrqjrrcxg1qpigcrjvrfjs2"))
+              (modules '((guix build utils)))
+              (snippet
+               '(delete-file-recursively "Arch packages"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false  ;there is no test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-hardcoded-file-names
+            (lambda _
+              (substitute* "cable_core/process.py"
+                (("/usr/share/cable")
+                 (string-append #$output "/share/cable/"))
+                (("connection-manager.py")
+                 "cables/launch-connection-manager.py"))
+              (rename-file "connection-manager.py"
+                           "cables/launch-connection-manager.py")))
+          (add-after 'install 'install-more
+            (lambda _
+              (install-file "jack-plug.svg"
+                            (string-append #$output "/share/icons/hicolor/scalable/apps/"))
+              (install-file "com.github.magillos.cable.desktop"
+                            (string-append #$output "/share/applications/"))))
+          (add-after 'install-more 'wrap-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((pyversion
+                      #$(version-major+minor (package-version
+                                              (this-package-input "python"))))
+                     (lib (string-append #$output "/lib/python" pyversion
+                                         "/site-packages"))
+                     (file
+                      (string-append lib "/cables/launch-connection-manager.py")))
+                (chmod file #o555)
+                (wrap-script file
+                  #:guile (search-input-file inputs "bin/guile")
+                  `("GUIX_PYTHONPATH" ":" prefix
+                    (,lib  ,(getenv "GUIX_PYTHONPATH"))))))))))
+    (inputs
+     (list python
+           python-dbus
+           python-jack-client
+           python-pyqt-6
+           python-requests))
+    (native-inputs
+     (list guile-3.0 pkg-config python-setuptools python-wheel))
+    (home-page "https://github.com/magillos/Cable")
+    (synopsis "GUI for pipewire and wireplumber settings and connections")
+    (description
+     "This is a PyQT GUI application to dynamically modify Pipewire and
+Wireplumber settings at runtime, such as quantum. sample rate, latency offset
+setting, services restart and more.  It features side-by-side and graph style
+connections manager, pw-top wrapper, simple ALSA mixer and jack_delay GUI.")
+    (license license:gpl3+)))
+
 (define-public calf
   (package
     (name "calf")
