@@ -5137,16 +5137,16 @@ back to the servers which know the data.")
 (define-public dropwatch
   (package
     (name "dropwatch")
-    (version "1.5.4")
+    (version "1.5.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/nhorman/dropwatch.git")
+                    (url "https://github.com/nhorman/dropwatch")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r653y7bx763fpxl1vrflx8bzcrbds98zk4z7yhfikjngrqn1f2d"))))
+                "1zpp52mw863km710ljbcrlqcmk9nwfswbwaa2q5wr79qdkad7dpv"))))
     (build-system gnu-build-system)
     ;; XXX: bfd support isn't finished.
     ;; https://github.com/nhorman/dropwatch/issues/76#issuecomment-1328345444
