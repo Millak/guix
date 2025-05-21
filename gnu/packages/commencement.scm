@@ -2070,7 +2070,8 @@ exec " gcc "/bin/" program
     (arguments
      `(#:tests? #f                            ; the test suite needs diffutils
        #:guile ,%bootstrap-guile
-       #:implicit-inputs? #f))))
+       #:implicit-inputs? #f
+       ,@(package-arguments diffutils)))))
 
 (define findutils-boot0
   (package
