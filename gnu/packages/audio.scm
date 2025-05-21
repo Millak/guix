@@ -3262,6 +3262,38 @@ compensation, (de)interleaving, and byte-swapping
     ;; original developer.
     (license license:expat)))
 
+(define-public python-jack-client
+  (package
+    (name "python-jack-client")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jack_client" version))
+       (sha256
+        (base32 "09l4c34klz73zikav94f1ws91s1j55kcb5gv1vpy5w12wnbj0j78"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-library
+            (lambda _
+              (substitute* "src/jack.py"
+                (("_libname = _find_library\\('jack'\\)")
+                 (string-append "_libname = '"
+                                #$(this-package-input "pipewire")
+                                "/lib/pipewire-0.3/jack/libjack.so.0'"))))))))
+    (inputs (list pipewire))
+    (propagated-inputs (list python-cffi))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://jackclient-python.readthedocs.io/")
+    (synopsis "JACK Audio Connection Kit (JACK) client for Python")
+    (description "This package provides a JACK Audio Connection Kit (JACK)
+client for Python.  This variant uses the compatibility JACK implementation
+provided by Pipewire.")
+    (license license:expat)))
+
 (define-public python-pyaudio
   (package
     (name "python-pyaudio")
