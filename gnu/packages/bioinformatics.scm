@@ -811,7 +811,7 @@ directly access various slots (e.g. X, obs, var), or convert the data into
       (license license:expat))))
 
 (define-public r-anpan
-  (let ((commit "286b88dcf5e9e963a595482139aade154ee1dc86")
+  (let ((commit "efd4dc4874c418a43104ed3f418283d2451f0483")
         (revision "1"))
     (package
       (name "r-anpan")
@@ -824,12 +824,16 @@ directly access various slots (e.g. X, obs, var), or convert the data into
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "10nw5v69gn4pxb4g5gd8nh9r1ywd6yczapl3dpdfms0434wcmkxm"))))
-      (properties `((upstream-name . "anpan")))
+          (base32 "02w281n489wsn0a935dcj7gmd8fjph5wba3ldlp5qz15brcp0w48"))))
+      (properties
+       '((upstream-name . "anpan")
+         (updater-extra-native-inputs . ("r-testthat"))))
       (build-system r-build-system)
-      ;; Tests require a configured r-cmdstanr.
+      ;; XXX: We don't actually provide cmdstan itself, just the R interface,
+      ;; so we cannot run the tests.
       (arguments (list #:tests? #false))
       (propagated-inputs (list r-ape
+                               r-cli
                                r-cmdstanr
                                r-data-table
                                r-dplyr
@@ -840,7 +844,6 @@ directly access various slots (e.g. X, obs, var), or convert the data into
                                r-ggnewscale
                                r-ggplot2
                                r-loo
-                               r-mass
                                r-patchwork
                                r-phylogram
                                r-posterior
