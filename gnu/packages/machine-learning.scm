@@ -2554,6 +2554,37 @@ forward-mode differentiation, and the two can be composed arbitrarily.  The
 main intended application of Autograd is gradient-based optimization.")
     (license license:expat)))
 
+(define-public python-torchdiffeq
+  ;; There are neither releases nor tags.
+  (let ((commit "a88aac53cae738addee44251288ce5be9a018af3")
+        (revision "0"))
+    (package
+      (name "python-torchdiffeq")
+      (version (git-version "0.2.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rtqichen/torchdiffeq")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0c2zqbdxqvd5abfpk0im6rcy1ij39xvrmixc6l9znb6bhcxk2jra"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        '(list "-k" "not test_seminorm" "tests/run_all.py")))
+      (propagated-inputs (list python-numpy python-scipy python-pytorch))
+      (native-inputs (list python-pytest python-setuptools))
+      (home-page "https://github.com/rtqichen/torchdiffeq")
+      (synopsis "ODE solvers and adjoint sensitivity analysis in PyTorch")
+      (description
+       "This tool provides ordinary differential equation solvers implemented
+in PyTorch.  Backpropagation through ODE solutions is supported using the
+adjoint method for constant memory cost.")
+      (license license:expat))))
+
 (define-public lightgbm
   (package
     (name "lightgbm")
