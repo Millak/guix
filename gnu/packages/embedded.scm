@@ -14,6 +14,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Junker dk@junkeria.club
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2182,3 +2183,31 @@ TS-4900 family.  The included commands are:
 @item tssilomon
 @end itemize")
       (license license:bsd-2))))
+
+(define-public cc-tool
+  (package
+    (name "cc-tool")
+    (version "0.27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dashesy/cc-tool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bnyp3fxhzhz6in4yx8s6vh004gslykrpysdz6b8x8b96ha35c7c"))))
+    (build-system gnu-build-system)
+    (inputs (list libusb))
+    (native-inputs (list pkg-config
+                         boost
+                         automake
+                         autoconf
+                         libtool))
+    (home-page "https://github.com/dashesy/cc-tool")
+    (synopsis "Support for Texas Instruments CC Debugger in Linux")
+    (description
+     "cc-tool provides support for Texas Instruments CC Debugger for Linux OS
+in order to program 8051-based System-On-Chip devices: CC254x CC253x CC243x
+CC251x CC111x.")
+    (license license:gpl2)))
