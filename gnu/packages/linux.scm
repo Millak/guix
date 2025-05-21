@@ -10549,35 +10549,43 @@ tools for managing PipeWire.")
          (delete "elogind"))))))
 
 (define-public ell
-  (package
-    (name "ell")
-    (version "0.71")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.kernel.org/pub/scm/libs/ell/ell.git")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "09s674lh2fafw7cpwldbi8cd89arbajgvhy9j5vgqg1kbn6xddwx"))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; Tests launch dbus-daemon instances that all try to bind to
-     ;; "/tmp/ell-test-bus".  Thus, we need to run them sequentially.
-     '(#:parallel-tests? #f))
-    (inputs
-     (list dbus))
-    (native-inputs
-     (list autoconf automake libtool pkg-config procps))
-    (home-page "https://01.org/ell")
-    (synopsis "Embedded Linux Library")
-    (description "The Embedded Linux* Library (ELL) provides core, low-level
+  (let ((commit "4f77dca1f1cd19041a5a882ba02ad5a39cde3661")
+        (revision "1"))
+    (package
+      (name "ell")
+      (version (git-version "0.77" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.kernel.org/pub/scm/libs/ell/ell.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ccxn9vdhn8miqhyxpj89hd9y8blz10q31qwvd6hbk2x214vgnk2"))
+                (modules '((guix build utils)))
+                (snippet
+                 #~(begin
+                     (substitute* "Makefile.am"
+                       ;; requires hwdb.bin
+                       (("unit/test-hwdb.*") ""))))))
+      (build-system gnu-build-system)
+      (arguments
+       ;; Tests launch dbus-daemon instances that all try to bind to
+       ;; "/tmp/ell-test-bus".  Thus, we need to run them sequentially.
+       '(#:parallel-tests? #f))
+      (inputs
+       (list dbus))
+      (native-inputs
+       (list autoconf automake libtool pkg-config procps))
+      (home-page "https://01.org/ell")
+      (synopsis "Embedded Linux Library")
+      (description "The Embedded Linux* Library (ELL) provides core, low-level
 functionality for system daemons.  It typically has no dependencies other than
 the Linux kernel, C standard library, and libdl (for dynamic linking).  While
 ELL is designed to be efficient and compact enough for use on embedded Linux
 platforms, it is not limited to resource-constrained systems.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public kexec-tools
   (package
