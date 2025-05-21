@@ -5066,7 +5066,7 @@ implementations.")
 (define-public vnstat
   (package
    (name "vnstat")
-   (version "2.12")
+   (version "2.13")
    (source
     (origin
       (method url-fetch)
@@ -5074,7 +5074,7 @@ implementations.")
                           version ".tar.gz"))
       (sha256
        (base32
-        "0li8dm081ym6jm7fhag2ccp8cqfs5sqhiwiimdzz9ihzzh96nf5p"))))
+        "11xilq1rhzazav9x7jhlvjcclqcyrx8sjak7qkxxvhqy5lqikzn9"))))
    (build-system gnu-build-system)
    (inputs (list sqlite gd))
    (native-inputs (list pkg-config check))
