@@ -11604,14 +11604,14 @@ containers.")
 (define-public r-msnbase
   (package
     (name "r-msnbase")
-    (version "2.34.0")
+    (version "2.34.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MSnbase" version))
        (sha256
         (base32
-         "19n60bzbjhyn1bn79x6329c5389ycm6ai7ipvqrspz1azrwzfa9x"))))
+         "00r4kpjf8y8l4jf4hjaxrcgzji2vbm0maqg2ybz5ifq9zk07mfhk"))))
     (properties
      `((upstream-name . "MSnbase")
        ;; Avoid dependency cycle.
