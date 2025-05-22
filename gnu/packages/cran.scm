@@ -41852,14 +41852,14 @@ appropriate ways.")
 (define-public r-acss-data
   (package
     (name "r-acss-data")
-    (version "1.0")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "acss.data" version))
        (sha256
         (base32
-         "09kl4179ipr8bq19g89xcdi1xxs397zcx5cvgp6viy8gn687ilgv"))))
+         "1b2p9p1bm3v93v7gr2rgjm1x9fhgd61ldzd4x6c1cxy1q865mwrc"))))
     (properties `((upstream-name . "acss.data")))
     (build-system r-build-system)
     (home-page "http://complexitycalculator.com/methodology.html")
