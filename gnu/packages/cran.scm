@@ -46597,19 +46597,19 @@ permuted copies (shadows).")
 (define-public r-directlabels
   (package
     (name "r-directlabels")
-    (version "2024.1.21")
+    (version "2025.5.20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "directlabels" version))
        (sha256
         (base32
-         "1zmnyqipiv6gxqi2ix5jzbql53p3kjv76l76kj7gv1llzy2a8fxv"))))
+         "0rxydqyfqkqhk9m9f5vldspss5kc6cljpglpq18skrcrylv9z4zd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-quadprog))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-nlme r-testthat))
     (home-page "https://directlabels.r-forge.r-project.org/")
     (synopsis "Direct labels for multicolor plots")
     (description
