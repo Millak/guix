@@ -9799,13 +9799,13 @@ un pipe.\"")
 (define-public r-marginaleffects
   (package
     (name "r-marginaleffects")
-    (version "0.25.1")
+    (version "0.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "marginaleffects" version))
        (sha256
-        (base32 "11kb423z4096w0dpl93d0sgsq746giab25cj8c532zbra1bvbmx4"))))
+        (base32 "1l78j10y1fv59wijwahb1hz919g5b0w1mi8snvb8mcrgdbwrd60j"))))
     (properties `((upstream-name . "marginaleffects")))
     (build-system r-build-system)
     (propagated-inputs (list r-backports
