@@ -5028,6 +5028,26 @@ against each other or just trying to beat the computer; single-player mode is
 also available.")
     (license license:gpl3+)))
 
+(define ring-racers-data
+  (hidden-package
+   (package
+     (name "ring-racers-data")
+     (version "2.3")
+     (source
+      (origin
+        (method url-fetch/zipbomb)
+        (uri (string-append
+              "https://github.com/KartKrewDev/RingRacers/releases/download/v"
+              version "/Dr.Robotnik.s-Ring-Racers-v" version "-Assets.zip"))
+        (file-name (string-append name "-" version ".zip"))
+        (sha256
+         (base32 "0i6sq8c1vq7z5r5i1hana0v73xvj53696f2xwn37xicxds4d15wp"))))
+     (build-system copy-build-system)
+     (home-page "https://github.com/KartKrewDev/RingRacers/releases")
+     (synopsis "Data files for Ring Racers")
+     (description "This package contains data files for Ring Racers.")
+     (license license:gpl2+))))
+
 (define-public unknown-horizons
   (package
     (name "unknown-horizons")
