@@ -18157,14 +18157,14 @@ provides a one-row summary of model-level statistics.")
 (define-public r-recipes
   (package
     (name "r-recipes")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "recipes" version))
        (sha256
         (base32
-         "1lrdy7nqqssdfpk25k85qzzn70544c9knbkikqmv2glr80b6zdyl"))))
+         "1i6wk6yhdmhm37vihyh1r3s1nxhihwacmhlj4yaygsfdzyqnzfnf"))))
     (properties
      ;; Avoid dependency cycle as r-workflows depends on r-recipes.  r-disp is
      ;; not packaged, but we don't seem to need it.
