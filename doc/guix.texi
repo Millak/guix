@@ -22408,6 +22408,168 @@ List of additional command-line arguments to pass to the daemon.
 @end table
 @end deftp
 
+@cindex IWD, Internet Wireless Daemon
+@defvar iwd-service-type
+This is the service type to run @acronym{IWD,Internet Wireless Daemon},
+a wireless daemon required to authenticate against encrypted WiFi
+networks.
+@end defvar
+
+@quotation Warning
+By default @code{iwd} removes and re-creates interfaces it manages.  It
+doesn't play nicely with @code{dhcp-client-service-type} that enumerates
+wireless interfaces before starting the Shepherd service.  Use either
+@code{dhcpcd-service-type} or the @code{iwd}'s built-in DHCP client (see
+@code{enable-network-configuration} option below).
+@end quotation
+
+@quotation Warning
+@code{iwd-service-type} conflicts with @code{wpa-supplicant-service-type}.
+Make sure only one is configured.
+@end quotation
+
+@c %start of fragment
+
+@deftp {Data Type} iwd-configuration
+Available @code{iwd-configuration} fields are:
+
+@table @asis
+@item @code{iwd} (default: @code{iwd}) (type: file-like)
+The IWD package to use.
+
+@item @code{interfaces} (default: @code{()}) (type: list-of-strings)
+If this is set, it must specify @dfn{glob patterns} matching network
+interfaces that IWD will control.
+
+@item @code{ignored-interfaces} (default: @code{()}) (type: list-of-strings)
+If this is set, it must specify @dfn{glob patterns} matching network
+interfaces that IWD will not manage.
+
+@item @code{phys} (default: @code{()}) (type: list-of-strings)
+If this is set, it must specify @dfn{glob patterns} matching network
+PHYs names that IWD will control.
+
+@item @code{ignored-phys} (default: @code{()}) (type: list-of-strings)
+If this is set, it must specify @dfn{glob patterns} matching network
+PHYs names that IWD will not manage.
+
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbols)
+Shepherd requirements the service should depend on.
+
+@item @code{shepherd-provision} (default: @code{(iwd wireless-daemon)}) (type: list-of-symbols)
+The name(s) of the service.
+
+@item @code{config} (type: iwd-settings)
+Configuration settings.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} iwd-settings
+Available @code{iwd-settings} fields are:
+
+@table @asis
+@item @code{general} (type: iwd-general-settings)
+General settings.
+
+@item @code{network} (type: maybe-iwd-network-settings)
+Network settings.
+
+@item @code{scan} (type: maybe-iwd-scan-settings)
+Scan settings.
+
+@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+Extra configuration values to append to the IWD configuration file.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} iwd-general-settings
+Available @code{iwd-general-settings} fields are:
+
+@table @asis
+@item @code{enable-network-configuration?} (default: @code{#f}) (type: boolean)
+Setting this option to true enables @code{iwd} to configure the network
+interfaces with the IP addresses.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the General settings group.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} iwd-network-settings
+Available @code{iwd-network-settings} fields are:
+
+@table @asis
+@item @code{enable-ipv6?} (default: @code{#t}) (type: boolean)
+Sets the global default that tells @code{iwd} whether it should
+configure IPv6 addresses and routes
+
+@item @code{name-resolving-service} (default: @code{none}) (type: resolving-service)
+Configures a DNS resolution method used by the system.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the Network settings group.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} iwd-scan-settings
+Available @code{iwd-scan-settings} fields are:
+
+@table @asis
+@item @code{disable-periodic-scan?} (default: @code{#f}) (type: boolean)
+Setting this option to @code{#t} will prevent @code{iwd} from issuing
+the periodic scans for the available networks while disconnected.
+
+@item @code{initial-periodic-scan-interval} (default: @code{10}) (type: number)
+The initial periodic scan interval upon disconnect (in seconds).
+
+@item @code{maximum-periodic-scan-interval} (default: @code{300}) (type: number)
+The maximum periodic scan interval (in seconds).
+
+@item @code{disable-roaming-scan?} (default: @code{#f}) (type: boolean)
+Setting this option to @code{#t} will prevent @code{iwd} from trying to
+scan when roaming decisions are activated.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the Scan settings group.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @cindex ModemManager
 Some networking devices such as modems require special care, and this is
 what the services below focus on.
