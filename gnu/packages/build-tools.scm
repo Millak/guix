@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
-;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
@@ -44,6 +44,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system guile)
   #:use-module (guix modules)
+  #:use-module (guix search-paths)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
@@ -82,6 +83,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python))
 
@@ -373,6 +375,57 @@ resembles Python.")
     (synopsis "Meson-based build backend for Python")
     (description "Meson-python is a PEP 517 build backend for Meson projects.")
     (license license:expat)))
+
+(define-public muon
+  ;; Use the latest commit, as there hasn't yet been a new release including
+  ;; recent changes (see: https://github.com/muon-build/muon/issues/146).
+  (let ((commit "55b7285a92779bd8b8870482e5535ce878f3e09f")
+        (revision "0"))
+    (package
+      (name "muon")
+      (version (git-version "0.4.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/muon-build/muon")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0kpk1h82djb0brxkwy5ylpvdpp2l1489bq822dmryhmsd573ii48"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:meson (computed-file "null-package" #~(mkdir #$output))
+             #:ninja samu-as-ninja-wrapper
+             #:configure-flags #~(list "-Dsamurai=disabled")
+             #:tests? #f                  ;to avoid extra dependencies
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-/bin/sh
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "tools/generate_test_check_script.py"
+                       (("#!/bin/sh")
+                        (string-append "#!" (search-input-file inputs
+                                                               "bin/sh"))))))
+                 (add-after 'patch-source-shebangs 'build-muon-bootstrap
+                   (lambda _
+                     (setenv "CC" #$(cc-for-target))
+                     (setenv "CFLAGS" "-DBOOTSTRAP_NO_SAMU")
+                     (invoke "./bootstrap.sh" "build")))
+                 (add-after 'build-muon-bootstrap 'setup-muon-bootstrap-as-meson
+                   (lambda _
+                     (mkdir "bin")
+                     (symlink "../build/muon-bootstrap" "bin/meson")
+                     (setenv  "PATH" (string-append (getcwd) "/bin:"
+                                                    (getenv "PATH"))))))))
+      (native-inputs (list samurai))
+      (inputs (list bash-minimal pkgconf))
+      (native-search-paths (list $PKG_CONFIG_PATH))
+      (home-page "https://muon.build/")
+      (synopsis "Meson build system alternative implementation in C99")
+      (description "Muon is an implementation of the meson build system in c99
+with minimal dependencies.")
+      (license license:gpl3))))            ;for the combined work
 
 (define-public premake4
   (package
