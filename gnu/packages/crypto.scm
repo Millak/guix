@@ -28,6 +28,7 @@
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1701,7 +1702,7 @@ SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
 (define-public keychain
   (package
     (name "keychain")
-    (version "2.8.5")
+    (version "2.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1710,9 +1711,10 @@ SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bkjlg0a2bbdjhwp37ci1rwikvrl4s3xlbf2jq2z4azc96dr83mj"))))
+                "1i698n0mp2wxk1yd8lhwq7i1dj5v01li1g9qi047aqc34r4079lq"))))
     (build-system gnu-build-system)
     (propagated-inputs (list procps))
+    (native-inputs (list perl))
     (arguments
      `(#:tests? #f ; No test suite
        #:phases (modify-phases %standard-phases
