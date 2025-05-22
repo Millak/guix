@@ -2383,7 +2383,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "4.3")
+    (version "4.6")
     (source
      (origin
        (method git-fetch)
@@ -2392,12 +2392,11 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1hfdhanbdfjxv2n355m6b9n0ihxgcdlgxgnsqz5f6q59957fcyiw"))
+       (sha256 (base32 "1qal9ilpyxds6nk2fgzfypk3y1qxh06f6lly3alawz385gf68fkv"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
-                    '("external/lib"
-                      "external/src/cppzmq"
+                    '("external/src/cppzmq"
                       "external/src/curl"
                       "external/src/libuv"
                       "external/src/libzmq"
