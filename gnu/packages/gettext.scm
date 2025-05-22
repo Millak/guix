@@ -116,15 +116,6 @@
                          (("/bin/pwd")
                           "pwd"))
 
-                       ;; Work around Gnulib test failures on armhf-linux.
-                       #$@(if (target-arm32?)
-                              #~((with-directory-excursion "gettext-tools"
-                                   (invoke "patch" "--force" "-p1" "-i"
-                                           #$(local-file
-                                              (search-patch
-                                               "coreutils-gnulib-tests.patch")))))
-                              '())
-
                        #$@(if (target-hurd?)
                               #~((substitute*
                                      "gettext-tools/gnulib-tests/Makefile.in"
