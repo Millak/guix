@@ -127,6 +127,7 @@
             dhcpcd-configuration-vendor-class-id
             dhcpcd-configuration-client-id
             dhcpcd-configuration-extra-content
+            dhcpcd-configuration-shepherd-requirement
 
             ntp-configuration
             ntp-configuration?
@@ -611,6 +612,12 @@ this is matually exclusive with the @code{duid} option.")
     maybe-string
     "Extra content to append to the configuration as-is.")
 
+  (shepherd-requirement
+   (list-of-symbols '())
+   "This is a list of symbols naming Shepherd services that this service
+will depend on."
+   empty-serializer)
+
   (prefix dhcpcd-))
 
 (define (dhcpcd-config-file config)
@@ -630,19 +637,19 @@ this is matually exclusive with the @code{duid} option.")
           (shell (file-append shadow "/sbin/nologin")))))
 
 (define (dhcpcd-shepherd-service config)
-  (let* ((config-file (dhcpcd-config-file config))
-         (command-args (dhcpcd-configuration-command-arguments config))
-         (ifaces (dhcpcd-configuration-interfaces config)))
-    (list (shepherd-service
-            (documentation "dhcpcd daemon.")
-            (provision '(networking))
-            (requirement '(user-processes udev))
-            (actions (list (shepherd-configuration-action config-file)))
-            (start
+  (match-record config <dhcpcd-configuration>
+                (command-arguments interfaces shepherd-requirement)
+    (let ((config-file (dhcpcd-config-file config)))
+      (list (shepherd-service
+             (documentation "dhcpcd daemon.")
+             (provision '(networking))
+             (requirement `(user-processes udev ,@shepherd-requirement))
+             (actions (list (shepherd-configuration-action config-file)))
+             (start
               #~(make-forkexec-constructor
-                    (list (string-append #$dhcpcd "/sbin/dhcpcd")
-                          #$@command-args "-B" "-f" #$config-file #$@ifaces)))
-            (stop #~(make-kill-destructor))))))
+                 (list (string-append #$dhcpcd "/sbin/dhcpcd")
+                       #$@command-arguments "-B" "-f" #$config-file #$@interfaces)))
+             (stop #~(make-kill-destructor)))))))
 
 (define dhcpcd-service-type
   (service-type (name 'dhcpcd)

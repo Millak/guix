@@ -18332,7 +18332,7 @@ As an example, an NFS file system would typically have a requirement for
 might not be sufficient as @code{networking} being marked as started
 does @emph{not} imply the network has already been configured and in
 working order (for example, when using
-@code{dhcpcd-client-service-type}).  For such cases, adding a
+@code{dhcp-client-service-type}).  For such cases, adding a
 requirement on a custom @code{network-online} service may be necessary.
 A sample @code{network-online} one-shot Shepherd service implementation
 is provided below:
@@ -21980,12 +21980,13 @@ Host name to send via DHCP, defaults to the current system host name.
 @item @code{duid} (default: @code{""}) (type: maybe-string)
 DHCPv4 clients require a unique client identifier, this option uses the
 DHCPv6 Unique Identifier as a DHCPv4 client identifier as well.  For
-more information, refer to @uref{https://www.rfc-editor.org/rfc/rfc4361, RFC 4361}
-and @code{dhcpcd.conf(5)}.
+more information, refer to
+@uref{https://www.rfc-editor.org/rfc/rfc4361,RFC 4361} and
+@code{dhcpcd.conf(5)}.
 
 @item @code{persistent?} (default: @code{#t}) (type: boolean)
-When true, automatically de-configure the interface when @command{dhcpcd}
-exits.
+When true, automatically de-configure the interface when
+@command{dhcpcd} exits.
 
 @item @code{option} (default: @code{("rapid_commit" "domain_name_servers" "domain_name" "domain_search" "host_name" "classless_static_routes" "interface_mtu")}) (type: list-of-strings)
 List of options to request from the server.
@@ -22019,9 +22020,13 @@ identifier, this is matually exclusive with the @code{duid} option.
 @item @code{extra-content} (type: maybe-string)
 Extra content to append to the configuration as-is.
 
-@end table
-@end deftp
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbols)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
 
+@end table
+
+@end deftp
 
 @cindex NetworkManager
 
