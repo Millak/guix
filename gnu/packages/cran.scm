@@ -48237,14 +48237,14 @@ Nair and Hall and Wellner.")
 (define-public r-kmsurv
   (package
     (name "r-kmsurv")
-    (version "0.1-5")
+    (version "0.1-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "KMsurv" version))
        (sha256
         (base32
-         "0hi5vvk584rl70gbrr75w9hc775xmbxnaig0dd6hlpi4071pnqjm"))))
+         "0cigcn8lzbg8pvkyb7viid7p0ia3k4hwygiiv9x2f9sb04m6zv22"))))
     (properties `((upstream-name . "KMsurv")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/KMsurv/")
