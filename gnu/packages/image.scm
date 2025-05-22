@@ -2925,3 +2925,30 @@ data scheme is represented as a terminal-friendly escape sequence.  So if you
 want to view a SIXEL image file, all you have to do is @command{cat} it to
 your terminal.")
     (license license:expat)))
+
+(define-public libyuv
+  (package
+    (name "libyuv")
+    (version "2021.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+	     (url "https://chromium.googlesource.com/libyuv/libyuv")
+	     (commit "4620f1705822fd6ab99939f43ce63099bd3d9ae0")))
+       (sha256
+	(base32 "17vdm2g5qvrby7xa3agiqwh7ips33dxg6sw18s3q2xkfil4xw3mm"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
+    (home-page "https://chromium.googlesource.com/libyuv/libyuv/")
+    (synopsis "YUV scaling and conversion functionality")
+    (description "libyuv is an open source project that includes YUV scaling and
+conversion functionality. It can:
+@itemize
+@item Scale YUV to prepare content for compression, with point, bilinear or box
+filter.
+@item Convert to YUV from webcam formats for compression.
+@item Convert to RGB formats for rendering/effects.
+@item Rotate by 90/180/270 degrees to adjust for mobile devices in portrait mode.
+@end itemize")
+    (license license:expat)))
