@@ -285,57 +285,6 @@ PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
 security standards.")
     (license license:mpl2.0)))
 
-(define-public nss/fixed
-  (let ((actual-version "3.99"))
-    (hidden-package
-     (package
-       (inherit nss)
-       (version (string-append actual-version ".0")) ;for grafts requirements
-       (source (origin
-                 (inherit (package-source nss))
-                 (uri (let ((version-with-underscores
-                             (string-join (string-split actual-version #\.) "_")))
-                        (string-append
-                         "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
-                         "releases/NSS_" version-with-underscores "_RTM/src/"
-                         "nss-" actual-version ".tar.gz")))
-                 (sha256
-                  (base32
-                   "1g89ig40gfi1sp02gybvl2z818lawcnrqjzsws36cdva834c5maw"))))
-       (arguments
-        (substitute-keyword-arguments (package-arguments nss)
-          ((#:phases phases)
-           #~(modify-phases #$phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (if tests?
-                       (begin
-                         ;; Use 127.0.0.1 instead of $HOST.$DOMSUF as HOSTADDR for
-                         ;; testing.  The latter requires a working DNS or /etc/hosts.
-                         (setenv "DOMSUF" "localdomain")
-                         (setenv "USE_IP" "TRUE")
-                         (setenv "IP_ADDRESS" "127.0.0.1")
-
-                         ;; This specific test is looking at performance "now
-                         ;; verify that we can quickly dump a database", and
-                         ;; we're not testing performance here (especially
-                         ;; since we're using faketime), so raise the
-                         ;; threshold
-                         (substitute* "nss/tests/dbtests/dbtests.sh"
-                           ((" -lt 5") " -lt 50"))
-
-                         ;; Since the test suite is very lengthy, run the test
-                         ;; suite once, not thrice as done by default, by
-                         ;; selecting only the 'standard' cycle.
-                         (setenv "NSS_CYCLES" "standard")
-
-                         ;; The "PayPalEE.cert" certificate expires every six months,
-                         ;; leading to test failures:
-                         ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
-                         ;; work around that, set the time to roughly the release date.
-                         (invoke "faketime" "2024-01-23" "./nss/tests/all.sh"))
-                       (format #t "test suite not run~%"))))))))))))
-
 ;; nss-rapid tracks the rapid release channel.  Unless your package requires a
 ;; newer version, you should prefer the `nss' package, which tracks the ESR
 ;; channel.
