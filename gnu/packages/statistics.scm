@@ -1453,17 +1453,18 @@ disk (or a connection).")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "14.4.2-1")
+    (version "14.4.3-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "1d6075xz3k8g0lm0y2kzylb5jwh04vm5flb4jlz89rrik6ddc68x"))))
+                "0f54x1nphwd5b0ipjqj3xql6zxgby8m3xri881zh2a9yih2mckqi"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
+    (native-inputs (list r-tinytest))
     (home-page "https://github.com/RcppCore/RcppArmadillo")
     (synopsis "Rcpp integration for the Armadillo linear algebra library")
     (description
