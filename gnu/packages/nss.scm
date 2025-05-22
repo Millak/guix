@@ -234,25 +234,23 @@ in the Mozilla clients.")
                               release-date "./nss/tests/all.sh")))
                   (format #t "test suite not run~%"))))
           (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (bin (string-append (assoc-ref outputs "bin") "/bin"))
-                     (inc (string-append out "/include/nss"))
-                     (lib (string-append out "/lib/nss"))
+            (lambda _
+              (let* ((inc (string-append #$output "/include/nss"))
+                     (lib (string-append #$output "/lib/nss"))
                      (obj (match (scandir "dist" (cut string-suffix? "OBJ" <>))
                             ((obj) (string-append "dist/" obj)))))
                 ;; Install nss-config to $out/bin.
                 (install-file (string-append obj "/bin/nss-config")
-                              (string-append out "/bin"))
+                              (string-append #$output "/bin"))
                 (delete-file (string-append obj "/bin/nss-config"))
                 ;; Install nss.pc to $out/lib/pkgconfig.
                 (install-file (string-append obj "/lib/pkgconfig/nss.pc")
-                              (string-append out "/lib/pkgconfig"))
+                              (string-append #$output "/lib/pkgconfig"))
                 (delete-file (string-append obj "/lib/pkgconfig/nss.pc"))
                 (rmdir (string-append obj "/lib/pkgconfig"))
                 ;; Install other files.
                 (copy-recursively "dist/public/nss" inc)
-                (copy-recursively (string-append obj "/bin") bin)
+                (copy-recursively (string-append obj "/bin") #$output:bin)
                 (copy-recursively (string-append obj "/lib") lib)))))))
     (inputs (list sqlite zlib))
     (propagated-inputs (list nspr))               ;required by nss.pc.
