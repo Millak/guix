@@ -134,7 +134,7 @@ in the Mozilla clients.")
                   (delete-file-recursively "nss/lib/zlib")
                   (delete-file-recursively "nss/lib/sqlite")))))
     (build-system gnu-build-system)
-    (outputs '("out" "bin"))
+    (outputs '("out" "bin" "static"))   ;11 MiB of static archives
     (arguments
      (list
       #:make-flags
@@ -251,7 +251,15 @@ in the Mozilla clients.")
                 ;; Install other files.
                 (copy-recursively "dist/public/nss" inc)
                 (copy-recursively (string-append obj "/bin") #$output:bin)
-                (copy-recursively (string-append obj "/lib") lib)))))))
+                (copy-recursively (string-append obj "/lib") lib))))
+          (add-after 'install 'move-static-archives
+            (lambda _
+              (with-directory-excursion #$output
+                (for-each (lambda (f)
+                            (install-file f
+                                          (string-append #$output:static
+                                                         "/" (dirname f))))
+                          (find-files "." "\\.a$"))))))))
     (inputs (list sqlite zlib))
     (propagated-inputs (list nspr))               ;required by nss.pc.
     (native-inputs (list perl                     ;for tests
