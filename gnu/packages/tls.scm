@@ -451,7 +451,6 @@ OpenSSL for TARGET."
     (native-inputs (list perl))
     (arguments
      (list
-      #:parallel-tests? #f
       #:make-flags
       ;; 'test_ssl_new.t' in 1.1.1n and 3.0.3 fails due to an expired
       ;; certificate: <https://github.com/openssl/openssl/issues/18441>.  Skip
