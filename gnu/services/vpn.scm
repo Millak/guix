@@ -141,18 +141,6 @@
            #f)))
 (define serialize-ip-mask serialize-string)
 
-(define-syntax define-enumerated-field-type
-  (lambda (x)
-    (define (id-append ctx . parts)
-      (datum->syntax ctx (apply symbol-append (map syntax->datum parts))))
-    (syntax-case x ()
-      ((_ name (option ...))
-       #`(begin
-           (define (#,(id-append #'name #'name #'?) x)
-             (memq x '(option ...)))
-           (define (#,(id-append #'name #'serialize- #'name) field-name val)
-             (serialize-field field-name val)))))))
-
 (define-enumerated-field-type proto
   (udp tcp udp6 tcp6))
 (define-enumerated-field-type dev

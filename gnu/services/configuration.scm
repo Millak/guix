@@ -75,6 +75,7 @@
             configuration->documentation
             empty-serializer
             serialize-package
+            define-enumerated-field-type
 
             filter-configuration-fields
 
@@ -507,6 +508,19 @@ DELIMITER interposed LS.  Support 'infix and 'suffix GRAMMAR values."
                           acc
                           (cons delimiter acc))))
               '() ls))
+
+(define-syntax define-enumerated-field-type
+  (lambda (x)
+    (syntax-case x (prefix)
+      ((_ name (option ...) (prefix serializer-prefix))
+       #`(begin
+           (define (#,(id #'name #'name #'?) x)
+             (memq x '(option ...)))
+           (define (#,(id #'name #'serializer-prefix #'serialize- #'name) field-name val)
+             (#,(id #'name #'serializer-prefix #'serialize-field) field-name val))))
+
+      ((_ name (option ...))
+       #`(define-enumerated-field-type name (option ...) (prefix #{}#))))))
 
 
 ;;;

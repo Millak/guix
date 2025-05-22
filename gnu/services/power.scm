@@ -204,23 +204,6 @@
     #~(#t))
    "The handler for the battattach event."))
 
-(define-syntax define-enum
-  (lambda (x)
-    (syntax-case x ()
-      ((_ name values)
-       (let* ((datum/name (syntax->datum #'name))
-              (datum/predicate (string->symbol
-                                (format #f "enum-~a?" datum/name)))
-              (datum/serialize (string->symbol
-                                (format #f "serialize-enum-~a" datum/name))))
-         (with-syntax
-             ((predicate (datum->syntax x datum/predicate))
-              (serialize (datum->syntax x datum/serialize)))
-           #'(begin
-               (define (predicate value)
-                 (memq value values))
-               (define serialize serialize-symbol))))))))
-
 (define mangle-field-name
   (match-lambda
     ('name                            "UPSNAME")
@@ -252,25 +235,25 @@
     ('data-time                       "DATATIME")
     ('facility                        "FACILITY")))
 
-(define (serialize-string field-name value)
+(define (serialize-field field-name value)
   #~(format #f "~a ~a\n" #$(mangle-field-name field-name) '#$value))
-(define serialize-symbol serialize-string)
-(define serialize-integer serialize-string)
+(define serialize-string serialize-field)
+(define serialize-symbol serialize-field)
+(define serialize-integer serialize-field)
 (define (serialize-boolean field-name value)
-  #~(format #f "~a ~a\n"
-            #$(mangle-field-name field-name)
-            #$(if value "on" "off")))
+  (serialize-field field-name (if value "on" "off")))
 
 (define-maybe string)
 
-(define-enum cable '( simple smart ether usb
-                      940-0119A 940-0127A 940-0128A 940-0020B 940-0020C
-                      940-0023A 940-0024B 940-0024C 940-1524C 940-0024G
-                      940-0095A 940-0095B 940-0095C 940-0625A MAM-04-02-2000))
-(define-enum type '(apcsmart usb net snmp netsnmp dumb pcnet modbus test))
-(define-enum no-logon '(disable timeout percent minutes always))
-(define-enum class '(standalone shareslave sharemaster))
-(define-enum mode '(disable share))
+(define-enumerated-field-type enum-cable
+   ( simple smart ether usb
+     940-0119A 940-0127A 940-0128A 940-0020B 940-0020C
+     940-0023A 940-0024B 940-0024C 940-1524C 940-0024G
+     940-0095A 940-0095B 940-0095C 940-0625A MAM-04-02-2000))
+(define-enumerated-field-type enum-type (apcsmart usb net snmp netsnmp dumb pcnet modbus test))
+(define-enumerated-field-type enum-no-logon (disable timeout percent minutes always))
+(define-enumerated-field-type enum-class (standalone shareslave sharemaster))
+(define-enumerated-field-type enum-mode (disable share))
 
 (define-configuration apcupsd-configuration
   (apcupsd (package apcupsd) "The @code{apcupsd} package to use.")
