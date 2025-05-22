@@ -5048,6 +5048,68 @@ also available.")
      (description "This package contains data files for Ring Racers.")
      (license license:gpl2+))))
 
+(define-public ring-racers
+  (package
+    (name "ring-racers")
+    (version "2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.do.srb2.org/KartKrew/RingRacers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05lf799imbk0x3i2adaj0r84ck5yyrvzjvhs4k9dj7l4jg0x4sjz"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (with-directory-excursion "thirdparty"
+                     (delete-file-recursively "glm")
+                     (substitute* "CMakeLists.txt"
+                       (("add_subdirectory\\(glm\\)")
+                        "find_package(glm REQUIRED)")))
+                   (with-directory-excursion "src"
+                     (substitute* "CMakeLists.txt"
+                       (("glm::glm")
+                        "glm")))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;There are no tests.
+      #:configure-flags
+      #~(list "-DCMAKE_C_FLAGS_RELWITHDEBINFO='-O3 -g -DNDEBUG'"
+              "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO='-O3 -g -DNDEBUG'")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-and-wrap-binary
+            ;; Install executable to $out/bin.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion #$output
+                (mkdir "bin")
+                (rename-file "ringracers" "bin/ringracers")
+                (wrap-program "bin/ringracers"
+                  `("RINGRACERSWADDIR" =
+                    (,(assoc-ref inputs "ring-racers-data"))))))))))
+    (inputs (list glm
+                  libogg
+                  libpng
+                  libvorbis
+                  libvpx
+                  libyuv
+                  ring-racers-data
+                  sdl2
+                  zlib
+                  curl))
+    (home-page "https://kartkrew.org")
+    (synopsis "Technical kart racing game")
+    (description
+     "Dr. Robotnik's Ring Racers is a kart racing game drawing inspiration from
+``anti-gravity'' racers, fighting games, and traditional-style kart racing.
+Ring Racers is designed with an emphasis on player agency in the face of highly
+technical game-play challenges in both single-player and online multiplayer
+modes.")
+    (license license:gpl2+)))
+
 (define-public unknown-horizons
   (package
     (name "unknown-horizons")
