@@ -183,7 +183,7 @@ to the corresponding bytevector."
 
 (define %default-channel-url
   ;; URL of the default 'guix' channel.
-  "https://git.savannah.gnu.org/git/guix.git")
+  "https://git.guix.gnu.org/guix.git")
 
 (define %default-guix-channel
   (channel

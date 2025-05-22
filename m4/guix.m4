@@ -438,7 +438,7 @@ AC_DEFUN([GUIX_CHANNEL_METADATA], [
   AC_ARG_WITH([channel-url], [AS_HELP_STRING([--with-channel-url=URL],
     [assert that this is built from the Git repository at URL])],
     [guix_channel_url="\"$withval\""],
-    [guix_channel_url="\"https://git.savannah.gnu.org/git/guix.git\""])
+    [guix_channel_url="\"https://git.guix.gnu.org/guix.git\""])
   AC_ARG_WITH([channel-commit], [AS_HELP_STRING([--with-channel-commit=COMMIT],
     [assert that this is built from COMMIT])],
     [guix_channel_commit="\"$withval\""],

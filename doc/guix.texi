@@ -4615,19 +4615,19 @@ produced by @command{guix pull}, along with details about their provenance:
 $ guix pull -l
 Generation 1	Jun 10 2018 00:18:18
   guix 65956ad
-    repository URL: https://git.savannah.gnu.org/git/guix.git
+    repository URL: https://git.guix.gnu.org/guix.git
     branch: origin/master
     commit: 65956ad3526ba09e1f7a40722c96c6ef7c0936fe
 
 Generation 2	Jun 11 2018 11:02:49
   guix e0cc7f6
-    repository URL: https://git.savannah.gnu.org/git/guix.git
+    repository URL: https://git.guix.gnu.org/guix.git
     branch: origin/master
     commit: e0cc7f669bec22c37481dd03a7941c7d11a64f1d
 
 Generation 3	Jun 13 2018 23:31:07	(current)
   guix 844cc1c
-    repository URL: https://git.savannah.gnu.org/git/guix.git
+    repository URL: https://git.guix.gnu.org/guix.git
     branch: origin/master
     commit: 844cc1c8f394f03b404c5bb3aee086922373490c
 @end example
@@ -4983,7 +4983,7 @@ about, and you would look up the @code{guile-json} package in the inferior:
   ;; extract guile-json.
   (list (channel
          (name 'guix)
-         (url "https://git.savannah.gnu.org/git/guix.git")
+         (url "https://git.guix.gnu.org/guix.git")
          (commit
           "65956ad3526ba09e1f7a40722c96c6ef7c0936fe"))))
 
@@ -5088,7 +5088,7 @@ and commit IDs (@pxref{Channels}):
 $ guix describe
 Generation 10	Sep 03 2018 17:32:44	(current)
   guix e0fa68c
-    repository URL: https://git.savannah.gnu.org/git/guix.git
+    repository URL: https://git.guix.gnu.org/guix.git
     branch: master
     commit: e0fa68c7718fffd33d81af415279d6ddb518f727
 @end example
@@ -5108,7 +5108,7 @@ to return a list of channels instead of the human-readable description above:
 $ guix describe -f channels
 (list (channel
         (name 'guix)
-        (url "https://git.savannah.gnu.org/git/guix.git")
+        (url "https://git.guix.gnu.org/guix.git")
         (commit
           "e0fa68c7718fffd33d81af415279d6ddb518f727")
         (introduction
@@ -5419,7 +5419,7 @@ modules:
 $ guix describe
 Generation 19	Aug 27 2018 16:20:48
   guix d894ab8
-    repository URL: https://git.savannah.gnu.org/git/guix.git
+    repository URL: https://git.guix.gnu.org/guix.git
     branch: master
     commit: d894ab8e9bfabcefa6c49d9ba2e834dd5a73a300
   variant-packages dd3df5e
@@ -5491,7 +5491,7 @@ to these commits that looks like this:
 ;; Deploy specific commits of my channels of interest.
 (list (channel
        (name 'guix)
-       (url "https://git.savannah.gnu.org/git/guix.git")
+       (url "https://git.guix.gnu.org/guix.git")
        (commit "6298c3ffd9654d3231a6f25390b056483e8f407c"))
       (channel
        (name 'variant-packages)

@@ -1997,8 +1997,8 @@ msgstr ""
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:934
 #, no-wrap
-msgid "$ git clone https://git.savannah.gnu.org/git/guix.git\n"
-msgstr "$ git clone https://git.savannah.gnu.org/git/guix.git\n"
+msgid "$ git clone https://git.guix.gnu.org/guix.git\n"
+msgstr "$ git clone https://git.guix.gnu.org/guix.git\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:938
@@ -7545,7 +7545,7 @@ msgid ""
 "    branch: main\n"
 "    commit: 36fd2b4920ae926c79b936c29e739e71a6dff2bc\n"
 "  guix c5bc698\n"
-"    repository URL: https://git.savannah.gnu.org/git/guix.git\n"
+"    repository URL: https://git.guix.gnu.org/guix.git\n"
 "    commit: c5bc698e8922d78ed85989985cc2ceb034de2f23\n"
 "$ guix package -A ^guile$\n"
 "guile   3.0.99-git      out,debug       guile-package.scm:51:4\n"

@@ -137,7 +137,7 @@ If you want to hack Guix itself, it is recommended to use the latest
 version from the Git repository:
 
 @example
-git clone https://git.savannah.gnu.org/git/guix.git
+git clone https://git.guix.gnu.org/guix.git
 @end example
 
 @cindex authentication, of a Guix checkout

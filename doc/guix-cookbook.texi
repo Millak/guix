@@ -931,7 +931,7 @@ development inertia.
 Check out the official @uref{https://git-scm.com/, Git} repository:
 
 @example
-$ git clone https://git.savannah.gnu.org/git/guix.git
+$ git clone https://git.guix.gnu.org/guix.git
 @end example
 
 In the rest of this article, we use @samp{$GUIX_CHECKOUT} to refer to the location of
@@ -4852,7 +4852,7 @@ Generation 264  May 26 2023 16:00:35    (current)
     branch: main
     commit: 36fd2b4920ae926c79b936c29e739e71a6dff2bc
   guix c5bc698
-    repository URL: https://git.savannah.gnu.org/git/guix.git
+    repository URL: https://git.guix.gnu.org/guix.git
     commit: c5bc698e8922d78ed85989985cc2ceb034de2f23
 $ guix package -A ^guile$
 guile   3.0.99-git      out,debug       guile-package.scm:51:4
