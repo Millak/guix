@@ -41879,18 +41879,19 @@ distribution of the halting states.")
 (define-public r-acss
   (package
     (name "r-acss")
-    (version "0.2-5")
+    (version "0.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "acss" version))
        (sha256
         (base32
-         "0cqa60544f58l5qd7h6xmsir40b9hqnq6pqgd5hfx2j2l5n7qhmk"))))
+         "1sxkbzlg6hhbpp1rg4lb2dhl2lmc8z8zbmjhi0dimxbp6am16mpn"))))
     (properties `((upstream-name . "acss")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-acss-data r-zoo))
+    (native-inputs (list r-knitr))
     (home-page "http://complexitycalculator.com/methodology.html")
     (synopsis "Algorithmic complexity for short strings")
     (description
