@@ -70,6 +70,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2025 Junker <dk@junkeria.club>"
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2197,6 +2198,35 @@ traffic.  Websockify accepts the WebSockets handshake, parses it, and then
 begins forwarding traffic between the client and the target in both
 directions.")
     (license license:lgpl3)))
+
+(define-public microsocks
+  (package
+    (name "microsocks")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rofl0r/microsocks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ffiwlkaylkm2ih7d96qvdy9s9ydqgypczs5k8iwkf5yv617dm74"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:make-flags #~(list "prefix=/"
+                           "CC=gcc"
+                           (string-append "DESTDIR=" #$output))
+      #:phases
+      '(modify-phases %standard-phases
+         (delete 'configure))))
+    (home-page "https://github.com/rofl0r/microsocks")
+    (synopsis "Tiny and lightweight SOCKS5 server")
+    (description "Microsocks is a small, efficient SOCKS5 server.")
+    (license license:expat)))
 
 ;; This is a variant of esbuild that builds and installs the nodejs API.
 ;; Eventually, this should probably be merged with the esbuild package.
