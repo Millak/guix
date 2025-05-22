@@ -24,7 +24,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
-  #:use-module (gnu packages certs)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages jami)

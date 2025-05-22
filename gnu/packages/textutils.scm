@@ -80,6 +80,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)

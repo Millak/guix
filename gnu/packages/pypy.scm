@@ -22,7 +22,7 @@
 (define-module (gnu packages pypy)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages certs)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages libffi)

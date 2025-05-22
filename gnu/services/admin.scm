@@ -27,7 +27,7 @@
   #:use-module ((gnu packages base)
                 #:select (canonical-package findutils coreutils sed))
   #:use-module (gnu packages file-systems)
-  #:use-module (gnu packages certs)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages linux)

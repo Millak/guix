@@ -197,7 +197,7 @@
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages build-tools)
-  #:use-module (gnu packages certs)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)

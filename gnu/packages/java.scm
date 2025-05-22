@@ -58,7 +58,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages certs)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages compression)

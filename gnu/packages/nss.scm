@@ -1,12 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2019, 2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014-2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016-2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
 
 (define-module (gnu packages nss)
   #:use-module (guix packages)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix download)
@@ -32,10 +34,12 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system mozilla)
+  #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-io)
@@ -43,6 +47,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
@@ -348,6 +353,88 @@ PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
 security standards.
 
 This package tracks the Rapid Release channel, which updates frequently.")))
+
+(define-public nss-certs
+  (package
+    (inherit nss)
+    (name "nss-certs")
+    (build-system gnu-build-system)
+    (outputs '("out"))
+    (native-inputs
+     (list certdata2pem openssl))
+    (inputs '())
+    (propagated-inputs '())
+    (arguments
+     (list #:modules '((guix build gnu-build-system)
+                       (guix build utils)
+                       (rnrs io ports)
+                       (srfi srfi-26))
+           #:phases
+           #~(modify-phases
+                 (map (cut assq <> %standard-phases)
+                      '(set-paths install-locale unpack))
+               (add-after 'unpack 'install
+                 (lambda _
+                   (let ((certsdir (string-append #$output
+                                                  "/etc/ssl/certs/")))
+                     (with-directory-excursion "nss/lib/ckfw/builtins/"
+                       (unless (file-exists? "blacklist.txt")
+                         (call-with-output-file "blacklist.txt" (const #t)))
+                       ;; Extract selected single certificates from blob.
+                       (invoke "certdata2pem")
+                       ;; Copy .pem files into the output.
+                       (for-each (cut install-file <> certsdir)
+                                 (find-files "." ".*\\.pem$")))
+                     (invoke "openssl" "rehash" certsdir)))))))
+    (synopsis "CA certificates from Mozilla")
+    (description
+     "This package provides certificates for Certification Authorities (CA)
+taken from the NSS package and thus ultimately from the Mozilla project.")
+    (home-page "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS")
+    (license license:mpl2.0)))
+
+(define-public nss-certs-for-test
+  (hidden-package
+   (package
+     (inherit nss-certs)
+     (name "nss-certs-for-test")
+     (source #f)
+     (build-system trivial-build-system)
+     (native-inputs (list nss-certs))
+     (inputs '())
+     (propagated-inputs '())
+     (arguments
+      (list #:modules '((guix build utils)
+                        (rnrs io ports)
+                        (srfi srfi-26))
+            #:builder
+            #~(begin
+                (use-modules (guix build utils)
+                             (rnrs io ports)
+                             (srfi srfi-26))
+                (define certs-dir (string-append #$output "/etc/ssl/certs/"))
+                (define ca-files
+                  (find-files (string-append #+(this-package-native-input
+                                                "nss-certs")
+                                             "/etc/ssl/certs")
+                              (lambda (file stat)
+                                (string-suffix? ".pem" file))))
+                (define (concatenate-files files result)
+                  "Make RESULT the concatenation of all of FILES."
+                  (define (dump file port)
+                    (display (call-with-input-file file get-string-all) port)
+                    (newline port))
+                  (call-with-output-file result
+                    (lambda (port)
+                      (for-each (cut dump <> port) files))))
+
+                (mkdir-p certs-dir)
+                (concatenate-files
+                 ca-files (string-append certs-dir "/ca-certificates.crt"))
+                (for-each (cut install-file <> certs-dir) ca-files))))
+     (native-search-paths
+      (list $SSL_CERT_DIR
+            $SSL_CERT_FILE)))))
 
 (define-public nsncd
   (package
