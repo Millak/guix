@@ -813,10 +813,6 @@ the \"texlive\" importer."
                        "vivien@planete-kraus.eu")
   gnome)
 
-(define-member (person "Wilko Meyer"
-                       "w@wmeyer.eu")
-  kernel)
-
 (define-member (person "Mark H Weaver"
                        "mhw@netris.org")
   mozilla)
