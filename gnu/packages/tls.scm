@@ -495,12 +495,10 @@ OpenSSL for TARGET."
                "shared"                 ;build shared libraries
                "--libdir=lib"
 
-               ;; The default for this catch-all directory is
-               ;; PREFIX/ssl.  Change that to something more
-               ;; conventional.
+               ;; The default for this catch-all directory is PREFIX/ssl.
+               ;; Change that to something more conventional.
                (string-append "--openssldir=" #$output
-                              "/share/openssl-"
-                              #$(package-version this-package))
+                              "/share/openssl")
 
                (string-append "--prefix=" #$output)
                (string-append "-Wl,-rpath," (string-append #$output "/lib"))
@@ -544,8 +542,7 @@ OpenSSL for TARGET."
               ;; Perl scripts.  Remove them to avoid retaining a reference on
               ;; Perl.
               (delete-file-recursively
-               (string-append #$output "/share/openssl-"
-                              #$(package-version this-package) "/misc")))))))
+               (string-append #$output "/share/openssl/misc")))))))
     (native-search-paths
      (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (synopsis "SSL/TLS implementation")
