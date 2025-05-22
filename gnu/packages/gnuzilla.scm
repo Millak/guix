@@ -1484,7 +1484,7 @@ ca495991b7852b855"))
                       "ac_add_options --with-system-jpeg\n"
                       "ac_add_options --with-system-libevent\n"
                       "ac_add_options --with-system-nspr\n"
-                      ; UNBUNDLE-ME! "ac_add_options --with-system-nss\n"
+                      "ac_add_options --with-system-nss\n"
                       "ac_add_options --with-system-zlib\n"
                       "ac_add_options --without-wasm-sandboxed-libraries\n"
                       "mk_add_options MOZ_MAKE_FLAGS=-j"
@@ -1583,7 +1583,7 @@ ca495991b7852b855"))
            mesa
            mit-krb5
            nspr
-           ;; UNBUNDLE-ME! nss  (pending upgrade of 'nss' to 3.90 or later)
+           nss
            pango
            pixman
            pulseaudio
