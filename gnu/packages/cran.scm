@@ -20298,13 +20298,13 @@ explored with minimal deviation from the common work patterns of
 (define-public r-nanonext
   (package
     (name "r-nanonext")
-    (version "1.5.2")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanonext" version))
        (sha256
-        (base32 "1lymdjach4gyd4xd3isql0vm8r120ck57vhg91lm6c7f5kxd7mvx"))))
+        (base32 "0n2lq6czshp4r5jsrabz6al36s3d9dai8dkf80h9bskga36bfkp3"))))
     (properties `((upstream-name . "nanonext")))
     (build-system r-build-system)
     (arguments
