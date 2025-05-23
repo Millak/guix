@@ -43,6 +43,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system guile)
+  #:use-module (guix build-system trivial)
   #:use-module (guix modules)
   #:use-module (guix search-paths)
   #:use-module (gnu packages)
@@ -426,6 +427,25 @@ resembles Python.")
       (description "Muon is an implementation of the meson build system in c99
 with minimal dependencies.")
       (license license:gpl3))))            ;for the combined work
+
+(define-public muon-as-meson-wrapper
+  (package/inherit muon
+    (name "muon-as-meson-wrapper")
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder
+           (with-imported-modules '((guix build utils))
+             #~(begin
+                 (use-modules (guix build utils))
+                 (let ((bindir (string-append #$output "/bin"))
+                       (samu (string-append #$(this-package-input "muon")
+                                            "/bin/muon")))
+                   (mkdir-p bindir)
+                   (symlink samu (string-append bindir "/meson")))))))
+    (inputs (list muon))
+    (description "This package provides the @command{meson} command,
+implemented as a symbolic link to the @command{muon} command of @code{muon}
+package.")))
 
 (define-public premake4
   (package
