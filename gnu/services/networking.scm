@@ -227,6 +227,8 @@
             wpa-supplicant-configuration?
             wpa-supplicant-configuration-wpa-supplicant
             wpa-supplicant-configuration-requirement
+            wpa-supplicant-configuration-shepherd-requirement
+            wpa-supplicant-configuration-shepherd-provision
             wpa-supplicant-configuration-pid-file
             wpa-supplicant-configuration-dbus?
             wpa-supplicant-configuration-interface
@@ -2024,34 +2026,48 @@ whatever the thing is supposed to do).")))
 ;;; WPA supplicant
 ;;;
 
+(define-with-syntax-properties (warn-deprecated-wpa-supplicant-requirement
+                                (value properties))
+  (unless (unspecified? value)
+    (warning (source-properties->location properties)
+             (G_ "the 'requirement' field is deprecated, please use \
+'shepherd-requirement' field instead~%")))
+  value)
+
 (define-record-type* <wpa-supplicant-configuration>
   wpa-supplicant-configuration make-wpa-supplicant-configuration
   wpa-supplicant-configuration?
-  (wpa-supplicant     wpa-supplicant-configuration-wpa-supplicant ;file-like
-                      (default wpa-supplicant))
-  (requirement        wpa-supplicant-configuration-requirement    ;list of symbols
-                      (default '(user-processes loopback syslogd)))
-  (pid-file           wpa-supplicant-configuration-pid-file       ;string
-                      (default "/var/run/wpa_supplicant.pid"))
-  (dbus?              wpa-supplicant-configuration-dbus?          ;Boolean
-                      (default #t))
-  (interface          wpa-supplicant-configuration-interface      ;#f | string
-                      (default #f))
-  (config-file        wpa-supplicant-configuration-config-file    ;#f | <file-like>
-                      (default #f))
-  (extra-options      wpa-supplicant-configuration-extra-options  ;list of strings
-                      (default '())))
+  (wpa-supplicant        wpa-supplicant-configuration-wpa-supplicant ;file-like
+                         (default wpa-supplicant))
+  (requirement           wpa-supplicant-configuration-requirement ;list of symbols
+                         (sanitize warn-deprecated-wpa-supplicant-requirement)
+                         (default *unspecified*))
+  (pid-file              wpa-supplicant-configuration-pid-file ;string
+                         (default "/var/run/wpa_supplicant.pid"))
+  (dbus?                 wpa-supplicant-configuration-dbus? ;Boolean
+                         (default #t))
+  (interface             wpa-supplicant-configuration-interface ;#f | string
+                         (default #f))
+  (config-file           wpa-supplicant-configuration-config-file ;#f | <file-like>
+                         (default #f))
+  (extra-options         wpa-supplicant-configuration-extra-options ;list of strings
+                         (default '()))
+  (shepherd-provision    wpa-supplicant-configuration-shepherd-provision    ;list of symbols
+                         (default '(wpa-supplicant wireless-daemon)))
+  (shepherd-requirement  wpa-supplicant-configuration-shepherd-requirement  ;list of symbols
+                         (default '(user-processes loopback syslogd))))
 
 (define (wpa-supplicant-shepherd-service config)
   (match-record config <wpa-supplicant-configuration>
     (wpa-supplicant requirement pid-file dbus?
+                    shepherd-requirement shepherd-provision
                     interface config-file extra-options)
     (list (shepherd-service
            (documentation "Run the WPA supplicant daemon")
-           (provision '(wpa-supplicant))
-           (requirement (if dbus?
-                            (cons 'dbus-system requirement)
-                            requirement))
+           (provision shepherd-provision)
+           (requirement `(,@(if dbus? '(dbus-system) '())
+                          ,@(or (if (unspecified? requirement) #f requirement)
+                                shepherd-requirement)))
            (start #~(make-forkexec-constructor
                      (list (string-append #$wpa-supplicant
                                           "/sbin/wpa_supplicant")
