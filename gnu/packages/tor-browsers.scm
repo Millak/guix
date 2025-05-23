@@ -433,6 +433,8 @@ Browser.")
                           ;; UNBUNDLE-ME! "gfx/graphite2"
                           "js/src/ctypes/libffi"
                           ;; UNBUNDLE-ME! "db/sqlite3"
+                          ;; 800Mo of unused tests.
+                          "testing/web-platform"
                           ))))
           (add-after 'remove-bundled-libraries 'fix-ffmpeg-runtime-linker
             (lambda* (#:key inputs #:allow-other-keys)
