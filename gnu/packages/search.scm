@@ -160,13 +160,16 @@ a CGI web search frontend.")
                 "0gc8l9cn8jdma0p73jl14z17yizp6dax5zsycvgprajii6j8bhwi"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--with-python3")
-       #:make-flags
-       (list (string-append "pkgpylibdir="
-                            (assoc-ref %outputs "out")
-                            "/lib/python" ,(version-major+minor
-                                            (package-version python))
-                            "/site-packages/xapian"))))
+     (list #:configure-flags #~(list "--with-python3")
+           #:make-flags
+           #~(list (string-append "pkgpylibdir="
+                                  #$output
+                                  "/lib/python" #$(version-major+minor
+                                                   (package-version python))
+                                  "/site-packages/xapian")
+                   ;; XXX: Otherwise set to "None", which produces _xapianNone
+                   ;; and ends up unable to find it.
+                   "PYTHON3_SO=.so")))
     (native-inputs
      (list python-sphinx)) ;for documentation
     (inputs
