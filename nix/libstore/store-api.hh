@@ -4,6 +4,7 @@
 #include "serialise.hh"
 
 #include <string>
+#include <cstdint>
 #include <map>
 #include <memory>
 
