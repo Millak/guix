@@ -41,12 +41,21 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 (use-modules (srfi srfi-1)
              (srfi srfi-9)
              (srfi srfi-26)
+             (srfi srfi-34)
+             (srfi srfi-35)
+             (srfi srfi-71)
              (ice-9 format)
              (ice-9 regex)
              (ice-9 match)
              (ice-9 rdelim)
              (guix ui)
-             (git))
+             (git)
+             (json)
+             (web client)
+             (web request)
+             (web response)
+             (rnrs bytevectors)
+             (guix base64))
 
 (define-record-type <regexp*>
   (%make-regexp* pat flag rx)
@@ -115,6 +124,241 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
                   (set-team-members!
                    team (cons p (team-members team)))))
               (quote (teams ...)))))
+
+
+;;;
+;;; Forgejo support.
+;;;
+
+;; Forgejo team.  This corresponds to both the 'Team' and 'CreateTeamOption'
+;; structures in Forgejo.
+(define-json-mapping <forgejo-team>
+  forgejo-team forgejo-team?
+  json->forgejo-team <=> forgejo-team->json
+  (name                forgejo-team-name)
+  (id                  forgejo-team-id)           ;integer
+  (description         forgejo-team-description)
+  (all-repositories?   forgejo-team-all-repositories?
+                       "includes_all_repositories")
+  (can-create-org-repository? forgejo-team-can-create-org-repository?
+                              "can_create_org_repo")
+  (permission          forgejo-team-permission
+                       "permission" string->symbol symbol->string)
+  ;; A 'units' field exists but is deprecated in favor of 'units_map'.
+  (unit-map            forgejo-team-unit-map
+                       "units_map" json->unit-map unit-map->json))
+
+(define (unit-map->json lst)
+  (map (match-lambda
+         ((unit . permission)
+          (cons unit (symbol->string permission))))
+       lst))
+
+(define (json->unit-map lst)
+  (map (match-lambda
+         ((unit . permission)
+          (cons unit (string->symbol permission))))
+       lst))
+
+(define %default-forgejo-team-units
+  '("repo.code" "repo.issues" "repo.pulls" "repo.releases"
+    "repo.wiki" "repo.ext_wiki" "repo.ext_issues" "repo.projects"
+    "repo.packages" "repo.actions"))
+
+(define %default-forgejo-team-unit-map
+  ;; Everything (including "repo.code") is read-only by default, except a few
+  ;; units.
+  (map (match-lambda
+         ("repo.pulls" (cons "repo.pulls" 'write))
+         ("repo.issues" (cons "repo.issues" 'write))
+         ("repo.wiki" (cons "repo.wiki" 'write))
+         (unit (cons unit 'read)))
+       %default-forgejo-team-units))
+
+(define (forgejo-http-headers token)
+  "Return the HTTP headers for basic authorization with TOKEN."
+  `((content-type . (application/json (charset . "UTF-8")))
+    ;; The "Auth Basic" scheme needs a base64-encoded colon-separated user and
+    ;; token values. Forgejo doesn't seem to care for the user part but the
+    ;; colon seems to be necessary for the token value to get extracted.
+    (authorization . (basic . ,(base64-encode
+                                (string->utf8
+                                 (string-append ":" token)))))))
+
+;; Error with a Forgejo request.
+(define-condition-type &forgejo-error &error
+  forgejo-error?
+  (url       forgejo-error-url)
+  (method    forgejo-error-method)
+  (response  forgejo-error-response))
+
+(define %codeberg-organization
+  ;; Name of the organization at codeberg.org.
+  "guix")
+
+(define* (codeberg-url items #:key (parameters '()))
+  "Construct a Codeberg API URL with the path components ITEMS and query
+PARAMETERS."
+  (define query
+    (match parameters
+      (() "")
+      (((keys . values) ...)
+       (string-append "?" (string-join
+                           (map (lambda (key value)
+                                  (string-append key "=" value)) ;XXX: hackish
+                                keys values)
+                           "&")))))
+
+  (string-append "https://codeberg.org/api/v1/"
+                 (string-join items "/")
+                 query))
+
+(define-syntax process-url-components
+  (syntax-rules (&)
+    "Helper macro to construct a Codeberg URL."
+    ((_ components ... & parameters)
+     (codeberg-url (list components ...)
+                   #:parameters parameters))
+    ((_ components ...)
+     (codeberg-url (list components ...)))))
+
+(define-syntax define-forgejo-request
+  (syntax-rules (=>)
+    "Define a procedure that performs a Forgejo request."
+    ((_ (proc parameters ...)
+        docstring
+        (verb components ...)
+        body
+        => code
+        deserialize)
+     (define (proc token parameters ...)
+       docstring
+       (let* ((url (process-url-components components ...))
+              (response port (http-request url
+                                           #:method 'verb
+                                           #:streaming? #t
+                                           #:headers (forgejo-http-headers token)
+                                           #:body body)))
+         (if (= code (response-code response))
+             (let ((value (deserialize port)))
+               (when port (close-port port))
+               value)
+             (begin
+               (when port (close-port port))
+               (raise (condition (&forgejo-error (url url)
+                                                 (method 'verb)
+                                                 (response response)))))))))
+    ((_ (proc parameters ...)
+        docstring
+        (method components ...)
+        => code
+        deserialize)
+     (define-forgejo-request (proc parameters ...)
+       docstring
+       (method components ...)
+       ""
+       => code
+       deserialize))
+    ((_ (proc parameters ...)
+        docstring
+        (method components ...)
+        => code)
+     (define-forgejo-request (proc parameters ...)
+       docstring
+       (method components ...)
+       ""
+       => code
+       (const *unspecified*)))))
+
+;; API documentation at <https://codeberg.org/api/swagger>.
+
+(define-forgejo-request (organization-teams organization)
+  "Return the list of teams of ORGANIZATION."
+  (GET "orgs" organization "teams"
+       & '(("limit" . "100")))                    ;get up to 100 teams
+  => 200
+  (lambda (port)
+    (map json->forgejo-team (vector->list (json->scm port)))))
+
+(define-forgejo-request (create-team organization team)
+  "Create TEAM, a Forgejo team, under ORGANIZATION."
+  (POST "orgs" organization "teams")
+  (forgejo-team->json team)
+  => 201
+  json->forgejo-team)
+
+(define-forgejo-request (delete-team team)
+  "Delete TEAM, a Forgejo team."
+  (DELETE "teams" (number->string (forgejo-team-id team)))
+  => 204)
+
+(define-forgejo-request (add-team-member team user)
+  "Add USER (a string) to TEAM, a Forgejo team."
+  (PUT "teams" (number->string (forgejo-team-id team))
+       "members" user)
+  => 204)
+
+(define (team->forgejo-team team)
+  "Return a Forgejo team derived from TEAM, a <team> record."
+  (forgejo-team (team-id->forgejo-id (team-id team))
+                #f
+                (or (team-description team) "")
+                #f                                ;all-repositories?
+                #f                                ;can-create-org-repository?
+                'read                             ;permission
+                %default-forgejo-team-unit-map))
+
+(define* (synchronize-team token team
+                           #:key
+                           (current-teams
+                            (organization-teams token
+                                                %codeberg-organization))
+                           (log-port (current-error-port)))
+  "Synchronize TEAM, a <team> record, so that its metadata and list of members
+are accurate on Codeberg.  Lookup team IDs among CURRENT-TEAMS."
+  (let ((forgejo-team
+         (find (let ((name (team-id->forgejo-id (team-id team))))
+                 (lambda (candidate)
+                   (string=? (forgejo-team-name candidate) name)))
+               current-teams)))
+    (when forgejo-team
+      ;; Delete the previously-created team.
+      (format log-port "team '~a' already exists; deleting it~%"
+              (forgejo-team-name forgejo-team))
+      (delete-team token forgejo-team))
+
+    ;; Create the team.
+    (let ((forgejo-team
+           (create-team token %codeberg-organization
+                        (or forgejo-team
+                            (team->forgejo-team team)))))
+      (format log-port "created team '~a'~%"
+              (forgejo-team-name forgejo-team))
+      (let ((members (filter-map person-codeberg-account
+                                 (team-members team))))
+        (for-each (lambda (member)
+                    (add-team-member token forgejo-team member))
+                  members)
+        (format log-port "added ~a members to team '~a'~%"
+                (length members)
+                (forgejo-team-name forgejo-team))
+        forgejo-team))))
+
+(define (synchronize-teams token)
+  "Push all the existing teams on Codeberg."
+  (let ((teams (sort-teams
+                (hash-map->list (lambda (_ value) value) %teams))))
+    (format (current-error-port)
+            "creating ~a teams in the '~a' organization at Codeberg...~%"
+            (length teams) %codeberg-organization)
+
+    ;; Arrange to compute the list of existing teams once and for all.
+    (for-each (let ((teams (organization-teams token
+                                               %codeberg-organization)))
+                (lambda (team)
+                  (synchronize-team token team
+                                    #:current-teams teams)))
+              teams)))
 
 
 
@@ -1137,6 +1381,8 @@ and REV-END, two git revision strings."
      (list-teams team-names))
     (("codeowners")
      (export-codeowners (current-output-port)))
+    (("sync-codeberg-teams" token)
+     (synchronize-teams token))
     (anything
      (format (current-error-port)
              "Usage: etc/teams.scm <command> [<args>]
@@ -1159,6 +1405,8 @@ Commands:
   show <team-name>
       display <team-name> properties
   codeowners
-      write a 'CODEOWNERS' file suitable for Codeberg on standard output~%"))))
+      write a 'CODEOWNERS' file suitable for Codeberg on standard output
+  sync-codeberg-teams <token>
+      create or update the list of teams at Codeberg~%"))))
 
 (apply main (cdr (command-line)))
