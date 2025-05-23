@@ -27,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
@@ -116,3 +117,21 @@ replacement, use the @code{samu-as-ninja-wrapper} package.")
     (license (list asl2.0               ;for the most part
                    expat))))            ;htab.h, htab.c and tree.c
 
+(define-public samu-as-ninja-wrapper
+  (package/inherit samurai
+    (name "samu-as-ninja-wrapper")
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder
+           (with-imported-modules '((guix build utils))
+             #~(begin
+                 (use-modules (guix build utils))
+                 (let ((bindir (string-append #$output "/bin"))
+                       (samu (string-append #$(this-package-input "samurai")
+                                            "/bin/samu")))
+                   (mkdir-p bindir)
+                   (symlink samu (string-append bindir "/ninja")))))))
+    (inputs (list samurai))
+    (description "This package provides the @command{ninja} command,
+implemented as a symbolic link to the @command{samu} command of @code{samurai}
+package.")))
