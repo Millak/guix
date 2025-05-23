@@ -1107,6 +1107,8 @@ Commands:
   get-maintainer <patch>
       compatibility mode with Linux get_maintainer.pl
   show <team-name>
-      display <team-name> properties~%"))))
+      display <team-name> properties
+  codeowners
+      write a 'CODEOWNERS' file suitable for Codeberg on standard output~%"))))
 
 (apply main (cdr (command-line)))
