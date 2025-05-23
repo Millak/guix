@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021, 2023, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2021, 2023-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -255,6 +255,7 @@ PROFILE and NUMBER "
       ("notabug.org" ,labhub-url)
       ("framagit.org" ,labhub-url)
       ("codeberg.org" ,labhub-url)
+      ("git.guix.gnu.org" ,labhub-url)            ;alias for codeberg.org
       ("gitlab.com" ,labhub-url)
       ("gitlab.inria.fr" ,labhub-url)
       ("github.com" ,labhub-url))))
