@@ -5076,6 +5076,7 @@ book.")
            (lambda _
              (let ((chuffed #$(this-package-input "chuffed"))
                    (gecode #$(this-package-input "gecode"))
+                   (or-tools #$(this-package-input "or-tools"))
                    (pkgdatadir (string-append #$output
                                               "/share/minizinc")))
                (call-with-output-file (string-append pkgdatadir
@@ -5096,11 +5097,11 @@ book.")
                    (copy-recursively
                      (string-append solver "/share/minizinc/solvers")
                      (string-append pkgdatadir "/solvers")))
-                 (list gecode chuffed))))))))
+                 (list chuffed gecode or-tools))))))))
     (native-inputs
      (list bison flex))
     (inputs
-     (list cbc chuffed gecode zlib))
+     (list cbc chuffed gecode or-tools zlib))
     (home-page "https://www.minizinc.org")
     (synopsis "High-level constraint modeling language")
     (description "MiniZinc is a high-level modeling language for constraint
