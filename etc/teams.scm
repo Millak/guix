@@ -126,6 +126,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 (define-team bootstrap
   (team 'bootstrap
         #:name "Bootstrap"
+        #:description "Full-source bootstrap: stage0, Mes, Gash, etc."
         #:scope (list "gnu/packages/commencement.scm"
                       "gnu/packages/mes.scm")))
 
@@ -355,6 +356,7 @@ the haskell-build-system."
 (define-team hurd
   (team 'hurd
         #:name "Team for the Hurd"
+        #:description "GNU Hurd packages and operating system support."
         #:scope (list "gnu/system/hurd.scm"
                       "gnu/system/images/hurd.scm"
                       "gnu/build/hurd-boot.scm"
