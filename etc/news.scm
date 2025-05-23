@@ -40,7 +40,9 @@
 
  (entry (commit "271a8fc2499135c3f0198bf69c9f2a60f1961bf1")
         (title
-         (en "@samp{guix refresh} can now target partial versions"))
+         (en "@samp{guix refresh} can now target partial versions")
+         (de "@samp{guix refresh} kann jetzt unvollständige Versionen als Ziel
+nehmen"))
         (body
          (en "While it had been possible for some time to use the
 @option{--target-version} to update to a partially defined version, this can
