@@ -1070,8 +1070,12 @@ has been designed to be fast, light and unintrusive.")
               ;; https://github.com/freebsd/kyua/issues/214).
               (substitute* "utils/Kyuafile"
                 ((".*atf_test_program.*stacktrace_test.*")
-                 "")))))))
-    (native-inputs (list autoconf automake gdb pkg-config))
+                 ""))))
+          (add-after 'install 'delete-installed-tests
+            (lambda _
+              ;; Delete 200 MiB of tests.
+              (delete-file-recursively (string-append #$output "/tests")))))))
+    (native-inputs (list autoconf automake gdb-minimal pkg-config))
     (inputs (list atf lutok sqlite))
     (home-page "https://github.com/freebsd/kyua")
     (synopsis "Testing framework for infrastructure software")
