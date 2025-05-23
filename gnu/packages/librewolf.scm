@@ -193,7 +193,11 @@
        (search-patches
         "librewolf-compare-paths.patch"
         "librewolf-use-system-wide-dir.patch"
-        "librewolf-add-store-to-rdd-allowlist.patch")))))
+        "librewolf-add-store-to-rdd-allowlist.patch"))
+      ;; XXX: 75 Mo (800+ Mo uncompressed) of unused tests.
+      ;; Removing it makes it possible to compile on some systems.
+      (modules '((guix build utils)))
+      (snippet #~(delete-file-recursively "testing/web-platform")))))
 
 ;;; Define the versions of rust needed to build firefox, trying to match
 ;;; upstream.  See table at [0], `Uses' column for the specific version.
