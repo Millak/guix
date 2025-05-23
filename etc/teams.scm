@@ -1024,13 +1024,27 @@ and REV-END, two git revision strings."
        (find-team-by-scope (apply diff-revisions
                                   (git-patch->revisions patch-file)))))
 
+(define (team-id->forgejo-id id)
+  "Return a name (string) suitable as a Forgejo team name."
+  (define valid                                   ;"AlphaDashDot"
+    (char-set-union char-set:ascii (char-set #\-) (char-set #\.)))
+
+  (define (valid? chr)
+    (char-set-contains? valid chr))
+
+  (string-map (match-lambda
+                (#\+ #\p)                         ;special case for "c++"
+                ((? valid? chr) chr)
+                (_ #\-))
+              (symbol->string id)))
+
 (define (team->codeowners-snippet team)
   (string-join (map (lambda (scope)
                       (format #f "~50a @guix/~a"
                               (if (regexp*? scope)
                                   (regexp*-pattern scope)
                                   (regexp-quote scope))
-                              (team-id team)))
+                              (team-id->forgejo-id (team-id team))))
                     (team-scope team))
                "\n"
                'suffix))
