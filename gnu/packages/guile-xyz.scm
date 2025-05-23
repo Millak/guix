@@ -5651,6 +5651,11 @@ not provide a way to change the headers on its own.")
            (add-after 'unpack 'run-hall
              (lambda _
                (setenv "HOME" "/tmp")   ; for ~/.hall
+               ;; Patch hall.scm.
+               (substitute* "hall.scm"
+                 (("\\(copyright '\\(2018\\)\\)")
+                  "(email \"alex@pompo.co\") (copyright (2018))"))
+               ;; Invoke hall.
                (invoke "hall" "build-system" "-x"))))))
       (native-inputs
        (list autoconf
