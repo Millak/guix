@@ -75,13 +75,14 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
   (scope       team-scope))
 
 (define-record-type <person>
-  (make-person name email)
+  (make-person name email account)
   person?
   (name    person-name)
-  (email   person-email))
+  (email   person-email)
+  (account person-codeberg-account))
 
-(define* (person name #:optional email)
-  (make-person name email))
+(define* (person name #:optional email account)
+  (make-person name email account))
 
 (define* (team id #:key name description (members '())
                (scope '()))
@@ -672,24 +673,29 @@ the \"texlive\" importer."
 
 
 (define-member (person "Eric Bavier"
-                       "bavier@posteo.net")
+                       "bavier@posteo.net"
+                       "bavier")
   science)
 
 (define-member (person "Lars-Dominik Braun"
-                       "lars@6xq.net")
+                       "lars@6xq.net"
+                       "ldb")
   python haskell)
 
 (define-member (person "Jonathan Brielmaier"
-                       "jonathan.brielmaier@web.de")
+                       "jonathan.brielmaier@web.de"
+                       "jonsger")
   mozilla)
 
 (define-member (person "Ludovic Courtès"
-                       "ludo@gnu.org")
+                       "ludo@gnu.org"
+                       "civodul")
   core home bootstrap core-packages installer
   documentation mentors)
 
 (define-member (person "Andreas Enge"
-                       "andreas@enge.fr")
+                       "andreas@enge.fr"
+                       "enge")
   bootstrap core-packages lxqt science tex)
 
 (define-member (person "Tanguy Le Carrour"
@@ -701,15 +707,18 @@ the \"texlive\" importer."
   core mentors)
 
 (define-member (person "Steve George"
-                       "steve@futurile.net")
+                       "steve@futurile.net"
+                       "futurile")
   rust)
 
 (define-member (person "Leo Famulari"
-                       "leo@famulari.name")
+                       "leo@famulari.name"
+                       "lfam")
   kernel)
 
 (define-member (person "Efraim Flashner"
-                       "efraim@flashner.co.il")
+                       "efraim@flashner.co.il"
+                       "efraim")
   embedded bootstrap rust)
 
 (define-member (person "jgart"
@@ -717,11 +726,13 @@ the \"texlive\" importer."
   lisp mentors)
 
 (define-member (person "Guillaume Le Vaillant"
-                       "glv@posteo.net")
+                       "glv@posteo.net"
+                       "glv")
   lisp)
 
 (define-member (person "Julien Lepiller"
-                       "julien@lepiller.eu")
+                       "julien@lepiller.eu"
+                       "roptat")
   java ocaml translations)
 
 (define-member (person "Philip McGrath"
@@ -729,27 +740,33 @@ the \"texlive\" importer."
   racket)
 
 (define-member (person "Mathieu Othacehe"
-                       "othacehe@gnu.org")
+                       "othacehe@gnu.org"
+                       "mothacehe")
   core installer mentors)
 
 (define-member (person "Florian Pelz"
-                       "pelzflorian@pelzflorian.de")
+                       "pelzflorian@pelzflorian.de"
+                       "pelzflorian")
   translations)
 
 (define-member (person "Liliana Marie Prikler"
-                       "liliana.prikler@gmail.com")
+                       "liliana.prikler@gmail.com"
+                       "lilyp")
   emacs games gnome)
 
 (define-member (person "Ricardo Wurmus"
-                       "rekado@elephly.net")
+                       "rekado@elephly.net"
+                       "rekado")
   r sugar)
 
 (define-member (person "Christopher Baines"
-                       "guix@cbaines.net")
+                       "guix@cbaines.net"
+                       "cbaines")
   core mentors ruby)
 
 (define-member (person "Andrew Tropin"
-                       "andrew@trop.in")
+                       "andrew@trop.in"
+                       "abcdw")
   home emacs)
 
 (define-member (person "pukkamustard"
@@ -769,19 +786,22 @@ the \"texlive\" importer."
   julia core mentors r)
 
 (define-member (person "宋文武"
-                       "iyzsong@envs.net")
+                       "iyzsong@envs.net"
+                       "iyzsong")
   games localization lxqt qt xfce)
 
 (define-member (person "Vagrant Cascadian"
-                       "vagrant@debian.org")
+                       "vagrant@debian.org"
+                       "vagrantc")
   embedded)
 
-(define-member (person "Vagrant Cascadian"
+(define-member (person "Vagrant Cascadian"        ;XXX: duplicate
                        "vagrant@reproducible-builds.org")
   reproduciblebuilds)
 
 (define-member (person "Maxim Cournoyer"
-                       "maxim.cournoyer@gmail.com")
+                       "maxim.cournoyer@gmail.com"
+                       "apteryx")
   documentation gnome qt telephony electronics)
 
 (define-member (person "Katherine Cox-Buday"
@@ -797,19 +817,23 @@ the \"texlive\" importer."
   audio documentation electronics embedded)
 
 (define-member (person "Ekaitz Zarraga"
-                       "ekaitz@elenq.tech")
+                       "ekaitz@elenq.tech"
+                       "ekaitz-zarraga")
   bootstrap zig electronics)
 
 (define-member (person "Divya Ranjan Pattanaik"
-                       "divya@subvertising.org")
+                       "divya@subvertising.org"
+                       "divyaranjan")
   emacs rust haskell)
 
 (define-member (person "Clément Lassieur"
-                       "clement@lassieur.org")
+                       "clement@lassieur.org"
+                       "snape")
   mozilla)
 
 (define-member (person "Sharlatan Hellseher"
-                       "sharlatanus@gmail.com")
+                       "sharlatanus@gmail.com"
+                       "Hellseher")
   go lisp python science sysadmin)
 
 (define-member (person "Vivien Kraus"
@@ -817,7 +841,8 @@ the \"texlive\" importer."
   gnome)
 
 (define-member (person "Mark H Weaver"
-                       "mhw@netris.org")
+                       "mhw@netris.org"
+                       "mhw")
   mozilla)
 
 (define-member (person "Adam Faiz"
@@ -829,23 +854,28 @@ the \"texlive\" importer."
   r)
 
 (define-member (person "Nicolas Goaziou"
-                       "guix@nicolasgoaziou.fr")
+                       "guix@nicolasgoaziou.fr"
+                       "ngz")
   tex)
 
 (define-member (person "André Batista"
-                       "nandre@riseup.net")
+                       "nandre@riseup.net"
+                       "madage")
   mozilla)
 
 (define-member (person "Janneke Nieuwenhuizen"
-                       "janneke@gnu.org")
+                       "janneke@gnu.org"
+                       "janneke")
   bootstrap core-packages home hurd installer)
 
 (define-member (person "Ian Eure"
-                       "ian@retrospec.tv")
+                       "ian@retrospec.tv"
+                       "ieure")
   mozilla emacs)
 
 (define-member (person "Zheng Junjie"
-                       "z572@z572.online")
+                       "z572@z572.online"
+                       "z572")
   core-packages qt kde)
 
 (define-member (person "Sughosha"
@@ -853,7 +883,8 @@ the \"texlive\" importer."
   kde)
 
 (define-member (person "Jelle Licht"
-                       "jlicht@fsfe.org")
+                       "jlicht@fsfe.org"
+                       "jlicht")
   javascript)
 
 (define-member (person "Cayetano Santos"
@@ -861,15 +892,18 @@ the \"texlive\" importer."
   emacs electronics)
 
 (define-member (person "Greg Hogan"
-                       "code@greghogan.com")
+                       "code@greghogan.com"
+                       "greghogan")
   c++)
 
 (define-member (person "Hilton Chain"
-                       "hako@ultrarare.space")
+                       "hako@ultrarare.space"
+                       "hako")
   emacs home localization mozilla rust zig)
 
 (define-member (person "Noé Lopez"
-                       "noelopez@free.fr")
+                       "noelopez@free.fr"
+                       "Baleine")
   gnome)
 
 (define-member (person "Ashvith Shetty"
