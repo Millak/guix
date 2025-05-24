@@ -52,6 +52,7 @@
                     (parallel-tests? #t)
                     (install-source? #t)
                     (skip-build? #f)
+                    (zig-build-target #f)
                     (zig-build-flags ''())
                     (zig-test-flags ''())
                     (zig-release-type #f)
@@ -78,8 +79,10 @@
                      #:skip-build? #$skip-build?
                      #:zig-build-flags #$zig-build-flags
                      ;; For reproducibility.
-                     #:zig-build-target #$(platform-target
-                                           (lookup-platform-by-system system))
+                     #:zig-build-target
+                     (or #$zig-build-target
+                         #$(platform-target
+                            (lookup-platform-by-system system)))
                      #:zig-test-flags #$zig-test-flags
                      #:zig-release-type #$zig-release-type
                      #:tests? #$(and tests? (not skip-build?))
@@ -110,6 +113,7 @@
                           (parallel-tests? #t)
                           (install-source? #t)
                           (skip-build? #f)
+                          (zig-build-target #f)
                           (zig-build-flags ''())
                           (zig-test-flags ''())
                           (zig-destdir "out")
@@ -158,7 +162,7 @@
                      #:install-source? #$install-source?
                      #:skip-build? #$skip-build?
                      #:zig-build-flags #$zig-build-flags
-                     #:zig-build-target #$target
+                     #:zig-build-target (or #$zig-build-target #$target)
                      #:zig-test-flags #$zig-test-flags
                      #:zig-release-type #$zig-release-type
                      #:zig-destdir #$zig-destdir
