@@ -22047,11 +22047,12 @@ Data type representing the configuration of NetworkManager.
 @item @code{network-manager} (default: @code{network-manager})
 The NetworkManager package to use.
 
-@item @code{shepherd-requirement} (default: @code{'(wpa-supplicant)})
-This option can be used to provide a list of symbols naming Shepherd services
-that this service will depend on, such as @code{'wpa-supplicant} or
-@code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
-networks.
+@item @code{shepherd-requirement} (default: @code{'(wireless-daemon)})
+This option can be used to provide a list of symbols naming Shepherd
+services that this service will depend on. The default @code{'wireless-daemon}
+is provided by @code{'wpa-supplicant-service-type} and @code{'iwd-service-type}.
+Make sure you have one of these configured. Note, that @code{%desktop-services}
+already include @code{wpa-supplicant-service-type}.
 
 @item @code{dns} (default: @code{"default"})
 Processing mode for DNS, which affects how NetworkManager uses the

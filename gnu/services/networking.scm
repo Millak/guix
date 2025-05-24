@@ -1419,7 +1419,7 @@ project's documentation} for more information."
   (network-manager network-manager-configuration-network-manager
                    (default network-manager))
   (shepherd-requirement network-manager-configuration-shepherd-requirement
-                        (default '(wpa-supplicant)))
+                        (default '(wireless-daemon)))
   (dns network-manager-configuration-dns
        (default "default"))
   (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
