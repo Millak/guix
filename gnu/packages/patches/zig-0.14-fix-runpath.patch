@@ -1,4 +1,4 @@
-From d5c31f6d99a3d02c8b0efba13e1a1e82e0e36f96 Mon Sep 17 00:00:00 2001
+From 467261b7e31dbb56aa06318bdd2e7260a80b313a Mon Sep 17 00:00:00 2001
 From: Hilton Chain <hako@ultrarare.space>
 Date: Fri, 29 Nov 2024 14:13:46 +0800
 Subject: [PATCH] Fix RUNPATH issue.
@@ -6,30 +6,15 @@ Subject: [PATCH] Fix RUNPATH issue.
 Add needed libraries and libc to RUNPATH when CROSS_LIBRARY_PATH or LIBRARY_PATH
 is set.
 ---
- lib/std/Build/Step/Compile.zig |  3 +++
- src/link/Elf.zig               | 14 ++++++++++++++
- src/main.zig                   | 34 +++++++++++++++++++++++++++++++++-
- 3 files changed, 50 insertions(+), 1 deletion(-)
+ src/link/Elf.zig | 14 ++++++++++++++
+ src/main.zig     | 34 +++++++++++++++++++++++++++++++++-
+ 2 files changed, 47 insertions(+), 1 deletion(-)
 
-diff --git a/lib/std/Build/Step/Compile.zig b/lib/std/Build/Step/Compile.zig
-index 1dd444abf2..df7f4a56db 100644
---- a/lib/std/Build/Step/Compile.zig
-+++ b/lib/std/Build/Step/Compile.zig
-@@ -778,6 +778,9 @@ fn runPkgConfig(compile: *Compile, lib_name: []const u8) !PkgConfigResult {
-             try zig_cflags.appendSlice(&[_][]const u8{ "-D", macro });
-         } else if (mem.startsWith(u8, arg, "-D")) {
-             try zig_cflags.append(arg);
-+        } else if (mem.startsWith(u8, arg, "-Wl,-rpath=")) {
-+            const dir = arg["-Wl,-rpath=".len..];
-+            try zig_libs.appendSlice(&[_][]const u8{ "-L", dir });
-         } else if (b.debug_pkg_config) {
-             return compile.step.fail("unknown pkg-config flag '{s}'", .{arg});
-         }
 diff --git a/src/link/Elf.zig b/src/link/Elf.zig
-index 608ff2fe3a..2b9fe803fd 100644
+index 591786cfbc..253c7f6732 100644
 --- a/src/link/Elf.zig
 +++ b/src/link/Elf.zig
-@@ -1037,6 +1037,13 @@ fn dumpArgvInit(self: *Elf, arena: Allocator) !void {
+@@ -1054,6 +1054,13 @@ fn dumpArgvInit(self: *Elf, arena: Allocator) !void {
              try argv.appendSlice(gpa, &.{ "-rpath", rpath });
          }
  
@@ -43,7 +28,7 @@ index 608ff2fe3a..2b9fe803fd 100644
          try argv.appendSlice(gpa, &.{
              "-z",
              try std.fmt.allocPrint(arena, "stack-size={d}", .{self.base.stack_size}),
-@@ -1857,6 +1864,13 @@ fn linkWithLLD(self: *Elf, arena: Allocator, tid: Zcu.PerThread.Id, prog_node: s
+@@ -1888,6 +1895,13 @@ fn linkWithLLD(self: *Elf, arena: Allocator, tid: Zcu.PerThread.Id, prog_node: s
              try argv.appendSlice(&.{ "-rpath", rpath });
          }
  
@@ -58,10 +43,10 @@ index 608ff2fe3a..2b9fe803fd 100644
              try argv.appendSlice(&.{ "-wrap", symbol_name });
          }
 diff --git a/src/main.zig b/src/main.zig
-index 79493aa624..505bb7570a 100644
+index 141fd42aab..81cdf6a507 100644
 --- a/src/main.zig
 +++ b/src/main.zig
-@@ -3901,7 +3901,7 @@ fn createModule(
+@@ -4022,7 +4022,7 @@ fn createModule(
                  create_module.want_native_include_dirs = true;
          }
  
@@ -70,7 +55,7 @@ index 79493aa624..505bb7570a 100644
              try create_module.rpath_list.ensureUnusedCapacity(arena, create_module.lib_directories.items.len);
              for (create_module.lib_directories.items) |lib_directory| {
                  create_module.rpath_list.appendAssumeCapacity(lib_directory.path.?);
-@@ -3976,6 +3976,28 @@ fn createModule(
+@@ -4096,6 +4096,28 @@ fn createModule(
              else => {},
          };
  
@@ -99,7 +84,7 @@ index 79493aa624..505bb7570a 100644
          create_module.resolved_options = Compilation.Config.resolve(create_module.opts) catch |err| switch (err) {
              error.WasiExecModelRequiresWasi => fatal("only WASI OS targets support execution model", .{}),
              error.SharedMemoryIsWasmOnly => fatal("only WebAssembly CPU targets support shared memory", .{}),
-@@ -7495,3 +7517,13 @@ fn addLibDirectoryWarn2(
+@@ -7748,3 +7770,13 @@ fn addLibDirectoryWarn2(
          .path = path,
      });
  }
@@ -114,5 +99,5 @@ index 79493aa624..505bb7570a 100644
 +    return true;
 +}
 -- 
-2.46.0
+2.49.0
 

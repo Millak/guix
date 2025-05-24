@@ -1861,12 +1861,12 @@ toolchain.  Among other features it provides
   (package
     (inherit zig-0.13)
     (name "zig")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (inherit (zig-source
                  version version
-                 "0ndrwir81zhkwviwnzwqc4vszc1klv1fnlf66nmdwijrkqi5wasp"))
+                 "0cnc3bzl965ckm70ayd6a29zn5h9cy3qzyfncp4n7mzkiwhlj58f"))
        (patches
         (search-patches
          "zig-0.14-use-baseline-cpu-by-default.patch"
