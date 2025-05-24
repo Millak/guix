@@ -22,6 +22,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages zig-xyz)
+  #:use-module (ice-9 match)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -35,6 +36,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -147,29 +149,57 @@ directly from a tty using KMS/DRM.")
     (license license:gpl3)))
 
 (define-public tigerbeetle
-  (package
-    (name "tigerbeetle")
-    (version "0.13.35")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tigerbeetledb/tigerbeetle")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0x8msknvq8s6vnlczq5fxmaiqvig2sbcv60c3x8zbgr28dsqpmll"))))
-    (build-system zig-build-system)
-    (arguments
-     (list
-      #:zig zig-0.9
-      #:install-source? #f
-      #:zig-release-type "safe"))
-    (synopsis "Distributed financial accounting database")
-    (description "TigerBeetle is a financial accounting database designed for
+  ;; Keep in sync with upstream release note.
+  (let ((commit "af6cebb66578481b507bf351c0ddb19cfa038cc3")
+        (min-release "0.16.4"))
+    (package
+      (name "tigerbeetle")
+      (version "0.16.41")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tigerbeetledb/tigerbeetle")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13c2y89ksdmnh8g666s0rlchwby860i5lvsvdrgj685222jdch2l"))))
+      (build-system zig-build-system)
+      (arguments
+       (list
+          #:zig zig-0.13
+          #:test-target "test:unit"
+          #:install-source? #f
+          #:zig-release-type "safe"
+          ;; Exact value required in build.zig.
+          #:zig-build-target
+          (match (or (%current-target-system)
+                     (%current-system))
+            ((? target-x86-64?)
+             "x86_64-linux")
+            ((? target-aarch64?)
+             "aarch64-linux")
+            (_ ""))
+          #:zig-build-flags
+          #~(list
+             (string-append "-Dconfig-release=" #$(package-version this-package))
+             (string-append "-Dconfig-release-client-min=" #$min-release)
+             (string-append "-Dgit-commit=" #$commit))
+          #:zig-test-flags
+          #~(list (string-append "-Dgit-commit=" #$commit))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-before 'check 'prepare-test-suite
+                (lambda _
+                  (substitute* "src/unit_tests.zig"
+                    ;; Expects git repository.
+                    ((".*tidy.zig.*") "")))))))
+      (synopsis "Distributed financial accounting database")
+      (description "TigerBeetle is a financial accounting database designed for
 mission-critical safety and performance for financial services.")
-    (home-page "https://github.com/tigerbeetledb/tigerbeetle")
-    (license license:asl2.0)))
+      (home-page "https://github.com/tigerbeetledb/tigerbeetle")
+      (supported-systems '("aarch64-linux" "x86_64-linux"))
+      (license license:asl2.0))))
 
 (define-public waylock
   (package
