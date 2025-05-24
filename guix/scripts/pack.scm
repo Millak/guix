@@ -580,9 +580,10 @@ layers."
                      (,source -> ,target))))))
 
             (define directives
-              ;; Create a /tmp directory, as some programs expect it, and
-              ;; create SYMLINKS.
+              ;; Create the /tmp and %store-prefix directories, as some
+              ;; programs expect them, and create SYMLINKS.
               `((directory "/tmp" ,(getuid) ,(getgid) #o1777)
+                (directory #$(%store-prefix) ,(getuid) ,(getgid) #o755)
                 ,@(append-map symlink->directives '#$symlinks)))
 
             (define (form-entry-point prefix entry-point entry-point-argument)

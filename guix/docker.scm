@@ -365,10 +365,11 @@ added to image as a layer."
                 (apply invoke "tar" "-cf" "../layer.tar"
                        `(,@transformation-options
                          ,@(tar-base-options)
-                         ,@(if max-layers '() paths)
+                         ;; Add parent directories before their contents.
                          ,@(scandir "."
                                     (lambda (file)
-                                      (not (member file '("." ".."))))))))
+                                      (not (member file '("." "..")))))
+                         ,@(if max-layers '() paths))))
               (delete-file-recursively "extra")))
 
         ;; It is possible for "/" to show up in the archive, especially when
