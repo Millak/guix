@@ -17,6 +17,7 @@
 ;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
 ;;; Copyright © 2025 Rutherther <rutherther@ditigal.xyz>
+;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1912,6 +1913,97 @@ focused on DXing and being shaped by community of DXers.JTDX")
 mode) providing weak signal keyboard to keyboard messaging to amateur radio
 operators.")
     (license license:gpl3)))
+
+(define-public limesuite-ng
+  (package
+    (name "limesuite-ng")
+    (version "25.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/myriadrf/LimeSuiteNG.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1riawgl7x89n6384y1j6brak3yzslap1vsnr5i33rwqf7hbrl4kh"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; Do not build pcie drivers, as they require
+         ;; kernel specific headers.
+         "-DBUILD_DRIVERS_LIMEPCIE=false"
+         ;; Specify the udev rules installation path into
+         ;; the ouput profile.
+         (string-append "-DUDEV_RULES_INSTALL_PATH="
+                        #$output "/lib/udev/rules.d")
+         ;; Do not reload udev rules after build.
+         "-DUDEV_RULES_RELOAD_ON_INSTALL=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The test binary requires different build options, so we
+          ;; re-issue a cmake configure + build before running the tests.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (substitute* "tests/CMakeLists.txt"
+                    ;; Provide google test locally instead of remote fetch.
+                    (("fetchcontent_makeavailable\\(googletest\\)")
+                     "find_package(GTest REQUIRED)"))
+                  ;; Configure the test build.
+                  (invoke "cmake"
+                          "-B"
+                          "../tests"
+                          "-DCMAKE_BUILD_TYPE=Debug"
+                          "-DBUILD_SHARED_LIBS=OFF"
+                          "-DENABLE_UNIT_TESTS=on"
+                          "-DBUILD_GUI=off"))
+                ;; Build and run the test binary.
+                (with-directory-excursion "../tests"
+                  (invoke "cmake"
+                          "--build"
+                          "tests"
+                          "--parallel"
+                          (number->string (parallel-job-count))
+                          "--config"
+                          "Debug"
+                          "--target"
+                          "gtest-runner")
+                  (invoke "./bin/gtest-runner"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list boost
+                  fftw
+                  glew
+                  gmp
+                  gnuplot
+                  gnuradio
+                  googletest
+                  libusb
+                  mesa
+                  pybind11
+                  python
+                  python-numpy
+                  soapysdr
+                  wxwidgets
+                  ;; GnuRadio-specific dependencies we need for the plugin,
+                  ;; if one is not present, then it will silently omit the
+                  ;; GnuRadio plugin from the build. Necessary dependencies
+                  ;; can be found in the path `cmake/Modules/GnuradioConfig.cmake`
+                  ;; in the GnuRadio source code checkout and by grepping for
+                  ;; "Gnuradio_NOT_FOUND_MESSAGE" in CMake build logs.
+                  spdlog
+                  volk))
+    (home-page "https://github.com/myriadrf/LimeSuiteNG")
+    (synopsis "C++ library and tools for LimeSDR devices (LMS7002M)")
+    (description
+     "Lime Suite NG is a collection of software supporting several hardware
+     platforms based on the LMS7002M transceiver under the LimeSDR name.
+     It provides a C++ API, command-line tools, a GUI, and plugins for
+     multiple SDR tools.")
+    (license license:expat)))
 
 (define-public xnec2c
   (package
