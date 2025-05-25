@@ -55,8 +55,17 @@
 #endif
 
 
-#define CHROOT_ENABLED HAVE_CHROOT && HAVE_SYS_MOUNT_H && defined(MS_BIND) && defined(MS_PRIVATE)
-#define CLONE_ENABLED defined(CLONE_NEWNS)
+#if defined(MS_BIND) && defined(MS_PRIVATE)
+#define CHROOT_ENABLED HAVE_CHROOT && HAVE_SYS_MOUNT_H
+#else
+#define CHROOT_ENABLED 0
+#endif
+
+#if defined(CLONE_NEWNS)
+#define CLONE_ENABLED 1
+#else
+#define CLONE_ENABLED 0
+#endif
 
 #if defined(SYS_pivot_root)
 #define pivot_root(new_root, put_old) (syscall(SYS_pivot_root, new_root,put_old))
