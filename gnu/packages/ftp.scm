@@ -124,14 +124,14 @@ reliability in mind.")
 (define-public ncftp
   (package
     (name "ncftp")
-    (version "3.2.9")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.ncftp.com/public_ftp/ncftp/ncftp-"
                                   version "-src.tar.gz"))
               (sha256
                (base32
-                "1hcpxxa6vc3ivlpbrcm3wfy5ykamgnrxmjci4im8y54fsy6k8y8x"))
+                "11k375kcimd8fxb6zxdkqy2qfs927mpnvi21iqncibxdqa2gh83r"))
               (patches
                (search-patches
                 "ncftp-reproducible.patch"
