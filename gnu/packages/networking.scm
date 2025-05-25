@@ -3736,7 +3736,7 @@ packets from wireless devices for use with hashcat or John the Ripper.")
 (define-public hcxdumptool
   (package
     (name "hcxdumptool")
-    (version "6.0.6")
+    (version "6.3.5")
     (source
      (origin
        (method git-fetch)
@@ -3744,19 +3744,21 @@ packets from wireless devices for use with hashcat or John the Ripper.")
              (url "https://github.com/ZerBea/hcxdumptool")
              (commit version)))
        (sha256
-        (base32 "1b4d543y64ib92w9gcmiyjn5hz2vyjqmxk3f3yr1zk04fhw16gmf"))
+        (base32 "12q5qzni0ggk76wsprk68l8g07rrgv46xw4ycnpvbj9q71p2f3iw"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "INSTALLDIR=" (assoc-ref %outputs "out") "/bin"))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "DESTDIR=")
+              (string-append "PREFIX=" #$output))
        #:tests? #f                      ; no test suite
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+       #~(modify-phases %standard-phases
+           (delete 'configure))))
     (inputs
-     (list openssl))
+     (list libpcap openssl))
     (home-page "https://github.com/ZerBea/hcxdumptool")
     (synopsis "Small tool to capture packets from wlan devices")
     (description
