@@ -3443,7 +3443,7 @@ initialization methods.")
 (define-public sbcl-charje.loop
   (package
     (name "sbcl-charje.loop")
-    (version "0.0.1")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3453,11 +3453,12 @@ initialization methods.")
        (file-name (git-file-name "cl-charje.loop" version))
        (sha256
         (base32
-         "13353ycjm4jyczlqxh5r7f7q8g679pyfx91w4hj9p6mp7paqsn16"))))
+         "07cyfs4qasrp376304aiavg318pmb4wvnk7ny7fggddd6imaw6k5"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
            sbcl-binding-arrows
+           sbcl-cl-environments
            sbcl-parse-declarations))
     (home-page "https://git.sr.ht/~charje/loop")
     (synopsis "Loop abstraction for Common Lisp that is consistent for
