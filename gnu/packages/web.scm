@@ -5382,8 +5382,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "d60a8a44cbc0efdf1f9194295e22769818ac2a3a")
-        (revision "66"))
+  (let ((commit "cf912ed933a79e2c3a616dd3f4cae5945fd738d9")
+        (revision "67"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -5395,7 +5395,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1c9iyllkkrww9znqa7zfpm6104ga5mcv1qq0j2ykdg53qxykgxnn"))))
+                  "08iw534hv4liab7lips9d1vlgfkl9a1j00mk8zph8axwc286g1dr"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -5469,7 +5469,7 @@ Cloud.")
              guile-squee
              guile-lzlib))
       (native-inputs
-       (list (car (assoc-ref (package-native-inputs guix) "guile"))
+       (list (lookup-package-native-input guix "guile")
              autoconf
              automake
              emacs-minimal
