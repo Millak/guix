@@ -35654,18 +35654,16 @@ support JSX syntax.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0ha1qsz2p36pqa0sa2sp83lspbgx5lr7930qxnwd585liajzdd9x"))
-         (patches
-          (list
-           (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://github.com/gregsexton/origami.el"
-                   "/commit/" patch ".patch"))
-             (sha256
-              (base32
-               "0yia4dhqjzdidxd77s2ggg6mmj05jbsnwc35myzzhzh1zbq8mrfy")))))))
+          (base32 "0ha1qsz2p36pqa0sa2sp83lspbgx5lr7930qxnwd585liajzdd9x"))
+         (modules '((guix build utils)))
+         (snippet #~(substitute* (find-files "." "\\.el$")
+                      (("\\(require 'cl\\)")
+                       "(require 'cl-lib)")
+                      (("(destructuring-bind|remove-if)" all)
+                       (string-append "cl-" all))
+                      (("\\(face-attribute 'highlight :background\\)") "\
+(let ((color (face-attribute 'highlight :background)))
+  (and color (not (eq color 'unspecified)) color))")))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-dash emacs-s))
