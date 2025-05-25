@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2024 Alexis Simon <alexis.simon@runbox.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6074,9 +6075,9 @@ databases.")
                         '("cd-hit-dup" "cd-hit-lap" "read-linker")))))))
     (inputs '())))
 
-(define-public clipper
+(define-public clipper-peak
   (package
-    (name "clipper")
+    (name "clipper-peak")
     (version "2.0.1")
     (source (origin
               (method git-fetch)
