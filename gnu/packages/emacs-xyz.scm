@@ -158,6 +158,7 @@
 ;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;; Copyright @ 2025 Amy Pillow <amypillow@lavache.com>
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.org>
+;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10435,6 +10436,29 @@ respective @code{*Help*} buffers.")
      "This is a major mode for @file{docker-compose} files that provides
 completion of relevant keywords.")
     (license license:expat)))
+
+(define-public emacs-dwim-shell-command
+  (package
+    (name "emacs-dwim-shell-command")
+    ;; This release is untagged, change commit below when updating.
+    (version "0.63.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xenodium/dwim-shell-command")
+             (commit "dd742977abaa25991a8b0b8beff1ae9e4bb39fd6")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b9nzla9gygljchdw04sr8c86h4sh52wqv644fzw5nmzvs9zkagj"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;No tests.
+    (home-page "https://github.com/xenodium/dwim-shell-command")
+    (synopsis "Shell commands with @acronym{DWIM, do what I mean} behaviour")
+    (description
+     "This package provides @code{dwim-shell-command} as an opinionated,
+@acronym{DWIM, do what I mean} alternative to @code{shell-command}.")
+    (license license:gpl3+)))
 
 (define-public emacs-dvc
   (let ((revision "591")                ;no tags or official releases
