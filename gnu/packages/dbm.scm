@@ -189,7 +189,9 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1v4kycs1n9x0pczm9ny6m16gfgpmj8gwv0bvh7w7gn3fjb2v6bfh"))))
+                "1v4kycs1n9x0pczm9ny6m16gfgpmj8gwv0bvh7w7gn3fjb2v6bfh"))
+              (patches
+               (search-patches "gdbm-lockwait-test.patch"))))
     (arguments `(#:configure-flags '("--enable-libgdbm-compat"
                                      "--disable-static")
                  ,@(if (target-loongarch64?)
