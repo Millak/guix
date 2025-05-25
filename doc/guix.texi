@@ -791,7 +791,7 @@ sudo pacman -S guix
 The Guix project also provides a shell script, @file{guix-install.sh},
 which automates the binary installation process without use of a foreign
 distro package
-manager@footnote{@uref{https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh}}.
+manager@footnote{@uref{https://guix.gnu.org/install.sh}}.
 Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget,
 and Xz.
 
@@ -808,7 +808,7 @@ As root, run:
 
 @example
 # cd /tmp
-# wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+# wget https://guix.gnu.org/install.sh
 # chmod +x guix-install.sh
 # ./guix-install.sh
 @end example
