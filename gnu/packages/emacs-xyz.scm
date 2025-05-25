@@ -42086,10 +42086,9 @@ and preferred services can easily be configured.")
           (base32 "06cznkqkm04zz5lqfb514aqvsr2p13arzysixv0ss0bqpvdq7cv7"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:tests? #t
-         #:test-command
-         '("emacs" "--no-init-file" "--batch"
-           "--eval=(require 'ecukes)" "--eval=(ecukes)")))
+       (list #:test-command
+             #~(list "emacs" "--no-init-file" "--batch"
+                     "--eval=(require 'ecukes)" "--eval=(ecukes)")))
       (native-inputs
        (list emacs-ecukes emacs-espuds emacs-undercover openjdk9))
       (propagated-inputs
