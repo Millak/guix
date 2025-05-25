@@ -1,4 +1,4 @@
-From 467261b7e31dbb56aa06318bdd2e7260a80b313a Mon Sep 17 00:00:00 2001
+From c531a68b2dc5d96a50c1783d5f266e8c5b9c456e Mon Sep 17 00:00:00 2001
 From: Hilton Chain <hako@ultrarare.space>
 Date: Fri, 29 Nov 2024 14:13:46 +0800
 Subject: [PATCH] Fix RUNPATH issue.
@@ -6,10 +6,24 @@ Subject: [PATCH] Fix RUNPATH issue.
 Add needed libraries and libc to RUNPATH when CROSS_LIBRARY_PATH or LIBRARY_PATH
 is set.
 ---
- src/link/Elf.zig | 14 ++++++++++++++
- src/main.zig     | 34 +++++++++++++++++++++++++++++++++-
- 2 files changed, 47 insertions(+), 1 deletion(-)
+ lib/std/Build/Step/Compile.zig |  2 ++
+ src/link/Elf.zig               | 14 ++++++++++++++
+ src/main.zig                   | 34 +++++++++++++++++++++++++++++++++-
+ 3 files changed, 49 insertions(+), 1 deletion(-)
 
+diff --git a/lib/std/Build/Step/Compile.zig b/lib/std/Build/Step/Compile.zig
+index c401a840ba..44ced5823f 100644
+--- a/lib/std/Build/Step/Compile.zig
++++ b/lib/std/Build/Step/Compile.zig
+@@ -787,6 +787,8 @@ fn runPkgConfig(compile: *Compile, lib_name: []const u8) !PkgConfigResult {
+             try zig_cflags.append(arg);
+         } else if (mem.startsWith(u8, arg, wl_rpath_prefix)) {
+             try zig_cflags.appendSlice(&[_][]const u8{ "-rpath", arg[wl_rpath_prefix.len..] });
++        } else if (mem.startsWith(u8, arg, "-Wl,-rpath=")) {
++            try zig_libs.appendSlice(&[_][]const u8{ "-L", arg["-Wl,-rpath=".len..] });
+         } else if (b.debug_pkg_config) {
+             return compile.step.fail("unknown pkg-config flag '{s}'", .{arg});
+         }
 diff --git a/src/link/Elf.zig b/src/link/Elf.zig
 index 591786cfbc..253c7f6732 100644
 --- a/src/link/Elf.zig
