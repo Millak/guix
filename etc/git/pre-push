@@ -29,9 +29,10 @@ do
 	# thus there are no signatures to be verified.
 	if [ "$local_hash" != $z40 ]
 	then
-		# Only use the hook when pushing to Savannah.
+		# Only use the hook when pushing to upstream.
 		case "$2" in
-		    *.gnu.org*)
+		    *.gnu.org*) ;&
+		    *codeberg.org/guix/*)
 			set -e
 			guix git authenticate
 			exec make check-channel-news
