@@ -168,6 +168,7 @@
       (apply invoke call))))
 
 (define* (check #:key tests?
+                test-target
                 zig-test-flags
                 target
                 parallel-tests?
@@ -177,7 +178,7 @@
     (let ((old-destdir (getenv "DESTDIR")))
       (setenv "DESTDIR" "test-out") ;; Avoid colisions with the build output
       (let* ((arguments (zig-arguments))
-             (call `("zig" "build" "test" "--verbose"
+             (call `("zig" "build" ,(or test-target "test") "--verbose"
                      ,@(if parallel-tests?
                            ((assoc-ref arguments "parallel-jobs")
                             (parallel-job-count))
