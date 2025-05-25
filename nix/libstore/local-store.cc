@@ -1015,7 +1015,7 @@ Path LocalStore::addToStoreFromDump(const string & dump, const string & name,
         /* The first check above is an optimisation to prevent
            unnecessary lock acquisition. */
 
-        PathLocks outputLock(singleton<PathSet, Path>(dstPath));
+        PathLocks outputLock{ PathSet{dstPath} };
 
         if (repair || !isValidPath(dstPath)) {
 
@@ -1084,7 +1084,7 @@ Path LocalStore::addTextToStore(const string & name, const string & s,
 
     if (repair || !isValidPath(dstPath)) {
 
-        PathLocks outputLock(singleton<PathSet, Path>(dstPath));
+        PathLocks outputLock{ PathSet{dstPath} };
 
         if (repair || !isValidPath(dstPath)) {
 
@@ -1380,7 +1380,7 @@ Path LocalStore::importPath(bool requireSignature, Source & source)
            lock on this path). */
         Strings locksHeld = tokenizeString<Strings>(getEnv("NIX_HELD_LOCKS"));
         if (find(locksHeld.begin(), locksHeld.end(), dstPath) == locksHeld.end())
-            outputLock.lockPaths(singleton<PathSet, Path>(dstPath));
+            outputLock.lockPaths(PathSet{dstPath});
 
         if (!isValidPath(dstPath)) {
 

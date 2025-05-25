@@ -76,24 +76,24 @@ public:
 };
 
 
-typedef list<string> Strings;
-typedef set<string> StringSet;
+using Strings = std::list<std::string>;
+using StringSet = std::set<std::string>;
 
 
 /* Paths are just strings. */
-typedef string Path;
-typedef list<Path> Paths;
-typedef set<Path> PathSet;
+using Path = std::string;
+using Paths = std::list<Path>;
+using PathSet = std::set<Path>;
 
 
-typedef enum {
+enum Verbosity {
     lvlError = 0,
     lvlInfo,
     lvlTalkative,
     lvlChatty,
     lvlDebug,
     lvlVomit
-} Verbosity;
+};
 
 
 }

@@ -121,15 +121,6 @@ Paths createDirs(const Path & path);
 void createSymlink(const Path & target, const Path & link);
 
 
-template<class T, class A>
-T singleton(const A & a)
-{
-    T t;
-    t.insert(a);
-    return t;
-}
-
-
 /* Messages. */
 
 
