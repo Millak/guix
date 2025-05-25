@@ -4836,6 +4836,35 @@ applications.")
 neuronal models")
     (license license:bsd-3)))
 
+(define-public python-ase
+  (package
+    (name "python-ase")
+    (version "3.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ase" version))
+       (sha256
+        (base32 "1hk2r5042cs9shqv49w0jvf65wkyq74s6vc5drfz1275kz5ghk1p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list ;; DeprecationWarning.
+              "--deselect"
+              "ase/test/fio/test_espresso.py::test_pw_input_write_nested_flat"
+              ;; UserWarning.
+              "--deselect"
+              "ase/test/fio/test_espresso.py::TestConstraints::test_fix_scaled")))
+    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
+    (native-inputs (list python-pytest python-pytest-xdist python-setuptools
+                         python-wheel))
+    (inputs (list spglib))
+    (home-page "https://wiki.fysik.dtu.dk/ase/")
+    (synopsis "Atomic Simulation Environment")
+    (description "This package provides a set of tools and Python modules for
+setting up, manipulating, running, visualizing and analyzing atomistic
+simulations.")
+    (license license:lgpl2.1+)))
 (define-public snakemake
   (package
     (name "snakemake")
