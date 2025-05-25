@@ -2126,7 +2126,7 @@ region on the fly.
 (define-public wmenu
   (package
     (name "wmenu")
-    (version "0.1.9")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2135,7 +2135,7 @@ region on the fly.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f46v4zbywh7fsz5dgkhaa62lmv7gydybwr7qym37gg10jz42pjc"))))
+                "0nav1ydfwcj7x05vlzcjf7i2xgx93lkcmhqbb8cvni0zqpf80hi6"))))
     (build-system meson-build-system)
     (native-inputs (append (if (%current-target-system)
                                ;; for wayland-scanner
