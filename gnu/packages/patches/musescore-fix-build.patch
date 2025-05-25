@@ -1,0 +1,23 @@
+--- a/src/instrumentsscene/view/systemobjectslayersettingsmodel.cpp
++++ b/src/instrumentsscene/view/systemobjectslayersettingsmodel.cpp
+@@ -83,6 +83,7 @@
+ 
+ void SystemObjectsLayerSettingsModel::setSystemObjectsGroupVisible(int index, bool visible)
+ {
++    using muse::TranslatableString;
+     const size_t idx = static_cast<size_t>(index);
+     if (idx >= m_systemObjectGroups.size()) {
+         return;
+@@ -95,9 +96,9 @@
+ 
+     SystemObjectsGroup& group = m_systemObjectGroups.at(idx);
+ 
+-    const muse::TranslatableString actionName = visible
+-                                                ? TranslatableString("undoableAction", "Make system marking(s) visible")
+-                                                : TranslatableString("undoableAction", "Make system marking(s) invisible");
++    const TranslatableString actionName = visible
++                                          ? TranslatableString("undoableAction", "Make system marking(s) visible")
++                                          : TranslatableString("undoableAction", "Make system marking(s) invisible");
+ 
+     notation->undoStack()->prepareChanges(actionName);
+ 

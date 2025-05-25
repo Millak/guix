@@ -5472,7 +5472,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.4.4")
+    (version "4.5.2")
     (source
      (origin
        (method git-fetch)
@@ -5480,8 +5480,9 @@ includes LV2 plugins and a JACK standalone client.")
              (url "https://github.com/musescore/MuseScore")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "musescore-fix-build.patch"))
        (sha256
-        (base32 "0cjp1sp50pwmrgvpxjxg849s0vsvk2vcb66ym617nvlj761h0ngz"))
+        (base32 "12lwv0gxd49dily2hwmadbw6c59h11sfm5751dpfnzzjvj3rydpn"))
        (modules '((guix build utils)))))
     (build-system qt-build-system)
     (arguments
