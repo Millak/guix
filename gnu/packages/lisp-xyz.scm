@@ -3472,8 +3472,9 @@ operations are non-consing when possible.")
 (define-public cl-charje.loop
   (sbcl-package->cl-source-package sbcl-charje.loop))
 
-(define-public ecl-charje.loop
-  (sbcl-package->ecl-package sbcl-charje.loop))
+;; TODO: ECL is not currently supported.
+;; (define-public ecl-charje.loop
+;;   (sbcl-package->ecl-package sbcl-charje.loop))
 
 (define-public sbcl-chemboy
   (package
