@@ -639,11 +639,13 @@ ca-certificates.crt file in the system profile."
                         (append
                          (map second (package-inputs package))
                          (map second (package-propagated-inputs package))))
-                #~(lambda _
+                #~(begin
                     (use-modules (guix-data-service database)
                                  (guix-data-service model git-repository)
                                  (guix-data-service model build-server))
 
+                    (simple-format #t "data-service-setup-database: ~A\n"
+                                   (current-filename))
                     (begin
                       ((@ (guix-data-service database) run-sqitch))
 
@@ -656,7 +658,8 @@ ca-certificates.crt file in the system profile."
                              #~(((@ (guix-data-service model build-server)
                                     specify-build-servers)
                                  '(#$@build-servers)))
-                             '()))))))
+                             '()))))
+              #:guile (lookup-package-input package "guile")))
           #:user #$user
           #:group #$group
           #:directory "/var/lib/guix-data-service"
