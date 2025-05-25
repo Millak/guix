@@ -60,7 +60,7 @@ in the Guix source tree for additional details.
 
 @cindex official website
 GNU Guix is available for download from its website at
-@url{https://www.gnu.org/software/guix/}.
+@url{https://guix.gnu.org}.
 
 GNU Guix depends on the following packages:
 
@@ -2121,7 +2121,7 @@ To add a prefix to the subject of your patch, you may use the
 @option{--subject-prefix} option.  The Guix project uses this to
 specify that the patch is intended for a branch or repository
 other than the @code{master} branch of
-@url{https://git.savannah.gnu.org/cgit/guix.git}.
+@url{https://codeberg.org/guix/guix.git}.
 
 @example
 git send-email --annotate --subject-prefix='PATCH core-updates' -1
@@ -2387,7 +2387,7 @@ browse issues:
 @url{https://issues.guix.gnu.org} provides a pleasant interface powered
 by mumi@footnote{Mumi is a nice piece of software written in Guile, and
 you can help!  See
-@url{https://git.savannah.gnu.org/cgit/guix/mumi.git}.} to browse bug
+@url{https://codeberg.org/guix/mumi}.} to browse bug
 reports and patches, and to participate in discussions; mumi also has a
 command-line interface as we will see below;
 @item
@@ -2792,7 +2792,7 @@ access by following these steps:
 @item
 Find three committers who would vouch for you.  You can view the list of
 committers at
-@url{https://savannah.gnu.org/project/memberlist.php?group=guix}.  Each
+@url{https://codeberg.org/guix/guix/settings/collaboration}.  Each
 of them should email a statement to @email{guix-maintainers@@gnu.org} (a
 private alias for the collective of maintainers), signed with their
 OpenPGP key.
@@ -2857,9 +2857,9 @@ review and merging system, which, as a consequence, may lead us to have
 fewer people with commit access to the main repository.  Stay tuned!
 @end quotation
 
-All commits that are pushed to the central repository on Savannah must
+All commits that are pushed to the central repository on Codeberg must
 be signed with an OpenPGP key, and the public key should be uploaded to
-your user account on Savannah and to public key servers, such as
+your user account on Codeberg and to public key servers, such as
 @code{keys.openpgp.org}.  To configure Git to automatically sign
 commits, run:
 
@@ -2880,7 +2880,7 @@ guix git authenticate
 checkout.
 
 To avoid accidentally pushing unsigned or signed with the wrong key
-commits to Savannah, make sure to configure Git according to
+commits to Codeberg, make sure to configure Git according to
 @xref{Configuring Git}.
 
 @subsection Commit Policy
@@ -2969,7 +2969,7 @@ machine configuration.
 @subsection Commit Revocation
 
 In order to reduce the possibility of mistakes, committers will have
-their Savannah account removed from the Guix Savannah project and their
+their Codeberg account removed from the Guix Codeberg project and their
 key removed from @file{.guix-authorizations} after 12 months of
 inactivity; they can ask to regain commit access by emailing the
 maintainers, without going through the vouching process.
@@ -3132,7 +3132,7 @@ the directory of your Guix checkout:
 
 To guard against accidentally updating the @code{guix} package to a
 commit that others can't refer to, a check is made that the commit used
-has already been pushed to the Savannah-hosted Guix git repository.
+has already been pushed to the Codeberg-hosted Guix Git repository.
 
 This check can be disabled, @emph{at your own peril}, by setting the
 @code{GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT} environment variable.  When
@@ -3686,32 +3686,25 @@ but it tends to receive less attention than Guix itself:
 
 @itemize
 @item
-Build Farm Front-End: @url{https://git.cbaines.net/guix/bffe, bffe}
+@url{https://git.cbaines.net/guix/bffe, Build Farm Front End}
 @item
-Cuirass: @url{https://guix.gnu.org/cuirass/, Cuirass}
+@url{https://codeberg.org/guix/cuirass/, Cuirass}
 @item
-Goggles (IRC logger):
-@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/hydra/goggles.scm,
-Goggles}
+@url{https://codeberg.org/guix/maintenance/src/branch/master/hydra/goggles.scm,
+Goggles} (IRC logger)
 @item
-Guix Build Coordinator:
-@url{https://git.savannah.gnu.org/cgit/guix/build-coordinator.git/,
-Build-Coordinator}
+@url{https://codeberg.org/guix/build-coordinator, Guix Build Coordinator}
 @item
-Guix Data Service:
-@url{https://git.savannah.gnu.org/git/guix/data-service.git/, Data-Service}
+@url{https://codeberg.org/guix/data-service, Guix Data Service}
 @item
-Guix Packages Website:
-@url{https://codeberg.org/luis-felipe/guix-packages-website.git,
-Guix-Packages-Website}
+@url{https://codeberg.org/luis-felipe/guix-packages-website,
+Guix Packages Website}
 @item
-mumi: @url{https://git.savannah.gnu.org/cgit/guix/mumi.git/, Mumi}
+@url{https://codeberg.org/guix/mumi, mumi}
 @item
-nar-herder: @url{https://git.savannah.gnu.org/cgit/guix/nar-herder.git/,
-Nar-Herder}
+@url{https://codeberg.org/guix/nar-herder, Nar Herder}
 @item
-QA Frontpage:
-@url{https://git.savannah.gnu.org/git/guix/qa-frontpage.git, QA-Frontpage}
+@url{https://codeberg.org/guix/qa-frontpage, QA Frontpage}
 @end itemize
 
 There is no time constraint on this coding activity: any improvement is
@@ -3729,7 +3722,7 @@ per @code{git shortlog -s | sort -k1 -n}.
 
 Guix System configuration for all our systems is held in this repository:
 
-@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/hydra/}
+@url{https://codeberg.org/guix/maintenance.git/src/branch/master/hydra/}
 
 The two front-ends are @file{berlin.scm} (the machine behind ci.guix.gnu.org)
 and @file{bayfront.scm} (the machine behind bordeaux.guix.gnu.org,
@@ -3772,7 +3765,7 @@ whenever you can work on it.
 Prerequisite: Familiarity with Guix System administration and ideally with the
 infrastructure handbook:
 
-@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/doc/infra-handbook.org,
+@url{https://codeberg.org/guix/maintenance.git/src/branch/master/doc/infra-handbook.org,
 Infra-Handbook}
 
 @end itemize
@@ -3794,7 +3787,7 @@ Prerequisite: Being a ``known'' member of the community, familiarity with Guix
 System administration, with some of the services/web sites being run, and with
 the infrastructure handbook:
 
-@url{https://git.savannah.gnu.org/cgit/guix/maintenance.git/tree/doc/infra-handbook.org,
+@url{https://codeberg.org/guix/maintenance.git/src/branch/master/doc/infra-handbook.org,
 Infra-Handbook}
 
 @node On-Site Intervention

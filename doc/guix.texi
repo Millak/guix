@@ -34907,7 +34907,7 @@ The port on which to connect to the database.
 
 @cindex Mumi, Debbugs Web interface
 @cindex Debbugs, Mumi Web interface
-@uref{https://git.savannah.gnu.org/cgit/guix/mumi.git/, Mumi} is a
+@uref{https://codeberg.org/guix/mumi, Mumi} is a
 Web interface to the Debbugs bug tracker, by default for
 @uref{https://bugs.gnu.org, the GNU instance}.  Mumi is a Web server,
 but it also fetches and indexes mail retrieved from Debbugs.
