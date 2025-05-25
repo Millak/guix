@@ -29,6 +29,13 @@ do
 	# thus there are no signatures to be verified.
 	if [ "$local_hash" != $z40 ]
 	then
+		# Skip the hook when performing a pull-request.
+		case "$remote_ref" in
+		    refs/for/*)
+			exit 0
+			;;
+		esac
+
 		# Only use the hook when pushing to upstream.
 		case "$2" in
 		    *.gnu.org*) ;&
