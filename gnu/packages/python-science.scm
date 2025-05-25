@@ -4865,6 +4865,26 @@ neuronal models")
 setting up, manipulating, running, visualizing and analyzing atomistic
 simulations.")
     (license license:lgpl2.1+)))
+
+(define-public python-asap3
+  (package
+    (name "python-asap3")
+    (version "3.13.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asap3" version))
+       (sha256
+        (base32 "0z6m9ybiy4fdnzlkfkvyxich18iwlwlgj1jd99fylyfwf8l160am"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-ase))
+    (native-inputs (list python-setuptools python-wheel which))
+    (home-page "https://wiki.fysik.dtu.dk/asap")
+    (synopsis "ASAP - classical potentials for Molecular Dynamics with ASE.")
+    (description "This package provides accelerated simulations and potentials
+of solids.")
+    (license license:lgpl3)))
+
 (define-public snakemake
   (package
     (name "snakemake")
