@@ -42,7 +42,9 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages time))
+  #:use-module (gnu packages time)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26))
 
 (define-public nspr
   (package
@@ -103,7 +105,7 @@ in the Mozilla clients.")
     ;; IMPORTANT: Also update and test the nss-certs package, which duplicates
     ;; version and source to avoid a top-level variable reference & module
     ;; cycle.
-    (version "3.99")
+    (version "3.101.4")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -114,11 +116,12 @@ in the Mozilla clients.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "1g89ig40gfi1sp02gybvl2z818lawcnrqjzsws36cdva834c5maw"))
+                "1sqvh49qi9vq55sbg42c5n0kz6w6ni383hgiyhaym6drsmbzb86a"))
               ;; Create nss.pc and nss-config.
               (patches (search-patches "nss-3.56-pkgconfig.patch"
                                        "nss-getcwd-nonnull.patch"
-                                       "nss-increase-test-timeout.patch"))
+                                       "nss-increase-test-timeout.patch"
+                                       "nss-disable-broken-tests.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -177,7 +180,7 @@ in the Mozilla clients.")
           ;; around that, set the time to roughly the release date.
           (add-after 'unpack 'set-release-date
             (lambda _
-              (setenv "GUIX_NSS_RELEASE_DATE" "2024-01-23")))
+              (setenv "GUIX_NSS_RELEASE_DATE" "2025-02-05")))
           (replace 'configure
             (lambda _
               (setenv "CC" #$(cc-for-target))
@@ -257,13 +260,15 @@ in the Mozilla clients.")
     (properties '((timeout . 216000)))  ;60 hours
 
     (home-page "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS")
-    (synopsis "Network Security Services")
+    (synopsis "Network Security Services (ESR)")
     (description
      "Network Security Services (@dfn{NSS}) is a set of libraries designed to
 support cross-platform development of security-enabled client and server
 applications.  Applications built with NSS can support SSL v2 and v3, TLS,
 PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
-security standards.")
+security standards.
+
+This package tracks the Extended Support Release (ESR) channel.")
     (license license:mpl2.0)))
 
 ;; nss-rapid tracks the rapid release channel.  Unless your package requires a
@@ -288,7 +293,10 @@ security standards.")
                      "nss-" version ".tar.gz")))
              (sha256
               (base32
-               "03qwl3ps3xgc9pkc07qrsa4vd2r57mjwicv3gb483gfk2ashdvxc"))))
+               "03qwl3ps3xgc9pkc07qrsa4vd2r57mjwicv3gb483gfk2ashdvxc"))
+             (patches
+              (remove (cut string-suffix? <> "nss-disable-broken-tests.patch")
+                      (origin-patches (package-source nss))))))
    (arguments
     (substitute-keyword-arguments (package-arguments nss)
       ((#:phases phases)
