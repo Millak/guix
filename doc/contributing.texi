@@ -1838,8 +1838,8 @@ Emacs-Guix Reference Manual}).
 
 @cindex indentation, of code
 @cindex formatting, of code
-If you do not use Emacs, please make sure to let your editor knows these
-rules.  To automatically indent a package definition, you can also run:
+If you do not use Emacs, please make sure your editor knows these rules.
+To automatically indent a package definition, you can also run:
 
 @example
 ./pre-inst-env guix style @var{package}
