@@ -22990,6 +22990,16 @@ simple method for converting between file types.")
         (base32
          "1xz0cqg629vz7mawwxx650mgmvh3wzn25rnxy4sij5jrypipk1ay"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-Calloc
+           (lambda _
+             (substitute* "src/pip.c"
+               (("# include <R.h>") "# include <R.h>\n# include <R_ext/RS.h>")
+               (("Calloc") "R_Calloc")
+               (("Free") "R_Free")))))))
     (propagated-inputs
      (list r-foreign r-lattice r-sp))
     (home-page "https://r-forge.r-project.org/projects/maptools/")
