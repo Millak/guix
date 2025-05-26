@@ -380,6 +380,7 @@
 (define-opt ao-pcm-append? boolean)
 (define-opt ao-pcm-file string)
 (define-opt ao-pcm-waveheader? boolean)
+(define-opt archive-exts list-of-string)
 (define-opt
   audio-backward-batch
   integer
@@ -496,7 +497,11 @@
 (define-opt cache-on-disk? boolean)
 (define-opt cache-pause? boolean)
 (define-opt cache-pause-initial? boolean)
-(define-opt cache-pause-wait float (>= val 0))
+(define-opt
+  cache-pause-wait
+  float
+  (>= val 0)
+  (<= val 3.4028234663853e38))
 (define-opt cache-secs double (>= val 0))
 (define-opt cdda-cdtext? boolean)
 (define-opt cdda-device string)
@@ -531,6 +536,10 @@
   (<= val 10000))
 (define-opt chapter-seek-threshold double)
 (define-opt chapters-file string)
+(define-opt
+  clipboard-backends
+  list-of-object-setting)
+(define-opt clipboard-monitor? boolean)
 (define-opt config? boolean)
 (define-opt
   container-fps-override
@@ -737,6 +746,7 @@
   byte-size
   (>= val 0)
   (<= val 4.6116860184274e18))
+(define-opt demuxer-mkv-crop-compat? boolean)
 (define-opt
   demuxer-mkv-probe-start-time?
   boolean)
@@ -858,33 +868,6 @@
   drag-and-drop
   enumeration
   (memq val '(no auto replace append insert-next)))
-(define-opt drm-connector string)
-(define-opt drm-device string)
-(define-opt
-  drm-draw-plane
-  enumeration
-  (or (memq val '(primary overlay))
-      (and (integer? val)
-           (>= val 0)
-           (<= val 2147483647))))
-(define-opt drm-draw-surface-size window-size)
-(define-opt
-  drm-drmprime-video-plane
-  enumeration
-  (or (memq val '(primary overlay))
-      (and (integer? val)
-           (>= val 0)
-           (<= val 2147483647))))
-(define-opt
-  drm-format
-  enumeration
-  (memq val
-        '(xrgb8888 xrgb2101010 xbgr8888 xbgr2101010 yuyv)))
-(define-opt drm-mode string)
-(define-opt
-  drm-vrr-enabled
-  enumeration
-  (memq val '(no yes auto)))
 (define-opt
   dscale
   enumeration
@@ -984,9 +967,9 @@
 (define-opt dvbin-prog string)
 (define-opt
   dvbin-timeout
-  integer
-  (>= val 1)
-  (<= val 30))
+  float
+  (>= val 0)
+  (<= val 3.4028234663853e38))
 (define-opt
   dvd-angle
   integer
@@ -1163,6 +1146,13 @@
   (>= val 0)
   (<= val 256))
 (define-opt hwdec-image-format image-format)
+(define-opt
+  hwdec-software-fallback
+  enumeration
+  (or (memq val '(no yes))
+      (and (integer? val)
+           (>= val 1)
+           (<= val 2147483647))))
 (define-opt icc-3dlut-size string)
 (define-opt icc-cache? boolean)
 (define-opt icc-cache-dir string)
@@ -1214,6 +1204,7 @@
   (>= val 0)
   (<= val 1000))
 (define-opt input-dragging-deadzone integer)
+(define-opt input-ime? boolean)
 (define-opt input-ipc-client string)
 (define-opt input-ipc-server string)
 (define-opt
@@ -1258,7 +1249,9 @@
   load-auto-profiles
   enumeration
   (memq val '(no yes auto)))
-(define-opt load-osd-console? boolean)
+(define-opt load-commands? boolean)
+(define-opt load-console? boolean)
+(define-opt load-positioning? boolean)
 (define-opt load-scripts? boolean)
 (define-opt load-select? boolean)
 (define-opt load-stats-overlay? boolean)
@@ -1280,10 +1273,7 @@
   enumeration
   (memq val '(auto native normalized conversion)))
 (define-opt mc float (>= val 0) (<= val 100))
-(define-opt
-  media-controls
-  enumeration
-  (memq val '(no player yes)))
+(define-opt media-controls? boolean)
 (define-opt merge-files? boolean)
 (define-opt metadata-codepage string)
 (define-opt mf-fps double)
@@ -1367,6 +1357,20 @@
   (>= val 0.1)
   (<= val 50))
 (define-opt
+  osd-bar-marker-min-size
+  float
+  (>= val 0)
+  (<= val 1000))
+(define-opt
+  osd-bar-marker-scale
+  float
+  (>= val 0)
+  (<= val 100))
+(define-opt
+  osd-bar-marker-style
+  enumeration
+  (memq val '(none triangle line)))
+(define-opt
   osd-bar-outline-size
   float
   (>= val 0)
@@ -1449,6 +1453,8 @@
   (>= val 0)
   (<= val 100))
 (define-opt osd-scale-by-window? boolean)
+(define-opt osd-selected-color color)
+(define-opt osd-selected-outline-color color)
 (define-opt osd-shadow-offset float)
 (define-opt
   osd-spacing
@@ -1484,6 +1490,7 @@
   player-operation-mode
   enumeration
   (memq val '(cplayer pseudo-gui)))
+(define-opt playlist-exts list-of-string)
 (define-opt
   playlist-start
   enumeration
@@ -1533,6 +1540,7 @@
   (>= val -100)
   (<= val 100))
 (define-opt save-position-on-quit? boolean)
+(define-opt save-watch-history? boolean)
 (define-opt
   scale
   enumeration
@@ -1761,25 +1769,16 @@
   (memq val '(top center bottom)))
 (define-opt sub-ass? boolean)
 (define-opt sub-ass-force-margins? boolean)
-(define-opt
-  sub-ass-hinting
-  enumeration
-  (memq val '(none light normal native)))
 (define-opt sub-ass-justify? boolean)
-(define-opt
-  sub-ass-line-spacing
-  float
-  (>= val -1000)
-  (<= val 1000))
 (define-opt
   sub-ass-override
   enumeration
   (memq val '(no yes scale force strip)))
-(define-opt sub-ass-scale-with-window? boolean)
 (define-opt
-  sub-ass-shaper
-  enumeration
-  (memq val '(simple complex)))
+  sub-ass-prune-delay
+  double
+  (>= val -1))
+(define-opt sub-ass-scale-with-window? boolean)
 (define-opt
   sub-ass-style-overrides
   list-of-string)
@@ -1850,12 +1849,21 @@
   (>= val 0)
   (<= val 3))
 (define-opt sub-gray? boolean)
+(define-opt
+  sub-hinting
+  enumeration
+  (memq val '(none light normal native)))
 (define-opt sub-italic? boolean)
 (define-opt
   sub-justify
   enumeration
   (memq val '(auto left center right)))
 (define-opt sub-lavc-o list-of-key-value)
+(define-opt
+  sub-line-spacing
+  float
+  (>= val -1000)
+  (<= val 1000))
 (define-opt
   sub-margin-x
   integer
@@ -1880,8 +1888,13 @@
   (>= val 0)
   (<= val 100))
 (define-opt sub-scale-by-window? boolean)
+(define-opt sub-scale-signs? boolean)
 (define-opt sub-scale-with-window? boolean)
 (define-opt sub-shadow-offset float)
+(define-opt
+  sub-shaper
+  enumeration
+  (memq val '(simple complex)))
 (define-opt
   sub-spacing
   float
@@ -1950,7 +1963,10 @@
           sinc
           lanczos
           spline)))
-(define-opt target-colorspace-hint? boolean)
+(define-opt
+  target-colorspace-hint
+  enumeration
+  (memq val '(auto no yes)))
 (define-opt
   target-contrast
   enumeration
@@ -2193,13 +2209,6 @@
   enumeration
   (memq val
         '(none default nonref bidir nonkey all)))
-(define-opt
-  vd-lavc-software-fallback
-  enumeration
-  (or (memq val '(no yes))
-      (and (integer? val)
-           (>= val 1)
-           (<= val 2147483647))))
 (define-opt vd-lavc-threads integer (>= val 0))
 (define-opt vd-queue-enable? boolean)
 (define-opt
@@ -2231,11 +2240,11 @@
 (define-opt
   video-aspect-method
   enumeration
-  (memq val '(bitstream container)))
+  (memq val '(bitstream container ignore)))
 (define-opt
   video-aspect-override
   aspect
-  (>= val -1)
+  (>= val -2)
   (<= val 10))
 (define-opt
   video-backward-batch
@@ -2277,6 +2286,7 @@
   (memq val '(auto limited full)))
 (define-opt video-pan-x float)
 (define-opt video-pan-y float)
+(define-opt video-recenter? boolean)
 (define-opt
   video-reversal-buffer
   byte-size
@@ -2511,6 +2521,7 @@
   enumeration
   (memq val
         '(auto fifo fifo-relaxed mailbox immediate)))
+(define-opt watch-history-path string)
 (define-opt watch-later-directory string)
 (define-opt watch-later-options list-of-string)
 (define-opt wayland-app-id string)
@@ -2533,6 +2544,10 @@
   integer
   (>= val 0)
   (<= val 2147483647))
+(define-opt
+  wayland-internal-vsync
+  enumeration
+  (memq val '(no auto yes)))
 (define-opt wayland-present? boolean)
 (define-opt wid integer64)
 (define-opt window-dragging? boolean)
