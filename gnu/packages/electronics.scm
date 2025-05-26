@@ -561,6 +561,52 @@ formats.")
 for sigrok.")
     (license license:gpl3+)))
 
+(define-public python-cocotb
+  (package
+    (name "python-cocotb")
+    (version "1.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cocotb/cocotb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19mybnhqa2jz134jj8686310fniav5nldiq0y7kbgml81ppai87c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests requiring a verilog simulator.
+      #~(list "-k" (string-join
+                    (list "not parallel_cocotb"
+                          "cocotb"
+                          "vhdl_libraries_multiple")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests requiring a vhdl simulator.
+          (add-after 'check 'check-vhdl
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "SIM" "nvc")
+                (invoke "pytest" "-vv" "-k" "vhdl_libraries_multiple")))))))
+    (native-inputs
+     (list iverilog
+           nvc
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-find-libpython))
+    (home-page "https://github.com/cocotb/cocotb")
+    (synopsis "Library for writing HDL test benches in Python")
+    (description
+     "Coroutine based cosimulation test bench environment for verifying VHDL
+and Verilog RTL using Python.")
+    (license license:bsd-3)))
+
 (define-public python-edalize
   (package
     (name "python-edalize")
