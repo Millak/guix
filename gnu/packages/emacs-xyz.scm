@@ -29312,13 +29312,13 @@ perform regression test for packages that provide font-lock rules.")
 
 (define-public emacs-racket-mode
   ;; XXX: Upstream does not tag releases, nor does it bump versions.  The
-  ;; "0.0.2" version below does not exist.  It might change, tho.  See
+  ;; "1" version below does not exist.  It might change, tho.  See
   ;; <https://github.com/greghendershott/racket-mode/issues/389>.
-  (let ((commit "cef5a55d2b766973db92f9d9ab2210c03fa8ba02")
-        (revision "7"))
+  (let ((commit "7f2813da48baf980f1ae188f651dafa98ba951cd")
+        (revision "8"))
     (package
       (name "emacs-racket-mode")
-      (version (git-version "0.0.2" revision commit))
+      (version (git-version "1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -29328,7 +29328,7 @@ perform regression test for packages that provide font-lock rules.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0zzk0s4akx6ffsbhylgfflcypkkg36a3accxhmmdd11yn5rckv7f"))))
+           "124zr2432kqyjak516mrc801kdkmb2072c906j942mf0zwjvh16v"))))
       (build-system emacs-build-system)
       (arguments
        (list
