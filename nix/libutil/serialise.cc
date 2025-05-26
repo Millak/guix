@@ -16,11 +16,11 @@ BufferedSink::~BufferedSink()
     delete[] buffer;
 }
 
-    
+
 void BufferedSink::operator () (const unsigned char * data, size_t len)
 {
     if (!buffer) buffer = new unsigned char[bufSize];
-    
+
     while (len) {
         /* Optimisation: bypass the buffer if the data exceeds the
            buffer size. */
@@ -96,7 +96,7 @@ size_t BufferedSource::read(unsigned char * data, size_t len)
     if (!buffer) buffer = new unsigned char[bufSize];
 
     if (!bufPosIn) bufPosIn = readUnbuffered(buffer, bufSize);
-            
+
     /* Copy out the data in the buffer. */
     size_t n = len > bufPosIn - bufPosOut ? bufPosIn - bufPosOut : len;
     memcpy(data, buffer + bufPosOut, n);
@@ -247,18 +247,17 @@ size_t readString(unsigned char * buf, size_t max, Source & source)
     return len;
 }
 
- 
+
 string readString(Source & source)
 {
     size_t len = readInt(source);
-    unsigned char * buf = new unsigned char[len];
-    AutoDeleteArray<unsigned char> d(buf);
-    source(buf, len);
-    readPadding(len, source);
-    return string((char *) buf, len);
+    std::vector<unsigned char> buf(len);
+    source(buf.data(), buf.size());
+    readPadding(buf.size(), source);
+    return string((char *) buf.data(), buf.size());
 }
 
- 
+
 template<class T> T readStrings(Source & source)
 {
     unsigned int count = readInt(source);

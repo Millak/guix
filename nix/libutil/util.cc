@@ -271,11 +271,10 @@ string readFile(int fd)
     if (fstat(fd, &st) == -1)
         throw SysError("statting file");
 
-    unsigned char * buf = new unsigned char[st.st_size];
-    AutoDeleteArray<unsigned char> d(buf);
-    readFull(fd, buf, st.st_size);
+    std::vector<unsigned char> buf(st.st_size);
+    readFull(fd, buf.data(), buf.size());
 
-    return string((char *) buf, st.st_size);
+    return string((char *) buf.data(), buf.size());
 }
 
 
