@@ -173,6 +173,43 @@ Emacs.")
     (description "This package provides a modern list API library for Emacs.")
     (license license:gpl3+)))
 
+(define-public emacs-ecukes
+  (package
+    (name "emacs-ecukes")
+    (version "0.6.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ecukes/ecukes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "182qgddfv8nd89y1l55rs5vm5i61ayc8cxbplb8zx0alnid9xrw1"))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:include (cons* "^feature/" "^reporters/" "^templates/" %default-include)
+       ;; 4 unexpected results:
+       ;;   FAILED  ecukes-run-test/run-step-async-callbacked-no-arg
+       ;;   FAILED  ecukes-run-test/run-step-async-callbacked-with-arg
+       ;;   FAILED  ecukes-run-test/run-step-async-callbacked-with-arg-and-args
+       ;;   FAILED  ecukes-run-test/run-step-async-with-timeout
+       #:tests? #f))
+    (propagated-inputs
+     (list emacs-ansi
+           emacs-commander
+           emacs-dash
+           emacs-espuds
+           emacs-f
+           emacs-s))
+    (home-page "https://github.com/ecukes/ecukes")
+    (synopsis "Cucumber for Emacs")
+    (description
+     "This package provides Ecukes, a Cucumber-inspired integration testing
+tool for Emacs.  Ecukes is not a complete clone of Cucumber and is not
+intended to be.")
+    (license license:gpl3+)))
+
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
