@@ -2920,11 +2920,14 @@ temperature of the screen.")
                     "https://github.com/google/xsecurelock/releases"
                     "/download/v" version "/xsecurelock-" version ".tar.gz"))
               (sha256
-               (base32 "09c0br8vwx9q728i4iv1pcp4s0sm0cd1c5ligag4k2730kcg93bf"))))
+               (base32
+                "09c0br8vwx9q728i4iv1pcp4s0sm0cd1c5ligag4k2730kcg93bf"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       '("--with-pam-service-name=login"
+     (list
+      #:configure-flags
+      #~(list
+         "--with-pam-service-name=login"
          "--with-xkb"
          "--with-default-authproto-module=/run/privileged/bin/authproto_pam")))
     (native-inputs
@@ -2942,8 +2945,9 @@ temperature of the screen.")
            linux-pam))
     (home-page "https://github.com/google/xsecurelock")
     (synopsis "X11 screen lock utility with the primary goal of security")
-    (description "@code{xsecurelock} is an X11 screen locker which uses
-a modular design to avoid the usual pitfalls of screen locking utility design.
+    (description
+     "@code{xsecurelock} is an X11 screen locker which uses a modular design
+to avoid the usual pitfalls of screen locking utility design.
 
 As a consequence of this design, you shouldn't use the usual screen locker
 service with @code{xsecurelock}.  Instead, add a helper binary to your
