@@ -1285,7 +1285,7 @@ nameservers other than libc.")
 (define-public smartdns
   (package
     (name "smartdns")
-    (version "46")
+    (version "46.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1297,7 +1297,7 @@ nameservers other than libc.")
                           ((".*SYSTEMDSYSTEMUNITDIR.*") "")))
               (sha256
                (base32
-                "0kllf623x5g7zh81nm41y3k67vsnm7a0dcdhdm0l6q4wyvr4z4zc"))))
+                "0jjzvm4i5978gb2xhkx7fhqwzgjnvwyk9a2d88zzv93mal7q9xi2"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
