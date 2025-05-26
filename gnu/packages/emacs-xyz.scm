@@ -8204,29 +8204,6 @@ something with a bit more flair than the Modus themes.")
        "This package lets Flymake run ESLint on the current buffer.")
       (license license:gpl3+))))
 
-(define-public emacs-espuds
-  (package
-    (name "emacs-espuds")
-    (version "0.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ecukes/espuds")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "16r4j27j9yfdiy841w9q5ykkc6n3wrm7hvfacagb32mydk821ijg"))))
-    (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ; XXX: test defined twice
-    (propagated-inputs
-     (list emacs-s emacs-dash emacs-f))
-    (home-page "https://github.com/ecukes/espuds")
-    (synopsis "Common step definitions for Ecukes")
-    (description "Espuds is a collection of the most commonly used step
-definitions for testing with the Ecukes framework.")
-    (license license:gpl3+)))
-
 (define-public emacs-spark
   (let ((version "20160503")  ; no proper tag, use date of commit
         (commit "0bf148c3ede3b31d56fd75f347cdd0b0eae60025")
