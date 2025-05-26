@@ -35877,10 +35877,19 @@ screensaver activation in EXWM.")
         (base32
          "04xspdj67nas1ivv0ldlmmkr6v7zd7y3k346pnfgvq8wzqi6x4vz"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; XXX: Missing coffescript requirement.
+           #:test-command #~(list "make" "test-ert")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'inject-makel
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (symlink (search-input-file inputs "include/makel.mk")
+                            "makel.mk"))))))
     (propagated-inputs
      (list emacs-dash emacs-f emacs-s))
     (native-inputs
-     (list emacs-el-mock emacs-ert-async))
+     (list emacs-ecukes emacs-el-mock emacs-ert-async emacs-shut-up makel))
     (home-page "https://github.com/rejeep/prodigy.el")
     (synopsis "Manage external services from within Emacs")
     (description "This package provides a GUI for defining and monitoring services.")
