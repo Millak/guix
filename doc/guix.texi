@@ -51131,7 +51131,8 @@ The value should be a list of the @var{type}.
 
 Other types accept strings, with validation of the values where possible
 (e.g. type @samp{Color} is validated, but type @samp{Audio channels or
-channel map} is not).
+channel map} is not).  If an option is marked as taking a file, values
+satisfying @code{file-like?} can also be used.
 
 The full list of currently supported keyword arguments is below.  For
 the types, allowed values and full description please refer to the
