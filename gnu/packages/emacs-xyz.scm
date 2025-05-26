@@ -29366,6 +29366,8 @@ It follows DrRacket concepts where applicable.")
                 "0bqhxi1nikxwc0gyqsnxc7ya2s41vc06w39s24qz64kja8zqzzya"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))  ; No tests.
     (home-page "https://github.com/hasu/emacs-ob-racket")
     (synopsis "Org Babel support for Racket")
     (description
