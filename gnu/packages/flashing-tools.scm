@@ -344,19 +344,20 @@ RK3036, RK3066, RK312X, RK3168, RK3188, RK3288, RK3368.")
 (define-public heimdall
   (package
     (name "heimdall")
-    (version "1.4.2")
+    (version "2.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://gitlab.com/BenjaminDobell/Heimdall.git")
+                     (url "https://git.sr.ht/~grimler/Heimdall")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ygn4snvcmi98rgldgxf5hwm7zzi1zcsihfvm6awf9s6mpcjzbqz"))))
+                "08sxn48jljrcily77g8yj89rhzwk0gjrz9lkglgrwl587x6q7sf7"))))
     (build-system qt-build-system)
     (arguments
      `(#:build-type "Release"
+       #:qtbase ,qtbase
        #:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
@@ -377,7 +378,8 @@ RK3036, RK3066, RK312X, RK3168, RK3188, RK3288, RK3368.")
                (install-file "libpit/libpit.a" lib)
                #t))))))
     (inputs
-     (list libusb qtbase-5 qtwayland-5 zlib))
+     (list libusb qtwayland zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://glassechidna.com.au/heimdall/")
     (synopsis "Flash firmware onto Samsung mobile devices")
     (description "@command{heimdall} is a tool suite used to flash firmware (aka
