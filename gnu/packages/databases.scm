@@ -54,7 +54,7 @@
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022, 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
@@ -2971,6 +2971,67 @@ sets, bitmaps and hyperloglogs.")
     (home-page "https://redis.io/")
     ;; These two CVEs have long been fixed.
     (properties `((lint-hidden-cve . ("CVE-2022-3647" "CVE-2022-33105"))))
+    (license license:bsd-3)))
+
+(define-public valkey-7
+  (package
+    (name "valkey")
+    ;; For compatibility, keep in sync with redis version.
+    (version "7.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valkey-io/valkey")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01pbaprl6nwrwv9382i033w8sslqainws0b22b3l1lzladdawrwx"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete bundled jemalloc, as the package will use the libc one
+        #~(begin (delete-file-recursively "deps/jemalloc")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   "MALLOC=libc"
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'patch-paths
+                 (lambda _
+                   (substitute* "runtest"
+                     (("^TCLSH=.*")
+                      (string-append "TCLSH=" (which "tclsh"))))
+                   (substitute* "tests/support/server.tcl"
+                     (("/usr/bin/env")
+                      (which "env")))))
+               (add-after 'unpack 'adjust-tests
+                 (lambda _
+                   ;; Disable failing tests.
+                   (substitute* "tests/test_helper.tcl"
+                     ;; The AOF tests cause the test suite to hang waiting for a
+                     ;; "background AOF rewrite to finish", perhaps because dead
+                     ;; processes persist as zombies in the build environment.
+                     (("unit/aofrw") "")
+                     (("integration/aof([^-]|-multi-part)") "")
+                     ;; The OOM score tests try to raise the current OOM score,
+                     ;; but our build environment already sets it for all
+                     ;; children to the highest possible one (1000).  We can't
+                     ;; lower it because we don't have CAP_SYS_RESOURCE.
+                     (("unit/oom-score-adj") "")
+
+                     (("integration/failover") "")
+                     (("integration/replication[^-]") "")))))))
+    (native-inputs (list pkg-config procps tcl which))
+    (home-page "https://valkey.io/")
+    (synopsis "High-performance key-value datastore")
+    (description
+     "Valkey is a high-performance key-value datastore that supports a variety
+of workloads such as caching, message queues, and can act as a primary
+database.")
     (license license:bsd-3)))
 
 (define-public hiredis
