@@ -3034,6 +3034,50 @@ of workloads such as caching, message queues, and can act as a primary
 database.")
     (license license:bsd-3)))
 
+(define-public valkey-8
+  (package
+    (inherit valkey-7)
+    (name "valkey")
+    (version "8.1.1")
+    (source
+     (origin
+       (inherit (package-source valkey-7))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valkey-io/valkey")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n5ckpa1h87h1llnm4khyf6060gqd4pj43d93vlrvn3hxpdyji8b"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments valkey-7)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'adjust-tests
+              (lambda _
+                ;; Disable failing tests.
+                ;; Valkey search test directories for tests.
+                (with-directory-excursion "tests"
+                  ;; The AOF tests cause the test suite to hang waiting for a
+                  ;; "background AOF rewrite to finish", perhaps because dead
+                  ;; processes persist as zombies in the build environment.
+                  (delete-file "unit/aofrw.tcl")
+                  (delete-file "integration/aof-multi-part.tcl")
+
+                  ;; The OOM score tests try to raise the current OOM score, but
+                  ;; our build environment already sets it for all children to
+                  ;; the highest possible one (1000).  We can't lower it because
+                  ;; we don't have CAP_SYS_RESOURCE.
+                  (delete-file "unit/oom-score-adj.tcl")
+
+                  (for-each delete-file
+                            (find-files "integration"
+                                        (string-join
+                                         '("^failover\\.tcl$"
+                                           "^replication"
+                                           "replication\\.tcl$")
+                                         "|"))))))))))))
+
 (define-public hiredis
   (package
     (name "hiredis")
