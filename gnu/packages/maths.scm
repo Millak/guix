@@ -2125,7 +2125,7 @@ System (Grid, Point and Swath).")
      (list autoconf automake gfortran libtool))
     (build-system gnu-build-system)
     (inputs
-     (list hdf5 zlib gctp))
+     (list gctp hdf5 libaec zlib))
     (arguments
      (list
       #:configure-flags ''("--enable-install-include" "--enable-shared"
