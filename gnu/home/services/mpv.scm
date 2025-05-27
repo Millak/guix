@@ -227,7 +227,7 @@
 (define (serialize-mpv/list-of-file field-name lst)
   #~(string-append #$(symbol->string field-name)
                    "="
-                   (string-join '#$lst ",")
+                   (string-join '#$lst ":")
                    "\n"))
 (define (mpv/list-of-file? lst)
   (every mpv/file? lst))
