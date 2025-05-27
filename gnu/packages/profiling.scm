@@ -151,15 +151,15 @@ performance measurement opportunities across the hardware and software stack.")
 (define-public otf2
   (package
     (name "otf2")
-    (version "2.1.1")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.vi-hps.org/upload/packages/otf2/otf2-"
-                           version ".tar.gz"))
-       (sha256 (base32 "1ls7rz6qwnqbkifpafc95bnfh3m9xbs74in8zxlnhfbgwx11nn81"))))
+       (uri (string-append "https://perftools.pages.jsc.fz-juelich.de/cicd/otf2/tags/otf2-"
+                           version "/otf2-" version ".tar.gz"))
+       (sha256 (base32 "0vhai3xsb1kbqy2fqcvzv9pk886p1iq5pi9mzsadfkmca4x02kjs"))))
     (native-inputs (list python))
-    (outputs '("doc"                              ; 18MB
+    (outputs '("doc"                              ; 21MB
                "lib"
                "out"))
     (build-system gnu-build-system)
@@ -167,6 +167,13 @@ performance measurement opportunities across the hardware and software stack.")
      `(#:configure-flags '("--enable-shared" "--disable-static")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'normalize-pkgconfig-files-location
+           (lambda _
+             ;; Prevent lib/pkgconfig/otf2-backend.pc from referencing the
+             ;; prefix of output "out" from the "lib" store location.
+             (substitute* "otf2-build.pc.in"
+               (("^prefix=.*") "")
+               (("^exec_prefix=.*") ""))))
          (add-after 'install 'licence
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (output)
