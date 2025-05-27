@@ -2175,7 +2175,7 @@ cp -r /tmp/locale/*/en_US.*")))
            dbus ; for dbus-daemon
            gettext-minimal
            `(,glib "bin") ; for glib-mkenums + gdbus-codegen
-           gtk-doc
+           gtk-doc/stable
            (libc-utf8-locales-for-target)
            gobject-introspection
            libcap

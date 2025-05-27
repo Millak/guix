@@ -263,7 +263,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
     (outputs (cons "doc" (package-outputs cairo)))
     (native-inputs
      (modify-inputs (package-native-inputs cairo)
-       (prepend gtk-doc)))
+       (prepend gtk-doc/stable)))
     (arguments
      (substitute-keyword-arguments (package-arguments cairo)
        ((#:configure-flags flags ''())
@@ -1337,7 +1337,7 @@ application suites.")
            `(,glib "bin")
            gobject-introspection        ;for building introspection data
            graphene
-           gtk-doc                      ;for building documentation
+           gtk-doc/stable               ;for building documentation
            intltool
            libxslt                      ;for building man-pages
            pkg-config
@@ -2799,7 +2799,7 @@ printed to standard output.")
              `(,glib "bin")
              gobject-introspection
              gnome-common
-             gtk-doc                    ;FIXME: propagate by gnome-common?
+             gtk-doc/stable             ;FIXME: propagate by gnome-common?
              intltool
              json-glib
              libtool

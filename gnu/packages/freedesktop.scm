@@ -2047,7 +2047,7 @@ message bus.")
            `(,glib "bin")               ; for gdbus-codegen, etc.
            glibc-locales                    ;for tests
            gobject-introspection
-           gtk-doc
+           gtk-doc/stable
            libxslt
            pkg-config
            vala
@@ -2133,7 +2133,7 @@ which speak the Mobile Interface Broadband Model (MBIM) protocol.")
     (native-inputs
      (list bash-completion
            `(,glib "bin")
-           gtk-doc
+           gtk-doc/stable
            gobject-introspection
            pkg-config))
     (propagated-inputs
@@ -3099,7 +3099,7 @@ useful with system integration.")
              `(,glib "bin")
              gnome-common
              gobject-introspection
-             gtk-doc
+             gtk-doc/stable
              libtool
              pkg-config
              vala

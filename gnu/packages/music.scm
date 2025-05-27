@@ -483,7 +483,8 @@ score, keyboard, guitar, drum and controller views.")
 
     (build-system gnu-build-system)
     (native-inputs
-     (list automake libtool autoconf intltool pkg-config `(,glib "bin") gtk-doc))
+     (list automake libtool autoconf intltool pkg-config `(,glib "bin")
+           gtk-doc/stable))
     (propagated-inputs (list libimobiledevice gdk-pixbuf))
     (inputs (list libxml2 sg3-utils sqlite taglib libplist))
     (home-page "https://sourceforge.net/projects/gtkpod")

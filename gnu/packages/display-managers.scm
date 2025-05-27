@@ -439,7 +439,7 @@ experience for your users, your family and yourself")
            autoconf
            automake
            gobject-introspection
-           gtk-doc
+           gtk-doc/stable
            pkg-config
            itstool
            intltool

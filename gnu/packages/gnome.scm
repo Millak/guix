@@ -2524,7 +2524,7 @@ the font would look under various sizes.")
            gi-docgen
            `(,glib "bin")
            gobject-introspection
-           gtk-doc
+           gtk-doc/stable
            libxml2
            libxslt
            openssh
@@ -5994,7 +5994,7 @@ faster results and to avoid unnecessary server load.")
     (native-inputs
      (list `(,glib "bin")               ; for gdbus-codegen
            gobject-introspection
-           gtk-doc
+           gtk-doc/stable
            intltool
            pkg-config
            python
@@ -10779,7 +10779,7 @@ library.")
       (native-inputs
        (list autoconf autoconf-archive automake
              `(,glib "bin")
-             gtk-doc gobject-introspection
+             gtk-doc/stable gobject-introspection
              intltool libtool pkg-config))
       (inputs
        (list gnome-online-accounts json-glib rest))
@@ -14622,7 +14622,7 @@ GNU Privacy Guard built with libadwaita.")
      (list docbook-xsl
            gettext-minimal
            `(,glib "bin")
-           gtk-doc
+           gtk-doc/stable
            libglib-testing
            libxslt                      ;for xsltproc
            pkg-config

@@ -2452,7 +2452,7 @@ local weather in the panel, using forecast data provided by the
     (propagated-inputs
      (list
       ;; required by 'xdt-autogen'
-      autoconf automake gtk-doc intltool libtool
+      autoconf automake gtk-doc/stable intltool libtool
       ;; required by 'xdt-depends.m4'
       (list glib "bin") ;for glib-genmarshal
       pkg-config))

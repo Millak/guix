@@ -886,7 +886,7 @@ It adds a large amount of new and improved features to Mutt.")
            pkg-config
            gnupg                        ; for tests only
            gobject-introspection
-           gtk-doc
+           gtk-doc/stable
            libtool
            vala
            which))                      ; to find libtool, &c.
