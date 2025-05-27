@@ -29945,30 +29945,32 @@ be changed by customizing the appropriate variables.")
       (license license:gpl3+))))
 
 (define-public emacs-org-caldav
-  (package
-    (name "emacs-org-caldav")
-    (version "3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dengste/org-caldav")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0im6swyhdy8g56lh2nnbz7hb4hjqspi7aag7qc4616m5fs7ijlig"))))
-    (build-system emacs-build-system)
-    (arguments
-     ;; Tests require to have two specific calendars on a test server.
-     `(#:exclude '("^org-caldav-testsuite\\.el")))
-    (propagated-inputs
-     (list emacs-org))
-    (home-page "https://github.com/dengste/org-caldav")
-    (synopsis "Sync Org files with external calendars via the CalDAV protocol")
-    (description
-     "Org CalDAV synchronizes events between Org files and a CalDAV
+  (let ((commit "44a6d463cee3c3be8acf7511db785ab55519b375")
+        (revision "0"))
+    (package
+      (name "emacs-org-caldav")
+      (version (git-version "3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dengste/org-caldav")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qxnms7libsq1q7hbvpbbza8g9kzyry0fi3ayhdv9sddnm2wx2d4"))))
+      (build-system emacs-build-system)
+      (arguments
+       ;; Tests require to have two specific calendars on a test server.
+       `(#:exclude '("^org-caldav-testsuite\\.el")))
+      (propagated-inputs
+       (list emacs-org))
+      (home-page "https://github.com/dengste/org-caldav")
+      (synopsis "Sync Org files with external calendars via the CalDAV protocol")
+      (description
+       "Org CalDAV synchronizes events between Org files and a CalDAV
 calendar.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-zotxt
   (package
