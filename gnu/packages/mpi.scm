@@ -30,14 +30,17 @@
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix deprecation)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fabric-management)
@@ -60,6 +63,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
@@ -690,6 +694,38 @@ modular framework for other derived implementations.")
           '%standard-phases)
          phases)))
     (synopsis "Implementation of the Message Passing Interface (MPI) for OmniPath")))
+
+(define-public gotcha
+  (package
+    (name "gotcha")
+    (version "1.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LLNL/GOTCHA")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "172h70x7mpyik2rbqc4zynfi7kpjfcxpazcwnjnm3d9wsmlwb1z5"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     ;; "git" is needed by test/unit/CMakeLists.txt but is not actually used
+     ;; if "check" is provided and DEPENDENCIES_PREINSTALLED is true.
+     (list git
+           check))
+    (arguments
+     (list #:configure-flags #~'("-DGOTCHA_ENABLE_TESTS=on"
+                                 "-DDEPENDENCIES_PREINSTALLED=true")))
+    (home-page "https://github.com/LLNL/GOTCHA")
+    (synopsis "Wrapping function calls in shared libraries")
+    (description
+     "Gotcha is a library that wraps functions.  Tools can use gotcha to
+install hooks into other libraries, for example putting a wrapper function
+around libc's malloc.  It is similar to @code{LD_PRELOAD}, but operates via a
+programmable API.")
+    ;; See <LGPL> file for preamble notice.
+    (license license:lgpl2.1)))
 
 (define (make-scorep mpi)
   (package
