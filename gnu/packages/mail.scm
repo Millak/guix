@@ -538,7 +538,7 @@ with a @code{ncurses} user interface similar to @code{alpine} and
 (define-public goimapnotify
   (package
     (name "goimapnotify")
-    (version "2.4")
+    (version "2.5")
     (source
      (origin
        (method git-fetch)
@@ -547,7 +547,7 @@ with a @code{ncurses} user interface similar to @code{alpine} and
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06gmhrmfl31icr2lld9g2bnqjs0y2fq7kjfzm8zjg8d3n3vs7rl9"))))
+        (base32 "0n7ib2i1g9l76a4qda30cr1hlc13rj3551qjss69gqdhxf4wwx24"))))
     (build-system go-build-system)
     (arguments
      (list
