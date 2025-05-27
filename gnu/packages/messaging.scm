@@ -3710,7 +3710,7 @@ a text snippet), using @code{libphonenumber}.")
 (define-public senpai
   (package
     (name "senpai")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -3720,7 +3720,7 @@ a text snippet), using @code{libphonenumber}.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hzrkzsi7c3nrarrd09b8cs31r6vdnmjcw3clj7mjm4cp7xp4dfw"))))
+        (base32 "1d16wbqm3hrydcb0308mg5cvgzz85vqq1bnwx0ly4647fr3f21wp"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~delthas/senpai/cmd/senpai"
