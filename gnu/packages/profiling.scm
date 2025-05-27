@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 dan <i@dan.games>
+;;; Copyright © 2025 Luca Cirrottola <luca.cirro@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -340,6 +341,102 @@ different dimensions.  All performance metrics are uniformly accommodated in
 the same display and thus provide the ability to easily compare the effects of
 different kinds of performance behavior.")
     (license license:bsd-3)))
+
+;; Since version 4.4, CUBE has been split in three different packages: CubeW,
+;; CubeLib, CubeGUI. They are still released together, so we conventionally
+;; define cubew as the parent package for cubelib and cubegui to factorize
+;; common data.
+(define-public cubew
+  (package
+    (name "cubew")
+    (version "4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://apps.fz-juelich.de/scalasca/releases/cube/"
+                       version "/dist/cubew-"
+                       version ".tar.gz"))
+       (sha256
+        (base32 "1pdcs8688y4nwcxshgs9773xmdajxahsbjsrfh8m7gv9qn0lxxsf"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-shared" "--disable-static" "--disable-silent-rules"
+              (string-append "--with-frontend-zlib="
+                             #$(this-package-input "zlib") "/lib")
+              (string-append "--with-backend-zlib="
+                             #$(this-package-input "zlib") "/lib"))))
+    (inputs
+     (list zlib))
+    (home-page "https://www.scalasca.org/software/cube-4.x/download.html")
+    (synopsis "CUBE high performance C writer library")
+    (description
+     "CUBE (CUBE Uniform Behavioral Encoding) is a tool to display a variety
+of performance metrics for parallel programs including MPI and OpenMP
+applications.  CubeW is the high performance C writer library of the CUBE
+project.")
+    (license license:bsd-3)))
+
+(define-public cubelib
+  (package/inherit cubew
+    (name "cubelib")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://apps.fz-juelich.de/scalasca/releases/cube/"
+                       (package-version cubew) "/dist/cubelib-"
+                       (package-version cubew) ".tar.gz"))
+       (sha256
+        (base32 "0hwl0aihn6fgpl0qhqckxc3sslb78wq6xav5ykfgfjzpyddqyrd0"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments cubew)
+       ((#:configure-flags flags)
+        #~(append #$flags
+                  (list "--with-compression=full")))
+       ((#:parallel-tests? _ #f) #f)))
+    (inputs
+     (list zlib))
+    (synopsis "CUBE C++ profile library")
+    (description
+     "CUBE (CUBE Uniform Behavioral Encoding) is a tool to display a variety
+of performance metrics for parallel programs including MPI and OpenMP
+applications.  CubeLib is the general purpose C++ library and tool of the CUBE
+project.")))
+
+(define-public cubegui
+  (package/inherit cubew
+    (name "cubegui")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://apps.fz-juelich.de/scalasca/releases/cube/"
+                       (package-version cubew) "/dist/cubegui-"
+                       (package-version cubew) ".tar.gz"))
+       (sha256
+        (base32 "04byhf00xnn1ppca914ag4hq2kjv37lhwyh8dl369ps47mp6viqh"))))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-shared" "--disable-static" "--disable-silent-rules"
+              (string-append "CXXFLAGS=-I" #$(this-package-input "dbus")
+                             "/include/dbus-1.0")
+              (string-append "LDFLAGS=-L" #$(this-package-input "dbus")
+                             "/lib"))))
+    (native-inputs
+     (list qtbase))
+    (inputs
+     (list cubelib
+           dbus
+           perl))
+    (synopsis "CUBE profile explorer GUI")
+    (description
+     "CUBE (CUBE Uniform Behavioral Encoding) is a tool to display a variety
+of performance metrics for parallel programs including MPI and OpenMP
+applications.  CubeGUI is the graphical explorer of the CUBE project.")))
 
 (define-public tracy-wayland
   (package
