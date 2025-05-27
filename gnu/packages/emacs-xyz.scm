@@ -159,6 +159,7 @@
 ;;; Copyright @ 2025 Amy Pillow <amypillow@lavache.com>
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.org>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
+;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -237,6 +238,7 @@
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages image-viewers)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -1707,6 +1709,45 @@ in named tab groups.  This package automates the steps you’d otherwise need to
 do manually if you wanted to keep the buffers of a project neatly isolated in
 separate, named tab groups.")
       (license license:gpl3+))))
+
+(define-public emacs-dicom
+  (package
+    (name "emacs-dicom")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minad/dicom")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02n5wagcznl5fhyfh222kklj4z90pfrqpzm7q97agyx8bynzwr2p"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-dcmtk-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "dicom.el")
+              (let ((dcm2xml (search-input-file inputs "/bin/dcm2xml"))
+                    (dcmj2pnm (search-input-file inputs "/bin/dcmj2pnm")))
+                (substitute* "dicom.el"
+                  (("\"dcm2xml")
+                   (string-append "\"" dcm2xml))
+                  (("\"dcmj2pnm")
+                   (string-append "\"" dcmj2pnm)))))))))
+    (inputs (list dcmtk))
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/minad/dicom")
+    (synopsis
+     "@acronym{DICOM, Digital Imaging and Communications in Medicine} viewer
+for Emacs")
+    (description
+     "This package adds the ability to view @acronym{DICOM, Digital Imaging
+and Communications in Medicine} files in Emacs.")
+    (license license:gpl3+)))
 
 (define-public emacs-discourse-mode
   (package
