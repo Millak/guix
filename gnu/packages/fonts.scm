@@ -2566,15 +2566,15 @@ programming.  Iosevka is completely generated from its source code.")
   (package
     (name "font-junicode")
     (version "2.211")
+    ;; TODO: Build from source when fontmake is packaged.
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/psb1558/Junicode-font")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/psb1558/Junicode-font/releases/download/v"
+             version "/Junicode_" version ".zip"))
        (sha256
-        (base32 "0nk6fgby5sp6035p542pfk2fgjir36vk315mj5z5xf7rafy13jhb"))))
+        (base32 "0infpcmq9js6s6qb6njw6kzx7y2jqj9yx1jzimr5gq8mbd61cswq"))))
     (build-system font-build-system)
     (home-page "https://github.com/psb1558/Junicode-font")
     (synopsis "Unicode font for medievalists, linguists, and others")
