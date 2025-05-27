@@ -2576,6 +2576,16 @@ programming.  Iosevka is completely generated from its source code.")
        (sha256
         (base32 "0infpcmq9js6s6qb6njw6kzx7y2jqj9yx1jzimr5gq8mbd61cswq"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'install-variable-fonts
+                 (lambda _
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "VAR"
+                       (install #:outputs `(("out" . ,#$output))))
+                     (delete-file-recursively "VAR")))))))
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/psb1558/Junicode-font")
     (synopsis "Unicode font for medievalists, linguists, and others")
     (description
