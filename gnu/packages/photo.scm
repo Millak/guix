@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016-2019, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Nico Rikken <nico@nicorikken.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -636,6 +637,92 @@ and enhance them.")
      '((release-monitoring-url . "https://github.com/darktable-org/darktable/releases")))
     (license (list license:gpl3+        ;Darktable itself
                    license:lgpl2.1+)))) ;Rawspeed library
+
+;; There has been no release nor any tag yet, so we take an arbitrary commit.
+(define-public ansel
+  (let ((commit "406cfed6cdd95002493d26042b646c45cbdf4bee")
+        (revision "0"))
+    (package
+      (name "ansel")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aurelienpierreeng/ansel.git")
+               (commit commit)
+               (recursive? #t)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1p0f1ys345i834a9grzd28wmwj7xmwz64lndabdskl7qc49fh9rf"))
+         (modules '((guix build utils)))
+         (snippet '(for-each delete-file-recursively
+                             '("src/external/LibRaw"
+                               "src/external/OpenCL"
+                               "src/external/lua"
+                               "doc/doxygen-awesome-css")))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f ;Tests are only examples
+        #:configure-flags #~(list "-DUSE_BUNDLED_LIBRAW=OFF")
+        #:build-type "Release")) ;Rawspeed fails on default 'RelWithDebInfo'
+      (native-inputs
+       (list cmocka
+             desktop-file-utils
+             ;; With the default GCC configuration fails with: Unsupported
+             ;; libstdc++ version: 11
+             gcc-12
+             `(,glib "bin")
+             gobject-introspection
+             intltool
+             llvm                       ;optional
+             opencl-headers
+             perl
+             pkg-config
+             po4a))
+      (inputs
+       (list bash-minimal
+             cairo
+             colord-gtk                 ;optional, for color profile support
+             cups                       ;optional, for printing support
+             curl
+             exiv2
+             gmic                       ;optional, for HaldcLUT support
+             graphicsmagick             ;optional
+             gtk+
+             imath
+             iso-codes/pinned ;optional, for language names in the preferences
+             jasper           ;optional, for JPEG-2000 support
+             json-glib
+             lcms
+             lensfun                 ;optional, for the lens distortion plugin
+             libavif                 ;optional, for AVIF support
+             libjpeg-turbo
+             libraw
+             (librsvg-for-system)
+             libsecret                  ;optional, for storing passwords
+             libsoup-minimal-2          ;optional, for osm-gps-map
+             libwebp                    ;optional, for WebP support
+             libxml2                    ;optional, for cameras.xml validation
+             libxslt
+             libheif
+             lua-5.4                    ;optional, for plugins
+             opencl-icd-loader          ;optional, for OpenCL support
+             openexr                    ;optional, for EXR import/export
+             openjpeg                   ;optional, for JPEG2000 export
+             osm-gps-map                ;optional, for geotagging view
+             pugixml
+             python-jsonschema
+             sqlite))
+      (home-page "https://ansel.photos/")
+      (synopsis "Virtual lighttable and darkroom for photographers")
+      (description
+       "Ansel is an photo-editing software for digital artists, designed to
+help you achieve your own interpretation of raw digital photographs.")
+      ;; See src/is_supported_platform.h for supported platforms.
+      (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
+      (license license:gpl3+))))
 
 (define-public photoflare
   (package
