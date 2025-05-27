@@ -373,16 +373,9 @@ systems.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (invoke "make"))))
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (with-directory-excursion (string-append "src/" import-path)
-                ;; go test: -race is only supported on linux/amd64,
-                ;; linux/ppc64le, linux/arm64
-                  (invoke #$@(if (not target-x86-32?)
-                                 (list "go" "test" "-v" "-race" "./...")
-                                 (list "go" "test" "-v" "./...")))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))
           (replace 'install
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
