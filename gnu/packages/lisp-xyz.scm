@@ -32448,8 +32448,8 @@ like-named macro that catches the SIGINT signal.")
   (sbcl-package->ecl-package sbcl-with-user-abort))
 
 (define-public sbcl-woo
-  (let ((commit "fba3567be95ed6e782d98a4c1477d3a74b8ad124")
-        (revision "1"))
+  (let ((commit "7f5219c55d49190f5ae17b123a8729b31c5d706e")
+        (revision "2"))
     (package
       (name "sbcl-woo")
       (version (git-version "0.12.0" revision commit))
@@ -32461,7 +32461,7 @@ like-named macro that catches the SIGINT signal.")
                (commit commit)))
          (file-name (git-file-name "woo" version))
          (sha256
-          (base32 "06f95x8s8v523gxmrkn9wwgw2pvc3bc66znbgrzhqb30y4aar5v5"))))
+          (base32 "0nhxlb1qhkl20vknm44gx0cq5cks33rcljczfhgbnmpkzrdpdrrl"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        ;; FIXME: Tests fail because they try to compile clack-test:
@@ -32481,6 +32481,7 @@ like-named macro that catches the SIGINT signal.")
        (list sbcl-alexandria
              sbcl-bordeaux-threads
              sbcl-cffi
+             sbcl-cl+ssl
              sbcl-cl-speedy-queue ;; Required for ecl build
              sbcl-clack
              sbcl-fast-http
@@ -32491,6 +32492,7 @@ like-named macro that catches the SIGINT signal.")
              sbcl-smart-buffer
              sbcl-static-vectors
              sbcl-swap-bytes
+             sbcl-trivial-mimes
              sbcl-trivial-utf-8
              sbcl-vom))
       (home-page "https://github.com/fukamachi/woo")
