@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -1178,12 +1178,12 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
                (("test-file-transfer-channel\\$\\(EXEEXT\\)") "")
                (("test-stream-tube\\$\\(EXEEXT\\)") "")))))))
     (native-inputs
-     `(("glib" ,glib "bin") ; uses glib-mkenums
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-minimal-wrapper)
-       ("vala" ,vala)
-       ("xsltproc" ,libxslt)))
+     (list `(,glib "bin") ; uses glib-mkenums
+           gobject-introspection
+           pkg-config
+           python-minimal-wrapper
+           vala
+           libxslt))
     (propagated-inputs
      ;; There are all in the Requires.private field of telepathy-glib.pc.
      (list dbus dbus-glib glib))
