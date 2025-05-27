@@ -9056,6 +9056,69 @@ information from a network device such as statistics, driver related
 information or even the peer of a VETH interface.")
     (license license:asl2.0)))
 
+(define-public go-github-com-santhosh-tekuri-jsonschema-v5
+  (package
+    (name "go-github-com-santhosh-tekuri-jsonschema-v5")
+    (version "5.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/santhosh-tekuri/jsonschema")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fjklx6sik1pp4qpmzsvwfmavd1m9pcsyap1wvajhm2d8wx3vnh0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/santhosh-tekuri/jsonschema/cmd/jv
+            (delete-file-recursively "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/santhosh-tekuri/jsonschema/v5"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; TODO: Figure out why these test patterns fail.
+                       (list "TestDraft2019/optional"
+                             "TestDraft2019/refRemote.json"
+                             "TestDraft2019/vocabulary.json"
+                             "TestDraft2020/dynamicRef.json"
+                             "TestDraft2020/optional"
+                             "TestDraft2020/refRemote.json"
+                             "TestDraft2020/vocabulary.json"
+                             "TestDraft4/refRemote.json"
+                             "TestDraft6/refRemote.json"
+                             "TestDraft7/optional"
+                             "TestDraft7/refRemote.json"
+                             "TestExtra/draft2020")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-json-schema-specs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (copy-recursively
+                 (string-append #$(this-package-native-input
+                                   "specification-json-schema-test-suite")
+                                "/share/tests")
+                 "testdata/JSON-Schema-Test-Suite/tests"))))
+          (add-after 'check 'remove-json-schema-specs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively
+                 "testdata/JSON-Schema-Test-Suite/tests")))))))
+    (native-inputs
+     (list specification-json-schema-test-suite))
+    (home-page "https://github.com/santhosh-tekuri/jsonschema")
+    (synopsis "JSONSchema validation using Golang")
+    (description
+     "Package jsonschema provides json-schema compilation and validation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
