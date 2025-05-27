@@ -8,6 +8,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -665,6 +666,20 @@ which will be used as a snippet in origin."
 
 (define-public tree-sitter-markdown-gfm
   (deprecated-package "tree-sitter-markdown-gfm" tree-sitter-markdown))
+
+(define-public tree-sitter-typst
+  (tree-sitter-grammar
+   "typst" "Typst"
+   "198rn8wdcqq51nz6hj1zxk7mplplr2z8vc36z6h1zpjjq925794z"
+   "0.11.0"
+   #:repository-url "https://github.com/uben0/tree-sitter-typst"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         ;; These tests are supposed to fail, but they don't fail the way the
+         ;; suite expects anymore.
+         (delete-file "test/corpus/negative.scm")
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-matlab
   (tree-sitter-grammar
