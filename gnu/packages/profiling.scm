@@ -184,14 +184,14 @@ memory-efficient event trace data format plus support library.")
 (define-public opari2
   (package
     (name "opari2")
-    (version "2.0.5")
+    (version "2.0.9")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.vi-hps.org/cms/upload/packages/opari2/"
-                           "opari2-" version ".tar.gz"))
+       (uri (string-append "https://perftools.pages.jsc.fz-juelich.de/cicd/opari2/tags/opari2-"
+                           version "/opari2-" version ".tar.gz"))
        (sha256
-        (base32 "1xaf25lcxk4ky1kzfks40ja9mayh8pnmrzch2107c8dcjrsxsd4h"))))
+        (base32 "0yfpzxy70wp6mwi6pvvc9a6bkaal14yysiddmvx6lrn5azvkjwfm"))))
     (build-system gnu-build-system)
     (inputs (list gfortran))
     (native-inputs (list gawk ; for tests
