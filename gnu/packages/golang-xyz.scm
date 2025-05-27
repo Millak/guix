@@ -3711,6 +3711,33 @@ locale can be selected.")
 the Go language features.")
     (license license:asl2.0)))
 
+(define-public go-github-com-code-hex-go-generics-cache
+  (package
+    (name "go-github-com-code-hex-go-generics-cache")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Code-Hex/go-generics-cache")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xna1fn9m35z17slf4z2f4dkc6s1hy5q41w8gf2500cl6bfid1ip"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Code-Hex/go-generics-cache"))
+    (propagated-inputs (list go-golang-org-x-exp))
+    (home-page "https://github.com/Code-Hex/go-generics-cache")
+    (synopsis "Key:Value store/cache library written in Golang")
+    (description
+     "This package implements a functionality of an in-memory key:value
+store/cache that is suitable for applications running on a single machine.
+This in-memory cache uses @url{https://go.dev/blog/generics-proposal, Go
+Generics} which is introduced in 1.18.")
+    (license license:expat)))
+
 (define-public go-github-com-containerd-btrfs-v2
   (package
     (name "go-github-com-containerd-btrfs-v2")
