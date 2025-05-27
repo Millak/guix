@@ -1917,21 +1917,21 @@ GNU libiconv, but completely written in Common Lisp.")
   (sbcl-package->ecl-package sbcl-babel))
 
 (define-public sbcl-binary-types
-  (let ((commit "9ec42042a50403961c08179a892ae3de725b1d7a"))
+  (let ((commit "a17caf8890f11fdc56f6ea3a21260bf0fb9c589c"))
     (package
       (name "sbcl-binary-types")
-      (version (git-version "1.2" "1" commit))
+      (version (git-version "1.2" "2" commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/frodef/binary-types/")
+               (url "https://github.com/Ferada/binary-types/")
                (commit commit)))
          (file-name (git-file-name "binary-types" version))
          (sha256
-          (base32 "0kp4xwblfxh7gmgqc38k9xzrqlcr0q1jm5167ma1pajdxd3182j8"))))
+          (base32 "1bh65p9vg2kgh4m8q1a4jiyncnp5prdzh0d0l4pzh3jvfhgbm0gh"))))
       (build-system asdf-build-system/sbcl)
-      (home-page "https://github.com/frodef/binary-types/")
+      (home-page "https://github.com/Ferada/binary-types/")
       (synopsis "Read and write binary records for Common Lisp")
       (description
        "Binary-types is a Common Lisp package for reading and writing binary
