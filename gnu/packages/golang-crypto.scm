@@ -3096,6 +3096,35 @@ tools."))))
                     "  This package provides an command line interface (CLI)
 tool."))))
 
+(define-public go-obfs4proxy
+  (package/inherit go-github-com-operatorfoundation-obfs4
+    (name "go-obfs4proxy")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-operatorfoundation-obfs4)
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/OperatorFoundation/obfs4/obfs4proxy")
+       ((#:unpack-path _ "") "github.com/OperatorFoundation/obfs4")
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'install-man-pages
+              (lambda* (#:key unpack-path #:allow-other-keys)
+                (let ((man-out (string-append #$output "/man/man1/"))
+                      (man-src (string-append "src/" unpack-path "/doc/obfs4proxy.1")))
+                  (install-file man-src man-out))))))))
+    (native-inputs (package-propagated-inputs go-github-com-operatorfoundation-obfs4))
+    (propagated-inputs '())
+    (inputs '())
+    (synopsis "Pluggable transport proxy for Tor, implementing obfs4")
+    (description
+     "obfs4proxy is a tool that attempts to circumvent censorship by
+transforming the Tor traffic between the client and the bridge.  This way
+censors, who usually monitor traffic between the client and the bridge, will
+see innocent-looking transformed traffic instead of the actual Tor
+traffic.")))
+
 (define-public ssh-to-pgp
   (package
     (name "ssh-to-pgp")
