@@ -910,7 +910,13 @@ the store.")
         "glibc-2.41-hurd-local-clock_gettime_MONOTONIC.patch"
         "glibc-hurd-mach-print.patch"
         "glibc-hurd-gettyent.patch"
-        "glibc-hurd-getauxval.patch"))
+        "glibc-hurd-getauxval.patch"
+        "glibc-hurd-pthread_setcancelstate.patch"
+        "glibc-hurd-2.41-pthread-once.patch"
+        "glibc-hurd-2.41-pthread-sigmask.patch"
+        "glibc-hurd-2.41-symlink.patch"
+        "glibc-hurd64-intr-msg-clobber.patch"
+        "glibc-hurd64-gcc-14.2-tls-bug.patch"))
 
 (define-public glibc
   ;; This is the GNU C Library, used on GNU/Linux and GNU/Hurd.  Prior to
@@ -1664,19 +1670,7 @@ variety of options.  It is an alternative to the shell \"type\" built-in
 command.")
     (license gpl3+))) ; some files are under GPLv2+
 
-(define-public glibc/hurd
-  (package/inherit glibc
-    (source
-     (origin
-       (inherit (package-source glibc))
-       (patches
-        (append (origin-patches (package-source glibc))
-                (search-patches "glibc-hurd-pthread_setcancelstate.patch"
-                                "glibc-hurd-2.41-pthread-once.patch"
-                                "glibc-hurd-2.41-pthread-sigmask.patch"
-                                "glibc-hurd-2.41-symlink.patch"
-                                "glibc-hurd64-intr-msg-clobber.patch"
-                                "glibc-hurd64-gcc-14.2-tls-bug.patch")))))))
+(define-public glibc/hurd glibc)
 
 (define-public glibc/hurd-headers
   (package/inherit glibc/hurd
