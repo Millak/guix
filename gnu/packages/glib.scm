@@ -1181,7 +1181,7 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
      `(("glib" ,glib "bin") ; uses glib-mkenums
        ("gobject-introspection" ,gobject-introspection)
        ("pkg-config" ,pkg-config)
-       ("python" ,python-2)
+       ("python" ,python-minimal-wrapper)
        ("vala" ,vala)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
