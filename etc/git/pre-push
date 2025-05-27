@@ -36,23 +36,25 @@ do
                         ;;
                 esac
 
-                # Only use the hook when pushing to upstream.
-                case "$2" in
-                    *.gnu.org*)
-                        echo "adjust remote: repo was migrated to codeberg"
-                        exit 127
-                        ;;
-                    *codeberg.org/guix/*)
-                        set -e
-                        guix git authenticate
-                        exec make check-channel-news
-                        exit 127
-                        ;;
-                    *)
-                        exit 0
-                        ;;
-                esac
-        fi
+		# Only use the hook when pushing to upstream.
+		case "$2" in
+		    *.gnu.org*)
+			set -e
+			guix git authenticate
+			exec make check-channel-news
+			exit 127
+			;;
+		    *codeberg.org/guix/*)
+			set -e
+			guix git authenticate
+			exec make check-channel-news
+			exit 127
+			;;
+		    *)
+			exit 0
+			;;
+		esac
+	fi
 done
 
 exit 0
