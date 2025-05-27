@@ -391,7 +391,7 @@ configure network interfaces in Linux containers.")
 (define-public gvisor-tap-vsock
   (package
     (name "gvisor-tap-vsock")
-    (version "0.7.3")
+    (version "0.8.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -400,7 +400,7 @@ configure network interfaces in Linux containers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q1zism0c63k2aq6yhkjqc3b2zsm4lwn0bk39p2kl79h798wfyp4"))))
+                "18pwpw3dap42mpv5a1ciq6fh0y8ya5ix7r38bi8i1xc7dxcy3jdj"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -422,11 +422,19 @@ configure network interfaces in Linux containers.")
           (add-before 'check 'prune-tests
             (lambda _
               ;; Requires internet connection to fetch QEMU image.
-              (invoke "rm" "-r" "test")))
+              (invoke "rm" "-r" "test-qemu")
+              ;; Requires working DNS.
+              (substitute* "pkg/services/dns/dns_test.go"
+                (("Should pass DNS requests to default system DNS.*" all)
+                 (string-append all "\n" "ginkgo.Skip(\"No network.\");"))
+                (("\"redhat.com\",")
+                 "\"localhost\",")
+                (("\"52.200.142.250\"")
+                 "\"127.0.0.1\""))))
           (replace 'install
             (lambda _
               (install-file "bin/gvproxy" (string-append #$output "/bin")))))))
-    (native-inputs (list go-1.20))
+    (native-inputs (list go-1.23))
     (home-page "https://github.com/containers/gvisor-tap-vsock")
     (synopsis "Network stack for virtualization based on gVisor")
     (description "This package provides a replacement for @code{libslirp} and
