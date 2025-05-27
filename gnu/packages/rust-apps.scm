@@ -2618,6 +2618,57 @@ tasks, an extensible scripting system for uncommon tasks, incremental
 compilation, and intuitive error messages.")
     (license license:asl2.0)))
 
+(define-public typstyle
+  (package
+    (name "typstyle")
+    (version "0.13.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typstyle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06mg12rkls1hkiz8wxchj1jqf1l1bq963s80mrvjfiajb08zqdx1"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/typstyle")
+                             (in-vicinity #$output "bin/typstyle"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "completions" shell))))))
+               '(("bash"   . "share/bash-completion/completions/typstyle")
+                 ("elvish" . "share/elvish/lib/typstyle")
+                 ("fish"   . "share/fish/vendor_completions.d/typstyle.fish")
+                 ("zsh"    . "share/zsh/site-functions/_typstyle"))))))))
+    (native-inputs
+     (if (%current-target-system)
+         (list this-package)
+         '()))
+    (inputs (cargo-inputs 'typstyle))
+    (home-page "https://enter-tainer.github.io/typstyle/")
+    (synopsis "Consistent formatter for Typst")
+    (description
+     "Typstyle is a formatter for the Typst typesetting system designed with
+universal consistency and correctness as top priorities.  It is
+configuration-free.")
+    (license license:asl2.0)))
+
 (define-public vivid
   (package
     (name "vivid")
