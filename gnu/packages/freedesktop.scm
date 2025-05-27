@@ -2322,42 +2322,68 @@ between protocols to provide a unified interface for applications.")
       (license license:lgpl2.1))))
 
 (define-public telepathy-logger
-  (package
-    (name "telepathy-logger")
-    (version "0.8.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://telepathy.freedesktop.org/releases/"
-                                  name "/" name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1bjx85k7jyfi5pvl765fzc7q2iz9va51anrc2djv7caksqsdbjlg"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:parallel-tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-          (lambda _
-            (setenv "HOME" (getenv "TMPDIR"))
-            #t)))))
-    (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-genmarshal, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)
-       ("xsltproc" ,libxslt)))
-    (propagated-inputs
-     ;; telepathy-logger-0.2.pc refers to all these.
-     (list libxml2 sqlite telepathy-glib))
-    (synopsis "Telepathy logger library")
-    (home-page "https://telepathy.freedesktop.org/")
-    (description
-     "Telepathy logger is a headless observer client that logs information
+  ;; Use the latest commit as the latest release is still using Python 2.
+  (let ((commit "5eaf8c99748b3d4e61afaba24ff6bf763f81695d")
+        (revision "0"))
+    (package
+      (name "telepathy-logger")
+      (version (git-version "0.8.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/TelepathyIM/telepathy-logger")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "13rry9y1fb5dcfd26r7zi79sw3rfss17sr19xhxavjnq08a0cgg2"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; The 'test-log-manager' fails non-deterministically with
+        ;; "../../tools/with-session-bus.sh: line 97: 10583 Segmentation
+        ;; fault" (see:
+        ;; https://github.com/TelepathyIM/telepathy-logger/issues/6).
+        #:tests? #f
+        ;; Do not treat deprecation warnings as errors, as there are some for
+        ;; telepathy-glib functions, e.g "error: ‘GTimeVal’ is deprecated: Use
+        ;; 'GDateTime' instead" (see:
+        ;; https://github.com/TelepathyIM/telepathy-logger/issues/7).
+        #:configure-flags #~(list "--disable-Werror")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-autogen.sh
+              (lambda _
+                (substitute* "autogen.sh"
+                  ;; The script calls configure before its shebang is
+                  ;; patched.
+                  (("\\./configure" all)
+                   (string-append "CONFIG_SHELL=sh sh configure")))))
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" (getenv "TMPDIR")))))))
+      (native-inputs
+       (list autoconf
+             automake
+             `(,glib "bin")             ;for glib-genmarshal, etc.
+             gobject-introspection
+             gtk-doc/stable
+             intltool
+             libtool
+             libxslt
+             pkg-config
+             python-minimal))
+      (inputs (list sqlite))
+      (propagated-inputs
+       ;; telepathy-logger-0.2.pc refers to all these.
+       (list libxml2 telepathy-glib))
+      (synopsis "Telepathy logger library")
+      (home-page "https://telepathy.freedesktop.org/")
+      (description
+       "Telepathy logger is a headless observer client that logs information
 received by the Telepathy framework.  It features pluggable backends to log
 different sorts of messages in different formats.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public telepathy-idle
   ;; Use the latest commit, as the latest release does not support Python 3.
