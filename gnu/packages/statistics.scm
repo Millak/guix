@@ -671,6 +671,40 @@ like tidy evaluation.")
 and printing capabilities than traditional data frames.")
     (license license:expat)))
 
+(define-public r-xpose4
+  (package
+    (name "r-xpose4")
+    (version "4.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/UUPharmacometrics/xpose4")
+             (commit (string-append "V" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p1mrgb3s7iz61366v36xswn36ivpgqiy7qwxy6yh3hi6y6rjf2j"))))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat))
+    (propagated-inputs (list r-lattice
+                             r-hmisc
+                             r-survival
+                             r-dplyr
+                             r-tibble
+                             r-lazyeval
+                             r-gam
+                             r-readr))
+    (home-page "https://uupharmacometrics.github.io/xpose4/")
+    (synopsis "Diagnostics for nonlinear mixed-effect models")
+    (description
+     "This package is a model building aid for nonlinear mixed-effects
+(population) model analysis using NONMEM, facilitating data set checkout,
+exploration and visualization, model diagnostics, candidate covariate
+identification and model comparison.  The methods are described in
+Keizer et al. (2013) <doi:10.1038/psp.2013.24>, and Jonsson et al.
+(1999) <doi:10.1016/s0169-2607(98)00067-4>.")
+    (license license:lgpl3+)))
+
 (define-public python-vega-datasets
   (package
     (name "python-vega-datasets")
