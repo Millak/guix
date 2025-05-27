@@ -1945,7 +1945,7 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
 (define-public go-github-com-libp2p-go-libp2p-kad-dht
   (package
     (name "go-github-com-libp2p-go-libp2p-kad-dht")
-    (version "0.29.2")
+    (version "0.33.1")
     (source
      (origin
        (method git-fetch)
@@ -1954,7 +1954,7 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cmj04sypdky5fc3b50fhz8h1aarg0ngdi15cyfwn6yb98pmfq4z"))))
+        (base32 "1m263kjax7zyn3k3xgiamh6fcfl4724hm64z6mvmlslcx5zvmmzz"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1967,13 +1967,11 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
     (propagated-inputs
      (list go-github-com-google-gopacket
            go-github-com-google-uuid
-           go-github-com-hashicorp-go-multierror
            go-github-com-hashicorp-golang-lru
            go-github-com-ipfs-boxo
            go-github-com-ipfs-go-cid
            go-github-com-ipfs-go-datastore
            go-github-com-ipfs-go-detect-race
-           go-github-com-ipfs-go-log
            go-github-com-ipfs-go-log-v2
            go-github-com-libp2p-go-libp2p
            go-github-com-libp2p-go-libp2p-kbucket
@@ -1990,7 +1988,7 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
            go-github-com-multiformats-go-multistream
            go-github-com-whyrusleeping-go-keyspace
            go-go-opentelemetry-io-otel
-           ;; go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-metric
            go-go-opentelemetry-io-otel-trace
            go-go-uber-org-multierr
            go-go-uber-org-zap
