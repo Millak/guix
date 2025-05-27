@@ -1615,7 +1615,7 @@ of a Unix terminal to HTML code.")
 (define-public vale
   (package
     (name "vale")
-    (version "3.9.5")
+    (version "3.11.2")
     (source
      (origin
        (method git-fetch)
@@ -1623,7 +1623,7 @@ of a Unix terminal to HTML code.")
              (url "https://github.com/errata-ai/vale")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "119iiyh164rkj7jlghr2j1kbhc8k1bvfhsfvd972zs092fg7dh4p"))
+        (base32 "04xgya706ljnbb7kh3kip0p9z67hpw55p7vfa0bl1nnd0is4q07g"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
@@ -1651,7 +1651,8 @@ of a Unix terminal to HTML code.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list go-github-com-adrg-strutil
+     (list go-github-com-adrg-frontmatter
+           go-github-com-adrg-strutil
            go-github-com-adrg-xdg
            go-github-com-bmatcuk-doublestar-v4
            go-github-com-d5-tengo-v2
@@ -1671,7 +1672,6 @@ of a Unix terminal to HTML code.")
            go-github-com-remeh-sizedwaitgroup
            go-github-com-smacker-go-tree-sitter
            go-github-com-spf13-pflag
-           go-github-com-stretchr-testify
            go-github-com-tomwright-dasel-v2
            go-github-com-yuin-goldmark
            go-golang-org-x-exp
