@@ -6087,6 +6087,31 @@ supported by HTTP PATCH method, allowing for standards based partial updates
 via REST APIs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-matterbridge-gomatrix
+  (package
+    (name "go-github-com-matterbridge-gomatrix")
+    (version "0.0.0-20220411225302-271e5088ea27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matterbridge/gomatrix")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08y6kbsa9cs4d9qckwg85i64gz7jbv606gqk4sk09172bzaxzsm1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/matterbridge/gomatrix"))
+    (home-page "https://github.com/matterbridge/gomatrix")
+    (synopsis "Golang Matrix client")
+    (description
+     "Package gomatrix implements the Matrix Client-Server API.  This package
+is an alternative fork of not maintained
+https://github.com/matrix-org/gomatrix project.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mattn-go-ieproxy
   (package
     (name "go-github-com-mattn-go-ieproxy")
