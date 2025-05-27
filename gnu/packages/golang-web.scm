@@ -11396,6 +11396,69 @@ the standard @code{context} package to store request-scoped values.")
     (description "This package is a Go Implementation of WireGuard.")
     (license license:expat)))
 
+(define-public go-google-golang-org-genproto-googleapis-api
+  (package
+    (name "go-google-golang-org-genproto-googleapis-api")
+    (version "0.0.0-20250519155744-55703ea1f237")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/go-genproto")
+             (commit (go-version->git-ref version #:subdir "googleapis/api"))))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - google.golang.org/genproto/googleapis/api/apikeys
+            ;; - google.golang.org/genproto/googleapis/api/servicecontrol
+            ;; - google.golang.org/genproto/googleapis/api/servicemanagement
+            ;; - google.golang.org/genproto/googleapis/api/serviceusage
+            (for-each delete-file-recursively
+                      (list "googleapis/api/apikeys"
+                            "googleapis/api/servicecontrol"
+                            "googleapis/api/servicemanagement"
+                            "googleapis/api/serviceusage"))
+            (delete-all-but "googleapis" "api")
+            (delete-all-but "." "googleapis")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ilf95lhx7930cqx2hmswxasxyxjz3xmbznd0cfcglzdl3d9k4rk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "google.golang.org/genproto/googleapis/api"
+      #:unpack-path "google.golang.org/genproto"))
+    (propagated-inputs
+     (list go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/googleapis/go-genproto")
+    (synopsis "API implementation of Google Cloud Platform in Golang")
+    (description
+     "This package provides an API to interact with @acronym{GCP, Google Cloud Platform}.")
+    (license license:asl2.0)))
+
 (define-public go-google-golang-org-grpc
   (package
     (name "go-google-golang-org-grpc")
