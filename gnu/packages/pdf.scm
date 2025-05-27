@@ -29,6 +29,7 @@
 ;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -95,6 +97,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -158,6 +161,88 @@ It does not have a document model and instead uses PDF primitives
 directly.  It uses LittleCMS for color management but otherwise does not
 convert data in any way.")
     (license license:asl2.0)))
+
+(define-public cpdf
+  (package
+    (name "cpdf")
+    (version "2.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/johnwhitington/cpdf-source")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dn4lxbnj7izrpxshil1wcvpc60yv9mwfy52dndpi9b66rm3rbih"))))
+    (build-system ocaml-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'patch-makefile-shell
+              (lambda _
+                (patch-makefile-SHELL "OCamlMakefile")))
+            (add-after 'install 'install-bin
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (install-file "cpdf" bin))))
+            (add-after 'install-bin 'install-doc
+              (lambda _
+                (let ((doc (string-append #$output "/share/doc/"
+                                          #$name "-" #$version))
+                      (man1 (string-append #$output "/share/man/man1")))
+                  (install-file "cpdf.1" man1)
+                  (install-file "cpdfmanual.pdf" doc)
+                  (copy-recursively "doc/cpdf/html"
+                                    (string-append doc "/html"))))))))
+    (propagated-inputs (list ocaml-camlpdf))
+    (home-page "https://www.coherentpdf.com")
+    (synopsis "Command-line tool for PDF manipulation")
+    (description
+     "The cpdf package provides a command-line tool and an OCaml library
+designed for manipulating PDF documents.  Key Features include:
+
+@itemize @bullet
+@item
+Splitting and merging PDF files (including bookmark preservation and
+splitting on bookmarks).
+@item
+Encryption and decryption (supports AES 128 and AES 256).
+@item
+Page manipulation: scaling, rotation, cropping, and flipping; fitting
+pages to a specific size.
+@item
+Bookmark management: copying, removing, and adding bookmarks.
+@item
+Watermarking: stamping logos, page numbers, and multi-line text with
+transparency support.
+@item
+Text and font handling: embedding TrueType fonts, supporting Unicode
+UTF-8 input and output, and converting text to PDF.
+@item
+Presentation features: creating PDF-based presentations and arranging
+multiple pages on a single page.
+@item
+Annotation management: listing, copying, setting, and removing
+annotations.
+@item
+Metadata management: reading and setting document information and
+metadata.
+@item
+Attachment handling: adding and removing file attachments to documents
+or pages.
+@item
+Advanced features: thickening hairlines, blackening text,
+reconstructing malformed files, detecting missing fonts and
+low-resolution images, exporting/importing in JSON format, and
+building table of contents.
+@item
+Drawing: Adding graphics and text directly onto PDF files.
+@end itemize")
+    (license license:agpl3+)))
 
 (define-public a4pdf
   (deprecated-package "a4pdf" capypdf))
