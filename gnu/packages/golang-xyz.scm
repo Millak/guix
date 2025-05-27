@@ -16803,6 +16803,31 @@ programming language.")
 merges them into one profile.")
     (license license:bsd-2)))
 
+(define-public go-github-com-wangjia184-sortedset
+  (package
+    (name "go-github-com-wangjia184-sortedset")
+    (version "0.0.0-20220209072355-af6d6d227aa7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wangjia184/sortedset")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15y8n0m5s723jifh01487sp2jn067jiaizp8w4z965vbn066hh8n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/wangjia184/sortedset"))
+    (home-page "https://github.com/wangjia184/sortedset")
+    (synopsis "Sorted Set in Golang")
+    (description
+     "Package sortedset provides the data-struct allowing a fast access the
+element in set by key or by score(order).  It is inspired by Sorted Set from
+Redis.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-warpfork-go-fsx
   (package
     (name "go-github-com-warpfork-go-fsx")
