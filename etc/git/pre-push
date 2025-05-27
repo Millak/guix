@@ -25,31 +25,31 @@ z40=0000000000000000000000000000000000000000
 
 while read local_ref local_hash remote_ref remote_hash
 do
-	# When deleting a remote branch, no commits are pushed to the remote, and
-	# thus there are no signatures to be verified.
-	if [ "$local_hash" != $z40 ]
-	then
-		# Skip the hook when performing a pull-request.
-		case "$remote_ref" in
-		    refs/for/*)
-			exit 0
-			;;
-		esac
+        # When deleting a remote branch, no commits are pushed to the remote, and
+        # thus there are no signatures to be verified.
+        if [ "$local_hash" != $z40 ]
+        then
+                # Skip the hook when performing a pull-request.
+                case "$remote_ref" in
+                    refs/for/*)
+                        exit 0
+                        ;;
+                esac
 
-		# Only use the hook when pushing to upstream.
-		case "$2" in
-		    *.gnu.org*) ;&
-		    *codeberg.org/guix/*)
-			set -e
-			guix git authenticate
-			exec make check-channel-news
-			exit 127
-			;;
-		    *)
-			exit 0
-			;;
-		esac
-	fi
+                # Only use the hook when pushing to upstream.
+                case "$2" in
+                    *.gnu.org*) ;&
+                    *codeberg.org/guix/*)
+                        set -e
+                        guix git authenticate
+                        exec make check-channel-news
+                        exit 127
+                        ;;
+                    *)
+                        exit 0
+                        ;;
+                esac
+        fi
 done
 
 exit 0
