@@ -1,0 +1,22 @@
+# Force the use of templates.
+blank_issues_enabled: false
+contact_links:
+  - name: Guix Issue Tracker (will stop accepting new submittions on January 1st, 2026)
+    url: https://issues.guix.gnu.org/
+    about: Submit patches and bug reports via email.
+
+  - name: Help Mailing List (help-guix@gnu.org)
+    url: https://lists.gnu.org/mailman/listinfo/help-guix
+    about: Subscribe to the Help mailing list to get support from the GNU Guix community via email.  You can post messages in English though we also accept other languages.
+
+  - name: Development Mailing List (guix-devel@gnu.org)
+    url: https://lists.gnu.org/mailman/listinfo/guix-devel
+    about: Discussion about the development of GNU Guix.
+
+  - name: Security Mailing List (guix-security@gnu.org)
+    url: https://lists.gnu.org/mailman/listinfo/guix-security
+    about: Report security issues in Guix itself or in the packages it provides.  Posting here allows Guix developers to address the problem before it is widely publicized.
+
+  - name: Contact - GNU Guix
+    url: https://guix.gnu.org/en/contact/
+    about: Communication channels of GNU Guix.
