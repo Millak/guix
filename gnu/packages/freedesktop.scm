@@ -2402,11 +2402,12 @@ messaging clients such as Empathy, GNOME Shell or KDE Telepathy.")
     (build-system gnu-build-system)
     (native-inputs
      (list `(,glib "bin") ; for glib-compile-schemas, etc.
-           pkg-config))
-    (inputs
-     (list dconf gtk-doc libgnome-keyring python-2 libxslt))
-    (propagated-inputs
-     (list telepathy-glib))
+           gtk-doc/stable
+           pkg-config
+           python-minimal
+           libxslt))
+    (inputs (list dconf libgnome-keyring))
+    (propagated-inputs (list telepathy-glib))
     (home-page "https://telepathy.freedesktop.org/wiki/Components/Mission_Control/")
     (synopsis "Telepathy real-time communication framework management daemon")
     (description
