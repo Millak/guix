@@ -84,6 +84,33 @@ suites of application implementing the standard.")
       ;; terms.
       (license (list license:expat license:asl2.0)))))
 
+(define-public specification-json-schema-test-suite
+  (package
+    (name "specification-json-schema-test-suite")
+    (version "23.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/json-schema-org/JSON-Schema-Test-Suite")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1400r7v5rl0bdhiygg37in0wzbqagc8jprcsw8wxfw082ayn57gq"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("./tests" "share/tests"))))
+    (home-page "https://github.com/json-schema-org/JSON-Schema-Test-Suite")
+    (synopsis "Language agnostic test suite for the JSON Schema specifications")
+    (description
+     "This package provides a set of JSON objects that implementers of JSON
+Schema validation libraries can use to test their validators.
+
+It is meant to be language agnostic and should require only a JSON parser.
+The conversion of the JSON objects into tests within a specific language and
+test framework of choice is left to be done by the validator implementer.")
+    (license license:expat)))
+
 (define-public specification-multibase
   (let ((commit "4c8344e37852773de155f587dcf5897771b3fc19")
         (revision "1"))
