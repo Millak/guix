@@ -38,7 +38,10 @@ do
 
                 # Only use the hook when pushing to upstream.
                 case "$2" in
-                    *.gnu.org*) ;&
+                    *.gnu.org*)
+                        echo "adjust remote: repo was migrated to codeberg"
+                        exit 127
+                        ;;
                     *codeberg.org/guix/*)
                         set -e
                         guix git authenticate
