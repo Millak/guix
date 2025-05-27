@@ -15593,10 +15593,11 @@ basic everyday functions and macros.")
   (sbcl-package->ecl-package sbcl-fare-utils))
 
 (define-public sbcl-fast-generic-functions
-  (let ((commit "9c307cd28af6453e45038ac3510de3123ff23743"))
+  (let ((commit "6e9d690ec08dacf9ab4e14aa39a084ef7c7edabb")
+        (revision "2"))
     (package
       (name "sbcl-fast-generic-functions")
-      (version (git-version "0.0.0" "1" commit))
+      (version (git-version "0.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15605,9 +15606,7 @@ basic everyday functions and macros.")
                (commit commit)))
          (file-name (git-file-name "cl-fast-generic-functions" version))
          (sha256
-          (base32 "16hf9bi2p5s77p3m3aqsihcd9iicqjhhxxpsarjv93c41qs54yad"))
-         (patches
-          (search-patches "sbcl-fast-generic-functions-fix-sbcl-2.4.patch"))))
+          (base32 "1v2pwmhnyfvhx8hrl1zk2lm4k1a3kqglf696hnfx7zrpz9kwk15m"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-closer-mop
