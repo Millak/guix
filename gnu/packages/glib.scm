@@ -1144,7 +1144,7 @@ libffi projects to dynamically create Perl bindings for a wide variety of
 libraries.  Examples include gtk+, webkit, libsoup and many more.")
     (license license:lgpl2.1+)))
 
-(define telepathy-glib
+(define-public telepathy-glib
   (package
     (name "telepathy-glib")
     (version "0.24.2")
@@ -1162,14 +1162,6 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-vala-bindings")
-
-       ;; '../tools/glib-*.py' generate files but the target dependencies are
-       ;; (presumably) not fully specified in the makefile, leading to
-       ;; parallel build errors like:
-       ;;
-       ;;   EOFError: EOF read where object expected
-       ;;   make[2]: *** [Makefile:1906: _gen/register-dbus-glib-marshallers-body.h] Error 1
-       #:parallel-build? #f
        ;; When spawned in parallel, the dbus daemons may fail to shut down
        ;; cleanly.  This issue appears to have been closed upstream due to low
        ;; information, but still continues to haunt folks.  See also
@@ -1184,8 +1176,7 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
              (substitute* "tests/dbus/Makefile.in"
                (("test-contacts\\$\\(EXEEXT\\)") "")
                (("test-file-transfer-channel\\$\\(EXEEXT\\)") "")
-               (("test-stream-tube\\$\\(EXEEXT\\)") ""))
-             #t)))))
+               (("test-stream-tube\\$\\(EXEEXT\\)") "")))))))
     (native-inputs
      `(("glib" ,glib "bin") ; uses glib-mkenums
        ("gobject-introspection" ,gobject-introspection)
