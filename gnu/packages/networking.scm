@@ -4832,7 +4832,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public yggtray
   (package
     (name "yggtray")
-    (version "0.1.13")
+    (version "0.1.14")
     (source
      (origin
        (method git-fetch)
@@ -4841,11 +4841,10 @@ IPv6 Internet connectivity - it also works over IPv4.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ivhhq25kz1di928icf361yf0k8lsf7wncf1f3fbch2gvivzm23a"))))
+        (base32 "1n4pg5fdbqf579d4xajah5y5dawizp8c8difwfsk7xrvjd3w5rcf"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f ;No tests.
       #:modules '((guix build cmake-build-system)
                   (guix build qt-utils)
                   (guix build utils))
@@ -4855,8 +4854,14 @@ IPv6 Internet connectivity - it also works over IPv4.")
                      (lambda* (#:key inputs #:allow-other-keys)
                        (wrap-qt-program "yggtray"
                                         #:output #$output
-                                        #:inputs inputs))))))
-    (native-inputs (list cmake-minimal doxygen graphviz))
+                                        #:inputs inputs)))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "./unit_tests")))))))
+    (native-inputs (list cmake-minimal
+                         check
+                         pkg-config))
     (inputs (list bash-minimal qtbase-5 qttools-5 qtwayland-5 yggdrasil))
     (home-page "https://github.com/the-nexi/yggtray")
     (synopsis "Yggdrasil tray and control panel")
