@@ -10768,7 +10768,7 @@ protocol.")
 (define-public lyrebird
   (package
     (name "lyrebird")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -10777,11 +10777,11 @@ protocol.")
              (commit (string-append "lyrebird-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hhilnk72s0h3cm7zw89n3kiqwa32c0r1a1y5ygp432hmrxvr2b0"))))
+        (base32 "1wmcr2ywzp38z7p8gqb0r4wpsz1f67fn3dln9pswcjscvgm251pj"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
+      #:go go-1.23
       #:build-flags #~(list (string-append "-ldflags="
                                            "-X main.lyrebirdVersion="
                                            #$version " -s -w"))
