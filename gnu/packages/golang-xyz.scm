@@ -739,6 +739,33 @@ runner and daemon that supports crontab like task list file.  It may be used
 programatically in Golang or as standalone binary instead of crond.")
     (license license:expat)))
 
+(define-public go-github-com-adrg-frontmatter
+  (package
+    (name "go-github-com-adrg-frontmatter")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/adrg/frontmatter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0slacbb6m6g9xg85qw3b170mimjahn9pryacm4iqk459s1qib6sq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/adrg/frontmatter"))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/adrg/frontmatter")
+    (synopsis "Detecting and decoding various content front matter formats")
+    (description
+     "This package implements fuctionality of detecting and decoding various
+content front matter formats e.g. @code{JSON}, @code{TOML} and @code{YAML}.")
+    (license license:expat)))
+
 (define-public go-github-com-adrg-strutil
   (package
     (name "go-github-com-adrg-strutil")
