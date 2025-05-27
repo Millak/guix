@@ -470,7 +470,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
 (define-public podman
   (package
     (name "podman")
-    (version "5.4.2")
+    (version "5.5.0")
     (outputs '("out" "docker"))
     (properties
       `((output-synopsis "docker" "docker alias for podman")))
@@ -481,7 +481,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1yjkyn1wrpzfcndds23p0r192l95rq4jcw7w9m2y1zdhafjlgr5y"))
+        (base32 "0ackw202dnydxzpa52i6vcp1m5g1p5s9kq9s639ih5nk4qvzba87"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -570,11 +570,10 @@ Its main purpose is to support the key usage by @code{docker-init}:
            libseccomp
            libselinux))
     (native-inputs
-     (list (package/inherit grep
-             (inputs (list pcre2)))     ; Drop once grep on master supports -P
+     (list grep
            bats
            git-minimal/pinned
-           go-1.22
+           go-1.23
            go-md2man
            gnu-gettext ; for envsubst
            mandoc
