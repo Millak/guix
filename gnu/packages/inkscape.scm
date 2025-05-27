@@ -337,6 +337,9 @@ as the native format.")
 
 (define-deprecated/public-alias inkscape/stable inkscape/pinned)
 
+;;; The Inkscape release year used in the about dialog.  Please keep it sync
+;;; when updating the package!
+(define %inkscape-release-year 2023)
 (define-public inkscape
   (package
     (inherit inkscape/pinned)
@@ -359,6 +362,12 @@ as the native format.")
         #~(delete "-DWITH_IMAGE_MAGICK=OFF" #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'patch-inkscape-build-year
+              (lambda _
+                (substitute* "CMakeScripts/inkscape-version.cmake"
+                  (("string\\(TIMESTAMP INKSCAPE_BUILD_YEAR.*")
+                   (format #f "set(INKSCAPE_BUILD_YEAR ~a)~%"
+                           #$%inkscape-release-year)))))
             #$@(if (target-x86-32?)
                    #~()            ;XXX: there are remaining failures on i686
                    #~((replace 'check
