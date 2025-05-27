@@ -213,24 +213,26 @@ devices.")
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
-    (version "0.81.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/googleapis/google-cloud-go")
-             (commit (string-append "v" version))))
+             (commit (go-version->git-ref version
+                                          #:subdir "compute/metadata"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15jgynqb5pbxqbj3a7ii970yn4srsw1dbxzxnhpkfkmplalpgyh3"))))
+        (base32 "1ryq4ay3myk7w2wb7pzfk0pbvz6ymirxq91zm6rql7a1vb15x0n9"))))
     (build-system go-build-system)
     (arguments
-     '(#:unpack-path "cloud.google.com/go"
-       #:import-path "cloud.google.com/go/compute/metadata"))
-    (home-page
-     "https://pkg.go.dev/cloud.google.com/go/compute/metadata")
-    (synopsis
-     "Go wrapper for Google Compute Engine metadata service")
+     (list
+      #:import-path "cloud.google.com/go/compute/metadata"
+      #:unpack-path "cloud.google.com/go"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://pkg.go.dev/cloud.google.com/go/compute/metadata")
+    (synopsis "Go wrapper for Google Compute Engine metadata service")
     (description
      "This package provides access to Google Compute Engine (GCE) metadata and
 API service accounts for Go.")
