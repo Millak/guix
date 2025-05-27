@@ -51139,7 +51139,7 @@ the types, allowed values and full description please refer to the
 @command{mpv --list-options} and
 @uref{https://mpv.io/manual/stable/#options, mpv manual}.
 
-Only set fields are outputted to the configuration file.  Accessors are
+Only set fields are output to the configuration file.  Accessors are
 provided for every field, returning either their value or a sentinel
 object @code{%unset-value} (from @code{(gnu services configuration)}).
 
