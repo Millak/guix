@@ -6945,6 +6945,30 @@ library in go standard library.")
      "Go library that pluralizes and singularizes English nouns.")
     (license license:bsd-2)))
 
+(define-public go-github-com-ghemawat-stream
+  (package
+    (name "go-github-com-ghemawat-stream")
+    (version "0.0.0-20171120220530-696b145b53b9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ghemawat/stream")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i0cjvhn2zfnvm9dc9nd9yyq27nmv8j2s7sa0lvcdvv2mbcdvvq8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ghemawat/stream"))
+    (home-page "https://github.com/ghemawat/stream")
+    (synopsis "UNIX pipe-like chained filters")
+    (description
+     "This Package provides filters that can be chained together in a manner
+similar to Unix pipelines.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ghodss-yaml
   (package
     (name "go-github-com-ghodss-yaml")
