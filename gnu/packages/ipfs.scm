@@ -1245,7 +1245,7 @@ Graphs, DAG} data structures as specified in
 (define-public go-github-com-ipfs-go-metrics-prometheus
   (package
     (name "go-github-com-ipfs-go-metrics-prometheus")
-    (version "0.0.3")
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1254,7 +1254,7 @@ Graphs, DAG} data structures as specified in
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gyh2g912lrwghs2f5alh42dgwsbbdg1wan5vw8s0a2ni0avsfib"))))
+        (base32 "12bvlg1pnwxyfn8paxf0viky5mv5isdql29mflvjhgs5g48mnc3s"))))
     (build-system go-build-system)
     (arguments
      (list
