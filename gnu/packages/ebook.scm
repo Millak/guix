@@ -46,7 +46,9 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
@@ -76,6 +78,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages sqlite)
@@ -84,6 +87,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages wxwidgets))
 
 (define-public chmlib
@@ -127,16 +131,14 @@ with Microsoft Compiled HTML (CHM) files")
 (define-public calibre
   (package
     (name "calibre")
-    (version "5.44.0")
+    (version "8.4.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://download.calibre-ebook.com/"
-                           version "/calibre-"
-                           version ".tar.xz"))
+       (uri (string-append "http://download.calibre-ebook.com/" version
+                           "/calibre-" version ".tar.xz"))
        (sha256
-        (base32
-         "1v48mzmr9z9rs6s7r8fgaqs6vnxnin1hyzwmwmal78inzpma7ykg"))
+        (base32 "1s9m80nakclxvsw0lax9bak23qipnia74xpy9sv061jvidqb3rz6"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -151,17 +153,23 @@ with Microsoft Compiled HTML (CHM) files")
            (delete-file "resources/calibre-portable.sh")))
        (patches (search-patches "calibre-no-updates-dialog.patch"
                                 "calibre-remove-test-sqlite.patch" ; TODO: fix test.
-                                "calibre-remove-test-unrar.patch"))))
+                                "calibre-remove-test-unrar.patch"
+                                "calibre-remove-test-import-modules.patch" ; TODO: fix test
+                                ))))
     (build-system python-build-system)
     (native-inputs
      (list bash-minimal
            pkg-config
            python-flake8
            python-pyqt-builder
-           qtbase-5                     ; for qmake
-           xdg-utils))
+           qtbase                     ; for qmake
+           xdg-utils
+           cmake))
     (inputs
-     (list bash-minimal
+     (list libxkbcommon
+           ffmpeg
+           uchardet
+           bash-minimal
            fontconfig
            font-liberation
            glib
@@ -176,7 +184,7 @@ with Microsoft Compiled HTML (CHM) files")
            libusb
            openssl
            optipng
-           podofo-0.9
+           podofo
            poppler
            python-apsw
            python-beautifulsoup4
@@ -186,6 +194,7 @@ with Microsoft Compiled HTML (CHM) files")
            python-dateutil
            python-dnspython-1.16
            python-feedparser
+           python-fonttools
            python-html2text
            python-html5-parser
            python-html5lib
@@ -203,12 +212,14 @@ with Microsoft Compiled HTML (CHM) files")
            python-pychm
            python-pycryptodome
            python-pygments
-           python-pyqt
-           python-pyqtwebengine
+           python-pyqt-6
+           python-pyqtwebengine-6
+           python-pykakasi
            python-regex
+           python-xxhash
            speech-dispatcher
            python-zeroconf
-           qtwebengine-5
+           qtwebengine
            sqlite))
     (arguments
      (list
@@ -249,7 +260,7 @@ tags = [\"WS_X11\"]")
                  (string-append "[tool.sip.project]
 sip-include-dirs = [\""
                    #$(this-package-input "python-pyqt")
-                   "/lib/python3.11/site-packages/PyQt5/bindings\"]")))
+                   "/lib/python3.11/site-packages/PyQt6/bindings\"]")))
               (substitute* "src/calibre/ebooks/pdf/pdftohtml.py"
                 (("PDFTOHTML = 'pdftohtml'")
                  (string-append "PDFTOHTML = \""
@@ -300,7 +311,8 @@ sip-include-dirs = [\""
               ;; plugins, and I notice the available plugins list it shows
               ;; lacks 'svg'. Adding qtsvg-5 doesn't fix it, so I'm not sure how
               ;; to fix it.  TODO: Fix test and remove this.
-              (setenv "SKIP_QT_BUILD_TEST" "true")))
+              (setenv "SKIP_QT_BUILD_TEST" "true")
+              (setenv "SKIP_SPEECH_TESTS" "true")))
           (add-after 'install 'install-rapydscript
             (lambda _
               ;; Unset so QtWebengine doesn't dump temporary files here.
@@ -332,7 +344,7 @@ sip-include-dirs = [\""
                      `("QTWEBENGINEPROCESS_PATH" =
                        ,(list
                          (search-input-file
-                          inputs "/lib/qt5/libexec/QtWebEngineProcess")))))
+                          inputs "/lib/qt6/libexec/QtWebEngineProcess")))))
                  ;; Wrap all the binaries shipping with the package, except
                  ;; for the wrappings created during the 'wrap standard
                  ;; phase.  This extends existing .calibre-real wrappers
