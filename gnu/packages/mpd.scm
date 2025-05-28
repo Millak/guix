@@ -39,6 +39,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
@@ -309,6 +310,7 @@ terminal using ncurses.")
     (build-system gnu-build-system)
     (inputs (list boost
                   curl
+                  fftw
                   icu4c
                   libmpdclient
                   ncurses
@@ -321,7 +323,8 @@ terminal using ncurses.")
            pkg-config))
     (arguments
      (list #:configure-flags
-           #~(list "BOOST_LIB_SUFFIX=" "--with-taglib" "--enable-clock")))
+           #~(list "BOOST_LIB_SUFFIX=" "--with-taglib" "--enable-clock"
+                   "--enable-visualizer")))
     (synopsis "Featureful ncurses based MPD client inspired by ncmpc")
     (description "Ncmpcpp is an mpd client with a UI very similar to ncmpc,
 but it provides new useful features such as support for regular expressions
