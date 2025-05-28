@@ -30,6 +30,7 @@
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix build-system go)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
@@ -481,6 +482,37 @@ hierarchy of the keys.")
      "Package measure provides a Datastore wrapper that records metrics using
 @url{https://github.com/ipfs/go-metrics-interface}.")
     (license license:expat)))
+
+(define-public go-github-com-ipfs-go-ds-pebble
+  (package
+    (name "go-github-com-ipfs-go-ds-pebble")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ds-pebble")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l0abcknray9hvk5j3vdiybgjk7yn6j3awznpy46j08g97z88ljw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/ipfs/go-ds-pebble"))
+    (propagated-inputs
+     (list go-github-com-cockroachdb-pebble-v2
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-log-v2))
+    (home-page "https://github.com/ipfs/go-ds-pebble")
+    (synopsis "Pebble-backed datastore")
+    (description
+     "This is a simple adapter to plug in
+@url{https://github.com/cockroachdb/pebble, cockroachdb/pebble} as a backend
+anywhere that accepts a @url{https://github.com/ipfs/go-datastore,
+go-datastore}.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public go-github-com-ipfs-go-fs-lock
   (package
