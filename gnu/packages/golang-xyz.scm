@@ -62,6 +62,7 @@
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
+;;; Copyright © 2025 Formbi <formbi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1131,6 +1132,31 @@ almost directly in Go source code.")
       (description
        "This library provides unit multipliers and functions for Go.")
       (license license:expat))))
+
+(define-public go-github-com-alessio-shellescape
+  (package
+    (name "go-github-com-alessio-shellescape")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alessio/shellescape")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14zypi8qdxl77lks5b9jshr17idrm4sri1rxgpw5q4dys1palddd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alessio/shellescape"))
+    (home-page "https://github.com/alessio/shellescape")
+    (synopsis "Escape arbitrary strings for use as command line arguments")
+    (description
+     "This package provides the @code{shellescape.Quote} to escape arbitrary
+strings for a safe use as command line arguments in the most common POSIX
+shells.")
+    (license license:expat)))
 
 (define-public go-github-com-alsm-ioprogress
   (package
