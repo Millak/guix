@@ -99,6 +99,7 @@ guix/workers\.scm                                  @guix/core
 ^guix/platforms/                                   @guix/core
 ^guix/scripts/                                     @guix/core
 ^guix/store/                                       @guix/core
+^nix/                                              @guix/core
 
 gnu/packages/base\.scm                             @guix/core-packages
 gnu/packages/bootstrap\.scm                        @guix/core-packages
