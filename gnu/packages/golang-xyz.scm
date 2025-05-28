@@ -3853,6 +3853,37 @@ queueing and rate limiting.")
 @code{unsafe} pieces of data when logging and constructing error object.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cockroachdb-swiss
+  (package
+    (name "go-github-com-cockroachdb-swiss")
+    (version "0.0.0-20250327203710-2932b022f6df")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/swiss")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v902vdngjqabqz6brkrsa26sb5x0xwa2b3986jy8ih6z7x44ib5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/swiss"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aclements-go-perfevent))
+    (home-page "https://github.com/cockroachdb/swiss")
+    (synopsis "Golang port of Google's Swiss Table hash table")
+    (description
+     "This package implements Swiss Tables as described in
+https://abseil.io/about/design/swisstables. It provides pseudo-randomized
+iteration (iteration order will change from one iteration to the next) and
+iteration stability akin to Go's builtin map if the map is mutated during
+iteration.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cockroachdb-tokenbucket
   (package
     (name "go-github-com-cockroachdb-tokenbucket")
