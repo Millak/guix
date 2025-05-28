@@ -44206,8 +44206,8 @@ EasyPG and latest Emacs.")
       (license license:gpl2+))))
 
 (define-public emacs-wallabag
-  (let ((commit "071cf68d3b150c4ae20eef79e301c3ba96d312ab")
-        (revision "0"))
+  (let ((commit "686fabf477b903857bc5d54a0a8e49620822e14e")
+        (revision "1"))
     (package
       (name "emacs-wallabag")
       (version (git-version "1.1.0" revision commit))
@@ -44219,7 +44219,7 @@ EasyPG and latest Emacs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "17awlzmxw3l7l8882k89gj1wv3ssni9vfxhih6mrwcminns83drl"))))
+          (base32 "09xpc65psh8nf7gww3y2chnfkyi8b8mz1bs71g0zmz8h5djf821i"))))
       (build-system emacs-build-system)
       (arguments
        '(#:tests? #f ;no tests
