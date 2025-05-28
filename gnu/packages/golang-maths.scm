@@ -37,6 +37,33 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-github-com-aclements-go-gg
+  (package
+    (name "go-github-com-aclements-go-gg")
+    (version "0.0.0-20170323211221-abd1f791f5ee")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aclements/go-gg")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06vda3fvhyavwdcbch591v64ds8jdb1v56c8rjv8qbd6g65ky383"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/aclements/go-gg"))
+    (propagated-inputs
+     (list go-github-com-aclements-go-moremath))
+    (home-page "https://github.com/aclements/go-gg")
+    (synopsis "Plotting package for Golang")
+    (description
+     "gg is a plotting package for Go inspired by the Grammar of Graphics.")
+    (license license:bsd-3)))
+
 (define-public go-codeberg-org-astronexus-brahe
   (package
     (name "go-codeberg-org-astronexus-brahe")
