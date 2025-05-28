@@ -1552,6 +1552,42 @@ testing capabilities.")
 Perl's @url{https://metacpan.org/pod/Test::Deep, Test::Deep perl}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-nbio-st
+  (package
+    (name "go-github-com-nbio-st")
+    (version "0.0.0-20140626010706-e9e8d9816f32")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nbio/st")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14r4acm82gp9ikqnp41a06bm4mrdlbskakhibbxsc5ljav7bni27"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nbio/st"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'delete-problematic-tests
+            (lambda _
+              ;; The readme_test.go file contains failing tests on
+              ;; purpose to demonstrate the failing output.
+              (delete-file "src/github.com/nbio/st/readme/readme_test.go"))))))
+    (home-page "https://github.com/nbio/st")
+    (synopsis "Tiny test framework for Go")
+    (description
+     "Package @code{st}, pronounced @emph{ghost}, is a tiny test framework for
+making short, useful assertions in your Go tests.  @samp{Assert(t, have, want)
+and Refute(t, have, want)} abort a test immediately with @code{t.Fatal}.
+@samp{Expect(t, have, want) and Reject(t, have, want)} allow a test to
+continue, reporting failure at the end with @code{t.Error}.  They print nice
+error messages, preserving the order of @code{have} (actual result) before
+@code{want} (expected result) to minimize confusion.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
