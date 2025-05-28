@@ -375,6 +375,36 @@ test (using testing.TB's @code{TempDir}) and with a few helper methods.")
      "A testing library for Go programs.")
     (license license:expat)))
 
+(define-public go-github-com-cockroachdb-datadriven
+  (package
+    (name "go-github-com-cockroachdb-datadriven")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/datadriven")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h2dhm4g1n8ny71lm495l5l842lwq320la0q8b8zmr4w3s5nyk09"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/datadriven"))
+    (propagated-inputs
+     (list go-github-com-pmezard-go-difflib))
+    (home-page "https://github.com/cockroachdb/datadriven")
+    (synopsis "Data-Driven Tests for Golang")
+    (description
+     "This package implements an extension of
+@url{https://github.com/golang/go/wiki/TableDrivenTests, Table-Driven
+Testing}.  Instead of building and iterating over a table in the test code,
+the input is further separated into files (or inline strings).  For certain
+classes of tests, this can significantly reduce the friction involved in
+writing and reading these tests.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coder-quartz
   (package
     (name "go-github-com-coder-quartz")
