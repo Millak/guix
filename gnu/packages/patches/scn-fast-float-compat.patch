@@ -1,0 +1,48 @@
+From 144a590f6c7861101579069e89dfb1db0ddfec25 Mon Sep 17 00:00:00 2001
+From: Elias Kosunen <elias.kosunen@gmail.com>
+Date: Wed, 21 May 2025 23:59:59 +0300
+Subject: [PATCH] Fix incompatibility with newer fast_float
+
+---
+ benchmark/runtime/float/repeated.cpp | 1 -
+ benchmark/runtime/float/single.cpp   | 1 -
+ src/scn/impl.cpp                     | 6 ++++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/benchmark/runtime/float/repeated.cpp b/benchmark/runtime/float/repeated.cpp
+index 0aa0c39a..8a4de0a1 100644
+--- a/benchmark/runtime/float/repeated.cpp
++++ b/benchmark/runtime/float/repeated.cpp
+@@ -210,4 +210,3 @@ static void scan_float_repeated_fastfloat(benchmark::State& state)
+ }
+ BENCHMARK_TEMPLATE(scan_float_repeated_fastfloat, float);
+ BENCHMARK_TEMPLATE(scan_float_repeated_fastfloat, double);
+-BENCHMARK_TEMPLATE(scan_float_repeated_fastfloat, long double);
+diff --git a/benchmark/runtime/float/single.cpp b/benchmark/runtime/float/single.cpp
+index e06cd138..6819621b 100644
+--- a/benchmark/runtime/float/single.cpp
++++ b/benchmark/runtime/float/single.cpp
+@@ -185,4 +185,3 @@ static void scan_float_single_fastfloat(benchmark::State& state)
+ }
+ BENCHMARK_TEMPLATE(scan_float_single_fastfloat, float);
+ BENCHMARK_TEMPLATE(scan_float_single_fastfloat, double);
+-BENCHMARK_TEMPLATE(scan_float_single_fastfloat, long double);
+diff --git a/src/scn/impl.cpp b/src/scn/impl.cpp
+index a36117d8..1e38f1f4 100644
+--- a/src/scn/impl.cpp
++++ b/src/scn/impl.cpp
+@@ -723,10 +723,12 @@ struct fast_float_impl_base : impl_base {
+     {
+         unsigned format_flags{};
+         if ((m_options & float_reader_base::allow_fixed) != 0) {
+-            format_flags |= fast_float::fixed;
++            format_flags |=
++                static_cast<unsigned>(fast_float::chars_format::fixed);
+         }
+         if ((m_options & float_reader_base::allow_scientific) != 0) {
+-            format_flags |= fast_float::scientific;
++            format_flags |=
++                static_cast<unsigned>(fast_float::chars_format::scientific);
+         }
+ 
+         return static_cast<fast_float::chars_format>(format_flags);

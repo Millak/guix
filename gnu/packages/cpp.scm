@@ -1719,6 +1719,34 @@ code and retrieving their output.")
    (home-page "https://github.com/DaanDeMeyer/reproc")
    (license license:expat)))
 
+(define-public scn
+  (package
+    (name "scn")
+    (version "4.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/eliaskosunen/scnlib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "scn-fast-float-compat.patch"))
+              (sha256
+               (base32 "0lnb9r004y75n4s4pd3k58cdcjpcylhdgr5phwja713g3dd40im8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DSCN_USE_EXTERNAL_GTEST=yes"
+                                     "-DSCN_USE_EXTERNAL_BENCHMARK=yes"
+                                     "-DSCN_USE_EXTERNAL_FAST_FLOAT=yes"
+                                     "-DBUILD_SHARED_LIBS=yes")))
+    (propagated-inputs (list fast-float))
+    (native-inputs (list googletest googlebenchmark))
+    (home-page "https://scnlib.dev/")
+    (synopsis "Type-safe text parsing library")
+    (description "@code{scn} is a text parsing library for C++.  It can
+be used as a safe alternative to @code{scanf} or as a fast alternative to
+@code{IOStreams}, analogous to @code{fmt}.")
+    (license license:asl2.0)))
+
 (define-public sobjectizer
   (package
     (name "sobjectizer")
