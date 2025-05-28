@@ -1483,7 +1483,7 @@ differentiate between installs of Mozilla software in @code{installs.ini} and
      (list go-github-com-caddyserver-zerossl
            go-github-com-klauspost-cpuid-v2
            go-github-com-libdns-libdns
-           go-github-com-mholt-acmez
+           go-github-com-mholt-acmez-v2
            go-github-com-miekg-dns
            go-github-com-zeebo-blake3
            go-go-uber-org-zap
@@ -6739,9 +6739,9 @@ communication between a hypervisor and its virtual machines.")
 operations on Linux using nl80211.")
     (license license:expat)))
 
-(define-public go-github-com-mholt-acmez
+(define-public go-github-com-mholt-acmez-v2
   (package
-    (name "go-github-com-mholt-acmez")
+    (name "go-github-com-mholt-acmez-v2")
     (version "2.0.3")
     (source
      (origin
@@ -6755,7 +6755,7 @@ operations on Linux using nl80211.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/mholt/acmez"))
+      #:import-path "github.com/mholt/acmez/v2"))
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-net
