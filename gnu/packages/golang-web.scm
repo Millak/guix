@@ -3864,6 +3864,33 @@ Go.  Designed to ease things up for fast development with zero memory
 allocation and performance in mind.")
     (license license:expat)))
 
+(define-public go-github-com-gogo-googleapis
+  (package
+    (name "go-github-com-gogo-googleapis")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gogo/googleapis")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "094znmiswmz8d4b6k7il655gvjrwvraacln0n0lzv5kskbzhlmfi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/gogo/googleapis"))
+    (propagated-inputs (list go-github-com-gogo-protobuf))
+    (home-page "https://github.com/gogo/googleapis")
+    (synopsis "Google APIs rRPC templates")
+    (description
+     "This package provides rRPC templates used to interact with Google
+APIs.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gogo-protobuf
   (package
     (name "go-github-com-gogo-protobuf")
