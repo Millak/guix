@@ -122,7 +122,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
 (define-public go-github-com-ipfs-boxo
   (package
     (name "go-github-com-ipfs-boxo")
-    (version "0.28.0")
+    (version "0.30.0")
     (source
      (origin
        (method git-fetch)
@@ -131,7 +131,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "152g98g4j0pw5az1pc9xdrrzp4qd3cb9xflc98w69migq9il6k68"))
+        (base32 "1siicb0bs4shc220xk2i5d4p5myrh3yg64hm3yl796gjbcqgs66d"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -189,7 +189,6 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-gammazero-deque
            go-github-com-google-uuid
            go-github-com-gorilla-mux
-           go-github-com-hashicorp-go-multierror
            go-github-com-hashicorp-golang-lru-v2
            go-github-com-ipfs-bbloom
            go-github-com-ipfs-go-bitfield
