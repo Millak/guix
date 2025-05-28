@@ -5894,7 +5894,6 @@ a secure way.")))
      (list #:tests? #f                  ; Figure out how to run tests
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'validate-runpath)
                (replace 'configure
                  (lambda _
                    (substitute* "src/signond/signond.pro"
@@ -5913,7 +5912,9 @@ a secure way.")))
                                      #$output "/lib/signon")))
                    (invoke "qmake"
                            (string-append "PREFIX=" #$output)
-                           (string-append "LIBDIR=" #$output "/lib")))))))
+                           (string-append "LIBDIR=" #$output "/lib")
+                           (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath,"
+                                          #$output "/lib -Wl,-rpath,")))))))
     (home-page "https://accounts-sso.gitlab.io/signond/index.html")
     (synopsis "Perform user authentication over D-Bus")
     (description "This package provides a D-Bus service which performs user
