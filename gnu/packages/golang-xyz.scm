@@ -3738,6 +3738,30 @@ locale can be selected.")
 the Go language features.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cockroachdb-redact
+  (package
+    (name "go-github-com-cockroachdb-redact")
+    (version "1.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/redact")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q6h35nrgsh2ygcvvs4ds9swwzzbh3v7414rvlpsnqq6a1kcskw0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/redact"))
+    (home-page "https://github.com/cockroachdb/redact")
+    (synopsis "Utilities to redact Golang strings for confidentiality")
+    (description
+     "Package redact provides facilities for separating @code{safe} and
+@code{unsafe} pieces of data when logging and constructing error object.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cockroachdb-tokenbucket
   (package
     (name "go-github-com-cockroachdb-tokenbucket")
