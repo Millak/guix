@@ -21254,6 +21254,55 @@ for locating directories
 their ASCII approximations.")
       (license license:asl2.0))))
 
+(define-public go-golang-org-x-perf
+  (package
+    (name "go-golang-org-x-perf")
+    (version "0.0.0-20250515181355-8f5f3abfb71a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/perf")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01qby8hvyamacndkavij7kk0dp95q3irssj4krpb7ppqwpq4j7l3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "golang.org/x/perf"))
+    (propagated-inputs
+     (list ;; go-cloud-google-com-go-storage
+           go-github-com-aclements-go-gg
+           go-github-com-aclements-go-moremath
+           go-github-com-go-sql-driver-mysql
+           go-github-com-google-safehtml
+           ;; go-github-com-googlecloudplatform-cloudsql-proxy
+           go-github-com-mattn-go-sqlite3
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           ;; go-gonum-org-v1-plot
+           ;; go-google-golang-org-api
+           go-google-golang-org-appengine))
+    (home-page "https://cs.opensource.google/go/x/perf")
+    (synopsis "Golang benchmark analysis tools and libraries")
+    (description
+     "This package provides tooling and utility libraries for perfoming and
+reading benchmarks results.
+
+@itemize
+@item @code{benchfmt} - reads and writes the Go benchmark format
+@item @code{benchunit} - manipulates benchmark units and formats numbers in
+those units
+@item @code{benchproc} - provides tools for filtering, grouping, and sorting
+benchmark results
+@item @code{benchmath} - provides tools for computing statistics over
+distributions of benchmark measurements
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-google-golang-org-appengine
   (package
     (name "go-google-golang-org-appengine")
