@@ -533,7 +533,7 @@ hierarchy of the keys.")
            go-github-com-ipfs-bbloom
            go-github-com-ipfs-go-block-format
            go-github-com-ipfs-go-cid
-           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-datastore-0.6
            go-github-com-ipfs-go-ipfs-ds-help
            go-github-com-ipfs-go-ipfs-util
            go-github-com-ipfs-go-ipld-format
@@ -544,8 +544,8 @@ hierarchy of the keys.")
     (home-page "https://github.com/ipfs/go-ipfs-blockstore")
     (synopsis "Caching wrapper over a IPFS datastore")
     (description
-     "@code{go-ipfs-blockstore} implements a thin wrapper over an IPFS datastore,
-giving a clean interface for getting and putting block objects.")
+     "@code{go-ipfs-blockstore} implements a thin wrapper over an IPFS
+datastore, giving a clean interface for getting and putting block objects.")
     (license license:expat)))
 
 (define-public go-github-com-ipfs-go-ipfs-blocksutil
