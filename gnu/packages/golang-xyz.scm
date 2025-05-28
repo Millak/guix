@@ -9700,6 +9700,35 @@ functionality is similar to the go builtin @code{flag} package, but
 way of specifying command line options.")
     (license license:bsd-3)))
 
+(define-public go-github-com-jiangxin-multi-log
+  (package
+    (name "go-github-com-jiangxin-multi-log")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jiangxin/multi-log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0im1i0dz5rcczfzxyvwqwvslv1mq6gbhlr5aw9s2fg7s29lcy179"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jiangxin/multi-log"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-sirupsen-logrus
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/jiangxin/multi-log")
+    (synopsis "Simple logging library for Go")
+    (description
+     "Multi-log is based on logrus, and supports concurrently logging to two
+destinations: the console and a log file.")
+    (license license:expat)))
+
 (define-public go-github-com-jinzhu-copier
   (package
     (name "go-github-com-jinzhu-copier")
