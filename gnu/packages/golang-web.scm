@@ -1873,6 +1873,35 @@ provides of error objects, in ways suitable for distributed systems with
 mixed-version software compatibility.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cockroachdb-metamorphic
+  (package
+    (name "go-github-com-cockroachdb-metamorphic")
+    (version "0.0.0-20231120015718-884f2746775a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/metamorphic")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cf5rwifmlvnrwq17izgc0297yjw4q2fl1qar9d1slm3wqd4h186"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/metamorphic"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cockroachdb-errors))
+    (home-page "https://github.com/cockroachdb/metamorphic")
+    (synopsis "Metamorphic-style testing in Golang")
+    (description
+     "This Package provides facilities for running metamorphic, property-based
+testing.  By running logically equivalent operations with different
+conditions, metamorphic tests can identify bugs without requiring an oracle.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
