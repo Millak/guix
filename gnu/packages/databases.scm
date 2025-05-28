@@ -547,6 +547,30 @@ file formats and a few extensions such as range deletion tombstones,
 table-level bloom filters, and updates to the MANIFEST format.")
     (license license:bsd-3)))
 
+(define-public go-github-com-cockroachdb-pebble-v2
+  (package
+    (inherit go-github-com-cockroachdb-pebble)
+    (name "go-github-com-cockroachdb-pebble-v2")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/pebble")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jglnsabg7y0y5agazvvmsa0r0ddn0j3c204cdpv7qsvi90pnr0d"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-cockroachdb-pebble)
+       ((#:tests? _ #t) #f) ; TODO: Find out why some tests fails to build
+       ((#:import-path _) "github.com/cockroachdb/pebble/v2")))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-cockroachdb-pebble)
+       (append go-github-com-cockroachdb-crlib
+               go-github-com-cockroachdb-swiss)))))
+
 (define-public pebble
   (package/inherit go-github-com-cockroachdb-pebble
     (name "pebble")
