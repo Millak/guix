@@ -1712,7 +1712,7 @@ their levels to be controlled individually.")
 (define-public go-github-com-ipfs-go-metrics-interface
   (package
     (name "go-github-com-ipfs-go-metrics-interface")
-    (version "0.0.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1721,7 +1721,7 @@ their levels to be controlled individually.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09xc71175sfnqlizkbw066jagnbag9ihvs240z6g6dm2yx3w5xgy"))))
+        (base32 "0d7jh9aclmxq4z5hynn4lc0ab8c8rip92xkc224vjw2y7kg6jyvg"))))
     (build-system go-build-system)
     (arguments
      (list
