@@ -31473,6 +31473,38 @@ structure.")
 for YAML and JSON.")
     (license license:expat)))
 
+(define-public python-pykakasi
+  (package
+    (name "python-pykakasi")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pykakasi" version))
+       (sha256
+        (base32 "18dhcw7myw5idajnfynjbvqxmyf9m0cygfwsavbbi7zmcf72l1gs"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags ''("-k" "not test_aozora")))
+    (propagated-inputs (list python-deprecated python-importlib-resources
+                             python-jaconv))
+    (native-inputs (list python-coverage
+                         python-py-cpuinfo
+                         python-pytest
+                         python-pytest-benchmark
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (home-page "https://codeberg.org/miurahr/pykakasi")
+    (synopsis "Kana kanji simple inversion library")
+    (description
+       "pykakasi is a Python Natural Language Processing @acronym{NLP, Natural
+Language Processing} library to transliterate hiragana, katakana and
+kanji (Japanese text) into rōmaji (Latin/Roman alphabet).  It can handle
+characters in NFC form.
+
+Its algorithms are based on the kakasi library, which is written in C.")
+    (license license:gpl3+)))
+
 (define-public python-dbus-python
   (package
     (name "python-dbus-python")
