@@ -1137,6 +1137,30 @@ Node @code{nock} library, it has features like:
      "This package provides a library to generate unified diffs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-hydrogen18-memlistener
+  (package
+    (name "go-github-com-hydrogen18-memlistener")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hydrogen18/memlistener")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "088zv1sqxw50x95xh7n7b5s4h32mry6myx559jjl1h11h9h7szwg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hydrogen18/memlistener"))
+    (home-page "https://github.com/hydrogen18/memlistener")
+    (synopsis "In memory listener for testing socket and HTTP servers in Golang")
+    (description
+     "This package implements a functionality for testing socket and HTTP
+servers in Golang.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-icrowley-fake
   (package
     (name "go-github-com-icrowley-fake")
