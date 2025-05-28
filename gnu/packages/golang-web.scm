@@ -3937,6 +3937,39 @@ generation features.  This code generation is used to achieve:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-gogo-status
+  (package
+    (name "go-github-com-gogo-status")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gogo/status")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k0j262qvq5ligiqafhq3mljzmgjcqz4n3xxv7j3di9glr8n38cz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gogo/status"))
+    (propagated-inputs
+     (list go-github-com-gogo-googleapis
+           go-github-com-gogo-protobuf
+           go-github-com-golang-protobuf
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/gogo/status")
+    (synopsis "Error handling for client/server rRPC-like communication")
+    (description
+     "Package status implements errors returned by @code{gRPC}.  These errors
+are serialized and transmitted on the wire between server and client, and
+allow for additional data to be transmitted via the Details field in the
+status proto.  @code{gRPC} service handlers should return an error created by
+this package, and @code{gRPC} clients should expect a corresponding error to
+be returned from the RPC call.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-golang-groupcache
   (package
     (name "go-github-com-golang-groupcache")
