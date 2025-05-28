@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2015, 2017 Alex Kost <alezost@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -1320,6 +1320,13 @@ download-po:
 	done; \
 	rm -rf "$$dir"
 .PHONY: download-po
+
+# Regenerate 'CODEOWNERS' when 'teams.scm' is modified so we don't forget.
+CODEOWNERS: etc/teams.scm
+	./etc/teams.scm codeowners > "$@.tmp"
+	mv "$@.tmp" "$@"
+
+BUILT_SOURCES += CODEOWNERS
 
 ## -------------- ##
 ## Silent rules.  ##
