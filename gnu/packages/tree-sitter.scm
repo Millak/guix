@@ -855,3 +855,10 @@ which will be used as a snippet in origin."
    "0z5fz9hiafzapi0ijhyz8np6rksq6c1pb16xv1vhnlfh75rg6zyv"
    "0.7.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
+
+(define-public tree-sitter-zig
+  (tree-sitter-grammar
+   "zig" "Zig"
+   "1r9p7hhnc1zagwxzdxhs4p6rnqs9naddkgbfymi6pbw6cyg2ccwl"
+   "1.1.2"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-zig"))
