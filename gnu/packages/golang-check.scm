@@ -25,6 +25,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,8 +50,10 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages golang-build)
-  #:use-module (gnu packages golang-xyz))
+  #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages version-control))
 
 ;;; Commentary:
 ;;;
@@ -1257,6 +1260,72 @@ implements exact URL and regexp matches.")
 Many times certain facilities are not available, or tests must run
 differently.")
     (license license:expat)))
+
+(define-public go-github-com-jiu2015-gotestspace
+  (package
+    (name "go-github-com-jiu2015-gotestspace")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Jiu2015/gotestspace")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wcvdp1wjqj3lh2vdhb2vph528vncjs3vixjriwkxrn979b59y4s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Jiu2015/gotestspace"
+      ;; Our patching causes some discrepancies in the expected
+      ;; output/values.
+      ;;
+      ;; expected: "goshelltest2=222"
+      ;; actual  : "goshelltest1=111"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestNewShellSpace/path_and_env_parameter"
+                             "TestNewShellSpace/path_and_env_and_tem.*r$")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example"))))
+          (add-after 'unpack 'preserve-PATH-from-environment
+            ;; Unlike FHS systems, Guix needs to look its commands fom PATH.
+            ;; Expose it by default in the test environments.
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "options.go"
+                  (("\"GIT_COMMITTER_NAME='C O Mitter'\"," all)
+                   (string-append
+                    all "\n\t\t\t\"PATH=\" + os.Getenv(\"PATH\"),"))))))
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key import-path inputs #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Runtime modules.
+                (substitute* "testspace.go"
+                  (("/bin/bash")
+                   (search-input-file inputs "bin/bash"))
+                  (("\"git\"")
+                   (format #f "~s" (search-input-file inputs "bin/git"))))))))))
+    (native-inputs
+     (list git-minimal
+           go-github-com-stretchr-testify))
+    (inputs
+     (list bash-minimal
+           git-minimal))
+    (home-page "https://github.com/Jiu2015/gotestspace")
+    (synopsis "Create Go workspaces that can quickly run shell commands")
+    (description
+     "@code{gotestspace} is used to quickly create a working directory for
+shell execution using Go, as well as a tool for customizing the execution of
+the shell.  It can help you quickly create an independent workspace for unit
+testing and improve the efficiency of unit test writing.")
+    (license license:gpl3+)))
 
 (define-public go-github-com-jmhodges-clock
   (package
