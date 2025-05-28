@@ -36112,7 +36112,7 @@ mangled symbols, which can be used for directly extracting type information.")
                              python-sqlalchemy
                              python-sympy
                              python-unique-log-filter
-                             unicorn))
+                             unicorn-2.0))
     (native-inputs `(("python-pytest" ,python-pytest)
                      ("python-pytest-xdist" ,python-pytest-xdist)
                      ("python-setuptools" ,python-setuptools)
