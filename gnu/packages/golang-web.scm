@@ -6801,6 +6801,24 @@ RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-mholt-acmez-v3
+  (package
+    (inherit go-github-com-mholt-acmez-v2)
+    (name "go-github-com-mholt-acmez-v3")
+    (version "3.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mholt/acmez")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0knh1j9679ma50myh38nj1hpgifk2h3jyn70nnjsmmmm6whysnlg"))))
+    (arguments
+     (list
+      #:import-path "github.com/mholt/acmez/v3"))))
+
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
     (name "go-github-com-microcosm-cc-bluemonday")
