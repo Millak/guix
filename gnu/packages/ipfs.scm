@@ -776,6 +776,35 @@ different strengths without committing the application to one datastore
 throughout its lifetime.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-datastore-0.6
+  (package
+    (inherit go-github-com-ipfs-go-datastore)
+    (name "go-github-com-ipfs-go-datastore")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-datastore")
+             (commit (string-append "v" version))))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/ipfs/go-datastore/fuzz
+            (delete-file-recursively "fuzz")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xbhh3gm7bgd2d1p821w8gmbh87aix1g1ynhbl7gjaxxyhrsh68n"))))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-ipfs-go-detect-race
+           go-github-com-ipfs-go-ipfs-delay
+           go-github-com-jbenet-goprocess
+           go-go-uber-org-multierr
+           go-golang-org-x-xerrors))))
+
 (define-public go-github-com-ipfs-go-ds-badger
   (package
     (name "go-github-com-ipfs-go-ds-badger")
