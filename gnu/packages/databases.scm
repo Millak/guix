@@ -115,6 +115,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
@@ -147,6 +148,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -480,6 +482,89 @@ database later.")
            license:lgpl2.1           ; exception for OSI-compatible licences
            license:mpl1.1            ; examples/interfaces/0{6,8}*.cpp
            license:public-domain)))) ; including files without explicit licence
+
+(define-public go-github-com-cockroachdb-pebble
+  ;; TODO: As inherited package can't be placed in separate module, keeping
+  ;; this Golang source library here.
+  (package
+    (name "go-github-com-cockroachdb-pebble")
+    (version "1.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/pebble")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15px3m8fid7fwh0xfyia75aak6a5sx5q3r01n79fr6mnyiaix18a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:build-flags #~(list "-tags" "external_libzstd")
+      #:test-flags #~(list "-tags" "external_libzstd"
+                           ;; Skip tests requiring git in PATH.
+                           "-skip" "TestLint")
+      ;; XXX: Maybe run more tests if possible.
+      #:test-subdirs #~(list "internal/...")
+      #:import-path "github.com/cockroachdb/pebble"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-golang-org-x-perf
+           pkg-config))
+    (inputs
+     (list (list zstd "lib")))
+    (propagated-inputs
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-cockroachdb-datadriven
+           go-github-com-cockroachdb-errors
+           go-github-com-cockroachdb-fifo
+           go-github-com-cockroachdb-redact
+           go-github-com-cockroachdb-tokenbucket
+           go-github-com-datadog-zstd
+           go-github-com-ghemawat-stream
+           go-github-com-golang-snappy
+           go-github-com-guptarohit-asciigraph
+           go-github-com-hdrhistogram-hdrhistogram-go
+           go-github-com-klauspost-compress
+           go-github-com-kr-pretty
+           go-github-com-pkg-errors
+           go-github-com-pmezard-go-difflib
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-spf13-cobra
+           go-golang-org-x-exp
+           go-golang-org-x-perf
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/cockroachdb/pebble")
+    (synopsis "RocksDB/LevelDB inspired key-value database in Golang")
+    (description
+     "Pebble is a LevelDB/RocksDB inspired key-value store focused on
+performance and internal usage by CockroachDB. Pebble inherits the RocksDB
+file formats and a few extensions such as range deletion tombstones,
+table-level bloom filters, and updates to the MANIFEST format.")
+    (license license:bsd-3)))
+
+(define-public pebble
+  (package/inherit go-github-com-cockroachdb-pebble
+    (name "pebble")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-cockroachdb-pebble)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/cockroachdb/pebble/cmd/pebble")
+       ((#:unpack-path _ "") "github.com/cockroachdb/pebble")))
+    (native-inputs
+     (append (package-propagated-inputs go-github-com-cockroachdb-pebble)
+             (package-native-inputs go-github-com-cockroachdb-pebble)))
+    (propagated-inputs '())
+    (description
+     (string-append (package-description
+                     go-github-com-cockroachdb-pebble)
+                    "\nThis package provides command line interface (CLI)."))))
 
 (define-public dicedb
   (package
