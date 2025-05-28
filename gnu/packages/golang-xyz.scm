@@ -9042,6 +9042,37 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hdrhistogram-hdrhistogram-go
+  (package
+    (name "go-github-com-hdrhistogram-hdrhistogram-go")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/HdrHistogram/hdrhistogram-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l12j3dvljp868p1d2izpiq7ysll05fchvxij8zb8r160lmqv58r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/HdrHistogram/hdrhistogram-go"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-gonum-org-v1-gonum))
+    (home-page "https://github.com/HdrHistogram/hdrhistogram-go")
+    (synopsis "Gil Tene's HDR Histogram in Golang")
+    (description
+     "This package provides an implementation of
+@url{https://github.com/HdrHistogram/HdrHistogram, Gil Tene's HDR Histogram}
+data structure.  The HDR Histogram allows for fast and accurate analysis of
+the extreme ranges of data with non-normal distributions, like latency.")
+    (license license:expat)))
+
 (define-public go-github-com-hebcal-gematriya
   (package
     (name "go-github-com-hebcal-gematriya")
