@@ -471,7 +471,8 @@ are accurate on Codeberg.  Lookup team IDs among CURRENT-TEAMS."
               "guix/workers.scm"
               (make-regexp* "^guix/platforms/")
               (make-regexp* "^guix/scripts/")
-              (make-regexp* "^guix/store/"))))
+              (make-regexp* "^guix/store/")
+              (make-regexp* "^nix/"))))
 
 (define-team core-packages
   (team 'core-packages
