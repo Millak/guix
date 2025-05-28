@@ -808,7 +808,7 @@ throughout its lifetime.")
 (define-public go-github-com-ipfs-go-ds-badger
   (package
     (name "go-github-com-ipfs-go-ds-badger")
-    (version "0.3.0")
+    (version "0.3.4")
     (source
      (origin
        (method git-fetch)
@@ -817,7 +817,7 @@ throughout its lifetime.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06hn79airlqrgsbsppin98swbqwz58ji659fyrk1wivp4iz2na3h"))))
+        (base32 "0ywq8cs6yf5vqfbw6rd5pw79sqljd87qi0ykv4gg736s7g7mkjr6"))))
     (build-system go-build-system)
     (arguments
      (list
