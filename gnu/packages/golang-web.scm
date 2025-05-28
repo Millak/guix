@@ -3025,35 +3025,6 @@ OpenAPI v3.0} and
 OpenAPI v3.1}.")
     (license license:expat)))
 
-;; TODO: This repository has been archived by the owner on Aug 30, 2023. It is
-;; now read-only. The raven-go SDK is no longer maintained and was superseded
-;; by the sentry-go
-(define-public go-github-com-getsentry-raven-go
-  (let ((commit "5c24d5110e0e198d9ae16f1f3465366085001d92")
-        (revision "0"))
-    (package
-      (name "go-github-com-getsentry-raven-go")
-      (version (git-version "0.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/getsentry/raven-go")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0lvc376sq8r8jhy2v1m6rf1wyld61pvbk0x6j9xpg56ivqy69xs7"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/getsentry/raven-go"))
-      (propagated-inputs
-       (list go-github-com-certifi-gocertifi go-github-com-pkg-errors))
-      (home-page "https://github.com/getsentry/raven-go")
-      (synopsis "Sentry client in Go")
-      (description "This package is a Go client API for the Sentry event/error
-logging system.")
-      (license license:bsd-3))))
-
 (define-public go-github-com-getsentry-sentry-go
   (package
     (name "go-github-com-getsentry-sentry-go")
