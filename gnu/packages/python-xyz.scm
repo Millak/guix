@@ -1112,6 +1112,27 @@ similar XML files, in the same way the @command{diff} utility does it.")
 Library.")
     (license license:expat)))
 
+(define-public python-jaconv
+  (package
+    (name "python-jaconv")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaconv" version))
+       (sha256
+        (base32 "0qc1dx21vwlarhsg19l5rdjpjf7j7lamrcynaadf0xpj8yr79nij"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel python-nose))
+    (home-page "https://github.com/ikegami-yukino/jaconv")
+    (synopsis
+     "Pure-Python Japanese character interconverter for Hiragana, Katakana,
+Hankaku, Zenkaku")
+    (description
+     "jaconv (Japanese Converter) is interconverter for Hiragana, Katakana,
+Hankaku (half-width character) and Zenkaku (full-width character)")
+    (license license:expat)))
+
 (define-public python-janus
   (package
     (name "python-janus")
