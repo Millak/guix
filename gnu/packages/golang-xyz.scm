@@ -3738,6 +3738,33 @@ locale can be selected.")
 the Go language features.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cockroachdb-fifo
+  (package
+    (name "go-github-com-cockroachdb-fifo")
+    (version "0.0.0-20240816210425-c5d0cb0b6fc0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/fifo")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17p2x5q7ngp0l0wswyf9816dv93ix0wljvp9cfiid9if6mr96wjp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/fifo"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-golang-org-x-sync))
+    (home-page "https://github.com/cockroachdb/fifo")
+    (synopsis "Facilities for FIFO queueing in Golang")
+    (description
+     "This package provides several optimized facilities related to FIFO
+queueing and rate limiting.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cockroachdb-logtags
   (package
     (name "go-github-com-cockroachdb-logtags")
