@@ -1651,6 +1651,89 @@ The aim is to provide confidential, authenticated Git storage and
 collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
 
+(define-public git-repo-go
+  (package
+    (name "git-repo-go")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Apteryks/git-repo-go")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y310dmpiaii6d84d9pvdv4wz4mx7snbpm7v9n400q0j8qnjal32"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:import-path "github.com/Apteryks/git-repo-go"
+      #:build-flags
+      #~(list "-ldflags" (string-append
+                          "-s -w "      ;default ldflags
+                          "-X github.com/Apteryks/git-repo-go/version.Version="
+                          #$version))
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "src/github.com/Apteryks/git-repo-go"
+                (substitute* "config/hooks.go"
+                  ;; The commit-msg hook script is executed by Git during the
+                  ;; tests, so must have a fully referenced /bin/sh shebang.
+                  (("#!/bin/sh")
+                   (format #f "#!~a"
+                           (search-input-file inputs "bin/sh"))))
+                (substitute* "test/t1302-helper-remote-unknown.sh"
+                  ;; This test creates some helper scripts.
+                  (("#!/bin/sh")
+                   (format #f "#!~a" (which "sh")))))))
+          (add-before 'check 'make-HOME-writable
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'functional-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PATH" (string-append #$output "/bin:"
+                                              (getenv "PATH")))
+                ;; Run the integration test suite.  Parallelism
+                ;; doesn't currently work (see:
+                ;; https://github.com/Apteryks/git-repo-go/issues/1)
+                (setenv "GIT_TEST_OPTS" "--verbose")
+                (invoke "make" "-C"
+                        "src/github.com/Apteryks/git-repo-go/test")))))))
+    (native-inputs
+     (list git-minimal
+           go-github-com-go-git-go-git-v5
+           go-github-com-h2non-gock
+           go-github-com-jiangxin-goconfig
+           go-github-com-jiangxin-multi-log
+           go-github-com-jiu2015-gotestspace
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-shellwords
+           go-github-com-mitchellh-go-homedir
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-golang-org-x-crypto
+           go-gopkg-in-yaml-v2
+           perl
+           python-minimal))
+    (inputs
+     (list bash-minimal))
+    (home-page "https://git-repo.info/en/docs/")
+    (synopsis "Git extensions for AGit-Flow and Gerrit servers")
+    (description
+     "@command{git-repo} provides Git extensions for interacting conveniently
+with AGit-Flow or Gerrit servers.  It makes it possible to create, update or
+fetch @acronym{PR, pull requests}, and more.  It is based on the
+@command{repo} tool that was developed for the Gerrit project, but also
+supports AGit-Flow and lifts the requirement to use a manifest file.")
+    (license license:asl2.0)))
+
 (define-public cgit
   ;; Use the latest commit, as the latest tagged release is 5 years old.
   (let ((commit "994d3fe1a8fa56d5a1dd36aae62c788169160c3a")
