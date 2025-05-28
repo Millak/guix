@@ -70,6 +70,8 @@
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2025 Formbi <formbi@protonmail.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -154,6 +156,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
@@ -3340,6 +3344,51 @@ Both command-line and GTK2 interface are available.")
     (description "ytcc is a command line tool to keep track of your favorite
 playlists.")
     (license license:gpl3+)))
+
+(define-public ytarchive
+  (package
+    (name "ytarchive")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Kethsar/ytarchive")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mx7w423rr6s4zvv65sbzl5rifj67rb0pzxjpi2y69l9p1vynmv3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/Kethsar/ytarchive"
+      #:embed-files #~(list "children" "nodes" "text")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap
+            (lambda _
+              (wrap-program (string-append #$output "/bin/ytarchive")
+                `("PATH" ":" prefix
+                  (,(string-append #$(this-package-input "ffmpeg")
+                                   "/bin/ffmpeg")))))))))
+    (native-inputs
+     (list go-github-com-alessio-shellescape
+           go-github-com-dannav-hhmmss
+           go-github-com-mattn-go-colorable
+           go-github-com-xhit-go-str2duration-v2
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (inputs
+     (list ffmpeg))
+    (home-page "https://github.com/Kethsar/ytarchive")
+    (synopsis "Youtube livestream downloader")
+    (description
+     "Attempt to archive a given Youtube livestream from the start.  This is
+most useful for streams that have already started and you want to download,
+but can also be used to wait for a scheduled stream and start downloading as
+soon as it starts.")
+    (license license:expat)))
 
 (define-public libbluray
   (package
