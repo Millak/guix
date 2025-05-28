@@ -44,7 +44,7 @@ TARGET."
 (define %system-packages
   ;; Key packages proposed by the Guix System installer.
   (append (map specification->package
-               '("guix"
+               '("guix" "shepherd"
                  "gnome" "xfce" "mate" "enlightenment"
                  "icewm" "openbox" "awesome"
                  "i3-wm" "i3status" "dmenu" "st"
@@ -54,6 +54,41 @@ TARGET."
                  "connman" "network-manager" "wpa-supplicant" "isc-dhcp" "cups"
                  "linux-libre" "grub-hybrid"))
           %default-xorg-modules))
+
+(define %bootloader-packages
+  ;; The bootloaders offered by the Guix System installer.
+  (append
+    (map specification->package
+         '("grub" "grub-minimal" "grub-efi"))
+    ;; Add all the u-boot packages.
+    ;; TODO: Filter by target.
+    (if (or (target-arm32?)
+            (target-aarch64?)
+            (target-riscv64?))
+        `(,@(fold-packages
+              (lambda (package lst)
+                (if (string-prefix? "u-boot-"
+                                    (package-name package))
+                    (cons package lst)
+                    lst))
+              (list)))
+        '())))
+
+(define %filesystem-packages
+  ;; The installer offers to create filesystems which are then needed.
+  ;; See also: (gnu system linux-initrd)
+  (cons* (@ (gnu packages linux) e2fsck/static)
+         (@ (gnu packages disk) fatfsck/static)
+         (@ (gnu packages file-systems) bcachefs/static)
+         (@ (gnu packages linux) btrfs-progs/static)
+         (@ (gnu packages file-systems) jfs_fsck/static)
+         (@ (gnu packages linux) ntfsfix/static)
+         (@ (gnu packages linux) f2fs-fsck/static)
+         (@ (gnu packages linux) xfs_repair/static)
+         (map specification->package
+              '("lvm2-static"
+                "cryptsetup-static"
+                "mdadm-static"))))
 
 
 ;;;
@@ -81,6 +116,8 @@ TARGET."
       (filter-map (lambda (package)
                     (and (supported-package? package (%current-system))
                          (package->manifest-entry package)))
-                  %system-packages))))
+                  (append %system-packages
+                          %bootloader-packages
+                          %filesystem-packages)))))
 
 %system-manifest
