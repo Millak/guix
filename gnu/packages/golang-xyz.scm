@@ -3738,6 +3738,30 @@ locale can be selected.")
 the Go language features.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cockroachdb-logtags
+  (package
+    (name "go-github-com-cockroachdb-logtags")
+    (version "0.0.0-20241215232642-bb51bb14a506")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/logtags")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vlbp0k365arqqxmdvdizxvmx6qpr2fqhqi5p6ini3l5zbxl5bw7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/logtags"))
+    (home-page "https://github.com/cockroachdb/logtags")
+    (synopsis "Key/Value annotations for Golang contexts")
+    (description
+     "This package provides a way to attach key/value annotations to a Go
+@code{context.Context}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cockroachdb-redact
   (package
     (name "go-github-com-cockroachdb-redact")
