@@ -3778,6 +3778,37 @@ locale can be selected.")
 the Go language features.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cockroachdb-crlib
+  (package
+    (name "go-github-com-cockroachdb-crlib")
+    (version "0.0.0-20250521014800-1789bc709bcb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/crlib")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09757m5brzl2pgvzqwgcz5sy0wnvgl12lz991plssazmgkl98dv6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:skip-build? #t
+      ;; TODO: More additional packages are required to enable all tests, it's
+      ;; used as source only package.
+      #:test-flags
+      #~(list "-skip" "TestLint")
+      #:import-path "github.com/cockroachdb/crlib"))
+    (home-page "https://github.com/cockroachdb/crlib")
+    (synopsis "Utility library for CockroachDB")
+    (description
+     "This package provides general-purpose Go libraries and utilities.  It is
+intended as an \"extended standard library\" and it has no external
+dependencies.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cockroachdb-fifo
   (package
     (name "go-github-com-cockroachdb-fifo")
