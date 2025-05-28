@@ -713,6 +713,46 @@ scripts (writing systems).  Languages are represented by a defined list of
 constants, while scripts are represented by RangeTable.")
     (license license:expat)))
 
+(define-public go-github-com-aclements-go-perfevent
+  (package
+    (name "go-github-com-aclements-go-perfevent")
+    (version "0.0.0-20240703205258-f34bb3e1a4e4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aclements/go-perfevent")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xlm7zi7k2ynla8z18n4zbz76n5f3iw5wz8axnn95jhdgzw07xr5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/aclements/go-perfevent"
+      #:test-flags
+      ;; Disable tests requiring root access and failing with error:
+      ;; permission denied (consider: echo 0 | sudo tee
+      ;; /proc/sys/kernel/perf_event_paranoid)
+      #~(list "-skip" (string-join
+                       (list "TestBasic"
+                             "TestOpenGroup"
+                             "TestOpenOne"
+                             "TestResetRunning"
+                             "TestResetStopped"
+                             "TestStop"
+                             "TestTotal")
+                       "|"))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/aclements/go-perfevent")
+    (synopsis "Golang API for Linux's @code{perf_event_open}")
+    (description
+     "This package provides a simple Go API to Linux's @code{perf_event_open},
+supporting event counters and a basic set of events.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-adhocore-gronx
   (package
     (name "go-github-com-adhocore-gronx")
