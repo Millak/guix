@@ -7572,6 +7572,35 @@ also be used to manage your stamp collection.")
      "Common enterprise features for the Go programming language.")
     (license license:cc0)))
 
+(define-public go-github-com-performancecopilot-speed-v4
+  (package
+    (name "go-github-com-performancecopilot-speed-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/performancecopilot/speed")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zpf42pid3cd3sqv4gy2h51adq2zpw0pi0v3fpgxqna4iia280j0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/performancecopilot/speed/v4"))
+    (propagated-inputs
+     (list go-github-com-edsrzf-mmap-go
+           go-github-com-hdrhistogram-hdrhistogram-go
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/performancecopilot/speed")
+    (synopsis "Performance Co-Pilot instrumentation API in Golang")
+    (description
+     "Package speed implements a golang client for the @url{https://pcp.io/,
+Performance Co-Pilot}, system performance analysis toolkit, instrumentation
+API.")
+    (license license:expat)))
+
 (define-public go-github-com-perimeterx-marshmallow
   (package
     (name "go-github-com-perimeterx-marshmallow")
