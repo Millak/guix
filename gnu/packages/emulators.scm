@@ -3862,6 +3862,18 @@ graphic filters.  Some of its features include:
 emulator framework based on QEMU.")
     (license license:gpl2+)))
 
+(define-public unicorn-2.0
+  (package
+    (inherit unicorn)
+    (name "unicorn")
+    (version "2.0.1.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri name version))
+       (sha256
+        (base32 "0mlfs8qfi0clyncfkbxp6in0cpl747510i6bqymwid43xcirbikz"))))))
+
 (define-public ppsspp
   (package
     (name "ppsspp")
