@@ -758,6 +758,7 @@ EXTRA_DIST +=						\
   etc/guix-install.sh					\
   etc/historical-authorizations				\
   etc/news.scm						\
+  etc/teams.scm						\
   etc/manifests/disarchive.scm				\
   etc/manifests/hurd.scm				\
   etc/manifests/kernels.scm				\
