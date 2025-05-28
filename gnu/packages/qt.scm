@@ -5888,7 +5888,7 @@ a secure way.")))
                (base32
                 "0k6saz5spys4a4p6ws0ayrjks2gqdqvz7zfmlhdpz5axha0gbqq4"))))
     (build-system qt-build-system)
-    (native-inputs (list doxygen pkg-config qtbase-5 qttools-5))
+    (native-inputs (list doxygen pkg-config qttools-5))
     (inputs (list dbus glib libaccounts-glib))
     (arguments
      (list #:tests? #f                  ; Figure out how to run tests
@@ -5938,7 +5938,6 @@ authentication on behalf of its clients.")
                  (base32
                   "13cgdf6hhi2z3c8sax79dwi7450n8h228kpyl2w5lx0xglb2savq"))))
       (native-inputs (modify-inputs (package-native-inputs signond)
-                       (delete "qtbase")
                        (replace "qttools" qttools)))
       (arguments
        (substitute-keyword-arguments (package-arguments signond)
