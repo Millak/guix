@@ -23,6 +23,14 @@
 # This is the "empty hash" used by Git when pushing a branch deletion.
 z40=0000000000000000000000000000000000000000
 
+perform_checks() {
+	set -e
+	guix git authenticate
+	exec make check-channel-news
+	exit 127
+}
+
+main() {
 while read local_ref local_hash remote_ref remote_hash
 do
         # When deleting a remote branch, no commits are pushed to the remote, and
@@ -39,16 +47,10 @@ do
 		# Only use the hook when pushing to upstream.
 		case "$2" in
 		    *.gnu.org*)
-			set -e
-			guix git authenticate
-			exec make check-channel-news
-			exit 127
+			perform_checks
 			;;
 		    *codeberg.org/guix/*)
-			set -e
-			guix git authenticate
-			exec make check-channel-news
-			exit 127
+			perform_checks
 			;;
 		    *)
 			exit 0
@@ -58,3 +60,6 @@ do
 done
 
 exit 0
+}
+
+main "$@"
