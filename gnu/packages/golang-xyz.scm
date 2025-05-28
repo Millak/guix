@@ -7910,6 +7910,31 @@ provides a buffered io.Writer that is flushed at a timed interval.")
      "This package can generate ASCII line graphs in Golang.")
     (license license:bsd-3)))
 
+(define-public go-github-com-h2non-parth
+  (package
+    (name "go-github-com-h2non-parth")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/h2non/parth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aj37m7z6wbi397g38jni54n3c7yy8nljc40ksy8am213lil5aqc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/h2non/parth"))
+    (home-page "https://github.com/h2non/parth")
+    (synopsis "Path parsing library for segment unmarshaling and slicing")
+    (description
+     "The @code{parth} Go library provides path parsing for segment
+unmarshaling and slicing.  In other words, parth provides simple and flexible
+access to (URL) path parameters.")
+    (license license:expat)))
+
 (define-public go-github-com-hanwen-go-fuse
   (package
     (name "go-github-com-hanwen-go-fuse")
