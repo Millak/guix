@@ -3738,6 +3738,29 @@ locale can be selected.")
 the Go language features.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cockroachdb-tokenbucket
+  (package
+    (name "go-github-com-cockroachdb-tokenbucket")
+    (version "0.0.0-20250429170803-42689b6311bb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/tokenbucket")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "051s1y35xqnr2qxzzyqnhs4zz8knqfj6zyxgzli2c7nycbzg9nrq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/tokenbucket"))
+    (home-page "https://github.com/cockroachdb/tokenbucket")
+    (synopsis "Token bucket implementation in Golang")
+    (description
+     "This package provides a token bucket implementation in Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-code-hex-go-generics-cache
   (package
     (name "go-github-com-code-hex-go-generics-cache")
