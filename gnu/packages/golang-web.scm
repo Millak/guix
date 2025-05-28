@@ -1810,6 +1810,69 @@ API.  See the full Circonus API Documentation at
 browser window.")
     (license license:bsd-2)))
 
+(define-public go-github-com-cockroachdb-errors
+  (package
+    (name "go-github-com-cockroachdb-errors")
+    (version "1.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/errors")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0savcvdq1xiwgf8in2xvj9d7gnj921izixlzd2zwdk6384lllc7m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/cockroachdb/errors"
+      #:test-subdirs #~(list "assert/..."
+                             "barriers/..."
+                             "contexttags/..."
+                             "domains/..."
+                             "errbase/..."
+                             "errutil/..."
+                             "extgrpc/..."
+                             "exthttp/..."
+                             ;; "fmttests/..." ; build failed
+                             "grpc/..."
+                             "hintdetail/..."
+                             "issuelink/..."
+                             "join/..."
+                             "markers/..."
+                             "oserror/..."
+                             ;; "report/..." ; build failed
+                             "safedetails/..."
+                             "secondary/..."
+                             "telemetrykeys/..."
+                             "testutils/..."
+                             "withstack/...")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cockroachdb-datadriven
+           go-github-com-cockroachdb-logtags
+           go-github-com-cockroachdb-redact
+           go-github-com-getsentry-sentry-go
+           go-github-com-gogo-googleapis
+           go-github-com-gogo-protobuf
+           go-github-com-gogo-status
+           go-github-com-hydrogen18-memlistener
+           go-github-com-kr-pretty
+           go-github-com-pkg-errors
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/cockroachdb/errors")
+    (synopsis "Golang errors with network portability")
+    (description
+     "This package provides a a drop-in replacement to
+@code{github.com/pkg/errors} and Go's standard @code{errors} package.  It also
+provides of error objects, in ways suitable for distributed systems with
+mixed-version software compatibility.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
