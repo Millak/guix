@@ -31,6 +31,7 @@
 ;;; Copyright © 2023, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1496,28 +1497,23 @@ items and collections, editing items, locking and unlocking collections
 (define-public python-trustme
   (package
     (name "python-trustme")
-    (version "0.9.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trustme" version))
        (sha256
-        (base32 "0v2qzszmyazfgc1snicdr4b4qdajpjd4pbinpgrn9vfff0yv41sy"))))
+        (base32 "0zz49agi7hy82fbr03xs6k9vjgiy7v8qsp426cgv8bbzphmvla35"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-more-itertools
+     (list python-hatchling
            python-pyopenssl
            python-pytest
-           python-pytest-cov
-           python-service-identity
-           python-setuptools
-           python-wheel
-           python-zipp))
+           python-service-identity))
     (propagated-inputs
      (list python-cryptography
-           python-idna
-           python-ipaddress))
-    (home-page "https://github.com/python-trio/trustme")
+           python-idna))
+    (home-page "https://trustme.readthedocs.io")
     (synopsis "Fake a certificate authority for tests")
     (description
      "@code{trustme} is a tiny Python package that does one thing: it gives you
