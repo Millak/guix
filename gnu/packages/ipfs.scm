@@ -728,36 +728,27 @@ keys used by @code{go-ipfs} (Kubo).")
 (define-public go-github-com-ipfs-go-datastore
   (package
     (name "go-github-com-ipfs-go-datastore")
-    (version "0.6.0")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ipfs/go-datastore")
              (commit (string-append "v" version))))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/ipfs/go-datastore/fuzz
+            (delete-file-recursively "fuzz")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xbhh3gm7bgd2d1p821w8gmbh87aix1g1ynhbl7gjaxxyhrsh68n"))))
+        (base32 "02n38i09f8ffr894fzlsl80ahf32mpap5q004acz9cdg9a67pdz3"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/ipfs/go-datastore"
-      #:test-subdirs
-      #~(list "autobatch/..."
-              "delayed/..."
-              "examples/..."
-              "failstore/..."
-              ;; "fuzz/..." ; introduces cycle, for CLI
-              "keytransform/..."
-              "mount/..."
-              "namespace/..."
-              "query/..."
-              "retrystore/..."
-              "scoped/..."
-              "sync/..."
-              "test/..."
-              "trace/..."
-              ".")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -771,9 +762,9 @@ keys used by @code{go-ipfs} (Kubo).")
      (list go-github-com-google-uuid
            go-github-com-ipfs-go-detect-race
            go-github-com-ipfs-go-ipfs-delay
-           go-github-com-jbenet-goprocess
-           go-go-uber-org-multierr
-           go-golang-org-x-xerrors))
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-trace
+           go-go-uber-org-multierr))
     (home-page "https://github.com/ipfs/go-datastore")
     (synopsis "Key-value datastore interfaces")
     (description
