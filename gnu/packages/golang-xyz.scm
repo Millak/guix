@@ -3927,6 +3927,30 @@ against various paths.  This is particularly useful when trying to filter
 files based on a .gitignore document.")
     (license license:expat)))
 
+(define-public go-github-com-dannav-hhmmss
+  (package
+    (name "go-github-com-dannav-hhmmss")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dannav/hhmmss")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h2wdpd5sd2wfd5d2vyqiwlrqlxf3qwpqjy74hbcr7bhjpgv81m0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dannav/hhmmss"))
+    (home-page "https://github.com/dannav/hhmmss")
+    (synopsis "Parse HHMMSS strings into a Go time.Duration type")
+    (description
+     "Package @code{hhmmss} manages converting HH:MM:SS time strings to
+@code{time.Duration} values.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-dicedb-dicedb-go
   (package
     (name "go-github-com-dicedb-dicedb-go")
