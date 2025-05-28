@@ -430,7 +430,7 @@ scans, enabling high performance, ordered, high-cardinality prefix queries.")
 (define-public go-github-com-ipfs-go-ds-flatfs
   (package
     (name "go-github-com-ipfs-go-ds-flatfs")
-    (version "0.5.1")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)
@@ -439,7 +439,7 @@ scans, enabling high performance, ordered, high-cardinality prefix queries.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mrgl6kslq4d4zfpdyxvqxz8brhm8wphvnp916pippn7z63sayj3"))))
+        (base32 "1m5fxxdn2zj9i9nm8fdyll4wcgaknfg3vj07959mj06hwc9r3z3c"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -449,7 +449,7 @@ scans, enabling high performance, ordered, high-cardinality prefix queries.")
            go-github-com-ipfs-go-log
            go-github-com-jbenet-goprocess))
     (home-page "https://github.com/ipfs/go-ds-flatfs")
-    (synopsis "Datastore implementation using sharded directories and flat files to store data")
+    (synopsis "Datastore with sharded directories and flat files")
     (description
      "Package flatfs is a Datastore implementation that stores all objects in
 a two-level directory structure in the local file system, regardless of the
