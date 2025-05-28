@@ -6815,7 +6815,7 @@ Differentiation between text and binary files}.
 (define-public go-github-com-gammazero-chanqueue
   (package
     (name "go-github-com-gammazero-chanqueue")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -6824,7 +6824,7 @@ Differentiation between text and binary files}.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kji9blaqbphzrdr9b09c1lfm4vzj94m2ygwganw62byqg4hwy26"))))
+        (base32 "1ff4k2hmg9m1k9qjdr5cv1rdhls5iajpi4c3rdqwbmqnnaz7m5fr"))))
     (build-system go-build-system)
     (arguments
      (list
