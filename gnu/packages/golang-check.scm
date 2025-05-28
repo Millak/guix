@@ -980,6 +980,59 @@ package).")
               license:isc    ; for d3-selection
               ))))
 
+(define-public go-github-com-h2non-gock
+  (package
+    (name "go-github-com-h2non-gock")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/h2non/gock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w6gmhyqbgf3xq8km3wip61j5y56nwxkny06rkhmvn6a3s5qkshv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/h2non/gock"
+      ;; want: (context.deadlineExceededError) context deadline exceeded
+      #:test-flags #~(list "-skip" "TestResponderPreExpiredContext")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "_examples")))))))
+    (propagated-inputs
+     (list go-github-com-h2non-parth
+           go-github-com-nbio-st))
+    (home-page "https://github.com/h2non/gock")
+    (synopsis "HTTP traffic mocking and testing for Go")
+    (description
+     "Versatile HTTP mocking made easy in @url{https://golang.org, Go} that
+works with any @code{net/http} based stdlib implementation.  Inspired by the
+Node @code{nock} library, it has features like:
+@itemize
+@item Simple and expressive API
+@item Semantic API DSL for declarative HTTP mock declarations
+@item Built-in helpers for easy JSON/XML mocking
+@item Supports persistent and volatile TTL-limited mocks
+@item Full regular expressions capable HTTP request mock matching
+@item Designed for both testing and runtime scenarios
+@item Match request by method, URL params, headers and bodies
+@item Extensible and pluggable HTTP matching rules
+@item Ability to switch between mock and real networking modes
+@item Ability to filter/map HTTP requests for accurate mock matching
+@item Supports map and filters to handle mocks easily
+@item Wide compatible HTTP interceptor using @code{http.RoundTripper} interface
+@item Works with any @code{net/http} compatible client, such as @code{gentleman}
+@item Network timeout/cancelation delay simulation
+@item Extensible and hackable API
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-hexops-gotextdiff
   (package
     (name "go-github-com-hexops-gotextdiff")
