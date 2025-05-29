@@ -7199,7 +7199,7 @@ direct replacement for @command{xvfb-run} specifically.
 (define-public xwayland-satellite
   (package
     (name "xwayland-satellite")
-    (version "0.5.1")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7208,7 +7208,7 @@ direct replacement for @command{xvfb-run} specifically.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r99qfbmc67202pcs4kiw94hiql0aqcsx877bgnlyxy6gzilq47y"))))
+                "04n9lsalzyj1pq0x0wvmnpldw1kdb8ws91niwqr54a3km7ayn8i2"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
