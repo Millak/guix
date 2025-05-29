@@ -4501,7 +4501,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
 (define-public traceroute
   (package
     (name "traceroute")
-    (version "2.1.5")
+    (version "2.1.6")
     (source
      (origin
        (method url-fetch)
@@ -4509,7 +4509,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
                            "traceroute-" version "/traceroute-"
                            version ".tar.gz"))
        (sha256
-        (base32 "17l5barragw0mfgsbjfndny3w4l7zs20l6s6rvim3azajq6jcv4w"))))
+        (base32 "0pnvp7fcgkhg58ilnp2j9dk83274s3mpjgzrzgvqzafpp76zkklw"))))
     (build-system gnu-build-system)
     (arguments
      (list
