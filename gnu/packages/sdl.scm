@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2023, 2024 dan <i@dan.games>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -517,6 +518,33 @@ SDL.")
     (description "This library is a wrapper around the Pango library.
 It allows you to use TrueType fonts to render internationalized and
 tagged text in SDL applications.")
+    (license license:lgpl2.1)))
+
+(define-public sdl2-pango
+  (package
+    (name "sdl2-pango")
+    (version "2.1.5")
+    (home-page "https://github.com/markuskimius/SDL2_Pango")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ivngl3bsy2aq8pqdh96nzrfnln6linz50mp5bpb9wv2bk5gj8pi"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list "--disable-static")))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (inputs
+     (list freetype pango sdl2))
+    (synopsis "Pango SDL2 binding")
+    (description "This library is a wrapper around the Pango library.
+It allows you to use TrueType fonts to render internationalized and
+tagged text in SDL2 applications.")
     (license license:lgpl2.1)))
 
 (define-public sdl-ttf
