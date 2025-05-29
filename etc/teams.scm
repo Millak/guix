@@ -948,7 +948,8 @@ the \"texlive\" importer."
   python home)
 
 (define-member (person "Tobias Geerinckx-Rice"
-                       "me@tobias.gr")
+                       "me@tobias.gr"
+                       "nckx")
   core mentors)
 
 (define-member (person "Steve George"
@@ -1120,7 +1121,7 @@ the \"texlive\" importer."
 
 (define-member (person "Zheng Junjie"
                        "z572@z572.online"
-                       "z572")
+                       "Z572")
   core-packages qt kde)
 
 (define-member (person "Sughosha"
