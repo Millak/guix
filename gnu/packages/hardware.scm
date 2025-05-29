@@ -494,7 +494,7 @@ support.")
 (define-public ckb-next
     (package
       (name "ckb-next")
-      (version "0.6.0")
+      (version "0.6.2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -502,7 +502,7 @@ support.")
                       (commit (string-append "v" version))))
                 (sha256
                  (base32
-                  "1s6xz2d631rds0bsxk26smqjs9jg3lwnjrjh2sw8hc7h7l8jyiqv"))
+                  "1mdmimxifzajyv7n75zrnkn1fi0v46vbas028da2mncy8yjla3cl"))
                 (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
