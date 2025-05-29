@@ -3757,6 +3757,49 @@ is no support for parsing block and inline level HTML.")
     (name "guile2.0-commonmark")
     (inputs (list guile-2.0))))
 
+(define-public guile-sundown
+  (package
+    (name "guile-sundown")
+    (version "2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/Baleine/guile-sundown-3.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dpc93l01zh9zri31baxr5zsfhv4r1hxfzxflijzisi7zs90j3vl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX="
+                             #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-extension-file-name
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "sundown/markdown.scm"
+                (("\\(load-extension \"libsundown-guile\"(.*)\\)" _ init)
+                 (format #f
+                  "(load-extension \"~a/lib/guile/3.0/extensions/libsundown-guile\"~a)"
+                  (assoc-ref outputs "out") init)))))
+          (delete 'configure)
+          ;; No tests.
+          (delete 'check))))
+    (inputs (list guile-3.0))
+    (native-inputs (list guile-3.0 pkg-config))
+    (home-page "https://github.com/greghull/sundown-guile")
+    (synopsis "Markdown library for Guile based on Sundown")
+    (description
+     "guile-sundown is a library that renders Markdown as HTML.  It
+supports many Markdown extensions including tables.")
+    (license (list (license:non-copyleft
+                    "file://LICENSES/LicenseRef-lesser-curl.txt"
+                    "cURL license without advertising clause.")
+                   license:lgpl2.1+ license:expat license:cc0))))
+
 (define-public mcron
   (package
     (name "mcron")
