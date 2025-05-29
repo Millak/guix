@@ -8,6 +8,7 @@
 ;;; Copyright © 2022 Denis Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,7 @@
 (define-public valgrind/pinned
   (package
     (name "valgrind")
-    (version "3.22.0")
+    (version "3.25.1")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/pub/valgrind"
@@ -49,32 +50,32 @@
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "0k1ddnzxfpbng2sp5r31jjxsmp35g977rx6a8jcp4prcvmddn4f8"))))
+                "1bvilavwimza3n6v5r2ypxydk737krn3n6ywxxlc4ibvfb8bipk1"))))
     (build-system gnu-build-system)
     (outputs '("doc"                              ;16 MB
                "out"))
     (arguments
-     `(,@(if (string-prefix? "powerpc" (or (%current-target-system)
-                                           (%current-system)))
-           `(#:make-flags '("CFLAGS+=-maltivec"))
-           '())
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'patch-suppression-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Don't assume the FHS.
-             (let* ((out (assoc-ref outputs "out"))
-                    (dir (string-append out "/lib/valgrind")))
-               (substitute* (find-files dir "\\.supp$")
-                 (("obj:/lib") "obj:*/lib")
-                 (("obj:/usr/X11R6/lib") "obj:*/lib")
-                 (("obj:/usr/lib") "obj:*/lib")))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((orig (format #f "~a/share/doc" (assoc-ref outputs "out")))
-                   (dest (format #f "~a/share" (assoc-ref outputs "doc"))))
-               (mkdir-p dest)
-               (rename-file orig dest)))))))
+     (append
+      (if (string-prefix? "powerpc" (or (%current-target-system)
+                                        (%current-system)))
+          (list #:make-flags #~(list "CFLAGS+=-maltivec"))
+          '())
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'install 'patch-suppression-files
+                  (lambda _
+                    ;; Don't assume the FHS.
+                    (let* ((dir (string-append #$output "/lib/valgrind")))
+                      (substitute* (find-files dir "\\.supp$")
+                        (("obj:/lib") "obj:*/lib")
+                        (("obj:/usr/X11R6/lib") "obj:*/lib")
+                        (("obj:/usr/lib") "obj:*/lib")))))
+                (add-after 'install 'install-doc
+                  (lambda _
+                    (let ((orig (string-append #$output "/share/doc"))
+                          (dest (string-append #$output:doc "/share")))
+                      (mkdir-p dest)
+                      (rename-file orig dest))))))))
     (native-inputs
      (list perl))
     (home-page "https://www.valgrind.org/")
@@ -86,8 +87,7 @@ management and threading bugs, and profile your programs in detail.  You can
 also use Valgrind to build new tools.")
     ;; https://valgrind.org/info/platforms.html
     (supported-systems (fold delete %supported-systems
-                             '("i586-gnu" "x86_64-gnu"
-                               "armhf-linux" "riscv64-linux")))
+                             '("i586-gnu" "x86_64-gnu" "armhf-linux")))
     (license gpl2+)
 
     ;; Hide this variant so end users get the "interactive" Valgrind below.
@@ -105,10 +105,7 @@ also use Valgrind to build new tools.")
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "1k3fb1vyx1b3vvwyql0ckg9n2lyw9dilbrhw1kcw0r3b3lln0pr9"))))
-    (supported-systems (fold delete %supported-systems
-                             '("i586-gnu" "x86_64-gnu"
-                               "armhf-linux")))))
+                "1k3fb1vyx1b3vvwyql0ckg9n2lyw9dilbrhw1kcw0r3b3lln0pr9"))))))
 
 (define-public valgrind/interactive
   (package/inherit valgrind
