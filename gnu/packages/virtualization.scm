@@ -2964,14 +2964,14 @@ administrators and developers in managing the database.")
 (define-public osinfo-db
   (package
     (name "osinfo-db")
-    (version "20240701")
+    (version "20250124")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0pchyq749nh6ivvd3d9bgd7zqdqa07x94jpsprrz8i8c5ykq2wqx"))))
+        (base32 "0l3j4lxgixqys1zmqs195rlb181n2kfyz7mkl8sq2yasjzq1g9vw"))))
     (build-system trivial-build-system)
     (arguments
      (list
