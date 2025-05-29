@@ -455,14 +455,17 @@ record instead of a package.  Please adjust your configuration accordingly."))
       (dhcp-client-configuration
        (package package))))))
 
-(define dhcp-client-service-type
+(define-deprecated dhcp-client-service-type
+  dhcpcd-service-type
   (service-type (name 'dhcp-client)
                 (extensions
                  (list (service-extension shepherd-root-service-type
                                           dhcp-client-shepherd-service)))
                 (default-value (dhcp-client-configuration))
                 (description "Run @command{dhcp}, a Dynamic Host Configuration
-Protocol (DHCP) client, on all the non-loopback network interfaces.")))
+Protocol (DHCP) client, on all the non-loopback network interfaces.
+
+This services is deprecated as ISC's DHCP client reached its end-of-life.")))
 
 (define-record-type* <dhcpd-configuration>
   dhcpd-configuration make-dhcpd-configuration
