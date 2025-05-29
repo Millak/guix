@@ -1265,7 +1265,7 @@ remind you to take a break now and then.")
            kcrash
            kdbusaddons
            kdnssd
-           kdsoap-qt6
+           kdsoap
            kdsoap-ws-discovery-client
            ki18n
            kiconthemes

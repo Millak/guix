@@ -28,7 +28,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2022, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
@@ -5713,9 +5713,12 @@ policy applications.")
         (base32
          "0mpkg9iyvzb6mxvhbi6zc052ids2r2nzpmjbljgpq6a2hja13vyr"))))
     (build-system qt-build-system)
-    (inputs (list qtbase-5))
     (arguments
-     (list #:configure-flags #~(list "-DKDSoap_TESTS=true")
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DKDSoap_TESTS=true"
+                   ;; remove when next version release.
+                   "-DKDSoap_QT6=true")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
@@ -5731,14 +5734,7 @@ web server.")
     (license (list license:gpl2 license:gpl3))))
 
 (define-public kdsoap-qt6
-  (package
-    (inherit kdsoap)
-    (name "kdsoap-qt6")
-    (arguments (substitute-keyword-arguments (package-arguments kdsoap)
-                 ((#:configure-flags flags #~(list))
-                  #~(cons "-DKDSoap_QT6=true" #$flags))))
-    (inputs (modify-inputs (package-inputs kdsoap)
-              (replace "qtbase" qtbase)))))
+  (deprecated-package "kdsoap-qt6" kdsoap))
 
 (define-public libaccounts-qt
   (package

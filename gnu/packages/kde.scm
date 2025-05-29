@@ -727,7 +727,7 @@ illustrate project schedules.")
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
-    (inputs (list kdsoap-qt6))
+    (inputs (list kdsoap))
     (arguments (list
                 ;; test require network.
                 #:tests? #f
@@ -788,7 +788,7 @@ KDSoap.")
                   kcoreaddons
                   kdnssd
                   kdbusaddons
-                  kdsoap-qt6
+                  kdsoap
                   kdsoap-ws-discovery-client
                   kguiaddons
                   ktextwidgets
