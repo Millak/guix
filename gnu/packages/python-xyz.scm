@@ -36051,6 +36051,21 @@ mangled symbols, which can be used for directly extracting type information.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-x"
+              "--dist" "load"
+              "-n" (number->string (parallel-job-count))
+              "-k"
+              ;; test_mips32_missing_offset_in_instructions fails
+              ;; with capstone 5 and passes with capstone 4. Might
+              ;; be a capstone regressions, needs investigation.
+              ;;
+              ;; test_concrete_memset is a non-deterministic benchmark.
+              ;; test_similarity_fauxware is flaky.
+              (string-append
+               "not test_mips32_missing_offset_in_instructions"
+               " and not test_concrete_memset"
+               " and not test_similarity_fauxware"))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-tests
                      (lambda* (#:key inputs #:allow-other-keys)
@@ -36070,26 +36085,11 @@ mangled symbols, which can be used for directly extracting type information.")
                          (substitute* "tests/common.py"
                            (("\\[\"cc\"\\]")
                             "[\"gcc\"]")))))
-                   (replace 'check
-                     (lambda* (#:key inputs tests? #:allow-other-keys)
-                       (when tests?
-                         (copy-recursively #$(this-package-native-input "binaries")
-                                           "../binaries")
-                         (with-directory-excursion "tests"
-                           ;; test_mips32_missing_offset_in_instructions fails
-                           ;; with capstone 5 and passes with capstone 4. Might
-                           ;; be a capstone regressions, needs investigation.
-                           ;;
-                           ;; test_concrete_memset is a non-deterministic benchmark.
-                           ;; test_similarity_fauxware is flaky.
-                           (let ((to-skip '("test_mips32_missing_offset_in_instructions"
-                                            "test_concrete_memset"
-                                            "test_similarity_fauxware")))
-                             (invoke "pytest" "-vv" "-x" "--dist" "loadfile"
-                                     "-k" (string-append
-                                            "not "
-                                            (string-join to-skip " and not "))
-                                     "-n" (number->string (parallel-job-count))))))))
+                   (add-before 'check 'check-setup
+                     (lambda _
+                       (copy-recursively
+                        #$(this-package-native-input "binaries")
+                        "../binaries")))
                    (add-before 'build 'set-cc
                      (lambda _
                        (setenv "CC" "gcc"))))))
