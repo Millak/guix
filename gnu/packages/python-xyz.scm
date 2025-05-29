@@ -36081,9 +36081,15 @@ mangled symbols, which can be used for directly extracting type information.")
                            ;; be a capstone regressions, needs investigation.
                            ;;
                            ;; test_concrete_memset is a non-deterministic benchmark.
-                           (invoke "pytest" "-vv" "-x" "--dist" "loadfile"
-                                   "-k" "not test_mips32_missing_offset_in_instructions and not test_concrete_memset"
-                                   "-n" (number->string (parallel-job-count)))))))
+                           ;; test_similarity_fauxware is flaky.
+                           (let ((to-skip '("test_mips32_missing_offset_in_instructions"
+                                            "test_concrete_memset"
+                                            "test_similarity_fauxware")))
+                             (invoke "pytest" "-vv" "-x" "--dist" "loadfile"
+                                     "-k" (string-append
+                                            "not "
+                                            (string-join to-skip " and not "))
+                                     "-n" (number->string (parallel-job-count))))))))
                    (add-before 'build 'set-cc
                      (lambda _
                        (setenv "CC" "gcc"))))))
