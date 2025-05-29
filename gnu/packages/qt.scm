@@ -5835,16 +5835,16 @@ GLib applications.")
 (define-public packagekit-qt5
   (package
     (name "packagekit-qt5")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/hughsie/PackageKit-Qt")
+                    (url "https://github.com/PackageKit/PackageKit-Qt")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bajp6lxc9gdn7sy7rs7hwkhx854k5kqr3w9v07mv9l6vwnwq057"))))
+                "1nx8xfhz9v4pc0mz1ir0pq47skpc3w3yj8wqa4m5yky87ib5xcxc"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))          ;no test suite
     (native-inputs (list pkg-config))
