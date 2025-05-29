@@ -7927,14 +7927,14 @@ midi devices to JACK midi devices.")
 (define-public opustags
   (package
     (name "opustags")
-    (version "1.9.0")
+    (version "1.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/fmang/opustags")
                     (commit version)))
               (sha256
-               (base32 "1f1bj0ng89plivdwpjc8qkfy8nn1kw5gqnbc74scigz7mw9z443i"))
+               (base32 "13ibqmp37hvm1k17zqi81r8ya727b5f56wg4a8bnqp0qaghkwnnj"))
               (file-name (git-file-name name version))))
     (arguments
      (list
