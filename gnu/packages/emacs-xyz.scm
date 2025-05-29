@@ -148,7 +148,7 @@
 ;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
 ;;; Copyright © 2024-2025 Liam Hupfer <liam@hpfr.net>
-;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2024-2025 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
@@ -1734,7 +1734,7 @@ posts, and participate in discussions on Discourse, directly from Emacs.")
 (define-public emacs-disproject
   (package
     (name "emacs-disproject")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1743,7 +1743,7 @@ posts, and participate in discussions on Discourse, directly from Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0550bfqbprbr9s36xgyrwdg2mrry28j5cbd7fms980ixn6a4vcx5"))))
+        (base32 "17691mi013pp1l39dmgzil6kq3nl0dqnqmwsba5j1j3dbfzm9i42"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-transient))
     (home-page "https://github.com/aurtzy/disproject")
