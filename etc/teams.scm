@@ -175,6 +175,17 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
          (unit (cons unit 'read)))
        %default-forgejo-team-units))
 
+;; Forgejo user, as returned by 'forgejo-team-members'.
+(define-json-mapping <forgejo-user>
+  forgejo-user forgejo-user?
+  json->forgejo-user <=> forgejo-user->json
+  (id           forgejo-user-id)                  ;integer
+  (active?      forgejo-user-active? "active")    ;boolean
+  (login        forgejo-user-login)               ;string
+  (full-name    forgejo-user-full-name "full_name") ;string
+  ;; Various fields omitted.
+  )
+
 (define (forgejo-http-headers token)
   "Return the HTTP headers for basic authorization with TOKEN."
   `((content-type . (application/json (charset . "UTF-8")))
@@ -287,10 +298,26 @@ PARAMETERS."
   => 201
   json->forgejo-team)
 
+(define-forgejo-request (edit-team team)
+  "Update TEAM, a Forgejo team."
+  (PATCH "teams" (number->string (forgejo-team-id team)))
+  (forgejo-team->json team)
+  => 200
+  json->forgejo-team)
+
 (define-forgejo-request (delete-team team)
   "Delete TEAM, a Forgejo team."
   (DELETE "teams" (number->string (forgejo-team-id team)))
   => 204)
+
+(define-forgejo-request (forgejo-team-members team)
+  "Return the list of account names of the members of TEAM, a Forgejo team."
+  (GET "teams" (number->string (forgejo-team-id team)) "members"
+       & '(("limit" . "100")))                    ;get up to 100 members
+  => 200
+  (lambda (port)
+    (set-port-encoding! port "UTF-8")
+    (map json->forgejo-user (vector->list (json->scm port)))))
 
 (define-forgejo-request (add-team-member team user)
   "Add USER (a string) to TEAM, a Forgejo team."
@@ -308,6 +335,32 @@ PARAMETERS."
                 'read                             ;permission
                 %default-forgejo-team-unit-map))
 
+(define* (update-team token forgejo-team team
+                      #:key (log-port (current-error-port)))
+  "Update FORGEJO-TEAM on the server so that it matches TEAM."
+  (format log-port "updating team '~a'~%"
+          (forgejo-team-name forgejo-team))
+
+  ;; Update metadata: description, permissions, etc.
+  (edit-team token forgejo-team)
+
+  ;; Update the list of members so it matches those of TEAM.
+  (let* ((current   (map forgejo-user-login
+                         (forgejo-team-members token forgejo-team)))
+         (target    (filter-map person-codeberg-account
+                                (team-members team)))
+         (to-add    (lset-difference string=? target current))
+         (to-remove (lset-difference string=? current target)))
+    (for-each (lambda (user)
+                (format log-port "adding '~a' to team '~a'~%"
+                        user (forgejo-team-name forgejo-team))
+                (add-team-member token forgejo-team user))
+              to-add)
+    (for-each (lambda (user)
+                (format log-port "removing '~a' from team '~a'~%"
+                        user (forgejo-team-name forgejo-team)))
+              to-remove)))
+
 (define* (synchronize-team token team
                            #:key
                            (current-teams
@@ -315,34 +368,31 @@ PARAMETERS."
                                                 %codeberg-organization))
                            (log-port (current-error-port)))
   "Synchronize TEAM, a <team> record, so that its metadata and list of members
-are accurate on Codeberg.  Lookup team IDs among CURRENT-TEAMS."
+are accurate on Codeberg, either by creating it or by updating it if it
+already exists.  Lookup team IDs among CURRENT-TEAMS."
   (let ((forgejo-team
          (find (let ((name (team-id->forgejo-id (team-id team))))
                  (lambda (candidate)
                    (string=? (forgejo-team-name candidate) name)))
                current-teams)))
-    (when forgejo-team
-      ;; Delete the previously-created team.
-      (format log-port "team '~a' already exists; deleting it~%"
-              (forgejo-team-name forgejo-team))
-      (delete-team token forgejo-team))
-
-    ;; Create the team.
-    (let ((forgejo-team
-           (create-team token %codeberg-organization
-                        (or forgejo-team
-                            (team->forgejo-team team)))))
-      (format log-port "created team '~a'~%"
-              (forgejo-team-name forgejo-team))
-      (let ((members (filter-map person-codeberg-account
-                                 (team-members team))))
-        (for-each (lambda (member)
-                    (add-team-member token forgejo-team member))
-                  members)
-        (format log-port "added ~a members to team '~a'~%"
-                (length members)
-                (forgejo-team-name forgejo-team))
-        forgejo-team))))
+    (if forgejo-team
+        (update-team token forgejo-team team
+                     #:log-port log-port)
+        (let ((forgejo-team
+               (create-team token %codeberg-organization
+                            (or forgejo-team
+                                (team->forgejo-team team)))))
+          (format log-port "created team '~a'~%"
+                  (forgejo-team-name forgejo-team))
+          (let ((members (filter-map person-codeberg-account
+                                     (team-members team))))
+            (for-each (lambda (member)
+                        (add-team-member token forgejo-team member))
+                      members)
+            (format log-port "added ~a members to team '~a'~%"
+                    (length members)
+                    (forgejo-team-name forgejo-team))
+            forgejo-team)))))
 
 (define (synchronize-teams token)
   "Push all the existing teams on Codeberg."
