@@ -6694,14 +6694,14 @@ versions of @command{find}, including POSIX, GNU, and *BSD find.")
 (define-public rdfind
   (package
     (name "rdfind")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://rdfind.pauldreik.se/" name "-" version
                            ".tar.gz"))
        (sha256
-        (base32 "0y9j1w3nbgjks0k4kgm6qq92yrwgv66n212ncmlmhsl8y676wh3s"))))
+        (base32 "0afzwhmzlzhzzckd9iwkbx6grrzm5p4vk0zbpz8lz7hx5qan7i3q"))))
     (build-system gnu-build-system)
     (native-inputs (list which))
     (inputs (list nettle))
@@ -6710,10 +6710,15 @@ versions of @command{find}, including POSIX, GNU, and *BSD find.")
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'patch-tests
                      (lambda _
-                       (display (which "echo"))
+                       (substitute* (list "testcases/hardlink_fails.sh"
+                                          "testcases/symlinking_action.sh")
+                         (("\"/bin/sh -c\"")
+                          (format #f
+                                  "\"~a -c\""
+                                  (search-input-file %build-inputs "/bin/sh"))))
                        (substitute* "testcases/common_funcs.sh"
                          (("/bin/echo")
-                          (which "echo"))))))))
+                          (search-input-file %build-inputs "/bin/echo"))))))))
     (home-page "https://rdfind.pauldreik.se")
     (synopsis "Find duplicate files")
     (description
