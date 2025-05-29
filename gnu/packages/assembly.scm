@@ -39,6 +39,7 @@
   #:use-module ((guix build utils) #:select (parallel-job-count))
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix svn-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -63,6 +64,41 @@
   #:use-module (gnu packages xml)
   #:use-module ((guix utils)
                 #:select (%current-system cc-for-target)))
+
+(define-public acme
+  (package
+    (name "acme")
+    (version "0.97")
+    (source
+     (origin
+       (method svn-fetch)
+       (uri (svn-reference
+             (url "https://svn.code.sf.net/p/acme-crossass/code-0/trunk/")
+             (revision 274)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d0nh06vxxfgb6ki8c8l3j2735kdppkd1c0s3mv03pv58wivwngp"))
+       (modules '((guix build utils)))
+       ;; Public domain and no source code.
+       (snippet '(delete-file-recursively "ACME_Lib"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;Released version has no tests.
+           #:make-flags
+           #~(list (string-append "BINDIR=" #$output "/bin")
+                   "-C" "src")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; No configure script.
+               (delete 'configure))))
+    (home-page "https://acme-crossass.sourceforge.io/")
+    (synopsis "Cross assembler for the 6502, 6510, 65c02 and 65816 processors")
+    (description
+     "ACME is a 6502, 6510, 65c02 and 65816 cross assembler that supports
+global/local/anonymous labels, offset assembly, conditional assembly and looping
+assembly.  It can include other source files as well as binaries while
+assembling.  Calculations can be done in integer or float mode.")
+    (license license:gpl2+)))
 
 (define-public asl
   (let ((build "267"))
