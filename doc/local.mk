@@ -52,6 +52,7 @@ info_TEXINFOS = %D%/guix.texi			\
   %D%/guix-cookbook.sv.texi
 
 %C%_guix_TEXINFOS = \
+  $(OS_CONFIG_EXAMPLES_TEXI) \
   %D%/contributing.texi \
   %D%/fdl-1.3.texi
 
