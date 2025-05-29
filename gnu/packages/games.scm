@@ -6607,76 +6607,86 @@ that sets it apart from other monster fighting RPGs.")
 (define-public tuxpaint
   (package
     (name "tuxpaint")
-    (version "0.9.23")                  ;keep VER_DATE below in sync
+    (version "0.9.34") ;keep VER_DATE below in sync
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/tuxpaint/tuxpaint/"
-                           version "/tuxpaint-" version ".tar.gz"))
+       (uri (string-append "mirror://sourceforge/tuxpaint/tuxpaint/" version
+                           "/tuxpaint-" version ".tar.gz"))
        (sha256
-        (base32
-         "09k9pxi88r3dx6dyjwf9h85d4qpva4i29qz63dc558hg9v21k69l"))
+        (base32 "00zdf3iza3qrbwmwn9q5fw5z29i1pw63xaq9d15f1ac6sdgdyqdp"))
        (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove win32 directory which contains binary dll's and the
-           ;; deprecated visualc directory.
-           (for-each delete-file-recursively '("win32" "visualc"))
-           (substitute* "Makefile"
-             ;; Do not rely on $(GPERF) being an absolute file name
-             (("\\[ -x \\$\\(GPERF\\) \\]")
-              "$(GPERF) --version >/dev/null 2>&1"))
-           #t))
+       (snippet '(begin
+                   ;; Remove win32 directory which contains binary dll's and the
+                   ;; deprecated visualc directory.
+                   (for-each delete-file-recursively
+                             '("win32" "visualc"))
+                   (substitute* "Makefile"
+                     ;; Do not rely on $(GPERF) being an absolute file name
+                     (("\\[ -x \\$\\(GPERF\\) \\]")
+                      "$(GPERF) --version >/dev/null 2>&1")) #t))
        (patches (search-patches "tuxpaint-stamps-path.patch"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list gperf pkg-config))
-    (inputs
-     (list bash-minimal
-           cairo
-           fribidi
-           gettext-minimal
-           libpng
-           (librsvg-for-system)
-           libpaper
-           netpbm
-           (sdl-union (list sdl sdl-mixer sdl-ttf sdl-image))))
+    (native-inputs (list gperf imagemagick pkg-config))
+    (inputs (list bash-minimal
+                  cairo
+                  fribidi
+                  gettext-minimal
+                  libimagequant
+                  libpng
+                  (librsvg-for-system)
+                  libpaper
+                  netpbm
+                  pango
+                  sdl2
+                  sdl2-gfx
+                  sdl2-image
+                  sdl2-mixer
+                  sdl2-pango
+                  sdl2-ttf))
     ;; TODO: Use system fonts rather than those in data/fonts
     (arguments
-     `(#:make-flags `("VER_DATE=2018-09-02"
-                      "GPERF=gperf" "CC=gcc"
-                      "SDL_PCNAME=sdl SDL_image SDL_mixer SDL_ttf"
-                      ,(string-append "PREFIX=" %output)
-                      "KDE_PREFIX=$(PREFIX)/share/applications"
-                      "KDE_ICON_PREFIX=$(PREFIX)/share/icons/"
-                      "COMPLETIONDIR=$(PREFIX)/etc/bash_completion.d")
-       #:parallel-build? #f             ;fails on some systems
-       #:tests? #f                      ;No tests
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)   ;no configure phase
-                  (add-before 'install 'no-sys-cache
-                    (lambda _           ;do not rebuild system conf cache
-                      (substitute* "Makefile"
-                        (("kbuildsycoca4") ""))))
-                  (add-after 'install 'fix-import
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (net (assoc-ref inputs "netpbm"))
-                             (tpi (string-append out "/bin/tuxpaint-import")))
-                        (substitute* tpi
-                          ;; Point to installation prefix so that the default
-                          ;; configure file is found.
-                          (("/usr/local") out))
-                        ;; tuxpaint-import uses a bunch of programs from
-                        ;; netpbm, so make sure it knows where those are
-                        (wrap-program tpi
-                          `("PATH" ":" prefix
-                            (,(string-append net "/bin"))))))))))
+     (list
+      #:make-flags
+      #~(list "VER_DATE=2024-10-25"
+              "GPERF=gperf"
+              (string-append "CC="
+                             #$(cc-for-target))
+              "SDL_PCNAME=sdl2 SDL2_image SDL2_mixer SDL2_ttf SDL2_gfx"
+              (string-append "PREFIX="
+                             #$output)
+              "KDE_PREFIX=$(PREFIX)/share/applications"
+              "KDE_ICON_PREFIX=$(PREFIX)/share/icons/"
+              "COMPLETIONDIR=$(PREFIX)/etc/bash_completion.d")
+      #:parallel-build? #f              ;fails on some systems
+      #:tests? #f                       ;No tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ;no configure phase
+          (add-before 'install 'no-sys-cache
+            (lambda _
+               ;do not rebuild system conf cache
+              (substitute* "Makefile"
+                (("kbuildsycoca4")
+                 ""))))
+          (add-after 'install 'fix-import
+            (lambda _
+              (let* ((tpi (string-append #$output "/bin/tuxpaint-import")))
+                (substitute* tpi
+                  ;; Point to installation prefix so that the default
+                  ;; configure file is found.
+                  (("/usr/local")
+                   #$output))
+                ;; tuxpaint-import uses a bunch of programs from
+                ;; netpbm, so make sure it knows where those are
+                (wrap-program tpi
+                  `("PATH" ":" prefix
+                    (,(string-append #$(this-package-input "netpbm") "/bin"))))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "TUXPAINT_STAMPS_PATH")
             (files '("share/tuxpaint/stamps")))))
-    (home-page "http://www.tuxpaint.org")
+    (home-page "https://tuxpaint.org")
     (synopsis "Drawing software for children")
     (description
      "Tux Paint is a free drawing program designed for young children (kids
@@ -6689,7 +6699,7 @@ your child be creative.")
 (define-public tuxpaint-stamps
   (package
     (name "tuxpaint-stamps")
-    (version "2018.09.01")
+    (version "2024.10.25")
     (source
      (origin
        (method url-fetch)
@@ -6698,24 +6708,9 @@ your child be creative.")
                            "/tuxpaint-stamps-" version ".tar.gz"))
        (sha256
         (base32
-         "1skr23k27yj3vgwfazpzxp90lb2a278gxrkr3bxw7az6zpkmb3yp"))))
-    (build-system trivial-build-system)
-    (native-inputs
-     (list tar gzip))
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
-                   (setenv "PATH"
-                           (string-append
-                            (assoc-ref %build-inputs "tar") "/bin" ":"
-                            (assoc-ref %build-inputs "gzip") "/bin"))
-                   (invoke "tar" "xvf" (assoc-ref %build-inputs "source"))
-                   (chdir (string-append ,name "-" ,version))
-                   (let ((dir (string-append %output "/share/tuxpaint/stamps")))
-                     (mkdir-p dir)
-                     (copy-recursively "stamps" dir))
-                   #t)))
+         "19vng3h6icd7zs2arfmkcg4w7snsw5syx956ww05xgvwll9s2hal"))))
+    (build-system copy-build-system)
+    (arguments (list #:install-plan #~'(("stamps" "share/tuxpaint/"))))
     (home-page (package-home-page tuxpaint))
     (synopsis "Stamp images for Tux Paint")
     (description
@@ -6726,7 +6721,7 @@ with the \"Stamp\" tool within Tux Paint.")
 (define-public tuxpaint-config
   (package
     (name "tuxpaint-config")
-    (version "0.0.14")                  ;keep VER_DATE below in sync
+    (version "0.0.25")                  ;keep VER_DATE below in sync
     (source
      (origin
        (method url-fetch)
@@ -6734,19 +6729,20 @@ with the \"Stamp\" tool within Tux Paint.")
                            version "/tuxpaint-config-" version ".tar.gz"))
        (sha256
         (base32
-         "0zkgxk436nqcp43zghkfmh397c7dvh5bwn2as7gwvv208bzyij6g"))))
+         "16awjwxr2wf6v05wr2z01kgnah2nwwk9k5y25fb3lawnzy0aqild"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
+    (native-inputs (list gettext-minimal pkg-config))
     (inputs
      (list fltk
            libpaper
+           libunibreak
+           pango
            ;; TODO: Should the following be propagated by fltk?
            libx11
            libxft
            mesa))
     (arguments
-     `(#:make-flags `("VER_DATE=2018-09-01"
+     `(#:make-flags `("VER_DATE=2024-11-15"
                       "CONFDIR=/etc/tuxpaint" ;don't write to store
                       ,(string-append "PREFIX=" %output)
                       "GNOME_PREFIX=$(PREFIX)")

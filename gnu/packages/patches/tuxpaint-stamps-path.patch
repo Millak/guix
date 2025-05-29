@@ -1,7 +1,10 @@
---- tuxpaint-0.9.22/src/tuxpaint.c
-+++ tuxpaint-0.9.22/src/tuxpaint.c
-@@ -7474,11 +7474,21 @@
- static void load_stamps(SDL_Surface * screen)
+This patch allows tuxpaint to load stamps from multiple sources, and allows
+Guix's packages to remain loosely coupled.
+
+--- tuxpaint-0.9.34/src/tuxpaint.c
++++ tuxpaint-0.9.34/src/tuxpaint.c
+@@ -9426,12 +9426,22 @@
+ static void load_stamps(SDL_Surface *screen)
  {
    char *homedirdir = get_fname("stamps", DIR_DATA);
 +  char *stamps_path = getenv("TUXPAINT_STAMPS_PATH");
@@ -9,6 +12,7 @@
    default_stamp_size = compute_default_scale_factor(1.0);
  
    load_stamp_dir(screen, homedirdir);
+ #ifndef __ANDROID__
    load_stamp_dir(screen, DATA_PREFIX "stamps");
 +  /* Load any stamps in TUXPAINT_STAMPS_PATH */
 +  if (stamps_path) {
@@ -19,6 +23,6 @@
 +      token = strtok(NULL, ":");
 +    }
 +  }
- #ifdef __APPLE__
-   load_stamp_dir(screen, "/Library/Application Support/TuxPaint/stamps");
- #endif
+ #else
+   load_stamp_dir(screen, "stamps/animals");
+   load_stamp_dir(screen, "stamps/cartoon/tux");
