@@ -65,6 +65,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5924,6 +5925,105 @@ compatible with SQLite using a graphical user interface.")
      ;; dual license
      (list license:gpl3+
            license:mpl2.0))))
+
+(define-public sqlitestudio
+  (package
+    (name "sqlitestudio")
+    (version "3.4.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pawelsalawa/sqlitestudio")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zb1qr88rwkzmrxc0lm99x8h99hpn5c2wfdpvqzs9f9ph8qvasww"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (python-version #$(version-major+minor (package-version
+                                                             python)))
+                     (python-include (string-append (assoc-ref inputs "python")
+                                                    "/include/python"
+                                                    python-version)))
+                (invoke "qmake"
+                        (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," out
+                                       "/lib:")
+                        (string-append "PREFIX=" out) "./SQLiteStudio3")
+                (mkdir-p "Plugins")
+                (with-directory-excursion "Plugins"
+                  (invoke "qmake"
+                          (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," out
+                                         "/lib:")
+                          (string-append "PREFIX=" out)
+                          (string-append "INCLUDEPATH+=" python-include)
+                          (string-append "PYTHON_VERSION=" python-version)
+                          ".")))))
+          (replace 'build
+            (lambda _
+              (invoke "make" "-j"
+                      (number->string (parallel-job-count)))
+              (with-directory-excursion "Plugins"
+                (invoke "make")))) ;building plugins in parallel corrupts them
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (icons-dir (string-append out "/share/icons/hicolor/"))
+                     (src-img-dir (string-append
+                                   "SQLiteStudio3/guiSQLiteStudio/img/")))
+                (invoke "make" "-j"
+                        (number->string (parallel-job-count)) "install")
+                (for-each (lambda (size)
+                            (let ((target-dir (string-append icons-dir size
+                                                             "x" size "/apps/")))
+                              (mkdir-p target-dir)
+                              (copy-file (string-append src-img-dir
+                                                        "sqlitestudio_" size
+                                                        ".png")
+                                         (string-append target-dir
+                                                        "sqlitestudio.png"))))
+                          '("16" "48" "256"))
+                (let ((target-dir (string-append icons-dir "scalable/apps/")))
+                  (mkdir-p target-dir)
+                  (install-file (string-append src-img-dir "sqlitestudio.svg")
+                                target-dir))
+                (with-directory-excursion "Plugins"
+                  (invoke "make" "-j"
+                          (number->string (parallel-job-count)) "install")))))
+          (add-after 'install 'install-desktop
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out")))
+                (make-desktop-entry-file (string-append out
+                                          "/share/applications/"
+                                          #$name ".desktop")
+                                         #:name "SQLiteStudio"
+                                         #:comment #$(package-synopsis
+                                                      this-package)
+                                         #:exec (string-append #$name " %f")
+                                         #:icon #$name
+                                         #:categories '("Development"
+                                                        "Utility" "Database")
+                                         #:mime-type "application/vnd.sqlite3")))))))
+    (inputs (list openssl
+                  python
+                  qtbase-5
+                  qtsvg-5
+                  readline
+                  sqlite-next))
+    (native-inputs (list python qttools-5 qtdeclarative-5 tcl))
+    (home-page "https://sqlitestudio.pl/")
+    (synopsis "Graphical user interface to browse and edit SQLite databases")
+    (description
+     "SQLiteStudio is desktop application for browsing and editing SQLite
+database files.  It is aimed for people, who know what SQLite is, or what
+relational databases are in general.")
+    (license license:gpl3+)))
 
 (define-public sqls
   (package
