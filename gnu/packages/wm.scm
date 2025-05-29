@@ -2446,6 +2446,7 @@ and provides animations for switching between backgrounds.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:glib-or-gtk? #t
       #:configure-flags #~(list
                            "-Dsystemd-service=false")
       #:phases
