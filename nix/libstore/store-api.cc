@@ -62,14 +62,14 @@ void checkStoreName(const string & name)
        reasons (e.g., "." and ".."). */
     if (string(name, 0, 1) == ".")
         throw Error(format("invalid name: `%1%' (can't begin with dot)") % name);
-    foreach (string::const_iterator, i, name)
-        if (!((*i >= 'A' && *i <= 'Z') ||
-              (*i >= 'a' && *i <= 'z') ||
-              (*i >= '0' && *i <= '9') ||
-              validChars.find(*i) != string::npos))
+    for (const auto& i : name)
+        if (!((i >= 'A' && i <= 'Z') ||
+              (i >= 'a' && i <= 'z') ||
+              (i >= '0' && i <= '9') ||
+              validChars.find(i) != string::npos))
         {
             throw Error(format("invalid character `%1%' in name `%2%'")
-                % *i % name);
+                % i % name);
         }
 }
 
@@ -81,22 +81,22 @@ void checkStoreName(const string & name)
    where
 
    <store> = the location of the store, usually /gnu/store
-   
+
    <name> = a human readable name for the path, typically obtained
      from the name attribute of the derivation, or the name of the
      source file from which the store path is created.  For derivation
      outputs other than the default "out" output, the string "-<id>"
      is suffixed to <name>.
-     
+
    <h> = base-32 representation of the first 160 bits of a SHA-256
      hash of <s>; the hash part of the store name
-     
+
    <s> = the string "<type>:sha256:<h2>:<store>:<name>";
      note that it includes the location of the store as well as the
      name to make sure that changes to either of those are reflected
      in the hash (e.g. you won't get /nix/store/<h>-name1 and
      /nix/store/<h>-name2 with equal hash parts).
-     
+
    <type> = one of:
      "text:<r1>:<r2>:...<rN>"
        for plain text files written to the store using
@@ -188,9 +188,9 @@ Path computeStorePathForText(const string & name, const string & s,
        hacky, but we can't put them in `s' since that would be
        ambiguous. */
     string type = "text";
-    foreach (PathSet::const_iterator, i, references) {
+    for (const auto& i : references) {
         type += ":";
-        type += *i;
+        type += i;
     }
     return makeStorePath(type, hash, name);
 }
@@ -203,11 +203,11 @@ string StoreAPI::makeValidityRegistration(const PathSet & paths,
     bool showDerivers, bool showHash)
 {
     string s = "";
-    
-    foreach (PathSet::iterator, i, paths) {
-        s += *i + "\n";
 
-        ValidPathInfo info = queryPathInfo(*i);
+    for (auto& i : paths) {
+        s += i + "\n";
+
+        ValidPathInfo info = queryPathInfo(i);
 
         if (showHash) {
             s += printHash(info.hash) + "\n";
@@ -219,8 +219,8 @@ string StoreAPI::makeValidityRegistration(const PathSet & paths,
 
         s += (format("%1%\n") % info.references.size()).str();
 
-        foreach (PathSet::iterator, j, info.references)
-            s += *j + "\n";
+        for (auto& j : info.references)
+            s += j + "\n";
     }
 
     return s;
@@ -229,9 +229,9 @@ string StoreAPI::makeValidityRegistration(const PathSet & paths,
 string showPaths(const PathSet & paths)
 {
     string s;
-    foreach (PathSet::const_iterator, i, paths) {
+    for (const auto& i : paths) {
         if (s.size() != 0) s += ", ";
-        s += "`" + *i + "'";
+        s += "`" + i + "'";
     }
     return s;
 }
@@ -247,7 +247,7 @@ Path readStorePath(Source & from)
 template<class T> T readStorePaths(Source & from)
 {
     T paths = readStrings<T>(from);
-    foreach (typename T::iterator, i, paths) assertStorePath(*i);
+    for (auto& i : paths) assertStorePath(i);
     return paths;
 }
 

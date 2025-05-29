@@ -679,12 +679,12 @@ static void performOp(bool trusted, unsigned int clientVersion,
         store->querySubstitutablePathInfos(paths, infos);
         stopWork();
         writeInt(infos.size(), to);
-        foreach (SubstitutablePathInfos::iterator, i, infos) {
-            writeString(i->first, to);
-            writeString(i->second.deriver, to);
-            writeStrings(i->second.references, to);
-            writeLongLong(i->second.downloadSize, to);
-            writeLongLong(i->second.narSize, to);
+        for (auto& i : infos) {
+            writeString(i.first, to);
+            writeString(i.second.deriver, to);
+            writeStrings(i.second.references, to);
+            writeLongLong(i.second.downloadSize, to);
+            writeLongLong(i.second.narSize, to);
         }
         break;
     }

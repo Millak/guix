@@ -474,19 +474,19 @@ void LocalStore::checkDerivationOutputs(const Path & drvPath, const Derivation &
 
     else {
         Derivation drvCopy(drv);
-        foreach (DerivationOutputs::iterator, i, drvCopy.outputs) {
-            i->second.path = "";
-            drvCopy.env[i->first] = "";
+        for (auto& i : drvCopy.outputs) {
+            i.second.path = "";
+            drvCopy.env[i.first] = "";
         }
 
         Hash h = hashDerivationModulo(*this, drvCopy);
 
-        foreach (DerivationOutputs::const_iterator, i, drv.outputs) {
-            Path outPath = makeOutputPath(i->first, h, drvName);
-            StringPairs::const_iterator j = drv.env.find(i->first);
-            if (i->second.path != outPath || j == drv.env.end() || j->second != outPath)
+        for (const auto& i : drv.outputs) {
+            Path outPath = makeOutputPath(i.first, h, drvName);
+            StringPairs::const_iterator j = drv.env.find(i.first);
+            if (i.second.path != outPath || j == drv.env.end() || j->second != outPath)
                 throw Error(format("derivation `%1%' has incorrect output `%2%', should be `%3%'")
-                    % drvPath % i->second.path % outPath);
+                    % drvPath % i.second.path % outPath);
         }
     }
 }
@@ -670,8 +670,8 @@ PathSet LocalStore::queryValidPaths(const PathSet & paths)
 {
     return retrySQLite<PathSet>([&]() {
         PathSet res;
-        foreach (PathSet::const_iterator, i, paths)
-            if (isValidPath_(*i)) res.insert(*i);
+        for (const auto& i : paths)
+            if (isValidPath_(i)) res.insert(i);
         return res;
     });
 }
@@ -854,8 +854,8 @@ PathSet LocalStore::querySubstitutablePaths(const PathSet & paths)
     Agent & run = *substituter();
 
     string s = "have ";
-    foreach (PathSet::const_iterator, j, paths)
-	if (res.find(*j) == res.end()) { s += *j; s += " "; }
+    for (const auto& j : paths)
+        if (res.find(j) == res.end()) { s += j; s += " "; }
     writeLine(run.toAgent.writeSide, s);
     while (true) {
 	/* FIXME: we only read stderr when an error occurs, so
@@ -889,8 +889,8 @@ void LocalStore::querySubstitutablePathInfos(PathSet & paths, SubstitutablePathI
     Agent & run = *substituter();
 
     string s = "info ";
-    foreach (PathSet::const_iterator, i, paths)
-        if (infos.find(*i) == infos.end()) { s += *i; s += " "; }
+    for (const auto& i : paths)
+        if (infos.find(i) == infos.end()) { s += i; s += " "; }
     writeLine(run.toAgent.writeSide, s);
 
     while (true) {
@@ -949,13 +949,13 @@ void LocalStore::registerValidPaths(const ValidPathInfos & infos)
         SQLiteTxn txn(db);
         PathSet paths;
 
-        foreach (ValidPathInfos::const_iterator, i, infos) {
-            assert(i->hash.type == htSHA256);
-            if (isValidPath_(i->path))
-                updatePathInfo(*i);
+        for (const auto& i : infos) {
+            assert(i.hash.type == htSHA256);
+            if (isValidPath_(i.path))
+                updatePathInfo(i);
             else
-                addValidPath(*i, false);
-            paths.insert(i->path);
+                addValidPath(i, false);
+            paths.insert(i.path);
         }
 
         for (auto & i : infos) {
@@ -967,12 +967,12 @@ void LocalStore::registerValidPaths(const ValidPathInfos & infos)
         /* Check that the derivation outputs are correct.  We can't do
            this in addValidPath() above, because the references might
            not be valid yet. */
-        foreach (ValidPathInfos::const_iterator, i, infos)
-            if (isDerivation(i->path)) {
+        for (const auto& i : infos)
+            if (isDerivation(i.path)) {
                 // FIXME: inefficient; we already loaded the
                 // derivation in addValidPath().
-                Derivation drv = readDerivation(i->path);
-                checkDerivationOutputs(i->path, drv);
+                Derivation drv = readDerivation(i.path);
+                checkDerivationOutputs(i.path, drv);
             }
 
         /* Do a topological sort of the paths.  This will throw an
@@ -1465,8 +1465,8 @@ bool LocalStore::verifyStore(bool checkContents, bool repair)
 
     PathSet validPaths2 = queryAllValidPaths(), validPaths, done;
 
-    foreach (PathSet::iterator, i, validPaths2)
-        verifyPath(*i, store, done, validPaths, repair, errors);
+    for (auto& i : validPaths2)
+        verifyPath(i, store, done, validPaths, repair, errors);
 
     /* Release the GC lock so that checking content hashes (which can
        take ages) doesn't block the GC or builds. */
@@ -1478,33 +1478,33 @@ bool LocalStore::verifyStore(bool checkContents, bool repair)
 
         Hash nullHash(htSHA256);
 
-        foreach (PathSet::iterator, i, validPaths) {
+        for (auto& i : validPaths) {
             try {
-                ValidPathInfo info = queryPathInfo(*i);
+                ValidPathInfo info = queryPathInfo(i);
 
                 /* Check the content hash (optionally - slow). */
-                printMsg(lvlTalkative, format("checking contents of `%1%'") % *i);
-                HashResult current = hashPath(info.hash.type, *i);
+                printMsg(lvlTalkative, format("checking contents of `%1%'") % i);
+                HashResult current = hashPath(info.hash.type, i);
 
                 if (info.hash != nullHash && info.hash != current.first) {
                     printMsg(lvlError, format("path `%1%' was modified! "
                             "expected hash `%2%', got `%3%'")
-                        % *i % printHash(info.hash) % printHash(current.first));
-                    if (repair) repairPath(*i); else errors = true;
+                        % i % printHash(info.hash) % printHash(current.first));
+                    if (repair) repairPath(i); else errors = true;
                 } else {
 
                     bool update = false;
 
                     /* Fill in missing hashes. */
                     if (info.hash == nullHash) {
-                        printMsg(lvlError, format("fixing missing hash on `%1%'") % *i);
+                        printMsg(lvlError, format("fixing missing hash on `%1%'") % i);
                         info.hash = current.first;
                         update = true;
                     }
 
                     /* Fill in missing narSize fields (from old stores). */
                     if (info.narSize == 0) {
-                        printMsg(lvlError, format("updating size field on `%1%' to %2%") % *i % current.second);
+                        printMsg(lvlError, format("updating size field on `%1%' to %2%") % i % current.second);
                         info.narSize = current.second;
                         update = true;
                     }
@@ -1516,7 +1516,7 @@ bool LocalStore::verifyStore(bool checkContents, bool repair)
             } catch (Error & e) {
                 /* It's possible that the path got GC'ed, so ignore
                    errors on invalid paths. */
-                if (isValidPath(*i))
+                if (isValidPath(i))
                     printMsg(lvlError, format("error: %1%") % e.msg());
                 else
                     printMsg(lvlError, format("warning: %1%") % e.msg());
@@ -1548,10 +1548,10 @@ void LocalStore::verifyPath(const Path & path, const PathSet & store,
            first, then we can invalidate this path as well. */
         bool canInvalidate = true;
         PathSet referrers; queryReferrers(path, referrers);
-        foreach (PathSet::iterator, i, referrers)
-            if (*i != path) {
-                verifyPath(*i, store, done, validPaths, repair, errors);
-                if (validPaths.find(*i) != validPaths.end())
+        for (auto& i : referrers)
+            if (i != path) {
+                verifyPath(i, store, done, validPaths, repair, errors);
+                if (validPaths.find(i) != validPaths.end())
                     canInvalidate = false;
             }
 

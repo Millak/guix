@@ -188,12 +188,12 @@ template<class N> void Settings::_get(N & res, const string & name)
 string Settings::pack()
 {
     string s;
-    foreach (SettingsMap::iterator, i, settings) {
-        if (i->first.find('\n') != string::npos ||
-            i->first.find('=') != string::npos ||
-            i->second.find('\n') != string::npos)
+    for (auto& i : settings) {
+        if (i.first.find('\n') != string::npos ||
+            i.first.find('=') != string::npos ||
+            i.second.find('\n') != string::npos)
             throw Error("invalid option name/value");
-        s += i->first; s += '='; s += i->second; s += '\n';
+        s += i.first; s += '='; s += i.second; s += '\n';
     }
     return s;
 }

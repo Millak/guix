@@ -60,7 +60,7 @@ bool lockFile(int fd, LockType lockType, bool wait)
         while (fcntl(fd, F_SETLK, &lock) != 0) {
             checkInterrupt();
             if (errno == EACCES || errno == EAGAIN) return false;
-            if (errno != EINTR) 
+            if (errno != EINTR)
                 throw SysError(format("acquiring/releasing lock"));
         }
     }
@@ -94,7 +94,7 @@ bool PathLocks::lockPaths(const PathSet & _paths,
     const string & waitMsg, bool wait)
 {
     assert(fds.empty());
-    
+
     /* Note that `fds' is built incrementally so that the destructor
        will only release those locks that we have already acquired. */
 
@@ -102,11 +102,11 @@ bool PathLocks::lockPaths(const PathSet & _paths,
        the same order, thus preventing deadlocks. */
     Paths paths(_paths.begin(), _paths.end());
     paths.sort();
-    
+
     /* Acquire the lock for each path. */
-    foreach (Paths::iterator, i, paths) {
+    for (auto& i : paths) {
         checkInterrupt();
-        Path path = *i;
+        Path path = i;
         Path lockPath = path + ".lock";
 
         debug(format("locking path `%1%'") % path);
@@ -115,7 +115,7 @@ bool PathLocks::lockPaths(const PathSet & _paths,
             throw Error("deadlock: trying to re-acquire self-held lock");
 
         AutoCloseFD fd;
-        
+
         while (1) {
 
             /* Open/create the lock file. */
@@ -172,15 +172,15 @@ PathLocks::~PathLocks()
 
 void PathLocks::unlock()
 {
-    foreach (list<FDPair>::iterator, i, fds) {
-        if (deletePaths) deleteLockFile(i->second, i->first);
+    for (auto& i : fds) {
+        if (deletePaths) deleteLockFile(i.second, i.first);
 
-        lockedPaths.erase(i->second);
-        if (close(i->first) == -1)
+        lockedPaths.erase(i.second);
+        if (close(i.first) == -1)
             printMsg(lvlError,
-                format("error (ignored): cannot close lock file on `%1%'") % i->second);
+                format("error (ignored): cannot close lock file on `%1%'") % i.second);
 
-        debug(format("lock released on `%1%'") % i->second);
+        debug(format("lock released on `%1%'") % i.second);
     }
 
     fds.clear();
@@ -199,5 +199,5 @@ bool pathIsLockedByMe(const Path & path)
     return lockedPaths.find(lockPath) != lockedPaths.end();
 }
 
- 
+
 }

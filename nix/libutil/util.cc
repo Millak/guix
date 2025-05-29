@@ -1158,9 +1158,9 @@ template vector<string> tokenizeString(const string & s, const string & separato
 string concatStringsSep(const string & sep, const Strings & ss)
 {
     string s;
-    foreach (Strings::const_iterator, i, ss) {
+    for (const auto& i : ss) {
         if (s.size() != 0) s += sep;
-        s += *i;
+        s += i;
     }
     return s;
 }
@@ -1169,9 +1169,9 @@ string concatStringsSep(const string & sep, const Strings & ss)
 string concatStringsSep(const string & sep, const StringSet & ss)
 {
     string s;
-    foreach (StringSet::const_iterator, i, ss) {
+    for (const auto& i : ss) {
         if (s.size() != 0) s += sep;
-        s += *i;
+        s += i;
     }
     return s;
 }
