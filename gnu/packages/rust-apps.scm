@@ -493,6 +493,35 @@ paging.")
 the terminal.")
     (license license:expat)))
 
+(define-public cargo-bloat
+  (package
+    (name "cargo-bloat")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-bloat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zhimclamvy4dggwnciras6w5ilc0wg0c0f7q8hq1qsmmf1w9qjn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-binfarce" ,rust-binfarce-0.2)
+                       ("rust-json" ,rust-json-0.12)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-multimap" ,rust-multimap-0.10)
+                       ("rust-pdb" ,rust-pdb-0.8)
+                       ("rust-pico-args" ,rust-pico-args-0.5)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-term-size" ,rust-term-size-0.3))))
+    (home-page "https://github.com/RazrFalcon/cargo-bloat")
+    (synopsis "Find out what takes most of the space in your executable")
+    (description
+     "This package provides a way to find out what takes most of the space
+in your executable.")
+    (license license:expat)))
+
 (define-public cargo-machete
   (package
     (name "cargo-machete")
