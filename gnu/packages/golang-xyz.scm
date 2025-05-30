@@ -18139,6 +18139,30 @@ word on a list of words, if none is found, look for a similar word.")
 @url{https://github.com/alecthomas/kong, Kong CLI parser}.")
     (license license:bsd-3)))
 
+(define-public go-go-lsp-dev-jsonrpc2
+  (package
+    (name "go-go-lsp-dev-jsonrpc2")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-language-server/jsonrpc2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mx7h0bak0kr3v18yqaqiq6ya9paw6lv3vqf30k55jsmwmrx5647"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.lsp.dev/jsonrpc2"))
+    (propagated-inputs (list go-github-com-segmentio-encoding))
+    (home-page "https://go.lsp.dev/jsonrpc2")
+    (synopsis "JSON-RPC 2 Go library")
+    (description "The @code{jsonrpc2F} package is an implementation of the
+JSON-RPC 2 specification for Go.")
+    (license license:bsd-3)))
+
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
