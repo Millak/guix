@@ -539,6 +539,37 @@ the terminal.")
     (description "@code{cargo-machete} finds unused dependencies in Cargo.toml.")
     (license (list license:expat license:asl2.0))))
 
+(define-public cargo-with
+  (package
+    (name "cargo-with")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cbourjau/cargo-with.git")
+             (commit "2eb3cbd87f221f24e780b84306574541de38a1e4")))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "127ifblgp7v2vv8iafl88y1cjyskymqdi0nzsavnyab0x9jiskcr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-clap" ,rust-clap-2)
+                       ("rust-env-logger" ,rust-env-logger-0.6)
+                       ("rust-failure" ,rust-failure-0.1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-void" ,rust-void-1))))
+    (home-page "https://github.com/cbourjau/cargo-with/")
+    (synopsis
+     "Cargo extension to run build artifacts through tools like `gdb`.")
+    (description
+     "This package provides a Cargo extension to run the build artifacts
+through tools like `gdb`.")
+    (license license:gpl3)))
+
 (define-public codeberg-cli
   (package
     (name "codeberg-cli")
