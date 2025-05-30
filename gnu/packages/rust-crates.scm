@@ -14319,6 +14319,10 @@
   (crate-source "typst-svg" "0.13.1"
                 "1bpy0dmnqq373wxkyr36aw3hddsfnvkar2y4f3wcj5a0p5f8wk37"))
 
+(define rust-typst-syntax-0.12.0
+  (crate-source "typst-syntax" "0.12.0"
+                "14vn68h92xas9kj0hh14paq7v3d293alfna9r8wwpcnnds5vxdq5"))
+
 (define rust-typst-syntax-0.13.1
   (crate-source "typst-syntax" "0.13.1"
                 "1a13bsxqz65s5j5zf5lx2zk1if5ccdn2xlv15xmylx53fnn4kaav"))
@@ -14326,6 +14330,10 @@
 (define rust-typst-timing-0.13.1
   (crate-source "typst-timing" "0.13.1"
                 "0xm9vjwim3k6khia0qrhj3mr0q90my97s9mj7l1f52z9chb5994b"))
+
+(define rust-typst-utils-0.12.0
+  (crate-source "typst-utils" "0.12.0"
+                "0h3s9y3bvkkiqvfgn9bmbrq3by3bz0l74j3ihijhnzyr7r20a0wg"))
 
 (define rust-typst-utils-0.13.1
   (crate-source "typst-utils" "0.13.1"
@@ -32070,6 +32078,67 @@
                                    rust-zvariant-4.2.0
                                    rust-zvariant-derive-4.2.0
                                    rust-zvariant-utils-2.1.0))
+                     (prettypst =>
+                                (list rust-anstream-0.6.19
+                                      rust-anstyle-1.0.11
+                                      rust-anstyle-parse-0.2.7
+                                      rust-anstyle-query-1.1.3
+                                      rust-anstyle-wincon-3.0.9
+                                      rust-clap-4.5.39
+                                      rust-clap-builder-4.5.39
+                                      rust-clap-derive-4.5.32
+                                      rust-clap-lex-0.7.4
+                                      rust-colorchoice-1.0.4
+                                      rust-crossbeam-deque-0.8.6
+                                      rust-crossbeam-epoch-0.9.18
+                                      rust-crossbeam-utils-0.8.21
+                                      rust-ecow-0.2.5
+                                      rust-either-1.15.0
+                                      rust-equivalent-1.0.2
+                                      rust-hashbrown-0.15.3
+                                      rust-heck-0.5.0
+                                      rust-indexmap-2.9.0
+                                      rust-is-terminal-polyfill-1.70.1
+                                      rust-memchr-2.7.4
+                                      rust-once-cell-1.21.3
+                                      rust-once-cell-polyfill-1.70.1
+                                      rust-portable-atomic-1.11.1
+                                      rust-proc-macro2-1.0.95
+                                      rust-quote-1.0.40
+                                      rust-rayon-1.10.0
+                                      rust-rayon-core-1.12.1
+                                      rust-serde-1.0.219
+                                      rust-serde-derive-1.0.219
+                                      rust-serde-spanned-0.6.9
+                                      rust-siphasher-1.0.1
+                                      rust-strsim-0.11.1
+                                      rust-syn-2.0.101
+                                      rust-thin-vec-0.2.14
+                                      rust-thiserror-1.0.69
+                                      rust-thiserror-impl-1.0.69
+                                      rust-toml-0.8.23
+                                      rust-toml-datetime-0.6.11
+                                      rust-toml-edit-0.22.27
+                                      rust-toml-write-0.1.2
+                                      rust-typst-syntax-0.12.0
+                                      rust-typst-utils-0.12.0
+                                      rust-unicode-ident-1.0.18
+                                      rust-unicode-math-class-0.1.0
+                                      rust-unicode-script-0.5.7
+                                      rust-unicode-segmentation-1.12.0
+                                      rust-unscanny-0.1.0
+                                      rust-utf8parse-0.2.2
+                                      rust-windows-sys-0.59.0
+                                      rust-windows-targets-0.52.6
+                                      rust-windows-aarch64-gnullvm-0.52.6
+                                      rust-windows-aarch64-msvc-0.52.6
+                                      rust-windows-i686-gnu-0.52.6
+                                      rust-windows-i686-gnullvm-0.52.6
+                                      rust-windows-i686-msvc-0.52.6
+                                      rust-windows-x86-64-gnu-0.52.6
+                                      rust-windows-x86-64-gnullvm-0.52.6
+                                      rust-windows-x86-64-msvc-0.52.6
+                                      rust-winnow-0.7.10))
                      (procs =>
                             (list rust-addr2line-0.24.2
                                   rust-adler2-2.0.0
