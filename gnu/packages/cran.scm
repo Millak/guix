@@ -20699,6 +20699,36 @@ in 2013.  It also includes useful metadata on airlines, airports, weather, and
 planes.")
     (license license:cc0)))
 
+(define-public r-s7
+  (package
+    (name "r-s7")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "S7" version))
+       (sha256
+        (base32 "16yllj1a2m9akli5z2q8fv7jlgc2y0z3bk919d96wfbsmizmlrxq"))))
+    (properties `((upstream-name . "S7")))
+    (build-system r-build-system)
+    (native-inputs (list r-callr
+                         r-knitr
+                         r-name
+                         r-testthat
+                         r-tibble
+                         r-withr))
+    (home-page "https://rconsortium.github.io/S7/")
+    (synopsis
+     "Object-oriented system meant to become a successor to S3 and S4")
+    (description
+     "This package provides a new object oriented programming system designed
+to be a successor to S3 and S4.  It includes formal class, generic, and method
+specification, and a limited form of multiple dispatch.  It has been designed
+and implemented collaboratively by the R Consortium Object-Oriented
+Programming Working Group, which includes representatives from R-Core,
+Bioconductor, Posit/tidyverse, and the wider R community.")
+    (license license:expat)))
+
 (define-public r-stabs
   (package
     (name "r-stabs")
