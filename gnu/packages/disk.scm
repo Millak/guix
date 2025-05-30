@@ -736,6 +736,69 @@ and unloading removable media and some other housekeeping functions.")
 maintained fork of https://github.com/cleech/open-isns.")
     (license license:gpl2)))
 
+(define-public open-iscsi
+  (package
+    (name "open-iscsi")
+    (version "2.1.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-iscsi/open-iscsi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bafxz3vwk0wfa5r3cl3h9sngdfkll10i8467q8d0im4sj489kay"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      ;; XXX: 2nd of 4th test fails with iSCSI ERROR: Could not open
+      ;; /run/lock/iscsi: 2: No such file or directory
+      ;; ../source/libopeniscsiusr/idbm.c:_idbm_lock():327
+      #:tests? #f
+      #:configure-flags
+      #~(list "-Dno_systemd=true"
+              (string-append "-Discsi_sbindir="
+                             #$output "/sbin")
+              (string-append "-Ddbroot="
+                             #$output "/var/lib/iscsi")
+              (string-append "--sbindir="
+                             #$output "/sbin"))))
+    (native-inputs
+     (list meson
+           ninja
+           perl
+           pkg-config))
+    (inputs
+     (list kmod
+           open-isns
+           openssl
+           (list util-linux "lib")))
+    (home-page "https://github.com/open-iscsi/open-iscsi")
+    (synopsis "Linux iSCSI tools")
+    (description
+     "The Open @acronym{iSCSI, Internet Small Computer Systems Interface}
+project is a high-performance, transport independent, multi-platform
+implementation of @url{https://www.rfc-editor.org/rfc/rfc3720.html, RFC3720}
+iSCSI.
+
+Features:
+@itemize
+@item highly optimized and very small-footprint data path
+@item persistent configuration database
+@item SendTargets discovery
+@item provides @acronym{CHAP, Challenge Handshake Authentication Protocol}
+support
+@item @acronym{PDU, Protocol Data Unit} header Digest
+@item multiple sessions
+@end itemize")
+    ;; The daemon and other top-level commands are licensed as GPLv3, while
+    ;; the libopeniscsiusr library used by some of those commmands is licensed
+    ;; as LGPLv3.
+    (license (list license:gpl2+        ;attached license
+                   license:gpl3         ;mentioned in README
+                   license:lgpl3))))    ;mentioned in README
+
 (define-public idle3-tools
   (package
     (name "idle3-tools")
