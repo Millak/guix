@@ -20,9 +20,11 @@
 
 (define-module (gnu packages patool)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix git-download)
+  #:use-module (guix download)
   #:use-module (guix packages)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages cdrom)
@@ -33,22 +35,23 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xiph))
 
 (define-public patool
   (package
     (name "patool")
-    (version "3.1.0")
+    (version "4.0.1")
     (source
      (origin
-       (method git-fetch)               ;no test data in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/wummel/patool")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1w20kiiq9ngy90lcgnjfjiwbp6zvf3vlhm34700ff8x85x9fknkr"))))
+       (method url-fetch)
+       (uri (pypi-uri "patool" version))
+       (sha256 (base32 "00lq140w13zr4b37j8qxfjmrfhyrx6b4gjxj0ypmnyikpqhyxxs1"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "pyproject.toml"
+                    (("requires +=.+setuptools-reproducible.+$") "")
+                    (("build-backend +=.+setuptools_reproducible.+$")
+                     "build-backend = \"setuptools.build_meta\"")))))
     (build-system pyproject-build-system)
     (native-inputs
      (list bzip2
@@ -68,10 +71,28 @@
            pbzip2
            pigz
            plzip
+           python-argcomplete
            python-pytest
            python-setuptools
            python-wheel
            rpm))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda _
+              (with-directory-excursion #$output
+                (for-each
+                 ((@ (ice-9 match) match-lambda)
+                  ((shell . path)
+                   (mkdir-p (dirname path))
+                   (with-output-to-file path
+                     (lambda _ (invoke "register-python-argcomplete" "patool"
+                                       "-s" shell)))))
+                 '(("bash" . "share/bash-completion/completions/patool")
+                   ("fish" . "share/fish/vendor_completions.d/patool.fish")
+                   ("zsh" . "share/zsh/site-functions/_patool")))))))))
     (home-page "https://wummel.github.io/patool/")
     (synopsis "Portable archive file manager")
     (description "Patool provides a unified command line interface for a
