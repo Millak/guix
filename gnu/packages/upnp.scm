@@ -163,7 +163,15 @@ and others.")
               (substitute* "minidlna.c"
                 (("rm -rf")
                  (string-append
-                  (search-input-file inputs "/bin/rm") " -rf"))))))))
+                  (search-input-file inputs "/bin/rm") " -rf")))
+              (substitute* "minidlnad.8"
+                (("/usr(/sbin/minidlnad)" _ path)
+                 (string-append #$output path)))))
+          (add-after 'install 'install-man-pages
+            (lambda _
+              (let ((man (string-append #$output "/share/man/man")))
+                (install-file "minidlnad.8" (string-append man "8"))
+                (install-file "minidlna.conf.5" (string-append man "5"))))))))
     (native-inputs (list autoconf automake gettext-minimal))
     (inputs
      (list coreutils-minimal
