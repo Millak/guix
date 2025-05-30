@@ -68,6 +68,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-apple)
@@ -607,6 +608,52 @@ in your executable.")
      "This package provides a Cargo subcommand to generate README.md content from doc
 comments.")
     (license (list license:expat license:asl2.0))))
+
+(define-public cargo-remark
+  (package
+    (name "cargo-remark")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-remark" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hfg3drsmyif7g8sqc40a5nzkzygqr9gqdajhaydh7dah2w8gkyq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-askama" ,rust-askama-0.12)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-fxhash" ,rust-fxhash-0.2)
+                       ("rust-hashbrown" ,rust-hashbrown-0.13)
+                       ("rust-html-escape" ,rust-html-escape-0.2)
+                       ("rust-indicatif" ,rust-indicatif-0.17)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mimalloc" ,rust-mimalloc-0.1)
+                       ("rust-opener" ,rust-opener-0.6)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rust-embed" ,rust-rust-embed-6)
+                       ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs
+     (list mimalloc))
+    (home-page "https://github.com/kobzol/cargo-remark")
+    (synopsis
+     "Cargo subcommand for displaying LLVM optimization remarks from compiling Rust programs")
+    (description
+     "This package provides a Cargo subcommand for displaying LLVM optimization remarks from
+compiling Rust programs.")
+    (license license:expat)))
 
 (define-public cargo-with
   (package
