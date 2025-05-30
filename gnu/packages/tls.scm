@@ -673,14 +673,14 @@ kilobytes of RAM.")
 (define-public libressl
   (package
     (name "libressl")
-    (version "4.0.0")
+    (version "4.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://openbsd/LibreSSL/"
                                   "libressl-" version ".tar.gz"))
               (sha256
                (base32
-                "1r518q11qwx9zr1niqjh4ci63x1s51gx6g8f3p3xzhxcy1aik12d"))))
+                "0qdvv3plx1fqh1xbl3kfxh9bdgr1955dk9cnrg6srnjbsdmw2w8g"))))
     (outputs (list "out" "debug"))
     (build-system gnu-build-system)
     (arguments
