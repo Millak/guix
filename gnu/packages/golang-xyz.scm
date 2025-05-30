@@ -18187,6 +18187,37 @@ JSON-RPC 2 specification for Go.")
      "Collection of Go modules for the Go Language Server project.")
     (license license:bsd-3)))
 
+(define-public go-go-lsp-dev-protocol
+  (package
+    (name "go-go-lsp-dev-protocol")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-language-server/protocol")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14n0s7bs4xcsdp8m7fq9ridrh2nxsh5l80wg6xprgsr984dicpr8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.lsp.dev/protocol"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-segmentio-encoding
+           go-go-lsp-dev-jsonrpc2
+           go-go-lsp-dev-pkg
+           go-go-lsp-dev-uri
+           go-go-uber-org-zap))
+    (home-page "https://go.lsp.dev/protocol")
+    (synopsis "Language Server Protocol (LSP) library for Go")
+    (description
+     "The @code{protocol} package implements the Language Server
+Protocol (LSP) specification in Go.")
+    (license license:bsd-3)))
+
 (define-public go-go-lsp-dev-uri
   (package
     (name "go-go-lsp-dev-uri")
