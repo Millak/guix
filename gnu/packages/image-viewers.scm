@@ -999,7 +999,7 @@ to set X desktop background.")
 (define-public pqiv
   (package
     (name "pqiv")
-    (version "2.12")
+    (version "2.13.2")
     (source
      (origin
        (method git-fetch)
@@ -1008,7 +1008,7 @@ to set X desktop background.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18nvrqmlifh4m8nfs0d19sb9d1l3a95xc89qxqdr881jcxdsgflw"))))
+        (base32 "1yic98a5j77vkc31qpyyikfgpv1gq36ymqdpc3q4gc5zdmw3r4y2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
