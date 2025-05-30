@@ -12208,6 +12208,32 @@ values pointed to.  Unexported field values are not copied.")
      "This package provides simple colorized console logger for golang.")
     (license license:expat)))
 
+(define-public go-github-com-motemen-go-quickfix
+  (package
+    (name "go-github-com-motemen-go-quickfix")
+    (version "0.0.0-20250224075427-39bb724d71b7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/motemen/go-quickfix")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j14k6kfzvfn8v21gf2ssaypicrwb4pvh7yzfa5m1jcc9581j2ad"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23                      ;minimum required version
+      #:import-path "github.com/motemen/go-quickfix"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/motemen/go-quickfix")
+    (synopsis "Go ASTs fixing library")
+    (description
+     "The @code{quickfix} Go package provides functions for fixing Go ASTs
+that are well typed but @samp{go build} refuses to build.")
+    (license license:expat)))
+
 (define-public go-github-com-mreiferson-go-options
   (package
     (name "go-github-com-mreiferson-go-options")
