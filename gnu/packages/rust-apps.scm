@@ -39,6 +39,7 @@
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
+;;; Copyright © 2025 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -381,6 +382,28 @@ the terminal.")
     (description
      "This package provides C to Rust translation, refactoring, and cross-checking.")
     (license license:bsd-3)))
+
+(define-public catppuccin-whiskers
+  (package
+    (name "catppuccin-whiskers")
+    (version "2.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "catppuccin-whiskers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jjh8qkc7a0vn9wshfi6qmn8b03694kdz9r95fgxmw0fpw6vpnjn"))))
+    (build-system cargo-build-system)
+    (arguments '(#:install-source? #f))
+    (inputs (cargo-inputs 'catppuccin-whiskers))
+    (home-page "https://github.com/catppuccin/whiskers")
+    (synopsis "Soothing port creation tool for the high-spirited")
+    (description
+     "Whiskers is a helper tool that is custom-built to create ports of the
+Catppuccin color theme, allowing developers to define template files which
+the palette can be injected into.")
+    (license license:expat)))
 
 (define-public cargo-audit
   (package
