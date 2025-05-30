@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019-2022 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2018, 2020, 2021, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
@@ -220,7 +220,10 @@ tools that process C/C++ code.")
          ;; Only one of the following three can be enabled at the same time
          ;; "-DCPPDAP_USE_EXTERNAL_RAPIDJSON_PACKAGE=ON"
          ;; "-DCPPDAP_USE_EXTERNAL_JSONCPP_PACKAGE=ON"
-         "-DCPPDAP_USE_EXTERNAL_NLOHMANN_JSON_PACKAGE=ON")))
+         "-DCPPDAP_USE_EXTERNAL_NLOHMANN_JSON_PACKAGE=ON"
+         #$@(if (target-riscv64?)
+                '("-DCMAKE_EXE_LINKER_FLAGS=-latomic")
+                '()))))
     (native-inputs
      (list googletest))
     ;; see lib/cmake/cppdap/cppdapConfig.cmake
