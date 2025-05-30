@@ -18187,6 +18187,30 @@ JSON-RPC 2 specification for Go.")
      "Collection of Go modules for the Go Language Server project.")
     (license license:bsd-3)))
 
+(define-public go-go-lsp-dev-uri
+  (package
+    (name "go-go-lsp-dev-uri")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-language-server/uri")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mz1jnbf46rzs3iy8a601rdfmify6x56jsw2wsjvmyczn4vz8qwc"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "go.lsp.dev/uri"))
+    (propagated-inputs (list go-github-com-google-go-cmp))
+    (home-page "https://go.lsp.dev/uri")
+    (synopsis "Go library for URI (uniform resource identifier)")
+    (description
+     "The @code{uri} package implements the URI Uniform Resource
+Identifier (RFC3986) specification in Go.")
+    (license license:bsd-3)))
+
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
