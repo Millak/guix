@@ -1536,7 +1536,7 @@ is based off of Slim mode.")
 (define-public emacs-show-font
   (package
     (name "emacs-show-font")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1545,8 +1545,21 @@ is based off of Slim mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bvd1jw5x623zh0ga8hvq7mdmijlvlwk478adlvg1k1a6s371wss"))))
+        (base32 "0nn7yqc0zsl0kxk17k0hd9dxd65lslj24fd83fych1jla4hd93jc"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)"))))))
+    (native-inputs
+     (list texinfo))
     (home-page "https://github.com/protesilaos/show-font")
     (synopsis "Show font features in a buffer")
     (description
