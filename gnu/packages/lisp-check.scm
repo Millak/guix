@@ -356,11 +356,11 @@ experience.")
   (sbcl-package->ecl-package sbcl-clunit))
 
 (define-public sbcl-clunit2
-  (let ((commit "b24c56851ee6ee6c4a9dc3725a634c06b604f207")
-        (revision "2"))
+  (let ((commit "dd654e199aa3cbbdbcb0c2d8e1d240745bff75e8")
+        (revision "1"))
     (package
       (name "sbcl-clunit2")
-      (version (git-version "0.6.1" revision commit))
+      (version (git-version "0.7.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -369,7 +369,7 @@ experience.")
                (commit commit)))
          (file-name (git-file-name "cl-clunit2" version))
          (sha256
-          (base32 "03k4wc2zz31wcqcxy8fhq095i8xzcaxrzgrlrn2va10lcjs4v51b"))))
+          (base32 "0xm9jsy2wsvbbf8cgln6601a1rbyiz8hk17vh0lm747sqhg2vxc5"))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Unit testing framework for Common Lisp")
       (description
