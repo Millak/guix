@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Guix Together <jgart@dismail.de>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Ramana Radhakrishnan <ramana.radhakrishnan@arm.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -82,6 +82,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -116,6 +117,62 @@
 ;;;
 ;;; Libraries:
 ;;;
+
+;; XXX: The package name in Guix uses 'ninefans' instead of '9fans' to
+;; accomodate from a shortcoming of the go-build-system where the `go-inputs'
+;; procedure in the `setup-go-environment' phase uses
+;; `package-name->name+version', which returns 'go' as name for
+;; go-9fans-net-go-acme, which gets removed from the results and thus GOPATH.
+(define (make-go-ninefans-net-go-module module)
+  "Return a go-ninefans-net-go package for MODULE."
+  (package
+    (name (string-append "go-ninefans-net-go-" module))
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/9fans/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cskaf3mk0l9xlz2fda5hwjc0kwcvdxwj4414znpvjzas73gr9mi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; This is challenging to package as it uses Go modules and modules
+      ;; inter-dependencies, and our build system lacks support for it;
+      ;; disable the tests to avoid everything getting tangled at build time.
+      #:tests? #f
+      #:import-path (string-append "9fans.net/go/" module)
+      #:unpack-path "9fans.net/go"))
+    (propagated-inputs (list go-golang-org-x-sys go-golang-org-x-exp))
+    (home-page "https://9fans.net/go")
+    (synopsis "Interface for interacting with Acme windows")
+    (description "The @code{acme} Go package provides simple interface for
+interacting with Acme windows of the Plan 9 text editor.")
+    (license license:expat)))
+
+(define go-ninefans-net-go-acme
+  (make-go-ninefans-net-go-module "acme"))
+
+(define go-ninefans-net-go-draw
+  (make-go-ninefans-net-go-module "draw"))
+
+(define go-ninefans-net-go-plan9
+  (make-go-ninefans-net-go-module "plan9"))
+
+(define-public go-ninefans-net-go
+  (let ((base (make-go-ninefans-net-go-module "")))
+    (package
+      (inherit base)
+      (name "go-ninefans-net-go")
+      (build-system trivial-build-system)
+      (arguments (list #:builder #~(mkdir #$output)))
+      (propagated-inputs
+       (list go-ninefans-net-go-acme
+             go-ninefans-net-go-draw
+             go-ninefans-net-go-plan9)))))
 
 (define-public go-atomicgo-dev-cursor
   (package
