@@ -1338,6 +1338,33 @@ outlines, manage all your contacts, your windows and frames, and search across
 buffers, directory trees, or the web.")
     (license license:gpl3+)))
 
+(define-public emacs-vline
+  (let ((commit "f5d7b5743dceca75b81c8c95287cd5b0341debf9")
+        (revision "0"))
+    (package
+      (name "emacs-vline")
+      (version (git-version "1.11" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/buzztaiki/vline")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06qqpjaxsacslxb3f2bm790lwygbq6387n9ccn4v9vz9xlyn9dmi"))))
+      (build-system emacs-build-system)
+      (arguments
+       ;; No tests
+       (list #:tests? #f))
+      (home-page "https://github.com/buzztaiki/vline")
+      (synopsis "Column highlighting (vertical line displaying) mode")
+      (description
+       "@code{vline-mode} is a minor mode for highlighting column at cursor
+position.  It enhances text editing by visually indicating the vertical
+line.")
+      (license license:gpl2+))))
+
 (define-public emacs-vlf
   (package
     (name "emacs-vlf")
