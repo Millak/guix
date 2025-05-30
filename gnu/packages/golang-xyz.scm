@@ -14975,6 +14975,43 @@ is undetermined, a customizable spinner is shown.")
 It's typically used for testing responses with larger data bodies.")
     (license license:expat)))
 
+(define-public go-github-com-segmentio-asm
+  (package
+    (name "go-github-com-segmentio-asm")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/segmentio/asm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01c90h83rq7fkvzfn28lz7x0455zxbvaxknd3c8259dfszfyr2zx"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/segmentio/asm/build
+            (delete-file-recursively "build")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/segmentio/asm"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/segmentio/asm")
+    (synopsis " Go library providing algorithms optimized for modern CPUs")
+    (description
+     "This package aims to provide algorithms optimized to
+leverage advanced instruction sets of modern CPUs to maximize throughput and
+take the best advantage of the available compute power.  It includes functions
+that have often been designed to work on arrays of values, which is where SIMD
+and branchless algorithms shine.")
+    (license license:expat)))
+
 (define-public go-github-com-sereal-sereal-go-sereal
   (package
     (name "go-github-com-sereal-sereal-go-sereal")
