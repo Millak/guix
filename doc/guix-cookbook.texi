@@ -1732,7 +1732,7 @@ procedure.  To produce such file you need to obtain Linux source code, create a
 @file{.config} file (using @code{make menuconfig} command, for example) or
 provide one you already have.  After that you will need to run
 @code{make savedefconfig} command within the kernel source tree---this will
-produce the @file{defconfig} file which we can be used to build a custom kernel.
+produce the @file{defconfig} file which we will use to build a custom kernel.
 
 Below is a sample kernel package.
 
@@ -1747,8 +1747,8 @@ Below is a sample kernel package.
 @end lisp
 
 In the same directory as the file defining @code{my-linux-libre} is a file
-named @file{defconfig}. This way you way you can provide kernel options
-you want to have in the result kernel.
+named @file{defconfig}. This way you can provide kernel options you want to
+have in the result kernel.
 
 The second way to create a custom kernel is to pass a new value to the
 @code{extra-options} keyword of the @code{make-linux-libre} procedure.  The
