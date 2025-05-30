@@ -9064,3 +9064,33 @@ applications.")
     (synopsis "Procedural macros for Askama")
     (description "This package provides procedural macros for Askama.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-askama-0.12
+  (package
+    (name "rust-askama")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "askama" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a1cmp0f1b01zzbzzp81ppa6r754zpax5372aykswz5933gr345p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-askama-derive" ,rust-askama-derive-0.12)
+                       ("rust-askama-escape" ,rust-askama-escape-0.10)
+                       ("rust-comrak" ,rust-comrak-0.18)
+                       ("rust-humansize" ,rust-humansize-2)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9))))
+    (home-page "https://askama.readthedocs.io/")
+    (synopsis "Type-safe, compiled Jinja-like templates for Rust")
+    (description
+     "This package provides type-safe, compiled Jinja-like templates for
+Rust.")
+    (license (list license:expat license:asl2.0))))
