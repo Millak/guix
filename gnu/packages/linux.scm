@@ -1598,6 +1598,12 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                                            ("CONFIG_VIDEO_ROCKCHIP_VDEC2" . m)
                                            ("CONFIG_ROCKCHIP_DW_HDMI_QP" . #true)
                                            ("CONFIG_ROCKCHIP_DW_MIPI_DSI" . #true)
+                                           ;; Fixes https://codeberg.org/guix/guix/issues/101
+                                           ("CONFIG_CRYPTO_USER_API_HASH" . #true)
+                                           ("CONFIG_CRYPTO_USER_API_SKCIPHER" . #true)
+                                           ("CONFIG_CRYPTO_USER_API_RNG" . #true)
+                                           ("CONFIG_CRYPTO_USER_API_AEAD" . #true)
+                                           ("CONFIG_KEY_DH_OPERATIONS" . #true)
                                            ;; Provide support for ath9k wireless
                                            ("CONFIG_ATH9K" . m)
                                            ("CONFIG_ATH9K_HTC" . m))
