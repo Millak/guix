@@ -37,7 +37,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023, 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023, 2024 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -3910,15 +3910,16 @@ extension to the X11 protocol.  It includes:
 (define-public xkeyboard-config
   (package
     (name "xkeyboard-config")
-    (version "2.38")
+    (version "2.44")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "ftp://ftp.freedesktop.org/pub/xorg//individual/data/xkeyboard-config/"
-                    "xkeyboard-config-" version ".tar.xz"))
+                    "mirror://xorg/individual/data/" name "/" name "-"
+                    version
+                    ".tar.xz"))
               (sha256
                (base32
-                "0wn8asnbz111194ksi2mysa6ikn4kqgd9rpfydl8icc6mcdsk406"))))
+                "0aillh6pmx5ji5jbqviq007vvg69ahz5832rz941s0xvxqzc7ljl"))))
     (build-system meson-build-system)
     (inputs (list libx11 xkbcomp-intermediate))
     (native-inputs (list gettext-minimal libxslt perl pkg-config python))
