@@ -8237,6 +8237,41 @@ methods.  The core computational algorithms are implemented using the Eigen
 C++ library for numerical linear algebra and RcppEigen glue.")
     (license license:gpl2+)))
 
+(define-public r-lmeinfo
+  (package
+    (name "r-lmeinfo")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lmeInfo" version))
+       (sha256
+        (base32 "11sqfb9bj7npngli4h0mzjd2pqjjkza2zmq4b9g2fhmm9r2b0zvd"))))
+    (properties
+     `((upstream-name . "lmeInfo")
+       ;; Avoid dependency cycles.
+       (updater-ignored-native-inputs . ("r-lmeinfo" "r-scdhlm"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-nlme))
+    (native-inputs (list r-knitr r-lme4 r-testthat))
+    (home-page "https://jepusto.github.io/lmeInfo/")
+    (synopsis "Information matrices for lmeStruct and glsStruct objects")
+    (description
+     "This package provides analytic derivatives and information matrices for
+fitted @dfn{linear mixed effects} (lme) models and generalized least
+squares (gls) models estimated using @code{lme()} (from package @code{nlme})
+and @code{gls()} (from package @code{nlme}), respectively.  The package
+includes functions for estimating the sampling variance-covariance of variance
+component parameters using the inverse Fisher information.  The variance
+components include the parameters of the random effects structure (for lme
+models), the variance structure, and the correlation structure.  The expected
+and average forms of the Fisher information matrix are used in the
+calculations, and models estimated by full maximum likelihood or restricted
+maximum likelihood are supported.  The package also includes a function for
+estimating standardized mean difference effect sizes based on fitted lme or
+gls models.")
+    (license license:gpl3)))
+
 (define-public r-lmodel2
   (package
     (name "r-lmodel2")
