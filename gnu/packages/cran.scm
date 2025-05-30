@@ -5872,6 +5872,25 @@ data for species delimitation, nearest neighbor based noise detection.")
 R packages that praise their users.")
     (license license:expat)))
 
+(define-public r-propcis
+  (package
+    (name "r-propcis")
+    (version "0.3-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "PropCIs" version))
+       (sha256
+        (base32 "1ywzi88igzaj2wnbrqa08cy7pw886z2m0x3j7rk45rin9mgpfdfd"))))
+    (properties `((upstream-name . "PropCIs")))
+    (build-system r-build-system)
+    (home-page "https://github.com/shearer/PropCIs")
+    (synopsis "Various confidence interval methods for proportions")
+    (description
+     "This package computes two-sample confidence intervals for single, paired
+and independent proportions.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-proto
   (package
     (name "r-proto")
