@@ -1365,6 +1365,36 @@ position.  It enhances text editing by visually indicating the vertical
 line.")
       (license license:gpl2+))))
 
+(define-public emacs-xhair
+  (let ((commit "c7bd7c501c3545aa99dadac386c882fe7c5edd9c")
+        (revision "0"))
+    (package
+      (name "emacs-xhair")
+      ;; No tag, version comes from source code
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Boruch-Baum/emacs-xhair")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03m15lbspk73x59wvb77wgvnkrmrlq4w6kmnrr2i69jgafqh0421"))))
+      (build-system emacs-build-system)
+      (arguments
+       ;; No tests
+       (list #:tests? #f))
+      (propagated-inputs (list emacs-vline))
+      (home-page "https://github.com/Boruch-Baum/emacs-xhair")
+      (synopsis "Highlight the current line and column")
+      (description
+       "This package simultaneously applies @code{vline-mode} and
+@code{hl-line-mode}, with tweaks, to present @code{point} in highlighted
+cross-hairs, reporting the value of @code{point} as a message in the echo
+area.")
+      (license license:gpl3+))))
+
 (define-public emacs-vlf
   (package
     (name "emacs-vlf")
