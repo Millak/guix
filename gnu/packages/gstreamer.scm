@@ -766,10 +766,11 @@ model to base your own plug-in on, here it is.")
     (name "gst-plugins-good-qt")
     (inputs
      (modify-inputs (package-inputs gst-plugins-good)
-       (prepend qtbase-5
-                qtdeclarative-5
-                qtwayland-5
-                qtx11extras)))))
+       (prepend qtbase
+                qtdeclarative
+                qtshadertools
+                qttools
+                qtwayland)))))
 
 (define-public gst-plugins-bad
   (package
