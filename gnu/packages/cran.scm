@@ -20307,6 +20307,34 @@ implementation of an approximate nearest neighbor search using hierarchical
 @acronym{NSW, Navigable Small World} graphs.")
     (license license:asl2.0)))
 
+(define-public r-name
+  (package
+    (name "r-name")
+    (version "0.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "name" version))
+       (sha256
+        (base32 "1va2qqcxgvc4nzkylxyyzz8yx6ndgb1hx7af3qjzf8m4mzg8qnvm"))))
+    (properties `((upstream-name . "name")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-dplyr
+                             r-rlang
+                             r-stringr
+                             r-tibble
+                             r-tidyselect))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/christopherkenny/name")
+    (synopsis "Tools for working with names")
+    (description
+     "This package provides a system for organizing column names in data.
+It is aimed at supporting a prefix-based and suffix-based column naming
+scheme.  It extends dplyr functionality to add ordering by function and more
+explicit renaming.")
+    (license license:expat)))
+
 (define-public r-naniar
   (package
     (name "r-naniar")
