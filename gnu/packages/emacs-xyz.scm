@@ -6218,46 +6218,43 @@ current match, total matches and exit status.
       (license license:gpl3+))))
 
 (define-public emacs-go-mode
-  ;; XXX: Upstream did not tag last release.  The commit below matches version
-  ;; bump.
-  (let ((commit "3273fcece5d9ab7edd4f15b2d6bce61f4e5a0666"))
-    (package
-      (name "emacs-go-mode")
-      (version "1.6.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/dominikh/go-mode.el")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "00qzn136d8cl3szbi44xf3iiv75r6n1m7wwgldmzn4i5mpz8dbq7"))))
-      (arguments
-       (list
-        #:tests? #t
-        #:test-command #~(list "ert-runner")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'check 'fix-tests
-              ;; Two tests fail because they (wrongly) assume we run them from
-              ;; the "test" sub-directory.  Fix their expectations.
-              (lambda _
-                (let ((test-file "test/go-indentation-test.el"))
-                  (make-file-writable test-file)
-                  (substitute* test-file
-                    (("testdata/indentation_tests/" all)
-                     (string-append "test/" all)))
-                  (ert-number-tests "test/go-fill-paragraph-test.el"
-                                    "go--fill-paragraph-block-region")))))))
-      (build-system emacs-build-system)
-      (native-inputs (list emacs-ert-runner))
-      (home-page "https://github.com/dominikh/go-mode.el")
-      (synopsis "Go mode for Emacs")
-      (description
-       "This package provides go-mode, an Emacs mode for working with software
+  (package
+    (name "emacs-go-mode")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dominikh/go-mode.el")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00qzn136d8cl3szbi44xf3iiv75r6n1m7wwgldmzn4i5mpz8dbq7"))))
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "ert-runner")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-tests
+            ;; Two tests fail because they (wrongly) assume we run them from
+            ;; the "test" sub-directory.  Fix their expectations.
+            (lambda _
+              (let ((test-file "test/go-indentation-test.el"))
+                (make-file-writable test-file)
+                (substitute* test-file
+                  (("testdata/indentation_tests/" all)
+                   (string-append "test/" all)))
+                (ert-number-tests "test/go-fill-paragraph-test.el"
+                                  "go--fill-paragraph-block-region")))))))
+    (build-system emacs-build-system)
+    (native-inputs (list emacs-ert-runner))
+    (home-page "https://github.com/dominikh/go-mode.el")
+    (synopsis "Go mode for Emacs")
+    (description
+     "This package provides go-mode, an Emacs mode for working with software
 written in the Go programming language.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public emacs-google-maps
   ;; There has been no new release tag since 2013.
