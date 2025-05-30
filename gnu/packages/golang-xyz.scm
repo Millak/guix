@@ -18163,6 +18163,30 @@ word on a list of words, if none is found, look for a similar word.")
 JSON-RPC 2 specification for Go.")
     (license license:bsd-3)))
 
+(define-public go-go-lsp-dev-pkg
+  (package
+    (name "go-go-lsp-dev-pkg")
+    (version "0.0.0-20210717090340-384b27a52fb2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-language-server/pkg")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n6mskf5g4m1h6hc12rwl622mn21a695kk7f2ldb5hdmlwib852g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.lsp.dev/pkg"))
+    (home-page "https://go.lsp.dev/pkg")
+    (synopsis "Library for the Go Language Server project")
+    (description
+     "Collection of Go modules for the Go Language Server project.")
+    (license license:bsd-3)))
+
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
