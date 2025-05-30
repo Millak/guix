@@ -9017,3 +9017,23 @@ applications.")
     (synopsis "HTML escaping, extracted from Askama")
     (description "This package provides HTML escaping, extracted from Askama.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-askama-parser-0.2
+  (package
+    (name "rust-askama-parser")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "askama_parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h00vcnqq9qqlayx1ass4an458rk4lm3q88867cc7lb4dcf1dcdc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-nom" ,rust-nom-7))))
+    (home-page "https://github.com/askama-rs/askama")
+    (synopsis "Parser for Askama templates")
+    (description "This package provides a parser for Askama templates.")
+    (license (list license:expat license:asl2.0))))
