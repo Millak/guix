@@ -15012,6 +15012,43 @@ that have often been designed to work on arrays of values, which is where SIMD
 and branchless algorithms shine.")
     (license license:expat)))
 
+(define-public go-github-com-segmentio-encoding
+  (package
+    (name "go-github-com-segmentio-encoding")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/segmentio/encoding")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gk2ry6s20h4j5gvl9vf83wi3badphnnzh6fhxfx3r24pbg7c2dx"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/segmentio/encoding/benchmarks
+            ;; - github.com/segmentio/encoding/proto/fixtures
+            (for-each delete-file-recursively
+                      (list "benchmarks" "proto/fixtures"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/segmentio/encoding"
+      #:test-flags #~(list "-skip" "TestUnmarshalFixture|TestDecodeFixture")))
+    (propagated-inputs
+     (list go-github-com-segmentio-asm))
+    (home-page "https://github.com/segmentio/encoding")
+    (synopsis "Encoding and decoding Go library")
+    (description
+     "Go package containing implementations of encoders and decoders for
+various data formats.")
+    (license license:expat)))
+
 (define-public go-github-com-sereal-sereal-go-sereal
   (package
     (name "go-github-com-sereal-sereal-go-sereal")
