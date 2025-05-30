@@ -46,8 +46,41 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages video)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk))
+
+(define-public zint
+  (package
+    (name "zint")
+    (version "2.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zint/zint")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0arnpdqspyy3bxafm3lqc020bhwq3vazfnja2fk2s8c7mr9wimgr"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DZINT_QT6=ON"
+                   "-DZINT_TEST=ON"
+                   "-DZINT_UNINSTALL=OFF")))
+    (native-inputs
+     (list pkg-config qttools))
+    (inputs
+     (list libpng
+           qtsvg))
+    (synopsis "Barcode encoding library")
+    (description "Zint is a suite of programs to allow easy encoding of data in
+any of the wide range of public domain barcode standards and to allow
+integration of this capability into your own programs.")
+    (home-page "https://www.zint.org.uk/")
+    (license (list license:bsd-3 license:gpl3+))))
 
 (define-public zxing-cpp
   ;; Use the master branch as it includes unreleased build system improvements
