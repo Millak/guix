@@ -539,6 +539,46 @@ the terminal.")
     (description "@code{cargo-machete} finds unused dependencies in Cargo.toml.")
     (license (list license:expat license:asl2.0))))
 
+(define-public cargo-readme
+  (package
+    (name "cargo-readme")
+    (version "3.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/webern/cargo-readme.git")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jwh2j4lw1hk08aflgk7pamnhdbrzr47dc0ipzczn48k6008fm8l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-toml" ,rust-toml-0.8))
+       #:cargo-development-inputs (("rust-assert-cli" ,rust-assert-cli-0.6))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'fix-test-warnings
+           (lambda _
+             ;; Otherwise the test case will see the warning being emitted
+             ;; that "config" is deprecated.
+             (when (file-exists? ".cargo/config")
+               (rename-file ".cargo/config"
+                            ".cargo/config.toml")))))))
+    (home-page "https://github.com/webern/cargo-readme")
+    (synopsis
+     "Cargo subcommand to generate README.md content from doc comments")
+    (description
+     "This package provides a Cargo subcommand to generate README.md content from doc
+comments.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public cargo-with
   (package
     (name "cargo-with")
