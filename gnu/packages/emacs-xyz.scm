@@ -31,7 +31,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
-;;; Copyright © 2017-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Sohom Bhattacharjee <soham.bhattacharjee15@gmail.com>
 ;;; Copyright © 2018, 2019 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -213,6 +213,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages games)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages go-apps)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
@@ -6277,6 +6278,10 @@ current match, total matches and exit status.
       #:test-command #~(list "ert-runner")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "go-mode.el"
+                ("godef-command" (search-input-file inputs "bin/godef")))))
           (add-before 'check 'fix-tests
             ;; Two tests fail because they (wrongly) assume we run them from
             ;; the "test" sub-directory.  Fix their expectations.
@@ -6290,6 +6295,7 @@ current match, total matches and exit status.
                                   "go--fill-paragraph-block-region")))))))
     (build-system emacs-build-system)
     (native-inputs (list emacs-ert-runner))
+    (inputs (list godef))
     (home-page "https://github.com/dominikh/go-mode.el")
     (synopsis "Go mode for Emacs")
     (description
