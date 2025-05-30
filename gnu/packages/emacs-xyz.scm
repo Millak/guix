@@ -42739,7 +42739,7 @@ and preferred services can easily be configured.")
 (define-public emacs-vertico
   (package
     (name "emacs-vertico")
-    (version "2.0")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
@@ -42748,7 +42748,7 @@ and preferred services can easily be configured.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qgw0mhfrjylhyznjmjf7wqs5p3xvdv0lq19pql54plbnr6fspqk"))))
+        (base32 "15zf0kj12an9dmdi55ghpkxj053bqzm50fwlhpga4sjzx7qmv5q8"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -42762,15 +42762,13 @@ and preferred services can easily be configured.")
                 (for-each (lambda (f)
                             (rename-file f (basename f)))
                           el-files))))
-          (add-after 'install 'makeinfo
+          (add-after 'move-source-files 'makeinfo
             (lambda _
               (invoke "emacs"
                       "--batch"
                       "--eval=(require 'ox-texinfo)"
                       "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
-              (install-file "vertico.info"
-                            (string-append #$output "/share/info")))))))
+                      "--eval=(org-texinfo-export-to-info)"))))))
     (native-inputs
      (list texinfo))
     (propagated-inputs
