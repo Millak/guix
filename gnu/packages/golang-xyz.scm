@@ -13806,6 +13806,32 @@ robust way to define those flags, and to parse them from command-line
 arguments, environment variables, and/or config files.")
     (license license:asl2.0)))
 
+(define-public go-github-com-peterh-liner
+  (package
+    (name "go-github-com-peterh-liner")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/peterh/liner")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hq0maja0ymdc0x5f78jv0hxh4i7byxb5y9p70vi9zsip9yhirqp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/peterh/liner"))
+    (propagated-inputs (list go-golang-org-x-sys
+                             go-github-com-mattn-go-runewidth))
+    (home-page "https://github.com/peterh/liner")
+    (synopsis "Command line editor Go library")
+    (description "The @code{liner} Go package implements a simple command line
+editor with history, inspired by @url{https://github.com/antirez/linenoise/,
+linenoise}.  Xterm as well as WIN32 terminal codes are supported.")
+    (license license:expat)))
+
 (define-public go-github-com-philhofer-fwd
   (package
     (name "go-github-com-philhofer-fwd")
