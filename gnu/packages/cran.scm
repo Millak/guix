@@ -40808,14 +40808,14 @@ Adibi et al. (2019) @url{doi:10.1101/651901}.")
 (define-public r-smpracticals
   (package
     (name "r-smpracticals")
-    (version "1.4-3.1")
+    (version "1.4-3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SMPracticals" version))
        (sha256
         (base32
-         "1xplp7ihy9ish7fqhc27bhvij9lk9w9mrs7lpdca38ppi4iiafi2"))))
+         "1i63pphsz2vn20z8nrg3i51s1jghc89kaidgm18vxalnckapmi2j"))))
     (properties `((upstream-name . "SMPracticals")))
     (build-system r-build-system)
     (propagated-inputs
