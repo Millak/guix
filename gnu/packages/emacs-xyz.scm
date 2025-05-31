@@ -23302,7 +23302,7 @@ or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
 (define-public emacs-dirvish
   (package
     (name "emacs-dirvish")
-    (version "2.2.7")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -23310,7 +23310,7 @@ or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
                     (commit version)))
               (sha256
                (base32
-                "13y066sj6ax8czlfp6vy2da310q988vij933wvw31frihwd2v200"))
+                "1x79j3xlvhrvigh38vqhfrzqvdnpzaivbxsjzfi0pnx00y8czs5q"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -23326,6 +23326,7 @@ or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
                 (for-each (lambda (f)
                             (rename-file f (basename f)))
                           el-files)))))))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/alexluigit/dirvish")
     (synopsis "Improved version of the Emacs package Dired")
     (description
