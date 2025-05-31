@@ -98826,6 +98826,29 @@ in Pure Rust.")
      "This package provides a bit level serialization/deserialization
 proc-macro for structs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-deku-0.16
+  (package
+    (name "rust-deku")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deku" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10a4x39p348s8hb7292sy9i33zd5h0wrpr9qzkispcq5gb68g6w1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-deku-derive" ,rust-deku-derive-0.16)
+                       ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/sharksforarms/deku")
+    (synopsis "bit level serialization/deserialization proc-macro for structs")
+    (description
+     "This package provides bit level serialization/deserialization proc-macro for structs.")
+    (license (list license:expat license:asl2.0))))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
