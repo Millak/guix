@@ -12938,6 +12938,28 @@ interoperation between crates in Rust.")
          (base32
           "0ls8zcqi5bmmrvrk3b6r1ym4wlivinbv590d2dvg2xn9f44mbpl1"))))))
 
+(define-public rust-bpaf-derive-0.5
+  (package
+    (name "rust-bpaf-derive")
+    (version "0.5.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bpaf_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12k1w518xkly98fcsxifrmj7rmxah5hg48l9jc2if2csxkp4zyzy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/pacak/bpaf")
+    (synopsis "Derive macros for bpaf Command Line Argument Parser")
+    (description
+     "This package provides derive macros for bpaf Command Line Argument Parser.")
+    (license (list license:expat license:asl2.0))))
 (define-public rust-clap-4
   (package
     (name "rust-clap")
