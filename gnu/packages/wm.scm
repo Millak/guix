@@ -68,7 +68,7 @@
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2024-2025 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2024 Erik Eduardo Alonso Hernández <erik@erikeduardo.xyz>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
@@ -2626,6 +2626,52 @@ core/thread.")
     (synopsis "Utility to manage Wayland compositor outputs")
     (description "wlr-randr is a utility to manage outputs of a Wayland compositor.")
     (license license:expat))) ; MIT license
+
+(define-public wlopm
+  ;; Use latest commit, mainly for Makefile fix
+  (let ((commit "6a197ebc634a6bc33f8251679bbe15bdd77e2cae")
+        (revision "0"))
+    (package
+      (name "wlopm")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~leon_plickat/wlopm")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (snippet
+          ;; Delete bundled wlr-protocols file
+          #~(delete-file "wlr-output-power-management-unstable-v1.xml"))
+         (sha256
+          (base32 "1zjlr97zyhbbi0vincxhwxszclgas539ixw9qpplpvf32zlcnjj3"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure) ;no 'configure' script
+            (add-after 'unpack 'replace-bundled-wlr-protocols-file
+              (lambda _
+                (copy-file (string-append #$(this-package-native-input
+                                             "wlr-protocols")
+                                          "/share/wlr-protocols/unstable/"
+                                          "wlr-output-power-management-unstable-v1.xml")
+                           "wlr-output-power-management-unstable-v1.xml"))))))
+      (native-inputs (list wayland wlr-protocols))
+      (home-page "https://git.sr.ht/~leon_plickat/wlopm")
+      (synopsis "Utility to manage Wayland outputs power")
+      (description
+       "wlopm is a simple client implementing
+@code{zwlr-output-power-management-v1}, which allows clients to control power
+management modes of outputs that are currently part of the compositor space.
+This allows wlopm to power down outputs when the system is idle.")
+      (license license:gpl3))))
 
 (define-public mako
   (package
