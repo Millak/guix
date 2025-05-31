@@ -30873,13 +30873,13 @@ only sparse real matrices in Matrix package format are supported.")
 (define-public r-sparsevctrs
   (package
     (name "r-sparsevctrs")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sparsevctrs" version))
        (sha256
-        (base32 "14r3w74xycsbs7am8ff8mb06m75nf0scscmishdh8mhkjhi5nni6"))))
+        (base32 "0wpjxcyckx3wnxdky3slyacv1nwm4xqc9aib2qm268pd0ksgpik9"))))
     (properties `((upstream-name . "sparsevctrs")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-rlang r-vctrs))
