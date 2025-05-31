@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
-;;; Copyright © 2024 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2024, 2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -160,6 +160,14 @@ standard gates and instructions")
               (substitute* "app/src/qvm-app-version.lisp"
                 (("\\(git-hash '#:qvm-app\\)")
                  "\"unknown\""))))
+          (add-after 'unpack 'fix-build
+            (lambda _
+              ;; Don't use symbol that doesn't exists in swank 2.31.
+              (substitute* "app/src/entry-point.lisp"
+                (("\\(defvar swank:\\*use-dedicated-output-stream\\*\\)")
+                 "")
+                (("\\(setf swank:\\*use-dedicated-output-stream\\* nil\\)")
+                 ""))))
           (add-after 'create-asdf-configuration 'build-program
             (lambda* (#:key outputs #:allow-other-keys)
               (build-program (string-append (assoc-ref outputs "bin")
