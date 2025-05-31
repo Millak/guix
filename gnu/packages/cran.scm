@@ -28455,14 +28455,14 @@ ROPE percentage and pd).")
 (define-public r-performance
   (package
     (name "r-performance")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "performance" version))
        (sha256
         (base32
-         "0ijavd5f1ziwhajpjlmd60qwj56bw6nqhj2hq0ml026y70gcymjj"))))
+         "1sibccf0kswv8gv8mk91593ikzkqigsj6n1bjflacihhjrpxyn1a"))))
     (properties
      '((updater-extra-native-inputs . ("r-dharma"))))
     (build-system r-build-system)
