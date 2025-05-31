@@ -40706,6 +40706,27 @@ org-roam")
 using org mode; faster than org-roam.")
     (license license:gpl3+)))
 
+(define-public emacs-org-mem-0.14
+  (package
+    (name "emacs-org-mem")
+    (version "0.14.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/meedstrom/org-mem/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wvgdb0kk1236xjhpm0bxsqhbwk1fzmwzmd6h622k453k8kxhacr"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-el-job emacs-llama))
+    (synopsis "Org structure cache")
+    (description "This package provides a cache of metadata about the
+structure of all your Org files – headings, links and so on..")
+    (home-page "https://github.com/meedstrom/org-node/")
+    (license license:gpl3+)))
 (define-public emacs-org-super-links
   (package
     (name "emacs-org-super-links")
