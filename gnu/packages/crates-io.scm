@@ -18490,6 +18490,31 @@ use with sct crate.")
      "This package provides utilities for encoding and decoding frames using
 `async/await`.")
     (license license:expat)))
+
+(define-public rust-slip-codec-0.4
+  (package
+    (name "rust-slip-codec")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "slip-codec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nwnwywkgjvzyismfzvv9n204afz8xrqc76lgikrp39z8j9bd577"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-asynchronous-codec" ,rust-asynchronous-codec-0.7)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7))))
+    (home-page "https://github.com/jmaygarden/slip-codec")
+    (synopsis "Serial Line Internet Protocol (SLIP) encoder/decoder")
+    (description
+     "This package provides a Serial Line Internet Protocol (SLIP)
+encoder/decoder.")
+    (license license:expat)))
+
 (define-public rust-ctor-0.2
   (package
     (name "rust-ctor")
