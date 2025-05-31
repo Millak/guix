@@ -14918,17 +14918,20 @@ inter-rater reliability, and classical utility.")
 (define-public r-pkgbuild
   (package
     (name "r-pkgbuild")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgbuild" version))
        (sha256
-        (base32 "1zllip5mkfx5gzq9vahmakl6iz7vdnl7xnsfcr0hhfbznf43i801"))))
+        (base32 "1jr4k43vj62hw8ak076pky7a68gz2kz6rwqzyd9c83z95hh5jhif"))))
     (properties
      ;; We can't have r-testthat among the inputs, because that would lead to
      ;; a dependency cycle.
-     '((updater-ignored-native-inputs . ("r-testthat"))))
+     '((updater-ignored-native-inputs . ("r-testthat"
+                                         "r-knitr"
+                                         "r-rmarkdown"
+                                         "r-withr"))))
     (build-system r-build-system)
     ;; Tests require r-testthat, but that package indirectly depends on
     ;; r-pkgbuild.
