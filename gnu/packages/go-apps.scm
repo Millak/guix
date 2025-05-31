@@ -58,3 +58,93 @@
     (description "The @command{godef} command prints the source location of
 definitions in Go programs.")
     (license license:bsd-3)))
+
+(define-public gore
+  (package
+    (name "gore")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/x-motemen/gore")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d8ayzni43j1y02g9j2sx1rhml8j1ikbbzmcki2lyi4j0ix5ys7f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23                      ;required by motemen-go-quickfix
+      #:import-path "github.com/x-motemen/gore"
+      #:install-source? #f
+      #:test-flags
+      ;; Gore is configured for building modules with Go module
+      ;; support, which fails in the build environment for the tests
+      ;; making use of that.  Skip them.
+      #~(list "-skip" (string-join
+                       (list "TestAction_ArgumentRequired"
+                             "TestAction_Clear"
+                             "TestAction_CommandNotFound"
+                             "TestAction_Help"
+                             "TestAction_Import"
+                             "TestAction_Quit"
+                             "TestSessionEval_AutoImport"
+                             "TestSessionEval_CompileError"
+                             "TestSessionEval_Const"
+                             "TestSessionEval_Copy"
+                             "TestSessionEval_Declarations"
+                             "TestSessionEval_Func"
+                             "TestSessionEval_Gomod"
+                             "TestSessionEval_Gomod_CompleteImport"
+                             "TestSessionEval_Gomod_DeepDir"
+                             "TestSessionEval_Gomod_Outside"
+                             "TestSessionEval_MultipleValues"
+                             "TestSessionEval_NotUsed"
+                             "TestSessionEval_QuickFix_evaluated_but_not_used"
+                             "TestSessionEval_QuickFix_no_new_variables"
+                             "TestSessionEval_QuickFix_used_as_value"
+                             "TestSessionEval_Struct"
+                             "TestSessionEval_TokenError"
+                             "TestSessionEval_import"
+                             "TestSession_IncludePackage"
+                             "TestSession_completeWord")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "src/github.com/x-motemen/gore"
+                (substitute* "gopls.go"
+                  (("\"gopls\"")
+                   (format #f "~s" (search-input-file inputs "bin/gopls")))))))
+          (replace 'install
+            (lambda _
+              (with-directory-excursion "src/github.com/x-motemen/gore"
+                (invoke "make" "install")))))))
+    (native-inputs
+     (list go-github-com-motemen-go-quickfix
+           go-github-com-peterh-liner
+           go-github-com-stretchr-testify
+           go-go-lsp-dev-jsonrpc2
+           go-go-lsp-dev-protocol
+           go-golang-org-x-text
+           go-golang-org-x-tools))
+    (inputs
+     (list gopls))
+    (home-page "https://github.com/x-motemen/gore")
+    (synopsis "Go REPL with line editing and completion capabilities")
+    (description
+     "Gore is a Go @acronym{REPL, read-eval-print loop} that offers line
+editing and auto-completion.  Some of its features include:
+@itemize
+@item Line editing with history
+@item Multi-line input
+@item Package importing with completion
+@item Evaluates any expressions, statements and function declarations
+@item No ``evaluated but not used'' errors
+@item Code completion
+@item Showing documents
+@item Auto-importing (gore -autoimport)
+@end itemize")
+    (license license:expat)))
