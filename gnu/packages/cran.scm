@@ -43402,16 +43402,21 @@ and time parsing.")
 (define-public r-anndata
   (package
     (name "r-anndata")
-    (version "0.7.5.6")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "anndata" version))
        (sha256
-        (base32 "1q1ii43wfj68qdlzhqj9msxqsfzpidhhlfrisax4p943v7yh75mi"))))
+        (base32 "0d9g77d1fm9v8mxvrz032r07q7896xgwzz9gg8wd3nlxwld54mj6"))))
     (properties `((upstream-name . "anndata")))
     (build-system r-build-system)
-    (propagated-inputs (list r-assertthat r-matrix r-r6 r-reticulate))
+    (propagated-inputs (list r-assertthat
+                             r-cli
+                             r-lifecycle
+                             r-matrix
+                             r-r6
+                             r-reticulate))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://anndata.dynverse.org")
     (synopsis "Anndata for R")
