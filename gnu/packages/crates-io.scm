@@ -6929,6 +6929,30 @@ c6e7d37.  However, this package works only up to 128 bytes.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.4))))))
 
+(define-public rust-base64-stream-1
+  (package
+    (name "rust-base64-stream")
+    (version "1.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "base64-stream" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yyxndmmw75zs6ssk5y5vlj4x7ifav6q5xhirw82dk41rpsgg5j8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.13)
+                       ("rust-educe" ,rust-educe-0.6)
+                       ("rust-generic-array" ,rust-generic-array-0.14))))
+    (home-page "https://magiclen.org/base64-stream")
+    (synopsis "Encode/decode large data with the standard Base64 encoding")
+    (description
+     "This package provides a way to encode/decode large data with the
+standard Base64 encoding.")
+    (license license:expat)))
+
 (define-public rust-basic-toml-0.1
   (package
     (name "rust-basic-toml")
