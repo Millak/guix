@@ -98924,6 +98924,32 @@ proc-macro for structs.")
 tables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-educe-0.6
+  (package
+    (name "rust-educe")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "educe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05wlg6wzil59lxc3kbs476gwykj6m63dbfv83frxx35xw54w0yqx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-enum-ordinalize" ,rust-enum-ordinalize-4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://magiclen.org/educe")
+    (synopsis
+     "Facilitate the swift implementation of Rust's built-in traits")
+    (description
+     "This crate offers procedural macros designed to facilitate the swift
+implementation of Rust's built-in traits.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
