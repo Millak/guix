@@ -24707,17 +24707,24 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.6.8")
+    (version "0.6.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "02m3hisk5jbpnli4s64aqapvlrln0v8wpjp5j0qy10d75by2djza"))))
+         "0xqcgb7jzxggrvmh4zab67lhg938c46j0rlxhy7k66ldkkxs03l8"))))
     (properties
      '((updater-extra-native-inputs . ("r-magick"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for saving ~/dump.RDS during tests.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-cli
            r-openssl
