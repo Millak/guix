@@ -55225,14 +55225,14 @@ more complete @code{viridis} package.")
 (define-public r-ggh4x
   (package
     (name "r-ggh4x")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggh4x" version))
        (sha256
         (base32
-         "0xrq0p6jhzqa1ap1c06pa77mksdh8gvm53sw5iz7hddfl46n8676"))))
+         "11szf1jwc23bc3615fwk89vc8rwhwhl6515d49n1423mxqqc1z6q"))))
     (properties `((upstream-name . "ggh4x")))
     (build-system r-build-system)
     (arguments
@@ -55249,6 +55249,7 @@ more complete @code{viridis} package.")
            r-gtable
            r-lifecycle
            r-rlang
+           r-s7
            r-scales
            r-vctrs))
     (native-inputs
