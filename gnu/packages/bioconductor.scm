@@ -25087,13 +25087,13 @@ assays such as Hi-C.")
 (define-public r-h5mread
   (package
     (name "r-h5mread")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "h5mread" version))
        (sha256
-        (base32 "14cqk68qb3wsdyr40cdc4rg3g413m5zxccfkgc7s0x53klf9z2sn"))))
+        (base32 "1dknsj8margcyh1ypdsc1qfn27d2m2ckch3phdlfj7nq7r4szfq5"))))
     (properties
      '((upstream-name . "h5mread")
        ;; Avoid dependency cycle.
