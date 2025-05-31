@@ -95303,6 +95303,19 @@ and native running processes.")
 @code{WebAssembly} binary files.")
     (license license:asl2.0)))
 
+(define-public rust-wasmparser-0.202
+  (package
+    (inherit rust-wasmparser-0.207)
+    (name "rust-wasmparser")
+    (version "0.202.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04qljgwjv6a6nn9sx6bbz167s0dim4liphgp1sc8ngygscaqb6fn"))))))
+
 (define-public rust-wasmparser-0.218
   (package
     (name "rust-wasmparser")
