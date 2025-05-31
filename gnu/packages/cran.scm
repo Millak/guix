@@ -7381,13 +7381,13 @@ climatograms, etc.).")
 (define-public r-climatol
   (package
     (name "r-climatol")
-    (version "4.1.0")
+    (version "4.2-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "climatol" version))
               (sha256
                (base32
-                "10znkynipb852y0j4kb16bhm4lcxdn5wy7vfx9ibcdwr06pv6kg7"))))
+                "0xg433g07mzjyqj6lxy0xmzvj2pq9s3kxxjzgdghji7d1hdxiz63"))))
     (properties `((upstream-name . "climatol")))
     (build-system r-build-system)
     (home-page "http://www.climatol.eu/")
