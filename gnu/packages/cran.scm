@@ -35287,14 +35287,14 @@ high-performance functions are provided here.")
 (define-public r-s2
   (package
     (name "r-s2")
-    (version "1.1.8")
+    (version "1.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "s2" version))
        (sha256
         (base32
-         "14c15a8zjidb3yb1d0s60p1wzj93dlh0bd0s9g9l85a7b05c0rj3"))))
+         "0mcvm72p42ksk34hslxl2ksy0972nsn2kvazjadsircbfgzjpkad"))))
     (properties
      '((upstream-name . "s2")
        (updater-extra-inputs . ("abseil-cpp"))
