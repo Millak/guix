@@ -813,7 +813,7 @@ $(1): $(2)
 	$(AM_V_at)echo "Compiling Scheme modules..." ;		\
 	unset GUILE_LOAD_COMPILED_PATH ;			\
 	XDG_CACHE_HOME=/nowhere					\
-	host=$(host) srcdir="$(top_srcdir)"			\
+	host="$(4)" srcdir="$(top_srcdir)"			\
 	$(top_builddir)/pre-inst-env				\
 	$(GUILE) -L "$(top_builddir)" -L "$(top_srcdir)"	\
 	  --no-auto-compile					\
@@ -859,36 +859,36 @@ MODULES_PO        := guix/build/po.scm
 
 $(eval $(call guile-compilation-rule,make-core-go,	\
   $(MODULES_CORE) guix/config.scm $(dist_noinst_DATA),	\
-  0))
+  0,$(host)))
 .PHONY: make-core-go
 
 $(eval $(call guile-compilation-rule,make-packages1-go,	\
   $(MODULES_PACKAGES1) make-core-go,			\
-  $(words $(MODULES_CORE))))
+  $(words $(MODULES_CORE)),$(host)))
 .PHONY: make-packages1-go
 
 $(eval $(call guile-compilation-rule,make-packages2-go,	\
   $(MODULES_PACKAGES2) make-core-go make-packages1-go,	\
-  $(words $(MODULES_CORE) $(MODULES_PACKAGES1))))
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES1)),$(host)))
 .PHONY: make-packages2-go
 
 $(eval $(call guile-compilation-rule,make-packages3-go,				\
   $(MODULES_PACKAGES3) make-core-go make-packages1-go make-packages2-go,	\
-  $(words $(MODULES_CORE) $(MODULES_PACKAGES1) $(MODULES_PACKAGES2))))
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)),$(host)))
 .PHONY: make-packages3-go
 
 $(eval $(call guile-compilation-rule,make-packages4-go,			\
   $(MODULES_PACKAGES4) make-core-go make-packages1-go make-packages2-go	\
     make-packages3-go,							\
   $(words $(MODULES_CORE) $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)	\
-    $(MODULES_PACKAGES3))))
+    $(MODULES_PACKAGES3)),$(host)))
 .PHONY: make-packages4-go
 
 $(eval $(call guile-compilation-rule,make-packages5-go,			\
   $(MODULES_PACKAGES5) make-core-go make-packages1-go make-packages2-go	\
     make-packages3-go make-packages4-go,				\
   $(words $(MODULES_CORE) $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)	\
-    $(MODULES_PACKAGES3) $(MODULES_PACKAGES4))))
+    $(MODULES_PACKAGES3) $(MODULES_PACKAGES4)),$(host)))
 .PHONY: make-packages5-go
 
 make-packages-go: make-packages1-go make-packages2-go \
@@ -897,17 +897,17 @@ make-packages-go: make-packages1-go make-packages2-go \
 
 $(eval $(call guile-compilation-rule,make-system-go,	\
   $(MODULES_SYSTEM) make-packages-go make-core-go,	\
-  $(words $(MODULES_CORE) $(MODULES_PACKAGES))))
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES)),$(host)))
 .PHONY: make-system-go
 
 $(eval $(call guile-compilation-rule,make-cli-go,			\
   $(MODULES_CLI) make-system-go make-packages-go make-core-go,		\
-  $(words $(MODULES_CORE) $(MODULES_PACKAGES) $(MODULES_SYSTEM))))
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES) $(MODULES_SYSTEM)),$(host)))
 .PHONY: make-cli-go
 
 $(eval $(call guile-compilation-rule,guix/build/po.go,			\
   $(MODULES_PO),							\
-  0))
+  0,$(build)))
 
 SUFFIXES = .go
 
