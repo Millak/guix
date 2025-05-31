@@ -18462,6 +18462,34 @@ reimplemented in Rust")
 use with sct crate.")
     (license (list license:asl2.0 license:isc license:expat))))
 
+(define-public rust-asynchronous-codec-0.7
+  (package
+    (name "rust-asynchronous-codec")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asynchronous-codec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cy2aqcq7km8ggpjmfvrbckvjgf1bpxh803kb4z90zqp48h0fq58"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures-sink" ,rust-futures-sink-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-cbor" ,rust-serde-cbor-0.11)
+                       ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/mxinden/asynchronous-codec")
+    (synopsis "Utilities for encoding and decoding frames using `async/await`")
+    (description
+     "This package provides utilities for encoding and decoding frames using
+`async/await`.")
+    (license license:expat)))
 (define-public rust-ctor-0.2
   (package
     (name "rust-ctor")
