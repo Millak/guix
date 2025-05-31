@@ -98849,6 +98849,38 @@ proc-macro for structs.")
     (description
      "This package provides bit level serialization/deserialization proc-macro for structs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-esp-idf-part-0.5
+  (package
+    (name "rust-esp-idf-part")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "esp-idf-part" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i4q8hanzphglwzj408bixkzwb9z6gapq226gc46f01p69n0pxar"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-csv" ,rust-csv-1)
+                       ("rust-deku" ,rust-deku-0.16)
+                       ("rust-heapless" ,rust-heapless-0.8)
+                       ("rust-md5" ,rust-md5-0.7)
+                       ("rust-parse-int" ,rust-parse-int-0.6)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-plain" ,rust-serde-plain-1)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/esp-rs/esp-idf-part")
+    (synopsis "Library for parsing and generating ESP-IDF partition tables")
+    (description
+     "This package provides a library for parsing and generating ESP-IDF partition
+tables.")
+    (license (list license:expat license:asl2.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
