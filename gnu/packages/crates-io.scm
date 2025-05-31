@@ -20321,6 +20321,40 @@ strings.")
     (synopsis "defmt JSON schema")
     (description "This package provides a defmt JSON schema.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-defmt-decoder-0.3
+  (package
+    (name "rust-defmt-decoder")
+    (version "0.3.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "defmt-decoder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kyfqw49a8ivdl9g7lan4mnlajjdfwgljq5s01vva0r237r59fhn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-defmt-json-schema" ,rust-defmt-json-schema-0.1)
+                       ("rust-defmt-parser" ,rust-defmt-parser-0.3)
+                       ("rust-dissimilar" ,rust-dissimilar-1)
+                       ("rust-gimli" ,rust-gimli-0.29)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-object" ,rust-object-0.35)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/knurling-rs/defmt")
+    (synopsis "Decodes defmt log frames")
+    (description "This package provides Decodes defmt log frames.")
+    (license (list license:expat license:asl2.0))))
+
 ;; TODO: Unbundle dejavu font
 (define-public rust-dejavu-2
   (package
