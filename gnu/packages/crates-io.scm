@@ -11175,6 +11175,34 @@ optional dependency graph analysis.")
 manifests in @code{Cargo.toml} files.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cargo-metadata-0.19.2
+  (package
+    (name "rust-cargo-metadata")
+    (version "0.19.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo_metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fkr8jp6vhva4kc3rhx13yrnl8g3zch463j20vbwa9scxlabcpnx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-camino" ,rust-camino-1)
+                       ("rust-cargo-platform" ,rust-cargo-platform-0.1)
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/oli-obk/cargo_metadata")
+    (synopsis "Structured access to the output of `cargo metadata`")
+    (description
+     "This package provides structured access to the output of @code{cargo
+metadata}.")
+    (license license:expat)))
+
 (define-public rust-cargo-metadata-0.19
   (package
     (name "rust-cargo-metadata")
