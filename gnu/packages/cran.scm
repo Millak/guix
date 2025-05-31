@@ -15075,6 +15075,29 @@ code using Rcpp or RcppArmadillo.  Functions are available that return a
 distributions, Armadillo vectors and matrices.")
     (license license:gpl2+)))
 
+(define-public r-rcpphungarian
+  (package
+    (name "r-rcpphungarian")
+    (version "0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppHungarian" version))
+       (sha256
+        (base32 "00wxi77ajnhwds1pnmhbxaykdaiyh6ayblif58sx9r5rvv055c1a"))))
+    (properties `((upstream-name . "RcppHungarian")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/jsilve24/RcppHungarian")
+    (synopsis "Solve minimum cost bipartite matching problems")
+    (description
+     "This package provides header library and R functions to solve minimum
+cost bipartite matching problem using Huhn-Munkres algorithm (Hungarian
+algorithm; <https://en.wikipedia.org/wiki/Hungarian_algorithm>; Kuhn (1955)
+<doi:10.1002/nav.3800020109>).")
+    (license license:gpl2+)))
+
 (define-public r-rcppint64
   (package
     (name "r-rcppint64")
