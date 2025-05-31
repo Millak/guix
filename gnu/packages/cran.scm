@@ -7497,6 +7497,30 @@ extended version of the original from Peter Rousseeuw, Anja Struyf and Mia
 Hubert, based on Kaufman and Rousseeuw (1990) \"Finding Groups in Data\".")
     (license license:gpl2+)))
 
+(define-public r-clustmixtype
+  (package
+    (name "r-clustmixtype")
+    (version "0.4-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "clustMixType" version))
+       (sha256
+        (base32 "1clby7x9jz0jpzmzni6g8zicysnf7ccxliglxr6ljigvkf747bg1"))))
+    (properties `((upstream-name . "clustMixType")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-combinat r-dplyr r-rcolorbrewer r-rlang
+                             r-tibble))
+    (native-inputs (list r-testthat))
+    (home-page "https://cran.r-project.org/package=clustMixType")
+    (synopsis "k-prototypes clustering for mixed variable-type data")
+    (description
+     "This package provides functions to perform k-prototypes partitioning
+clustering for mixed variable-type data according to Z.Huang (1998):
+Extensions to the k-Means Algorithm for Clustering Large Data Sets with
+Categorical Variables, Data Mining and Knowledge Discovery 2, 283-304.")
+    (license license:gpl2+)))
+
 (define-public r-clvalid
   (package
     (name "r-clvalid")
