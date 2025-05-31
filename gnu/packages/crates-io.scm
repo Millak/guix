@@ -50886,6 +50886,28 @@ form and deobfuscated locally.")
 file formats.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ruzstd-0.6
+  (package
+    (name "rust-ruzstd")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ruzstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yygqpar2x910lnii4k5p43aj4943hlnxpczmqhsfddmxrqa8x2i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-derive-more" ,rust-derive-more-0.99)
+                       ("rust-twox-hash" ,rust-twox-hash-1))))
+    (home-page "https://github.com/KillingSpark/zstd-rs")
+    (synopsis "Decoder for the zstd compression format")
+    (description
+     "This package provides a decoder for the zstd compression format.")
+    (license license:expat)))
 (define-public rust-object-0.32
   (package
     (inherit rust-object-0.36)
