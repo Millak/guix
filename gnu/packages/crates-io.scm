@@ -20301,6 +20301,26 @@ resource-constrained devices, like micro-controllers.")
 strings.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-defmt-json-schema-0.1
+  (package
+    (name "rust-defmt-json-schema")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "defmt-json-schema" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0smd5mxzk3b6j82ykb0fzk34f6xl1fcchsyqhprir9jpiqi4vc4n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/knurling-rs/defmt")
+    (synopsis "defmt JSON schema")
+    (description "This package provides a defmt JSON schema.")
+    (license (list license:expat license:asl2.0))))
 ;; TODO: Unbundle dejavu font
 (define-public rust-dejavu-2
   (package
