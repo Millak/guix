@@ -6271,19 +6271,21 @@ package eases work with equally and unequally spaced time series.")
 (define-public r-rush
   (package
     (name "r-rush")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rush" version))
        (sha256
-        (base32 "1pcp60hn07r57dfs2xk7nd7y59q1ahnjylz30vbdpmny8cjxlx4n"))))
+        (base32 "115k13k6qj8pq0h58y7qcknfw53x0qv4z0nrs446knc90rcwjscx"))))
     (properties `((upstream-name . "rush")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
                              r-data-table
+                             r-ids
                              r-jsonlite
                              r-lgr
+                             r-mirai
                              r-mlr3misc
                              r-processx
                              r-r6
