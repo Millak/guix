@@ -319,13 +319,13 @@ wrong.")
 (define-public r-aster
   (package
     (name "r-aster")
-    (version "1.1-3")
+    (version "1.3-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aster" version))
        (sha256
-        (base32 "1piimmrsvhbps8ld6vjjg82kf8pm5nwl91437dglid802p51pwlm"))))
+        (base32 "0inj8gn29z6apjh9h2ps26j7077k91l9m637rsdav2b8a87anw5h"))))
     (properties `((upstream-name . "aster")))
     (build-system r-build-system)
     (propagated-inputs (list r-trust))
