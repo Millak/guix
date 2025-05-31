@@ -20108,16 +20108,16 @@ display.")
 (define-public r-zeallot
   (package
     (name "r-zeallot")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zeallot" version))
        (sha256
         (base32
-         "1sd1igcfnv27pa3bqxlbyxchi562h7grnjg1l7wxx3bwr49i57s3"))))
+         "1fwjv8lck5jz3gd67lr5wrpj1m7k70mkx6riyxv2yxndnzdrfsvz"))))
     (build-system r-build-system)
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-codetools r-knitr r-testthat))
     (home-page "https://github.com/nteetor/zeallot")
     (synopsis "Multiple, unpacking, and destructuring assignment")
     (description
