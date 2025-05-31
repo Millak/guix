@@ -94149,6 +94149,33 @@ and test them against various comparison operators.")
 updated when the crate version changes.")
     (license license:expat)))
 
+(define-public rust-update-informer-1
+  (package
+    (name "rust-update-informer")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "update-informer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19w2s4wqpjrw70b8v5b6h0lrxk11jpllik7qjh3l7n7hspskp0ak"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-etcetera" ,rust-etcetera-0.8)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-ureq" ,rust-ureq-2))))
+    (home-page "https://github.com/mgrachev/update-informer")
+    (synopsis "Easily implement update checks for your application")
+    (description
+     "This package provides a way to implement update checks for your
+application.")
+    (license license:expat)))
+
 (define-public rust-version-sync-0.8
   (package
     (inherit rust-version-sync-0.9)
