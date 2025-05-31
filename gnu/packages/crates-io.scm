@@ -12960,6 +12960,31 @@ interoperation between crates in Rust.")
     (description
      "This package provides derive macros for bpaf Command Line Argument Parser.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-bpaf-0.9
+  (package
+    (name "rust-bpaf")
+    (version "0.9.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bpaf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0caacci746fr7vh3x64fxi7zwqr3gi089lfddphb22v2m3bpcfa7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bpaf-derive" ,rust-bpaf-derive-0.5)
+                       ("rust-owo-colors" ,rust-owo-colors-4)
+                       ("rust-supports-color" ,rust-supports-color-3))))
+    (home-page "https://github.com/pacak/bpaf")
+    (synopsis "Simple Command Line Argument Parser with parser combinators")
+    (description
+     "This package provides a simple command line argument parser with parser
+combinators.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-4
   (package
     (name "rust-clap")
