@@ -13292,6 +13292,25 @@ Command Line Argument Parser.")
                        ("rust-cargo-metadata" ,rust-cargo-metadata-0.17)
                        ("rust-clap" ,rust-clap-4))))))
 
+(define-public rust-clap-cargo-0.9
+  (package
+    (inherit rust-clap-cargo-0.12)
+    (name "rust-clap-cargo")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-cargo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "024vbvb0hfi22n7gbg88i4w1qxlvfzxz854hrn03prnsdk11f6w4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
+                       ("rust-clap" ,rust-clap-3)
+                       ("rust-doc-comment" ,rust-doc-comment-0.3))))))
+
 (define-public rust-clap-complete-4
   (package
     (name "rust-clap-complete")
