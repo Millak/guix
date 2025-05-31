@@ -91281,6 +91281,30 @@ arithmetic.")
 literal characters.")
     (license license:expat)))
 
+(define-public rust-unescaper-0.1
+  (package
+    (name "rust-unescaper")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unescaper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09hzbayg38dvc298zygrx7wvs228bz197winnjl34i3alpii47f0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/hack-ink/unescaper")
+    (synopsis
+     "Unescape strings with escape sequences written out as literal characters")
+    (description
+     "This package provides a way to unescape strings with escape sequences
+written out as literal characters.")
+    ;; User can choose either license.
+    (license (list license:gpl3 license:expat))))
+
 (define-public rust-ungrammar-1
   (package
     (name "rust-ungrammar")
