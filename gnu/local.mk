@@ -567,6 +567,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/poedit.scm				\
   %D%/packages/polkit.scm			\
   %D%/packages/popt.scm				\
+  %D%/packages/postmarketos.scm			\
   %D%/packages/potassco.scm				\
   %D%/packages/power.scm			\
   %D%/packages/printers.scm			\
