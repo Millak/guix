@@ -28529,14 +28529,14 @@ results using @code{ggplot2}.")
 (define-public r-effectsize
   (package
     (name "r-effectsize")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "effectsize" version))
        (sha256
         (base32
-         "1r9kx7dp49db43c6r6n7n21b7hsiqv5mvnwpxpmdxvxfcjgbg41z"))))
+         "1lq23s8nnya4l79ahfr9dh1b9ncgw3r8x2qz0i81ca683lh5kzrd"))))
     (properties `((upstream-name . "effectsize")))
     (build-system r-build-system)
     (propagated-inputs
@@ -28549,12 +28549,12 @@ results using @code{ggplot2}.")
            r-knitr
            r-lavaan
            r-lme4
-           ;r-lmeinfo
+           r-lmeinfo
            r-lmertest
            r-mgcv
            r-nlme
            r-parsnip
-           ;r-propcis
+           r-propcis
            r-rms
            r-rstanarm
            r-testthat))
