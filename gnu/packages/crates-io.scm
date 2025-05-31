@@ -618,6 +618,32 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
 Rust, using gimli.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-addr2line-0.22
+  (package
+    (inherit rust-addr2line-0.24)
+    (name "rust-addr2line")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "addr2line" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y66f1sa27i9kvmlh76ynk60rxfrmkba9ja8x527h32wdb206ibf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
+                       ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+                       ("rust-gimli" ,rust-gimli-0.29)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-object" ,rust-object-0.35)
+                       ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+                       ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+                       ("rust-smallvec" ,rust-smallvec-1))))))
+
 (define-public rust-adler-1
   (package
     (name "rust-adler")
