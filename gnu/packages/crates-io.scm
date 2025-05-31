@@ -96368,6 +96368,30 @@ function to call assembly instructions typically not exposed in higher level
 languages.")
     (license license:expat)))
 
+(define-public rust-capstone-sys-0.17
+  (package
+    (name "rust-capstone-sys")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capstone-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1809b0is1415n13ayn3wwpknzhmfs7zq8hpccdw1kr512s6wnrr2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page
+     "https://github.com/capstone-rust/capstone-rs/tree/master/capstone-sys")
+    (synopsis "System bindings to the capstone disassembly library")
+    (description
+     "This package provides system bindings to the capstone disassembly library.")
+    (license license:expat)))
 (define-public rust-x86-0.33
   (package
     (inherit rust-x86-0.52)
