@@ -124,6 +124,62 @@ produce a pretty-printed file.  It also includes some extra abilities for
 special cases, such as pretty-printing @samp{-help} output.")
     (license gpl3+)))
 
+(define-public ansifilter
+  (package
+    (name "ansifilter")
+    (version "2.21")
+    (outputs (list "out" "gui"))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/saalen/ansifilter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pvx4l0k8dw642yisf1wahdqcfw36ny6v3v1lcshvxiqxmwrna3d"))))
+    ;; Stick to makefile since CMakeLists.txt is broken upstream
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-makefile
+            (lambda _
+              ;; Fixes install failure with qtbase@6
+              (substitute* "makefile"
+                (("[ ]*@echo[ ]*\n")
+                 "\n"))))
+          (delete 'configure) ;no configure script
+          (add-after 'build 'build-gui
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (invoke "make"
+                      "-j" (if parallel-build?
+                               (number->string (parallel-job-count))
+                               "1")
+                      "gui")))
+          (replace 'install
+            (lambda _
+              (invoke "make" "install"
+                      (string-append "PREFIX="
+                                     #$output))))
+          (add-after 'install 'install-gui
+            (lambda _
+              (mkdir-p (string-append #$output:gui "/bin"))
+              (invoke "make" "install-gui"
+                      (string-append "PREFIX="
+                                     #$output:gui)))))))
+    (native-inputs (list qtbase))
+    (inputs (list qtbase))
+    (home-page "http://andre-simon.de/doku/ansifilter/en/ansifilter.html")
+    (synopsis "ANSI sequence filter")
+    (description
+     "Ansifilter handles text files containing ANSI terminal escape codes.
+The command sequences may be stripped or be interpreted to generate formatted
+output (HTML, RTF, TeX, LaTeX, BBCode, Pango).")
+    (license gpl3+)))
+
 (define-public trueprint
   (package
     (name "trueprint")
