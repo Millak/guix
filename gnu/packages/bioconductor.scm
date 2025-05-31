@@ -4462,13 +4462,13 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-ancombc
   (package
     (name "r-ancombc")
-    (version "2.10.0")
+    (version "2.10.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANCOMBC" version))
               (sha256
                (base32
-                "00ywqww9vhsxsx2y4ji8k3b9202f187a54nkafl6wa10yqqnvqcq"))))
+                "16cfr7q1ivksmajrfx5gv75z83aza443lw11as2nf8pbsfjwfgrf"))))
     (properties
      '((upstream-name . "ANCOMBC")
        (updater-extra-native-inputs . ("r-microbiome"))))
