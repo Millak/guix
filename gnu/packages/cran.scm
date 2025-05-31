@@ -51019,13 +51019,13 @@ are.")
 (define-public r-mlr3misc
   (package
     (name "r-mlr3misc")
-    (version "0.17.0")
+    (version "0.18.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3misc" version))
               (sha256
                (base32
-                "1d9d2z2qvgs0b0z8l8myw7rgb03w2zxh38kivi5403rqng0xdp1z"))))
+                "1x8h65p0b12a7ld98a4dcrr67rak7psk3izacy097sbp3x9518k5"))))
     (build-system r-build-system)
     (properties
      ;; Avoid dependency cycle.
@@ -51037,7 +51037,7 @@ are.")
            r-data-table
            r-digest
            r-r6))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-mirai r-testthat))
     (home-page "https://mlr3misc.mlr-org.com/")
     (synopsis "Helper functions for mlr3")
     (description "@code{mlr3misc} provides frequently used helper functions
