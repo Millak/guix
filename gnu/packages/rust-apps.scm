@@ -5182,3 +5182,70 @@ or existing object")
      "This package generates Podman Quadlet files from a Podman command,
 compose file, or existing object.")
     (license license:mpl2.0)))
+
+(define-public espflash
+  (package
+    (name "espflash")
+    (version "3.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/esp-rs/espflash.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vmq3b66yinqypgzfpdivli2ipiyzingakxy84j31srzg70m7maz"))))
+    (build-system cargo-build-system)
+    (inputs
+     (list eudev))
+    (native-inputs
+     (list pkg-config))
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-addr2line" ,rust-addr2line-0.22)
+                       ("rust-base64" ,rust-base64-0.22)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-cargo" ,rust-cargo)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-comfy-table" ,rust-comfy-table-7)
+                       ("rust-crossterm" ,rust-crossterm-0.25)
+                       ("rust-ctrlc" ,rust-ctrlc-3)
+                       ("rust-defmt-decoder" ,rust-defmt-decoder-0.3)
+                       ("rust-defmt-parser" ,rust-defmt-parser-0.3)
+                       ("rust-dialoguer" ,rust-dialoguer-0.11)
+                       ("rust-directories" ,rust-directories-5)
+                       ("rust-env-logger" ,rust-env-logger-0.11)
+                       ("rust-esp-idf-part" ,rust-esp-idf-part-0.5)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-indicatif" ,rust-indicatif-0.17)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-md-5" ,rust-md-5-0.10)
+                       ("rust-miette" ,rust-miette-7)
+                       ("rust-parse-int" ,rust-parse-int-0.6)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serialport" ,rust-serialport-4)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-slip-codec" ,rust-slip-codec-0.4)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-update-informer" ,rust-update-informer-1)
+                       ("rust-xmas-elf" ,rust-xmas-elf-0.9))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (delete-file "Cargo.lock")
+             (chdir "espflash"))))))
+    (home-page "https://github.com/esp-rs/espflash")
+    (synopsis "Command-line tool for flashing Espressif devices")
+    (description
+     "This package provides a command-line tool for flashing Espressif devices.")
+    (license (list license:expat license:asl2.0))))
