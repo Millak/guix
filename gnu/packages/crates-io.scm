@@ -13039,6 +13039,36 @@ interoperation between crates in Rust.")
 combinators.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-clap-4.5.24
+  (package
+    (name "rust-clap")
+    (version "4.5.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ggirkjxvmhspgjsfi0lyg2x9bvg9n2rd4lbjphcg0cjg5xb0q4m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap-builder" ,rust-clap-builder-4)
+                       ("rust-clap-derive" ,rust-clap-derive-4))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1)
+                                   ("rust-clap-cargo" ,rust-clap-cargo-0.14)
+                                   ("rust-humantime" ,rust-humantime-2)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-shlex" ,rust-shlex-1)
+                                   ("rust-snapbox" ,rust-snapbox-0.6)
+                                   ("rust-trybuild" ,rust-trybuild-1)
+                                   ("rust-trycmd" ,rust-trycmd-0.15))))
+    (home-page "https://github.com/clap-rs/clap")
+    (synopsis "Command Line Argument Parser")
+    (description
+     "This package provides a simple to use, efficient, and full-featured Command Line
+Argument Parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-4
   (package
     (name "rust-clap")
