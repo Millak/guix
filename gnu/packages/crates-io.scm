@@ -98046,6 +98046,27 @@ language.")
      "This package provides API to handle D-Bus introspection XML.")
     (license license:expat)))
 
+(define-public rust-zero-0.1
+  (package
+    (name "rust-zero")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zero" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "113pa9jj40x6bvxsw582ca9np7d53qkb2b6cavfyczya6k61pqig"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/nrc/zero")
+    (synopsis "Rust library for zero-allocation parsing of binary data")
+    (description
+     "This package provides a Rust library for zero-allocation parsing of binary data.")
+    ;; User can use package under either license. 
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-zerocopy-0.8
   (package
     (name "rust-zerocopy")
