@@ -45631,28 +45631,26 @@ trend test.")
 (define-public r-keyring
   (package
     (name "r-keyring")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "keyring" version))
        (sha256
         (base32
-         "0mps6q7yayx5l78vlq567pndlsjk71izd65znz3lj4dfbh0qq046"))))
+         "1s1msy82f76wkbchhrfxr072dzg93qnmcg017ymhdksmrjw7zxwk"))))
     (properties
      '((upstream-name . "keyring")
        (updater-extra-native-inputs . ("r-mockery"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-askpass
-           r-assertthat
-           r-filelock
-           r-openssl
-           r-r6
-           r-rappdirs
-           r-sodium
-           r-yaml))
-    (native-inputs (list pkg-config r-mockery r-testthat))
+     (list r-askpass r-filelock r-r6 r-yaml))
+    (native-inputs (list pkg-config
+                         r-callr
+                         r-mockery
+                         r-openssl
+                         r-testthat
+                         r-withr))
     (home-page "https://github.com/r-lib/keyring")
     (synopsis "Access the system credential store from R")
     (description
