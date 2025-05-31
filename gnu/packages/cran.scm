@@ -10865,6 +10865,50 @@ are especially useful when timing several sections in more than a few lines of
 code.")
     (license license:asl2.0)))
 
+(define-public r-tidyclust
+  (package
+    (name "r-tidyclust")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tidyclust" version))
+       (sha256
+        (base32 "09z4p01l76wyc1dzkz1ggvbwcdih1c515amwm54mx5rvpmvmdw64"))))
+    (properties
+     '((upstream-name . "tidyclust")
+       (updater-extra-native-inputs
+        . ("r-cluster" "r-clustmixtype" "r-rcpphungarian"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-dials
+                             r-dplyr
+                             r-flexclust
+                             r-foreach
+                             r-generics
+                             r-glue
+                             r-hardhat
+                             r-modelenv
+                             r-parsnip
+                             r-philentropy
+                             r-prettyunits
+                             r-rlang
+                             r-rsample
+                             r-tibble
+                             r-tidyr
+                             r-tune
+                             r-vctrs))
+    (native-inputs
+     (list r-cluster r-clusterr r-clustmixtype r-rcpphungarian
+           r-recipes r-testthat r-workflows))
+    (home-page "https://github.com/tidymodels/tidyclust")
+    (synopsis "Common API to clustering")
+    (description
+     "This package provides a common interface to specifying clustering
+models, in the same style as parsnip.  It creates a unified interface across
+different functions and computational engines.")
+    (license license:expat)))
+
 (define-public r-tidyft
   (package
     (name "r-tidyft")
