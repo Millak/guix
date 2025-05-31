@@ -98800,6 +98800,32 @@ in Pure Rust.")
     (description
      "This package provides a restricted plain text serializer for serde.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-deku-derive-0.16
+  (package
+    (name "rust-deku-derive")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deku_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17h0wn3xipgdrg312dd2z0aaks6pfv3xfjm7aaiib4i3f8js2b2f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-darling" ,rust-darling-0.14)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/sharksforarms/deku")
+    (synopsis "bit level serialization/deserialization proc-macro for structs")
+    (description
+     "This package provides a bit level serialization/deserialization
+proc-macro for structs.")
+    (license (list license:expat license:asl2.0))))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
