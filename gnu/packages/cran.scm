@@ -14472,14 +14472,14 @@ plot functionality is provided in a single ggplot2 layer by calling the
 (define-public r-haven
   (package
     (name "r-haven")
-    (version "2.5.4")
+    (version "2.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "haven" version))
        (sha256
         (base32
-         "0dd83v3bfs7and9ydx35m8zw0md3wgchwpnvj6yllixa6yxk25cy"))
+         "19f9n7a4g90fdwhx66cjyxmzm5zdgwqkawk8ry587qb06yfcv0ll"))
        (modules '((guix build utils)))
        (snippet
         ;; unvendor readstat
