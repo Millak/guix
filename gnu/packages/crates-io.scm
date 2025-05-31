@@ -23438,6 +23438,30 @@ from the main thread.")
     (description "Set a type's minimum alignment with const generics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-xmas-elf-0.9
+  (package
+    (name "rust-xmas-elf")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xmas-elf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1inias7h1cv4zh3szk46byiqhnzm5zc7658q1brzfhl3wwbrii22"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-flate2" ,rust-flate2-1)
+                       ("rust-zero" ,rust-zero-0.1))))
+    (home-page "https://github.com/nrc/xmas-elf")
+    (synopsis
+     "Library for parsing and navigating ELF data")
+    (description
+     "This package provides a library for parsing and navigating ELF data;
+the library is zero-allocation, type-safe.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-elf-0.0.10
   (package
     (name "rust-elf")
