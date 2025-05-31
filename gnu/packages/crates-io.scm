@@ -30990,6 +30990,19 @@ permitted in ordinary Rust.")
 debugging format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gimli-0.29
+  (package
+    (inherit rust-gimli-0.31)
+    (name "rust-gimli")
+    (version "0.29.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gimli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zgzprnjaawmg6zyic4f2q2hc39kdhn116qnkqpgvsasgc3x9v20"))))))
+
 (define-public rust-glam-0.24
   (package
     (name "rust-glam")
