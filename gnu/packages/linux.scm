@@ -1434,6 +1434,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_CRYPTO_USER_API_RNG" . #true)
                         ("CONFIG_CRYPTO_USER_API_AEAD" . #true)
 
+                        ;; Fixes https://codeberg.org/guix/guix/issues/101
+                        ("CONFIG_KEY_DH_OPERATIONS" . #true)
+
                         ;; For connecting to ci.guix.gnu.org over VPN.
                         ("CONFIG_WIREGUARD" . m)
 
