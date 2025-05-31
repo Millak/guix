@@ -89,6 +89,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages haskell-xyz)
@@ -654,6 +655,45 @@ comments.")
      "This package provides a Cargo subcommand for displaying LLVM optimization remarks from
 compiling Rust programs.")
     (license license:expat)))
+
+(define-public cargo-show-asm
+  (package
+    (name "cargo-show-asm")
+    (version "0.2.49")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-show-asm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01dg77r3jbbbvf5icl46l24vhw2x8q13nqw414aj77p95jk2gf2g"))))
+    (build-system cargo-build-system)
+    (inputs
+     (list capstone))
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-ar" ,rust-ar-0.9)
+                       ("rust-bpaf" ,rust-bpaf-0.9)
+                       ("rust-capstone" ,rust-capstone-0.13)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.19.2)
+                       ("rust-line-span" ,rust-line-span-0.1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-object" ,rust-object-0.36)
+                       ("rust-owo-colors" ,rust-owo-colors-4)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+                       ("rust-same-file" ,rust-same-file-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-supports-color" ,rust-supports-color-3))
+       #:cargo-development-inputs (("rust-bpaf" ,rust-bpaf-0.9))))
+    (home-page "https://github.com/pacak/cargo-show-asm")
+    (synopsis
+     "cargo subcommand that displays the generated assembly of Rust source code.")
+    (description
+     "This package provides a cargo subcommand that displays the generated assembly of
+Rust source code.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public cargo-with
   (package
