@@ -49230,14 +49230,14 @@ methods, and post-processing steps.")
 (define-public r-workflowsets
   (package
     (name "r-workflowsets")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "workflowsets" version))
        (sha256
         (base32
-         "1mkczbdhs7cddvbklpqml70078cxmlv34hzg8f0zx1s1bpvvi7x6"))))
+         "1dimx66h4qg7v20cqq35g6c0s7d8zpzc9ajws6rs1ax0vj5i63yv"))))
     (properties `((upstream-name . "workflowsets")))
     (build-system r-build-system)
     (propagated-inputs
@@ -49245,7 +49245,6 @@ methods, and post-processing steps.")
            r-dplyr
            r-generics
            r-ggplot2
-           r-glue
            r-hardhat
            r-lifecycle
            r-parsnip
@@ -49261,7 +49260,15 @@ methods, and post-processing steps.")
            r-withr
            r-workflows))
     (native-inputs
-     (list r-kknn r-knitr r-modeldata r-testthat))
+     (list r-dials
+           r-kknn
+           r-knitr
+           r-modeldata
+           r-recipes
+           r-spelling
+           r-testthat
+           r-tidyclust
+           r-yardstick))
     (home-page "https://github.com/tidymodels/workflowsets")
     (synopsis "Create a collection of tidymodels workflows")
     (description
