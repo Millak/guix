@@ -41045,6 +41045,27 @@ harness used by @code{rustc --test}.")
     (description "This package provides FFI bindings to libudev.")
     (license license:expat)))
 
+(define-public rust-libudev-0.3
+  (package
+    (name "rust-libudev")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libudev" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q1my5alvdwyi8i9pc9gn2mcx5rhbsssmz5cjnxzfpd65laj9cvq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-libudev-sys" ,rust-libudev-sys-0.1))))
+    (home-page "https://github.com/dcuddeback/libudev-rs")
+    (synopsis "Rust wrapper for libudev")
+    (description "This package provides a Rust wrapper for libudev.")
+    (license license:expat)))
+
 (define-public rust-libusb1-sys-0.7
   (package
     (name "rust-libusb1-sys")
