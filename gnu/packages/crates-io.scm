@@ -50908,6 +50908,36 @@ file formats.")
     (description
      "This package provides a decoder for the zstd compression format.")
     (license license:expat)))
+
+(define-public rust-object-0.35
+  (package
+    (inherit rust-object-0.36)
+    (name "rust-object")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pnv84mx3f3p847hfnsp4znivnwkc1x53maq459a92w42fw7mv5q"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-test-flags
+       ;; The parse_self test correspond to the unit tests; the integration
+       ;; tests have some failures for unknown reasons.
+       '("--release" "parse_self" "--")
+       #:cargo-inputs (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+                       ("rust-ruzstd" ,rust-ruzstd-0.6)
+                       ("rust-wasmparser" ,rust-wasmparser-0.202))))))
+
 (define-public rust-object-0.32
   (package
     (inherit rust-object-0.36)
