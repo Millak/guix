@@ -96392,6 +96392,30 @@ languages.")
     (description
      "This package provides system bindings to the capstone disassembly library.")
     (license license:expat)))
+
+(define-public rust-capstone-0.13
+  (package
+    (name "rust-capstone")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capstone" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16mcsipj3x9fbk8lhvp4zqy551i8pnk9nl7r9bwy6hqprbazaph1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-capstone-sys" ,rust-capstone-sys-0.17)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/capstone-rust/capstone-rs")
+    (synopsis
+     "High level bindings to capstone disassembly engine")
+    (description
+     "This package provides high level bindings to capstone disassembly engine.")
+    (license license:expat)))
+
 (define-public rust-x86-0.33
   (package
     (inherit rust-x86-0.52)
