@@ -20854,14 +20854,14 @@ arbitrary user specified variable selection approaches.")
 (define-public r-rle
   (package
     (name "r-rle")
-    (version "0.9.2")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rle" version))
        (sha256
         (base32
-         "0sagl0jggg40lihzy7pfq4593rfvc3b3f7g6ggi85s7n18qvwg40"))))
+         "1arlb1lhwyk8744f1inlghd3rkmzfgmfdq7zs353v0rs1yl9j5qr"))))
     (properties `((upstream-name . "rle")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rle/")
