@@ -25252,13 +25252,13 @@ libxlsxwriter.")
 (define-public r-writexls
   (package
     (name "r-writexls")
-    (version "6.7.0")
+    (version "6.8.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "WriteXLS" version))
               (sha256
                (base32
-                "0vr6h7jycwiic02krgz0ignzqhpi3vc9gsa5cykvg8wxdsfyyb6k"))))
+                "1xh93xxwa6v8bbzbz6ddn0np5isir6z1dkw3cm84zdayh69bimhb"))))
     (properties `((upstream-name . "WriteXLS")))
     (build-system r-build-system)
     (inputs (list perl))
