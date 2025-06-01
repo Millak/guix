@@ -33070,28 +33070,30 @@ or a window into some windows according to a layout recipe.")
       (license license:gpl3+))))
 
 (define-public emacs-e2wm
-  (package
+  ;; Release not tagged; version taken from package header.
+  (let ((commit "33efca5504db9d8b3fdbd412c3d79663c9eec77a")
+        (version "1.5"))
+    (package
       (name "emacs-e2wm")
-      (version "1.4")
-      (home-page "https://github.com/kiwanami/emacs-window-manager")
+      (version version)
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url home-page)
-                      (commit (string-append "v" version))))
+                      (url "https://github.com/kiwanami/emacs-window-manager")
+                      (commit commit)))
                 (sha256
                  (base32
-                  "12midsrx07pdrsr1qbl2rpi7xyhxqx08bkz7n7gf8vsmqkpfp56s"))
+                  "1a1n9b5gw6985qi1dm56vyw8jacx4k3jyl4cadkhj38rz24yiyx8"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-window-layout))
+      (propagated-inputs (list emacs-window-layout))
+      (home-page "https://github.com/kiwanami/emacs-window-manager")
       (synopsis "Equilibrium Emacs Window Manager")
       (description "E2WM is a window manager for Emacs.  It enables to
 customize the place of pop-up window, how the windows are split, how the
 buffers are located in the windows, keybinds to manipulate windows and
 buffers, etc.  It also has plug-ins to help your Emacs life.")
-      (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-ctable
   ;; Latest release is not tagged.  Use commit matching version bump.
