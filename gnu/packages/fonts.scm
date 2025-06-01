@@ -3884,7 +3884,7 @@ Overpass includes proportional and monospace variants.")
 (define-public font-cormorant
   (package
     (name "font-cormorant")
-    (version "3.609")
+    (version "4.002")
     (source
      (origin
        (method git-fetch)
@@ -3893,7 +3893,7 @@ Overpass includes proportional and monospace variants.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fjp2xk4bjx8i6jamkyjq2fdr7324fh41pbn634iwnhdvvawvbav"))))
+        (base32 "0n9h27b9r85k1ink4690pgqldhq2bzdk6kbgvx3qbycgbwqzm2dx"))))
     (build-system font-build-system)
     (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/CatharsisFonts/Cormorant")
