@@ -1034,7 +1034,7 @@ terminals, as commonly found on Unix systems.")
 (define-public go-golang-org-x-text
   (package
     (name "go-golang-org-x-text")
-    (version "0.21.0")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)
@@ -1043,12 +1043,22 @@ terminals, as commonly found on Unix systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02zh18l5rlr8hg8ipn9r5m4rir3hskp80pzr4ljyfmgy72gxbhlv"))))
+        (base32 "1r9532ml0psfby89agf20q23qzwfikhydl8q77ad5y73xvdx89lf"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "golang.org/x/text"))
+      #:import-path "golang.org/x/text"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list
+                ;; TestLinking fails with error: "dict_test.go:19: size(base)
+                ;; - size(compact) = 4929873 - 4898852 = was 31021; want >
+                ;; 1.5MB
+                "TestLinking"
+                "TestFullCycle")         ;requires go module support
+               "|"))))
     (home-page "https://go.googlesource.com/text")
     (native-inputs
      (list go-golang-org-x-mod-bootstrap
