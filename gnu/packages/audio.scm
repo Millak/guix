@@ -408,6 +408,52 @@ Linux kernel.")
     (home-page "https://github.com/tinyalsa/tinyalsa")
     (license (license:non-copyleft "file:///NOTICE"))))
 
+(define-public fmsynth-lv2
+  (let ((commit "b989b5c0efd46b312ce4edd89808d34dc5135bb4")
+        (revision "0"))
+    (package
+      (name "fmsynth-lv2")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Themaister/libfmsynth")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0nck4ih0rxyr8b2vw6m119lybfnmzmas859m784i73ind3rcy44k"))))
+      (properties '((tunable? . #true)))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #false                 ;no check target
+        #:make-flags
+        #~(list "CC=gcc"
+                (string-append "INSTALL_DIR=" #$output "/lib/lv2"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'do-not-tune
+              (lambda _
+                (substitute* "GNUmakefile"
+                  (("-march=native") ""))))
+            (add-after 'do-not-tune 'chdir
+              (lambda _ (chdir "lv2")))
+            (add-before 'install 'make-target-directory
+              (lambda _
+                (mkdir-p (string-append #$output "/lib/lv2"))))
+            (delete 'configure))))
+      (inputs (list gtkmm-2 lv2 lvtk))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/Themaister/libfmsynth")
+      (synopsis "Frequency modulation synthesizer plugin")
+      (description
+       "fmsynth is an LV2 plugin which implements an @dfn{FM} (Frequency
+Modulation) synthesizer.  Unlike most FM synth implementations in software,
+this FM synthesizer does not aim to emulate or replicate a particular
+synth (like DX7) or FM chip.")
+      (license license:expat))))
+
 (define-public libgme
   (package
     (name "libgme")
