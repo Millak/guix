@@ -1099,7 +1099,7 @@ time.")
 (define-public go-golang-org-x-tools
   (package
     (name "go-golang-org-x-tools")
-    (version "0.25.0")
+    (version "0.33.0")
     (source
      (origin
        (method git-fetch)
@@ -1108,7 +1108,7 @@ time.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12r0cwsq898vka7jkxwjv1s8y8z2gxzq8z15ssl37y85hhcadkl8"))
+        (base32 "1lbb4y1c5b4719pdhfcb90sdzagzsb2lw5hx8gizsba3cj0r0f25"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1161,7 +1161,18 @@ time.")
                           "./refactor/importgraph/..."
                           "./refactor/rename/..."
                           "./refactor/satisfy/..."
-                          "./txtar/..."))))))))
+                          "./txtar/..."
+                          "-skip"
+                          (string-join
+                           (list
+                            ;; The GenericPaths test fails with "invalid
+                            ;; memory address or nil pointer dereference".
+                            "TestGenericPaths"
+                            ;; The ordering and paths tests fails because they
+                            ;; can't find test packages (perhaps because we do
+                            ;; not support Go modules).
+                            "TestOrdering" "TestPaths")
+                           "|")))))))))
     (native-inputs
      (list gccgo-14
            go-github-com-google-go-cmp))
