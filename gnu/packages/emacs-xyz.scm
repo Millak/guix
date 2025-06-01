@@ -12904,6 +12904,29 @@ noticeable performance improvement.")
 field values, and more within @code{haskell-cabal-mode}.")
       (license license:gpl3+))))
 
+(define-public emacs-rfc-mode
+  (package
+    (name "emacs-rfc-mode")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/galdor/rfc-mode")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sym5pji4ba4jy79zfs7gb2n9kqa60ma4z622s0mz647g56z09f4"))))
+    (build-system emacs-build-system)
+    (arguments
+     ;; No tests
+     (list #:tests? #f))
+    (home-page "https://github.com/galdor/rfc-mode")
+    (synopsis "Emacs major mode to read and browse @acronym{RFC, Request for Comments} documents")
+    (description "The @code{rfc-mode} Emacs major mode is a browser and reader
+for @acronym{RFC, Request for Comments} documents.")
+    (license license:isc)))
+
 (define-public emacs-rfcview
   (package
     (name "emacs-rfcview")
