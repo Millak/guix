@@ -1534,6 +1534,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/go-fix-script-tests.patch			\
   %D%/packages/patches/go-gopkg-in-yaml-v3-32bit.patch		\
   %D%/packages/patches/go-github-com-golang-snappy-32bit-test.patch \
+  %D%/packages/patches/go-github-com-jbenet-go-context-fix-import-error.patch	\
   %D%/packages/patches/go-github-com-skip2-go-qrcode-fix-tests.patch \
   %D%/packages/patches/go-github-com-warpfork-go-wish-fix-tests.patch \
   %D%/packages/patches/go-github-com-wraparound-wrap-free-fonts.patch \

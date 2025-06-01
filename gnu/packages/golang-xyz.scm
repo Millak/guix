@@ -10402,13 +10402,12 @@ that might only rarely be reached.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q91f5549n81w3z5927n4a1mdh220bdmgl42zi3h992dcc4ls0sl"))))
+        (base32 "0q91f5549n81w3z5927n4a1mdh220bdmgl42zi3h992dcc4ls0sl"))
+       (patches (search-patches
+                 "go-github-com-jbenet-go-context-fix-import-error.patch"))))
     (build-system go-build-system)
     (arguments
-     (list
-      #:import-path "github.com/jbenet/go-context"))
-    (propagated-inputs
-     (list go-golang-org-x-net))
+     (list #:import-path "github.com/jbenet/go-context"))
     (home-page "https://github.com/jbenet/go-context/")
     (synopsis "@code{jbenet's} context extensions")
     (description

@@ -1,0 +1,137 @@
+Retrieved from
+<https://patch-diff.githubusercontent.com/raw/jbenet/go-context/pull/3.patch>.
+
+From a55d3832cfe7bb061123c7e90ed3c6195d8ce890 Mon Sep 17 00:00:00 2001
+From: Prudhvi Surapaneni <p@supr.io>
+Date: Wed, 13 Mar 2019 16:29:55 -0500
+Subject: [PATCH] No-longer necessary to import context package
+
+---
+ dag/dagctx.go        |  3 +--
+ dag/dagctx_test.go   |  3 +--
+ frac/fracctx.go      |  3 +--
+ frac/fracctx_test.go | 12 +++++++-----
+ io/ctxio.go          |  3 +--
+ io/ctxio_test.go     |  3 +--
+ 6 files changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/dag/dagctx.go b/dag/dagctx.go
+index 521390b..17a9090 100644
+--- a/dag/dagctx.go
++++ b/dag/dagctx.go
+@@ -1,10 +1,9 @@
+ package ctxext
+ 
+ import (
++	"context"
+ 	"sync"
+ 	"time"
+-
+-	context "golang.org/x/net/context"
+ )
+ 
+ // WithParents returns a Context that listens to all given
+diff --git a/dag/dagctx_test.go b/dag/dagctx_test.go
+index 30a27e2..8692f54 100644
+--- a/dag/dagctx_test.go
++++ b/dag/dagctx_test.go
+@@ -1,11 +1,10 @@
+ package ctxext
+ 
+ import (
++	"context"
+ 	"math/rand"
+ 	"testing"
+ 	"time"
+-
+-	context "golang.org/x/net/context"
+ )
+ 
+ func TestWithParentsSingle(t *testing.T) {
+diff --git a/frac/fracctx.go b/frac/fracctx.go
+index 60938c0..d1ee94a 100644
+--- a/frac/fracctx.go
++++ b/frac/fracctx.go
+@@ -2,9 +2,8 @@
+ package ctxext
+ 
+ import (
++	"context"
+ 	"time"
+-
+-	context "golang.org/x/net/context"
+ )
+ 
+ // WithDeadlineFraction returns a Context with a fraction of the
+diff --git a/frac/fracctx_test.go b/frac/fracctx_test.go
+index c6dd10d..8de81be 100644
+--- a/frac/fracctx_test.go
++++ b/frac/fracctx_test.go
+@@ -1,11 +1,10 @@
+ package ctxext
+ 
+ import (
++	"context"
+ 	"os"
+ 	"testing"
+ 	"time"
+-
+-	context "golang.org/x/net/context"
+ )
+ 
+ // this test is on the context tool itself, not our stuff. it's for sanity on ours.
+@@ -14,7 +13,8 @@ func TestDeadline(t *testing.T) {
+ 		t.Skip("timeouts don't work reliably on travis")
+ 	}
+ 
+-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
++	ctx, cncl := context.WithTimeout(context.Background(), 5*time.Millisecond)
++	defer cncl()
+ 
+ 	select {
+ 	case <-ctx.Done():
+@@ -46,8 +46,10 @@ func TestDeadlineFractionHalf(t *testing.T) {
+ 		t.Skip("timeouts don't work reliably on travis")
+ 	}
+ 
+-	ctx1, _ := context.WithTimeout(context.Background(), 10*time.Millisecond)
+-	ctx2, _ := WithDeadlineFraction(ctx1, 0.5)
++	ctx1, cncl1 := context.WithTimeout(context.Background(), 10*time.Millisecond)
++	defer cncl1()
++	ctx2, cncl2 := WithDeadlineFraction(ctx1, 0.5)
++	defer cncl2()
+ 
+ 	select {
+ 	case <-ctx1.Done():
+diff --git a/io/ctxio.go b/io/ctxio.go
+index b4f2454..b27689b 100644
+--- a/io/ctxio.go
++++ b/io/ctxio.go
+@@ -11,9 +11,8 @@
+ package ctxio
+ 
+ import (
++	"context"
+ 	"io"
+-
+-	context "golang.org/x/net/context"
+ )
+ 
+ type ioret struct {
+diff --git a/io/ctxio_test.go b/io/ctxio_test.go
+index 884e090..bc4a0e9 100644
+--- a/io/ctxio_test.go
++++ b/io/ctxio_test.go
+@@ -2,11 +2,10 @@ package ctxio
+ 
+ import (
+ 	"bytes"
++	"context"
+ 	"io"
+ 	"testing"
+ 	"time"
+-
+-	context "golang.org/x/net/context"
+ )
+ 
+ func TestReader(t *testing.T) {
