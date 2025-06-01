@@ -33047,24 +33047,27 @@ man pages with practical examples.")
       (license license:wtfpl2))))
 
 (define-public emacs-window-layout
-  (package
-    (name "emacs-window-layout")
-    (version "1.4")
-    (home-page "https://github.com/kiwanami/emacs-window-layout")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "0wgqi8r844lbx52fn6az8c1n8m681rp6dkfzd54wmdk1ka7zmvv6"))
-              (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (synopsis "Simple window layout management framework for emacs")
-    (description "A window-layout management library that can split a frame
+  ;; Release not tagged; version taken from package header.
+  (let ((commit "277d0a8247adf13707703574cbbc16ddcff7c5fd")
+        (version "1.5"))
+    (package
+      (name "emacs-window-layout")
+      (version version)
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/kiwanami/emacs-window-layout")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "101gab1xm3a4ildwzfysmjcpxrzxj3a1l9fa03nc88if9pcsxjb9"))
+                (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/kiwanami/emacs-window-layout")
+      (synopsis "Simple window layout management framework for emacs")
+      (description "A window-layout management library that can split a frame
 or a window into some windows according to a layout recipe.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-e2wm
   (package
