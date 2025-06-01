@@ -113,6 +113,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -828,6 +829,44 @@ options are given, the action applies to the focused window.")
 following the mouse.")
     (license license:x11)))
 
+(define-public bemoji
+  (package
+    (name "bemoji")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/marty-oehme/bemoji")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "030zlq4k32zdkpmzc9dkiz2l94z10z1qkk70a9mxc8yi9fij2z0x"))))
+    (build-system copy-build-system)
+    (inputs (list bash-minimal coreutils-minimal curl grep sed))
+    (arguments
+     (list
+      #:install-plan #~'(("bemoji" "bin/bemoji"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/bemoji")
+                `("PATH" prefix
+                  ,(search-path-as-list
+                    '("bin")
+                    '#$(map (lambda (input)
+                              (lookup-package-input this-package input))
+                            '("coreutils-minimal" "curl" "grep" "sed"))))))))))
+    (home-page "https://github.com/marty-oehme/bemoji")
+    (synopsis "Emoji picker for @code{dmenu}-like launchers")
+    (description
+     "Bemoji is an emoji picker for @code{dmenu}-like launchers
+(e.g. @code{bemenu}, @code{wofi}, @code{rofi}, @code{fuzzel}, etc.)  It will
+remember your favorite emojis and give you quick access to them via a separately
+installed clipboard tool (e.g. @command{wl-copy}, @code{xclip}, etc.), or a
+typing tool (@code{wtype}, @code{xdotool}, etc.), or via standard output.")
+    (license license:expat)))
 
 (define-public pixman
   (package
