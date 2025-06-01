@@ -10705,14 +10705,14 @@ platforms, it is not limited to resource-constrained systems.")
 (define-public kexec-tools
   (package
     (name "kexec-tools")
-    (version "2.0.30")
+    (version "2.0.31")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/utils/kernel"
                                   "/kexec/kexec-tools-" version ".tar.xz"))
               (sha256
                (base32
-                "0khjha6qjgbg7v470mwv333k1i9aqggvs1z93nfhba17mykmz2kl"))))
+                "0c9cj9xvcm81gcwnkvvh9vh82v59kdz5llmblc2wkqb6vh6kb3wa"))))
     (build-system gnu-build-system)
     (arguments
      ;; There are no automated tests.
