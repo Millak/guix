@@ -1,26 +1,25 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
-# Rey Lopezch <taodeking@tutanota.com>, 2024, 2025.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2025.
+# ButterflyOfFire <butterflyoffire@users.noreply.translate.fedoraproject.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-05-31 03:18+0000\n"
-"PO-Revision-Date: 2025-05-13 12:14+0000\n"
-"Last-Translator: Rey Lopezch <taodeking@tutanota.com>\n"
-"Language-Team: Swedish <https://translate.fedoraproject.org/projects/guix/packages/sv/>\n"
-"Language: sv\n"
+"PO-Revision-Date: 2025-05-17 22:05+0000\n"
+"Last-Translator: ButterflyOfFire <butterflyoffire@users.noreply.translate.fedoraproject.org>\n"
+"Language-Team: Kabyle <https://translate.fedoraproject.org/projects/guix/packages/kab/>\n"
+"Language: kab\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.11.3\n"
 
 #: gnu/packages/abiword.scm:128
 msgid "Word processing program"
-msgstr "Ordbehandlingsprogram"
+msgstr "Amaẓrag n weḍris"
 
 #. TRANSLATORS: Dear translator, We would like to inform you that package
 #. descriptions may occasionally include Texinfo markup.  Texinfo markup
@@ -35,7 +34,7 @@ msgstr ""
 
 #: gnu/packages/aspell.scm:90
 msgid "Spell checker"
-msgstr "Stavningskontroll"
+msgstr "Aseɣtay n teɣdirawt"
 
 #: gnu/packages/aspell.scm:92
 msgid ""
@@ -47,23 +46,21 @@ msgstr ""
 
 #: gnu/packages/aspell.scm:140
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/aspell.scm:436
 msgid "Interactive spell-checking tool for Unix"
-msgstr "Interaktivt stavningskontrollverktyg för Unix"
+msgstr ""
 
 #: gnu/packages/aspell.scm:437
 msgid ""
 "Ispell is an interactive spell-checking tool supporting many\n"
 "European languages."
 msgstr ""
-"Ispell är ett interaktivt stavningskontrollverktyg som stödjer många\n"
-" europeiska språk."
 
 #: gnu/packages/audio.scm:237
 msgid "Embedded Audio Acceleration"
-msgstr "Inbäddad ljudacceleration"
+msgstr ""
 
 #: gnu/packages/audio.scm:238
 msgid ""
@@ -100,7 +97,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:356
 msgid "WebRTC's Audio Processing Library"
-msgstr "WebRTC:s ljudbehandlingsbibliotek"
+msgstr ""
 
 #: gnu/packages/audio.scm:357
 msgid ""
@@ -110,7 +107,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:376
 msgid "VisualOn AAC Encoder"
-msgstr "VisualOn AAC-kodare"
+msgstr ""
 
 #: gnu/packages/audio.scm:377
 msgid ""
@@ -237,7 +234,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:726
 msgid "dsp is an audio processing program with an interactive mode."
-msgstr "dsp är ett ljudbehandlingsprogram med ett interaktivt läge."
+msgstr ""
 
 #: gnu/packages/audio.scm:773
 msgid "C++ library of functions for DSP and Music Informatics purposes"
@@ -292,7 +289,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1195 gnu/packages/audio.scm:1314
 msgid "Software for recording and editing sounds"
-msgstr "Programvara för att spela in och redigera ljud"
+msgstr ""
 
 #: gnu/packages/audio.scm:1197
 msgid ""
@@ -300,9 +297,6 @@ msgid ""
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
 "tools."
 msgstr ""
-"Audacity är en redigerare för multiljudspår och är utformad för att spela in, spela upp\n"
-"och redigera digitalt ljud.  Det tillhandahåller digitala effekter och verktyg för \n"
-"spektrumanalysering."
 
 #: gnu/packages/audio.scm:1316
 msgid ""
@@ -310,13 +304,10 @@ msgid ""
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
 "tools."
 msgstr ""
-"Tenacity är en redigerare för multiljudspår och är utformad för att spela in, spela upp\n"
-"och redigera digitalt ljud.  Det tillhandahåller digitala effekter och verktyg för\n"
-"spektrumanalysering."
 
 #: gnu/packages/audio.scm:1371
 msgid "Library to handle various audio file formats"
-msgstr "Bibliotek för att hantera olika ljudfilsformat"
+msgstr ""
 
 #: gnu/packages/audio.scm:1372
 msgid ""
@@ -328,13 +319,6 @@ msgid ""
 ".snd/.au, BICS, and raw data.  Supported compression formats are currently\n"
 "G.711 mu-law and A-law."
 msgstr ""
-"Det här är en öppen källkodsversion av SGI:s ljudfilsbibliotek.\n"
-"Det tillhandahåller ett enhetligt programmeringsgränssnitt för behandling av ljuddata till\n"
-"och från ljudfiler av många vanliga format.\n"
-"\n"
-"För närvarande stödjer det format så som AIFF/AIFF-C, WAVE, och NeXT/Sun\n"
-".snd/.au, BICS, samt rå data.  I dagsläget stödjer det kompressionsformaten \n"
-"G.711 mu-law och A-law."
 
 #: gnu/packages/audio.scm:1412
 msgid "Pitch-correction LADSPA audio plugin"
@@ -703,7 +687,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:2779
 msgid "Virtual guitar amplifier"
-msgstr "Virtuell gitarrförstärkare"
+msgstr ""
 
 #: gnu/packages/audio.scm:2780
 msgid ""
@@ -839,15 +823,13 @@ msgstr ""
 
 #: gnu/packages/audio.scm:3287
 msgid "Implementation of the Open Sound Control protocol"
-msgstr "Implementation av protokollet Open Sound Control"
+msgstr ""
 
 #: gnu/packages/audio.scm:3289
 msgid ""
 "liblo is a lightweight library that provides an easy to use\n"
 "implementation of the Open Sound Control (@dfn{OSC}) protocol."
 msgstr ""
-"liblo är ett resurssnålt bibliotek som tillhandahåller en lättanvänd\n"
-"implementation av protokollet Open Sound Control (@dfn{OSC})."
 
 #: gnu/packages/audio.scm:3311
 msgid "Common API for real-time audio I/O"
@@ -908,7 +890,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:3434 gnu/packages/audio.scm:3459
 msgid "Python bindings for liblo"
-msgstr "Python-bindningar för liblo"
+msgstr ""
 
 #: gnu/packages/audio.scm:3436 gnu/packages/audio.scm:3461
 msgid ""
@@ -920,7 +902,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:3498
 msgid "Python bindings for libsndfile"
-msgstr "Python-bindningar för libsndfile"
+msgstr ""
 
 #: gnu/packages/audio.scm:3499
 msgid ""
@@ -947,12 +929,10 @@ msgid ""
 "This package provides a python API to read and write MIDI\n"
 "files."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/audio.scm:3600
 msgid "Convert audio to multichannel MIDI"
-msgstr "Konvertera ljud till multikanal-MIDI"
+msgstr ""
 
 #: gnu/packages/audio.scm:3601
 msgid ""
@@ -1040,7 +1020,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:3885
 msgid "Free implementation of OpenAL's ALUT standard"
-msgstr "Fri implementation av OpenAL:s ALUT-standard"
+msgstr ""
 
 #: gnu/packages/audio.scm:3886
 msgid "freealut is the OpenAL Utility Toolkit."
@@ -1079,7 +1059,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:3995
 msgid "Portable C audio library"
-msgstr "Ljudbibliotek för Portable C"
+msgstr ""
 
 #: gnu/packages/audio.scm:3997
 msgid ""
@@ -1665,20 +1645,12 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/audio.scm:6013
-#, fuzzy
-#| msgid "VisualOn AAC Encoder"
 msgid "Command-line AAC encoder"
-msgstr "VisualOn AAC-kodare"
+msgstr ""
 
 #: gnu/packages/audio.scm:6014
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a command-line AAC-encoder."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/audio.scm:6047
 msgid "aptX codec library"
@@ -2041,7 +2013,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:7216
 msgid "Record audio streams to your hard drive"
-msgstr "Spela in ljudströmmar till din hårddisk"
+msgstr ""
 
 #: gnu/packages/audio.scm:7217
 msgid ""
@@ -2905,10 +2877,8 @@ msgid "Simple zip library"
 msgstr ""
 
 #: gnu/packages/compression.scm:224
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides a simple zip library based on miniz."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/compression.scm:241
 msgid "Replacement for Sun's 'jar' utility"
@@ -4118,14 +4088,8 @@ msgid "Postgres SQL parser"
 msgstr ""
 
 #: gnu/packages/databases.scm:1509
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a Postgres SQL parser as a library."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/databases.scm:1621
 msgid "Time-series extension for PostgreSQL"
@@ -5652,13 +5616,10 @@ msgid ""
 "platform-jumping, key-collecting, ancient pyramid exploring game, vaguely in\n"
 "the style of similar games for the Commodore+4."
 msgstr ""
-"Abe's Amazing Adventure är ett sidorullande\n"
-"plattformsspel där man samlar nycklar samt utforskar antika pyramider\n"
-"och det liknar vagt spelen till Commodore+4."
 
 #: gnu/packages/games.scm:455
 msgid "Action game in four spatial dimensions"
-msgstr "Actionspel i fyra rumsliga dimensioner"
+msgstr ""
 
 #: gnu/packages/games.scm:457
 msgid ""
@@ -5683,7 +5644,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:529
 msgid "Control your system with a gamepad"
-msgstr "Kontrollera ditt system med en spelkontroll"
+msgstr ""
 
 #: gnu/packages/games.scm:531
 msgid ""
@@ -5756,17 +5717,17 @@ msgstr ""
 
 #: gnu/packages/games.scm:795
 msgid "Terminal-based multiplayer Tetris clone"
-msgstr "Terminalbaserad Tetris-klon med flerspelarläge"
+msgstr ""
 
 #: gnu/packages/games.scm:796
 msgid ""
 "Tetrinet is a multiplayer Tetris-like game with powerups and\n"
 "attacks you can use on opponents."
-msgstr "Tetrinet är ett Tetris-liknande spel i flerspelarläge med powerup-funktioner och attacker du kan använda på motståndare."
+msgstr ""
 
 #: gnu/packages/games.scm:827
 msgid "Game data for Vdrift"
-msgstr "Speldata för Vdrift"
+msgstr ""
 
 #: gnu/packages/games.scm:828
 msgid ""
@@ -5805,19 +5766,17 @@ msgstr ""
 
 #: gnu/packages/games.scm:924
 msgid "Terminal-based Tetris clone"
-msgstr "Terminalbaserad Tetris-klon"
+msgstr ""
 
 #: gnu/packages/games.scm:925
 msgid ""
 "Vitetris is a classic multiplayer Tetris clone for the\n"
 "terminal."
 msgstr ""
-"Vitetris är en klassisk Tetris-klon i flerspelarläge för\n"
-"terminalen."
 
 #: gnu/packages/games.scm:970
 msgid "Platform action game featuring a blob with a lot of weapons"
-msgstr "Plattform- och actionspel med en plump och massa vapen i huvudrollen"
+msgstr ""
 
 #: gnu/packages/games.scm:971
 msgid ""
@@ -5829,7 +5788,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1062
 msgid "Collection of the old text-based games and amusements"
-msgstr "Samling av de gamla textbaserade spelen och förströelserna"
+msgstr ""
 
 #: gnu/packages/games.scm:1064
 msgid ""
@@ -5876,7 +5835,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1168
 msgid "Simon Tatham's portable puzzle collection"
-msgstr "Simon Tathams portabla pusselsamling"
+msgstr ""
 
 #: gnu/packages/games.scm:1169
 msgid ""
@@ -5910,7 +5869,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1297
 msgid "Survival horror roguelike video game"
-msgstr "Rogueliknande skräck- och överlevnadspel"
+msgstr ""
 
 #: gnu/packages/games.scm:1299
 msgid ""
@@ -5938,7 +5897,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1401
 msgid "Implementation of the @i{Theme Hospital} game engine"
-msgstr "Implementation av @i{Theme Hospital}-spelmotorn"
+msgstr ""
 
 #: gnu/packages/games.scm:1403
 msgid ""
@@ -5989,7 +5948,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1603
 msgid "Fallout 2 game engine"
-msgstr "Fallout 2-spelmotor"
+msgstr ""
 
 #: gnu/packages/games.scm:1604
 #, scheme-format
@@ -5997,12 +5956,10 @@ msgid ""
 "This package provides the Fallout 2 game engine.  Game data\n"
 "should be placed in @file{~/.local/share/falltergeist}."
 msgstr ""
-"Det här paketet tillhandahåller Fallout 2-spelmotorn.  Speldata\n"
-"bör placeras i @file{~/.local/share/falltergeist}."
 
 #: gnu/packages/games.scm:1714
 msgid "3D billiard game"
-msgstr "Tredimensionellt biljardspel"
+msgstr ""
 
 #: gnu/packages/games.scm:1715
 msgid ""
@@ -6028,7 +5985,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1773
 msgid "Free content game based on the Doom engine"
-msgstr "Spel med fritt innehåll baserat på Doom-motorn"
+msgstr ""
 
 #: gnu/packages/games.scm:1782
 msgid ""
@@ -6041,7 +5998,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:1835
 msgid "Isometric role-playing game against killer robots"
-msgstr "Isometriskt datorrollspel mot mördarrobotar"
+msgstr ""
 
 #: gnu/packages/games.scm:1837
 msgid ""
@@ -6194,7 +6151,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:2371
 msgid "Chess board for GNOME"
-msgstr "Schackbräde för GNOME"
+msgstr ""
 
 #: gnu/packages/games.scm:2372
 msgid ""
@@ -6203,10 +6160,6 @@ msgid ""
 "Portable Game Notation.  To play against a computer, install a chess engine\n"
 "such as chess or stockfish."
 msgstr ""
-"GNOME Chess tillhandahåller ett tvådimensionellt schackbräde\n"
-"för att spela mot mänskliga eller datordrivna motståndare.    Det kan läsa in\n"
-"och spara partier via filformatet Portable Game Notation (PNG).    Installera en\n"
-"schackmotor så som chess eller stockfish för att spela mot datorn."
 
 #: gnu/packages/games.scm:2433
 msgid "Backgammon game"
@@ -6223,7 +6176,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:2473
 msgid "3d Rubik's cube game"
-msgstr "Tredimensionellt Rubikskubspel"
+msgstr ""
 
 #: gnu/packages/games.scm:2475
 msgid ""
@@ -6235,22 +6188,18 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/games.scm:2522
-#, fuzzy
-#| msgid "The game of Shogi (Japanese chess)"
 msgid "Game of Shogi (Japanese chess)"
-msgstr "Spelet Shogi (japansk schack)"
+msgstr ""
 
 #: gnu/packages/games.scm:2524
 msgid ""
 "GNU Shogi is a program that plays the game Shogi (Japanese Chess).\n"
 "It is similar to standard chess but this variant is far more complicated."
 msgstr ""
-"GNU Shogi är ett program som spelar spelet Shogi (japanskt schack)\n"
-"Det liknar vanlig schack men denna variant är betydligt mer komplicerad."
 
 #: gnu/packages/games.scm:2552
 msgid "Tetris clone based on the SDL library"
-msgstr "Tetrisklon baserad på SDL-biblioteket"
+msgstr ""
 
 #: gnu/packages/games.scm:2554
 msgid ""
@@ -6351,15 +6300,13 @@ msgstr ""
 
 #: gnu/packages/games.scm:2947
 msgid "Action platformer game"
-msgstr "Action- och plattformsspel"
+msgstr ""
 
 #: gnu/packages/games.scm:2949
 msgid ""
 "ReTux is an action platformer loosely inspired by the Mario games,\n"
 "utilizing the art assets from the @code{SuperTux} project."
 msgstr ""
-"ReTux är ett action- och plattformsspel löst inspirerat av Mario-spelen\n"
-"och nyttjar grafik med mera från @code{SuperTux}-projektet."
 
 #: gnu/packages/games.scm:2984
 msgid "Thematic meditative game"
@@ -6401,7 +6348,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3259
 msgid "Lightweight game engine for Action-RPGs"
-msgstr "Resurssnål spelmotor för action-rpg:er"
+msgstr ""
 
 #: gnu/packages/games.scm:3261
 msgid ""
@@ -6409,9 +6356,6 @@ msgid ""
 "scripted in Lua.  It has been designed with 16-bit classic Action-RPGs\n"
 "in mind."
 msgstr ""
-"Solarus är en tvådimensionell spelmotor skriven i C++ och som\n"
-"kan köra spel skriptade i Lua.    Den har formgivits med klassiska 16-bitars\n"
-"action-rpg:er i åtanke."
 
 #: gnu/packages/games.scm:3288
 msgid "Create and modify quests for the Solarus engine"
@@ -6496,7 +6440,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3700
 msgid "UFO: AI data files"
-msgstr "Datafiler för UFO: AI"
+msgstr ""
 
 #: gnu/packages/games.scm:3702
 msgid "This package contains maps and other assets for UFO: Alien Invasion."
@@ -6558,7 +6502,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3962
 msgid "Lemmings clone"
-msgstr "Lemmings-klon"
+msgstr ""
 
 #: gnu/packages/games.scm:3964
 msgid ""
@@ -6606,7 +6550,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:4109
 msgid "Full chess implementation"
-msgstr "Fullständig schackimplementation"
+msgstr ""
 
 #: gnu/packages/games.scm:4110
 msgid ""
@@ -6614,9 +6558,6 @@ msgid ""
 "against the computer in a game of chess, either through the default terminal\n"
 "interface or via an external visual interface such as GNU XBoard."
 msgstr ""
-"GNU Chess är en schackmotor.   Den gör att du kan tävla mot datorn\n"
-"i ett parti schack, antingen via gränssnittet för standardterminalen eller \n"
-"genom ett externt visuellt gränssnitt så som GNU XBoard."
 
 #: gnu/packages/games.scm:4170
 msgid "Twisted adventures of young pig farmer Dink Smallwood"
@@ -6632,7 +6573,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:4198
 msgid "Game data for GNU Freedink"
-msgstr "Speldata för GNU Freedink"
+msgstr ""
 
 #: gnu/packages/games.scm:4200
 msgid "This package contains the game data of GNU Freedink."
@@ -6661,7 +6602,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:4323
 msgid "Graphical user interface for chess programs"
-msgstr "Grafiskt användargränssnitt för schackprogram"
+msgstr ""
 
 #: gnu/packages/games.scm:4324
 msgid ""
@@ -6671,11 +6612,6 @@ msgid ""
 "fully interactive graphical interface and it can load and save games in the\n"
 "Portable Game Notation."
 msgstr ""
-"GNU XBoard är ett grafiskt bräde för alla schackvarianter,\n"
-"så som internationellt schack, xiangqi (kinesiskt schack), shogi (japanskt schack)\n"
-"och Makruk.    Flera mindre kända varianter stöds också.    Det tillhandahåller ett\n"
-"fullständigt interaktivt grafiskt gränssnitt och det kan läsa in och spara partier i\n"
-"filformatet Portable Game Notation (PGN)."
 
 #: gnu/packages/games.scm:4357
 msgid "Typing tutor"
@@ -6839,10 +6775,8 @@ msgid "Data files for SuperTuxKart"
 msgstr ""
 
 #: gnu/packages/games.scm:4976
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package contains data files for SuperTuxKart."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/games.scm:5031
 msgid "3D kart racing game"
@@ -6855,9 +6789,6 @@ msgid ""
 "against each other or just trying to beat the computer; single-player mode is\n"
 "also available."
 msgstr ""
-"SuperTuxKart är ett tredimensionellt rallyspel med fokus på\n"
-"spelglädje snarare än realism.    Du kan spela med upp till fyra vänner på en dator,\n"
-"tävla mot varandra eller bara försöka slå datorn; det finns också enspelarläge."
 
 #: gnu/packages/games.scm:5108
 msgid "Isometric realtime strategy, economy and city building simulation"
@@ -7274,8 +7205,6 @@ msgid ""
 "SuperTux is a classic 2D jump'n run sidescroller game in\n"
 "a style similar to the original Super Mario games."
 msgstr ""
-"SuperTux är ett klassiskt tvådimensionellt sidorullande spel\n"
-"som liknar de ursprungliga Super Mario-spelen."
 
 #: gnu/packages/games.scm:6852
 msgid "MUD client"
@@ -8288,18 +8217,14 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/games.scm:11492
-#, fuzzy
-#| msgid "Action platformer game"
 msgid "Falling tower game"
-msgstr "Action- och plattformsspel"
+msgstr ""
 
 #: gnu/packages/games.scm:11493
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This package provides a reimplementation of the classic\n"
 "Xjump game, using SDL instead of Xlib."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/games.scm:11574
 msgid "2D motocross platform game"
@@ -8315,19 +8240,17 @@ msgstr ""
 
 #: gnu/packages/games.scm:11619
 msgid "Graphical user interface to play chess"
-msgstr "Grafiskt användargränssnitt för att spela schack"
+msgstr ""
 
 #: gnu/packages/games.scm:11621
 msgid ""
 "Eboard is a chess board interface for ICS (Internet Chess Servers)\n"
 "and chess engines."
 msgstr ""
-"Eboard är ett schackbrädesgränssnitt för ICS (Internet Chess Servers)\n"
-"och schackmotorer."
 
 #: gnu/packages/games.scm:11672
 msgid "Chess game database"
-msgstr "Databas för schackpartier"
+msgstr ""
 
 #: gnu/packages/games.scm:11674
 msgid ""
@@ -8335,13 +8258,10 @@ msgid ""
 "collection of chess games in many ways: browse, edit, add, organize, analyze,\n"
 "etc.  You can also play games on FICS or against an engine."
 msgstr ""
-"ChessX är en schackdatabas.    Med ChessX kan du hantera din samling\n"
-"av schackpartier på flera sätt: bläddra, redigera, lägga till, organisera, analysera\n"
-"med mera.    Du kan även spela partier på FICS eller mot en motor."
 
 #: gnu/packages/games.scm:11740
 msgid "Strong chess engine"
-msgstr "Stark schackmotor"
+msgstr ""
 
 #: gnu/packages/games.scm:11742
 msgid ""
@@ -8349,9 +8269,6 @@ msgid ""
 "best human chess grandmasters.  It can be used with UCI-compatible GUIs like\n"
 "ChessX."
 msgstr ""
-"Stockfish är en oerhört stark schackmotor.     Den är avsevärt starkare än\n"
-"de bästa mänskliga schackstormästarna.    Den kan användas med UCI-kompatibla \n"
-"grafiska användargränssnitt som ChessX."
 
 #: gnu/packages/games.scm:11779
 msgid "Simple chess engine written in C"
@@ -8364,10 +8281,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/games.scm:11803
-#, fuzzy
-#| msgid "Implementation of the @i{Theme Hospital} game engine"
 msgid "Implementation of the board game Nine Men's Morris"
-msgstr "Implementation av @i{Theme Hospital}-spelmotorn"
+msgstr ""
 
 #: gnu/packages/games.scm:11804
 msgid ""
@@ -8692,10 +8607,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/games.scm:13134
-#, fuzzy
-#| msgid "Implementation of the @i{Theme Hospital} game engine"
 msgid "Portable implementation of Bioware's Infinity Engine"
-msgstr "Implementation av @i{Theme Hospital}-spelmotorn"
+msgstr ""
 
 #: gnu/packages/games.scm:13136
 msgid ""
@@ -9184,7 +9097,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:1302
 msgid "Color profile manager for the GNOME desktop"
-msgstr "Färgprofilhanterare för skrivbordsmiljön GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:1303
 msgid ""
@@ -10346,7 +10259,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:7019
 msgid "Music player for GNOME"
-msgstr "Musikspelare för GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:7020
 msgid ""
@@ -10356,15 +10269,13 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:7081
 msgid "GNOME image viewer"
-msgstr "En bildvisare för GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:7082
 msgid ""
 "Eye of GNOME is the GNOME image viewer.  It\n"
 "supports image conversion, rotation, and slideshows."
 msgstr ""
-"Eye of GNOME är en bildvisare för GNOME. Den\n"
-"stödjer bildkonvertering, rotation och bildspel."
 
 #: gnu/packages/gnome.scm:7104
 msgid "Extensions for the Eye of GNOME image viewer"
@@ -10398,16 +10309,10 @@ msgid "GLib library for accessing MS Graph APIs"
 msgstr ""
 
 #: gnu/packages/gnome.scm:7177
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides a GLib-based library for accessing\n"
 "MS Graph APIs."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/gnome.scm:7258
 msgid "Userspace virtual file system for GIO"
@@ -10529,7 +10434,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:7787
 msgid "Photo manager for GNOME 3"
-msgstr "Fotohanterare för GNOME 3"
+msgstr ""
 
 #: gnu/packages/gnome.scm:7789
 msgid ""
@@ -10538,14 +10443,10 @@ msgid ""
 "them by keywords and events, view them in full-window or fullscreen mode, and\n"
 "share them with others via social networking and more."
 msgstr ""
-"Shotwell är en digital fotohanterare utformad för skrivbordsmiljön\n"
-"GNOME. Den tillåter dig att importera foton från skiva eller kamera, organisera\n"
-"dem via nyckelord eller händelser, visa dem i helfönster- eller helskärmsläge och\n"
-"dela dem med andra på sociala medier med mera."
 
 #: gnu/packages/gnome.scm:7830
 msgid "Graphical archive manager for GNOME"
-msgstr "Grafisk arkivhanterare för GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:7831
 msgid ""
@@ -10553,13 +10454,10 @@ msgid ""
 "environment that allows users to view, unpack, and create compressed archives\n"
 "such as gzip tarballs."
 msgstr ""
-"File Roller är en arkivhanterare för skrivbordsmiljön GNOME\n"
-"som ger användare möjligheten att se, packa upp och skapa komprimerade arkiv\n"
-"så som gzip-filer."
 
 #: gnu/packages/gnome.scm:7887
 msgid "Session manager for GNOME"
-msgstr "Sessionshanterare för GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:7889
 msgid ""
@@ -10762,7 +10660,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:9482
 msgid "Utilities to configure the GNOME desktop"
-msgstr "Verktyg för att konfigurera skrivbordsmiljön GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:9485
 msgid ""
@@ -10840,7 +10738,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:10108
 msgid "File manager for GNOME"
-msgstr "Filhanterare för GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:10111
 msgid ""
@@ -10848,13 +10746,10 @@ msgid ""
 "design and behaviour, giving the user a simple way to navigate and manage its\n"
 "files."
 msgstr ""
-"Nautilus (Files) är en filhanterare utformad för att passa skrivbordsmiljön GNOME:s\n"
-"utformning och beteende genom att ge användaren ett enkelt sätt att navigera\n"
-"och hantera filer på."
 
 #: gnu/packages/gnome.scm:10150
 msgid "Disk usage analyzer for GNOME"
-msgstr "Diskanvändningsanalysator för GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:10152
 msgid ""
@@ -10913,7 +10808,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:10335
 msgid "GoVirt Library"
-msgstr "GoVirt-bibliotek"
+msgstr ""
 
 #: gnu/packages/gnome.scm:10336
 msgid "GoVirt is a GObject wrapper for the oVirt REST API."
@@ -11006,7 +10901,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:10833
 msgid "GNOME's clock application"
-msgstr "GNOME:s klockprogram"
+msgstr ""
 
 #: gnu/packages/gnome.scm:10835
 msgid ""
@@ -11016,7 +10911,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:10883
 msgid "GNOME's calendar application"
-msgstr "GNOME:s kalenderprogram"
+msgstr ""
 
 #: gnu/packages/gnome.scm:10885
 msgid ""
@@ -11047,7 +10942,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:11024
 msgid "Look up words in dictionary sources"
-msgstr "Sök efter ord i ordbokskällor"
+msgstr ""
 
 #: gnu/packages/gnome.scm:11026
 msgid ""
@@ -11623,14 +11518,8 @@ msgid "Functions useful in mobile related, glib based projects"
 msgstr ""
 
 #: gnu/packages/gnome.scm:13547
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides functions for mobiles."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/gnome.scm:13583
 msgid "Haptic/visual/audio feedback via DBus"
@@ -11662,16 +11551,10 @@ msgid "Spell-checking library for GTK 4"
 msgstr ""
 
 #: gnu/packages/gnome.scm:13699
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides a spell-checker for\n"
 "GtkTextView widgets."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/gnome.scm:13798
 msgid "Toolsmith for GNOME-based applications"
@@ -11700,14 +11583,8 @@ msgid "Servers for Komikku"
 msgstr ""
 
 #: gnu/packages/gnome.scm:13931
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides more recent servers for Komikku."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/gnome.scm:13977
 msgid "Uniform data access"
@@ -11777,30 +11654,18 @@ msgid "Share GNOME desktop with remote sessions"
 msgstr ""
 
 #: gnu/packages/gnome.scm:14289
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a remote desktop server for GNOME."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/gnome.scm:14327
 msgid "Common User Interfaces for call handling"
 msgstr ""
 
 #: gnu/packages/gnome.scm:14328
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides common user interfaces to make and\n"
 "receive calls."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/gnome.scm:14389
 msgid "Phone dialer and call handler"
@@ -11855,10 +11720,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/gnome.scm:14646
-#, fuzzy
-#| msgid "File manager for GNOME"
 msgid "Graphical software manager for GNOME"
-msgstr "Filhanterare för GNOME"
+msgstr ""
 
 #: gnu/packages/gnome.scm:14647
 msgid ""
@@ -12653,10 +12516,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/guile.scm:1035
-#, fuzzy
-#| msgid "Python bindings for liblo"
 msgid "Guile bindings for libbzip2"
-msgstr "Python-bindningar för liblo"
+msgstr ""
 
 #: gnu/packages/guile.scm:1036
 msgid ""
@@ -16523,14 +16384,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/linux.scm:10010
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "Simple API to read and write INI-style files"
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/linux.scm:10012
 msgid ""
@@ -19439,14 +19294,8 @@ msgid "Tiny HTTP client library"
 msgstr ""
 
 #: gnu/packages/networking.scm:4366
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a tiny HTTP client library in C."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/networking.scm:4395
 msgid "Make localhost servers publicly visible"
@@ -19565,10 +19414,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/networking.scm:4712
-#, fuzzy
-#| msgid "Full chess implementation"
 msgid "QUIC protocol implementation"
-msgstr "Fullständig schackimplementation"
+msgstr ""
 
 #: gnu/packages/networking.scm:4714
 msgid ""
@@ -19834,10 +19681,8 @@ msgid "Qt6 frontend for the Poppler PDF rendering library"
 msgstr ""
 
 #: gnu/packages/pdf.scm:456
-#, fuzzy
-#| msgid "Python bindings for liblo"
 msgid "Python binding to Poppler-Qt5"
-msgstr "Python-bindningar för liblo"
+msgstr ""
 
 #: gnu/packages/pdf.scm:458
 msgid ""
@@ -20267,10 +20112,8 @@ msgid "Sioyek is a PDF viewer with a focus on textbooks and research papers."
 msgstr ""
 
 #: gnu/packages/pdf.scm:1878
-#, fuzzy
-#| msgid "Look up words in dictionary sources"
 msgid "Tool for manipulating PDF documents"
-msgstr "Sök efter ord i ordbokskällor"
+msgstr ""
 
 #: gnu/packages/pdf.scm:1880
 msgid ""
@@ -20718,14 +20561,8 @@ msgid "Method for memory mapping a file"
 msgstr ""
 
 #: gnu/packages/perl.scm:1231
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a way to memory map a file."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/perl.scm:1249
 msgid "Capture STDOUT and STDERR from Perl, XS or external programs"
@@ -22288,14 +22125,8 @@ msgid "Sort revision-like numbers"
 msgstr ""
 
 #: gnu/packages/perl.scm:4551
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a way to sort revision-like numbers."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/perl.scm:4571
 msgid "Deconstructed dynamic C library loading"
@@ -22630,16 +22461,10 @@ msgid "@code{try/catch} syntax in Perl"
 msgstr ""
 
 #: gnu/packages/perl.scm:5283
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This module provides syntactical support for\n"
 "@code{try/catch} control flows."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/perl.scm:5311
 msgid "Watch for changes to files"
@@ -24500,12 +24325,10 @@ msgid "Syntax for lexical field-based objects"
 msgstr ""
 
 #: gnu/packages/perl.scm:9268
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This module provides a simple syntax for creating object\n"
 "classes."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/perl.scm:9287
 msgid "Generate cryptographic signatures for objects"
@@ -25799,10 +25622,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/perl.scm:11975
-#, fuzzy
-#| msgid "Implementation of the @i{Theme Hospital} game engine"
 msgid "An implementation of the Brew edit distance"
-msgstr "Implementation av @i{Theme Hospital}-spelmotorn"
+msgstr ""
 
 #: gnu/packages/perl.scm:11977
 msgid ""
@@ -28784,10 +28605,8 @@ msgid "Binary for @code{texlive-afm2pl}"
 msgstr ""
 
 #: gnu/packages/tex.scm:2280
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-afm2pl}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:2301
 msgid "Air Force Institute of Technology thesis class"
@@ -28907,10 +28726,8 @@ msgid "Binary for @code{texlive-aleph}"
 msgstr ""
 
 #: gnu/packages/tex.scm:2574
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-aleph}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:2601
 msgid "Alfa Slab One font face with support for LaTeX and pdfLaTeX"
@@ -29616,16 +29433,10 @@ msgid "Create abstract argumentation frameworks via TikZ"
 msgstr ""
 
 #: gnu/packages/tex.scm:4193
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides commands for creating abstract argumentation\n"
 " frameworks via TikZ."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:4221
 msgid "Arimo sans serif fonts with LaTeX support"
@@ -30073,10 +29884,8 @@ msgid "Binary for @code{texlive-axodraw2}"
 msgstr ""
 
 #: gnu/packages/tex.scm:5319
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-axodraw2}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:5342
 msgid "LaTeX encoding tools for Bookhands fonts"
@@ -30121,10 +29930,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:5443
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Comprehensive Bangla LaTeX package"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:5445
 msgid ""
@@ -32103,14 +31910,8 @@ msgid "C90 font encoding for Thai"
 msgstr ""
 
 #: gnu/packages/tex.scm:10207
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides C90 font encoding for Thai."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:10228
 msgid "Schedule and grade books for French teachers"
@@ -33332,14 +33133,8 @@ msgid "Color separation"
 msgstr ""
 
 #: gnu/packages/tex.scm:13071
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides support for colour separation when using Dvips."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:13098
 msgid "Sans serif font, with LaTeX support"
@@ -33424,16 +33219,10 @@ msgid "Typesetting (complex) polynomial long division"
 msgstr ""
 
 #: gnu/packages/tex.scm:13282
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides a simple interface for typesetting (complex)\n"
 "polynomial long division."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:13306
 msgid "Class for the journal Computational Complexity"
@@ -33881,14 +33670,8 @@ msgid "Cuprum font family support for LaTeX"
 msgstr ""
 
 #: gnu/packages/tex.scm:14328
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides support for the Cuprum font family."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:14361
 msgid "Customised BibTeX styles"
@@ -35822,12 +35605,10 @@ msgid "Font Awesome 5 with LaTeX support"
 msgstr ""
 
 #: gnu/packages/tex.scm:18806
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This package provides LaTeX support for the included Font Awesome 5 icon\n"
 "set."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:18829
 msgid "Font Mfizz icons for use in LaTeX"
@@ -35978,16 +35759,10 @@ msgid "Align math formulas in different lines"
 msgstr ""
 
 #: gnu/packages/tex.scm:19210
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides several commands for aligning math formulas in\n"
 "different lines."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:19233
 msgid "Typesetting mathematics according to French rules"
@@ -36571,10 +36346,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:20581
-#, fuzzy
-#| msgid "Collection of the old text-based games and amusements"
 msgid "Collection of old German-style fonts"
-msgstr "Samling av de gamla textbaserade spelen och förströelserna"
+msgstr ""
 
 #: gnu/packages/tex.scm:20583
 msgid ""
@@ -36587,10 +36360,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:20610
-#, fuzzy
-#| msgid "Implementation of the @i{Theme Hospital} game engine"
 msgid "Implementation of the Gotoh sequence alignment algorithm"
-msgstr "Implementation av @i{Theme Hospital}-spelmotorn"
+msgstr ""
 
 #: gnu/packages/tex.scm:20612
 msgid ""
@@ -36659,10 +36430,8 @@ msgid "Binary for @code{texlive-gregoriotex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:20779
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-gregoriotex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:20805
 msgid "URW Grotesq font pack for LaTeX"
@@ -36980,14 +36749,8 @@ msgid "Macros for scientific articles"
 msgstr ""
 
 #: gnu/packages/tex.scm:21476
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides macros for scientific articles."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:21498
 msgid "Diagrams of board positions in the games of Havannah and Hex"
@@ -37391,10 +37154,8 @@ msgid "Binaries for @code{texlive-hitex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:22392
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binaries for @code{texlive-hitex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:22415
 msgid "Beamer theme for Harbin Institute of Technology, ShenZhen"
@@ -37591,16 +37352,10 @@ msgid "Generate BibTeX entries for various IETF index files"
 msgstr ""
 
 #: gnu/packages/tex.scm:22870
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "The package provides scripts to translate IETF index files to BibTeX\n"
 "files."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:22892
 msgid "Check if a given input string is a number or dimension for TeX"
@@ -39002,16 +38757,10 @@ msgid "Macros for a two language dictionary"
 msgstr ""
 
 #: gnu/packages/tex.scm:25975
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides macros for a two language\n"
 "dictionary."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:25996
 msgid "Convenient and uniform references to legal provisions"
@@ -39901,10 +39650,8 @@ msgid "Binary for @code{texlive-m-tx}"
 msgstr ""
 
 #: gnu/packages/tex.scm:28002
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-m-tx}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:28022
 msgid "List of internal LaTeX2e macros"
@@ -40339,12 +40086,10 @@ msgid "Documentation for Mendex index processor"
 msgstr ""
 
 #: gnu/packages/tex.scm:28992
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This package provides documentation for Mendex (Japanese index\n"
 "processor)."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:29014
 msgid "Basis for books to be published by Mentis publishers"
@@ -41591,14 +41336,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:31918
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "Thesis template for Ningxia University"
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:31920
 msgid ""
@@ -41997,10 +41736,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:32961
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Document LaTeX packages in a consistent way"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:32963
 msgid ""
@@ -42108,12 +41845,10 @@ msgid "BibTeX style for the journal @emph{Perception}"
 msgstr ""
 
 #: gnu/packages/tex.scm:33211
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This package provides a BibTeX style for the journal\n"
 "@emph{Perception}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:33234
 msgid "Nested delimiters that consistently grow regardless of the contents"
@@ -43056,16 +42791,10 @@ msgid "Markup for structured journal and conference paper rebuttals"
 msgstr ""
 
 #: gnu/packages/tex.scm:35406
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides means for writing structured journal and\n"
 "conference paper rebuttals."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:35427
 msgid "Commands to typeset recursion theory papers"
@@ -43710,14 +43439,8 @@ msgid "Thesis template of Shandong University"
 msgstr ""
 
 #: gnu/packages/tex.scm:36919
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a thesis template of Shandong University."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:36942
 msgid ""
@@ -44611,10 +44334,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:39004
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Set of sudoku-related packages"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:39006
 msgid ""
@@ -44907,16 +44628,10 @@ msgid "Format German phone numbers"
 msgstr ""
 
 #: gnu/packages/tex.scm:39705
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "The package provides a command @code{\\telprint} for formatting German\n"
 "telephone numbers."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:39734
 msgid "Greek and Cyrillic to accompany Times"
@@ -46292,10 +46007,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:42875
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Load classes as packages"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:42877
 msgid ""
@@ -46469,10 +46182,8 @@ msgid "Binary for @code{texlive-velthuis}"
 msgstr ""
 
 #: gnu/packages/tex.scm:43283
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provide the binary for @code{texlive-velthuis}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:43303
 msgid "Creating Venn diagrams with MetaPost"
@@ -46521,10 +46232,8 @@ msgid "Binary for @code{texlive-vlna}"
 msgstr ""
 
 #: gnu/packages/tex.scm:43447
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-vlna}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:43501
 msgid "Support for Vietnamese"
@@ -46606,14 +46315,8 @@ msgid "LaTeX support for @code{wnri} fonts"
 msgstr ""
 
 #: gnu/packages/tex.scm:43671
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides LaTeX support for the @code{wnri} fonts."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:43693
 msgid "LaTeX class for Bavarian school w-seminar papers"
@@ -47005,14 +46708,8 @@ msgid "BibLaTeX and Biber cheat sheet"
 msgstr ""
 
 #: gnu/packages/tex.scm:44715
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a BibLaTeX and Biber cheat sheet."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:44738
 msgid "BibTeX variant supporting 8-bit encodings"
@@ -47031,10 +46728,8 @@ msgid "Binary for @code{texlive-bibtex8}"
 msgstr ""
 
 #: gnu/packages/tex.scm:44815
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-bibtex8}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:44837
 msgid "BibTeX variant supporting Unicode (UTF-8), via ICU"
@@ -47051,10 +46746,8 @@ msgid "Binary for @code{texlive-bibtexu}"
 msgstr ""
 
 #: gnu/packages/tex.scm:44868
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-bibtexu}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:44897
 msgid "Bundle together all the files needed to build a LaTeX document"
@@ -47115,10 +46808,8 @@ msgid "Binaries for @code{texlive-chktex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:45064
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binaries for @code{texlive-chktex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:45092
 msgid "Literate programming tool based on Clojure's Pamphlet system"
@@ -47313,10 +47004,8 @@ msgid "Binary for @code{texlive-detex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:45590
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-detex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:45620
 msgid "Editor plugin for LaTeX, ConTeXt etc."
@@ -47379,10 +47068,8 @@ msgid "Binaries for @code{texlive-dtl}"
 msgstr ""
 
 #: gnu/packages/tex.scm:45759
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binaries for @code{texlive-dtl}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:45780
 msgid "Creates a template for a self-extracting @file{.dtx} file"
@@ -47453,10 +47140,8 @@ msgid "Binary for @code{texlive-dvicopy}"
 msgstr ""
 
 #: gnu/packages/tex.scm:45960
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-dvicopy}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:45982
 msgid "Convert one DVI file into another"
@@ -47503,10 +47188,8 @@ msgid "Binary for @code{texlive-dviljk}"
 msgstr ""
 
 #: gnu/packages/tex.scm:46143
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-dviljk}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:46167
 msgid "Utilities from the @code{dviout} package"
@@ -49102,10 +48785,8 @@ msgid "Plain TeX macros for resumes"
 msgstr ""
 
 #: gnu/packages/tex.scm:49943
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides a set of macros for resumes."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:49962
 msgid "Typographic ruler for TeX"
@@ -49339,14 +49020,8 @@ msgid "Draw trees"
 msgstr ""
 
 #: gnu/packages/tex.scm:50474
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides macros to draw trees, within TeX or LaTeX."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:50495
 msgid "Demonstration code for cos and sin in TeX macros"
@@ -50031,10 +49706,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:52250
-#, fuzzy
-#| msgid "Spell checker"
 msgid "LaTeX checker"
-msgstr "Stavningskontroll"
+msgstr ""
 
 #: gnu/packages/tex.scm:52252
 msgid "Lacheck is a tool for finding common mistakes in LaTeX documents."
@@ -50045,10 +49718,8 @@ msgid "Binary for @code{texlive-lacheck}"
 msgstr ""
 
 #: gnu/packages/tex.scm:52298
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-lacheck}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:52320
 msgid "Legacy stub to allow loading pictex as m-pictex"
@@ -50382,10 +50053,8 @@ msgid "Binary for @code{texlive-patgen}"
 msgstr ""
 
 #: gnu/packages/tex.scm:53222
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-patgen}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:53247
 msgid "Create booklets from PDF files"
@@ -50561,10 +50230,8 @@ msgid "Binary for @code{texlive-seetexk}"
 msgstr ""
 
 #: gnu/packages/tex.scm:53645
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-seetexk}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:53669
 msgid "Yet another TeX compilation tool"
@@ -50581,10 +50248,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:53701
-#, fuzzy
-#| msgid "Look up words in dictionary sources"
 msgid "Tool for redacting sources"
-msgstr "Sök efter ord i ordbokskällor"
+msgstr ""
 
 #: gnu/packages/tex.scm:53703
 msgid ""
@@ -51911,10 +51576,8 @@ msgid "Binaries for @code{texlive-ps2pk}"
 msgstr ""
 
 #: gnu/packages/tex.scm:56936
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binaries for @code{texlive-ps2pk}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:56980
 msgid "PostScript utilities"
@@ -52848,10 +52511,8 @@ msgid "Binaries for @code{texlive-texware}"
 msgstr ""
 
 #: gnu/packages/tex.scm:59384
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binaries for @code{texlive-texware}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:59406
 msgid "Graphical representation of keys on a standard scientific calculator"
@@ -53444,10 +53105,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:60721
-#, fuzzy
-#| msgid "Collection of the old text-based games and amusements"
 msgid "Collection of cute little animals and similar creatures"
-msgstr "Samling av de gamla textbaserade spelen och förströelserna"
+msgstr ""
 
 #: gnu/packages/tex.scm:60723
 msgid ""
@@ -53837,10 +53496,8 @@ msgid "Binary for @code{texlive-tpic2pdftex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:61654
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-tpic2pdftex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:61675
 msgid "Drawing TQFT diagrams with TikZ/PGF"
@@ -53965,10 +53622,8 @@ msgid "Binary for @code{texlive-upmendex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:61989
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-upmendex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:62009
 msgid "Tools to produce formats that read Polish language input"
@@ -54117,14 +53772,8 @@ msgid "Unicode compatible index generation"
 msgstr ""
 
 #: gnu/packages/tex.scm:62338
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a Unicode compatible index program for LaTeX."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:62360
 msgid "Cistercian numerals in LaTeX"
@@ -54811,10 +54460,8 @@ msgid "Binary for @code{texlive-gsftopk}"
 msgstr ""
 
 #: gnu/packages/tex.scm:64078
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-gsftopk}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:64099
 msgid "Colour for packages @code{hyperref} and @code{bookmark}"
@@ -54886,10 +54533,8 @@ msgid "Binary for @code{texlive-xml2pmx}"
 msgstr ""
 
 #: gnu/packages/tex.scm:64281
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-xml2pmx}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:64328
 msgid "Support for parsing XML documents"
@@ -55337,16 +54982,10 @@ msgid "Flexible interface for setting font sizes"
 msgstr ""
 
 #: gnu/packages/tex.scm:65354
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides an interface for selecting (arbitrary) font sizes\n"
 "and associated values."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:65380
 msgid "Font encodings, metrics and Lua script fragments for font creation"
@@ -56219,12 +55858,10 @@ msgid "Babel support for Italian text"
 msgstr ""
 
 #: gnu/packages/tex.scm:67541
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "The package provides language definitions for use in\n"
 "Babel."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:67564
 msgid "Babel support for Japanese"
@@ -56579,10 +56216,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:68432
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Passing options to packages or classes"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:68434
 msgid ""
@@ -57953,12 +57588,10 @@ msgid "Simplified introduction to LaTeX"
 msgstr ""
 
 #: gnu/packages/tex.scm:71435
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This package provides an accessible introduction to LaTeX for the\n"
 "beginner."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:71457
 msgid "Generate slideshow with MetaPost"
@@ -58389,16 +58022,10 @@ msgid "Copperplate calligraphic letters in LaTeX"
 msgstr ""
 
 #: gnu/packages/tex.scm:72440
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides a maths interface to the @code{rsfs}\n"
 "fonts."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:72462
 msgid "Captions on more than floats"
@@ -58463,14 +58090,8 @@ msgid "Generate DOI banners and links"
 msgstr ""
 
 #: gnu/packages/tex.scm:72593
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a LaTeX package to generate DOI banners and links."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:72613
 msgid "e-TeX tools for LaTeX"
@@ -58658,10 +58279,8 @@ msgid "Binary for @code{texlive-makeindex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:73032
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-makeindex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:73055
 msgid "Non-floating marginal content with automatic placement for LuaLaTeX"
@@ -58978,10 +58597,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:73755
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of free ICC profiles"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:73757
 msgid ""
@@ -59128,10 +58745,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:74128
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of LaTeX packages"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:74130
 msgid ""
@@ -60315,10 +59930,8 @@ msgid "Binary for @code{texlive-metapost}"
 msgstr ""
 
 #: gnu/packages/tex.scm:76945
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-metapost}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:76966
 msgid "Class for typesetting publications of ACM"
@@ -60591,10 +60204,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:77857
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of general packages for LaTeX"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:77859
 msgid ""
@@ -61042,10 +60653,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:78851
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Miscellaneous LaTeX packages"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:78853
 msgid "This package provides miscellaneous LaTeX packages and classes."
@@ -61191,10 +60800,8 @@ msgid "Binary for @code{texlive-bibtex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:79184
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-bibtex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:79211
 msgid "CharisSIL fonts with support for all LaTeX engines"
@@ -62648,12 +62255,10 @@ msgid "PSTricks support functions"
 msgstr ""
 
 #: gnu/packages/tex.scm:82784
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "The package provides helper functions for other PSTricks related\n"
 "packages."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:82807
 msgid "Trees, using PSTricks"
@@ -64123,10 +63728,8 @@ msgid "Music packages"
 msgstr ""
 
 #: gnu/packages/tex.scm:89607
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "This collection includes music-related fonts and packages."
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:89890
 msgid "Graphics, pictures, diagrams"
@@ -64140,10 +63743,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:90023
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Plain (La)TeX packages"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:90025
 msgid ""
@@ -64434,16 +64035,10 @@ msgid "Support for the OpenType font Bonum"
 msgstr ""
 
 #: gnu/packages/tex.scm:91121
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides support for the OpenType font Bonum (text and\n"
 "math) of the TeXGyre fonts."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:91143
 msgid "Draw Braid diagrams with PGF/TikZ"
@@ -64462,14 +64057,8 @@ msgid "Eepic facilities using @code{pict2e}"
 msgstr ""
 
 #: gnu/packages/tex.scm:91170
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "The package provides an Eepic driver to use @code{pict2e} facilities."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:91192
 msgid "Build Your Own Twemojis with TikZ"
@@ -65412,12 +65001,10 @@ msgid "German translation of the User Guide for BibLaTeX"
 msgstr ""
 
 #: gnu/packages/tex.scm:93269
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This package provides a German translation of the User Guide for\n"
 "BibLaTeX."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:93290
 msgid "German version of @code{chemsym}"
@@ -65672,10 +65259,8 @@ msgid "Binary for @code{texlive-xindy}"
 msgstr ""
 
 #: gnu/packages/tex.scm:93900
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-xindy}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:93920
 msgid "Support for the Persian language in Xindy"
@@ -66281,10 +65866,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:95285
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Option handling for LuaLaTeX packages"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:95287
 msgid ""
@@ -67310,16 +66893,12 @@ msgid "Binary for @code{texlive-xetex}"
 msgstr ""
 
 #: gnu/packages/tex.scm:97667
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides the binary for @code{texlive-xetex}."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:97689
-#, fuzzy
-#| msgid "Implementation of the Open Sound Control protocol"
 msgid "Reimplementation of the LaTeX @code{for-loop} macro"
-msgstr "Implementation av protokollet Open Sound Control"
+msgstr ""
 
 #: gnu/packages/tex.scm:97691
 msgid ""
@@ -67578,10 +67157,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:98314
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of packages and classes"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:98316
 msgid ""
@@ -68323,10 +67900,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:99948
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of LaTeX Beamer themes"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:99950
 msgid ""
@@ -68366,16 +67941,10 @@ msgid "Beamer color theme which alternates theme colors on every frame"
 msgstr ""
 
 #: gnu/packages/tex.scm:100031
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides a Beamer color theme which alternates theme colors\n"
 "on every frame."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:100055
 msgid "Beamer theme with colours and fonts of Saint Petersburg State University"
@@ -68474,10 +68043,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:100254
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of flat Beamer themes"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:100256
 msgid ""
@@ -68501,14 +68068,8 @@ msgid "Contributed Beamer theme"
 msgstr ""
 
 #: gnu/packages/tex.scm:100302
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a theme for Beamer presentations."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:100323
 msgid "Beamer theme for LALIC"
@@ -68540,10 +68101,8 @@ msgid "This package provides a simple Beamer theme using the Nord color theme."
 msgstr ""
 
 #: gnu/packages/tex.scm:100396
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "collection of programming tools for beamer"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:100398
 msgid ""
@@ -71784,10 +71343,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:107606
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of easy-to-use macros"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:107608
 msgid ""
@@ -73993,16 +73550,10 @@ msgid "Formatting indexes"
 msgstr ""
 
 #: gnu/packages/tex.scm:112341
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides a way to generate the format of index entries from\n"
 "within LaTeX."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:112363
 msgid "Modification of @code{inputenc} for German"
@@ -74304,10 +73855,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:113085
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Documentation of LaTeX packages"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:113087
 msgid ""
@@ -76510,10 +76059,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:117965
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of LaTeX API macros"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:117967
 msgid ""
@@ -78157,14 +77704,8 @@ msgid "Template for printing presentations on note paper"
 msgstr ""
 
 #: gnu/packages/tex.scm:121596
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides an easy way to input slides on note pages quickly."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:121628
 msgid "Filling documents with notes pages and notes areas"
@@ -78208,14 +77749,8 @@ msgid "Avoid widows"
 msgstr ""
 
 #: gnu/packages/tex.scm:121707
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a useful macro to manage widow lines."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:121727
 msgid "Adaptable tables"
@@ -78613,16 +78148,10 @@ msgid "Commands to display French road signs (vector graphics)"
 msgstr ""
 
 #: gnu/packages/tex.scm:122549
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "The package provides commands to insert French road signs as vector\n"
 "graphics."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:122577
 msgid "Versions of @code{article} class, tuned for scholarly publications"
@@ -79620,10 +79149,8 @@ msgid "Class for typesetting press releases"
 msgstr ""
 
 #: gnu/packages/tex.scm:124784
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid "This package provides a configurable class for writing press releases."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:124806
 msgid "Make label references self-identify"
@@ -81154,10 +80681,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:128083
-#, fuzzy
-#| msgid "Collection of unrelated LaTeX packages"
 msgid "Collection of LaTeX packages and classes"
-msgstr "Samling av orelaterade LaTeX-paket"
+msgstr ""
 
 #: gnu/packages/tex.scm:128085
 msgid ""
@@ -83081,16 +82606,10 @@ msgid "Typeset tutorial-like documentations"
 msgstr ""
 
 #: gnu/packages/tex.scm:132157
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid ""
 "This package provides some macros to write documentation of LaTeX\n"
 "packages in a tutorial style."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:132178
 msgid "Print two pages on a single page"
@@ -83665,10 +83184,8 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:133364
-#, fuzzy
-#| msgid "Action game in four spatial dimensions"
 msgid "Set various page dimensions"
-msgstr "Actionspel i fyra rumsliga dimensioner"
+msgstr ""
 
 #: gnu/packages/tex.scm:133366
 msgid ""
@@ -83792,14 +83309,8 @@ msgid "Typeset Weiqi (Go)"
 msgstr ""
 
 #: gnu/packages/tex.scm:133632
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package uses LaTeX3 to typeset Weiqi (Go)."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/tex.scm:133654
 msgid "Environment for typesetting tables of specified width"
@@ -83943,12 +83454,10 @@ msgid "English version of the @code{wrapstuff} package documentation"
 msgstr ""
 
 #: gnu/packages/tex.scm:133954
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgid ""
 "This package provides an English translation of the documentation for\n"
 "the @code{wrapstuff} package."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
+msgstr ""
 
 #: gnu/packages/tex.scm:133976
 msgid "Write on grid lines"
@@ -85609,14 +85118,8 @@ msgid "Heat map visualization of a git repository"
 msgstr ""
 
 #: gnu/packages/version-control.scm:2871
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
 msgid "This package provides a way of visualizing a heat map of a git repo."
 msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
 
 #: gnu/packages/version-control.scm:2901
 msgid "HTTP and WebDAV client library"
@@ -89837,7 +89340,7 @@ msgstr ""
 
 #: gnu/packages/xiph.scm:347
 msgid "Ogg vorbis tools"
-msgstr "Ogg vorbis-verktyg"
+msgstr ""
 
 #: gnu/packages/xiph.scm:349
 msgid ""
@@ -89851,15 +89354,6 @@ msgid ""
 "ogginfo, to obtain information (tags, bitrate, length, etc.) about\n"
 "         an ogg vorbis file."
 msgstr ""
-"Ogg vorbis är ett komprimerat icke-proprietärt, patent- och royalty-fritt \n"
-"samt universalt ljudfilsformat.\n"
-"\n"
-"Paketet vorbis-verktyg innehåller\n"
-"ogg123,  en terminalbaserad ogg vorbis-ljudspelare;\n"
-"oggenc,  ogg vorbis-kodaren;\n"
-"oggdec,  en simpel, portabel terminalbaserad avkodare (från wav till rå);\n"
-"ogginfo, för att skaffa information (taggar, bitfrekvens, längd etc.) om\n"
-"         en ogg vorbis-fil."
 
 #: gnu/packages/xiph.scm:375 gnu/packages/xiph.scm:450
 msgid "Versatile audio codec"
@@ -89904,7 +89398,7 @@ msgstr ""
 
 #: gnu/packages/xiph.scm:504
 msgid "Streaming media server"
-msgstr "Strömmande mediaserver"
+msgstr ""
 
 #: gnu/packages/xiph.scm:505
 msgid ""
