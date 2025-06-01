@@ -1065,7 +1065,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
 ;;
-(define-public go go-1.21)
+(define-public go go-1.24)
 
 (define make-go-std
   (mlambdaq (go)
