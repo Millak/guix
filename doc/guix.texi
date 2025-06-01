@@ -51897,6 +51897,50 @@ API.
 @end table
 @end deftp
 
+@defvar home-gcr-ssh-agent-service-type
+
+GNOME Keyring used to be able to act as a wrapper over
+@command{ssh-agent}.  It would display a graphical password entry
+dialog, including a checkbox to remember the password, which, if
+selected, would allow fully passwordless use of that key.
+
+The SSH functionality is disabled by default in
+@command{gnome-keyring-daemon} builds since version
+@uref{https://gitlab.gnome.org/GNOME/gnome-keyring/-/commit25c5a1982467802fa12c6852b03c57924553ba73,
+1.46}.  It has been
+@uref{https://gitlab.gnome.org/GNOME/gcr/-/merge_requests/67, moved}
+into @command{gcr-ssh-agent}, which is part of the @code{gcr} package.
+
+To enable the SSH agent functionality it is sufficient to add the
+following to your Home configuration.
+
+@lisp
+(use-modules (gnu home services gnome) ;for 'home-gcr-ssh-agent-service-type'
+             @dots{})
+
+(home-environment
+  (services
+    (list
+      @dots{}
+      (service home-gcr-ssh-agent-service-type))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} gcr-ssh-agent-configuration
+The configuration record for @code{home-gcr-ssh-agent-service-type}.  Its
+available fields are:
+
+@table @asis
+@item @code{package} (default: @code{gcr}) (type: package)
+The @code{gcr} package to use.
+
+@item @code{log-file} (type: maybe-string)
+Where the service will write its logs.  If unset, it defaults to
+@file{$HOME/.local/state/shepherd/gcr-ssh-agent.log}.
+
+@end table
+@end deftp
+
 @node Guix Home Services
 @subsection Guix Home Services
 

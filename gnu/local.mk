@@ -112,6 +112,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/dotfiles.scm		\
   %D%/home/services/symlink-manager.scm		\
   %D%/home/services/fontutils.scm		\
+  %D%/home/services/gnome.scm			\
   %D%/home/services/gnupg.scm			\
   %D%/home/services/guix.scm			\
   %D%/home/services/mail.scm			\
