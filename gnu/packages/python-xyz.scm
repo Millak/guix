@@ -10043,6 +10043,62 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
            python-typing-extensions
            python-wheel))))
 
+(define-public python-numpysane
+  (package
+    (name "python-numpysane")
+    (version "0.42")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/dkogan/numpysane.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s38fm88bmq08j5qxfka1wyjs2r9s9arzd1c3c4ixa8k3pisnihr"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "Makefile.common.header"
+                    ;; numpy 2.0 has this--but we don't use numpy 2.0.
+                    (("pkg-config --cflags-only-I numpy")
+                     (string-append "echo -I"
+                                    (assoc-ref inputs "python-numpy")
+                                    "/lib/python"
+                                    #$(version-major+minor
+                                       (package-version python))
+                                    "/site-packages/numpy/core/include")))))
+               (replace 'check
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (invoke "make" "check"))))))
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list perl pkg-config))
+    (synopsis "More-reasonable core functionality for numpy")
+    (description "This package provides more-reasonable core functionality for numpy.
+
+A lot of numpysane functionality is inspired by PDL (Perl Data Language).
+
+numpysane has:
+@itemize
+@item easier broadcasting
+@item nicer array manipulation
+@item array concatenation
+@item manipulation of dimensions
+@item broadcast-aware inner product
+@item broadcast-aware outer product
+@item broadcast-aware 2-norm
+@item broadcast-aware matrix multiplication
+@end itemize
+")
+    (home-page "https://github.com/dkogan/numpysane")
+    (license license:lgpl2.0+)))
+
 (define-public python-numpy-documentation
   (package
     (inherit python-numpy)
