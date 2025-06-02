@@ -203,7 +203,7 @@ also update a file with new \"golden\" output that is deemed correct.")
 (define-public go-github-com-google-go-cmp
   (package
     (name "go-github-com-google-go-cmp")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -212,7 +212,7 @@ also update a file with new \"golden\" output that is deemed correct.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n1j4hi50bl05pyys4i7y417k9g6k1blslj27z327qny7kkdl2ma"))))
+        (base32 "1cys8lz68za30z5cabvwrpnv2pg1ppqxdncmiz8iy2j624a5kg15"))))
     (build-system go-build-system)
     (arguments
      (list
