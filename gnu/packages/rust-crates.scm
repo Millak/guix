@@ -8091,6 +8091,10 @@
   (crate-source "multimap" "0.10.0"
                 "00vs2frqdhrr8iqx4y3fbq73ax5l12837fvbjrpi729d85alrz6y"))
 
+(define rust-multimap-0.10.1
+  (crate-source "multimap" "0.10.1"
+                "1150lf0hjfjj4ksb8s3y0hl7a2nqzqlbh0is7vdym2iyjfrfr1qx"))
+
 (define rust-multimap-0.8.3
   (crate-source "multimap" "0.8.3"
                 "0sicyz4n500vdhgcxn4g8jz97cp1ijir1rnbgph3pmx9ckz4dkp5"))
@@ -9619,6 +9623,10 @@
 (define rust-pcsc-sys-1.3.0
   (crate-source "pcsc-sys" "1.3.0"
                 "00vhv7mmivqhn8373vdpp8h53sms3mn396p3m695abjxw4bz0kp1"))
+
+(define rust-pdb-0.8.0
+  (crate-source "pdb" "0.8.0"
+                "0qs8lxx3ly029c77ip2mhlf0s9fmcbzlmaq0khkydar354whl142"))
 
 (define rust-peeking-take-while-0.1.2
   (crate-source "peeking_take_while" "0.1.2"
@@ -18081,6 +18089,41 @@
                                    rust-zeroize-1.8.1
                                    rust-zerovec-0.10.4
                                    rust-zerovec-derive-0.10.3))
+                     (cargo-bloat =>
+                                  (list rust-aho-corasick-1.1.3
+                                   rust-binfarce-0.2.1
+                                   rust-bumpalo-3.17.0
+                                   rust-cfg-if-1.0.0
+                                   rust-fallible-iterator-0.2.0
+                                   rust-js-sys-0.3.77
+                                   rust-json-0.12.4
+                                   rust-libc-0.2.172
+                                   rust-log-0.4.27
+                                   rust-memchr-2.7.4
+                                   rust-memmap2-0.9.5
+                                   rust-multimap-0.10.1
+                                   rust-once-cell-1.21.3
+                                   rust-pdb-0.8.0
+                                   rust-pico-args-0.5.0
+                                   rust-proc-macro2-1.0.95
+                                   rust-quote-1.0.40
+                                   rust-regex-1.11.1
+                                   rust-regex-automata-0.4.9
+                                   rust-regex-syntax-0.8.5
+                                   rust-rustversion-1.0.21
+                                   rust-scroll-0.11.0
+                                   rust-syn-2.0.101
+                                   rust-term-size-0.3.2
+                                   rust-unicode-ident-1.0.18
+                                   rust-uuid-1.17.0
+                                   rust-wasm-bindgen-0.2.100
+                                   rust-wasm-bindgen-backend-0.2.100
+                                   rust-wasm-bindgen-macro-0.2.100
+                                   rust-wasm-bindgen-macro-support-0.2.100
+                                   rust-wasm-bindgen-shared-0.2.100
+                                   rust-winapi-0.3.9
+                                   rust-winapi-i686-pc-windows-gnu-0.4.0
+                                   rust-winapi-x86-64-pc-windows-gnu-0.4.0))
                      (cargo-license =>
                                     (list rust-ansi-term-0.12.1
                                      rust-anstream-0.6.18
