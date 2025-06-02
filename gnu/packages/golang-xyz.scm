@@ -4242,6 +4242,34 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-danieljoos-wincred
+  (package
+    (name "go-github-com-danieljoos-wincred")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danieljoos/wincred")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cgf74srid92gzkd094mwp0jvakgi0a22a8hpl7v9w28a9d61bf3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/danieljoos/wincred"))
+    (propagated-inputs (list go-golang-org-x-sys
+                             go-github-com-stretchr-testify))
+    (home-page "https://github.com/danieljoos/wincred")
+    (synopsis "Go interface to Windows Credentials Management")
+    (description
+     "Package wincred provides primitives for accessing the Windows Credentials
+Management API. This includes functions for retrieval, listing and storage of
+credentials as well as Go structures for convenient access to the credential
+data.")
+    (license license:expat)))
+
 (define-public go-github-com-dannav-hhmmss
   (package
     (name "go-github-com-dannav-hhmmss")
