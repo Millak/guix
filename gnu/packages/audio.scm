@@ -4111,7 +4111,7 @@ background file post-processing.")
 (define-public supercollider
   (package
     (name "supercollider")
-    (version "3.13.0")
+    (version "3.13.1")
     (source
      (origin
        (method git-fetch)
@@ -4123,7 +4123,7 @@ background file post-processing.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dkpnaly4m2j41ypy7xj5m2yhbl4ykw3vbnam345z4dk6qhyj9b1"))
+         "0ii3nczg46f2hzgj2fkd418wgkbal54yhh90sza9vr66l1kxlp2s"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -4179,7 +4179,6 @@ link REQUIRED)"))))))
                    (string-append "Path(\"" scclass-dir "\")"))))))
           (add-after 'patch-scclass-dir 'fix-struct-SOUNDFILE-tag
             (lambda _
-              (display (getcwd)) (newline)
               (substitute* "include/plugin_interface/SC_SndBuf.h"
                 (("SNDFILE_tag")
                  "sf_private_tag"))))
