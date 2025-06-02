@@ -980,7 +980,7 @@ Go toolchain programs with opt-in telemetry.")
 (define-public go-golang-org-x-telemetry-config
   (package
     (name "go-golang-org-x-telemetry-config")
-    (version "0.36.0")
+    (version "0.48.0")
     (source
      (origin
        (method git-fetch)
@@ -990,7 +990,7 @@ Go toolchain programs with opt-in telemetry.")
                                           #:subdir "config"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nib4d3p1zknd8m0grkylpd3qfknnw7cffv2v1l4sq0rf30gi04m"))))
+        (base32 "0lzybsdibr71y6n3x8qh37yh9vfwdmmdb6vksqimg4ayys373q7x"))))
     (build-system go-build-system)
     (arguments
      (list
