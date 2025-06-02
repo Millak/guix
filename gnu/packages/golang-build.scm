@@ -243,7 +243,7 @@ semantically equal.")
 (define-public go-github-com-google-renameio
   (package
     (name "go-github-com-google-renameio")
-    (version "1.0.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -252,7 +252,7 @@ semantically equal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qn84nra9nxqyqg4i496b6ijbhnxvx66hdndwl7qh7r6q8lz2ba5"))))
+        (base32 "13vc7p43zz5pmgli4k18b15khxpca1zd8v1ga0ryq7ddyz55fg7i"))))
     (build-system go-build-system)
     (arguments
      (list
