@@ -430,15 +430,8 @@ audit @file{Cargo.lock} for crates with security vulnerabilities.")
         (base32 "0zhimclamvy4dggwnciras6w5ilc0wg0c0f7q8hq1qsmmf1w9qjn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs (("rust-binfarce" ,rust-binfarce-0.2)
-                       ("rust-json" ,rust-json-0.12)
-                       ("rust-memmap2" ,rust-memmap2-0.9)
-                       ("rust-multimap" ,rust-multimap-0.10)
-                       ("rust-pdb" ,rust-pdb-0.8)
-                       ("rust-pico-args" ,rust-pico-args-0.5)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-term-size" ,rust-term-size-0.3))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'cargo-bloat))
     (home-page "https://github.com/RazrFalcon/cargo-bloat")
     (synopsis "Find out what takes most of the space in your executable")
     (description
