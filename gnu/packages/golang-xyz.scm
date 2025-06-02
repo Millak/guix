@@ -5061,6 +5061,40 @@ GNU extensions to the POSIX recommendations for command-line options}.  This
 is an actively maintained fork of @url{https://github.com/ogier/pflag}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-docker-cli
+  (package
+    (name "go-github-com-docker-cli")
+    (version "25.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gaz2pkivky94z8148aa27kdxn548j3r96xa3a9xfqpi6b1rhy27"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/cli"
+      #:embed-files #~(list ".*\\.json")
+      #:skip-build? #t
+      #:tests? #f))
+    (propagated-inputs (list go-github-com-mitchellh-mapstructure
+                             go-gopkg-in-yaml-v2
+                             go-github-com-google-shlex
+                             go-github-com-docker-docker-credential-helpers))
+    (home-page "https://github.com/docker/cli")
+    (synopsis "Docker command-line interface")
+    (description "This repository is the home of the Docker command-line
+interface (CLI).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-docker-distribution
   (package
     (name "go-github-com-docker-distribution")
