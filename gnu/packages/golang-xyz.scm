@@ -16830,6 +16830,35 @@ serialize and de-serialize Go data structures to and from data interchange
 format - @url{https://en.wikipedia.org/wiki/MessagePack,MessagePack}.")
     (license license:expat)))
 
+(define-public go-github-com-timshannon-bolthold
+  (package
+    (name "go-github-com-timshannon-bolthold")
+    (version "0.0.0-20240314194003-30aac6950928")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/timshannon/bolthold")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "107r4nwhvpdp0n9b5fls1lw8z8qsiajiykkpjs7947nrbc07ij1j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/timshannon/bolthold"
+      ;; Test suite fails.
+      #:tests? #f))
+    (propagated-inputs (list go-go-etcd-io-bbolt))
+    (home-page "https://github.com/timshannon/bolthold")
+    (synopsis "Indexing and querying on top of a Bold database")
+    (description
+     "Package bolthold is an indexing and querying layer on top of a Bolt
+database. The goal is to allow easy, persistent storage and retrieval of Go
+types.  BoltDB is an embedded key-value store, and bolthold servers a similar
+use case however with a higher level interface for common uses of BoltDB.")
+    (license license:expat)))
+
 (define-public go-github-com-tklauser-go-sysconf
   (package
     (name "go-github-com-tklauser-go-sysconf")
