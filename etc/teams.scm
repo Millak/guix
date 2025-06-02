@@ -1018,7 +1018,8 @@ the \"texlive\" importer."
   embedded bootstrap rust)
 
 (define-member (person "jgart"
-                       "jgart@dismail.de")
+                       "jgart@dismail.de"
+                       "jgart")
   lisp mentors)
 
 (define-member (person "Guillaume Le Vaillant"
@@ -1032,7 +1033,8 @@ the \"texlive\" importer."
   java ocaml translations)
 
 (define-member (person "Philip McGrath"
-                       "philip@philipmcgrath.com")
+                       "philip@philipmcgrath.com"
+                       "LiberalArtist")
   racket)
 
 (define-member (person "Mathieu Othacehe"
@@ -1105,7 +1107,8 @@ the \"texlive\" importer."
   emacs go lisp)
 
 (define-member (person "Munyoki Kilyungi"
-                       "me@bonfacemunyoki.com")
+                       "me@bonfacemunyoki.com"
+                       "BonfaceKilz")
   python lisp)
 
 (define-member (person "Gabriel Wicki"
@@ -1184,7 +1187,8 @@ the \"texlive\" importer."
   javascript)
 
 (define-member (person "Cayetano Santos"
-                       "csantosb@inventati.org")
+                       "csantosb@inventati.org"
+                       "csantosb")
   emacs electronics)
 
 (define-member (person "Greg Hogan"
