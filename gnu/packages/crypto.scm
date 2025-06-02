@@ -58,8 +58,6 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
-  #:use-module (gnu packages crates-crypto)
-  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
@@ -1538,82 +1536,6 @@ via FUSE without root permissions.  It is similar to EncFS, but provides
 additional security and privacy measures such as hiding file sizes and directory
 structure.  However CryFS is not considered stable yet by the developers.")
     (license license:lgpl3+)))
-
-(define-public rust-blake3-0.3
-  (package
-    (name "rust-blake3")
-    (version "0.3.8")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "blake3" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1cr5l5szgxm632px41kavl6cgils8h6yhdfkm6jsc5jgiivqai5n"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-arrayref" ,rust-arrayref-0.3)
-         ("rust-arrayvec" ,rust-arrayvec-0.5)
-         ("rust-cc" ,rust-cc-1)
-         ("rust-cfg-if" ,rust-cfg-if-0.1)
-         ("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
-         ("rust-crypto-mac" ,rust-crypto-mac-0.8)
-         ("rust-digest" ,rust-digest-0.9)
-         ("rust-rayon" ,rust-rayon-1))))
-    (home-page "https://github.com/BLAKE3-team/BLAKE3")
-    (synopsis "BLAKE3 hash function Rust implementation")
-    (description "This crate provides the official Rust implementation of the
-BLAKE3 cryptographic hash function.  BLAKE3 is faster than MD5, SHA-1, SHA-2,
-SHA-3, and BLAKE2.")
-    ;; Users may choose between these two licenses when redistributing the
-    ;; program provided by this package.
-    (license (list license:cc0 license:asl2.0))))
-
-(define-public rust-blake3-1
-  (package
-    (name "rust-blake3")
-    (version "1.5.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "blake3" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "07k07q7f2m0hr6z944gf0wn1s15f3gwsydhpz2ssbpn44hc0rvmq"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:tests? #f       ; use of undeclared crate or module `reference_impl`
-      #:cargo-inputs
-      `(("rust-arrayref" ,rust-arrayref-0.3)
-        ("rust-arrayvec" ,rust-arrayvec-0.7)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-constant-time-eq" ,rust-constant-time-eq-0.3)
-        ("rust-digest" ,rust-digest-0.10)
-        ("rust-memmap2" ,rust-memmap2-0.9)
-        ("rust-rayon-core" ,rust-rayon-core-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-zeroize" ,rust-zeroize-1))
-      #:cargo-development-inputs
-      `(("rust-ciborium" ,rust-ciborium-0.2)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-hmac" ,rust-hmac-0.12)
-        ("rust-page-size" ,rust-page-size-0.6)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-rand-chacha" ,rust-rand-chacha-0.3)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/BLAKE3-team/BLAKE3")
-    (synopsis "BLAKE3 hash function Rust implementation")
-    (description "This crate provides the official Rust implementation of the
-BLAKE3 cryptographic hash function.  BLAKE3 is faster than MD5, SHA-1, SHA-2,
-SHA-3, and BLAKE2.")
-    ;; Users may choose between these two licenses when redistributing the
-    ;; program provided by this package.
-    (license (list license:cc0 license:asl2.0))))
 
 (define-public b3sum
   (package

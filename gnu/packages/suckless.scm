@@ -37,7 +37,6 @@
 (define-module (gnu packages suckless)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cups)

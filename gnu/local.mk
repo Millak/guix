@@ -216,20 +216,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/cpp.scm 				\
   %D%/packages/cppi.scm				\
   %D%/packages/cran.scm				\
-  %D%/packages/crates-apple.scm		\
-  %D%/packages/crates-audio.scm		\
-  %D%/packages/crates-check.scm			\
-  %D%/packages/crates-compression.scm		\
-  %D%/packages/crates-crypto.scm		\
-  %D%/packages/crates-database.scm		\
-  %D%/packages/crates-io.scm			\
-  %D%/packages/crates-graphics.scm		\
-  %D%/packages/crates-gtk.scm			\
-  %D%/packages/crates-shell.scm		\
-  %D%/packages/crates-tls.scm			\
-  %D%/packages/crates-vcs.scm			\
-  %D%/packages/crates-web.scm			\
-  %D%/packages/crates-windows.scm		\
   %D%/packages/cross-base.scm			\
   %D%/packages/cross-toolchain.scm		\
   %D%/packages/crypto.scm			\
@@ -2278,17 +2264,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-1.78-unwinding-fix.patch		\
   %D%/packages/patches/rust-1.81-fix-riscv64-bootstrap.patch	\
   %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
-  %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
-  %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
-  %D%/packages/patches/rust-ndarray-0.14-remove-blas-src.patch	\
-  %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
-  %D%/packages/patches/rust-onenote-parser-for-clamav-deps.patch	\
-  %D%/packages/patches/rust-onenote-parser-for-clamav-parse-in-memory-buffer.patch	\
-  %D%/packages/patches/rust-onenote-parser-for-clamav-property-type.patch	\
-  %D%/packages/patches/rust-poem-1-fewer-deps.patch		\
-  %D%/packages/patches/rust-rspec-1-remove-clippy.patch	\
-  %D%/packages/patches/rust-trash-2-update-windows.patch	\
-  %D%/packages/patches/rust-wl-clipboard-rs-newer-wl.patch      \
   %D%/packages/patches/rw-igraph-0.10.patch			\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
   %D%/packages/patches/s7-flint-3.patch                      	\
