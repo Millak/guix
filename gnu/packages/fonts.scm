@@ -3285,22 +3285,22 @@ always uses Farsi digits, and does not include Latin glyphs from Roboto.
 (define-public font-victor-mono
   (package
    (name "font-victor-mono")
-   (version "1.5.3")
+   (version "1.5.6")
    (source (origin
             (method url-fetch/zipbomb)
             (uri (string-append
                        "https://github.com/rubjo/victor-mono/raw/v"
                        version
                        "/public/VictorMonoAll.zip"))
-            (sha256 "1axiwxz8l46cc60jfp2la8a9qpj866236lz3dc5l6m35r9as56l3")))
+            (sha256 "15llri92081xiwsks2agkiw9k3vjr2wfn960jwk20ync7fnpgcza")))
    (build-system font-build-system)
    (synopsis "Font with support for italics and ligatures")
-   (description "Victor Mono is an open-source monospaced font with
-optional semi-connected cursive italics and programming symbol ligatures.
-This package provides only TrueType files (TTF).
-It comes in seven weights and Roman, Italic and Oblique styles.")
+   (description
+    "Victor Mono is a monospaced font with optional semi-connected cursive
+italics and programming symbol ligatures.  It comes in seven weights and Roman,
+Italic and Oblique styles.")
    (home-page "https://rubjo.github.io/victor-mono/")
-   (license license:expat)))
+   (license license:silofl1.1)))
 
 (define-public font-dongle
   (let ((commit "f7127c4d2450e1cad20254ec692591347e2fc260")
