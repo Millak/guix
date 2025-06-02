@@ -12505,6 +12505,30 @@ about OS mounts as seen by the current process is available from
 @code{/proc/self/mountinfo}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-patternmatcher
+  (package
+    (name "go-github-com-moby-patternmatcher")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/patternmatcher")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s77wpsc6szr9qdpnpg9q65ibgjgj4b2d12hwf6wrwb39grcnbcz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/patternmatcher"))
+    (home-page "https://github.com/moby/patternmatcher")
+    (synopsis "File name pattern matching")
+    (description
+     "This Go library provides facilities for pattern matching on file
+names.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-sequential
   (package
     (name "go-github-com-moby-sys-sequential")
