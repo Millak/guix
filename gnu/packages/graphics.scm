@@ -2209,7 +2209,8 @@ and GPU architectures.")
     (license license:asl2.0)))
 
 (define-public opencsg
-  (let ((dot-to-dash (lambda (c) (if (char=? c #\.) #\- c))))
+  (let ((dot-to-dash (lambda (c)
+                       (if (char=? c #\.) #\- c))))
     (package
       (name "opencsg")
       (version "1.8.1")
@@ -2223,15 +2224,13 @@ and GPU architectures.")
                                       "-release"))))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0q19mswyjlampdssqgik4q7j08fbj0dhxdr9mzg0i7ma2b2rhdhw"))))
+          (base32 "0q19mswyjlampdssqgik4q7j08fbj0dhxdr9mzg0i7ma2b2rhdhw"))))
       (build-system cmake-build-system)
       (arguments
        `(#:phases (modify-phases %standard-phases
                     ;; library has no tests
                     (delete 'check))))
-      (inputs
-       (list glew freeglut))
+      (inputs (list glew freeglut))
       (synopsis "Library for rendering Constructive Solid Geometry (CSG)")
       (description
        "OpenCSG is a library for rendering Constructive Solid Geometry (CSG) using
