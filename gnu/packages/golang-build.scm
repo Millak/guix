@@ -1317,7 +1317,7 @@ values.")
 (define-public go-google-golang-org-protobuf
   (package
     (name "go-google-golang-org-protobuf")
-    (version "1.36.0")
+    (version "1.36.6")
     (source
      (origin
        (method git-fetch)
@@ -1326,7 +1326,7 @@ values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a6l9zcm1za7w9f9n86wjszn9fm53cfacl0liyk3wpsqx4h4x6dl"))))
+        (base32 "0lp1a6bcwdiil4my0aq85ranxf2k757m8q0ss9658jyrh5g7av79"))))
     (build-system go-build-system)
     (arguments
      (list
