@@ -11328,6 +11328,30 @@ ways.  It is a Go implementation of some string manipulation libraries of Java
 Apache Commons.")
     (license license:asl2.0)))
 
+(define-public go-github-com-masterminds-semver
+  (package
+    (name "go-github-com-masterminds-semver")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Masterminds/semver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i169xscsxsh8lsw8bz2apnsqixld37xdnfh36i30xy5wnf0iwfx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Masterminds/semver"))
+    (home-page "https://github.com/Masterminds/semver")
+    (synopsis "@code{semver} helps to work with semantic versions")
+    (description
+     "Package semver provides the ability to work with
+@url{https://semver.org, Semantic Versions} in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-masterminds-semver-v3
   (package
     (name "go-github-com-masterminds-semver-v3")
