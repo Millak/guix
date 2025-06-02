@@ -4123,7 +4123,7 @@ for interacting with an OpenDHT distributed network.")
 (define-public frrouting
   (package
     (name "frrouting")
-    (version "10.3")
+    (version "10.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4132,7 +4132,7 @@ for interacting with an OpenDHT distributed network.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fv06z506l26jx9gz8dib6zn0rv2yvl7ihvm48d95jjmc7bldw53"))))
+                "1shlxcmvz9ay83wdk2h23yzhqc79hh47v99kq70rymh1d35wr0p7"))))
     (build-system gnu-build-system)
     (inputs
      (list c-ares json-c libcap libxcrypt libyang libelf protobuf-c readline))
