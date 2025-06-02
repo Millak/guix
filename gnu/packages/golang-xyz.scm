@@ -5060,6 +5060,32 @@ on throughput and hit ratio performance.")
 Mark} detection.")
     (license license:asl2.0)))
 
+(define-public go-github-com-distribution-reference
+  (package
+    (name "go-github-com-distribution-reference")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/distribution/reference")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zj2lmmznlrxdrrfmdsx7fgrmi64bj1jqz6r0ar35qmkx8pjvgl2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/distribution/reference"))
+    (propagated-inputs (list go-github-com-opencontainers-go-digest))
+    (home-page "https://github.com/distribution/reference")
+    (synopsis "Handle references to container images held in registries")
+    (description
+     "Package reference provides a general type to represent any way of referencing
+images within the registry.  Its main purpose is to abstract tags and digests
+(content-addressable hash).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-disintegration-imaging
   (package
     (name "go-github-com-disintegration-imaging")
