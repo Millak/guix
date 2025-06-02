@@ -449,7 +449,7 @@ library.")
 (define-public go-golang-org-x-arch
   (package
     (name "go-golang-org-x-arch")
-    (version "0.12.0")
+    (version "0.17.0")
     (source
      (origin
        (method git-fetch)
@@ -458,7 +458,7 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "104mnfx3v6lwjndjd35ly8r6yb4bb74lq5sq1cqpxw38mqyzqmx2"))))
+        (base32 "02qwvciikyrssifdp50zbjgqvpkb6sj09jzjvyl1n9v5fvg7mxba"))))
     (build-system go-build-system)
     (arguments
      (list
