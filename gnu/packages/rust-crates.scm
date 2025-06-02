@@ -18525,6 +18525,64 @@
                                       rust-windows-x86-64-gnu-0.52.6
                                       rust-windows-x86-64-gnullvm-0.52.6
                                       rust-windows-x86-64-msvc-0.52.6))
+                     (cargo-with =>
+                                 (list rust-addr2line-0.24.2
+                                  rust-adler2-2.0.0
+                                  rust-aho-corasick-1.1.3
+                                  rust-ansi-term-0.12.1
+                                  rust-atty-0.2.14
+                                  rust-backtrace-0.3.75
+                                  rust-bitflags-1.3.2
+                                  rust-cfg-if-1.0.0
+                                  rust-clap-2.34.0
+                                  rust-env-logger-0.6.2
+                                  rust-failure-0.1.8
+                                  rust-failure-derive-0.1.8
+                                  rust-gimli-0.31.1
+                                  rust-hermit-abi-0.1.19
+                                  rust-humantime-1.3.0
+                                  rust-itoa-1.0.15
+                                  rust-libc-0.2.172
+                                  rust-log-0.4.27
+                                  rust-memchr-2.7.4
+                                  rust-miniz-oxide-0.8.8
+                                  rust-object-0.36.7
+                                  rust-proc-macro2-1.0.95
+                                  rust-quick-error-1.2.3
+                                  rust-quote-1.0.40
+                                  rust-regex-1.11.1
+                                  rust-regex-automata-0.4.9
+                                  rust-regex-syntax-0.8.5
+                                  rust-rustc-demangle-0.1.24
+                                  rust-ryu-1.0.20
+                                  rust-serde-1.0.219
+                                  rust-serde-derive-1.0.219
+                                  rust-serde-json-1.0.140
+                                  rust-strsim-0.8.0
+                                  rust-syn-1.0.109
+                                  rust-syn-2.0.101
+                                  rust-synstructure-0.12.6
+                                  rust-termcolor-1.4.1
+                                  rust-textwrap-0.11.0
+                                  rust-unicode-ident-1.0.18
+                                  rust-unicode-width-0.1.14
+                                  rust-unicode-xid-0.2.6
+                                  rust-vec-map-0.8.2
+                                  rust-void-1.0.2
+                                  rust-winapi-0.3.9
+                                  rust-winapi-i686-pc-windows-gnu-0.4.0
+                                  rust-winapi-util-0.1.9
+                                  rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                  rust-windows-sys-0.59.0
+                                  rust-windows-targets-0.52.6
+                                  rust-windows-aarch64-gnullvm-0.52.6
+                                  rust-windows-aarch64-msvc-0.52.6
+                                  rust-windows-i686-gnu-0.52.6
+                                  rust-windows-i686-gnullvm-0.52.6
+                                  rust-windows-i686-msvc-0.52.6
+                                  rust-windows-x86-64-gnu-0.52.6
+                                  rust-windows-x86-64-gnullvm-0.52.6
+                                  rust-windows-x86-64-msvc-0.52.6))
                      (castor =>
                              (list rust-aho-corasick-0.7.20
                                    rust-ansi-parser-0.6.5
