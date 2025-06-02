@@ -853,6 +853,40 @@ Distance}.")
 http://tartarus.org/~martin/PorterStemmer/index.html.")
     (license license:expat)))
 
+(define-public go-github-com-alecaivazis-survey-v2
+  (package
+    (name "go-github-com-alecaivazis-survey")
+    (version "2.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AlecAivazis/survey")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l3wqphqvm0qxv33pj9f1r72z5fln99vg735fcigv8k513m2aw9l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AlecAivazis/survey"
+      #:unpack-path "github.com/AlecAivazis/survey"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-golang-org-x-term
+                             go-github-com-stretchr-testify
+                             go-github-com-mgutz-ansi
+                             go-github-com-mattn-go-isatty
+                             go-github-com-kballard-go-shellquote
+                             go-github-com-hinshun-vt10x
+                             go-github-com-creack-pty
+                             go-github-com-netflix-go-expect))
+    (home-page "https://github.com/AlecAivazis/survey")
+    (synopsis "Interactive and accessible terminal prompts for Go")
+    (description
+     "This package provides a library for building interactive and accessible prompts
+on terminals supporting ANSI escape sequences.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-chroma
   (package
     (name "go-github-com-alecthomas-chroma")
