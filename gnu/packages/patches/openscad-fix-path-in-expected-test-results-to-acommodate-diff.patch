@@ -1,0 +1,117 @@
+From 4fd0053f89728d03c3123c9473c36209556d1018 Mon Sep 17 00:00:00 2001
+From: nomike <nomike@nomike.com>
+Date: Sat, 31 May 2025 23:54:08 +0200
+Subject: [PATCH] Fix path in expected test  results to acommodate different
+ directory structure in guix build
+ (see https://github.com/openscad/openscad/issues/5938)
+---
+ .../echo/bitwise-operators-expected.echo       | 10 +++++-----
+ .../echo/include-recursive-test-expected.echo  | 18 +++++++++---------
+ .../echo/include-tests-expected.echo           |  8 ++++----
+ tests/regression/echo/linenumber-expected.echo | 18 +++++++++---------
+ tests/regression/echo/use-tests-expected.echo  |  8 ++++----
+ 5 files changed, 31 insertions(+), 31 deletions(-)
+
+diff --git a/tests/regression/echo/bitwise-operators-expected.echo b/tests/regression/echo/bitwise-operators-expected.echo
+index d85a95915..91f3155ba 100644
+--- a/tests/regression/echo/bitwise-operators-expected.echo
++++ b/tests/regression/echo/bitwise-operators-expected.echo
+@@ -1,8 +1,8 @@
+-WARNING: Hexadecimal constant "0x10000000000000000" too large in file ../../tests/data/scad/functions/bitwise-operators.scad, line 106
+-WARNING: Integer "0x1000000000000001" cannot be represented precisely in file ../../tests/data/scad/functions/bitwise-operators.scad, line 108
+-WARNING: Integer "1152921504606846977" cannot be represented precisely in file ../../tests/data/scad/functions/bitwise-operators.scad, line 109
+-WARNING: Integer "0xfffffffffffffff0" cannot be represented precisely in file ../../tests/data/scad/functions/bitwise-operators.scad, line 113
+-WARNING: Integer "18446744073709551600" cannot be represented precisely in file ../../tests/data/scad/functions/bitwise-operators.scad, line 113
++WARNING: Hexadecimal constant "0x10000000000000000" too large in file ../../source/tests/data/scad/functions/bitwise-operators.scad, line 106
++WARNING: Integer "0x1000000000000001" cannot be represented precisely in file ../../source/tests/data/scad/functions/bitwise-operators.scad, line 108
++WARNING: Integer "1152921504606846977" cannot be represented precisely in file ../../source/tests/data/scad/functions/bitwise-operators.scad, line 109
++WARNING: Integer "0xfffffffffffffff0" cannot be represented precisely in file ../../source/tests/data/scad/functions/bitwise-operators.scad, line 113
++WARNING: Integer "18446744073709551600" cannot be represented precisely in file ../../source/tests/data/scad/functions/bitwise-operators.scad, line 113
+ ECHO: "Expect two warnings:"
+ WARNING: undefined operation (number | bool) in file bitwise-operators.scad, line 42
+ WARNING: undefined operation (bool | number) in file bitwise-operators.scad, line 44
+diff --git a/tests/regression/echo/include-recursive-test-expected.echo b/tests/regression/echo/include-recursive-test-expected.echo
+index c20e44cbe..855c16d10 100644
+--- a/tests/regression/echo/include-recursive-test-expected.echo
++++ b/tests/regression/echo/include-recursive-test-expected.echo
+@@ -1,12 +1,12 @@
+-WARNING: Can't open include file 'include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 1
+-WARNING: Can't open include file '../misc/include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 2
+-WARNING: Can't open include file '../../scad/misc/include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 3
+-WARNING: Can't open include file 'include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 1
+-WARNING: Can't open include file '../misc/include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 2
+-WARNING: Can't open include file '../../scad/misc/include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 3
+-WARNING: Can't open include file 'include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 1
+-WARNING: Can't open include file '../misc/include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 2
+-WARNING: Can't open include file '../../scad/misc/include-recursive-test.scad'. in file ../../tests/data/scad/misc/include-recursive-test.scad, line 3
++WARNING: Can't open include file 'include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 1
++WARNING: Can't open include file '../misc/include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 2
++WARNING: Can't open include file '../../scad/misc/include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 3
++WARNING: Can't open include file 'include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 1
++WARNING: Can't open include file '../misc/include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 2
++WARNING: Can't open include file '../../scad/misc/include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 3
++WARNING: Can't open include file 'include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 1
++WARNING: Can't open include file '../misc/include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 2
++WARNING: Can't open include file '../../scad/misc/include-recursive-test.scad'. in file ../../source/tests/data/scad/misc/include-recursive-test.scad, line 3
+ ECHO: "INC"
+ ECHO: "INC"
+ ECHO: "INC"
+diff --git a/tests/regression/echo/include-tests-expected.echo b/tests/regression/echo/include-tests-expected.echo
+index d0aaecf88..64098d5d6 100644
+--- a/tests/regression/echo/include-tests-expected.echo
++++ b/tests/regression/echo/include-tests-expected.echo
+@@ -1,6 +1,6 @@
+-WARNING: Can't open include file 'not_exist.scad'. in file ../../tests/data/scad/misc/sub1/included.scad, line 3
+-WARNING: Can't open include file 'non/existent/path/non-file'. in file ../../tests/data/scad/misc/include-tests.scad, line 8
+-WARNING: Can't open include file 'test/'. in file ../../tests/data/scad/misc/include-tests.scad, line 20
+-WARNING: Can't open include file '/'. in file ../../tests/data/scad/misc/include-tests.scad, line 23
++WARNING: Can't open include file 'not_exist.scad'. in file ../../source/tests/data/scad/misc/sub1/included.scad, line 3
++WARNING: Can't open include file 'non/existent/path/non-file'. in file ../../source/tests/data/scad/misc/include-tests.scad, line 8
++WARNING: Can't open include file 'test/'. in file ../../source/tests/data/scad/misc/include-tests.scad, line 20
++WARNING: Can't open include file '/'. in file ../../source/tests/data/scad/misc/include-tests.scad, line 23
+ ECHO: "included.scad"
+ ECHO: "included2.scad"
+diff --git a/tests/regression/echo/linenumber-expected.echo b/tests/regression/echo/linenumber-expected.echo
+index 35a74ebe0..f243ae2c0 100644
+--- a/tests/regression/echo/linenumber-expected.echo
++++ b/tests/regression/echo/linenumber-expected.echo
+@@ -1,12 +1,12 @@
+-WARNING: Can't open library 'line 1'. in file ../../tests/data/scad/misc/linenumber.scad, line 1
+-WARNING: Can't open include file 'line 1'. in file ../../tests/data/scad/misc/linenumber.scad, line 1
+-WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../tests/data/scad/misc/linenumber.scad, line 7
+-WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../tests/data/scad/misc/linenumber.scad, line 8
+-WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../tests/data/scad/misc/linenumber.scad, line 9
+-WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../tests/data/scad/misc/linenumber.scad, line 10
+-WARNING: Can't open include file 'line 9'. in file ../../tests/data/scad/misc/linenumber.scad, line 10
+-WARNING: new lines 'use<>'-statement is not defined - behavior may change in the future in file ../../tests/data/scad/misc/linenumber.scad, line 16
+-WARNING: Can't open library 'line 16'. in file ../../tests/data/scad/misc/linenumber.scad, line 16
++WARNING: Can't open library 'line 1'. in file ../../source/tests/data/scad/misc/linenumber.scad, line 1
++WARNING: Can't open include file 'line 1'. in file ../../source/tests/data/scad/misc/linenumber.scad, line 1
++WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../source/tests/data/scad/misc/linenumber.scad, line 7
++WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../source/tests/data/scad/misc/linenumber.scad, line 8
++WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../source/tests/data/scad/misc/linenumber.scad, line 9
++WARNING: new lines in 'include<>'-statement is not defined - behavior may change in the future in file ../../source/tests/data/scad/misc/linenumber.scad, line 10
++WARNING: Can't open include file 'line 9'. in file ../../source/tests/data/scad/misc/linenumber.scad, line 10
++WARNING: new lines 'use<>'-statement is not defined - behavior may change in the future in file ../../source/tests/data/scad/misc/linenumber.scad, line 16
++WARNING: Can't open library 'line 16'. in file ../../source/tests/data/scad/misc/linenumber.scad, line 16
+ WARNING: Unable to convert cube(size="line 3", ...) parameter to a number or a vec3 of numbers in file linenumber.scad, line 3
+ WARNING: Unable to convert cube(size="line 12", ...) parameter to a number or a vec3 of numbers in file linenumber.scad, line 12
+ WARNING: Unable to convert cube(size="line 18", ...) parameter to a number or a vec3 of numbers in file linenumber.scad, line 18
+diff --git a/tests/regression/echo/use-tests-expected.echo b/tests/regression/echo/use-tests-expected.echo
+index 2da158d03..1cfa234e7 100644
+--- a/tests/regression/echo/use-tests-expected.echo
++++ b/tests/regression/echo/use-tests-expected.echo
+@@ -1,7 +1,7 @@
+-WARNING: Can't open library ''. in file ../../tests/data/scad/misc/use-tests.scad, line 2
+-WARNING: Can't open library 'non/existent/path/non-file'. in file ../../tests/data/scad/misc/use-tests.scad, line 8
+-WARNING: Can't open library 'test/'. in file ../../tests/data/scad/misc/use-tests.scad, line 20
+-WARNING: Can't open library '/'. in file ../../tests/data/scad/misc/use-tests.scad, line 23
++WARNING: Can't open library ''. in file ../../source/tests/data/scad/misc/use-tests.scad, line 2
++WARNING: Can't open library 'non/existent/path/non-file'. in file ../../source/tests/data/scad/misc/use-tests.scad, line 8
++WARNING: Can't open library 'test/'. in file ../../source/tests/data/scad/misc/use-tests.scad, line 20
++WARNING: Can't open library '/'. in file ../../source/tests/data/scad/misc/use-tests.scad, line 23
+ WARNING: Ignoring unknown module 'test3' in file use-tests.scad, line 42
+ WARNING: Ignoring unknown module 'test4' in file use-tests.scad, line 43
+ WARNING: Ignoring unknown variable "test2_variable" in file use-tests.scad, line 49
+-- 
+2.49.0

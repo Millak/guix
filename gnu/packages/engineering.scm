@@ -3189,8 +3189,8 @@ ontinuous-time and discret-time expressions.")
     (license license:lgpl2.1+)))
 
 (define-public openscad
-  (let ((commit "72c9919d63116f8e711f3566ae34e9eb63a2d6e6")
-        (version "2025.05.08")
+  (let ((commit "7245089d3226de41ab55faee62ffe326f6efcb69")
+        (version "2025.06.01")
         (revision "0"))
     (package
       (name "openscad")
@@ -3201,23 +3201,27 @@ ontinuous-time and discret-time expressions.")
          (uri (git-reference
                (url "https://github.com/openscad/openscad")
                (commit commit)
+               ;; Needed for libraries/MCAD, a library specific to OpenSCAD
+               ;; which is included as a submodule. All other libraries are
+               ;; deleted in the patch-source build phase.
                (recursive? #t)))
          (sha256
-          (base32 "077x7s3z65mz6rnrzan3qn06045d2fkqnd6ss6ibw1fhlaypzfbf"))
+          (base32 "0lynjxa5y9wi443vxgaj2r8lr98dyfxinq7n4gcw9gz7cfc52a4a"))
+         (patches (search-patches
+                   "openscad-fix-path-in-expected-test-results-to-acommodate-diff.patch"))
          (file-name (git-file-name name version))))
       (build-system qt-build-system)
       (arguments
        (list
         #:configure-flags
         #~(list "-DCMAKE_BUILD_TYPE=Release"
-                "-DUSE_BUILTIN_OPENCSG=ON"
+                "-DUSE_BUILTIN_CLIPPER2=OFF"
+                "-DUSE_BUILTIN_MANIFOLD=OFF"
+                "-DUSE_BUILTIN_OPENCSG=OFF"
                 "-DMANIFOLD_PYBIND=OFF"
                 "-DMANIFOLD_TEST=OFF"
-                "-DENABLE_TESTS=OFF"
                 "-DEXPERIMENTAL=ON"
-                "-DSNAPSHOT=ON"
                 "-DENABLE_PYTHON=ON"
-                "-DUSE_BUILTIN_CLIPPER2=OFF"
                 (string-append "-DOPENSCAD_VERSION="
                                #$version)
                 (string-append "-DOPENSCAD_COMMIT="
@@ -3226,27 +3230,47 @@ ontinuous-time and discret-time expressions.")
                 "-DENABLE_GLX=ON")
         #:phases
         #~(modify-phases %standard-phases
-            (delete 'check)
             (add-after 'unpack 'patch-source
               (lambda* (#:key inputs #:allow-other-keys)
-                ;; <https://github.com/openscad/openscad/issues/5877>
+                ;; Delete all unbundled libraries to replace them with guix
+                ;; packages.
+                (delete-file-recursively "submodules")
+                ;; Fix: Dependency lib3mf is not found due to using a wrong
+                ;; variable name in the CMake config (see
+                ;; https://github.com/openscad/openscad/issues/5877).
                 (substitute* "cmake/Modules/FindLib3MF.cmake"
                   (("PC_LIB3MF_INCLUDE_DIRS")
                    "PC_LIB3MF_INCLUDEDIR"))
                 (substitute* "CMakeLists.txt"
-                  ;; <https://github.com/openscad/openscad/issues/5880>
+                  ;; Remove bundled libraries from cmake.
+                  (("add_subdirectory\\(submodules\\)")
+                   "")
+                  ;; Fix detection of EGL (see
+                  ;; https://github.com/openscad/openscad/issues/5880).
                   (("target_link_libraries\\(OpenSCAD PRIVATE OpenGL::EGL\\)")
-                   "      find_package(ECM REQUIRED NO_MODULE)
+                   "find_package(ECM REQUIRED NO_MODULE)
       list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
       find_package(EGL REQUIRED)
       target_link_libraries(OpenSCAD PRIVATE EGL::EGL)")
-                  ;; <https://github.com/openscad/openscad/issues/5897>
-                  (("find_package\\(Nettle 3.4\\)")
-                   "find_package(Nettle 3.4 REQUIRED)")
                   ;; Use the system sanitizers-cmake module.
                   (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
                    (string-append (assoc-ref inputs "sanitizers-cmake")
-                                  "/share/sanitizers-cmake/cmake"))))))))
+                                  "/share/sanitizers-cmake/cmake")))
+                ;; Fix test-tool expecting build directory to be a direct
+                ;; subdirectory of the source directory (see
+                ;; https://github.com/openscad/openscad/issues/5937).
+                (substitute* "tests/test_cmdline_tool.py"
+                  (("build_to_test_sources = \"../../tests\"")
+                   "build_to_test_sources = \"../../source/tests\""))))
+            (add-before 'check 'patch-tests
+              (lambda _
+                ;; Fix tests expecting build directory to be a direct descendant
+                ;; of the source dir (see
+                ;; https://github.com/openscad/openscad/issues/5938).
+                (copy-recursively "../source/color-schemes" "./color-schemes")
+                (copy-recursively "../source/shaders" "./shaders")
+                ;; Required for fontconfig
+                (setenv "HOME" "/tmp"))))))
       (inputs (list boost
                     cairomm
                     cgal
@@ -3267,7 +3291,7 @@ ontinuous-time and discret-time expressions.")
                     libxml2
                     libzip
                     manifold
-                    mesa ; or libglvnd if we had mesa-glvnd, too
+                    mesa
                     mimalloc
                     mpfr
                     nettle
@@ -3275,9 +3299,9 @@ ontinuous-time and discret-time expressions.")
                     python
                     python-numpy
                     python-pillow
-                    python-pip
                     qscintilla
                     qtbase-5
+                    qtgamepad
                     qtmultimedia-5
                     qtsvg-5
                     qtwayland-5
