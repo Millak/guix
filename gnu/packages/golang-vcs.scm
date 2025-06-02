@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 David Thompson <davet@gnu.org>
+;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +31,8 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages haskell-apps)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages version-control))
 
 ;;; Commentary:
@@ -156,6 +160,61 @@ using the Git pkt-line format used in various Git operations.")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
     (license license:asl2.0)))
+
+(define-public go-github-com-rhysd-actionlint
+  (package
+    (name "go-github-com-rhysd-actionlint")
+    (version "1.7.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rhysd/actionlint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xbsrcvklxn0lppikabwrizav945jk85d0mz16zc3spxc80plrvn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rhysd/actionlint"
+      ;; Several tests try to download stuff from raw.githubusercontent.com;
+      ;; skip them.
+      #:test-flags #~(list "-skip"
+                           (string-join
+                            '("TestMain"          ;XXX: segfaults
+                              "TestUpdate"        ;XXX: segfaults
+                              "TestFetchRemoteYAML"
+                              "TestWriteOutdatedActionAsJSONL"
+                              "TestDetectNewRelease"
+                              "TestDetectNoRelease"
+                              "TestCouldNotFetch"
+                              "TestDetectErrorBadRequest"
+                              "TestFetchOK"
+                              "TestFetchError/not_found")
+                            "|"))))
+    (native-inputs
+     ;; Test dependencies.
+     (list python-pyflakes
+           shellcheck))
+    (propagated-inputs
+     (list go-gopkg-in-yaml-v3
+           go-golang-org-x-sys
+           go-golang-org-x-sync
+           go-github-com-yuin-goldmark
+           go-github-com-robfig-cron-v3
+           go-github-com-mattn-go-shellwords
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-colorable
+           go-github-com-google-go-cmp
+           go-github-com-fatih-color
+           go-github-com-bmatcuk-doublestar-v4))
+    (home-page "https://github.com/rhysd/actionlint")
+    (synopsis "Statically check GitHub Action workflow files")
+    (description
+     "Package @code{actionlint} is the implementation of actionlint linter.
+It's a static checker for GitHub Actions workflow files.")
+    (license license:expat)))
 
 (define-public go-github-com-xanzy-go-gitlab
   (package
