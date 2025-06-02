@@ -1892,7 +1892,7 @@ fully-vectorial and three-dimensional methods.")
 (define-public meep
   (package
     (name "meep")
-    (version "1.30.0")
+    (version "1.30.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -1901,7 +1901,7 @@ fully-vectorial and three-dimensional methods.")
                 version "/meep-" version ".tar.gz"))
               (sha256
                (base32
-                "0fgbyg0b1g172ndi5cmmawd7j602g00hfr8waqjw3fa4s3zxgq09"))))
+                "1h80d7i7v06fxfdsa496b542dvr105c4v1n7pk8m3jssvbxvv2a0"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1922,7 +1922,7 @@ fully-vectorial and three-dimensional methods.")
            mpb
            openblas
            zlib))
-    (home-page "http://ab-initio.mit.edu/wiki/index.php/Meep")
+    (home-page "https://meep.readthedocs.io/en/latest/")
     (synopsis "Finite-difference time-domain (FDTD) simulation software")
     (description
      "Meep is a finite-difference time-domain (FDTD) simulation software package
