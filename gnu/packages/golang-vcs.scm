@@ -46,6 +46,32 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-code-gitea-io-actions-proto-go-runner
+  (package
+    (name "go-code-gitea-io-actions-proto-go-runner")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitea.com/gitea/actions-proto-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gdrsr7kx20nhp1r54xyrq4gcwxvyzv636bzmsrchikffhq773b6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.gitea.io/actions-proto-go/runner/v1"
+      #:unpack-path "code.gitea.io/actions-proto-go"))
+    (propagated-inputs (list go-google-golang-org-protobuf
+                             go-connectrpc-com-connect))
+    (home-page "https://code.gitea.io/actions-proto-go")
+    (synopsis "Action runner for Gitea")
+    (description
+     "This package provides an Action runner for the Gitea forge.")
+    (license license:expat)))
+
 (define-public go-github-com-git-lfs-pktline
   (let ((commit "ca444d533ef1e474d0aab99cdbeed9b048d65241")
         (revision "1"))
