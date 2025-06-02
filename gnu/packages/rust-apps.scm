@@ -512,13 +512,6 @@ license of dependencies.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs (("rust-clap" ,rust-clap-4)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-percent-encoding" ,rust-percent-encoding-2)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-toml" ,rust-toml-0.8))
-       #:cargo-development-inputs (("rust-assert-cli" ,rust-assert-cli-0.6))
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'fix-test-warnings
@@ -528,6 +521,7 @@ license of dependencies.")
              (when (file-exists? ".cargo/config")
                (rename-file ".cargo/config"
                             ".cargo/config.toml")))))))
+    (inputs (cargo-inputs 'cargo-readme))
     (home-page "https://github.com/webern/cargo-readme")
     (synopsis
      "Cargo subcommand to generate README.md content from doc comments")

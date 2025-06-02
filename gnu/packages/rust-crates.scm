@@ -514,6 +514,10 @@
   (crate-source "asn1_derive" "0.20.0"
                 "1b88xsqmxpxjq4p2mrn1icj7c3k2s041v7wqp8yhnqiq06fq0052"))
 
+(define rust-assert-cli-0.6.3
+  (crate-source "assert_cli" "0.6.3"
+                "0jc1bh3cvnl66bl7s5gr1xnm0hl8d2l3gmil0pmhp5v2xp0bg6m2"))
+
 (define rust-assert-cmd-2.0.16
   (crate-source "assert_cmd" "2.0.16"
                 "0gdj0710k3lnvyjmpv8a4dgwrk9ib85l2wfw4n2xwy3qyavka66w"))
@@ -3636,6 +3640,10 @@
 (define rust-env-logger-0.9.3
   (crate-source "env_logger" "0.9.3"
                 "1rq0kqpa8my6i1qcyhfqrn1g9xr5fbkwwbd42nqvlzn9qibncbm1"))
+
+(define rust-environment-0.1.1
+  (crate-source "environment" "0.1.1"
+                "1vh32mcxf3z8xaibwv751zj14d08nh7iwk1vqdj90rkq17i18jqz"))
 
 (define rust-envmnt-0.8.4
   (crate-source "envmnt" "0.8.4"
@@ -18656,6 +18664,80 @@
                                      rust-zstd-0.13.3
                                      rust-zstd-safe-7.2.4
                                      rust-zstd-sys-2.0.15+zstd.1.5.7))
+                     (cargo-readme =>
+                                   (list rust-addr2line-0.24.2
+                                    rust-adler2-2.0.0
+                                    rust-aho-corasick-1.1.3
+                                    rust-anstream-0.6.18
+                                    rust-anstyle-1.0.10
+                                    rust-anstyle-parse-0.2.6
+                                    rust-anstyle-query-1.1.2
+                                    rust-anstyle-wincon-3.0.8
+                                    rust-assert-cli-0.6.3
+                                    rust-backtrace-0.3.75
+                                    rust-cfg-if-1.0.0
+                                    rust-clap-4.5.39
+                                    rust-clap-builder-4.5.39
+                                    rust-clap-derive-4.5.32
+                                    rust-clap-lex-0.7.4
+                                    rust-colorchoice-1.0.3
+                                    rust-colored-1.9.4
+                                    rust-difference-2.0.0
+                                    rust-environment-0.1.1
+                                    rust-equivalent-1.0.2
+                                    rust-failure-0.1.8
+                                    rust-failure-derive-0.1.8
+                                    rust-gimli-0.31.1
+                                    rust-hashbrown-0.15.3
+                                    rust-heck-0.5.0
+                                    rust-hermit-abi-0.5.1
+                                    rust-indexmap-2.9.0
+                                    rust-is-terminal-0.4.16
+                                    rust-is-terminal-polyfill-1.70.1
+                                    rust-itoa-1.0.15
+                                    rust-lazy-static-1.5.0
+                                    rust-libc-0.2.172
+                                    rust-memchr-2.7.4
+                                    rust-miniz-oxide-0.8.8
+                                    rust-object-0.36.7
+                                    rust-once-cell-polyfill-1.70.1
+                                    rust-percent-encoding-2.3.1
+                                    rust-proc-macro2-1.0.95
+                                    rust-quote-1.0.40
+                                    rust-regex-1.11.1
+                                    rust-regex-automata-0.4.9
+                                    rust-regex-syntax-0.8.5
+                                    rust-rustc-demangle-0.1.24
+                                    rust-ryu-1.0.20
+                                    rust-serde-1.0.219
+                                    rust-serde-derive-1.0.219
+                                    rust-serde-json-1.0.140
+                                    rust-serde-spanned-0.6.8
+                                    rust-strsim-0.11.1
+                                    rust-syn-1.0.109
+                                    rust-syn-2.0.101
+                                    rust-synstructure-0.12.6
+                                    rust-toml-0.8.22
+                                    rust-toml-datetime-0.6.9
+                                    rust-toml-edit-0.22.26
+                                    rust-toml-write-0.1.1
+                                    rust-unicode-ident-1.0.18
+                                    rust-unicode-xid-0.2.6
+                                    rust-utf8parse-0.2.2
+                                    rust-winapi-0.3.9
+                                    rust-winapi-i686-pc-windows-gnu-0.4.0
+                                    rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                    rust-windows-sys-0.59.0
+                                    rust-windows-targets-0.52.6
+                                    rust-windows-aarch64-gnullvm-0.52.6
+                                    rust-windows-aarch64-msvc-0.52.6
+                                    rust-windows-i686-gnu-0.52.6
+                                    rust-windows-i686-gnullvm-0.52.6
+                                    rust-windows-i686-msvc-0.52.6
+                                    rust-windows-x86-64-gnu-0.52.6
+                                    rust-windows-x86-64-gnullvm-0.52.6
+                                    rust-windows-x86-64-msvc-0.52.6
+                                    rust-winnow-0.7.10))
                      (cargo-remark =>
                                    (list rust-ahash-0.8.12
                                     rust-aho-corasick-1.1.3
