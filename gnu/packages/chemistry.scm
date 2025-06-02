@@ -73,7 +73,7 @@
 (define-public avogadrolibs
   (package
     (name "avogadrolibs")
-    (version "1.93.0")
+    (version "1.100.0")
     (source
      (origin
        (method git-fetch)
@@ -81,7 +81,7 @@
              (url "https://github.com/OpenChemistry/avogadrolibs")
              (commit version)))
        (sha256
-        (base32 "1xivga626n5acnmwmym8svl0pdri8hkp59czf04ri2zflnviyh39"))
+        (base32 "1l9bp3ba8yx9mk2in5v375jzi1w4y7l1xl37xqv869810drgjffc"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
@@ -91,18 +91,61 @@
            pkg-config
            pybind11))
     (inputs
-     (list glew
-           libarchive
-           libmsym
-           molequeue
-           python
-           spglib
-           qtbase-5))
+      `(("glew" ,glew)
+        ("libarchive" ,libarchive)
+        ("libmsym" ,libmsym)
+        ("molequeue" ,molequeue)
+        ("python" ,python)
+        ("spglib" ,spglib)
+        ("qtbase-5" ,qtbase-5)
+        ("qtsvg-5" ,qtsvg-5)
+        ("avogadro-molecules"
+          ,(origin
+            (method git-fetch)
+            (uri
+              (git-reference
+                (url "https://github.com/openchemistry/molecules")
+                (commit "8a37883")))
+            (file-name (git-file-name name version))
+            (sha256
+              (base32
+                "00mfx0bwmqazbiklrvaijjd5n4wa5lp3z73291ihm78q0v9dzhl4"))))
+        ("avogadro-crystals"
+          ,(origin
+            (method git-fetch)
+            (uri
+              (git-reference
+                (url "https://github.com/openchemistry/crystals")
+                (commit "28404bd")))
+            (file-name (git-file-name name version))
+            (sha256
+              (base32
+                "0kcz99q5nfl2v2qmm9cqnbb2c2qqzw79vsnv557i7x64bxsxrw1m"))))
+        ("avogadro-fragments"
+          ,(origin
+            (method git-fetch)
+            (uri
+              (git-reference
+                (url "https://github.com/openchemistry/fragments")
+                (commit "c4943b5")))
+            (file-name (git-file-name name version))
+            (sha256
+              (base32
+                "17l6qmkc25wb0nvic708l25fxiy89b3vfs0x5d40qcnn27bid32n"))))))
     (arguments
-     '(#:configure-flags (list "-DENABLE_TESTING=ON"
-                               (string-append "-DSPGLIB_INCLUDE_DIR="
-                                              (assoc-ref %build-inputs "spglib")
-                                              "/include"))))
+     (list
+      #:configure-flags #~(list "-DENABLE_TESTING=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'symlink
+            (lambda _
+              (begin
+                (symlink (assoc-ref %build-inputs "avogadro-molecules")
+                         "../molecules")
+                (symlink (assoc-ref %build-inputs "avogadro-crystals")
+                         "../crystals")
+                (symlink (assoc-ref %build-inputs "avogadro-fragments")
+                         "../fragments")))))))
     (home-page "https://www.openchemistry.org/projects/avogadro2/")
     (synopsis "Libraries for chemistry, bioinformatics, and related areas")
     (description
