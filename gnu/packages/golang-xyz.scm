@@ -8217,6 +8217,32 @@ anniversaries.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-hinshun-vt10x
+  (package
+    (name "go-github-com-hinshun-vt10x")
+    (version "0.0.0-20220301184237-5011da428d02")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hinshun/vt10x")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pzdwwbzxrsqjb8xfzmfpkyb1gbcszrrimr70cz75jjk2535r26b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hinshun/vt10x"))
+    (home-page "https://github.com/hinshun/vt10x")
+    (synopsis "vt10x terminal emulation backend")
+    (description
+     "Package terminal is a vt10x terminal emulation backend, influenced
+largely by st, rxvt, xterm, and iTerm as reference.  Use it for terminal
+muxing, a terminal emulation frontend, or wherever else you need terminal
+emulation.")
+    (license license:expat)))
+
 (define-public go-github-com-hodgesds-perf-utils
   (package
     (name "go-github-com-hodgesds-perf-utils")
