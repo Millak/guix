@@ -9872,6 +9872,35 @@ lists)
      "Package opencensus contains Go support for @code{OpenCensus}.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib
+  (package
+    (name "go-go-opentelemetry-io-contrib")
+    (version "1.35.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gnhccl9fkyqr4kp8by3cqzsc1w88h1ghxikdh5fpwnvsdqzqy9q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "go.opentelemetry.io/contrib"
+      #:tests? #f))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs (list go-github-com-felixge-httpsnoop))
+    (home-page "https://go.opentelemetry.io/contrib")
+    (synopsis "OpenTelemetry-Go Contrib")
+    (description
+     "Package contrib is a collection of extensions for the opentelemetry-go project.
+It provides 3rd party resource detectors, propagators, samplers, bridges, and
+instrumentation as submodules.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
   (package
     (name "go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp")
