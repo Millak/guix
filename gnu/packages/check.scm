@@ -264,47 +264,19 @@ like Jasmine or Mocha.")
 (define-public cargo-nextest
   (package
     (name "cargo-nextest")
-    (version "0.9.87")
+    (version "0.9.97")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-nextest" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02aq4wmrnwlm2amjqpwv0k58mw5kbwkxgj2z1d6qydxfrrm50k1d"))))
+        (base32 "0j55sqr3fnhsk5b9n2jwy6g1h605qgrhwpxlsx789k8b3yhhnfyz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-camino" ,rust-camino-1)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-color-eyre" ,rust-color-eyre-0.6)
-        ("rust-dialoguer" ,rust-dialoguer-0.11)
-        ("rust-duct" ,rust-duct-0.13)
-        ("rust-enable-ansi-support" ,rust-enable-ansi-support-0.2)
-        ("rust-guppy" ,rust-guppy-0.17)
-        ("rust-itertools" ,rust-itertools-0.13)
-        ("rust-miette" ,rust-miette-7)
-        ("rust-nextest-filtering" ,rust-nextest-filtering-0.12)
-        ("rust-nextest-metadata" ,rust-nextest-metadata-0.12)
-        ("rust-nextest-runner" ,rust-nextest-runner-0.70)
-        ("rust-nextest-workspace-hack" ,rust-nextest-workspace-hack-0.1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-owo-colors" ,rust-owo-colors-4)
-        ("rust-pathdiff" ,rust-pathdiff-0.2)
-        ("rust-quick-junit" ,rust-quick-junit-0.5)
-        ("rust-semver" ,rust-semver-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-shell-words" ,rust-shell-words-1)
-        ("rust-supports-color" ,rust-supports-color-3)
-        ("rust-supports-unicode" ,rust-supports-unicode-3)
-        ("rust-swrite" ,rust-swrite-0.1)
-        ("rust-thiserror" ,rust-thiserror-2)
-        ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
-       #:cargo-development-inputs
-       (("rust-camino-tempfile" ,rust-camino-tempfile-1))))
-    (inputs (list pkg-config zlib (list zstd "lib")))
+     `(#:install-source? #f))
+    (inputs
+     (cons* pkg-config zlib `(,zstd "lib") (cargo-inputs 'cargo-nextest)))
     (home-page "https://github.com/nextest-rs/nextest")
     (synopsis "next-generation test runner for Rust")
     (description
