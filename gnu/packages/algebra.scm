@@ -602,7 +602,7 @@ matrices, and polynomials over the integers and over finite fields.")
 (define-public singular
   (package
    (name "singular")
-   (version "4.4.0p7")
+   (version "4.4.0p8")
    (source
     (origin
       (method url-fetch)
@@ -618,7 +618,7 @@ matrices, and polynomials over the integers and over finite fields.")
                       "/singular-" version ".tar.gz"))
             (sha256
               (base32
-               "0625541pxxhs7789i3ddf5fm1pqvf1kyljyaii41djg9j12cdhbc"))))
+               "1kppj2ilblq0wcfksgcj5gqpsg87kmahsyw6kn3kh457kf3yngb6"))))
    (build-system gnu-build-system)
    (arguments
     (list
@@ -643,7 +643,7 @@ geometry and singularity theory.")
    ;; libraries with which it links are licensed under lgpl3+, so the
    ;; combined work becomes gpl3. See COPYING in the source code.
    (license license:gpl3)
-   (home-page "https://www.singular.uni-kl.de/index.php")))
+   (home-page "https://www.singular.uni-kl.de/index.html")))
 
 (define-public python-pysingular
   (package
