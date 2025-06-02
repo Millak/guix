@@ -1425,14 +1425,14 @@ transparently check connection attempts against an access control list.")
 (define-public zeromq
   (package
     (name "zeromq")
-    (version "4.3.4")
+    (version "4.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/zeromq/libzmq/releases"
                            "/download/v" version "/zeromq-" version ".tar.gz"))
        (sha256
-        (base32 "1rf3jmi36ms8jh2g5cvi253h43l6xdfq0r7mvp95va7mi4d014y5"))))
+        (base32 "0hxbpw9sk9g5ilxfnq3iki6nxjh3igk348z73y358ygi21cyylv6"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-static"
                                      "--enable-drafts")))
