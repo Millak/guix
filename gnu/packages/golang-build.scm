@@ -1224,7 +1224,7 @@ Go programming language.")
     (name "go-golang-org-x-vuln")
     ;; XXX: Newer version of govulncheck requires golang.org/x/telemetry,
     ;; which needs to be discussed if it may be included in Guix.
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method git-fetch)
@@ -1233,7 +1233,7 @@ Go programming language.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0izm18r8ksx4n10an9nxyflc8cgr766qrwfmx5nbk702x80prln9"))))
+        (base32 "004hmcaahgj0ajvpkrhbvs6av1nas8302vzy9is9msxyya3mclkp"))))
     (build-system go-build-system)
     (arguments
      (list
