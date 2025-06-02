@@ -10135,6 +10135,35 @@ Goroutine-safe connections)
 @end itemize")
     (license license:bsd-2)))
 
+(define-public go-github-com-keybase-go-keychain
+  (package
+    (name "go-github-com-keybase-go-keychain")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/keybase/go-keychain")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gkd839h8xnfiv0g52hm4p9snrcfgrnczrqf5wxr61sgg2w8h3y1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/keybase/go-keychain"
+      ;; Test suite tries to talk to dbus.
+      #:tests? #f))
+    (propagated-inputs (list go-golang-org-x-crypto
+                             go-github-com-stretchr-testify
+                             go-github-com-keybase-dbus))
+    (home-page "https://github.com/keybase/go-keychain")
+    (synopsis "Go library to access the keychain")
+    (description
+     "This package provides a library for accessing the keychain, typically
+the @code{SecretService} D-Bus interface on GNU/Linux.")
+    (license license:expat)))
+
 (define-public go-github-com-keybase-go-ps
   (package
     (name "go-github-com-keybase-go-ps")
