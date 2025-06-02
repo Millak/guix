@@ -46,6 +46,32 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-code-gitea-io-actions-proto-go-ping
+  (package
+    (name "go-code-gitea-io-actions-proto-go-ping")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitea.com/gitea/actions-proto-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gdrsr7kx20nhp1r54xyrq4gcwxvyzv636bzmsrchikffhq773b6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.gitea.io/actions-proto-go/ping/v1"
+      #:unpack-path "code.gitea.io/actions-proto-go"))
+    (propagated-inputs (list go-google-golang-org-protobuf
+                             go-connectrpc-com-connect))
+    (home-page "https://code.gitea.io/actions-proto-go")
+    (synopsis "Helper for the Gitea Action runner")
+    (description
+     "This package provides a helper for the Gitea Action runer.")
+    (license license:expat)))
+
 (define-public go-code-gitea-io-actions-proto-go-runner
   (package
     (name "go-code-gitea-io-actions-proto-go-runner")
