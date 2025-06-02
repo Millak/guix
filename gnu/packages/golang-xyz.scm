@@ -5104,6 +5104,35 @@ store, and deliver content.  It contains Docker Registry 2.0 and libraries to
 interact with distribution components.")
     (license license:asl2.0)))
 
+(define-public go-github-com-docker-docker-credential-helpers
+  (package
+    (name "go-github-com-docker-docker-credential-helpers")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/docker-credential-helpers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y9chbmp70sjz88j4yy8p68f8n9x2rl9r4z25kd77s31cbdkg707"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/docker-credential-helpers"
+      #:skip-build? #t
+      #:tests? #f))
+    (propagated-inputs (list go-github-com-keybase-go-keychain
+                             go-github-com-danieljoos-wincred))
+    (home-page "https://github.com/docker/docker-credential-helpers")
+    (synopsis
+     "Keep Docker login credentials safe by storing in platform keystores")
+    (description
+     "docker-credential-helpers is a suite of programs to use native stores to keep
+Docker credentials safe.")
+    (license license:expat)))
+
 (define-public go-github-com-docker-go-units
   (package
     (name "go-github-com-docker-go-units")
