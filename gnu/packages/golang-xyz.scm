@@ -1336,6 +1336,30 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
     ;; Dual licence: MIT (Expat) and CC0 1.0 UNIVERSAL.
     (license license:expat)))
 
+(define-public go-github-com-andreaskoch-go-fswatch
+  (package
+    (name "go-github-com-andreaskoch-go-fswatch")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andreaskoch/go-fswatch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0caikz1bbb2g9w8hyk7qvwixsy8dvc2gism10927q2cc1100mlr2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/andreaskoch/go-fswatch"))
+    (home-page "https://github.com/andreaskoch/go-fswatch")
+    (synopsis "File system watch library")
+    (description
+     "fswatch is a go library for watching file system changes to @emph{does not}
+depend on inotify.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-anmitsu-go-shlex
   (package
     (name "go-github-com-anmitsu-go-shlex")
