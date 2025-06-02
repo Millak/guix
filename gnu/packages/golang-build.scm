@@ -638,7 +638,10 @@ directory) packages.")
 (define-public go-golang-org-x-exp-typeparams
   (package
     (name "go-golang-org-x-exp-typeparams")
-    (version "0.0.0-20241210194714-1829a127f884")
+    ;; Note: Beware, the updater gets this wrong.  Take the latest version
+    ;; string from
+    ;; <https://pkg.go.dev/golang.org/x/exp/typeparams?tab=versions>.
+    (version "0.0.0-20250531010427-b6e5de432a8b")
     (source
      (origin
        (method git-fetch)
@@ -647,7 +650,7 @@ directory) packages.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16lc0sgydpr4gbb5c9ygq86jdmq6f9qjf0vv1m5mhh3dggc1fzpp"))))
+        (base32 "0vszjiblb7i79dp9x1zvfpjidnmkzsaq6ij2jfh63hv9ph7yz3hf"))))
     (build-system go-build-system)
     (arguments
      (list
