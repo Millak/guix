@@ -391,7 +391,7 @@ library.")
 (define-public go-github-com-yuin-goldmark
   (package
     (name "go-github-com-yuin-goldmark")
-    (version "1.7.8")
+    (version "1.7.12")
     (source
      (origin
        (method git-fetch)
@@ -400,7 +400,7 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iz7x1hqdixx8dkcbaa8lr842i59n843mc553jv5grq057s76yjx"))))
+        (base32 "1qc665b8clfvah62l8bkk473ybng7qzwwibxsq5wskfswv5yaj94"))))
     (build-system go-build-system)
     (arguments
      (list
