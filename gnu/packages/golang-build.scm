@@ -724,7 +724,7 @@ compile does not support generics.")
     ;; "go/version" module, see
     ;; <https://cs.opensource.google/go/go/+/refs/tags/
     ;; go1.23.0:src/go/version/version.go>.
-    (version "0.21.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)
@@ -733,7 +733,7 @@ compile does not support generics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rk4vbdrdmiaacx50a1q31hydidwl9rnlcl7rim3f535vyw01fxk"))))
+        (base32 "17sjk98d3qwh9s6gqjmfy07z0gyj5hyv5a9kyg4si3yjfzbnwhx7"))))
     (build-system go-build-system)
     (arguments
      (list
