@@ -62,16 +62,16 @@
 (define-public go-github-com-goccmack-gocc
   (package
     (name "go-github-com-goccmack-gocc")
-    (version "0.0.0-20230228185258-2292f9e40198")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/goccmack/gocc")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ah1z1bmn9y9sbh2z1jxsjgsrv1rfrzzzi4c4nq646z2n25c2x8s"))))
+        (base32 "0rv0v0k13lql0z9s9bffkjsan32a0i0m8405w3xng1y0jk3706mh"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -85,8 +85,8 @@
     (description
      "Gocc is a compiler kit for Go written in Go.  Gocc generates lexers and
 parsers or stand-alone DFAs or parsers from a BNF.  Lexers are DFAs, which
-recognise regular languages. Gocc lexers accept UTF-8 input. Gocc parsers are
-PDAs, which recognise LR-1 languages. Optional LR1 conflict handling
+recognise regular languages. Gocc lexers accept UTF-8 input.  Gocc parsers are
+PDAs, which recognise LR-1 languages.  Optional LR1 conflict handling
 automatically resolves shift / reduce and reduce / reduce conflicts.")
     (license license:asl2.0)))
 
