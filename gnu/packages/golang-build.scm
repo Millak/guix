@@ -922,7 +922,9 @@ low-level interaction with the operating system.")
 (define-public go-golang-org-x-telemetry
   (package
     (name "go-golang-org-x-telemetry")
-    (version "0.0.0-20240912191618-22fe4a1e7b9c")
+    ;; Beware: the updater gets this wrong.  Use the latest commit and its
+    ;; matching date.
+    (version "0.0.0-20250529002037-25d2f7894191")
     (source
      (origin
        (method git-fetch)
@@ -931,7 +933,7 @@ low-level interaction with the operating system.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05gvxiv0yqfclckm2ysavbfy1jpz8v71r2glrcvhjq8wzw90g9gz"))
+        (base32 "0ymqig10vyrmzkali1wqhxrrb3fjvl7z9wmzf5g0dydb9a8ng42l"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -957,7 +959,10 @@ low-level interaction with the operating system.")
                              "TestRun_ModeHandling/on"
                              "TestRun_MultipleUploads"
                              "TestRun_Retries"
-                             "TestStart") ; no upload occurred on 2786
+                             "TestStart" ;no upload occurred on 2786
+                             ;; TestLoadedChartsAreValid fails with "go: list
+                             ;; -cannot be used with GO111MODULE=off"
+                             "TestLoadedChartsAreValid")
                        "|"))
       #:import-path "golang.org/x/telemetry"))
     (propagated-inputs
