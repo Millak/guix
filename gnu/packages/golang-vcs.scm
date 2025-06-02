@@ -26,6 +26,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
@@ -160,6 +161,80 @@ using the Git pkt-line format used in various Git operations.")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
     (license license:asl2.0)))
+
+;; TODO: Delete all node_modules in pkg/runner/testdata/actions.
+(define-public go-github-com-nektos-act
+  (package
+    (name "go-github-com-nektos-act")
+    (version "1.24.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://code.forgejo.org/forgejo/act.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fk5l44jycyzzlvxr0312ayns1rl15vl2kjc6nh726sjlghpa0d7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/nektos/act"
+      #:embed-files #~(list ".*\\.json")
+      #:tests? #f                     ;XXX: one test fails for unknown reasons
+      #:phases #~(modify-phases %standard-phases
+                   ;; The buildkit dependency tree is *massive* and the only
+                   ;; thing that's used is the dockerignore module, which is
+                   ;; just an alias to github.com/moby/patternmatcher which
+                   ;; this library already depends on!
+                   (add-after 'unpack 'fix-dockerignore
+                     (lambda _
+                       (substitute* "src/github.com/nektos/act/pkg/container/docker_build.go"
+                         (("\"github.com/moby/buildkit/frontend/dockerfile/dockerignore\"")
+                          "dockerignore \"github.com/moby/patternmatcher/ignorefile\"")))))))
+    (propagated-inputs (list go-github-com-adrg-xdg
+                             go-github-com-alecaivazis-survey-v2
+                             go-github-com-andreaskoch-go-fswatch
+                             go-github-com-creack-pty
+                             ;; go-dario-cat-mergo
+                             go-github-com-distribution-reference
+                             go-github-com-docker-cli
+                             go-github-com-docker-distribution
+                             go-github-com-docker-docker
+                             go-github-com-docker-go-connections
+                             go-github-com-gobwas-glob
+                             go-github-com-go-git-go-billy-v5
+                             go-github-com-go-git-go-git-v5
+                             go-github-com-golang-jwt-jwt-v5
+                             go-github-com-imdario-mergo
+                             go-github-com-joho-godotenv
+                             go-github-com-julienschmidt-httprouter
+                             go-github-com-kballard-go-shellquote
+                             go-github-com-masterminds-semver
+                             go-github-com-mattn-go-isatty
+                             go-github-com-moby-patternmatcher
+                             go-github-com-opencontainers-image-spec
+                             go-github-com-opencontainers-selinux
+                             go-github-com-pkg-errors
+                             go-github-com-rhysd-actionlint
+                             go-github-com-sabhiram-go-gitignore
+                             go-github-com-sirupsen-logrus
+                             go-github-com-spf13-cobra
+                             go-github-com-spf13-pflag
+                             go-github-com-stretchr-testify
+                             go-github-com-timshannon-bolthold
+                             go-go-etcd-io-bbolt
+                             go-golang-org-x-term
+                             go-google-golang-org-protobuf
+                             go-gopkg-in-yaml-v3
+                             go-gotest-tools-v3))
+    (home-page "https://github.com/nektos/act")
+    (synopsis "Run GitHub Actions locally")
+    (description
+     "Helper tool to run @url{https://developer.github.com/actions/,GitHub
+Actions} locally.")
+    (license license:expat)))
 
 (define-public go-github-com-rhysd-actionlint
   (package
