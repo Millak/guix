@@ -606,14 +606,8 @@ Rust source code.")
         (base32 "127ifblgp7v2vv8iafl88y1cjyskymqdi0nzsavnyab0x9jiskcr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs (("rust-clap" ,rust-clap-2)
-                       ("rust-env-logger" ,rust-env-logger-0.6)
-                       ("rust-failure" ,rust-failure-0.1)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-void" ,rust-void-1))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'cargo-with))
     (home-page "https://github.com/cbourjau/cargo-with/")
     (synopsis
      "Cargo extension to run build artifacts through tools like `gdb`.")
