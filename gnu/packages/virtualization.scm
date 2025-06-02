@@ -82,7 +82,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages containers)
   #:use-module (gnu packages cpio)
-  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)

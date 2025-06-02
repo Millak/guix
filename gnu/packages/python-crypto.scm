@@ -59,8 +59,6 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages crates-io)
-  #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libffi)

@@ -44,8 +44,6 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages crates-io)
-  #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)

@@ -42,8 +42,6 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages crates-compression)
-  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages check)
   #:use-module (gnu packages maths)
