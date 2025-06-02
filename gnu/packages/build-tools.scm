@@ -607,65 +607,79 @@ software.")
 (define-public tup
   (package
     (name "tup")
-    (version "0.7.11")
+    (version "0.8")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://gittup.org/tup/releases/tup-v"
+              (uri (string-append "https://gittup.org/tup/releases/tup-v"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1157qfnhjakm3h07y7h38lrjw5650gkif34k30bnrsypmwl5xyzb"))
-              (patches (search-patches "tup-unbundle-dependencies.patch"))
+                "1yv60apd8dsigb74cjw1nzvqqqpjbsxz1i9dhq24jdkjwgsra3w4"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   ;; NOTE: Tup uses a slightly modified Lua, so it cannot be
-                  ;; unbundled.  See: src/lula/tup-lua.patch
+                  ;; unbundled.  See: src/lua/tup-lua.patch
                   (delete-file-recursively "src/pcre")
                   (delete-file-recursively "src/sqlite3")
-                  #t))))
+                  (delete-file-recursively "src/inih")
+                  ;; ldpreload Used only on BSD.  Deleting to avoid putting
+                  ;; license:bsd-2 in the licenses field
+                  (delete-file-recursively "src/ldpreload")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; There is a bootstrap script, but it doesn't do what you think - it
-         ;; builds tup.
-         (delete 'bootstrap)
-         (replace 'configure
-           (lambda _
-             (substitute* "src/tup/link.sh"
-               (("`git describe`") ,version))
-             (with-output-to-file "tup.config"
-               (lambda _
-                 (format #t "CONFIG_TUP_USE_SYSTEM_SQLITE=y~%")))
-             #t))
-         (delete 'check)
-         (replace 'build
-           (lambda _
-             ;; Based on bootstrap-nofuse.sh, but with a detour to patch-shebang.
-             (invoke "./build.sh")
-             (invoke "./build/tup" "init")
-             (invoke "./build/tup" "generate" "--verbose" "build-nofuse.sh")
-             (patch-shebang "build-nofuse.sh")
-             (invoke "./build-nofuse.sh")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((outdir (assoc-ref outputs "out"))
-                    (ftdetect (string-append outdir
-                                             "/share/vim/vimfiles/ftdetect")))
-               (install-file "tup" (string-append outdir "/bin"))
-               (install-file "tup.1" (string-append outdir "/share/man/man1"))
-               (install-file "contrib/syntax/tup.vim"
-                             (string-append outdir "/share/vim/vimfiles/syntax"))
-               (mkdir-p ftdetect)
-               (with-output-to-file (string-append ftdetect "/tup.vim")
-                 (lambda _
-                   (display "au BufNewFile,BufRead Tupfile,*.tup setf tup")))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; There is a bootstrap script, but it doesn't do what you think - it
+          ;; builds tup.
+          (delete 'bootstrap)
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "build.sh"
+                ;; LDFLAGS
+                (("-lm") "-lm -lsqlite3 -linih `pcre2-config --libs8`")
+                ;; CFLAGS
+                (("-DHAVE_CONFIG_H") "-DHAVE_CONFIG_H `pcre2-config --cflags`")
+                ;; Don't build bundled inih and pcre
+                (("\\.\\./src/inih/ini\\.c \\.\\./src/pcre/\\*\\.c") "")
+                ;; Don't build bundled sqlite3
+                (("\\$CC \\$CFLAGS -c \\.\\./src/sqlite3/sqlite3\\.c.*") ""))
+              (substitute* "src/tup/option.c"
+                (("\"ini.h\"") "<ini.h>"))
+              (substitute* '("src/tup/tupid.h"
+                             "src/tup/db.c")
+                (("sqlite3/sqlite3.h")
+                 (search-input-file inputs "include/sqlite3.h")))
+              (with-output-to-file "tup.config"
+                (lambda _
+                  (format #t (string-append "CONFIG_TUP_USE_SYSTEM_SQLITE=y~%"
+                                            "CONFIG_TUP_USE_SYSTEM_PCRE=y~%"
+                                            "CONFIG_TUP_USE_SYSTEM_INIH=y~%"))))))
+          (delete 'check)    ; Most tests require fuse to be setup
+          (replace 'build
+            (lambda _
+              ;; Based on bootstrap-nofuse.sh, but with a detour to patch-shebang.
+              (invoke "./build.sh")
+              (invoke "./build/tup" "init")
+              (invoke "./build/tup" "generate" "--verbose" "build-nofuse.sh")
+              (patch-shebang "build-nofuse.sh")
+              (invoke "./build-nofuse.sh")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((outdir (assoc-ref outputs "out"))
+                     (ftdetect (string-append outdir
+                                              "/share/vim/vimfiles/ftdetect")))
+                (install-file "tup" (string-append outdir "/bin"))
+                (install-file "tup.1" (string-append outdir "/share/man/man1"))
+                (install-file "contrib/syntax/tup.vim"
+                              (string-append outdir "/share/vim/vimfiles/syntax"))
+                (mkdir-p ftdetect)
+                (with-output-to-file (string-append ftdetect "/tup.vim")
+                  (lambda _
+                    (display "au BufNewFile,BufRead Tupfile,*.tup setf tup")))))))))
     (inputs
-     (list fuse pcre
-           `(,pcre "bin") ; pcre-config
-           sqlite))
+     (list fuse libinih pcre2 sqlite))
     (native-inputs
      (list pkg-config))
     (home-page "https://gittup.org/tup/")
@@ -675,7 +689,9 @@ graphs of commands to be executed.  Tup instruments your build to detect the
 exact dependencies of the commands, allowing you to take advantage of ideal
 parallelism during incremental builds, and detecting any situations where
 a build worked by accident.")
-    (license license:gpl2)))
+    (license (list
+              license:gpl2
+              license:x11))))     ; src/lua
 
 (define-public osc
   (package
