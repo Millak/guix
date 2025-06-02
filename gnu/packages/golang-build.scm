@@ -483,7 +483,7 @@ toolchain.  The parts needed in the main Go repository are copied in.")
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.31.0")
+    (version "0.38.0")
     (source
      (origin
        (method git-fetch)
@@ -492,7 +492,7 @@ toolchain.  The parts needed in the main Go repository are copied in.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pd3qipz2wb5wbbb44lgbfygxhf9lq5rknf82p2dmaicszn0rd53"))
+        (base32 "1wx7wf3ifb10cx2yckm925a9ydy5bw3iv664cma27abkfssj07ba"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
