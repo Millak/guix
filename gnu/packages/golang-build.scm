@@ -553,7 +553,9 @@ language.")
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
-    (version "0.0.0-20241217172543-b2144cdd0a67")
+    ;; Note: Beware, the updater gets this wrong.  Take the latest version
+    ;; string from <https://pkg.go.dev/golang.org/x/exp?tab=versions>.
+    (version "0.0.0-20250531010427-b6e5de432a8b")
     (source
      (origin
        (method git-fetch)
@@ -562,7 +564,7 @@ language.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01dq7llbqqdybv5s372zwlfiyq2syqpfqs7h4lxvbpqjq0aayf60"))
+        (base32 "0vszjiblb7i79dp9x1zvfpjidnmkzsaq6ij2jfh63hv9ph7yz3hf"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
