@@ -423,7 +423,7 @@ library.")
 (define-public go-github-com-yuin-goldmark-emoji
   (package
     (name "go-github-com-yuin-goldmark-emoji")
-    (version "1.0.4")
+    (version "1.0.6")
     (source
      (origin
        (method git-fetch)
@@ -432,7 +432,7 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "001dgjaa9crbl1yb803gyq1dbcnnfzvv205ycgd97qw9p4xjg21g"))))
+        (base32 "09n5ws797ma47kj0jwg0g2gkwq899kb40ny62r9f44wg6dkrpppr"))))
     (build-system go-build-system)
     (arguments
      (list
