@@ -12195,6 +12195,33 @@ about OS mounts as seen by the current process is available from
 @code{/proc/self/mountinfo}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-sys-sequential
+  (package
+    (name "go-github-com-moby-sys-sequential")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "sequential"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i1phx1kk9qa4jf1i1nl23d3f6k9fn2w46274cl76cqw9hjqg868"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/sequential"
+      #:unpack-path "github.com/moby/sys"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Go bindings to the Windows sequential file interface")
+    (description
+     "Package sequential provides a set of functions for managing sequential files on
+Windows.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-user
   (package
     (name "go-github-com-moby-sys-user")
