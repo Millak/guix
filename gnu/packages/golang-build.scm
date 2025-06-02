@@ -93,7 +93,7 @@ automatically resolves shift / reduce and reduce / reduce conflicts.")
 (define-public go-github-com-golang-glog
   (package
     (name "go-github-com-golang-glog")
-    (version "1.2.3")
+    (version "1.2.5")
     (source
      (origin
        (method git-fetch)
@@ -102,7 +102,7 @@ automatically resolves shift / reduce and reduce / reduce conflicts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sfgcf18wg4glcamgq9njmbny17xq0dd14g3094sj5c1cwjij982"))))
+        (base32 "15gza8cb5qs8brwqjn1lpbm9p5z5332m44gmxz9m0qxkr27lcmhr"))))
     (build-system go-build-system)
     (arguments
      (list
