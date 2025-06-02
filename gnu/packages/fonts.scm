@@ -3832,7 +3832,7 @@ and heavily inspired by Creep.")
 (define-public font-montserrat
   (package
     (name "font-montserrat")
-    (version "7.222")
+    (version "9.000")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3841,7 +3841,7 @@ and heavily inspired by Creep.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03cfk45r5g694dqp2gjgg0qwra8w78nl6hc6p56qwd5dcfgr2l3r"))))
+                "1pky6s2driaa1if7xaadh1djjk1b6h5xmc4vnicq1b9iwpfjma3w"))))
     (build-system font-build-system)
     (home-page "https://github.com/JulietaUla/Montserrat")
     (synopsis "The Montserrat font")
