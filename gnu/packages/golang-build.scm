@@ -188,7 +188,16 @@ as an ordered, mutable data structure.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/google/go-cmdtest"))
+      #:import-path "github.com/google/go-cmdtest"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda _
+              (substitute* "src/github.com/google/go-cmdtest/cmdtest_test.go"
+                ;; Since Go 1.24, fmt procedures are checked to use a constant
+                ;; format string.
+                (("t.Errorf\\(diff)")
+                 "t.Errorf(\"%s\", diff)")))))))
     (propagated-inputs
      (list go-github-com-google-renameio go-github-com-google-go-cmp))
     (home-page "https://github.com/google/go-cmdtest")
