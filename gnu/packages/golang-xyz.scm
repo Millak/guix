@@ -63,6 +63,8 @@
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2025 Formbi <formbi@protonmail.com>
+;;; Copyright © 2025 David Thompson <davet@gnu.org>
+;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20230,6 +20232,38 @@ library.")
      (string-append (package-description go-github-com-alecthomas-chroma-v2)
                     "  This package provides an command line interface (CLI)
 tool."))))
+
+(define-public go-connectrpc-com-connect
+  (package
+    (name "go-connectrpc-com-connect")
+    (version "1.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/connectrpc/connect-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a6rzp57srhyf66jri62gfsj4ndpfxgb9ln15qdpfwv0xvcffz63"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "connectrpc.com/connect"
+      ;; Needs additional dependencies..
+      #:tests? #f))
+    (propagated-inputs (list go-google-golang-org-protobuf
+                             go-golang-org-x-net
+                             go-github-com-google-go-cmp))
+    (home-page "https://connectrpc.com/connect")
+    (synopsis "@acronym{RPC, Remote procedure call} framework built on
+Protocol Buffers")
+    (description
+     "Package @code{connect} is a slim RPC framework built on Protocol Buffers
+and @code{net/http}.  In addition to supporting its own protocol, Connect
+handlers and clients are wire-compatible with gRPC and gRPC-Web, including
+streaming.")
+    (license license:asl2.0)))
 
 (define-public go-csv2table
   (package/inherit go-github-com-olekukonko-tablewriter
