@@ -114,7 +114,6 @@ the file and search through it.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.24
       #:import-path "github.com/wader/fq"))
     (native-inputs
      (list go-github-com-burntsushi-toml

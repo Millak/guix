@@ -1235,7 +1235,6 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "github.com/google/go-tpm"
       #:phases
       #~(modify-phases %standard-phases

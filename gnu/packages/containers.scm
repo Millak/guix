@@ -406,7 +406,6 @@ Layer-4 sockets.")
     (arguments
      `(#:unpack-path "github.com/containernetworking/plugins"
        #:tests? #f ; XXX: see stat /var/run below
-       #:go ,go-1.24
        #:phases (modify-phases %standard-phases
                   (replace 'build
                     (lambda _

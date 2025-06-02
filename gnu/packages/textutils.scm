@@ -1628,7 +1628,6 @@ of a Unix terminal to HTML code.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:embed-files #~(list ".*\\.gob")
       #:import-path "github.com/errata-ai/vale/cmd/vale"

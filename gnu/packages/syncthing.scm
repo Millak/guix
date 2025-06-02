@@ -70,7 +70,6 @@
                    (guix build go-build-system))
        #:import-path "github.com/syncthing/syncthing"
        ;; Check 'go.mod' in the source distribution for the required version of Go.
-       #:go go-1.23
        ;; We don't need to install the source code for end-user applications.
        #:install-source? #f
        #:phases

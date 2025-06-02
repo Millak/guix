@@ -2879,7 +2879,6 @@ used to skip the test
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
       #:import-path "honnef.co/go/tools"
       #:unpack-path "honnef.co/go/tools"))

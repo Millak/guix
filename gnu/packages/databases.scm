@@ -501,7 +501,6 @@ database later.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:build-flags #~(list "-tags" "external_libzstd")
       #:test-flags #~(list "-tags" "external_libzstd"
                            ;; Skip tests requiring git in PATH.
@@ -607,7 +606,6 @@ table-level bloom filters, and updates to the MANIFEST format.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/dicedb/dice"
       #:build-flags

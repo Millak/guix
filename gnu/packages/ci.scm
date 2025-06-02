@@ -314,7 +314,6 @@ reinventing them.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "gitea.com/gitea/act_runner"
       #:embed-files #~(list ".*\\.json" ".*\\.js" ".*\\.sh")

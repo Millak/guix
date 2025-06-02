@@ -119,7 +119,6 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "0xacab.org/leap/lb"))
     (propagated-inputs
      (list go-github-com-golang-protobuf
@@ -1826,7 +1825,6 @@ browser window.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/cockroachdb/errors"
       #:test-subdirs #~(list "assert/..."
                              "barriers/..."
@@ -2223,7 +2221,6 @@ Data Representation (XDR) standard protocol as specified in RFC
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "github.com/digitalocean/godo"
       #:test-flags
       #~(list "-skip" (string-join
@@ -3716,7 +3713,6 @@ OpenAPI 2.0).")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "github.com/go-webauthn/webauthn"
       #:phases
       #~(modify-phases %standard-phases
@@ -5999,7 +5995,6 @@ intends to be compatible with Avahi.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.24
       #:import-path "github.com/LINBIT/golinstor"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -7554,7 +7549,6 @@ higher-level API for doing so.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.24
       #:skip-build? #t
       #:import-path "github.com/osrg/gobgp/v3"))
     (native-inputs
@@ -10810,7 +10804,6 @@ https://openid.net/developers/how-connect-works/}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "gitlab.com/gitlab-org/api/client-go"
       #:test-flags
       #~(list "-skip"
@@ -11091,7 +11084,6 @@ lists)
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "go.opencensus.io"
       #:test-flags
       #~(list "-skip"
@@ -11135,7 +11127,6 @@ lists)
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "go.opentelemetry.io/contrib"
       #:tests? #f))
     (native-inputs (list go-github-com-stretchr-testify))
@@ -11706,7 +11697,6 @@ the standard @code{context} package to store request-scoped values.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "google.golang.org/genproto/googleapis/api"
       #:unpack-path "google.golang.org/genproto"))
     (propagated-inputs
@@ -11760,7 +11750,6 @@ the standard @code{context} package to store request-scoped values.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:tests? #f ; TODO: full test suite needs more packages
       #:import-path "google.golang.org/grpc"))
     (propagated-inputs
@@ -11849,7 +11838,6 @@ the standard @code{context} package to store request-scoped values.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "k8s.io/cri-api"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -11897,7 +11885,6 @@ docs}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "k8s.io/kube-openapi"
       #:phases
       #~(modify-phases %standard-phases
@@ -11952,7 +11939,6 @@ the code or routes.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "maunium.net/go/mautrix"
       #:embed-files
       #~(list
@@ -12117,7 +12103,6 @@ etc)
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:import-path "mvdan.cc/xurls/v2"
       #:build-flags #~(list (string-append "-ldflags=-X main.version="
                                            #$version))
@@ -12180,7 +12165,6 @@ protocol.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:build-flags #~(list (string-append "-ldflags="
                                            "-X main.lyrebirdVersion="
                                            #$version " -s -w"))

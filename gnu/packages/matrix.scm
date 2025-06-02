@@ -68,7 +68,6 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:tests? #f ; no tests provided
       #:import-path "go.mau.fi/mautrix-whatsapp/cmd/mautrix-whatsapp"

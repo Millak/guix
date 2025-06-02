@@ -147,7 +147,6 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
       #:embed-files #~(list "sorted-network-list.bin")
       #:test-subdirs #~(list "bitswap/..."
@@ -499,7 +498,6 @@ hierarchy of the keys.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/ipfs/go-ds-pebble"))
     (propagated-inputs
      (list go-github-com-cockroachdb-pebble-v2
@@ -682,7 +680,6 @@ with @url{https://github.com/ipld/cid, CIDs}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/ipfs/go-ipfs-cmds"
       #:phases
       #~(modify-phases %standard-phases
@@ -1521,7 +1518,6 @@ code prior to it getting merged into @code{go-cid}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:embed-files #~(list "sorted-network-list.bin")
       #:import-path "github.com/ipfs-shipyard/nopfs/ipfs"
       #:unpack-path "github.com/ipfs-shipyard/nopfs"))
@@ -1815,7 +1811,6 @@ their levels to be controlled individually.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:embed-files #~(list "sorted-network-list.bin")
       #:import-path "github.com/libp2p/go-libp2p"
       ;; XXX: Check how to enable the most of the tests, see GitHub Actions
@@ -2009,7 +2004,6 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:embed-files #~(list "sorted-network-list.bin")
       #:import-path "github.com/libp2p/go-libp2p-kad-dht"))
     (native-inputs
@@ -2109,7 +2103,6 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       ;; TODO: Tests may need some adjustments as they take quite a lot of
       ;; time to finish.
       #:import-path "github.com/libp2p/go-libp2p-pubsub"
@@ -2485,7 +2478,6 @@ types.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.22
       #:embed-files #~(list "sorted-network-list.bin")
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
@@ -2669,7 +2661,6 @@ also mount the world at @code{/ipfs}.")
       (build-system go-build-system)
       (arguments
        (list
-        #:go go-1.22
         #:embed-files #~(list "sorted-network-list.bin")
         #:install-source? #f
         #:import-path "gitlab.com/spritely/spritely-libp2p-daemon"))
