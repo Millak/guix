@@ -12248,6 +12248,32 @@ parsing.")
      "@code{geohash} provides encoding and decoding of string and integer geohashes.")
     (license license:expat)))
 
+(define-public go-github-com-moby-docker-image-spec
+  (package
+    (name "go-github-com-moby-docker-image-spec")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/docker-image-spec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06r6z8s0rvl66n626q41hmqgnnlpsqdblj32fjq3r0qsccp8s167"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/docker-image-spec"
+      #:skip-build? #t
+      #:tests? #f))
+    (propagated-inputs (list go-github-com-opencontainers-image-spec))
+    (home-page "https://github.com/moby/docker-image-spec")
+    (synopsis "Docker Image Specification v1.")
+    (description
+     "This directory contains documents about Docker Image Specification v1.X.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-mountinfo
   (package
     (name "go-github-com-moby-sys-mountinfo")
