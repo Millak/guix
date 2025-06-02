@@ -12195,6 +12195,33 @@ about OS mounts as seen by the current process is available from
 @code{/proc/self/mountinfo}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-sys-user
+  (package
+    (name "go-github-com-moby-sys-user")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "user"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1clr9x412gr1cq3jxf9lxblh9pkf8c42gz57wr14miy0nqsimx7j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/user"
+      #:unpack-path "github.com/moby/sys"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Unix user and group access from Go")
+    (description
+     "This Go library provides facilities to access @file{/etc/passwd} and
+related files.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-userns
   (package
     (name "go-github-com-moby-sys-userns")
