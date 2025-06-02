@@ -2924,32 +2924,35 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
     (license license:bsd-2)))
 
 (define-public manifold
-  (package
-    (name "manifold")
-    (version "3.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/elalish/manifold")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1f0k8937gk7b9100k99pmz1f17nzczpdk7797p2aijla0z29ddy1"))))
-    (build-system cmake-build-system)
-    (inputs (list tbb clipper2 assimp python-nanobind googletest))
-    (arguments
-     ;; can be removed when emscripten is packaged
-     `(#:configure-flags '("-DMANIFOLD_JSBIND=OFF")))
-    (synopsis "Geometry library for topological robustness")
-    (description
-     "Manifold is a geometry library dedicated to creating and operating on
+  (let ((commit "7c8fbe186aa1ac5eb73f12c28bdef093ee4d11c9")
+        (version "3.0.1")
+        (revision "0"))
+    (package
+      (name "manifold")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/elalish/manifold")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09s4r4hlarl5lzbbihfd1fpfd3987lma5m26wkkvi7zssdbis9zc"))))
+      (build-system cmake-build-system)
+      (inputs (list tbb clipper2 assimp python-nanobind googletest))
+      (arguments
+       ;; can be removed once emscripten is packaged
+       `(#:configure-flags '("-DMANIFOLD_JSBIND=OFF")))
+      (synopsis "Geometry library for topological robustness")
+      (description
+       "Manifold is a geometry library dedicated to creating and operating on
 manifold triangle meshes.  A manifold mesh is a mesh that represents a solid
 object, and so is very important in manufacturing, CAD, structural analysis,
 etc..  Manifold also supports arbitrary vertex properties and enables mapping
 of materials for rendering use-cases.")
-    (home-page "https://github.com/elalish/manifold")
-    (license license:asl2.0)))
+      (home-page "https://github.com/elalish/manifold")
+      (license license:asl2.0))))
 
 (define-public python-keithley2600
   (package
