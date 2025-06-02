@@ -12831,6 +12831,34 @@ very fast, and tries to be entropy pool friendly.")
 and parsing.")
     (license license:expat)))
 
+(define-public go-github-com-netflix-go-expect
+  (package
+    (name "go-github-com-netflix-go-expect")
+    (version "0.0.0-20220104043353-73e0943537d2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Netflix/go-expect")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zkvhnc4ii6ygvcsj54ng0kql26rnny7l3hy1w61g88mxjsww1b9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Netflix/go-expect"))
+    (propagated-inputs (list go-github-com-stretchr-testify
+                             go-github-com-creack-pty))
+    (home-page "https://github.com/Netflix/go-expect")
+    (synopsis "Control applications with an Expect-like interface in Go")
+    (description
+     "Package expect provides an expect-like interface to automate control of
+applications.  It is unlike expect in that it does not spawn or manage process
+lifecycle.  This package only focuses on expecting output and sending input
+through it's psuedoterminal.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-neurosnap-sentences
   (package
     (name "go-github-com-neurosnap-sentences")
