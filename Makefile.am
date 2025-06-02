@@ -443,6 +443,11 @@ AUX_FILES =						\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/findclass.php			\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.15-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.15-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.15-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.15-riscv.conf	\
+  gnu/packages/aux-files/linux-libre/6.15-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.14-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.14-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.14-i686.conf	\
