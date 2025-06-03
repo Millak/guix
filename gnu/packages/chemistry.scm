@@ -1365,6 +1365,83 @@ and 3D and descriptor generation for machine learning.")
     ;; other test fail.
     (supported-systems %64bit-supported-systems)
     (license license:bsd-3)))
+
+(define-public xcfun
+  (package
+    (name "xcfun")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dftlibs/xcfun")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bj70cnhbh6ziy02x988wwl7cbwaq17ld7qwhswqkgnnx8rpgxid"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove bundled and generated code
+           (delete-file-recursively "external")
+           (delete-file-recursively "cmake/autocmake")
+           (delete-file-recursively "cmake/downloaded")
+           (delete-file-recursively "CMakeLists.txt")
+           (delete-file "cmake/update.py")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-cmake-file
+            (lambda _
+              (let ((autocmake-path
+                     #$(this-package-native-input "autocmake-src")))
+                (with-directory-excursion "cmake"
+                  (substitute* "autocmake.yml"
+                    (("^url_root:.*")
+                     (string-append "url_root: "
+                                    (string-append autocmake-path "/") "\n")))
+                  (invoke "python3"
+                          (string-append autocmake-path "/update.py") "..")))))
+          (add-after 'generate-cmake-file 'set-libtaylor-path
+            (lambda _
+              (substitute* "src/CMakeLists.txt"
+                (("\\$\\{PROJECT_SOURCE_DIR\\}/external/upstream/taylor")
+                 (string-append #$(this-package-native-input "libtaylor")
+                                "/include/taylor"))))))))
+    (native-inputs
+     `(("libtaylor" ,libtaylor)
+       ;; The Autocmake script copies files from its source repository (or ;;
+       ;; directory) and there are no packaging scripts, so the source is used
+       ;; directly.
+       ("autocmake-src"
+        ,(let* ((commit "77a1f851f08af1cbe0d95fd7dba4a16a14264412")
+                (revision "0")
+                (version (git-version "1.0.0" revision commit)))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/dev-cafe/autocmake")
+                    (commit commit)))
+             (file-name (git-file-name "autocmake" version))
+             (modules '((guix build utils)))
+             (snippet
+              '(begin
+                 (delete-file-recursively "autocmake/external")))
+             (sha256
+              (base32
+               "0rq5hyaj6c3yv4357a2p317cqv22gngw5085aansii69h063d0a4")))))
+       ("python" ,python)
+       ("python-pyyaml" ,python-pyyaml)))
+    (home-page "https://github.com/dftlibs/xcfun")
+    (synopsis
+     "Library of exchange-correlation functionals with automatic differentiation")
+    (description
+     "@code{XCFun} is a library of exchange-correlation functionals with
+arbitrary-order derivatives for density functional theory.")
+    (license license:mpl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above in alphabetical order.
