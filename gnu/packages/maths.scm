@@ -199,6 +199,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -10641,7 +10642,7 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "2025.0.0")
+    (version "2025.1.0")
     (source
      (origin
        (method git-fetch)
@@ -10651,7 +10652,7 @@ computation is supported via MPI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zn31mby7rwxsnkg91rp92ixhj785hw459krw9k2prs2cxqpn6j5"))
+         "1db23hla27lfrf1qvk3p4465qqizxb1a6qkjh4k6rzdxgvxdbxng"))
        (patches (search-patches "scilab-better-compiler-detection.patch"
                                 "scilab-tbx_build_help.patch"))
        (modules '((guix build utils)
@@ -10738,6 +10739,7 @@ computation is supported via MPI.")
                   matio
                   ocaml-num
                   openblas
+                  rapidjson
                   readline
                   suitesparse
                   tcl
