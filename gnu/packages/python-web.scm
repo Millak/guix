@@ -10474,13 +10474,13 @@ for modern conventions.")
 (define-public python-parsel
   (package
     (name "python-parsel")
-    (version "1.8.1")
+    (version "1.10.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "parsel" version))
         (sha256
-          (base32 "0f8yh30y3961a7kqwcnp4j3s7044ilakykiavc0skwdkr5l8xwmg"))))
+          (base32 "1050v20gzijfcaxpm1d4bvxqw2l7xhyf9pxrawrv8lczanwpvw8l"))))
     (build-system pyproject-build-system)
     (propagated-inputs
       (list python-cssselect
