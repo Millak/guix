@@ -889,6 +889,35 @@ critical parts are implemented in C.")
      "This package is a wrapper around simple-dftd3 and dftd4 for use with pyscf.")
     (license license:asl2.0)))
 
+(define-public python-pyscf-properties
+  (let ((commit "4eee5a430fb47eca5962f36fdcaf75c2b87e7ede")
+        (revision "1"))
+    (package
+      (name "python-pyscf-properties")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/pyscf/properties")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jzyfqhk6hcn1dpc311iiamc5dnwp71q5087432f5gqqvpg1zz94"))))
+      (build-system pyproject-build-system)
+      (arguments (list #:tests? #f)) ; no tests
+      (native-inputs
+       (list python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-pyscf))
+      (home-page "https://github.com/pyscf/properties")
+      (synopsis "PySCF electronic properties extension")
+      (description
+       "This extension to python-pyscf provides calculations of different
+electromagnetic properties for molecules and crystals.")
+      (license license:asl2.0))))
+
 ;; Depends on at least SSE3 and should only be used for a tuned build of
 ;; python-pyscf.
 (define-public qcint
