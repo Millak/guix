@@ -72,6 +72,7 @@
 ;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>"
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>"
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5355,13 +5356,13 @@ Integration Center (4DN-DCIC).")
 (define-public python-feedparser
   (package
     (name "python-feedparser")
-    (version "6.0.10")
+    (version "6.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "feedparser" version ".tar.gz"))
        (sha256
-        (base32 "0lfa1c8s6abnlksbwxdpq78bg4rb6603mcgarmip3kip8rglini7"))
+        (base32 "1mc4856draxac5s7acywq060a0awng195cpbs1js1wn6cixl1l69"))
        (patches (search-patches "python-feedparser-missing-import.patch"))))
     (build-system python-build-system)
     (propagated-inputs
