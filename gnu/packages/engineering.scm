@@ -3406,7 +3406,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
 (define-public freecad
   (package
     (name "freecad")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -3415,7 +3415,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wwymcfgi0cybj7m6awflk8c7n6iy97lpgpfhfncx3zwvjrxv588"))
+        (base32 "0p3pa4w1xj7sgqk9vxdri8l3hbx0a8iz2pwn8gwjqlhc62z4hrg8"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3507,7 +3507,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
                (wrap-program (string-append out "/bin/FreeCAD")
                  (list "GUIX_PYTHONPATH"
                        'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
-    (home-page "https://www.freecadweb.org/")
+    (home-page "https://www.freecad.org/")
     (synopsis "Your Own 3D Parametric Modeler")
     (description
      "FreeCAD is a general-purpose, feature-based, parametric 3D modeler for
