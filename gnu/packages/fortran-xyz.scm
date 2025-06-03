@@ -25,6 +25,7 @@
   #:use-module (gnu packages fortran-check)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python))
 
@@ -93,6 +94,42 @@ geometry file formats.")
     (description
      "This package contains a Fortran interface to obtain molecular geometries
 used for testing.")
+    (license license:asl2.0)))
+
+(define-public fortran-multicharge
+  (package
+    (name "fortran-multicharge")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grimme-lab/multicharge")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19460xclxnlmyzcxg392kmm532ydg3yka5mkbbv845kgvbfhrb7j"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "-Dfortran_link_args=-Wl,-rpath="
+                        #$output "/lib"))))
+    (native-inputs
+     (list gfortran
+           pkg-config
+           python-minimal))
+    (inputs
+     (list fortran-mctc-lib
+           fortran-mstore
+           fortran-toml-f
+           lapack))
+    (home-page "https://github.com/grimme-lab/multicharge")
+    (synopsis "Electronegativity equilibration model for atomic partial charges")
+    (description
+     "This library implements an electronegativity equilibration model to
+calculate partial charges used in the DFT-D4 model.")
     (license license:asl2.0)))
 
 (define-public fortran-simple-dftd3
