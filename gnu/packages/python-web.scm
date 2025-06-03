@@ -10133,14 +10133,14 @@ GCS, Azure Blob Storage, gzip, bz2, etc.)")
 (define-public python-w3lib
   (package
     (name "python-w3lib")
-    (version "2.1.2")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "w3lib" version))
        (sha256
         (base32
-         "1cd4b3w5g3pfccsg79kjj27fwi216ip927rjq7isp8pfjzlp8nzd"))))
+         "1929layzxwdnf43hhrz7rabv388b2yibj7mnq9s62mr760mc12jw"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools python-wheel))
