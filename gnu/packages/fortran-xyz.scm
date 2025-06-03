@@ -19,16 +19,49 @@
 (define-module (gnu packages fortran-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system meson)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages fortran-check)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python))
 
 ;;; Please: Try to add new module packages in alphabetic order.
 ;;;
 ;;; Code:
 
+(define-public fortran-mctc-lib
+  (package
+    (name "fortran-mctc-lib")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grimme-lab/mctc-lib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gabdxllx2pcw1mbv4gw9zpn6817ikz9ql8xs9w86wswd6f0m5kl"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dfortran_link_args=-Wl,-rpath="
+                             #$output "/lib"))))
+    (native-inputs
+     (list gfortran
+           python-minimal))
+    (home-page "https://github.com/grimme-lab/mctc-lib")
+    (synopsis "Fortran library for working with molecular structure data")
+    (description
+     "@code{mctc-lib} (modular computation tool chain library) is a Fortran
+library for operating on molecular structures and reading and writing common
+geometry file formats.")
+    (license license:asl2.0)))
+
 (define-public fortran-toml-f
   (package
     (name "fortran-toml-f")
