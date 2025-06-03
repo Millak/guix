@@ -48,7 +48,7 @@
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 # Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
-# Copyright © 2022, 2024 Remco van 't Veer <remco@remworks.net>
+# Copyright © 2022, 2024, 2025 Remco van 't Veer <remco@remworks.net>
 # Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 # Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 # Copyright © 2022 muradm <mail@muradm.net>
@@ -2044,6 +2044,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qcodeeditor-qt6.patch			\
   %D%/packages/patches/qtdeclarative-5-disable-qmlcache.patch	\
   %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\
+  %D%/packages/patches/quodlibet-disable-bundled-packages.patch	\
   %D%/packages/patches/qucs-s-qucsator-rf-search.patch		\
   %D%/packages/patches/qxlsx-fix-include-directory.patch	\
   %D%/packages/patches/scn-fast-float-compat.patch		\

@@ -8043,7 +8043,12 @@ streaming audio server.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nk2n4j0vm9ibrm3p9qwf5s0a4iwjkbvr6z23sc0v3rdxvaxrgf6"))))
+        (base32 "0nk2n4j0vm9ibrm3p9qwf5s0a4iwjkbvr6z23sc0v3rdxvaxrgf6"))
+
+       ;; Disable and remove bundled packages.
+       (patches (search-patches "quodlibet-disable-bundled-packages.patch"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "quodlibet/packages"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -8106,6 +8111,7 @@ streaming audio server.")
            python-pycairo
            python-pygobject
            python-pyinotify
+           python-senf
            python-sgmllib3k
            python-toml))
     (home-page "https://github.com/quodlibet/quodlibet")
