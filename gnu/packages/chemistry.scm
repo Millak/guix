@@ -46,6 +46,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages fortran-xyz)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
@@ -835,6 +836,57 @@ Python library for quantum chemistry calculations and method development.
 Most of the functionality is implemented in Python, while computationally
 critical parts are implemented in C.")
     (properties '((tunable? . #t)))
+    (license license:asl2.0)))
+
+(define-public python-pyscf-dispersion
+  (package
+    (name "python-pyscf-dispersion")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyscf/dispersion")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0za1qmn0v948zalw1j6j0qdbj7cnfz398aq1lf145frxddmprz8n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This tries to download and build Simple DFT-D3 and DFT-D4.
+          (add-after 'unpack 'disable-build
+            (lambda _
+              (substitute* "setup.py"
+                (("packages=modules.*")
+                 "packages=modules,")
+                (("cmdclass=.*") ""))))
+          (add-after 'install 'symlink
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((outdir (string-append (site-packages inputs outputs)
+                                           "/pyscf/lib")))
+                (mkdir-p outdir)
+                (symlink (string-append #$(this-package-input "fortran-simple-dftd3")
+                                        "/lib/libs-dftd3.so")
+                         (string-append outdir "/libs-dftd3.so"))
+                (symlink (string-append #$(this-package-input "fortran-dftd4")
+                                        "/lib/libdftd4.so")
+                         (string-append outdir "/libdftd4.so"))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list fortran-simple-dftd3
+           fortran-dftd4))
+    (propagated-inputs
+     (list python-pyscf))
+    (home-page "https://github.com/pyscf/dispersion")
+    (synopsis "PySCF extensions for dispersion calculations")
+    (description
+     "This package is a wrapper around simple-dftd3 and dftd4 for use with pyscf.")
     (license license:asl2.0)))
 
 ;; Depends on at least SSE3 and should only be used for a tuned build of
