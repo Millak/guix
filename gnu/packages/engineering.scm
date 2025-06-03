@@ -3429,9 +3429,8 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
      (list c++-gsl
            doxygen
            graphviz
-           qttools-5
+           qttools
            pkg-config
-           python-pyside-2-tools
            swig))
     (inputs
      (list bash-minimal
@@ -3465,16 +3464,16 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            python-matplotlib
            python-pivy
            python-ply
-           python-pyside-2
+           python-pyside-6
            python-pyyaml
-           python-shiboken-2
+           python-shiboken-6
            python-wrapper
-           qtbase-5
-           qtdeclarative-5
-           qtsvg-5
-           qtwebchannel-5
-           qtwebengine-5
-           qtwayland-5
+           qtbase
+           qtdeclarative
+           qtsvg
+           qtwebchannel
+           qtwebengine
+           qtwayland
            qtx11extras
            qtxmlpatterns
            sqlite
@@ -3487,10 +3486,10 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
      `(#:tests? #f  ;; Project has tests, but they are a pain to build
        #:configure-flags
        ,#~(list
-           "-DBUILD_QT5=ON"
            "-DBUILD_FLAT_MESH:BOOL=ON"
            "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
            "-DENABLE_DEVELOPER_TESTS=OFF"  ;; see the above: #:tests? comment
+           "-DFREECAD_QT_VERSION=6"  ;; Build with Qt6
            "-DFREECAD_USE_EXTERNAL_ONDSELSOLVER=ON"  ;; unbundle ondsel-solver
            ;; Do not try to install modules into system python
            "-DINSTALL_TO_SITEPACKAGES=OFF"
