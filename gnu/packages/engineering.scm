@@ -3118,7 +3118,7 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "1.6.2")
+    (version "1.7.0")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -3126,7 +3126,7 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0s339mw231jgml6wdi6zmvy93x58pv6fmk6xmpjpymdr4g36kk86"))
+                "148bfdbh0y69f5xhxb49jqvc6gabk0n4i0fl1j5f3fnm9vaypyis"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy
