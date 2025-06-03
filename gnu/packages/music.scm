@@ -46,7 +46,7 @@
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 Sughosha <sughosha@disroot.org>
-;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022, 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
@@ -8034,7 +8034,7 @@ streaming audio server.")
 (define-public quodlibet
   (package
     (name "quodlibet")
-    (version "4.5.0")
+    (version "4.7.1")
     (source
      (origin
        (method git-fetch)
@@ -8042,10 +8042,8 @@ streaming audio server.")
              (url "https://github.com/quodlibet/quodlibet")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
-       (patches (search-patches "quodlibet-fix-invalid-glob.patch"
-                                "quodlibet-fix-mtime-tests.patch"))
        (sha256
-        (base32 "1i5k93k3bfp7hpcwkbr865mbj9jam3jv2a5k1bazcyp4f5vdrb0v"))))
+        (base32 "0nk2n4j0vm9ibrm3p9qwf5s0a4iwjkbvr6z23sc0v3rdxvaxrgf6"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -8064,10 +8062,8 @@ streaming audio server.")
               (if tests?
                   (invoke "xvfb-run" "pytest"
                           ;; needs network
-                          "--ignore=tests/test_browsers_iradio.py"
-                          ;; broken upstream
-                          "--disable-warnings"
-                          "--ignore=tests/quality/test_flake8.py")
+                          "--ignore=tests/plugin/test_covers.py"
+                          "--ignore=tests/test_browsers_iradio.py")
                   (format #t "test suite not run~%"))))
           (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
@@ -8082,7 +8078,7 @@ streaming audio server.")
                      `("GI_TYPELIB_PATH" ":" = (,gi-typelib-path))
                      `("GST_PLUGIN_SYSTEM_PATH" ":" suffix (,gst-plugins-path))))
                  '("exfalso" "quodlibet"))))))))
-    (native-inputs (list xvfb-run gettext-minimal))
+    (native-inputs (list xvfb-run gettext-minimal python-pytest))
     (inputs
      (list adwaita-icon-theme
            bash-minimal
@@ -8098,7 +8094,7 @@ streaming audio server.")
            hicolor-icon-theme
            keybinder-3.0 ; keybindings outside of GNOME
            (librsvg-for-system)
-           libsoup-minimal-2
+           libsoup-minimal
            python
            python-cheetah
            python-dbus
@@ -8110,7 +8106,6 @@ streaming audio server.")
            python-pycairo
            python-pygobject
            python-pyinotify
-           python-pytest
            python-sgmllib3k
            python-toml))
     (home-page "https://github.com/quodlibet/quodlibet")

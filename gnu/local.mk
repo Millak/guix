@@ -2044,8 +2044,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/qcodeeditor-qt6.patch			\
   %D%/packages/patches/qtdeclarative-5-disable-qmlcache.patch	\
   %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\
-  %D%/packages/patches/quodlibet-fix-invalid-glob.patch	\
-  %D%/packages/patches/quodlibet-fix-mtime-tests.patch		\
   %D%/packages/patches/qucs-s-qucsator-rf-search.patch		\
   %D%/packages/patches/qxlsx-fix-include-directory.patch	\
   %D%/packages/patches/scn-fast-float-compat.patch		\
