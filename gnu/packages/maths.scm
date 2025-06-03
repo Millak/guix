@@ -9922,6 +9922,38 @@ diagrams.")
 symbolic reasoning engines that need to reason about polynomial constraints.")
    (license license:lgpl3+)))
 
+(define-public libtaylor
+  ;; Project proves no release or tagged versions, use the latest commit.
+  (let ((commit "88709f03efda5b81ff460ccef67d4fd0e7d050cc")
+        (revision "0"))
+    (package
+      (name "libtaylor")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/uekstrom/libtaylor")
+               (commit commit)))
+         (file-name (git-file-name name commit))
+         (sha256
+          (base32 "17gp97vqlpmigf1rf1f5s8lavcswfvpyvqnxxjpdrz5dw9f51y6f"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (delete 'check)
+           (add-after 'install 'check
+             (lambda* (#:key tests? #:allow-other-keys #:rest args)
+               (when tests?
+                 (apply (assoc-ref %standard-phases 'check) args)))))))
+      (home-page "https://github.com/uekstrom/libtaylor")
+      (synopsis "C++ library for automatic differentiation")
+      (description
+       "This is a header-only C++ library for calculating analytical
+derivatives and taylor expansions of composite functions.")
+      (license license:expat))))
+
 (define-public lingeling
   (package
     (name "lingeling")
