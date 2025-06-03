@@ -713,7 +713,7 @@ Biolinum is available in both Regular and Bold weights.")
 (define-public font-libertinus
   (package
     (name "font-libertinus")
-    (version "7.040")
+    (version "7.051")
     (source
      (origin
        (method url-fetch)
@@ -721,9 +721,9 @@ Biolinum is available in both Regular and Bold weights.")
                            "/download/v" version "/libertinus-" version
                            ".zip"))
        (sha256
-        (base32 "1xkj993hwkr49q63dd2dnkvdkm9sckxm3zjwhdxsxn21fi80ikic"))))
+        (base32 "14lc8zbhsgn3i6bqlwqzpq3ixbajqyy7m5msz1dc705kbjdy56sd"))))
     (build-system font-build-system)
-    (outputs '("out" "woff"))
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/alerque/libertinus")
     (synopsis "Font family based on Linux Libertine")
     (description
