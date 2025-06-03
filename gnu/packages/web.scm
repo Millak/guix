@@ -1318,6 +1318,42 @@ libraries for working with JNLP applets.")
     ;; or dual licenses.
     (license license:gpl2+)))
 
+(define-public iocaine
+  (package
+    (name "iocaine")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iocaine" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pd42hn5lqm3xw6id652w7sswix3l6bslcld7svqyq47gscsm3vn"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'override-jemalloc
+            (lambda* (#:key inputs #:allow-other-keys) ;Copied from uv
+              (let ((jemalloc (assoc-ref inputs "jemalloc")))
+                ;; This flag is needed when not using the bundled jemalloc.
+                ;; https://github.com/tikv/jemallocator/issues/19
+                (setenv
+                 "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+                (setenv "JEMALLOC_OVERRIDE"
+                        (string-append jemalloc "/lib/libjemalloc.so"))))))))
+    (inputs (cons* jemalloc (cargo-inputs 'iocaine)))
+    (home-page "https://iocaine.madhouse-project.org/")
+    (synopsis "Serves poisonous data to large language model scrapers")
+    (description
+     "Iocaine is an HTTP server that generates a stable endless maze of
+Markov-babble-filled web pages.  Placed behind a heavily rate-limited reverse
+proxy, it becomes a ``tar pit'' for trapping aggressive web scrapers commonly
+used to train large language models, and poisoning the collected data.")
+    (license license:expat)))
+
 (define-public jansson
   (package
     (name "jansson")
