@@ -24,6 +24,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages fortran-check)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python))
 
@@ -93,6 +94,44 @@ geometry file formats.")
      "This package contains a Fortran interface to obtain molecular geometries
 used for testing.")
     (license license:asl2.0)))
+
+(define-public fortran-simple-dftd3
+  (package
+    (name "fortran-simple-dftd3")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dftd3/simple-dftd3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aygmnax3vwz2x3ad7syksfjca4zc85nyslsibs0wg8wqfsmr33k"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-Dpython=true"
+         (string-append "-Dfortran_link_args=-Wl,-rpath="
+                        #$output "/lib"))))
+    (native-inputs
+     (list gfortran
+           pkg-config
+           python-minimal
+           python-cffi))
+    (inputs
+     (list fortran-mctc-lib
+           fortran-mstore
+           fortran-toml-f))
+    (home-page "https://github.com/dftd3/simple-dftd3")
+    (synopsis "Implementation of the DFT-D3 dispersion correction")
+    (description
+     "This library provides an implementation of the @url{DFT-D3,
+https://www.chemie.uni-bonn.de/grimme/de/software/dft-d3/} dispersion
+correction.")
+    (license (list license:lgpl3+ license:gpl3+))))
 
 (define-public fortran-toml-f
   (package
