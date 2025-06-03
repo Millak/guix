@@ -10456,28 +10456,19 @@ by asyncio.")
 (define-public python-protego
   (package
     (name "python-protego")
-    (version "0.2.1")
+    (version "0.4.0")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "Protego" version))
+        (uri (pypi-uri "protego" version))
         (sha256
-          (base32 "1wigcjyhz8zbk562zhgfbkm733dcn65j1swzvki79dys0i1nsrnz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest")))))))
-    (propagated-inputs (list python-six))
-    (native-inputs (list python-pytest))
+          (base32 "1xn2aska8v94jqnbyv4ywczb55gaqvr298q8ybhs168knrifd9ck"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/scrapy/protego")
-    (synopsis
-      "Pure-Python robots.txt parser with support for modern conventions")
-    (description
-      "Pure-Python robots.txt parser with support for modern conventions.")
+    (synopsis "Python robots.txt parser with support for modern conventions")
+    (description "Protego is a pure-Python @file{robots.txt} parser with support
+for modern conventions.")
     (license license:bsd-3)))
 
 (define-public python-parsel
