@@ -34062,13 +34062,13 @@ By default it uses the open Python vulnerability database Safety DB.")
 (define-public python-pypandoc
   (package
     (name "python-pypandoc")
-    (version "1.14")
+    (version "1.15")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pypandoc" version))
        (sha256
-        (base32 "15x161bxr7hky7rvq0jlgf1kxg6vdf069487casmpyxry7slak3b"))))
+        (base32 "04yfja8p8flvpjakyw7n43jb1jm3863w043l7zb43bhjwzmvw9ga"))))
     (build-system pyproject-build-system)
     (arguments
      (list
