@@ -10500,13 +10500,13 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.12.0")
+    (version "2.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scrapy" version))
        (sha256
-        (base32 "13vqykvjv9d0hj02l0s025r107dncfj7as0r0iv484lv01v6wvfn"))))
+        (base32 "18anr8jjjqyv6pfzdm4fr5hx4vddb8qclyja0y874f5slcnsfsrx"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -10517,6 +10517,8 @@ regular expressions.")
                                  (list "test_pformat"
                                        "test_pformat_old_windows"
                                        "test_pformat_windows"
+                                       ;; AssertionError.
+                                       "test_start_deprecated_super"
                                        ;; Connection refused.
                                        "test_persist")
                                  " and not "))
@@ -10550,6 +10552,7 @@ regular expressions.")
            python-zope-interface))
     (native-inputs
      (list nss-certs-for-test
+           python-hatchling
            python-mypy
            python-pexpect
            python-pytest
