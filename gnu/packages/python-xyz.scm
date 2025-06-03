@@ -854,6 +854,31 @@ your terminal.")
 edit distance algorithm for Python in Cython for high performance.")
     (license license:bsd-3)))
 
+(define-public python-senf
+  (package
+    (name "python-senf")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "senf" version))
+       (sha256
+        (base32 "1lcccdb4hrfksbr8vy4nljial85six1w39l5xlw16m4qx884anch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--deselect" "tests/test_api.py::test_getuserdir"
+             "--deselect" "tests/test_api.py::test_expanduser_user")))
+    (native-inputs (list python-setuptools python-wheel python-pytest))
+    (home-page "https://github.com/quodlibet/senf")
+    (synopsis "Text, bytes and paths conversion functions for Python")
+    (description "Senf introduces a new platform native string type called
+fsnative.  It adds functions to convert text, bytes and paths to and from that
+new type and helper functions to integrate it nicely with the Python
+stdlib.")
+    (license license:expat)))
+
 (define-public python-shxparser
   (package
     (name "python-shxparser")
