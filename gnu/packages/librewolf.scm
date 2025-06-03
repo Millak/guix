@@ -644,7 +644,7 @@
                   libxt
                   mesa
                   mit-krb5
-                  nspr-4.36
+                  nspr
                   nss-rapid
                   pango
                   pciutils

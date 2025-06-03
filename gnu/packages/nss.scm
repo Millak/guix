@@ -95,19 +95,6 @@ platform-neutral API for system level and libc-like functions.  It is used
 in the Mozilla clients.")
     (license license:mpl2.0)))
 
-(define-public nspr-4.36
-  (package
-    (inherit nspr)
-    (version "4.36")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
-                    version "/src/nspr-" version ".tar.gz"))
-              (sha256
-               (base32
-                "15b83ipjxrmw0909l5qqz13pbarhp50d6i58vgjx4720y4bw7pjm"))))))
-
 ;; nss should track ESRs, but currently doesn't.  3.102.1 is the current ESR.
 
 (define-public nss
@@ -337,9 +324,6 @@ security standards.")
                      (invoke #$(if (target-64bit?) "faketime" "datefudge")
                             "2025-06-19" "./nss/tests/all.sh"))
                    (format #t "test suite not run~%"))))))))
-   (propagated-inputs
-        (modify-inputs (package-propagated-inputs nss)
-          (replace "nspr" nspr-4.36)))
    (synopsis "Network Security Services (Rapid Release)")
    (description
     "Network Security Services (@dfn{NSS}) is a set of libraries designed to
