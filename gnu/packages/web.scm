@@ -5618,7 +5618,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
 (define-public jq
   (package
     (name "jq")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
@@ -5626,18 +5626,18 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
                            "/releases/download/jq-" version
                            "/jq-" version ".tar.gz"))
        (sha256
-        (base32 "1hl0wppdwwrqf3gzg3xwc260s7i1br2lnc97zr1k8bpx56hrr327"))
+        (base32 "171i5dnw15gx4ah3xv05vhlq8b5pr7zbzhjhzyan36hxz5vib0ci"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled onigurama.
-        '(delete-file-recursively "modules"))))
+        '(delete-file-recursively "vendor/oniguruma"))))
     (inputs
      (list oniguruma))
     (native-inputs
      (append
        ;; TODO: fix gems to generate documentation
        ;(list ruby bundler)
-       '()
+       (list tzdata) ;; needed for tests
        (if (member (%current-system)
                    (package-supported-systems valgrind/pinned))
          (list valgrind/pinned)
