@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -1434,8 +1434,20 @@ transparently check connection attempts against an access control list.")
        (sha256
         (base32 "0hxbpw9sk9g5ilxfnq3iki6nxjh3igk348z73y358ygi21cyylv6"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--disable-static"
-                                     "--enable-drafts")))
+    (arguments
+     (list
+      #:configure-flags #~(list "--disable-static"
+                                "--enable-drafts")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; Avoid the 'reconnect_stop_on_refused' test, which fails
+              ;; non-deterministically (see:
+              ;; https://github.com/zeromq/libzmq/issues/4793).
+              (substitute* "Makefile.in"
+                  (("@ENABLE_DRAFTS_TRUE@\ttests/test_reconnect_options.*")
+                   "")))))))
     (home-page "https://zeromq.org")
     (synopsis "Library for message-based applications")
     (description
