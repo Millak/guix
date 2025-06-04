@@ -862,11 +862,11 @@ including 2D color images.")
     (inputs
      ;; GIMP and its dependencies.
      (modify-inputs (package-inputs gmic-qt)
-       (prepend gimp gdk-pixbuf cairo gegl)))
+       (prepend gexiv2 gdk-pixbuf gegl gimp pango)))
     (arguments
      (substitute-keyword-arguments (package-arguments gmic-qt)
        ((#:configure-flags flags)
-        #~(list "-DGMIC_QT_HOST=gimp"
+        #~(list "-DGMIC_QT_HOST=gimp3"
                 "-DENABLE_DYNAMIC_LINKING=ON"))))
     (synopsis "GIMP plugin for the G'MIC image processing framework")))
 
