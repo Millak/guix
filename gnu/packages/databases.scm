@@ -61,7 +61,7 @@
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
-;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
@@ -184,6 +184,7 @@
   #:use-module (guix bzr-download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -1755,6 +1756,66 @@ Store your vectors with the rest of your data.  It supports:
      "@code{pgloader} is a program that can load data or migrate databases from
 CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
     (license (license:x11-style "file://LICENSE"))))
+
+(define-public postgresql-backup-scripts
+  (package
+    (name "postgresql-backup-scripts")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://codeberg.org/fishinthecalculator/"
+                                 "postgresql-backup-scripts"))
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ig19345p9h2z56k07i6g94pls2b4fhxacf1i8f0hxvk2p4x730k"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("./src/" "/bin")
+                         ("./examples" "/share/examples"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'chmod
+            (lambda _
+              (for-each
+               (lambda (file) (chmod file #o755))
+               (find-files (string-append #$output "/bin")))))
+          (add-after 'chmod 'wrap
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (inputs
+                      (list
+                       #$@(map cadr
+                               (package-inputs this-package))))
+                     (lib-directories (search-path-as-list '("lib") inputs))
+                     (bin-directories
+                      (search-path-as-list
+                       '("bin" "sbin" "libexec")
+                       inputs)))
+                (for-each
+                 (lambda (exe)
+                   (wrap-program exe
+                     `("PATH" ":" prefix
+                       (,(string-join bin-directories ":")))
+                     `("LD_LIBRARY_PATH" ":" prefix
+                       (,(string-join lib-directories ":")))))
+                 (find-files bin))))))))
+    (inputs
+     (list coreutils
+           bash-minimal
+           findutils
+           postgresql))
+    (home-page "https://codeberg.org/fishinthecalculator/postgresql-backup-scripts")
+    (synopsis "Utility scripts for PostgreSQL backups")
+    (description
+     "This package provides two scripts that will backup PostgreSQL databases in
+a cluster.  They are supposed to be run in scheduled jobs.  @code{pg_backup.sh}
+runs regular backups, @code{pg_backup_rotated.sh} runs rotated backups.")
+    (license
+     (license:x11-style "file://LICENSE"))))
 
 (define-public python-pymysql
   (package
