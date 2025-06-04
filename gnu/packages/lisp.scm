@@ -559,7 +559,7 @@ Definition Facility.")
                             "--with-module=rawsock")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sh-and-pwd
+         (add-after 'unpack 'patch-references
            (lambda _
              ;; The package is very messy with its references to "/bin/sh" and
              ;; some other absolute paths to traditional tools.  These appear in
@@ -574,6 +574,8 @@ Definition Facility.")
                (("/bin/sh") "sh"))
              (substitute* '("src/clisp-link.in")
                (("/bin/pwd") "pwd"))
+             (substitute* '("tests/streamslong.tst")
+               (("/bin/cat") "cat"))
              #t))
          (add-after 'unpack 'replace-asdf
            ;; Use system ASDF instead of bundled one.
