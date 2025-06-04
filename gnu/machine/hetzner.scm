@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2025 Owen T. Heisler <writer@owenh.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,7 +118,7 @@
     (initrd-modules
      (cons* "sd_mod" "virtio_scsi" %base-initrd-modules))
     (services
-     (cons* (service dhcp-client-service-type)
+     (cons* (service dhcpcd-service-type)
             (service openssh-service-type
                      (openssh-configuration
                       (openssh openssh-sans-x)
@@ -393,7 +394,7 @@ Available locations:~%~%~a~%~%For more details, see: ~a")
                                        (type ,root-fs-type))
                                      %base-file-systems))))
        (services
-        (cons* (service dhcp-client-service-type)
+        (cons* (service dhcpcd-service-type)
                (service openssh-service-type
                         (openssh-configuration
                          (openssh openssh-sans-x)
