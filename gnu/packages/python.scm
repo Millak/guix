@@ -820,6 +820,9 @@ def contents() -> str:
                                     " test_pdb "
                                     " test_regrtest"
                                     " test_sqlite")
+                                  '())
+                            ,@(if (system-hurd64?)
+                                  '(" test_largefile") ;; hangs
                                   '())))
 
       #:modules
