@@ -49,7 +49,12 @@ do
 		    *.gnu.org*)
 			perform_checks
 			;;
+                    # HTTPS Git remote.
 		    *codeberg.org/guix/*)
+			perform_checks
+			;;
+		    # SSH Git remote.
+		    *codeberg.org:guix/*)
 			perform_checks
 			;;
 		    *)
