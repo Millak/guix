@@ -301,14 +301,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.9")
+    (version "5.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.gethomebank.org/public/sources"
                                   "/homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "1riizq0l9k0ml5lgsrg740f0zycpdy8lf7z8w79zk5p1p5ms74nb"))))
+                "1iqvzb3a27z6zcmv7rxvrzc11g2ciwsbskbandvxrf4lvjpqfxgb"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
