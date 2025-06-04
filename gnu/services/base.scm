@@ -3355,14 +3355,16 @@ to CONFIG."
                                              (apply link-set
                                                     (link-id link)
                                                     (alist->keyword+value '#$arguments))
-                                             (format #t (G_ "Interface with name '~a' not found~%") #$name))))
+                                             (format #t "Interface with name '~a' not found~%"
+                                                     #$name))))
                                     ((string? mac-address)
                                      #~(let ((link (match-link-by link-addr #$mac-address)))
                                          (if link
                                              (apply link-set
                                                     (link-id link)
                                                     (alist->keyword+value '#$arguments))
-                                             (format #t (G_ "Interface with mac-address '~a' not found~%") #$mac-address)))))))
+                                             (format #t "Interface with mac-address '~a' not found~%"
+                                                     #$mac-address)))))))
                                 links)
 
                         ;; 'wait-for-link' below could wait forever when
