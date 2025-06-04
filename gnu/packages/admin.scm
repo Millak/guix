@@ -1039,7 +1039,8 @@ console.")
     (arguments
      (list #:tests? #f ;no test suite
            #:make-flags #~(list (string-append "PREFIX=" #$output)
-                                (string-append "CC=" #$(cc-for-target)))
+                                (string-append "CC=" #$(cc-for-target))
+                                (string-append "CXX=" #$(cxx-for-target)))
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure))))
     (home-page "https://github.com/aristocratos/btop")
