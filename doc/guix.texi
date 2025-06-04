@@ -14,7 +14,7 @@
 @set OPENPGP-SIGNING-KEY-URL https://sv.gnu.org/people/viewgpg.php?user_id=15145
 
 @c Base URL for downloads.
-@set BASE-URL https://ftp.gnu.org/gnu/guix
+@set BASE-URL https://ftpmirror.gnu.org/gnu/guix
 
 @c The official substitute server used by default.
 @set SUBSTITUTE-SERVER-1 bordeaux.guix.gnu.org
