@@ -265,6 +265,7 @@ It has extensive support for indexing and cross-referencing, and generates
 hyperlinks within output documents wherever possible.  It supports Unicode,
 with the ability to fall back to an alternative representation if Unicode
 output is not available.")
+    (properties `((cpe-vendor . "halibut_project")))
     (license license:expat)))
 
 (define-public doc++
