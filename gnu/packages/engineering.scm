@@ -3695,20 +3695,23 @@ operations.")
 (define-public libspnav
   (package
     (name "libspnav")
-    (version "0.2.3")
+    (version "1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/FreeSpacenav/libspnav")
-                    (commit (string-append "libspnav-" version))))
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "098h1jhlj87axpza5zgy58prp0zn94wyrbch6x0s7q4mzh7dc8ba"))
+                "12z548jsyxcgyhh9gazw032n3igw6g15y07h4c1nlk2cd8gv6i70"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
      (list libx11))
-    (arguments `(#:tests? #f))
+    (arguments
+     (list
+      #:tests? #f ; there are no tests
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))))
     (home-page "https://spacenav.sourceforge.net/")
     (synopsis
      "Library for communicating with spacenavd or 3dxsrv")
