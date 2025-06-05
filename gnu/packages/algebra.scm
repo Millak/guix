@@ -725,19 +725,18 @@ binary.")
 (define-public bc
   (package
     (name "bc")
-    (version "1.07.1")
+    (version "1.08.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/bc/bc-" version ".tar.gz"))
              (sha256
               (base32
-               "0amh9ik44jfg66csyvf4zz1l878c4755kjndq9j0270akflgrbb2"))
-             (patches (search-patches "bc-fix-cross-compilation.patch"))))
+               "11jzg23ks39k58bnb5y55wxqqz6h534ys5900hz6axcp8bn0yixf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list automake autoconf ed flex readline texinfo))
     (inputs
-     (list readline))
+     (list readline ncurses))
     (arguments
      '(#:configure-flags
        (list "--with-readline")
@@ -753,7 +752,7 @@ binary.")
 an interactive environment for evaluating mathematical statements.  Its
 syntax is similar to that of C, so basic usage is familiar.  It also includes
 \"dc\", a reverse-polish calculator.")
-    (license license:gpl2+)))
+    (license license:gpl3+)))
 
 ;; The original kiss-fft does not have a complete build system and does not
 ;; build any shared libraries.  This is a fork used by Extempore.
