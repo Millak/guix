@@ -43,7 +43,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages ruby))
+  #:use-module (gnu packages ruby-check))
 
 (define-public compton
   (let ((upstream-version "0.1_beta2"))
@@ -146,8 +146,8 @@ performance).
     (native-inputs
      (append
        (list pkg-config xorgproto)
-       (if (supported-package? ruby-asciidoctor)
-           (list ruby-asciidoctor)
+       (if (supported-package? ruby-asciidoctor/minimal)
+           (list ruby-asciidoctor/minimal)
            '())))
     (arguments
      (list #:build-type "release"

@@ -121,7 +121,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages regex)
-  #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages slang)
   #:use-module (gnu packages sqlite)

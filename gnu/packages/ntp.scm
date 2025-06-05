@@ -42,7 +42,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system gnu)
@@ -110,8 +110,8 @@
     (native-inputs
      (append (list bison
                    pkg-config)
-             (if (supported-package? ruby-asciidoctor)
-                 (list ruby-asciidoctor)
+             (if (supported-package? ruby-asciidoctor/minimal)
+                 (list ruby-asciidoctor/minimal)
                  '())))
     (inputs
      (list gnutls libcap libseccomp nettle))
@@ -213,7 +213,7 @@ computers over a network.")
                          pkg-config
                          pps-tools
                          python-waf
-                         ruby-asciidoctor))
+                         ruby-asciidoctor/minimal))
     (inputs (cons* gpsd openssl
                    ;; Build with POSIX capabilities and syscall filtering
                    ;; support on GNU/Linux, for extra security features.

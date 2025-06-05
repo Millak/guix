@@ -32,6 +32,8 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages node)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system ruby))

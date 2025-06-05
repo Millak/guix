@@ -211,7 +211,7 @@
   #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages scanner)

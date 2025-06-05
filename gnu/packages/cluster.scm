@@ -37,7 +37,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
@@ -135,12 +135,12 @@
                    eudev                        ;just to satisfy a configure check
                    flex)
              ;; For the documentation.
-             (if (supported-package? ruby-asciidoctor)
+             (if (supported-package? ruby-asciidoctor/minimal)
                (list docbook-xml
                      docbook-xml-4.4            ;used by documentation/ra2refentry.xsl
                      docbook-xsl
                      libxslt                    ;for xsltproc
-                     ruby-asciidoctor)
+                     ruby-asciidoctor/minimal)
                '())))
     (home-page "https://www.linbit.com/drbd/")
     (synopsis "Replicate block devices between machines")

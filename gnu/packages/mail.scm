@@ -169,6 +169,8 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages screen)

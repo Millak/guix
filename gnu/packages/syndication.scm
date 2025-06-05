@@ -65,7 +65,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages time)
@@ -252,8 +252,8 @@ cards.")
              openssl
              pkg-config)
        ;; For building documentation.
-       (if (supported-package? ruby-asciidoctor)
-           (list ruby-asciidoctor)
+       (if (supported-package? ruby-asciidoctor/minimal)
+           (list ruby-asciidoctor/minimal)
            '())))
     (inputs
      (list curl

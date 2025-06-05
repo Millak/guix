@@ -104,7 +104,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -1774,8 +1774,8 @@ instances over the network, and general QSO and DXpedition logging.")
                    gfortran
                    pkg-config
                    qttools-5)
-             (if (supported-package? ruby-asciidoctor)
-               (list ruby-asciidoctor)
+             (if (supported-package? ruby-asciidoctor/minimal)
+               (list ruby-asciidoctor/minimal)
                '())))
     (inputs
      (list boost
@@ -1812,8 +1812,8 @@ weak-signal conditions.")
     (build-system qt-build-system)
     (native-inputs
      (append (list asciidoc gfortran pkg-config qttools-5)
-             (if (supported-package? ruby-asciidoctor)
-                 (list ruby-asciidoctor)
+             (if (supported-package? ruby-asciidoctor/minimal)
+                 (list ruby-asciidoctor/minimal)
                  '())))
     (inputs
      (list

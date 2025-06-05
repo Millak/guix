@@ -32,7 +32,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages web))
 
 (define-public cryptsetup
@@ -71,8 +71,8 @@
                          (assoc-ref %build-inputs "libgcrypt"))))))
    (native-inputs
     (append (list pkg-config)
-            (if (supported-package? ruby-asciidoctor)
-                (list ruby-asciidoctor)
+            (if (supported-package? ruby-asciidoctor/minimal)
+                (list ruby-asciidoctor/minimal)
                 '())))
    (inputs
     (list argon2

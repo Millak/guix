@@ -102,7 +102,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rsync)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages time)
@@ -1222,8 +1222,8 @@ interactive mode.")
                                        "bin/mbuffer"
                                        "bin/ssh")))))))))
     (native-inputs
-     (if (supported-package? ruby-asciidoctor)
-         (list ruby-asciidoctor)
+     (if (supported-package? ruby-asciidoctor/minimal)
+         (list ruby-asciidoctor/minimal)
          '()))
     (inputs (list bash-minimal
                   btrfs-progs

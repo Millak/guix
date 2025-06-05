@@ -38,6 +38,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages search)
   #:use-module (gnu packages vnc)
   #:use-module (gnu packages perl)

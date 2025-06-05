@@ -121,6 +121,7 @@
   #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages tcl)
@@ -247,7 +248,8 @@ human.")
          (list "-DWITH_XC_ALL=YES"
                "-DWITH_XC_UPDATECHECK=NO")
          #$(if (member (%current-system)
-                       (package-transitive-supported-systems ruby-asciidoctor))
+                       (package-transitive-supported-systems
+                        ruby-asciidoctor/minimal))
                #~'()
                #~(list "-DWITH_XC_DOCS=NO")))
       #:phases
@@ -288,8 +290,9 @@ human.")
      (append
       (list qttools-5)
       (if (member (%current-system)
-                  (package-transitive-supported-systems ruby-asciidoctor))
-          (list ruby-asciidoctor)
+                  (package-transitive-supported-systems
+                   ruby-asciidoctor/minimal))
+          (list ruby-asciidoctor/minimal)
           '())))
     (inputs
      (list argon2

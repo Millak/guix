@@ -161,7 +161,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages sagemath)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -1409,7 +1409,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
                          perl-unicode-linebreak
                          perl-yaml-tiny
                          po4a
-                         ruby-asciidoctor
+                         ruby-asciidoctor/minimal
                          source-highlight))
     (home-page "https://kicad.org")
     (synopsis "KiCad official documentation")

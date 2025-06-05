@@ -51,7 +51,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages rails)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (srfi srfi-1))
 
 (define-public fstrm

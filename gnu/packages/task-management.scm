@@ -59,7 +59,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -280,7 +280,7 @@ execution, and libreadline support.")
                  "../timew-1.4.3/completion/timew-completion.bash"
                  (string-append bash-completion-install-dir "/timew"))))))))
     (native-inputs
-     (list ruby-asciidoctor))
+     (list ruby-asciidoctor/minimal))
     (inputs
      (list gnutls python `(,util-linux "lib")))
     (home-page "https://timewarrior.net")

@@ -103,6 +103,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages qt)
@@ -389,7 +390,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
     (native-inputs
      (append (list gettext-minimal pkg-config)
              (if (target-x86?)
-                 (list ruby-asciidoctor)
+                 (list ruby-asciidoctor/minimal)
                  '())))
     (inputs
      (list aspell

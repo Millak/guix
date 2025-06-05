@@ -218,7 +218,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
@@ -6469,7 +6469,7 @@ in-window at 640x480 resolution or fullscreen.")
                        "iV_DrawTextRotated(\"Press ESC to exit.\", "
                        "100, 100, 0.0f, font_regular);"))))))))
     (native-inputs (list asciidoc
-                     ruby-asciidoctor
+                     ruby-asciidoctor/minimal
                      gettext-minimal
                      pkg-config
                      unzip
@@ -8299,8 +8299,8 @@ at their peak of economic growth and military prowess.
              python-pylint
              python-pyyaml
              python-wrapper)
-       (if (supported-package? ruby-asciidoctor)
-           (list ruby-asciidoctor)
+       (if (supported-package? ruby-asciidoctor/minimal)
+           (list ruby-asciidoctor/minimal)
            '())))
     (home-page "https://gitlab.com/esr/open-adventure")
     (synopsis "Colossal Cave Adventure")

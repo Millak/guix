@@ -30,7 +30,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages ruby))
+  #:use-module (gnu packages ruby-check))
 
 (define-public ccache
   (package
@@ -64,8 +64,8 @@
                    (setenv "HOME" (getenv "TMPDIR")))))))
     (native-inputs
      (append (list perl which)
-             (if (supported-package? ruby-asciidoctor)
-               (list ruby-asciidoctor)
+             (if (supported-package? ruby-asciidoctor/minimal)
+               (list ruby-asciidoctor/minimal)
                '())))
     (inputs (list zlib `(,zstd "lib")))
     (home-page "https://ccache.dev/")
