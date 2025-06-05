@@ -186,9 +186,13 @@ as well as images, OS examples, and translations."
   (or (getenv "GUIX_WEB_SITE_URL")
       "/software/guix/"))
 
+(define %manual-css-url
+  ;; URL of the main CSS file.
+  "/themes/initial/css/manual.css")
+
 (define %makeinfo-html-options
   ;; Options passed to 'makeinfo --html'.
-  '("--css-ref=https://www.gnu.org/software/gnulib/manual.css"
+  `(,(string-append "--css-ref=" %manual-css-url)
     "-c" "EXTRA_HEAD=<meta name=\"viewport\" \
 content=\"width=device-width, initial-scale=1\" />"))
 
@@ -624,7 +628,7 @@ its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
                         #:key
                         (languages %languages)
                         (manual %manual)
-                        (manual-css-url "/themes/initial/css/manual.css"))
+                        (manual-css-url %manual-css-url))
   "Process all the HTML files in INPUT; add them MANUAL-CSS-URL as a <style>
 link, and add a menu to choose among LANGUAGES.  Use the Guix PO files found
 in SOURCE."
