@@ -2033,7 +2033,7 @@ warnings, especially those about use of undefined symbols.
 Make sure your changes do not break Guix and simulate a @command{guix pull}
 with:
 @example
-guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master
+guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-authentication
 @end example
 
 @end enumerate

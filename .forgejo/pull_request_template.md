@@ -53,4 +53,4 @@ Tick a box by changing it from [ ] to [x].
 
 - [ ] Commit messages follow [the "ChangeLog" style](https://www.gnu.org/prep/standards/html_node/Change-Logs.html).
 
-- [ ] The change doesn't break `guix pull` (`guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master`).
+- [ ] The change doesn't break `guix pull` (`guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-authentication`).
