@@ -45,8 +45,12 @@ do
                         ;;
                 esac
 
-		# Only use the hook when pushing to upstream.
+		# Only perform checks when pushing to upstream.
 		case "$2" in
+	            *savannah.gnu.org*)
+			printf "ERROR: The repositories on Savannah are read-only mirrors of our repos at <https://codeberg.org/guix>.\n" 1>&2
+			exit 1
+			;;
 		    *.gnu.org*)
 			perform_checks
 			;;
