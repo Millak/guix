@@ -84,7 +84,7 @@ please use 'modules' instead~%")))
                  (sanitize warn-share-field-deprecation)
                  (default *unspecified*))
   (modules       rsync-configuration-actual-modules ;list of <rsync-module>
-                 (default %default-modules))  ;TODO: eventually remove default
+                 (default '()))
   (share-path    rsync-configuration-share-path           ; string
                  (sanitize warn-share-field-deprecation)
                  (default *unspecified*))
@@ -120,13 +120,6 @@ please use 'modules' instead~%")))
                  (default #t))
   (timeout       rsync-module-timeout             ;integer
                  (default 300)))
-
-(define %default-modules
-  ;; Default modules, provided for backward compatibility.
-  (list (rsync-module (name "files")
-                      (file-name "/srv/rsyncd")
-                      (comment "Rsync share")
-                      (read-only? #f))))          ;yes, that was the default
 
 (define (rsync-configuration-modules config)
   (match-record config <rsync-configuration>
