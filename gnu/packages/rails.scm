@@ -992,7 +992,7 @@ already included in Rails.")
            ruby-rails
            ruby-rexml
            ruby-selenium-webdriver
-           ruby-sqlite3
+           ruby-sqlite3-1.4
            ruby-stimulus-rails
            ruby-turbo-rails
            ruby-tzinfo
