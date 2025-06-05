@@ -2892,16 +2892,20 @@ development, not the kernel implementation of ACPI.")
 (define-public s-tui
   (package
     (name "s-tui")
-    (version "1.1.6")
+    (version "1.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "s-tui" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/amanusk/s-tui")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0mvvqg0pr8k0cy0mbvi25yqm6zsf8mipdbq97xjqfvifryf6j9wx"))))
+        (base32 "08mfclgdy6cb8xgp8sc7fpm4qxay37j71b1b3niywi6x206i5m2m"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (inputs
-     (list python-psutil python-urwid))
+     (list python-psutil-7 python-urwid-3))
     (home-page "https://github.com/amanusk/s-tui")
     (synopsis "Interactive terminal stress test and monitoring tool")
     (description
