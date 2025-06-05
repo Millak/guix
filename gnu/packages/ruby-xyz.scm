@@ -1852,11 +1852,12 @@ to save time in the following ways:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05qwj72dy2fcy0n2jnf3bfriybfj36m7s6pv9xash6295dbcp901"))))
+        (base32 "05qwj72dy2fcy0n2jnf3bfriybfj36m7s6pv9xash6295dbcp901"))
+       (patches
+        (search-patches "ruby-chunky-png-ruby-3-2-support.patch"))))
     (build-system ruby-build-system)
     (arguments
      (list
-      #:ruby ruby-3.1
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
