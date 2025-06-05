@@ -6765,7 +6765,7 @@ several firewall backends.")
 (define-public px
   (package
     (name "px")
-    (version "3.6.9")
+    (version "3.6.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6774,7 +6774,7 @@ several firewall backends.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kqwi1qb6hvk4si1dynz4q56lxy5161b50fgsvlfk9dnb6gwln6i"))))
+                "15xkpmymf0g0mqhjc6mswymrqkilbys3mkhz1xk9lq3jilfhdm04"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
