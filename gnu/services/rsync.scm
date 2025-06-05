@@ -57,13 +57,6 @@
 ;;;
 ;;;; Code:
 
-(define-with-syntax-properties (warn-share-field-deprecation (value properties))
-  (unless (unspecified? value)
-    (warning (source-properties->location properties)
-             (G_ "the 'share-path' and 'share-comment' fields is deprecated, \
-please use 'modules' instead~%")))
-  value)
-
 (define-record-type* <rsync-configuration>
   rsync-configuration
   make-rsync-configuration
@@ -80,23 +73,8 @@ please use 'modules' instead~%")))
                  (default "/var/run/rsyncd/rsyncd.lock"))
   (log-file      rsync-configuration-log-file             ; string
                  (default "/var/log/rsyncd.log"))
-  (use-chroot?   rsync-configuration-use-chroot?          ; boolean
-                 (sanitize warn-share-field-deprecation)
-                 (default *unspecified*))
-  (modules       rsync-configuration-actual-modules ;list of <rsync-module>
+  (modules       rsync-configuration-modules ;list of <rsync-module>
                  (default '()))
-  (share-path    rsync-configuration-share-path           ; string
-                 (sanitize warn-share-field-deprecation)
-                 (default *unspecified*))
-  (share-comment rsync-configuration-share-comment        ; string
-                 (sanitize warn-share-field-deprecation)
-                 (default *unspecified*))
-  (read-only?    rsync-configuration-read-only?           ; boolean
-                 (sanitize warn-share-field-deprecation)
-                 (default *unspecified*))
-  (timeout       rsync-configuration-timeout              ; integer
-                 (sanitize warn-share-field-deprecation)
-                 (default *unspecified*))
   (user          rsync-configuration-user                 ; string
                  (default "root"))
   (group         rsync-configuration-group                ; string
@@ -120,23 +98,6 @@ please use 'modules' instead~%")))
                  (default #t))
   (timeout       rsync-module-timeout             ;integer
                  (default 300)))
-
-(define (rsync-configuration-modules config)
-  (match-record config <rsync-configuration>
-    (modules
-     share-path share-comment use-chroot? read-only? timeout) ;deprecated
-    (if (unspecified? share-path)
-        (rsync-configuration-actual-modules config)
-        (list (rsync-module                       ;backward compatibility
-               (name "files")
-               (file-name share-path)
-               (comment "Rsync share")
-               (chroot?
-                (if (unspecified? use-chroot?) #t use-chroot?))
-               (read-only?
-                (if (unspecified? read-only?) #f read-only?))
-               (timeout
-                (if (unspecified? timeout) 300 timeout)))))))
 
 (define (rsync-account config)
   "Return the user accounts and user groups for CONFIG."

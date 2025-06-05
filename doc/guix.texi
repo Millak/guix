@@ -24448,7 +24448,7 @@ place as when the daemon was run as @code{root}.
 @item @code{gid} (default: @code{"rsyncd"})
 Group name or group ID that will be used when accessing the module.
 
-@item @code{modules} (default: @code{%default-modules})
+@item @code{modules} (default: @code{'())})
 List of ``modules''---i.e., directories exported over rsync.  Each
 element must be a @code{rsync-module} record, as described below.
 @end table
