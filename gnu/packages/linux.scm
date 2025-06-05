@@ -145,6 +145,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
@@ -8538,11 +8539,11 @@ interface in sysfs, which can be accomplished with the included udev rules.")
     (native-inputs
      (list shellcheck))
     (inputs
-     `(("bash" ,bash)
-       ("dbus" ,dbus)
+     `(("dbus" ,dbus)
        ("ethtool" ,ethtool)
        ("eudev" ,eudev)
        ("grep" ,grep)
+       ("guile" ,guile-3.0) ;for wrap-script
        ("hdparm" ,hdparm)
        ("inetutils" ,inetutils)
        ("iw" ,iw)
@@ -8600,15 +8601,20 @@ interface in sysfs, which can be accomplished with the included udev rules.")
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
                      (sbin (string-append (assoc-ref outputs "out") "/sbin"))
-                     (bin-files (find-files bin ".*"))
-                     (sbin-files (find-files sbin ".*")))
+                     ;; Used to ignore symlinks which don't need wrapping
+                     (regular-file-predicate
+                      (lambda (file stat) (eq? 'regular (stat:type stat))))
+                     (bin-files (find-files bin regular-file-predicate))
+                     (sbin-files (find-files sbin regular-file-predicate)))
                 (define (bin-directory input-name)
                   (let ((p (assoc-ref inputs input-name)))
                     (and p (string-append p "/bin"))))
                 (define (sbin-directory input-name)
                   (string-append (assoc-ref inputs input-name) "/sbin"))
                 (for-each (lambda (program)
-                            (wrap-program program
+                            ;; Programs rely on $0 so we use wrap-script
+                            ;; instead of wrap-program
+                            (wrap-script program
                               `("PATH" ":" prefix
                                 ,(append
                                   (filter-map bin-directory
