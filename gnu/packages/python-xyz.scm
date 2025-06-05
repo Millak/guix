@@ -14701,6 +14701,19 @@ adherence to RFC 6570, but adds a few extensions.")
 features useful for text console applications.")
     (license license:lgpl2.1+)))
 
+(define-public python-urwid-3
+  (package
+    (inherit python-urwid)
+    (name "python-urwid")
+    (version "3.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urwid" version))
+       (sha256
+        (base32
+         "0y7bh77ad94i4i1nrdggrvk7vvl1fp2l6zm5lmwmgx3z3sx71jz7"))))))
+
 (define-public python-urwid-readline
   (package
     (name "python-urwid-readline")
