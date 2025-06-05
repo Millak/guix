@@ -537,7 +537,7 @@ following formats:
 (define-public cozy
   (package
     (name "cozy")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -546,7 +546,7 @@ following formats:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qky885fl63d5ih5d3rggm8rhp00sk6lny26qljyz3gga8n9y6ki"))))
+        (base32 "0g3nxhh6q8gy760g9kzw1iqfkkxkp5xnhxsxbnslpjv7cz7ivj50"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -561,7 +561,7 @@ following formats:
             (lambda _
               (with-directory-excursion (string-append #$output "/bin")
                 (rename-file "com.github.geigi.cozy" "cozy"))))
-          (add-after 'wrap 'wrap-libs
+          (add-after 'patch-executable-name 'wrap-libs
             (lambda _
               (let* ((pylib             (string-append
                                          #$output "/lib/python"
@@ -598,6 +598,7 @@ following formats:
            gst-plugins-good
            gst-plugins-ugly
            gtk+
+           libadwaita
            libdazzle
            libgee
            libhandy
