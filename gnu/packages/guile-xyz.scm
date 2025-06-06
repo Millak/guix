@@ -54,6 +54,8 @@
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2025 Libre en Communs <contact@a-lec.org>
+;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,6 +149,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
+  #:use-module (guix build-system meson)
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (ice-9 match)
@@ -1324,6 +1327,43 @@ order to provide IDE functionality for Guile Scheme.")
  interactions with a running guile processes, for implementing REPLs, IDEs,
  test runners or other tools.")
     (license license:gpl3+)))
+
+(define-public guile-custom-ports
+  (package
+    (name "guile-custom-ports")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/Baleine/guile-custom-ports.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0iyy3nvghn0y2nkqbml0763rsvnbf1qkz40wrgm0x1bsbpw0asjw"))))
+    (build-system meson-build-system)
+    (native-inputs (list guile-3.0
+                         pkg-config))
+    (inputs `(("guile-sources" ,(package-source guile-3.0))))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append
+               "-Dlibguile_headers_dir=../guile-sources/libguile"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-guile
+            (lambda _
+              ((assoc-ref %standard-phases 'unpack)
+               #:source #$(this-package-input "guile-sources"))
+              (chdir "..")
+              (rename-file "guile-3.0.9" "guile-sources")))
+          (delete 'shrink-runpath))))
+    (home-page "https://codeberg.org/Baleine/guile-custom-ports")
+    (synopsis "Standalone custom ports for Guile before 3.10")
+    (description "guile-custom-port overrides Guile's port modules to bring the
+custom ports from Guile 3.10 to previous versions.")
+    (license license:lgpl3+)))
 
 (define-public guile-squee
   (let ((commit "9f2609563fc53466e46d37c8d8d2fbcfce67b2ba")
