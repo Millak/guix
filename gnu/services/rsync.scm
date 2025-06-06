@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -226,12 +226,6 @@ please use 'modules' instead~%")))
 
 (define (rsync-shepherd-service config)
   "Return a <shepherd-service> for rsync with CONFIG."
-
-  ;; XXX: Predicates copied from (gnu services ssh).
-  (define inetd-style?
-    #~(and (defined? 'make-inetd-constructor)
-           (not (string=? (@ (shepherd config) Version) "0.9.0"))))
-
   (define ipv6-support?
     #~(catch 'system-error
         (lambda ()
@@ -280,28 +274,21 @@ please use 'modules' instead~%")))
              (requirement '(user-processes))
              (documentation "Run rsync daemon.")
              (actions (list (shepherd-configuration-action config-file)))
-             (start #~(if #$inetd-style?
-                          (make-inetd-constructor
-                           #$rsync-command
-                           (cons (endpoint
-                                  (make-socket-address AF_INET INADDR_ANY
-                                                       #$port-number))
-                                 (if #$ipv6-support?
-                                     (list
-                                      (endpoint
-                                       (make-socket-address AF_INET6 IN6ADDR_ANY
-                                                            #$port-number)))
-                                     '()))
-                           #:service-name-stem "rsync"
-                           #:user #$user
-                           #:group #$group)
-                          (make-forkexec-constructor #$rsync-command
-                                                     #:pid-file #$pid-file
-                                                     #:user #$user
-                                                     #:group #$group)))
-             (stop #~(if #$inetd-style?
-                         (make-inetd-destructor)
-                         (make-kill-destructor))))))))
+             (start #~(make-inetd-constructor
+                       #$rsync-command
+                       (cons (endpoint
+                              (make-socket-address AF_INET INADDR_ANY
+                                                   #$port-number))
+                             (if #$ipv6-support?
+                                 (list
+                                  (endpoint
+                                   (make-socket-address AF_INET6 IN6ADDR_ANY
+                                                        #$port-number)))
+                                 '()))
+                       #:service-name-stem "rsync"
+                       #:user #$user
+                       #:group #$group))
+             (stop #~(make-inetd-destructor)))))))
 
 (define rsync-service-type
   (service-type
