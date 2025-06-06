@@ -492,7 +492,7 @@ database later.")
 (define-public dicedb
   (package
     (name "dicedb")
-    (version "1.0.3")
+    (version "1.0.10")
     (source
      (origin
        (method git-fetch)
@@ -501,7 +501,7 @@ database later.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19hkr2sqb5vcyrxb17y8586aa9amw2nny2fia7yf2lshigg03va5"))
+        (base32 "1f9qsqmv41ikkrb5pfrh3b7cv3x82yzq7m3p2d3iml9azbmxvkyy"))
        (patches (search-patches "dicedb-remove-init-from-config-subpkg.patch"))))
     (build-system go-build-system)
     (arguments
@@ -510,11 +510,10 @@ database later.")
       #:install-source? #f
       #:import-path "github.com/dicedb/dice"
       #:build-flags
-      #~(list (format #f "-ldflags=-X config.DiceDBVersion=v~a"
+      #~(list (format #f "-ldflags=-X github.com/dicedb/dice/config.DiceDBVersion=v~a"
                       #$version))
       #:test-subdirs
-      #~(list "internal/auth/..."
-              ;; "internal/clientio/..." ; matched no packages
+      #~(list ;; "internal/auth/..." ; build failed
               "internal/cmd/..."
               "internal/comm/..."
               "internal/common/..."
@@ -527,20 +526,15 @@ database later.")
               "internal/object/..."
               "internal/observability/..."
               "internal/ops/..."
-              "internal/querymanager/..."
               "internal/regex/..."
               "internal/server/..."
               "internal/shard/..."
-              ;; "internal/sql/..." ; matched no packages
-              ;; "internal/store/..." ; build failed
+              "internal/shardmanager/..."
+              "internal/shardthread/..."
+              "internal/store/..."
+              "internal/types/..."
               "internal/wal/..."
-              "internal/watchmanager/..."
-              ;; "internal/worker/..." ; matched no packages
-              )
-      #:test-flags
-      #~(list "-skip"
-              (string-join (list "TestSessionIsActive" "TestSessionActivate"
-                                 "TestSessionValidate" "TestDEL") "|"))
+              "internal/watchmanager/...")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-example
@@ -567,7 +561,8 @@ database later.")
                              go-github-com-cespare-xxhash-v2
                              go-github-com-bytedance-sonic
                              go-github-com-axiomhq-hyperloglog
-                             go-gotest-tools-v3))
+                             go-gotest-tools-v3
+                             go-github-com-wangjia184-sortedset))
     (home-page "https://github.com/dicedb/dice")
     (synopsis
      "Fast, reactive, in-memory database optimized for modern hardware")
