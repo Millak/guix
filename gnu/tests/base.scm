@@ -1116,6 +1116,32 @@ non-ASCII names from /tmp.")
 evaluated in MARIONETTE, a gexp denoting a marionette (system under test).
 Assume that an unprivileged account for 'user' exists on the system under
 test."
+  (define chown-snippet
+    ;; XXX: This snippet exists primarily so that #$output is understood in
+    ;; the right context.
+    '(object->string
+      `(begin
+         (use-modules (guix)
+                      (gnu packages bootstrap))
+         (computed-file "chown-to-supplementary-group"
+                        #~(begin
+                            (use-modules (srfi srfi-1))
+
+                            ',(gettimeofday)      ;nonce
+                            (let* ((groups (getgroups))
+                                   (other (find (lambda (gid)
+                                                  (not (= gid (getgid))))
+                                                (vector->list groups))))
+                              (format #t "attempting to chown \
+to supplementary group ~a...~%" other)
+                              (pk 'supplementary-groups (getgroups)
+                                  'gid (getgid) 'other other)
+                              (force-output)
+                              (mkdir "test")
+                              (chown "test" (getuid) other)
+                              (mkdir #$output)))
+                        #:guile %bootstrap-guile))))
+
   #~(begin
       (test-equal "guix describe"
         0
@@ -1142,6 +1168,17 @@ test."
                            #$(with-parameters ((%graft? #f))
                                hello))
                          #$marionette))
+
+      (test-equal "kvm GID mapped"
+        0
+        ;; The "kvm" group should be among the supplementary groups of the
+        ;; build user.  Try to chown a file to that group; this fails with
+        ;; EINVAL when running the unprivileged guix-daemon and the "kvm" GID
+        ;; is not mapped in its user namespace.  See
+        ;; <https://bugs.gnu.org/77862>.
+        (marionette-eval
+         '(system* "guix" "build" "--no-grafts" "-e" #$chown-snippet)
+         #$marionette))
 
       (test-equal "guix install hello"
         0
