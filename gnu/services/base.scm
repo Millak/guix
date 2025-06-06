@@ -2275,10 +2275,14 @@ guix-daemon have the right ownership."))
                                   ;; Make 'tar' and 'gzip' available so
                                   ;; that 'guix perform-download' can use
                                   ;; them when downloading from Software
-                                  ;; Heritage via '(guix swh)'.
+                                  ;; Heritage via '(guix swh)'.  Last,
+                                  ;; /run/privileged/bin is needed for
+                                  ;; 'newgidmap', used by the unprivileged
+                                  ;; daemon.
                                   (string-append "PATH="
                                                  #$(file-append tar "/bin") ":"
-                                                 #$(file-append gzip "/bin")))
+                                                 #$(file-append gzip "/bin") ":"
+                                                 "/run/privileged/bin"))
                             (if proxy
                                 (list (string-append "http_proxy=" proxy)
                                       (string-append "https_proxy=" proxy))
@@ -2383,7 +2387,24 @@ guix-daemon have the right ownership."))
         #$(if (null? (guix-configuration-build-machines config))
               #~#f
               (guix-machines-files-installation
-               #~(list #$@(guix-configuration-build-machines config)))))))
+               #~(list #$@(guix-configuration-build-machines config))))
+
+        #$(and (not (guix-configuration-privileged? config))
+               ;; Augment /etc/subgid so that the "kvm" group can be mapped in
+               ;; the build user namespace.  If a line is already present,
+               ;; assume it's correct.
+               #~(let ((port (open-file "/etc/subgid" "w+"))
+                       (kvm (false-if-exception (getgrnam "kvm"))))
+                   (when kvm
+                     (let loop ()
+                       (let ((line ((@ (ice-9 rdelim) read-line) port)))
+                         (cond ((eof-object? line)
+                                (format port "guix-daemon:~a:1~%"
+                                        (group:gid kvm)))
+                               ((string-prefix? "guix-daemon:" line)
+                                #t)
+                               (else (loop))))))
+                   (close-port port))))))
 
 (define-record-type* <guix-extension>
   guix-extension make-guix-extension
