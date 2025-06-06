@@ -2298,7 +2298,7 @@ PHYs names that IWD will not manage.")
 
     (if (eq? resolver 'resolvconf)
         #~(list (string-append "PATH=" #$openresolv "/sbin"))
-        '())))
+        #~(list))))
 
 (define (iwd-shepherd-service config)
   (match-record config <iwd-configuration>
