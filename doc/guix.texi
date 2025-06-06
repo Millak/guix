@@ -22478,7 +22478,7 @@ Available @code{iwd-settings} fields are:
 @item @code{general} (type: iwd-general-settings)
 General settings.
 
-@item @code{network} (type: maybe-iwd-network-settings)
+@item @code{network} (default: @code{(iwd-network-settings)}) (type: maybe-iwd-network-settings)
 Network settings.
 
 @item @code{scan} (type: maybe-iwd-scan-settings)

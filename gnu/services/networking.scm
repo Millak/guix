@@ -2228,7 +2228,7 @@ appended to the Scan settings group.")
    "General settings.")
 
   (network
-   maybe-iwd-network-settings
+   (maybe-iwd-network-settings (iwd-network-settings))
    "Network settings.")
 
   (scan
