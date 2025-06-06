@@ -91,6 +91,11 @@ SYSV_INIT_REQUIRE=(
     "daemonize"
 )
 
+# Unprivileged guix-daemon requires 'newgidmap'.
+SYSTEMD_REQUIRE=(
+    "newgidmap"
+)
+
 PAS=$'[ \033[32;1mPASS\033[0m ] '
 ERR=$'[ \033[31;1mFAIL\033[0m ] '
 WAR=$'[ \033[33;1mWARN\033[0m ] '
@@ -515,6 +520,13 @@ sys_create_build_user()
 	create_account guix-daemon guix-daemon		\
 		       guix-daemon"$KVMGROUP"		\
 		       "Unprivileged Guix Daemon User"
+
+	if getent group kvm > /dev/null; then
+	    # Allow 'newgidmap' to map the "kvm" group.
+	    local kvmgid="$(getent group kvm | cut -f3 -d:)"
+	    _msg_info "allowing kvm mapping (GID $kvmgid) for unprivileged guix-daemon"
+	    echo "guix-daemon:$kvmgid:1" >> /etc/subgid
+	fi
 
 	# ‘tar xf’ creates root:root files.  Change that.
 	chown -R guix-daemon:guix-daemon /gnu /var/guix
