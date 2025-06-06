@@ -43660,7 +43660,7 @@ hacker.")
 (define-public emacs-osm
   (package
     (name "emacs-osm")
-    (version "1.6")
+    (version "1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -43669,7 +43669,7 @@ hacker.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "078dd89jyz51755adrxm90ka0kvmgmm5h2w2c9f0986g3jmb9daq"))))
+                "0fw0hgi2542ivc05dbq07ybr8c2mf8ja0z3f07lnslvn7vn5xp9i"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -43681,17 +43681,14 @@ hacker.")
                                               (search-input-file inputs
                                                                  "/bin/curl")
                                               space "\"")))))
-                        (add-after 'install 'makeinfo
+                        (add-after 'unpack 'makeinfo
                           (lambda _
                             (invoke "emacs"
                              "--batch"
                              "--eval=(require 'ox-texinfo)"
                              "--eval=(setq org-export-with-broken-links t)"
                              "--eval=(find-file \"README.org\")"
-                             "--eval=(org-texinfo-export-to-info)")
-                            (install-file "osm.info"
-                                          (string-append #$output
-                                                         "/share/info")))))))
+                             "--eval=(org-texinfo-export-to-info)"))))))
     (inputs (list curl))
     (native-inputs (list texinfo))
     (propagated-inputs (list emacs-compat))
