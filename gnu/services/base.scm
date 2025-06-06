@@ -1931,9 +1931,12 @@ GID in a context where the store is writable, even if it was bind-mounted
 read-only via %IMMUTABLE-STORE (this wrapper must run as root)."
   (program-file "run-with-writable-store"
                 (with-imported-modules (source-module-closure
-                                        '((guix build syscalls)))
+                                        '((guix build syscalls)
+                                          (gnu build accounts)))
                   #~(begin
                       (use-modules (guix build syscalls)
+                                   (gnu build accounts)
+                                   (srfi srfi-1)
                                    (ice-9 match))
 
                       (define (ensure-writable-store store)
@@ -1948,11 +1951,19 @@ read-only via %IMMUTABLE-STORE (this wrapper must run as root)."
                       (match (command-line)
                         ((_ user group command args ...)
                          (ensure-writable-store #$(%store-prefix))
-                         (let ((uid (or (string->number user)
-                                        (passwd:uid (getpwnam user))))
-                               (gid (or (string->number group)
-                                        (group:gid (getgrnam group)))))
-                           (setgroups #())
+                         (let* ((uid (or (string->number user)
+                                         (passwd:uid (getpwnam user))))
+                                (gid (or (string->number group)
+                                         (group:gid (getgrnam group))))
+                                (user (passwd:name (getpwuid uid)))
+                                (groups (filter-map
+                                         (lambda (group)
+                                           (and (member user
+                                                        (group-entry-members
+                                                         group))
+                                                (group-entry-gid group)))
+                                         (read-group))))
+                           (setgroups (list->vector groups))
                            (setgid gid)
                            (setuid uid)
                            (apply execl command command args))))))))
