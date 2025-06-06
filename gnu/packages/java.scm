@@ -1964,14 +1964,14 @@ OpenJDK.")
 (define-public ant/java8
   (package
     (name "ant")
-    (version "1.10.13")
+    (version "1.10.15")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/ant/source/apache-ant-"
                                   version "-src.tar.gz"))
               (sha256
                (base32
-                "01l4g9b1xnnq450ljvhrlvcf8wzzmr45wmhkybrx0hcdi166y06s"))
+                "1ccr852dxg5affdqafg04gi3l89q5c6l9lqrz50jhj05kidljax2"))
               (modules '((guix build utils)))
               (snippet
                '(begin
