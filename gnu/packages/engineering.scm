@@ -43,6 +43,7 @@
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2025 Frederick Muriuki Muriithi <fredmanglis@gmail.com>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
+;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5552,3 +5553,47 @@ and mogan.")
 towards field theory.")
     (home-page "https://cadabra.science/")
     (license license:gpl3+)))
+
+(define-public orocos-kinematics-dynamics
+  (let ((commit "34ecff4ca7bae52fa16ca13fdb3d9db26fd2a293")
+        ;; There hasn't been a new release in many years (version 1.5.1)
+        ;; Using the latest commit (which has internally set version to 1.5.2)
+        (revision "0"))
+    (package
+      (name "orocos-kinematics-dynamics")
+      (version (git-version "1.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/orocos/orocos_kinematics_dynamics")
+               (commit commit)))
+         (sha256
+          (base32 "1c7vimy065908qs5nwhnrk9pp0wh8pjgdvz2hwb12a9wcsj50kf0"))
+         (file-name (git-file-name name version))
+         (modules '((guix build utils)))
+         ;; make tests deterministic by seeding the random number generator
+         (snippet '(substitute* '("orocos_kdl/tests/treeinvdyntest.cpp"
+                                  "orocos_kdl/tests/solvertest.cpp")
+                     (("srand\\( \\(unsigned\\)time\\( NULL \\)\\)")
+                      "srand(0u)")))))
+      (build-system cmake-build-system)
+      (native-inputs (list cppunit))
+      (propagated-inputs (list eigen))
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DENABLE_TESTS=ON")
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "orocos_kdl"))))))
+      (home-page "https://docs.orocos.org/kdl/overview.html")
+      (synopsis "Orocos Kinematics and Dynamics (KDL) C++ Library")
+      (description
+       "A C++ library for rigid body kinematics calculations
+and representations for kinematic structures and their inverse and
+forward kinematics solvers.")
+      (license license:lgpl2.1+))))
