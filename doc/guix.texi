@@ -22408,11 +22408,11 @@ List of additional command-line arguments to pass to the daemon.
 @end table
 @end deftp
 
-@cindex IWD, Internet Wireless Daemon
+@cindex iwd, iNet Wireless Daemon
 @defvar iwd-service-type
-This is the service type to run @acronym{IWD,Internet Wireless Daemon},
-a wireless daemon required to authenticate against encrypted WiFi
-networks.
+This is the service type to run iwd, the
+@uref{https://iwd.wiki.kernel.org/, iNet Wireless Daemon}, a daemon
+required to authenticate against encrypted WiFi networks.
 @end defvar
 
 @quotation Warning

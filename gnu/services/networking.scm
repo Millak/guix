@@ -2307,7 +2307,7 @@ PHYs names that IWD will not manage.")
                      shepherd-requirement shepherd-provision)
 
     (list (shepherd-service
-           (documentation "Run Internet Wireless Daemon")
+           (documentation "Run the iNet Wireless Daemon, iwd.")
            (provision shepherd-provision)
            (requirement `(user-processes dbus-system loopback ,@shepherd-requirement))
            (start #~(make-forkexec-constructor
@@ -2347,8 +2347,8 @@ PHYs names that IWD will not manage.")
                                             add-iwd-package)))
                   (default-value (iwd-configuration))
                   (description
-                   "Run @url{https://iwd.wiki.kernel.org/,Iwd},
-a network connection manager."))))
+                   "Run the iNet Wireless Daemon,
+@url{https://iwd.wiki.kernel.org/,iwd}, a network connection manager."))))
 
 
 ;;;
