@@ -485,14 +485,14 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "3.1.3")
+   (version "3.2.1")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "https://flintlib.org/download/flint-"
                           version ".tar.gz"))
       (sha256
-       (base32 "1nmd7jb2hqg3sqv0dbqa5glpn24lli3gh9ghxzmkpsh7pgnfan9j"))))
+       (base32 "0gyjbkhwrmx2vgb1gailnmmzacl4aikzgi70dzmpf8lpfxny8yya"))))
    (build-system gnu-build-system)
    (inputs
     (list ntl))
