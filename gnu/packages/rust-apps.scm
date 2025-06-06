@@ -2556,6 +2556,68 @@ show number of files, total lines within those files and code, comments, and
 blanks grouped by language.")
     (license (list license:expat license:asl2.0))))
 
+(define-public typst
+  (package
+    (name "typst")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typst-cli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10xnxf6z78hcck7647vfq9vigrvvz0a6g4ha4l4vn5zlarrxwd56"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:modules '((guix build cargo-build-system)
+                  (guix build utils)
+                  (ice-9 match)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version-string
+            (lambda _
+              (setenv "TYPST_VERSION" #$(package-version this-package))))
+          (add-after 'configure 'configure-artifacts
+            (lambda _
+              (mkdir "artifacts")
+              (setenv "GEN_ARTIFACTS" "artifacts")))
+          (add-after 'install 'install-artifacts
+            (lambda _
+              (with-directory-excursion "artifacts"
+                (for-each (cut install-file <>
+                               (string-append #$output "/share/man/man1"))
+                          (find-files "." "\\.1$"))
+                (rename-file "typst.bash" "typst")
+                (map
+                 (match-lambda
+                   ((file . loc)
+                    (install-file file (string-append #$output "/share" loc))))
+                 '(("typst" . "/bash-completion/completions")
+                   ("_typst" . "/zsh/site-functions")
+                   ("typst.elv" . "/elvish/lib")
+                   ("typst.fish" . "/fish/vendor_completions.d")))))))))
+    (inputs (cons* openssl (cargo-inputs 'typst)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TYPST_PACKAGE_PATH")
+            (files '("share/typst/packages"))
+            (separator #f))
+           (search-path-specification
+            (variable "TYPST_FONT_PATHS")
+            (files '("share/fonts" "share/texmf-dist/fonts")))))
+    (home-page "https://typst.app/")
+    (synopsis "LaTeX-like typesetting system")
+    (description
+     "Typst is a markup-based typesetting system that is designed to be as
+powerful as LaTeX while being much easier to learn and use.  Features include
+built-in markup for math typesetting, bibliography management and other common
+tasks, an extensible scripting system for uncommon tasks, incremental
+compilation, and intuitive error messages.")
+    (license license:asl2.0)))
+
 (define-public vivid
   (package
     (name "vivid")
