@@ -79,7 +79,7 @@ you tailor the wrapping process to suit your application.")
   (package
     (inherit swig)
     (name "swig")
-    (version "4.3.0")
+    (version "4.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/" name "/" name "/"
@@ -87,5 +87,10 @@ you tailor the wrapping process to suit your application.")
                                  name "-" version ".tar.gz"))
               (sha256
                (base32
-                "17ma0iwan81hnmd1wqx9g8dx7l6b6ri8218cqy3gj6pnjvvkw87p"))))
+                "1f31xjxymq0nwlis0jn2xjcnd29qmfn6jk9bb9ipvqgif2gq5z24"))))
+    (native-inputs (list boost
+                         pcre2 ; for pcre2-config
+                         ;; The following are for tests and examples:
+                         guile-3.0
+                         perl))
     (inputs (list pcre2))))
