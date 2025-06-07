@@ -45,8 +45,8 @@
      (git-reference
       (url "https://github.com/nim-lang/atlas.git")
       ;; referenced in koch.nim
-      (commit "5faec3e9a33afe99a7d22377dd1b45a5391f5504")))
-    (sha256 (base32 "1yd3pcg46blkxfkpcvymfln44wgryq9v1mcxblqjhgfi0rvdjm0v"))))
+      (commit "26cecf4d0cc038d5422fc1aa737eec9c8803a82b")))
+    (sha256 (base32 "0wbgxvgxqmla70hsy1ra85l27s100yllrwan5ycca833f7czi7wk"))))
 
 (define sat
   (origin
@@ -62,14 +62,14 @@
 (define-public nim
   (package
     (name "nim")
-    (version "2.2.2")
+    (version "2.2.4")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://nim-lang.org/download/"
                           name "-" version ".tar.xz"))
       (sha256
-       (base32 "07wazlsj3yby4vb008b2rairdkl0hhnnxhpxi6jaa2wwmj3rpk3z"))))
+       (base32 "1iw9h486dqcc4jgxkdbgsx2nh640n6308yl97wgmdkpwa2bl2azq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f          ; TODO: Investigate tests failures.
