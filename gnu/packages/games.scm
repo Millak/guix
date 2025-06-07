@@ -2760,7 +2760,7 @@ Every puzzle has a complete solution, although there may be more than one.")
 (define-public dsda-doom
   (package
     (name "dsda-doom")
-    (version "0.28.2")
+    (version "0.29.0")
     (source
      (origin
        (method git-fetch)
@@ -2769,7 +2769,7 @@ Every puzzle has a complete solution, although there may be more than one.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qvxx4r3ahiy8w9x0559g581971ycmbqm1kszzc65w1aa85f5q2f"))))
+        (base32 "1aki559nz1czlvzah1rdmpdcad4mswpp5gszfwxhil9x0hc3gj4r"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2791,18 +2791,11 @@ Every puzzle has a complete solution, although there may be more than one.")
     (home-page "https://github.com/kraflab/dsda-doom")
     (synopsis "Doom source port, successor of PrBoom+")
     (description
-     "This is a successor of PrBoom+ with new features, including:
-@enumerate
-@item Heretic, Hexen, MBF21, Doom-in-Hexen, UDMF, and MAPINFO support
-@item In-game console and scripting
-@item Full controller support
-@item Palette-based opengl renderer
-@item Debugging features for testing
-@item Strict mode for speedrunning
-@item Various quality of life improvements
-@item Advanced tools for TASing
-@item Rewind
-@end enumerate")
+     "DSDA-Doom is a Doom source port and successor of PrBoom+, with extra
+features for demo recording/playback and quality of life.  In particular, its
+features include support for the Heretic, Hexen, MBF21, Doom-in-Hexen and UDMF
+map formats, MAPINFO support, full controller support, debug and scripting
+features, rewinding, and a strict mode for speedrunning.")
     (license license:gpl2+)))
 
 (define-public prboom-plus
