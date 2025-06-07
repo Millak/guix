@@ -3282,6 +3282,27 @@ always uses Farsi digits, and does not include Latin glyphs from Roboto.
             "file://LICENSE" "Bitstream Vera License")
            license:asl2.0))))           ; Latin glyphs from Roboto
 
+(define-public font-vazirmatn
+  (package
+    (name "font-vazirmatn")
+    (version "33.003")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rastikerdar/vazirmatn")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s2w6905iaqqaqrvm1vrsyqbhxxrw7pg2qzqpwp3vks5niz2sm8b"))))
+    (build-system font-build-system)
+    (home-page "https://rastikerdar.github.io/vazirmatn/")
+    (synopsis "Persian/Arabic font")
+    (description
+     "Vazirmatn is a Persian/Arabic font project with the idea of a new simple
+and legible typeface suitable for web pages and applications.")
+    (license license:silofl1.1)))
+
 (define-public font-victor-mono
   (package
    (name "font-victor-mono")
