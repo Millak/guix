@@ -185,8 +185,8 @@ Luanti games with multiplayer support.  This package provides
 @command{luantiserver} to run a Luanti server.")))
 
 (define-public minetest-game
-  (let ((commit "88ecab34d98550c8eb77f49ac2866b480a6e707a")
-        (revision "0"))
+  (let ((commit "0351c6691595c6eb88a1bea2383f6fae46a686ce")
+        (revision "1"))
     (package
       (name "minetest-game")
       (version (git-version "0.0.0" revision commit))
@@ -194,21 +194,22 @@ Luanti games with multiplayer support.  This package provides
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/minetest/minetest_game")
+               (url "https://github.com/luanti-org/minetest_game")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0pvr3m7kxrriabw20sy6rhx0givh5ic85dk5g88cbbsy83admsp0"))))
+          (base32 "13l33ghnm1g3ka0ivxljzdga50x0iv0fzyd7pqm15ickfbkwbm0v"))))
       (build-system copy-build-system)
       (arguments
        (list
         #:install-plan #~'(("." "/share/minetest/games/minetest_game"))))
-      (synopsis "Ex-official game for Minetest game engine")
+      (synopsis "Ex-official game for Luanti game engine")
       (description
-       "A game for the Minetest voxel game platform. It provides a very basic
-Minecraft-like base for some mods. It is currently in maintenance mode
-and gets no new features.")
-      (home-page "https://www.minetest.net/")
+       "This package provides the Minetest Game - a game for the
+Luanti game engine which used to be the official game for Luanti
+(formerly Minetest).  It is currently in maintenance mode and gets no
+new features.")
+      (home-page "https://www.luanti.org/")
       (license license:lgpl2.1+))))
 
 ;; This package is deprecated. "Minetest Game" is no longer the official game.
