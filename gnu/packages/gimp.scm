@@ -7,7 +7,7 @@
 ;;; Copyright © 2018 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -487,47 +487,21 @@ that is extensible via a plugin system.")
 (define-public gimp-fourier
   (package
     (name "gimp-fourier")
-    (version "0.4.3-2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://registry.gimp.org/files/fourier-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1rpacyad678lqgxa3hh2n0zpg4azs8dpa8q079bqsl12812k9184"))))
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/rpeyron/plugin-gimp-fourier/"
+                           "releases/download/v" version
+                           "/gimp-plugin-fourier-" version ".tar.gz"))
+       (sha256
+        (base32 "0c4z3hd2sk1s6sx0441p4li383riq1q33wj7ni7l2rwsr8x1s95s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; FIXME: The gegl package only installs "gegl-0.4.pc", but
-         ;; "gimp-2.0.pc" requires "gegl-0.3.pc", so we just copy it.
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "tmppkgconfig")
-             (copy-file (search-input-file inputs
-                                           "/lib/pkgconfig/gegl-0.4.pc")
-                        "tmppkgconfig/gegl-0.3.pc")
-             (setenv "PKG_CONFIG_PATH"
-                     (string-append "tmppkgconfig:"
-                                    (or (getenv "PKG_CONFIG_PATH") "")))
-             #t))
-         (add-after 'unpack 'set-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; gimptool-2.0 does not allow us to install to any target
-             ;; directory.
-             (let ((target (string-append (assoc-ref outputs "out")
-                                          "/lib/gimp/"
-                                          (car (string-split ,(package-version gimp) #\.))
-                                          ".0/plug-ins")))
-               (substitute* "Makefile"
-                 (("\\$\\(PLUGIN_INSTALL\\) fourier")
-                  (string-append "cp fourier " target)))
-               (mkdir-p target))
-             #t)))))
+     `(#:tests? #f)) ;no tests
     (inputs
      (list fftw
-           gimp
+           gimp-2
            ;; needed by gimp-2.0.pc
            gdk-pixbuf
            gegl
