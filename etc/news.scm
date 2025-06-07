@@ -29,6 +29,7 @@
 ;; Copyright © 2024 Sebastian Dümcke <code@sam-d.com>
 ;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
+;; Copyright © 2025 Rivulet Cedar <rivulet_cedar@yeah.net>
 
 ;;
 ;; Copying and distribution of this file, with or without modification, are
@@ -40,7 +41,8 @@
  (entry (commit "78d4b1e52c731502b29288ab6975bd9efa91392a")
         (title
          (en "New services for /etc/profile.d and /etc/bashrc.d")
-         (de "Neue Dienste für /etc/profile.d und /etc/bashrc.d"))
+         (de "Neue Dienste für /etc/profile.d und /etc/bashrc.d")
+         (zh "为 /etc/profile.d 和 /etc/bashrc.d 提供新服务"))
         (body
          (en "Two new services, @code{etc-profile-d-service-type} and
 @code{etc-bashrc-d-service-type}, can now be used to configure and extend your
@@ -69,13 +71,29 @@ nicht beinhaltet, möchten Sie vielleicht
 @code{(service etc-bashrc-d-service-type)} in Ihre Dienstliste aufnehmen, damit
 Bash-Komplettierung weiterhin für neue Benutzer Befehle vervollständigt.  Siehe
 @samp{info \"(guix.de) Service-Referenz\"} für weitere Informationen und
-Beispiele.")))
+Beispiele.")
+         (zh "您现在可在 Guix 中使用新服务 @code{etc-profile-d-service-type}
+和 @code{etc-bashrc-d-service-type} 配置和扩展 shell。这些服务接受一个必须具有
+@file{.sh} 文件扩展名的类文件对象列表。
+
+Guix 现在用 @code{etc-bashrc-d-service-type} 取代了 skeleton
+文件（skeleton file），以提供 Bash
+别名（@file{/etc/bashrc.d/aliases.sh}）。该服务也能通过提供
+@file{/etc/bashrc.d/bash_completion.sh} 来配置
+@code{bash-completion} 包。
+
+如果您的 @code{operating-system} 配置不包含 @code{%base-services} 或
+@code{%desktop-services}，则可能需要将
+@code{(service etc-bashrc-d-service-type)} 添加到 @code{services}
+列表中，以确保 Bash 补全功能对新用户继续有效。更多信息和示例请参阅
+@samp{info \"(guix.zh_CN) 服务参考\"}。")))
 
  (entry (commit "3b6e499d5e635e2189f1bf60279dbf5175c404bd")
         (title
          (en "Guix source code repository moved to Codeberg")
          (de "Repository mit Guix’ Quellcode ist auf Codeberg umgezogen")
-         (fr "Dépôt de code source de Guix déplacé sur Codeberg"))
+         (fr "Dépôt de code source de Guix déplacé sur Codeberg")
+         (zh "Guix 源代码仓库已迁移至 Codeberg"))
         (body
          (en "The canonical URL of the Guix repository is now
 @url{https://git.guix.gnu.org/guix.git}.
@@ -134,7 +152,15 @@ décembre 2025.
 Le Guix Consensus Document (GCD) 002, qui est le résultat du consensus
 construit par la communauté, documente les motivations, les choix et les
 questions ouvertes relatives à cette migration sur Codeberg :
-@url{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md}.")))
+@url{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md}.")
+         (zh "Guix 仓库的规范 URL 现在是 @url{https://git.guix.gnu.org/guix.git}。
+
+您无需进行任何操作：@command{guix pull} 现在会自动从新 URL 获取（fetch）代码，除非您的 @file{channels.scm} 文件引用了之前的 URL；这种情况下，建议更新文件，不过位于 @code{git.savannah.gnu.org} 的原 URL 将至少一年内继续有效。
+
+现在可以通过 @url{https://codeberg.org/guix/guix} 上的工单（Issue）和合并请求（Pull Request） 机制报告缺陷和提出修改建议。邮件列表 @email{bug-guix@@gnu.org} 和 @email{guix-patches@@gnu.org} 在 2025 年 12 月 31 日之前仍可使用，包括用于提交新的缺陷报告和补丁。
+
+Guix 共识文档 (Guix Consensus Document，GCD) 002 记录了此次迁移至 Codeberg 的动机、选择以及待解决的问题，是社区共识的成果：
+@url{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md}。")))
 
  (entry (commit "271a8fc2499135c3f0198bf69c9f2a60f1961bf1")
         (title
@@ -169,14 +195,16 @@ refresh\").")))
  (entry (commit "6e8ffdf3c5afac265e540027c2332573b25461ae")
         (title
          (en "Linux-libre 6.13 removed from Guix")
-         (de "Linux-libre 6.13 wurde aus Guix entfernt"))
+         (de "Linux-libre 6.13 wurde aus Guix entfernt")
+         (zh "Linux-libre 6.13 已从 Guix 中移除"))
         (body
-         (en "The 6.13 linux-libre kernel series has been removed from GNU Guix,
+	 (en "The 6.13 linux-libre kernel series has been removed from GNU Guix,
 because it is no longer supported upstream.  The 6.14 kernel series is now the
 default.")
-         (de "Die Versionsreihe 6.13 des Linux-libre-Kernels wurde aus GNU Guix
+	 (de "Die Versionsreihe 6.13 des Linux-libre-Kernels wurde aus GNU Guix
 entfernt, weil sie von dessen Anbieter nicht mehr unterstützt wird.
-Kernel-Versionsreihe 6.14 ist jetzt vorgegeben.")))
+Kernel-Versionsreihe 6.14 ist jetzt vorgegeben.")
+	 (zh "由于上游不再支持，GNU Guix 已移除 6.13 系列的 linux-libre 内核。6.14 内核系列现已成为默认版本。")))
 
  (entry (commit "ce363c1dc7bd63a74dcf7788d340819f6d5db89f")
         (title
