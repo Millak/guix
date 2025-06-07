@@ -2773,12 +2773,29 @@ $ guix shell -D guix
 [env]$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -2
 @end example
 
-To generate a @file{CODEOWNERS} file, which Forgejo uses to determine
-which team or person should review changes to a given set of files, run:
+@cindex teams, on Codeberg
+To generate a @file{CODEOWNERS} file, which Forgejo---the software
+behind Codeberg---uses to determine which team or person should review
+changes to a given set of files, run:
 
 @example
 ./etc/teams.scm codeowners > CODEOWNERS
 @end example
+
+Teams defined in @file{etc/teams.scm} are reflected
+@uref{https://codeberg.org/guix/guix, on Codeberg}; the ``Owners'' team
+on Codeberg, whose members have administration privileges over
+@uref{https://codeberg.org/guix, the entire ``organization''}, is the
+only one missing from this file.  To synchronize team changes with
+Codeberg, a member of the ``Owners'' team can run:
+
+@example
+./etc/teams.scm sync-codeberg-teams @var{token}
+@end example
+
+@noindent
+... where @var{token} is a token created on the Codeberg interface
+granting access to the relevant settings.
 
 @node Making Decisions
 @section Making Decisions
