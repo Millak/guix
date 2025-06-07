@@ -366,14 +366,15 @@ The following services are supported:
 (define-public gnunet-gtk
   (package (inherit gnunet)
     (name "gnunet-gtk")
-    (version "0.23.0")
+    (version "0.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gnunet/gnunet-gtk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "131z47px0kqnmn2b3sb84qmf90kynhl6mrx4rxrqh9chhy5pcr3h"))))
+                "1asp0c5f278zdf6586zng36zmn5pj08qqx0pnap4nh58ycr37i5f"))))
+    (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
            #~(list "--with-libunique"
