@@ -1861,13 +1861,23 @@ keyword parameters for procedures that take more than four parameters.
 
 Development is done using the Git distributed version control system.
 Thus, access to the repository is not strictly necessary.  We welcome
-contributions in the form of patches as produced by @code{git
-format-patch} sent to the @email{guix-patches@@gnu.org} mailing list
-(@pxref{Submitting patches to a project,,, git, Git User Manual}).
-Contributors are encouraged to take a moment to set some Git repository
-options (@pxref{Configuring Git}) first, which can improve the
-readability of patches.  Seasoned Guix developers may also want to look
-at the section on commit access (@pxref{Commit Access}).
+contributions in one of the following forms:
+
+@itemize
+@item
+@cindex pull request, for contributions
+As a @dfn{pull request} (PR) at
+@url{https://codeberg.org/guix/guix/pulls/}.  This is now the preferred
+form.
+
+@item
+Until December 31st, 2025@footnote{This date is the result of a decision
+made collectively in
+@uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md,
+Guix Consensus Document 002} in May 2025.}, you may also send patches as
+produced by @code{git format-patch} to the @email{guix-patches@@gnu.org}
+mailing list (@pxref{Submitting patches to a project,,, git, Git User
+Manual}).
 
 This mailing list is backed by a Debbugs instance, which allows us to
 keep track of submissions (@pxref{Tracking Bugs and Changes}).
@@ -1875,6 +1885,12 @@ Each message sent to that mailing list gets a new tracking number
 assigned; people can then follow up on the submission by sending email
 to @code{@var{ISSUE_NUMBER}@@debbugs.gnu.org}, where @var{ISSUE_NUMBER}
 is the tracking number (@pxref{Sending a Patch Series}).
+@end itemize
+
+Either way, contributors are encouraged to take a moment to set some Git
+repository options (@pxref{Configuring Git}) first, which can improve
+the readability of patches.  Seasoned Guix developers may also want to
+look at the section on commit access (@pxref{Commit Access}).
 
 Please write commit logs in the ChangeLog format (@pxref{Change Logs,,,
 standards, GNU Coding Standards}); you can check the commit history for
@@ -2093,6 +2109,13 @@ can place it under the @file{.git/hooks/commit-msg.d/} directory.
 @cindex @code{git send-email}
 @cindex @code{git format-patch}
 
+@quotation Warning
+This section is about contributing code by sending patches by email.
+This option is supported until December 31st, 2025, but we recommend
+getting familiar with the @dfn{pull request} workflow, which will become
+the norm after that date.  @xref{Submitting Patches}, for more info.
+@end quotation
+
 @unnumberedsubsubsec Single Patches
 @anchor{Single Patches}
 The @command{git send-email} command is the best way to send both single
@@ -2261,25 +2284,33 @@ patch submissions and topic branches.
 @cindex patch submissions, tracking
 @cindex issue tracking
 @cindex Debbugs, issue tracking system
-Bug reports and patch submissions are currently tracked using the
-Debbugs instance at @uref{https://bugs.gnu.org}.  Bug reports are filed
-against the @code{guix} ``package'' (in Debbugs parlance), by sending
-email to @email{bug-guix@@gnu.org}, while patch submissions are filed
-against the @code{guix-patches} package by sending email to
-@email{guix-patches@@gnu.org} (@pxref{Submitting Patches}).
+But reports (@dfn{issues}) and patch submissions (@dfn{pull requests})
+are currently tracked at the @uref{https://codeberg.org/guix/guix,
+project's home at Codeberg}.
+
+Before May 25th, 2025, bug reports and patches were exclusively tracked
+using the Debbugs instance at @uref{https://bugs.gnu.org}; it may still
+be used for these purposes until December 31st, 2025, after which
+Codeberg will become the sole option to report new bugs and propose new
+changes@footnote{Check out
+@uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md,
+Guix Consensus Document 002} for details on this decision.}.  With
+Debbugs, bug reports are sent by email to @email{bug-guix@@gnu.org} and
+patches are sent to @email{guix-patches@@gnu.org} (@pxref{Submitting
+Patches}).
 
 @node Managing Patches and Branches
 @subsection Managing Patches and Branches
 @cindex branching strategy
 @cindex rebuild scheduling strategy
 
-Changes should be posted to @email{guix-patches@@gnu.org}.  This mailing
-list fills the patch-tracking database (@pxref{The Issue Tracker}).  It
-also allows patches to be picked up and tested by the quality assurance
-tooling; the result of that testing eventually shows up on the dashboard
+@c TODO: Update when qa.guix is hooked up to Codeberg.
+Submitted patches are picked up and tested by the quality assurance
+service; the result of that testing eventually shows up on the dashboard
 at @indicateurl{https://qa.guix.gnu.org/issue/@var{ISSUE_NUMBER}}, where
-@var{ISSUE_NUMBER} is the number assigned by the issue tracker.  Leave
-time for a review, without committing anything.
+@var{ISSUE_NUMBER} is the number assigned by the issue tracker,
+currently Debbugs (work is in progress to support Codeberg pull
+requests).  Leave time for a review, without committing anything.
 
 As an exception, some changes considered ``trivial'' or ``obvious'' may
 be pushed directly to the @code{master} branch.  This includes changes
@@ -2375,6 +2406,15 @@ only then should the merge requests be created, as documented earlier.
 
 @node Debbugs User Interfaces
 @subsection Debbugs User Interfaces
+
+@quotation Warning
+This section is about bug reports and patches sent by email to
+@uref{https://issues.guix.gnu.org, Debbugs}.  This option is supported
+until December 31st, 2025, after which
+@uref{https://codeberg.org/guix/guix, Codeberg} will be the only
+interface for submitting bug reports and changes.  @xref{Submitting
+Patches}, for more info.
+@end quotation
 
 @subsubsection Web interface
 
@@ -3068,11 +3108,15 @@ In other words, build consensus with everyone involved (@pxref{Making
 Decisions}).
 @end enumerate
 
+When you deem the proposed change adequate and ready for inclusion
+in Guix, you can explicitly say so for pull requests on Codeberg, for
+example by selecting ``Approve changes'' in the ``Finish review'' dialog
+of the web interface.
+
 @cindex LGTM, Looks Good To Me
 @cindex review tags
 @cindex Reviewed-by, git trailer
-When you deem the proposed change adequate and ready for inclusion
-within Guix, the following well understood/codified
+The following well understood/codified
 @samp{Reviewed-by:@tie{}Your@tie{}Name@tie{}<your-email@@example.com>}
 @footnote{The @samp{Reviewed-by} Git trailer is used by other projects
 such as Linux, and is understood by third-party tools such as the
