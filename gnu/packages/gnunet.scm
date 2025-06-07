@@ -268,32 +268,6 @@ For reliable NAT traversal, also install the @var{miniupnpc} package.")
     (license license:agpl3+)
     (home-page "https://www.gnunet.org/en/")))
 
-(define-public guile-gnunet                       ;GSoC 2015!
-  (let ((commit "d12167ab3c8d7d6caffd9c606e389ef043760602")
-        (revision "1"))
-    (package
-      (name "guile-gnunet")
-      (version (git-version "0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix/gnunet.git/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0nqc18jh9j30y4l6yh6j35byfg6qalq7yr3frv9rk10qa041c2sv"))))
-      (build-system gnu-build-system)
-      (native-inputs (list pkg-config autoconf automake))
-      (inputs (list guile-2.0 gnunet))
-      (synopsis "Guile bindings for GNUnet services")
-      (description
-       "This package provides Guile bindings to the client libraries of various
-GNUnet services, including the @dfn{identity} and @dfn{file sharing}
-services.")
-      (home-page "https://gnu.org/software/guix")
-      (license license:gpl3+))))
-
 (define-public gnunet-scheme
   (package
     (name "gnunet-scheme")
