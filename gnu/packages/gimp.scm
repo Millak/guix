@@ -592,7 +592,7 @@ MyPaint.")
   ;; “Edit->Preferences->Folders->Plug Ins”.
   (package
     (name "gimp-resynthesizer")
-    (version "2.0.3")
+    (version "3.0")
     (source
      (origin
        (method git-fetch)
@@ -601,48 +601,19 @@ MyPaint.")
               (commit (string-append "v" version))))
        (sha256
         (base32
-         "1jwc8bhhm21xhrgw56nzbma6fwg59gc8anlmyns7jdiw83y0zx3j"))
+         "1w0mp8bpwlk6p2gwg9zqvckzyfc16djgmzjc8x9zp2biai3vkz7w"))
        (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     `( ;; Turn off tests to avoid:
-       ;; make[1]: *** No rule to make target '../src/resynth-gui.c', needed by 'resynthesizer.pot'.  Stop.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-env
-           (lambda _
-             (setenv "CONFIG_SHELL" (which "sh"))
-             #t))
-         (add-after 'configure 'set-prefix
-           ;; Install plugin under $prefix, not under GIMP's libdir.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((target (string-append (assoc-ref outputs "out")
-                                          "/lib/gimp/"
-                                          ,(version-major
-                                            (package-version gimp))
-                                          ".0")))
-               (substitute* (list "src/resynthesizer/Makefile"
-                                  "src/resynthesizer-gui/Makefile")
-                 (("GIMP_LIBDIR = .*")
-                  (string-append "GIMP_LIBDIR = " target "\n")))
-               (mkdir-p target)
-               #t))))))
+    (build-system meson-build-system)
     (native-inputs
-     ;; avoid ./autogen.sh: ./configure: /bin/sh: bad interpreter:
-     ;; No such file or directory
-     `(("autoconf" ,autoconf-wrapper)
-       ("automake" ,automake)
-       ("glib" ,glib "bin")                       ; glib-gettextize
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     (list gimp
-           gdk-pixbuf ; needed by gimp-2.0.pc
-           cairo
+     (list cairo
+           gdk-pixbuf
            gegl
-           gtk+-2 ; needed by gimpui-2.0.pc
-           glib))
+           gexiv2
+           gimp
+           gtk+
+           pango))
     (home-page "https://github.com/bootchk/resynthesizer")
     (synopsis "GIMP plugins for texture synthesis")
     (description
