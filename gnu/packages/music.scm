@@ -4313,7 +4313,6 @@ websites such as Libre.fm.")
               (let ((completion-path
                      (string-append
                       #$output "/share/bash-completion/completions/beet")))
-                (invoke "echo" completion-path)
                 (mkdir-p (dirname completion-path))
                 (with-output-to-file completion-path
                   (lambda _ (invoke (string-append #$output "/bin/beet")
@@ -4369,41 +4368,37 @@ Then it provides a variety of tools for manipulating and accessing
 your music.")
     (license license:expat)))
 
-;;; XXX: The original project is abandoned for 4y, see
-;;; <https://github.com/unrblt/beets-bandcamp/issues/15>, this package may be
-;;; sourced from maintained fork <https://github.com/snejus/beetcamp>.
-(define-public beets-bandcamp
+(define-public beets-beetcamp
   (package
-    (name "beets-bandcamp")
-    (version "0.1.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "beets-bandcamp" version))
-              (sha256
-               (base32
-                "0dwbdkrb9c0ppzm5s78h47ndpr88cw1k0z8fgfhkl706wazx2ddg"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ; there are no tests
-    (propagated-inputs
-     (list beets
-           python-beautifulsoup4
-           python-confuse
-           python-isodate
-           python-jellyfish
-           python-mediafile
-           python-munkres
-           python-musicbrainzngs
-           python-requests
-           python-six
-           python-unidecode
-           python-typing-extensions))
-    (home-page "https://github.com/unrblt/beets-bandcamp")
+    (name "beets-beetcamp")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "beetcamp" version))
+       (sha256
+        (base32 "14him9y82071l8jszy3g86k3mvnvzdb6g9yir3czfy7bhcn8x50x"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list beets
+                             python-httpx
+                             python-packaging
+                             python-pycountry))
+    (native-inputs (list python-poetry-core python-pytest))
+    ;; Tests are weird and can't be run properly.
+    (arguments (list #:tests? #f))
+    (home-page "https://github.com/snejus/beetcamp")
     (synopsis "Bandcamp plugin for beets")
     (description
      "This plugin for beets automatically obtains tag data from @uref{Bandcamp,
 https://bandcamp.com/}.  It's also capable of getting song lyrics and album art
 using the beets FetchArt plugin.")
     (license license:gpl2)))
+
+;;; XXX: The original project is abandoned for 4y, see
+;;; <https://github.com/unrblt/beets-bandcamp/issues/15>, this package may be
+;;; sourced from maintained fork <https://github.com/snejus/beetcamp>.
+(define-public beets-bandcamp
+  (deprecated-package "beets-bandcamp" beets-beetcamp))
 
 (define-public milkytracker
   (package
