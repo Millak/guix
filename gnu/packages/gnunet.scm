@@ -82,7 +82,8 @@
   #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson))
 
 (define-public libextractor
   (package
@@ -192,7 +193,7 @@ authentication and support for SSL3 and TLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.23.0")
+    (version "0.24.2")
     (source
      (origin
        (method url-fetch)
@@ -200,8 +201,8 @@ authentication and support for SSL3 and TLS.")
                            ".tar.gz"))
        (sha256
         (base32
-         "0ypnsn81fp3iqi8rgsbcvfnz9iwmaxd1h71mphak8ska2kabdim4"))))
-    (build-system gnu-build-system)
+         "0ixgyq331vyv1vv63jcxgqwwyb7pxb69arsdvp1z09wlgn84lkif"))))
+    (build-system meson-build-system)
     (inputs
      (list bluez
            glpk
@@ -218,7 +219,6 @@ authentication and support for SSL3 and TLS.")
            libogg
            libsodium
            libunistring
-           miniupnpc
            opus
            pulseaudio
            sqlite
@@ -238,24 +238,11 @@ authentication and support for SSL3 and TLS.")
       #:parallel-tests? #f              ;parallel tests aren't supported
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-problematic-tests
+          (add-after 'unpack 'disable-network-tests
             (lambda _
-              ;; The file 'test_arm_probnat.sh' doesn't seem to exist,
-              ;; or have a creation method specified anywhere in the source.
-              (substitute* "src/service/arm/Makefile.in"
-                (("check_SCRIPTS = \\\\")
-                 "DISABLED_check_SCRIPTS = \\"))
-              ;; The 'test_communicator_bidirect-tcp' fails
-              ;; non-deterministically (see:
-              ;; https://bugs.gnunet.org/view.php?id=8689).
-              (substitute* "src/service/transport/Makefile.in"
-                (("test_communicator_bidirect-tcp\\$\\(EXEEXT) ")
-                 ""))
-              ;; The 'test_fs_search_with_and' fails non-deterministically
-              ;; (see: https://bugs.gnunet.org/view.php?id=8692).
-              (substitute* "src/service/fs/Makefile.in"
-                (("test_fs_search_with_and\\$\\(EXEEXT) ")
-                 ""))))
+              (substitute* "src/cli/gns/meson.build"
+                (("'test_gns_box_sbox',") "")
+                (("'test_dns2gns',") ""))))
           (add-before 'check 'set-env-var-for-tests
             (lambda _
               (setenv "LANG" "en_US.UTF-8")))
@@ -275,7 +262,9 @@ high-level goal is to provide a strong foundation of free software for a
 global, distributed network that provides security and privacy.  GNUnet in
 that sense aims to replace the current internet protocol stack.  Along with
 an application for secure publication of files, it has grown to include all
-kinds of basic applications for the foundation of a GNU internet.")
+kinds of basic applications for the foundation of a GNU internet.
+
+For reliable NAT traversal, also install the @var{miniupnpc} package.")
     (license license:agpl3+)
     (home-page "https://www.gnunet.org/en/")))
 
