@@ -991,6 +991,60 @@ This package is the community maintained fork of @code{exa}.")
 (define-public exa
   (deprecated-package "exa" eza))
 
+(define-public fclones
+  (package
+    (name "fclones")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fclones" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1danl1sn7l1b5wz27aqbx43nnvsm9nflly8l8xqf41c4ainq5j07"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/fclones")
+                             (in-vicinity #$output "bin/fclones"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "complete" shell))))))
+               '(("bash"   . "share/bash-completion/completions/fclones")
+                 ("elvish" . "share/elvish/lib/fclones")
+                 ("fish"   . "share/fish/vendor_completions.d/fclones.fish")
+                 ("zsh"    . "share/zsh/site-functions/_fclones"))))))))
+    (native-inputs
+     (if (%current-target-system)
+         (list this-package)
+         '()))
+    (inputs (cargo-inputs 'fclones))
+    (home-page "https://github.com/pkolaczk/fclones")
+    (synopsis "Find and operate on duplicate files")
+    (description
+     "@command{fclones} is a command line utility that identifies groups of
+identical files and gets rid of the file copies you no longer need.  It comes
+with plenty of configuration options for controlling the search scope and
+offers many ways of removing duplicates.  For maximum flexibility, it
+integrates well with other Unix utilities like @command{find} and it speaks
+JSON, so you have a lot of control over the search and cleanup process.")
+    (license license:expat)))
+
 (define-public fd
   (package
     (name "fd")
