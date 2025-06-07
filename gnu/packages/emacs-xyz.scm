@@ -160,6 +160,7 @@
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.org>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright @ 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9777,6 +9778,37 @@ with Emacs.")
 which-func, navigation and basic beautify and completion features to navigate
 and edit VHDL files.")
     (license license:gpl3+)))
+
+(define-public emacs-typst-ts-mode
+  (let ((commit "972dc69d6b8a3f8983f6b8000654f59c8a8d05ba")
+        (revision "0"))
+    ;; Releases are not tagged, so use commits that change the "Version:"
+    ;; keyword in the main file.
+    (package
+      (name "emacs-typst-ts-mode")
+      (version (git-version "0.12.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/meow_king/typst-ts-mode")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "167kdgbxp8n721xnka803lzgwxrfx4h6m4m2ip0lnfxi2fv007zv"))
+         (snippet #~(begin (delete-file "test/basic-syntax.pdf")))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list tree-sitter-typst))
+      ;; There is a 'test' directory, but it is for use during development.
+      ;; There are no automated tests.
+      (arguments (list #:tests? #f))
+      (home-page "https://codeberg.org/meow_king/typst-ts-mode")
+      (synopsis "Typst tree-sitter mode")
+      (description
+       "@code{typst-ts-mode} is a tree-sitter mode for the Typst typesetting and
+markup language, providing automatic (re-)compilation, structural navigation,
+symbol and documentation lookup, and more.")
+      (license license:gpl3+))))
 
 (define-public emacs-mode-line-bell
   (package
