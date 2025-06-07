@@ -445,7 +445,7 @@ It was written for the X Window system and does not work well on Wayland.")
 (define-public python-terminaltexteffects
   (package
     (name "python-terminaltexteffects")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -456,12 +456,12 @@ It was written for the X Window system and does not work well on Wayland.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lakq27bxf8wn99gch37p2mqnbbax54y22qrb1h4x04da006kjz2"))))
+        (base32 "13d22i5pqn0dw1whk1v4as2ymzb0a59lns7lzz5zw6y4v3zbva07"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
            python-pytest))
-    (home-page "https://github.com/ChrisBuilds/terminaltexteffects")
+    (home-page "https://chrisbuilds.github.io/terminaltexteffects/")
     (synopsis "Terminal visual effects engine and demo toy")
     (description
      "TerminalTextEffects (TTE) is a terminal visual effects engine.  It can
