@@ -39,6 +39,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages xiph)
@@ -55,16 +56,16 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.10.0")
+    (version "5.12.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/minetest/minetest")
+             (url "https://github.com/luanti-org/luanti")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nsnsf1axiazb8zz51c0742kh0qx2b298pr5mr91m0l9r6dv1sdj"))
+        (base32 "1l8kwy23p3gpk12nnhhq1lp4v0zj6kiygnmia043pdinmgzzd0xy"))
        (modules '((guix build utils)
                   (srfi srfi-26)
                   (ice-9 ftw)))
@@ -75,20 +76,24 @@
        ;;   but still ok for internal use." Also asked MT devs on IRC for this.
        ;; - tiniergltf is intended for Minetest and diverged from upstream.
        (snippet
-        '(let ((keep '("." ".." "sha256" "tiniergltf")))
-           (with-directory-excursion "lib"
-             (for-each delete-file-recursively
-                       (scandir "." (negate (cut member <> keep)))))
-           ;; IrrlichtMT includes
-           (delete-file-recursively "irr/include/KHR")
-           (delete-file-recursively "irr/src/vendor")
-           (substitute* "irr/src/COpenGLCommon.h"
-             (("\"vendor/gl.h\"") "<GL/gl.h>"))
-           ;; Catch2
-           (substitute* "CMakeLists.txt"
-             (("add_subdirectory\\(lib/catch2\\)") "find_package(Catch2 3 REQUIRED)"))
-           (substitute* "src/catch.h"
-             (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))))))
+          '(let ((keep '("." ".." "sha256" "tiniergltf")))
+             (with-directory-excursion "lib"
+               (for-each delete-file-recursively
+                         (scandir "." (negate (cut member <> keep)))))
+             ;; IrrlichtMT includes
+             (delete-file-recursively "irr/include/KHR")
+             (delete-file-recursively "irr/src/vendor")
+             (substitute* "irr/src/COpenGLCommon.h"
+               (("\"vendor/gl.h\"") "<GL/gl.h>"))
+             ;; Catch2
+             (substitute* "CMakeLists.txt"
+               (("add_subdirectory\\(lib/catch2\\)") "find_package(Catch2 3 REQUIRED)"))
+             (substitute* "src/catch.h"
+               (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))
+             (substitute* "src/unittest/test_irr_rotation.cpp"
+               (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))
+             (substitute* "src/unittest/test_irr_matrix4.cpp"
+               (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -130,18 +135,19 @@
                   mesa
                   ncurses
                   openal
+                  sdl2
                   sqlite
                   `(,zstd "lib")))
     (outputs '("out" "debug"))
     (synopsis "Voxel game engine")
     (description
-     "Minetest is a voxel game engine that supports modding and game creation
+     "Luanti is a voxel game engine that supports modding and game creation
 using its Lua modding API.  It allows playing a wide range of voxel-based
 games, installing mods and texture packs.  This package only provides the base
 platform, users need to install games themselves (for example,
 @code{minetest-game}), either through Guix, the built-in interface or other
 sources.")
-    (home-page "https://www.minetest.net/")
+    (home-page "https://www.luanti.org/")
     (license license:lgpl2.1+)))
 
 (define-public minetest-server
@@ -174,9 +180,9 @@ sources.")
                "openal")))
     (synopsis "Infinite-world block sandbox game (server)")
     (description
-     "Server for Minetest game engine and gaming platform. Allows hosting
-Minetest games with multiplayer support.  This package provides
-@command{minetestserver} to run a Minetest server.")))
+     "Server for Luanti game engine and gaming platform. Allows hosting
+Luanti games with multiplayer support.  This package provides
+@command{luantiserver} to run a Luanti server.")))
 
 (define-public minetest-game
   (let ((commit "88ecab34d98550c8eb77f49ac2866b480a6e707a")
