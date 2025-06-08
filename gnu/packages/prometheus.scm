@@ -192,7 +192,7 @@ registry.")
 (define-public go-github-com-prometheus-client-golang
   (package
     (name "go-github-com-prometheus-client-golang")
-    (version "1.21.1")
+    (version "1.22.0")
     (source
      (origin
        (method git-fetch)
@@ -201,7 +201,7 @@ registry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01946gv7ncjzd0536dx0523safcdnwy64m7pa8b54vrwzryrvb7p"))
+        (base32 "08japwfsl7wlw6z8dkfdrhpgxr2w6frbinn96ksn0izab2h9s5gd"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
