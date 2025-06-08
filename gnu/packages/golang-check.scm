@@ -1831,7 +1831,7 @@ Gomega matcher library.")
 (define-public go-github-com-onsi-gomega
   (package
     (name "go-github-com-onsi-gomega")
-    (version "1.33.1")
+    (version "1.37.0")
     (source
      (origin
        (method git-fetch)
@@ -1840,10 +1840,11 @@ Gomega matcher library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jygwi2lz3q7ri85dxdxf187l1hm7r3i0c843l47iakivmld31x1"))))
+        (base32 "1nkkr1kw3bbz0mmxqyxafa9h951plv7nd570lc0wrr7skmicbw9x"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/onsi/gomega"
       #:phases
       #~(modify-phases %standard-phases
