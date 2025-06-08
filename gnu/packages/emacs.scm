@@ -523,6 +523,7 @@ editor (console only)")
                libx11
                libxft
                libxpm
+               libwebp
                pango
                poppler)))))
 
