@@ -6,6 +6,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
@@ -37,6 +38,7 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (ice-9 match))
@@ -1749,11 +1751,15 @@ most of the heavy lifting.")
     (native-inputs (modify-inputs (package-native-inputs mono-5.10.0)
                      (replace "mono" mono-5.10.0)))
     (inputs (modify-inputs (package-inputs mono-5.10.0)
-              (append libgdiplus)))
+              (append libgdiplus unixodbc)))
     (arguments
      (substitute-keyword-arguments
        (strip-keyword-arguments (list #:parallel-build?)
          (package-arguments mono-5.10.0))
+       ((#:modules modules '((guix build gnu-build-system)
+                             (guix build utils)))
+        `((sxml simple)
+          ,@modules))
        ((#:make-flags make-flags #~'())
         #~(append #$make-flags
                   (list
@@ -1861,4 +1867,41 @@ most of the heavy lifting.")
                   (with-directory-excursion "mono/mini"
                     (apply invoke "make" "check" make-flags))
                   (with-directory-excursion "mono/tests"
-                    (apply invoke "make" "check" make-flags)))))))))))
+                    (apply invoke "make" "check" make-flags)))))
+            (add-after 'install 'configure-external-libs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((gac (string-append #$output
+                                          "/lib/mono/gac"))
+                      (libgdiplus (search-input-file inputs "/lib/libgdiplus.so.0"))
+                      (libx11 (search-input-file inputs "/lib/libX11.so.6"))
+                      (unixodbc (search-input-file inputs "/lib/libodbc.so.2")))
+                  ;;; gamin purposefully not fixed since nowadays mono can
+                  ;;; just use inotify--and does.
+                  (for-each
+                   (lambda (name)
+                     (call-with-output-file (string-append name ".config")
+                       (lambda (port)
+                         (sxml->xml
+                          `(configuration
+                            (dllmap (@ (dll "libodbc.so.2")
+                                       (target ,unixodbc))))
+                          port))))
+                   (find-files gac "^System[.]Data[.]dll$"))
+                  (for-each
+                   (lambda (name)
+                     (call-with-output-file (string-append name ".config")
+                       (lambda (port)
+                         (sxml->xml
+                          `(configuration (dllmap (@ (dll "gdiplus")
+                                                     (target ,libgdiplus))))
+                          port))))
+                   (find-files gac "^System[.]Drawing[.]dll$"))
+                  (for-each
+                   (lambda (name)
+                     (call-with-output-file (string-append name ".config")
+                       (lambda (port)
+                         (sxml->xml
+                          `(configuration (dllmap (@ (dll "libX11")
+                                                     (target ,libx11))))
+                          port))))
+                   (find-files gac "^System[.]Windows[.]Forms[.]dll$")))))))))))
