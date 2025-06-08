@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2020, 2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -52,6 +52,13 @@ after_v1_2_0="be4d9527b55b6829e33a6e0727496af25927a786"
 guix git authenticate				\
      --cache-key="$cache_key" --stats		\
      --end="$v1_2_0_commit"
+
+# Likewise, but pass the OID of the annotated tag 'v1.2.0' instead of that of
+# the commit--this mimics what the pre-push hook gets when pushing tags.
+v1_2_0_annotated_tag="d5b556eef57321d0be89fdb07db447b2db2718ed"
+guix git authenticate				\
+     --cache-key="$cache_key" --stats		\
+     --end="$v1_2_0_annotated_tag"
 
 rm "$XDG_CACHE_HOME/guix/authentication/$cache_key"
 

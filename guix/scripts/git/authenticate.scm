@@ -233,6 +233,14 @@ known-broken version is installed."
         (display %pre-push-hook port)
         (chmod port #o755)))))
 
+(define (ensure-commit-id repository oid)
+  "If OID refers to an annotated tag, return its target commit; otherwise
+return OID."
+  (let ((obj (object-lookup repository oid)))
+    (if (= OBJ-TAG (object-type obj))
+        (tag-target-id (tag-lookup repository oid))
+        oid)))
+
 (define (show-stats stats)
   "Display STATS, an alist containing commit signing stats as returned by
 'authenticate-repository'."
@@ -337,7 +345,7 @@ expected COMMIT and SIGNER~%")))
             (end         (match (assoc-ref options 'end-commit)
                            (#f  (reference-target
                                  (repository-head repository)))
-                           (oid oid)))
+                           (oid (ensure-commit-id repository oid))))
             (history     (match (assoc-ref options 'historical-authorizations)
                            (#f '())
                            (file (call-with-input-file file
