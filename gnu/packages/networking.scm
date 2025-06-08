@@ -2168,14 +2168,13 @@ reusing frequently-requested web pages.")
         (base32 "1gpp2l3w479h1w5skjra5xy0gxd24kvmk6i4psbkafnv2399la4k"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-premature-./configure
-           (lambda _
-             (substitute* "autogen.sh"
-               (("\\$srcdir/configure")
-                "true"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-premature-./configure
+                 (lambda _
+                   (substitute* "autogen.sh"
+                     (("\\$srcdir/configure")
+                      "true")))))))
     (native-inputs
      (list autoconf automake))
     (inputs
