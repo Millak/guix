@@ -5611,11 +5611,14 @@ Actions for the Lightning suite of libraries.")
     (arguments
      (list
       #:test-flags
-      '(list "-k"
-             ;; These two tests (out of more than 1000 tests) fail because of
-             ;; accuracy problems.
-             "not test_softmax_classification_batch_multi_target\
- and not test_softmax_classification_batch_zero_baseline")))
+      '(list "-k" (string-append
+                   ;; These two tests (out of more than 1000 tests) fail because of
+                   ;; accuracy problems.
+                   "not test_softmax_classification_batch_multi_target"
+                   " and not test_softmax_classification_batch_zero_baseline"
+                   ;; This test fails with PyTorch 2.7.0 due to stricter
+                   ;; torch.load weights_only behavior.
+                   " and not test_exp_sets_with_diffent_lengths"))))
     (propagated-inputs
      (list python-matplotlib python-numpy python-pytorch python-tqdm))
     (native-inputs (list jupyter
