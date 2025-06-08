@@ -1390,38 +1390,31 @@ login, passwd, su, groupadd, and useradd.")
                "05yxrp44ky2kg6qknk1ih0kvwkgbn9fbz77r3vci7agslh5wjm8g"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs target #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (man8   (string-append out "/share/man/man8"))
-                    (sbin   (string-append out "/sbin"))
-                    (shadow (assoc-ref inputs "shadow"))
-                    (login  (string-append shadow "/bin/login")))
-               (substitute* "Makefile"
-                 ,@(if (%current-target-system)
-                       '((("CC=.*$")
-                          (string-append "CC=" target "-gcc\n")))
-                       '())
-                 (("^SBINDIR.*")
-                  (string-append "SBINDIR = " out
-                                 "/sbin\n"))
-                 (("^MANDIR.*")
-                  (string-append "MANDIR = " out
-                                 "/share/man/man8\n")))
+     (list
+      #:tests? #f    ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((man8   (string-append #$output "/share/man/man8"))
+                     (sbin   (string-append #$output "/sbin"))
+                     (login  (search-input-file inputs "/bin/login")))
+                (substitute* "Makefile"
+                  (("CC=.*$")
+                   (string-append "CC=" #$(cc-for-target) "\n"))
+                  (("^SBINDIR.*")
+                   (string-append "SBINDIR = " #$output "/sbin\n"))
+                  (("^MANDIR.*")
+                   (string-append "MANDIR = " #$output "/share/man/man8\n")))
 
-               ;; Pick the right 'login' by default.
-               (substitute* "mingetty.c"
-                 (("\"/bin/login\"")
-                  (string-append "\"" login "\"")))
+                ;; Pick the right 'login' by default.
+                (substitute* "mingetty.c"
+                  (("\"/bin/login\"")
+                   (string-append "\"" login "\"")))
 
-               (mkdir-p sbin)
-               (mkdir-p man8))
-             #t)))
-       #:tests? #f))                              ; no tests
+                (mkdir-p sbin)
+                (mkdir-p man8)))))))
     (inputs (list shadow))
-
     (home-page "https://sourceforge.net/projects/mingetty")
     (synopsis "Getty for the text console")
     (description
