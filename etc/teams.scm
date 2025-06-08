@@ -1214,6 +1214,11 @@ the \"texlive\" importer."
                        "trev@trevdev.ca")
   lisp emacs)
 
+(define-member (person "Konrad Hinsen"
+                       "guix@khinsen.fastmail.net"
+                       "khinsen")
+  lisp)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
