@@ -432,7 +432,7 @@ file along with an index.html file.")
 (define-public go-dario-cat-mergo
   (package
     (name "go-dario-cat-mergo")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -441,10 +441,11 @@ file along with an index.html file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v12vc9bmqq89k4y60a8ykmv85hpa7nh73sn9b7ars143pxvmhf1"))))
+        (base32 "1q61904rd858ac19vsmmhz69b1hvn0y9rjfb9d2gc4abg64dva57"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "dario.cat/mergo"))
     (native-inputs
      (list go-gopkg-in-yaml-v3))
@@ -4978,6 +4979,7 @@ gist (https://gist.github.com/kballard/272720).")
      (name "go-github-com-darccio-mergo")
      (arguments
       (list
+       #:go go-1.23
        #:import-path "github.com/darccio/mergo"
        #:phases
        #~(modify-phases %standard-phases
@@ -9619,6 +9621,7 @@ ABI}.")
      (name "go-github-com-imdario-mergo")
      (arguments
       (list
+       #:go go-1.23
        #:import-path "github.com/imdario/mergo"
        #:phases
        #~(modify-phases %standard-phases
