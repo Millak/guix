@@ -3525,7 +3525,7 @@ code is based on the Go-based PHaul implementation from the CRIU repository.")
   (package
     (inherit go-github-com-cheggaaa-pb)
     (name "go-github-com-cheggaaa-pb-v3")
-    (version "3.1.5")
+    (version "3.1.7")
     (source
      (origin
        (method git-fetch)
@@ -3534,7 +3534,7 @@ code is based on the Go-based PHaul implementation from the CRIU repository.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mf86iav69qpyg0nd54g0f50yigjkfzdhaqzkbn4yfb3fnb75n2z"))))
+        (base32 "1zbqjc7phdsa4p66j3nrpbgrdq171nvqma99bq6d3w373lnl1q67"))))
     (arguments
      (list
       #:import-path "github.com/cheggaaa/pb/v3"
