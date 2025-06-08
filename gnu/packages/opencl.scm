@@ -101,7 +101,7 @@
 (define-public opencl-clhpp
   (package
     (name "opencl-clhpp")
-    (version "2023.02.06")
+    (version "2024.10.24")
     (source
      (origin
        (method git-fetch)
@@ -109,7 +109,7 @@
              (url "https://github.com/KhronosGroup/OpenCL-CLHPP")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1m3v5apjv3qagym32xqg38pq6i8j5d8svz11clsx408nrlyngrj0"))
+        (base32 "1s9z30p80qc1dgp04wvc6szgcs4r167m3nk9622d2bbaaalgd5vg"))
        (file-name (git-file-name name version))))
     (native-inputs
      `(("python" ,python-wrapper)))
