@@ -60,7 +60,7 @@
 (define-public opencl-headers
   (package
     (name "opencl-headers")
-    (version "2023.02.06")
+    (version "2024.10.24")
     (source
       (origin
         (method git-fetch)
@@ -69,13 +69,13 @@
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1jxpx15gwxc6i7vp64xlzcxf57nl0qnaiip6jyr0j7iji47dm404"))))
+         (base32 "0c3s6g8b3ggfr36cl27axdf3kn79kj6cb880jizcf6q89nw6nf98"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Not enabled during build.
     (synopsis "The Khronos OpenCL headers")
     (description
      "This package provides the C headers by Khronos for OpenCL programming.")
-    (home-page "https://www.khronos.org/registry/OpenCL/")
+    (home-page "https://registry.khronos.org/OpenCL/")
     (license license:asl2.0)))
 
 (define (make-opencl-headers major-version subversion)
