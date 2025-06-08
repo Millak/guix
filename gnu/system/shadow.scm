@@ -164,8 +164,8 @@ then
     # /etc/profile so we get PATH and other essential variables.
     [[ -n \"$SSH_CLIENT\" ]] && source /etc/profile
 
-    # Don't do anything else.
-    return
+    # Don't do anything else, returning a successful return code.
+    return 0
 fi
 
 for i in /etc/bashrc.d/*.sh; do
