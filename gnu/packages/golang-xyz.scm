@@ -14948,6 +14948,34 @@ compatibility with `errors.Is`, `errors.As`, and `errors.Unwrap`.  The package
 is thread-safe and optimized with object pooling for performance.")
     (license license:expat)))
 
+(define-public go-github-com-olekukonko-ll
+  (package
+    (name "go-github-com-olekukonko-ll")
+    (version "0.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olekukonko/ll")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c3f0vqg5fpyqmz86xlgf8sjv9jgbxc3i9ackmdk9xnhjx9mxac9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/olekukonko/ll"))
+    (home-page "https://github.com/olekukonko/ll")
+    (synopsis "Structured Logging Library for Golang")
+    (description
+     "@code{ll} is a high-performance, production-ready logging library for Go,
+designed to provide @strong{hierarchical namespaces}, @strong{structured
+logging}, @strong{middleware pipelines}, @strong{conditional logging}, and
+support for multiple output formats, including text, JSON, colorized logs, and
+compatibility with Go’s @code{slog}.  It’s ideal for applications requiring
+fine-grained log control, extensibility, and scalability.")
+    (license license:expat)))
+
 (define-public go-github-com-olekukonko-tablewriter
   (package
     (name "go-github-com-olekukonko-tablewriter")
