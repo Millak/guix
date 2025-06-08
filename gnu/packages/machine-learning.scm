@@ -4513,8 +4513,8 @@ on quantized 8-bit tensors.")
 (define-public xnnpack
   ;; There's currently no tag on this repo.
   (let ((version "0.0")
-        (commit "08f1489fc815e8f121d4d2676c4863d2b51bfe73")
-        (revision "3"))
+        (commit "51a0103656eff6fc9bfd39a4597923c4b542c883")
+        (revision "4"))
     (package
       (name "xnnpack")
       (version (git-version version revision commit))
@@ -4526,7 +4526,7 @@ on quantized 8-bit tensors.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "00jjhz0nfggbdnqqvcznba03pcyy7gssd24yhhzjhincnz9qh8jr"))
+           "0j4smj8yaxw6r14caqn0dgb8j8mnsq34zp8ixxn11zmgbab306ly"))
          (modules '((guix build utils)
                     (ice-9 ftw)
                     (ice-9 textual-ports)
@@ -4548,7 +4548,7 @@ on quantized 8-bit tensors.")
                        (delete-file path))))
                  (scandir dir (negate (cut member <> '("." ".." "simd"))))))
               (cons*
-               "test" "bench" "eval" "models" "src/enums" "src/xnnpack"
+               "test" "bench/models" "src/enums" "src/xnnpack"
                "gen" "cmake/gen"
                (filter
                 identity
@@ -4625,7 +4625,7 @@ on quantized 8-bit tensors.")
                 ;; These need to run after the above scripts
                 (display "Remaining files\n")
                 (invoke "python3" "tools/update-microkernels.py")
-                (invoke "python3" "tools/update-microkernels.py" "-a")
+                ;; The -a flag is no longer supported in newer versions
                 (invoke "python3" "tools/generate-lut-norm-test.py"
                         "--spec" "test/u8-lut32norm.yaml"
                         "--output" "test/u8-lut32norm.cc")
