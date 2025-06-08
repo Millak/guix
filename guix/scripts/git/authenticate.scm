@@ -351,26 +351,35 @@ expected COMMIT and SIGNER~%")))
                            (file (call-with-input-file file
                                    read-authorizations))))
             (cache-key   (or (assoc-ref options 'cache-key)
-                             (repository-cache-key repository))))
-       (define stats
-         (authenticate-repository repository (string->oid commit)
-                                  (openpgp-fingerprint* signer)
-                                  #:end end
-                                  #:keyring-reference keyring
-                                  #:historical-authorizations history
-                                  #:cache-key cache-key
-                                  #:make-reporter make-reporter))
+                             (repository-cache-key repository)))
+            (branch      (current-branch repository)))
+       ;; Since the keyring branch is not authenticated, exit successfully
+       ;; when invoked on it.  This exit status is what the 'post-merge' hook
+       ;; expects when running 'git pull' on that branch, and what the
+       ;; 'pre-push' hook expects when running 'git push' on that branch.
+       (if (and branch (string=? branch keyring))
+           (info (G_ "current branch '~a' is the keyring branch; \
+doing nothing~%")
+                 branch)
+           (let ((stats
+                  (authenticate-repository repository (string->oid commit)
+                                           (openpgp-fingerprint* signer)
+                                           #:end end
+                                           #:keyring-reference keyring
+                                           #:historical-authorizations history
+                                           #:cache-key cache-key
+                                           #:make-reporter make-reporter)))
 
-       (if (configured? repository)
-           (maybe-upgrade-hooks repository)
-           (begin
-             (record-configuration repository
-                                   #:commit commit #:signer signer
-                                   #:keyring-reference keyring)
-             (install-hooks repository)))
+             (if (configured? repository)
+                 (maybe-upgrade-hooks repository)
+                 (begin
+                   (record-configuration repository
+                                         #:commit commit #:signer signer
+                                         #:keyring-reference keyring)
+                   (install-hooks repository)))
 
-       (when (and show-stats? (not (null? stats)))
-         (show-stats stats))
+             (when (and show-stats? (not (null? stats)))
+               (show-stats stats))
 
-       (info (G_ "successfully authenticated commit ~a~%")
-             (oid->string end))))))
+             (info (G_ "successfully authenticated commit ~a~%")
+                   (oid->string end))))))))
