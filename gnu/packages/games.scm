@@ -12842,27 +12842,29 @@ the map.")
       (license license:expat))))
 
 (define-public freerct
-  (package
-    (name "freerct")
-    (version "0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/FreeRCT/FreeRCT")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1szwy2cq4ffp4yxm9pp9vdyia0i5nz0wnppdd1xb9w7v3wa4mywi"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f))
-    (native-inputs (list flex bison))
-    (inputs (list libpng sdl2 sdl2-ttf))
-    (home-page "https://freerct.net/")
-    (synopsis "Theme park management simulation game")
-    (description
-     "FreeRCT is a game that captures the look and feel of the popular games
+  (let ((commit "f85335dc98cdb28081b38cdf23409ac8a91d9a66")
+        (revision "0"))
+    (package
+      (name "freerct")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/FreeRCT/FreeRCT")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1mimwgw487dxr2h1kxciwz34hk06g1lfgpicrav7khh19843a2fq"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f))
+      (native-inputs (list flex bison))
+      (inputs (list libpng glfw glew freetype))
+      (home-page "https://freerct.net/")
+      (synopsis "Theme park management simulation game")
+      (description
+       "FreeRCT is a game that captures the look and feel of the popular games
 RollerCoaster Tycoon 1 and 2, graphics- and gameplay-wise.
 
 In this game, you play as a manager of a theme park, allowing you to make a
@@ -12871,7 +12873,7 @@ finances, landscaping, and most importantly: rides.  Good managers follow the
 principle of prioritizing the guests' happiness with a well-maintained park.
 Should they go unwise, a theme park plunge into chaos with vandalizing guests
 and unsafe rides.  Which path will you take?")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public ultrastar-deluxe
   (package
