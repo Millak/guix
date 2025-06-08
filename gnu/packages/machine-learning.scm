@@ -4956,7 +4956,7 @@ PyTorch.")
         (base32
          "0hdpkhcjry22fjx2zg2r48v7f4ljrclzj0li2pgk76kvyblfbyvm"))))))
 
-(define %python-pytorch-version "2.5.1")
+(define %python-pytorch-version "2.7.0")
 
 (define %python-pytorch-src
   (origin
@@ -4967,14 +4967,14 @@ PyTorch.")
     (file-name (git-file-name "python-pytorch" %python-pytorch-version))
     (sha256
      (base32
-      "052cvagpmm9y7jspjpcyysx8yc5fhxnjl8rcz6nndis06v8dcj8s"))
-    (patches (search-patches "python-pytorch-system-libraries.patch"
-                             "python-pytorch-runpath.patch"
-                             "python-pytorch-without-kineto.patch"
+      "19prdpzx34n8y2q6wx9dn9vyms6zidjvfgh58d28rfcf5z7z5ra5"))
+    (patches (search-patches "python-pytorch-system-libraries-2.7.0.patch"
+                             "python-pytorch-runpath-2.7.0.patch"
+                             "python-pytorch-without-kineto-2.7.0.patch"
                              ;; Some autogeneration scripts depend on the
                              ;; compile PyTorch library. Therefore, we create
                              ;; dummy versions which are regenerated later.
-                             "python-pytorch-fix-codegen.patch"))
+                             "python-pytorch-fix-codegen-2.7.0.patch"))
     (modules '((guix build utils)))
     (snippet
      '(begin
@@ -5124,8 +5124,10 @@ PyTorch.")
           (add-before 'build 'use-system-libraries
             (lambda _
               (substitute* '("caffe2/serialize/crc.cc"
-                             "caffe2/serialize/inline_container.cc")
-                (("\"miniz\\.h\"") "<miniz/miniz.h>"))
+                             "caffe2/serialize/inline_container.cc"
+                             "torch/csrc/inductor/aoti_package/model_package_loader.cpp")
+                (("\"miniz\\.h\"") "<miniz/miniz.h>")
+                (("<miniz\\.h>") "<miniz/miniz.h>"))
               (substitute* "aten/src/ATen/native/vulkan/api/Allocator.h"
                 (("<include/vk_mem_alloc.h>")
                  "<vk_mem_alloc.h>"))
@@ -5162,6 +5164,12 @@ PyTorch.")
               (substitute* '("requirements.txt" "setup.py")
                 (("sympy==1\\.13\\.1")
                  "sympy>=1.13.1"))))
+          (add-after 'use-system-libraries 'skip-nccl-call
+            (lambda _
+              ;; Comment-out `checkout_nccl()` invokation in build_pytorch().
+              (substitute* "tools/build_pytorch_libs.py"
+                (("^[[:blank:]]*checkout_nccl\\(\\)" all)
+                 (string-append "# " all "  # Guix: use system NCCL\n")))))
           ;; PyTorch is still built with AVX2 and AVX-512 support selected at
           ;; runtime, but these dependencies require it (nnpack only for
           ;; x86_64).
