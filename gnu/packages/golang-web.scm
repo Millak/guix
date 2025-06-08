@@ -9024,7 +9024,7 @@ the Go standard library}.")
 (define-public go-github-com-quic-go-quic-go
   (package
     (name "go-github-com-quic-go-quic-go")
-    (version "0.45.2")
+    (version "0.52.0")
     (source
      (origin
        (method git-fetch)
@@ -9033,10 +9033,11 @@ the Go standard library}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0skg771b6h9xlssf7prkryypz4j8hnkz7k3i76qhxdc4iz4rqyfz"))))
+        (base32 "0frcjzrarvk3ck6dhqp88a1cbazw7jb26gxq1wp3lhgmxv4v4m2m"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/quic-go/quic-go"
       #:phases
       #~(modify-phases %standard-phases
@@ -9061,8 +9062,8 @@ the Go standard library}.")
     (native-inputs
      (list go-ginkgo
            go-github-com-onsi-ginkgo-v2
-           go-go-uber-org-mock
-           go-golang-org-x-time))
+           go-github-com-stretchr-testify
+           go-go-uber-org-mock))
     (propagated-inputs
      (list go-github-com-francoispqt-gojay
            go-github-com-quic-go-qpack
