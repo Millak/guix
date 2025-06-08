@@ -909,15 +909,32 @@ functions.")
 
 (define-public go-github-com-aws-aws-sdk-go-v2-config
   (package
-    (inherit go-github-com-aws-aws-sdk-go-v2)
     (name "go-github-com-aws-aws-sdk-go-v2-config")
-    (version "1.18.5")
+    (version "1.29.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version
+                                          #:subdir "config"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g6pmb6i7l88d2k4i2jz2mfxjb8snq8lhl419yvblgm96zgp5qbi"))))
+    (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2/config"
-       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/config"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-google-go-cmp
-           go-github-com-aws-smithy-go))))
+     (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - config module")
+    (description
+     "Package config provides utilities for loading configuration from
+multiple sources that can be used to configure the SDK's API clients, and
+utilities.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-credentials
   (package
