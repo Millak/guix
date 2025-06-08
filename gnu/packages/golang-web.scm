@@ -4343,7 +4343,7 @@ language.")
 (define-public go-github-com-gorilla-csrf
   (package
     (name "go-github-com-gorilla-csrf")
-    (version "1.7.2")
+    (version "1.7.3")
     (source
      (origin
        (method git-fetch)
@@ -4352,10 +4352,11 @@ language.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01d56sr9yggn6gs4lf5bnj15q6bkwvsim8kzj8m4arv1ccj7918j"))))
+        (base32 "0h32npfjir3k0yciisr6ybziv1bshmzw6x3bfkh3i72y3i7nv610"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/gorilla/csrf"))
     (propagated-inputs
      (list go-github-com-gorilla-securecookie
