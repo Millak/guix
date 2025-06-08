@@ -2746,6 +2746,7 @@ strings into words like a POSIX or Windows shell would.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/BurntSushi/toml"))
     (home-page "https://github.com/BurntSushi/toml")
     (synopsis "Toml parser and encoder for Go")
