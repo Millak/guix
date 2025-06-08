@@ -123,6 +123,9 @@ manner.  It also features an interactive interpreter.")
                                     #+(this-package-native-input "swi-prolog")
                                     "/bin/swipl"))
                   #~())
+           (string-append "-DPOSIX_SHELL="
+                          #$(this-package-input "bash-minimal")
+                          "/bin/sh")
            "-DINSTALL_DOCUMENTATION=ON"
            "-DSWIPL_INSTALL_IN_LIB=OFF") ; FIXME: Breaks RUNPATH validation.
        #:phases
