@@ -9433,6 +9433,45 @@ information or even the peer of a VETH interface.")
 support.")
     (license license:expat)))
 
+(define-public go-github-com-shopify-goreferrer
+  (package
+    (name "go-github-com-shopify-goreferrer")
+    (version "0.0.0-20250513162709-b78e2829e40b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Shopify/goreferrer")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sdmhkb1z5lhk7sgwq13vn2ryp0aaj4vsqb3fcxj8nyjvq19bfin"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Shopify/goreferrer"
+      #:embed-files
+      #~(list
+         ;; golang.org/x/net/publicsuffix/table.go:63:12: pattern
+         ;; data/children: cannot embed irregular file data/children
+         "children"
+         ;; golang.org/x/net/publicsuffix/table.go:48:12: pattern data/nodes:
+         ;; cannot embed irregular file data/nodes
+         "nodes"
+         ;; golang.org/x/net/publicsuffix/table.go:33:12: pattern data/text:
+         ;; cannot embed irregular file data/text
+         "text")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/Shopify/goreferrer")
+    (synopsis "Referrer URLs analyzer and classifier library for Golang")
+    (description
+     "This package provides a Go module that analyzes and classifies different
+kinds of referrer URLs (search, social, ...).")
+    (license license:expat)))
+
 (define-public go-github-com-shurcool-githubv4
   (package
     (name "go-github-com-shurcool-githubv4")
