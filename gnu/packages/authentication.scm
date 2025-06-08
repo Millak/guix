@@ -23,6 +23,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
@@ -126,7 +127,7 @@ PSKC (RFC6030) to manage secret key data.")
 (define-public oauth2l
   (package
     (name "oauth2l")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
@@ -135,13 +136,14 @@ PSKC (RFC6030) to manage secret key data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gm5pbgmz3p0zk5s4gvslp8ixhak3d35pfm7wrw5yk2rcdffr5li"))
+        (base32 "0qpgbbyjvvdw944d7ppa9ccmcp0gyyc9ik0bhq8agsia40biagwc"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/google/oauth2l"
       #:test-flags
