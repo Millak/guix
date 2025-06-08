@@ -25,6 +25,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build))
 
 ;;; Commentary:
@@ -229,6 +230,7 @@ flow into higher precision types from the @code{math.big} library.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/montanaflynn/stats"
       #:phases
       #~(modify-phases %standard-phases

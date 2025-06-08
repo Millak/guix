@@ -5315,7 +5315,7 @@ from the module-init-tools project.")
         (list
           ;; For the test suite.
           cppcheck
-          go)))
+          go-1.23)))
     (home-page "https://github.com/rfjakob/earlyoom")
     (synopsis "Simple out of memory (OOM) daemon for the Linux kernel")
     (description "Early OOM is a minimalist out of memory (OOM) daemon that

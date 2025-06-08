@@ -213,6 +213,7 @@ primitives.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/99designs/keyring"
       #:test-flags
       #~(list "-skip" (string-join
@@ -388,6 +389,7 @@ with its management port enabled.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:skip-build? #t
       #:import-path "github.com/blanu/Dust"))
     (propagated-inputs
@@ -568,6 +570,7 @@ described at @url{https://xxhash.com/}.")
       (build-system go-build-system)
       (arguments
        (list
+        #:go go-1.23
         #:import-path "github.com/chmduquesne/rollinghash/"
         #:phases
         #~(modify-phases %standard-phases

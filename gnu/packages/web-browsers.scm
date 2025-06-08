@@ -76,6 +76,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnome-xyz)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -923,6 +924,7 @@ history, and page outlines.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "tildegit.org/sloum/bombadillo"
       #:install-source? #f
       #:phases

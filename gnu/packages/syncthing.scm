@@ -65,6 +65,7 @@
     (outputs '("out" "utils"))
     (arguments
      (list
+      #:go go-1.23
        #:modules '((srfi srfi-26) ; for cut
                    (guix build utils)
                    (guix build go-build-system))

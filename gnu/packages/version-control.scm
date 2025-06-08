@@ -4299,6 +4299,7 @@ file contents on a remote server.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "git.sr.ht/~ngraves/lfs-s3"))
     (inputs (list git-lfs))
     (propagated-inputs
@@ -4867,6 +4868,7 @@ developer workflow, and project and release management.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "git.sr.ht/~xenrox/hut"
       #:phases
       #~(modify-phases %standard-phases

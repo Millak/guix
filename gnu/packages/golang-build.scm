@@ -44,7 +44,8 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module (gnu packages gcc))
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages golang))
 
 ;;; Commentary:
 ;;;
@@ -388,6 +389,7 @@ primitives in Go.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/twitchyliquid64/golang-asm"))
     (home-page "https://github.com/twitchyliquid64/golang-asm")
     (synopsis "Assembler from the Go compiler, in library form")

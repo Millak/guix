@@ -474,6 +474,7 @@ is corrupted you'll lose the affected file(s) but not the whole back-up.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/google/fscrypt"
       #:install-source? #f
       #:test-flags
@@ -2206,8 +2207,8 @@ memory-efficient.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/oniony/TMSU"
-      #:unpack-path "github.com/oniony/TMSU"
       #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases

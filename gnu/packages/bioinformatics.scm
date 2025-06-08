@@ -101,6 +101,7 @@
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
@@ -25294,6 +25295,7 @@ functions.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:skip-build? #t
       #:import-path "github.com/biogo/store"))
     (propagated-inputs

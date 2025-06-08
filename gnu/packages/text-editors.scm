@@ -96,6 +96,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-xyz)
@@ -180,6 +181,7 @@ extensions over the standard utility.")
       (build-system go-build-system)
       (arguments
        (list
+        #:go go-1.23
         #:install-source? #f
         #:import-path "github.com/zyedidia/micro/v2/cmd/micro"
         #:unpack-path "github.com/zyedidia/micro/v2"

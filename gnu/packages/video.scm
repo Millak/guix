@@ -159,6 +159,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphics)
@@ -3516,6 +3517,7 @@ playlists.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/Kethsar/ytarchive"
       #:embed-files #~(list "children" "nodes" "text")
