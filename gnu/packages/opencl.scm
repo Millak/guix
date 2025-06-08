@@ -129,16 +129,16 @@
 (define-public opencl-icd-loader
   (package
     (name "opencl-icd-loader")
-    (version "2023.02.06")
+    (version "2024.10.24")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/KhronosGroup/OpenCL-ICD-Loader.git")
+                    (url "https://github.com/KhronosGroup/OpenCL-ICD-Loader")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cmbcm6bz6kfvr0dy9hzf2vgfwcz8gbm8rxspqqpva6z74dz0qxr"))))
+                "0rnyx83iwisxfj818dzf016fmi62kk1hrlfav0b8a1pjfbzmvr03"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Tests need stub loader setup.
     (native-search-paths
