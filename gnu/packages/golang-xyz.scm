@@ -2611,7 +2611,7 @@ Supported Barcode Types:
 (define-public go-github-com-briandowns-spinner
   (package
     (name "go-github-com-briandowns-spinner")
-    (version "1.23.0")
+    (version "1.23.2")
     (source
      (origin
        (method git-fetch)
@@ -2620,7 +2620,7 @@ Supported Barcode Types:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "036r59m068k8grr0q77a6b1rqw4dyxm00fsxj7b9w1fjviq8djs6"))
+        (base32 "1icg6z10rkksbls6c50syfw63vvxbp849w4gbq3dsxlsabj32vsp"))
        (modules '((guix build utils)))
        (snippet
         '(begin
