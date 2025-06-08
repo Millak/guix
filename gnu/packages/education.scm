@@ -129,7 +129,7 @@
            go-github-com-fatih-color
            go-github-com-k0kubun-go-ansi
            go-github-com-mitchellh-go-homedir
-           go-github-com-olekukonko-tablewriter
+           go-github-com-olekukonko-tablewriter-0.0.5
            go-github-com-puerkitobio-goquery
            go-github-com-sergi-go-diff
            go-github-com-shirou-gopsutil

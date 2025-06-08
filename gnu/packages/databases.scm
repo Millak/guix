@@ -6131,7 +6131,7 @@ relational databases are in general.")
            go-github-com-lib-pq
            go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-sqlite3
-           go-github-com-olekukonko-tablewriter
+           go-github-com-olekukonko-tablewriter-0.0.5
            go-github-com-pkg-errors
            go-github-com-sourcegraph-jsonrpc2
            go-golang-org-x-crypto

@@ -3163,7 +3163,7 @@ glamorous default themes.")
        (replace "go-github-com-alecthomas-chroma-v2"
          go-github-com-alecthomas-chroma)
        (append go-github-com-dlclark-regexp2
-               go-github-com-olekukonko-tablewriter))))))
+               go-github-com-olekukonko-tablewriter-0.0.5))))))
 
 (define-public go-github-com-charmbracelet-harmonica
   (package
@@ -14979,7 +14979,7 @@ fine-grained log control, extensibility, and scalability.")
 (define-public go-github-com-olekukonko-tablewriter
   (package
     (name "go-github-com-olekukonko-tablewriter")
-    (version "0.0.5")
+    (version "1.0.7")
     (source
      (origin
        (method git-fetch)
@@ -14988,13 +14988,19 @@ fine-grained log control, extensibility, and scalability.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zhnrih2px6jm8nxzkz8s7va3lj03bzwxim8wjba9zh7i78bp67z"))))
+        (base32 "1ycpp98j8xzgfq87f9vqzh8mncai142l1r32qrz3m47sx88pk69s"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/olekukonko/tablewriter"))
+    (native-inputs
+     (list go-github-com-olekukonko-ts)) ; for CLI <cmd/csv2table>
     (propagated-inputs
-     (list go-github-com-mattn-go-runewidth))
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-runewidth
+           go-github-com-olekukonko-errors
+           go-github-com-olekukonko-ll))
     (home-page "https://github.com/olekukonko/tablewriter/")
     (synopsis "Generate ASCII table")
     (description "This package generates ASCII tables.  Features:
@@ -15016,6 +15022,22 @@ fine-grained log control, extensibility, and scalability.")
 @item optional reflowing of paragrpahs in multi-line cells
 @end itemize")
     (license license:expat)))
+
+(define-public go-github-com-olekukonko-tablewriter-0.0.5
+  ;; XXX: Pinned older version as upstream did not migrated to the latest one,
+  ;; remove it when no longer required.
+  (hidden-package (package (inherit go-github-com-olekukonko-tablewriter)
+    (name "go-github-com-olekukonko-tablewriter")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olekukonko/tablewriter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zhnrih2px6jm8nxzkz8s7va3lj03bzwxim8wjba9zh7i78bp67z")))))))
 
 (define-public go-github-com-olekukonko-ts
   (package
@@ -22790,9 +22812,17 @@ streaming.")
   (package/inherit go-github-com-olekukonko-tablewriter
     (name "go-csv2table")
     (arguments
-     (list #:install-source? #f
-           #:import-path "github.com/olekukonko/tablewriter/csv2table"
-           #:unpack-path "github.com/olekukonko/tablewriter"))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-olekukonko-tablewriter)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/olekukonko/tablewriter/cmd/csv2table")
+       ((#:unpack-path _ "") "github.com/olekukonko/tablewriter")))
+    (native-inputs
+     (append (package-native-inputs go-github-com-olekukonko-tablewriter)
+             (package-propagated-inputs go-github-com-olekukonko-tablewriter)))
+    (propagated-inputs '())
+    (inputs '())
     (description
      (string-append (package-description go-github-com-olekukonko-tablewriter)
                     "\nThis package provides a command line interface (CLI) tool."))))

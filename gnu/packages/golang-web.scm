@@ -4988,10 +4988,11 @@ port mapping and discovering the external IP address of a firewall.")
               (("jaytaylor.com/html2text") "github.com/jaytaylor/html2text"))))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/jaytaylor/html2text"))
+     (list
+      #:import-path "github.com/jaytaylor/html2text"))
     (propagated-inputs
      (list go-golang-org-x-net
-           go-github-com-olekukonko-tablewriter
+           go-github-com-olekukonko-tablewriter-0.0.5
            go-github-com-ssor-bom))
     (home-page "https://github.com/jaytaylor/html2text")
     (synopsis "Convert HTML emails to text")
@@ -10737,7 +10738,7 @@ connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
            go-github-com-hashicorp-go-syslog
            go-github-com-hjson-hjson-go-v4
            go-github-com-kardianos-minwinsvc
-           go-github-com-olekukonko-tablewriter
+           go-github-com-olekukonko-tablewriter-0.0.5
            go-github-com-quic-go-quic-go
            go-github-com-vishvananda-netlink
            go-github-com-wlynxg-anet

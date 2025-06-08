@@ -415,7 +415,7 @@ source code editors and IDEs.")
     (native-inputs
      (list go-github-com-docopt-docopt-go
            go-github-com-go-ini-ini
-           go-github-com-olekukonko-tablewriter
+           go-github-com-olekukonko-tablewriter-0.0.5
            go-github-com-stretchr-testify
            go-md2man))
     (home-page "https://github.com/mrtazz/checkmake")

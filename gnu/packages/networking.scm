@@ -4852,7 +4852,7 @@ implementing them.")
            go-github-com-hashicorp-go-syslog
            go-github-com-hjson-hjson-go-v4
            go-github-com-kardianos-minwinsvc
-           go-github-com-olekukonko-tablewriter
+           go-github-com-olekukonko-tablewriter-0.0.5
            go-github-com-quic-go-quic-go
            go-github-com-vishvananda-netlink
            go-github-com-wlynxg-anet
