@@ -4992,7 +4992,7 @@ gist (https://gist.github.com/kballard/272720).")
 (define-public go-github-com-dave-jennifer
   (package
     (name "go-github-com-dave-jennifer")
-    (version "1.7.0")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -5001,10 +5001,11 @@ gist (https://gist.github.com/kballard/272720).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01sgafbds8n5zs61qf057whn06yj6avz30xgxk6pllf22528558m"))))
+        (base32 "1a0zg8cdnhyqfgrz7jbgpnnz75g5ps1c8cnmbxvfldmy973ziaml"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/dave/jennifer"))
     (home-page "https://github.com/dave/jennifer")
     (synopsis "Code generator for Go")
