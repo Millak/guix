@@ -1856,7 +1856,7 @@ commands.")
 (define-public lite-xl
   (package
     (name "lite-xl")
-    (version "2.1.7")
+    (version "2.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1865,10 +1865,10 @@ commands.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ykidzm2wi2ds251ngq0g02sdawajw5iy5hcp3mzr5z5347if392"))))
+                "1lf6l6r02hp641n6wnfp7xmx54r32hv8whf7bd5nhf3gzvnl76pl"))))
     (build-system meson-build-system)
     (arguments (list #:configure-flags #~'("-Duse_system_lua=true")))
-    (inputs (list lua-5.4 pcre2 freetype sdl2))
+    (inputs (list lua-5.4 pcre2 freetype libdecor sdl3))
     (native-inputs (list pkg-config))
     (home-page "https://lite-xl.com")
     (synopsis "Lightweight text editor written in Lua")
