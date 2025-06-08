@@ -7275,7 +7275,7 @@ it effectively reuses the JSON struct tags as well as the custom JSON methods
 (define-public go-github-com-git-lfs-go-netrc
   (package
     (name "go-github-com-git-lfs-go-netrc")
-    (version "0.0.0-20230601124202-e96144b9a966")
+    (version "0.0.0-20250218165306-ba0029b43d11")
     (source
      (origin
        (method git-fetch)
@@ -7284,7 +7284,7 @@ it effectively reuses the JSON struct tags as well as the custom JSON methods
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rb8xk0gp7yvw10zs122p48qhj3xc9csaykbflr7wdfx5xqpbr2f"))))
+        (base32 "11srhd9xjrrkmqxkgzdbfahak6bi1zlm153i6cbl3z0pchrlykqr"))))
     (build-system go-build-system)
     (arguments
      (list
