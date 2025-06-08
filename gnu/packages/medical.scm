@@ -30,6 +30,7 @@
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash) ; wrap-program
   #:use-module (gnu packages boost)
@@ -385,3 +386,49 @@ Medicine} server instead of SQLite.")
 backend of an Orthanc @acronym{DICOM, Digital Imaging and Communications in
 Medicine} server instead of SQLite.")
       (license license:agpl3+))))
+
+;; Provide this variant without MySQL to save MariaDB users ~340 MiB
+;; of disk space.
+(define-public orthanc-mariadb
+  (package/inherit orthanc-mysql
+    (name "orthanc-mariadb")
+    (arguments
+     (substitute-keyword-arguments (package-arguments orthanc-mysql)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; The tests rely on a MySQL or MariaDB test server
+                  ;; being available.
+                  (let ((datadir "/tmp/mysql")
+                        (socket "/tmp/mysql/mysqld.sock")
+                        (username "root")
+                        (password "")
+                        (database "orthanctest"))
+                    (invoke "mariadb-install-db"
+                            (string-append "--datadir=" datadir)
+                            "--auth-root-authentication-method=normal")
+                    (spawn "mysqld"
+                           (list
+                            "mysqld"
+                            ;; Respect '--datadir'.
+                            "--no-defaults"
+                            (string-append "--datadir=" datadir)
+                            (string-append "--socket=" socket)
+                            ;; For one test.
+                            "--max-allowed-packet=32m"))
+                    (sleep 1)
+                    (invoke "mysql"
+                            (string-append "--socket=" socket)
+                            "-u" username
+                            "-e" "CREATE DATABASE orthanctest;")
+                    (invoke "./UnitTests" socket username password
+                            database)))))))))
+    (native-inputs (modify-inputs (package-native-inputs orthanc-mysql)
+                     (prepend mariadb))) ;for tests
+    (inputs (modify-inputs (package-inputs orthanc-mysql)
+              (delete "mysql")
+              (prepend `(,mariadb "dev")
+                       `(,mariadb "lib"))))
+    (synopsis "MariaDB plugins for Orthanc")))
