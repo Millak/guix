@@ -10272,7 +10272,7 @@ the superuser to make device nodes.")
 (define-public fakeroot
   (package
     (name "fakeroot")
-    (version "1.35.1")
+    (version "1.37.1.2")
     (source
      (origin
        ;; There are no tags in the repository, so take this snapshot.
@@ -10281,7 +10281,7 @@ the superuser to make device nodes.")
                            "fakeroot/fakeroot_" version ".orig.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p2zcng64sigixppmh42gd3ava771pmq9a6lwva7flp05lxya3ba"))
+        (base32 "091jym16c4m4qjf5yclksvx7nw4sl7v5yrkz6z46wrwaij99d54m"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -10344,7 +10344,7 @@ the superuser to make device nodes.")
                (("tar -tvf") "tar --numeric-owner -tvf")))))))
     (native-inputs
      (list autoconf-2.71 automake gettext-minimal libtool po4a
-           sharutils xz))               ; for tests
+           perl sharutils xz))               ; for tests
     (inputs
      (list acl libcap util-linux sed coreutils))
     (synopsis "Run commands in an environment with fake root privileges")
