@@ -20,14 +20,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages medical)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module (guix hg-download)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash) ; wrap-program
@@ -213,3 +214,82 @@ Medicine} server")
 Communications in Medicine} server with a RESTful API and plugin
 mechanism for extending its functionality.")
     (license license:gpl3+)))
+
+(define-public orthanc-postgresql
+  ;; No tags provided.
+  (let ((changeset "ddc98844d931")
+        (revision "0"))
+    (package
+      (name "orthanc-postgresql")
+      (version (git-version "7.2" revision changeset))
+      (source
+       (origin
+         (method hg-fetch)
+         (uri (hg-reference
+                (url "https://orthanc.uclouvain.be/hg/orthanc-databases")
+                (changeset changeset)))
+         (file-name (hg-file-name name version))
+         (sha256
+          (base32 "1zv2lrj0f3fahmdyiwyj70ayv5ysa3cj33i58fbk7hy2zclrkjzf"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list
+           ;; Don't try to download the Orthanc source code.
+           "-DORTHANC_FRAMEWORK_SOURCE=path"
+           (string-append "-DORTHANC_FRAMEWORK_ROOT="
+                          #$(package-source (this-package-input "orthanc"))
+                          "/OrthancFramework/Sources"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                ;; The PostgreSQL/ subdirectory contains the root
+                ;; CMakeLists.txt file.
+                (chdir "PostgreSQL")))
+            ;; There is no test target; simply run the binary.
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; The tests rely on a PostgreSQL test server
+                  ;; being available.
+                  (let ((pgdata "/tmp/pgdata")
+                        (host "/tmp")
+                        (port "5432")
+                        ;; This username is hard-coded in tests.
+                        (username "postgres")
+                        (password "")
+                        (database "orthanctest"))
+                    (invoke "initdb" pgdata)
+                    (invoke "pg_ctl" "-D" pgdata
+                            "-o" (string-append "-k " host)
+                            "start")
+                    (invoke "createdb" "-h" host database)
+                    (invoke "createuser" "-h" host username)
+                    ;; The tests include managing Large Objects.
+                    (invoke "psql" "-h" host "-d" database "-c"
+                            (string-append "ALTER ROLE " username
+                                           " WITH SUPERUSER;"))
+                    (invoke "./UnitTests" host port username password
+                            database))))))))
+      (native-inputs
+       (list googletest
+             python))
+      (inputs
+       (list boost
+             jsoncpp
+             openssl
+             orthanc
+             postgresql
+             protobuf
+             unzip
+             (list util-linux "lib") ; <uuid.h>
+             zlib))
+      (home-page "https://orthanc-server.com")
+      (synopsis "PostgreSQL plugins for Orthanc")
+      (description
+       "This package provides plugins to use PostgreSQL as the database
+backend of an Orthanc @acronym{DICOM, Digital Imaging and Communications in
+Medicine} server instead of SQLite.")
+      (license license:agpl3+))))
