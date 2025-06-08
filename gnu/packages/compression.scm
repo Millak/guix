@@ -3095,16 +3095,16 @@ exported by the zlib library.")
 (define-public miniz-for-pytorch
   (package
     (inherit miniz)
-    (version "pytorch-2.2.0")
+    (version "pytorch-2.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/richgel999/miniz")
-                    (commit "2.2.0")))
+                    (commit "3.0.2")))
               (file-name (git-file-name (package-name miniz) version))
               (sha256
                (base32
-                "09j9ihigfsavgcmk8l36zmbjvdf1x1w7h2v4rkww1qk1sb43y5zf"))
+                "0672q35vjrpakmsr1gwj9k5fwv5ihzhahm19bq4y74wqpn91p7fw"))
               (patches (search-patches "miniz-for-pytorch.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments miniz)
