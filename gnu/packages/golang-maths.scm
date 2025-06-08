@@ -329,7 +329,7 @@ format as binary16.")
 (define-public go-gonum-org-v1-gonum
   (package
     (name "go-gonum-org-v1-gonum")
-    (version "0.15.1")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -338,10 +338,11 @@ format as binary16.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "002qsavnylj8l4ki56narpn3zm0r9p7p8ccgd20q1xp751wg2kvp"))))
+        (base32 "01mj449mlvp863d6k9zaz3y2z3vc0l5vcn046f17s83f49r0sh58"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "gonum.org/v1/gonum"
       #:test-subdirs
       #~(list "."
