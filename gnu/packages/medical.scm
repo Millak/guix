@@ -293,3 +293,95 @@ mechanism for extending its functionality.")
 backend of an Orthanc @acronym{DICOM, Digital Imaging and Communications in
 Medicine} server instead of SQLite.")
       (license license:agpl3+))))
+
+(define-public orthanc-mysql
+  ;; No tags provided.
+  (let ((changeset "a6300ccf6683")
+        (revision "0"))
+    (package
+      (name "orthanc-mysql")
+      (version (git-version "5.2" revision changeset))
+      (source
+       (origin
+         (method hg-fetch)
+         (uri (hg-reference
+                (url "https://orthanc.uclouvain.be/hg/orthanc-databases")
+                (changeset changeset)))
+         (file-name (hg-file-name name version))
+         (sha256
+          (base32 "0hi3bawj117lk7lrxpa6h7vq4hx9jwqb3m5pwn3726hnf4kmp4jc"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list
+           ;; Don't try to download the Orthanc source code.
+           "-DORTHANC_FRAMEWORK_SOURCE=path"
+           (string-append "-DORTHANC_FRAMEWORK_ROOT="
+                          #$(package-source (this-package-input "orthanc"))
+                          "/OrthancFramework/Sources"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                ;; The MySQL/ subdirectory contains the root CMakeLists.txt
+                ;; file.
+                (chdir "MySQL")))
+            (add-after 'unpack 'fix-mysql-include-path
+              (lambda _
+                ;; Help it find mysql.h, either from mysql in this package or
+                ;; from mariadb:dev in orthanc-mariadb.
+                (substitute* "Resources/CMake/MariaDBConfiguration.cmake"
+                  (("/usr/include/mysql")
+                   (string-append #$(this-package-input "mysql")
+                                  "/include/mysql")))))
+            ;; There is no test target; simply run the binary.
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; The tests rely on a MySQL or MariaDB test server
+                  ;; being available.
+                  (let ((datadir "/tmp/mysql")
+                        (socket "/tmp/mysql/mysqld.sock")
+                        (username "root")
+                        (password "")
+                        (database "orthanctest"))
+                    (invoke "mysqld" "--initialize-insecure"
+                            (string-append "--datadir=" datadir))
+                    (spawn "mysqld"
+                           (list
+                            "mysqld"
+                            ;; Respect '--datadir'.
+                            "--no-defaults"
+                            (string-append "--datadir=" datadir)
+                            (string-append "--socket=" socket)
+                            ;; For one test.
+                            "--max_allowed_packet=32m"))
+                    (sleep 1)
+                    (invoke "mysql"
+                            (string-append "--socket=" socket)
+                            "-u" username
+                            "-e" "CREATE DATABASE orthanctest;")
+                    (invoke "./UnitTests" socket username password
+                            database))))))))
+      (native-inputs
+       (list googletest
+             python))
+      (inputs
+       (list boost
+             curl
+             jsoncpp
+             mysql
+             openssl
+             orthanc
+             protobuf
+             unzip
+             (list util-linux "lib") ; <uuid.h>
+             zlib))
+      (home-page "https://orthanc-server.com")
+      (synopsis "MySQL plugins for Orthanc")
+      (description
+       "This package provides plugins to use MySQL or MariaDB as the database
+backend of an Orthanc @acronym{DICOM, Digital Imaging and Communications in
+Medicine} server instead of SQLite.")
+      (license license:agpl3+))))
