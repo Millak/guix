@@ -1932,7 +1932,7 @@ conditions, metamorphic tests can identify bugs without requiring an oracle.")
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
-    (version "1.8.12")
+    (version "1.8.13")
     (source
      (origin
        (method git-fetch)
@@ -1941,7 +1941,7 @@ conditions, metamorphic tests can identify bugs without requiring an oracle.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "172v9mqghswf50ga512qghb6ii0ivz5fi2iyjzdnbm42g0cr4fjj"))
+        (base32 "1ycphyxz8ap0l3sbwii650wz2p0a0wy7swikxr1sb39m5mw2amdi"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1985,8 +1985,7 @@ compression.
 CloseRead} helper for write only connections
 @item Compile to @url{https://pkg.go.dev/github.com/coder/websocket#hdr-Wasm,
 Wasm}.
-@end itemize
-")
+@end itemize")
     (license license:isc)))
 
 (define-public go-github-com-containerd-typeurl
