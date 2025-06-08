@@ -17790,12 +17790,10 @@ a few advantages over using the standard log library alone.
 @end itemize")
     (license license:expat)))
 
-;; XXX: Not maintained for 3y, see
-;; <https://github.com/spf13/pflag/issues/385>.
 (define-public go-github-com-spf13-pflag
   (package
     (name "go-github-com-spf13-pflag")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method git-fetch)
@@ -17804,19 +17802,11 @@ a few advantages over using the standard log library alone.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gpmacngd0gpslnbkzi263f5ishigzgh6pbdv9hp092rnjl4nd31"))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils))
-            ;; Fix compatibility with go-1.19+
-            ;; https://github.com/spf13/pflag/issues/368
-            (substitute* "flag_test.go"
-              (("fmt\\.Println") "fmt.Print")
-              (("\\+ got\\)") "+ got + \"\\n\")")
-              (("\\+ defaultOutput\\)") "+ defaultOutput + \"\\n\")"))))))
+        (base32 "0ckdaa5q3afhgx5hi45czxn2pcc5fd0sz4axh4hqxyvgsjfjvmg0"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/spf13/pflag"))
     (home-page "https://github.com/spf13/pflag")
     (synopsis "Replacement for Go's @code{flag} package")
