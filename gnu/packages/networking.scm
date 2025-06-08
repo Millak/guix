@@ -151,6 +151,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages lxqt)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages man)
@@ -2178,7 +2179,7 @@ reusing frequently-requested web pages.")
     (native-inputs
      (list autoconf automake))
     (inputs
-     (list ncurses))
+     (list libstatgrab ncurses))
     (synopsis "Console based live network and disk I/O bandwidth monitor")
     (description "Bandwidth Monitor NG is a small and simple console based
 live network and disk I/O bandwidth monitor.")
