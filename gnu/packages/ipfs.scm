@@ -392,6 +392,39 @@ provides a single @code{GetBlock/AddBlock} interface that seamlessly retrieves
 data either locally or from a remote peer through the exchange.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ds-badger4
+  (package
+    (name "go-github-com-ipfs-go-ds-badger4")
+    (version "0.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ds-badger4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gyzywd74cb8jl0zr8b3fjjmd8rsabwk5rj17nhagigps4971h1a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/ipfs/go-ds-badger4"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-zap))
+    (propagated-inputs
+     (list go-github-com-dgraph-io-badger-v4
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-detect-race
+           go-github-com-ipfs-go-log-v2))
+    (home-page "https://github.com/ipfs/go-ds-badger4")
+    (synopsis "Datastore implementation using Badger v4 as backend")
+    (description
+     "This package implements a Badger v4 (a key-value database) backed
+datastore for IPFS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipfs-go-ds-dynamodb
   (package
     (name "go-github-com-ipfs-go-ds-dynamodb")
