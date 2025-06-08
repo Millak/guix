@@ -974,13 +974,30 @@ credentials sources.")
 
 (define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
   (package
-    (inherit go-github-com-aws-aws-sdk-go-v2)
     (name "go-github-com-aws-aws-sdk-go-v2-feature-s3-manager")
-    (version "1.11.44")
+    (version "1.17.78")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version
+                                          #:subdir "feature/s3/manager"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g6pmb6i7l88d2k4i2jz2mfxjb8snq8lhl419yvblgm96zgp5qbi"))))
+    (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2/feature/s3/manager"
-       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
-    (propagated-inputs (list go-github-com-aws-smithy-go))))
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - S3 manager module")
+    (description
+     "Package manager provides utilities to upload and download objects from
+S3 concurrently.  Helpful for when working with large objects.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-iam
   (package
