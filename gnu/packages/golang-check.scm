@@ -1807,6 +1807,8 @@ Gomega matcher library.")
       ;; XXX: Most of the tests hang, find out why, keeping bare minimal
       ;; amount.
       #~(list "dsl/..." "extensions/globals" ".")))
+    (native-inputs
+     (list go-go-uber-org-automaxprocs)) ; for the CLI
     (propagated-inputs
      (list go-github-com-go-logr-logr
            go-github-com-go-task-slim-sprig-v3
@@ -3022,14 +3024,20 @@ thoroughly
 ;;;
 
 (define-public go-ginkgo
-  (package
-    (inherit go-github-com-onsi-ginkgo-v2)
+  (package/inherit go-github-com-onsi-ginkgo-v2
     (name "ginkgo")
     (arguments
-     (list
-       #:import-path "github.com/onsi/ginkgo/ginkgo"
-       #:unpack-path "github.com/onsi/ginkgo"
-       #:install-source? #f))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-onsi-ginkgo-v2)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/onsi/ginkgo/ginkgo")
+       ((#:unpack-path _ "") "github.com/onsi/ginkgo")))
+    (native-inputs
+     (append (package-native-inputs go-github-com-onsi-ginkgo-v2)
+             (package-propagated-inputs go-github-com-onsi-ginkgo-v2)))
+    (propagated-inputs '())
+    (inputs '())
     (description
      (string-append (package-description go-github-com-onsi-ginkgo-v2)
                     "  This package provides an command line interface (CLI)
