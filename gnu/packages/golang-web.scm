@@ -1617,6 +1617,31 @@ process, in order to gradually find an acceptable rate.  The retries
 exponentially increase and stop increasing when a certain threshold is met.")
     (license license:expat)))
 
+(define-public go-github-com-cenkalti-backoff-v5
+  (package
+    (inherit go-github-com-cenkalti-backoff-v4)
+    (name "go-github-com-cenkalti-backoff-v5")
+    (version "5.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cenkalti/backoff")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hc4manlkqfy9acva1jb8ayh8jihjb0h76l3g1sqqp0vlaq5y6q3"))))
+    (arguments
+     (list
+      #:import-path "github.com/cenkalti/backoff/v5"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Example tests freeze infinitely.
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "example_test.go")))))))))
+
 (define-public go-github-com-cenkalti-hub
   (package
     (name "go-github-com-cenkalti-hub")
