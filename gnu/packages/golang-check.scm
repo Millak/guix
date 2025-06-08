@@ -1789,7 +1789,7 @@ Gomega matcher library.")
   (package
     (inherit go-github-com-onsi-ginkgo)
     (name "go-github-com-onsi-ginkgo-v2")
-    (version "2.22.0")
+    (version "2.23.4")
     (source
      (origin
        (method git-fetch)
@@ -1798,9 +1798,10 @@ Gomega matcher library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mla4hr73ykbhl2mr40vzr4fjl97whr17ip907cac78fzch1csn8"))))
+        (base32 "01rmm0lx29bwl973qixx6avwa8m6yc1vkara52cbl0jxxwf1jf3d"))))
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/onsi/ginkgo/v2"
       #:test-subdirs
       ;; XXX: Most of the tests hang, find out why, keeping bare minimal
