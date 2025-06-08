@@ -5349,8 +5349,12 @@ controlled.  It is based on netlink messages.")
       #:go go-1.23
       #:import-path "github.com/json-iterator/go"
       #:test-flags
-      ;; XXX: Try to skip just "Test_symmetric/map[test.stringKeyType]string".
-      #~(list "-skip" "Test_symmetric")))
+      #~(list "-skip" (string-join
+                       (list "Test_marshal/.53..b/string"
+                             "Test_marshal/.57._/string"
+                             "Test_string_encode_with_std_without_html_escape"
+                             "Test_symmetric/map.test.stringKeyType.string")
+                       "|"))))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-google-gofuzz
