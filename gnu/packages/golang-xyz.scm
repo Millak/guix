@@ -14920,6 +14920,34 @@ millisecond)
      (list
       #:import-path "github.com/oklog/ulid/v2"))))
 
+(define-public go-github-com-olekukonko-errors
+  (package
+    (name "go-github-com-olekukonko-errors")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olekukonko/errors")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12wb02aa4pmd1dl34jczcf12v0bv7kh6qfp8zqmw0hsnh6kdp3i4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/olekukonko/errors"))
+    (home-page "https://github.com/olekukonko/errors")
+    (synopsis "Enhanced Error Handling for Golang")
+    (description
+     "Package errors provides a robust error handling library with support for
+error wrapping, stack traces, context storage, and retry mechanisms.  It
+extends the standard library's error interface with features like HTTP-like
+status codes, error categorization, and JSON serialization, while maintaining
+compatibility with `errors.Is`, `errors.As`, and `errors.Unwrap`.  The package
+is thread-safe and optimized with object pooling for performance.")
+    (license license:expat)))
+
 (define-public go-github-com-olekukonko-tablewriter
   (package
     (name "go-github-com-olekukonko-tablewriter")
