@@ -2477,7 +2477,7 @@ matching and globbing with support for \"doublestar\" patterns.")
   (package
     (inherit go-github-com-bmatcuk-doublestar)
     (name "go-github-com-bmatcuk-doublestar-v4")
-    (version "4.7.1")
+    (version "4.8.1")
     (source
      (origin
        (method git-fetch)
@@ -2486,9 +2486,10 @@ matching and globbing with support for \"doublestar\" patterns.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bvfxqkpl8bkfqxjxjgmz0gd4b4v6dxwrzxq2qzly0r9zrj1lfic"))))
+        (base32 "0jskh3dp9xmh1bf1a7dh5ykv0pk2v4pxh5bynsl33cmw61dkd6s0"))))
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/bmatcuk/doublestar/v4"))))
 
 (define-public go-github-com-bmizerany-perks-quantile
