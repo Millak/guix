@@ -5872,7 +5872,7 @@ exit code reports successful or failed execution to
 (define-public udpcast
   (package
     (name "udpcast")
-    (version "20211207")
+    (version "20250223")
     (source
      (origin
        (method url-fetch)
@@ -5885,11 +5885,13 @@ exit code reports successful or failed execution to
                    "https://www.udpcast.linux.lu/download/udpcast-"
                    version ".tar.gz")))
        (sha256
-        (base32 "0l6hck694szrrvz85nm48rwb7mzvg2z2bwa50v51pkvym3kvxkm3"))))
+        (base32 "19qa6yp0svhvyra4898c6kjs56bn7yr9cavxk1vbrqbpr1a7bzff"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake m4 perl))
-    (arguments `(#:tests? #f))                    ;no test suite
+    (arguments
+     (list #:tests? #f                    ;no test suite
+           #:make-flags #~(list (string-append "sbindir=" #$output "/sbin/"))))
     (synopsis "Multicast file transfer tool")
     (description
      "UDPcast is a file transfer tool that can send data simultaneously to
