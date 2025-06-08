@@ -5358,6 +5358,38 @@ simultaneously.  It uses @acronym{Multi-Version Concurrency Control, MVCC},
 supports concurrent serializable transactions.")
     (license license:asl2.0)))
 
+(define-public go-github-com-dgraph-io-badger-v4
+  (package
+    (inherit go-github-com-dgraph-io-badger)
+    (name "go-github-com-dgraph-io-badger-v4")
+    (version "4.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgraph-io/badger")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v4c69whypm3k40hrx8bw9rjrcb0swz43v056s0fadqr04j0ncwj"))))
+    (arguments
+     (list
+      #:go go-1.23
+      #:tests? #f ; TODO: tests hang, find out why.
+      #:import-path "github.com/dgraph-io/badger/v4"))
+    (propagated-inputs
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-dgraph-io-ristretto-v2
+           go-github-com-dustin-go-humanize
+           go-github-com-google-flatbuffers
+           go-github-com-klauspost-compress
+           go-github-com-pkg-errors
+           go-github-com-spf13-cobra
+           go-go-opencensus-io
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))))
+
 (define-public go-github-com-dgraph-io-ristretto
   (package
     (name "go-github-com-dgraph-io-ristretto")
