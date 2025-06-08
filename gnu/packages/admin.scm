@@ -1002,17 +1002,16 @@ or via the @code{facter} Ruby library.")
           (base32 "0ldb7a13b9v876c6cbrs78pkizj64drnqx95z5shfbwgpwfhr4im"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f      ; no tests
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target)))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (install-file "ttyload" bin)))))))
+       (list #:tests? #f      ; no tests
+             #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (replace 'install
+                   (lambda _
+                     (let ((bin (string-append #$output "/bin")))
+                       (install-file "ttyload" bin)))))))
       (home-page "https://www.daveltd.com/src/util/ttyload/")
       (synopsis "Console based color-coded graphs of CPU load average")
       (description
