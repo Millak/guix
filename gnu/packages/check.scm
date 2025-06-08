@@ -1216,7 +1216,7 @@ similar to unit tests.")
 (define-public gotestsum
   (package
     (name "gotestsum")
-    (version "1.12.0")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -1225,7 +1225,7 @@ similar to unit tests.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fx92jh6ay4rk1ljbgp9b2m4fafqwy0a19q7lhdabgb1j8dvgxvs"))))
+        (base32 "02q251j5kf2874vnvmbfc0ncnwssq459s8mf9f50cymqkpqbx0lp"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1235,6 +1235,9 @@ similar to unit tests.")
               (string-join
                (list "TestE2E_IgnoresWarnings"
                      "TestE2E_MaxFails_EndTestRun"
+                     "TestE2E_RerunFails/first_run_has_errors,_abort_rerun"
+                     "TestE2E_RerunFails/reruns_continues_to_fail"
+                     "TestE2E_RerunFails/reruns_until_success"
                      "TestScanTestOutput_TestTimeoutPanicRace/panic-race-2")
                "|"))
       ;; Run just unit test, integration tests from "testjson" require: run
