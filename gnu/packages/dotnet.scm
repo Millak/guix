@@ -1905,3 +1905,5 @@ most of the heavy lifting.")
                                                      (target ,libx11))))
                           port))))
                    (find-files gac "^System[.]Windows[.]Forms[.]dll$")))))))))))
+
+(define-public mono mono-6.12.0)

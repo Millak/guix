@@ -87,6 +87,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages dotnet)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -99,6 +100,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
@@ -321,6 +323,124 @@ algorithms AES or Twofish.")
     ;; While various parts of the software are licensed under different licenses,
     ;; the combined work falls under the GPLv3.
     (license license:gpl3)))
+
+(define-public keepass
+  (package
+    (name "keepass")
+    (version "2.57.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "mirror://sourceforge/keepass/KeePass%202.x/" version
+         "/KeePass-" version "-Source.zip"))
+       (sha256 (base32 "11i9h0pbvbmz3a6wkp97qhrc8r4l5a2iwxw6vl0zwcp19ka5gdpp"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'unpack
+           (lambda* (#:key source #:allow-other-keys)
+             (mkdir "source")
+             (chdir "source")
+             (invoke "unzip" source)))
+         (replace 'configure
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Make reproducible by setting build number to 0.
+             (substitute* "KeePass/Properties/AssemblyInfo.cs"
+              (("AssemblyVersion[(]\"2.57.1.*\"[)]")
+               "AssemblyVersion(\"2.57.1.0\")"))
+             (substitute* "KeePassLib/Native/NativeMethods.Unix.cs"
+              (("libgcrypt.so.20" all)
+               (string-append (search-input-file inputs (string-append "/lib/" all))))
+              (("libglib-2.0.so.0" all)
+               (string-append (search-input-file inputs (string-append "/lib/" all))))
+              (("libgtk-3.so.0" all)
+               (string-append (search-input-file inputs (string-append "/lib/" all)))))
+             (substitute* "KeePass.sln"
+               (("GlobalSection\\(ExtensibilityGlobals\\).*?EndGlobalSection")
+                "")
+               (("GlobalSection\\(ExtensibilityGlobals\\).*?EndGlobalSection"
+                 all)
+                "")
+               (("Format Version 10\\.0")
+                "Format Version 11.00"))
+             (substitute* "KeePass/KeePass.csproj"
+               ((" ToolsVersion=\\\"3\\.5\\\"")
+                " ToolsVersion=\"4.0\"")
+               (("<SignAssembly>true</SignAssembly>")
+                "<SignAssembly>false</SignAssembly>")
+               ;; XML Serializer AOT compiler doesn't work here.
+               ;; mono will just fall back to the runtime compiler.
+               (("[$][(]FrameworkSDKDir[)]bin.sgen[.]exe")
+                "echo")
+               (("<TargetFrameworkVersion>v4\\.8</TargetFrameworkVersion>")
+                "<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>"))
+             (copy-file
+              "Ext/Icons_15_VA/LowResIcons/KeePass_LR.ico"
+              "KeePass/KeePass.ico")
+             (copy-file
+              "Ext/Icons_15_VA/LowResIcons/KeePass_LR.ico"
+              "KeePass/IconsKeePass.ico")
+             (copy-file
+              "Ext/Icons_15_VA/LowResIcons/KeePass_LR_G.ico"
+              "KeePass/IconsKeePass_G.ico")
+             (copy-file
+              "Ext/Icons_15_VA/LowResIcons/KeePass_LR_R.ico"
+              "KeePass/IconsKeePass_R.ico")
+             (copy-file
+              "Ext/Icons_15_VA/LowResIcons/KeePass_LR_Y.ico"
+              "KeePass/IconsKeePass_Y.ico")
+             (substitute* "KeePassLib/KeePassLib.csproj"
+               ((" ToolsVersion=\\\"3\\.5\\\"")
+                " ToolsVersion=\"4.0\"")
+               (("<SignAssembly>true</SignAssembly>")
+                "<SignAssembly>false</SignAssembly>"))
+             (substitute* "Translation/TrlUtil/TrlUtil.csproj"
+               ((" ToolsVersion=\\\"3\\.5\\\"") " ToolsVersion=\"4.0\""))
+             (copy-file
+              "Ext/Icons_15_VA/LowResIcons/KeePass_LR.ico"
+              "KeePass/Resources/KeePass.ico")))
+         (delete 'patch-source)
+         (replace 'build
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "MONO_REGISTRY_PATH" "/dev/null")
+             (setenv "LANG" "C")
+             (setenv "LC_ALL" "C")
+             (invoke
+              "xbuild"
+              "/target:KeePass"
+              "/property:Configuration=Release"
+              "/property:CscToolExe=mcs"
+              "/verbosity:diagnostic")))
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (script (string-append out "/bin/keepass"))
+                    (mono (assoc-ref inputs "mono"))
+                    (lib (string-append out "/lib/keepass")))
+               (install-file "KeePass/obj/Release/KeePass.exe" lib)
+               (install-file "Ext/KeePass.config.xml" lib)
+               (mkdir (string-append out "/bin"))
+               (call-with-output-file script
+                   (lambda (port)
+                     (format port "#!/bin/sh
+exec ~s/bin/mono ~s/lib/keepass/KeePass.exe \"$@\"
+"
+                             mono out)))
+               (chmod script #o755)
+               (patch-shebang script)))))
+       #:tests? #f)) ;no tests
+    (native-inputs (list unzip icoutils))
+    (inputs (list mono libgdiplus libgcrypt glib gtk+))
+    (home-page "https://keepass.info/")
+    (synopsis
+     "Light-weight and easy-to-use password manager")
+    (description
+     "KeePass is a light-weight and easy-to-use password manager that helps
+you manage your passwords in a secure way.  All passwords are stored
+in an encrypted database, which is locked with a master key or key file.")
+    (license license:gpl2)))
 
 (define-public pwsafe
   (package
