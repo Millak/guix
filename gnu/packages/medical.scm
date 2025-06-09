@@ -25,6 +25,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages bash) ; wrap-program
   #:use-module (gnu packages databases)
@@ -81,7 +82,7 @@
      "This package provides GNUHealth Personal Health Record
 application for desktop and mobile devices that integrates with the GNU
 Health Federation.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public openmolar-1
   (package
@@ -123,4 +124,4 @@ Health Federation.")
 functionality includes appointments, patient records, treatment planning,
 billing etc.  It is a full featured, reliable and thoroughly tested
 application and has been translated into many languages.")
-    (license gpl3+)))
+    (license license:gpl3+)))
