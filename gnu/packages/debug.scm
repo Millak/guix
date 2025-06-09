@@ -220,10 +220,20 @@ tools that process C/C++ code.")
          ;; Only one of the following three can be enabled at the same time
          ;; "-DCPPDAP_USE_EXTERNAL_RAPIDJSON_PACKAGE=ON"
          ;; "-DCPPDAP_USE_EXTERNAL_JSONCPP_PACKAGE=ON"
-         "-DCPPDAP_USE_EXTERNAL_NLOHMANN_JSON_PACKAGE=ON"
-         #$@(if (target-riscv64?)
-                '("-DCMAKE_EXE_LINKER_FLAGS=-latomic")
-                '()))))
+         "-DCPPDAP_USE_EXTERNAL_NLOHMANN_JSON_PACKAGE=ON")
+      #:phases
+      (if (target-riscv64?)
+          #~(modify-phases %standard-phases
+              ;; We need to unconditionally link with libatomic on some
+              ;; architectures to successfully build cmake.
+              (add-after 'unpack 'link-with-libatomic
+                (lambda _
+                  (substitute* "CMakeLists.txt"
+                    (("cppdap_set_target_options\\(cppdap\\)" all)
+                     (string-append
+                       all "\n\n"
+                       "target_link_libraries(cppdap PRIVATE atomic)"))))))
+          #~%standard-phases)))
     (native-inputs
      (list googletest))
     ;; see lib/cmake/cppdap/cppdapConfig.cmake
