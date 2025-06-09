@@ -326,6 +326,19 @@ PARAMETERS."
        "members" user)
   => 204)
 
+(define-forgejo-request (repository-teams owner repository)
+  "Return the list of teams assigned to REPOSITORY of OWNER."
+  (GET "repos" owner repository "teams"
+       & '(("limit" . "100")))                    ;get up to 100 teams
+  => 200
+  (lambda (port)
+    (map json->forgejo-team (vector->list (json->scm port)))))
+
+(define-forgejo-request (add-repository-team owner repository team-name)
+  "Add TEAM-NAME as a team of OWNER's REPOSITORY."
+  (PUT "repos" owner repository "teams" team-name)
+  => 204)
+
 (define (team->forgejo-team team)
   "Return a Forgejo team derived from TEAM, a <team> record."
   (forgejo-team (team-id->forgejo-id (team-id team))
@@ -409,7 +422,24 @@ already exists.  Lookup team IDs among CURRENT-TEAMS."
                 (lambda (team)
                   (synchronize-team token team
                                     #:current-teams teams)))
-              teams)))
+              teams)
+
+    ;; Ensure all the teams are associated with the main repository.
+    (let ((repository-teams (repository-teams token
+                                              %codeberg-organization
+                                              "guix")))
+      (for-each (lambda (missing)
+                  (format (current-error-port)
+                          "adding team '~a' to '~a/guix'~%"
+                          (team-id missing) %codeberg-organization)
+                  (add-repository-team token %codeberg-organization "guix"
+                                       (team-id->forgejo-id
+                                        (team-id missing))))
+                (let ((names (map forgejo-team-name repository-teams)))
+                  (remove (lambda (team)
+                            (member (team-id->forgejo-id (team-id team))
+                                    names))
+                          teams))))))
 
 
 
