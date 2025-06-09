@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
@@ -294,7 +294,7 @@ cards.")
              rust-section-testing-0.0.5)
        #:phases
        #~(modify-phases %standard-phases
-           #$@(if (not (this-package-native-input "asciidoctor"))
+           #$@(if (not (this-package-native-input "ruby-asciidoctor"))
                   #~((add-after 'unpack 'dont-use-asciidoctor
                        (lambda _
                          (substitute* "config.sh"
