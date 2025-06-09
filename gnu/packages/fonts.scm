@@ -2957,15 +2957,15 @@ confused with one another.  This package provides only TrueType files (TTF).")
 (define-public font-sil-charis
   (package
     (name "font-sil-charis")
-    (version "6.200")
+    (version "7.000")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://software.sil.org/downloads/r/charis/CharisSIL-"
+                    "https://software.sil.org/downloads/r/charis/Charis-"
                     version ".zip"))
               (sha256
                (base32
-                "1pksr5wc9grdj75md4phr1a0gpjxk7xlmhv2nybsd2hbfrssl2ab"))))
+                "0rkn30fbrcrgfkj904y7fwxqfpkci0a1j7cvypw1mly50c9pn8z3"))))
     ;; As for Gentium (see above), the TTF files are considered source.
     (build-system font-build-system)
     (synopsis "Serif font for the Cyrillic and Latin alphabets")
