@@ -634,7 +634,7 @@ being rootless and not requiring any daemon to be running.")
 (define-public buildah
   (package
     (name "buildah")
-    (version "1.40.0")
+    (version "1.40.1")
     (source
      (origin
        (method git-fetch)
@@ -642,7 +642,7 @@ being rootless and not requiring any daemon to be running.")
              (url "https://github.com/containers/buildah")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0k2fdz2cqz0zj6cih32saa1wl7rcf6hqnpf0afmxgy68pinzq2g2"))
+        (base32 "109xvnx65gbajxipq2h0669bzzxyc6hfmdcijgngijxj5kwx5cgq"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
