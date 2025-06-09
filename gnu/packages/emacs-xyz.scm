@@ -6411,7 +6411,6 @@ current match, total matches and exit status.
                 "00qzn136d8cl3szbi44xf3iiv75r6n1m7wwgldmzn4i5mpz8dbq7"))))
     (arguments
      (list
-      #:test-command #~(list "ert-runner")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-commands
