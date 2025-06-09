@@ -36,7 +36,7 @@
 (define-public mold
   (package
     (name "mold")
-    (version "2.40.0")
+    (version "2.40.1")
     (source
      (origin
        (method git-fetch)
@@ -45,7 +45,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yjip7i8ldjcb28qsl4w27ppnsxbkfxbk31r159b10vgv60q0jph"))
+        (base32 "0m14ymwy1jzslfk91vscdk4mpb1n2cgf620p652jm8i0k56l1bfp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -67,7 +67,7 @@
       #~(modify-phases %standard-phases
           (add-before 'configure 'force-system-xxhash
             (lambda _
-              (substitute* "lib/common.h"
+              (substitute* "lib/lib.h"
                 (("#include \"../third-party/xxhash/xxhash.h\"")
                  "#include <xxhash.h>"))))
           (add-before 'configure 'fix-compiler-name-in-test
