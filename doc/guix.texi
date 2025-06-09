@@ -14939,27 +14939,17 @@ guix import crate constant-time-eq@@0.1.0
 Additional options include:
 
 @table @code
-@item --recursive
-@itemx -r
-Traverse the dependency graph of the given upstream package recursively
-and generate package expressions for all those packages that are not yet
-in Guix.
-@item --recursive-dev-dependencies
-If @option{--recursive-dev-dependencies} is specified, also the recursively
-imported packages contain their development dependencies, which are recursively
-imported as well.
 @item --allow-yanked
 If no non-yanked version of a crate is available, use the latest yanked
 version instead instead of aborting.
-@item --mark-missing
-If a crate dependency is not (yet) packaged, make the corresponding
-input in @code{#:cargo-inputs} or @code{#:cargo-development-inputs} into
-a comment.
 @item --lockfile=@var{file}
 @itemx -f @var{file}
 When @option{--lockfile} is specified, the importer will ignore other options
 and won't output package expressions, instead importing source expressions
 from @var{file}, a @file{Cargo.lock} file.
+
+@xref{Packaging Rust Crates,,, guix-cookbook, GNU Guix Cookbook}, for packaging
+workflow utilizing it.
 @end table
 
 @item elm
