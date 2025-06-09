@@ -24,6 +24,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.comg>
+;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1025,6 +1026,46 @@ and Super Game Boy emulator.  SameBoy is accurate and includes a wide
 range of debugging features.  It has all the features one would expect
 from an emulator---from save states to scaling filters.")
     (license license:expat)))
+
+(define-public stella
+  (package
+    (name "stella")
+    (version "7.0c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stella-emu/stella")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kcbjlsi5wy0pia7apck7va86yx9y6iyy5245ylkn77khaf7wr13"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete machine-generated parser files
+           (with-directory-excursion "src/debugger/yacc"
+             (delete-file "y.tab.c")
+             (delete-file "y.tab.h"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Regenerate the deleted files
+          (add-before 'build 'regenerate-yacc-files
+            (lambda _
+              (with-directory-excursion "src/debugger/yacc"
+                (invoke "make" "-f" "Makefile.yacc")))))))
+    (inputs (list sdl2 sqlite))
+    (native-inputs (list bison pkg-config sdl2))
+    (synopsis "Atari 2600 @acronym{VCS, Video Computer System} emulator")
+    (description "Stella is a multi-platform Atari 2600
+@acronym{VCS, Video Computer System} emulator, released as Free Software.
+Enjoy all of your favorite Atari 2600 games on your PC thanks to Stella!")
+    (home-page "https://stella-emu.github.io/")
+    (license license:gpl2+)))
 
 (define-public mupen64plus-core
   (package
