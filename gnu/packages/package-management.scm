@@ -2214,11 +2214,19 @@ cp -r /tmp/locale/*/en_US.*")))
                              libseccomp
                              libxau))
     (native-search-paths
-     (list (search-path-specification
+     (list ;; Flatpak creates desktop files on its own.
+           ;; If those desktop files contain DBusActivatable=true, the application
+           ;; will be invoked by using dbus activation.  But dbus activation
+           ;; doesn't use $PATH but rather does execve while the working directory
+           ;; is "/".  That means, if the Exec entry contains just "flatpak",
+           ;; that won't be ever found.
+           ;; When flatpak creates desktop files, it uses a path from
+           ;; $FLATPAK_BINARY if set.
+           ;; See <https://codeberg.org/guix/guix/issues/438>.
+           (search-path-specification
             (variable "FLATPAK_BINARY")
             (separator #f)
-            (files '("bin"))
-            (file-pattern "^flatpak$")
+            (files '("bin/flatpak"))
             (file-type 'regular))))
     (home-page "https://flatpak.org")
     (synopsis "System for building, distributing, and running sandboxed desktop
