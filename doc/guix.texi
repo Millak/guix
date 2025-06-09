@@ -9554,30 +9554,26 @@ This variable is exported by @code{(guix build-system cargo)}.  It
 supports builds of packages using Cargo, the build tool of the
 @uref{https://www.rust-lang.org, Rust programming language}.
 
-It adds @code{rustc} and @code{cargo} to the set of inputs.
+@quotation Deprecation warning
+Parameters @code{#:cargo-inputs} and @code{#:cargo-development-inputs},
+previously used for specifying source inputs, are deprecated.  Their support
+will be removed after Dec. 31, 2026.
+@end quotation
+
+It adds @code{rust} and @code{rust:cargo} to the set of inputs.
 A different Rust package can be specified with the @code{#:rust} parameter.
 
-Regular cargo dependencies should be added to the package definition similarly
-to other packages; those needed only at build time to native-inputs, others to
-inputs.  If you need to add source-only crates then you should add them to via
-the @code{#:cargo-inputs} parameter as a list of name and spec pairs, where the
-spec can be a package or a source definition.  Note that the spec must
-evaluate to a path to a gzipped tarball which includes a @code{Cargo.toml}
-file at its root, or it will be ignored.  Similarly, cargo dev-dependencies
-should be added to the package definition via the
-@code{#:cargo-development-inputs} parameter.
+In its @code{unpack-rust-crates}, @code{configure} and
+@code{patch-cargo-checksums} phases, this build system will make any source
+inputs available to Cargo.  It will also remove an included @code{Cargo.lock}
+file to be recreated by @command{cargo} during the @code{build} phase.  The
+@code{package} phase will run @command{cargo package} to create a source crate
+for future use.  The @code{install} phase installs the binaries defined by the
+crate.  Unless @code{install-source? #f} is defined it will also install a
+source crate repository of itself and unpacked sources, to ease in future
+hacking on Rust packages.
 
-In its @code{configure} phase, this build system will make any source inputs
-specified in the @code{#:cargo-inputs} and @code{#:cargo-development-inputs}
-parameters available to cargo.  It will also remove an included
-@code{Cargo.lock} file to be recreated by @code{cargo} during the
-@code{build} phase.  The @code{package} phase will run @code{cargo package}
-to create a source crate for future use.  The @code{install} phase installs
-the binaries defined by the crate.  Unless @code{install-source? #f} is
-defined it will also install a source crate repository of itself and unpacked
-sources, to ease in future hacking on rust packages.
-
-This build system supports cargo workspaces.  Parameter
+This build system supports Cargo workspaces.  Parameter
 @code{#:cargo-package-crates} (default: @code{''()}) allows specifying names of
 library crates to package in the @code{package} phase.  Specified crates are
 packaged from left to right, in case there's dependency among them.  For
@@ -9586,6 +9582,8 @@ example, specifying @code{''("pcre2-sys" "pcre2")} will package
 @code{#:cargo-install-paths} (default: @code{''()}) allows specifying paths of
 binary crates to install in the @code{install} phase, @code{''("crates/atuin")},
 for example.
+
+@xref{Rust Crates}, for packaging guidelines.
 @end defvar
 
 @defvar chicken-build-system

@@ -273,6 +273,7 @@ unavailable."
                     #:graft? #f
                     #:guile-for-build guile))
 
+;; TODO: Remove after Dec. 31, 2026.
 (define (package-cargo-inputs p)
   (apply
     (lambda* (#:key (cargo-inputs '()) #:allow-other-keys)
@@ -396,6 +397,11 @@ any dependent crates. This can be a benefits:
       #:cargo-inputs #:cargo-development-inputs
       #:rust-sysroot #:cargo-target
       ,@(if target '() '(#:target))))
+
+  (unless (every null? (list cargo-inputs cargo-development-inputs))
+    (warning (G_ "'~a' and '~a' are deprecated~%")
+             "#:cargo-inputs"
+             "#:cargo-development-inputs"))
 
   (bag
     (name name)
