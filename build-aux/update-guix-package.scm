@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -125,8 +125,8 @@ COMMIT.  PROC receives the temporary directory file name as an argument."
        (lambda ()
          (invoke "git" "worktree" "remove" "--force" tmp-directory))))))
 
-(define %savannah-guix-git-repo-push-url-regexp
-  "git.(savannah|sv).gnu.org:?/srv/git/guix.git \\(push\\)")
+(define %guix-git-repo-push-url-regexp
+  "(git.guix.gnu.org|codeberg.org/guix)/guix.git \\(push\\)")
 
 (define-syntax-rule (with-input-pipe-to-string prog arg ...)
   (let* ((input-pipe (open-pipe* OPEN_READ prog arg ...))
@@ -138,12 +138,12 @@ COMMIT.  PROC receives the temporary directory file name as an argument."
     (string-trim-both output)))
 
 (define (find-origin-remote)
-  "Find the name of the git remote with the Savannah Guix git repo URL."
+  "Find the name of the git remote with the Guix git repo URL."
   (and-let* ((remotes (string-split (with-input-pipe-to-string
                                      "git" "remote" "-v")
                                     #\newline))
              (origin-entry (find (cut string-match
-                                      %savannah-guix-git-repo-push-url-regexp
+                                      %guix-git-repo-push-url-regexp
                                       <>)
                                  remotes)))
     (first (string-split origin-entry #\tab))))
