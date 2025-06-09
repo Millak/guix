@@ -14676,6 +14676,29 @@ computing.")
                   texlive-xetex
                   texlive-xindy))))))
 
+(define-public python-ipython-pygments-lexers
+  (package
+    (name "python-ipython-pygments-lexers")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipython/ipython-pygments-lexers/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "154vbpp9mkblsk1d0w8x8mybwgn5gz6mjgg77nqyn75ky0banrd7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pygments))
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://github.com/ipython/ipython-pygments-lexers/")
+    (synopsis "Plugin for IPython code sessions")
+    (description
+     "This package defines a variety of Pygments lexers for highlighting IPython
+code.")
+    (license license:bsd-3)))
+
 (define-public python-uri-template
   (package
     (name "python-uri-template")
