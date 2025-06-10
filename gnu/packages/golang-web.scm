@@ -10149,7 +10149,7 @@ extract data from those paths.")
 (define-public go-github-com-ugorji-go-codec
   (package
     (name "go-github-com-ugorji-go-codec")
-    (version "1.2.12")
+    (version "1.2.14")
     (source
      (origin
        (method git-fetch)
@@ -10158,10 +10158,11 @@ extract data from those paths.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11j0sd7kli2bh2npfr2znnvdjsk118rs8khqzfdp6pb5jm0l20ib"))))
+        (base32 "1mny5gm5gr82hz4y6k5ljaa0khjw647ys278wq750fgrbzp6fs8h"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/ugorji/go/codec"
       #:unpack-path "github.com/ugorji/go"
       #:phases #~(modify-phases %standard-phases
