@@ -993,7 +993,7 @@ minimalistic.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.60.2")
+    (version "0.62.0")
     (source
      (origin
        (method git-fetch)
@@ -1003,7 +1003,7 @@ minimalistic.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1c18h9326i8g9ksbfrpzrxpz8xlym2a35fpjsi7dn1dv6rr3jayn"))))
+         "1kwia7dmsaq08048h3s6avrczvca2mpd8sa3m4r1y28wjqjxmkbk"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
