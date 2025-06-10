@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
@@ -5637,7 +5637,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
      (append
        ;; TODO: fix gems to generate documentation
        ;(list ruby bundler)
-       (list tzdata) ;; needed for tests
+       (list tzdata-for-tests)  ; needed for tests
        (if (member (%current-system)
                    (package-supported-systems valgrind/pinned))
          (list valgrind/pinned)
