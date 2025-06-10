@@ -2067,7 +2067,7 @@ functions and even in applications.")
 (define-public go-github-com-smarty-gunit
   (package
     (name "go-github-com-smarty-gunit")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2076,17 +2076,12 @@ functions and even in applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13bcb1aq8yshmi5inn7np5lyqhsyy5hksridi8bxbjq35xrknskr"))))
+        (base32 "0qf050cby21in2s5k8777vbrbjssl8glkkn6h1x24xkjmi7q3fv8"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/smarty/gunit"
-      ;; Expected: [&{ BowlingGameScoringTests [0xc000080020
-      ;; 0xc000080040 0xc000080060 0xc000080080 0xc0000800a0]}]
-      ;; Actual:   [&{ BowlingGameScoringTests [0xc0000da920
-      ;; 0xc0000da940 0xc0000da960 0xc0000da9a0 0xc0000da9c0]}]
-      #:test-flags
-      #~(list "-skip" "TestParseFileWithValidFixturesAndConstructs")))
+      #:go go-1.23
+      #:import-path "github.com/smarty/gunit"))
     (home-page "https://github.com/smarty/gunit")
     (synopsis "Golang xUnit-style test fixture test adapter")
     (description
