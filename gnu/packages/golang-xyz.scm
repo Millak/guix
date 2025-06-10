@@ -22549,6 +22549,53 @@ prints the Go version used to build that executable.")
 unmarshaling functions based on @code{encoding/json} @code{Unmarshal()}.")
     (license license:asl2.0)))
 
+(define-public go-sigs-k8s-io-kustomize-kyaml
+  (package
+    (name "go-sigs-k8s-io-kustomize-kyaml")
+    (version "0.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes-sigs/kustomize")
+             (commit (go-version->git-ref version
+                                          #:subdir "kyaml"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bpllzbaxvi93i74dw1z8k221ib2ydks0wmwx13vkh6cacrvydan"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "sigs.k8s.io/kustomize/kyaml"
+      #:unpack-path "sigs.k8s.io/kustomize"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestCommandResultsChecker_UpdateExpectedFromActual"
+                             "TestProcessorResultsChecker_UpdateExpectedFromActual")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-davecgh-go-spew))
+    (propagated-inputs
+     (list go-github-com-go-errors-errors
+           go-github-com-google-gnostic-models
+           go-github-com-google-go-cmp
+           go-github-com-monochromegane-go-gitignore
+           go-github-com-sergi-go-diff
+           go-github-com-spf13-cobra
+           go-github-com-xlab-treeprint
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf
+           go-k8s-io-kube-openapi
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/kubernetes-sigs/")
+    (synopsis "Read Kubernetes config as YAML")
+    (description
+     "Package kyaml contains libraries for reading and writing Kubernetes Resource
+configuration as YAML.")
+    (license license:asl2.0)))
+
 (define-public go-sigs-k8s-io-structured-merge-diff-v4
   (package
     (name "go-sigs-k8s-io-structured-merge-diff-v4")
