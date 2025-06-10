@@ -527,7 +527,7 @@ fast arithmetic.")
 (define-public python-flint
   (package
     (name "python-flint")
-    (version "0.5.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -536,7 +536,7 @@ fast arithmetic.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10370kqik6q6vdqrqv3gbznsyaxbgqb3rbrff4alpw0sqr5s07c7"))))
+                "09nsys2cajxsfh2c13nf98a2kwnm0msmab9f9zcjpkndj4ir453a"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython-3))
