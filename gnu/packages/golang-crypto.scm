@@ -2180,7 +2180,7 @@ done by Marc Stevens and Dan Shumow, and can be found at:
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
-    (version "1.1.3")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2189,19 +2189,17 @@ done by Marc Stevens and Dan Shumow, and can be found at:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kcan2bw548cn6pm282zyddysv400dankcsrdanha7qmxqki34c0"))))
+        (base32 "0h4zhdxpg5qh5li4r2nsjya757d9kghqjxg3cch4pm3wqvkpjg1h"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "github.com/ProtonMail/go-crypto"
       #:test-flags
       (if (target-riscv64?)
           ;; This test times out on riscv64-linux.
           #~(list "-skip" "TestEndToEnd")
-          #~'())
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)))) ; no go files in project's root
+          #~'())))
     (propagated-inputs
      (list go-github-com-cloudflare-circl
            go-golang-org-x-crypto))
