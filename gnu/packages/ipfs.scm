@@ -1818,6 +1818,56 @@ their levels to be controlled individually.")
      "Metrics interface for IPFS (Kubo).")
     (license license:expat)))
 
+(define-public go-github-com-ipshipyard-p2p-forge
+  (package
+    (name "go-github-com-ipshipyard-p2p-forge")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipshipyard/p2p-forge")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qh820v738fn1k5scd99v230s4xcz26wg2s41farirhdjx8lmzc6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Enalbe when all missing inputs are packaged, using for Kubo as
+      ;; source only package.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/ipshipyard/p2p-forge"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-caddyserver-certmagic
+           ;; go-github-com-coredns-caddy
+           ;; go-github-com-coredns-coredns
+           go-github-com-felixge-httpsnoop
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ds-badger4
+           go-github-com-ipfs-go-ds-dynamodb
+           go-github-com-ipfs-go-log-v2
+           go-github-com-joho-godotenv
+           go-github-com-letsencrypt-pebble-v2
+           go-github-com-libp2p-go-libp2p
+           go-github-com-mholt-acmez-v3
+           go-github-com-miekg-dns
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-multiaddr-dns
+           go-github-com-multiformats-go-multibase
+           go-github-com-prometheus-client-golang
+           go-github-com-slok-go-http-metrics
+           go-go-uber-org-zap))
+    (home-page "https://github.com/ipshipyard/p2p-forge")
+    (synopsis "Authoritative DNS server for distributing DNS subdomains to libp2p peers")
+    (description
+     "This package provides an Authoritative DNS server and HTTP+libp2p API
+for distributing DNS subdomains with CA-signed TLS certificates to libp2p
+peers.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-libp2p-go-libp2p
   (package
     (name "go-github-com-libp2p-go-libp2p")
