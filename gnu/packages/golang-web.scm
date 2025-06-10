@@ -11593,6 +11593,38 @@ go.opentelemetry.io/otel, go.opentelemetry.io/otel/metric and
 go.opentelemetry.io/otel/trace.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace")
+    (version "1.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir
+                                          "exporters/stdout/stdouttrace"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kvfbqc56p1h9rh9cvgn37ya6k10613r0f2rhjiwrrkgs2mszk30"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Enable when all missing inputs are availalbe, use as source
+      ;; only package for Boxo.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (propagated-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "STDOUT Trace Exporter")
+    (description
+     "Package stdouttrace contains an @code{OpenTelemetry} exporter for tracing
+telemetry to be written to an output destination as JSON.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-exporters-zipkin
   (package
     (name "go-go-opentelemetry-io-otel-exporters-zipkin")
