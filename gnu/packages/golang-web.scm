@@ -11529,6 +11529,40 @@ defaults (a combined @code{TraceContext} and Baggage
 OTEL_PROPAGATORS environment variable.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-propagators-ot
+  (package
+    (name "go-go-opentelemetry-io-contrib-propagators-ot")
+    (version "1.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+             (commit (go-version->git-ref version
+                                          #:subdir "propagators/ot"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15k2xps4qv37pw3ml6pj98kihl6a04bbr005px5hhckl23s40w2c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/contrib/propagators/ot"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list
+      go-go-opentelemetry-io-otel
+      go-go-opentelemetry-io-otel-trace
+      go-go-uber-org-multierr))
+    (home-page "https://opentelemetry.io/")
+    (synopsis "OpenTracing propagator library")
+    (description
+     "Package ot implements the ot-tracer-* propagator used by the default
+Tracer implementation from the @code{OpenTracing} project.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
