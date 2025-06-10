@@ -3707,14 +3707,14 @@ minimum contrast levels, and more.")
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.9.7")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xwbc9zjglgzzxk23qyg2924gkyaclc844jcg1apx0190r4qlc3z"))))
+        (base32 "083mg0hlg5z16a1f6vrzwr11k1blq1mwr4djic9a28fkjarpvxn2"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
@@ -3739,11 +3739,14 @@ minimum contrast levels, and more.")
                           (fish-completions-dir
                             (string-append share "/fish/vendor_completions.d"))
                           (elvish-completions-dir
-                            (string-append share "/elvish/lib")))
+                           (string-append share "/elvish/lib"))
+                          (nushell-completions-dir
+                           (string-append share "/nushell/vendor/autoload")))
                      ;; The completions are generated in build.rs.
                      (mkdir-p man1)
                      (mkdir-p bash-completions-dir)
                      (mkdir-p elvish-completions-dir)
+                     (mkdir-p nushell-completions-dir)
                      (for-each (lambda (file)
                                  (install-file file man1))
                                (find-files "man/man1"))
@@ -3755,7 +3758,9 @@ minimum contrast levels, and more.")
                                    zsh-completions-dir)
                      (copy-file "contrib/completions/zoxide.elv"
                                 (string-append elvish-completions-dir
-                                               "/zoxide"))))))))
+                                               "/zoxide"))
+                     (install-file "contrib/completions/zoxide.nu"
+                                   nushell-completions-dir)))))))
     (inputs (cargo-inputs 'zoxide))
     (home-page "https://github.com/ajeetdsouza/zoxide/")
     (synopsis "Fast way to navigate your file system")
