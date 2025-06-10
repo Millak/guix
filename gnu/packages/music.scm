@@ -4390,7 +4390,7 @@ using the beets FetchArt plugin.")
 (define-public milkytracker
   (package
     (name "milkytracker")
-    (version "1.04.00")
+    (version "1.05.00")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4399,7 +4399,7 @@ using the beets FetchArt plugin.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zxaq69yb30wyw4dmx3hypzgyxsypp6i9qrv599jlbbbzhwjysqc"))
+                "0pbsp1pz80j0wgl08h212jwvannmg4z0m72aqwa9a3f5iqqycgvl"))
               (modules '((guix build utils)))
               ;; Remove non-FSDG compliant sample songs.
               (snippet
