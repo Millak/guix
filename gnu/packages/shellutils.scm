@@ -754,7 +754,8 @@ Latin script and other languages.")
                "0p6n9zi3p9frj3ndnpdc1cz51hq0nkyjc9b1rqg7967l8vhdr8f6"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/direnv/direnv"
+     (list #:install-source? #f
+           #:import-path "github.com/direnv/direnv"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'install-manpages
