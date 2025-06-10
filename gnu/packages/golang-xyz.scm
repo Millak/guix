@@ -11414,7 +11414,7 @@ word-splitting rules.")
 (define-public go-github-com-kevinburke-ssh-config
   (package
     (name "go-github-com-kevinburke-ssh-config")
-    (version "1.2.0")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -11423,7 +11423,7 @@ word-splitting rules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jvv3i0g8ll210xlbxy8ywj09gab0im676rmnywh3wlpdhxdkbjd"))))
+        (base32 "1m8nagaylwrgy9yfqr5x6p1zdsnrfy4km7pgv58iqdmmd5l6v73a"))))
     (arguments
      (list
       #:import-path "github.com/kevinburke/ssh_config"))
