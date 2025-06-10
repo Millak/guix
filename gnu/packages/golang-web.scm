@@ -3938,7 +3938,7 @@ protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
-    (version "0.10.3")
+    (version "0.10.5")
     (source
      (origin
        (method git-fetch)
@@ -3947,12 +3947,14 @@ protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w9kjplhyzq8n4iainddapzj7dxnfbjiz4xdpb0hlb6h35grpxgn"))
+        (base32 "0kbb7d4xal1y65fnb152icqjkhrk19b4h3344xmzl3grc4rdxj1n"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "benchmarks"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/goccy/go-json"))
+     (list
+      #:go go-1.23
+      #:import-path "github.com/goccy/go-json"))
     (home-page "https://github.com/goccy/go-json")
     (synopsis "JSON encoder/decoder in Go")
     (description
