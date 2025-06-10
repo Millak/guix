@@ -9145,39 +9145,43 @@ protocol.")
     (license license:expat)))
 
 (define-public go-github-com-quic-go-webtransport-go
-  (package
-    (name "go-github-com-quic-go-webtransport-go")
-    (version "0.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/quic-go/webtransport-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zwr4jg4dg2b14kkypkbs8dpai5b5s44gm5gq0vrs3mmg6vq0v97"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:go go-1.23
-      #:import-path "github.com/quic-go/webtransport-go"
-      ;; Error: "68" is not greater than "80"
-      #:test-flags #~(list "-skip" "TestDatagrams")))
-    (native-inputs
-     (list go-go-uber-org-mock
-           go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-quic-go-quic-go
-           go-golang-org-x-exp))
-    (home-page "https://github.com/quic-go/webtransport-go")
-    (synopsis "WebTransport implementation based on quic-go")
-    (description
-     "webtransport-go is an implementation of the @code{WebTransport} protocol, based
-on @@url{https://github.com/quic-go/quic-go,quic-go}.  It currently implements
+  ;; XXX: The latest commits contains comparability with Go@1.24 and QUICK
+  ;; 0.48+, revert back to version tag when released.
+  (let ((commit "0a9e2ee55f751e48eb03c4675d873edff3b69c05")
+        (revision "0"))
+    (package
+      (name "go-github-com-quic-go-webtransport-go")
+      (version (git-version "0.8.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/quic-go/webtransport-go")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "048qf7glv3zgz43qvi1smwsh1khhzyfrid6hp5dnp799p3s3vk13"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/quic-go/webtransport-go"
+        ;; Error: "68" is not greater than "80"
+        #:test-flags #~(list "-skip" "TestDatagrams")))
+      (native-inputs
+       (list go-go-uber-org-mock
+             go-github-com-stretchr-testify))
+      (propagated-inputs
+       (list go-github-com-quic-go-quic-go
+             go-golang-org-x-exp))
+      (home-page "https://github.com/quic-go/webtransport-go")
+      (synopsis "WebTransport implementation based on quic-go")
+      (description
+       "webtransport-go is an implementation of the @code{WebTransport}
+protocol, based on @@url{https://github.com/quic-go/quic-go,quic-go}.  It
+currently implements
 @@url{https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-02.html,draft-02}
 of the specification.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public go-github-com-rcrowley-go-metrics
   (package
