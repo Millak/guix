@@ -922,14 +922,14 @@ console.")
 (define-public eza
   (package
     (name "eza")
-    (version "0.21.1")
+    (version "0.21.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eza" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "026i75pk4vnx1yz2iggkdin2xwbb58qwqm3rim7f4q905m8ar2jh"))))
+        (base32 "09jksgqqsvzxha335a9cv5xqm1mr9gsamk85bg1giwnhqgfg1kkw"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -979,7 +979,7 @@ console.")
                  (list pandoc)
                  '())))
     (inputs (cons* libgit2-1.9 zlib (cargo-inputs 'eza)))
-    (home-page "https://github.com/eza-community/eza")
+    (home-page "https://eza.rocks/")
     (synopsis "Modern replacement for ls")
     (description
      "@code{eza} is a modern replacement for the command-line
