@@ -276,11 +276,13 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:zlib))))
 
 (define-public minipro
-  ;; Information needed to fix Makefile
-  (let* ((date "2024-09-20 20:55:06 -0700"))
+  ;; When built from a Git repo, minipro expects GIT_DATE to be set to the
+  ;; value of `git show -s --format=%ci'.  When updating the package, run this
+  ;; in a checkout and put the value here.
+  (let* ((date "2025-04-13 21:54:38 -0700"))
     (package
       (name "minipro")
-      (version "0.7.2")
+      (version "0.7.3")
       (source
        (origin
          (method git-fetch)
@@ -289,9 +291,9 @@ which allows one to install the M8 firmware on any Teensy.")
                (commit version)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1a7sbbs1byngkh3bh0dxwxk1iw1dx0kvp946y2lxb8rm6b7hwqym"))))
+          (base32 "1525rn5h73xism16vmivd3cz93g8w76h24f0yvbpc35ydc3fkqf7"))))
       (native-inputs (list pkg-config which))
-      (inputs (list libusb))
+      (inputs (list libusb zlib))
       (build-system gnu-build-system)
       (arguments
        (list
