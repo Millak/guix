@@ -12003,7 +12003,7 @@ docs}.")
 (define-public go-k8s-io-kube-openapi
   (package
     (name "go-k8s-io-kube-openapi")
-    (version "0.0.0-20241212222426-2c72e554b1e7")
+    (version "0.0.0-20250318190949-c8a335a9a2ff")
     ;; XXX: Unbundle third_party in pkg.
     (source
      (origin
@@ -12013,7 +12013,7 @@ docs}.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0crd349jd210bh68ic70pqmdkfns7cix2qhsa6pfya6kbvschyf9"))
+        (base32 "02l2rp1fgraincay5xj9ar3l5v60svq07i6b2hamn74i3xkm3lis"))
        ;; XXX: test/integration contains submodule with it's own go.mod.
        (modules '((guix build utils)))
        (snippet
@@ -12030,13 +12030,12 @@ docs}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "k8s.io/kube-openapi"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)))) ; no go files in project's root
+      #:go go-1.23
+      #:skip-build? #t
+      #:import-path "k8s.io/kube-openapi"))
     (native-inputs
      (list go-github-com-getkin-kin-openapi
-           go-github-com-google-gofuzz
+           go-sigs-k8s-io-randfill
            go-github-com-onsi-ginkgo-v2
            go-github-com-onsi-gomega
            go-github-com-stretchr-testify))
@@ -12057,8 +12056,7 @@ docs}.")
            go-k8s-io-klog-v2
            go-k8s-io-utils
            go-sigs-k8s-io-json
-           go-sigs-k8s-io-structured-merge-diff-v4
-           go-sigs-k8s-io-yaml))
+           go-sigs-k8s-io-structured-merge-diff-v4))
     (home-page "https://github.com/kubernetes/kube-openapi")
     (synopsis "Kubernetes OpenAPI spec generation & serving")
     (description
