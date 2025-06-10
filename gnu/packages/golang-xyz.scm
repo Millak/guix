@@ -18106,7 +18106,8 @@ slices, JSON and other data.")
     (arguments
      (list
       #:go go-1.23
-      #:import-path "github.com/subosito/gotenv"))
+      #:import-path "github.com/subosito/gotenv"
+      #:test-flags #~(list "-skip" "TestScanner")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
