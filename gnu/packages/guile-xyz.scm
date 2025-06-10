@@ -2684,12 +2684,12 @@ capabilities.")
 (define-public guile-g-golf
   (package
     (name "guile-g-golf")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (g-golf-source #:version version
                     #:hash
                     (content-hash
-                     "044iidjd24cjncvx510ai46is9jxni72iz8pxyi34g4p7gbbcbi7")))
+                     "10qxhbfdysh4mhw6rxr40lfq24m4smk37cpr4wvjf008s6w7f4nz")))
     (build-system gnu-build-system)
     (arguments
      (list
