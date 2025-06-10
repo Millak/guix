@@ -21093,7 +21093,7 @@ CPU quota.")
 (define-public go-go-uber-org-dig
   (package
     (name "go-go-uber-org-dig")
-    (version "1.18.0")
+    (version "1.19.0")
     (source
      (origin
        (method git-fetch)
@@ -21102,7 +21102,7 @@ CPU quota.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hc56szkalhsxfnpw5iphhm1vhlq2za5049vcwi4zlcy64mjx8v9"))))
+        (base32 "1wmd4l3nn1mkv5kkx2xylk1fbkpp5a5f21fzavmc1rxlbfhfqvpz"))))
     (build-system go-build-system)
     (arguments
      (list
