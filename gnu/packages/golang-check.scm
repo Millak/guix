@@ -3019,6 +3019,30 @@ thoroughly
 @end itemize")
     (license license:mpl2.0)))
 
+(define-public go-sigs-k8s-io-randfill
+  (package
+    (name "go-sigs-k8s-io-randfill")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes-sigs/randfill")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nk0vk269jw0k155yna43jx9lz4dbzhlhp98jrk8iwqn7k250my6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "sigs.k8s.io/randfill"))
+    (home-page "https://sigs.k8s.io/randfill")
+    (synopsis "Fuzz testing for Golang")
+    (description
+     "Package randfill is a library for populating go objects with random values.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Executables:
 ;;;
