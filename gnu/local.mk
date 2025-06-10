@@ -283,6 +283,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/elm.scm				\
   %D%/packages/embedded.scm			\
   %D%/packages/emacs.scm			\
+  %D%/packages/emacs-build.scm			\
   %D%/packages/emacs-xyz.scm			\
   %D%/packages/emulators.scm			\
   %D%/packages/enchant.scm			\
