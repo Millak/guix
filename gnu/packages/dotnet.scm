@@ -419,7 +419,8 @@ a C-style programming language from Microsoft that is very similar to Java.")
               (snippet prepare-mono-source)
               (patches (search-patches
                          "mono-1.9.1-fixes.patch"
-                         "mono-1.9.1-add-MONO_CREATE_IMAGE_VERSION.patch"))))
+                         "mono-1.9.1-add-MONO_CREATE_IMAGE_VERSION.patch"
+                         "mono-1.9.1-reproducibility.patch"))))
     (native-inputs
      (modify-inputs (package-native-inputs mono-1.2.6)
        (delete "pnet-git")
@@ -431,9 +432,29 @@ a C-style programming language from Microsoft that is very similar to Java.")
     (arguments
      (substitute-keyword-arguments (package-arguments mono-1.2.6)
        ((#:make-flags _ #f)
-        #~(list #$(string-append "CC=" (cc-for-target)) "V=1"))
+        #~(list #$(string-append "CC=" (cc-for-target))
+                "NO_SIGN_ASSEMBLY=yes" ; non-reproducible otherwise.
+                "V=1"))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (add-before 'install 'delete-mdb
+              (lambda _
+                ;; Those are a source of non-reproducibility--because of the
+                ;; random GUIDs.  We are also nerfing the module GUIDs anyway
+                ;; so I don't think .net still knows which mdb module is for
+                ;; what implementation module.
+                (for-each delete-file (find-files "." "[.]mdb$"))))
+            ;; Note: Would also work directly after unpack.
+            (add-after 'configure 'disable-signing
+              (lambda _
+                ;; This would be a source of non-reproducibility and have no /keyfile.
+                (substitute* "mcs/class/IBM.Data.DB2/Makefile"
+                 (("^LIB_MCS_FLAGS =")
+                  "LIB_MCS_FLAGS = /delaysign+ "))
+                ;; This would be a source of non-reproducibility.
+                (substitute* "mcs/class/FirebirdSql.Data.Firebird/Assembly/AssemblyInfo.cs"
+                 (("AssemblyDelaySign[(]false[)]")
+                  "AssemblyDelaySign(true)"))))
             (add-before 'configure 'set-cflags
               (lambda _
                 ;; apparently can't be set via make flags in this version

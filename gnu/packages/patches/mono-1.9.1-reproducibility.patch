@@ -1,0 +1,216 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 10 Jun 2025
+Subject: Fix sources of non-reproducibility.
+
+diff -ru orig/mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs
+--- orig/mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs	2025-06-09 11:58:58.679365113 +0200
++++ mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs	2025-06-09 19:10:46.839764717 +0200
+@@ -80,7 +80,7 @@
+ 			this.assembly = this.assemblyb = assb;
+ 			this.transient = transient;
+ 			// to keep mcs fast we do not want CryptoConfig wo be involved to create the RNG
+-			guid = Guid.FastNewGuidArray ();
++			guid = new byte[16]; // = Guid.Empty.ToByteArray();
+ 			// guid = Guid.NewGuid().ToByteArray ();
+ 			table_idx = get_next_table_index (this, 0x00, true);
+ 			name_cache = new Hashtable ();
+diff -ru orig/mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs
+--- orig/mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs	2025-06-09 11:58:58.233978153 +0200
++++ mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs	2025-06-09 16:46:46.086454131 +0200
+@@ -132,6 +132,15 @@
+ 
+ 		public static uint TimeDateStampFromEpoch ()
+ 		{
++			string sourceDateEpoch = Environment.GetEnvironmentVariable("SOURCE_DATE_EPOCH");
++			if (sourceDateEpoch != null && sourceDateEpoch != "") {
++				try {
++					return uint.Parse(sourceDateEpoch);
++				} catch {
++					// fallthrough
++				}
++			}
++			
+ 			return (uint) DateTime.UtcNow.Subtract (
+ 				new DateTime (1970, 1, 1)).TotalSeconds;
+ 		}
+diff -ru orig/mono-1.9.1-checkout/mcs/mcs/anonymous.cs mono-1.9.1-checkout/mcs/mcs/anonymous.cs
+--- orig/mono-1.9.1-checkout/mcs/mcs/anonymous.cs	2025-06-09 11:58:58.814338639 +0200
++++ mono-1.9.1-checkout/mcs/mcs/anonymous.cs	2025-06-09 22:27:26.049258977 +0200
+@@ -21,6 +21,7 @@
+ 
+ namespace Mono.CSharp {
+ 
++
+ 	public abstract class CompilerGeneratedClass : Class
+ 	{
+ 		GenericMethod generic_method;
+@@ -174,6 +175,61 @@
+ 				throw new InternalErrorException ("Helper class already defined!");
+ 		}
+ 
++//
++// A robust, standalone, and deterministic comparer for all types that
++// inherit from the abstract class 'Variable'. This version uses only
++// C# 2.0 compatible syntax.
++//
++public class VariableComparer : System.Collections.IComparer
++{
++    // Helper method to safely get a comparable name from any Variable type.
++    private string GetVariableName(object obj)
++    {
++        // Case 1: The object is a 'CapturedVariable' or any of its children.
++        if (obj is ScopeInfo.CapturedVariable)
++        {
++            // Explicit cast required for C# 2.0
++            ScopeInfo.CapturedVariable cv = (ScopeInfo.CapturedVariable)obj;
++            return cv.Name;
++        }
++
++        // Case 2: The object is a 'LocalVariable' from statement.cs.
++        if (obj is LocalInfo.LocalVariable)
++        {
++            // Explicit cast required for C# 2.0
++            LocalInfo.LocalVariable lv = (LocalInfo.LocalVariable)obj;
++            return lv.LocalInfo.Name;
++        }
++        
++        //
++        // Fallback for any other unknown 'Variable' subtype.
++        //
++        return obj.GetType().FullName;
++    }
++    
++    // The single method required by the IComparer interface.
++    public int Compare(object x, object y)
++    {
++        // Handle nulls gracefully.
++        if (x == null && y == null) return 0;
++        if (x == null) return -1;
++        if (y == null) return 1;
++
++        string name_x = GetVariableName(x);
++        string name_y = GetVariableName(y);
++        
++        // 1. Primary Sort Key: The extracted variable name.
++        int name_compare = string.CompareOrdinal(name_x, name_y);
++        if (name_compare != 0)
++        {
++            return name_compare;
++        }
++
++        // 2. Secondary Sort Key (Stable Tie-breaker): The full type name.
++        return string.CompareOrdinal(x.GetType().FullName, y.GetType().FullName);
++    }
++}
++
+ 		protected class CapturedVariableField : Field
+ 		{
+ 			public CapturedVariableField (CompilerGeneratedClass helper, string name,
+@@ -264,9 +320,11 @@
+ 
+ 		protected CapturedScope[] CapturedScopes {
+ 			get {
+-				CapturedScope[] list = new CapturedScope [captured_scopes.Count];
+-				captured_scopes.Values.CopyTo (list, 0);
+-				return list;
++                ArrayList list = new ArrayList(captured_scopes.Values);
++                list.Sort(new VariableComparer());
++                CapturedScope[] result = new CapturedScope[list.Count];
++                list.CopyTo(result, 0);
++                return result;
+ 			}
+ 		}
+ 
+@@ -420,7 +478,7 @@
+ 			return new ScopeInitializer (this);
+ 		}
+ 
+-		protected abstract class CapturedVariable : Variable
++		public abstract class CapturedVariable : Variable
+ 		{
+ 			public readonly ScopeInfo Scope;
+ 			public readonly string Name;
+@@ -493,7 +551,7 @@
+ 			}
+ 		}
+ 
+-		protected class CapturedParameter : CapturedVariable {
++		public class CapturedParameter : CapturedVariable {
+ 			public readonly Parameter Parameter;
+ 			public readonly int Idx;
+ 
+@@ -511,7 +569,7 @@
+ 			}
+ 		}
+ 
+-		protected class CapturedLocal : CapturedVariable {
++		public class CapturedLocal : CapturedVariable {
+ 			public readonly LocalInfo Local;
+ 
+ 			public CapturedLocal (ScopeInfo scope, LocalInfo local)
+@@ -527,7 +585,7 @@
+ 			}
+ 		}
+ 
+-		protected class CapturedThis : CapturedVariable {
++		public class CapturedThis : CapturedVariable {
+ 			public CapturedThis (RootScopeInfo host)
+ 				: base (host, "<>THIS", host.ParentType)
+ 			{ }
+@@ -646,7 +704,9 @@
+ 				} else
+ 					scope_instance = ec.ig.DeclareLocal (type);
+ 
+-				foreach (CapturedLocal local in Scope.locals.Values) {
++				ArrayList sorted_locals = new ArrayList(Scope.locals.Values);
++				sorted_locals.Sort(new VariableComparer());
++				foreach (CapturedLocal local in sorted_locals) {
+ 					FieldExpr fe = (FieldExpr) Expression.MemberLookup (
+ 						ec.ContainerType, type, local.Field.Name, loc);
+ 					Report.Debug (64, "RESOLVE SCOPE INITIALIZER #2", this, Scope,
+@@ -660,7 +720,9 @@
+ 				}
+ 
+ 				if (Scope.HostsParameters) {
+-					foreach (CapturedParameter cp in Scope.captured_params.Values) {
++                    ArrayList sorted_params = new ArrayList(Scope.captured_params.Values);
++					sorted_params.Sort(new VariableComparer());
++					foreach (CapturedParameter cp in sorted_params) {
+ 						FieldExpr fe = (FieldExpr) Expression.MemberLookup (
+ 							ec.ContainerType, type, cp.Field.Name, loc);
+ 						if (fe == null)
+@@ -775,7 +837,9 @@
+ 					captured_scope.EmitAssign (ec);
+ 
+ 				if (Scope.HostsParameters) {
+-					foreach (CapturedParameter cp in Scope.captured_params.Values) {
++                    ArrayList sorted_params = new ArrayList(Scope.captured_params.Values);
++					sorted_params.Sort(new VariableComparer());
++					foreach (CapturedParameter cp in sorted_params) {
+ 						Report.Debug (128, "EMIT SCOPE INIT #6", this,
+ 							      ec, ec.IsStatic, Scope, cp, cp.Field.Name);
+ 						DoEmitInstance (ec);
+diff -ru orig/mono-1.9.1-checkout/mcs/mcs/statement.cs mono-1.9.1-checkout/mcs/mcs/statement.cs
+--- orig/mono-1.9.1-checkout/mcs/mcs/statement.cs	2025-06-09 11:58:58.816851529 +0200
++++ mono-1.9.1-checkout/mcs/mcs/statement.cs	2025-06-09 22:07:10.441563853 +0200
+@@ -1392,7 +1392,7 @@
+ 			get { return Location; }
+ 		}
+ 
+-		protected class LocalVariable : Variable
++		public class LocalVariable : Variable
+ 		{
+ 			public readonly LocalInfo LocalInfo;
+ 			LocalBuilder builder;
+diff -ru orig/mono-1.9.1-checkout/mono/metadata/reflection.c mono-1.9.1-checkout/mono/metadata/reflection.c
+--- orig/mono-1.9.1-checkout/mono/metadata/reflection.c	2025-06-09 11:58:58.903462701 +0200
++++ mono-1.9.1-checkout/mono/metadata/reflection.c	2025-06-09 18:44:58.063693593 +0200
+@@ -4851,7 +4851,7 @@
+ 	
+ 	header->coff.coff_machine = GUINT16_FROM_LE (assemblyb->machine);
+ 	header->coff.coff_sections = GUINT16_FROM_LE (nsections);
+-	header->coff.coff_time = GUINT32_FROM_LE (time (NULL));
++	header->coff.coff_time = GUINT32_FROM_LE (getenv("SOURCE_DATE_EPOCH") ? atoi(getenv("SOURCE_DATE_EPOCH")) : time (NULL));
+ 	header->coff.coff_opt_header_size = GUINT16_FROM_LE (sizeof (MonoDotNetHeader) - sizeof (MonoCOFFHeader) - 4);
+ 	if (assemblyb->pekind == 1) {
+ 		/* it's a dll */
