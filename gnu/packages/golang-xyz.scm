@@ -2760,7 +2760,7 @@ similar to Go's standard library @code{json} and @code{xml} package.")
 (define-public go-github-com-bytedance-sonic
   (package
     (name "go-github-com-bytedance-sonic")
-    (version "1.12.6")
+    (version "1.13.3")
     (source
      (origin
        (method git-fetch)
@@ -2769,7 +2769,7 @@ similar to Go's standard library @code{json} and @code{xml} package.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "011hp6lvqvx4facxsmy6vya02g9q3rlnmxcii827sbf6bssy7wxp"))
+        (base32 "0sh7xmf0sivxbl344ns4i35fijcq259wcz5fn2xb5pkacxffclgg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
