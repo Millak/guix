@@ -832,7 +832,7 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go
   (package
     (name "go-github-com-aws-aws-sdk-go")
-    (version "1.55.2")
+    (version "1.55.7")
     (source
      (origin
        (method git-fetch)
@@ -841,27 +841,13 @@ functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wsl1vcig3j9z6v2hppfr1bvrvbisck026fwq2a7yzmx36pwnj6a"))))
+        (base32 "11lyc27wwpfly4hvvml8j3y16g010snd4qjc9ivlwdcafjpxly33"))))
     (build-system go-build-system)
     (arguments
      (list
       #:go go-1.23
       #:import-path "github.com/aws/aws-sdk-go"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  (("TestProcessProviderTimeout")
-                   "OffTestProcessProviderTimeout")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:test-flags #~(list "-skip" "TestProcessProviderTimeout")))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath))
     (home-page "https://github.com/aws/aws-sdk-go")
