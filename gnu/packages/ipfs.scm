@@ -230,17 +230,17 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-polydawn-refmt
            go-github-com-prometheus-client-golang
            go-github-com-samber-lo
-           ;; go-github-com-slok-go-http-metrics
+           go-github-com-slok-go-http-metrics
            go-github-com-spaolacci-murmur3
            go-github-com-whyrusleeping-base32
            go-github-com-whyrusleeping-chunker
            go-go-opencensus-io
            go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
            go-go-opentelemetry-io-otel
-           ;; go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
-           ;; go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
-           ;; go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
-           ;; go-go-opentelemetry-io-otel-exporters-zipkin
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
+           go-go-opentelemetry-io-otel-exporters-zipkin
            go-go-opentelemetry-io-otel-sdk
            go-go-opentelemetry-io-otel-trace
            go-go-uber-org-multierr
