@@ -47,14 +47,12 @@
     (arguments
      (list
       #:import-path "github.com/rogpeppe/godef"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'delete-problematic-tests
-            (lambda _
-              ;; The TestGoDef/Modules test fails, because of the lack of Go
-              ;; modules support.
-              (delete-file "src/github.com/rogpeppe/godef/godef_test.go"))))))
-    (inputs (list go-golang-org-x-tools go-ninefans-net-go))
+      ;; The TestGoDef/Modules test fails, because of the lack of Go modules
+      ;; support.
+      #:test-flags #~(list "-skip" "TestGoDef/GOPATH|TestGoDef/Modules")))
+    (inputs
+     (list go-golang-org-x-tools
+           go-ninefans-net-go))
     (home-page "https://github.com/rogpeppe/godef")
     (synopsis "Print where symbols are defined in Go source code")
     (description "The @command{godef} command prints the source location of
