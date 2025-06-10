@@ -29,7 +29,7 @@ diff -ru orig/mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageIn
 +					// fallthrough
 +				}
 +			}
-+			
++
  			return (uint) DateTime.UtcNow.Subtract (
  				new DateTime (1970, 1, 1)).TotalSeconds;
  		}
@@ -49,9 +49,9 @@ diff -ru orig/mono-1.9.1-checkout/mcs/mcs/anonymous.cs mono-1.9.1-checkout/mcs/m
  		}
  
 +//
-+// A robust, standalone, and deterministic comparer for all types that
-+// inherit from the abstract class 'Variable'. This version uses only
-+// C# 2.0 compatible syntax.
++// A comparer for all types that inherit from the abstract class 'Variable'.
++// Uses only C# 2.0 compatible syntax.
++//
 +//
 +public class VariableComparer : System.Collections.IComparer
 +{
@@ -61,25 +61,25 @@ diff -ru orig/mono-1.9.1-checkout/mcs/mcs/anonymous.cs mono-1.9.1-checkout/mcs/m
 +        // Case 1: The object is a 'CapturedVariable' or any of its children.
 +        if (obj is ScopeInfo.CapturedVariable)
 +        {
-+            // Explicit cast required for C# 2.0
++
 +            ScopeInfo.CapturedVariable cv = (ScopeInfo.CapturedVariable)obj;
 +            return cv.Name;
 +        }
 +
-+        // Case 2: The object is a 'LocalVariable' from statement.cs.
++        // Case 2: The object is a 'LocalVariable'
 +        if (obj is LocalInfo.LocalVariable)
 +        {
 +            // Explicit cast required for C# 2.0
 +            LocalInfo.LocalVariable lv = (LocalInfo.LocalVariable)obj;
 +            return lv.LocalInfo.Name;
 +        }
-+        
++
 +        //
 +        // Fallback for any other unknown 'Variable' subtype.
 +        //
 +        return obj.GetType().FullName;
 +    }
-+    
++
 +    // The single method required by the IComparer interface.
 +    public int Compare(object x, object y)
 +    {
@@ -90,15 +90,15 @@ diff -ru orig/mono-1.9.1-checkout/mcs/mcs/anonymous.cs mono-1.9.1-checkout/mcs/m
 +
 +        string name_x = GetVariableName(x);
 +        string name_y = GetVariableName(y);
-+        
-+        // 1. Primary Sort Key: The extracted variable name.
++
++        // Primary Sort Key: The extracted variable name.
 +        int name_compare = string.CompareOrdinal(name_x, name_y);
 +        if (name_compare != 0)
 +        {
 +            return name_compare;
 +        }
 +
-+        // 2. Secondary Sort Key (Stable Tie-breaker): The full type name.
++        // Secondary Sort Key (Tie-breaker): The full type name.
 +        return string.CompareOrdinal(x.GetType().FullName, y.GetType().FullName);
 +    }
 +}

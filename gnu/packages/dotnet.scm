@@ -497,7 +497,9 @@ a C-style programming language from Microsoft that is very similar to Java.")
               (modules '((guix build utils)
                          (ice-9 string-fun)))
               (snippet prepare-mono-source)
-              (patches (search-patches "mono-2.4.2.3-fixes.patch"))))
+              (patches (search-patches "mono-2.4.2.3-reproducibility.patch"
+                                       "mono-2.4.2.3-fixes.patch"
+                                       "mono-2.4.2.3-fix-parallel-builds.patch"))))
     (native-inputs (modify-inputs (package-native-inputs mono-1.9.1)
                      (replace "mono" mono-1.9.1)))
     (inputs (modify-inputs (package-inputs mono-1.9.1)
@@ -513,6 +515,13 @@ a C-style programming language from Microsoft that is very similar to Java.")
         #f)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'disable-mono-mini-timestamps
+              (lambda _
+                ;; Note: Newer monos have mono/mini/Makefile.am.in .
+                (substitute* '("mono/mini/Makefile.am")
+                 (("`date`")
+                  ;; This timestamp is the same as SOURCE_DATE_EPOCH.
+                  "Tue Jan  1 12:00:00 AM UTC 1980"))))
             (add-before 'bootstrap 'patch-sub-autogen.sh-shebang
               (lambda _
                 (patch-shebang "eglib/autogen.sh")))))))

@@ -1,0 +1,20 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: Mon Jun  9 12:06:40 PM CEST 2025
+Subject: Fix parallel builds
+
+diff -ru orig/7pmpv2pzi9xirz7fc8pzjb9d1qnscvdh-mono-2.4.2.3-checkout/scripts/Makefile.am 7pmpv2pzi9xirz7fc8pzjb9d1qnscvdh-mono-2.4.2.3-checkout/scripts/Makefile.am
+--- orig/7pmpv2pzi9xirz7fc8pzjb9d1qnscvdh-mono-2.4.2.3-checkout/scripts/Makefile.am	2025-06-09 12:02:29.749177390 +0200
++++ 7pmpv2pzi9xirz7fc8pzjb9d1qnscvdh-mono-2.4.2.3-checkout/scripts/Makefile.am	2025-06-09 12:05:00.125919505 +0200
+@@ -236,9 +236,6 @@
+ 	mv $@.tmp $@
+ 
+ $(MDOC_SUBCOMMANDS): Makefile
+-	for script in $(MDOC_SUBCOMMANDS) ; do                  \
+-		cmd=`echo $$script | sed 's/mdoc-//'` ;         \
+-		echo "#!/bin/sh" > $$script ;                   \
+-		echo "exec mdoc $$cmd \"\$$@\"" >> $$script;    \
+-	done
+-
++	cmd=`echo $@ | sed 's/mdoc-//'` ; \
++	echo "#!/bin/sh" > $@ ; \
++	echo "exec mdoc $$cmd \"\$$@\"" >> $@

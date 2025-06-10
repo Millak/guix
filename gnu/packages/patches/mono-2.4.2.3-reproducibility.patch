@@ -1,0 +1,47 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: Mon Jun  9 01:19:28 PM CEST 2025
+Subject: Make mono 2.4.2.3 reprodubile.
+
+diff -ru orig/mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs
+--- orig/mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs	2025-06-09 11:58:58.679365113 +0200
++++ mono-1.9.1-checkout/mcs/class/corlib/System.Reflection.Emit/ModuleBuilder.cs	2025-06-09 19:10:46.839764717 +0200
+@@ -80,7 +80,7 @@
+ 			this.assembly = this.assemblyb = assb;
+ 			this.transient = transient;
+ 			// to keep mcs fast we do not want CryptoConfig wo be involved to create the RNG
+-			guid = Guid.FastNewGuidArray ();
++			guid = new byte[16]; // = Guid.Empty.ToByteArray();
+ 			// guid = Guid.NewGuid().ToByteArray ();
+ 			table_idx = get_next_table_index (this, 0x00, true);
+ 			name_cache = new Hashtable ();
+diff -ru orig/mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs
+--- orig/mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs	2025-06-09 11:58:58.233978153 +0200
++++ mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil.Binary/ImageInitializer.cs	2025-06-09 16:46:46.086454131 +0200
+@@ -132,6 +132,15 @@
+ 
+ 		public static uint TimeDateStampFromEpoch ()
+ 		{
++			string sourceDateEpoch = Environment.GetEnvironmentVariable("SOURCE_DATE_EPOCH");
++			if (sourceDateEpoch != null && sourceDateEpoch != "") {
++				try {
++					return uint.Parse(sourceDateEpoch);
++				} catch {
++					// fallthrough
++				}
++			}
++			
+ 			return (uint) DateTime.UtcNow.Subtract (
+ 				new DateTime (1970, 1, 1)).TotalSeconds;
+ 		}
+diff -ru orig/mono-1.9.1-checkout/mono/metadata/reflection.c mono-1.9.1-checkout/mono/metadata/reflection.c
+--- orig/mono-1.9.1-checkout/mono/metadata/reflection.c	2025-06-09 11:58:58.903462701 +0200
++++ mono-1.9.1-checkout/mono/metadata/reflection.c	2025-06-09 18:44:58.063693593 +0200
+@@ -4851,7 +4851,7 @@
+ 	
+ 	header->coff.coff_machine = GUINT16_FROM_LE (assemblyb->machine);
+ 	header->coff.coff_sections = GUINT16_FROM_LE (nsections);
+-	header->coff.coff_time = GUINT32_FROM_LE (time (NULL));
++	header->coff.coff_time = GUINT32_FROM_LE (getenv("SOURCE_DATE_EPOCH") ? atoi(getenv("SOURCE_DATE_EPOCH")) : time (NULL));
+ 	header->coff.coff_opt_header_size = GUINT16_FROM_LE (sizeof (MonoDotNetHeader) - sizeof (MonoCOFFHeader) - 4);
+ 	if (assemblyb->pekind == 1) {
+ 		/* it's a dll */
