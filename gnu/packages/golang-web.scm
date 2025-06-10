@@ -5668,6 +5668,37 @@ Features:
 server for rapidly testing HTTP-01, DNS-01 and TLS-ALPN-01 challenge types.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-letsencrypt-pebble-v2
+  (package
+    (name "go-github-com-letsencrypt-pebble-v2")
+    (version "2.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/letsencrypt/pebble")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17jqkmgh8hl4cazslnjc90blzncqv5g2h0nf1bihpc26x7an3xqx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/letsencrypt/pebble/v2"))
+    (propagated-inputs
+     (list go-github-com-go-jose-go-jose-v4
+           go-github-com-letsencrypt-challtestsrv
+           go-github-com-miekg-dns))
+    (home-page "https://github.com/letsencrypt/pebble")
+    (synopsis "RFC 8555 ACME test server")
+    (description
+     "This package provides a miniature version of
+@url{https://github.com/letsencrypt/boulder, Boulder}, Pebble is a small
+@url{https://github.com/ietf-wg-acme/acme, ACME} test server not suited for
+use as a production CA.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-levigross-grequests
   (package
     (name "go-github-com-levigross-grequests")
