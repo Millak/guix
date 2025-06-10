@@ -11398,6 +11398,51 @@ intended to be used to add tracing by wrapping existing handlers (with
 Handler) and routes @code{WithRouteTag}.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-propagators-autoprop
+  (package
+    (name "go-go-opentelemetry-io-contrib-propagators-autoprop")
+    (version "0.61.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+             (commit (go-version->git-ref version
+                                          #:subdir "propagators/autoprop"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15k2xps4qv37pw3ml6pj98kihl6a04bbr005px5hhckl23s40w2c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Enable tests and build when all missing inputs are packags, use
+      ;; as source only package for Kubo.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "go.opentelemetry.io/contrib/propagators/autoprop"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list ;; go-go-opentelemetry-io-contrib-propagators-aws
+           ;; go-go-opentelemetry-io-contrib-propagators-b3
+           ;; go-go-opentelemetry-io-contrib-propagators-jaeger
+           ;; go-go-opentelemetry-io-contrib-propagators-ot
+           go-go-opentelemetry-io-otel))
+    (home-page "https://opentelemetry.io/")
+    (synopsis "OpenTelemetry TextMapPropagator creation")
+    (description
+     "Package autoprop provides an @code{OpenTelemetry}
+@code{TextMapPropagator} creation function.  The @code{OpenTelemetry}
+specification states that the default @code{TextMapPropagator} needs to be a
+no-operation implementation.  The opentelemetry-go project adheres to this
+requirement.  However, for systems that perform propagation this default is
+not ideal.  This package provides a @code{TextMapPropagator} with useful
+defaults (a combined @code{TraceContext} and Baggage
+@code{TextMapPropagator}), and supports environment overrides using the
+OTEL_PROPAGATORS environment variable.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
