@@ -5642,6 +5642,32 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-letsencrypt-challtestsrv
+  (package
+    (name "go-github-com-letsencrypt-challtestsrv")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/letsencrypt/challtestsrv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03g5bvifxijhg9kw4qrs3x3h48m6q6s9a14w7172s1mwshmyr0wi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/letsencrypt/challtestsrv"))
+    (propagated-inputs
+     (list go-github-com-miekg-dns))
+    (home-page "https://github.com/letsencrypt/challtestsrv")
+    (synopsis "Challenge Test Server")
+    (description
+     "Package challtestsrv provides a trivially insecure acme challenge response
+server for rapidly testing HTTP-01, DNS-01 and TLS-ALPN-01 challenge types.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-levigross-grequests
   (package
     (name "go-github-com-levigross-grequests")
