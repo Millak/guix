@@ -2881,6 +2881,27 @@ documents, as well as for calculating & applying
 @url{https://tools.ietf.org/html/rfc7396,RFC7396 JSON merge patches}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-evanphx-json-patch-v5
+  (package
+    (inherit go-github-com-evanphx-json-patch)
+    (name "go-github-com-evanphx-json-patch-v5")
+    (version "5.9.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/evanphx/json-patch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sydllg5hsmvwdr1276qzl8v3xsr3jjrimvvgl9096rn3kf3664m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/evanphx/json-patch/v5"
+      #:unpack-path "github.com/evanphx/json-patch"))))
+
 (define-public go-github-com-fasthttp-router
   (package
     (name "go-github-com-fasthttp-router")
