@@ -11770,6 +11770,69 @@ go.opentelemetry.io/otel, go.opentelemetry.io/otel/metric and
 go.opentelemetry.io/otel/trace.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc")
+    (version "1.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "exporters/otlp/otlptrace/otlptracegrpc"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kvfbqc56p1h9rh9cvgn37ya6k10613r0f2rhjiwrrkgs2mszk30"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "exporters/otlp/otlptrace" "otlptracegrpc")
+            (delete-all-but "." "exporters")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Enable when all missing inputs are availalbe, use as source
+      ;; only package for Boxo.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path
+      "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cenkalti-backoff-v5
+           go-go-opentelemetry-io-proto-otlp
+           go-go-uber-org-goleak
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OTLP Trace gRPC Exporter")
+    (description
+     "Package otlptracegrpc provides an OTLP span exporter using @code{gRPC}.
+By default the telemetry is sent to @@url{https://localhost:4317}.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
   (package
     (name "go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace")
