@@ -11529,6 +11529,39 @@ defaults (a combined @code{TraceContext} and Baggage
 OTEL_PROPAGATORS environment variable.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-propagators-jaeger
+  (package
+    (name "go-go-opentelemetry-io-contrib-propagators-jaeger")
+    (version "1.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+             (commit (go-version->git-ref version
+                                          #:subdir "propagators/jaeger"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15k2xps4qv37pw3ml6pj98kihl6a04bbr005px5hhckl23s40w2c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/contrib/propagators/jaeger"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://go.opentelemetry.io/contrib")
+    (synopsis "OpenTracing Jaeger propagator library")
+    (description
+     "Package jaeger implements the Jaeger propagator specification as defined
+at
+@url{https://www.jaegertracing.io/docs/1.18/client-libraries/#propagation-format}.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-propagators-ot
   (package
     (name "go-go-opentelemetry-io-contrib-propagators-ot")
