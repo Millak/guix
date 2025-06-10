@@ -4635,6 +4635,47 @@ responses.  It is only suitable for use as a \"private\" cache (i.e. for a
 web-browser or an API-client and not for a shared proxy).")
     (license license:expat)))
 
+(define-public go-github-com-grpc-ecosystem-grpc-gateway-v2
+  (package
+    (name "go-github-com-grpc-ecosystem-grpc-gateway-v2")
+    (version "2.26.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grpc-ecosystem/grpc-gateway")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pw845x9bqhj64pxvyaafacq0mmmblbf5z4r2arprhdnb05czx3v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/grpc-ecosystem/grpc-gateway/v2"))
+    (propagated-inputs
+     (list go-github-com-antihax-optional
+           go-github-com-google-go-cmp
+           go-github-com-rogpeppe-fastuuid
+           go-golang-org-x-oauth2
+           go-golang-org-x-text
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/grpc-ecosystem/grpc-gateway")
+    (synopsis "gRPC to JSON proxy generator following the gRPC HTTP spec")
+    (description
+     "The @code{gRPC-Gateway} is a plugin of the Google protocol buffers
+compiler @@url{https://github.com/protocolbuffers/protobuf,protoc}.  It reads
+protobuf service definitions and generates a reverse-proxy server which
+translates a RESTful HTTP API into @code{gRPC}.  This server is generated
+according to the
+@url{https://github.com/googleapis/googleapis/raw/master/google/api/http.proto#L46,(code
+google.api.http)} annotations in your service definitions.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-hashicorp-go-cleanhttp
   (package
     (name "go-github-com-hashicorp-go-cleanhttp")
