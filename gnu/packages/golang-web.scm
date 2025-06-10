@@ -9685,6 +9685,56 @@ use gzip compression when serving HTTP requests.")
 provided @code{http.FileSystem}.")
     (license license:expat)))
 
+(define-public go-github-com-slok-go-http-metrics
+  (package
+    (name "go-github-com-slok-go-http-metrics")
+    (version "0.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/slok/go-http-metrics")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lrnf0vhqlnhad6n8yyc2iafqlw6jr55cmyg9gqns2yi2gdfqv8m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/slok/go-http-metrics"
+      ;; XXX: Full tests require Iris package.
+      #:test-subdirs #~(list "metrics/...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-contrib-go-opencensus-io-exporter-prometheus
+           go-github-com-emicklei-go-restful-v3
+           go-github-com-fasthttp-router
+           go-github-com-gin-gonic-gin
+           go-github-com-go-chi-chi-v5
+           go-github-com-gorilla-mux
+           go-github-com-julienschmidt-httprouter
+           go-github-com-justinas-alice
+           ;; go-github-com-kataras-iris-v12
+           go-github-com-labstack-echo-v4
+           go-github-com-prometheus-client-golang
+           go-github-com-stretchr-testify
+           go-github-com-urfave-negroni
+           go-github-com-valyala-fasthttp
+           go-go-opencensus-io
+           go-goji-io))
+    (home-page "https://github.com/slok/go-http-metrics")
+    (synopsis "Modular http middleware to measure HTTP requests")
+    (description
+     "Package gohttpmetrics knows how to measure http metrics in different
+metric formats, it comes with a middleware that can be used for different
+frameworks and also the the main Go net/http handler:.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-smartystreets-go-aws-auth
   (package
     (name "go-github-com-smartystreets-go-aws-auth")
