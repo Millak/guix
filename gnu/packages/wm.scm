@@ -2465,7 +2465,7 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
 (define-public swww
   (package
     (name "swww")
-    (version "0.9.5")
+    (version "0.10.3")
     (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -2474,24 +2474,13 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ivfaw1ff5z68cw15s5qgshk8gqdx9fjslgvfr9xnn9c28gbvp4m"))
-                (modules '((guix build utils)))
-                (snippet
-                 '(begin (substitute* "utils/Cargo.toml"
-                           (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                            (string-append "\"^" version)))))))
+                  "1i02m8ccc40vm9yg2037yzampvv79wwhfjjd5wnvkbxxgmk9fyhr"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-guix-vendored-dependencies
-            (lambda _
-              (substitute* '("daemon/Cargo.toml"
-                             "utils/Cargo.toml")
-                (("git.*rev.*, default-features")
-                 "version = \"*\", default-features"))))
           (add-before 'build 'build-documentation
             (lambda* (#:key inputs #:allow-other-keys)
               (invoke "doc/gen.sh")))
@@ -2517,17 +2506,9 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
                 (install-file "completions/swww.bash" bash-completions-dir)
                 (install-file "completions/_swww" zsh-completions-dir)
                 (install-file "completions/swww.fish" fish-completions-dir)
-                (install-file "completions/swww.elv" elvish-completions-dir))))
-          (add-after 'install 'wrap-binaries
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (lz4 (assoc-ref inputs "lz4")))
-               (wrap-program (string-append out "/bin/swww")
-                 `("PATH" prefix (,(string-append lz4 "/bin"))))
-               (wrap-program (string-append out "/bin/swww-daemon")
-                 `("PATH" prefix (,(string-append lz4 "/bin"))))))))))
+                (install-file "completions/swww.elv" elvish-completions-dir)))))))
     (native-inputs (list pkg-config scdoc))
-    (inputs (cons* bash-minimal lz4 (cargo-inputs 'swww)))
+    (inputs (cons* lz4 wayland wayland-protocols (cargo-inputs 'swww)))
     (home-page "https://github.com/LGFae/swww")
     (synopsis
      "Efficient animated wallpaper daemon for wayland controlled at runtime")
