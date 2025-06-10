@@ -13902,6 +13902,29 @@ standard @code{copy} will copy the pointers where @code{deepcopy} copies the
 values pointed to.  Unexported field values are not copied.")
     (license license:expat)))
 
+(define-public go-github-com-monochromegane-go-gitignore
+  (package
+    (name "go-github-com-monochromegane-go-gitignore")
+    (version "0.0.0-20200626010858-205db1a8cc00")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/monochromegane/go-gitignore")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rawqsxi6n0nwl34nc4jda7drnwfli9v4zkhf60qhl6lcipj0lwg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/monochromegane/go-gitignore"))
+    (home-page "https://github.com/monochromegane/go-gitignore")
+    (synopsis "Gitignore matching library for Golang")
+    (description
+     "This package provides a fast gitignore matching library for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-motemen-go-colorine
   (package
     (name "go-github-com-motemen-go-colorine")
