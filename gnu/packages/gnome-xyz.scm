@@ -148,7 +148,7 @@ the Moka icon theme.")
 (define-public delft-icon-theme
   (package
     (name "delft-icon-theme")
-    (version "1.14")
+    (version "1.15")
     (source
      (origin
        (method git-fetch)
@@ -157,7 +157,7 @@ the Moka icon theme.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1iw85cxx9lv7irs28qi3815dk9f9vldv2j7jf1x5l1dqzwaxgwpb"))
+         "1c4hl0zd6zl7kz9aj554ssdp8421fm592c4ybd42gm6icj3r4nvy"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
