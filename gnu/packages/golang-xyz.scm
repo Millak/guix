@@ -15730,9 +15730,10 @@ programs that use traditional command lines.")
         (base32 "0sacv6g8cxfibxd3gnfjnzp7fynrnc4s2aaz5wbxivqqhvflc22l"))))
     (build-system go-build-system)
     (arguments
-     (list
-      #:import-path "github.com/pborman/getopt/v2"
-      #:unpack-path "github.com/pborman/getopt"))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-pborman-getopt)
+       ((#:import-path _) "github.com/pborman/getopt/v2")
+       ((#:unpack-path _ "") "github.com/pborman/getopt")))))
 
 (define-public go-github-com-pborman-uuid
   (package
