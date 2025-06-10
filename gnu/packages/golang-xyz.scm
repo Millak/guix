@@ -118,14 +118,14 @@
 ;;; Libraries:
 ;;;
 
-;; XXX: The package name in Guix uses 'ninefans' instead of '9fans' to
-;; accomodate from a shortcoming of the go-build-system where the `go-inputs'
-;; procedure in the `setup-go-environment' phase uses
-;; `package-name->name+version', which returns 'go' as name for
-;; go-9fans-net-go-acme, which gets removed from the results and thus GOPATH.
-(define-public go-ninefans-net-go
+(define-public go-9fans-net-go
+  ;; XXX: This variant is to keep go importer healthy with "--insert" option,
+  ;; which places package in alphabetical order and names it accordingly to
+  ;; import path from go.mod file.
+  ;;
+  ;; Use go-ninefans-net-go to include in inputs.
   (package
-    (name "go-ninefans-net-go")
+    (name "go-9fans-net-go")
     (version "0.0.7")
     (source
      (origin
@@ -19558,6 +19558,17 @@ that @code{gofmt} is happy with.")
      "This package provides a Golang library implementing a shell parser,
 formatter, and interpreter with bash support.")
     (license license:bsd-3)))
+
+(define-public go-ninefans-net-go
+  ;; XXX: The package name in Guix uses 'ninefans' instead of '9fans' to
+  ;; accomodate from a shortcoming of the go-build-system where the
+  ;; `go-inputs' procedure in the `setup-go-environment' phase uses
+  ;; `package-name->name+version', which returns 'go' as name for
+  ;; go-9fans-net-go-acme, which gets removed from the results and thus
+  ;; GOPATH.
+  (package
+    (inherit go-9fans-net-go)
+    (name "go-ninefans-net-go")))
 
 (define-public go-nullprogram-com-x-optparse
   (package
