@@ -1193,7 +1193,9 @@ string runProgram(Path program, bool searchPath, const Strings & args)
         else
             execv(program.c_str(), stringsToCharPtrs(args_).data());
 
-        throw SysError(format("executing `%1%'") % program);
+	int err = errno;
+        printMsg(lvlError, format("executing `%1%': %2%") % program % strerror(err));
+	_exit(127);
     });
 
     pipe.writeSide.close();
