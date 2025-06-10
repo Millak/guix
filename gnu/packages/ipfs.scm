@@ -611,34 +611,30 @@ datastore, giving a clean interface for getting and putting block objects.")
     (license license:expat)))
 
 (define-public go-github-com-ipfs-go-ipfs-blocksutil
-  ;; Use the latest commit from the "master" branch to fix the build with
-  ;; go-1.21, see <https://github.com/ipfs/go-ipfs-blocksutil/issues/25>.
-  (let ((commit "ce0497f5ee55c479db98905aec8ff56c27aad2a2")
-        (revision "0"))
-    (package
-      (name "go-github-com-ipfs-go-ipfs-blocksutil")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ipfs/go-ipfs-blocksutil")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1ya6376wphp51rv48nmv4jw3x0mf6ym5yx1650fbkp5l5crqpdb8"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/ipfs/go-ipfs-blocksutil"))
-      (propagated-inputs
-       (list go-github-com-ipfs-go-block-format))
-      (home-page "https://github.com/ipfs/go-ipfs-blocksutil")
-      (synopsis "Utility functions for working with IPFS blocks")
-      (description
-       "This package provides an utility functions for working with
+  (package
+    (name "go-github-com-ipfs-go-ipfs-blocksutil")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-blocksutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g6b4b2b5wp5r0dh20qdfdm76qnh421y8lgz4381r02q2flh57dv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-blocksutil"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format))
+    (home-page "https://github.com/ipfs/go-ipfs-blocksutil")
+    (synopsis "Utility functions for working with IPFS blocks")
+    (description
+     "This package provides an utility functions for working with
 @url{https://github.com/ipfs/go-block-format, IPFS blocks}.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public go-github-com-ipfs-go-cid
   (package
