@@ -12109,6 +12109,39 @@ metrics SDK.")
      "Package trace provides an implementation of the tracing part of the
 OpenTelemetry API.")))
 
+(define-public go-go-opentelemetry-io-proto-otlp
+  (package
+    (name "go-go-opentelemetry-io-proto-otlp")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-proto-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "otlp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k7g5p1qhw17szyzxr08aixi5d0d2ixlb3sp4dksgz45v0dy5cds"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.opentelemetry.io/proto/otlp"
+      #:unpack-path "go.opentelemetry.io/proto"))
+    (propagated-inputs
+     (list go-github-com-grpc-ecosystem-grpc-gateway-v2
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://go.opentelemetry.io/proto")
+    (synopsis "OpenTelemetry protobuf data model")
+    (description
+     "This package provides Go code follows the stability guarantees as
+defined in
+@code{https://github.com/open-telemetry/opentelemetry-proto?tab=readme-ov-file#maturity-level,
+maturity level}.")
+    (license license:asl2.0)))
+
 (define-public go-go-starlark-net
   (package
     (name "go-go-starlark-net")
