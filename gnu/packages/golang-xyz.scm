@@ -2809,7 +2809,7 @@ using JIT and SIMD approaches.")
 (define-public go-github-com-bytedance-sonic-loader
   (package
     (name "go-github-com-bytedance-sonic-loader")
-    (version "0.2.1")
+    (version "0.2.4")
     (source
      (origin
        (method git-fetch)
@@ -2819,7 +2819,7 @@ using JIT and SIMD approaches.")
                                           #:subdir "loader"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fyjq3hr4cmai2r06ppzil314bcqz416gd1zpw7lfp9h7mcwxwa4"))))
+        (base32 "09a7jka6a74802i6a6lgxlc3vp0jnb69hy1l5s772260q1zgnkds"))))
     (build-system go-build-system)
     (arguments
      (list
