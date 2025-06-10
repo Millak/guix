@@ -7614,6 +7614,42 @@ standard library.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-openzipkin-zipkin-go
+  (package
+    (name "go-github-com-openzipkin-zipkin-go")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openzipkin/zipkin-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0780agn2bygi7i2nxng8n80mspaab17k95px1vf6nqil1kg8hh7m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Enable tests and build when all missing inputs are packags, use
+      ;; as source only package for Kubo.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/openzipkin/zipkin-go"))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega))
+    (propagated-inputs
+     (list ;; go-github-com-ibm-sarama
+           ;; go-github-com-rabbitmq-amqp091-go
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/openzipkin/zipkin-go")
+    (synopsis "Zipkin Library for Go")
+    (description
+     "Package zipkin implements a native Zipkin instrumentation library for
+Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-oschwald-geoip2-golang
   (package
     (name "go-github-com-oschwald-geoip2-golang")
