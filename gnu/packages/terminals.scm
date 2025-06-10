@@ -1319,7 +1319,7 @@ tmux.")
            ncurses ;; for tic command
            pkg-config
            python-sphinx
-           wayland-protocols))
+           wayland-protocols-1.42))
     (inputs
      (list fontconfig
            freetype
