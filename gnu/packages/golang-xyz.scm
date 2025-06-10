@@ -10654,7 +10654,7 @@ Golang.")
 (define-public go-github-com-jedib0t-go-pretty-v6
   (package
     (name "go-github-com-jedib0t-go-pretty-v6")
-    (version "6.6.5")
+    (version "6.6.7")
     (source
      (origin
        (method git-fetch)
@@ -10663,10 +10663,11 @@ Golang.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sy8fia04lxi07yga7z3h3fp19y4bla5p16v1n7ldip0ymdmvjnx"))))
+        (base32 "122zmbcrxvl0yvpcq56p4hhcasf7lmprmka4fa00hkpr0m0rrbxq"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:skip-build? #t
       #:import-path "github.com/jedib0t/go-pretty/v6"))
     (native-inputs
