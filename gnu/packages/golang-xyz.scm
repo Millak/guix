@@ -123,10 +123,9 @@
 ;; procedure in the `setup-go-environment' phase uses
 ;; `package-name->name+version', which returns 'go' as name for
 ;; go-9fans-net-go-acme, which gets removed from the results and thus GOPATH.
-(define (make-go-ninefans-net-go-module module)
-  "Return a go-ninefans-net-go package for MODULE."
+(define-public go-ninefans-net-go
   (package
-    (name (string-append "go-ninefans-net-go-" module))
+    (name "go-ninefans-net-go")
     (version "0.0.7")
     (source
      (origin
@@ -140,39 +139,33 @@
     (build-system go-build-system)
     (arguments
      (list
-      ;; This is challenging to package as it uses Go modules and modules
-      ;; inter-dependencies, and our build system lacks support for it;
-      ;; disable the tests to avoid everything getting tangled at build time.
-      #:tests? #f
-      #:import-path (string-append "9fans.net/go/" module)
-      #:unpack-path "9fans.net/go"))
-    (propagated-inputs (list go-golang-org-x-sys go-golang-org-x-exp))
+      #:skip-build? #t
+      #:import-path "9fans.net/go"
+      #:test-subdirs #~(list "acme/..."
+                             ;; "cmd/..." ; missing packages
+                             ;;
+                             ;; Tests fail with error: panic: drawfcall.New:
+                             ;; exec: "devdraw": executable file not found in
+                             ;; $PATH
+                             ;;
+                             ;; "draw/..."
+                             "games/..."
+                             "p9trace/..."
+                             "plan9/..."
+                             "plumb/...")))
+    ;; TODO: Not ready packages required to build CLI from <cmd/devdraw>.
+    ;; (native-inputs
+    ;;  (list go-golang-org-x-exp-shiny
+    ;;        go-golang-org-x-mobile))
+    (propagated-inputs
+     (list go-golang-org-x-exp
+           go-golang-org-x-sys))
     (home-page "https://9fans.net/go")
     (synopsis "Interface for interacting with Acme windows")
-    (description "The @code{acme} Go package provides simple interface for
+    (description
+     "The @code{acme} Go package provides simple interface for
 interacting with Acme windows of the Plan 9 text editor.")
     (license license:expat)))
-
-(define go-ninefans-net-go-acme
-  (make-go-ninefans-net-go-module "acme"))
-
-(define go-ninefans-net-go-draw
-  (make-go-ninefans-net-go-module "draw"))
-
-(define go-ninefans-net-go-plan9
-  (make-go-ninefans-net-go-module "plan9"))
-
-(define-public go-ninefans-net-go
-  (let ((base (make-go-ninefans-net-go-module "")))
-    (package
-      (inherit base)
-      (name "go-ninefans-net-go")
-      (build-system trivial-build-system)
-      (arguments (list #:builder #~(mkdir #$output)))
-      (propagated-inputs
-       (list go-ninefans-net-go-acme
-             go-ninefans-net-go-draw
-             go-ninefans-net-go-plan9)))))
 
 (define-public go-atomicgo-dev-cursor
   (package
