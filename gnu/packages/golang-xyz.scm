@@ -16117,7 +16117,7 @@ alternative fork of https://github.com/pkg/errors project.")
 (define-public go-github-com-pion-logging
   (package
     (name "go-github-com-pion-logging")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -16126,10 +16126,11 @@ alternative fork of https://github.com/pkg/errors project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11ay8c15xk3pv7y9nd80szk3mci480x67yqlgb10vswrz4h4mx3v"))))
+        (base32 "13c8pkn6nyhayjax77bcysmv9fsyb63gllk2ns880b3hgdcl2l1a"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/pion/logging"))
     (home-page "https://github.com/pion/logging/")
     (synopsis "Logging library for Golang projects")
