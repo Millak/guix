@@ -1322,7 +1322,7 @@ download-po:
 .PHONY: download-po
 
 # Regenerate 'CODEOWNERS' when 'teams.scm' is modified so we don't forget.
-CODEOWNERS: etc/teams.scm
+CODEOWNERS: etc/teams.scm scripts/guix
 	./etc/teams.scm codeowners > "$@.tmp"
 	mv "$@.tmp" "$@"
 
