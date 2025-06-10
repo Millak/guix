@@ -3241,7 +3241,7 @@ Features:
 (define-public go-github-com-go-chi-chi-v5
   (package
     (name "go-github-com-go-chi-chi-v5")
-    (version "5.0.7")
+    (version "5.2.1")
     (source
      (origin
        (method git-fetch)
@@ -3250,10 +3250,12 @@ Features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rzrsxz4xj0973c6nxklvq2vmg2m795snhk25836i0gnd1jnx79k"))))
+        (base32 "1kbgz6j720cdipmmkaxqa1w42wyqirw3x5pysnph92wpm2wnss1g"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/go-chi/chi/v5"))
+     (list
+      #:go go-1.23
+      #:import-path "github.com/go-chi/chi/v5"))
     (home-page "https://github.com/go-chi/chi")
     (synopsis "Composable router for HTTP services written in Go")
     (description
