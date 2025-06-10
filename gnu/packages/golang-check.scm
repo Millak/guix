@@ -2644,36 +2644,6 @@ the end of a test.")
 built-in @code{testing} package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
-(define-public go-golang-org-sql-mock
-  (package
-    (name "go-golang-org-sql-mock")
-    (version "1.5.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DATA-DOG/go-sqlmock")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vpvdx9hwmx9gm27aq5r5219xpaxz0gy4q1iqskk4saz05bspn0f"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/DATA-DOG/go-sqlmock"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file-recursively
-               (string-append "src/" import-path "/examples")))))))
-    (home-page "https://github.com/DATA-DOG/go-sqlmock")
-    (synopsis "Mock library implementing @code{sql/driver}")
-    (description
-     "This library simulates SQL-driver behavior in tests without requiring a
-real database connection.")
-    (license license:expat)))
-
 (define-public go-golang-org-x-lint
   (package
     (name "go-golang-org-x-lint")
