@@ -12693,7 +12693,7 @@ generation.")
 (define-public go-github-com-magiconair-properties
   (package
     (name "go-github-com-magiconair-properties")
-    (version "1.8.9")
+    (version "1.8.10")
     (source
      (origin
        (method git-fetch)
@@ -12702,10 +12702,11 @@ generation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05nkgdzl393505arq6hf1wxjxs2iaqkc88v5cy1s068abpl65xy0"))))
+        (base32 "1cmbh9y51lbn2q2i2jzjfd14spwclg88hfsj4k1kkj1xc2bkwqdj"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/magiconair/properties"))
     (home-page "https://github.com/magiconair/properties")
     (synopsis "Java properties scanner for Go")
