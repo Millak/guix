@@ -11593,6 +11593,61 @@ go.opentelemetry.io/otel, go.opentelemetry.io/otel/metric and
 go.opentelemetry.io/otel/trace.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-zipkin
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-zipkin")
+    (version "1.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "exporters/zipkin"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kvfbqc56p1h9rh9cvgn37ya6k10613r0f2rhjiwrrkgs2mszk30"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "exporters" "zipkin")
+            (delete-all-but "." "exporters")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/exporters/zipkin"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-openzipkin-zipkin-go
+           go-github-com-google-go-cmp
+           go-github-com-go-logr-stdr
+           go-github-com-go-logr-logr))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "Zipkin Exporter")
+    (description
+     "Package zipkin contains an @code{OpenTelemetry} tracing exporter for Zipkin.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-log
   (package
     (name "go-go-opentelemetry-io-otel-log")
