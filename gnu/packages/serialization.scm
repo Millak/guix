@@ -437,8 +437,17 @@ that implements both the msgpack and msgpack-rpc specifications.")
                 "1c9i93kr7wvpr01i4wixi9mf991nd3k2adg5fy0vxwwlvvc7dgdw"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase
-           #:test-target "tests"))
+     (list #:modules '((guix build cmake-build-system)
+                       (guix build qt-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
+           #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:rest args)
+                   (apply (assoc-ref gnu:%standard-phases 'check)
+                          #:test-target "tests" args))))))
     (home-page "https://github.com/iamantony/qtcsv")
     (synopsis "Library for reading and writing CSV files in Qt")
     (description

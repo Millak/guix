@@ -485,8 +485,6 @@ convert HTML to Markdown.")
                (base32
                 "0llj68l9rxdhral0zyv0bz6yzqsxgq8d3730082sl3kx78lsq5qq"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:test-target "test"))
     (native-inputs (list python))
     (synopsis "CommonMark Markdown reference implementation")
     (description
@@ -543,8 +541,7 @@ CommonMark C library libcmark.  It closely follows the original API.")
                (base32
                 "1apy9i76rgs0bmgdlpjszv0fpqhlap2s12m68wvnsv8j3fsqc90y"))))
     (arguments
-     (list #:test-target "test"
-           #:phases #~(modify-phases %standard-phases
+     (list #:phases #~(modify-phases %standard-phases
                         (add-after 'install 'install-config
                           (lambda _
                             ;; XXX: cmark-gfm-core-extensions.h includes this file.

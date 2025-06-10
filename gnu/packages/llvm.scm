@@ -817,14 +817,20 @@ of programming tools as well as libraries with equivalent functionality.")
       #~(list "-DLIBOMP_USE_HWLOC=ON"
               "-DOPENMP_TEST_C_COMPILER=clang"
               "-DOPENMP_TEST_CXX_COMPILER=clang++")
-      #:test-target "check-libomp"
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir-to-source-and-install-license
             (lambda _
               (chdir "openmp")
               (install-file "LICENSE.TXT"
-                            (string-append #$output "/share/doc")))))))
+                            (string-append #$output "/share/doc"))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "check-libomp" args))))))
     (native-inputs (list clang-15 llvm-15 perl pkg-config python))
     (inputs (list `(,hwloc "lib")))
     (home-page "https://openmp.llvm.org")
@@ -921,14 +927,14 @@ Library.")
                 "0kvbr4j6ldpssiv7chgqra5y77n7jwbyxlwcl7z32v31f49jcybb"))
               (file-name (string-append "libomp-" version ".tar.xz"))))
     (arguments
-     '(#:configure-flags '("-DLIBOMP_USE_HWLOC=ON"
-                           "-DOPENMP_TEST_C_COMPILER=clang"
-                           "-DOPENMP_TEST_CXX_COMPILER=clang++"
-
-                           ;; Work around faulty target detection, fixed in 14:
-                           ;; https://github.com/llvm/llvm-project/issues/52910
-                           "-DLIBOMPTARGET_BUILD_AMDGCN_BCLIB=OFF")
-       #:test-target "check-libomp"))
+     (substitute-keyword-arguments (package-arguments libomp-14)
+       ((#:configure-flags flags)
+        ;; Work around faulty target detection, fixed in 14:
+        ;; https://github.com/llvm/llvm-project/issues/52910
+        #~(cons* "-DLIBOMPTARGET_BUILD_AMDGCN_BCLIB=OFF" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'chdir-to-source-and-install-license)))))
     (native-inputs
      (modify-inputs (package-native-inputs libomp-14)
        (replace "clang" clang-13)
@@ -1007,10 +1013,9 @@ Library.")
                 "14dh0r6h2xh747ffgnsl4z08h0ri04azi9vf79cbz7ma1r27kzk0"))
               (file-name (string-append "libomp-" version ".tar.xz"))))
     (arguments
-     '(#:configure-flags '("-DLIBOMP_USE_HWLOC=ON"
-                           "-DOPENMP_TEST_C_COMPILER=clang"
-                           "-DOPENMP_TEST_CXX_COMPILER=clang++")
-       #:test-target "check-libomp"))
+     (substitute-keyword-arguments (package-arguments libomp-13)
+       ((#:configure-flags flags)
+        #~`(,@(delete "-DLIBOMPTARGET_BUILD_AMDGCN_BCLIB=OFF" #$flags)))))
     (native-inputs
      (modify-inputs (package-native-inputs libomp-13)
        (replace "clang" clang-12)
@@ -1952,7 +1957,6 @@ which highly leverage existing libraries in the larger LLVM project.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:test-target "check-cxx"
       #:tests? #f                       ;prohibitively expensive to run
       #:implicit-inputs? #f             ;to avoid conflicting GCC headers
       #:configure-flags
@@ -1965,11 +1969,18 @@ which highly leverage existing libraries in the larger LLVM project.")
               ;; as RUNPATH and don't attempt to patch it.
               ;; See also: https://gitlab.kitware.com/cmake/cmake/-/issues/22963
               "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enter-subdirectory
             (lambda _
-              (chdir "runtimes"))))))
+              (chdir "runtimes")))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "check-cxx" args))))))
     (native-inputs
      (modify-inputs (standard-packages)
        ;; Remove GCC from the build environment, to avoid its C++
@@ -2511,7 +2522,6 @@ LLVM bitcode files.")
       ;; FIXME: 79 tests fail, out of ~200 (see:
       ;; https://github.com/root-project/cling/issues/534)
       #:tests? #f
-      #:test-target "check-cling"
       #:configure-flags
       #~(list (string-append "-DCLING_CXX_PATH="
                              (search-input-file %build-inputs "bin/g++"))

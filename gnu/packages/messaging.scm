@@ -2875,11 +2875,18 @@ asynchronicity.")
                (base32
                 "06y3mh1d1mks6d0ynxp3980g712nkf8l5nyljpybsk326b246hg9"))))
    (arguments
-    `(#:test-target "tests"
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'change-directory
-          (lambda _ (chdir "cpp"))))))
+    (list
+     #:modules '((guix build cmake-build-system)
+                 ((guix build gnu-build-system) #:prefix gnu:)
+                 (guix build utils))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'change-directory
+           (lambda _ (chdir "cpp")))
+         (replace 'check
+           (lambda* (#:rest args)
+             (apply (assoc-ref gnu:%standard-phases 'check)
+                    #:test-target "tests" args))))))
    (build-system cmake-build-system)
    (native-inputs
     (list googletest pkg-config))

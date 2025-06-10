@@ -10757,7 +10757,9 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
               #$(string-append "-DFALCOSECURITY_LIBS_VERSION=" version))
       ;; Only the libsinsp test suite is run, as the one for libscap requires
       ;; elevated privileges.
-      #:test-target "run-unit-test-libsinsp"
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-problematic-tests
@@ -10767,6 +10769,10 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
                 ;; exists in the build environment.
                 (("TEST_F\\(usergroup_manager_test, system_lookup)")
                  "TEST_F(usergroup_manager_test, DISABLED_system_lookup)"))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "run-unit-test-libsinsp" args)))
           (add-after 'install 'delete-src
             (lambda _
               (delete-file-recursively

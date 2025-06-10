@@ -126,10 +126,12 @@ available in French.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:test-target "testit"
       #:configure-flags
       #~(list "-DUSE_SYSTEM_TZ_DB=ON" "-DBUILD_SHARED_LIBS=ON"
               "-DBUILD_TZ_LIB=ON" "-DENABLE_DATE_TESTING=ON")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-bin-bash
@@ -148,7 +150,11 @@ available in French.")
             (lambda _
               (for-each delete-file
                         '("test/solar_hijri_test/parse.pass.cpp"
-                          "test/tz_test/zoned_time_deduction.pass.cpp")))))))
+                          "test/tz_test/zoned_time_deduction.pass.cpp"))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "testit" args))))))
     (synopsis "Date and time library for C++11 and C++14")
     (description
      "Date is a header only C++ library that extends the chrono date

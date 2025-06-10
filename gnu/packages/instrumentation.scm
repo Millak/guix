@@ -698,7 +698,14 @@ bundled with python-3 and luajit that you can delete in a package variant.")
                  (base32
                   "1p4nqsq689hr2srdvg59v9yfig2aaq9psdy6fhwnya0vszssyvn5"))))
       (build-system cmake-build-system)
-      (arguments `(#:test-target "check"))
+      (arguments
+       (list
+        #:modules '((guix build cmake-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
       (native-inputs (list boost python-pytest))
       (home-page "https://github.com/eepp/yactfr")
       (synopsis "CTF reading library offering a C++14 API")

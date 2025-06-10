@@ -143,8 +143,12 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
      (list doxygen groff ; for 'fish --help'
            procps))             ; for the test suite
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'set-env
            (lambda _
              ;; some tests write to $HOME
@@ -244,6 +248,10 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                 port)
                (close-port port))
              #t))
+         (replace 'check
+           (lambda* (#:rest args)
+             (apply (assoc-ref gnu:%standard-phases 'check)
+                    #:test-target "test" args)))
          ;; Use fish-foreign-env to source /etc/profile.
          (add-before 'install 'source-etc-profile
            (lambda* (#:key inputs #:allow-other-keys)

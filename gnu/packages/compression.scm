@@ -2168,6 +2168,15 @@ timestamps in the file header with a fixed time (1 January 2008).
                (base32
                 "18578xbzj8j89srv4bwayjm11bg56fl34sya0znq4fwq3apm037i"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Avoid the integration test, which requires a system bus.
+          (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
     (inputs
      (list zlib))
     (native-inputs (list perl ; for the documentation

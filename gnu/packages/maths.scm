@@ -481,8 +481,7 @@ enough to be used effectively as a scientific calculator.")
                 "0csy4pjw1p8rp6g5qxi2h0ychhhp1fldv7gb761627fs2mclw9gv"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:test-target "test"
-       #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DBUILD_TESTING=ON")))
     (synopsis "Conversion routines for IEEE doubles")
     (description
@@ -10332,7 +10331,6 @@ community detection algorithm.")
     (arguments
      (list
       #:build-type "Release"
-      #:test-target "test"
       #:configure-flags #~(list "-DENABLE_TESTING=ON" "-DSTATS=ON")
       #:phases
       #~(modify-phases %standard-phases
@@ -10648,16 +10646,24 @@ projects up to the certification of critical software.")
         (base32 "0c88gc72j3zggyk4yrrip6i0v7xkx97l140vpy3xhxs2i7xy1461"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_DOC=ON"
-                           "-DBUILD_TESTING=ON")
-       ;; The default "check" target also includes examples and benchmarks.
-       #:test-target "check-testsuite"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-doc
-           (lambda _
-             (invoke "make" "-j" (number->string (parallel-job-count))
-                     "blitz-doc"))))))
+     (list
+      #:configure-flags #~(list "-DBUILD_DOC=ON"
+                                "-DBUILD_TESTING=ON")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-doc
+            (lambda _
+              (invoke "make" "-j" (number->string (parallel-job-count))
+                      "blitz-doc")))
+           (replace 'check
+             (lambda* (#:rest args)
+               (apply (assoc-ref gnu:%standard-phases 'check)
+                      ;; The default "check" target also includes examples and
+                      ;; benchmarks.
+                      #:test-target "check-testsuite" args))))))
     (native-inputs
      (list python texinfo))
     (synopsis "C++ template class library for multidimensional arrays")

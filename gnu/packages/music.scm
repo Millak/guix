@@ -537,27 +537,34 @@ enables iPod support in music players such as Clementine.")
                                #:directories? #t))))))
     (build-system cmake-build-system)
     (arguments
-     '(#:test-target "clementine_test"
-       #:configure-flags
-       (list ;; Requires unpackaged "projectm"
-             "-DENABLE_VISUALISATIONS=OFF"
-             ;; Otherwise it may try to download a non-free library at run-time.
-             ;; TODO In an origin snippet, remove the code that performs the
-             ;; download.
-             "-DHAVE_SPOTIFY_DOWNLOADER=FALSE"
-             ;; Clementine checks that the taglib version is higher than 1.11,
-             ;; because of https://github.com/taglib/taglib/issues/864. Remove
-             ;; this flag when 1.12 is released.
-             "-DUSE_SYSTEM_TAGLIB=TRUE")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out             (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/clementine")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
-                   (,gst-plugin-path)))))))))
+     (list
+      #:configure-flags
+      #~(list ;; Requires unpackaged "projectm"
+            "-DENABLE_VISUALISATIONS=OFF"
+            ;; Otherwise it may try to download a non-free library at run-time.
+            ;; TODO In an origin snippet, remove the code that performs the
+            ;; download.
+            "-DHAVE_SPOTIFY_DOWNLOADER=FALSE"
+            ;; Clementine checks that the taglib version is higher than 1.11,
+            ;; because of https://github.com/taglib/taglib/issues/864. Remove
+            ;; this flag when 1.12 is released.
+            "-DUSE_SYSTEM_TAGLIB=TRUE")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "clementine_test" args)))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out             (assoc-ref outputs "out"))
+                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program (string-append out "/bin/clementine")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                    (,gst-plugin-path)))))))))
     (native-inputs
      (list gettext-minimal
            googletest
@@ -769,24 +776,31 @@ Winamp/XMMS skins.")
                                #:directories? #t))))))
     (build-system qt-build-system)
     (arguments
-     `(#:qtbase ,qtbase
-       #:test-target "run_strawberry_tests"
-       #:configure-flags
-       `("-DBUILD_WITH_QT6=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/strawberry")
-               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
-                 (,(getenv "GST_PLUGIN_SYSTEM_PATH"))))))
-         (add-before 'check 'pre-check
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (system (format #f "~a :1 &"
-                             (search-input-file (or native-inputs inputs)
-                                                "bin/Xvfb")))
-             (setenv "DISPLAY" ":1")
-             (setenv "HOME" (getcwd)))))))
+     (list
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DBUILD_WITH_QT6=ON")
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (system (format #f "~a :1 &"
+                              (search-input-file (or native-inputs inputs)
+                                                 "bin/Xvfb")))
+              (setenv "DISPLAY" ":1")
+              (setenv "HOME" (getcwd))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "run_strawberry_tests" args)))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/strawberry")
+                `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (native-inputs
      (list bash-minimal
            gettext-minimal
@@ -6083,7 +6097,14 @@ for the DSSI Soft Synth Interface.  A brief list of features:
              version ".tar.gz"))
        (sha256
         (base32 "10mj1hwv1598nsi7jw5di0pfcwk36g4rr6kl7gi45m7ak8f8ypnx"))))
-    (arguments `(#:test-target "check"))
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
     (build-system cmake-build-system)
     (home-page "https://musicbrainz.org/doc/libdiscid")
     (synopsis "Disc id reader library")
@@ -7971,28 +7992,31 @@ midi devices to JACK midi devices.")
               (file-name (git-file-name name version))))
     (arguments
      (list
-       #:test-target "check"
+       #:modules '((guix build cmake-build-system)
+                   ((guix build gnu-build-system) #:prefix gnu:)
+                   (guix build utils))
        #:phases
        #~(modify-phases %standard-phases
-         ;; This package does not use the perl-build-system, so we have to
-         ;; manually set up the Perl environment used by the test suite.
-         (add-before 'check 'setup-perl-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((perl-list-moreutils-lib
-                      (string-append #$(this-package-native-input "perl-list-moreutils")
-                                     "/lib/perl5/site_perl/"
-                                     #$(package-version perl)))
-                    (perl-exporter-tiny-lib
-                      (string-append #$(this-package-native-input "perl-exporter-tiny")
-                                     "/lib/perl5/site_perl/"
-                                     #$(package-version perl)))
-                    (perl-test-deep-lib
-                      (string-append #$(this-package-native-input "perl-test-deep")
-                                     "/lib/perl5/site_perl/"
-                                     #$(package-version perl))))
-               (setenv "PERL5LIB" (string-append perl-list-moreutils-lib ":"
-                                                 perl-exporter-tiny-lib ":"
-                                                 perl-test-deep-lib))))))))
+           ;; This package does not use the perl-build-system, so we have to
+           ;; manually set up the Perl environment used by the test suite.
+           (add-before 'check 'setup-perl-environment
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let* ((perl-list-moreutils-lib
+                        (string-append #$(this-package-native-input "perl-list-moreutils")
+                                       "/lib/perl5/site_perl/"
+                                       #$(package-version perl)))
+                      (perl-exporter-tiny-lib
+                        (string-append #$(this-package-native-input "perl-exporter-tiny")
+                                       "/lib/perl5/site_perl/"
+                                       #$(package-version perl)))
+                      (perl-test-deep-lib
+                        (string-append #$(this-package-native-input "perl-test-deep")
+                                       "/lib/perl5/site_perl/"
+                                       #$(package-version perl))))
+                 (setenv "PERL5LIB" (string-append perl-list-moreutils-lib ":"
+                                                   perl-exporter-tiny-lib ":"
+                                                   perl-test-deep-lib)))))
+           (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
     (build-system cmake-build-system)
     (inputs
       (list libogg))

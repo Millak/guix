@@ -216,7 +216,6 @@ markup) can be customized and extended by the user.")
                                  (assoc-ref %build-inputs "cross-libc")
                                  "/include"))
           #~'())
-      #:test-target "tests"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-bibtex-test

@@ -172,9 +172,8 @@ link-time.  New implementations can be added as well.")
        '("-DTESTING=OFF"    ; The tests fail to link correctly to googletest.
          ;; Don't install the shared libraries of the dependencies:
          "-DENABLE_LIBS_PACKAGING=OFF")
-       #:tests? #f
        ;; https://iroha.readthedocs.io/en/latest/build/index.html#running-tests-optional
-       #:test-target "."))
+       #:tests? #f))
     ;; https://github.com/hyperledger/iroha/blob/master/vcpkg/VCPKG_DEPS_LIST
     (native-inputs
      (list fmt-8

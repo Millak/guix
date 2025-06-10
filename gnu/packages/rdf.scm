@@ -116,8 +116,7 @@ HTML and JSON.")
      (list boost ; could also use bundled copy
            zlib))
     (arguments
-     `(#:test-target "cl_test"
-       #:configure-flags '("-DBUILD_CONTRIBS_LIB=ON")
+     `(#:configure-flags '("-DBUILD_CONTRIBS_LIB=ON")
        #:tests? #f)) ; Tests do not compile, as TestIndexSearcher.cpp uses
                      ; undeclared usleep. After fixing this, one needs to run
                      ; "make test" in addition to "make cl_test", then

@@ -147,8 +147,17 @@
           (base32 "0i6jhrdswr1wglyb9h39idpz5v9z13yhidvlbj34vxpyngrkhlvs"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
-         #:test-target "test_all"))
+       (list
+        #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON")
+        #:modules '((guix build cmake-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:rest args)
+                (apply (assoc-ref gnu:%standard-phases 'check)
+                       #:test-target "test_all" args))))))
       (home-page "https://github.com/quiet/libfec")
       (synopsis "Forward error correction algorithms library")
       (description
@@ -175,12 +184,15 @@ useful in modems implemented with @dfn{digital signal processing} (DSP).")
       (build-system cmake-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:modules '((guix build cmake-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'build 'build-libfec-compatibility-layer
               (lambda _
                 (invoke "make" "shim")))
+            (replace 'check (assoc-ref gnu:%standard-phases 'check))
             (add-after 'install 'delete-static-libraries
               (lambda _
                 (delete-file (string-append #$output "/lib/libcorrect.a"))

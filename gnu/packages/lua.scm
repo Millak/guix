@@ -984,7 +984,6 @@ spirit of the Lua C API and thus degrade performance.")
      `(#:configure-flags
        ;; lua pc file in CMakeLists.txt is lua5.3.pc
        '("-DLUA_PC_CFG=lua;lua-5.3;lua-5.1")
-       #:test-target "all"
        #:phases
        ;; This is a header only library
        (modify-phases %standard-phases

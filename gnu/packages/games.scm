@@ -7603,22 +7603,31 @@ screensaver.")))
     (native-inputs
      (list cppunit pkg-config))
     (arguments
-     `(#:configure-flags
-       (list "-DCMAKE_CXX_FLAGS=-fcommon"
-             "-DCMAKE_C_FLAGS=-fcommon"
-             (string-append "-DCUSTOM_DATA_INSTALL_PATH="
-                            (search-input-directory %build-inputs
-                                                    "share/megaglest"))
-             "-DBUILD_MEGAGLEST_TESTS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-ini-search-path
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "source/glest_game/global/config.cpp"
-                        (("/usr/share/megaglest/")
-                         (string-append (assoc-ref outputs "out")
-                                        "/share/megaglest/"))))))
-       #:test-target "megaglest_tests"))
+     (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:configure-flags
+      #~(list "-DCMAKE_CXX_FLAGS=-fcommon"
+              "-DCMAKE_C_FLAGS=-fcommon"
+              (string-append "-DCUSTOM_DATA_INSTALL_PATH="
+                             (search-input-directory %build-inputs
+                                                     "share/megaglest"))
+              "-DBUILD_MEGAGLEST_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-ini-search-path
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (substitute* "source/glest_game/global/config.cpp"
+                         (("/usr/share/megaglest/")
+                          (string-append (assoc-ref outputs "out")
+                                         "/share/megaglest/")))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys #:rest args)
+                (when tests?
+                  (apply (assoc-ref gnu:%standard-phases 'check)
+                         #:tests? tests? #:test-target "megaglest_tests" args)
+                  (invoke "source/tests/megaglest_tests")))))))
     (home-page "https://megaglest.org/")
     (synopsis "3D real-time strategy (RTS) game")
     (description "MegaGlest is a cross-platform 3D real-time strategy (RTS)
@@ -7844,26 +7853,31 @@ small robot living in the nano world, repair its maker.")
                   #t))))
     (build-system cmake-build-system)
     (arguments
-     `(#:test-target "run_tests"
+     (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Embed path to assets.
-             (substitute* "src/engine/shared/storage.cpp"
-               (("#define DATA_DIR.*")
-                (string-append "#define DATA_DIR \""
-                               (assoc-ref outputs "out")
-                               "/share/teeworlds/data"
-                               "\"")))
-             #t))
-         (add-after 'unpack 'replace-font
-           (lambda* (#:key inputs #:allow-other-keys)
-             (delete-file "datasrc/fonts/DejaVuSans.ttf")
-             (symlink (string-append (assoc-ref inputs "font-dejavu")
-                                     "/share/fonts/truetype/DejaVuSans.ttf")
-                      "datasrc/fonts/DejaVuSans.ttf")
-             #t)))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-paths
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; Embed path to assets.
+               (substitute* "src/engine/shared/storage.cpp"
+                 (("#define DATA_DIR.*")
+                  (string-append "#define DATA_DIR \""
+                                 (assoc-ref outputs "out")
+                                 "/share/teeworlds/data"
+                                 "\"")))))
+           (add-after 'unpack 'replace-font
+             (lambda* (#:key inputs #:allow-other-keys)
+               (delete-file "datasrc/fonts/DejaVuSans.ttf")
+               (symlink (string-append (assoc-ref inputs "font-dejavu")
+                                       "/share/fonts/truetype/DejaVuSans.ttf")
+                        "datasrc/fonts/DejaVuSans.ttf")))
+           (replace 'check
+             (lambda* (#:rest args)
+               (apply (assoc-ref gnu:%standard-phases 'check)
+                      #:test-target "run_tests" args))))))
     (inputs
      (list freetype
            font-dejavu
@@ -10808,7 +10822,9 @@ a fortress beyond the forbidden swamp.")
      (list
       #:configure-flags
       #~(list "-DAudio_TK=OpenAL")
-      #:test-target "tests"
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-gmock
@@ -10839,7 +10855,13 @@ a fortress beyond the forbidden swamp.")
               (substitute* "CMakeLists.txt"
                 (("share/games/openclonk") "share/openclonk")
                 (("TARGETS openclonk DESTINATION games")
-                 "TARGETS openclonk DESTINATION bin")))))))
+                 "TARGETS openclonk DESTINATION bin"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys #:rest args)
+              (when tests?
+                (apply (assoc-ref gnu:%standard-phases 'check)
+                       #:tests? tests? #:test-target "tests" args)
+                (invoke "tests/tests")))))))
     (native-inputs
      (list (package-source googletest)
            googletest

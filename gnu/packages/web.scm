@@ -1854,8 +1854,10 @@ for efficient socket-like bidirectional reliable communication channels.")
      (list
       ;; Tests on non-x86_64 architectures are not well supported upstream.
       #:tests? (target-x86-64?)
-      #:test-target "run-tests"
       #:configure-flags '(list "-DUSE_SYSTEM_GTEST=ON")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'use-gcc
@@ -1863,7 +1865,11 @@ for efficient socket-like bidirectional reliable communication channels.")
          ;; XXX This is the only test that fails.
          (add-after 'unpack 'delete-broken-test
            (lambda _
-             (delete-file "test/wasm2c/spec/memory_init.txt"))))))
+             (delete-file "test/wasm2c/spec/memory_init.txt")))
+         (replace 'check
+           (lambda* (#:rest args)
+             (apply (assoc-ref gnu:%standard-phases 'check)
+                    #:test-target "run-tests" args))))))
     (native-inputs (list python googletest))
     (home-page "https://github.com/WebAssembly/wabt")
     (synopsis "WebAssembly Binary Toolkit")

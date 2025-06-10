@@ -5197,8 +5197,7 @@ window docking system.")
                 "0nsh6v5k4kdrrhcd6adz947n0dka4rrbx8f8rvm1175545nbi67s"))))
     (build-system qt-build-system)
     (arguments
-     (list #:test-target "tests"
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-before 'install 'fix-include-path
                  (lambda _

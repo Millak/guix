@@ -190,7 +190,16 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
                (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                               #$output "/lib")
                "-DBUILD_SHARED_LIBS=ON"
-               "-DLLVM_SPIRV_INCLUDE_TESTS=ON")))
+               "-DLLVM_SPIRV_INCLUDE_TESTS=ON")
+       #:modules '((guix build cmake-build-system)
+                   ((guix build gnu-build-system) #:prefix gnu:)
+                   (guix build utils))
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:rest args)
+               (apply (assoc-ref gnu:%standard-phases 'check)
+                      #:test-target "test" args))))))
     (inputs (list llvm-18))
     (native-inputs (list clang-18 llvm-18 python-lit spirv-headers))
     (home-page "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")

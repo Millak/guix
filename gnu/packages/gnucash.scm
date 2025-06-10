@@ -78,13 +78,13 @@
     (build-system cmake-build-system)
     (arguments
      (list
-      #:test-target "check"
       #:configure-flags #~(list "-DWITH_PYTHON=ON")
       #:make-flags #~(list "GUILE_AUTO_COMPILE=0")
       #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build cmake-build-system)
                            (guix build glib-or-gtk-build-system))
       #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
       #:phases
@@ -114,6 +114,7 @@
               (invoke "localedef" "-i" "en_US" "-f" "UTF-8" "./en_US.UTF-8")
               (invoke "localedef" "-i" "en_GB" "-f" "UTF-8" "./en_GB.UTF-8")
               (invoke "localedef" "-i" "fr_FR" "-f" "UTF-8" "./fr_FR.UTF-8")))
+          (replace 'check (assoc-ref gnu:%standard-phases 'check))
           ;; There is about 100 MiB of documentation.
           (add-after 'install 'install-docs
             (lambda _

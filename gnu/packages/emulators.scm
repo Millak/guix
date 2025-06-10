@@ -491,6 +491,9 @@ It aims to support Nintendo DSi and 3DS as well.")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:modules '((guix build cmake-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'configure 'generate-fonts&hardcode-libvulkan-path
@@ -512,6 +515,10 @@ It aims to support Nintendo DSi and 3DS as well.")
                     (("\"vulkan\", 1") (string-append "\"vulkan\""))
                     (("\"vulkan\"") (string-append "\"" libvulkan "\""))
                     (("Common::DynamicLibrary::GetVersionedFilename") "")))))
+            (replace 'check
+              (lambda* (#:rest args)
+                (apply (assoc-ref gnu:%standard-phases 'check)
+                       #:test-target "unittests" args)))
             (add-before 'install 'build-codeloader.bin
               (lambda _
                 (with-directory-excursion "../source/docs"
@@ -537,8 +544,7 @@ It aims to support Nintendo DSi and 3DS as well.")
                   (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))
         #:configure-flags
         #~(list "-DUSE_DISCORD_PRESENCE=OFF" ;avoid bundled discord-rpc lib
-                "-DDSPTOOL=ON")
-        #:test-target "unittests"))
+                "-DDSPTOOL=ON")))
       (native-inputs
        (list (cross-gcc "powerpc-linux-gnu")
              gettext-minimal

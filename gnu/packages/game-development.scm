@@ -3357,9 +3357,19 @@ rigid body physics library written in C.")
               "include <doctest/doctest.h>"))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:test-target "unit_test"
-       #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
-                           "-DBOX2D_BUILD_TESTBED=OFF")))
+     (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
+                                 "-DBOX2D_BUILD_TESTBED=OFF")
+           #:modules '((guix build cmake-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys #:rest args)
+                   (when tests?
+                     (apply (assoc-ref gnu:%standard-phases 'check)
+                            #:tests? tests? #:test-target "unit_test" args)
+                     (invoke "bin/unit_test")))))))
     (native-inputs
      (list doctest))                    ;for tests
     (inputs
@@ -3390,11 +3400,13 @@ physics engine is just a system for procedural animation.")
    (arguments
     (substitute-keyword-arguments
         (package-arguments box2d)
-      ((#:test-target _) "")            ; no check
       ((#:configure-flags original-flags)
-       `(cons* "-DBOX2D_UNIT_TESTS=OFF" ; enkiTS need for all test apps
-               "-DBOX2D_SAMPLES=OFF"
-               (delete "-DBOX2D_BUILD_TESTBED=OFF" ,original-flags)))))))
+       #~(cons* "-DBOX2D_UNIT_TESTS=OFF" ; enkiTS need for all test apps
+                "-DBOX2D_SAMPLES=OFF"
+                (delete "-DBOX2D_BUILD_TESTBED=OFF" #$original-flags)))
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (delete 'check)))))))        ; no check
 
 (define-public libtcod
   (package

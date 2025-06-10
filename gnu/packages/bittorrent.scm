@@ -524,7 +524,13 @@ desktops.")
     (arguments
      (list #:qtbase qtbase
            #:configure-flags #~(list "-DTESTING=ON")
-           #:test-target "check"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:rest args)
+                   ;; Fix for "enable_testing" not in the top-level directory.
+                   (with-directory-excursion "test"
+                     (apply (assoc-ref %standard-phases 'check) args)))))))
     (native-inputs
      (list qttools))
     (inputs

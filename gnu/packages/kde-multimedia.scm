@@ -254,10 +254,10 @@ This package is part of the KDE multimedia module.")
                    (system "Xvfb :1 -screen 0 640x480x24 &")
                    (setenv "DISPLAY" ":1")))
                (replace 'check
-                 (lambda* (#:key tests? test-target #:allow-other-keys)
+                 (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-                     (invoke "dbus-launch" "make" test-target)))))))
+                     (invoke "dbus-launch" "make" "test")))))))
     (home-page "https://apps.kde.org/elisa/")
     (synopsis "Powerful music player for Plasma 5")
     (description "Elisa is a simple music player aiming to provide a nice

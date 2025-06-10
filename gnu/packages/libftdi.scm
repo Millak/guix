@@ -87,7 +87,6 @@
                                   (string-append share "/doc/"
                                                  #$name "-" #$version
                                                  "/html"))))))
-      #:test-target "check"
       #:tests? #f))                     ; tests fail without access to USB
     (native-inputs
      (list doxygen graphviz pkg-config python swig))

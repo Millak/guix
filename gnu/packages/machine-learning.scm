@@ -4888,7 +4888,6 @@ the tensors contained therein.")
       (build-system cmake-build-system)
       (arguments
        (list
-        #:test-target "cpptest"
         #:configure-flags
         #~(list "-DUSE_OPENCL=ON"
                 "-DUSE_VULKAN=ON"
@@ -4908,11 +4907,11 @@ the tensors contained therein.")
         #:phases
         #~(modify-phases %standard-phases
             (replace 'check
-              (lambda* (#:key source test-target tests? #:allow-other-keys)
+              (lambda* (#:key source tests? #:allow-other-keys)
                 (when tests?
                   (begin
                     (invoke "make" "-j"
-                            (number->string (parallel-job-count)) test-target)
+                            (number->string (parallel-job-count)) "cpptest")
                     ;; Disable below the actual run of the tests because
                     ;; several fail due to platform variations (for example,
                     ;; fp16 tests fail because not supported on CPUs).
@@ -6384,7 +6383,6 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:test-target "ctranslate2_test"
       ;; XXX: mkl and openblas seem incompatible.
       #:configure-flags `(list "-DBUILD_TESTS=ON"
                                "-DWITH_ACCELERATE=OFF"
@@ -6393,7 +6391,16 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
                                "-DWITH_CUDA=OFF"
                                "-DWITH_CUDNN=OFF"
                                "-DWITH_MKL=OFF"
-                               "-DWITH_OPENBLAS=ON")))
+                               "-DWITH_OPENBLAS=ON")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "ctranslate2_test" args))))))
     (native-inputs (list libomp
                          cxxopts
                          spdlog

@@ -439,7 +439,6 @@ and securely connects to Microsoft OneDrive services.")
      `(;; The "tests" target is broken and assumes that tests are run in the
        ;; root directory.
        #:tests? #f
-       #:test-target "tests"
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'search-$PATH-for-binaries

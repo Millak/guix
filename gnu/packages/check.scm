@@ -1357,7 +1357,9 @@ with the @code{klee} package.")
    (arguments
     (list
      #:strip-directories #~(list "bin") ;don't strip LLVM bitcode in /lib
-     #:test-target "check"
+     #:modules '((guix build cmake-build-system)
+                 ((guix build gnu-build-system) #:prefix gnu:)
+                 (guix build utils))
      #:phases
      #~(modify-phases %standard-phases
                       (add-after 'unpack 'patch
@@ -1373,6 +1375,7 @@ with the @code{klee} package.")
                           (substitute* "test/lit.cfg"
                             (("addEnv\\('PWD'\\)" env)
                              (string-append env "\n" "addEnv('GUIX_PYTHONPATH')")))))
+                      (replace 'check (assoc-ref gnu:%standard-phases 'check))
                       (add-after 'install 'wrap-programs
                         (lambda* (#:key inputs outputs #:allow-other-keys)
                           (let* ((out (assoc-ref outputs "out"))
@@ -3609,12 +3612,11 @@ tests.  The output format is JSON.")
           (list)
           (list #:configure-flags #~(list "-DTROMPELOEIL_BUILD_TESTS=yes")))
       (list
-       #:test-target "test/self_test"
        #:phases #~(modify-phases %standard-phases
                     (replace 'check
-                      (lambda* (#:key tests? test-target #:allow-other-keys)
+                      (lambda* (#:key tests? #:allow-other-keys)
                         (when tests?
-                          (invoke test-target))))))))
+                          (invoke "test/self_test"))))))))
     (native-inputs (list catch2-3))
     (home-page "https://github.com/rollbear/trompeloeil")
     (synopsis "Header only C++14 mocking framework")

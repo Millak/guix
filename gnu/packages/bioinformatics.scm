@@ -23466,8 +23466,7 @@ The output is in SAM format.")
                 "0slkagrk3nfi2qsksv6b1brj6zhx4bj4bkib2sdycvrcd10ql2lh"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:test-target "test"
-       #:configure-flags
+     `(#:configure-flags
        ,#~(list "-DWITH_CHECK=ON"
                 (string-append "-DLIBXML_LIBRARY="
                                #$(this-package-input "libxml2")
@@ -24595,14 +24594,20 @@ both types of files.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:test-target "simple_test"
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "src/megahit"
-               (("os.path.join\\(script_path, '..'\\)")
-                "os.path.join(script_path, '../source')")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "src/megahit"
+                (("os.path.join\\(script_path, '..'\\)")
+                 "os.path.join(script_path, '../source')"))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "simple_test" args))))))
     (inputs (list python-wrapper zlib))
     (home-page "https://www.ncbi.nlm.nih.gov/pubmed/25609793")
     (synopsis "Meta-genome assembler")

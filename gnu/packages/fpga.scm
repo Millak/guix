@@ -715,7 +715,14 @@ automated testing of HDL code.")
         (base32 "1v5fg3h9ffdzq9f6zplvr9all00ssc1gpdvbg129xahkrbl53kvw"))))
     (native-inputs (list perl))
     (build-system cmake-build-system)
-    (arguments '(#:test-target "check"))
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
     (home-page "https://accellera.org/community/systemc")
     (synopsis "Library for event-driven simulation")
     (description

@@ -1285,9 +1285,7 @@ features, and more.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     (list
-      #:configure-flags #~(list "-DBUILD_TESTS=ON")
-      #:test-target "xtest"))
+     (list #:configure-flags #~(list "-DBUILD_TESTS=ON")))
     (native-inputs
      (list doctest
            googletest

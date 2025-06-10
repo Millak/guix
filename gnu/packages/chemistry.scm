@@ -604,7 +604,6 @@ usual algorithms you expect from a modern molecular dynamics implementation.")
          (search-input-file %build-inputs "/lib/inchi/libinchi.so.1"))
         (string-append "-DINCHI_INCLUDE_DIR="
                        (search-input-directory %build-inputs "/include/inchi")))
-      #:test-target "test"
       #:phases
       '(modify-phases %standard-phases
          ;; Fixed upstream:

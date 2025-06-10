@@ -1361,14 +1361,16 @@ standard astronomy libraries:
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "PREFIX=" #$output))
-      #:test-target "test"
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (chdir "../source")
-                (setenv "CC" #$(cc-for-target))))))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (with-directory-excursion "../source"
+                (apply (assoc-ref gnu:%standard-phases 'check)
+                       #:test-target "test" args)))))))
     (native-inputs
      (list python-wrapper))
     (home-page "https://github.com/kbarbary/sep")
@@ -9602,7 +9604,6 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
      (list
       ;; FIXME: Tests keep failing on 100% when preparing test-suit for INDI.
       #:tests? #f
-      #:test-target "test"
       #:configure-flags
       #~(list "-DENABLE_GPS=1"
               ;; TODO: Enable when all of the dependencies are available for Qt6.

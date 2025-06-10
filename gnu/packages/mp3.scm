@@ -668,8 +668,7 @@ command-line tool.")
     (arguments
      `(#:tests? #f ; tests require googletest *sources*
        ;;#:configure-flags '("-DBUILD_TESTS=ON") ; for building the tests
-       #:configure-flags '("-DBUILD_TOOLS=ON") ; for fpcalc
-       #:test-target "check"))
+       #:configure-flags '("-DBUILD_TOOLS=ON"))) ; for fpcalc
     (inputs
      ;; requires one of FFmpeg (prefered), FFTW3 or vDSP
      ;; use the same ffmpeg version as for acoustid-fingerprinter

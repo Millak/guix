@@ -1617,38 +1617,46 @@ channels.")
         (base32 "1qm6bvj28l42km009nc60gffn1qhngc0m2wjlhf90si3mcc8d99m"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:test-target "tests"
-       #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON"
-                               ;; darktable needs BMFF to support
-                               ;; CR3 files.
-                               "-DEXIV2_ENABLE_BMFF=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-gcc-reference
-           (lambda _
-             ;; _GLIBCXX_ASSERTIONS brings reference to GCC.
-             (substitute* "cmake/compilerFlags.cmake"
-               (("add_compile_options[(]-Wp,-D_GLIBCXX_ASSERTIONS[)]")
-                ""))))
-         (add-after 'install 'delete-static-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib")))
-               (for-each delete-file (find-files lib "\\.a$")))))
+     (list
+      #:configure-flags
+      #~(list "-DEXIV2_BUILD_UNIT_TESTS=ON"
+              ;; darktable needs BMFF to support
+              ;; CR3 files.
+              "-DEXIV2_ENABLE_BMFF=ON")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-gcc-reference
+            (lambda _
+              ;; _GLIBCXX_ASSERTIONS brings reference to GCC.
+              (substitute* "cmake/compilerFlags.cmake"
+                (("add_compile_options[(]-Wp,-D_GLIBCXX_ASSERTIONS[)]")
+                 ""))))
+          (add-after 'install 'delete-static-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (lib (string-append out "/lib")))
+                (for-each delete-file (find-files lib "\\.a$")))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "tests" args)))
 
-         ,@(if (or (target-ppc64le?)
-                   (target-aarch64?)
-                   (target-riscv64?))
-               '((add-after 'unpack 'adjust-tests
-                   (lambda _
-                     ;; Adjust test on ppc64 and aarch64, where no exception
-                     ;; is raised and thus the return value is different.  See
-                     ;; <https://github.com/Exiv2/exiv2/issues/365> and
-                     ;; <https://github.com/Exiv2/exiv2/issues/933>.
-                     (substitute* "tests/bugfixes/github/test_CVE_2018_12265.py"
-                       (("\\$uncaught_exception \\$addition_overflow_message\n") "")
-                       (("retval = \\[1\\]") "retval = [0]")))))
-               '()))))
+          #$@(if (or (target-ppc64le?)
+                    (target-aarch64?)
+                    (target-riscv64?))
+                 '((add-after 'unpack 'adjust-tests
+                     (lambda _
+                       ;; Adjust test on ppc64 and aarch64, where no exception
+                       ;; is raised and thus the return value is different.  See
+                       ;; <https://github.com/Exiv2/exiv2/issues/365> and
+                       ;; <https://github.com/Exiv2/exiv2/issues/933>.
+                       (substitute* "tests/bugfixes/github/test_CVE_2018_12265.py"
+                         (("\\$uncaught_exception \\$addition_overflow_message\n") "")
+                         (("retval = \\[1\\]") "retval = [0]")))))
+                 '()))))
     (propagated-inputs
      (list expat zlib))
     (native-inputs
