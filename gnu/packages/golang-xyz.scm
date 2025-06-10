@@ -3927,58 +3927,6 @@ against various paths.  This is particularly useful when trying to filter
 files based on a .gitignore document.")
     (license license:expat)))
 
-(define-public go-github-com-dannav-hhmmss
-  (package
-    (name "go-github-com-dannav-hhmmss")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dannav/hhmmss")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1h2wdpd5sd2wfd5d2vyqiwlrqlxf3qwpqjy74hbcr7bhjpgv81m0"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/dannav/hhmmss"))
-    (home-page "https://github.com/dannav/hhmmss")
-    (synopsis "Parse HHMMSS strings into a Go time.Duration type")
-    (description
-     "Package @code{hhmmss} manages converting HH:MM:SS time strings to
-@code{time.Duration} values.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-dicedb-dicedb-go
-  (package
-    (name "go-github-com-dicedb-dicedb-go")
-    (version "1.0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DiceDB/dicedb-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "18hfymwvp0mdnw1ssxnh58wvg4ifbjq4yhxvzfnw1f70rnhv01y3"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; dicedb-go depends on dicedb for running tests
-      ;; but dicedb depends on dice-db, creating a cyclic depedency
-      #:tests? #f
-      #:import-path "github.com/dicedb/dicedb-go"))
-    (propagated-inputs (list go-github-com-google-uuid
-                             go-google-golang-org-protobuf))
-    (home-page "https://github.com/dicedb/dicedb-go")
-    (synopsis "SDK for @code{DiceDB}")
-    (description
-     "Go SDK for @url{https://github.com/dicedb/dice,@code{dicedb}}.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
@@ -4233,6 +4181,30 @@ Features:
 @item use cases: rules engine, state machine, data pipeline, transpiler
 @end itemize")
     (license license:expat)))
+
+(define-public go-github-com-dannav-hhmmss
+  (package
+    (name "go-github-com-dannav-hhmmss")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dannav/hhmmss")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h2wdpd5sd2wfd5d2vyqiwlrqlxf3qwpqjy74hbcr7bhjpgv81m0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dannav/hhmmss"))
+    (home-page "https://github.com/dannav/hhmmss")
+    (synopsis "Parse HHMMSS strings into a Go time.Duration type")
+    (description
+     "Package @code{hhmmss} manages converting HH:MM:SS time strings to
+@code{time.Duration} values.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-danwakefield-fnmatch
   (let ((commit "cbb64ac3d964b81592e64f957ad53df015803288")
@@ -4824,6 +4796,34 @@ on throughput and hit ratio performance.")
 @item ewmaest - progress logging with ewma-based ETA estimation
 @end itemize")
     (license license:expat)))
+
+(define-public go-github-com-dicedb-dicedb-go
+  (package
+    (name "go-github-com-dicedb-dicedb-go")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DiceDB/dicedb-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18hfymwvp0mdnw1ssxnh58wvg4ifbjq4yhxvzfnw1f70rnhv01y3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; dicedb-go depends on dicedb for running tests
+      ;; but dicedb depends on dice-db, creating a cyclic depedency
+      #:tests? #f
+      #:import-path "github.com/dicedb/dicedb-go"))
+    (propagated-inputs (list go-github-com-google-uuid
+                             go-google-golang-org-protobuf))
+    (home-page "https://github.com/dicedb/dicedb-go")
+    (synopsis "SDK for @code{DiceDB}")
+    (description
+     "Go SDK for @url{https://github.com/dicedb/dice,@code{dicedb}}.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-dimchansky-utfbom
   (package
@@ -18139,6 +18139,40 @@ word on a list of words, if none is found, look for a similar word.")
 @url{https://github.com/alecthomas/kong, Kong CLI parser}.")
     (license license:bsd-3)))
 
+(define-public go-go-etcd-io-bbolt
+  (package
+    (name "go-go-etcd-io-bbolt")
+    (version "1.3.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/etcd-io/bbolt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16s2l1yjn55rgybc9k8kh88zg7z8igm10y1xmx2qx1a147k64d31"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Extending the test timeout to 30 minutes still times out on aarch64.
+      #:tests? (not target-arm?)
+      #:import-path "go.etcd.io/bbolt"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-etcd-io-gofail
+           go-golang-org-x-sync))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://go.etcd.io/bbolt")
+    (synopsis "Embedded key/value database for Go")
+    (description
+     "Bolt is a pure Go key/value store inspired by Howard Chu's LMDB project.
+The goal of the project is to provide a simple, fast, and reliable database
+for projects that don't require a full database server such as Postgres or
+MySQL.")
+    (license license:expat)))
+
 (define-public go-go-lsp-dev-jsonrpc2
   (package
     (name "go-go-lsp-dev-jsonrpc2")
@@ -18241,40 +18275,6 @@ Protocol (LSP) specification in Go.")
      "The @code{uri} package implements the URI Uniform Resource
 Identifier (RFC3986) specification in Go.")
     (license license:bsd-3)))
-
-(define-public go-go-etcd-io-bbolt
-  (package
-    (name "go-go-etcd-io-bbolt")
-    (version "1.3.11")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/etcd-io/bbolt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "16s2l1yjn55rgybc9k8kh88zg7z8igm10y1xmx2qx1a147k64d31"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; Extending the test timeout to 30 minutes still times out on aarch64.
-      #:tests? (not target-arm?)
-      #:import-path "go.etcd.io/bbolt"))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-go-etcd-io-gofail
-           go-golang-org-x-sync))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (home-page "https://go.etcd.io/bbolt")
-    (synopsis "Embedded key/value database for Go")
-    (description
-     "Bolt is a pure Go key/value store inspired by Howard Chu's LMDB project.
-The goal of the project is to provide a simple, fast, and reliable database
-for projects that don't require a full database server such as Postgres or
-MySQL.")
-    (license license:expat)))
 
 (define-public go-go-mau-fi-util
   (package
