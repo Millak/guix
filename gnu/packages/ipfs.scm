@@ -1821,7 +1821,7 @@ their levels to be controlled individually.")
 (define-public go-github-com-libp2p-go-libp2p
   (package
     (name "go-github-com-libp2p-go-libp2p")
-    (version "0.40.0")
+    (version "0.41.1")
     (source
      (origin
        (method git-fetch)
@@ -1830,7 +1830,7 @@ their levels to be controlled individually.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w9bx5g5c39ik4d7lxrhh1hv6k1mw9hz61l3ipshylf5jc3azc8f"))
+        (base32 "1sxx27hgryg93a03n08vasycaj76iwclzdskajjy8bivk5z9ls9p"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1868,18 +1868,20 @@ their levels to be controlled individually.")
            go-github-com-gorilla-websocket
            go-github-com-hashicorp-golang-lru-arc-v2
            go-github-com-hashicorp-golang-lru-v2
+           go-github-com-huin-goupnp
            go-github-com-ipfs-go-cid
            go-github-com-ipfs-go-datastore
            go-github-com-ipfs-go-ds-badger
            go-github-com-ipfs-go-ds-leveldb
            go-github-com-ipfs-go-log-v2
+           go-github-com-jackpal-go-nat-pmp
            go-github-com-jbenet-go-temp-err-catcher
            go-github-com-klauspost-compress
+           go-github-com-koron-go-ssdp
            go-github-com-libp2p-go-buffer-pool
            go-github-com-libp2p-go-flow-metrics
            go-github-com-libp2p-go-libp2p-asn-util
            go-github-com-libp2p-go-msgio
-           go-github-com-libp2p-go-nat
            go-github-com-libp2p-go-netroute
            go-github-com-libp2p-go-reuseport
            go-github-com-libp2p-go-yamux-v5
