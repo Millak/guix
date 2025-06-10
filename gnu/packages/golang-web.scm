@@ -2855,7 +2855,7 @@ protocol definition.")
 (define-public go-github-com-evanphx-json-patch
   (package
     (name "go-github-com-evanphx-json-patch")
-    (version "0.5.2")
+    (version "4.12.0")
     (source
      (origin
        (method git-fetch)
@@ -2864,10 +2864,11 @@ protocol definition.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00sib9ba8j1h1n3r1cxx48zn8hs6sxwnrh78p6wbs28wcpz8nqxi"))))
+        (base32 "1z0bmsvzm4nchfbi7h9pdvkfgrnf0fvhn39pgb0q2az8cql58q56"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/evanphx/json-patch"))
     (propagated-inputs
      (list go-github-com-jessevdk-go-flags go-github-com-pkg-errors))
