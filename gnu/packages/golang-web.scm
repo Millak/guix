@@ -11553,21 +11553,9 @@ OTEL_PROPAGATORS environment variable.")
              ;; the longest path to go.mod first, shell snippet to
              ;; produce the list:
              ;; find . -type f -name go.mod -printf "%d %p\n" | sort -rn
-             (list "exporters/otlp/otlptrace/otlptracehttp"
-                   "exporters/otlp/otlptrace/otlptracegrpc"
-                   "exporters/otlp/otlpmetric/otlpmetrichttp"
-                   "exporters/otlp/otlpmetric/otlpmetricgrpc"
-                   "exporters/otlp/otlplog/otlploghttp"
-                   "exporters/otlp/otlplog/otlploggrpc"
-                   "exporters/stdout/stdouttrace"
-                   "exporters/stdout/stdoutmetric"
-                   "exporters/stdout/stdoutlog"
-                   "exporters/otlp/otlptrace"
-                   "sdk/metric"
+             (list "sdk/metric"
                    "sdk/log"
                    "internal/tools"
-                   "exporters/zipkin"
-                   "exporters/prometheus"
                    "example/zipkin"
                    "example/prometheus"
                    "example/passthrough"
@@ -11578,6 +11566,7 @@ OTEL_PROPAGATORS environment variable.")
                    "bridge/opentracing"
                    "bridge/opencensus"
                    ;; "trace"  - introduces a cycle, keep it
+                   "exporters"
                    "sdk"
                    "schema"
                    ;; "metric" - introduces a cycle, keep it
