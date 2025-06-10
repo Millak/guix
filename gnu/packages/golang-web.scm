@@ -11542,23 +11542,42 @@ Handler) and routes @code{WithRouteTag}.")
                                           #:subdir "propagators/autoprop"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15k2xps4qv37pw3ml6pj98kihl6a04bbr005px5hhckl23s40w2c"))))
+        (base32 "15k2xps4qv37pw3ml6pj98kihl6a04bbr005px5hhckl23s40w2c"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "propagators" "autoprop")
+            (delete-all-but "." "propagators")))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable tests and build when all missing inputs are packags, use
-      ;; as source only package for Kubo.
-      #:skip-build? #t
-      #:tests? #f
       #:import-path "go.opentelemetry.io/contrib/propagators/autoprop"
       #:unpack-path "go.opentelemetry.io/contrib"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list ;; go-go-opentelemetry-io-contrib-propagators-aws
-           ;; go-go-opentelemetry-io-contrib-propagators-b3
-           ;; go-go-opentelemetry-io-contrib-propagators-jaeger
-           ;; go-go-opentelemetry-io-contrib-propagators-ot
+     (list go-go-opentelemetry-io-contrib-propagators-aws
+           go-go-opentelemetry-io-contrib-propagators-b3
+           go-go-opentelemetry-io-contrib-propagators-jaeger
+           go-go-opentelemetry-io-contrib-propagators-ot
            go-go-opentelemetry-io-otel))
     (home-page "https://opentelemetry.io/")
     (synopsis "OpenTelemetry TextMapPropagator creation")
