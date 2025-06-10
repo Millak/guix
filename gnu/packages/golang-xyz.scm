@@ -22529,7 +22529,7 @@ unmarshaling functions based on @code{encoding/json} @code{Unmarshal()}.")
 (define-public go-sigs-k8s-io-structured-merge-diff-v4
   (package
     (name "go-sigs-k8s-io-structured-merge-diff-v4")
-    (version "4.5.0")
+    (version "4.7.0")
     (source
      (origin
        (method git-fetch)
@@ -22538,17 +22538,16 @@ unmarshaling functions based on @code{encoding/json} @code{Unmarshal()}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xgi3r2xvwvxy6jc6rd5rrnib4y9b4kgpqphm4lkhgaayy3njwv3"))))
+        (base32 "001h7lsnnglwj2nbbfhkmyfrym0y2dpwbfc6kqa3spl1dbl2lgac"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "sigs.k8s.io/structured-merge-diff/v4"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)))) ; no go files in project's root
+      #:skip-build? #t
+      #:import-path "sigs.k8s.io/structured-merge-diff/v4"))
+    (native-inputs
+     (list go-sigs-k8s-io-randfill))
     (propagated-inputs
      (list go-github-com-google-go-cmp
-           go-github-com-google-gofuzz
            go-github-com-json-iterator-go
            go-sigs-k8s-io-yaml))
     (home-page "https://github.com/kubernetes-sigs/structured-merge-diff")
