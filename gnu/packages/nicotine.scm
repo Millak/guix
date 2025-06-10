@@ -36,7 +36,7 @@
 (define-public nicotine+
   (package
     (name "nicotine+")
-    (version "3.3.6")
+    (version "3.3.10")
     (source
      (origin
        (method git-fetch)
@@ -45,7 +45,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sblhfsyf34lsarjv8b83k20jqfpgcxa1iqbvab05xy52v5y3vcd"))
+        (base32 "0xj7hlhgirgjyfmdchksvwhjhaqaf5n84brzih6fqlbsrr9gxkw9"))
        (modules '((guix build utils)))
        ;; Remove test that relies on network access.
        (snippet '(delete-file-recursively
