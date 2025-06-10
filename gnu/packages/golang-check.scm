@@ -1897,8 +1897,8 @@ testing type to omit repeated @code{t}.")
     (license license:expat)))
 
 (define-public go-github-com-petermattis-goid
-  (let ((commit "bb94eb51e7a772d09cef11768f3248ac25adf9f9")
-        (revision "2"))
+  (let ((commit "395b08cebbdbaf68f44f53a2d6e9f8d064180a0b")
+        (revision "3"))
     (package
       (name "go-github-com-petermattis-goid")
       (version (git-version "0.0.0" revision commit))
@@ -1910,7 +1910,7 @@ testing type to omit repeated @code{t}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hr94frr0rhac4mb9r7ixdgr6hm63rxh6z43rhn2wn7fdy8csw11"))))
+          (base32 "0c8fc1v29wjv9r1l2dhkr9bxc7hysahr30bnxwnc854jckxiqi46"))))
       (build-system go-build-system)
       (arguments
        (list
