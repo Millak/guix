@@ -39,7 +39,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2023 Kyle Andrews <kyle@posteo.net>
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
-;;; Copyright © 2024, 2025 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -15562,6 +15562,30 @@ scatterplot, tiles and plot items for further decorations include connector,
 link (lines and ribbons), and text (gene) label.  All functions require only R
 graphics packages that comes with the base installation.")
     (license license:gpl2+)))
+
+(define-public r-circstats
+  (package
+    (name "r-circstats")
+    (version "0.2-6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "CircStats" version))
+       (sha256
+        (base32 "07bg4zrs2iqh0pmi44pybi8hlvnxwcaa5zpg85rmf55kflxxkzlf"))))
+    (properties `((upstream-name . "CircStats")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:tests? #f))
+    (propagated-inputs (list r-boot r-mass))
+    (home-page "https://cran.r-project.org/package=CircStats")
+    (synopsis
+     "Circular Statistics, from \"Topics in Circular Statistics\" (2001)")
+    (description
+     "Circular Statistics, from \"Topics in Circular Statistics\" (2001) S. Rao
+Jammalamadaka and A. @code{SenGupta}, World Scientific.")
+    (license license:gpl2)))
 
 (define-public r-ctrdata
   (package
