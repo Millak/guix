@@ -27,6 +27,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xorg))
 
@@ -77,7 +78,15 @@
       (propagated-inputs
        (list fontconfig freetype libxext libxft libxpm libxt xbitmaps))
       (native-inputs
-       (list autoconf automake byacc flex libtool pkg-config))
+       ;; This fails to build with GCC 14 due to missing header includes and
+       ;; other C semantics issues.
+       (list gcc-11
+             autoconf
+             automake
+             byacc
+             flex
+             libtool
+             pkg-config))
       (home-page "https://motif.ics.com/motif")
       (synopsis "Toolkit for the X window system")
       (description "Motif is a standard graphical user interface, (as defined
