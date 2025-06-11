@@ -1562,24 +1562,32 @@ fonts.")
 (define-public font-google-roboto
   (package
     (name "font-google-roboto")
-    (version "2.136")
+    (version "3.011")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/google/roboto/releases/download/"
-                           "v" version "/roboto-hinted.zip"))
+       (uri (string-append
+             "https://github.com/googlefonts/roboto-3-classic/releases/download/v"
+             version "/Roboto_v" version ".zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32
-         "0spscx08fad7i8qs7icns96iwcapniq8lwwqqvbf7bamvs8qfln4"))))
+        (base32 "03km9r4cgbbjparmzvlkr59a3r6j5cwmnf4s17qr7wkdf0qyx7wq"))))
     (build-system font-build-system)
-    (home-page "https://github.com/google/roboto")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Install only needed fonts.
+          (add-before 'install 'chdir
+            (lambda _
+              (chdir "../hinted/static"))))))
+    (home-page "https://github.com/googlefonts/roboto-3-classic")
     (synopsis "The Roboto family of fonts")
     (description
      "Roboto is Google’s signature family of fonts, the default font on Android
-and Chrome OS, and the recommended font for the
-visual language \"Material Design\".")
-    (license license:asl2.0)))
+and Chrome OS, and the recommended font for the visual language \"Material
+Design\".")
+    (license license:silofl1.1)))
 
 (define-public font-google-roboto-mono
   (package
