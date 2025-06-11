@@ -3566,7 +3566,7 @@ allowing you to declaratively define \"match\" rules.")
     ;; Upstream is informed to provide man/info for the project, see
     ;; <https://github.com/toml-lang/toml-test/issues/163>.
     (name "toml-test")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3575,7 +3575,7 @@ allowing you to declaratively define \"match\" rules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "188xcsxgn20pjnddfn3mvx7wak030xdgkhxkhjiijfap37gbv6df"))))
+        (base32 "1b6lfamh673a4x509cacr6qr1xvf82562cpqn9ygrgnd81469qcc"))))
     (build-system go-build-system)
     (arguments
      (list
