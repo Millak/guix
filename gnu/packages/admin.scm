@@ -2786,22 +2786,23 @@ authentication server.")
                 "0vydqpf44146ir6k87gmqaq6xy66xhc1gkr3nsd7jj3nhy7ypx9x"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/bin"))
-               (mkdir-p (string-append out "/share/man/man1"))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (mkdir-p (string-append #$output "/bin"))
+             (mkdir-p (string-append #$output "/share/man/man1"))
 
-               ;; It's an old configure script that doesn't understand
-               ;; the extra options we pass.
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       (string-append "--mandir=" out
-                                      "/share/man"))))))
-       #:tests? #f))
+             ;; It's an old configure script that doesn't understand
+             ;; the extra options we pass.
+             (setenv "CONFIG_SHELL"
+                     (search-input-file %build-inputs "bin/bash"))
+             (invoke "./configure"
+                     (string-append "--prefix=" #$output)
+                     (string-append "--mandir=" #$output
+                                    "/share/man")))))))
     (home-page "https://www.kernel.org") ; really, no home page
     (synopsis "Send a wake-on-LAN packet")
     (description
