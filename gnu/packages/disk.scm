@@ -1469,7 +1469,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    (version "33")
+    (version "35")
     (source
      (origin
        (method git-fetch)
@@ -1478,7 +1478,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
              (commit (string-append "r" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jmqf27ysi35n3hqahlzs5hym7i4w1mplklrvv0lc0baddzx7av8"))))
+        (base32 "19hk78j1cdnpjg5gjilm797vzzlppfard1qas9vxjhx289n8i76i"))))
     (build-system go-build-system)
     (arguments
      (list
