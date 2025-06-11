@@ -3479,7 +3479,7 @@ about the content.")
 (define-public go-github-com-go-openapi-errors
   (package
     (name "go-github-com-go-openapi-errors")
-    (version "0.22.0")
+    (version "0.22.1")
     (source
      (origin
        (method git-fetch)
@@ -3488,10 +3488,11 @@ about the content.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nikzvknkv0nqdy44dfi096lcvkjnpjfrpg1gqlkg5ffccvdnd9s"))))
+        (base32 "0ll8hys25q536q73d5qhgf7ch9cl5183g6bqgdq61zdgcvvz0krf"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/go-openapi/errors"))
     (native-inputs
      (list go-github-com-stretchr-testify))
