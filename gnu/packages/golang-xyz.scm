@@ -22787,7 +22787,7 @@ terminals.")
 (define-public go-zgo-at-zli
   (package
     (name "go-zgo-at-zli")
-    (version "0.0.0-20240922172047-d7bc84b1106f")
+    (version "0.0.0-20250601161843-debde58580f1")
     (source
      (origin
        (method git-fetch)
@@ -22796,10 +22796,11 @@ terminals.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "110kwhydj6bzwqk7amkm9xgr3apx2bq6frlqb5yxds8cj5y25jks"))))
+        (base32 "120nlnxhzdmk1lh7cfgajkl85n8mfd00cn5csyislris9q2n2rxb"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "zgo.at/zli"))
     (home-page "https://github.com/arp242/zli")
     (synopsis "Go library for writing command line interface programs")
