@@ -38,7 +38,7 @@
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021, 2025 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -11625,6 +11625,20 @@ work properly.")
     (supported-systems
      (filter (cut string-suffix? "-linux" <>) %supported-systems))
     (license license:gpl2+)))
+
+(define-public firejail-disable-sandbox-check
+  (package/inherit
+   firejail
+   (name "firejail-disable-sandbox-check")
+   (arguments
+    (substitute-keyword-arguments (package-arguments firejail)
+      ((#:configure-flags flags #~'())
+       #~(append #$flags
+                 (list "--disable-sandbox-check")))))
+   (description
+    (string-append (package-description firejail)
+                   "  Builded with @code{--disable-sandbox-check}, which is
+ only intended for development."))))
 
 (define-public edac-utils
   (package
