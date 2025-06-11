@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
-;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019, 2021-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -907,7 +907,6 @@ the freedesktop.org XDG Base Directory specification.")
   (package
     (name "elogind")
     (version "255.17")
-    (replacement elogind/fixed)
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -978,8 +977,8 @@ the freedesktop.org XDG Base Directory specification.")
          (add-after 'unpack 'fix-pkttyagent-path
            (lambda _
              (substitute* "meson.build"
-               (("join_paths\\(bindir, 'pkttyagent'\\)")
-                "'\"/run/current-system/profile/bin/pkttyagent\"'"))))
+               (("bindir / 'pkttyagent'")
+                "'/run/current-system/profile/bin/pkttyagent'"))))
          (add-after 'unpack 'use-global-hook-directory
            ;; XXX There is no run-time setting to set this per-process, only a
            ;; build-time, hard-coded list of global directories.
@@ -1093,20 +1092,6 @@ extracted out as a separate project.  Elogind integrates with PAM to provide
 the org.freedesktop.login1 interface over the system bus, allowing other parts
 of a the system to know what users are logged in, and where.")
     (license license:lgpl2.1+)))
-
-(define-public elogind/fixed
-  (hidden-package
-   (package
-     (inherit elogind)
-     (arguments
-      (substitute-keyword-arguments (package-arguments elogind)
-        ((#:phases phases)
-         #~(modify-phases #$phases
-             (replace 'fix-pkttyagent-path
-               (lambda _
-                 (substitute* "meson.build"
-                   (("bindir / 'pkttyagent'")
-                    "'/run/current-system/profile/bin/pkttyagent'")))))))))))
 
 (define-public basu
   (package
