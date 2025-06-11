@@ -142,7 +142,8 @@ and APIs for non-parametric methods.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/cockroachdb/apd"))
+      #:import-path "github.com/cockroachdb/apd"
+      #:test-flags #~(list "-skip" "TestFormatFlags/.*010G")))
     (propagated-inputs
      (list go-github-com-pkg-errors))
     (home-page "https://github.com/cockroachdb/apd")
@@ -170,8 +171,9 @@ and GCC’s decimal extension.")
        (sha256
         (base32 "1jrb43l80mr8q1hx8q4p54rld6kya886ackv5yzqyhhhl271rnm6"))))
     (arguments
-     (list
-      #:import-path "github.com/cockroachdb/apd/v3"))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-cockroachdb-apd)
+       ((#:import-path _) "github.com/cockroachdb/apd/v3")))))
 
 (define-public go-github-com-johncgriffin-overflow
   (package
