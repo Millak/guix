@@ -595,7 +595,7 @@ a hardware description and verification language.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "5.0.0-dev.5") ;v4.7.0 dates back from 2 years ago.
+    (version "5.0.0-dev.6") ;v4.7.0 dates back from 2 years ago.
     (source
      (origin
        (method git-fetch)
@@ -605,10 +605,21 @@ a hardware description and verification language.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sfnl1l6bgaqa8c2sk8k8f232bnq2drjg6rg7jvscmyz18yfih0b"))))
+        (base32 "0zm7733g7ivcx6y00bigvqzkxa2i46sw4pb5k1n3lfbqvsjymshh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-ghdl-jit
+            (lambda _
+              ;; TODO: Remove when fixed upstream (see:
+              ;; https://github.com/VUnit/vunit/pull/1121).
+              (substitute* "vunit/sim_if/ghdl.py"
+                ((": \"llvm\",")
+                 (string-append
+                  ": \"llvm\",\n\tr\"static elaboration, LLVM JIT code "
+                  "generator\": \"llvm-jit\","))))))
       #:test-flags
       ;; Skip lint tests which require python-pycodestyle, python-pylint and
       ;; python-mypy to reduce closoure size; some lint test fails, see
