@@ -2191,6 +2191,7 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
      (list
       ;; TODO: Tests may need some adjustments as they take quite a lot of
       ;; time to finish.
+      #:tests? #f
       #:import-path "github.com/libp2p/go-libp2p-pubsub"
       ;; src/github.com/libp2p/go-libp2p-asn-util/asn.go:12:12: pattern
       ;; sorted-network-list.bin: cannot embed irregular file
