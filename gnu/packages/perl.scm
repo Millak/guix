@@ -6,7 +6,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
-;;; Copyright © 2016-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2022, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
@@ -5359,7 +5359,7 @@ type.")
 (define-public perl-file-find-rule
   (package
     (name "perl-file-find-rule")
-    (version "0.34")
+    (version "0.35")
     (source
      (origin
        (method url-fetch)
@@ -5367,10 +5367,10 @@ type.")
                            "File-Find-Rule-" version ".tar.gz"))
        (sha256
         (base32
-         "1znachnhmi1w5pdqx8dzgfa892jb7x8ivrdy4pzjj7zb6g61cvvy"))))
+         "10hcrwx30g161fmwm08ydwj0s1dhn25ja0s8wwpasi3dk8l5dm9b"))))
     (build-system perl-build-system)
     (propagated-inputs
-     (list perl-text-glob perl-number-compare))
+     (list perl-number-compare perl-text-glob))
     (home-page "https://metacpan.org/release/File-Find-Rule")
     (synopsis "Alternative interface to File::Find")
     (description "File::Find::Rule is a friendlier interface to File::Find.
