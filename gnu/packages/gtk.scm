@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2018, 2019, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -169,11 +169,10 @@ such as mate-panel and xfce4-panel.")
     (home-page "https://gitlab.com/vala-panel-project/vala-panel-appmenu")
     (license (list license:lgpl3))))
 
-(define cairo
+(define-public cairo
   (package
     (name "cairo")
-    (version "1.18.2")
-    (replacement cairo-1.18.4)
+    (version "1.18.4")
     (source
      (origin
        (method url-fetch)
@@ -181,7 +180,7 @@ such as mate-panel and xfce4-panel.")
         (string-append "https://cairographics.org/releases/cairo-"
                        version ".tar.xz"))
        (sha256
-        (base32 "0nnli5cghygbl9bvlbjls7nspnrrzx1y1pbd7p649s154js9nax6"))))
+        (base32 "1jrcqfcna0358aqrk7rnys1hwq6k36ilr9r62bg26j3fi8hdhpj4"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ; see http://lists.gnu.org/archive/html/bug-guix/2013-06/msg00085.html
@@ -239,21 +238,6 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
       license:mpl1.1))
     ;; Hide and have cairo-with-documentation public.
     (properties '((hidden? . #t)))))
-
-;;; TODO: This newer version resolves an issue when writing PDFs.  Remove
-;;; after ungrafting cairo.
-(define cairo-1.18.4
-  (package
-    (inherit cairo)
-    (version "1.18.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://cairographics.org/releases/cairo-"
-                       version ".tar.xz"))
-       (sha256
-        (base32 "1jrcqfcna0358aqrk7rnys1hwq6k36ilr9r62bg26j3fi8hdhpj4"))))))
 
 (define-public cairo-with-documentation
   ;; cairo's docs must be built in a separate package since it requires
