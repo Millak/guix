@@ -2411,7 +2411,7 @@ types.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.32.1")
+    (version "0.35.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -2420,152 +2420,14 @@ types.")
              "https://dist.ipfs.tech/kubo//v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "1v8bnrfir7322qklc2ri4xd32arifza5w6br7kpfknyrq2daiggz"))
+        (base32 "056kkc2jpf743dpdygapks4y94wv668ymma0d8db2nc9mmlxgris"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
-       (snippet '(for-each delete-file-recursively
-                           ;; TODO: unbundle the rest as well
-                           '("vendor/bazil.org"
-                             "vendor/contrib.go.opencensus.io"
-                             "vendor/github.com/AndreasBriese"
-                             "vendor/github.com/DataDog"
-                             "vendor/github.com/Jorropo"
-                             "vendor/github.com/alecthomas"
-                             "vendor/github.com/benbjohnson"
-                             "vendor/github.com/beorn7"
-                             "vendor/github.com/blang"
-                             "vendor/github.com/caddyserver/certmagic"
-                             "vendor/github.com/cenkalti"
-                             "vendor/github.com/ceramicnetwork"
-                             "vendor/github.com/cespare"
-                             "vendor/github.com/cheggaaa"
-                             "vendor/github.com/containerd"
-                             "vendor/github.com/coreos"
-                             "vendor/github.com/crackcomm"
-                             "vendor/github.com/cskr"
-                             "vendor/github.com/davecgh"
-                             "vendor/github.com/davidlazar"
-                             "vendor/github.com/decred"
-                             "vendor/github.com/dgraph-io"
-                             "vendor/github.com/docker"
-                             "vendor/github.com/dustin"
-                             "vendor/github.com/elastic"
-                             "vendor/github.com/elgris"
-                             "vendor/github.com/facebookgo"
-                             "vendor/github.com/felixge"
-                             "vendor/github.com/flynn"
-                             "vendor/github.com/francoispqt"
-                             "vendor/github.com/fsnotify"
-                             "vendor/github.com/gabriel-vasile"
-                             "vendor/github.com/go-kit"
-                             "vendor/github.com/go-logfmt"
-                             "vendor/github.com/go-logr"
-                             "vendor/github.com/go-task"
-                             "vendor/github.com/godbus"
-                             "vendor/github.com/gogo"
-                             "vendor/github.com/golang"
-                             "vendor/github.com/google"
-                             "vendor/github.com/gorilla"
-                             "vendor/github.com/hashicorp"
-                             "vendor/github.com/huin"
-                             "vendor/github.com/ipfs/bbloom"
-                             "vendor/github.com/ipfs/go-bitfield"
-                             "vendor/github.com/ipfs/go-block-format"
-                             "vendor/github.com/ipfs/go-cid"
-                             "vendor/github.com/ipfs/go-cidutil"
-                             "vendor/github.com/ipfs/go-datastore"
-                             "vendor/github.com/ipfs/go-detect-race"
-                             "vendor/github.com/ipfs/go-ds-badger"
-                             "vendor/github.com/ipfs/go-ds-flatfs"
-                             "vendor/github.com/ipfs/go-ds-leveldb"
-                             "vendor/github.com/ipfs/go-ds-measure"
-                             "vendor/github.com/ipfs/go-fs-lock"
-                             "vendor/github.com/ipfs/go-ipfs-delay"
-                             "vendor/github.com/ipfs/go-ipfs-ds-help"
-                             "vendor/github.com/ipfs/go-ipfs-redirects-file"
-                             "vendor/github.com/ipfs/go-ipfs-util"
-                             "vendor/github.com/ipfs/go-ipld-cbor"
-                             "vendor/github.com/ipfs/go-ipld-format"
-                             "vendor/github.com/ipfs/go-ipld-git"
-                             "vendor/github.com/ipfs/go-ipld-legacy"
-                             "vendor/github.com/ipfs/go-log"
-                             "vendor/github.com/ipfs/go-metrics-interface"
-                             "vendor/github.com/ipfs/go-metrics-prometheus"
-                             "vendor/github.com/ipfs/go-peertaskqueue"
-                             "vendor/github.com/ipfs/go-test"
-                             "vendor/github.com/ipfs/go-unixfsnode"
-                             "vendor/github.com/ipfs/go-verifcid"
-                             "vendor/github.com/ipld"
-                             "vendor/github.com/jackpal"
-                             "vendor/github.com/jbenet"
-                             "vendor/github.com/julienschmidt"
-                             "vendor/github.com/klauspost"
-                             "vendor/github.com/koron"
-                             "vendor/github.com/kr"
-                             "vendor/github.com/libp2p/go-buffer-pool"
-                             "vendor/github.com/libp2p/go-cidranger"
-                             "vendor/github.com/libp2p/go-doh-resolver"
-                             "vendor/github.com/libp2p/go-flow-metrics"
-                             "vendor/github.com/libp2p/go-libp2p"
-                             "vendor/github.com/libp2p/go-libp2p-asn-util"
-                             "vendor/github.com/libp2p/go-libp2p-http"
-                             "vendor/github.com/libp2p/go-libp2p-pubsub"
-                             "vendor/github.com/libp2p/go-libp2p-pubsub-router"
-                             "vendor/github.com/libp2p/go-libp2p-routing-helpers"
-                             "vendor/github.com/libp2p/go-libp2p-testing"
-                             "vendor/github.com/libp2p/go-msgio"
-                             "vendor/github.com/libp2p/go-nat"
-                             "vendor/github.com/libp2p/go-netroute"
-                             "vendor/github.com/libp2p/go-reuseport"
-                             "vendor/github.com/libp2p/go-socket-activation"
-                             "vendor/github.com/libp2p/go-yamux"
-                             "vendor/github.com/libp2p/zeroconf"
-                             "vendor/github.com/marten-seemann"
-                             "vendor/github.com/mattn"
-                             "vendor/github.com/mgutz"
-                             "vendor/github.com/mholt"
-                             "vendor/github.com/miekg"
-                             "vendor/github.com/mikioh"
-                             "vendor/github.com/minio"
-                             "vendor/github.com/mr-tron"
-                             "vendor/github.com/multiformats"
-                             "vendor/github.com/munnerz"
-                             "vendor/github.com/onsi"
-                             "vendor/github.com/opencontainers"
-                             "vendor/github.com/opentracing"
-                             "vendor/github.com/pbnjay"
-                             "vendor/github.com/petar"
-                             "vendor/github.com/pion"
-                             "vendor/github.com/pkg"
-                             "vendor/github.com/pmezard"
-                             "vendor/github.com/polydawn"
-                             "vendor/github.com/prometheus"
-                             "vendor/github.com/quic-go"
-                             "vendor/github.com/raulk"
-                             "vendor/github.com/rogpeppe"
-                             "vendor/github.com/rs"
-                             "vendor/github.com/samber"
-                             "vendor/github.com/spaolacci"
-                             "vendor/github.com/stretchr"
-                             "vendor/github.com/syndtr"
-                             "vendor/github.com/texttheater"
-                             "vendor/github.com/tidwall"
-                             "vendor/github.com/ucarion"
-                             "vendor/github.com/whyrusleeping"
-                             "vendor/github.com/wlynxg"
-                             "vendor/go.opencensus.io"
-                             "vendor/go.uber.org"
-                             "vendor/go4.org"
-                             "vendor/golang.org"
-                             "vendor/gonum.org"
-                             "vendor/google.golang.org/genproto/googleapis/rpc"
-                             "vendor/google.golang.org/protobuf"
-                             "vendor/gopkg.in"
-                             "vendor/lukechampine.com")))))
+       (snippet '(delete-file-recursively "vendor"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:embed-files #~(list "sorted-network-list.bin")
+      #:embed-files #~(list "sorted-network-list.bin" ".*\\.css" ".*\\.html")
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
       #:phases
@@ -2582,20 +2444,14 @@ types.")
                                   "ipfs"
                                   #~(string-append #$output "/bin/ipfs"))
                             "commands" "completion" "bash")))))))))
-    (inputs (list ;; Direct requirements as seen in kubo's go.mod file.
-                  ;;
-                  ;; XXX: Uncomment out when package is available in Guix,
-                  ;; otherwise it will be sourced from provided vendor
-                  ;; directory.
-                  ;;
-                  go-bazil-org-fuse
+    (inputs (list go-bazil-org-fuse
                   go-contrib-go-opencensus-io-exporter-prometheus
                   go-github-com-blang-semver-v4
                   go-github-com-caddyserver-certmagic
                   go-github-com-cenkalti-backoff-v4
                   go-github-com-ceramicnetwork-go-dag-jose
                   go-github-com-cheggaaa-pb
-                  ;;go-github-com-cockroachdb-pebble
+                  go-github-com-cockroachdb-pebble-v2
                   go-github-com-coreos-go-systemd-v22
                   go-github-com-dustin-go-humanize
                   go-github-com-elgris-jsondiff
@@ -2603,9 +2459,8 @@ types.")
                   go-github-com-filecoin-project-go-clock
                   go-github-com-fsnotify-fsnotify
                   go-github-com-google-uuid
-                  go-github-com-hashicorp-go-multierror
                   go-github-com-hashicorp-go-version
-                  ;;go-github-com-ipfs-boxo
+                  go-github-com-ipfs-boxo
                   go-github-com-ipfs-go-block-format
                   go-github-com-ipfs-go-cid
                   go-github-com-ipfs-go-cidutil
@@ -2615,9 +2470,9 @@ types.")
                   go-github-com-ipfs-go-ds-flatfs
                   go-github-com-ipfs-go-ds-leveldb
                   go-github-com-ipfs-go-ds-measure
-                  ;;go-github-com-ipfs-go-ds-pebble
+                  go-github-com-ipfs-go-ds-pebble
                   go-github-com-ipfs-go-fs-lock
-                  ;;go-github-com-ipfs-go-ipfs-cmds
+                  go-github-com-ipfs-go-ipfs-cmds
                   go-github-com-ipfs-go-ipld-cbor
                   go-github-com-ipfs-go-ipld-format
                   go-github-com-ipfs-go-ipld-git
@@ -2628,24 +2483,24 @@ types.")
                   go-github-com-ipfs-go-metrics-prometheus
                   go-github-com-ipfs-go-test
                   go-github-com-ipfs-go-unixfsnode
-                  ;;go-github-com-ipfs-shipyard-nopfs
-                  ;;go-github-com-ipfs-shipyard-nopfs-ipfs
+                  go-github-com-ipfs-shipyard-nopfs
+                  go-github-com-ipfs-shipyard-nopfs-ipfs
                   go-github-com-ipld-go-car
                   go-github-com-ipld-go-car-v2
                   go-github-com-ipld-go-codec-dagpb
                   go-github-com-ipld-go-ipld-prime
-                  ;;go-github-com-ipshipyard-p2p-forge
+                  go-github-com-ipshipyard-p2p-forge
                   go-github-com-jbenet-go-temp-err-catcher
                   go-github-com-jbenet-goprocess
                   go-github-com-julienschmidt-httprouter
                   go-github-com-libp2p-go-doh-resolver
-                  go-github-com-libp2p-go-libp2p-0.38
+                  go-github-com-libp2p-go-libp2p
                   go-github-com-libp2p-go-libp2p-http
-                  ;;go-github-com-libp2p-go-libp2p-kad-dht
-                  ;;go-github-com-libp2p-go-libp2p-kbucket
+                  go-github-com-libp2p-go-libp2p-kad-dht
+                  go-github-com-libp2p-go-libp2p-kbucket
                   go-github-com-libp2p-go-libp2p-pubsub
                   go-github-com-libp2p-go-libp2p-pubsub-router
-                  ;;go-github-com-libp2p-go-libp2p-record
+                  go-github-com-libp2p-go-libp2p-record
                   go-github-com-libp2p-go-libp2p-routing-helpers
                   go-github-com-libp2p-go-libp2p-testing
                   go-github-com-libp2p-go-socket-activation
@@ -2664,11 +2519,12 @@ types.")
                   go-github-com-whyrusleeping-go-sysinfo
                   go-github-com-whyrusleeping-multiaddr-filter
                   go-go-opencensus-io
-                  ;;go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
-                  ;;go-go-opentelemetry-io-contrib-propagators-autoprop
-                  ;;go-go-opentelemetry-io-otel
-                  ;;go-go-opentelemetry-io-otel-sdk
-                  ;;go-go-opentelemetry-io-otel-trace
+                  go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+                  go-go-opentelemetry-io-contrib-propagators-autoprop
+                  go-go-opentelemetry-io-otel
+                  go-go-opentelemetry-io-otel-exporters-otlp-otlptrace ; check which module uses it
+                  go-go-opentelemetry-io-otel-sdk
+                  go-go-opentelemetry-io-otel-trace
                   go-go-uber-org-dig
                   go-go-uber-org-fx
                   go-go-uber-org-multierr
@@ -2678,40 +2534,7 @@ types.")
                   go-golang-org-x-mod
                   go-golang-org-x-sync
                   go-golang-org-x-sys
-                  go-google-golang-org-protobuf
-
-                  ;;
-                  ;; A list of indirect dependencies required for the vendored
-                  ;; models.
-                  ;; XXX: Remove them when all of the vendored packages are
-                  ;; available.
-                  ;;
-
-                  go-github-com-texttheater-golang-levenshtein ; github.com/ipfs/go-ipfs-cmds
-
-                  go-github-com-crackcomm-go-gitignore        ; github.com/ipfs/boxo
-                  go-github-com-cskr-pubsub                   ; github.com/ipfs/boxo
-                  go-github-com-datadog-zstd                  ; github.com/cockroachdb/pebble
-                  go-github-com-felixge-httpsnoop             ; go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
-                  go-github-com-gabriel-vasile-mimetype       ; github.com/ipfs/boxo
-                  go-github-com-go-logr-stdr                  ; go.opentelemetry.io/otel
-                  go-github-com-google-gopacket               ; github.com/libp2p/go-libp2p-kad-dht
-                  go-github-com-gorilla-mux                   ; github.com/ipfs/boxo
-                  go-github-com-hashicorp-golang-lru          ; github.com/libp2p/go-libp2p-kad-dht
-                  go-github-com-hashicorp-golang-lru-v2       ; github.com/ipfs/boxo
-                  go-github-com-ipfs-go-bitfield              ; github.com/ipfs/boxo
-                  go-github-com-ipfs-go-ipfs-redirects-file   ; github.com/ipfs/boxo
-                  go-github-com-ipfs-go-peertaskqueue         ; github.com/ipfs/boxo
-                  go-github-com-libp2p-go-cidranger           ; github.com/libp2p/go-libp2p-kbucket
-                  go-github-com-libp2p-go-libp2p-asn-util     ; github.com/libp2p/go-libp2p-kbucket
-                  go-github-com-libp2p-go-msgio               ; github.com/libp2p/go-libp2p-kad-dht
-                  go-github-com-rs-cors                       ; github.com/ipfs/go-ipfs-cmds
-                  go-github-com-samber-lo                     ; github.com/ipfs/boxo
-                  go-github-com-whyrusleeping-base32          ; github.com/ipfs/boxo
-                  go-github-com-whyrusleeping-chunker         ; github.com/ipfs/boxo
-                  go-github-com-whyrusleeping-go-keyspace     ; github.com/libp2p/go-libp2p-kad-dht
-                  go-gonum-org-v1-gonum                       ; github.com/libp2p/go-libp2p-kad-dht
-                  ))
+                  go-google-golang-org-protobuf))
     (native-inputs
      (append (if (%current-target-system)
                  (list this-package)
