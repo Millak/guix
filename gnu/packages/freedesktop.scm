@@ -1331,7 +1331,7 @@ manager for the current system.")
 (define-public power-profiles-daemon
   (package
     (name "power-profiles-daemon")
-    (version "0.23")
+    (version "0.30")
     (source
      (origin
        (method git-fetch)
@@ -1341,7 +1341,7 @@ manager for the current system.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08xz38r2fv6bpmv5vyjfvizwkbflg6m504fh3qd1jpw6xxv1lzwi"))))
+         "0bp14d1bazylcpqmi26z3kq2gc33rk7w8092lzy5j4l1iq1j21c9"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1360,12 +1360,16 @@ manager for the current system.")
                  (lambda _
                    (wrap-program
                        (string-append #$output "/bin/powerprofilesctl")
-                     `("GUIX_PYTHONPATH" = (,(string-append
-                                              #$(this-package-input "python-pygobject")
-                                              "/lib/python"
-                                              #$(version-major+minor
-                                                 (package-version (this-package-input "python")))
-                                              "/site-packages"))))))
+                     `("GUIX_PYTHONPATH" prefix
+                       (,(string-append
+                          #$(this-package-input "python-pygobject")
+                          "/lib/python" #$(version-major+minor
+                                           (package-version
+                                            (this-package-input "python")))
+                          "/site-packages")))
+                     `("GI_TYPELIB_PATH" prefix (,(string-append
+                                                   #$(this-package-input "glib")
+                                                   "/lib/girepository-1.0"))))))
                (add-after 'install 'move-docs
                  (lambda _
                    (mkdir-p (string-append #$output:doc "/share"))
