@@ -439,6 +439,31 @@ and workspaces that can be used in the compiler environment of your choice.")
        (prepend (module-ref (resolve-interface '(gnu packages debug))
                             'cppdap))))))
 
+(define-public cmake-minimal-3.30
+  (package
+    (inherit cmake-minimal)
+    (version "3.30.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://cmake.org/files/v"
+                                  (version-major+minor version)
+                                  "/cmake-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1r48zym4dy4mvwzk704zh1vx9gb4a910f424ypvis28mcxdy2pbd"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments cmake-minimal)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'delete-help-documentation)))))
+    (native-inputs
+     (modify-inputs (package-native-inputs cmake-minimal)
+       ;; Avoid circular dependency with (gnu packages debug).  Note: cppdap
+       ;; is built with cmake, so when the default cmake-minimal is updated to
+       ;; this version this circular dependency will need to be worked around.
+       (prepend (module-ref (resolve-interface '(gnu packages debug))
+                            'cppdap))))))
+
 (define-public cmake-minimal-cross
   (package
     (inherit cmake-minimal)

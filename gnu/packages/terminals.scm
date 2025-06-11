@@ -878,14 +878,14 @@ eye-candy, customizable, and reasonably lightweight.")
                         (list wayland pkg-config-for-build)
                         '())
                     (list ncurses ;for 'tic'
-                          pkg-config scdoc wayland-protocols-next)))
+                          pkg-config scdoc wayland-protocols)))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (inputs (list fcft libxkbcommon-1.8 wayland wayland-protocols-next))
+    (inputs (list fcft libxkbcommon-1.8 wayland wayland-protocols))
     (synopsis "Wayland-native terminal emulator")
     (description
      "@command{foot} is a terminal emulator for systems using the Wayland
@@ -1308,7 +1308,7 @@ tmux.")
            ncurses ;; for tic command
            pkg-config
            python-sphinx
-           wayland-protocols))
+           wayland-protocols-1.42))
     (inputs
      (list fontconfig
            freetype

@@ -1561,7 +1561,7 @@ fullscreen) or other display servers.")
 (define-public wayland-protocols
   (package
     (name "wayland-protocols")
-    (version "1.39")
+    (version "1.44")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1570,7 +1570,7 @@ fullscreen) or other display servers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dpcwsd2p6sjf5164b674cr7vq24hp3lfdshijj438r4bx8bld28"))))
+                "1gjhfiah8hkhqlfan2pr8jvf9h8rjkyz79kkxddi8js2q7dy4bbq"))))
     (build-system meson-build-system)
     (inputs
      (list wayland))
@@ -1587,11 +1587,11 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
     (home-page "https://wayland.freedesktop.org")
     (license license:expat)))
 
-(define-public wayland-protocols-next
+(define-public wayland-protocols-1.42
   (package
     (inherit wayland-protocols)
-    (name "wayland-protocols-next")
-    (version "1.43")
+    (name "wayland-protocols-1.42")
+    (version "1.42")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1600,7 +1600,7 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pgjkc0gw11xb55kn8hf8adnmx3bkpgb4p0haylb2jh7irqhxhqd"))))))
+                "1gx8788wgkl42x3fh4kwkfz2xy7n84slbjwqg9w5z2b7jjkwzrrq"))))))
 
 (define-public wayland-utils
   (package

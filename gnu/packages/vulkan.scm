@@ -8,6 +8,7 @@
 ;;; Copyright © 2022, 2024 dan <i@dan.games>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,7 +53,7 @@
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -61,7 +62,7 @@
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
         (base32
-         "17jw5gwj2vmicyd6522b1zp7x551krfj826j0fg5kl0ixv0q08wk"))
+         "15l35w60sbw1i3a48057hvpvldf0lrlfmkz73bp456g2jn5vln23"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -84,7 +85,7 @@ and for the GLSL.std.450 extended instruction set.
 (define-public spirv-tools
   (package
     (name "spirv-tools")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
       (method git-fetch)
@@ -92,7 +93,7 @@ and for the GLSL.std.450 extended instruction set.
             (url "https://github.com/KhronosGroup/SPIRV-Tools")
             (commit (string-append "vulkan-sdk-" version))))
       (sha256
-       (base32 "1sj84ngwcgmydlj88nx1a9jfmhmxlij7wc92khp8wf1vsfplayas"))
+       (base32 "1ykrsd3fl8sx9sq8pc551swacqnl0xwv3p0l1ppdpw2h2mvz8syr"))
       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -116,7 +117,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
 (define-public spirv-cross
   (package
     (name "spirv-cross")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -124,11 +125,15 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
              (url "https://github.com/KhronosGroup/SPIRV-Cross")
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
-        (base32 "1k6fbkradknxis85akzzksz9ipm3v42xvrzaamwj2lrgfm8d6r4d"))
+        (base32 "1sckwqz67mh48zypgr1r9x101mcq1dlkh8sxi341ynrxzjk8rm3j"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     `(;; Disable tests for now due to upstream issue hit when running
+       ;; update-reference-shaders phase:
+       ;; <https://github.com/KhronosGroup/SPIRV-Tools/issues/5980>.
+       #:tests? #f
+       #:configure-flags
        (list "-DSPIRV_CROSS_SHARED=YES")
        #:phases
        (modify-phases %standard-phases
@@ -141,9 +146,10 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
                (("\\$\\{CMAKE_(.*)_DIR\\}/external/spirv-tools(.*)/bin")
                 (string-append (assoc-ref inputs "spirv-tools") "/bin")))))
          (add-before 'check 'update-reference-shaders
-           (lambda _
-             (with-directory-excursion "../source"
-               (invoke "./update_test_shaders.sh")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "../source"
+                 (invoke "./update_test_shaders.sh"))))))))
     (inputs
      (list glslang spirv-headers spirv-tools))
     (native-inputs (list python))
@@ -177,10 +183,9 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
                      (target-x86-64?))
        #:configure-flags
        #~(list (string-append "-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR="
-                              #$(this-package-native-input "spirv-headers")
-                              "/include/spirv")
+                              #+(this-package-native-input "spirv-headers"))
                (string-append "-DLLVM_EXTERNAL_LIT="
-                              #$(this-package-native-input "python-lit")
+                              #+(this-package-native-input "python-lit")
                               "/bin/lit")
                (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                               #$output "/lib")
@@ -198,7 +203,7 @@ translation between LLVM IR and SPIR-V.")
 (define-public glslang
   (package
     (name "glslang")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -207,11 +212,12 @@ translation between LLVM IR and SPIR-V.")
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
         (base32
-         "1vvgqvwhsimlz8wkk38b9cvp9abggq840iws8al0znzz3mnvkfdn"))
+         "0kzzjh2dxzkznp75jk9sl4fjjgdy5s6xr8vha9av6cvi3jxm2i8y"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+     `(#:cmake ,cmake-minimal-3.30
+       #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DALLOW_EXTERNAL_SPIRV_TOOLS=ON"
                            ,@(if (target-riscv64?)
                                  `("-DCMAKE_EXE_LINKER_FLAGS=-latomic")
@@ -303,7 +309,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
 (define-public vulkan-headers/no-loader
   (package
     (name "vulkan-headers")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -313,7 +319,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "13mmv5621z73hlfnsrccbcb4z0d7kwj92a081701vbpss45a4whj"))))
+         "0ncj4gqb5zmkgmd205frrq8rxxdqlissqpj2fq3wxkdbdyx7pwid"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; No tests.
@@ -347,7 +353,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
 (define-public vulkan-loader
   (package
     (name "vulkan-loader")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -357,7 +363,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0glix3clqkdbi9kqcp8abmglqpgjd2r2bjqvi11r8sair0z54hnf"))))
+         "1y6wqc8adzg7ndmbr95nzhcxf93qsfndfdnsym5pkbjfx454151d"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -427,7 +433,7 @@ and the ICD.")
 (define-public vulkan-tools
   (package
     (name "vulkan-tools")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -442,7 +448,7 @@ and the ICD.")
                      "// ASSERT_EQ(std::string(driver_properties.driverInfo)")))
        (sha256
         (base32
-         "0w0m04vscr4a6vr682g3mn7mfni740cmai9ylzlgfdggb77y58xz"))))
+         "0ywvvkra29y2cvw8i9laf4skn6cl7phrwshcc7z9dljb3il87cym"))))
     (build-system cmake-build-system)
     (inputs
      (list glslang libxrandr vulkan-loader wayland wayland-protocols))
@@ -468,7 +474,7 @@ API.")
   (package
     (name "shaderc")
     ;; shaderc doesn't follow the versioning scheme of vulkan sdk
-    (version "2024.0")
+    (version "2025.1")
     (source
      (origin
        (method git-fetch)
@@ -478,7 +484,7 @@ API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1m5jncn6y8c6g83f8nwh86hz33mvv03x7fyr5zq0ynwanrcpn2hb"))))
+         "0hbsvyyy5fzgal83z8kx4a3x9d2fnd2fcs53l3s9n0pyybip3i5j"))))
     (build-system cmake-build-system)
     (arguments
      `(;; FIXME: Skip most of the tests, because enabling system gtest breaks
@@ -578,7 +584,7 @@ shader compilation.")
 (define-public vulkan-validationlayers
   (package
     (name "vulkan-validationlayers")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -593,7 +599,7 @@ shader compilation.")
                            "")))
               (sha256
                (base32
-                "1w6fsaicrgnzkj5vz2v86a2gk1n7478q6n66ac2920avnin9a64c"))))
+                "1dvgbgfxcp3ypy06j5m561j1gag0hk40zqd477cdv1kizv6i7nsk"))))
     (build-system cmake-build-system)
     (inputs (list glslang
                   libxrandr
@@ -642,7 +648,7 @@ use the Vulkan API.")
 (define-public vulkan-volk
   (package
     (name "vulkan-volk")
-    (version "1.3.280.0")
+    (version "1.4.304")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -651,7 +657,7 @@ use the Vulkan API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x4jhc8n9c4k8svmmcaxxs613xbsav7wam94gacddlm738cwp13v"))))
+                "0slgshhrr1l08wkc4n0ky2z670cfrnzw8gxdrznmja4ly13cc8pr"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -681,7 +687,7 @@ skipping loader dispatch overhead.")
 (define-public vulkan-memory-allocator
   (package
     (name "vulkan-memory-allocator")
-    (version "3.0.1")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -692,7 +698,7 @@ skipping loader dispatch overhead.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1hpzjwl5bgqv9hmf1fdldihfllcbdg515f391a200klg0rnixdds"))))
+         "0y8ccx080bqrgv71ggixxpl57vc5znq55rnvl4v4srfkjxhz6yiy"))))
     (build-system cmake-build-system)
     (arguments
      ;; no test
@@ -710,7 +716,7 @@ storage.")
 (define-public vulkan-utility-libraries
   (package
     (name "vulkan-utility-libraries")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -718,7 +724,7 @@ storage.")
              (url "https://github.com/KhronosGroup/Vulkan-Utility-Libraries")
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
-        (base32 "17fmalilczs4x435f8kdx8bf0x5mnjhkmcp34xap8lanpbyzs84q"))
+        (base32 "1ihk95gjszk9yn3r6xvda83qp7f463m86srj6cq43z01sk2naxkr"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
