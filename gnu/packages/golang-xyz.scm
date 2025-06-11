@@ -22693,7 +22693,7 @@ It allows one to safely call Unveil / Pledge on non-OpenBSD operating systems.")
 (define-public go-zgo-at-jfmt
   (package
     (name "go-zgo-at-jfmt")
-    (version "0.0.0-20240531161922-a97493b8db3c")
+    (version "0.0.0-20240726113937-e6436421fade")
     (source
      (origin
        (method git-fetch)
@@ -22702,23 +22702,12 @@ It allows one to safely call Unveil / Pledge on non-OpenBSD operating systems.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vm38kp46m1drxx16prbjwrc575vv7819ci16p96i0mksnnlfxj3"))))
+        (base32 "1nc3n3lf0ixzpk85sadp2w4yg9v39pdb2z0i1rpxksdayax009wa"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "zgo.at/jfmt"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Remove test data which failing during tests, see
-          ;; <https://github.com/arp242/jfmt/issues/1>.
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each
-                 (lambda (file) (delete-file file))
-                 '("testdata/escape.json"
-                   "testdata/toml-test-key-escapes.json"
-                   "testdata/toml-test-string-quoted-unicode.json"))))))))
+      #:go go-1.23
+      #:import-path "zgo.at/jfmt"))
     (propagated-inputs
      (list go-zgo-at-termtext
            go-zgo-at-zli
