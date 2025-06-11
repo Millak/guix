@@ -43,6 +43,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system glib-or-gtk)
@@ -73,6 +74,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -187,21 +189,27 @@ DHT, µTP, PEX and Magnet Links.")
 (define-public transmission-remote-gtk
   (package
     (name "transmission-remote-gtk")
-    (version "1.4.2")
+    (version "1.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/transmission-remote-gtk/"
-                           "transmission-remote-gtk/releases/download/"
-                           version "/transmission-remote-gtk-" version
-                           ".tar.gz"))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url
+          "https://github.com/transmission-remote-gtk/transmission-remote-gtk")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qz9wi70qc6vgnaymivc3xz6y86c9hglk6wjv3snnqxpxmp9saay"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list gnu-gettext pkg-config))
-    (inputs
-     (list appstream-glib curl gtk+ json-glib))
+        (base32 "17b4as8k84b6gfr7g27r9hgw8qbcx5wr5kbspl5yd1jbzqirkk7y"))))
+    (build-system meson-build-system)
+    (native-inputs (list `(,glib "bin") ;glib-compile-resources
+                         gettext-minimal
+                         gsettings-desktop-schemas
+                         perl           ;pod2man
+                         pkg-config))
+    (inputs (list gtk+ json-glib libappindicator libsoup))
+    (arguments (list #:tests? #f        ;Tests require network access.
+                     #:glib-or-gtk? #t))
     (synopsis "Gtk frontend to the Transmission daemon")
     (description "transmission-remote-gtk is a GTK client for remote management
 of the Transmission BitTorrent client, using its HTTP RPC protocol.")
