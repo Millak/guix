@@ -59,6 +59,52 @@
 definitions in Go programs.")
     (license license:bsd-3)))
 
+(define-public gomacro
+  (package
+    (name "gomacro")
+    (version "0.0.0-20240506194242-2ff796e3da10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cosmos72/gomacro")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17v3vlq5s5mxplzvs5d414shd2mqkfj3jwxzfgq6cnr9hgr4b9kc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cosmos72/gomacro"
+      ;; There are some unexplained test failures (see:
+      ;; https://github.com/cosmos72/gomacro/issues/164), and even after
+      ;; disabling the problematic tests, the test suite exits uncleanly with
+      ;; an exit status of 1.
+      #:tests? #f
+      #:test-flags
+      #~(list "-skip" (string-join '("TestFiles/slow.input"
+                                     "TestFromReflect6")
+                                   "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-problematic-tests
+            (lambda _
+              ;; Some test module(s) under go/types fail to build.
+              (for-each delete-file
+                        (find-files "src/github.com/cosmos72/gomacro/go/types"
+                                    "_test\\.go(\\.off)?$")))))))
+    (inputs (list go-golang-org-x-tools go-github-com-peterh-liner
+                  go-github-com-mattn-go-runewidth))
+    (home-page "https://github.com/cosmos72/gomacro")
+    (synopsis
+     "Interactive Go interpreter and debugger with generics and macros")
+    (description
+     "@command{gomacro} is an almost complete Go interpreter, implemented in
+pure Go.  It offers both an interactive REPL and a scripting mode, and does
+not require a Go toolchain at runtime (except in one very specific case:
+import of a 3rd party package at runtime).")
+    (license license:mpl2.0)))
+
 (define-public gore
   (package
     (name "gore")
