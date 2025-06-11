@@ -543,16 +543,7 @@ described at @url{https://xxhash.com/}.")
       (arguments
        (list
         #:go go-1.23
-        #:import-path "github.com/chmduquesne/rollinghash/"
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; XXX: Run all tests, workaround for go-build-system's lack of Go
-            ;; modules support.
-            (replace 'check
-              (lambda* (#:key tests? import-path #:allow-other-keys)
-                (when tests?
-                  (with-directory-excursion (string-append "src/" import-path)
-                    (invoke "go" "test" "-v" "./..."))))))))
+        #:import-path "github.com/chmduquesne/rollinghash/"))
       (propagated-inputs
        (list go-code-cloudfoundry-org-bytefmt))
       (home-page "https://github.com/chmduquesne/rollinghash")
