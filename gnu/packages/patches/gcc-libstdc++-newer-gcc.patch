@@ -1,0 +1,32 @@
+Building this file with GCC 14 leads to this error:
+
+  ../../libstdc++-v3/libsupc++/eh_call.cc:39:1: warning: new declaration ‘void __cxa_call_terminate(_Unwind_Exception*)’ ambiguates built-in declaration ‘void __cxa_call_terminate(void*)’ [-Wbuiltin-declaration-mismatch]
+     39 | __cxa_call_terminate(_Unwind_Exception* ue_header) throw ()
+	| ^~~~~~~~~~~~~~~~~~~~
+  ../../libstdc++-v3/libsupc++/eh_call.cc: In function ‘void __cxa_call_terminate(_Unwind_Exception*)’:
+  ../../libstdc++-v3/libsupc++/eh_call.cc:39:1: internal compiler error: in gimple_build_eh_must_not_throw, at gimple.cc:730
+  0x7fbc43241bd6 __libc_start_call_main
+	  ???:0
+  0x7fbc43241c94 __libc_start_main_alias_1
+	  ???:0
+  Please submit a full bug report, with preprocessed source.
+  Please include the complete backtrace with any bug report.
+  See <https://gcc.gnu.org/bugs/> for instructions.
+
+Work around it.
+
+diff --git a/libstdc++-v3/libsupc++/eh_call.cc b/libstdc++-v3/libsupc++/eh_call.cc
+index bf864f692..4f7ade71e 100644
+--- a/libstdc++-v3/libsupc++/eh_call.cc
++++ b/libstdc++-v3/libsupc++/eh_call.cc
+@@ -36,8 +36,9 @@ using namespace __cxxabiv1;
+ // terminate.
+ 
+ extern "C" void
+-__cxa_call_terminate(_Unwind_Exception* ue_header) throw ()
++__cxa_call_terminate(void *arg) throw ()
+ {
++  _Unwind_Exception *ue_header = (_Unwind_Exception *) arg;
+ 
+   if (ue_header)
+     {

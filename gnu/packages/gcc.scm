@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2023 Andreas Enge <andreas@enge.fr>
@@ -695,7 +695,8 @@ Go.  It also includes runtime support libraries for these languages.")
               (patches (search-patches "gcc-strmov-store-file-names.patch"
                                        "gcc-7-libsanitizer-mode-size.patch"
                                        "gcc-7-libsanitizer-fsconfig-command.patch"
-                                       "gcc-5.0-libvtv-runpath.patch"))))
+                                       "gcc-5.0-libvtv-runpath.patch"
+                                       "gcc-libstdc++-newer-gcc.patch"))))
     (description
      "GCC is the GNU Compiler Collection.  It provides compiler front-ends
 for several languages, including C, C++, Objective-C, Fortran, Ada, and Go.
@@ -722,7 +723,8 @@ It also includes runtime support libraries for these languages.")
               (patches (search-patches "gcc-8-strmov-store-file-names.patch"
                                        "gcc-7-libsanitizer-fsconfig-command.patch"
                                        "gcc-5.0-libvtv-runpath.patch"
-                                       "gcc-8-sort-libtool-find-output.patch"))
+                                       "gcc-8-sort-libtool-find-output.patch"
+                                       "gcc-libstdc++-newer-gcc.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))))
 
@@ -742,7 +744,8 @@ It also includes runtime support libraries for these languages.")
                                      "gcc-13.2.0-libstdc++-info-install-fix.patch"
                                      "gcc-9-strmov-store-file-names.patch"
                                      "gcc-9-asan-fix-limits-include.patch"
-                                     "gcc-5.0-libvtv-runpath.patch"))
+                                     "gcc-5.0-libvtv-runpath.patch"
+                                     "gcc-libstdc++-newer-gcc.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))))
 
@@ -759,7 +762,8 @@ It also includes runtime support libraries for these languages.")
               "1h87lcfaga0ydsf4pkhwlnjr8mky5ix8npbv6iy3jvzlzm1ra415"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"
-                                     "gcc-10-libsanitizer-no-crypt.patch"))
+                                     "gcc-10-libsanitizer-no-crypt.patch"
+                                     "gcc-libstdc++-newer-gcc.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
@@ -785,7 +789,8 @@ It also includes runtime support libraries for these languages.")
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"
                                      "gcc-10-libsanitizer-no-crypt.patch"
-                                     "gcc-11-libstdc++-hurd-libpthread.patch"))
+                                     "gcc-11-libstdc++-hurd-libpthread.patch"
+                                     "gcc-libstdc++-newer-gcc.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
@@ -811,7 +816,8 @@ It also includes runtime support libraries for these languages.")
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"
                                        "gcc-12-libsanitizer-no-crypt.patch"
-                                       "gcc-11-libstdc++-hurd-libpthread.patch"))
+                                       "gcc-11-libstdc++-hurd-libpthread.patch"
+                                       "gcc-libstdc++-newer-gcc.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
@@ -836,7 +842,8 @@ It also includes runtime support libraries for these languages.")
                 "10y0l1hx1haz4cj4d4g9f2ci5h7z9555i52f90zs2hwm3iifji88"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"
-                                       "gcc-13-libsanitizer-no-crypt.patch"))
+                                       "gcc-13-libsanitizer-no-crypt.patch"
+                                       "gcc-libstdc++-newer-gcc.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
     (arguments
