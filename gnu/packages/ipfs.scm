@@ -548,7 +548,7 @@ go-datastore}.")
 (define-public go-github-com-ipfs-go-fs-lock
   (package
     (name "go-github-com-ipfs-go-fs-lock")
-    (version "0.0.7")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -557,7 +557,7 @@ go-datastore}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zf52cq7j59pwdy4wd8h5gym8ph2big0nma05xwl61wrsyjwsngz"))))
+        (base32 "14m5038067px6vvqyvx6449f0f62nj8d0p5hkf9rj8ykfahs80ff"))))
     (build-system go-build-system)
     (arguments
      (list
