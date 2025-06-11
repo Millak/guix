@@ -11789,6 +11789,68 @@ go.opentelemetry.io/otel, go.opentelemetry.io/otel/metric and
 go.opentelemetry.io/otel/trace.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-otlp-otlptrace")
+    (version "1.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "exporters/otlp/otlptrace"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kvfbqc56p1h9rh9cvgn37ya6k10613r0f2rhjiwrrkgs2mszk30"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "exporters/otlp" "otlptrace")
+            (delete-all-but "." "exporters")
+            ;; Submodules with their own go.mod files and packed as separated
+            ;; packages:
+            ;;
+            ;; - go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc
+            ;; - go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp
+            (for-each delete-file-recursively
+                      (list "exporters/otlp/otlptrace/otlptracegrpc"
+                            "exporters/otlp/otlptrace/otlptracehttp"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-proto-otlp
+           go-google-golang-org-protobuf))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OTLP Trace Exporter")
+    (description
+     "Package otlptrace contains abstractions for OTLP span exporters.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
   (package
     (name "go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc")
