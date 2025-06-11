@@ -22812,7 +22812,7 @@ helpful utility functions, and makes testing fairly easy.")
 (define-public go-zgo-at-zstd
   (package
     (name "go-zgo-at-zstd")
-    (version "0.0.0-20241125224656-49fafbb06ca9")
+    (version "0.0.0-20250624130507-310bc16feb74")
     (source
      (origin
        (method git-fetch)
@@ -22821,12 +22821,13 @@ helpful utility functions, and makes testing fairly easy.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hwvv685vv003j4ry6b791fmz5fz0ff57pq64s9s57zqxaxn8jrv"))))
+        (base32 "1b8w6cl0z9wz32n8znj3d6il775gfbnw6k8x6cxki4acqhga8dd2"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "zgo.at/zstd"
-      #:test-flags #~(list "-skip" "TestExists/4|TestDiffMatch/3")))
+      #:test-flags #~(list "-skip" "TestExists/4")))
     (home-page "https://github.com/arp242/zstd")
     (synopsis "Extensions to Go's standard library")
     (description
