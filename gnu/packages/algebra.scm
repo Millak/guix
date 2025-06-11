@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
@@ -337,7 +337,7 @@ GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
 (define-public paritwine
   (package
     (name "paritwine")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -346,7 +346,7 @@ GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
                     ".tar.gz"))
               (sha256
                (base32
-                "0xj948ngp9k2l1krwfcpzb4rxrvm2gy3r8w020lniz5hwbslagl7"))))
+                "0hkn18qkg4ssg1rg6k95ff7yvywacvhwqq9gj06wix4xb7nw4yzz"))))
     (build-system gnu-build-system)
     (propagated-inputs (list pari-gp
                              gmp
