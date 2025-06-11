@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015-2018, 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
@@ -10090,7 +10090,12 @@ configuration files.  It supports data files in ASCII, MBCS and Unicode.")
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "install-dev" make-flags))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     ;; riscv64 needs >= gcc-13.3.0 for liburcu.
+     (append
+       (if (target-riscv64?)
+           (list gcc-14)
+           '())
+       (list gettext-minimal)))
     (inputs
      `(("libinih" ,libinih)
        ("liburcu" ,liburcu)
