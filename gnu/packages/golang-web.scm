@@ -1475,7 +1475,7 @@ differentiate between installs of Mozilla software in @code{installs.ini} and
 (define-public go-github-com-caddyserver-certmagic
   (package
     (name "go-github-com-caddyserver-certmagic")
-    (version "0.21.4")
+    (version "0.22.1")
     (source
      (origin
        (method git-fetch)
@@ -1484,7 +1484,7 @@ differentiate between installs of Mozilla software in @code{installs.ini} and
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "061whx9p00lpxlfnywizqx5z9b020ggqg5vx5r5v2qhdrprg1gkz"))))
+        (base32 "0xi3c4b0wcpk75lrpvx254zf49pi2yibxvl3x7hm9j1xhah6fsaa"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1505,10 +1505,11 @@ differentiate between installs of Mozilla software in @code{installs.ini} and
      (list go-github-com-caddyserver-zerossl
            go-github-com-klauspost-cpuid-v2
            go-github-com-libdns-libdns
-           go-github-com-mholt-acmez-v2
+           go-github-com-mholt-acmez-v3
            go-github-com-miekg-dns
            go-github-com-zeebo-blake3
            go-go-uber-org-zap
+           go-go-uber-org-zap-exp
            go-golang-org-x-crypto
            go-golang-org-x-net))
     (home-page "https://github.com/caddyserver/certmagic")
