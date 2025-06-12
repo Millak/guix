@@ -2869,7 +2869,7 @@ used to skip the test
      (list go-github-com-burntsushi-toml
            go-golang-org-x-exp
            go-golang-org-x-exp-typeparams
-           go-golang-org-x-mod
+           go-golang-org-x-sys
            go-golang-org-x-tools))
     (home-page "https://staticcheck.dev/")
     (synopsis "Staticcheck advanced Go linter library")
