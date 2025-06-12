@@ -18259,7 +18259,7 @@ storage system.")
 (define-public go-github-com-tdewolff-argp
   (package
     (name "go-github-com-tdewolff-argp")
-    (version "0.0.0-20240625173203-87b04d5d3e52")
+    (version "0.0.0-20250430135133-0f54527d2b1e")
     (source
      (origin
        (method git-fetch)
@@ -18268,7 +18268,7 @@ storage system.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d2xqir997qrxkwmbb6pn5hgl9ii0nz19f19lrgc4ixjhxxjwyy5"))))
+        (base32 "06pjm6z0b21rjwwpq0b18mr7v2h7igf9rrv7zqlaadmv5i58cbh4"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -18278,7 +18278,8 @@ storage system.")
     (propagated-inputs
      (list go-github-com-go-sql-driver-mysql
            go-github-com-jmoiron-sqlx
-           go-github-com-pelletier-go-toml))
+           go-github-com-pelletier-go-toml
+           go-gopkg-in-yaml-v3))
     (home-page "https://github.com/tdewolff/argp")
     (synopsis "GNU command line argument parser")
     (description "Command line argument parser following the GNU standard.")
