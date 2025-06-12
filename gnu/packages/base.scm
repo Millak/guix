@@ -341,57 +341,25 @@ differences.")
      (home-page "https://savannah.gnu.org/projects/patch/"))))
 
 (define-public patch
-  ;; The latest release is from 2018, and lacks multiple security related
-  ;; patches.  Since Fedora carries 23 patches, simply use the latest commit
-  ;; until a proper release is made.
-  (let ((revision "0")
-        (commit "f144b35425d9d7732ea5485034c1a6b7a106ab92")
-        (base patch/pinned))
-    (package
-      (inherit base)
-      (name "patch")
-      (version (git-version "2.7.6" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/patch.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1bk38169c0xh01b0q0zmnrjqz8k9byz3arp4q7q66sn6xwf94nvz"))
-                (patches (search-patches "patch-hurd-path-max.patch"))))
-      (arguments
-       (let ((arguments
-         (substitute-keyword-arguments (package-arguments base)
-           ((#:phases phases '%standard-phases)
-            #~(modify-phases #$phases
-                (add-after 'unpack 'copy-gnulib-sources
-                  (lambda _
-                    ;; XXX: We copy the source instead of using 'gnulib' as a
-                    ;; native input to avoid introducing a dependency cycle.
-                    (copy-recursively #+gnulib "gnulib")
-                    (setenv "GNULIB_SRCDIR"
-                            (string-append (getcwd) "/gnulib/src/gnulib"))))
-                (add-after 'copy-gnulib-sources 'update-bootstrap-script
-                  (lambda _
-                    (copy-file "gnulib/src/gnulib/build-aux/bootstrap"
-                               "bootstrap")))
-                (add-after 'unpack 'patch-configure.ac
-                  (lambda _
-                    (substitute* "configure.ac"
-                      ;; The gnulib-provided git-version-gen script has a plain
-                      ;; shebang of #!/bin/sh; avoid using it.
-                      (("build-aux/git-version-gen" all)
-                       (string-append "sh " all))))))))))
-         (if (target-hurd64?)
-             (substitute-keyword-arguments arguments
-               ((#:configure-flags flags '())
-                #~(list "--disable-threads"
-                        "gl_cv_func_working_mktime=yes")))
-             arguments)))
-      (native-inputs (list autoconf automake bison ed))
-      (properties '()))))
+  (package
+    (inherit patch/pinned)
+    (name "patch")
+    (version "2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/patch/patch-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1qssgwgy3mfahkpgg99a35gl38vamlqb15m3c2zzrd62xrlywz7q"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments patch/pinned)
+       ((#:configure-flags flags #~'())
+        (if (and (target-hurd?) (not (target-64bit?)))
+            #~(cons* "--disable-year2038"
+                     #$flags)
+            flags))))
+    (properties '())))
 
 (define-public diffutils
   (package
