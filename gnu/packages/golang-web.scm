@@ -5343,6 +5343,24 @@ about missing required fields, or when pattern validation does not match.")
 geared towards parsing MIME encoded emails.")
     (license license:expat)))
 
+(define-public go-github-com-jhillyerd-enmime-v2
+  (package
+    (inherit go-github-com-jhillyerd-enmime)
+    (name "go-github-com-jhillyerd-enmime-v2")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jhillyerd/enmime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ahw8bxwp8zbi7qgq2d49hd31iznc8njjjzk84xmxa30qyb3ilgc"))))
+    (arguments
+     (list
+      #:import-path "github.com/jhillyerd/enmime/v2"))))
+
 (define-public go-github-com-jlaffaye-ftp
   (package
     (name "go-github-com-jlaffaye-ftp")
