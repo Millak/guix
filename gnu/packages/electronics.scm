@@ -609,6 +609,50 @@ for sigrok.")
 and Verilog RTL using Python.")
     (license license:bsd-3)))
 
+(define-public python-cocotb-bus
+  ;; XXX: The latest tagged release (2.6.1) was placed on <2023-07-01>, switch
+  ;; to tag when the fresh release is available.
+  (let ((commit "8269cbdacdc26e676eace4e19fc753c96ac9a059")
+        (revision "0"))
+    (package
+      (name "python-cocotb-bus")
+      (version (git-version "0.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cocotb/cocotb-bus/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12762rdg630dq5qyvnv1g9kc36g0997nx8c5qndl34v6s9fc2152"))))
+      (build-system pyproject-build-system)
+      ;; TODO: Build documentation from <docs>.
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "make" "-k" "-C" "tests")
+                  (invoke "make" "-k" "-C" "examples")))))))
+      (native-inputs
+       (list iverilog
+             nvc
+             python-pytest
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-cocotb
+             python-packaging
+             python-scapy))
+      (home-page "https://github.com/cocotb/cocotb-bus/")
+      (synopsis "Cocotb reusable tools")
+      (description "@code{Cocotb-bus} provides a set of utilities, test benches
+and reusable bus interfaces to be used with @code{cocotb}.")
+      (license license:bsd-3))))
+
 (define-public python-edalize
   (package
     (name "python-edalize")
