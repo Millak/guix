@@ -20373,6 +20373,30 @@ configuration languages, but other uses may be possible too.")
 utilities for cty Golang module.")
     (license license:expat)))
 
+(define-public go-github-com-zclconf-go-cty-yaml
+  (package
+    (name "go-github-com-zclconf-go-cty-yaml")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zclconf/go-cty-yaml")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wwfwrf77rwxi39ln8mhdwg2d2znqz109yksac9x0x9jhczmxbvf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zclconf/go-cty-yaml"))
+    (propagated-inputs (list go-github-com-zclconf-go-cty))
+    (home-page "https://github.com/zclconf/go-cty-yaml")
+    (synopsis "YAML marshalling and unmarshalling for go-cty")
+    (description
+     "Package yaml can marshal and unmarshal cty values in YAML format.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-zitadel-logging
   (package
     (name "go-github-com-zitadel-logging")
