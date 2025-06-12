@@ -14,6 +14,7 @@
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Charles <charles@charje.net>
+;;; Copyright © 2025 Kurome <hunt31999@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages dictionaries)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -504,6 +506,42 @@ adds the Anthy Japanese language input method to IBus.  Because most graphical
 applications allow text input via IBus, installing this package will enable
 Japanese language input in most graphical applications.")
     (home-page "https://github.com/fujiwarat/ibus-anthy")
+    (license gpl2+)))
+
+(define-public ibus-skk
+  (package
+    (name "ibus-skk")
+    (version "1.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/ueno/ibus-skk/releases/download/ibus-skk-"
+             version "/ibus-skk-" version ".tar.xz"))
+       (sha256
+        (base32 "0pb5766njjsv0cfikm0j5sq0kv07sd5mlxj1c06k5y6p1ffvsqb6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-skk-jisyo
+            (lambda _
+              (substitute* "src/preferences.vala"
+                (("/usr/share/skk/SKK-JISYO.L")
+                 (string-append #$(this-package-input "skk-jisyo")
+                                "/share/skk/SKK-JISYO.L"))))))))
+    (inputs
+     (list gtk+ ibus libgee libskk skk-jisyo))
+    (native-inputs
+     (list intltool pkg-config vala))
+    (synopsis "Japanese input method SKK engine for IBus")
+    (description
+     "ibus-skk is an implementation of the SKK (Simple Kana-Kanji) input method
+on the IBus input method framework.  Note that SKK works quite differently from
+other Japanese input methods.")
+    (home-page "https://github.com/ueno/ibus-skk")
     (license gpl2+)))
 
 (define-public librime
