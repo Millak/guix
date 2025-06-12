@@ -2799,7 +2799,7 @@ for Go.")
 (define-public go-github-com-emersion-go-smtp
   (package
     (name "go-github-com-emersion-go-smtp")
-    (version "0.21.3")
+    (version "0.22.0")
     (source
      (origin
        (method git-fetch)
@@ -2808,10 +2808,11 @@ for Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0drvmvrkmhqhnv4m3my1hbkyyva2vi35b36j0pdi57xc9rflziq3"))))
+        (base32 "0p57x0x0pvk24pgl6qnyz7pvfvdncj8bs5p5k0g10phh5p8md684"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/emersion/go-smtp"))
     (propagated-inputs
      (list go-github-com-emersion-go-sasl))
