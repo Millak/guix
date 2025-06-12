@@ -879,8 +879,8 @@ sys_maybe_setup_selinux()
 
 sys_delete_init_profile()
 {
-    _msg_info "removing /etc/profile.d/guix.sh"
-    rm -f /etc/profile.d/guix.sh
+    _msg_info "removing /etc/profile.d/zzz-guix.sh"
+    rm -f /etc/profile.d/zzz-guix.sh
 }
 
 sys_delete_user_profiles()
