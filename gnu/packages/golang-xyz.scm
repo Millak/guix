@@ -1565,7 +1565,7 @@ dumps of Go values.")
 (define-public go-github-com-apparentlymart-go-textseg-autoversion
   (package
     (name "go-github-com-apparentlymart-go-textseg-autoversion")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1574,7 +1574,7 @@ dumps of Go values.")
              (commit (go-version->git-ref version #:subdir "autoversion"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j7vm09cd36wm4z986qz5am3rk242v52amcapwbdbkbgzx2kqfkm"))))
+        (base32 "06y73sqyihcyfigy9z0kbv4x1dd7yh4ipkxhsyshd04hwxfxx0bq"))))
     (build-system go-build-system)
     (arguments
      (list
