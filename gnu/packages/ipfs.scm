@@ -1975,29 +1975,6 @@ peers.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
-;; For kubo@0.32.0
-(define-public go-github-com-libp2p-go-libp2p-0.38
-  (hidden-package (package/inherit go-github-com-libp2p-go-libp2p
-    (name "go-github-com-libp2p-go-libp2p")
-    (version "0.38.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1c88qgkvyvdjsy5bds3ylcikpj00jxhyxnv7alb6x860xm9703xk"))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-libp2p-go-libp2p)
-       (replace "go-github-com-libp2p-go-yamux-v5"
-         go-github-com-libp2p-go-yamux-v4)
-       (replace "go-github-com-pion-ice-v4"
-         go-github-com-pion-ice-v2)
-       (replace "go-github-com-pion-webrtc-v4"
-         go-github-com-pion-webrtc-v3))))))
-
 (define-public go-github-com-libp2p-go-libp2p-gostream
   (package
     (name "go-github-com-libp2p-go-libp2p-gostream")
