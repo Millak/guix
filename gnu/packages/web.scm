@@ -5711,7 +5711,7 @@ you'd expect.")
 (define-public go-github-com-mikefarah-yq-v4
   (package
     (name "go-github-com-mikefarah-yq-v4")
-    (version "4.44.3")
+    (version "4.45.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5720,7 +5720,7 @@ you'd expect.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s7c8r6y5jv6wda2v3k47hawfdr9j3rwk717l6byvh5qsbbml0vd"))))
+                "1adrbxqsmpsvz2jfjkvarvnvblj5zdznr3sxpakv85vvs3njdjx9"))))
     (build-system go-build-system)
     (arguments
      (list
