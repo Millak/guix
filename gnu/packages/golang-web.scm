@@ -331,7 +331,7 @@ Gemini clients and servers.")
 (define-public go-git-sr-ht-rockorager-go-jmap
   (package
     (name "go-git-sr-ht-rockorager-go-jmap")
-    (version "0.5.0")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -340,19 +340,12 @@ Gemini clients and servers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r8bmdlmvpk08i7xrqwgv0aaz05564wgcyji73nszdh2s32m4kzl"))))
+        (base32 "00lj2ckg039xn7gnwyvl55wcwrzcnz4383qajv35dv9yp19vnljy"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "git.sr.ht/~rockorager/go-jmap"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:go go-1.23
+      #:import-path "git.sr.ht/~rockorager/go-jmap"))
     (native-inputs
      (list
       go-github-com-stretchr-testify))
