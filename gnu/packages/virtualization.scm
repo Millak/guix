@@ -316,20 +316,11 @@
                       (lambda _
                         (substitute* "pc-bios/meson.build"
                           ((".*(pxe|efi)-.*") ""))
-                        (substitute* "tests/qtest/meson.build"
-                          ((".*qom-test.*") "")
-                          ((".*qos-test.*") "")
-                          ((".*test-hmp.*") "")
-                          ((".*'pxe-test':.*") "")
-                          ((",? ?'boot-serial-test',?") "")
-                          ((",? ?'endianness-test',?") "")
-                          ((",? ?'prom-env-test',?") "")
-                          ((",? ?'pxe-test',?") "")
-                          ((",? ?'test-filter-mirror',?") "")
-                          ((",? ?'test-filter-redirector',?") "")
-                          ((",? ?'test-netfilter',?") "")
-                          ;; Fix the slow_qtests array after the substitutions
-                          (("  : .*") "")))))
+                        ;; Skip all the tests in tests/qtest instead
+                        ;; of cherry-picking the tests which need the
+                        ;; ipxe-qemu firmware.
+                        (substitute* "tests/meson.build"
+                          (("subdir.*qtest.*") "")))))
                  #~())
           (add-after 'unpack 'extend-test-time-outs
             (lambda _
