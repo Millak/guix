@@ -348,11 +348,7 @@ standard.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("dbus" ,dbus)
-       ("libconfuse" ,libconfuse)
-       ("sane-backends" ,sane-backends)
-       ("udev" ,eudev)
-       ("zlib" ,zlib)))
+     (list dbus libconfuse sane-backends eudev zlib))
     (home-page "https://scanbd.sourceforge.io")
     (synopsis "Configurable scanner button monitor")
     (description "Scanbd stands for scanner button daemon.  It regularly polls
