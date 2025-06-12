@@ -48,6 +48,7 @@
   #:use-module ((guix licenses)
                 #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix search-paths)
   #:use-module (guix utils))
 
 (define-public sane-airscan
@@ -115,6 +116,8 @@ both WSD and eSCL.")
              (file-name (git-file-name name version))
              (sha256
               (base32 "1fb6shx9bz0svcyasmyqs93rbbwq7kzg6l0h1zh3kjvcwhchyv72"))
+             (patches (search-patches
+                       "sane-look-for-plugins-in-SANE_BACKEND_LIB_PATH.patch"))
              (modules '((guix build utils)))
              (snippet
               ;; Generated HTML files and udev rules normally embed a
@@ -186,6 +189,11 @@ both WSD and eSCL.")
                           (string-append out
                                          "/lib/udev/rules.d/"
                                          "60-libsane.rules")))))
+         (add-after 'install 'remove-dll.conf
+           (lambda _
+             ;; dll.conf lists enabled backends, so it should be removed as
+             ;; there are none in this package
+             (delete-file (string-append %output "/etc/sane.d/dll.conf"))))
          (add-after 'install 'make-reproducible
            ;; XXX Work around an old bug <https://issues.guix.gnu.org/26247>.
            ;; Then work around "Throw to key `decoding-error' ..." by using sed.
@@ -197,6 +205,14 @@ both WSD and eSCL.")
                              (invoke "sed" "-i" "/^PO-Revision-Date:/d" file))
                            (list "en@boldquot/LC_MESSAGES/sane-backends.mo"
                                  "en@quot/LC_MESSAGES/sane-backends.mo")))))))))
+    (native-search-paths
+     (list
+      (search-path-specification
+        (variable "SANE_CONFIG_DIR")
+        (files '("etc/sane.d")))
+      (search-path-specification
+        (variable "SANE_BACKEND_LIB_PATH")
+        (files '("lib/sane")))))
     (home-page "http://www.sane-project.org")
     (synopsis
      "Raster image scanner library and drivers, without scanner support")
