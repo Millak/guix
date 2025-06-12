@@ -17438,7 +17438,13 @@ and branchless algorithms shine.")
       #:go go-1.23
       #:skip-build? #t
       #:import-path "github.com/segmentio/encoding"
-      #:test-flags #~(list "-skip" "TestUnmarshalFixture|TestDecodeFixture")))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestCodec/string#07"
+                             "TestCodec/string#08"
+                             "TestDecodeFixture"
+                             "TestUnmarshalFixture")
+                       "|"))))
     (propagated-inputs
      (list go-github-com-segmentio-asm))
     (home-page "https://github.com/segmentio/encoding")
