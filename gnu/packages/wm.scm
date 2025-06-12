@@ -153,6 +153,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
@@ -166,6 +167,7 @@
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages music)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pantheon)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -180,6 +182,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages suckless)
@@ -891,6 +894,67 @@ subscribe to events.")
     (description "Qtile is simple, small, and extensible.  It's easy to write
 your own layouts, widgets, and built-in commands.")
     (license license:expat)))
+
+(define-public quickshell
+  (package
+    (name "quickshell")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.outfoxxed.me/quickshell/quickshell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s3d2mw133d11x1kwjf1krw0xfiidgc77vsz92n65zjdjb8kkl8d"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests are development-only for now
+      #:configure-flags
+      #~(list "-GNinja"
+              "-DCRASH_REPORTER=OFF" ; Breakpad is not packaged in Guix
+              "-DDISTRIBUTOR=\"GNU Guix\""
+              "-DDISTRIBUTOR_DEBUGINFO_AVAILABLE=NO")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build (lambda _ (invoke "cmake" "--build" ".")))
+          (replace 'install (lambda _ (invoke "cmake" "--install" ".")))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/quickshell")
+                `("QML_IMPORT_PATH" ":" = (,(getenv "QML_IMPORT_PATH")))))))))
+    (native-inputs
+     (list gcc-14
+           ninja
+           pkg-config
+           qtshadertools
+           spirv-tools))
+    (inputs
+     (list bash-minimal
+           cli11
+           jemalloc
+           libdrm
+           libxcb
+           libxkbcommon
+           linux-pam
+           mesa
+           pipewire
+           qtbase
+           qtdeclarative
+           qtwayland
+           wayland
+           wayland-protocols))
+    (propagated-inputs
+     (list qtsvg))
+    (home-page "https://quickshell.outfoxxed.me")
+    (synopsis "QtQuick-based desktop shell toolkit")
+    (description
+     "Quickshell is a flexible QtQuick-based toolkit for creating and
+customizing toolbars, notification centers, and other desktop environment
+tools in a live programming environment.")
+    (license license:lgpl3)))
 
 (define-public quickswitch-i3
   (let ((commit "ed692b1e8f43b95bd907ced26238ce8ccb2ed28f")
