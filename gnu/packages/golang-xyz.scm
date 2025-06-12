@@ -12280,7 +12280,7 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
 (define-public go-github-com-leonelquinteros-gotext
   (package
     (name "go-github-com-leonelquinteros-gotext")
-    (version "1.7.0")
+    (version "1.7.2")
     (source
      (origin
        (method git-fetch)
@@ -12289,14 +12289,14 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccls9xzbbrbrplbikz18lcky5p5rmifif6w69l5rl34dv11948m"))))
+        (base32 "098iizlr05xj16b2mxwpa8bmcfm3fnlhm8a13kdzmw9dz11jjsm9"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/leonelquinteros/gotext"))
     (propagated-inputs
-     (list go-golang-org-x-text
-           go-golang-org-x-tools))
+     (list go-golang-org-x-tools))
     (home-page "https://github.com/leonelquinteros/gotext")
     (synopsis "GNU gettext utilities in Go")
     (description
