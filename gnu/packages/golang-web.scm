@@ -9291,7 +9291,7 @@ of the specification.")
 (define-public go-github-com-rcrowley-go-metrics
   (package
     (name "go-github-com-rcrowley-go-metrics")
-    (version "0.0.0-20201227073835-cf1acfcdf475")
+    (version "0.0.0-20250401214520-65e299d6c5c9")
     (source
      (origin
        (method git-fetch)
@@ -9300,14 +9300,23 @@ of the specification.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s7zab04slz07c7l4h2cqz62qnqah69r6p157vvbd7725a7wzkr0"))))
+        (base32 "1d47289sm3gzjx0ah5wi0gcia40kixfyxyilrdrdzlak8mra94c4"))))
     (build-system go-build-system)
     (arguments
-     ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
-     ;; and s390x. See: https://github.com/rcrowley/go-metrics/issues/249
-     `(#:tests? ,(not (string-prefix? "aarch64" (or (%current-target-system)
-                                                    (%current-system))))
-       #:import-path "github.com/rcrowley/go-metrics"))
+     (list
+      #:go go-1.23
+      #:import-path "github.com/rcrowley/go-metrics"
+      #:test-flags
+      ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
+      ;; and s390x. See: https://github.com/rcrowley/go-metrics/issues/249
+      #~(list #$@(if (or (target-aarch64?) (target-ppc64le?))
+                     '("-skip" (string-join
+                                (list "TestEWMA1"
+                                      "TestEWMA5"
+                                      "TestUniformSampleSnapshot"
+                                      "TestUniformSampleStatistics")
+                                "|"))
+                     '()))))
     (propagated-inputs
      (list go-github-com-stathat-go))
     (home-page "https://github.com/rcrowley/go-metrics")
