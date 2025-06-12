@@ -173,6 +173,63 @@
 interacting with Acme windows of the Plan 9 text editor.")
     (license license:expat)))
 
+(define-public go-ariga-io-atlas
+  (package
+    (name "go-ariga-io-atlas")
+    (version "0.35.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ariga/atlas")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09lh0j5w85xm0rli4cqifn5qkwdb1vnmwfdf5kymsf2w4qz3f82i"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - ariga.io/atlas/cmd/atlas
+            ;; - ariga.io/atlas/internal/integration
+            (delete-file-recursively "cmd")
+            (delete-file-recursively "internal/integration")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "ariga.io/atlas"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestValidate"
+                             "TestDriver_LockAcquired")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Received unexpected error: open
+          ;; /homeless-shelter/.cache/lock.lock: no such file or directory
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bmatcuk-doublestar
+           go-github-com-data-dog-go-sqlmock
+           go-github-com-go-openapi-inflect
+           go-github-com-hashicorp-hcl-v2
+           go-github-com-zclconf-go-cty
+           go-github-com-zclconf-go-cty-yaml
+           go-golang-org-x-mod
+           go-gopkg-in-yaml-v3))
+    (home-page "https://ariga.io/atlas")
+    (synopsis "Database schema as code")
+    (description
+     "Atlas is a language-agnostic tool for managing and migrating database
+schemas using @code{DevOps} principles.")
+    (license license:asl2.0)))
+
 (define-public go-atomicgo-dev-cursor
   (package
     (name "go-atomicgo-dev-cursor")
