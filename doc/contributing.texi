@@ -2284,7 +2284,7 @@ patch submissions and topic branches.
 @cindex patch submissions, tracking
 @cindex issue tracking
 @cindex Debbugs, issue tracking system
-But reports (@dfn{issues}) and patch submissions (@dfn{pull requests})
+Bug reports (@dfn{issues}) and patch submissions (@dfn{pull requests})
 are currently tracked at the @uref{https://codeberg.org/guix/guix,
 project's home at Codeberg}.
 
