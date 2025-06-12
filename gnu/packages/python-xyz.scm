@@ -100,7 +100,7 @@
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2021, 2023-2024 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023-2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
@@ -28838,6 +28838,36 @@ path components.")
 Its major feature is tracking the number of lines authored by each person for every
 commit, but it also includes some other useful statistics.")
     (license license:asl2.0)))
+
+(define-public python-gitignore-parser
+  (package
+    (name "python-gitignore-parser")
+    (version "0.1.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mherrmann/gitignore_parser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00s8vvslnlbqnmkgnmc374mjzbsw7b167gh7wf5ygigd79cpnnxk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests are missing in PyPI.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "unittest")))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/mherrmann/gitignore_parser")
+    (synopsis "Spec-compliant gitignore parser for Python")
+    (description
+     "This package provides a spec-compliant gitignore parser for Python.")
+    (license license:expat)))
 
 (define-public python-fusepy
   (package
