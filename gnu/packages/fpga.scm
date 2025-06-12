@@ -829,11 +829,27 @@ hardware designs in Verilog.")
                   libusb
                   zlib))
     (arguments
-     `(#:tests? #f)) ; No tests exist
+     (list #:tests? #f                  ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-rules
+                 (lambda _
+                   (install-file
+                    "../source/99-openfpgaloader.rules"
+                    (string-append #$output "/lib/udev/rules.d/")))))))
     (synopsis "Utility for programming FPGA")
     (description "This package provides a program to transfer a bitstream
-to an FPGA.")
-    (home-page "https://trabucayre.github.io/openFPGALoader")
+to an FPGA.  To use @code{openfpgaloader} without root privileges it is
+necessary to install the necessary udev rules.  This can be done by extending
+@code{udev-service-type} in the @code{operating-system} configuration file with
+this package, as in:
+@lisp
+(udev-rules-service 'openfpgaloader openfpgaloader #:groups '(\"plugdev\")
+@end lisp
+Additionally, the @samp{plugdev} group should be registered in the
+@code{supplementary-groups} field of your @code{user-account} declaration. Refer
+to @samp{info \"(guix) Base Services\"} for examples.")
+    (home-page "https://trabucayre.github.io/openFPGALoader/")
     (license license:asl2.0)))
 
 (define-public python-hdlmake
