@@ -1771,35 +1771,38 @@ trezord as a regular user instead of needing to it run as root.")
         (license license:lgpl3+))))
 
 (define-public trezord
-  (package
-    (name "trezord")
-    (version "2.0.33")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/trezor/trezord-go")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "0nnfh9qkb8ljajkxwrn3nn85zrsw10hp7c5i4zh60qgfyl0djppw"))
-       (file-name (git-file-name name version))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:go go-1.18
-      #:install-source? #f
-      #:import-path "github.com/trezor/trezord-go"))
-    (native-inputs
-     (list go-github-com-gorilla-csrf
-           go-github-com-gorilla-handlers
-           go-github-com-gorilla-mux
-           go-gopkg-in-natefinch-lumberjack-v2))
-    (home-page "https://trezor.io")
-    (synopsis "Trezor Communication Daemon aka Trezor Bridge (written in Go)")
-    (description
-     "This allows a Trezor hardware wallet to communicate to the Trezor
+  ;; XXX: The latest commit provides support for Go 1.24+, move back to the
+  ;; tag when it is released.
+  (let ((commit "a58468e4f70619d4ca7dd6404bdf9bdcff8011f0")
+        (revision "0"))
+    (package
+      (name "trezord")
+      (version (git-version "2.0.33" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/trezor/trezord-go")
+               (commit commit)))
+         (sha256
+          (base32 "15bqxg98wp4w8yc697rf228298dcxfmlvf7pzq370g852w8hm6q8"))
+         (file-name (git-file-name name version))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:import-path "github.com/trezor/trezord-go"))
+      (native-inputs
+       (list go-github-com-gorilla-csrf
+             go-github-com-gorilla-handlers
+             go-github-com-gorilla-mux
+             go-gopkg-in-natefinch-lumberjack-v2))
+      (home-page "https://trezor.io")
+      (synopsis "Trezor Communication Daemon aka Trezor Bridge (written in Go)")
+      (description
+       "This allows a Trezor hardware wallet to communicate to the Trezor
 wallet.")
-    (license license:lgpl3+)))
+      (license license:lgpl3+))))
 
 (define-public libofx
   (package
