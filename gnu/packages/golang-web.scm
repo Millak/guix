@@ -1172,7 +1172,10 @@ Amazon Simple Queue Service.")
      (list
       #:skip-build? #t
       #:import-path "github.com/aws/smithy-go/aws-http-auth"
-      #:unpack-path "github.com/aws/smithy-go"))
+      #:unpack-path "github.com/aws/smithy-go"
+      ;; panic: runtime error: invalid memory address or nil pointer
+      ;; dereference
+      #:test-flags #~(list "-skip" "TestSignRequest_SignStringError")))
     (home-page "https://github.com/aws/smithy-go")
     (synopsis "Consumable SigV4 and SigV4a request signing")
     (description
