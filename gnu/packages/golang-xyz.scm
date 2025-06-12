@@ -9251,7 +9251,7 @@ expressing configuration which is easy for both humans and machines to read.")
 (define-public go-github-com-hashicorp-hcl-v2
   (package
     (name "go-github-com-hashicorp-hcl-v2")
-    (version "2.11.1")
+    (version "2.23.0")
     (source
      (origin
        (method git-fetch)
@@ -9260,10 +9260,11 @@ expressing configuration which is easy for both humans and machines to read.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f9flmmkj7fr1337fc56cqy73faq87ix375hnz3id4wc023przv1"))))
+        (base32 "0y457prckv5pdglxxc61fcslmswm35c6swwgcrdvfmjgw286y56i"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/hashicorp/hcl/v2"
       #:test-flags
       #~(list "-skip"
@@ -9273,20 +9274,16 @@ expressing configuration which is easy for both humans and machines to read.")
                      "TestFunctionCallExprValue/valid_call_with_dynamic_arg")
                "|"))))
     (native-inputs
-     (list go-github-com-apparentlymart-go-dump
-           go-github-com-davecgh-go-spew
+     (list go-github-com-davecgh-go-spew
            go-github-com-go-test-deep
-           go-github-com-kr-pretty
-           go-github-com-kylelemons-godebug
-           go-github-com-sergi-go-diff
            go-github-com-spf13-pflag
-           go-github-com-zclconf-go-cty-debug
-           go-golang-org-x-crypto))
-    (inputs
+           go-github-com-zclconf-go-cty-debug))
+    (propagated-inputs
      (list go-github-com-agext-levenshtein
            go-github-com-apparentlymart-go-textseg-v13
            go-github-com-mitchellh-go-wordwrap
-           go-github-com-zclconf-go-cty))
+           go-github-com-zclconf-go-cty
+           go-golang-org-x-tools))
     (synopsis "Go implementation of HashiCorp Configuration Language V2")
     (description
      "This package contains the main implementation of the @acronym{HCL,
