@@ -303,7 +303,7 @@ Gemini clients and servers.")
 (define-public go-git-sr-ht-emersion-gqlclient
   (package
     (name "go-git-sr-ht-emersion-gqlclient")
-    (version "0.0.0-20230820050442-8873fe0204b9")
+    (version "0.0.0-20250318184027-d4a003529bba")
     (source
      (origin
        (method git-fetch)
@@ -312,10 +312,11 @@ Gemini clients and servers.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x64kcryawdr0daq1w6fada60zqrddw75yi397835b9ij7wb5gmh"))))
+        (base32 "1yqgyjdi9cxkqdp20xwqycd8rccpqqanpq29k1qz8jazabkdlr06"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:embed-files #~(list "prelude.graphql")
       #:import-path "git.sr.ht/~emersion/gqlclient"))
     ;; For the CLI.
