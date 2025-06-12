@@ -1712,7 +1712,12 @@ accountsservice web site} for more information."
       config
       (begin
         (when warn?
-          (warning (G_ "'sane' service now expects a 'sane-configuration' record~%")))
+          (warning (G_ "'sane' service now expects a 'sane-configuration' record~%"))
+
+          (when (eq? config sane-backends)
+            (warning (G_ "'sane-backends' does not include 'hplip' backend anymore. Add it
+explicitly when needed.~%"))))
+
         (sane-configuration (backends (list config))))))
 
 (define sane-service-type

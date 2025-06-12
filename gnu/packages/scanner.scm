@@ -224,15 +224,11 @@ hand-held scanner, video- and still-cameras, frame-grabbers, etc.).  The
 package contains the library, but no drivers.")
     (license license:gpl2+))) ; plus linking exception
 
-;; This variant links in the hpaio backend provided by hplip, which adds
-;; support for HP scanners whose backends are not maintained by the SANE
-;; project, and builds all of those backends.
 (define-public sane-backends
   (package/inherit sane
     (name "sane-backends")
     (inputs
-     `(("hplip" ,(@ (gnu packages cups) hplip))
-       ("libjpeg" ,libjpeg-turbo)       ; for pixma/epsonds/other back ends
+     `(("libjpeg" ,libjpeg-turbo)       ; for pixma/epsonds/other back ends
        ("libpng" ,libpng)               ; support ‘scanimage --format=png’
        ("libxml2" ,libxml2)             ; for pixma back end
        ,@(package-inputs sane)))
@@ -247,22 +243,6 @@ package contains the library, but no drivers.")
                ;;   <https://bugs.gnu.org/39449>
                (substitute* "testsuite/backend/genesys/Makefile.in"
                  ((" genesys_unit_tests\\$\\(EXEEXT\\)") ""))
-               #t))
-           (add-after 'unpack 'add-backends
-             (lambda _
-               (substitute* "backend/dll.conf.in"
-                 (("hp5590" all) (format #f "~a~%~a" all "hpaio")))
-               #t))
-           (add-after 'install 'install-hpaio
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (define hplip (string-append (assoc-ref inputs "hplip")
-                                            "/lib/sane"))
-               (define out (string-append (assoc-ref outputs "out")
-                                          "/lib/sane"))
-               (for-each
-                (lambda (file)
-                  (symlink file (string-append out "/" (basename file))))
-                (find-files hplip))
                #t))))))
     (synopsis
      "Raster image scanner library and drivers, with scanner support")
