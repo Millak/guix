@@ -12740,6 +12740,24 @@ generation.")
 raw strings.")
     (license license:expat)))
 
+(define-public go-github-com-makenowjust-heredoc-v2
+  (package
+    (inherit go-github-com-makenowjust-heredoc)
+    (name "go-github-com-makenowjust-heredoc-v2")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/makenowjust/heredoc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k4ggh0dkz3919m7gy2avhj0drjxrcvm01a5dgsc3z971yk6h5xw"))))
+    (arguments
+     (list
+      #:import-path "github.com/MakeNowJust/heredoc/v2"))))
+
 (define-public go-github-com-marcinbor85-gohex
   ;; No release, see <https://github.com/marcinbor85/gohex/issues/5>.
   (let ((commit "baab2527a9a2a4abb3dc06baabedfa5e0268b8d8")
