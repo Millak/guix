@@ -23084,9 +23084,13 @@ correctly.")))
 (define-public go-jfmt
   (package/inherit go-zgo-at-jfmt
     (name "go-jfmt")
-    (arguments (list #:install-source? #f
-                     #:import-path "zgo.at/jfmt/cmd/jfmt"
-                     #:unpack-path "zgo.at/jfmt"))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-zgo-at-jfmt)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "zgo.at/jfmt/cmd/jfmt")
+        ((#:unpack-path _ "") "zgo.at/jfmt")))
     (description
      (string-append (package-description go-zgo-at-jfmt)
                     "  This package provides a command line interface (CLI) tool."))))
