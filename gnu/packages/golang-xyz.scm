@@ -1193,7 +1193,7 @@ Golang structs.")
 (define-public go-github-com-alecthomas-participle-v2
   (package
     (name "go-github-com-alecthomas-participle-v2")
-    (version "2.1.1")
+    (version "2.1.4")
     (source
      (origin
        (method git-fetch)
@@ -1202,7 +1202,7 @@ Golang structs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k2vsd58rgwyylyn5zja6z6k1sg4m39g2fhd88lvja60ca51bh98"))))
+        (base32 "0hfgrdzj0p2knqmnspkpjb1y4bbhbxbykckpvsp3mc1n9hr6gz01"))))
     (build-system go-build-system)
     (arguments
      (list
