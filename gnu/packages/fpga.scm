@@ -55,6 +55,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages electronics)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
@@ -437,18 +438,39 @@ files.")
      (list
       #:cmake cmake                     ;CMake 3.25 or higher is required.
       #:configure-flags
-      #~(list "-DARCH=generic;ice40"    ;TODO: enable more architectures?
+      ;; TODO: enable more architectures?
+      #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
               "-DBUILD_GUI=ON"
               "-DUSE_OPENMP=ON"
               "-DBUILD_TESTS=ON"
+              "-DHIMBAECHEL_UARCH=ng-ultra"
+              "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
+              "-DHIMBAECHEL_PRJBEYOND_DB=/tmp/prjbeyond-db"
               (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
               (string-append "-DICESTORM_INSTALL_PREFIX="
                              #$(this-package-input "icestorm"))
+              (string-append "-DTRELLIS_INSTALL_PREFIX="
+                             #$(this-package-input "prjtrellis"))
               "-DUSE_IPO=OFF")
       #:phases
       #~(modify-phases %standard-phases
+          ;; Required by himbaechel architecture, ng-ultra support.
+          (add-after 'unpack 'get-prjbeyond-db
+            (lambda _
+              (copy-recursively
+               #$(origin
+                   (method git-fetch)
+                   (uri (git-reference
+                         (url "https://github.com/yosyshq-GmbH/prjbeyond-db/")
+                         ;; We take latest commit, as indicated in nextpnr’s
+                         ;; README.md file
+                         (commit "06d3b424dd0e52d678087c891c022544238fb9e3")))
+                   (sha256
+                    (base32
+                     "17dd3cgms2fy6xvz7magdmvv92km4cqh2kz9dyjrvz5y8caqav4y")))
+               "/tmp/prjbeyond-db")))
           (add-after 'unpack 'unbundle-sanitizers-cmake
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (substitute* "CMakeLists.txt"
                 ;; Use the system sanitizers-cmake module.  This is made
                 ;; necessary 'sanitizers-cmake' installing a FindPackage
@@ -465,6 +487,7 @@ files.")
            corrosion
            eigen
            icestorm
+           prjtrellis
            pybind11
            python
            qtbase-5
