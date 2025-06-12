@@ -7677,6 +7677,31 @@ standard log package.")
 of building man pages.")
     (license license:expat)))
 
+(define-public go-github-com-go-openapi-inflect
+  (package
+    (name "go-github-com-go-openapi-inflect")
+    (version "0.21.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-openapi/inflect")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xmayn2qbl8dy7hk60xwwgkacpzv7ssm2s6xqn84kg4bnr6bbvhv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/inflect"))
+    (home-page "https://github.com/go-openapi/inflect")
+    (synopsis "Pluralize words library for Golang")
+    (description
+     "This package provides a basic set of functions applying grammar rules to
+inflect English words, modify case style (Capitalize, camelCase, snake_case,
+etc.).")
+    (license license:expat)))
+
 (define-public go-github-com-go-playground-locales
   (package
     (name "go-github-com-go-playground-locales")
