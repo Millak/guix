@@ -4205,28 +4205,28 @@ will reconstruct the object along its delta-base chain and return it.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "3.6.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/git-lfs/git-lfs")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "02819i3sd9qjw89lcpv6rmhfqaxkz1pddqw8havw3ysmcmhmb7yd"))))
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/git-lfs/git-lfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wxx7i29n4gk8s78xq4hacc1ylwi6bq4b6y2bjx8fs9p7z4awnqh"))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list "children" "nodes" "text")
-      #:import-path "github.com/git-lfs/git-lfs"
+      #:import-path "github.com/git-lfs/git-lfs/v3"
       #:install-source? #f
       #:test-flags #~(list "-skip" "TestHistoryRewriterUpdatesRefs")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-/bin/sh
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "src/github.com/git-lfs/git-lfs/lfs/hook.go"
+              (substitute* "src/github.com/git-lfs/git-lfs/v3/lfs/hook.go"
                 (("/bin/sh")
                  (search-input-file inputs "bin/sh")))))
           ;; Only build the man pages if ruby-asciidoctor is available.
@@ -4235,15 +4235,15 @@ will reconstruct the object along its delta-base chain and return it.")
                       ;; Without this, the binary generated in 'build
                       ;; phase won't have any embedded usage-text.
                       (lambda _
-                        (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                        (with-directory-excursion "src/github.com/git-lfs/git-lfs/v3"
                           (invoke "make" "mangen"))))
                     (add-after 'build 'build-man-pages
                       (lambda _
-                        (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                        (with-directory-excursion "src/github.com/git-lfs/git-lfs/v3"
                           (invoke "make" "man"))))
                     (add-after 'install 'install-man-pages
                       (lambda* (#:key outputs #:allow-other-keys)
-                        (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
+                        (with-directory-excursion "src/github.com/git-lfs/git-lfs/v3/man"
                           (for-each
                            (lambda (manpage)
                              (install-file manpage
@@ -4258,6 +4258,7 @@ will reconstruct the object along its delta-base chain and return it.")
                    go-github-com-git-lfs-go-netrc
                    go-github-com-git-lfs-pktline
                    go-github-com-git-lfs-wildmatch-v2
+                   go-github-com-golang-groupcache
                    go-github-com-jmhodges-clock
                    go-github-com-leonelquinteros-gotext
                    go-github-com-mattn-go-isatty
