@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2177,3 +2178,37 @@ systems.  This encompasses:
 @end itemize")
     (license license:gpl2+)))
 
+(define-public clac
+  (package
+    (name "clac")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/soveran/clac")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        "0crpm5rxxipiz6kqs5ip900d77vvnslyjn5f6nj0lrc86bkbgi8d")))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'set-env
+            (lambda _
+              (setenv "CC" "gcc")
+              (setenv "PREFIX" #$output))))))
+    (home-page "https://github.com/soveran/clac")
+    (synopsis "Command-line, stack-based calculator with postfix notation")
+    (description
+     "Clac is a command line, stack-based calculator with postfix notation
+that displays the stack contents at all times.  As you type, the stack
+changes are reflected immediately.")
+    ;; Bundles two dependencies, both also BSD-2. SDS is not yet packaged.
+    ;; linenoise is packaged, but the package doesn't provide shared
+    ;; object files so we have to build it anyway.
+    (license license:bsd-2)))
