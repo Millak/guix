@@ -690,13 +690,8 @@ e.g. emacs-geiser-guile for Guile.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-appropriate-curl
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "gptel-curl.el"
-                (("\"curl\"")
-                 (string-append "\""
-                                (search-input-file inputs "/bin/curl")
-                                "\"")))
               (emacs-substitute-variables "gptel.el"
-                ("gptel-use-curl" 't)))))))
+                ("gptel-use-curl" (search-input-file inputs "/bin/curl"))))))))
     (inputs (list curl))
     (propagated-inputs (list emacs-compat emacs-transient))
     (home-page "https://github.com/karthink/gptel")
