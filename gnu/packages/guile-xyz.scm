@@ -5369,6 +5369,38 @@ run SRFI 64 test suites.  It gives Automake insight into the individual
 tests being run, resulting clearer and more specific output.")
     (license license:gpl3+)))
 
+(define-public guile-uuid
+  (package
+    (name "guile-uuid")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/elb/guile-uuid.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g508aajkyi513wbhm1rhs03ilnb701lwlrvppkmc0vynydlk9ws"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'remove-unnecessary-file
+                          (lambda _
+                            (delete-file "run-tests.scm")
+                            (delete-file-recursively "tests"))))))
+    (build-system guile-build-system)
+    (native-inputs (list guile-3.0))
+    (propagated-inputs (list guile-gcrypt))
+    (home-page "https://codeberg.org/elb/guile-uuid")
+    (synopsis "UUID generation and manipulation library for Guile Scheme")
+    (description
+     "This package implements RFC 9562 UUIDs, and can generate versions
+1 and 3-8 from that specification.  It also provides parsing for UUIDs in
+standard hex-and-dash format of any variant and version.
+Conversion between binary and hex-and-dash string UUIDs is also included.")
+    (license license:gpl3+)))
+
+
 (define-public guile-semver
   (package
     (name "guile-semver")
