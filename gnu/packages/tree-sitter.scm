@@ -591,6 +591,17 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/acristoffers/tree-sitter-matlab"
    #:license license:expat))
 
+(define-public tree-sitter-mermaid
+  (let ((version "0.0.2") ; In package.json, but untagged
+        (commit "90ae195b31933ceb9d079abfa8a3ad0a36fee4cc")
+        (revision "0"))
+  (tree-sitter-grammar
+   "mermaid" "Mermaid"
+   "1wfdsz3ikdbpym14aljgy80jhr06cgwhhg72rr8d3rsbm8z5ppaf"
+   (git-version version revision commit)
+   #:commit commit
+   #:repository-url "https://github.com/monaqa/tree-sitter-mermaid")))
+
 (define-public tree-sitter-meson
   (tree-sitter-grammar
    "meson" "Meson"
