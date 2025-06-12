@@ -3608,7 +3608,7 @@ Supports JSON and YAML documents.")
 (define-public go-github-com-go-openapi-runtime
   (package
     (name "go-github-com-go-openapi-runtime")
-    (version "0.28.0")
+    (version "0.26.2")
     (source
      (origin
        (method git-fetch)
@@ -3617,10 +3617,11 @@ Supports JSON and YAML documents.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h8yqc6bb8mzb8jvr3m08fyws1gbrhbry6k5vj2cx2xdi50kqiy5"))))
+        (base32 "1vi0pdip4zdw8yn8qd7wn8i1di4f05qfy9cyjfskgqpqw38v4jkz"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
       #:import-path "github.com/go-openapi/runtime"))
     (native-inputs
