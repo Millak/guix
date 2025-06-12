@@ -9997,7 +9997,8 @@ include_dirs = ~:*~a/include~%"
                               ;; https://github.com/numpy/numpy/issues/20635
                               #$@(if (target-riscv64?)
                                    `(" and not test_float"
-                                     " and not test_fpclass")
+                                     " and not test_fpclass"
+                                     " and not test_fp_noncontiguous")
                                    '())))))))))
     (native-inputs
      (list gfortran
