@@ -81,7 +81,7 @@
            libjpeg-turbo
            libpng
            libxml2
-           sane-backends))
+           sane))
     (home-page "https://github.com/alexpevzner/sane-airscan")
     (synopsis "SANE backend for eSCL (AirScan) and WSD document scanners")
     (description ; no @acronym{eSCL} because the meaning isn't officially known
@@ -348,7 +348,7 @@ standard.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list dbus libconfuse sane-backends eudev zlib))
+     (list dbus libconfuse sane eudev zlib))
     (home-page "https://scanbd.sourceforge.io")
     (synopsis "Configurable scanner button monitor")
     (description "Scanbd stands for scanner button daemon.  It regularly polls
@@ -429,7 +429,7 @@ provided the driver also exposes the buttons.")
            lcms
            libjpeg-turbo
            libtiff
-           sane-backends
+           sane
            xdg-utils))                  ;to open the manual from the Help menu
     (home-page "https://gitlab.com/sane-project/frontend/xsane")
     (synopsis "Featureful graphical interface for document and image scanners")

@@ -213,7 +213,7 @@ default.  To add support for more languages, the
            leptonica
            podofo
            poppler-qt5
-           sane-backends
+           sane
            qtbase-5
            qtspell
            quazip-5

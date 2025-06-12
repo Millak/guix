@@ -5791,7 +5791,7 @@ output devices.")
                docbook-xsl
                gtk-doc/stable
                libxslt
-               sane-backends
+               sane
                vala)))))                ;for VAPI, needed by simple-scan
 
 (define-public geoclue
@@ -7230,7 +7230,7 @@ USB transfers with your high-level application or system daemon.")
            gdk-pixbuf
            gusb
            libadwaita
-           sane-backends))
+           sane))
     (home-page "https://gitlab.gnome.org/GNOME/simple-scan")
     (synopsis "Document and image scanner")
     (description
@@ -13993,7 +13993,7 @@ world.")
        ("python-pyenchant" ,python-pyenchant)
        ("python-reportlab" ,python-reportlab)
        ("python-sane" ,python-sane)
-       ("sane-backends" ,sane-backends)
+       ("sane" ,sane)
        ("tesseract-ocr" ,tesseract-ocr)))
     (home-page "https://wiki.gnome.org/Apps/OCRFeeder")
     (synopsis "Complete OCR Suite")

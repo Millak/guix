@@ -185,7 +185,7 @@ integrate Windows applications into your desktop.")
            libgphoto2
            openldap
            samba
-           sane-backends
+           sane
            libpcap
            libusb
            libice
