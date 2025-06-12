@@ -7954,16 +7954,8 @@ also be used to manage your stamp collection.")
     (arguments
      (list
       #:go go-1.23
-      #:import-path "github.com/pascaldekloe/goe"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:import-path "github.com/pascaldekloe/goe"))
     (home-page "https://github.com/pascaldekloe/goe")
     (synopsis "Enterprise tooling for Golang")
     (description
