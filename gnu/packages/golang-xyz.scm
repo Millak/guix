@@ -672,7 +672,7 @@ Golang.")
 (define-public go-github-com-a8m-envsubst
   (package
     (name "go-github-com-a8m-envsubst")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method git-fetch)
@@ -681,10 +681,12 @@ Golang.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mjs729g9nmalx25l4nn3p07amm4vsciqmdf0jbh2jwpy1zymz41"))))
+        (base32 "0pkvza3dr3bs2r8y8gfbckijcpl4w3llxd7zy8hw45zznynb273q"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/a8m/envsubst"))
+     (list
+      #:go go-1.23
+      #:import-path "github.com/a8m/envsubst"))
     (home-page "https://github.com/a8m/envsubst")
     (synopsis "Environment variables substitution for Go")
     (description
