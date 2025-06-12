@@ -2259,7 +2259,7 @@ Data Representation (XDR) standard protocol as specified in RFC
 (define-public go-github-com-digitalocean-godo
   (package
     (name "go-github-com-digitalocean-godo")
-    (version "1.138.0")
+    (version "1.151.0")
     (source
      (origin
        (method git-fetch)
@@ -2268,15 +2268,20 @@ Data Representation (XDR) standard protocol as specified in RFC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "083vhzb1hwzdmn5m14ygs949g2kabmafvpcxq2laylkylq1fd3rm"))))
+        (base32 "02nwqlz2fxv74h4bhd8yp02s0zfxb1d7jmp4yydgbz7psk296j98"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "github.com/digitalocean/godo"
       #:test-flags
       #~(list "-skip" (string-join
                        ;; Tests requiring networking setup.
-                       (list "TestRegistry_DeleteManifest"
+                       (list "TestRegistries_DeleteManifest"
+                             "TestRegistries_DeleteTag"
+                             "TestRegistries_ListRepositoryManifests"
+                             "TestRegistries_ListRepositoryTags"
+                             "TestRegistry_DeleteManifest"
                              "TestRegistry_DeleteTag"
                              "TestRegistry_ListManifests"
                              "TestRepository_ListTags")
