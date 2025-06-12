@@ -1427,6 +1427,9 @@ write native speed custom Git applications in any language with bindings.")
                     (url "https://github.com/libgit2/libgit2")
                     (commit (string-append "v" version))))
               (file-name (git-file-name "libgit2" version))
+              (patches
+               (search-patches "libgit2-uninitialized-proxy-settings.patch"
+                               "libgit2-proxy-reconnection.patch"))
               (sha256
                (base32
                 "06ajn5i5l1209z7x7jxcpw68ph0a6g3q67bmx0jm381rr8cb4zdz"))))))

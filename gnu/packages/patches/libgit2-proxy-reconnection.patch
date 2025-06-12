@@ -1,0 +1,18 @@
+Temporary fix for <https://github.com/libgit2/libgit2/issues/7081>.
+Submitted as <https://github.com/libgit2/libgit2/pull/7082>.
+
+diff --git a/src/libgit2/transports/httpclient.c b/src/libgit2/transports/httpclient.c
+index e25e0a73a..ecefbcd3e 100644
+--- a/src/libgit2/transports/httpclient.c
++++ b/src/libgit2/transports/httpclient.c
+@@ -914,6 +914,10 @@ GIT_INLINE(git_http_parser_settings *) http_client_parser_settings(void)
+ 
+ static void reset_parser(git_http_client *client)
+ {
++	/* Force the proxy connection to be closed so a fresh connection is
++	   opened for the next CONNECT request.  */
++	client->proxy_connected = 0;
++
+ 	git_http_parser_init(&client->parser,
+ 	                     GIT_HTTP_PARSER_RESPONSE,
+ 	                     http_client_parser_settings());
