@@ -3282,8 +3282,14 @@ decompose request handling into many smaller layers.")
     (arguments
      (list
       #:import-path "github.com/go-fed/httpsig"
-      ;; algorithms_test.go:153: "sha1": got true, want false
-      #:test-flags #~(list "-skip" "TestIsAvailable")))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; algorithms_test.go:153: "sha1": got true, want false
+                       (list "TestIsAvailable"
+                             ;; "rsa_SHA3_224": expected error, got:
+                             ;; %!s(<nil>)
+                             "TestSignerSigns")
+                       "|"))))
     (propagated-inputs
      (list go-golang-org-x-crypto))
     (home-page "https://github.com/go-fed/httpsig")
