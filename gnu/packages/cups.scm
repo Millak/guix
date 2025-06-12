@@ -704,6 +704,14 @@ should only be used as part of the Guix cups-pk-helper service.")
                    (string-append "rulessystemdir = " out "/lib/systemd/system"))
                   (("/etc/sane.d")
                    (string-append out "/etc/sane.d"))))))
+          (add-after 'install 'move-sane-config-to-dll.d
+            (lambda _
+              ;; move dll.conf to dll.d - the directory intended for 3rd-party
+              ;; backend configurations.
+              (let ((dll.d (string-append #$output "/etc/sane.d/dll.d"))
+                    (dll.conf (string-append #$output "/etc/sane.d/dll.conf")))
+                (mkdir-p dll.d)
+                (rename-file dll.conf (string-append dll.d "/hpaio")))))
           (add-after 'install 'install-models-dat
             (lambda* (#:key outputs #:allow-other-keys)
               (install-file "data/models/models.dat"
