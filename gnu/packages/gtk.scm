@@ -1277,6 +1277,15 @@ application suites.")
                         (substitute* "testsuite/css/parser/meson.build"
                           ((".*color-mix.*") "")))
                      #~())
+              ;; libEGL warning: DRI3 error: Could not get DRI3 device
+              ;; libEGL warning: Activate DRI3 at Xorg or build mesa with DRI2
+              #$@(if (target-ppc64le?)
+                     #~((substitute* "testsuite/gsk/meson.build"
+                          (("'border-zero-width-color',") ""))
+                        (substitute* "testsuite/css/parser/meson.build"
+                          ((".*at-valid-17.*") "")
+                          ((".*color-mix.*") "")))
+                     #~())
               ;; XXX: These failures appear specific to i686 – investigate them.
               #$@(if (target-x86-32?)
                      #~((substitute* "testsuite/gsk/meson.build"
