@@ -999,14 +999,31 @@ S3 concurrently.  Helpful for when working with large objects.")
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-s3
   (package
-    (inherit go-github-com-aws-aws-sdk-go-v2)
     (name "go-github-com-aws-aws-sdk-go-v2-service-s3")
-    (version "1.30.0")
+    (version "1.80.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version
+                                          #:subdir "service/s3"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07g7vgpkq8cqirc2s64d9yswnpzdb7jzqr5kwrpblya2nq27inml"))))
+    (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2/service/s3"
-       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/s3"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-aws-smithy-go))))
+     (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - S3 service module")
+    (description
+     "Package s3 provides the API client, operations, and parameter types for
+Amazon Simple Storage Service.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-secretsmanager
   (package
