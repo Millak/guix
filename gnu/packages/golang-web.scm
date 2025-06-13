@@ -926,7 +926,7 @@ utilities.")
 (define-public go-github-com-aws-aws-sdk-go-v2-credentials
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-credentials")
-    (version "1.17.48")
+    (version "1.17.69")
     (source
      (origin
        (method git-fetch)
@@ -936,7 +936,7 @@ utilities.")
                                           #:subdir "credentials"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n3spqncpw6w11pwkqaiq7jyv6dv0229jsbshibg24l2g3accdqi"))))
+        (base32 "07g7vgpkq8cqirc2s64d9yswnpzdb7jzqr5kwrpblya2nq27inml"))))
     (build-system go-build-system)
     (arguments
      (list
