@@ -51,6 +51,7 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -451,71 +452,82 @@ total number of shares generated.")
 (define-public tomb
   (package
     (name "tomb")
-    (version "2.9")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://files.dyne.org/tomb/releases/"
-                                  "Tomb-" version ".tar.gz"))
-              (sha256
-               (base32
-                "136nfnpaz29hngwwnzrmc858gpnvnb977gf4ldbpapw1h1k3r8mk"))))
+    (version "2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://files.dyne.org/tomb/releases/"
+                           "Tomb-" version ".tar.gz"))
+       (sha256
+        (base32 "05f34yx91bn9fj7rkabgpzvkw4pa6bg2c1r8cnp72wwnx6bzj97m"))))
     (build-system gnu-build-system)
-    (native-inputs (list sudo))   ;presence needed for 'check' phase
-    (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
-       ("zsh" ,zsh)
-       ("gnupg" ,gnupg)
-       ("cryptsetup" ,cryptsetup)
-       ("e2fsprogs" ,e2fsprogs)         ;for mkfs.ext4
-       ("gettext" ,gettext-minimal)     ;used at runtime
-       ("lsof" ,lsof)
-       ("mlocate" ,mlocate)
-       ("pinentry" ,pinentry)
-       ("qrencode" ,qrencode)
-       ("steghide" ,steghide)
-       ("util-linux" ,util-linux)))
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       ;; The "sudo" input is needed only to satisfy dependency checks in the
-       ;; 'check' phase.  The "sudo" used at runtime should come from the
-       ;; system's privileged-programs, so ensure no reference is kept.
-       #:disallowed-references (,sudo)
-       ;; TODO: Build and install gtk and qt trays
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configuration to be done
-         (add-after 'install 'i18n
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "-C" "extras/translations"
-                    "install" make-flags)
-             #t))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/tomb")
-                 `("PATH" ":" prefix
-                   (,(string-append (assoc-ref inputs "mlocate") "/bin")
-                    ,@(map (lambda (program)
-                             (or (and=> (which program) dirname)
-                                 (error "program not found:" program)))
-                           '("seq" "mkfs.ext4" "pinentry"
-                             "gpg" "cryptsetup" "gettext" "lsof"
-                             "qrencode" "steghide" "findmnt" "getent")))))
-               #t)))
-         (delete 'check)
-         (add-after 'wrap 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Running the full tests requires sudo/root access for
-             ;; cryptsetup, which is not available in the build environment.
-             ;; But we can run `tomb dig` without root, so make sure that
-             ;; works.  TODO: It Would Be Nice to check the expected "index",
-             ;; "search", "bury", and "exhume" features are available by
-             ;; querying `tomb -h`.
-             (let ((tomb (string-append (assoc-ref outputs "out")
-                                        "/bin/tomb")))
-               (invoke tomb "dig" "-s" "10" "secrets.tomb")
-               #t))))))
-    (home-page "https://www.dyne.org/software/tomb")
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      ;; TODO: Build and install gtk and qt trays
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)            ;no configuration to be done
+          (add-after 'install 'i18n
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "-C" "extras/translations"
+                     "install" make-flags)))
+          (add-after 'install 'cloak
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "-C" "extras/cloak" "install" make-flags)
+              (copy-recursively
+               "extras/cloak/ciphers"
+               (string-append #$output "/share/tomb/extras/cloak/ciphers"))))
+          (add-after 'install 'gtomb
+            (lambda _
+              (install-file "extras/gtomb/gtomb"
+                            (string-append #$output "/bin"))))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/tomb")
+                `("PATH" ":" prefix
+                  (,(string-append (assoc-ref inputs "mlocate") "/bin")
+                   ,@(map (lambda (program)
+                            (or (and=> (which program) dirname)
+                                (error "program not found:" program)))
+                          ;; The size of this package explodes with:
+                          ;; "unoconv" "recoll"
+                          '("argon2" "seq" "mkfs.ext4" "pinentry"
+                            "gpg" "cryptsetup" "gettext" "lsof"
+                            "qrencode" "steghide" "findmnt" "getent")))))))
+          (delete 'check)
+          (add-after 'wrap 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Running the full tests requires sudo/root access for
+                ;; cryptsetup, which is not available in the build
+                ;; environment.  But we can run `tomb dig` without root, so
+                ;; make sure that works.
+                ;;
+                ;; TODO: It Would Be Nice to check the expected "index",
+                ;; "search", "bury", and "exhume" features are available by
+                ;; querying `tomb -h`.
+                (let ((tomb (string-append #$output "/bin/tomb")))
+                  (invoke tomb "dig" "-s" "10" "secrets.tomb"))))))))
+    (native-inputs
+     (list which))
+    (inputs
+     (list argon2
+           bash-minimal
+           cryptsetup
+           e2fsprogs        ; for mkfs.ext4
+           gettext-minimal  ; used at runtime
+           gnupg
+           lsof
+           mlocate
+           pinentry
+           qrencode
+           ;; recoll        ; size explodes
+           steghide
+           ;; unoconv       ; size explodes
+           util-linux
+           zsh))
+    (home-page "https://dyne.org/tomb/")
     (synopsis "File encryption for secret data")
     (description
      "Tomb is an application to manage the creation and access of encrypted
