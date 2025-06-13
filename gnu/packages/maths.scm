@@ -1611,6 +1611,41 @@ their deployment in massively parallel environments easy.")
 functionality for the Arcane development platform.")
     (license license:asl2.0)))
 
+(define-public arccore
+  (package
+    (name "arccore")
+    (version "2.5.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arcaneframework/framework")
+             (commit (string-append "arccore-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cxqwhhs3zafiqnrjs28y60xg14jifg2xdycpr7l2291hyh6r7ra"))))
+    (build-system cmake-build-system)
+    (native-inputs (list arccon pkg-config googletest))
+    (inputs (list glib openmpi))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=TRUE" "-DARCCORE_USE_MPI=TRUE"
+              "-DARCCORE_WANT_TEST=TRUE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'chdir-arccore
+            (lambda _
+              (chdir "arccore"))))))
+    (home-page "https://github.com/arcaneframework/framework")
+    (synopsis "Arcane Framework's base functionalities for simulation code")
+    (description
+     "Arcane is a development environment for parallel numerical calculation
+code.  It supports the architectural aspects of a calculation code, such as data
+structures for meshing and parallelism, as well as more environment-related aspects
+such as dataset configuration.")
+    (license license:asl2.0)))
+
 (define-public gctp
   (package
     (name "gctp")
