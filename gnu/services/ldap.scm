@@ -32,7 +32,7 @@
 
             directory-server-instance-configuration
             slapd-configuration
-            backend-configuration))
+            backend-userroot-configuration))
 
 (define (uglify-field-name name)
   (let ((str (string-map (match-lambda
