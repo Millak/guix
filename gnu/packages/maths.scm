@@ -1583,6 +1583,34 @@ their deployment in massively parallel environments easy.")
     ;; Dual licensed, user choice.
     (license (list license:lgpl3+ license:gpl3+))))
 
+(define-public arccon
+  (package
+    (name "arccon")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arcaneframework/framework")
+             (commit (string-append "arccon-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zvj863plifp4rs3wzq5z18vh7z3bh7zy90cvn12b6n0jbpfdpg3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'chdir-arccon
+            (lambda _
+              (chdir "arccon"))))))
+    (home-page "https://github.com/arcaneframework/framework")
+    (synopsis "Arcane Framework's CMake build libraries")
+    (description "Arccon is part of the Arcane framework, providing core
+functionality for the Arcane development platform.")
+    (license license:asl2.0)))
+
 (define-public gctp
   (package
     (name "gctp")
