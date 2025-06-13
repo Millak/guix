@@ -16016,13 +16016,13 @@ highlighting and display the results in Brick-based interfaces.")
 (define-public ghc-git-lfs
   (package
     (name "ghc-git-lfs")
-    (version "1.2.0")
+    (version "1.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "git-lfs" version))
        (sha256
-        (base32 "1iv3s1c7gwmsima9z3rsphjligpnf7h3vc5c96zgq9b71cx81lba"))))
+        (base32 "1lzlz9v05iabpkw09bgxxv4nj5yk7a0vzg6rx0kr0qrsir8c3jh2"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "git-lfs")))
     (inputs (list ghc-http-client ghc-http-types ghc-aeson ghc-network-uri
