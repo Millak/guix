@@ -893,7 +893,7 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2-config
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-config")
-    (version "1.29.15")
+    (version "1.29.16")
     (source
      (origin
        (method git-fetch)
@@ -903,7 +903,7 @@ functions.")
                                           #:subdir "config"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g6pmb6i7l88d2k4i2jz2mfxjb8snq8lhl419yvblgm96zgp5qbi"))))
+        (base32 "07g7vgpkq8cqirc2s64d9yswnpzdb7jzqr5kwrpblya2nq27inml"))))
     (build-system go-build-system)
     (arguments
      (list
