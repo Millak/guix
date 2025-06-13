@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2018, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
@@ -2355,7 +2355,7 @@ and engineering community.")
                         (string-append
                          ;;
                          "--args="
-                         "cc=\"gcc\" "              ;defaults to 'cc'
+                         "cc=\"" #$(cc-for-target) "\" " ;defaults to 'cc'
                          "is_official_build=true "  ;to use system libraries
                          "is_component_build=true " ;build as a shared library
                          "skia_use_system_zlib=true " ; use system zlib library
@@ -2451,7 +2451,7 @@ Cflags: -I${includedir}~%" #$output #$version)))))
                     (invoke "gn" "gen" "out/Debug"
                             (string-append
                              "--args="
-                             "cc=\"gcc\" "                    ;defaults to 'cc'
+                             "cc=\"" #$(cc-for-target) "\" "  ;defaults to 'cc'
                              "skia_compile_sksl_tests=false " ; disable some tests
                              "skia_use_perfetto=false " ; disable performance tests
                              "skia_use_wuffs=false " ; missing performance tool
@@ -2544,9 +2544,13 @@ Cflags: -I${includedir}~%" #$output #$version)))))
                             "gl" "lottie" "_" "_"
                             "_" "_" "_" "ES2BlendWithNoTexture"))
                   (format #t "test suite not run~%")))))))
-  (native-inputs (list gn libjpeg-turbo ninja pkg-config python-wrapper
-                       spirv-tools spirv-headers
-                       icu4c-for-skia glu xorg-server-for-tests))
+  (native-inputs
+   (append (if (target-x86-32?)
+               (list clang-toolchain)
+               '())
+           (list gn libjpeg-turbo ninja pkg-config python-wrapper
+                 spirv-tools spirv-headers
+                 icu4c-for-skia glu xorg-server-for-tests)))
   (inputs (list expat fontconfig freetype harfbuzz mesa libwebp zlib))
   (home-page "https://skia.org/")
   (synopsis "2D graphics library")
