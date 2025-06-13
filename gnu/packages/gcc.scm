@@ -1111,7 +1111,7 @@ using compilers other than GCC."
             (lambda _
               (chdir "libstdc++-v3")))
 
-          #$@(if (version>=? (package-version gcc) "14")
+          #$@(if (version>=? (package-version gcc) "13")
                  #~((add-after 'unpack 'patch-tzdb.cc
                       (lambda _
                         (substitute* "libstdc++-v3/src/c++20/tzdb.cc"
