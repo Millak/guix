@@ -11267,7 +11267,7 @@ Go.")
   (package
     (name
      "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil")
-    (version "0.0.0-20240710081135-6c4d8ed41027")
+    (version "0.0.0-20250130151315-efaf4e0ec0d3")
     (source
      (origin
        (method git-fetch)
@@ -11278,16 +11278,21 @@ Go.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h7ssgsny6abhpycgks1kvqzvd20s081n39j5yxjjr7zn495ysdc"))))
+        (base32 "04c76aygplm81h49dbibzjax1r9b4i37rn7qi8qsi2j2czvm639z"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path
       "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/ptutil"))
+    (native-inputs
+     (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2-bootstrap))
     (propagated-inputs
      (list go-github-com-prometheus-client-golang
            go-github-com-prometheus-client-model
+           go-github-com-refraction-networking-utls
+           go-github-com-smartystreets-goconvey
+           go-golang-org-x-net
            go-google-golang-org-protobuf))
     (home-page
      "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/ptutil")
@@ -11372,6 +11377,20 @@ Snowflake
 library code
 @end itemize")
     (license license:bsd-3)))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2-bootstrap
+  ;; This variant is to break cycle where ptuil tries to read version from
+  ;; <gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2/common/version>
+  (hidden-package
+   (package/inherit go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2"))
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs
+                      go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2)
+        (delete "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil"))))))
 
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
   (package
