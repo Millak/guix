@@ -684,7 +684,7 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
 (define-public dtc
   (package
     (name "dtc")
-    (version "1.7.0")
+    (version "1.7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -692,9 +692,7 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                     "dtc-" version ".tar.gz"))
               (sha256
                (base32
-                "0cij9399snpn672pdbda8qbxljdkfg068kvv3g5811rz6yslx124"))
-              (patches
-               (search-patches "dtc-meson-cell-overflow.patch"))))
+                "1x609axqpkw5d47pz3ag34ycy3w7y1d0i8q4715hvlmgszmya07j"))))
     (build-system meson-build-system)
     (arguments
      (list
