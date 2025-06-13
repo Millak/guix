@@ -87,7 +87,8 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages toolkits)
-  #:use-module (gnu packages version-control))
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages web))
 
 (define-public abc
   (let ((commit "d2714035145bd237097c509c23fc9e24b0fa933b")
@@ -649,7 +650,7 @@ automated testing of HDL code.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.16.0")
+    (version "1.16.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -658,11 +659,20 @@ automated testing of HDL code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hi1mqhjbj7r3wcdkjr6yazwpc7y9lqc0b8bj4ikfgdfsmakm3s4"))))
+                "0kzlr99viw652p8wiz0nb1705hyh4mkx7j9zk1yzrspqfmh6pcq3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
-           #:configure-flags #~(list "--enable-tcl" "--enable-llvm")
+           #:configure-flags
+           #~(list "--enable-tcl"
+                   "--enable-llvm"
+                   "--enable-verilog"
+                   "--enable-vital"
+                   "--enable-server"
+                   "--with-ncurses"
+                   "--enable-parallel-make"
+                   (string-append "--with-bash-completion=" #$output
+                                  "/share/bash-completion/completions"))
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'clean-up
                           (lambda _
@@ -679,7 +689,8 @@ automated testing of HDL code.")
            ruby
            which))
     (inputs
-     (list libffi
+     (list jansson
+           libffi
            llvm
            readline
            tcl
