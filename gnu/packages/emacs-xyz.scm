@@ -37781,23 +37781,20 @@ message.
 (define-public emacs-gnus-desktop-notify
   (package
     (name "emacs-gnus-desktop-notify")
-    (version "20180623.1538")
+    ;; There is no version tag; use a MELPA style date corresponding to that
+    ;; of the last commit.
+    (version "20250616.0809")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/wavexx/gnus-desktop-notify.el.git")
-             (commit "24588a3e024b204d930480fdc8bca31426f4e846")))
+             (commit "12d2a52c0340a6d822f23cf8bc3f4d929c2d8838")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06gxqlhfrc9ykq8v7qhxsr4w8hwyv1jkrifpp0kqjhf7idv96010"))
-       (patches
-        (search-patches
-         "emacs-gnus-desktop-notify-fix-notifications.patch"
-         "emacs-gnus-desktop-notify-rescan.patch"))))
+        (base32 "15gs8j5z88yvbpxjx9760isdiv6rz43m11f38yp5xh8i79x2gzwp"))))
     (build-system emacs-build-system)
-    (home-page
-     "http://www.thregr.org/~wavexx/software/gnus-desktop-notify.el/")
+    (home-page "https://www.thregr.org/wavexx/software/gnus-desktop-notify.el/")
     (synopsis "Gnus desktop notification global minor mode")
     (description
      "@code{gnus-desktop-notify} provides a simple mechanism to notify the
@@ -37810,8 +37807,8 @@ configuration snippet in your @file{~/.gnus.el} configuration file:
 ;; Alternatively, configure the period and idle times specifically, e.g.:
 ;; (gnus-demon-add-handler 'gnus-demon-scan-news 10 1)
 @end lisp
-The above causes Gnus to scan all configured groups every two 2 hours when
-Emacs has been idle for 1 hour, with desktop notifications emitted for new
+The above causes Gnus to scan all configured groups every two hours when
+Emacs has been idle for one hour, with desktop notifications emitted for new
 messages received.")
     (license license:gpl3+)))
 
