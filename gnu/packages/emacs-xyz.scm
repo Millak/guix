@@ -37736,6 +37736,43 @@ message.
 @end itemize")
     (license license:gpl2+)))
 
+(define-public emacs-gnus-desktop-notify
+  (package
+    (name "emacs-gnus-desktop-notify")
+    (version "20180623.1538")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/wavexx/gnus-desktop-notify.el.git")
+             (commit "24588a3e024b204d930480fdc8bca31426f4e846")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06gxqlhfrc9ykq8v7qhxsr4w8hwyv1jkrifpp0kqjhf7idv96010"))
+       (patches
+        (search-patches
+         "emacs-gnus-desktop-notify-fix-notifications.patch"
+         "emacs-gnus-desktop-notify-rescan.patch"))))
+    (build-system emacs-build-system)
+    (home-page
+     "http://www.thregr.org/~wavexx/software/gnus-desktop-notify.el/")
+    (synopsis "Gnus desktop notification global minor mode")
+    (description
+     "@code{gnus-desktop-notify} provides a simple mechanism to notify the
+user when new messages are received.  To get started, place the following
+configuration snippet in your @file{~/.gnus.el} configuration file:
+@lisp
+(require 'gnus-desktop-notify)
+(gnus-desktop-notify-mode)
+(gnus-demon-add-rescan)
+;; Alternatively, configure the period and idle times specifically, e.g.:
+;; (gnus-demon-add-handler 'gnus-demon-scan-news 10 1)
+@end lisp
+The above causes Gnus to scan all configured groups every two 2 hours when
+Emacs has been idle for 1 hour, with desktop notifications emitted for new
+messages received.")
+    (license license:gpl3+)))
+
 (define-public emacs-ox-epub
   (package
     (name "emacs-ox-epub")
