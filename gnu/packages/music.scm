@@ -386,52 +386,49 @@ more.")
   (package
     (name "aria-maestosa")
     (version "1.4.13")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/ariamaestosa/ariamaestosa/"
-                                  version "/AriaSrc-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1cs3z6frx2ch7rm5ammx9p0rxcjrbj1vq14hvcbimpaw39rdsn3d"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/ariamaestosa/ariamaestosa/"
+                           version "/AriaSrc-" version ".tar.bz2"))
+       (sha256
+        (base32 "1cs3z6frx2ch7rm5ammx9p0rxcjrbj1vq14hvcbimpaw39rdsn3d"))))
     (build-system scons-build-system)
     (arguments
-     `(#:tests? #f  ;no tests
-       #:scons-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:scons ,scons-python2
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'scons-propagate-environment
-           (lambda _
-             ;; By design, SCons does not, by default, propagate
-             ;; environment variables to subprocesses.  See:
-             ;; <http://comments.gmane.org/gmane.linux.distributions.nixos/4969>
-             ;; Here, we modify the SConstruct file to arrange for
-             ;; environment variables to be propagated.
-             (substitute* "SConstruct"
-               (("env = Environment\\(\\)")
-                "env = Environment(ENV=os.environ)")
-               ;; Scons errors out when copying subdirectories from Resources,
-               ;; so we move them instead.
-               (("Copy") "Move")
-               ;; We move the "score" and "Documentation" directories at once,
-               ;; so we have to ignore files contained therein.
-               (("if \".svn\" in file" line)
-                (string-append line
-                               " or \"score/\" in file"
-                               " or \"Documentation/\" in file")))
-             #t))
-         (add-after 'install 'fix-directory-permissions
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (chmod (string-append out "/share/Aria/Documentation") #o555)
-               (chmod (string-append out "/share/Aria/score") #o555)
-               #t))))))
-    (inputs
-     (list wxwidgets glib alsa-lib))
-    (native-inputs
-     (list pkg-config))
+     (list
+      #:tests? #f  ;no tests
+      #:scons-flags
+      #~(list (string-append "prefix=" (assoc-ref %outputs "out")))
+      #:scons scons-python2
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'scons-propagate-environment
+            (lambda _
+              ;; By design, SCons does not, by default, propagate
+              ;; environment variables to subprocesses.  See:
+              ;; <http://comments.gmane.org/gmane.linux.distributions.nixos/4969>
+              ;; Here, we modify the SConstruct file to arrange for
+              ;; environment variables to be propagated.
+              (substitute* "SConstruct"
+                (("env = Environment\\(\\)")
+                 "env = Environment(ENV=os.environ)")
+                ;; Scons errors out when copying subdirectories from Resources,
+                ;; so we move them instead.
+                (("Copy") "Move")
+                ;; We move the "score" and "Documentation" directories at once,
+                ;; so we have to ignore files contained therein.
+                (("if \".svn\" in file" line)
+                 (string-append line
+                                " or \"score/\" in file"
+                                " or \"Documentation/\" in file")))))
+          (add-after 'install 'fix-directory-permissions
+            (lambda _
+              (with-directory-excursion (string-append #$output "/share/Aria")
+                (chmod "Documentation" #o555)
+                (chmod "score" #o555)))))))
+    (inputs (list wxwidgets glib alsa-lib))
+    (native-inputs (list pkg-config))
     (home-page "https://ariamaestosa.sourceforge.net/")
     (synopsis "MIDI sequencer and editor")
     (description
