@@ -3919,24 +3919,30 @@ fight Morgoth, the Lord of Darkness.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://gitlab.com/pingus/pingus.git")
-              (commit (string-append "v" version))))
+             (url "https://gitlab.com/pingus/pingus.git")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0wp06kcmknsnxz7bjnsndb8x062z7r23fb3yrnbfnj68qhz18y74"))
+        (base32 "0wp06kcmknsnxz7bjnsndb8x062z7r23fb3yrnbfnj68qhz18y74"))
        (patches (search-patches "pingus-boost-headers.patch"
                                 "pingus-sdl-libs-config.patch"))
        (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "src/pingus/screens/demo_session.cpp"
-             (("#include <iostream>")
-              ;; std::function moved to <functional> with C++ 11.
-              ;; Remove this for versions newer than 0.7.6.
-              "#include <iostream>\n#include <functional>"))
-           #t))))
+       (snippet #~(begin
+                    (substitute* "src/pingus/screens/demo_session.cpp"
+                      (("#include <iostream>")
+                       ;; std::function moved to <functional> with C++ 11.
+                       ;; Remove this for versions newer than 0.7.6.
+                       "#include <iostream>
+#include <functional>"))))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" %output))
+      #:tests? #f ;no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)))) ;no configure script
     (native-inputs (list pkg-config scons-python2))
     (inputs (list sdl
                   sdl-image
@@ -3945,12 +3951,6 @@ fight Morgoth, the Lord of Darkness.")
                   glu
                   libpng
                   boost))
-    (arguments
-     '(#:make-flags (list (string-append "PREFIX=" %output))
-       #:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)))) ; no configure script
     (home-page "https://pingus.seul.org/")
     (synopsis "Lemmings clone")
     (description
