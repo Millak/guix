@@ -3946,26 +3946,31 @@ plug-in architecture to allow monitoring other system metrics.")
         (base32 "18ipa1bm6q1n5drbi8i65726hhqhl1g41390lfqrc11hkbvv443d"))
        (patches (search-patches "thefuck-test-environ.patch"
                                 "thefuck-remove-broken-tests.patch"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Tests look for installed package
-             (add-installed-pythonpath inputs outputs)
-             ;; Some tests need write access to $HOME.
-             (setenv "HOME" "/tmp")
-             ;; Even with that, this function tries to mkdir /.config.
-             (substitute* "tests/test_utils.py"
-               (("settings\\.init\\(\\)") ""))
-             (invoke "py.test" "-v"))))))
-    (propagated-inputs
-     (list python-colorama python-decorator python-psutil python-pyte
-           python-six))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests look for installed package
+              ;; Some tests need write access to $HOME.
+              (setenv "HOME" "/tmp")
+              ;; Even with that, this function tries to mkdir /.config.
+              (substitute* "tests/test_utils.py"
+                (("settings\\.init\\(\\)") "")))))))
     (native-inputs
-     (list go python-mock python-pytest python-pytest-mock))
+     (list go
+           python-mock
+           python-pytest
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list python-colorama
+           python-decorator
+           python-psutil
+           python-pyte))
     (home-page "https://github.com/nvbn/thefuck")
     (synopsis "Correct mistyped console command")
     (description
