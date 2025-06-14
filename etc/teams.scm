@@ -1125,7 +1125,8 @@ the \"texlive\" importer."
   embedded)
 
 (define-member (person "Vagrant Cascadian"        ;XXX: duplicate
-                       "vagrant@reproducible-builds.org")
+                       "vagrant@reproducible-builds.org"
+                       "vagrantc")
   reproduciblebuilds)
 
 (define-member (person "Maxim Cournoyer"
