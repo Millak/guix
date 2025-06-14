@@ -4264,31 +4264,33 @@ in order to be able to find it.
        (file-name (git-file-name name version))
        (sha256
         (base32 "0sy26d60j89fw4z2bfvc7zblb7r1ras5q7f06gaqfg2058z5wj8m"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f                      ; no tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-sed-in
-                 (lambda _
-                   (substitute* "sedsed.py"
-                     (("sedbin = 'sed'")
-                      (string-append "sedbin = '" (which "sed") "'")))))
-               (delete 'build)
-               (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bin (string-append out "/bin")))
-                     ;; Just one file to copy around
-                     (install-file "sedsed.py" bin))))
-               (add-after 'wrap 'symlink
-                 ;; Create 'sedsed' symlink to "sedsed.py".
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bin (string-append out "/bin"))
-                          (sed (string-append bin "/sedsed"))
-                          (sedpy (string-append bin "/sedsed.py")))
-                     (symlink sedpy sed)))))))
+     (list
+      #:tests? #f ; XXX: test suit requires git set up, run by "./test/run"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sed-in
+            (lambda _
+              (substitute* "sedsed.py"
+                (("sedbin = 'sed'")
+                 (string-append "sedbin = '" (which "sed") "'")))))
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                ;; Just one file to copy around
+                (install-file "sedsed.py" bin))))
+          (add-after 'wrap 'symlink
+            ;; Create 'sedsed' symlink to "sedsed.py".
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (sed (string-append bin "/sedsed"))
+                     (sedpy (string-append bin "/sedsed.py")))
+                (symlink sedpy sed)))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://aurelio.net/projects/sedsed")
     (synopsis "Sed sed scripts")
     (description
