@@ -1880,42 +1880,42 @@ support for reading and writing various compression algorithms including:
 @url{http://facebook.github.io/zstd/,Zstandard}.")
       (license license:bsd-3))))
 
-(define python-asdf-time-schemas
-  ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "a3062066ee70f1b934f7339d1ce96a5c5f61f055")
-        (revision "3"))
-    (package
-      (name "python-asdf-time-schemas")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/asdf-format/asdf-time-schemas")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1i8lm2d18r6fadsch52dxc2zp1swkfa8w40s03albn7p290n4a97"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        ;; Dependency cycle with python-asdf
-        #:tests? #f
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
-      (native-inputs (list python-setuptools-scm))
-      (propagated-inputs (list python-asdf-standard
-                               python-asdf-unit-schemas
-                               python-importlib-resources))
-      (home-page "https://github.com/asdf-format/asdf-fits-schemas")
-      (synopsis "Schemas for storing time in ASDF")
-      (description
-       "This package provides ASDF schemas for validating time tags.")
-      (license license:bsd-3))))
+(define-public python-asdf-time-schemas
+  (hidden-package
+   ;; TODO: No release, change to tag when it's ready.
+   (let ((commit "a3062066ee70f1b934f7339d1ce96a5c5f61f055")
+         (revision "3"))
+     (package
+       (name "python-asdf-time-schemas")
+       (version (git-version "0.0.1" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/asdf-format/asdf-time-schemas")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "1i8lm2d18r6fadsch52dxc2zp1swkfa8w40s03albn7p290n4a97"))))
+       (build-system pyproject-build-system)
+       (arguments
+        (list
+         ;; Dependency cycle with python-asdf
+         #:tests? #f
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-before 'build 'set-version
+               (lambda _
+                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+       (native-inputs (list python-setuptools-scm))
+       (propagated-inputs (list python-asdf-standard
+                                python-asdf-unit-schemas
+                                python-importlib-resources))
+       (home-page "https://github.com/asdf-format/asdf-fits-schemas")
+       (synopsis "Schemas for storing time in ASDF")
+       (description
+        "This package provides ASDF schemas for validating time tags.")
+       (license license:bsd-3)))))
 
 (define-public python-asdf-zarr
   (package
@@ -6867,155 +6867,159 @@ and use.  Unlike FITS, the metadata is highly structured and is designed
 up-front for extensibility.")
     (license license:bsd-3)))
 
-(define python-asdf-transform-schemas
-  (package
-    (name "python-asdf-transform-schemas")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_transform_schemas" version))
-       (sha256
-        (base32 "0as6dcf9dmxjh24gwdmqwbbrk56fhgsmzwi7af4llwvm4mw4rkw2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; Dependency cycle with python-asdf
-     (list #:tests? #f))
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-asdf-standard
-           python-importlib-resources))
-    (home-page "https://github.com/asdf-format/asdf-transform-schemas")
-    (synopsis "ASDF schemas for transforms")
-    (description
-     "This package provides ASDF schemas for validating transform tags.  Users
-should not need to install this directly; instead, install an implementation
-package such as asdf-astropy.")
-    (license license:bsd-3)))
-
-(define python-asdf-coordinates-schemas
-  (package
-    (name "python-asdf-coordinates-schemas")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_coordinates_schemas" version))
-       (sha256
-        (base32 "0kk0rlzv0kkcw6fiwvps4n0x05867xc9hxyyzica31zcvhan12y9"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-asdf))
-    (home-page "https://github.com/asdf-format/asdf-coordinates-schemas")
-    (synopsis "ASDF coordinates schemas")
-    (description
-     "This package provides ASDF schemas for validating coordinates tags.
+(define-public python-asdf-transform-schemas
+  (hidden-package
+   (package
+     (name "python-asdf-transform-schemas")
+     (version "0.5.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "asdf_transform_schemas" version))
+        (sha256
+         (base32 "0as6dcf9dmxjh24gwdmqwbbrk56fhgsmzwi7af4llwvm4mw4rkw2"))))
+     (build-system pyproject-build-system)
+     (arguments
+      ;; Dependency cycle with python-asdf
+      (list #:tests? #f))
+     (native-inputs
+      (list python-setuptools
+            python-setuptools-scm
+            python-wheel))
+     (propagated-inputs
+      (list python-asdf-standard
+            python-importlib-resources))
+     (home-page "https://github.com/asdf-format/asdf-transform-schemas")
+     (synopsis "ASDF schemas for transforms")
+     (description
+      "This package provides ASDF schemas for validating transform tags.
 Users should not need to install this directly; instead, install an
 implementation package such as asdf-astropy.")
-    (license license:bsd-3)))
+     (license license:bsd-3))))
 
-(define python-asdf-fits-schemas
-  ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "d1b5e7a12a49fe61d43855045bab106be34cd252")
-        (revision "1"))
-    (package
-      (name "python-asdf-fits-schemas")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/asdf-format/asdf-fits-schemas")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1h2xbk9c9l2959i3sdnwviv3z0hp1f0lba2vz9hpzgcm46qadqp8"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        ;; Dependency cycle with python-asdf
-        #:tests? #f
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
-      (native-inputs (list python-setuptools-scm))
-      (propagated-inputs (list python-asdf-standard python-importlib-resources))
-      (home-page "https://github.com/asdf-format/asdf-fits-schemas")
-      (synopsis "ASDF schemas to support the FITS format")
-      (description
-       "This package provides ASDF schemas for validating FITS tags.")
-      (license license:bsd-3))))
+(define-public python-asdf-coordinates-schemas
+  (hidden-package
+   (package
+     (name "python-asdf-coordinates-schemas")
+     (version "0.3.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "asdf_coordinates_schemas" version))
+        (sha256
+         (base32 "0kk0rlzv0kkcw6fiwvps4n0x05867xc9hxyyzica31zcvhan12y9"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:test-flags
+       #~(list "--numprocesses" (number->string (parallel-job-count)))))
+     (native-inputs
+      (list python-pytest
+            python-pytest-xdist
+            python-setuptools
+            python-setuptools-scm
+            python-wheel))
+     (propagated-inputs
+      (list python-asdf))
+     (home-page "https://github.com/asdf-format/asdf-coordinates-schemas")
+     (synopsis "ASDF coordinates schemas")
+     (description
+      "This package provides ASDF schemas for validating coordinates tags.
+Users should not need to install this directly; instead, install an
+implementation package such as asdf-astropy.")
+     (license license:bsd-3))))
 
-(define python-asdf-unit-schemas
-  (package
-    (name "python-asdf-unit-schemas")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_unit_schemas" version))
-       (sha256
-        (base32
-         "0h24gvm1wip4gh3fw5ki8kwnvcy8gw6b6pajw3i1zvriamdw95fr"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; Dependency cycle with python-asdf
-     (list #:tests? #f))
-    (native-inputs (list python-setuptools-scm))
-    (propagated-inputs (list python-asdf-standard python-importlib-resources))
-    (home-page "https://asdf-unit-schemas.readthedocs.io/")
-    (synopsis "ASDF serialization schemas for the units defined by @code{astropy.units}")
-    (description "This package provides ASDF schemas for validating unit tags.")
-    (license license:bsd-3)))
+(define-public python-asdf-fits-schemas
+  (hidden-package
+   ;; TODO: No release, change to tag when it's ready.
+   (let ((commit "d1b5e7a12a49fe61d43855045bab106be34cd252")
+         (revision "1"))
+     (package
+       (name "python-asdf-fits-schemas")
+       (version (git-version "0.0.1" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/asdf-format/asdf-fits-schemas")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "1h2xbk9c9l2959i3sdnwviv3z0hp1f0lba2vz9hpzgcm46qadqp8"))))
+       (build-system pyproject-build-system)
+       (arguments
+        (list
+         ;; Dependency cycle with python-asdf
+         #:tests? #f
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-before 'build 'set-version
+               (lambda _
+                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+       (native-inputs (list python-setuptools-scm))
+       (propagated-inputs (list python-asdf-standard python-importlib-resources))
+       (home-page "https://github.com/asdf-format/asdf-fits-schemas")
+       (synopsis "ASDF schemas to support the FITS format")
+       (description "This package provides ASDF schemas for validating FITS tags.")
+       (license license:bsd-3)))))
 
-(define python-asdf-wcs-schemas
-  (package
-    (name "python-asdf-wcs-schemas")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_wcs_schemas" version))
-       (sha256
-        (base32 "1d08ng890xc1ilf3y1hrimx09x990wvg9g18n0ijwvpilnw49fy0"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "tests")))
-    (native-inputs
-     (list python-asdf
-           python-pytest
-           python-pytest-openfiles
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-asdf-coordinates-schemas
-           python-asdf-standard
-           python-asdf-transform-schemas))
-    (home-page "https://github.com/asdf-format/asdf-wcs-schemas")
-    (synopsis "ASDF WCS Schemas")
-    (description
-     "This package provides ASDF schemas for validating World Coordinate
+(define-public python-asdf-unit-schemas
+  (hidden-package
+   (package
+     (name "python-asdf-unit-schemas")
+     (version "0.2.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "asdf_unit_schemas" version))
+        (sha256
+         (base32
+          "0h24gvm1wip4gh3fw5ki8kwnvcy8gw6b6pajw3i1zvriamdw95fr"))))
+     (build-system pyproject-build-system)
+     (arguments
+      ;; Dependency cycle with python-asdf
+      (list #:tests? #f))
+     (native-inputs (list python-setuptools-scm))
+     (propagated-inputs (list python-asdf-standard python-importlib-resources))
+     (home-page "https://asdf-unit-schemas.readthedocs.io/")
+     (synopsis "ASDF serialization schemas for the units defined by @code{astropy.units}")
+     (description "This package provides ASDF schemas for validating unit tags.")
+     (license license:bsd-3))))
+
+(define-public python-asdf-wcs-schemas
+  (hidden-package
+   (package
+     (name "python-asdf-wcs-schemas")
+     (version "0.4.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "asdf_wcs_schemas" version))
+        (sha256
+         (base32 "1d08ng890xc1ilf3y1hrimx09x990wvg9g18n0ijwvpilnw49fy0"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:test-flags #~(list "tests")))
+     (native-inputs
+      (list python-asdf
+            python-pytest
+            python-pytest-openfiles
+            python-setuptools
+            python-setuptools-scm
+            python-wheel))
+     (propagated-inputs
+      (list python-asdf-coordinates-schemas
+            python-asdf-standard
+            python-asdf-transform-schemas))
+     (home-page "https://github.com/asdf-format/asdf-wcs-schemas")
+     (synopsis "ASDF WCS Schemas")
+     (description
+      "This package provides ASDF schemas for validating World Coordinate
 System (WCS) tags.  Users should not need to install this directly; instead,
 install an implementation package such as gwcs.")
-    (license license:bsd-3)))
+     (license license:bsd-3))))
 
 (define-public python-pint-pulsar
   (package
