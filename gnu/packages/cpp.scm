@@ -170,6 +170,33 @@ to achieve the majority of argument parsing needs in a simple manner with an
 easy to use API.")
       (license license:expat))))
 
+(define-public argpp
+  ;; XXX: Does not release anymore.
+  (let ((commit "9e1d54f8ed20af0aa5857e6653ab605b2ab63d5c")
+        (revision "0"))
+    (package
+      (name "argpp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Grumbel/argpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1izn9xfplhnqi9vs4w28dixqd2vy0n1n3asaa1751grg30bw0xxs"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")))
+      (native-inputs (list tinycmmc))
+      (home-page "https://github.com/Grumbel/argpp")
+      (synopsis "Argument parser for C++")
+      (description "This package provides a simple argument parser for C++.")
+      (license license:gpl3+))))
+
 (define-public asmjit
   (let ((commit "cfc9f813cc6ccda63cad872edb32b38e0662bedb")
         (revision "2"))
