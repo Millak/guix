@@ -6735,80 +6735,81 @@ several firewall backends.")
   (package
     (name "px")
     (version "3.6.12")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/walles/px.git")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "06jg6izya1k5gk71pygv8691fcaa6zfnzns57fjknnihz3c42pzw"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/walles/px")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06jg6izya1k5gk71pygv8691fcaa6zfnzns57fjknnihz3c42pzw"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-git
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* (find-files "px" "\\.py$")
-                    ;; We don't have MacOS X programs.
-                    (("px_exec_util[.]run[(]\\[\"(vm_stat)\"" all x)
-                     (string-append "px_exec_util.run([\""
-                                    "/bin/false"
-                                    "\""))
-                    ;; Patch names of executables in "sbin".
-                    (("px_exec_util[.]run[(]\\[\"(sysctl)\"" all x)
-                     (string-append "px_exec_util.run([\""
-                                    (search-input-file inputs
-                                                       (string-append "sbin/" x))
-                                    "\""))
-                    ;; Patch names of executables in "bin".
-                    (("px_exec_util[.]run[(]\\[\"([^/\"]*)\"" all x)
-                     (string-append "px_exec_util.run([\""
-                                    (search-input-file inputs
-                                                       (string-append "bin/" x))
-                                    "\"")))
-                   (substitute* "px/px_process.py"
-                    ;; Patch path name of "ps" executable.
-                    (("\"/bin/ps\"") (string-append "\""
-                                                    (assoc-ref inputs "procps")
-                                                    "/bin/ps\"")))
-                   (substitute* "setup.py"
-                    ;; Patch "git describe", replacing it by its result.
-                    (("\\[\"git\", \"describe\", \"--dirty\"\\]")
-                     (string-append "[\"echo\", \"" #$version "\"]")))))
-               (add-before 'check 'prepare-check
-                 (lambda _
-                   (substitute* "tests/px_terminal_test.py"
-                    ;; We don't have /etc/passwd so the output will not say "root".
-                    (("root") "0   "))
-                   (substitute* "tests/px_process_test.py"
-                    ;; Our containers don't have the kernel visible.
-                    (("len[(]all_processes[)] >= 4")
-                     "len(all_processes) >= 3")
-                    ;; We don't have /etc/passwd so the output will not say "root".
-                    (("\"root\"") "\"0\""))
-                   (setenv "PYTEST_ADDOPTS"
-                           (string-append "-vv -k \"not "
-                                          (string-join
-                                           '(;; Network tests cannot succeed.
-                                             "test_stdfds_ipc_and_network"
-                                             ;; Network tests cannot succeed.
-                                             "test_str_resolve"
-                                             ;; Tiny difference in color.
-                                             "test_to_screen_lines_unbounded")
-                                           " and not ")
-                                          "\"")))))))
+     (list
+      #:test-flags
+      ;; Tests requiring networking setup or root access.
+      #~(list "-k" (string-join
+                    (list "not test_get_all_defaultlocale"
+                          "test_get_all_swedish"
+                          "test_match"
+                          "test_ps_line_to_process_1"
+                          "test_ps_line_to_process_2"
+                          "test_ps_line_to_process_unicode"
+                          "test_stdfds_ipc_and_network"
+                          "test_str_resolve"
+                          "test_to_screen_lines_unbounded"
+                          "test_to_screen_lines_unicode")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-git
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "px" "\\.py$")
+                ;; We don't have MacOS X programs.
+                (("px_exec_util[.]run[(]\\[\"(vm_stat)\"" all x)
+                 (string-append "px_exec_util.run([\""
+                                "/bin/false"
+                                "\""))
+                ;; Patch names of executables in "sbin".
+                (("px_exec_util[.]run[(]\\[\"(sysctl)\"" all x)
+                 (string-append "px_exec_util.run([\""
+                                (search-input-file inputs
+                                                   (string-append "sbin/" x))
+                                "\""))
+                ;; Patch names of executables in "bin".
+                (("px_exec_util[.]run[(]\\[\"([^/\"]*)\"" all x)
+                 (string-append "px_exec_util.run([\""
+                                (search-input-file inputs
+                                                   (string-append "bin/" x))
+                                "\"")))
+              (substitute* "px/px_process.py"
+                ;; Patch path name of "ps" executable.
+                (("\"/bin/ps\"") (string-append "\""
+                                                (assoc-ref inputs "procps")
+                                                "/bin/ps\"")))
+              (substitute* "setup.py"
+                ;; Patch "git describe", replacing it by its result.
+                (("\\[\"git\", \"describe\", \"--dirty\"\\]")
+                 (string-append "[\"echo\", \"" #$version "\"]"))))))))
     (native-inputs
-     (list pkg-config python-setuptools python-wheel python-pytest
-           python-pytest-runner python-dateutil))
+     (list pkg-config
+           python-setuptools
+           python-wheel
+           python-pytest
+           python-dateutil))
     (inputs
-     (list lsof net-tools procps sysstat util-linux))
-    (synopsis "ps, top and pstree for human beings")
-    (description "This package provides a way to figure out which processes
-communicate with which other processes.  It provides more usable versions
-of ps, top and pstree.")
+     (list lsof
+           net-tools
+           procps
+           sysstat
+           util-linux))
     (home-page "https://github.com/walles/px")
+    (synopsis "Alternative to @command{ps}, @command{top} and @command{pstree}")
+    (description
+     "This package provides a way to figure out which processes communicate
+with which other processes.  It provides more usable versions of @command{ps},
+@command{top} and @command{pstree}.")
     (license license:expat)))
 
 (define-public wakelan
