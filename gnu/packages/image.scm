@@ -2053,36 +2053,31 @@ custom formats for representing color values..")
   (package
     (name "gpick")
     (version "0.2.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/thezbyg/gpick")
-                    (commit (string-append name "-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0nl89gca5nmbyycv5rl5bm6k7facapdk4pab9pl949aa3cjw9bk7"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thezbyg/gpick")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nl89gca5nmbyycv5rl5bm6k7facapdk4pab9pl949aa3cjw9bk7"))))
     (build-system scons-build-system)
-    (native-inputs
-     `(("boost" ,boost)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("ragel" ,ragel)))
-    (inputs
-     `(("expat" ,expat)
-       ("gtk2" ,gtk+-2)
-       ("lua" ,lua-5.2)))
     (arguments
-     `(#:tests? #f
-       #:scons ,scons-python2
-       #:scons-flags (list (string-append "DESTDIR=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-lua-reference
-           (lambda _
-             (substitute* "SConscript"
-               (("lua5.2") "lua-5.2"))
-             #t)))))
+     (list
+      #:tests? #f
+      #:scons scons-python2
+      #:scons-flags
+      #~(list (string-append "DESTDIR=" %output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-lua-reference
+            (lambda _
+              (substitute* "SConscript"
+                (("lua5.2")
+                 "lua-5.2")))))))
+    (native-inputs (list boost gettext-minimal pkg-config ragel))
+    (inputs (list expat gtk+-2 lua-5.2))
     (home-page "http://www.gpick.org/")
     (synopsis "Color picker")
     (description "Gpick is an advanced color picker and palette editing tool.")
