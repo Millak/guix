@@ -3892,10 +3892,10 @@ throughput (in the same interval).")
        (uri (git-reference
              (url "https://github.com/scottchiefbaker/dool")
              (commit (string-append "v" version))))
-       (file-name (git-file-name "dool" version))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "11myxg4y4z0nr60cg0xi3r4akjypyjjg1mxbc4y2a6lg0pras9bv"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
