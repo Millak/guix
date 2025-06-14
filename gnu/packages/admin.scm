@@ -5368,23 +5368,28 @@ file-types for easier parsing in scripts.")
 (define-public jtbl
   (package
     (name "jtbl")
-    (version "1.1.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kellyjonbrazil/jtbl")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "19i21fqz2m40cds9pb17brjxkczqagmx2f7mfb0xdvbygaply5wz"))))
-    (build-system python-build-system)
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kellyjonbrazil/jtbl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gryjfjchvfb2nv797h5ba2qz54ig5kkjwcq8ycfdffdk1931d10"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
      (list python-tabulate))
     (home-page "https://github.com/kellyjonbrazil/jtbl")
     (synopsis "Command-line tool to print JSON data as a table in the terminal")
-    (description "@code{jtbl} accepts piped JSON data from stdin and outputs a
-text table representation to stdout.")
+    (description
+     "@code{jtbl} accepts piped JSON data from stdin and outputs a text table
+representation to stdout.")
     (license license:expat)))
 
 (define-public hosts
