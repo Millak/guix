@@ -392,14 +392,15 @@ more.")
        (uri (string-append "mirror://sourceforge/ariamaestosa/ariamaestosa/"
                            version "/AriaSrc-" version ".tar.bz2"))
        (sha256
-        (base32 "1cs3z6frx2ch7rm5ammx9p0rxcjrbj1vq14hvcbimpaw39rdsn3d"))))
+        (base32 "1cs3z6frx2ch7rm5ammx9p0rxcjrbj1vq14hvcbimpaw39rdsn3d"))
+       (patches
+        (search-patches "aria-maestosa-scons-python3.patch"))))
     (build-system scons-build-system)
     (arguments
      (list
       #:tests? #f  ;no tests
       #:scons-flags
       #~(list (string-append "prefix=" (assoc-ref %outputs "out")))
-      #:scons scons-python2
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
