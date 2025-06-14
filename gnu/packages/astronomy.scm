@@ -1880,6 +1880,43 @@ support for reading and writing various compression algorithms including:
 @url{http://facebook.github.io/zstd/,Zstandard}.")
       (license license:bsd-3))))
 
+(define python-asdf-time-schemas
+  ;; TODO: No release, change to tag when it's ready.
+  (let ((commit "a3062066ee70f1b934f7339d1ce96a5c5f61f055")
+        (revision "3"))
+    (package
+      (name "python-asdf-time-schemas")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/asdf-format/asdf-time-schemas")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1i8lm2d18r6fadsch52dxc2zp1swkfa8w40s03albn7p290n4a97"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; Dependency cycle with python-asdf
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+      (native-inputs (list python-setuptools-scm))
+      (propagated-inputs (list python-asdf-standard
+                               python-asdf-unit-schemas
+                               python-importlib-resources))
+      (home-page "https://github.com/asdf-format/asdf-fits-schemas")
+      (synopsis "Schemas for storing time in ASDF")
+      (description
+       "This package provides ASDF schemas for validating time tags.")
+      (license license:bsd-3))))
+
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
@@ -2478,6 +2515,111 @@ celestial-to-terrestrial coordinate transformations.")
        (delete python-matplotlib
                python-scipy)))))
 
+(define-public python-astroquery
+  (package
+    (name "python-astroquery")
+    (version "0.4.9.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astroquery" version))
+       (sha256
+        (base32 "15viynwq96gyb12q894fi2j4jlzmba3lk86l469ixmrnj3qnn4aw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "astroquery"
+              "-m" "not remote_data"
+              ;; Some tests failed with parallel run, see
+              ;; <https://github.com/astropy/astroquery/issues/2968>.
+              ;; "-n" "auto"
+              "-k" (string-append
+                    ;; Failed: DID NOT RAISE <class
+                    ;; 'astropy.utils.exceptions.AstropyDeprecationWarning'>
+                    "not test_raises_deprecation_warning"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                ;; Some tests require write access to $HOME.
+                (setenv "HOME" "/tmp")
+                ;; Step out of the source directory to avoid interference;
+                ;; we want to run the installed code with extensions etc.
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v" test-flags))))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-matplotlib
+           python-pytest-astropy
+           python-pytest-dependency
+           python-pytest-doctestplus
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-astropy-healpix
+           python-beautifulsoup4
+           python-boto3
+           python-html5lib
+           python-keyring
+           ;; python-mocpy : Not packed yet, optional and Rust is required
+           python-numpy
+           python-pyvo
+           python-regions
+           python-requests))
+    (home-page "https://astroquery.readthedocs.io/en/latest/index.html")
+    (synopsis "Access online astronomical data resources")
+    (description
+     "Astroquery is a package that contains a collection of tools to access
+online Astronomical data.  Each web service has its own sub-package.")
+    (license license:bsd-3)))
+
+(define-public python-astroscrappy
+  (package
+    (name "python-astroscrappy")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astroscrappy" version))
+       (sha256
+        (base32 "0r2alg8imr201ykjsvr6y43bzw8mwbc4ddprn8f6qfw9k4hsx8ff"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "astroscrappy")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "astroscrappy/_compiler.c")))
+          (add-before 'check 'tests-preparation
+            (lambda _
+              (make-file-writable "astroscrappy/_compiler.c")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython-3
+           python-extension-helpers
+           python-pytest-astropy
+           python-scipy
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/astropy/astroscrappy")
+    (synopsis "Speedy Cosmic Ray Annihilation Package in Python")
+    (description
+     "Astro-SCRAPPY is designed to detect cosmic rays in images (numpy
+arrays), based on Pieter van Dokkum's L.A.Cosmic algorithm.  Much of this was
+originally adapted from cosmics.py written by Malte Tewes.  This is designed to
+be as fast as possible so some of the readability has been sacrificed,
+specifically in the C code.")
+    (license license:bsd-3)))
+
 (define-public python-baseband
   (package
     (name "python-baseband")
@@ -2758,42 +2900,6 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
-(define-public python-ci-watson
-  (package
-    (name "python-ci-watson")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ci_watson" version))
-       (sha256
-        (base32 "1rlhs8y0splmzr76z1s35zl68qm748nlayha8m81b0zhkhicxvhg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pypojrect-toml
-            (lambda _
-              (substitute* "setup.cfg"
-                ;; ImportError: Error importing plugin " no:legacypath": No
-                ;; module named ' no:legacypath'
-                (("-p no:legacypath") "")))))))
-    (native-inputs
-     (list python-pytest-astropy-header
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-crds
-           python-pytest
-           python-readchar
-           python-requests))
-    (home-page "https://github.com/spacetelescope/ci_watson")
-    (synopsis "Helper functions for STScI software")
-    (description
-     "This package contains a helper functionality to test ROMAN and JWST.")
-    (license license:bsd-3)))
-
 (define-public python-cesium
   (package
     (name "python-cesium")
@@ -2832,6 +2938,42 @@ attempting to maintain ISTP compliance
     (synopsis "Library for time-series feature extraction and processing")
     (description
      "Cesium is a library for time-series feature extraction and processing.")
+    (license license:bsd-3)))
+
+(define-public python-ci-watson
+  (package
+    (name "python-ci-watson")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ci_watson" version))
+       (sha256
+        (base32 "1rlhs8y0splmzr76z1s35zl68qm748nlayha8m81b0zhkhicxvhg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pypojrect-toml
+            (lambda _
+              (substitute* "setup.cfg"
+                ;; ImportError: Error importing plugin " no:legacypath": No
+                ;; module named ' no:legacypath'
+                (("-p no:legacypath") "")))))))
+    (native-inputs
+     (list python-pytest-astropy-header
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-crds
+           python-pytest
+           python-readchar
+           python-requests))
+    (home-page "https://github.com/spacetelescope/ci_watson")
+    (synopsis "Helper functions for STScI software")
+    (description
+     "This package contains a helper functionality to test ROMAN and JWST.")
     (license license:bsd-3)))
 
 (define-public python-cmyt
@@ -4755,6 +4897,38 @@ export the simulated X-ray events to other software packages to simulate the
 end products of specific X-ray observatories.")
     (license license:bsd-3)))
 
+(define-public python-regularizepsf
+  (package
+    (name "python-regularizepsf")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "regularizepsf" version))
+       (sha256
+        (base32 "1ial8i9nshhpn3lsgnjqm94dfrzxwz2qgpd8bjzmml1ls0j7sm9v"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-matplotlib
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sep-pjw))
+    (home-page "https://github.com/punch-mission/regularizepsf")
+    (synopsis "Point spread function modeling and regularization")
+    (description
+     "This package implements functionality of @acronym{Point Spread Function,
+PSF} describing how the optical system spreads light from sources.")
+    (license license:expat)))
+
 (define-public python-sirilic
   (package
     (name "python-sirilic")
@@ -4794,6 +4968,49 @@ and the options
 @item batch process multiple channel and sessions
 @end itemize")
     (license license:gpl3)))
+
+(define-public python-skyfield
+  (package
+    (name "python-skyfield")
+    (version "1.53")
+    (source
+     (origin
+       (method git-fetch) ; PyPI tarball lacks test data
+       (uri (git-reference
+             (url "https://github.com/skyfielders/python-skyfield")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jj0bjvzlfxr4qaq6mnybhwabhz9n70afi8sd6a26wl79s5bw1q9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-m" "assay" "--batch" "skyfield.tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "ci"
+                  (apply invoke "python" test-flags))))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-assay
+           python-pandas
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-certifi
+           python-jplephem
+           python-numpy
+           python-sgp4))
+    (home-page "https://rhodesmill.org/skyfield/")
+    (synopsis "Astronomy for Python")
+    (description
+     "Skyfield computes positions for the stars, planets, and satellites in
+orbit around the Earth.")
+    (license license:expat)))
 
 (define-public python-sncosmo
   (package
@@ -5059,111 +5276,6 @@ observations from Optical and @acronym{Near-infrared spectroscopy,NIR}
 instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
-
-(define-public python-astroquery
-  (package
-    (name "python-astroquery")
-    (version "0.4.9.post1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "astroquery" version))
-       (sha256
-        (base32 "15viynwq96gyb12q894fi2j4jlzmba3lk86l469ixmrnj3qnn4aw"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--pyargs" "astroquery"
-              "-m" "not remote_data"
-              ;; Some tests failed with parallel run, see
-              ;; <https://github.com/astropy/astroquery/issues/2968>.
-              ;; "-n" "auto"
-              "-k" (string-append
-                    ;; Failed: DID NOT RAISE <class
-                    ;; 'astropy.utils.exceptions.AstropyDeprecationWarning'>
-                    "not test_raises_deprecation_warning"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                ;; Some tests require write access to $HOME.
-                (setenv "HOME" "/tmp")
-                ;; Step out of the source directory to avoid interference;
-                ;; we want to run the installed code with extensions etc.
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-v" test-flags))))))))
-    (native-inputs
-     (list nss-certs-for-test
-           python-matplotlib
-           python-pytest-astropy
-           python-pytest-dependency
-           python-pytest-doctestplus
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-astropy-healpix
-           python-beautifulsoup4
-           python-boto3
-           python-html5lib
-           python-keyring
-           ;; python-mocpy : Not packed yet, optional and Rust is required
-           python-numpy
-           python-pyvo
-           python-regions
-           python-requests))
-    (home-page "https://astroquery.readthedocs.io/en/latest/index.html")
-    (synopsis "Access online astronomical data resources")
-    (description
-     "Astroquery is a package that contains a collection of tools to access
-online Astronomical data.  Each web service has its own sub-package.")
-    (license license:bsd-3)))
-
-(define-public python-astroscrappy
-  (package
-    (name "python-astroscrappy")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "astroscrappy" version))
-       (sha256
-        (base32 "0r2alg8imr201ykjsvr6y43bzw8mwbc4ddprn8f6qfw9k4hsx8ff"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "--pyargs" "astroscrappy")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'preparations
-            (lambda _ (setenv "HOME" "/tmp")))
-          (add-before 'install 'writable-compiler
-            (lambda _ (make-file-writable "astroscrappy/_compiler.c")))
-          (add-before 'check 'tests-preparation
-            (lambda _
-              (make-file-writable "astroscrappy/_compiler.c")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list python-cython-3
-           python-extension-helpers
-           python-pytest-astropy
-           python-scipy
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-numpy))
-    (home-page "https://github.com/astropy/astroscrappy")
-    (synopsis "Speedy Cosmic Ray Annihilation Package in Python")
-    (description
-     "Astro-SCRAPPY is designed to detect cosmic rays in images (numpy
-arrays), based on Pieter van Dokkum's L.A.Cosmic algorithm.  Much of this was
-originally adapted from cosmics.py written by Malte Tewes.  This is designed to
-be as fast as possible so some of the readability has been sacrificed,
-specifically in the C code.")
-    (license license:bsd-3)))
 
 (define-public python-hvpy
   (package
@@ -5657,38 +5769,6 @@ interest, and which require portability between platforms or ease of scripting."
      "PyVO is a package providing access to remote data and services of the
 Virtual observatory (VO) using Python.")
     (license license:bsd-3)))
-
-(define-public python-regularizepsf
-  (package
-    (name "python-regularizepsf")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "regularizepsf" version))
-       (sha256
-        (base32 "1ial8i9nshhpn3lsgnjqm94dfrzxwz2qgpd8bjzmml1ls0j7sm9v"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-mpl
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-h5py
-           python-matplotlib
-           python-numpy
-           python-scikit-image
-           python-scipy
-           python-sep-pjw))
-    (home-page "https://github.com/punch-mission/regularizepsf")
-    (synopsis "Point spread function modeling and regularization")
-    (description
-     "This package implements functionality of @acronym{Point Spread Function,
-PSF} describing how the optical system spreads light from sources.")
-    (license license:expat)))
 
 (define-public python-reproject
   (package
@@ -6838,43 +6918,6 @@ implementation package such as asdf-astropy.")
        "This package provides ASDF schemas for validating FITS tags.")
       (license license:bsd-3))))
 
-(define python-asdf-time-schemas
-  ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "a3062066ee70f1b934f7339d1ce96a5c5f61f055")
-        (revision "3"))
-    (package
-      (name "python-asdf-time-schemas")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/asdf-format/asdf-time-schemas")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1i8lm2d18r6fadsch52dxc2zp1swkfa8w40s03albn7p290n4a97"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        ;; Dependency cycle with python-asdf
-        #:tests? #f
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
-      (native-inputs (list python-setuptools-scm))
-      (propagated-inputs (list python-asdf-standard
-                               python-asdf-unit-schemas
-                               python-importlib-resources))
-      (home-page "https://github.com/asdf-format/asdf-fits-schemas")
-      (synopsis "Schemas for storing time in ASDF")
-      (description
-       "This package provides ASDF schemas for validating time tags.")
-      (license license:bsd-3))))
-
 (define python-asdf-unit-schemas
   (package
     (name "python-asdf-unit-schemas")
@@ -7281,49 +7324,6 @@ representation of the same items within the Python code.  That is not a concern
 for Roman since FITS format data files will not be used by the Roman calibration
 pipelines.")
     (license license:bsd-3)))
-
-(define-public python-skyfield
-  (package
-    (name "python-skyfield")
-    (version "1.53")
-    (source
-     (origin
-       (method git-fetch) ; PyPI tarball lacks test data
-       (uri (git-reference
-             (url "https://github.com/skyfielders/python-skyfield")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0jj0bjvzlfxr4qaq6mnybhwabhz9n70afi8sd6a26wl79s5bw1q9"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-m" "assay" "--batch" "skyfield.tests")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "ci"
-                  (apply invoke "python" test-flags))))))))
-    (native-inputs
-     (list nss-certs-for-test
-           python-assay
-           python-pandas
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-certifi
-           python-jplephem
-           python-numpy
-           python-sgp4))
-    (home-page "https://rhodesmill.org/skyfield/")
-    (synopsis "Astronomy for Python")
-    (description
-     "Skyfield computes positions for the stars, planets, and satellites in
-orbit around the Earth.")
-    (license license:expat)))
 
 (define-public python-stsci-image
   (package
