@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -116,6 +118,36 @@ staying as close to their API as is reasonable.")
 after Apache log4j which uses the Apache Portable Runtime for most
 platform-specific code.")
     (license license:asl2.0)))
+
+(define-public logmich
+  ;; XXX: Does not release anymore.
+  (let ((commit "0cc475efc10c6786d1d805c997fab1d7da60252a")
+        (revision "0"))
+    (package
+      (name "logmich")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/logmich/logmich")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1q7dkw3sw2578kx4vf646hzzlca82rnprbvc1bp2nf218id8n326"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")))
+      (inputs (list fmt-8))
+      (native-inputs (list tinycmmc))
+      (home-page "https://github.com/logmich/logmich")
+      (synopsis "Trivial logging library")
+      (description
+       "This package provides a bare-bones logging library for C++, with only
+a @code{printf}-like syntax and five logging levels.")
+      (license license:gpl3+))))
 
 (define-public glog
   (package
