@@ -1606,7 +1606,8 @@ represented by a QPoint or a QSize.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1n5fq0gppx6rzgzkkskd077jygzj7cindb7zwr35yvbg5l69gdc8"))))
+                "1n5fq0gppx6rzgzkkskd077jygzj7cindb7zwr35yvbg5l69gdc8"))
+              (patches (search-patches "kwayland-5-fix-build.patch"))))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs

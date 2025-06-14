@@ -1724,6 +1724,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/krita-bump-sip-abi-version-to-12.8.patch	\
   %D%/packages/patches/krita-xsimd-13-compat.patch	\
   %D%/packages/patches/kvmfr-linux-module-fix-build.patch	\
+  %D%/packages/patches/kwayland-5-fix-build.patch		\
   %D%/packages/patches/kwin-unwrap-executable-name-for-dot-desktop-search.patch\
   %D%/packages/patches/laby-make-install.patch			\
   %D%/packages/patches/laby-use-tmpdir-from-runtime.patch	\
