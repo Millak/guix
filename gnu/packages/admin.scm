@@ -2857,10 +2857,14 @@ development, not the kernel implementation of ACPI.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "08mfclgdy6cb8xgp8sc7fpm4qxay37j71b1b3niywi6x206i5m2m"))))
-    (build-system python-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
-     (list python-psutil-7 python-urwid-3))
+     (list python-psutil-7
+           python-urwid-3))
     (home-page "https://github.com/amanusk/s-tui")
     (synopsis "Interactive terminal stress test and monitoring tool")
     (description
