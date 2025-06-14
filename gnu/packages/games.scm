@@ -10266,12 +10266,14 @@ download and unpack them separately.")
        (uri (string-append "mirror://sourceforge/btanks/btanks-source/"
                            "btanks-" version ".tar.bz2"))
        (sha256
-        (base32 "0ha35kxc8xlbg74wsrbapfgxvcrwy6psjkqi7c6adxs55dmcxliz"))))
+        (base32 "0ha35kxc8xlbg74wsrbapfgxvcrwy6psjkqi7c6adxs55dmcxliz"))
+       (patches
+        (search-patches "btanks-scons-python.patch"
+                        "btanks-sl08-python.patch"))))
     (build-system scons-build-system)
     (arguments
      (list
       #:tests? #f ;there are none
-      #:scons scons-python2
       #:scons-flags
       #~(list (string-append "prefix=" #$output))
       #:phases
@@ -10279,12 +10281,11 @@ download and unpack them separately.")
           (add-after 'unpack 'replace-removed-scons-syntax
             (lambda _
               (substitute* "SConstruct"
-                (("Options")
-                 "Variables")
-                (("opts.Add\\(BoolOption.*")
-                 "opts.Add('gcc_visibility', 'gcc visibility', 'true')")
-                (("opts.Add\\(EnumOption.*")
-                 "opts.Add('mode', 'build mode', 'release')"))))
+                ;; XXX: Shorten CheckLibWithHeader.
+                (("\"xmmintrin\\.h\"")
+                 "'xmmintrin.h'")
+                (("(conf\\.CheckLibWithHeader\\(.*), \".*\\)" all check)
+                 (string-append check ")")))))
           (add-after 'set-paths 'set-sdl-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (setenv "CPATH"
@@ -10326,6 +10327,7 @@ download and unpack them separately.")
                   libsmpeg-with-sdl1
                   libvorbis
                   lua-5.1
+                  python-wrapper
                   (sdl-union (list sdl sdl-mixer sdl-image sdl-ttf))
                   zlib))
     (native-inputs (list pkg-config zip))
