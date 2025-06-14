@@ -2066,7 +2066,6 @@ custom formats for representing color values..")
     (arguments
      (list
       #:tests? #f
-      #:scons scons-python2
       #:scons-flags
       #~(list (string-append "DESTDIR=" %output))
       #:phases
