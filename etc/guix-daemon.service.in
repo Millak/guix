@@ -21,6 +21,9 @@ User=guix-daemon
 # effect of 'gnu-store.mount'.
 PrivateMounts=true
 BindPaths=@storedir@
+# Disable host file system mount propagation to keep service view of the
+# store read-write after 'gnu-store.mount' makes it read-only system-wide.
+MountFlags=private
 
 # Provide the CAP_CHOWN capability so that guix-daemon can create and chown
 # /var/guix/profiles/per-user/$USER and also chown failed build directories
