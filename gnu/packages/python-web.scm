@@ -75,6 +75,7 @@
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -325,6 +326,50 @@ server process.")
     (synopsis "Pypi.org caching server")
     (description "This package implements a reliable private and pypi.org
 caching server.")
+    (license license:expat)))
+
+(define-public python-dicomweb-client
+  (package
+    (name "python-dicomweb-client")
+    (version "0.60.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ImagingDataCommons/dicomweb-client")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zad0905cc4jy4hnh9yhcw63bg25f7xa33x9rj9fhh5r4fznha8d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-dynamic-versioning
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Dynamic versioning via 'uv-dynamic-versioning' is
+                ;; not suitable for Guix.
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \""
+                                #$version "\""))))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-localserver))
+    (propagated-inputs
+     (list python-numpy
+           python-pillow
+           python-pydicom
+           python-requests
+           python-retrying))
+    (home-page "https://github.com/ImagingDataCommons/dicomweb-client")
+    (synopsis "Python client for DICOMweb RESTful services")
+    (description
+     "@code{dicomweb_client} provides client intefaces for DICOMweb RESTful
+services QIDO-RS, WADO-RS and STOW-RS to search, retrieve and store
+DICOM objects over the web, respectively.")
     (license license:expat)))
 
 (define-public python-docusign-esign
