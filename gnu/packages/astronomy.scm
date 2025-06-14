@@ -6440,6 +6440,49 @@ implementing calibration pipeline software.")
     ;; LICENSE Association of Universities for Research in Astronomy (AURA)
     (license license:bsd-3)))
 
+(define-public python-stpsf
+  (package
+    (name "python-stpsf")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stpsf" version))
+       (sha256
+        (base32 "191bwwv0ji7m74cglk5jvfgx6c4yfxhx6fd0w5n9k363cxqqp0x6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+       ;; XXX: Tests and installation require 100MiB archive, upstream does
+       ;; not provide any version to pin particular data file per release,
+       ;; check if they can apply any tag.
+       ;;
+       ;; See: <https://stpsf.readthedocs.io/en/stable/installation.html>,
+       ;; <https://github.com/spacetelescope/stpsf/issues/76>.
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools-next
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-matplotlib
+           python-numpy
+           python-photutils
+           python-poppy
+           python-pysiaf
+           python-scipy
+           python-synphot))
+    (home-page "https://stpsf.readthedocs.io")
+    (synopsis "Creates simulated point spread functions for Space Telescopes)")
+    (description
+     "STPSF produces simulated PSFs for the James Webb Space Telescope, NASA's
+flagship infrared space telescope.  STPSF can simulate images for any of the four
+science instruments plus the fine guidance sensor, including both direct
+imaging, coronagraphic, and spectroscopic modes.")
+    (license license:bsd-3)))
+
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
