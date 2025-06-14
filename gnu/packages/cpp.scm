@@ -3970,6 +3970,44 @@ efficient ordered insertions and lookup, while sacrifing performance for
 ordered erase operations.")
     (license license:expat)))
 
+(define-public tinygettext
+  ;; XXX: Does not release anymore.
+  (let ((commit "ef4164639004d7de5bf8ab28ed0e85ea521b7c5e")
+        (revision "0"))
+    (package
+      (name "tinygettext")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tinygettext/tinygettext")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a8l92nba33f3j2hk6ckrn9javmy2xbnsfkks1z740y3bj4sxzw9"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda _
+                (substitute* "../source/test/test.sh"
+                  (("^\\.")
+                   (getcwd)))
+                (with-directory-excursion "../source/test"
+                  (invoke "bash" "test.sh")))))))
+      (native-inputs (list tinycmmc))
+      (home-page "https://github.com/tinygettext/tinygettext")
+      (synopsis "Simple gettext replacement")
+      (description
+       "This package provides a simple gettext replacement that works directly
+on @code{.po} files and doesn't need @code{.mo} files pre-generated.")
+      (license license:expat))))
+
 (define-public tl-optional
   (package
     (name "tl-optional")
