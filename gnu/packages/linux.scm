@@ -1231,6 +1231,25 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;;; Specialized kernel variants.
 ;;;
 
+(define-public %dummy-linux-kernel-for-container
+  (hidden-package
+   (package
+     (name "linux-dummy")
+     (version "0.0.0")
+     (source #f)
+     (build-system copy-build-system)
+     (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (delete 'unpack)
+                (replace 'install
+                  (lambda _
+                    (mkdir-p #$output))))))
+     (home-page "")
+     (synopsis "Dummy Linux kernel for @command{guix system container}")
+     (description "")
+     (license #f))))
+
 (define-public linux-libre-arm-generic
   (make-linux-libre* linux-libre-version
                      linux-libre-gnu-revision

@@ -40,6 +40,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
+  #:use-module (gnu packages linux)
   #:export (system-container
             containerized-operating-system
             container-script
@@ -152,6 +153,7 @@ containerized OS.  EXTRA-FILE-SYSTEMS is a list of file systems to add to OS."
   (define os-with-base-essential-services
     (operating-system
       (inherit os)
+      (kernel %dummy-linux-kernel-for-container)
       (swap-devices '()) ; disable swap
       (services
        (append services-to-add
