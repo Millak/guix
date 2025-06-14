@@ -572,31 +572,31 @@ software.")
   (package
     (inherit scons)
     (version "3.0.4")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/SCons/scons")
-                   (commit version)))
-             (file-name (git-file-name "scons" version))
-             (sha256
-              (base32
-               "1xy8jrwz87y589ihcld4hv7wn122sjbz914xn8h50ww77wbhk8hn"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SCons/scons")
+             (commit version)))
+       (file-name (git-file-name "scons" version))
+       (sha256
+        (base32 "1xy8jrwz87y589ihcld4hv7wn122sjbz914xn8h50ww77wbhk8hn"))))
     (arguments
-     `(#:use-setuptools? #f                ; still relies on distutils
-       #:tests? #f                         ; no 'python setup.py test' command
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'bootstrap
-           (lambda _
-             (substitute* "src/engine/SCons/compat/__init__.py"
-               (("sys.modules\\[new\\] = imp.load_module\\(old, \\*imp.find_module\\(old\\)\\)")
-                "sys.modules[new] = __import__(old)"))
-             (substitute* "src/engine/SCons/Platform/__init__.py"
-               (("mod = imp.load_module\\(full_name, file, path, desc\\)")
-                "mod = __import__(full_name)"))
-             (invoke "python" "bootstrap.py" "build/scons" "DEVELOPER=guix")
-             (chdir "build/scons")
-             #t)))))
+     (list
+      #:use-setuptools? #f                ; still relies on distutils
+      #:tests? #f                         ; no 'python setup.py test' command
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'bootstrap
+            (lambda _
+              (substitute* "src/engine/SCons/compat/__init__.py"
+                (("sys.modules\\[new\\] = imp.load_module\\(old, \\*imp.find_module\\(old\\)\\)")
+                 "sys.modules[new] = __import__(old)"))
+              (substitute* "src/engine/SCons/Platform/__init__.py"
+                (("mod = imp.load_module\\(full_name, file, path, desc\\)")
+                 "mod = __import__(full_name)"))
+              (invoke "python" "bootstrap.py" "build/scons" "DEVELOPER=guix")
+              (chdir "build/scons"))))))
     (native-inputs '())))
 
 (define-public scons-python2
