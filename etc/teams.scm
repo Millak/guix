@@ -1143,7 +1143,8 @@ the \"texlive\" importer."
   python lisp)
 
 (define-member (person "Gabriel Wicki"
-                       "gabriel@erlikon.ch")
+                       "gabriel@erlikon.ch"
+                       "gabber")
   audio documentation electronics embedded)
 
 (define-member (person "Ekaitz Zarraga"
