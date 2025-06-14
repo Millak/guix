@@ -1476,41 +1476,43 @@ engine (except effects) that can be used for layering or split patches.")
   (package
     (name "klick")
     (version "0.12.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://das.nasophon.de/download/klick-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0hmcaywnwzjci3pp4xpvbijnnwvibz7gf9xzcdjbdca910y5728j"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://das.nasophon.de/download/klick-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "0hmcaywnwzjci3pp4xpvbijnnwvibz7gf9xzcdjbdca910y5728j"))))
     (build-system scons-build-system)
     (arguments
-     `(#:scons-flags (list (string-append "PREFIX=" %output))
-       #:scons ,scons-python2
-       #:tests? #f ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'be-permissive
-           (lambda _
-             (substitute* "SConstruct"
-               (("'-Wall'") "'-Wall', '-fpermissive'"))
-             #t))
-         (add-after 'unpack 'replace-removed-scons-syntax
-           (lambda _
-             (substitute* "SConstruct"
-               (("BoolOption") "BoolVariable")
-               (("PathOption") "PathVariable")
-               (("Options") "Variables"))
-             #t)))))
-    (inputs
-     (list boost
-           jack-1
-           libsndfile
-           libsamplerate
-           liblo
-           rubberband))
-    (native-inputs
-     (list pkg-config))
+     (list
+      #:scons-flags
+      #~(list (string-append "PREFIX=" %output))
+      #:scons scons-python2
+      #:tests? #f ;no "check" target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'be-permissive
+            (lambda _
+              (substitute* "SConstruct"
+                (("'-Wall'")
+                 "'-Wall', '-fpermissive'"))))
+          (add-after 'unpack 'replace-removed-scons-syntax
+            (lambda _
+              (substitute* "SConstruct"
+                (("BoolOption")
+                 "BoolVariable")
+                (("PathOption")
+                 "PathVariable")
+                (("Options")
+                 "Variables")))))))
+    (inputs (list boost
+                  jack-1
+                  libsndfile
+                  libsamplerate
+                  liblo
+                  rubberband))
+    (native-inputs (list pkg-config))
     (home-page "http://das.nasophon.de/klick/")
     (synopsis "Metronome for JACK")
     (description
