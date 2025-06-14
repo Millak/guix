@@ -39,6 +39,7 @@
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
@@ -1007,6 +1009,36 @@ many more.")
     ;; The 'LICENSE' file explains that a subset is available under more
     ;; permissive licenses.
     (license license:gpl3+)))
+
+(define-public geomcpp
+  ;; XXX: No releases.
+  (let ((commit "730b3d35bc4fcd5f68764239682d936bae192811")
+        (revision "0"))
+    (package
+      (name "geomcpp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Grumbel/geomcpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qswqbyzsns8wp1xzkl74nywdpg9f6mjjry0y3c5ghz4ah0hg8gr"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")))
+      (inputs (list glm))
+      (native-inputs (list googletest tinycmmc))
+      (home-page "https://github.com/Grumbel/geomcpp")
+      (synopsis "Collection of point, size and rect classes")
+      (description
+       "This package provides a very basic collection of point, size and rect
+classes for C++.")
+      (license license:gpl3+))))
 
 (define-public imath
   (package
