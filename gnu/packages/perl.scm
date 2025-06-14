@@ -9909,6 +9909,47 @@ the @dfn{Pod} (plain old documentation) markup language that is typically
 used for writing documentation for Perl and for Perl modules.")
     (license (package-license perl))))
 
+(define-public perl-pod-site
+  (package
+    (name "perl-pod-site")
+    (version "0.56")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DW/DWHEELER/Pod-Site-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0imi2sjrjnkc0p8j2g5alw492f5zgi1ryhw1izdwbvl85gabigmd"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (delete-file "t/build.t"))))) ;requires internet access
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-podsite
+            (lambda _
+              (wrap-program (string-append #$output "/bin/podsite")
+                `("PERL5LIB" ":" prefix
+                  (,(getenv "PERL5LIB") ,(string-append #$output
+                                          "/lib/perl5/site_perl")))))))))
+    (native-inputs (list perl-module-build
+                         perl-test-file
+                         perl-test-mockmodule
+                         perl-test-pod
+                         perl-test-pod-coverage
+                         perl-test-xpath))
+    (propagated-inputs (list perl-html-parser ;for HTML::Entities
+                             perl-object-tiny))
+    (home-page "https://metacpan.org/release/Pod-Site")
+    (synopsis "Build browsable HTML documentation for Perl program")
+    (description
+     "This is a Perl package designed to generate browsable HTML
+documentation from the POD (Plain Old Documentation) embedded in Perl source
+code.")
+    (license (package-license perl))))
+
 (define-public perl-pod-spell
   (package
     (name "perl-pod-spell")
