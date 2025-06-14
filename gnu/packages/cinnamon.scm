@@ -29,10 +29,16 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages bootstrap)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -42,6 +48,8 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
@@ -123,6 +131,55 @@
 GTK desktop environments (Cinnamon, MATE and Xfce) and required to implement
 cross-DE solutions.")
     (license license:lgpl3+)))
+
+(define-public python-xapp
+  (package
+    (name "python-xapp")
+    (version "2.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/linuxmint/python3-xapp")
+             (recursive? #f)
+             (commit "master")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06v84bvhhhx7lf7bsl2wdxh7vlkpb2fczjh6717b9jjr7xhvif8r"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests provided
+      #:imported-modules `((guix build python-build-system)
+                           ,@%meson-build-system-modules)
+      #:modules '((guix build utils)
+                  (guix build meson-build-system)
+                  ((guix build python-build-system)
+                   #:prefix python:))))
+    (native-inputs
+     (list gobject-introspection
+           intltool
+           python-wrapper))
+    (inputs
+     (list libxapp))
+    (propagated-inputs
+     (list python-configobj
+           python-distutils-extra
+           python-pycairo
+           python-pygobject
+           python-pyinotify
+           python-pyxdg
+           python-setproctitle
+           python-setuptools
+           python-unidecode
+           python-xdg
+           python-xlib))
+    (home-page "https://github.com/linuxmint/python3-xapp")
+    (synopsis "Python 3 XApp library")
+    (description
+     "Provides Python 3 bindings for libxapp, including a toolkit to build and
+persist XApp settings windows using GSettings.")
+    (license license:lgpl2.0+)))
 
 (define-public cinnamon-desktop
   (package
