@@ -4319,6 +4319,39 @@ cache.  It is possible to download the full background cache to your local
 machine.")
     (license license:bsd-3)))
 
+(define-public python-jwst-reffiles
+  (package
+    (name "python-jwst-reffiles")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jwst_reffiles" version))
+       (sha256
+        (base32 "1dlw955cw49qczdmimglmlcbal8vd3wbv5j48ckllvjgd59pwr3s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; One test fails with error: FileNotFoundError: [Errno 2] No such file
+      ;; or directory.
+      #:test-flags #~(list "-k" "not test_calib_prep_steps")))
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-astropy
+           python-jwst
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/spacetelescope/jwst_reffiles")
+    (synopsis "Tool for JWST's CRDS-formatted reference files creation")
+    (description
+     "This package provides a tool to create @acronym{Calibration References
+Data System,CRDS}-formatted reference files for @acronym{James Webb Space
+Telescope,JWST} from a set of input dark current files and a set of flat field
+files.")
+    (license license:bsd-3)))
+
 (define-public python-libstempo
   (package
     (name "python-libstempo")
@@ -4573,6 +4606,74 @@ perform MCMC fitting of radiative models to X-ray, GeV, and TeV spectra using
 Carlo.")
     (license license:bsd-3)))
 
+(define-public python-ndcube
+  (package
+    (name "python-ndcube")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ndcube" version))
+       (sha256
+        (base32 "0hf261l36jxmd0r8sh2vyxaapv8gcdmnnv82k0hqvq6wh1qp5ksv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-append
+                    ;; Break cycle: python-ndcube -> python-specutils ->
+                    ;; python-ndcube, see
+                    ;; <https://github.com/sunpy/ndcube/issues/733>.
+                    "not test_rebin_specutils"
+                    ;; Introduced with astropy 6.1.3, see
+                    ;; <https://github.com/sunpy/ndcube/issues/758>.
+                    " and not test_2d[celestial_2d_ape14_wcs]"
+                    " and not test_2d[celestial_2d_fitswcs]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'break-cycle
+            (lambda _
+              (substitute* "ndcube/tests/test_ndcube.py"
+                (("from specutils import Spectrum1D") ""))))
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-gwcs
+           python-matplotlib
+           python-mpl-animators
+           python-numpy
+           python-reproject))
+    (native-inputs
+     (list python-dask
+           python-pytest
+           python-pytest-astropy
+           python-pytest-mpl
+           ;; python-pytest-memray ; not packaged yet
+           python-pytest-xdist
+           python-scipy
+           python-setuptools
+           python-setuptools-scm-next
+           python-sunpy-minimal
+           python-wheel))
+    (home-page "https://docs.sunpy.org/projects/ndcube/")
+    (synopsis "Multi-dimensional contiguous and non-contiguous coordinate aware arrays")
+    (description
+     "@code{ndcube} is a package for manipulating, inspecting and visualizing
+multi-dimensional contiguous and non-contiguous coordinate-aware data arrays.
+
+It combines data, uncertainties, units, metadata, masking, and coordinate
+transformations into classes with unified slicing and generic coordinate
+transformations and plotting/animation capabilities.  It is designed to handle
+data of any number of dimensions and axis types (e.g. spatial, temporal,
+spectral, etc.) whose relationship between the array elements and the real world
+can be described by @acronym{WCS, World Coordinate System} translations.")
+    (license license:bsd-2)))
+
 (define-public python-petrofit
   (package
     (name "python-petrofit")
@@ -4732,6 +4833,61 @@ position-frequency slice.")
      (native-inputs
       (list python-setuptools
             python-wheel)))))
+
+(define-public python-pyregion
+  (package
+    (name "python-pyregion")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyregion" version))
+       (sha256
+        (base32 "09a98v3zk1vdjns1q64al58mapr4cns3nlnyi6b26wqi888qfjg8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; setup.py was removed in b26ec4fe88e29447dc8391fcdef7082a4f7876ce
+          ;; TODO: Check how to implement it in python-build-system.
+          (add-after 'unpack 'create-setup.py
+            (lambda _
+              (call-with-output-file "setup.py"
+                (lambda (port)
+                  (format port "from setuptools import setup
+from extension_helpers import get_extensions
+setup(ext_modules=get_extensions())")))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-pyparsing))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-pytest
+           python-pytest-astropy
+           python-pytest-astropy-header
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/astropy/pyregion")
+    (synopsis "Python parser for ds9 region files")
+    (description
+     "@code{pyregion} is a python module to parse ds9 region files.  It also
+supports ciao region files.
+Features:
+@itemize
+@item ds9 and ciao region files.
+@item (physical, WCS) coordinate conversion to the image coordinate.
+@item convert regions to matplotlib patches.
+@item convert regions to spatial filter (i.e., generate mask images)
+@end itemize")
+    (license license:expat)))
 
 (define-public python-pysiril
   (package
@@ -4897,6 +5053,50 @@ export the simulated X-ray events to other software packages to simulate the
 end products of specific X-ray observatories.")
     (license license:bsd-3)))
 
+(define-public python-radiospectra
+  (package
+    (name "python-radiospectra")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "radiospectra" version))
+       (sha256
+        (base32 "14p4hp9yncyjsrbys0yjq7jbj0n9wf0x5sy67kilqrw14d1xvzch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-doctestplus
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-sunpy-soar
+           python-wheel))
+    (propagated-inputs
+     (list python-cdflib
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-sunpy))
+    (home-page "https://docs.sunpy.org/projects/radiospectra")
+    (synopsis "Support for radio spectra on solar physics")
+    (description
+     "@code{radiospectra} provides support for some type of radio spectra in
+solar physics.")
+    (license license:bsd-2)))
+
 (define-public python-regularizepsf
   (package
     (name "python-regularizepsf")
@@ -4928,6 +5128,34 @@ end products of specific X-ray observatories.")
      "This package implements functionality of @acronym{Point Spread Function,
 PSF} describing how the optical system spreads light from sources.")
     (license license:expat)))
+
+(define-public python-sep
+  (package/inherit libsep
+    (name "python-sep")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; numpy = "^1.26.4"
+                (("1.26.4") "1.26.2"))))
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(package-version this-package)))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (synopsis "Python library for Source Extraction and Photometry")))
 
 (define-public python-sirilic
   (package
@@ -5339,39 +5567,6 @@ Astronomical Almanac to within 0.0005 arcseconds (half a @emph{mas} or
 milliarcsecond).")
     (license license:expat)))
 
-(define-public python-jwst-reffiles
-  (package
-    (name "python-jwst-reffiles")
-    (version "1.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jwst_reffiles" version))
-       (sha256
-        (base32 "1dlw955cw49qczdmimglmlcbal8vd3wbv5j48ckllvjgd59pwr3s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; One test fails with error: FileNotFoundError: [Errno 2] No such file
-      ;; or directory.
-      #:test-flags #~(list "-k" "not test_calib_prep_steps")))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-astropy
-           python-jwst
-           python-matplotlib
-           python-numpy
-           python-scipy))
-    (home-page "https://github.com/spacetelescope/jwst_reffiles")
-    (synopsis "Tool for JWST's CRDS-formatted reference files creation")
-    (description
-     "This package provides a tool to create @acronym{Calibration References
-Data System,CRDS}-formatted reference files for @acronym{James Webb Space
-Telescope,JWST} from a set of input dark current files and a set of flat field
-files.")
-    (license license:bsd-3)))
-
 (define-public python-kanon
   (package
     (name "python-kanon")
@@ -5454,74 +5649,6 @@ operations (PrecisionContext)
 astronomical tables
 @end itemize")
     (license license:bsd-3)))
-
-(define-public python-ndcube
-  (package
-    (name "python-ndcube")
-    (version "2.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ndcube" version))
-       (sha256
-        (base32 "0hf261l36jxmd0r8sh2vyxaapv8gcdmnnv82k0hqvq6wh1qp5ksv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-append
-                    ;; Break cycle: python-ndcube -> python-specutils ->
-                    ;; python-ndcube, see
-                    ;; <https://github.com/sunpy/ndcube/issues/733>.
-                    "not test_rebin_specutils"
-                    ;; Introduced with astropy 6.1.3, see
-                    ;; <https://github.com/sunpy/ndcube/issues/758>.
-                    " and not test_2d[celestial_2d_ape14_wcs]"
-                    " and not test_2d[celestial_2d_fitswcs]"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'break-cycle
-            (lambda _
-              (substitute* "ndcube/tests/test_ndcube.py"
-                (("from specutils import Spectrum1D") ""))))
-          (add-before 'check 'set-home-env
-            (lambda _
-              ;; Tests require HOME to be set.
-              ;;  Permission denied: '/homeless-shelter'
-              (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-astropy
-           python-gwcs
-           python-matplotlib
-           python-mpl-animators
-           python-numpy
-           python-reproject))
-    (native-inputs
-     (list python-dask
-           python-pytest
-           python-pytest-astropy
-           python-pytest-mpl
-           ;; python-pytest-memray ; not packaged yet
-           python-pytest-xdist
-           python-scipy
-           python-setuptools
-           python-setuptools-scm-next
-           python-sunpy-minimal
-           python-wheel))
-    (home-page "https://docs.sunpy.org/projects/ndcube/")
-    (synopsis "Multi-dimensional contiguous and non-contiguous coordinate aware arrays")
-    (description
-     "@code{ndcube} is a package for manipulating, inspecting and visualizing
-multi-dimensional contiguous and non-contiguous coordinate-aware data arrays.
-
-It combines data, uncertainties, units, metadata, masking, and coordinate
-transformations into classes with unified slicing and generic coordinate
-transformations and plotting/animation capabilities.  It is designed to handle
-data of any number of dimensions and axis types (e.g. spatial, temporal,
-spectral, etc.) whose relationship between the array elements and the real world
-can be described by @acronym{WCS, World Coordinate System} translations.")
-    (license license:bsd-2)))
 
 (define-public python-photutils
   (package
@@ -6452,61 +6579,6 @@ astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
 N-Chilada and RAMSES AMR outputs.")
     (license license:gpl3+)))
 
-(define-public python-pyregion
-  (package
-    (name "python-pyregion")
-    (version "2.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyregion" version))
-       (sha256
-        (base32 "09a98v3zk1vdjns1q64al58mapr4cns3nlnyi6b26wqi888qfjg8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; setup.py was removed in b26ec4fe88e29447dc8391fcdef7082a4f7876ce
-          ;; TODO: Check how to implement it in python-build-system.
-          (add-after 'unpack 'create-setup.py
-            (lambda _
-              (call-with-output-file "setup.py"
-                (lambda (port)
-                  (format port "from setuptools import setup
-from extension_helpers import get_extensions
-setup(ext_modules=get_extensions())")))))
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs
-     (list python-astropy
-           python-numpy
-           python-pyparsing))
-    (native-inputs
-     (list python-cython
-           python-extension-helpers
-           python-pytest
-           python-pytest-astropy
-           python-pytest-astropy-header
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/astropy/pyregion")
-    (synopsis "Python parser for ds9 region files")
-    (description
-     "@code{pyregion} is a python module to parse ds9 region files.  It also
-supports ciao region files.
-Features:
-@itemize
-@item ds9 and ciao region files.
-@item (physical, WCS) coordinate conversion to the image coordinate.
-@item convert regions to matplotlib patches.
-@item convert regions to spatial filter (i.e., generate mask images)
-@end itemize")
-    (license license:expat)))
-
 (define-public python-pysat
   (package
     (name "python-pysat")
@@ -6720,34 +6792,6 @@ emission from gas
 well as ephemerides services
 @end itemize")
     (license license:bsd-3)))
-
-(define-public python-sep
-  (package/inherit libsep
-    (name "python-sep")
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "test.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; numpy = "^1.26.4"
-                (("1.26.4") "1.26.2"))))
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(package-version this-package)))))))
-    (native-inputs
-     (list python-cython
-           python-pytest
-           python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (synopsis "Python library for Source Extraction and Photometry")))
 
 (define-public python-sep-pjw
   (package
@@ -7185,50 +7229,6 @@ channels
 @item Add the beam shape to a matplotlib plot
 @end itemize")
     (license license:bsd-3)))
-
-(define-public python-radiospectra
-  (package
-    (name "python-radiospectra")
-    (version "0.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "radiospectra" version))
-       (sha256
-        (base32 "14p4hp9yncyjsrbys0yjq7jbj0n9wf0x5sy67kilqrw14d1xvzch"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home-env
-            (lambda _
-              ;; Tests require HOME to be set.
-              ;;  Permission denied: '/homeless-shelter'
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-pytest-doctestplus
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm
-           python-sunpy-soar
-           python-wheel))
-    (propagated-inputs
-     (list python-cdflib
-           python-matplotlib
-           python-numpy
-           python-scipy
-           python-sunpy))
-    (home-page "https://docs.sunpy.org/projects/radiospectra")
-    (synopsis "Support for radio spectra on solar physics")
-    (description
-     "@code{radiospectra} provides support for some type of radio spectra in
-solar physics.")
-    (license license:bsd-2)))
 
 (define-public python-regions
   (package
