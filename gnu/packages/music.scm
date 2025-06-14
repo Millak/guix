@@ -1488,7 +1488,6 @@ engine (except effects) that can be used for layering or split patches.")
      (list
       #:scons-flags
       #~(list (string-append "PREFIX=" %output))
-      #:scons scons-python2
       #:tests? #f ;no "check" target
       #:phases
       #~(modify-phases %standard-phases
