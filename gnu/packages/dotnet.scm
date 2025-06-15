@@ -1933,3 +1933,51 @@ most of the heavy lifting.")
                    (find-files gac "^System[.]Windows[.]Forms[.]dll$")))))))))))
 
 (define-public mono mono-6.12.0)
+
+(define mono-system-collections-immutable-bootstrap
+  (package
+    (name "mono-system-collections-immutable-bootstrap")
+    (version
+     (package-version mono))
+    (source
+     (package-source mono))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list mono))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'bootstrap)
+               (add-after 'unpack 'prepare
+                 (lambda _
+                   (chdir "external/corefx/src/System.Collections.Immutable/src")
+                   (substitute* "../../Common/src/System/SR.cs"
+                     ;; I don't want to drag System.Security.AccessControl into the bootstrap path.
+                     (("new ResourceManager[(]ResourceType[)]")
+                      "new ResourceManager(\"System.Collections.Immutable\", typeof(SR).Assembly)"))))
+               (delete 'configure)
+               (replace 'build
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (invoke "resx2sr" "-o" "SR.cs" "-n" "System.SR"
+                           "--warn-mismatch"
+                           "Resources/Strings.resx")
+                   (apply invoke "mcs"
+                          "-target:library"
+                          "-langversion:7.2"
+                          ;;; mono can't do it: "-d:FEATURE_ITEMREFAPI"
+                          "-out:System.Collections.Immutable.dll"
+                          "../../Common/src/System/Runtime/Versioning/NonVersionableAttribute.cs"
+                          "../../Common/src/System/SR.cs"
+                          (find-files "." "\\.cs$"))))
+               (delete 'check)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((lib-dir (string-append #$output "/lib/mono/4.5")))
+                     (mkdir-p lib-dir)
+                     (install-file "System.Collections.Immutable.dll"
+                                   lib-dir)))))))
+    (synopsis "System.Collections.Immutable library for bootstrapping")
+    (description "This package builds the System.Collections.Immutable library from
+the source code included within the Mono source tree.")
+    (home-page "https://dot.net/")
+    (license license:expat)))
