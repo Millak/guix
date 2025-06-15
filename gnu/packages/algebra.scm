@@ -41,6 +41,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -528,31 +529,38 @@ fast arithmetic.")
   (package
     (name "python-flint")
     (version "0.7.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fredrik-johansson/python-flint")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "09nsys2cajxsfh2c13nf98a2kwnm0msmab9f9zcjpkndj4ir453a"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fredrik-johansson/python-flint")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09nsys2cajxsfh2c13nf98a2kwnm0msmab9f9zcjpkndj4ir453a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "flint")))
     (native-inputs
-     (list python-cython-3))
+     (list meson-python
+           pkg-config
+           python-cython-3
+           python-pytest))
+    (inputs
+     (list gmp
+           flint))
     (propagated-inputs
      (list python-numpy))
-    (inputs
-     (list flint))
+    (home-page "https://fredrikj.net/python-flint/")
     (synopsis "Python module wrapping ARB and FLINT")
     (description
      "Python-flint is a Python extension module wrapping FLINT
 (Fast Library for Number Theory) and Arb (arbitrary-precision ball
-arithmetic).  It supports integers, rationals, modular integers,
-real and complex ball arithmetic, polynomials and matrices over all
-these types and other mathematical functions.")
-    (license license:expat)
-    (home-page "https://fredrikj.net/python-flint/")))
+arithmetic).  It supports integers, rationals, modular integers, real and
+complex ball arithmetic, polynomials and matrices over all these types and
+other mathematical functions.")
+    (license license:expat)))
 
 (define-public ntl
   (package
