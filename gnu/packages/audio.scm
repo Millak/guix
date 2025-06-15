@@ -4747,6 +4747,35 @@ compression modes.  This package contains command-line programs and library to
 encode and decode wavpack files.")
     (license license:bsd-3)))
 
+(define-public wstsound
+  ;; XXX: Does not release anymore.
+  (let ((commit "289cae8dd2b1e75c447b063a6a4299bf139d4249")
+        (revision "0"))
+    (package
+      (name "wstsound")
+      (version (git-version "0.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/WindstilleTeam/wstsound")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14qgvwwl1jah85adbf7q6r954mpcxnszibjzip90839n2g112zwf"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")))
+      (native-inputs (list googletest tinycmmc))
+      ;; XXX: CMake-built dependents currently require propagation.
+      (propagated-inputs (list libmodplug libvorbis mpg123 openal opusfile))
+      (home-page "https://github.com/WindstilleTeam/wstsound")
+      (synopsis "C++ sound library")
+      (description "This package provides a simple sound library for C++.")
+      (license license:gpl3+))))
+
 (define-public libmixed
   ;; Release is much outdated.
   (let ((commit "9b2668e0d85175b0e92864cfbf1b9e58f77c92e0")
