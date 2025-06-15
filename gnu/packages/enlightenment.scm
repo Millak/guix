@@ -6,6 +6,7 @@
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -562,30 +564,26 @@ directories.
     (name "epour")
     (version "0.7.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://download.enlightenment.org/rel/apps/epour"
-                            "/epour-" version ".tar.xz"))
-        (sha256
-         (base32
-          "0g9f9p01hsq6dcf4cs1pwq95g6fpkyjgwqlvdjk1km1i5gj5ygqw"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.enlightenment.org/rel/apps/epour"
+             "/epour-" version ".tar.xz"))
+       (sha256
+        (base32 "0g9f9p01hsq6dcf4cs1pwq95g6fpkyjgwqlvdjk1km1i5gj5ygqw"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f      ; no test target
-       #:use-setuptools? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'find-theme-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "epour/gui/__init__.py"
-                 (("join\\(data_path")
-                  (string-append "join(\"" out "/share/epour\"")))
-               #t))))))
-    (native-inputs
-     (list intltool python-distutils-extra))
-    (inputs
-     (list libtorrent-rasterbar-1.2 python-dbus python-efl python-pyxdg))
+     (list
+      #:tests? #f ;no test target
+      #:use-setuptools? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-theme-dir
+            (lambda _
+              (substitute* "epour/gui/__init__.py"
+                (("join\\(data_path")
+                 (string-append "join(\"" #$output "/share/epour\""))))))))
+    (native-inputs (list intltool python-distutils-extra))
+    (inputs (list libtorrent-rasterbar-1.2 python-dbus python-efl python-pyxdg))
     (home-page "https://www.enlightenment.org")
     (synopsis "EFL Bittorrent client")
     (description "Epour is a BitTorrent client based on the @dfn{Enlightenment
