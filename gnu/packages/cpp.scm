@@ -119,6 +119,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages web)
@@ -4120,6 +4121,15 @@ ordered erase operations.")
        "This package provides a simple gettext replacement that works directly
 on @code{.po} files and doesn't need @code{.mo} files pre-generated.")
       (license license:expat))))
+
+(define-public tinygettext-with-sdl2
+  (package/inherit tinygettext
+    (arguments
+     (substitute-keyword-arguments (package-arguments tinygettext)
+       ((#:configure-flags flags)
+        #~(list "-DTINYGETTEXT_WITH_SDL=ON" "-DBUILD_TESTS=ON"))))
+    (native-inputs (list pkg-config tinycmmc))
+    (inputs (list sdl2))))
 
 (define-public tl-optional
   (package
