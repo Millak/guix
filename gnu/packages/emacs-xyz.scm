@@ -120,7 +120,7 @@
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;; Copyright © 2023, 2025 Simon Streit <simon@netpanic.org>
-;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
@@ -39267,29 +39267,41 @@ replicate some of the features of the Doom modeline package.")
     (license license:gpl3+)))
 
 (define-public emacs-frames-only-mode
-  (package
-    (name "emacs-frames-only-mode")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/davidshepherd7/frames-only-mode")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0y0sdjixaxvywrlp2sw51wnczhk51q1svl5aghbk9rkxpwv9ys9v"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash emacs-s))
-    (native-inputs (list emacs-ert-runner emacs-flycheck emacs-magit))
-    (home-page "https://github.com/davidshepherd7/frames-only-mode")
-    (synopsis "Use frames instead of Emacs windows")
-    (description
-     "This is an Emacs global minor mode to use Emacs frames instead of Emacs'
+  ;; Latest release is from 8 years ago.
+  (let ((commit "3c7d7d89398b999bac2d848c8c26d742572e8109")
+        (revision "0"))
+    (package
+      (name "emacs-frames-only-mode")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/davidshepherd7/frames-only-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1rs01wiahqnz33x66mm4i7147jfjz75mx1q4mwjpds6yvir4mdkn"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-makefile
+              (lambda _
+                (substitute* "Makefile"
+                  (("cask") "")))))
+        #:test-command #~(list "make" "test-unit")))
+      (propagated-inputs
+       (list emacs-dash emacs-s))
+      (native-inputs (list emacs-flycheck emacs-magit emacs-validate))
+      (home-page "https://github.com/davidshepherd7/frames-only-mode")
+      (synopsis "Use frames instead of Emacs windows")
+      (description
+       "This is an Emacs global minor mode to use Emacs frames instead of Emacs'
 internal windowing system.  This combines particularly well with tiling window
 managers such as XMonad.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-modalka
   (package
