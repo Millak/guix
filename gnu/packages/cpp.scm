@@ -3889,6 +3889,33 @@ file name and location, as well as filters with friendly names (such as
 for C++17 string-view.")
     (license license:boost1.0)))
 
+(define-public strutcpp
+  ;; XXX: No releases.
+  (let ((commit "108ac9bb4993d661187ac7add0863abc7ff2531f")
+        (revision "0"))
+    (package
+      (name "strutcpp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Grumbel/strutcpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0m344qq3d57balzvc26fjx985nj2xwnfb1a7prkv3njj5lfcf127"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")))
+      (native-inputs (list googletest tinycmmc))
+      (home-page "https://github.com/Grumbel/strutcpp")
+      (synopsis "Collection of string utilities for C++")
+      (description "This package provides simple string utilities for C++.")
+      (license license:gpl3+))))
+
 (define-public tsl-hopscotch-map
   (package
     (name "tsl-hopscotch-map")
