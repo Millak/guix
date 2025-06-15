@@ -2590,7 +2590,7 @@ with the provided training tools.")
 (define-public nlopt
   (package
     (name "nlopt")
-    (version "2.7.1")
+    (version "2.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2598,10 +2598,12 @@ with the provided training tools.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1xpdza28i8w441fwv6a5f3qk4zi7ys6ws9fx6kr5ny27dfdz6rr1"))))
+               (base32 "04257r7a1bjmm6hznf9v6fimz2p93dk745sf89wmxzhg3rh0ak44"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+          (list "-DNLOPT_TESTS=ON")
+      #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'set-libnlopt-file-name
            (lambda* (#:key outputs #:allow-other-keys)
