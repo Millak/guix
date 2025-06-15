@@ -27687,27 +27687,21 @@ Time} values as well as an event scheduler.")
 (define-public python-semver
   (package
     (name "python-semver")
-    (version "2.9.0")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "semver" version))
        (sha256
-        (base32
-         "183kg1rhzz3hqizvphkd8hlbf1zxfx8737zhfkmqzxi71jmdw7pd"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (delete-file "setup.cfg")
-                      (invoke "py.test"))))))
-    (native-inputs
-     (list python-pytest))
+        (base32 "00lnb1mpppgq041kwcbg405rqsi2mzl8dw1s0c8hmvd5hk2xiixg"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools
+                         python-wheel))
     (home-page "https://github.com/k-bx/python-semver")
     (synopsis "Python helper for Semantic Versioning")
-    (description "This package provides a Python library for
-@url{Semantic Versioning, http://semver.org/}.")
+    (description
+     "This package provides a Python library for @url{Semantic Versioning,
+http://semver.org/}.")
     (license license:bsd-3)))
 
 (define-public python-pyro4
