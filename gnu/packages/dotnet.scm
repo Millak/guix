@@ -1981,3 +1981,66 @@ most of the heavy lifting.")
 the source code included within the Mono source tree.")
     (home-page "https://dot.net/")
     (license license:expat)))
+
+(define mono-system-reflection-metadata-bootstrap
+  (package
+    (name "mono-system-reflection-metadata-bootstrap")
+    ;; Upstream version 1.4.2; but for bootstrap packages it's more useful to have the mono version here.
+    (version
+     (package-version mono))
+    (source
+     (package-source mono))
+    (build-system gnu-build-system)
+    (inputs
+     (list mono-system-collections-immutable-bootstrap)) ; not required: mono-system-buffers-bootstrap
+    (native-inputs
+     (list mono))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'bootstrap)
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir "external/corefx/src/System.Reflection.Metadata/src")
+                   (substitute* "../../Common/src/System/SR.cs"
+                     ;; I don't want to drag System.Security.AccessControl into the bootstrap path.
+                     (("new ResourceManager[(]ResourceType[)]")
+                      "new ResourceManager(\"System.Collections.Immutable\", typeof(SR).Assembly)"))))
+               (add-after 'chdir 'prepare
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (for-each
+                    (lambda (name)
+                      (if (file-exists? name)
+                          (delete-file name)
+                          (format #t "Warning: File ~s doesn't exist~%" name)))
+                    ;; We don't need those since they would be for different .NET standards.
+                    '("./System/Reflection/Internal/Utilities/CriticalDisposableObject.netstandard1.1.cs"
+                      "./System/Reflection/Internal/Utilities/EncodingHelper.netcoreapp.cs"
+                      "./System/Reflection/Internal/Utilities/FileStreamReadLightUp.netstandard1.1.cs"
+                      "./System/Reflection/Internal/Utilities/MemoryMapLightUp.netstandard1.1.cs"))))
+               (delete 'configure)
+               (replace 'build
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (invoke "resx2sr" "-o" "SR.cs" "-n" "System.SR" "--warn-mismatch"
+                           "Resources/Strings.resx")
+                   (apply invoke "mcs"
+                          "-target:library"
+                          "-langversion:7.2"
+                          "-unsafe"
+                          "-out:System.Reflection.Metadata.dll"
+                                        ; ,(string-append "-r:" buffers-dll)
+                          (string-append "-r:"
+                                         (search-input-file inputs
+                                                            "/lib/mono/4.5/System.Collections.Immutable.dll"))
+                          "../../Common/src/System/SR.cs"
+                          (find-files "." "\\.cs$"))))
+               (delete 'check)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((lib-dir (string-append #$output "/lib/mono/4.5")))
+                     (install-file "System.Reflection.Metadata.dll" lib-dir)))))))
+    (synopsis "System.Reflection.Metadata library for bootstrapping")
+    (description "This package builds the System.Reflection.Metadata library from
+the source code included within the Mono source tree.")
+    (home-page "https://dot.net/")
+    (license license:expat)))
