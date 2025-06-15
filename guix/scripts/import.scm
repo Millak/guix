@@ -51,7 +51,7 @@
 ;; please keep this list alphabetically sorted!
 (define importers '("composer" "cpan" "cran" "crate" "egg" "elm" "elpa"
                     "gem" "gnu" "go" "hackage" "hexpm" "json" "minetest"
-                    "npm-binary" "opam" "pypi" "stackage" "texlive"))
+                    "npm-binary" "nuget" "opam" "pypi" "stackage" "texlive"))
 
 (define (resolve-importer name)
   (let ((module (resolve-interface

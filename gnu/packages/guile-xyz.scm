@@ -5535,17 +5535,19 @@ Conversion between binary and hex-and-dash string UUIDs is also included.")
 (define-public guile-semver
   (package
     (name "guile-semver")
-    (version "0.1.1")
+    (version "0.2.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://files.ngyro.com/guile-semver/"
-                                  "guile-semver-" version ".tar.gz"))
-              (sha256
-               (base32
-                "109p4n39ln44cxvwdccf9kgb96qx54makvd2ir521ssz6wchjyag"))))
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/daym/guile-semver.git")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name "guile-semver" version))
+                (sha256
+                 (base32
+                  "1pb1fvm6myb3cdkqn18rhygzh8yhk3b5a8966ppwgg0d92xhxp1v"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list guile-3.0 pkg-config))
+     (list guile-3.0 pkg-config autoconf automake))
     (inputs
      (list guile-3.0))
     (home-page "https://ngyro.com/software/guile-semver.html")
