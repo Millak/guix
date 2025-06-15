@@ -30,6 +30,7 @@
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Andy Tai <atai@atai.org>
+;;; Copyright © 2025 Lapearldot <lapearldot@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,6 +108,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ninja)
@@ -6290,6 +6292,50 @@ is fully standalone and can be modified to enable quick research experiments.
 Transformers is backed by the three most popular deep learning libraries —
 Jax, PyTorch and TensorFlow — with a seamless integration between them.")
     (license license:asl2.0)))
+
+(define-public ctranslate2
+  (package
+    (name "ctranslate2")
+    (version "4.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/OpenNMT/CTranslate2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "CTranslate2" version))
+       (sha256 (base32 "0sngxjq5rmrgjabgxfazdnhfn3wpfi62n226f4k47cx1xjjkllcd"))
+       (patches (search-patches "ctranslate2-local-build.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:test-target "ctranslate2_test"
+      ;; XXX: mkl and openblas seem incompatible.
+      #:configure-flags `(list "-DBUILD_TESTS=ON"
+                               "-DWITH_ACCELERATE=OFF"
+                               "-DWITH_RUY=OFF"
+                               "-DWITH_DNNL=ON"
+                               "-DWITH_CUDA=OFF"
+                               "-DWITH_CUDNN=OFF"
+                               "-DWITH_MKL=OFF"
+                               "-DWITH_OPENBLAS=ON")))
+    (native-inputs (list libomp
+                         cxxopts
+                         spdlog
+                         googletest
+                         cpu-features
+                         oneapi-dnnl
+                         openblas))
+    (home-page "https://opennmt.net/CTranslate2/")
+    (synopsis "Fast inference engine for Transformer models")
+    (description "CTranslate2 is a C++ and Python library for efficient
+inference with Transformer models.
+
+The project implements a custom runtime that applies many performance
+optimization techniques such as weights quantization, layers fusion, batch
+reordering, etc., to accelerate and reduce the memory usage of Transformer
+models on CPU and GPU.")
+    (license license:expat)))
 
 (define-public python-hmmlearn
   (package

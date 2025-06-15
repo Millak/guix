@@ -1163,6 +1163,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/crda-optional-gcrypt.patch		\
   %D%/packages/patches/clucene-contribs-lib.patch               \
   %D%/packages/patches/csvkit-set-locale-for-tests.patch			\
+  %D%/packages/patches/ctranslate2-local-build.patch		\
   %D%/packages/patches/cube-nocheck.patch			\
   %D%/packages/patches/cups-minimal-Address-PPD-injection-issues.patch	\
   %D%/packages/patches/curl-CVE-2024-8096.patch			\
