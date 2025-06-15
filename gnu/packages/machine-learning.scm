@@ -6337,6 +6337,26 @@ reordering, etc., to accelerate and reduce the memory usage of Transformer
 models on CPU and GPU.")
     (license license:expat)))
 
+(define-public python-ctranslate2
+  (package/inherit ctranslate2
+    (name "python-ctranslate2")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: tests require the eole python project.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'cd-to-build-dir
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs (list ctranslate2
+                         python-setuptools
+                         python-wheel
+                         pybind11-2.10
+                         python-pyyaml
+                         python-numpy))))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
