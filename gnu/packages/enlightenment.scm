@@ -31,6 +31,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages bittorrent)
@@ -63,6 +64,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
@@ -570,11 +572,10 @@ directories.
              "/epour-" version ".tar.xz"))
        (sha256
         (base32 "0g9f9p01hsq6dcf4cs1pwq95g6fpkyjgwqlvdjk1km1i5gj5ygqw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ;no test target
-      #:use-setuptools? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'find-theme-dir
@@ -582,7 +583,8 @@ directories.
               (substitute* "epour/gui/__init__.py"
                 (("join\\(data_path")
                  (string-append "join(\"" #$output "/share/epour\""))))))))
-    (native-inputs (list intltool python-distutils-extra))
+    (native-inputs (list intltool python-distutils-extra python-setuptools
+                         python-wheel))
     (inputs (list libtorrent-rasterbar-1.2 python-dbus python-efl python-pyxdg))
     (home-page "https://www.enlightenment.org")
     (synopsis "EFL Bittorrent client")
