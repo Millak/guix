@@ -3402,6 +3402,37 @@ provides an optional IDE-like error list.")
 FictionBook2 (@file{.fb2} and @file{.fb2.zip} files) ebooks.")
       (license license:gpl3+))))
 
+(define-public emacs-flymake-clippy
+  (let ((commit "713b7e873d6b30dc0ded75d5d890d6847f2ea093")
+        (revision "0"))
+    (package
+      (name "emacs-flymake-clippy")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://git.sr.ht/~mgmarlow/flymake-clippy")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "097yha74kabxzyf6zqdi94wxjs7zdsg38nxwz1w4w86wxlrq0ymg"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "make" "test")))))))
+      (synopsis "Flymake backend for Clippy")
+      (description "Emacs package for displaying Clippy lint diagnostics for
+Rust code.")
+      (home-page "https://git.sr.ht/~mgmarlow/flymake-clippy")
+      (license license:gpl3+))))
+
 (define-public emacs-flymake-collection
   (package
     (name "emacs-flymake-collection")
