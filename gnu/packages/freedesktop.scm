@@ -665,6 +665,33 @@ for translations, though this is only a dependency for the maintainers.  This
 database is translated at Transifex.")
     (license license:gpl2+)))
 
+(define-public xdgcpp
+  ;; XXX: Does not release anymore.
+  (let ((commit "e2c40c081e2ee2d315d1d0b3ae5981d5fd77260e")
+        (revision "0"))
+    (package
+      (name "xdgcpp")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Grumbel/xdgcpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0wxxck7phbgqdlg3g1ryw0vhkx17xi1ivqsbh32r0liw9i2xis3s"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f)) ;no test suite
+      (home-page "https://github.com/Grumbel/xdgcpp")
+      (synopsis "C++ implementation of the XDG base dir specification")
+      (description
+       "This package provides a straightforward implementation of the XDG Base
+Directory Specification.")
+      (license license:lgpl3+))))
+
 (define-public xdg-utils
   (package
     (name "xdg-utils")
