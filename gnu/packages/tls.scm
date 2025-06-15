@@ -205,7 +205,7 @@ living in the same process.")
 (define-public gnutls
   (package
     (name "gnutls")
-    (version "3.8.3")
+    (version "3.8.9")
     (source (origin
               (method url-fetch)
               ;; Note: Releases are no longer on ftp.gnu.org since the
@@ -216,7 +216,7 @@ living in the same process.")
               (patches (search-patches "gnutls-skip-trust-store-test.patch"))
               (sha256
                (base32
-                "0ghpyhhfa3nsraph6dws50jb3dc8g2cfl7dizdnyrm179fawakzp"))))
+                "1v9090cbajf02cw01idfbp0cgmgjn5091ff1b96hqryi0bc17qb9"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? (not (or (%current-target-system)
@@ -241,6 +241,12 @@ living in the same process.")
               ;; fallback, and users have to configure each program
               ;; independently.  This seems suboptimal.
               "--with-default-trust-store-dir=/etc/ssl/certs"
+
+              ;; The compression extensions dlopen compression libraries.
+              ;; Give them the absolute file name to look for.  (The variable
+              ;; is called 'soname' but it's really the file name.)
+              (string-append "gnutls_cv_soname_z="
+                             #$(this-package-input "zlib") "/lib/libz.so")
 
               (let ((system #$(or (%current-target-system)
                                   (%current-system))))
@@ -290,7 +296,7 @@ living in the same process.")
                        iproute          ;for 'ss'
                        socat            ;several tests rely on it
                        datefudge))))    ;tests rely on 'datefudge'
-    (inputs (list libunistring))
+    (inputs (list libunistring zlib))
     (propagated-inputs
      ;; These are all in the 'Requires.private' field of gnutls.pc.
      (append (list libtasn1 libidn2 nettle zlib)
