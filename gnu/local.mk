@@ -1230,6 +1230,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-eglot-x-fix-apply-text-edits.patch			\
   %D%/packages/patches/emacs-exec-path.patch			\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
+  %D%/packages/patches/emacs-gnus-alias-reference-signature.patch	\
   %D%/packages/patches/emacs-gnus-desktop-notify-fix-notifications.patch	\
   %D%/packages/patches/emacs-gnus-desktop-notify-rescan.patch	\
   %D%/packages/patches/emacs-helpful-fix-signature.patch	\

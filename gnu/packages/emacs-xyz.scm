@@ -37707,34 +37707,39 @@ An optional mode-line format can be enabled with @code{zerodark-setup-modeline-f
     (license license:gpl3+)))
 
 (define-public emacs-gnus-alias
-  (package
-    (name "emacs-gnus-alias")
-    (version "20150316")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/hexmode/gnus-alias")
-                    (commit "9447d3ccb4c0e75d0468899cccff7aa249657bac")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1i278npayv3kfxxd1ypi9n83q5l402sbc1zkm11pf8g006ifqsp4"))))
-    (build-system emacs-build-system)
-    (home-page "https://melpa.org/#/gnus-alias")
-    (synopsis "Alternative to @code{gnus-posting-styles}")
-    (description "This Emacs add-on provides a simple mechanism to switch
-Identities when using a @code{message-mode} or a @code{message-mode} derived
-mode.  Identities can include @code{From} and @code{Organisation} headers,
+  ;; There are no release no tag.  Use the latest commit.
+  (let ((commit "cf1783a9294bc2f72bfafcaea288c159c4e3dee5")
+        (revision "0"))
+    (package
+      (name "emacs-gnus-alias")
+      ;; The version string is specified in gnus-alias.el.
+      (version (git-version "1.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hexmode/gnus-alias")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0cs0cyi7hj7ga9aiqz4dafc07xrk3l5g9zzlbda9l90xbvyfssa0"))
+                (patches
+                 (search-patches "emacs-gnus-alias-reference-signature.patch"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/hexmode/gnus-alias")
+      (synopsis "Alternative to @code{gnus-posting-styles}")
+    (description "Gnus-alias provides a simple mechanism to switch
+identities when using a @code{message-mode} or a @code{message-mode} derived
+mode.  Identities can include @code{From} and @code{Organization} headers,
 extra headers, body and signature.  Other features include:
-
 @itemize
-@item Switch Identities in a message buffer.
-@item Access original message to help determine Identity of the followup/reply
+@item Switch identities in a message buffer.
+@item Access original message to help determine identity of the followup/reply
 message.
 @item Act on a forwarded message as if it were a message being replied to.
 @item Start a new message with a given Identity pre-selected.
 @end itemize")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public emacs-gnus-desktop-notify
   (package
