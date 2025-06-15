@@ -3733,14 +3733,14 @@ rules is done with the @code{auditctl} utility.")
 (define-public nmap
   (package
     (name "nmap")
-    (version "7.96")
+    (version "7.97")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nmap.org/dist/nmap-" version
                                   ".tar.bz2"))
               (sha256
                (base32
-                "12lcvyzfl1hblbklcss44dr92fr86w0z1y1a90yilv5n5x7pmblq"))
+                "1h252sz1cqr0r440s7pxn9wwn1jffbrdvacnvmbw4w664mwz565g"))
               (modules '((guix build utils)))
               (snippet
                '(begin
