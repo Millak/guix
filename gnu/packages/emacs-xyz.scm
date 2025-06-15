@@ -538,8 +538,8 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
 (define-public emacs-bqn-mode
   (package
     (name "emacs-bqn-mode")
-    ;; upstream releases are tagged by date
-    (version "2024-09-10")
+    ;; Upstream releases are tagged by date.
+    (version "2025-04-10")
     (source
      (origin
        (method git-fetch)
@@ -548,29 +548,11 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a4whlx8065c15nfyqy8176mwysnc13z4q7mmdfnf6skdnvi2pk6"))))
+        (base32 "0zl6s0c0nd8m55f83yamgnl8kg1a9jrzl0wrmixrixzn7zmdj6qk"))))
     (build-system emacs-build-system)
     (arguments
-     (list
-      #:tests? #f ;No tests found in source
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; `bqn-comint-bring' in `bqn-mode.el' uses the macro
-          ;; `thread-last', defined in `subr-x.el' but not autoloaded.
-          ;; `emacs-build-system' will happily byte-compile `bqn-mode.el'
-          ;; but interactively calling `bqn-comint-bring' will cause an
-          ;; error.  An explicit call to `(require 'subr-x)' remedies the
-          ;; issue until it is fixed upstream.
-          (add-after 'unpack 'require-subr-x
-            (lambda _
-              (emacs-batch-edit-file "bqn-mode.el"
-                                     '(progn (goto-char (point-min))
-                                             (re-search-forward
-                                              "(require 'pulse)")
-                                             (forward-line)
-                                             (insert "(require 'subr-x)\n")
-                                             (basic-save-buffer))))))))
-    (propagated-inputs (list emacs-compat))
+     (list #:tests? #f)) ;No tests found in source.
+    (propagated-inputs (list emacs-compat emacs-eros))
     (synopsis "Emacs major mode for the BQN programming language")
     (description
      "This package provides a major mode for editing and executing BQN code.
