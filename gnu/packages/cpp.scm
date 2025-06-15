@@ -3869,6 +3869,34 @@ file name and location, as well as filters with friendly names (such as
 \"source files\" or \"image files\") where supported.")
     (license license:zlib)))
 
+(define-public sexp-cpp
+  ;; XXX: Does not release anymore.
+  (let ((commit "4d8096c223d2f469ca6e407e793d20980f6aba76")
+        (revision "0"))
+    (package
+      (name "sexp-cpp")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lispparser/sexp-cpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c79mp0d0b52k7bk0xlh9xmczd60v3f5jv5b240mm8r9z7gyk1vz"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")))
+      (native-inputs (list googletest tinycmmc))
+      (home-page "https://github.com/lispparser/sexp-cpp")
+      (synopsis "S-Expression parser for C++")
+      (description
+       "This package provides a simple S-Expression parser for C++.")
+      (license license:gpl3+))))
+
 (define-public string-view-lite
   (package
     (name "string-view-lite")
