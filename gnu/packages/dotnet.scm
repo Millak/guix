@@ -1066,6 +1066,27 @@ unused0:")))))
                            #$(add-external-repos
                               mono-5.1.0-external-repo-specs)
                            #$@prepare-mono-source-0))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-5.0.1)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'build 'build-resx2sr
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "-C" "mcs/tools/resx2sr" make-flags)))
+            (add-after 'install 'install-resx2sr
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "-C" "mcs/tools/resx2sr" "install" make-flags)
+                ;; They don't install a wrapper script--but we need it for
+                ;; bootstrapping MSBuild.
+                (let ((resx2sr (string-append #$output "/bin/resx2sr")))
+                  (call-with-output-file resx2sr
+                    (lambda (port)
+                      (format port "#!/bin/sh
+exec ~s ~s \"$@\"
+"
+                              (string-append #$output "/bin/mono")
+                              (string-append #$output "/lib/mono/4.5/resx2sr.exe"))))
+                  (chmod resx2sr #o755))))))))
     (native-inputs (modify-inputs (package-native-inputs mono-5.0.1)
                      (replace "mono" mono-5.0.1)))))
 
