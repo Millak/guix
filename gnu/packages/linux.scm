@@ -1511,12 +1511,29 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
               license:gpl3
               license:x11))))
 
+(define %mnt-reform-revert-drm-rockchip-vop2-patch
+  (origin
+    (method url-fetch)
+    (uri (string-append
+          "https://source.mnt.re/vagrantc/reform-debian-packages/"
+          "-/raw/e4e6b0972dcbe21c83c0704a9f36d29e0657a9f2/linux/"
+          "patches6.12/rk3588-drm-revert/"
+          "0001-Revert-drm-rockchip-vop2-Improve-display-modes-handl.patch"))
+    (file-name "mnt-reform-revert-drm-rockchip-vop2.patch")
+    (sha256
+     (base32 "1h4cznxx0ix5bd7cfwxil0zrxmzqryha19l11ww6hd8bad1f9i7p"))))
+
 (define-public linux-libre-arm64-mnt-reform
   ;; Kernel for use on the MNT/Reform systems
   ;; https://mntre.com/reform.html
   (let ((base (make-linux-libre* linux-libre-6.12-version
                                  linux-libre-6.12-gnu-revision
-                                 linux-libre-6.12-source
+                                 (source-with-patches linux-libre-6.12-source
+                                                      ;; Revert upstream patch
+                                                      ;; that conflicts with
+                                                      ;; MNT/Reform patches
+                                                      (list
+                                                       %mnt-reform-revert-drm-rockchip-vop2-patch))
                                  '("aarch64-linux")
                                  #:extra-version "arm64-mnt-reform"
                                  #:extra-options
