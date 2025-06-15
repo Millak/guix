@@ -128,7 +128,7 @@
   #:use-module (gnu packages xorg)
   ;; Using autoload to avoid a cycle.
   ;; Note that (gnu packages serialization) has #:use-module (gnu packages cpp)
-  #:autoload   (gnu packages serialization) (cereal)
+  #:autoload   (gnu packages serialization) (cereal jsoncpp)
   #:use-module (ice-9 match))
 
 (define-public argagg
@@ -3350,6 +3350,37 @@ functions for the float and double types.")
 computing Fast Fourier transformations.  It supports multidimensional arrays,
 different floating point sizes and complex transformations.")
       (license license:bsd-3))))
+
+(define-public priocpp
+  ;; XXX: No releases.
+  (let ((commit "214a0ff789d5c58e76d870fe2e75f98857991855")
+        (revision "0"))
+    (package
+      (name "priocpp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Grumbel/priocpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ksrgajcwqvim5ymxikj26akza3sbhvx3kn4n9xib6r57131kq2m"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=ON")))
+      (inputs (list fmt-8 logmich))
+      (native-inputs (list googletest pkg-config tinycmmc))
+      ;; XXX: CMake-built dependents currently require propagation.
+      (propagated-inputs (list jsoncpp sexp-cpp))
+      (home-page "https://github.com/Grumbel/priocpp")
+      (synopsis "Property input/output for C++")
+      (description
+       "This package provides simple property input/output utilities for C++.")
+      (license license:gpl3+))))
 
 (define-public sajson
   (let ((commit "ec644013e34f9984a3cc9ba568cab97a391db9cd")
