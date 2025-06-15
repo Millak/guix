@@ -608,13 +608,16 @@ using the least destructive approach."
 
 
 ;;;
-;;; FAT16 file systems.
+;;; FAT16/FAT12 file systems.
 ;;;
 
 (define (fat16-superblock? sblock)
-  "Return #t when SBLOCK is a fat16 boot record."
-  (bytevector=? (sub-bytevector sblock 54 8)
-                (string->utf8 "FAT16   ")))
+  "Return #t when SBLOCK is a fat16 or fat12 boot record."
+  (let ((boot-record (sub-bytevector sblock 54 8)))
+    (or (bytevector=? boot-record
+                      (string->utf8 "FAT16   "))
+        (bytevector=? boot-record
+                      (string->utf8 "FAT12   ")))))
 
 (define (read-fat16-superblock device)
   "Return the raw contents of DEVICE's fat16 superblock as a bytevector, or
