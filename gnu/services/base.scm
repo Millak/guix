@@ -4015,6 +4015,8 @@ to handle."
          (group "greeter")
          (supplementary-groups (greetd-greeter-supplementary-groups config))
          (system? #t)
+         (home-directory "/var/empty")
+         (shell (file-append shadow "/sbin/nologin"))
          (create-home-directory? #f))))
 
 (define (make-greetd-pam-mount-conf-file config)
