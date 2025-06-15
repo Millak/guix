@@ -1879,6 +1879,11 @@ most of the heavy lifting.")
                     (apply invoke "make" "-j" (number->string
                                                (parallel-job-count))
                            "CSC=mcs" make-flags)))))
+            (add-after 'unpack 'enable-resx2sr-installation
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (substitute* "mcs/tools/resx2sr/Makefile"
+                 (("^NO_INSTALL = .*")
+                  "NO_INSTALL = \n"))))
             (replace 'check
               (lambda* (#:key tests? (make-flags '()) #:allow-other-keys)
                 (when tests?
