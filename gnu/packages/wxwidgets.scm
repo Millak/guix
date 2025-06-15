@@ -392,7 +392,7 @@ except ImportError:
     (native-inputs
      (list pkg-config python-setuptools python-waf python-wheel))
     (propagated-inputs
-     (list python-attrdict3 python-numpy python-pillow python-six))
+     (list python-numpy python-pillow python-six))
     (home-page "https://wxpython.org/")
     (synopsis "Cross platform GUI toolkit for Python")
     (description "wxPython is a cross-platform GUI toolkit for the Python
