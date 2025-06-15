@@ -25629,27 +25629,6 @@ instead of servers and network commands.")
      and bit flag values.")
     (license license:expat)))
 
-(define-public python-attrdict3
-  (package
-    (name "python-attrdict3")
-    (version "2.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "attrdict3" version))
-              (sha256
-               (base32
-                "1s2z6c9jam5azm746l49wsqsyi29zbbrknq1axsw230jl4f1fk00"))))
-    (build-system python-build-system)
-    ;; The package is no longer maintained and tests need some work.
-    (arguments '(#:tests? #f))
-    (propagated-inputs (list python-six))
-    (home-page "https://github.com/pirofti/AttrDict3")
-    (synopsis "Attribute-style access dictionaries")
-    (description
-     "This package provides mapping objects whose elements can be accessed
-both as keys and as attributes.")
-    (license license:expat)))
-
 (define-public python-attrs
   (package
     (name "python-attrs")
