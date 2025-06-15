@@ -1,0 +1,54 @@
+Date: 2025-06-15
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Subject: Register the resources from the EXE in the engine DLL as well.
+
+--- mono-msbuild-15.7.179-checkout/src/MSBuild/AssemblyResources.cs.orig	2025-06-15 20:05:31.372348854 +0200
++++ mono-msbuild-15.7.179-checkout/src/MSBuild/AssemblyResources.cs	2025-06-15 20:43:07.563094173 +0200
+@@ -10,9 +10,24 @@
+     /// <summary>
+     /// This class provides access to the assembly's resources.
+     /// </summary>
+-    internal static class AssemblyResources
++    internal static class ExeAssemblyResources
+     {
+         /// <summary>
++        /// Manual function here.  Constructor wouldn't work because that would be
++        /// called lazily--i.e. never.  No idea how the original mechanism was
++        /// supposed to work (probably didn't :P)--but I like explicit better anyway.
++        /// </summary>
++        internal static void RegisterExe()
++        {
++            // This is the call that bridges the two assemblies.
++            // It calls the static RegisterMSBuildExeResources method that exists on the
++            // AssemblyResources class inside the referenced Microsoft.Build.dll.
++            // We pass it our own main resource manager.
++            Microsoft.Build.Shared.AssemblyResources.RegisterMSBuildExeResources(s_resources);
++
++        }
++
++        /// <summary>
+         /// Loads the specified resource string, either from the assembly's primary resources, or its shared resources.
+         /// </summary>
+         /// <remarks>This method is thread-safe.</remarks>
+@@ -34,8 +49,8 @@
+         }
+ 
+         // assembly resources
+-        private static readonly ResourceManager s_resources = new ResourceManager("MSBuild.Strings", typeof(AssemblyResources).GetTypeInfo().Assembly);
++        private static readonly ResourceManager s_resources = new ResourceManager("MSBuild.Strings", typeof(ExeAssemblyResources).GetTypeInfo().Assembly);
+         // shared resources
+-        private static readonly ResourceManager s_sharedResources = new ResourceManager("MSBuild.Strings.shared", typeof(AssemblyResources).GetTypeInfo().Assembly);
++        private static readonly ResourceManager s_sharedResources = new ResourceManager("MSBuild.Strings.shared", typeof(ExeAssemblyResources).GetTypeInfo().Assembly);
+     }
+ }
+--- mono-msbuild-15.7.179-checkout/src/MSBuild/XMake.cs.orig	2025-06-15 20:01:35.729388083 +0200
++++ mono-msbuild-15.7.179-checkout/src/MSBuild/XMake.cs	2025-06-15 20:47:55.337071631 +0200
+@@ -207,6 +207,8 @@
+ #endif
+             )
+         {
++            Microsoft.Build.Shared.ExeAssemblyResources.RegisterExe();
++
+             if (Environment.GetEnvironmentVariable("MSBUILDDUMPPROCESSCOUNTERS") == "1")
+             {
+                 DumpCounters(true /* initialize only */);

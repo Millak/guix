@@ -1,6 +1,7 @@
 (define-module (gnu packages dotnet)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages assembly)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -1074,16 +1075,17 @@ unused0:")))))
               (lambda* (#:key make-flags #:allow-other-keys)
                 (apply invoke "make" "-C" "mcs/tools/resx2sr" make-flags)))
             (add-after 'install 'install-resx2sr
-              (lambda* (#:key make-flags #:allow-other-keys)
+              (lambda* (#:key inputs make-flags #:allow-other-keys)
                 (apply invoke "make" "-C" "mcs/tools/resx2sr" "install" make-flags)
                 ;; They don't install a wrapper script--but we need it for
                 ;; bootstrapping MSBuild.
                 (let ((resx2sr (string-append #$output "/bin/resx2sr")))
                   (call-with-output-file resx2sr
                     (lambda (port)
-                      (format port "#!/bin/sh
+                      (format port "#!~a
 exec ~s ~s \"$@\"
 "
+                              (search-input-file inputs "/bin/bash")
                               (string-append #$output "/bin/mono")
                               (string-append #$output "/lib/mono/4.5/resx2sr.exe"))))
                   (chmod resx2sr #o755))))))))
@@ -1934,113 +1936,771 @@ most of the heavy lifting.")
 
 (define-public mono mono-6.12.0)
 
-(define mono-system-collections-immutable-bootstrap
-  (package
-    (name "mono-system-collections-immutable-bootstrap")
-    (version
-     (package-version mono))
-    (source
-     (package-source mono))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list mono))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (delete 'bootstrap)
-               (add-after 'unpack 'prepare
-                 (lambda _
-                   (chdir "external/corefx/src/System.Collections.Immutable/src")
-                   (substitute* "../../Common/src/System/SR.cs"
-                     ;; I don't want to drag System.Security.AccessControl into the bootstrap path.
-                     (("new ResourceManager[(]ResourceType[)]")
-                      "new ResourceManager(\"System.Collections.Immutable\", typeof(SR).Assembly)"))))
-               (delete 'configure)
-               (replace 'build
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (invoke "resx2sr" "-o" "SR.cs" "-n" "System.SR"
-                           "--warn-mismatch"
-                           "Resources/Strings.resx")
-                   (apply invoke "mcs"
-                          "-target:library"
-                          "-langversion:7.2"
+(define-public mono-system-collections-immutable-bootstrap
+  (hidden-package
+   (package
+     (name "mono-system-collections-immutable-bootstrap")
+     (version
+      (package-version mono))
+     (source
+      (package-source mono))
+     (build-system gnu-build-system)
+     (native-inputs
+      (list mono))
+     (arguments
+      (list #:tests? #f ; tests would require xunit which is not in the bootstrap path.
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'prepare
+                  (lambda _
+                    (chdir "external/corefx/src/System.Collections.Immutable/src")
+                    (substitute* "../../Common/src/System/SR.cs"
+                      ;; I don't want to drag System.Security.AccessControl into the bootstrap path.
+                      (("new ResourceManager[(]ResourceType[)]")
+                       "new ResourceManager(\"System.Collections.Immutable\", typeof(SR).Assembly)"))))
+                (delete 'configure) ; no "configure" script exists
+                (replace 'build
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (invoke "resx2sr" "-o" "SR.cs" "-n" "System.SR"
+                            "--warn-mismatch"
+                            "Resources/Strings.resx")
+                    (apply invoke "mcs"
+                           "-target:library"
+                           "-langversion:7.2"
                           ;;; mono can't do it: "-d:FEATURE_ITEMREFAPI"
-                          "-out:System.Collections.Immutable.dll"
-                          "../../Common/src/System/Runtime/Versioning/NonVersionableAttribute.cs"
-                          "../../Common/src/System/SR.cs"
-                          (find-files "." "\\.cs$"))))
-               (delete 'check)
-               (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((lib-dir (string-append #$output "/lib/mono/4.5")))
-                     (mkdir-p lib-dir)
-                     (install-file "System.Collections.Immutable.dll"
-                                   lib-dir)))))))
-    (synopsis "System.Collections.Immutable library for bootstrapping")
-    (description "This package builds the System.Collections.Immutable library from
+                           "-out:System.Collections.Immutable.dll"
+                           "../../Common/src/System/Runtime/Versioning/NonVersionableAttribute.cs"
+                           "../../Common/src/System/SR.cs"
+                           (find-files "." "\\.cs$"))))
+                (replace 'install
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (let* ((lib-dir (string-append #$output "/lib/mono/4.5")))
+                      (mkdir-p lib-dir)
+                      (install-file "System.Collections.Immutable.dll"
+                                    lib-dir)))))))
+     (synopsis "System.Collections.Immutable library for bootstrapping")
+     (description "This package builds the System.Collections.Immutable library from
 the source code included within the Mono source tree.")
-    (home-page "https://dot.net/")
-    (license license:expat)))
+     (home-page "https://dot.net/")
+     (license license:expat))))
 
-(define mono-system-reflection-metadata-bootstrap
+(define-public mono-system-reflection-metadata-bootstrap
+  (hidden-package
+   (package
+     (name "mono-system-reflection-metadata-bootstrap")
+     ;; Upstream version 1.4.2; but for bootstrap packages it's more useful to have the mono version here.
+     (version
+      (package-version mono))
+     (source
+      (package-source mono))
+     (build-system gnu-build-system)
+     (inputs
+      (list mono-system-collections-immutable-bootstrap)) ; not required: mono-system-buffers-bootstrap
+     (native-inputs
+      (list mono))
+     (arguments
+      (list #:tests? #f ; would require xunit which is not in the bootstrap path
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'chdir
+                  (lambda _
+                    (chdir "external/corefx/src/System.Reflection.Metadata/src")
+                    (substitute* "../../Common/src/System/SR.cs"
+                      ;; I don't want to drag System.Security.AccessControl into the bootstrap path.
+                      (("new ResourceManager[(]ResourceType[)]")
+                       "new ResourceManager(\"System.Collections.Immutable\", typeof(SR).Assembly)"))))
+                (add-after 'chdir 'prepare
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (for-each
+                     (lambda (name)
+                       (if (file-exists? name)
+                           (delete-file name)
+                           (format #t "Warning: File ~s doesn't exist~%" name)))
+                     ;; We don't need those since they would be for different .NET standards.
+                     '("./System/Reflection/Internal/Utilities/CriticalDisposableObject.netstandard1.1.cs"
+                       "./System/Reflection/Internal/Utilities/EncodingHelper.netcoreapp.cs"
+                       "./System/Reflection/Internal/Utilities/FileStreamReadLightUp.netstandard1.1.cs"
+                       "./System/Reflection/Internal/Utilities/MemoryMapLightUp.netstandard1.1.cs"))))
+                (delete 'configure) ; no "configure" script exists
+                (replace 'build
+                  (lambda* (#:key inputs outputs #:allow-other-keys)
+                    (invoke "resx2sr" "-o" "SR.cs" "-n" "System.SR" "--warn-mismatch"
+                            "Resources/Strings.resx")
+                    (apply invoke "mcs"
+                           "-target:library"
+                           "-langversion:7.2"
+                           "-unsafe"
+                           "-out:System.Reflection.Metadata.dll"
+                           (string-append "-r:"
+                            (search-input-file inputs
+                                               "/lib/mono/4.5/System.Collections.Immutable.dll"))
+                           "../../Common/src/System/SR.cs"
+                           (find-files "." "\\.cs$"))))
+                (replace 'install
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (let* ((lib-dir (string-append #$output "/lib/mono/4.5")))
+                      (install-file "System.Reflection.Metadata.dll" lib-dir)))))))
+     (synopsis "System.Reflection.Metadata library for bootstrapping")
+     (description "This package builds the System.Reflection.Metadata library from
+the source code included within the Mono source tree.")
+     (home-page "https://dot.net/")
+     (license license:expat))))
+
+;; too new version: 15.9.21.664
+;; too old (no support for mono) version: 14.0
+(define-public msbuild
   (package
-    (name "mono-system-reflection-metadata-bootstrap")
-    ;; Upstream version 1.4.2; but for bootstrap packages it's more useful to have the mono version here.
-    (version
-     (package-version mono))
+    (name "msbuild")
+    (version "15.7.179")
     (source
-     (package-source mono))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dotnet/msbuild")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1fhd4z9575lwgy6l3wisih7g6qd6j3wb99kz246028dzm0rh3cfh"))
+       (patches
+        (search-patches
+         "mono-msbuild-15.7.179-fix-build.patch"
+         "mono-msbuild-15.7.179-fix-resources.patch"))))
     (build-system gnu-build-system)
     (inputs
-     (list mono-system-collections-immutable-bootstrap)) ; not required: mono-system-buffers-bootstrap
-    (native-inputs
-     (list mono))
+     (list bash-minimal
+           mono mono-system-reflection-metadata-bootstrap
+           mono-system-collections-immutable-bootstrap))
     (arguments
-     (list #:phases
+     (list #:tests? #f ; would require xunit which is not in the bootstrap path
+           #:phases
            #~(modify-phases %standard-phases
-               (delete 'bootstrap)
-               (add-after 'unpack 'chdir
+               (replace 'configure
                  (lambda _
-                   (chdir "external/corefx/src/System.Reflection.Metadata/src")
-                   (substitute* "../../Common/src/System/SR.cs"
-                     ;; I don't want to drag System.Security.AccessControl into the bootstrap path.
-                     (("new ResourceManager[(]ResourceType[)]")
-                      "new ResourceManager(\"System.Collections.Immutable\", typeof(SR).Assembly)"))))
-               (add-after 'chdir 'prepare
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (for-each
-                    (lambda (name)
-                      (if (file-exists? name)
-                          (delete-file name)
-                          (format #t "Warning: File ~s doesn't exist~%" name)))
-                    ;; We don't need those since they would be for different .NET standards.
-                    '("./System/Reflection/Internal/Utilities/CriticalDisposableObject.netstandard1.1.cs"
-                      "./System/Reflection/Internal/Utilities/EncodingHelper.netcoreapp.cs"
-                      "./System/Reflection/Internal/Utilities/FileStreamReadLightUp.netstandard1.1.cs"
-                      "./System/Reflection/Internal/Utilities/MemoryMapLightUp.netstandard1.1.cs"))))
-               (delete 'configure)
+                   (define (generate-version-file filename version-str internals-list)
+                     (call-with-output-file filename
+                       (lambda (port)
+                         (format port
+                                 "[assembly: System.Reflection.AssemblyVersion(\"~a\")]~%"
+                                 version-str)
+                         (format port
+                                 "[assembly: System.Reflection.AssemblyFileVersion(\"~a\")]~%"
+                                 version-str)
+                         ;; TODO: and commit id, if any.
+                         (format port
+                                 "[assembly: System.Reflection.AssemblyInformationalVersion(\"~a\")]~%"
+                                 version-str)
+                         (for-each
+                          (lambda (internal-name)
+                            (format port
+                                    "[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(\"~a\")]~%"
+                                    internal-name))
+                          internals-list))))
+                   (let ((version #$(package-version this-package)))
+                     (substitute* "src/Build/Resources/AssemblyResources.cs"
+                       ;; There's a caller that has a caller that checks for null.
+                       ;;
+                       ;; But if this check is here, the high-level fallback will
+                       ;; not work since it only falls back on null, not on
+                       ;; exception.
+                       ;;
+                       ;; So what's this about?!  Remove it.
+                       (("ErrorUtilities.VerifyThrow[(]resource != null, .*")
+                        "\n"))
+                     (substitute* "src/Shared/AssemblyNameExtension.cs"
+                       (("\\<ISerializable\\>")
+                        "System.Runtime.Serialization.ISerializable")
+                       (("\\<StreamingContext\\>")
+                        "System.Runtime.Serialization.StreamingContext")
+                       (("\\<SerializationInfo\\>")
+                        "System.Runtime.Serialization.SerializationInfo"))
+                     ;; ThisAssembly would have been generated by MSBuild--which we don't have yet.
+                     (substitute* '("src/Shared/CommunicationsUtilities.cs"
+                                    "src/Tasks/StronglyTypedResourceBuilder.cs")
+                       (("ThisAssembly[.]AssemblyInformationalVersion")
+                        (string-append "\"" version "\""))
+                       (("ThisAssembly[.]Version")
+                        (string-append "\"" version "\"")))
+                     (substitute* "src/Shared/FrameworkLocationHelper.cs"
+                       ;; That is unused anyway.
+                       (("^using Microsoft.Build.Evaluation;")
+                        ""))
+                     (substitute* '("src/Tasks/AspNetCompiler.cs"
+                                    "src/Tasks/AxTlbBaseTask.cs"
+                                    "src/Tasks/AxImp.cs"
+                                    "src/Tasks/TlbImp.cs"
+                                    "src/Tasks/Exec.cs"
+                                    "src/Tasks/ResGen.cs"
+                                    "src/Tasks/LC.cs"
+                                    "src/Tasks/SGen.cs"
+                                    "src/Tasks/WinMDExp.cs")
+                       (("protected override bool ValidateParameters")
+                        "protected internal override bool ValidateParameters")
+                       (("override protected bool ValidateParameters") ; SGen.cs
+                        "protected internal override bool ValidateParameters"))
+                     (substitute* "src/Shared/Modifiers.cs"
+                       (("^using Microsoft.Build.Internal;")
+                        ""))
+                     (substitute* "src/MSBuild/OutOfProcTaskHostNode.cs"
+                       (("^using Microsoft.Build.BackEnd;")
+                        "using Microsoft.Build.BackEnd;
+using Microsoft.Build.BackEnd.Components.Caching;"))
+                     (generate-version-file "Version-Framework.cs" version
+                                            '("Microsoft.Build.Utilities.Core"
+                                              "Microsoft.Build.Tasks.Core"
+                                              "Microsoft.Build.Tasks"
+                                              "Microsoft.Build"))
+                     (generate-version-file "Version-Utilities.cs" version
+                                            '("Microsoft.Build"
+                                              "Microsoft.Build.Tasks.Core"
+                                              "Microsoft.Build.Tasks"
+                                              "MSBuild"))
+                     (generate-version-file "Version.cs" version
+                                            '("MSBuild"))
+                     (generate-version-file "Version-exe.cs" version
+                                            '()))))
                (replace 'build
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (invoke "resx2sr" "-o" "SR.cs" "-n" "System.SR" "--warn-mismatch"
-                           "Resources/Strings.resx")
-                   (apply invoke "mcs"
-                          "-target:library"
-                          "-langversion:7.2"
-                          "-unsafe"
-                          "-out:System.Reflection.Metadata.dll"
-                                        ; ,(string-append "-r:" buffers-dll)
-                          (string-append "-r:"
-                                         (search-input-file inputs
-                                                            "/lib/mono/4.5/System.Collections.Immutable.dll"))
-                          "../../Common/src/System/SR.cs"
-                          (find-files "." "\\.cs$"))))
-               (delete 'check)
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let* ((mcs-flags '("-langversion:7.2" "-unsafe" "-d:NET472" "-d:STRONG_NAME"
+                                       "-d:MONO" "-d:STANDALONEBUILD"
+                                       ;; Otherwise the build would fail.
+                                       "-d:FEATURE_COM_INTEROP"
+                                       ;; Otherwise it would try to load shell32.
+                                       "-d:FEATURE_SPECIAL_FOLDERS"
+                                        ;"-d:FEATURE_BINARY_SERIALIZATION"
+                                        ;"-d:FEATURE_ASSEMBLY_LOADFROM"
+                                        ;"-d:FEATURE_RESX_RESOURCE_READER"
+                                       "-d:FEATURE_RESGENCACHE"
+                                       "-d:FEATURE_CODEDOM"
+                                        ;"-d:FEATURE_SYSTEM_CONFIGURATION"
+                                       "-d:FEATURE_APPDOMAIN"
+                                        ;"-d:FEATURE_APM" ; ?
+                                       "-d:FEATURE_TYPE_INVOKEMEMBER"
+                                       "-d:FEATURE_APPDOMAIN_UNHANDLED_EXCEPTION")))
+                     (mkdir "artifacts")
+
+                     ;;; --- 1. Build Microsoft.Build.Framework.dll
+
+                     ;;; Note: No generating SR.cs for now.
+
+                     (invoke "resgen" "src/Shared/Resources/Strings.shared.resx"
+                             "artifacts/Microsoft.Build.Framework.Strings.shared.resources")
+
+                     (apply invoke "mcs"
+                            (append mcs-flags
+                                    '("-target:library" "-out:artifacts/Microsoft.Build.Framework.dll"
+                                      "-resource:artifacts/Microsoft.Build.Framework.Strings.shared.resources"
+                                      "-r:System.Xaml.dll"
+                                      "Version-Framework.cs")
+                                    (find-files "src/Framework" "\\.cs$")
+                                    (list "src/Shared/Constants.cs"
+                                          "src/Shared/BinaryWriterExtensions.cs")))
+
+                     ;;; --- 2. Build Microsoft.Build.Utilities.Core.dll
+
+                     ;; No resx2sr since src/Utilities/AssemblyResources.cs is hand-written.
+                     (invoke "resgen" "src/Shared/Resources/Strings.shared.resx"
+                             "artifacts/Microsoft.Build.Utilities.Core.Strings.shared.resources")
+                     (invoke "resgen" "src/Utilities/Resources/Strings.resx"
+                             "artifacts/Microsoft.Build.Utilities.Core.Strings.resources")
+                     (apply invoke "mcs"
+                            (append mcs-flags
+                                    '("-target:library" "-out:artifacts/Microsoft.Build.Utilities.Core.dll"
+                                      "-resource:artifacts/Microsoft.Build.Utilities.Core.Strings.shared.resources"
+                                      "-resource:artifacts/Microsoft.Build.Utilities.Core.Strings.resources"
+                                      "-r:System.Runtime.Serialization.dll"
+                                      "-r:artifacts/Microsoft.Build.Framework.dll"
+                                      "src/Utilities/AssemblyResources.cs"
+                                      "Version-Utilities.cs")
+                                    (map (lambda (f) (string-append "src/Utilities/" f))
+                                         '("SDKManifest.cs"
+                                           "ApiContract.cs"
+                                           "SDKType.cs"
+                                           "Logger.cs"
+                                           "TrackedDependencies/FlatTrackingData.cs"
+                                           "TrackedDependencies/CanonicalTrackedOutputFiles.cs"
+                                           "TrackedDependencies/CanonicalTrackedInputFiles.cs"
+                                           "TrackedDependencies/CanonicalTrackedFilesHelper.cs"
+                                           "TrackedDependencies/FileTracker.cs"
+                                           "TrackedDependencies/DependencyTableCache.cs"
+                                           "AssemblyFolders/AssemblyFoldersExInfo.cs"
+                                           "AssemblyFolders/AssemblyFoldersFromConfigInfo.cs"
+                                           "AssemblyInfo.cs"
+                                           "ProcessorArchitecture.cs"
+                                           "FxCopExclusions/Microsoft.Build.Utilities.Suppressions.cs"
+                                           "PlatformManifest.cs"
+                                           "ExtensionSDK.cs"
+                                           "CommandLineBuilder.cs"
+                                           "TaskItem.cs"
+                                           "ToolTask.cs"
+                                           "TargetPlatformSDK.cs"
+                                           "AppDomainIsolatedTask.cs"
+                                           "Task.cs"
+                                           "ProcessExtensions.cs"
+                                           "MuxLogger.cs"))
+                                    (map (lambda (f) (string-append "src/Shared/" f))
+                                         '("FxCopExclusions/Microsoft.Build.Shared.Suppressions.cs"
+                                           "EncodingStringWriter.cs"
+                                           "EncodingUtilities.cs"
+                                           "CopyOnWriteDictionary.cs"
+                                           "Tracing.cs"
+                                           "TaskLoggingHelper.cs"
+                                           "TaskLoggingHelperExtension.cs"
+                                           "EventArgsFormatting.cs"
+                                           "FileDelegates.cs"  ; req by tasks
+                                           "NativeMethodsShared.cs" ; again ???
+                                           "MSBuildNameIgnoreCaseComparer.cs"
+                                           "BuildEventFileInfo.cs"
+                                           "ErrorUtilities.cs"
+                                           "EscapingUtilities.cs"
+                                           "FileUtilities.cs"
+                                           "FileUtilities.GetFolderPath.cs"
+                                           "TempFileUtilities.cs"
+                                           "Modifiers.cs"
+                                           "FileUtilitiesRegex.cs"
+                                           "HybridDictionary.cs"
+                                           "IConstrainedEqualityComparer.cs"
+                                           "ResourceUtilities.cs"
+                                           "StringBuilderCache.cs"
+                                           "Traits.cs"
+                                           "IElementLocation.cs"
+                                           "INodePacket.cs"
+                                           "INodePacketFactory.cs"
+                                           "INodePacketHandler.cs"
+                                           "INodePacketTranslatable.cs"
+                                           "INodePacketTranslator.cs"
+                                           "ExceptionHandling.cs"
+                                           "ReadOnlyEmptyCollection.cs"
+                                           "OpportunisticIntern.cs"
+                                           "AssemblyUtilities.cs"
+                                           "ReadOnlyEmptyDictionary.cs"
+                                           "CanonicalError.cs"
+                                           "VisualStudioLocationHelper.cs"
+                                           "AssemblyFolders/Serialization/AssemblyFolderItem.cs"
+                                           "AssemblyFolders/Serialization/AssemblyFolderCollection.cs"
+                                           "BuildEnvironmentHelper.cs"
+                                           "EnvironmentUtilities.cs"
+                                           "VersionUtilities.cs"
+                                           "InternalErrorException.cs"))))
+
+                     ;;; --- 3. Build Microsoft.Build.Tasks.Core.dll
+
+                     ;; No resx2sr since src/Tasks/AssemblyResources.cs is
+                     ;; hand-written.
+                     (invoke "resgen" "src/Tasks/Resources/Strings.resx"
+                             "artifacts/Microsoft.Build.Tasks.Core.Strings.resources")
+                     (apply invoke "mcs"
+                            (append mcs-flags
+                                    `("-d:MICROSOFT_BUILD_TASKS"
+                                      "-target:library"
+                                      "-out:artifacts/Microsoft.Build.Tasks.Core.dll"
+                                      "-resource:artifacts/Microsoft.Build.Tasks.Core.Strings.resources,Microsoft.Build.Tasks.Core.Strings"
+                                      "-r:System.Xml.Linq.dll"
+                                      "-r:artifacts/Microsoft.Build.Framework.dll"
+                                      ;; This should contain ToolLocationHelper--but it's impossible.
+                                      "-r:artifacts/Microsoft.Build.Utilities.Core.dll"
+                                      "-r:System.Windows.Forms.dll" ; ResXDataNode
+                                      ,(string-append "-r:"
+                                                      (search-input-file inputs
+                                                                         "/lib/mono/4.5/System.Reflection.Metadata.dll"))
+                                      ,(string-append "-r:"
+                                                      (search-input-file inputs
+                                                                         "lib/mono/4.5/System.Collections.Immutable.dll"))
+                                      "Version.cs")
+                                    (map (lambda (f) (string-append "src/Tasks/" f))
+                                         '(;; Otherwise impossible to use since it requires weird things.
+                                           "../Utilities/ToolLocationHelper.cs"
+                                           "Delegate.cs"
+                                           "StrongNameUtils.cs"
+                                           "AssemblyRegistrationCache.cs"
+                                           "StateFileBase.cs"
+                                           "AppDomainIsolatedTaskExtension.cs"
+                                           "SdkToolsPathUtility.cs"
+                                           "StronglyTypedResourceBuilder.cs"
+                                           "Al.cs" "AppConfig/AppConfig.cs"
+                                           "AppConfig/AppConfigException.cs"
+                                           "AppConfig/BindingRedirect.cs"
+                                           "AppConfig/DependentAssembly.cs"
+                                           "AppConfig/RuntimeSection.cs"
+                                           "AspNetCompiler.cs"
+                                           "AssignCulture.cs"
+                                           "AssignLinkMetadata.cs"
+                                           "AssignProjectConfiguration.cs"
+                                           "AssignTargetPath.cs"
+                                           "AssemblyDependency/AssemblyFoldersExResolver.cs"
+                                           "AssemblyDependency/AssemblyFoldersFromConfig/AssemblyFoldersFromConfigCache.cs"
+                                           "AssemblyDependency/AssemblyFoldersFromConfig/AssemblyFoldersFromConfigResolver.cs"
+                                           "AssemblyDependency/AssemblyFoldersResolver.cs"
+                                           "AssemblyDependency/AssemblyInformation.cs"
+                                           "AssemblyDependency/AssemblyNameReference.cs"
+                                           "AssemblyDependency/AssemblyNameReferenceAscendingVersionComparer.cs"
+                                           "AssemblyDependency/AssemblyResolution.cs"
+                                           "AssemblyDependency/AssemblyResolutionConstants.cs"
+                                           "AssemblyDependency/BadImageReferenceException.cs"
+                                           "AssemblyDependency/CandidateAssemblyFilesResolver.cs"
+                                           "AssemblyDependency/ConflictLossReason.cs"
+                                           "AssemblyDependency/CopyLocalState.cs"
+                                           "AssemblyDependency/DependencyResolutionException.cs"
+                                           "AssemblyDependency/DirectoryResolver.cs"
+                                           "AssemblyDependency/DisposableBase.cs"
+                                           "AssemblyDependency/FrameworkPathResolver.cs"
+                                           "AssemblyDependency/GacResolver.cs"
+                                           "AssemblyDependency/GlobalAssemblyCache.cs"
+                                           "AssemblyDependency/HintPathResolver.cs"
+                                           "AssemblyDependency/InstalledAssemblies.cs"
+                                           "AssemblyDependency/InvalidReferenceAssemblyNameException.cs"
+                                           "AssemblyDependency/NoMatchReason.cs"
+                                           "AssemblyDependency/RawFilenameResolver.cs"
+                                           "AssemblyDependency/Reference.cs"
+                                           "AssemblyDependency/ReferenceResolutionException.cs"
+                                           "AssemblyDependency/ReferenceTable.cs"
+                                           "AssemblyDependency/ResolutionSearchLocation.cs"
+                                           "AssemblyDependency/Resolver.cs"
+                                           "AssemblyDependency/ResolveAssemblyReference.cs"
+                                           "AssemblyDependency/TaskItemSpecFilenameComparer.cs"
+                                           "AssemblyDependency/UnificationReason.cs"
+                                           "AssemblyDependency/UnificationVersion.cs"
+                                           "AssemblyDependency/UnifiedAssemblyName.cs"
+                                           "AssemblyDependency/WarnOrErrorOnTargetArchitectureMismatchBehavior.cs"
+                                           "AssemblyDependency/GenerateBindingRedirects.cs"
+                                           "AssemblyFolder.cs" "AssemblyInfo.cs" "AssemblyRemapping.cs"
+                                           "AxImp.cs"
+                                           "AxTlbBaseTask.cs"
+                                           "BuildCacheDisposeWrapper.cs"
+                                           "CallTarget.cs"
+                                           "CodeTaskFactory.cs"
+                                           "CombinePath.cs"
+                                           "CommandLineBuilderExtension.cs"
+                                           "ComReferenceResolutionException.cs"
+                                           "ComReferenceTypes.cs"
+                                           "ComReferenceWrapperInfo.cs"
+                                           "ConvertToAbsolutePath.cs"
+                                           "Copy.cs"
+                                           "CreateCSharpManifestResourceName.cs"
+                                           "CreateItem.cs"
+                                           "CreateManifestResourceName.cs"
+                                           "CreateProperty.cs"
+                                           "CreateVisualBasicManifestResourceName.cs"
+                                           "CSharpParserUtilities.cs"
+                                           "Culture.cs"
+                                           "CultureInfoCache.cs"
+                                           "Delete.cs"
+                                           "Dependencies.cs"
+                                           "DependencyFile.cs"
+                                           "Error.cs"
+                                           "ErrorFromResources.cs"
+                                           "Exec.cs"
+                                           "ExtractedClassName.cs"
+                                           "FileIO/ReadLinesFromFile.cs"
+                                           "FileIO/WriteLinesToFile.cs"
+                                           "FileState.cs"
+                                           "FindAppConfigFile.cs"
+                                           "FindInList.cs"
+                                           "FindInvalidProjectReferences.cs"
+                                           "FormatUrl.cs"
+                                           "FormatVersion.cs"
+                                           "FxCopExclusions/Microsoft.Build.Tasks.Suppressions.cs"
+                                           "GenerateResource.cs"
+                                           "GetAssemblyIdentity.cs"
+                                           "GetFrameworkPath.cs"
+                                           "GetFrameworkSDKPath.cs"
+                                           "GetInstalledSDKLocations.cs"
+                                           "GetReferenceAssemblyPaths.cs"
+                                           "GetSDKReferenceFiles.cs"
+                                           "Hash.cs"
+                                           "IAnalyzerHostObject.cs"
+                                           "ICscHostObject.cs"
+                                           "ICscHostObject2.cs"
+                                           "ICscHostObject3.cs"
+                                           "ICscHostObject4.cs"
+                                           "IComReferenceResolver.cs"
+                                           "IVbcHostObject.cs"
+                                           "IVbcHostObject2.cs"
+                                           "IVbcHostObject3.cs"
+                                           "IVbcHostObject4.cs"
+                                           "IVbcHostObject5.cs"
+                                           "IVbcHostObjectFreeThreaded.cs"
+                                           "InstalledSDKResolver.cs"
+                                           "InvalidParameterValueException.cs"
+                                           "LC.cs"
+                                           "ListOperators/FindUnderPath.cs"
+                                           "ListOperators/RemoveDuplicates.cs"
+                                           "LockCheck.cs" "MakeDir.cs"
+                                           "ManifestUtil/ApplicationIdentity.cs"
+                                           "ManifestUtil/AssemblyIdentity.cs"
+                                           "ManifestUtil/AssemblyReference.cs"
+                                           "ManifestUtil/AssemblyReferenceCollection.cs"
+                                           "ManifestUtil/BaseReference.cs"
+                                           "ManifestUtil/CngLightup.cs"
+                                           "ManifestUtil/ComImporter.cs"
+                                           "ManifestUtil/CompatibleFramework.cs"
+                                           "ManifestUtil/CompatibleFrameworkCollection.cs"
+                                           "ManifestUtil/Constants.cs"
+                                           "ManifestUtil/ConvertUtil.cs"
+                                           "ManifestUtil/EmbeddedManifestReader.cs"
+                                           "ManifestUtil/FileAssociation.cs"
+                                           "ManifestUtil/FileAssociationCollection.cs"
+                                           "ManifestUtil/FileReference.cs"
+                                           "ManifestUtil/FileReferenceCollection.cs"
+                                           "ManifestUtil/ManifestFormatter.cs"
+                                           "ManifestUtil/MetadataReader.cs"
+                                           "ManifestUtil/NativeMethods.cs"
+                                           "ManifestUtil/OutputMessage.cs"
+                                           "ManifestUtil/PathUtil.cs"
+                                           "ManifestUtil/RSAPKCS1SHA256SignatureDescription.cs"
+                                           "ManifestUtil/Util.cs"
+                                           "ManifestUtil/XmlNamespaces.cs"
+                                           "ManifestUtil/XmlUtil.cs"
+                                           "ManifestUtil/XPaths.cs"
+                                           "Message.cs"
+                                           "Move.cs"
+                                           "MSBuild.cs"
+                                           "NativeMethods.cs"
+                                           "ParserState.cs"
+                                           "RCWForCurrentContext.cs"
+                                           "RedistList.cs"
+                                           "RegisterAssembly.cs"
+                                           "RemoveDir.cs"
+                                           "RequiresFramework35SP1Assembly.cs"
+                                           "ResGen.cs"
+                                           "ResGenDependencies.cs"
+                                           "ResolveCodeAnalysisRuleSet.cs"
+                                           "ResolveKeySource.cs"
+                                           "ResolveManifestFiles.cs"
+                                           "ResolveNonMSBuildProjectOutput.cs"
+                                           "ResolveProjectBase.cs"
+                                           "ResolveSDKReference.cs"
+                                           "SGen.cs"
+                                           "StrongNameException.cs"
+                                           "System.Design.cs"
+                                           "TaskExtension.cs"
+                                           "Telemetry.cs"
+                                           "TlbImp.cs"
+                                           "ToolTaskExtension.cs"
+                                           "Touch.cs"
+                                           "UnregisterAssembly.cs"
+                                           "VisualBasicParserUtilities.cs"
+                                           "Warning.cs"
+                                           "WinMDExp.cs"
+                                           "WriteCodeFragment.cs"
+                                           "XmlPeek.cs"
+                                           "XmlPoke.cs"
+                                           "XslTransformation.cs"
+                                           "AssemblyDependency/AssemblyMetadata.cs"))
+                                    (append
+                                     (map (lambda (f) (string-append "src/Shared/LanguageParser/" f))
+                                          '("CSharptokenCharReader.cs"
+                                            "CSharptokenizer.cs"
+                                            "tokenChar.cs"
+                                            "token.cs"
+                                            "VisualBasictokenCharReader.cs"
+                                            "VisualBasictokenizer.cs"
+                                            "CSharptokenEnumerator.cs"
+                                            "StreamMappedString.cs"
+                                            "tokenCharReader.cs"
+                                            "tokenEnumerator.cs"
+                                            "VisualBasictokenEnumerator.cs"))
+                                     '("src/Shared/AssemblyNameExtension.cs"
+                                       "src/Shared/Constants.cs"
+                                       "src/Shared/NGen.cs"
+                                       "src/Shared/PropertyParser.cs"
+                                       "src/Shared/ConversionUtilities.cs"
+                                       "src/Shared/MetadataConversionUtilities.cs"
+                                       "src/Shared/AssemblyNameComparer.cs"
+                                       "src/Shared/AssemblyNameReverseVersionComparer.cs"
+                                       "src/Shared/FileMatcher.cs"
+                                       "src/Shared/RegistryHelper.cs"
+                                       "src/Shared/StrongNameHelpers.cs"
+                                       "src/Shared/AssemblyFolders/AssemblyFoldersFromConfig.cs" ; class
+                                       ;; Requires Evaluation.
+                                       "src/Shared/FrameworkLocationHelper.cs"))))
+
+                     ;;; --- 4. Build Microsoft.Build.dll (The Main Engine)
+
+                     ;; src/Build/Resources/AssemblyResources.cs was
+                     ;; hand-written to fall-back to EXE resources,
+                     ;; so no resx2sr here.
+
+                     (invoke "resgen" "src/Shared/Resources/Strings.shared.resx"
+                             "artifacts/Microsoft.Build.Strings.shared.resources")
+                     (invoke "resgen" "src/Build/Resources/Strings.resx"
+                             "artifacts/Microsoft.Build.Strings.resources")
+                     (invoke "resgen" "src/MSBuild/Resources/Strings.resx"
+                             "artifacts/Microsoft.Build.Strings.commandline.resources")
+
+                     (apply invoke "mcs"
+                            (append mcs-flags
+                                    `("-d:BUILD_ENGINE"
+                                      "-d:FEATURE_ASSEMBLY_LOADFROM"
+                                      "-d:FEATURE_SYSTEM_CONFIGURATION"
+                                      "-target:library"
+                                      "-out:artifacts/Microsoft.Build.dll"
+                                      "-resource:artifacts/Microsoft.Build.Strings.shared.resources,Microsoft.Build.Strings.shared.resources"
+                                      "-resource:artifacts/Microsoft.Build.Strings.resources,Microsoft.Build.Strings.resources"
+                                      "-resource:artifacts/Microsoft.Build.Strings.commandline.resources,Microsoft.Build.Strings.commandline.resources"
+
+                                      "-r:System.Configuration.dll"
+                                      "-r:System.Threading.Tasks.Dataflow.dll"
+                                      "-r:System.IO.Compression.dll"
+                                      "-r:artifacts/Microsoft.Build.Framework.dll"
+                                      ,(string-append "-r:"
+                                        (search-input-file inputs
+                                                           "/lib/mono/4.5/System.Collections.Immutable.dll"))
+                                      "Version.cs")
+                                    (filter (lambda (name)
+                                              (not (string-contains name "/Originals/")))
+                                            (find-files "src/Build" "\\.cs$"))
+                                    (map (lambda (f) (string-append "src/Shared/" f))
+                                         '("CollectionHelpers.cs"
+                                           "Constants.cs"
+                                           "EscapingUtilities.cs"
+                                           "FileUtilities.cs"
+                                           "FileUtilitiesRegex.cs"
+                                           "TempFileUtilities.cs"
+                                           "FileUtilities.GetFolderPath.cs"
+                                           "InterningBinaryReader.cs"
+                                           "MSBuildNameIgnoreCaseComparer.cs"
+                                           "NativeMethodsShared.cs"
+                                           "ResourceUtilities.cs"
+                                           "StringBuilderCache.cs"
+                                           "Traits.cs"
+                                           "IKeyed.cs"
+                                           "Pair.cs"
+                                           "EscapingStringExtensions/EscapingStringExtensions.cs"
+                                           "NodeShutdown.cs"
+                                           "NodeEngineShutdownReason.cs"
+                                           "NodePacketFactory.cs"
+                                           "INodeEndpoint.cs"
+                                           "NodeBuildComplete.cs"
+                                           "LogMessagePacketBase.cs"
+                                           "NodeEndpointOutOfProcBase.cs"
+                                           "ProjectFileErrorUtilities.cs"
+                                           "TaskHostConfiguration.cs"
+                                           "TaskHostTaskCancelled.cs"
+                                           "TaskHostTaskComplete.cs"
+                                           "ToolsetElement.cs"
+                                           "TaskEngineAssemblyResolver.cs"
+                                           "RegisteredTaskObjectCacheBase.cs"
+                                           "TypeLoader.cs"
+                                           "LoadedType.cs"
+                                           "AssemblyLoadInfo.cs"
+                                           "ReuseableStringBuilder.cs"
+                                           "TaskParameter.cs"
+                                           "TaskParameterTypeVerifier.cs"
+                                           "OutOfProcTaskHostTaskResult.cs"
+                                           "VisualStudioConstants.cs"
+                                           "CommunicationsUtilities.cs"
+                                           "XMakeAttributes.cs"
+                                           "XMakeElements.cs"
+                                           ;; Yes, again.  It has a feature flag check.
+                                           "TaskLoggingHelper.cs"
+                                           "TaskLoggingHelperExtension.cs"
+                                           "AssemblyNameComparer.cs"
+                                           "EncodingUtilities.cs"
+                                           "BuildEventFileInfo.cs"
+                                           "CopyOnWriteDictionary.cs"
+                                           "FileDelegates.cs"
+                                           "HybridDictionary.cs"
+                                           "IConstrainedEqualityComparer.cs"
+                                           "IElementLocation.cs"
+                                           "INodePacket.cs"
+                                           "INodePacketFactory.cs"
+                                           "INodePacketHandler.cs"
+                                           "INodePacketTranslatable.cs"
+                                           "INodePacketTranslator.cs"
+                                           "NGen.cs"
+                                           "OpportunisticIntern.cs"
+                                           "ErrorUtilities.cs"
+                                           "ExceptionHandling.cs"
+                                           "AssemblyUtilities.cs"
+                                           "AwaitExtensions.cs"
+                                           "BuildEnvironmentHelper.cs"
+                                           "ConversionUtilities.cs"
+                                           "EnvironmentUtilities.cs"
+                                           "EventArgsFormatting.cs"
+                                           "FileMatcher.cs"
+                                           "FrameworkLocationHelper.cs"
+                                           "NodePacketTranslator.cs"
+                                           "ProjectErrorUtilities.cs"
+                                           "ProjectWriter.cs"
+                                           "PropertyParser.cs"
+                                           "ReadOnlyEmptyCollection.cs"
+                                           "ReadOnlyEmptyDictionary.cs"
+                                           "TaskLoader.cs"
+                                           "ThreadPoolExtensions.cs"
+                                           "Tracing.cs"
+                                           "VersionUtilities.cs"
+                                           "XmlUtilities.cs"
+                                           "VisualStudioLocationHelper.cs"
+                                           "Modifiers.cs"
+                                           "ReadOnlyCollection.cs"
+                                           "AssemblyNameExtension.cs"
+                                           "BufferedReadStream.cs"
+                                           "CanonicalError.cs"
+                                           "EncodingStringWriter.cs"
+                                           "InternalErrorException.cs"))))
+
+                     ;;; --- 5. Build MSBuild.exe (the executable)
+
+                     ;; no resx2sr since src/MSBuild/AssemblyResources.cs is hand-written.
+                     (invoke "resgen" "src/MSBuild/Resources/Strings.resx"
+                             "artifacts/MSBuild.Strings.resources")
+                     (invoke "resgen" "src/Shared/Resources/Strings.shared.resx"
+                             "artifacts/MSBuild.Strings.shared.resources")
+                     (apply invoke "mcs"
+                            (append mcs-flags
+                                    '("-target:exe"
+                                      "-out:artifacts/MSBuild.exe"
+                                      ;; Add the correct logical names (RHS) for BOTH resource files.
+                                      "-resource:artifacts/MSBuild.Strings.resources,MSBuild.Strings.resources"
+                                      "-resource:artifacts/MSBuild.Strings.shared.resources,MSBuild.Strings.shared.resources"
+                                      "-r:artifacts/Microsoft.Build.dll"
+                                      "-r:artifacts/Microsoft.Build.Framework.dll"
+                                      "-r:artifacts/Microsoft.Build.Tasks.Core.dll"
+                                      "Version-exe.cs")
+                                    (find-files "src/MSBuild" "\\.cs$")
+                                    '("src/Shared/QuotingUtilities.cs"
+                                      "src/Shared/ExceptionHandling.cs"))))))
                (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((lib-dir (string-append #$output "/lib/mono/4.5")))
-                     (install-file "System.Reflection.Metadata.dll" lib-dir)))))))
-    (synopsis "System.Reflection.Metadata library for bootstrapping")
-    (description "This package builds the System.Reflection.Metadata library from
-the source code included within the Mono source tree.")
-    (home-page "https://dot.net/")
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((lib-dir (string-append #$output "/lib/mono/msbuild"))
+                          (bin-dir (string-append #$output "/bin")))
+                     (mkdir-p lib-dir)
+                     (mkdir-p bin-dir)
+                     (for-each (lambda (file)
+                                 (install-file file lib-dir))
+                               (find-files "artifacts" "(\\.dll|\\.exe)$"))
+                     (for-each (lambda (file)
+                                 (install-file file lib-dir))
+                               (find-files "src/Tasks" "\\.(targets|props|tasks)$"))
+                     (substitute* '("src/MSBuild/app.amd64.config"
+                                    "src/MSBuild/app.config")
+                       (("</configuration>")
+                        (string-append "<runpath path=\""
+                                       (dirname
+                                        (search-input-file inputs
+                                                           "/lib/mono/4.5/System.Reflection.Metadata.dll"))
+                                       ":"
+                                       (dirname
+                                        (search-input-file inputs
+                                                           "/lib/mono/4.5/System.Collections.Immutable.dll"))
+                                       "\"/></configuration>")))
+                     (copy-file #$(if (target-x86-64? (or (%current-target-system)
+                                                          (%current-system)))
+                                      "src/MSBuild/app.amd64.config"
+                                      "src/MSBuild/app.config")
+                                (string-append lib-dir "/MSBuild.exe.config"))
+                     (let* ((msbuild-exe (string-append lib-dir "/MSBuild.exe"))
+                            (wrapper (string-append bin-dir "/msbuild")))
+                       (call-with-output-file wrapper
+                         (lambda (port)
+                           (format port "#!~a
+exec ~s ~s \"$@\"~%"
+                                   (search-input-file inputs "/bin/bash")
+                                   (search-input-file inputs "/bin/mono")
+                                   msbuild-exe)))
+                       (chmod wrapper #o755))))))))
+    (synopsis "Microsoft Build Engine (MSBuild) for mono")
+    (description "This package provides MSBuild, the build tool for .NET.")
+    (home-page "https://github.com/dotnet/msbuild")
     (license license:expat)))

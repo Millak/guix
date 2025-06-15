@@ -1,0 +1,24 @@
+Date: 2025-06-13
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Subject: Mono 6.12.0.206 can do closures but no local functions.  Use closures then :P
+
+--- mono-msbuild-15.7.179-checkout/src/Build/BackEnd/BuildManager/BuildManager.cs.orig	2025-06-13 14:13:15.637777100 +0200
++++ mono-msbuild-15.7.179-checkout/src/Build/BackEnd/BuildManager/BuildManager.cs	2025-06-13 14:14:01.888115956 +0200
+@@ -443,7 +443,7 @@
+             CultureInfo parentThreadCulture = _buildParameters != null ? _buildParameters.Culture : CultureInfo.CurrentCulture;
+             CultureInfo parentThreadUICulture = _buildParameters != null ? _buildParameters.UICulture : CultureInfo.CurrentUICulture;
+ 
+-            void Callback(object state)
++            System.Threading.WaitCallback Callback = (object state) =>
+             {
+                 lock (_syncLock)
+                 {
+@@ -475,7 +475,7 @@
+                     ShutdownConnectedNodesAsync(true /* abort */);
+                     CheckForActiveNodesAndCleanUpSubmissions();
+                 }
+-            }
++            };
+ 
+             ThreadPoolExtensions.QueueThreadPoolWorkItemWithCulture(Callback, parentThreadCulture, parentThreadUICulture);
+         }
