@@ -570,7 +570,7 @@ output), and Binutils.")
     ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
     ("18.1.8" . "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la")
     ("19.1.7" . "18hkfhsm88bh3vnj21q7f118vrcnf7z6q1ylnwbknyb3yvk0343i")
-    ("20.1.6" . "0ilgihwhl24zz5h8ra37iqh6fajdylm5313shhsfjcw2508b7w1x")))
+    ("20.1.7" . "1arli0d26n0f5h24s9kd2w1p8rvidnwfcgz3znl25kna4bl7c9rr")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"
@@ -586,7 +586,7 @@ output), and Binutils.")
                  "clang-17.0-link-dsymutil-latomic.patch"))
     ("19.1.7" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))
-    ("20.1.6" . ("clang-18.0-libc-search-path.patch"
+    ("20.1.7" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
@@ -1610,7 +1610,7 @@ Library.")
   (make-clang-toolchain clang-19 libomp-19))
 
 (define-public llvm-20
-  (make-llvm "20.1.6"))
+  (make-llvm "20.1.7"))
 
 (define-public clang-runtime-20
   (clang-runtime-from-llvm llvm-20))
@@ -1625,7 +1625,7 @@ Library.")
                     (package-version llvm-20)))
      (sha256
       (base32
-       "1s64r06swfm17x2ngxad3402kni9y9lvrjybcsgn91qjm92vd3cq")))))
+       "0csnr7xkl3qrl931lq09176v3fcwsf1ca3dz2ian5ibbydf6f70f")))))
 
 (define-public libomp-20
   (package
