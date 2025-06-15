@@ -287,7 +287,12 @@ backups (called chunks) to allow easy burning to CD/DVD.")
            `(,zstd "lib")))
     (arguments
      (list
-      #:configure-flags #~'("--disable-static")
+      #:configure-flags
+      #~'("--disable-static"
+          ;; Because of the circular dependency, we cannot use openssl here.
+          ;; Explicitly disable openssl to avoid unnecessary dependencies in the
+          ;; pc file.
+          "--without-openssl")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'patch-pwd
