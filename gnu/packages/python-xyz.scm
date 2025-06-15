@@ -29290,15 +29290,18 @@ identifying what the file is.")
        (method url-fetch)
        (uri (pypi-uri "tldextract" version))
        (sha256
-        (base32
-         "1wac4yvcpgqjvls770mfx165amvy7gr00nnd2w24bqqwyamj9kdd"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-responses python-setuptools-scm))
-    (propagated-inputs
-     (list python-filelock python-idna python-requests python-requests-file))
-    (home-page
-     "https://github.com/john-kurkowski/tldextract")
+        (base32 "1wac4yvcpgqjvls770mfx165amvy7gr00nnd2w24bqqwyamj9kdd"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list nss-certs-for-test
+                         python-pytest
+                         python-pytest-mock
+                         python-responses
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (propagated-inputs (list python-filelock python-idna python-requests
+                             python-requests-file))
+    (home-page "https://github.com/john-kurkowski/tldextract")
     (synopsis
      "Separate the TLD from the registered domain and subdomains of a URL")
     (description
