@@ -189,6 +189,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -3912,56 +3913,57 @@ fight Morgoth, the Lord of Darkness.")
     (license license:gpl2)))
 
 (define-public pingus
-  (package
-    (name "pingus")
-    (version "0.7.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/pingus/pingus.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wp06kcmknsnxz7bjnsndb8x062z7r23fb3yrnbfnj68qhz18y74"))
-       (patches (search-patches "pingus-boost-headers.patch"
-                                "pingus-sdl-libs-config.patch"))
-       (modules '((guix build utils)))
-       (snippet #~(begin
-                    (substitute* "src/pingus/screens/demo_session.cpp"
-                      (("#include <iostream>")
-                       ;; std::function moved to <functional> with C++ 11.
-                       ;; Remove this for versions newer than 0.7.6.
-                       "#include <iostream>
-#include <functional>"))))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "PREFIX=" %output))
-      #:tests? #f ;no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)))) ;no configure script
-    (native-inputs (list pkg-config scons-python2))
-    (inputs (list sdl
-                  sdl-image
-                  sdl-mixer
-                  mesa
-                  glu
-                  libpng
-                  boost))
-    (home-page "https://pingus.seul.org/")
-    (synopsis "Lemmings clone")
-    (description
-     "Pingus is a free Lemmings-like puzzle game in which the player takes
+  ;; XXX: Does not release anymore.
+  (let ((commit "8c68e08b0b9530b0078a6e2972786f7accf0d0e6")
+        (revision "0"))
+    (package
+      (name "pingus")
+      (version (git-version "0.7.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Pingus/pingus")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0cnjrma5wfsgjxzclzsk5rycllfh2ncsv2frqwhijwm2ggwcm3am"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; XXX: tests build but are flagged as failing in pingus.nix
+        #:tests? #f
+        #:configure-flags #~(list "-DBUILD_TESTS=OFF")))
+      (native-inputs (list googletest pkg-config tinycmmc uitest))
+      (inputs (list argpp
+                    boost
+                    fmt-8
+                    geomcpp
+                    glm
+                    glu
+                    libpng
+                    libsigc++-2
+                    logmich
+                    mesa
+                    priocpp
+                    sdl2
+                    sdl2-image
+                    sdl2-mixer
+                    strutcpp
+                    tinygettext-with-sdl2
+                    wstsound
+                    xdgcpp))
+      (home-page "https://pingus.seul.org/")
+      (synopsis "Lemmings clone")
+      (description
+       "Pingus is a free Lemmings-like puzzle game in which the player takes
 command of a bunch of small animals and has to guide them through levels.
 Since the animals walk on their own, the player can only influence them by
 giving them commands, like build a bridge, dig a hole, or redirect all animals
 in the other direction.  Multiple such commands are necessary to reach the
 level's exit.  The game is presented in a 2D side view.")
-    ;; Some source files are under bsd-3 and gpl2+ licenses.
-    (license license:gpl3+)))
+      ;; Some source files are under bsd-3 and gpl2+ licenses.
+      (license license:gpl3+))))
 
 (define-public talkfilters
   (package
