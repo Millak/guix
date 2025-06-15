@@ -606,25 +606,28 @@ C/C++ projects.  It features:
       (license license:expat))))
 
 (define-public tinycmmc
-  (package
-    (name "tinycmmc")
-    (version "0.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Grumbel/tinycmmc")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0chv7h6vnd8zpa6b69krxwdgvp3n5fd37355wa1zwi14x4nyyay5"))))
-    (build-system cmake-build-system)
-    (arguments (list #:tests? #f))      ;no test suite
-    (home-page "https://github.com/Grumbel/tinycmmc")
-    (synopsis "Tiny CMake Module Collections")
-    (description "The tinycmmc package contains a small collection of reusable
+  ;; XXX: Does not release anymore.
+  (let ((commit "8238a6c1b90536e211fddf356dc3af26ea7c2f2c")
+        (revision "0"))
+    (package
+      (name "tinycmmc")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Grumbel/tinycmmc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1nv1439psdnq99vqpmp4nj2630l85cfwxzmf7rgpa436q09ql77p"))))
+      (build-system cmake-build-system)
+      (arguments (list #:tests? #f))      ;no test suite
+      (home-page "https://github.com/Grumbel/tinycmmc")
+      (synopsis "Tiny CMake Module Collections")
+      (description "The tinycmmc package contains a small collection of reusable
 CMake modules.")
-    (license license:zlib)))
+      (license license:zlib))))
 
 (define-public cpm-cmake
   (package
