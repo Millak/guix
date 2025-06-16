@@ -9940,6 +9940,7 @@ used for writing documentation for Perl and for Perl modules.")
                          perl-test-pod
                          perl-test-pod-coverage
                          perl-test-xpath))
+    (inputs (list bash-minimal))
     (propagated-inputs (list perl-html-parser ;for HTML::Entities
                              perl-object-tiny))
     (home-page "https://metacpan.org/release/Pod-Site")
