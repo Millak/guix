@@ -2313,6 +2313,32 @@ features, such as the ability to take a screenshot as the background image,
 display a clock or apply image manipulation techniques to the background image.")
     (home-page "https://github.com/jirutka/swaylock-effects")))
 
+(define-public shaderbg
+  ;; There is no official upstream version, so we will use the latest commit.
+  (let ((commit "027d4f87fd542c79d4276b521e39025477b6d03e")
+        (revision "0"))
+   (package
+    (name "shaderbg")
+    (version (git-version "0" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~mstoeckl/shaderbg")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qjidfczlw96jky6iszk28cn8slydwq1ry2k1l2dmsz7xd5mnyzw"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config
+                         wayland))      ;for wayland-scanner
+    (inputs (list egl-wayland mesa))
+    (home-page "https://git.sr.ht/~mstoeckl/shaderbg")
+    (synopsis "Use Shadertoy shaders as the desktop background")
+    (description "@code{shaderbg} lets you render shaders as wallpapers.  It
+works on Wayland compositors supporting the wlr-layer-shell protocol.")
+    (license license:gpl3+))))
+
 (define-public swaybg
   (package
     (name "swaybg")
