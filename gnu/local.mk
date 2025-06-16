@@ -1213,7 +1213,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dwarves-threading-reproducibility.patch	\
   %D%/packages/patches/dynaconf-unvendor-deps.patch		\
-  %D%/packages/patches/efivar-211.patch			\
   %D%/packages/patches/efivar-fix-fprint-format.patch		\
   %D%/packages/patches/eigen-fix-strict-aliasing-bug.patch	\
   %D%/packages/patches/einstein-build.patch			\
