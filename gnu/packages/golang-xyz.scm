@@ -4800,7 +4800,7 @@ on throughput and hit ratio performance.")
 (define-public go-github-com-dicedb-dicedb-go
   (package
     (name "go-github-com-dicedb-dicedb-go")
-    (version "1.0.3")
+    (version "1.0.11")
     (source
      (origin
        (method git-fetch)
@@ -4809,7 +4809,7 @@ on throughput and hit ratio performance.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18hfymwvp0mdnw1ssxnh58wvg4ifbjq4yhxvzfnw1f70rnhv01y3"))))
+        (base32 "14n3j88asnx52hy8ykg6xx2cpshcl5w5mlp5qvcjbgrrmw29c0s9"))))
     (build-system go-build-system)
     (arguments
      (list
