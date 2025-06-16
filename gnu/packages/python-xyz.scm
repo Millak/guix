@@ -16851,7 +16851,8 @@ blocks or callables with two context managers and two decorators.")
               (sha256
                (base32
                 "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/pnpnpn/timeout-decorator")
     (synopsis "Timeout decorator")
     (description "This package provides a decorator that raises an error
