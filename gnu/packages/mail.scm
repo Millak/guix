@@ -61,6 +61,7 @@
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1669,7 +1670,7 @@ useful for email address completion.")
          ;; This python package lives in a subdirectory of the notmuch source
          ;; tree, so chdir into it before building.
          (add-after 'unpack 'enter-python-dir
-           (lambda _ (chdir "bindings/python") #t))
+           (lambda _ (chdir "contrib/python-legacy") #t))
          ;; Make sure the correct notmuch shared library gets loaded.
          (add-before 'build 'set-libnotmuch-file-name
            (lambda* (#:key inputs #:allow-other-keys)
