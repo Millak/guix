@@ -30447,11 +30447,10 @@ on regular expressions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kqipkbdaw5s1xg0gi29awm03vp1x8dz24pjidgxagvkvrjpzhi7"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
+        (base32 "1kqipkbdaw5s1xg0gi29awm03vp1x8dz24pjidgxagvkvrjpzhi7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/rholder/retrying")
     (synopsis "Library for adding retry behavior")
     (description "Retrying is a general-purpose retrying library to simplify
