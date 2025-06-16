@@ -4167,19 +4167,26 @@ the use of a local MTA such as Sendmail.")
        (method url-fetch)
        (uri (pypi-uri "afew" version))
        (sha256
-        (base32
-         "0wpfqbqjlfb9z0hafvdhkm7qw56cr9kfy6n8vb0q42dwlghpz1ff"))))
-    (build-system python-build-system)
-    (inputs
-     (list notmuch python-chardet python-dkimpy python-notmuch))
+        (base32 "0wpfqbqjlfb9z0hafvdhkm7qw56cr9kfy6n8vb0q42dwlghpz1ff"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-freezegun python-setuptools-scm))
+     (list python-freezegun
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (inputs
+     (list notmuch
+           python-chardet
+           python-dkimpy
+           python-notmuch))
     (home-page "https://github.com/afewmail/afew")
     (synopsis "Initial tagging script for notmuch mail")
-    (description "afew is an initial tagging script for notmuch mail.  It
-provides automatic tagging each time new mail is registered with notmuch.  It
-can add tags based on email headers or Maildir folders and can handle spam and
-killed threads.")
+    (description
+     "afew is an initial tagging script for notmuch mail.  It provides
+automatic tagging each time new mail is registered with notmuch.  It can add
+tags based on email headers or Maildir folders and can handle spam and killed
+threads.")
     (license license:isc)))
 
 (define-public pan
