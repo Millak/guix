@@ -5918,6 +5918,40 @@ logging, so games can be viewed again.")
 are only two levels to play with, but they are very addictive.")
     (license license:gpl2)))
 
+(define-public trackballs
+  (package
+    (name "trackballs")
+    (version "1.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/trackballs/trackballs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vr35i5y93n155m20mvsri42r8k3hphpc8fmrv8wmfv6xqss5914"))))
+    (build-system cmake-build-system)
+    (native-inputs (list pkg-config
+                         gettext-minimal))
+    (inputs (list guile-2.2
+                  mesa
+                  sdl2
+                  sdl2-image
+                  sdl2-mixer
+                  sdl2-ttf
+                  zlib))
+    (arguments (list #:tests? #f))      ;No test suite.
+    (home-page "https://trackballs.github.io/")
+    (synopsis "Marble-rolling puzzle/skill game")
+    (description
+     "Trackballs is a simple game similar to the classic Amiga game @cite{Marble
+Madness}.  By steering a marble ball through a labyrinth filled with vicious
+hammers, pools of acid and other obstacles the player collects points.  When the
+ball reaches the destination it continues at the next, more difficult level -
+unless the time runs out.")
+    (license license:gpl2+)))
+
 (define-public pioneers
   (package
     (name "pioneers")
