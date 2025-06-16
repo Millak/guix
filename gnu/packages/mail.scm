@@ -1472,46 +1472,51 @@ Notmuch.")
     (license license:gpl3+)))
 
 (define-public notifymuch
-  (let
-      ((commit "9d4aaf54599282ce80643b38195ff501120807f0")
-       (revision "1"))
+  (let ((commit "9d4aaf54599282ce80643b38195ff501120807f0")
+        (revision "1"))
     (package
       (name "notifymuch")
-      (version (string-append "0.1-" revision "." (string-take commit 7)))
+      (version (git-version "0.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/kspi/notifymuch")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1lssr7iv43mp5v6nzrfbqlfzx8jcc7m636wlfyhhnd8ydd39n6k4"))
-         (file-name (string-append name "-" version "-checkout"))))
-      (build-system python-build-system)
-      (inputs
-       (list bash-minimal python-notmuch python-pygobject gobject-introspection
-             libnotify gtk+))
+          (base32 "1lssr7iv43mp5v6nzrfbqlfzx8jcc7m636wlfyhhnd8ydd39n6k4"))))
+      (build-system pyproject-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'wrap-binary
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin/notifymuch")))
-                 (wrap-program bin
-                   `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-                   `("GI_TYPELIB_PATH" ":" prefix
-                     (,(getenv "GI_TYPELIB_PATH")
-                      ,(string-append out "/lib/girepository-1.0")))))
-               #t)))))
+       (list
+        #:tests? #f ; no tests provided
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap-binary
+              (lambda _
+                (wrap-program (string-append #$output "/bin/notifymuch")
+                  `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH")
+                     ,(string-append #$output "/lib/girepository-1.0")))))))))
+      (native-inputs
+       (list python-setuptools
+             python-wheel))
+      (inputs
+       (list bash-minimal
+             gobject-introspection
+             gtk+
+             libnotify
+             python-notmuch
+             python-pygobject))
       (home-page "https://github.com/kspi/notifymuch")
       (synopsis "Displays notifications for changes in the notmuch email database")
-      (description "notifymuch displays desktop notifications for messages in
-the notmuch database.  The notifications are sent using libnotify to a
-notification daemon.  The query to find messages to send a notification about
-is configurable, and a notification for the same message will not be send
-within a configurable period (defaults to 48 hours).  To use notifymuch, run
+      (description
+       "notifymuch displays desktop notifications for messages in the notmuch
+database.  The notifications are sent using libnotify to a notification
+daemon.  The query to find messages to send a notification about is
+configurable, and a notification for the same message will not be send within
+a configurable period (defaults to 48 hours).  To use notifymuch, run
 @command{notifymuch} after new mail is indexed, this can be automated by
 invoking @command{notifymuch} from the post-new hook.")
       (license license:gpl3))))
