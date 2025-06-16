@@ -1661,23 +1661,28 @@ useful for email address completion.")
     ;; Notmuch python bindings are now unavailable on pypi.  The
     ;; bindings are distributed via the notmuch release tarball.
     (source (package-source notmuch))
-    (build-system python-build-system)
-    (inputs (list notmuch))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f  ; no "test" target
-       #:phases
-       (modify-phases %standard-phases
-         ;; This python package lives in a subdirectory of the notmuch source
-         ;; tree, so chdir into it before building.
-         (add-after 'unpack 'enter-python-dir
-           (lambda _ (chdir "contrib/python-legacy") #t))
-         ;; Make sure the correct notmuch shared library gets loaded.
-         (add-before 'build 'set-libnotmuch-file-name
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((notmuch (assoc-ref inputs "notmuch")))
-               (substitute* "notmuch/globals.py"
-                 (("libnotmuch\\.so\\.")
-                  (string-append notmuch "/lib/libnotmuch.so.")))))))))
+     (list
+      #:tests? #f ; no tests provided
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This python package lives in a subdirectory of the notmuch source
+          ;; tree, so chdir into it before building.
+          (add-after 'unpack 'enter-python-dir
+            (lambda _ (chdir "contrib/python-legacy") #t))
+          ;; Make sure the correct notmuch shared library gets loaded.
+          (add-before 'build 'set-libnotmuch-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "notmuch/globals.py"
+                (("libnotmuch\\.so\\.")
+                 (format #f "~a/lib/libnotmuch.so."
+                         #$(this-package-input "notmuch")))))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (inputs
+     (list notmuch))
     (home-page (package-home-page notmuch))
     (synopsis "Python bindings of the Notmuch mail indexing library")
     (description
