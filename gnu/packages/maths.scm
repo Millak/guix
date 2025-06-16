@@ -2598,7 +2598,9 @@ with the provided training tools.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "04257r7a1bjmm6hznf9v6fimz2p93dk745sf89wmxzhg3rh0ak44"))))
+               (base32 "04257r7a1bjmm6hznf9v6fimz2p93dk745sf89wmxzhg3rh0ak44"))
+              (patches
+                (search-patches "nlopt_CMake-Assume-working-c-compiler-597.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
