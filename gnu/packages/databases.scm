@@ -541,37 +541,37 @@ database later.")
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "examples")))))))
-    (propagated-inputs (list go-google-golang-org-protobuf
-                             go-golang-org-x-crypto
-                             go-github-com-twmb-murmur3
-                             go-github-com-stretchr-testify
-                             go-github-com-spf13-viper
-                             go-github-com-spf13-pflag
-                             go-github-com-spf13-cobra
-                             go-github-com-rs-zerolog
-                             go-github-com-rs-xid
-                             go-github-com-ohler55-ojg
-                             go-github-com-mmcloughlin-geohash
-                             go-github-com-google-uuid
-                             go-github-com-google-go-cmp
-                             go-github-com-google-btree
-                             go-github-com-gobwas-glob
-                             go-github-com-dicedb-dicedb-go
-                             go-github-com-dgryski-go-farm
-                             go-github-com-cespare-xxhash-v2
-                             go-github-com-bytedance-sonic
-                             go-github-com-axiomhq-hyperloglog
-                             go-gotest-tools-v3
-                             go-github-com-wangjia184-sortedset))
+    (native-inputs
+     (list go-github-com-axiomhq-hyperloglog
+           go-github-com-bytedance-sonic
+           go-github-com-cespare-xxhash-v2
+           go-github-com-dgryski-go-farm
+           go-github-com-dicedb-dicedb-go
+           go-github-com-gobwas-glob
+           go-github-com-google-btree
+           go-github-com-google-go-cmp
+           go-github-com-google-uuid
+           go-github-com-mmcloughlin-geohash
+           go-github-com-ohler55-ojg
+           go-github-com-rs-xid
+           go-github-com-rs-zerolog
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-github-com-twmb-murmur3
+           go-github-com-wangjia184-sortedset
+           go-golang-org-x-crypto
+           go-google-golang-org-protobuf
+           go-gotest-tools-v3))
     (home-page "https://github.com/dicedb/dice")
-    (synopsis
-     "Fast, reactive, in-memory database optimized for modern hardware")
+    (synopsis "Fast, reactive, in-memory database optimized for modern hardware")
     (description
-     "@code{dicedb} is a fast, reactive, in-memory database optimized
-for modern hardware.  Commonly used as a cache, it offers a familiar interface
-while enabling real-time data updates through query subscriptions.  It delivers
-higher throughput and lower median latencies, making it ideal for modern
-workloads.")
+     "@code{dicedb} is a fast, reactive, in-memory database optimized for
+modern hardware.  Commonly used as a cache, it offers a familiar interface
+while enabling real-time data updates through query subscriptions.  It
+delivers higher throughput and lower median latencies, making it ideal for
+modern workloads.")
     (license license:bsd-3)))
 
 (define-public leveldb
