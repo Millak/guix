@@ -1105,7 +1105,7 @@ projections and coordinate transformations library.")
         (sha256
           (base32
             "083120rqc4rrqzgmams0yjd8b1h4p5xm4n9fnxg064ymw3vx6yan"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1139,7 +1139,11 @@ projections and coordinate transformations library.")
       (list gdal ; for gdal-config
             python-boto3
             python-cython
-            python-pytest python-pytest-cov python-pytz))
+            python-pytest
+            python-pytest-cov
+            python-pytz
+            python-setuptools
+            python-wheel))
     (home-page "https://github.com/Toblerity/Fiona")
     (synopsis
       "Fiona reads and writes spatial data files")
