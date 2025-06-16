@@ -1563,13 +1563,13 @@ manage or manipulate PDFs.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "045a6j5mh2ixrx3awrpfqh6l3x61i4jrv8r73xz1mvw0bc97lxbc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'wrap-for-typelib
+          (add-after 'wrap 'wrap-for-typelib
             (lambda _
               (let ((program (string-append #$output "/bin/pdfarranger")))
                 (wrap-program program
@@ -1579,7 +1579,9 @@ manage or manipulate PDFs.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list intltool))
+     (list intltool
+           python-setuptools
+           python-wheel))
     (inputs
      (list bash-minimal
            gtk+
