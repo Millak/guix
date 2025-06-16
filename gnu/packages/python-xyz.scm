@@ -16845,12 +16845,12 @@ blocks or callables with two context managers and two decorators.")
   (package
     (name "python-timeout-decorator")
     (version "0.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "timeout-decorator" version))
-              (sha256
-               (base32
-                "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "timeout-decorator" version))
+       (sha256
+        (base32 "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/pnpnpn/timeout-decorator")
