@@ -23856,11 +23856,9 @@ etc.")
        (uri (pypi-uri "entrypoint2" version))
        (sha256
         (base32 "1qyxq54r2fbh09ab5sffbxajy8arbk6czxz5lq3ccr9qrypw6w27"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:test-target "pytest"))
-    (native-inputs
-     (list python-easyprocess python-pytest python-pytest-runner))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-easyprocess python-pytest python-pytest-runner
+                         python-setuptools python-wheel))
     (home-page "https://github.com/ponty/entrypoint2")
     (synopsis "Command-line interface for Python modules")
     (description
