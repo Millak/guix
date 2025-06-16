@@ -1318,7 +1318,6 @@ of xmpppy.")
     (native-inputs
      (list gettext-minimal
            gobject-introspection
-           python-distutils-extra
            python-pypa-build
            python-setuptools
            xorg-server-for-tests))
