@@ -35411,7 +35411,7 @@ CMake.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0j719kld4dr85d9lxn0d0b6156mcy09jm7arssfp2n3j6hmjssci"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -35439,8 +35439,10 @@ CMake.")
                   python-dbus-python
                   python-pycairo
                   python-pygobject
+                  python-setuptools
                   python-setuptools-git
-                  python-tokenize-rt))
+                  python-tokenize-rt
+                  python-wheel))
     (home-page "https://www.thregr.org/~wavexx/software/screenkey/")
     (synopsis "Screencast tool to display pressed keys")
     (description
