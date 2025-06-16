@@ -2,6 +2,7 @@
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023, 2024 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,12 +26,18 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system qt)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu build chromium-extension)
   #:use-module (gnu build icecat-extension)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages password-utils)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages security-token)
+  #:use-module (gnu packages tls))
 
 (define adaptive-tab-bar-colour
   (package
@@ -365,3 +372,48 @@ selected.")
 
 (define-public privacy-redirect/icecat
   (make-icecat-extension privacy-redirect))
+
+(define-public web-eid-host
+  (package
+    (name "web-eid-host")
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/web-eid/web-eid-app")
+             (commit (string-append "v" version))
+             ;; This package contains two git modules:
+             ;; <https://github.com/web-eid/libelectronic-id>, a library with
+             ;; no support for standalone installation; and a copy of the
+             ;; Web-eID WebExtension, deleted below.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02kryhzy4zizly8pj0bldcfh1hn93ls83033n98i6zaylhf3sn5f"))
+       (modules '((guix build utils)))
+       ;; Delete bundled copy of the corresponding browser extension.
+       (snippet '(delete-file-recursively "src/mac/js"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-icecat-nmh
+            (lambda _
+              (let ((icecat-lib (format #f "~A/lib/icecat" #$output))
+                    (mozilla-lib (format #f "~A/lib/mozilla" #$output)))
+                (mkdir-p icecat-lib)
+                (copy-recursively mozilla-lib icecat-lib)))))))
+    (native-inputs (list googletest pkg-config qttools))
+    (inputs (list openssl pcsc-lite qtsvg))
+    (home-page "https://github.com/web-eid/web-eid-app")
+    (synopsis "Web eID native messaging host for Estonian ID cards")
+    (description
+     "Native messaging host for the Web eID browser extension that performs
+signing and authentication operations with Estonian ID cards.  The
+@command{web-eid} program can also be used directly in command-line mode.
+
+It requires a running pcscd service and a compatible card reader.")
+    (license license:expat)))
