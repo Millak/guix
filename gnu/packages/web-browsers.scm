@@ -46,6 +46,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -96,6 +97,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -550,9 +552,11 @@ interface.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0vbd6b5332nd7q9y94zjd1bwdr0gk6pgzvl1ygm274nk5plifdjs"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-attrs                 ; for tests
+     (list python-setuptools
+           python-wheel
+           python-attrs                      ; for tests
            asciidoc))
     (inputs
      (list bash-minimal
