@@ -35438,7 +35438,6 @@ CMake.")
            libxtst
            python-babel
            python-dbus-python
-           python-distutils-extra
            python-pycairo
            python-pygobject
            python-setuptools-git
