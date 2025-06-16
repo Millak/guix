@@ -35410,43 +35410,41 @@ CMake.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0j719kld4dr85d9lxn0d0b6156mcy09jm7arssfp2n3j6hmjssci"))))
+        (base32 "0j719kld4dr85d9lxn0d0b6156mcy09jm7arssfp2n3j6hmjssci"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dlopen-paths
-          (lambda* (#:key inputs  #:allow-other-keys)
-            (substitute* "Screenkey/xlib.py"
-              (("libX11.so.6")
-               (search-input-file inputs "lib/libX11.so.6")))
-            (substitute* "Screenkey/xlib.py"
-              (("libXtst.so.6")
-               (search-input-file inputs "lib/libXtst.so.6")))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-dlopen-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Screenkey/xlib.py"
+                (("libX11.so.6")
+                 (search-input-file inputs "lib/libX11.so.6")))
+              (substitute* "Screenkey/xlib.py"
+                (("libXtst.so.6")
+                 (search-input-file inputs "lib/libXtst.so.6")))))
           (add-after 'install 'wrap-screenkey
-            (lambda* (#:key outputs #:allow-other-keys)
-              (wrap-program
-                  (string-append (assoc-ref outputs "out") "/bin/screenkey")
-                `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-                `("GI_TYPELIB_PATH"
-                  ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))))
-    (inputs
-     (list bash-minimal
-           gtk+
-           libx11
-           libxtst
-           python-babel
-           python-dbus-python
-           python-pycairo
-           python-pygobject
-           python-setuptools-git
-           python-tokenize-rt))
+            (lambda _
+              (wrap-program (string-append #$output "/bin/screenkey")
+                `("GUIX_PYTHONPATH" ":" prefix
+                  (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
+    (inputs (list bash-minimal
+                  gtk+
+                  libx11
+                  libxtst
+                  python-babel
+                  python-dbus-python
+                  python-pycairo
+                  python-pygobject
+                  python-setuptools-git
+                  python-tokenize-rt))
     (home-page "https://www.thregr.org/~wavexx/software/screenkey/")
-    (synopsis
-      "Screencast tool to display pressed keys")
+    (synopsis "Screencast tool to display pressed keys")
     (description
-      "Screenkey is a screencast tool to display your keys inspired by
+     "Screenkey is a screencast tool to display your keys inspired by
 Screenflick.")
     (license license:gpl3+)))
 
