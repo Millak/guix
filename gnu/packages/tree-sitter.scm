@@ -423,6 +423,17 @@ which will be used as a snippet in origin."
    "01sjympivwhr037c0gdx5fqw8fvzchq4fd4m8wlr8mdw50di0ag2"
    "0.20.4"))
 
+(define-public tree-sitter-blueprint
+  (let ((commit "329699d55f3e3955091e13756563c3f320a561fc")
+        (revision "0"))
+    (tree-sitter-grammar
+     "blueprint" "Blueprint"
+     "0pdjka1sdw9dwilw3vjl3k3cn7pcyv7m57cmxqibashg316dygxm"
+     (git-version "0.0.0" revision commit) ; Upstream has not tagged any releases
+     #:repository-url "https://github.com/huanie/tree-sitter-blueprint"
+     #:commit commit
+     #:license license:expat)))
+
 (define-public tree-sitter-c-sharp
   (tree-sitter-grammar
    "c-sharp" "C#"
