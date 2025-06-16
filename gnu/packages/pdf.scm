@@ -1579,8 +1579,7 @@ manage or manipulate PDFs.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list intltool
-           python-distutils-extra))
+     (list intltool))
     (inputs
      (list bash-minimal
            gtk+
