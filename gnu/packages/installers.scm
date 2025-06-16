@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
+;;; Copyright © 2025 fanquake <fanquake@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,14 +35,14 @@
          (xgcc (cross-gcc triplet #:libc xlibc)))
     (package
       (name (string-append "nsis-" machine))
-      (version "3.10")
+      (version "3.11")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "http://prdownloads.sourceforge.net/nsis/nsis-"
                                     version "-src.tar.bz2"))
                 (sha256
                  (base32
-                  "15xj1izz3cmaw0mazsvfm8jpr132dyphlw5j0pszwimb0xilmd8i"))
+                  "0jzz07acshml9fq60v48sgzxp74p1fl2n0yw25ycdgbfcxi21rqr"))
                 (patches (search-patches "nsis-env-passthru.patch"))))
       (build-system scons-build-system)
       (native-inputs `(("xgcc" ,xgcc)
