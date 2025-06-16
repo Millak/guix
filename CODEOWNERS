@@ -126,6 +126,7 @@ gnu/packages/libftdi\.scm                          @guix/electronics
 gnu/packages/engineering\.scm                      @guix/electronics
 
 gnu/packages/aux-files/emacs/guix-emacs\.el        @guix/emacs
+gnu/packages/aux-files/emacs/comp-integrity\.el    @guix/emacs
 ^gnu/packages/emacs(-.+|)\.scm$                    @guix/emacs
 gnu/packages/tree-sitter\.scm                      @guix/emacs
 guix/build/emacs-build-system\.scm                 @guix/emacs
