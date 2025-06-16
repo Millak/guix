@@ -14822,16 +14822,9 @@ features useful for text console applications.")
        (sha256
         (base32
          "0y9k86p31mlr9rwnrbljvfgl183r5j60yaj0r3scljn1m0mlg8qg"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-urwid))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/rr-/urwid_readline")
     (synopsis "Text input widget for urwid that supports readline shortcuts")
     (description
