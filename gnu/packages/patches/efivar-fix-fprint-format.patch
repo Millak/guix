@@ -1,0 +1,46 @@
+iter->offset is type off_t, so signed int, and is always safe to cast to unsigned long.
+This fixes builds on i686 and armhf, and cross-compiling from x86_64 to riscv64.
+
+The issue can be traced at https://github.com/rhboot/efivar/issues/270
+And this commit is at https://github.com/rhboot/efivar/pull/281
+
+diff --git a/src/esl-iter.c b/src/esl-iter.c
+index 4a1938a..e4c8fb8 100644
+--- a/src/esl-iter.c
++++ b/src/esl-iter.c
+@@ -337,7 +337,7 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 			if (correct_size && (iter->len - iter->offset) > 0) {
+ 				warnx("correcting ESL size from %d to %jd at %lx",
+ 				      iter->esl->signature_list_size,
+-				      (intmax_t)(iter->len - iter->offset), iter->offset);
++				      (intmax_t)(iter->len - iter->offset), (unsigned long)iter->offset);
+ 				debug("correcting ESL size from %d to %zd at %lx",
+ 				      iter->esl->signature_list_size,
+ 				      iter->len - iter->offset, iter->offset);
+@@ -362,7 +362,7 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 			if (correct_size && (iter->len - iter->offset) > 0) {
+ 				warnx("correcting ESL size from %d to %jd at 0x%lx",
+ 				      iter->esl->signature_list_size,
+-				      (intmax_t)(iter->len - iter->offset), iter->offset);
++				      (intmax_t)(iter->len - iter->offset), (unsigned long)iter->offset);
+ 				debug("correcting ESL size from %d to %zd at 0x%lx",
+ 				      iter->esl->signature_list_size,
+ 				      iter->len - iter->offset, iter->offset);
+@@ -394,7 +394,7 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 		if ((uint32_t)iter->offset >= iter->len)
+ 			return 0;
+ 		iter->esl = (efi_signature_list_t *)((intptr_t)iter->buf
+-						+ iter->offset);
++						+ (unsigned long)iter->offset);
+ 	}
+ 
+ 	efi_signature_list_t esl;
+@@ -413,7 +413,7 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 		if (correct_size && (iter->len - iter->offset) > 0) {
+ 			warnx("correcting ESL size from %d to %jd at 0x%lx",
+ 			      iter->esl->signature_list_size,
+-			      (intmax_t)(iter->len - iter->offset), iter->offset);
++			      (intmax_t)(iter->len - iter->offset), (unsigned long)iter->offset);
+ 			debug("correcting ESL size from %d to %zd at 0x%lx",
+ 			      iter->esl->signature_list_size,
+ 			      iter->len - iter->offset, iter->offset);

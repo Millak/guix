@@ -8274,7 +8274,8 @@ under OpenGL graphics workloads.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zd9dghg1z2rrsazv3d9rj7nik6kdqz42jiak65pipz7mpjn9zdk"))))
+                "1zd9dghg1z2rrsazv3d9rj7nik6kdqz42jiak65pipz7mpjn9zdk"))
+              (patches (search-patches "efivar-fix-fprint-format.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
