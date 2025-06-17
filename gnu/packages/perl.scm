@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -10182,6 +10182,25 @@ in @code{PPIx::Utilities::Node}.")
 with @samp{PPI} documents.  The functions are organized into
 submodules, and may be imported from the appropriate submodules or via
 this module.")
+    (license license:perl-license)))
+
+(define-public perl-ppr
+  (package
+    (name "perl-ppr")
+    (version "0.001010")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DC/DCONWAY/PPR-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0vx6ciij5smsb9flbcyiirzzn6qqpaqr879hypc05mjbxj7q4fd3"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/PPR")
+    (synopsis "Pattern-based Perl recognizer")
+    (description "This module defines a single regex that will match
+syntactically valid Perl documents, or valid components (such as statements,
+expressions, blocks, strings, etc.)")
     (license license:perl-license)))
 
 (define-public perl-probe-perl
