@@ -6969,29 +6969,6 @@ implementation package such as asdf-astropy.")
         "This package provides ASDF schemas for validating FITS tags.")
        (license license:bsd-3)))))
 
-(define-public python-asdf-unit-schemas
-  (hidden-package
-   (package
-     (name "python-asdf-unit-schemas")
-     (version "0.2.0")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "asdf_unit_schemas" version))
-        (sha256
-         (base32
-          "0h24gvm1wip4gh3fw5ki8kwnvcy8gw6b6pajw3i1zvriamdw95fr"))))
-     (build-system pyproject-build-system)
-     (arguments
-      ;; Dependency cycle with python-asdf
-      (list #:tests? #f))
-     (native-inputs (list python-setuptools-scm))
-     (propagated-inputs (list python-asdf-standard python-importlib-resources))
-     (home-page "https://asdf-unit-schemas.readthedocs.io/")
-     (synopsis "ASDF serialization schemas for the units defined by @code{astropy.units}")
-     (description "This package provides ASDF schemas for validating unit tags.")
-     (license license:bsd-3))))
-
 (define-public python-asdf-wcs-schemas
   (hidden-package
    (package
