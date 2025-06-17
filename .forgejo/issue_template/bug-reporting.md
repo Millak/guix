@@ -5,8 +5,12 @@ title: ''
 ref: ''
 labels:
 ---
-`guix describe` output:
+<!--
+Describe the bug you encounter below.
+
+Please provide the output of the command `guix describe`.
+-->
+`guix describe` outputs:
 ```text
 
 ```
-<!-- describe the bug you encounter below -->
