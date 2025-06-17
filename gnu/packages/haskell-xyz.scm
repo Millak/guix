@@ -9336,6 +9336,24 @@ standard Read class, for better deserialisation of Haskell values from
 Strings.")
     (license license:lgpl2.1)))
 
+(define-public ghc-portmidi
+  (package
+    (name "ghc-portmidi")
+    (version "0.2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "PortMidi" version))
+              (sha256
+               (base32
+                "1jb722gwgx1fdyv64nj3by22970l3r04ibc3fa3hnp3k4l2jvk0f"))))
+    (build-system haskell-build-system)
+    (inputs (list alsa-lib))
+    (home-page "https://github.com/PortMidi/PortMidi-haskell")
+    (synopsis "Haskell bindings for PortMedia/PortMidi")
+    (description "This is a Haskell module for PortMidi audio library,
+which supports real-time MIDI input and output.")
+    (license license:bsd-3)))
+
 (define-public ghc-pqueue
   (package
     (name "ghc-pqueue")
