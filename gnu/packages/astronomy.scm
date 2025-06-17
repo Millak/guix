@@ -6813,18 +6813,10 @@ library with bug fixtures.")
         (base32
          "0r7dxbiwngpwwjdbs2vqk94v1vjsgyilswkq180d5slx74grcn2r"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Remove tests requiring python-asdf where python-asdf requires
-      ;; python-asdf-standard, break circular dependencies.
-      #~(list "--ignore=tests/test_asdf_schema.py"
-              "--ignore=tests/test_integration.py"
-              "--ignore=tests/test_manifests.py"
-              "--ignore=tests/test_reference_files.py"
-              "--ignore=tests/test_yaml_schema.py")))
     (native-inputs
-     (list python-astropy-minimal
+     (list python-asdf-bootstrap
+           python-asdf-transform-schemas-bootstrap
+           python-astropy-minimal
            python-jsonschema
            python-pypa-build
            python-pytest
