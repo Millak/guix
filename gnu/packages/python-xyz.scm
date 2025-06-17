@@ -10251,7 +10251,7 @@ writing C extensions for Python as easy as Python itself.")
     ;; - URL <https://raw.githubusercontent.com/numpy/numpy>
     ;; - commit :: 2f3549c9d7c5048621568e431c86bc7530742723
     ;; - file <doc/source/building/understanding_meson.rst>
-    (version "1.26.4")
+    (version "1.26.4") ;; This is the last planned release in the 1.26.x series.
     (source
      (origin
        (method url-fetch)
@@ -10391,14 +10391,14 @@ include_dirs = ~:*~a/include~%"
     (native-inputs
      (list meson-python
            pkg-config
-           python-cython-0.29.35        ;overwrite Cython from meson-python
+           python-cython
            python-hypothesis
            python-mypy
            python-pytest
            python-pytest-xdist
-           python-setuptools
+           python-setuptools-67 ;see: <https://github.com/numpy/numpy/issues/27531>
            python-typing-extensions
-           python-wheel
+           python-wheel-0.40
            ;; XXX: Avoid to: 'fenv_t' has not been declared in '::' 58 | using ::fenv_t;
            ;; See <https://github.com/numpy/numpy/issues/21075#issuecomment-1047976197>,
            ;; <https://github.com/numpy/numpy/issues/24318>.
