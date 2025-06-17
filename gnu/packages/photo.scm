@@ -640,8 +640,8 @@ and enhance them.")
 
 ;; There has been no release nor any tag yet, so we take an arbitrary commit.
 (define-public ansel
-  (let ((commit "406cfed6cdd95002493d26042b646c45cbdf4bee")
-        (revision "0"))
+  (let ((commit "b51cfa38c41abe9933b40e1583807b105c5933c1")
+        (revision "1"))
     (package
       (name "ansel")
       (version (git-version "0.0.0" revision commit))
@@ -649,12 +649,12 @@ and enhance them.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/aurelienpierreeng/ansel.git")
+               (url "https://github.com/aurelienpierreeng/ansel")
                (commit commit)
                (recursive? #t)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1p0f1ys345i834a9grzd28wmwj7xmwz64lndabdskl7qc49fh9rf"))
+          (base32 "0f2m8qlmfaw9afs3b2bpk3s40wmgqzaf36szcz10c38dm3lhnhqh"))
          (modules '((guix build utils)))
          (snippet '(for-each delete-file-recursively
                              '("src/external/LibRaw"
