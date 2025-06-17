@@ -24,6 +24,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -321,7 +322,7 @@ compatible to GNU Pth.")
     ;; Note: Odd minor versions are usually for development purposes.  See
     ;; <https://gnupg.org/download/index.html> for how to pick the right
     ;; version.
-    (version "2.4.7")
+    (version "2.4.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
@@ -329,7 +330,7 @@ compatible to GNU Pth.")
               (patches (search-patches "gnupg-default-pinentry.patch"))
               (sha256
                (base32
-                "0ipbhlxwr79l66b907640a0j67s04w826s50djqf7q579mp7093v"))))
+                "05l666aha1nxpiiras446zmkhcgqnp33y74wyhzj9lq4kgbq135m"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
