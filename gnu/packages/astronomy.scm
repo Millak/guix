@@ -3146,6 +3146,35 @@ lens models possibly obtained from different modeling codes.")
 cosmological parameters e.g. redshift or luminosity-distance.")
     (license license:expat)))
 
+(define-public python-costools
+  (package
+    (name "python-costools")
+    (version "1.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "costools" version))
+       (sha256
+        (base32 "0w0hgm847qsq5q30j5nshxwf7bdj503h6r1y3b6hvlf55gzlscnd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-calcos
+           python-numpy
+           python-stsci-tools))
+    (home-page "https://github.com/spacetelescope/costools")
+    (synopsis "Tools for Cosmic Origins Spectrograph")
+    (description
+     "This package provides tools for @acronym{COS, Cosmic Origins
+Spectrograph}.")
+    (license license:bsd-3)))
+
 (define-public python-crds
   (package
     (name "python-crds")
