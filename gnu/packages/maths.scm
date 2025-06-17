@@ -7173,7 +7173,7 @@ This package contains all of the above-mentioned parts.
 (define-public cglm
   (package
     (name "cglm")
-    (version "0.8.4")
+    (version "0.9.6")
     (source
      (origin
        (method git-fetch)
@@ -7182,7 +7182,7 @@ This package contains all of the above-mentioned parts.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zgckh56vcdar3a4n51r84wrizyd2ssqal4nsvxd4qdjm0rvb4h0"))))
+        (base32 "1b04zdypa8clhpzg95h8m8xjylk8y5pw9kfn4jv19qlz5bsz183i"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dbuild_tests=true")))
