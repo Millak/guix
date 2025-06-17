@@ -2465,20 +2465,19 @@ astronomy and astrophysics.")
 (define-public python-astropy-iers-data
   (package
     (name "python-astropy-iers-data")
-    (version "0.2025.5.12.0.38.29")
+    (version "0.2025.6.16.0.38.47")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy_iers_data" version))
        (sha256
-        (base32 "1gl1ar7wq3x1lclmzaxwl4qg3hd34hgimbkqi7fjqcb7x0d7xyf8"))))
+        (base32 "08bifygdnifcmrk3wqn8k0fi31mj8j3zxak9r70sbf06cnbq9jaq"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; no tests
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-hatch-vcs
+           python-hatchling))
     (home-page "https://docs.astropy.org/en/latest/utils/iers.html")
     (synopsis "IERS Earth Rotation and Leap Second tables for Astropy core")
     (description
