@@ -662,7 +662,7 @@
     (list (shepherd-service
             (documentation "Run the Knot DNS daemon.")
             (provision '(knot dns))
-            (requirement '(networking))
+            (requirement '(networking user-processes))
             (actions (list (shepherd-configuration-action config-file)))
             (start #~(make-forkexec-constructor
                        (list (string-append #$knot "/sbin/knotd")
