@@ -6833,24 +6833,23 @@ up-front for extensibility.")
   (hidden-package
    (package
      (name "python-asdf-transform-schemas")
-     (version "0.5.0")
+     (version "0.6.0")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "asdf_transform_schemas" version))
         (sha256
-         (base32 "0as6dcf9dmxjh24gwdmqwbbrk56fhgsmzwi7af4llwvm4mw4rkw2"))))
+         (base32 "0clp3a2ldfhvsh5c7zqd7nr2bvv62a89aaf8p4a2vzgzjvhghl0g"))))
      (build-system pyproject-build-system)
      (arguments
       ;; Dependency cycle with python-asdf
       (list #:tests? #f))
      (native-inputs
-      (list python-setuptools
+      (list python-setuptools-next
             python-setuptools-scm
             python-wheel))
      (propagated-inputs
-      (list python-asdf-standard
-            python-importlib-resources))
+      (list python-asdf-standard))
      (home-page "https://github.com/asdf-format/asdf-transform-schemas")
      (synopsis "ASDF schemas for transforms")
      (description
