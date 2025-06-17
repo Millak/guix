@@ -38,6 +38,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -592,7 +593,8 @@ software.")
               (chdir "build/scons"))))))
     (native-inputs (list python-setuptools python-wheel))))
 
-(define-public scons-python2
+;; TODO Remove on the next python-team iteration.
+(define-deprecated/public scons-python2 scons
   (package
     (inherit (package-with-python2 scons-3))
     (name "scons-python2")))
