@@ -6587,6 +6587,11 @@ returns multiple locations, a list is displayed to choose from.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "graphviz-dot-mode.el"
+                ("graphviz-dot-dot-program"
+                 (search-input-file inputs "/bin/dot")))))
           (add-before 'install 'make-info
             (lambda* (#:key inputs #:allow-other-keys)
               (with-directory-excursion "texinfo"
@@ -6605,6 +6610,7 @@ returns multiple locations, a list is displayed to choose from.")
                 (install-file "texinfo/graphviz-dot-mode.info.gz" info)))))))
     (native-inputs
      (list gzip texinfo))
+    (inputs (list graphviz))
     (propagated-inputs
      (list emacs-company))
     (home-page "http://ppareit.github.com/graphviz-dot-mode")
