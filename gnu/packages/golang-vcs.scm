@@ -322,8 +322,11 @@ Actions} locally.")
                             "|"))))
     (native-inputs
      ;; Test dependencies.
-     (list python-pyflakes
-           shellcheck))
+     (append
+      (list python-pyflakes)
+      (if (supported-package? shellcheck)
+          (list shellcheck)
+          '())))
     (propagated-inputs
      (list go-gopkg-in-yaml-v3
            go-golang-org-x-sys
