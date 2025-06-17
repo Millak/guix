@@ -1880,43 +1880,6 @@ support for reading and writing various compression algorithms including:
 @url{http://facebook.github.io/zstd/,Zstandard}.")
       (license license:bsd-3))))
 
-(define-public python-asdf-time-schemas
-  (hidden-package
-   ;; TODO: No release, change to tag when it's ready.
-   (let ((commit "a3062066ee70f1b934f7339d1ce96a5c5f61f055")
-         (revision "3"))
-     (package
-       (name "python-asdf-time-schemas")
-       (version (git-version "0.0.1" revision commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                (url "https://github.com/asdf-format/asdf-time-schemas")
-                (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "1i8lm2d18r6fadsch52dxc2zp1swkfa8w40s03albn7p290n4a97"))))
-       (build-system pyproject-build-system)
-       (arguments
-        (list
-         ;; Dependency cycle with python-asdf
-         #:tests? #f
-         #:phases
-         #~(modify-phases %standard-phases
-             (add-before 'build 'set-version
-               (lambda _
-                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
-       (native-inputs (list python-setuptools-scm))
-       (propagated-inputs (list python-asdf-standard
-                                python-asdf-unit-schemas
-                                python-importlib-resources))
-       (home-page "https://github.com/asdf-format/asdf-fits-schemas")
-       (synopsis "Schemas for storing time in ASDF")
-       (description
-        "This package provides ASDF schemas for validating time tags.")
-       (license license:bsd-3)))))
-
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
