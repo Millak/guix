@@ -47,6 +47,7 @@
 ;;; Copyright © 2024 Grigory Shepelev <shegeley@gmail.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2854,7 +2855,9 @@ cartesian product.")
                  ((".*\"PyParser_SimpleParseStringFlagsFilename\".*") "")
                  ((".*\"PyParser_SimpleParseFile\".*") "")
                  ((".*\"PyParser_SimpleParseFileFlags\".*") "")
-                 ((".*\"PyLong_FromUnicode\".*") "")))))))
+                 ((".*\"PyLong_FromUnicode\".*") "")
+                 ((".*\"PyUnicodeEncodeError_Create\".*") "")
+                 ((".*\"PyUnicodeTranslateError_Create\".*") "")))))))
       (native-inputs
        (list sbcl-cl-fad sbcl-lift sbcl-cl-quickcheck))
       (inputs
