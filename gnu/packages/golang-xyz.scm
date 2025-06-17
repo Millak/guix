@@ -5975,7 +5975,7 @@ interact with distribution components.")
            go-github-com-moby-sys-sequential
            go-github-com-moby-sys-user
            go-github-com-moby-sys-userns
-           go-go-opentelemetry-io-contrib
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
            go-go-opentelemetry-io-otel))
     (home-page "https://github.com/docker/docker")
     (synopsis "The Moby Project")
