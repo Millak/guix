@@ -5359,6 +5359,35 @@ and the options
 orbit around the Earth.")
     (license license:expat)))
 
+(define-public python-slitronomy
+  (package
+    (name "python-slitronomy")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "slitronomy" version))
+       (sha256
+        (base32 "0hpffl0icf63ski1f0j06a0wnaawh5gy24w5a3h4rzgkp8rrmhck"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: Tests depend on lenstronomy, not packaged yet.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-configparser
+           python-numpy))
+    (home-page "https://github.com/aymgal/SLITronomy")
+    (synopsis "Sparse Linear Inversion Technique for lenstronomy")
+    (description
+     "This package provides an Updated and improved version of the
+@acronym{Sparse Lens Inversion Technique, SLIT}, developed within the
+framework of lens modelling software lenstronomy.")
+    (license license:expat)))
+
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
