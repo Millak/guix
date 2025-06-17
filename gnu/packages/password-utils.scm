@@ -40,7 +40,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
-;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1443,7 +1443,7 @@ program.")
 (define-public pass-git-helper
   (package
     (name "pass-git-helper")
-    (version "1.1.0")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1453,8 +1453,8 @@ program.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18nvwlp0w4aqj268wly60rnjzqw2d8jl0hbs6bkwp3hpzzz5g6yd"))))
-    (build-system python-build-system)
+         "0nih6wxbpnasngdkbyh9df8wrm4b5inca8mshkqpmraqqmckzrk3"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1464,16 +1464,18 @@ program.")
                     (pass (string-append password-store "/bin/pass")))
                (substitute* '("passgithelper.py"
                               "test_passgithelper.py")
-                 (("'pass'") (string-append "'" pass "'")))
-               #t)))
-         (replace 'check
+                 (("'pass'") (string-append "'" pass "'"))))))
+         (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getcwd))
-             (invoke "pytest"))))))
+             (setenv "HOME" (getcwd)))))))
     (inputs
      (list python-pyxdg password-store))
     (native-inputs
-     (list python-pytest python-pytest-mock))
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/languitar/pass-git-helper")
     (synopsis "Git credential helper interfacing with pass")
     (description "pass-git-helper is a git credential helper which
