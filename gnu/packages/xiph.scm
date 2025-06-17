@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -263,14 +264,14 @@ It currently supports:
 (define-public flac
   (package
    (name "flac")
-   (version "1.4.3")
+   (version "1.5.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://downloads.xiph.org/releases/flac/flac-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0w2v40kmvl741vmycv8h5s10n7arbs12n2b1p10z8j13saffcn3c"))))
+              "085rqa2h8qw8zl1ywkbkdjq7lv4v56hw98rv87wgybx8j9jwghgj"))))
    (build-system gnu-build-system)
    (arguments
     `(#:parallel-tests? #f
