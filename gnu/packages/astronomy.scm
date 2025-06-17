@@ -2495,13 +2495,13 @@ celestial-to-terrestrial coordinate transformations.")
 (define-public python-astroquery
   (package
     (name "python-astroquery")
-    (version "0.4.9.post1")
+    (version "0.4.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroquery" version))
        (sha256
-        (base32 "15viynwq96gyb12q894fi2j4jlzmba3lk86l469ixmrnj3qnn4aw"))))
+        (base32 "01m4sp35vgyc816gyvvajah3pa6sa0w15hzv80bn93ipvblr3kga"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2511,10 +2511,17 @@ celestial-to-terrestrial coordinate transformations.")
               ;; Some tests failed with parallel run, see
               ;; <https://github.com/astropy/astroquery/issues/2968>.
               ;; "-n" "auto"
-              "-k" (string-append
-                    ;; Failed: DID NOT RAISE <class
-                    ;; 'astropy.utils.exceptions.AstropyDeprecationWarning'>
-                    "not test_raises_deprecation_warning"))
+              "-k" (string-join
+                    (list
+                     ;; Failed: DID NOT RAISE <class
+                     ;; 'astropy.utils.exceptions.AstropyDeprecationWarning'>
+                     "not test_raises_deprecation_warning"
+                     ;; E       fixture 'tmp_cwd' not found
+                     "test_download_cache"
+                     "test_download_local"
+                     "test_download_table"
+                     "test_read_uncompressed")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
