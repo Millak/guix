@@ -6804,14 +6804,14 @@ library with bug fixtures.")
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
-    (version "1.1.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_standard" version))
        (sha256
         (base32
-         "00k1fzc8y8j0ar1chq0nqyfw8bgkkjgrkm32ibn0kz2vn715nlq1"))))
+         "0r7dxbiwngpwwjdbs2vqk94v1vjsgyilswkq180d5slx74grcn2r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6821,6 +6821,7 @@ library with bug fixtures.")
       #~(list "--ignore=tests/test_asdf_schema.py"
               "--ignore=tests/test_integration.py"
               "--ignore=tests/test_manifests.py"
+              "--ignore=tests/test_reference_files.py"
               "--ignore=tests/test_yaml_schema.py")))
     (native-inputs
      (list python-astropy-minimal
@@ -6828,11 +6829,9 @@ library with bug fixtures.")
            python-pypa-build
            python-pytest
            python-packaging
-           python-setuptools
+           python-setuptools-next
            python-setuptools-scm
            python-wheel))
-    (propagated-inputs
-     (list python-importlib-resources))
     (home-page "https://asdf-standard.readthedocs.io/")
     (synopsis "ASDF standard schemas")
     (description
