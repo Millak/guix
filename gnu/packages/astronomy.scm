@@ -1741,31 +1741,32 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "4.1.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "189d282d8c3yyv5fk473rvfm5yra05zsn4lmkaynimszr294kx0g"))))
+        (base32 "1xvcli823yqnyylxs817l36w1x9223j1y00f20hfp3g1rl80m86b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (native-inputs
-     (list python-fsspec
-           python-psutil
+     (list python-psutil
            python-pytest
            python-pytest-doctestplus
            python-pytest-remotedata
            python-pytest-xdist
+           python-setuptools-next
            python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list python-asdf-standard
            python-asdf-transform-schemas
            python-attrs ;; for vendorized jsonschema
+           python-fsspec
            python-importlib-metadata
            python-jmespath
            python-lz4
