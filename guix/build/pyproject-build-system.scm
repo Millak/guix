@@ -78,11 +78,11 @@
 
 ;; Raised when 'check cannot find a valid test system in the inputs.
 (define-condition-type &test-system-not-found &python-build-error
-                       test-system-not-found?)
+  test-system-not-found?)
 
 ;; Raised when multiple wheels are created by 'build.
 (define-condition-type &cannot-extract-multiple-wheels &python-build-error
-                       cannot-extract-multiple-wheels?)
+  cannot-extract-multiple-wheels?)
 
 ;; Raised, when no wheel has been built by the build system.
 (define-condition-type &no-wheels-built &python-build-error no-wheels-built?)
@@ -102,8 +102,8 @@
                              pyproject.toml
                              '("build-system" "backend-path")))
          (use-backend-path (call-with-output-string
-                            (cut write-json
-                             (or backend-path auto-backend-path '()) <>)))
+                             (cut write-json
+                                  (or backend-path auto-backend-path '()) <>)))
          ;; There is no easy way to get data from Guile into Python via
          ;; s-expressions, but we have JSON serialization already, which Python
          ;; also supports out-of-the-box.
@@ -122,25 +122,25 @@
                                 auto-build-backend
                                 "setuptools.build_meta")))
     (format #t
-     (string-append
-      "Using '~a' to build wheels, auto-detected '~a', override '~a'.~%"
-      "Prepending '~a' to sys.path, auto-detected '~a', override '~a'.~%")
-     use-build-backend auto-build-backend build-backend
-     use-backend-path auto-backend-path backend-path)
+            (string-append
+             "Using '~a' to build wheels, auto-detected '~a', override '~a'.~%"
+             "Prepending '~a' to sys.path, auto-detected '~a', override '~a'.~%")
+            use-build-backend auto-build-backend build-backend
+            use-backend-path auto-backend-path backend-path)
     (mkdir-p wheel-dir)
     ;; Call the PEP 517 build function, which drops a .whl into wheel-dir.
     (invoke "python" "-c"
-     "import sys, importlib, json
+            "import sys, importlib, json
 backend_path = json.loads (sys.argv[1]) or []
 backend_path.extend (sys.path)
 sys.path = backend_path
 config_settings = json.loads (sys.argv[4])
 builder = importlib.import_module(sys.argv[2])
 builder.build_wheel(sys.argv[3], config_settings=config_settings)"
-     use-backend-path
-     use-build-backend
-     wheel-dir
-     config-settings)))
+            use-backend-path
+            use-build-backend
+            wheel-dir
+            config-settings)))
 
 (define* (check #:key tests? test-backend test-flags #:allow-other-keys)
   "Run the test suite of a given Python package."
@@ -261,12 +261,12 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
                         (scandir wheel-dir
                                  (cut string-suffix? ".whl" <>)))))
       (cond
-        ((> (length wheels) 1)
-         ;; This code does not support multiple wheels yet, because their
-         ;; outputs would have to be merged properly.
-         (raise (condition (&cannot-extract-multiple-wheels))))
-        ((= (length wheels) 0)
-         (raise (condition (&no-wheels-built)))))
+       ((> (length wheels) 1)
+        ;; This code does not support multiple wheels yet, because their
+        ;; outputs would have to be merged properly.
+        (raise (condition (&cannot-extract-multiple-wheels))))
+       ((= (length wheels) 0)
+        (raise (condition (&no-wheels-built)))))
       (for-each extract wheels))
     (let ((datadirs (map (cut string-append site-dir "/" <>)
                          (list-directories site-dir
@@ -349,7 +349,7 @@ and return write it to PATH/NAME."
 import sys
 import ~a as mod
 sys.exit (mod.~a ())~%" interpreter module function)))
-        (chmod file-path #o755)))
+      (chmod file-path #o755)))
 
   (let* ((site-dir (site-packages inputs outputs))
          (out (assoc-ref outputs "out"))
