@@ -5642,11 +5642,12 @@ code, used in @code{libtoxcore}.")
               (sha256
                (base32
                 "1180ypn9596rq4b7y7dyv627j1q0fqilmkkrckclnzsdakdgis44"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                   ; tests require access to ALSA devices.
     (inputs
      (list alsa-lib))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://larsimmisch.github.io/pyalsaaudio/")
     (synopsis "ALSA wrappers for Python")
     (description
