@@ -6954,13 +6954,13 @@ implementation package such as asdf-astropy.")
   (hidden-package
    (package
      (name "python-asdf-wcs-schemas")
-     (version "0.4.0")
+     (version "0.5.0")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "asdf_wcs_schemas" version))
         (sha256
-         (base32 "1d08ng890xc1ilf3y1hrimx09x990wvg9g18n0ijwvpilnw49fy0"))))
+         (base32 "1dar2pzf2plwyl1rbmnv8fqvx1ljgpf3z39d4ybmn690djjdsyxg"))))
      (build-system pyproject-build-system)
      (arguments
       (list
@@ -6969,7 +6969,7 @@ implementation package such as asdf-astropy.")
       (list python-asdf
             python-pytest
             python-pytest-openfiles
-            python-setuptools
+            python-setuptools-next
             python-setuptools-scm
             python-wheel))
      (propagated-inputs
