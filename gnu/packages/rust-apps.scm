@@ -2746,6 +2746,40 @@ universal consistency and correctness as top priorities.  It is
 configuration-free.")
     (license license:asl2.0)))
 
+(define-public vhdl-ls
+  (package
+    (name "vhdl-ls")
+    (version "0.85.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/VHDL-LS/rust_hdl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vb2wmwammbxg89q8hhndskw43kgbamhyz41wdmpzk9skwy658ms"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("vhdl_ls")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-libraries
+            (lambda _
+              (mkdir-p (string-append #$output "/share/vhdl_libraries"))
+              (copy-recursively
+               "vhdl_libraries"
+               (string-append #$output "/share/vhdl_libraries")))))))
+    (inputs (cargo-inputs 'vhdl-ls))
+    (home-page "https://github.com/VHDL-LS/rust_hdl")
+    (synopsis "VHDL language server")
+    (description
+     "This package provides a VHDL language server protocol implementation with
+support for diagnostics, navigating to symbol, finding all references etc.")
+    (license license:mpl2.0)))
+
 (define-public vivid
   (package
     (name "vivid")
