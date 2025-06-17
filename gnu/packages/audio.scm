@@ -6950,7 +6950,7 @@ device.  There is support for mono and/or stereo and 8 or 16 bit samples.")
          (sha256
           (base32
            "0i62jx92vfpcr2z7lp69yzqdi9idfs3pifl3rzm2akc2c4cr1mac"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -6972,7 +6972,12 @@ device.  There is support for mono and/or stereo and 8 or 16 bit samples.")
       (propagated-inputs
        (list python-numpy python-typing-extensions))
       (native-inputs
-       (list sox python-pytest python-pytest-cov python-soundfile))
+       (list sox
+             python-pytest
+             python-pytest-cov
+             python-soundfile
+             python-setuptools
+             python-wheel))
       (home-page "https://github.com/rabitt/pysox")
       (synopsis "Python wrapper around SoX")
       (description "@code{python-pysox} is a wrapper around the @command{sox}
