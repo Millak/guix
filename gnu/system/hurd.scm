@@ -74,7 +74,7 @@
   ;; shepherd the herd, but also because we want its 'halt' and 'reboot'
   ;; commands to take precedence.
   (list shepherd-1.0 hurd netdde bash coreutils file findutils grep sed
-        diffutils patch gawk tar gzip bzip2 xz lzip
+        diffutils patch gawk tar gzip bzip2 xz lzip zstd
         guile-3.0-latest guile-colorized guile-readline
         net-base nss-certs inetutils less procps shadow sudo which
         info-reader))
