@@ -6858,10 +6858,13 @@ up-front for extensibility.")
          (base32 "0clp3a2ldfhvsh5c7zqd7nr2bvv62a89aaf8p4a2vzgzjvhghl0g"))))
      (build-system pyproject-build-system)
      (arguments
-      ;; Dependency cycle with python-asdf
-      (list #:tests? #f))
+      (list
+       ;; XXX: Check why all tests fail in this file.
+       #:test-flags #~(list "--deselect=tests/test_invalid.py")))
      (native-inputs
-      (list python-setuptools-next
+      (list python-asdf-bootstrap
+            python-pytest
+            python-setuptools-next
             python-setuptools-scm
             python-wheel))
      (propagated-inputs
