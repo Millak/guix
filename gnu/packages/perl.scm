@@ -9908,6 +9908,27 @@ available.")
 for a given module is comprehensive.")
     (license (package-license perl))))
 
+(define-public perl-pod-markdown
+  (package
+    (name "perl-pod-markdown")
+    (version "3.400")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/R/RW/RWSTAUNER/Pod-Markdown-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "0hl4ky3y584lzff4gxv271qw7ymawda2lwnl8d722zafrndyj9m6"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-differences))
+    (propagated-inputs (list perl-html-parser perl-uri))
+    (home-page "https://metacpan.org/release/Pod-Markdown")
+    (synopsis "POD to Markdown converter")
+    (description "This module uses @code{Pod::Simple} to convert POD to
+Markdown.")
+    (license license:perl-license)))
+
 (define-public perl-pod-parser
   (package
     (name "perl-pod-parser")
