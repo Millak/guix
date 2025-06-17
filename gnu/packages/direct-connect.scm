@@ -19,6 +19,7 @@
 
 (define-module (gnu packages direct-connect)
   #:use-module (guix build-system scons)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -34,7 +35,12 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control))
 
-(define-public linuxdcpp
+;; TODO Remove on the next python-team iteration.
+;; Unmaintained for 14 years, tried updating it here:
+;; https://lists.sr.ht/~ngraves/devel/patches/60080
+;; but it's too hard for most likely no users.
+;; If you use this package, let python-team know or try to fix it.
+(define-deprecated/public linuxdcpp #f
   (package
     (name "linuxdcpp")
     (version "1.1.0")
