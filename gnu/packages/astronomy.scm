@@ -2694,6 +2694,37 @@ encompassing software system for the operations and analysis of the ESA satellit
 Herschel.")
     (license license:gpl3+)))
 
+(define-public python-calcos
+  (package
+    (name "python-calcos")
+    (version "3.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "calcos" version))
+       (sha256
+        (base32 "0mfyinbbrps1ryjnqkjj7h7117clx762q7jvl7raycf1wj0g2zs0"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-ci-watson
+           python-numpy
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-scipy
+           python-stsci-tools))
+    (home-page "https://hst-docs.stsci.edu/cosdhb/chapter-3-cos-calibration")
+    (synopsis "Calibration software for Cosmic Origins Spectrograph")
+    (description
+     "This packages provides a calibration software for @acronym{COS, Cosmic
+Origins Spectrograph}.")
+    (license license:bsd-3)))
+
 (define-public python-camb
   (package
     (name "python-camb")
