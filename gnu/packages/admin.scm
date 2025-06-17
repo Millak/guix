@@ -5125,23 +5125,22 @@ cache of unix and unix-like systems.")
   (package
     (name "solaar")
     (version "1.1.14")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pwr-Solaar/Solaar")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "000700waw4z6ab40naycapjgqz8yvz9ny1px94ni4pwf8f3kh0vh"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'setenv-PATH
-           (lambda _
-             (setenv "PYTHONPATH" "lib"))))))
-    (native-inputs (list python-pytest))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pwr-Solaar/Solaar")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "000700waw4z6ab40naycapjgqz8yvz9ny1px94ni4pwf8f3kh0vh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-mock
+           python-setuptools
+           python-typing-extensions
+           python-wheel))
     (propagated-inputs
      (list python-pygobject
            python-pyudev
