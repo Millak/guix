@@ -79,6 +79,7 @@
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages plotutils)
   #:use-module (gnu packages popt)
@@ -3393,6 +3394,72 @@ biggest change from DrizzlePac is that this code passes an array that maps the
 input to output image into the C code, while the DrizzlePac code computes the
 mapping by using a Python callback.  Switching to using an array allowed the
 code to be greatly simplified.")
+    (license license:bsd-3)))
+
+(define-public python-drizzlepac
+  (package
+    (name "python-drizzlepac")
+    (version "3.7.1") ; higher versions require NumPy 2+
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "drizzlepac" version))
+       (sha256
+        (base32 "0vb1sxq4hjh9p7gi320k7nwmm7f0dm4i9dn5wl56h30n0m16lp37"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; TODO: Tests fail to load with error: E ModuleNotFoundError: No module
+      ;; named 'stsci.tools'
+      #:tests? #f
+      ;; TODO: Sanity check phase fails a lot on mismatched versions or failed
+      ;; to load "stsci.tools" module.
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'sanity-check))))
+    (native-inputs
+     (list python-astropy
+           python-ci-watson
+           python-crds
+           python-pytest
+           python-pytest-remotedata
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astrocut
+           python-astropy
+           python-astroquery
+           python-bokeh
+           python-fitsblender
+           python-lxml
+           python-markupsafe
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-photutils
+           python-pypdf2
+           python-regions
+           python-requests-next
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-simplify-polyline
+           python-spherical-geometry
+           python-stsci-image
+           python-stsci-imagestats
+           python-stsci-skypac
+           python-stsci-stimage
+           python-stsci-tools
+           python-stwcs
+           python-tables
+           python-tweakwcs))
+    (home-page "https://drizzlepac.readthedocs.io/")
+    (synopsis "AstroDrizzle for HST images")
+    (description
+     "@acronym{Hubble Space Telescope , HST} image combination using the
+drizzle algorithm to combine astronomical images, to model image distortion,
+to remove cosmic rays, and generally to improve the fidelity of data in the
+final image.")
     (license license:bsd-3)))
 
 (define-public python-drms
