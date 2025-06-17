@@ -6876,6 +6876,18 @@ Users should not need to install this directly; instead, install an
 implementation package such as asdf-astropy.")
      (license license:bsd-3))))
 
+(define-public python-asdf-transform-schemas-bootstrap
+  (hidden-package
+   (package/inherit python-asdf-transform-schemas
+     (arguments
+      (list #:tests? #f
+            #:phases #~(modify-phases %standard-phases
+                         (delete 'sanity-check))))
+     (native-inputs
+      (list python-setuptools-next
+            python-wheel))
+     (propagated-inputs '()))))
+
 (define-public python-asdf-coordinates-schemas
   (hidden-package
    (package
