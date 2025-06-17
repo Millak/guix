@@ -2927,13 +2927,13 @@ attempting to maintain ISTP compliance
 (define-public python-ci-watson
   (package
     (name "python-ci-watson")
-    (version "0.8.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ci_watson" version))
        (sha256
-        (base32 "1rlhs8y0splmzr76z1s35zl68qm748nlayha8m81b0zhkhicxvhg"))))
+        (base32 "0dlys7yr11c59zl0smy2hb3bw5r6vyrmx8s97f1942i7zjnyb1zx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2947,11 +2947,13 @@ attempting to maintain ISTP compliance
                 (("-p no:legacypath") "")))))))
     (native-inputs
      (list python-pytest-astropy-header
-           python-setuptools
+           python-pytest
+           python-setuptools-next
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
-     (list python-crds
-           python-pytest
+     (list python-colorama
+           python-crds
            python-readchar
            python-requests))
     (home-page "https://github.com/spacetelescope/ci_watson")
