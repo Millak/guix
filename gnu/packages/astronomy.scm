@@ -6881,13 +6881,13 @@ implementation package such as asdf-astropy.")
   (hidden-package
    (package
      (name "python-asdf-coordinates-schemas")
-     (version "0.3.0")
+     (version "0.4.0")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "asdf_coordinates_schemas" version))
         (sha256
-         (base32 "0kk0rlzv0kkcw6fiwvps4n0x05867xc9hxyyzica31zcvhan12y9"))))
+         (base32 "1i5w1v74b84ygbd9pw9cs35bjaqs35f5iavazhjpbycqr1pf8rvh"))))
      (build-system pyproject-build-system)
      (arguments
       (list
@@ -6896,7 +6896,7 @@ implementation package such as asdf-astropy.")
      (native-inputs
       (list python-pytest
             python-pytest-xdist
-            python-setuptools
+            python-setuptools-next
             python-setuptools-scm
             python-wheel))
      (propagated-inputs
