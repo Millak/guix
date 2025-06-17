@@ -1835,6 +1835,22 @@ implementation of the ASDF Standard.")
 Astropy objects.")
     (license license:bsd-3)))
 
+(define-public python-asdf-bootstrap
+  (hidden-package
+   (package/inherit python-asdf
+     (arguments
+      (list #:tests? #f
+            #:phases #~(modify-phases %standard-phases
+                         (delete 'sanity-check))))
+     (native-inputs
+      (list python-setuptools-next
+            python-wheel))
+    (propagated-inputs
+     (list python-importlib-metadata
+           python-numpy
+           python-pyyaml
+           python-semantic-version)))))
+
 (define-public python-asdf-compression
   ;; TODO: No release, change to tag when it's ready.
   (let ((commit "7cfd07c6f789d4919e5730e0cda150fb20da4139")
