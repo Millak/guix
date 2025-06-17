@@ -19,7 +19,7 @@
 
 (define-module (guix build pyproject-build-system)
   #:use-module ((guix build python-build-system) #:prefix python:)
-  #:use-module (guix build utils)
+  #:use-module ((guix build utils) #:hide (delete))
   #:use-module (guix build json)
   #:use-module (guix build toml)
   #:use-module (ice-9 match)
