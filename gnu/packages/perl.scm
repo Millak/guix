@@ -7585,6 +7585,27 @@ simple for others to extend your meta-object based tools by providing hooks
 for other packages to add metrics to your meta object.")
     (license license:perl-license)))
 
+(define-public perl-metrics-any
+  (package
+    (name "perl-metrics-any")
+    (version "0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/P/PE/PEVANS/Metrics-Any-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "16xrx0h9gfyj4ky9zvlg1gwm66343w36f6wspcbaa95gr3wss3m9"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test2-suite))
+    (home-page "https://metacpan.org/release/Metrics-Any")
+    (synopsis "Abstract collection of monitoring metrics")
+    (description "This Perl module provides a central location for modules to
+report monitoring metrics, such as counters of the number of times interesting
+events have happened, and programs to collect up and send those metrics to
+monitoring services.")
+    (license license:perl-license)))
+
 (define-public perl-mime-base64
   (package
     (name "perl-mime-base64")
