@@ -5525,7 +5525,7 @@ loudness of audio and video files to the same level.")
               (sha256
                (base32
                 "0zqclskkjb9hfdw9gq6iq4bs9dl1wj9nr8v1jz6s885379q9l8i7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
        (list
         #:phases
@@ -5539,7 +5539,10 @@ loudness of audio and video files to the same level.")
                                   "\""))))))))
     (inputs (list python-crcmod python-ffmpeg-python python-mutagen
                   python-tqdm ffmpeg))
-    (native-inputs (list python-future python-requests))
+    (native-inputs (list python-future
+                         python-requests
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/desbma/r128gain")
     (synopsis "Fast audio loudness scanner & tagger")
     (description
