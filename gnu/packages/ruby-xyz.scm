@@ -8377,14 +8377,14 @@ parsing.")
 (define-public ruby-character-set
   (package
     (name "ruby-character-set")
-    (version "1.4.0")
+    (version "1.8.0")
     (source
       (origin
         (method url-fetch)
         (uri (rubygems-uri "character_set" version))
         (sha256
           (base32
-            "0affq9n77vwy897ri2zhmfinfagf37hcwwimrccy1bcxan9mj3h3"))))
+            "0l9z2pihzc11f0jpq2sx789zwpmwf5nyhsjps45zzvfs5931fwrb"))))
     (build-system ruby-build-system)
     (arguments '(#:tests? #f))          ;avoid a cycle with ruby-regexp-parser
     (synopsis "Ruby library to manipulate Unicode")
