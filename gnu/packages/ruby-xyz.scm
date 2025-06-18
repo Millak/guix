@@ -14000,32 +14000,35 @@ development kit for Ruby.")
   (package
     (name "ruby-spy")
     (version "1.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "spy" version))
-              (sha256
-               (base32
-                "0g2mma8q17m26k5s864ndlvvqllhcivwg2wdigjvb7z06iw17gds"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "spy" version))
+       (sha256
+        (base32 "0g2mma8q17m26k5s864ndlvvqllhcivwg2wdigjvb7z06iw17gds"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'extract-gemspec 'relax-requirements
-                          (lambda _
-                            (substitute* "spy.gemspec"
-                              ((".*pry-byebug.*") ""))
-                            (substitute* "test/test_helper.rb"
-                              ((".*pry-byebug.*") ""))
-                            (substitute* "Gemfile"
-                              ((".*redcarpet.*") "")
-                              ((".*yard.*") "")))))))
-    (native-inputs
-     (list ruby-coveralls
-           ruby-minitest-reporters
-           ruby-pry
-           ruby-rspec-core
-           ruby-rspec-expectations))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "spy.gemspec"
+                ((".*pry-byebug.*")
+                 ""))
+              (substitute* "test/test_helper.rb"
+                ((".*pry-byebug.*")
+                 ""))
+              (substitute* "Gemfile"
+                ((".*redcarpet.*")
+                 "")
+                ((".*yard.*")
+                 "")))))))
+    (native-inputs (list ruby-coveralls ruby-minitest-reporters ruby-pry
+                         ruby-rspec-core ruby-rspec-expectations))
     (synopsis "Mocking library for Ruby")
-    (description "Spy is a mocking library.  By default, it will raise an
+    (description
+     "Spy is a mocking library.  By default, it will raise an
 error if you attempt to stub a method that doesn't exist or call the stubbed
 method with the wrong arity.")
     (home-page "https://github.com/ryanong/spy")
