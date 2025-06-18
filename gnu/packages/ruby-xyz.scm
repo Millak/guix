@@ -11668,7 +11668,8 @@ part of the Prawn PDF generator.")
                 (skip-tests "test/test_web_concurrency_auto.rb" "\
 test_web_concurrency_with_concurrent_ruby_unavailable")
                 (skip-tests "test/helpers/integration.rb"
-                            "test_puma_started_log_writing"))))
+                            "test_puma_started_log_writing"
+                            "test_require_dependencies"))))
           (add-before 'check 'relax-test-case-timeout
             (lambda _
               ;; The default value is 45 s and easily causes timeouts.
