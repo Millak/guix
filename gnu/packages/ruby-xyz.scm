@@ -14358,6 +14358,27 @@ characteristics.")
     (home-page "https://github.com/sinatra/mustermann")
     (license license:expat)))
 
+(define-public ruby-mutex-m
+  (package
+    (name "ruby-mutex-m")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ruby/mutex_m")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "162khhcahd6bn4r63driw23745lyg7h5dx5hli3clxbrpa1c0qvx"))))
+    (build-system ruby-build-system)
+    (synopsis "Mixin to extend objects to be handled like a Mutex.")
+    (description
+     "When @code{mutex_m} is required, any object that extends or includes
+@code{Mutex_m} will be treated like a Mutex.")
+    (home-page "https://github.com/ruby/mutex_m")
+    (license license:bsd-2)))
+
 (define-public ruby-prettier-print
   (package
     (name "ruby-prettier-print")
