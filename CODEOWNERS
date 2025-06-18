@@ -7,6 +7,7 @@
 # usually suited as a reviewer.
 
 gnu/packages/audio\.scm                            @guix/audio
+gnu/packages/xiph\.scm                             @guix/audio
 
 gnu/packages/commencement\.scm                     @guix/bootstrap
 gnu/packages/mes\.scm                              @guix/bootstrap
