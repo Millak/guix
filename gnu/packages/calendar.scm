@@ -218,32 +218,40 @@ data units.")
 (define-public khal
   (package
     (name "khal")
-    (version "0.11.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "khal" version))
-              (sha256
-               (base32
-                "0pijq7crjpak1rq3hzx68fz34n7ikkcz3xsk9r3brny17z2brk58"))))
-    (build-system python-build-system)
+    ;; TODO: The latest version requires fresh pytz module and fails with
+    ;; error: E AttributeError: module 'icalendar' has no attribute 'use_pytz'
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "khal" version))
+       (sha256
+        (base32 "1gxrhfr4kv5mij75nzjgj69wcssbx4dfbky196w6b4nh3v7nm2pf"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; The test suite is unreliable. See <https://bugs.gnu.org/44197>
-       #:phases (modify-phases %standard-phases
-        ;; Building the manpage requires khal to be installed.
-        (add-after 'install 'manpage
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            ;; Make installed package available for running the tests
-            (add-installed-pythonpath inputs outputs)
-            (invoke "make" "--directory=doc/" "man")
-            (install-file
-             "doc/build/man/khal.1"
-             (string-append (assoc-ref outputs "out") "/share/man/man1")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Building the manpage requires khal to be installed.
+          (add-after 'install 'manpage
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs)
+              (invoke "make" "--directory=doc/" "man")
+              (install-file "doc/build/man/khal.1"
+                            (string-append #$output "/share/man/man1")))))))
     (native-inputs
-     (list python-setuptools-scm
-           ;; Required to build manpage
-           python-sphinxcontrib-newsfeed python-sphinx))
+     (list python-freezegun
+           python-importlib-metadata
+           python-packaging
+           python-pytest
+           python-setuptools-next
+           python-setuptools-scm-next
+           python-sphinx
+           python-sphinxcontrib-newsfeed
+           python-wheel))
     (inputs
-     (list python-atomicwrites
+     (list python-aiohttp
+           python-atomicwrites
            python-click
            python-click-log
            python-configobj
@@ -251,16 +259,17 @@ data units.")
            python-icalendar
            python-pytz
            python-pyxdg
+           python-setproctitle
            python-tzlocal
            python-urwid
-           ;; For the extras.
-           python-setproctitle))
-    (synopsis "Console calendar program")
-    (description "Khal is a standards based console calendar program,
-able to synchronize with CalDAV servers through vdirsyncer.  It includes
-both a @acronym{CLI, command-line interface} and a @acronym{TUI, textual user
-interface} named 'ikhal'.")
+           vdirsyncer))
     (home-page "https://lostpackets.de/khal/")
+    (synopsis "Console calendar program")
+    (description
+     "Khal is a standards based console calendar program, able to synchronize
+with CalDAV servers through vdirsyncer.  It includes both a @acronym{CLI,
+command-line interface} and a @acronym{TUI, textual user interface} named
+'ikhal'.")
     (license license:expat)))
 
 (define-public remind
