@@ -647,6 +647,40 @@ Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
 Dropbox API v2.")
     (license license:expat)))
 
+(define-public python-essentials-openapi
+  (package
+    (name "python-essentials-openapi")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Neoteroi/essentials-openapi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f3lhpkqhvv8sr1c34cvzdqkc61306m03w3jp0zdih1v6is05j8x"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flask
+           python-hatchling
+           python-pydantic
+           python-pytest
+           python-rich))
+    (propagated-inputs
+     (list python-essentials
+           python-httpx
+           python-jinja2
+           python-markupsafe
+           python-pyyaml))
+    (home-page "https://github.com/Neoteroi/essentials-openapi/")
+    (synopsis "Generator for OpenAPI Documentation")
+    (description
+     "Generator for OpenAPI Documentation version 2 and 3, in JSON and YAML
+formats.  Generator for other kinds of documents from OpenAPI Documentation
+files.")
+    (license license:expat)))
+
 (define-public python-eventlet
   (package
     (name "python-eventlet")
