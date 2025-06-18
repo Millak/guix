@@ -6079,69 +6079,64 @@ databases.")
   (package
     (name "clipper-peak")
     (version "2.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/YeoLab/clipper")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0508rgnfjk5ar5d1mjbjyrnarv4kw9ksq0m3jw2bmgabmb5v6ikk"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete pre-compiled files.
-                  (delete-file "clipper/src/peaks.so")))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/YeoLab/clipper")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0508rgnfjk5ar5d1mjbjyrnarv4kw9ksq0m3jw2bmgabmb5v6ikk"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Delete pre-compiled files.
+                   (delete-file "clipper/src/peaks.so")))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-python3-for-cython
-           (lambda _
-             (substitute* "setup.py"
-               (("^setup")
-                "\
-peaks.cython_directives = {'language_level': '3'}
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'use-python3-for-cython
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("^setup")
+                         "peaks.cython_directives = {'language_level': '3'}
 readsToWiggle.cython_directives = {'language_level': '3'}
 setup"))))
-         (add-after 'unpack 'disable-nondeterministic-test
-           (lambda _
-             ;; This test fails/succeeds non-deterministically.
-             (substitute* "clipper/test/test_call_peak.py"
-               (("test_get_FDR_cutoff_mean") "_test_get_FDR_cutoff_mean"))))
-         ;; This doesn't work because "usage" is executed, and that calls
-         ;; exit(8).
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "clipper/test"
-                 (invoke "python" "-m" "unittest")))))
-         ;; This is not a library
-         (delete 'sanity-check))))
-    (inputs
-     (list htseq
-           python-pybedtools
-           python-cython
-           python-scikit-learn
-           python-matplotlib
-           python-pandas
-           python-pysam
-           python-numpy
-           python-scipy))
-    (native-inputs
-     (list python-setuptools-git
-           python-setuptools
-           python-wheel
-           python-mock ; for tests
-           python-nose ; for tests
-           python-pytz)) ; for tests
+                  (add-after 'unpack 'disable-nondeterministic-test
+                    (lambda _
+                      ;; This test fails/succeeds non-deterministically.
+                      (substitute* "clipper/test/test_call_peak.py"
+                        (("test_get_FDR_cutoff_mean")
+                         "_test_get_FDR_cutoff_mean"))))
+                  ;; This doesn't work because "usage" is executed, and that calls
+                  ;; exit(8).
+                  (replace 'check
+                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                      (when tests?
+                        (add-installed-pythonpath inputs outputs)
+                        (with-directory-excursion "clipper/test"
+                          (invoke "python" "-m" "unittest")))))
+                  ;; This is not a library
+                  (delete 'sanity-check))))
+    (inputs (list htseq
+                  python-pybedtools
+                  python-cython
+                  python-scikit-learn
+                  python-matplotlib
+                  python-pandas
+                  python-pysam
+                  python-numpy
+                  python-scipy))
+    (native-inputs (list python-setuptools-git
+                         python-setuptools
+                         python-wheel
+                         python-mock ;for tests
+                         python-nose ;for tests
+                         python-pytz)) ;for tests
     (home-page "https://github.com/YeoLab/clipper")
     (synopsis "CLIP peak enrichment recognition")
-    (description
-     "CLIPper is a tool to define peaks in CLIP-seq datasets.")
+    (description "CLIPper is a tool to define peaks in CLIP-seq datasets.")
     (license license:gpl2)))
 
 (define-public codingquarry
