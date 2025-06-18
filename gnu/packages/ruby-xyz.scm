@@ -12612,6 +12612,11 @@ features that don't exist yet like variables, nesting, mixins and inheritance.")
                   (ice-9 textual-ports))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-minitest
+           (lambda _
+             (substitute* (find-files "test" "\\.rb$")
+               (("MiniTest")
+                "Minitest"))))
          ;; TODO: This would be better as a snippet, but the ruby-build-system
          ;; doesn't seem to support that
          (add-after 'unpack 'remove-libsass
