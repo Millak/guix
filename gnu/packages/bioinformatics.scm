@@ -14516,34 +14516,31 @@ quality control are provided.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0cagawlzjwj3wam10lv64xgbfx4zcnzxi5sjpsdhq7rn4z24mzc2"))))
+        (base32 "0cagawlzjwj3wam10lv64xgbfx4zcnzxi5sjpsdhq7rn4z24mzc2"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "requirements.txt"
-               (("==") ">=")))))))
-    (inputs
-     (list python-cryptography
-           python-intervaltree
-           python-jsonschema
-           python-lxml
-           python-ndg-httpsclient
-           python-progressbar2
-           python-pyasn1
-           python-pyopenssl
-           python-pyyaml
-           python-requests
-           python-termcolor))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      (substitute* "requirements.txt"
+                        (("==")
+                         ">=")))))))
+    (inputs (list python-cryptography
+                  python-intervaltree
+                  python-jsonschema
+                  python-lxml
+                  python-ndg-httpsclient
+                  python-progressbar2
+                  python-pyasn1
+                  python-pyopenssl
+                  python-pyyaml
+                  python-requests
+                  python-termcolor))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool")
     (synopsis "GDC data transfer tool")
-    (description "The gdc-client provides several convenience functions over
+    (description
+     "The gdc-client provides several convenience functions over
 the GDC API which provides general download/upload via HTTPS.")
     (license license:asl2.0)))
 
