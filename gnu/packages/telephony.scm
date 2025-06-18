@@ -868,8 +868,8 @@ Initiation Protocol (SIP) and a multimedia framework.")
     (license license:gpl2+)))
 
 (define-public pjproject-jami
-  (let ((commit "797f1a38cc1066acc4adc9561aa1288afabe72d5")
-        (revision "2"))
+  (let ((commit "8fc165b833eea6e3c88d67a541385424b129fd3f")
+        (revision "3"))
     (package
       (inherit pjproject)
       (name "pjproject-jami")
@@ -890,7 +890,7 @@ Initiation Protocol (SIP) and a multimedia framework.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ssiffc48qg43c45fbpx86i1gbi969b8y34922z62irxbljdnc4m"))))
+                  "146gwpkhia9d7lqk3czlrwy0m3b8d9mhi2l05gffs0i0hljrj3mq"))))
       (arguments
        (substitute-keyword-arguments (package-arguments pjproject)
          ((#:configure-flags _ ''())
