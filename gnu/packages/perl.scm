@@ -5896,6 +5896,27 @@ defining functions and methods with parameter lists. At minimum this saves you
 from having to unpack @code{@@_} manually, but this module can do much more.")
     (license license:perl-license)))
 
+(define-public perl-future
+  (package
+    (name "perl-future")
+    (version "0.51")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/P/PE/PEVANS/Future-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0dja5wf2c7rn548762syqjrb5bwz9c7xshkrdgyyq050hdry6g2n"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test2-suite))
+    (home-page "https://metacpan.org/release/Future")
+    (synopsis "Perl module for representing operations awaiting completions")
+    (description "This Perl module implements @code{Future}, an object
+representing an operation that is currently in progress, or has recently
+completed.  It can be used in a variety of ways to manage the flow of control,
+and data, through an asynchronous program.")
+    (license license:perl-license)))
+
 (define-public perl-getopt-argvfile
   (package
     (name "perl-getopt-argvfile")
