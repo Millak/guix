@@ -2931,6 +2931,26 @@ italics shapes.  This package provides only TrueType files (TTF).")
     (home-page "https://software.sil.org/gentium/")
     (license license:silofl1.1)))
 
+(define-public font-sil-gentium-book
+  (package
+    (name "font-sil-gentium-book")
+    (version "7.000")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://software.sil.org/downloads/r/gentium/GentiumBook-"
+                    version ".zip"))
+              (sha256
+               (base32
+                "06gl97pi7ygm13h8mv2i3xlx5b2sfv1bfjxzzaz6ipb2xay3akps"))))
+    (build-system font-build-system)
+    (synopsis "Serif font for the Cyrillic, Greek, and Latin alphabets")
+    (description
+     "Gentium Book is a slightly heavier-weight variant of the
+Gentium typeface.")
+    (home-page "https://software.sil.org/gentium/")
+    (license license:silofl1.1)))
+
 (define-public font-sil-andika
   (package
     (name "font-sil-andika")
