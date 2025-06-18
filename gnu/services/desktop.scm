@@ -80,8 +80,10 @@
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages enlightenment)
   #:use-module (guix deprecation)
+  #:use-module (guix i18n)
   #:use-module (guix records)
   #:use-module (guix packages)
+  #:use-module (guix search-paths)
   #:use-module (guix store)
   #:use-module (guix ui)
   #:use-module (guix utils)
@@ -147,6 +149,11 @@
             accountsservice-service  ; deprecated
 
             cups-pk-helper-service-type
+
+            sane-configuration
+            sane-configuration?
+            sane-configuration-backends
+            sane-configuration-sane
             sane-service-type
 
             gnome-desktop-configuration
@@ -1681,6 +1688,33 @@ accountsservice web site} for more information."
   ;; The '60-libsane.rules' udev rules refers to the "scanner" group.
   (list (user-group (name "scanner") (system? #t))))
 
+(define (non-empty-list-of-packages? val)
+  (and (not (null? val)) (list-of-packages? val)))
+
+(define-configuration/no-serialization sane-configuration
+  (sane
+   (package sane)
+   "The package that provides the SANE library.")
+  (backends
+   (non-empty-list-of-packages (list sane-backends))
+   "A list of packages containing SANE backends."))
+
+(define (sane-search-paths config)
+  (match-record config <sane-configuration> (sane backends)
+    (let ((backend-union (directory-union "sane-backends" backends)))
+      (map (match-lambda
+             (($ <search-path-specification> variable (files))
+              (cons variable (file-append backend-union "/" files))))
+           (package-native-search-paths sane)))))
+
+(define* (lift-sane-configuration config #:key warn?)
+  (if (sane-configuration? config)
+      config
+      (begin
+        (when warn?
+          (warning (G_ "'sane' service now expects a 'sane-configuration' record~%")))
+        (sane-configuration (backends (list config))))))
+
 (define sane-service-type
   (service-type
    (name 'sane)
@@ -1688,9 +1722,15 @@ accountsservice web site} for more information."
     "This service provides access to scanners @i{via}
 @uref{http://www.sane-project.org, SANE} by installing the necessary udev
 rules.")
-   (default-value sane-backends-minimal)
+   (default-value (sane-configuration))
    (extensions
-    (list (service-extension udev-service-type list)
+    (list (service-extension udev-service-type
+                             (lambda (c)
+                               (sane-configuration-backends
+                                (lift-sane-configuration c #:warn? #t))))
+          (service-extension session-environment-service-type
+                             (lambda (c)
+                               (sane-search-paths (lift-sane-configuration c))))
           (service-extension account-service-type
                              (const %sane-accounts))))))
 
@@ -2445,7 +2485,7 @@ applications needing access to be root.")
          ;; Add udev rules for MTP devices so that non-root users can access
          ;; them.
          (simple-service 'mtp udev-service-type (list libmtp))
-         ;; Add udev rules for scanners.
+         ;; Add udev rules and default backends for scanners.
          (service sane-service-type)
          ;; Add polkit rules, so that non-root users in the wheel group can
          ;; perform administrative tasks (similar to "sudo").

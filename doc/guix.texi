@@ -26957,23 +26957,46 @@ site} for more information.
 @defvar sane-service-type
 This service provides access to scanners @i{via}
 @uref{http://www.sane-project.org, SANE} by installing the necessary
-udev rules.  It is included in @code{%desktop-services} (@pxref{Desktop
-Services}) and relies by default on @code{sane-backends-minimal} package
-(see below) for hardware support.
+udev rules and pluggable backends.  It is included in
+@code{%desktop-services} (@pxref{Desktop Services}) and relies by
+default on @code{sane-backends} package (see below) for hardware
+support.
 @end defvar
 
-@defvar sane-backends-minimal
-The default package which the @code{sane-service-type} installs.  It
-supports many recent scanners.
-@end defvar
+@deftp {Data Type} sane-configuration
+Data type representing the configuration for SANE.
 
-@defvar sane-backends
-This package includes support for all scanners that
-@code{sane-backends-minimal} supports, plus older Hewlett-Packard
-scanners supported by @code{hplip} package.  In order to use this on
-a system which relies on @code{%desktop-services}, you may use
-@code{modify-services} (@pxref{Service Reference,
-@code{modify-services}}) as illustrated below:
+@table @asis
+
+@item @code{sane} (default: @code{sane})
+Package containing SANE library.
+
+@item @code{backends} (default: @code{(sane-backends)})
+List of packages with pluggable SANE backends:
+
+@itemize @bullet
+@item
+@code{sane-backends}: The default backend collection which supports many recent scanners,
+
+@item
+@code{sane-airscan}: A backend that enables network scanners supporting eSCL (Apple) or WSD,
+(Microsoft) protocols
+
+@item
+@code{hplip}: A backend containing drivers for older Hewlett-Packard scanners,
+
+@item
+@code{utsushi}: A backend containing drivers for older Epson devices.
+
+@end itemize
+
+@end table
+@end deftp
+
+In order to use additional backends on a system which relies on
+@code{%desktop-services}, you may use @code{modify-services}
+(@pxref{Service Reference, @code{modify-services}}) as illustrated
+below:
 
 @lisp
 (use-modules (gnu))
@@ -26987,13 +27010,14 @@ a system which relies on @code{%desktop-services}, you may use
 (define %my-desktop-services
   ;; List of desktop services that supports a broader range of scanners.
   (modify-services %desktop-services
-    (sane-service-type _ => sane-backends)))
+    (sane-service-type _ =>
+      (sane-configuration
+        (backends (list sane-backends sane-airscan))))))
 
 (operating-system
   @dots{}
   (services %my-desktop-services))
 @end lisp
-@end defvar
 
 @deffn {Procedure} geoclue-application name [#:allowed? #t] [#:system? #f] [#:users '()]
 Return a configuration allowing an application to access GeoClue
