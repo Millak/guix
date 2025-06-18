@@ -12744,19 +12744,18 @@ bindings to the libsass library.  This enables rendering
 (define-public ruby-jekyll-sass-converter
   (package
     (name "ruby-jekyll-sass-converter")
-    (version "2.1.0")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "jekyll-sass-converter" version))
               (sha256
                (base32
-                "04ncr44wrilz26ayqwlg7379yjnkb29mvx4j04i62b7czmdrc9dv"))))
+                "077xkkkb592vg8kxdia9jwsaz1bc70lkpf4hdvazjqphn5hlz2bi"))))
     (build-system ruby-build-system)
-    (propagated-inputs
-     (list ruby-sass))
     (arguments
      ;; No rakefile
      `(#:tests? #f))
+    (propagated-inputs (list ruby-sassc))
     (home-page "https://github.com/jekyll/jekyll-sass-converter")
     (synopsis "Sass converter for Jekyll")
     (description "This gem provide built-in support for the Sass converter
