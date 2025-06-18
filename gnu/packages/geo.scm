@@ -2387,7 +2387,7 @@ persisted.
 (define-public libmseed
   (package
     (name "libmseed")
-    (version "3.1.1")
+    (version "3.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2396,7 +2396,7 @@ persisted.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05sk2h19c7ja98s75b7hbn2cwnjc5l6dr59c23fgnaimmad2rfn7"))))
+                "1xswg62h8mqmgpkllyvj8zyw2sjks7pq2np820xca71ahc89aaiz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
