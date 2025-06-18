@@ -8496,7 +8496,7 @@ they match.")
 (define-public ruby-regexp-parser
   (package
     (name "ruby-regexp-parser")
-    (version "2.6.0")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch) ;bin/test missing from gem
@@ -8505,13 +8505,18 @@ they match.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07dx96gjvpa07dsdnzpwhhwc7qpxakjgws7d7wbnkbs20fyvx55x"))))
+        (base32 "108yjd737f7ky0acijqd5iydnia358szbyc8a80lab2v9dpqs9ax"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:test-target "default"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-ragel
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tasks/ragel.rake"
+                (("command -v ragel")
+                 (string-append (search-input-file inputs "bin/ragel") " -v")))))
           (add-before 'build 'compile-scanner.rb
             (lambda _
               (invoke "rake" "build")
@@ -8519,7 +8524,10 @@ they match.")
               ;; phase fails to delete the installed cached
               ;; gem file.
               (delete-file-recursively "pkg"))))))
-    (native-inputs (list ragel ruby-ice-nine ruby-regexp-property-values
+    (native-inputs (list ragel
+                         ruby-ice-nine
+                         ruby-leto
+                         ruby-regexp-property-values
                          ruby-rspec))
     (synopsis "Regular expression parser library for Ruby")
     (description "A Ruby gem for tokenizing, parsing, and transforming regular
