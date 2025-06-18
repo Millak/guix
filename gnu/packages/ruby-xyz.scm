@@ -13393,7 +13393,7 @@ own right, and also constitutes a row or column of a @code{Matrix}.")
 (define-public ruby-m
   (package
     (name "ruby-m")
-    (version "1.6.1")
+    (version "1.6.2")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -13402,7 +13402,7 @@ own right, and also constitutes a row or column of a @code{Matrix}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1aycfc8l1bsln1y300fv75fknn4amjcvc4rm2kd8hb6cqivjq5rg"))))
+                "0za9jsq341xyqjaswx2wrd4x42w9a2xygarh9spsvsxaxf5b1sz3"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -13411,24 +13411,13 @@ own right, and also constitutes a row or column of a @code{Matrix}.")
           (add-after 'unpack 'sanitize-dependencies
             (lambda _
               (delete-file "Gemfile")
-              (delete-file "Gemfile.lock")
-              ;; Rocco is unmaintained as of 2023/01/08; avoid depending on
-              ;; it.
               (substitute* "m.gemspec"
-                ;; The rdiscount and rocco dependencies are used for
-                ;; generating the documentation.
-                ((".*rdiscount.*") "")
-                ((".*rocco.*") "")
-                ((".*appraisal.*") "")
                 ((".*coveralls.*") ""))
               (substitute* "Rakefile"
-                ;; ruby-appraisal is not packaged, and is used to test against
-                ;; various dependencies; circumvent its use.
-                ((".*require 'appraisal'.*") "")
-                ((".*require 'coveralls'.*") "")
-                (("appraisal [:graphic:]+ rake")
-                 "rake")
-                (("Coveralls.push!") ""))))
+                ((".*require \"coveralls\".*") "")
+                ((".*require \"standard/rake\".*") "")
+                (("Coveralls.push!") "")
+                (("\"standard:fix\"") ""))))
           (add-before 'replace-git-ls-files 'pre-replace-git-ls-files
             (lambda _
               (substitute* "m.gemspec"
