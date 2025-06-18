@@ -13427,6 +13427,10 @@ YAML.load suitable for accepting user input in Ruby applications.")
       (arguments
        `(#:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'sanitize-dependencies
+             (lambda _
+               (substitute* "spec/spec_helper.rb"
+                 ((".*[Cc]overalls.*") ""))))
            (replace 'check
              (lambda* (#:key tests? #:allow-other-keys)
                (when tests?
