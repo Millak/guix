@@ -5917,6 +5917,29 @@ completed.  It can be used in a variety of ways to manage the flow of control,
 and data, through an asynchronous program.")
     (license license:perl-license)))
 
+(define-public perl-future-queue
+  (package
+    (name "perl-future-queue")
+    (version "0.52")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/P/PE/PEVANS/Future-Queue-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "01gfawx01mnzq6kd735w58qgk7pglyvmaqxcj92vdk2bcllsk3g9"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test2-suite))
+    (propagated-inputs (list perl-future))
+    (home-page "https://metacpan.org/release/Future-Queue")
+    (synopsis "FIFO queue of @code{Future} values")
+    (description "This Perl modules implements @code{Future::Queue}, a class
+providing a simple FIFO queue that stores arbitrary Perl values.  Values may
+be added into the queue using the @code{push} method, and retrieved from it
+using the @code{shift} method.")
+    (license license:perl-license)))
+
 (define-public perl-getopt-argvfile
   (package
     (name "perl-getopt-argvfile")
