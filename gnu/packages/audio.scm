@@ -5638,13 +5638,13 @@ code, used in @code{libtoxcore}.")
 (define-public python-pyalsaaudio
   (package
     (name "python-pyalsaaudio")
-    (version "0.8.4")
+    (version "0.11.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyalsaaudio" version))
               (sha256
                (base32
-                "1180ypn9596rq4b7y7dyv627j1q0fqilmkkrckclnzsdakdgis44"))))
+                "1p7xw2jrdwwjfnksj97k7hqp4hl7mgsj2kmkcj82qjsj6g59v2m7"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                   ; tests require access to ALSA devices.
