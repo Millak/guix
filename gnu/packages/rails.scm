@@ -153,7 +153,7 @@ uniquely identify it.")
 (define-public ruby-spring
   (package
     (name "ruby-spring")
-    (version "4.1.1")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
@@ -163,7 +163,7 @@ uniquely identify it.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0p8hidxqnk8s1gfm1s1xb06gbbahdxjmzy6x3ybi25nkmdp0anb6"))))
+         "1n2c6y69asj3z447kbrc13qaqw12dm1qq886rannbpj5av3k5csy"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "test:unit"
@@ -173,6 +173,8 @@ uniquely identify it.")
                  (lambda _
                    (substitute* "spring.gemspec"
                      (("gem.add_development_dependency 'bump'") ""))
+                   (substitute* "Gemfile"
+                     (("gem \"bump\"") ""))
                    (substitute* "Rakefile"
                      (("require \\\"bump/tasks\\\"") "")))))))
     (native-inputs (list bundler ruby-activesupport))
