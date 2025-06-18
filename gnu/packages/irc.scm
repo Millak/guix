@@ -735,74 +735,87 @@ other enhancements and bug fixes.")
   (package
     (name "epic5")
     (version "2.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://ftp.epicsol.org/pub/"
-                                  "epic/EPIC5-PRODUCTION/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1ap73d5f4vccxjaaq249zh981z85106vvqmxfm4plvy76b40y9jm"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://ftp.epicsol.org/pub/"
+                           "epic/EPIC5-PRODUCTION/"
+                           name
+                           "-"
+                           version
+                           ".tar.xz"))
+       (sha256
+        (base32 "1ap73d5f4vccxjaaq249zh981z85106vvqmxfm4plvy76b40y9jm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-perl
-           (lambda _
-             (substitute* "regress/crash-irc"
-               (("perl5") (which "perl")))
-             #t))
-         (add-after 'unpack 'patch-bsdinstall
-           ;; If we just remove /bin/ some part of the bsdinstall breaks.
-           ;; Furthermore bsdinstalls has a reference to /etc/chmod here, which
-           ;; means if we leave /etc/ in, install fails.
-           (lambda _
-             (substitute* "bsdinstall"
-               (("/bin/strip") "strip")
-               (("/bin/cp") "cp")
-               (("/bin/chmod") "chmod")
-               (("/bin/chgrp") "chgrp")
-               (("/bin/mkdir") "mkdir")
-               (("/bin/rm") "rm")
-               (("/bin/mv") "mv")
-               (("/etc/") ""))
-             #t))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; The tarball uses a very old version of autconf. It does not
-             ;; understand extra flags like `--enable-fast-install', so
-             ;; we need to invoke it with just what it understands.
-             (let ((out (assoc-ref outputs "out")))
-               ;; 'configure' doesn't understand '--host'.
-               ,@(if (%current-target-system)
-                     `((setenv "CHOST" ,(%current-target-system)))
-                     '())
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (setenv "SHELL" (which "bash"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       "--with-ipv6" "--with-libarchive"
-                       ;; We use libressl because openssl does not come
-                       ;; with the lib/libssl.a which is needed for epic5.
-                       ;; XXX: No matter which implementation is chosen,
-                       ;; epic5 fails to connect to tls ports of roundrobin
-                       ;; irc networks. This however is believed to be an
-                       ;; protocol issue at epic5 related to ircd.
-                       (string-append "--with-ssl="
-                                      (assoc-ref %build-inputs "libressl"))
-                       (string-append "--with-tcl="
-                                      (assoc-ref %build-inputs "tcl")
-                                      "/lib/tclConfig.sh"))))))))
-    (inputs
-     (list libressl
-           ncurses
-           libarchive ; CHANGELOG: "Support for loading zip files"
-           perl
-           tcl
-           ruby))
-    (native-inputs
-     (list pkg-config))
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-perl
+            (lambda _
+              (substitute* "regress/crash-irc"
+                (("perl5")
+                 (which "perl")))))
+          (add-after 'unpack 'patch-bsdinstall
+            ;; If we just remove /bin/ some part of the bsdinstall breaks.
+            ;; Furthermore bsdinstalls has a reference to /etc/chmod here, which
+            ;; means if we leave /etc/ in, install fails.
+            (lambda _
+              (substitute* "bsdinstall"
+                (("/bin/strip")
+                 "strip")
+                (("/bin/cp")
+                 "cp")
+                (("/bin/chmod")
+                 "chmod")
+                (("/bin/chgrp")
+                 "chgrp")
+                (("/bin/mkdir")
+                 "mkdir")
+                (("/bin/rm")
+                 "rm")
+                (("/bin/mv")
+                 "mv")
+                (("/etc/")
+                 ""))))
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; The tarball uses a very old version of autconf. It does not
+              ;; understand extra flags like `--enable-fast-install', so
+              ;; we need to invoke it with just what it understands.
+              (let ((out (assoc-ref outputs "out")))
+                ;; 'configure' doesn't understand '--host'.
+                #$@(if (%current-target-system)
+                       `((setenv "CHOST"
+                                 ,(%current-target-system)))
+                       '())
+                (setenv "CONFIG_SHELL"
+                        (which "bash"))
+                (setenv "SHELL"
+                        (which "bash"))
+                (invoke "./configure"
+                        (string-append "--prefix=" out)
+                        "--with-ipv6"
+                        "--with-libarchive"
+                        ;; We use libressl because openssl does not come
+                        ;; with the lib/libssl.a which is needed for epic5.
+                        ;; XXX: No matter which implementation is chosen,
+                        ;; epic5 fails to connect to tls ports of roundrobin
+                        ;; irc networks. This however is believed to be an
+                        ;; protocol issue at epic5 related to ircd.
+                        (string-append "--with-ssl="
+                                       (assoc-ref %build-inputs "libressl"))
+                        (string-append "--with-tcl="
+                                       (assoc-ref %build-inputs "tcl")
+                                       "/lib/tclConfig.sh"))))))))
+    (inputs (list libressl
+                  ncurses
+                  libarchive ;CHANGELOG: "Support for loading zip files"
+                  perl
+                  tcl
+                  ruby))
+    (native-inputs (list pkg-config))
     (home-page "http://epicsol.org")
     (synopsis "IRC Client")
     (description
