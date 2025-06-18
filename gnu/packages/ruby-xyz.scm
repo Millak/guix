@@ -13637,13 +13637,13 @@ to load dynamic content on storefronts.")
 (define ruby-liquid-c-bootstrap
   (package
     (name "ruby-liquid-c-bootstrap")
-    (version "4.1.0")
+    (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "liquid-c" version))
               (sha256
                (base32
-                "0jl37jz9hbfbhknryx4myxqx4n1f5dzyzmf1sapkcbw93xyrmkch"))))
+                "040qspl1x0pm5l3zwf90w02rcygbk0xl9bb1jgbszpj857pyqh8p"))))
     (build-system ruby-build-system)
     (arguments (list #:tests? #f))
     (native-inputs (list ruby-rake-compiler))
@@ -13677,7 +13677,15 @@ liquid ruby gem in C that makes it operate about three times faster.")
                 ((".*rubocop.*") "")
                 ;; Relax spy version specification.
                 (("gem \"spy\", \"0.4.1\"")
-                 "gem \"spy\", \">= 0.4.1\"")))))))
+                 "gem \"spy\", \">= 0.4.1\""))))
+          ;; XXX: Unclear if the binary_name has any influence on Memcheck.
+          ;; But the tests fail if it's unset.
+          (add-before 'check 'pre-check
+            (lambda _
+              (substitute* "Rakefile"
+                (("require \"ruby_memcheck\"" all)
+                 (string-append all "
+RubyMemcheck.config(binary_name: \"liquid_c.so\")"))))))))
     (native-inputs
      (list ruby-benchmark-ips
            ruby-rake-compiler
