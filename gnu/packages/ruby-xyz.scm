@@ -7860,13 +7860,13 @@ including comments and whitespace.")
 (define-public ruby-unf-ext
   (package
     (name "ruby-unf-ext")
-    (version "0.0.8.2")
+    (version "0.0.9.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "unf_ext" version))
               (sha256
                (base32
-                "1yj2nz2l101vr1x9w2k83a0fag1xgnmjwp8w8rw4ik2rwcz65fch"))))
+                "1sf6bxvf6x8gihv6j63iakixmdddgls58cpxpg32chckb2l18qcj"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
