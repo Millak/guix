@@ -625,7 +625,7 @@ subject.")
 (define-public ruby-rspec-pending-for
   (package
     (name "ruby-rspec-pending-for")
-    (version "0.1.16")
+    (version "0.1.17")
     (source
      (origin
        (method git-fetch) ;for tests
@@ -634,9 +634,19 @@ subject.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "107l560vm0kx25w5iy5rsk9ly8dxzr81b31284j514f4hkd0qv3m"))))
+        (base32 "0mczm7lwcji2q7xhsrrpffhgdn0n6kdykvx64y2r6726fs467wnl"))))
     (build-system ruby-build-system)
-    (native-inputs (list ruby-rspec ruby-simplecov))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda _
+              (substitute* "rspec-pending_for.gemspec"
+                (("spec\\.signing_key = .*")
+                 "spec.signing_key = nil\n")))))))
+    (native-inputs (list ruby-rspec-block-is-expected-bootstrap ruby-rspec
+                         ruby-simplecov))
     (propagated-inputs (list ruby-rspec-core ruby-ruby-engine
                              ruby-ruby-version))
     (synopsis "Skip RSpec tests for specific Ruby engines or versions")
