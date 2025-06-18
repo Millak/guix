@@ -10342,14 +10342,21 @@ more complex, and error-prone.")
 (define-public ruby-unf
   (package
     (name "ruby-unf")
-    (version "0.1.4")
+    (version "0.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "unf" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/knu/ruby-unf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0bh2cf73i2ffh4fcpdn9ir4mhq8zi50ik0zqa1braahzadx536a9"))))
+        (base32 "1zczv2z4yk73gymh5ymjgf857z6274nwv7gnslip507ds67r78ay"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (delete-file-recursively "ext")
+                    (substitute* "unf.gemspec"
+                      (("gem\\.extensions.*") ""))))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
