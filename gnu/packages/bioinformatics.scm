@@ -6207,28 +6207,23 @@ time.")
   (package
     (name "crossmap")
     (version "0.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "CrossMap" version))
-              (sha256
-               (base32
-                "0hqminh5wn1p3x481jbyc7gmncp5xc196hpvki7k25vzbryhwcix"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete compiled Python files.
-                  (for-each delete-file (find-files "." "\\.pyc$"))
-                  (delete-file-recursively ".eggs")))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "CrossMap" version))
+       (sha256
+        (base32 "0hqminh5wn1p3x481jbyc7gmncp5xc196hpvki7k25vzbryhwcix"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Delete compiled Python files.
+                   (for-each delete-file
+                             (find-files "." "\\.pyc$"))
+                   (delete-file-recursively ".eggs")))))
     (build-system pyproject-build-system)
-    (inputs
-     (list python-bx-python python-numpy python-pybigwig python-pysam
-           zlib))
-    (native-inputs
-     (list python-cython
-           python-nose
-           python-pyparsing
-           python-setuptools
-           python-wheel))
+    (inputs (list python-bx-python python-numpy python-pybigwig python-pysam
+                  zlib))
+    (native-inputs (list python-cython python-nose python-pyparsing
+                         python-setuptools python-wheel))
     (home-page "https://crossmap.sourceforge.net/")
     (synopsis "Convert genome coordinates between assemblies")
     (description
