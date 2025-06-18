@@ -689,7 +689,7 @@ This is the declarative counterpart of 'gexp->file'."
   (match file
     (($ <file-append> base suffix)
      (format port "#<file-append ~s ~s>" base
-             (string-join suffix)))))
+             (string-concatenate suffix)))))
 
 (set-record-type-printer! <file-append> write-file-append)
 
