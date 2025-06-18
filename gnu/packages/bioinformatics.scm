@@ -11960,41 +11960,38 @@ for Spatial Transcriptomics data.")
   (package
     (name "stpipeline")
     (version "1.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stpipeline" version))
-              (sha256
-               (base32
-                "0har2g42fvaqpiz66lincy86aj1hvwzds26kxhxfamvyvv4721wk"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stpipeline" version))
+       (sha256
+        (base32 "0har2g42fvaqpiz66lincy86aj1hvwzds26kxhxfamvyvv4721wk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "requirements.txt"
-               (("argparse.*") "")))))))
-    (propagated-inputs
-     (list htseq
-           python-cython
-           python-invoke
-           python-numpy
-           python-pandas
-           python-pympler
-           python-pysam
-           python-regex
-           python-scikit-learn
-           python-scipy
-           python-seaborn
-           python-setuptools
-           python-sqlitedict
-           python-taggd
-           samtools
-           star))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      (substitute* "requirements.txt"
+                        (("argparse.*")
+                         "")))))))
+    (propagated-inputs (list htseq
+                             python-cython
+                             python-invoke
+                             python-numpy
+                             python-pandas
+                             python-pympler
+                             python-pysam
+                             python-regex
+                             python-scikit-learn
+                             python-scipy
+                             python-seaborn
+                             python-setuptools
+                             python-sqlitedict
+                             python-taggd
+                             samtools
+                             star))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/SpatialTranscriptomicsResearch/st_pipeline")
     (synopsis "Pipeline for spatial mapping of unique transcripts")
     (description
