@@ -554,7 +554,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
 (define-public librecast
   (package
     (name "librecast")
-    (version "0.10.0")
+    (version "0.11.2")
     (source
      (origin
        (method git-fetch)
@@ -563,7 +563,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04h7hzm0j9cvcd5skrbnyd69pidbrxzqsnciz0yxwbb883nd5kmq"))))
+        (base32 "06185zz2glfzqvnz579byvfhrzqw1j0fhxkwrcnzfvp8fiaacnql"))))
     (build-system gnu-build-system)
     (arguments
      (list
