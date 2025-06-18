@@ -22227,7 +22227,7 @@ single-cell RNA-seq data.")
        (sha256
         (base32
          "086czpvj4yafz4vrq5rx2gy0bj2l8nzwnkk0gw8qvy4w133xjysy"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #false
        #:phases
@@ -22249,6 +22249,8 @@ single-cell RNA-seq data.")
            python-anndata
            python-ctxcore ;because of issue 12
            pyscenic))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/BIMSBbioinfo/ikarus")
     (synopsis "Machine learning classifier of tumor cells")
     (description
