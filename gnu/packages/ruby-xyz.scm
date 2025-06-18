@@ -6849,7 +6849,7 @@ aware transformations between times in different time zones.")
 (define-public ruby-tzinfo-data
   (package
     (name "ruby-tzinfo-data")
-    (version "1.2023.3")
+    (version "1.2025.2")
     (source
      (origin
        (method git-fetch)
@@ -6860,8 +6860,7 @@ aware transformations between times in different time zones.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1v3fpfmw485lsc9bfqfcasb9j25g9ywfpmmk648l2vdsh7nipilf"))))
+        (base32 "00hsw1rga03js3la1fdjvzlixqjjg5fw3xpx71mppkhk61ks728f"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -6883,40 +6882,40 @@ aware transformations between times in different time zones.")
                 (("    sh\\(\\\"make -C" text)
                  (string-append "    sh(\"sed -i 's@/bin/sh@sh@' #{tzdb_combined_path}/Makefile \")\n"
                                 "    sh(\"sed -i 's@cc=@cc?=@' #{tzdb_combined_path}/Makefile \")\n" text)))
-              (setenv "cc" #$(cc-for-target)))))))
+              (setenv "CC" #$(cc-for-target)))))))
     (propagated-inputs
      (list ruby-tzinfo))
     (native-inputs
      `(("tzdata"
         ,(file-union "tzdata-for-ruby-tzdata-info"
-           `(("tzdata2023c.tar.gz"
+           `(("tzdata2025b.tar.gz"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzdata2023c.tar.gz")
+                 (uri "https://data.iana.org/time-zones/releases/tzdata2025b.tar.gz")
                  (sha256
                   (base32
-                   "0p4nvp5bdxxdqh269nvvcfrpycbbfwm31al5whwbpsaa3dfhnl9z"))))
-             ("tzdata2023c.tar.gz.asc"
+                   "0x0lswl5v3q3ml8ig4djc76p9zc593xajzp22x881isz6h9h908i"))))
+             ("tzdata2025b.tar.gz.asc"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzdata2023c.tar.gz.asc")
+                 (uri "https://data.iana.org/time-zones/releases/tzdata2025b.tar.gz.asc")
                  (sha256
                   (base32
-                   "0mrmhczs5qnj1zp6gh4pg6fm0iblr2jmzy0fgh9slinwxmn7pv6m"))))
-             ("tzcode2023c.tar.gz"
+                   "0ss9h9nqy4hb09ywzsgqrs33l92w8kbjd7m8ahvi9h3mh4jhd742"))))
+             ("tzcode2025b.tar.gz"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzcode2023c.tar.gz")
+                 (uri "https://data.iana.org/time-zones/releases/tzcode2025b.tar.gz")
                  (sha256
                   (base32
-                   "1rqln88ki0jagi372nqyn7bs03rf2l33081sy2835mwsn4mpzla6"))))
-             ("tzcode2023c.tar.gz.asc"
+                   "1v1mw6599afdcmf5dal7zvjbl3caibkzmlw7kka71vi56pdzxy05"))))
+             ("tzcode2025b.tar.gz.asc"
               ,(origin
                  (method url-fetch)
-                 (uri "https://data.iana.org/time-zones/releases/tzcode2023c.tar.gz.asc")
+                 (uri "https://data.iana.org/time-zones/releases/tzcode2025b.tar.gz.asc")
                  (sha256
                   (base32
-                   "0jbx8xjv75qfh7bxa2xmrf97r37057y89rhmrq1gz8s6b8qlzb2i")))))))))
+                   "13vj6s9mvw9083xhzyzzs1a4lgyfqmibx6k2rh4nb2ggy3gmwa22")))))))))
     (synopsis "Data from the IANA Time Zone database")
     (description
      "This library provides @code{TZInfo::Data}, which contains data from the
