@@ -1,0 +1,43 @@
+Upstream-status: https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/2072
+
+--- a/src/app/LayoutManager.qml	2025-06-18 02:28:42.298627257 +0300
++++ b/src/app/LayoutManager.qml	2025-06-18 02:34:07.528403540 +0300
+@@ -17,7 +17,6 @@
+ 
+ import QtQuick
+ import QtQuick.Controls
+-import QtWebEngine
+ 
+ import net.jami.Adapters 1.1
+ import net.jami.Enums 1.1
+@@ -41,9 +40,6 @@ QtObject {
+     // Used to store if a CallStackView component is fullscreened.
+     property bool isCallFullscreen: false
+ 
+-    // Used to store if a WebEngineView component is fullscreened.
+-    property bool isWebFullscreen: false
+-
+     // QWK: Provide spacing for widgets that may be occluded by the system buttons.
+     property QtObject qwkSystemButtonSpacing: QtObject {
+         id: qwkSystemButtonSpacing
+@@ -253,9 +249,6 @@ QtObject {
+             isCallFullscreen = fullScreenItems
+                 .filter(o => o.item.objectName === "callViewLoader")
+                 .length
+-            isWebFullscreen = fullScreenItems
+-                .filter(o => o.item instanceof WebEngineView)
+-                .length
+         }
+ 
+         // Listen for a hangup combined with a fullscreen call state and
+--- a/src/app/mainview/components/CallStackView.qml	2025-06-18 02:36:58.863782993 +0300
++++ b/src/app/mainview/components/CallStackView.qml	2025-06-18 02:38:00.994456741 +0300
+@@ -43,7 +43,7 @@ Item {
+     Shortcut {
+         sequence: "F11"
+         context: Qt.ApplicationShortcut
+-        enabled: CurrentConversation.hasCall && !layoutManager.isWebFullscreen
++        enabled: CurrentConversation.hasCall
+         onActivated: toggleFullScreen();
+     }
+ 

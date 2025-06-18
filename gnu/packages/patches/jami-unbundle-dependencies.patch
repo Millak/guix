@@ -1,25 +1,11 @@
-Forwarded here: https://lists.gnu.org/archive/html/jami/2024-01/msg00007.html
-
-From a302dc0a0faf2778331745a1d01bc3071e182d4d Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
-Date: Mon, 8 Jan 2024 16:07:05 -0500
-Subject: [PATCH] build: Allow using system-provided md4c and tidy libraries.
-
-* CMakeLists.txt <md4c, tidy>: Search for libraries in the system
-first, falling back to bundled copies in case they aren't found.
-
-Series-to: jami@gnu.org
-Fixes: <https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1506>
-Change-Id: I637959fefce6a21b0ee73a793acb6c3c42dcdce0
----
- CMakeLists.txt | 36 +++++++++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 11 deletions(-)
+Upstream-status: https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1506
+Upstream-status: https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/2073
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index e802357f..6d2dccfb 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -600,20 +600,34 @@ add_subdirectory(3rdparty/SortFilterProxyModel)
+@@ -696,29 +696,50 @@ add_subdirectory(3rdparty/SortFilterProx
  set(SFPM_OBJECTS $<TARGET_OBJECTS:SortFilterProxyModel>)
  
  # md4c
@@ -62,6 +48,27 @@ index e802357f..6d2dccfb 100644
 +  list(APPEND CLIENT_LINK_DIRS ${tidy_BINARY_DIR}/Release)
 +  list(APPEND CLIENT_INCLUDE_DIRS ${tidy_SOURCE_DIR}/include)
 +  list(APPEND CLIENT_LIBS tidy-static)
++endif()
+ 
+ # ZXing-cpp configuration
+-set(BUILD_EXAMPLES OFF CACHE BOOL "")
+-set(BUILD_BLACKBOX_TESTS OFF CACHE BOOL "")
+-add_subdirectory(3rdparty/zxing-cpp EXCLUDE_FROM_ALL)
++pkg_check_modules(zxing IMPORTED_TARGET zxing)
++if(zxing_FOUND)
++  message(STATUS "Using system-provided ZXing-cpp")
++  list(APPEND CLIENT_INCLUDE_DIRS ${zxing_INCLUDE_DIRS})
++  list(APPEND CLIENT_LIBS PkgConfig::zxing)
++else()
++  set(BUILD_EXAMPLES OFF CACHE BOOL "")
++  set(BUILD_BLACKBOX_TESTS OFF CACHE BOOL "")
++  add_subdirectory(3rdparty/zxing-cpp EXCLUDE_FROM_ALL)
+ 
+ # Add ZXing-cpp to includes and libraries
+-list(APPEND CLIENT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/zxing-cpp/core/src)
+-list(APPEND CLIENT_LIBS ZXing)
++  list(APPEND CLIENT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/zxing-cpp/core/src)
++  list(APPEND CLIENT_LIBS ZXing)
 +endif()
  
  # common executable sources

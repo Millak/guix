@@ -13,7 +13,7 @@ index 6d2dccfb..8dedff50 100644
 -  TARGET qwindowkit
 +  TARGET QWindowKit
    URL https://github.com/stdware/qwindowkit.git
-   BRANCH 79b1f3110754f9c21af2d7dacbd07b1a9dbaf6ef
+   BRANCH 758b00cb6c2d924be3a1ea137ec366dc33a5132d
    PATCHES ${QWINDOWKIT_PATCHES}
    OPTIONS ${QWINDOWKIT_OPTIONS}
  )
