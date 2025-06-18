@@ -10024,6 +10024,11 @@ application.")
     (build-system ruby-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-minitest
+                          (lambda _
+                            (substitute* (find-files "test" "\\.rb$")
+                              (("MiniTest")
+                               "Minitest"))))
                         (add-after 'extract-gemspec 'relax-requirements
                           (lambda _
                             (substitute* "event_emitter.gemspec"
