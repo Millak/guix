@@ -943,7 +943,16 @@ support for YAML, to optimize and cache expensive computations.")
                (base32
                 "1mv223davpm0z50i787yiy49fiakd8ay5slmimyrg5cl3cjrvzm9"))))
     (build-system ruby-build-system)
-    (arguments (list #:tests? #f))             ;avoid all extra dependencies
+    (arguments
+     (list #:tests? #f ;avoid all extra dependencies
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-rails-version
+                 (lambda _
+                   (substitute* (cons* "Appraisals"
+                                       (find-files "gemfiles" "\\.gemfile$"))
+                     (("7\\.1\\.0")
+                      #$%ruby-rails-version)))))))
     ;; Leave out ruby-railties, for bootstrapping purposes.
     (propagated-inputs (list ruby-actionpack))
     (synopsis "Tool to manage modern JavaScript in Rails")
@@ -963,6 +972,12 @@ already included in Rails.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-rails-version
+                 (lambda _
+                   (substitute* (cons* "Appraisals"
+                                       (find-files "gemfiles" "\\.gemfile$"))
+                     (("7\\.1\\.0")
+                      #$%ruby-rails-version))))
                (add-after 'extract-gemspec 'relax-requirements
                  (lambda _
                    (delete-file "gemfiles/rails_7_1_propshaft.gemfile.lock")
