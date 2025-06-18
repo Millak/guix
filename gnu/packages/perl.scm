@@ -9978,6 +9978,67 @@ to the other justmodern languages that have a normal regular expression engine
 available.")
    (license (package-license perl))))
 
+(define-public pls
+  (package
+    (name "pls")
+    (version "0.905")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/M/MR/MREISNER/PLS-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0a9f612wlz8x5zjpyk116jyfp81cl0g30ppyrg1iar61k4kvama5"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-pls
+            (lambda _
+              ;; This is to avoid having to propagate inputs.
+              (wrap-program (string-append #$output "/bin/pls")
+                `("PERL5LIB" ":" prefix
+                  (,(getenv "PERL5LIB")
+                   ,(string-append #$output "/lib/perl5/site_perl")))))))))
+    (inputs
+     (list bash-minimal                 ;for wrap-program
+           perl-critic
+           perl-future
+           perl-future-queue
+           perl-io-async
+           perl-json-xs
+           perl-path-tiny
+           perl-pod-markdown
+           perl-ppi
+           perl-ppr
+           perl-tidy
+           perl-uri))
+    (home-page "https://metacpan.org/release/PLS")
+    (synopsis "Perl language server")
+    (description "PLS is a Perl language server that implements a subset of
+the Language Server Protocol for the Perl language.  Features currently
+implemented are:
+@itemize
+@item Go to definition (for packages, subroutines, and variables)
+@item Listing all symbols in a document
+@item Hovering to show documentation
+@item Signature help (showing parameters for a function as you type)
+@item Formatting
+@item Range formatting
+@item Auto-completion
+@item Syntax checking
+@item Linting (using perlcritic)
+@item Sorting imports
+@end itemize
+
+To use this language with Emacs, you can configure Eglot like so:
+@lisp
+(add-hook 'perl-mode-hook 'eglot-ensure)
+(setq eglot-server-programs '((perl-mode . (\"pls\"))))
+@end lisp")
+    (license license:perl-license)))
+
 (define-public perl-pod-coverage
   (package
     (name "perl-pod-coverage")
