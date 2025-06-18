@@ -11027,13 +11027,13 @@ secure hash algorithm for hashing passwords.")
 (define-public ruby-bcrypt-pbkdf
   (package
     (name "ruby-bcrypt-pbkdf")
-    (version "1.1.0")
+    (version "1.1.2.rc1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "bcrypt_pbkdf" version))
               (sha256
                (base32
-                "0ndamfaivnkhc6hy0yqyk2gkwr6f3bz6216lh74hsiiyk3axz445"))))
+                "1p2m7q7kwrj56ilw07mvzpqinryx525b05gpsa57wzm591y7waqm"))))
     (build-system ruby-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
