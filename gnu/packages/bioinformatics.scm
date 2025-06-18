@@ -20668,27 +20668,25 @@ matrices.")
   (package
     (name "python-scanorama")
     (version "1.7.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "scanorama" version))
-              (sha256
-               (base32
-                "0il7bf4c7vli2dm2jx7dskh3ymgv8nmk0y90jzgfrnqjzh250x5w"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scanorama" version))
+       (sha256
+        (base32 "0il7bf4c7vli2dm2jx7dskh3ymgv8nmk0y90jzgfrnqjzh250x5w"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-annoy
-           python-fbpca
-           python-geosketch
-           python-intervaltree
-           python-matplotlib
-           python-numpy
-           python-scikit-learn
-           python-scipy))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+    (propagated-inputs (list python-annoy
+                             python-fbpca
+                             python-geosketch
+                             python-intervaltree
+                             python-matplotlib
+                             python-numpy
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/brianhie/scanorama")
-    (synopsis "Panoramic stitching of heterogeneous single cell transcriptomic data")
+    (synopsis
+     "Panoramic stitching of heterogeneous single cell transcriptomic data")
     (description
      "Scanorama enables batch-correction and integration of heterogeneous
 scRNA-seq datasets, which is described in the paper \"Efficient integration of
