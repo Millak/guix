@@ -852,13 +852,13 @@ pattern.  Including support for multipart email and attachments.")
 (define ruby-ammeter-bootstrap
   (package
     (name "ruby-ammeter-bootstrap")
-    (version "1.1.5")
+    (version "1.1.7")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "ammeter" version))
               (sha256
                (base32
-                "1bcslj6y3lgaknd9fpj32m1r4is7blyxygxzmwidq9cjwkrn4msh"))))
+                "1y8idnc7v0w82mmri17902ahn56x0wqcny496mmsg4n3vham702r"))))
     (build-system ruby-build-system)
     (arguments
      (list #:tests? #f
