@@ -14014,17 +14014,15 @@ development kit for Ruby.")
           (add-after 'extract-gemspec 'relax-requirements
             (lambda _
               (substitute* "spy.gemspec"
-                ((".*pry-byebug.*")
+                ((".*(pry-byebug|coveralls).*")
                  ""))
               (substitute* "test/test_helper.rb"
-                ((".*pry-byebug.*")
+                ((".*(pry-byebug|[Cc]overalls).*")
                  ""))
               (substitute* "Gemfile"
-                ((".*redcarpet.*")
-                 "")
-                ((".*yard.*")
+                ((".*(redcarpet|yard).*")
                  "")))))))
-    (native-inputs (list ruby-coveralls ruby-minitest-reporters ruby-pry
+    (native-inputs (list ruby-minitest-reporters ruby-pry
                          ruby-rspec-core ruby-rspec-expectations))
     (synopsis "Mocking library for Ruby")
     (description
