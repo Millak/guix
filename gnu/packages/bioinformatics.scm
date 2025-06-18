@@ -22319,7 +22319,7 @@ effective when applied to the signal dataset.")
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "ont_fast5_api/vbz_plugin"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -22334,6 +22334,9 @@ effective when applied to the signal dataset.")
      (list vbz-compression))
     (propagated-inputs
      (list python-numpy python-h5py python-packaging python-progressbar33))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/nanoporetech/ont_fast5_api")
     (synopsis "Interface to HDF5 files of the Oxford Nanopore fast5 file format")
     (description
