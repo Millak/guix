@@ -16280,21 +16280,15 @@ markdown syntax document and passes the Markdown 1.0 test suite.")
   (package
     (name "ruby-bibtex-ruby")
     (version "6.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "bibtex-ruby" version))
-              (sha256
-               (base32
-                "0vynqa8q9hwghw6sdljr304b5gh11nqzy5nwqqwxmgy7pqyf7qw5"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "bibtex-ruby" version))
+       (sha256
+        (base32 "0vynqa8q9hwghw6sdljr304b5gh11nqzy5nwqqwxmgy7pqyf7qw5"))))
     (build-system ruby-build-system)
-    (propagated-inputs
-     (list ruby-latex-decode
-           ruby-rdf
-           ruby-rdf-vocab))
-    (native-inputs
-     (list ruby-cucumber
-           ruby-minitest
-           ruby-yard))
+    (propagated-inputs (list ruby-latex-decode ruby-rdf ruby-rdf-vocab))
+    (native-inputs (list ruby-cucumber ruby-minitest ruby-yard))
     (arguments
      (list
       #:phases
