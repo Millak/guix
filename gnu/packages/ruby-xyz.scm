@@ -7547,7 +7547,7 @@ you about the changes.")
 (define-public ruby-loofah
   (package
     (name "ruby-loofah")
-    (version "2.21.3")
+    (version "2.22.0")
     (home-page "https://github.com/flavorjones/loofah")
     (source
      (origin
@@ -7557,8 +7557,7 @@ you about the changes.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1lh7cf56y1b0h090ahphvz7grq581phsamdl0rq59y0q9bqwrhg0"))))
+        (base32 "0qf7km4b6cgz5xfhik7i0s8fyhq01j7wsrmk8zbz441vmady8rf1"))))
     (build-system ruby-build-system)
     (native-inputs
      (list ruby-hoe ruby-hoe-markdown ruby-rr))
