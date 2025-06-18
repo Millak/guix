@@ -643,13 +643,13 @@ to reproduce user environments.")
 (define-public ruby-minitest
   (package
     (name "ruby-minitest")
-    (version "5.18.1")
+    (version "5.19.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "minitest" version))
               (sha256
                (base32
-                "1kg9wh7jlc9zsr3hkhpzkbn0ynf4np5ap9m2d8xdrb8shy0y6pmb"))))
+                "0jnpsbb2dbcs95p4is4431l2pw1l5pn7dfg3vkgb4ga464j0c5l6"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-hoe))
     (home-page "https://github.com/minitest/minitest")
