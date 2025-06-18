@@ -6565,7 +6565,7 @@ classes implemented in C.")
 (define-public ruby-single-cov
   (package
     (name "ruby-single-cov")
-    (version "1.9.1")
+    (version "1.11.0")
     (home-page "https://github.com/grosser/single_cov")
     (source (origin
               (method git-fetch)
@@ -6574,7 +6574,7 @@ classes implemented in C.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w4k81f2mdg620m6pwkrqayddnz9mr8qx0myqn33mw8k6imfip05"))))
+                "10xfciy1an4jlc2fb59m4cllxgfv98n9kcj7frgs44dbmlyfxb08"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "spec"             ;to avoid rubocop requirement
