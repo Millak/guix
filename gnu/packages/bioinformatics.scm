@@ -21483,36 +21483,30 @@ deleted.")
        (method url-fetch)
        (uri (pypi-uri "velocyto" version))
        (sha256
-        (base32
-         "0fgygyzqgrq32dv6a00biq1p1cwi6kbl5iqblxq1kklj6b2mzmhs"))
+        (base32 "0fgygyzqgrq32dv6a00biq1p1cwi6kbl5iqblxq1kklj6b2mzmhs"))
        (modules '((guix build utils)))
        ;; Delete generated C files.
-       (snippet
-        '(for-each delete-file (find-files "." "\\.c")))))
+       (snippet '(for-each delete-file
+                           (find-files "." "\\.c")))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (native-inputs
-     (list python-joblib
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-click
-           python-cython
-           python-h5py
-           python-loompy
-           python-matplotlib
-           python-numba
-           python-numpy
-           python-pandas
-           python-pysam
-           python-scikit-learn
-           python-scipy))
+     '(#:phases (modify-phases %standard-phases
+                  ;; Numba needs a writable dir to cache functions.
+                  (add-before 'check 'set-numba-cache-dir
+                    (lambda _
+                      (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs (list python-joblib python-setuptools python-wheel))
+    (propagated-inputs (list python-click
+                             python-cython
+                             python-h5py
+                             python-loompy
+                             python-matplotlib
+                             python-numba
+                             python-numpy
+                             python-pandas
+                             python-pysam
+                             python-scikit-learn
+                             python-scipy))
     (home-page "https://github.com/velocyto-team/velocyto.py")
     (synopsis "RNA velocity analysis for single cell RNA-seq data")
     (description
