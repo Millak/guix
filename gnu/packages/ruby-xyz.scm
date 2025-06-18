@@ -13783,7 +13783,7 @@ Unicode formatted tables.")
 (define-public jekyll
   (package
     (name "jekyll")
-    (version "4.3.4")
+    (version "4.4.1")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -13792,7 +13792,7 @@ Unicode formatted tables.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sz285x5ppbifrnixi9sdzv28kg4x3qbzds3qniiwh1ip9hi1yk4"))))
+                "13cgr7nhxsmackzc976pcvrmam0il623rz13fnr9f7g4g3d1m1lq"))))
     (build-system ruby-build-system)
     (arguments
      (list #:modules '((guix build ruby-build-system)
@@ -13851,7 +13851,13 @@ Unicode formatted tables.")
                      ;; These tests fail non-deterministically (see:
                      ;; https://github.com/jekyll/jekyll/issues/9323).
                      (delete-file "test_new_command.rb")
-                     (delete-file "test_collections.rb"))))
+                     (delete-file "test_collections.rb")
+                     ;; This requires post-install run with GEM_PATH.
+                     ;; Also requires more native-inputs.
+                     (substitute* "test_commands_serve.rb"
+                       ((".*\"fork is not supported.*" all)
+                        (string-append all
+                                       "      skip('fails on guix')\n"))))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
