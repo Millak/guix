@@ -806,7 +806,7 @@ rogue test/unit/autorun requires.")
 (define-public ruby-rake
   (package
     (name "ruby-rake")
-    (version "13.0.6")
+    (version "13.3.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -816,7 +816,7 @@ rogue test/unit/autorun requires.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0c77xyl677s966f8yvk8yv7l31c1ffa1yl4kcwiram219h0s76in"))))
+         "01ixsz1k6y9ckzmyjmspbi5s213m9b7imglb9iypjmf1nrmsvgkx"))))
     (build-system ruby-build-system)
     (native-inputs
      (list bundler))
