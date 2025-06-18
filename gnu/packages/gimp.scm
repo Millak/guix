@@ -425,7 +425,7 @@ that is extensible via a plugin system.")
   (package
     (inherit gimp-2)
     (name "gimp")
-    (version "3.0.0")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
@@ -433,7 +433,7 @@ that is extensible via a plugin system.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.xz"))
        (sha256
-        (base32 "081d3n88fcly67qmp0zf4a1b5r5vdj4gnj9cwp0cmn0vklywmwck"))))
+        (base32 "09dbxim6k7pjkk8lbjkw3r4zi0y0mxvc4jk5fmjk42dzfp12xalc"))))
     (build-system meson-build-system)
     (arguments
      (list #:modules `((ice-9 popen)
