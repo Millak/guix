@@ -9685,6 +9685,11 @@ API.")
             (lambda _
               (substitute* "skiptrace.gemspec"
                 (("`git ls-files -z`") "`find . -type f -print0 |sort -z`"))))
+          (add-after 'unpack 'patch-minitest
+            (lambda _
+              (substitute* "test/test_helper.rb"
+                (("MiniTest")
+                 "Minitest"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
