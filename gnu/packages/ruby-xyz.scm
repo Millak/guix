@@ -6147,7 +6147,7 @@ for select languages.")
 (define-public ruby-cuke-modeler
   (package
     (name "ruby-cuke-modeler")
-    (version "3.20.1")
+    (version "3.24.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6156,7 +6156,7 @@ for select languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xbnx1blxm4kfhfwfh58n2ja40p2kfw8hbbz60dlzvghz25vcwy6"))))
+                "1gk8bk1bq8xi1vlkgmfslasfpj70qrnk82vayhdhm68zz3yxqs00"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "default"
