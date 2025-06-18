@@ -5492,14 +5492,14 @@ absence of failure.")
 (define-public ruby-minitest-reporters
   (package
     (name "ruby-minitest-reporters")
-    (version "1.3.6")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "minitest-reporters" version))
        (sha256
         (base32
-         "1a3das80rwgys5rj48i5ly144nvszyqyi748bk9bss74jblcf5ay"))))
+         "0b2na3mr8l712c0fa03r9n43l5qwcgrhc1iywwpw7f4m1hx42q2h"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases
