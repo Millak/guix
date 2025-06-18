@@ -1358,6 +1358,20 @@ order to provide IDE functionality for Guile Scheme.")
                #:source #$(this-package-input "guile-sources"))
               (chdir "..")
               (rename-file "guile-3.0.9" "guile-sources")))
+          (add-after 'unpack 'set-extension-path
+            (lambda _
+              (substitute* "module/ice-9/custom-ports.scm"
+                (("\\(load-extension.*")
+                 (string-append "(load-extension \"" #$output
+                                "/lib/libguile-custom-ports-3.0.so\"\n")))))
+          ;; We need to install the extension before building the Guile modules
+          ;; so that it is found at build time.  This can be removed once our
+          ;; guile package has the native-search-path for GUILE_EXTENSIONS_PATH.
+          (add-after 'configure 'build-and-install-extension
+            (lambda _
+              (invoke "meson" "compile" "guile-custom-ports-3.0")
+              (install-file "src/libguile-custom-ports-3.0.so"
+                            (string-append #$output "/lib"))))
           (delete 'shrink-runpath))))
     (home-page "https://codeberg.org/Baleine/guile-custom-ports")
     (synopsis "Standalone custom ports for Guile before 3.10")
