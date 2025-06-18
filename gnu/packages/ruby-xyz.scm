@@ -12593,7 +12593,14 @@ the @file{spec} directory.")
         (base32 "03215h9jkni3l9w6lq28p8adaj3qzb47qgxd20l6kldjnm1a1yky"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:test-target "test:ruby"))
+     (list #:test-target "test:ruby"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-minitest
+                 (lambda _
+                   (substitute* (find-files "test" "\\.rb$")
+                     (("MiniTest")
+                      "Minitest")))))))
     (propagated-inputs
      (list ruby-sass-listen))
     (native-inputs
