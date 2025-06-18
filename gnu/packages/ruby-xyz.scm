@@ -6077,16 +6077,16 @@ that provides the ability to deal with POSIX tar archive files.")
 (define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.15.2")
+    (version "1.16.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/sparklemotion/nokogiri")
-                    (commit "a6ad20b3edc8f020043ccfe5d9ec6ae9af103720")))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n0vlg6v58jw3qzgyihz1dh5fvp4js1qgdh75j0kn47nvyiw3jxj"))
+                "09fkjvs4n9n0k0b2qyiq5pxrzidb5a7xaklpckslbcm9fb2gvsq9"))
               (patches (search-patches "ruby-nokogiri.patch"))))
     (build-system ruby-build-system)
     (arguments
