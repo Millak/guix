@@ -988,7 +988,6 @@ sentences to be re-spoken.")
              kio
              kitemviews
              kjobwidgets
-             kjs
              kservice
              kwidgetsaddons
              kxmlgui
