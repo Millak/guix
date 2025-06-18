@@ -65,6 +65,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
@@ -7625,7 +7626,7 @@ lock with a counter.")
 (define-public ruby-oj
   (package
     (name "ruby-oj")
-    (version "3.13.9")
+    (version "3.16.9")
     (source
      (origin
        (method git-fetch)
@@ -7637,19 +7638,24 @@ lock with a counter.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0a24zd28y58nyhjxgrpn2k9p72vzj3zbmdrcsbhwbdycj7nn9fpd"))))
+         "01zsvzgpn336lk93v8fr4lpjdl28hiq9iddxr7rcra3d28780fzi"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "test_all"
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-bash
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "test/test_writer.rb"
+               (("/bin/bash")
+                (search-input-file inputs "bin/bash")))))
          (add-before 'check 'disable-bundler
            (lambda _
              (substitute* "Rakefile"
                (("Bundler\\.with_clean_env") "1.times")
                (("bundle exec ") "")))))))
     (native-inputs
-     (list bundler ruby-rspec ruby-rake-compiler))
+     (list bash-minimal bundler ruby-rspec ruby-rake-compiler))
     (synopsis "JSON parser for Ruby optimized for speed")
     (description
      "Oj is a JSON parser and generator for Ruby, where the encoding and
