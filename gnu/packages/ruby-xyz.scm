@@ -9027,53 +9027,56 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
     (license license:expat)))
 
 (define-public ruby-stackprof
-  (package
-    (name "ruby-stackprof")
-    (version "0.2.27")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "stackprof" version))
-       (sha256
-        (base32 "03788mbipmihq2w7rznzvv0ks0s9z1321k1jyr6ffln8as3d5xmg"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'patch-gemspec
-            (lambda _
-              (substitute* "stackprof.gemspec"
-                (("rake-compiler.*")
-                 "rake-compiler>.freeze, [\"> 0.9\"])\n")
-                (("mocha.*")
-                 "mocha>.freeze, [\"> 0.14\"])\n"))))
-          (add-before 'check 'skip-dubious-test
-            (lambda _
-              (substitute* "test/test_stackprof.rb"
-                ;; This unreliable test can fail with "Expected 0 to be >= 1."
-                (("def test_(cputime)" _ name)
-                 (string-append "def skip_" name))
-                ;; This test often fails
-                (("def test_gc") "def skip_test_gc")
-                ;; This test is known to fail on 32-bit systems.
-                ;; /gnu/store/...-stackprof-0.2.27.gem
-                (("def test_raw") "def skip_test_raw"))))
-          (add-before 'check 'build-tests
-            (lambda _
-              (invoke "rake" "compile")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "bundle" "exec" "rake" "default")))))))
-    (native-inputs
-     (list bundler ruby-mocha-1 ruby-rake-compiler))
-    (synopsis "Sampling profiler for Ruby code")
-    (description
-     "@code{stackprof} is a fast sampling profiler for Ruby code, with cpu,
+  (let ((commit "5d832832e4afcb88521292d6dfad4a9af760ef7c")
+        (revision "0"))
+    (package
+      (name "ruby-stackprof")
+      (version (git-version "0.2.27" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tmm1/stackprof")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "184n5lpsclrw5ypcskk3gxbg28acxr5jkjaxlxc3nl4jzsjrammw"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'patch-gemspec
+              (lambda _
+                (substitute* "stackprof.gemspec"
+                  (("rake-compiler.*")
+                   "rake-compiler', [\"> 0.9\"]\n"))))
+            (add-before 'check 'skip-dubious-test
+              (lambda _
+                (substitute* "test/test_stackprof.rb"
+                  ;; This unreliable test can fail with "Expected 0 to be >= 1."
+                  (("def test_(cputime)" _ name)
+                   (string-append "def skip_" name))
+                  ;; This test often fails
+                  (("def test_gc") "def skip_test_gc")
+                  ;; This test is known to fail on 32-bit systems.
+                  ;; /gnu/store/...-stackprof-0.2.27.gem
+                  (("def test_raw") "def skip_test_raw"))))
+            (add-before 'check 'build-tests
+              (lambda _
+                (invoke "rake" "compile")))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "bundle" "exec" "rake" "default")))))))
+      (native-inputs
+       (list bundler ruby-minitest ruby-rake-compiler))
+      (synopsis "Sampling profiler for Ruby code")
+      (description
+       "@code{stackprof} is a fast sampling profiler for Ruby code, with cpu,
 wallclock and object allocation samplers.")
-    (home-page "https://github.com/tmm1/stackprof")
-    (license license:expat)))
+      (home-page "https://github.com/tmm1/stackprof")
+      (license license:expat))))
 
 (define-public ruby-bindex
   (package
