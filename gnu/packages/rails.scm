@@ -38,7 +38,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system ruby))
 
-(define %ruby-rails-version "7.1.5.1")
+(define %ruby-rails-version "7.2.2.1")
 
 (define ruby-rails-monorepo
   (origin
@@ -49,7 +49,7 @@
     (file-name (git-file-name "ruby-rails" %ruby-rails-version))
     (sha256
      (base32
-      "0wzlnfs3k6ahhzcqznk43y1lq8a3dq3i7q1aqracx891hjmr19n2"))
+      "09dmxi7f34bwkrizgm8vy1bjmkychmxrxvvw1xz3b3abxxslm05m"))
     (patches
      (search-patches "ruby-actionpack-remove-browser-tests.patch"))))
 
@@ -340,6 +340,7 @@ serialization, internationalization, and testing.")
               (when tests?
                 ;; Avoid running the database tests, which require railties
                 ;; and/or database servers.
+                (setenv "ARCONN" "sqlite3")
                 (invoke "ruby" "-Itest" "test/cases/base_test.rb"))))
           (add-before 'check 'set-GEM_PATH
             (lambda _
@@ -663,7 +664,8 @@ test_translate_marks_translation_with_missing_html_key_as_safe")
            ruby-rack-session
            ruby-rack-test
            ruby-rails-dom-testing
-           ruby-rails-html-sanitizer))
+           ruby-rails-html-sanitizer
+           ruby-useragent))
     (synopsis "Conventions for building and testing MVC web applications")
     (description
      "ActionPack provides conventions for building and testing MVC web
@@ -1175,6 +1177,7 @@ previous options, like Sprockets.")
                   ;; This test requires 'rails' and Bundler.
                   (delete-file "application/server_test.rb")
                   ;; These depends on firefox or chrome.
+                  (delete-file "application/active_job_adapter_test.rb")
                   (delete-file "application/system_test_case_test.rb")
                   ;; These tests requires the assets which we lack.
                   (delete-file "application/assets_test.rb")
@@ -1182,7 +1185,8 @@ previous options, like Sprockets.")
                   (skip-tests "generators/shared_generator_tests.rb"
                               ;; This test checks that bin/rails has /usr/bin/env has a
                               ;; shebang and fails.
-                              "test_shebang_when_is_the_same_as_default_use_env")
+                              "test_shebang_when_is_the_same_as_default_use_env"
+                              "test_generated_files_have_no_rubocop_warnings")
                   (skip-tests "generators/app_generator_test.rb"
                               ;; These tests requires networking.
                               "test_app_update_create_new_framework_defaults"
@@ -1206,14 +1210,24 @@ contents_when_skip_action_cable_is_given"
                               "test_template_from_url"
                               ;; This test requires Bundler.
                               "test_generation_use_original_bundle_environment"
+                              ;; This test requires Rubocop.
+                              "test_app_update_preserves_skip_rubocop"
                               ;; These tests require assets.
                               "test_css_option_with_cssbundling_gem"
                               "test_css_option_with_asset_pipeline_sass"
                               ;; These tests require the rails/command
                               ;; namespace provided by the 'ruby-rails'
                               ;; package, which depends on this one.
+                              "test_app_update_generates_public_folders"
+                              "test_app_update_preserves_skip_brakeman"
+                              "test_app_update_supports_pretend"
+                              "test_app_update_supports_skip"
                               "test_css_option_with_asset_pipeline_tailwind"
                               "test_hotwire")
+                  ;; These tests require Rubocop.
+                  (skip-tests "application/generators_test.rb"
+                              "generators with apply_rubocop_autocorrect_after_generate!"
+                              "generators with apply_rubocop_autocorrect_after_generate! and pretend")
                   (skip-tests
                    "generators/plugin_generator_test.rb"
                    ;; These tests require assets.
@@ -1306,6 +1320,9 @@ taken_before_other_teardown")
                               "expire schema cache dump if the version can't be checked because the database is unhealthy"
                               "does not expire schema cache dump if check_schema_cache_dump_version is false and the database unhealthy"
                               "does not expire schema cache dump if check_schema_cache_dump_version is false")
+                  (skip-tests "commands/console_test.rb"
+                              "test_prompt_env_colorization"
+                              "test_reload_command_fires_preparation_and_cleanup_callbacks")
                   (skip-tests "commands/credentials_test.rb"
                               "edit command does not display save confirmation message if interrupted")
                   (skip-tests "commands/encrypted_test.rb"
