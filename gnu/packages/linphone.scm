@@ -802,7 +802,7 @@ device.")
            sqlite
            xsd
            zlib
-           zxing-cpp))
+           zxing-cpp-1.2a))
     (synopsis "Belledonne Communications Softphone Library")
     (description "Liblinphone is a high-level SIP library integrating
 all calling and instant messaging features into an unified

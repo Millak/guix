@@ -1503,7 +1503,7 @@ default.")
                   qqc2-desktop-style
                   qxmpp
                   sonnet
-                  zxing-cpp))
+                  zxing-cpp-1.2a))
     (home-page "https://www.kaidan.im/")
     (synopsis "Qt-based XMPP/Jabber Client")
     (description "Kaidan is a chat client.  It uses the open communication

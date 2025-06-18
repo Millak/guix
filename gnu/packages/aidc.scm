@@ -32,6 +32,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages gettext)
@@ -83,29 +84,63 @@ integration of this capability into your own programs.")
     (license (list license:bsd-3 license:gpl3+))))
 
 (define-public zxing-cpp
+  (package
+    (name "zxing-cpp")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zxing-cpp/zxing-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hdr73fllnsp3zpmrhw6cjla39lihwg1khgvddsf4v57a0lmiy3f"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DZXING_READERS=ON"
+              "-DZXING_WRITERS=BOTH"
+              "-DZXING_DEPENDENCIES=LOCAL"
+              "-DZXING_EXAMPLES=OFF" ;requires stb.pc
+              "-DZXING_USE_BUNDLED_ZINT=OFF"
+              "-DZXING_UNIT_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-headers
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "sh" "-c"
+                           (string-append "cp " source "/core/src/*.h "
+                                                #$output "/include/ZXing/")))))))
+    (native-inputs (list fmt-8 googletest pkg-config))
+    (inputs (list libpng zint zlib))
+    (synopsis "C++ port of ZXing")
+    (description "ZXing-CPP is a barcode scanning library.")
+    (home-page "https://github.com/zxing-cpp/zxing-cpp")
+    (license license:asl2.0)))
+
+;;; This older variant is kept for kaidan, liblinphone and yosys-clang.
+(define-public zxing-cpp-1.2a
   ;; Use the master branch as it includes unreleased build system improvements
   ;; allowing to use system libraries (instead of attempting to fetch them
   ;; from the Internet).
   (let ((revision "0")
         (commit "00783db7aa3bcf8620a301854ac71c0ceaaca0c1"))
-    (package
+    (package/inherit zxing-cpp
       (name "zxing-cpp")
       (version (git-version "1.2.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/nu-book/zxing-cpp")
+                      (url "https://github.com/zxing-cpp/zxing-cpp")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "1yl2cpaqiv1g4nq9v0xfj1vd5faz55k4541vz6hsffvcxgn9nmc5"))))
-      (build-system cmake-build-system)
-      (native-inputs (list fmt-8 googletest))
-      (synopsis "C++ port of ZXing")
-      (description "ZXing-CPP is a barcode scanning library.")
-      (home-page "https://github.com/nu-book/zxing-cpp")
-      (license license:asl2.0))))
+      (arguments '(#:configure-flags '()))
+      (native-inputs (list fmt-8 googletest)))))
 
 ;;; This older variant is kept for gst-plugins-bad (see:
 ;;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1684).
@@ -116,7 +151,7 @@ integration of this capability into your own programs.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/nu-book/zxing-cpp")
+                    (url "https://github.com/zxing-cpp/zxing-cpp")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
