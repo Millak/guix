@@ -1281,14 +1281,13 @@ toolkit.")
 (define-public ruby-css-parser
   (package
     (name "ruby-css-parser")
-    (version "1.7.1")
+    (version "1.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "css_parser" version))
        (sha256
-        (base32
-         "04c4dl8cm5rjr50k9qa6yl9r05fk9zcb1zxh0y0cdahxlsgcydfw"))))
+        (base32 "1izp5vna86s7xivqzml4nviy01bv76arrd5is8wkncwp1by3zzbc"))))
     (build-system ruby-build-system)
     (arguments `(#:tests? #f))          ;gem doesn't ship with test suite
     (propagated-inputs
