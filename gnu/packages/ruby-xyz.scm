@@ -14229,6 +14229,9 @@ spawned processes.  It is designed after Python's @code{subprocess} module.")
     (build-system ruby-build-system)
     (arguments
      (list
+      ;; Some tests are broken with Ruby@3.3.
+      ;; See: https://github.com/ruby-syntax-tree/syntax_tree/issues/457
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           ;; The tests rely on the Gem being installed, so move the check
