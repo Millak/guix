@@ -7793,7 +7793,7 @@ with PostgreSQL 9.3 and later.")
 (define-public ruby-byebug
   (package
     (name "ruby-byebug")
-    (version "11.1.3")
+    (version "12.0.0")
     (source
      (origin
        (method git-fetch)
@@ -7803,13 +7803,13 @@ with PostgreSQL 9.3 and later.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0vyy3k2s7dcndngj6m8kxhs1vxc2c93dw8b3yyand3srsg9ffpij"))
+         "0pjdadc079rmasgiwdxcz8h9wvzk3mb6xq8xr02xxv616ihwxllk"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove wrappers that try to setup a bundle environment.
            (with-directory-excursion "bin"
-             (for-each delete-file '("bundle" "rake" "rubocop"))
+             (for-each delete-file '("rake" "rubocop"))
              ;; ruby-minitest doesn't come with a launcher, so fix the one
              ;; provided.
              (substitute* "minitest"
@@ -7822,8 +7822,9 @@ with PostgreSQL 9.3 and later.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'sanitize-dependencies
             (lambda _
+              (delete-file "tasks/release.rake")
               (substitute* "Rakefile"
-                ((".*chandler/tasks.*") ""))))
+                ((".*tasks/release.rake.*") ""))))
           (add-after 'unpack 'skip-tmp-path-sensitive-test
             (lambda _
               (substitute* "test/commands/where_test.rb"
