@@ -7310,6 +7310,11 @@ from the YAML format.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-deprecated-syntax
+            (lambda _
+              (substitute* "test/psych/test_yaml.rb"
+                (("Regexp\\.new\\('',0,'n'\\)")
+                 "Regexp.new('',Regexp::NOENCODING)"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
