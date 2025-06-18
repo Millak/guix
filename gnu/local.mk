@@ -784,6 +784,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/sound.scm			\
   %D%/services/herd.scm				\
   %D%/services/pm.scm				\
+  %D%/services/high-availability.scm			\
   %D%/services/rsync.scm			\
   %D%/services/samba.scm			\
   %D%/services/sddm.scm				\
@@ -868,6 +869,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/ganeti.scm				\
   %D%/tests/gdm.scm				\
   %D%/tests/guix.scm				\
+  %D%/tests/high-availability.scm		\
   %D%/tests/monitoring.scm                      \
   %D%/tests/nfs.scm				\
   %D%/tests/image.scm				\

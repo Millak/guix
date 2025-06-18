@@ -141,6 +141,7 @@ Copyright @copyright{} 2025 Zacchaeus@*
 Copyright @copyright{} 2025 Sergio Pastor Pérez@*
 Copyright @copyright{} 2024 Evgeny Pisemsky@*
 Copyright @copyright{} 2025 jgart@*
+Copyright @copyright{} 2025 Artur Wroblewski@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -420,6 +421,7 @@ Services
 * Kerberos Services::           Kerberos services.
 * LDAP Services::               LDAP services.
 * Web Services::                Web servers.
+* High Availability Services::  High availability services.
 * Certificate Services::        TLS certificates via Let's Encrypt.
 * DNS Services::                DNS daemons.
 * VNC Services::                VNC daemons.
@@ -19508,6 +19510,7 @@ declaration.
 * Kerberos Services::           Kerberos services.
 * LDAP Services::               LDAP services.
 * Web Services::                Web servers.
+* High Availability Services::  High availability services.
 * Certificate Services::        TLS certificates via Let's Encrypt.
 * DNS Services::                DNS daemons.
 * VNC Services::                VNC daemons.
@@ -35660,6 +35663,67 @@ Owner's group of the @code{agate} process.
 
 @item @code{log-file} (default: @file{"/var/log/agate.log"})
 The file which should store the logging output of Agate.
+
+@end table
+@end deftp
+
+@node High Availability Services
+@subsection High Availability Services
+
+@cindex Message broker
+@cindex Message streaming
+The @code{(gnu services high-availability)} module provides RabbitMQ
+message broker service.
+
+@anchor{RabbitMQ}
+@subsubheading RabbitMQ
+
+@defvar rabbitmq-service-type
+Service type for the @uref{https://www.rabbitmq.com/,RabbitMQ} web server.
+The value for this service type is a @code{<rabbitmq-configuration>} record.
+
+A simple example configuration is given below.
+
+@lisp
+(service rabbitmq-service-type
+         (rabbitmq-configuration
+           (rabbitmq-configuration
+             (plugins '("rabbitmq_stream"
+                        "rabbitmq_management"
+                        "rabbitmq_prometheus")))))
+@end lisp
+@end defvar
+
+At startup, RabbitMQ broker logs its initialization messages into
+@file{/var/log/messages} file.  Once running, the logging messages can be
+found in a logging file of a RabbitMQ node in @file{/var/log/rabbitmq}
+directory.
+
+@quotation Note
+The default configuration of the RabbitMQ service enables the RabbitMQ
+broker to accept connections only on loopback interfaces.  However,
+enabling certain plugins may open ports on all network interfaces.  See
+also @url{https://www.rabbitmq.com/docs/networking#ports, RabbitMQ Port Access}.
+@end quotation
+
+@deftp {Data Type} rabbitmq-configuration
+This data type represents the configuration for RabbitMQ.
+
+@table @asis
+@item @code{rabbitmq} (default: @code{rabbitmq})
+The RabbitMQ package to use.
+
+@item @code{config-file} (default: @code{%default-rabbitmq-config-file})
+Configuration file for the RabbitMQ broker. See also
+@url{https://www.rabbitmq.com/docs/configure, RabbitMQ Configuration}.
+
+@item @code{data-directory} (default: @code{"/var/lib/rabbitmq/data"})
+Directory with RabbitMQ broker data - a schema database, message stores,
+cluster member information, and other persistent node state.
+
+@item @code{plugins} (default: @code{'()})
+A list of RabbitMQ plugins to enable.  View all available plugins using
+the @command{rabbitmq-plugins list} command.
 
 @end table
 @end deftp
