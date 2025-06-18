@@ -83,6 +83,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -791,6 +792,81 @@ library for GNU Guile based on the actor model.")
 configuration file, and then reads and evaluates Guile expressions that
 you send to a FIFO file.")
     (license license:gpl3+)))
+
+(define-public guile-documenta
+  (package
+    (name "guile-documenta")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/luis-felipe/guile-documenta")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jv8nd7hlrsg2v2p5wacs8x3rzmhxwcg83pjsrnwks346jvsfxnv"))))
+    (build-system guile-build-system)
+    (inputs
+     (list bash-minimal
+           guile-3.0))
+    (native-inputs
+     (list texinfo
+           guile-proba))
+    (propagated-inputs
+     (list guile-config
+           guile-lib))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'set-paths 'add-output-to-guile-load-paths
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (guile-version (target-guile-effective-version))
+                     (scm-path (string-append out
+                                              "/share/guile/site/"
+                                              guile-version))
+                     (go-path (string-append out
+                                             "/lib/guile/"
+                                             guile-version
+                                             "/site-ccache")))
+                (setenv "GUILE_LOAD_PATH"
+                        (string-append scm-path ":"
+                                       (getenv "GUILE_LOAD_PATH")))
+                (setenv "GUILE_LOAD_COMPILED_PATH"
+                        (string-append
+                         go-path ":"
+                         (getenv "GUILE_LOAD_COMPILED_PATH"))))))
+          (add-after 'build 'build-manual
+            (lambda _
+              (invoke "bash" "build-manual.sh")))
+          (add-after 'build 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "proba" "run" "tests"))))
+          (add-after 'check 'install-wrapped-script
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin-dir (string-append out "/bin"))
+                     (script (string-append bin-dir "/documenta")))
+                (mkdir-p bin-dir)
+                (copy-file "documenta.scm" script)
+                (chmod script #o555)
+                (wrap-program script
+                  `("GUILE_LOAD_PATH" prefix (,(getenv "GUILE_LOAD_PATH")))
+                  `("GUILE_LOAD_COMPILED_PATH" prefix
+                    (,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))
+      #:scheme-file-regexp
+      #~(begin
+          (use-modules (ice-9 regex))
+          (lambda (file stat) (string-match "/documenta/.*\\.scm$" file)))))
+    (home-page "https://luis-felipe.gitlab.io/guile-documenta/")
+    (synopsis "Generate API documentation for Guile projects")
+    (description
+     "Guile Documentá is a command-line program and accompanying library to
+generate API documentation for GNU Guile projects.")
+    (license license:public-domain)))
 
 (define-public guile-dsv
   (package
