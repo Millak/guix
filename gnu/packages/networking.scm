@@ -3980,22 +3980,18 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
        (replace "llhttp" http-parser)))))
 
 (define-public opendht
-  ;; Temporarily use the latest commit, as the latest release lacks a 'detach'
-  ;; procedure used by a recent DhtNet, required by Jami.
-  (let ((commit "318d02c55a7061a771a632ff2224b0d195a80d42")
-        (revision "0"))
     (package
       (name "opendht")
-      (version (git-version "3.1.11" revision commit))
+      (version "3.4.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/savoirfairelinux/opendht")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0d4m9bxvwa1pz8r0sfrjjyml4yp5v7n4vy8ad7k4hcryyvd5npb0"))))
+                  "069y4mgygjsfp5szfbqr7l30g7fbcqqj62h11byyq9k24rl7ilsq"))))
       (outputs '("out" "python" "tools" "debug"))
       (build-system gnu-build-system)
       (arguments
@@ -4046,6 +4042,13 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                   (("extra_link_args=\\[(.*)\\]" _ args)
                    (string-append "extra_link_args=[" args
                                   ", '-Wl,-rpath=" #$output "/lib']")))))
+            ;; TODO: build with liburing, requires cmake or meson.
+            (add-after 'unpack 'pkgconfig-disable-iouring
+              (lambda _
+                ;; This one causes configure error in dhtnet.
+                (substitute* "opendht.pc.in"
+                  (("@iouring_lib@")
+                   ""))))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
@@ -4075,12 +4078,13 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
              readline))
       (propagated-inputs
        (list msgpack-cxx                  ;included in several installed headers
-             restinio-0.6                 ;included in opendht/http.h
+             restinio                     ;included in opendht/http.h
              ;; The following are listed in the 'Requires.private' field of
              ;; opendht.pc:
              argon2
              gnutls
              jsoncpp
+             llhttp
              nettle
              openssl                      ;required for the DHT proxy
              python))
@@ -4117,7 +4121,7 @@ library (get, put, etc.) with text values.
 @item dhtchat
 A very simple IM client working over the DHT.
 @end table")
-      (license license:gpl3+))))
+      (license license:gpl3+)))
 
 (define-public dhtnet
   ;; There is no tag nor release; use the latest available commit.
