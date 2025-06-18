@@ -11902,7 +11902,7 @@ sequence itself can be retrieved from these databases.")
        (sha256
         (base32
          "0lv3h5k2pn1pz35kz0wk5xmricxzy8qscs2y7nwh0k6x4pn0m0s5"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-biopython
            python-intervaltree
@@ -11911,7 +11911,10 @@ sequence itself can be retrieved from these databases.")
            python-pybedtools
            python-pysam))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://t-neumann.github.io/slamdunk/")
     (synopsis "Streamline SLAM-seq analysis with high sensitivity")
     (description "SlamDunk is a fully automated tool for automated, robust,
