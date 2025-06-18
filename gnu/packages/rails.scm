@@ -890,7 +890,7 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
 (define-public ruby-bootsnap
   (package
     (name "ruby-bootsnap")
-    (version "1.16.0")
+    (version "1.18.6")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -899,7 +899,7 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gaih5v4jjndrkn0crrr5mxnwc3cd0f3i955n62ghk29zabvd7wf"))))
+                "1dd9qffwhfzd4lzv264mcvx3w8zw4inwywgarfjnwa31nfxwb1r2"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -918,7 +918,7 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
               (substitute* "bootsnap.gemspec"
                 (("`git ls-files -z ext lib`")
                  "`find ext lib -type f -print0 | sort -z`")))))))
-    (native-inputs (list ruby-mocha-1 ruby-rake-compiler))
+    (native-inputs (list ruby-mocha ruby-rake-compiler))
     (propagated-inputs (list ruby-msgpack))
     (synopsis "Accelerator for large Ruby/Rails application")
     (description "Bootsnap is a library that plugs into Ruby, with optional
