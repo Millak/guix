@@ -10034,14 +10034,13 @@ used to create both network servers and clients.")
 (define-public ruby-ruby-engine
   (package
     (name "ruby-ruby-engine")
-    (version "2.0.0")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ruby_engine" version))
        (sha256
-        (base32
-         "0wqdcv8gxybp1y7kjhh18g3r9dczacs62d4ahcvyhz32bih8c9fm"))))
+        (base32 "1ala4zx6gdq271n2bh2x4h1v9j2rbmnx71m1nszw5kfgz3gffana"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -10054,20 +10053,13 @@ used to create both network servers and clients.")
                ;; dependencies.
                ((".*<rdoc.*") "")
                ((".*<rubygems-tasks.*") "")
-               ;; Remove extraneous .gem file
-               (("\"pkg/ruby_engine-[0-9.]+\\.gem\".freeze, ") "")
                (("\"Gemfile.lock\".freeze, ") "")
-               ;; Soften rake dependency
-               (("%q<rake>.freeze, \\[\"~> 10.0\"\\]")
-                "%q<rake>.freeze, [\">= 10.0\"]")
-               ;; Soften the rspec dependency
-               (("%q<rspec>.freeze, \\[\"~> 2.4\"\\]")
-                "%q<rspec>.freeze, [\">= 2.4\"]"))
+               ;; Soften rake/rspec dependencies
+               (("%q<(rake|rspec)>.freeze, \\[\"~> .*\"\\.freeze\\]" all dep)
+                (format #f "~s" dep)))
              (substitute* "Rakefile"
                (("require 'rubygems/tasks'") "")
-               (("Gem::Tasks.new") ""))
-             ;; Remove extraneous .gem file that otherwise gets installed.
-             (delete-file-recursively "pkg"))))))
+               (("Gem::Tasks.new") "")))))))
     (native-inputs
      (list bundler ruby-rake ruby-rspec))
     (synopsis "Simplifies checking for Ruby implementation")
