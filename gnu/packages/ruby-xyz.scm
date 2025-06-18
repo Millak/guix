@@ -10541,13 +10541,13 @@ checking for the right Ruby version in software.")
 (define-public ruby-websocket-client-simple
   (package
     (name "ruby-websocket-client-simple")
-    (version "0.6.1")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "websocket-client-simple" version))
               (sha256
                (base32
-                "1ypl4xvlh5c99zbn20sifv7gv04zi20ly464vsgikfrpn5f37bid"))))
+                "029iar7fnnrgmc1k463xlkpr4n72s4zdgri13rqmmcr295g7r8zr"))))
     (build-system ruby-build-system)
     (arguments (list #:test-target "default"))
     (native-inputs (list ruby-eventmachine ruby-websocket-eventmachine-server))
