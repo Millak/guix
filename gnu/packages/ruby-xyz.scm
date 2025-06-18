@@ -9412,7 +9412,7 @@ during shutdown.")
 (define-public ruby-memory-profiler
   (package
     (name "ruby-memory-profiler")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
       (origin
         (method git-fetch)
@@ -9422,8 +9422,20 @@ during shutdown.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1z1x0rymfv45gh1y3s46w5pga5y8cvgn228jiwlnhc8hin3zig84"))))
+          "1g9s8j2d892vb34zcwkxkjh3mywvc4p52ggbfzmgqzrdskf2nja6"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-flaky-tests
+            (lambda _
+              ;; XXX: These tests check the number of logged lines, which
+              ;; can change with ruby versions.
+              (for-each delete-file
+                        (list "test/test_reporter.rb"
+                              "test/test_reporter_public_start_stop.rb"
+                              "test/test_reporter_private_start_stop.rb")))))))
     (synopsis "Memory profiling routines for Ruby")
     (description
      "This package provides memory profiling routines for Ruby.")
