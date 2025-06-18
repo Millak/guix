@@ -26,6 +26,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2025 Kjartan Oli Agustsson <kjartanoli@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -531,9 +532,9 @@ errors.")
                            "download/v" version "/rdiff-backup-" version ".tar.gz"))
        (sha256
         (base32 "1ksqjkqadhxzp83zdfs80dvb494vn9q4anppnwxm3ikb4rbq6xyh"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools-scm python-setuptools python-wheel))
     (inputs
      (list python python-pyaml librsync))
     (arguments
