@@ -1023,7 +1023,7 @@ already included in Rails.")
 (define-public ruby-marcel
   (package
     (name "ruby-marcel")
-    (version "1.0.2")
+    (version "1.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1032,7 +1032,7 @@ already included in Rails.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i1x24afmn09n48fj4yz2pdm6vlfnq14gism0cgxsyqmlrvsxajn"))))
+                "08lfdzv7niy0wyh6lh4zp47li35shg8dyik02m9h9xfldxri5gjw"))))
     (build-system ruby-build-system)
     (arguments
      (list
