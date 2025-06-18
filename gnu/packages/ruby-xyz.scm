@@ -6796,49 +6796,51 @@ utilities for Ruby.")
     (license license:asl2.0)))
 
 (define-public ruby-tzinfo
-  (package
-    (name "ruby-tzinfo")
-    (version "2.0.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              ;; Pull from git because the gem has no tests.
-              (url "https://github.com/tzinfo/tzinfo")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1n1gzjqwwnx209h8d054miva0y7x17db2ahy7jav5r25ibhh7rgm"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'skip-safe-tests
-            (lambda _
-              (substitute* "test/test_utils.rb"
-                (("def safe_test\\(options = \\{\\}\\)")
-                 "def safe_test(options = {})
+  ;; XXX: Unreleased for Ruby@3.3.
+  (let ((commit "5cfebcbdbe3beff2a254ea0709a1586968a301a0")
+        (revision "0"))
+    (package
+      (name "ruby-tzinfo")
+      (version (git-version "2.0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; Pull from git because the gem has no tests.
+               (url "https://github.com/tzinfo/tzinfo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02sp9pp3qxds1cw8kks3iha6ib5wrjybh4d2qjm0rksrqkq1gd6q"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'skip-safe-tests
+              (lambda _
+                (substitute* "test/test_utils.rb"
+                  (("def safe_test\\(options = \\{\\}\\)")
+                   "def safe_test(options = {})
       skip('The Guix build environment has an unsafe load path')"))))
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" (getcwd))
-              (substitute* "Gemfile"
-                (("simplecov.*") "simplecov'\n"))))
-          (replace 'check
-            (lambda* (#:key tests? test-target #:allow-other-keys)
-              (when tests?
-                (invoke "bundler" "exec" "rake" test-target)))))))
-    (propagated-inputs
-     (list ruby-concurrent))
-    (native-inputs
-     (list ruby-simplecov))
-    (synopsis "Time zone library for Ruby")
-    (description "TZInfo is a Ruby library that provides daylight savings
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" (getcwd))
+                (substitute* "Gemfile"
+                  (("simplecov.*") "simplecov'\n"))))
+            (replace 'check
+              (lambda* (#:key tests? test-target #:allow-other-keys)
+                (when tests?
+                  (invoke "bundler" "exec" "rake" test-target)))))))
+      (propagated-inputs
+       (list ruby-concurrent))
+      (native-inputs
+       (list ruby-simplecov))
+      (synopsis "Time zone library for Ruby")
+      (description "TZInfo is a Ruby library that provides daylight savings
 aware transformations between times in different time zones.")
-    (home-page "https://tzinfo.github.io")
-    (license license:expat)))
+      (home-page "https://tzinfo.github.io")
+      (license license:expat))))
 
 (define-public ruby-tzinfo-data
   (package
