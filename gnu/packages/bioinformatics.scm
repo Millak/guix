@@ -14518,7 +14518,7 @@ quality control are provided.")
        (sha256
         (base32
          "0cagawlzjwj3wam10lv64xgbfx4zcnzxi5sjpsdhq7rn4z24mzc2"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -14538,6 +14538,9 @@ quality control are provided.")
            python-pyyaml
            python-requests
            python-termcolor))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool")
     (synopsis "GDC data transfer tool")
     (description "The gdc-client provides several convenience functions over
