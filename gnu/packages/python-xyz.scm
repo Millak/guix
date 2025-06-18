@@ -17280,7 +17280,7 @@ pseudo terminal (pty), and interact with both the process and its pty.")
        ;; XXX: Snippet below is required because on v1.1.30 the source code
        ;; has configshell_fb as softlink to configshell and guix
        ;; pyproject-build-system doesn't work with symlinks very well.
-       ;; 
+       ;;
        ;; This package is only used in spdk for now and it's crucial to keep
        ;; it locked on version and keep the snipped for spdk to build
        ;; successfully.
@@ -25316,6 +25316,41 @@ numbers, real numbers, mixed types and more, and comes with a shell command
      "Graphene is a Python library for building GraphQL schemas/types.  A
 GraphQL schema describes your data model, and provides a GraphQL server with
 an associated set of resolve methods that know how to fetch data.")
+    (license license:expat)))
+
+(define-public python-rodi
+  (package
+    (name "python-rodi")
+    (version "2.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Neoteroi/rodi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kf98yjllrq7vqcp07r2gmkqcviqglsnai3sdigdsrwrfc0b44yp"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-asyncio))
+    (home-page "https://github.com/Neoteroi/rodi")
+    (synopsis "Dependency injection framework for Python")
+    (description
+     "Rodi is a dependency injection framework for Python applications.
+
+Its features include
+
+@itemize
+@item Type resolution by signature types annotations.
+@item Type resolution by class annotations.
+@item Type resolution by names and aliases.
+@item Build graph of objects without the need for source code changes.
+@item Minimum overhead to obtain services, once the objects graph is built.
+@item Support for singleton, transient, and scoped services.
+@end itemize")
     (license license:expat)))
 
 ;; XXX: The last time updated in 2015, consider to remove it when nothing is
