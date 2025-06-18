@@ -41,7 +41,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
+  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
