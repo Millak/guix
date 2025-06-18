@@ -3511,8 +3511,15 @@ two hashes.")
                   "1swzab7i4cqk1bck7p5m3bh526jh0v6m9qq720r3270zbjc8x8z3"))))
       (build-system ruby-build-system)
       (arguments
-       ;; Avoid rspec dependency.
-       '(#:tests? #f))
+       (list
+        #:tests? #f ; Avoid rspec dependency.
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-ruby-3.3-build
+              (lambda _
+                (substitute* "lib/hydra.rb"
+                  (("exists\\?")
+                   "exist?")))))))
       (synopsis "Ruby hyphenation patterns")
       (description
        "ruby-hydra-minimal is a Ruby library for working with hyphenation patterns.
@@ -3549,16 +3556,18 @@ It is a low-dependency variant of ruby-hydra.")
     (inherit ruby-hydra-minimal)
     (name "ruby-hydra")
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'make-files-writable
-            (lambda _
-              (for-each make-file-writable (find-files "."))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "rspec")))))))
+     (substitute-keyword-arguments (package-arguments ruby-hydra-minimal)
+       ((#:tests? tests? #t)
+        #t)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'make-files-writable
+              (lambda _
+                (for-each make-file-writable (find-files "."))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "rspec"))))))))
     (native-inputs
      (list ruby-rspec))
     (description
