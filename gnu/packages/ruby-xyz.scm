@@ -5194,19 +5194,6 @@ allows mocking and stubbing of methods on real (non-mock) classes.")
     ;; Mocha can be used with either license at the users choice.
     (license (list license:expat license:ruby))))
 
-(define-public ruby-mocha-1
-  (package
-    (inherit ruby-mocha)
-    (version "1.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "mocha" version))
-              (sha256
-               (base32
-                "15s53ggsykk69kxqvs4416s8yxdhz6caggva55n8sjgy4ixzwp10"))))
-    (arguments
-     '(#:tests? #f))))
-
 (define-public ruby-mocha-on-bacon
   (package
     (name "ruby-mocha-on-bacon")
