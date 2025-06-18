@@ -25000,17 +25000,15 @@ interest.")
   (package
     (name "python-vireosnp")
     (version "0.5.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "vireoSNP" version))
-              (sha256
-               (base32
-                "02ybhzivsxwnb1axlgbs63wni1j27xajnkl4jw1ps5vmsz2l4b0d"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vireoSNP" version))
+       (sha256
+        (base32 "02ybhzivsxwnb1axlgbs63wni1j27xajnkl4jw1ps5vmsz2l4b0d"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib python-numpy python-scipy))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/huangyh09/vireoSNP")
     (synopsis "Deconvolution based on SNP for multiplexed scRNA-seq data")
     (description
