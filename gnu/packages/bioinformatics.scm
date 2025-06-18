@@ -5951,7 +5951,7 @@ high-throughput sequencing data – with an emphasis on simplicity.")
               (sha256
                (base32
                 "1m3xsydakhdan9gp9mfdz7llka5g6ak91d0mbl1cmmxq9qs6an4y"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -5994,6 +5994,9 @@ high-throughput sequencing data – with an emphasis on simplicity.")
            python-pysam
            r-minimal
            r-deseq2))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/mhammell-laboratory/TEtranscripts")
     (synopsis "Transposable elements in differential enrichment analysis")
     (description
