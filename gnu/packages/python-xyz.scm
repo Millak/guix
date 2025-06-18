@@ -20372,6 +20372,33 @@ package and greatly reduce the number of imports for your users.  It is a small
 pure Python module that works on virtually all Python versions.")
     (license license:expat)))
 
+(define-public python-essentials
+  (package
+    (name "python-essentials")
+    (version "1.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Neoteroi/essentials")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bh8yi79gn9fg26mp58nm9xhnxcfab7rhc076av4qg00mg5p9rn0"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pydantic
+           python-pytest-asyncio))
+    (home-page "https://github.com/Neoteroi/essentials/wiki")
+    (synopsis
+     "Utility functions, exceptions, and classes for Python applications")
+    (description
+     "Essentials is a collection of functions, exceptions, and classes for Python
+applications.  Examples of utilities are exceptions for common scenarios,
+friendly JSON encoder, decorators for retries and logging.")
+    (license license:expat)))
+
 (define-public python-execnet
     (package
       (name "python-execnet")
