@@ -848,6 +848,51 @@ formats (PDF/XML/CSV).")
 @url{https://www.globus.org/, Globus} APIs.")
     (license license:asl2.0)))
 
+(define-public python-guardpost
+  (package
+    (name "python-guardpost")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Neoteroi/guardpost")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cwxxxhazpaphhcysgpivk51vp76zdf7hrryc1vr6vlp2zzgwsxd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Possible timing issue, see:
+      ;; <https://github.com/Neoteroi/GuardPost/issues/18>.
+      #:test-flags '(list "--ignore=tests/test_jwts.py")))
+    (native-inputs
+     (list python-cryptography
+           python-flask
+           python-hatchling
+           python-pyjwt
+           python-pytest
+           python-pytest-asyncio))
+    (propagated-inputs
+     (list python-rodi))
+    (home-page "https://github.com/Neoteroi/GuardPost/")
+    (synopsis
+     "Authentication and authorization framework for Python applications")
+    (description
+     "GuardPost is a framework to handle authentication and
+authorization in asynchronous Python applications.
+
+Its features include
+
+@itemize
+@item Strategy to implement authentication.
+@item Strategy to implement authorization.
+@item Support for dependency injection
+@item Built-in support for JSON Web Tokens (JWTs) authentication.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-hookdns
   (package
     (name "python-hookdns")
