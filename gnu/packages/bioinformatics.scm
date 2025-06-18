@@ -21637,19 +21637,17 @@ sequence for paired-ended data, for which this information is not available.")
        (method url-fetch)
        (uri (pypi-uri "checkm-genome" version))
        (sha256
-        (base32
-         "0i2nnki639hgjag17wlva2x0ymn37b4krqsf6akxddykhfbkdnkz"))))
-    (build-system python-build-system)
+        (base32 "0i2nnki639hgjag17wlva2x0ymn37b4krqsf6akxddykhfbkdnkz"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; Some tests fail for unknown reasons.
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
-    (inputs
-     (list python-dendropy python-matplotlib python-numpy python-pysam
-           python-scipy))
+     `(#:tests? #f ;Some tests fail for unknown reasons.
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'set-HOME
+                    (lambda _
+                      (setenv "HOME" "/tmp"))))))
+    (inputs (list python-dendropy python-matplotlib python-numpy python-pysam
+                  python-scipy))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://ecogenomics.github.io/CheckM/")
     (synopsis "Assess the quality of putative genome bins")
     (description
