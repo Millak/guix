@@ -790,6 +790,27 @@ processes is complicated. @code{Test::Fork} provides a function to smooth over
 the complications.")
     (license perl-license)))
 
+(define-public perl-test-future-io-impl
+  (package
+    (name "perl-test-future-io-impl")
+    (version "0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/P/PE/PEVANS/Test-Future-IO-Impl-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0dg2z3nycnsrx8nmyibr7z9nsmz5w6hbrvsnbhr395nlsccvcz80"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-test2-suite))
+    (home-page "https://metacpan.org/release/Test-Future-IO-Impl")
+    (synopsis "Acceptance tests for Future::IO implementations")
+    (description "This module contains a collection of acceptance tests for
+implementations of @code{Future::IO}.")
+    (license perl-license)))
+
 (define-public perl-test-harness
   (package
     (name "perl-test-harness")
