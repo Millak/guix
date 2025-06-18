@@ -752,7 +752,7 @@ should only be used as part of the Guix cups-pk-helper service.")
            python-pygobject
            python-pyqt
            python-wrapper
-           sane-backends-minimal
+           sane
            net-snmp
            openssl
            avahi
@@ -790,7 +790,7 @@ should only be used as part of the Guix cups-pk-helper service.")
            dbus
            libjpeg-turbo
            libusb
-           sane-backends-minimal
+           sane
            zlib))
     (synopsis "GUI-less version of hplip")))
 

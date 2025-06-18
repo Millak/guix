@@ -42,6 +42,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system gnu)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
@@ -104,9 +105,10 @@ both WSD and eSCL.")
     (license (list license:gpl2+        ; the combined work
                    license:expat))))    ; http_parser.[ch]
 
-(define-public sane-backends-minimal
+(define-deprecated/public-alias sane-backends-minimal sane)
+(define-public sane
   (package
-    (name "sane-backends-minimal")
+    (name "sane")
     (version "1.3.1")
     (source (origin
              (method git-fetch)
@@ -226,16 +228,16 @@ package contains the library, but no drivers.")
 ;; support for HP scanners whose backends are not maintained by the SANE
 ;; project, and builds all of those backends.
 (define-public sane-backends
-  (package/inherit sane-backends-minimal
+  (package/inherit sane
     (name "sane-backends")
     (inputs
      `(("hplip" ,(@ (gnu packages cups) hplip))
        ("libjpeg" ,libjpeg-turbo)       ; for pixma/epsonds/other back ends
        ("libpng" ,libpng)               ; support ‘scanimage --format=png’
        ("libxml2" ,libxml2)             ; for pixma back end
-       ,@(package-inputs sane-backends-minimal)))
+       ,@(package-inputs sane)))
     (arguments
-     (substitute-keyword-arguments (package-arguments sane-backends-minimal)
+     (substitute-keyword-arguments (package-arguments sane)
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'disable-backends)
@@ -304,7 +306,7 @@ package contains the library and drivers.")))
                                                   "/lib/udev/rules.d")))))))
       (inputs (list boost
                     eudev
-                    sane-backends-minimal
+                    sane
                     libusb
                     libjpeg-turbo
                     imagemagick
