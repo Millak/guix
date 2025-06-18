@@ -6442,6 +6442,32 @@ Perl IO idioms.  It exports a single function called io, which returns a new
 @code{IO::All} object.  And that object can do it all!")
     (license license:perl-license)))
 
+(define-public perl-io-async
+  (package
+    (name "perl-io-async")
+    (version "0.804")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/P/PE/PEVANS/IO-Async-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "156475yl0zx9b8yy05yhzw39cn54jl8m5hkdkrpwsr41j4r58qch"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-future-io-impl
+                         perl-test-metrics-any perl-test2-suite))
+    (propagated-inputs (list perl-future perl-struct-dumb))
+    (home-page "https://metacpan.org/release/IO-Async")
+    (synopsis "Modules for asynchronous event-driven programming in Perl")
+    (description "This collection of modules enables writing Perl programs
+that perform asynchronous input/output (IO) operations.  A typical program
+using them would consist of a single subclass of @code{IO::Async::Loop} to act
+as a container of other objects, which perform the actual IO work required by
+the program.  As well as IO handles, the loop also supports timers and signal
+handlers, and includes more higher-level functionality built on top of these
+basic parts.")
+    (license license:perl-license)))
+
 (define-public perl-io-captureoutput
   (package
     (name "perl-io-captureoutput")
