@@ -5147,7 +5147,7 @@ Ruby, but can be used for all programs.")
 (define-public ruby-maxitest
   (package
     (name "ruby-maxitest")
-    (version "5.1.0")
+    (version "6.0.0")
     (home-page "https://github.com/grosser/maxitest")
     (source (origin
               ;; Pull from git because the gem does not contain tests.
@@ -5158,13 +5158,19 @@ Ruby, but can be used for all programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qj410krfm497ggmf71xpnabbb6814y0585by4nlzyjvg9hpgg3m"))))
+                "08wwcjlq0gnzfpmf9jxs28x31d62xvx0gbvwrfr923mcn30myxrd"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:test-target "default"
       #:phases
       #~(modify-phases %standard-phases
+          ;; Warnings make 2 tests fail. Add mutex-m in Gemfile to avoid them.
+          (add-after 'unpack 'add-mutex-m
+            (lambda _
+              (substitute* "Gemfile"
+                (("^gem \"bump\".*" all)
+                 (string-append all "gem \"mutex_m\"\n")))))
           (replace 'replace-git-ls-files
             (lambda _
               (substitute* "maxitest.gemspec"
@@ -5184,6 +5190,7 @@ Ruby, but can be used for all programs.")
     (native-inputs
      (list procps
            ruby-bump
+           ruby-mutex-m
            ruby-rspec
            ruby-wwtd))
     (propagated-inputs
