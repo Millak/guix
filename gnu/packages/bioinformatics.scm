@@ -22351,28 +22351,24 @@ and reflect the fast5 file schema, and tools to convert between
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1im0bik2hxkcb7jzkcxp5nqb30hd8lfraxml6i5ik52j6z3qqln1"))))
+          (base32 "1im0bik2hxkcb7jzkcxp5nqb30hd8lfraxml6i5ik52j6z3qqln1"))))
       (build-system pyproject-build-system)
       (arguments
-       '(#:tests? #f         ; no tests included
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'relax-requirements
-             (lambda _
-               (substitute* "setup.py"
-                 ((", <3.0") ""))))))) ; matplotlib
-      (inputs
-       (list python-matplotlib
-             python-networkx
-             python-numpy
-             python-pybigwig
-             python-biopython-1.73
-             python-scikit-learn
-             python-scipy))
-      (native-inputs
-       (list python-setuptools
-             python-wheel))
+       '(#:tests? #f ;no tests included
+         #:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'relax-requirements
+                      (lambda _
+                        (substitute* "setup.py"
+                          ((", <3.0")
+                           ""))))))) ;matplotlib
+      (inputs (list python-matplotlib
+                    python-networkx
+                    python-numpy
+                    python-pybigwig
+                    python-biopython-1.73
+                    python-scikit-learn
+                    python-scipy))
+      (native-inputs (list python-setuptools python-wheel))
       (home-page "https://github.com/phoenixding/tbsp/")
       (synopsis "SNP-based trajectory inference")
       (description
