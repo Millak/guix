@@ -11275,6 +11275,28 @@ a functional interface.")
 processing strings in various ways.")
     (license license:perl-license)))
 
+(define-public perl-struct-dumb
+  (package
+    (name "perl-struct-dumb")
+    (version "0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/P/PE/PEVANS/Struct-Dumb-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0dll8njq8zm2ax0w8nchfjsnjvnawhljy4sf1dp8rqhhdd9lih8k"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test2-suite))
+    (home-page "https://metacpan.org/release/Struct-Dumb")
+    (synopsis "Simple lightweight record-like structures for Perl")
+    (description "@code{Struct::Dumb} creates record-like structure types,
+similar to the struct keyword in C, C++ or C#, or Record in Pascal.  An
+invocation of this module will create a construction function which returns
+new object references with the given field values.  These references all
+respond to lvalue methods that access or modify the values stored.")
+    (license license:perl-license)))
+
 (define-public perl-sub-exporter
   (package
     (name "perl-sub-exporter")
