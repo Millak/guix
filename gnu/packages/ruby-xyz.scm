@@ -2559,6 +2559,11 @@ building block for authentication strategies.")
   (arguments
    '(#:phases
      (modify-phases %standard-phases
+       (add-after 'unpack 'patch-minitest
+         (lambda _
+           (substitute* "test/lib/test_case.rb"
+             (("MiniTest::Unit::TestCase")
+              "Minitest::Test"))))
        (add-after 'unpack 'patch
          (lambda _
            (substitute* "rakefile"
@@ -2569,6 +2574,7 @@ building block for authentication strategies.")
          (lambda _
            ;; This is used in the rakefile when running the tests
            (setenv "LIB" "open4"))))))
+  (native-inputs (list ruby-minitest))
   (synopsis "Open child processes from Ruby and manage them easily")
   (description
     "@code{Open4} is a Ruby library to run child processes and manage their
