@@ -11706,17 +11706,17 @@ generation.")
         (base32 "0wb0yjdx9gx9r0cahpx42pblvglgh1i9pdfxjavq7f40nan2g076"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'disable-bundler-dependency
-                    (lambda _
-                      (substitute* "spec/spec_helper.rb"
-                        (("require.*bundler/setup.*")
-                         "")))))))
-    (native-inputs
-     (list ruby-rspec))
-    (propagated-inputs
-     (list ruby-rake))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-bundler-dependency
+            (lambda _
+              (substitute* "spec/spec_helper.rb"
+                (("require.*bundler/setup.*")
+                 "")))))))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-rake))
     (synopsis "Hoe plugin with Markdown helpers")
     (description
      "This package provides a Hoe plugin with various Markdown helpers, which
