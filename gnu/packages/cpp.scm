@@ -526,7 +526,7 @@ for transforming one sequence into another.")
 (define-public expected-lite
   (package
     (name "expected-lite")
-    (version "0.6.3")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -535,7 +535,7 @@ for transforming one sequence into another.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d58nqh2fwdzdpln2wlnf898wyfxdnskq6ff33azbg92d5ibzys2"))))
+                "0j3vwil4qippjmwvyah7c4cjw08ady0vkdkjfnyrlkyhl18z259d"))))
     (build-system cmake-build-system)
     (home-page "https://github.com/martinmoene/expected-lite")
     (synopsis "Expected objects in C++11 and later")
