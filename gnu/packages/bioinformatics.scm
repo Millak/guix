@@ -5942,61 +5942,65 @@ high-throughput sequencing data – with an emphasis on simplicity.")
   (package
     (name "tetoolkit")
     (version "2.2.1b")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mhammell-laboratory/TEtranscripts")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1m3xsydakhdan9gp9mfdz7llka5g6ak91d0mbl1cmmxq9qs6an4y"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mhammell-laboratory/TEtranscripts")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m3xsydakhdan9gp9mfdz7llka5g6ak91d0mbl1cmmxq9qs6an4y"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'adjust-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; This defunct dependency isn't required for Python 3 (see:
-               ;; https://github.com/mhammell-laboratory/TEtranscripts/issues/111).
-               ((".*'argparse'.*") ""))))
-         (add-after 'unpack 'patch-invocations
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("bin/TEtranscripts"
-                            "bin/TEcount")
-               (("'sort ")
-                (string-append "'" (search-input-file inputs "bin/sort") " "))
-               (("'rm -f ")
-                (string-append "'" (search-input-file inputs "bin/rm") " -f "))
-               (("'Rscript'")
-                (string-append "'" (search-input-file inputs "bin/Rscript")
-                               "'")))
-             (substitute* "TEToolkit/IO/ReadInputs.py"
-               (("BamToBED")
-                (search-input-file inputs "bin/bamToBed")))
-             (substitute* "TEToolkit/Normalization.py"
-               (("\"Rscript\"")
-                (string-append "\"" (search-input-file inputs "bin/Rscript")
-                               "\"")))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure the executables find R packages.
-             (for-each (lambda (script)
-                         (wrap-program script
-                           `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
-                       (list (search-input-file outputs "bin/TEtranscripts")
-                             (search-input-file outputs "bin/TEcount"))))))))
-    (inputs
-     (list bash-minimal
-           coreutils
-           bedtools
-           python-pysam
-           r-minimal
-           r-deseq2))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'adjust-requirements
+                    (lambda _
+                      (substitute* "setup.py"
+                        ;; This defunct dependency isn't required for Python 3 (see:
+                        ;; https://github.com/mhammell-laboratory/TEtranscripts/issues/111).
+                        ((".*'argparse'.*")
+                         ""))))
+                  (add-after 'unpack 'patch-invocations
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* '("bin/TEtranscripts" "bin/TEcount")
+                        (("'sort ")
+                         (string-append "'"
+                                        (search-input-file inputs "bin/sort")
+                                        " "))
+                        (("'rm -f ")
+                         (string-append "'"
+                                        (search-input-file inputs "bin/rm")
+                                        " -f "))
+                        (("'Rscript'")
+                         (string-append "'"
+                                        (search-input-file inputs
+                                                           "bin/Rscript") "'")))
+                      (substitute* "TEToolkit/IO/ReadInputs.py"
+                        (("BamToBED")
+                         (search-input-file inputs "bin/bamToBed")))
+                      (substitute* "TEToolkit/Normalization.py"
+                        (("\"Rscript\"")
+                         (string-append "\""
+                                        (search-input-file inputs
+                                                           "bin/Rscript") "\"")))))
+                  (add-after 'install 'wrap-program
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; Make sure the executables find R packages.
+                      (for-each (lambda (script)
+                                  (wrap-program script
+                                    `("R_LIBS_SITE" ":" =
+                                      (,(getenv "R_LIBS_SITE")))))
+                                (list (search-input-file outputs
+                                                         "bin/TEtranscripts")
+                                      (search-input-file outputs "bin/TEcount"))))))))
+    (inputs (list bash-minimal
+                  coreutils
+                  bedtools
+                  python-pysam
+                  r-minimal
+                  r-deseq2))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/mhammell-laboratory/TEtranscripts")
     (synopsis "Transposable elements in differential enrichment analysis")
     (description
