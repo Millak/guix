@@ -6937,59 +6937,52 @@ device.  There is support for mono and/or stereo and 8 or 16 bit samples.")
     (license license:gpl2)))
 
 (define-public python-pysox
-  ;; PyPi does not include the data folder containing audio files for testing.
-  (let ((commit "3d0053381c24ae3490f759d4de87194b85789d36")
-        (revision "0"))
-    (package
-      (name "python-pysox")
-      (version (git-version "1.4.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/rabitt/pysox")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0i62jx92vfpcr2z7lp69yzqdi9idfs3pifl3rzm2akc2c4cr1mac"))))
-      (build-system pyproject-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-sox
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((sox-store-path (assoc-ref inputs "sox"))
-                      (sox-bin (string-append sox-store-path "/bin/sox")))
-                 (substitute* "sox/__init__.py"
-                   (("sox -h")
-                    (string-append sox-bin " -h")))
-                 (substitute* "sox/core.py"
-                   (("\\['sox")
-                    (string-append "['" sox-bin))))))
-           (replace 'check
-             (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-               (when tests?
-                 (add-installed-pythonpath inputs outputs)
-                 (invoke "pytest")))))))
-      (propagated-inputs
-       (list python-numpy python-typing-extensions))
-      (native-inputs
-       (list sox
-             python-pytest
-             python-pytest-cov
-             python-soundfile
-             python-setuptools
-             python-wheel))
-      (home-page "https://github.com/rabitt/pysox")
-      (synopsis "Python wrapper around SoX")
-      (description "@code{python-pysox} is a wrapper around the @command{sox}
-command line tool.  The API offers @code{Transformer} and @code{Combiner}
-classes that allow the user to incrementally build up effects and audio
-manipulations.  @code{python-pysox} also provides methods for querying audio
-information such as sample rate, determining whether an audio file is silent,
-and much more.")
-      (license license:bsd-3))))
+  (package
+    (name "python-pysox")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rabitt/pysox")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0039gksdcca5npnfvzy7dqc315f26mcy734la5v3hgvjj84cpcz8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sox
+            (lambda _
+              (let* ((sox-store-path #$(this-package-input "sox"))
+                     (sox-bin (string-append sox-store-path "/bin/sox")))
+                (substitute* "sox/__init__.py"
+                  (("sox -h")
+                   (string-append sox-bin " -h")))
+                (substitute* "sox/core.py"
+                  (("\\['sox")
+                   (string-append "['" sox-bin)))))))))
+    (native-inputs
+     (list python-pytest
+           python-soundfile
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list sox))
+    (propagated-inputs
+     (list python-numpy
+           python-typing-extensions))
+    (home-page "https://github.com/rabitt/pysox")
+    (synopsis "Python wrapper around SoX")
+    (description
+     "@code{python-pysox} is a wrapper around the @command{sox} command line
+tool.  The API offers @code{Transformer} and @code{Combiner} classes that
+allow the user to incrementally build up effects and audio manipulations.
+@code{python-pysox} also provides methods for querying audio information such
+as sample rate, determining whether an audio file is silent, and much more.")
+    (license license:bsd-3)))
 
 (define-public python-resampy
   (package
