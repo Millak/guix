@@ -9132,7 +9132,12 @@ wallclock and object allocation samplers.")
                (add-after 'unpack 'avoid-bundler
                  (lambda _
                    (substitute* "Rakefile"
-                     (("^Bundler::.*") "")))))))
+                     (("^Bundler::.*") ""))))
+               (add-after 'unpack 'patch-minitest
+                 (lambda _
+                   (substitute* "test/test_helper.rb"
+                     (("MiniTest")
+                      "Minitest")))))))
     (native-inputs (list bundler ruby-rake-compiler))
     (synopsis "Bindings for Ruby exceptions")
     (description
