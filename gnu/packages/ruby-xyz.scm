@@ -5250,7 +5250,7 @@ with processes on remote servers, via SSH2.")
 (define-public ruby-net-scp
   (package
     (name "ruby-net-scp")
-    (version "4.0.1.rc3")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -5259,10 +5259,10 @@ with processes on remote servers, via SSH2.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "136mb8idxdkxkadx827027nyxcsvvv2wivz5dnjqy8g6ic0h9dzn"))))
+        (base32 "0v512gbsapdwbdsm8vxn1mz521gbab71r2bx5khccvjgb3rbw8fp"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list bundler ruby-test-unit ruby-mocha-1))
+     (list bundler ruby-test-unit ruby-mocha))
     (propagated-inputs
      (list ruby-net-ssh))
     (synopsis "Pure-Ruby SCP client library")
