@@ -613,6 +613,15 @@ subject.")
     (home-page "https://github.com/pboling/rspec-block_is_expected")
     (license license:expat)))
 
+(define ruby-rspec-block-is-expected-bootstrap
+  (package/inherit ruby-rspec-block-is-expected
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments ruby-rspec-block-is-expected)
+       ((#:tests? tests? #t)
+        #f)))
+    (native-inputs '())))
+
 (define-public ruby-rspec-pending-for
   (package
     (name "ruby-rspec-pending-for")
