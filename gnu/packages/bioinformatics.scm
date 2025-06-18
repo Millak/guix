@@ -21489,7 +21489,7 @@ deleted.")
        ;; Delete generated C files.
        (snippet
         '(for-each delete-file (find-files "." "\\.c")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -21498,7 +21498,9 @@ deleted.")
            (lambda _
              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
-     (list python-joblib))
+     (list python-joblib
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-click
            python-cython
