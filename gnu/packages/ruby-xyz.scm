@@ -9247,7 +9247,7 @@ variable length integers (varint) in Ruby Protocol Buffers.")
 (define-public ruby-version-gem
   (package
     (name "ruby-version-gem")
-    (version "1.1.3")
+    (version "1.1.8")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -9256,26 +9256,12 @@ variable length integers (varint) in Ruby Protocol Buffers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wazx2jr9vx5wm48fy8bccvfwhg7y2s8shfw9q81dhb4yvwk6gbf"))))
+                "1cspiyvixb6q0zyvis5jaa1q35g69jh32m83r8br8hi1yr95fiql"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "Gemfile"
-                (("^linting = .*")
-                 "linting = false\n")
-                (("^coverage = .*")
-                 "coverage = false\n")
-                (("^debug = .*")
-                 "debug = false\n"))
-              (substitute* "spec/spec_helper.rb"
-                (("^RUN_COVERAGE = .*")
-                 "RUN_COVERAGE = false\n")
-                (("^ALL_FORMATTERS = .*")
-                 "ALL_FORMATTERS = false\n"))))
           (add-before 'build 'drop-signing-key-requirement
             (lambda _
               (substitute* "version_gem.gemspec"
