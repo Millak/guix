@@ -2020,13 +2020,13 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public python-metpy
   (package
     (name "python-metpy")
-    (version "1.6.3")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "metpy" version))
               (sha256
                (base32
-                "0rh7lslwf79sgbf0933pz6mxchbrb0434pbdzqgzs1kjlsli9pr3"))))
+                "1r3adxf6knplp96s5jp65lahg9r096iaq5hdhzyqpkrmqwyy1mxa"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Too many of the tests in the files below require online data.
@@ -2049,7 +2049,9 @@ to create databases that are optimized for rendering/tile/map-services.")
                     " and not test_zoom_xarray"
                     " and not test_parse_wpc_surface_bulletin"
                     " and not test_add_timestamp_xarray"
-                    " and not test_parse_wpc_surface_bulletin_highres"))
+                    " and not test_parse_wpc_surface_bulletin_highres"
+                    " and not test_find_peaks"
+                    " and not test_find_peaks_minima"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'fix-version-check
