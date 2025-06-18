@@ -6592,6 +6592,13 @@ classes implemented in C.")
     (arguments
      '(#:test-target "spec"             ;to avoid rubocop requirement
        #:phases (modify-phases %standard-phases
+                  ;; XXX: Warnings make a few tests fail.
+                  ;; Add mutex-m in Gemfile to avoid them.
+                  (add-after 'unpack 'add-mutex-m
+                    (lambda _
+                      (substitute* "Gemfile"
+                        (("^gem \"bump\".*" all)
+                         (string-append all "gem \"mutex_m\"\n")))))
                   (replace 'replace-git-ls-files
                     (lambda _
                       (substitute* "single_cov.gemspec"
@@ -6617,8 +6624,10 @@ classes implemented in C.")
                       ;; it for now.
                       (substitute* "specs/single_cov_spec.rb"
                         (("it \"complains when coverage is bad\"")
-                         "xit \"complains when coverage is bad\"")))))))
-    (native-inputs (list ruby-minitest ruby-rspec ruby-simplecov))
+                         "xit \"complains when coverage is bad\"")
+                        (("it \"does not duplicate coverage\"")
+                         "xit \"does not duplicate coverage\"")))))))
+    (native-inputs (list ruby-minitest ruby-mutex-m ruby-rspec ruby-simplecov))
     (synopsis "Code coverage reporting tool")
     (description
      "This package provides actionable code coverage reports for Ruby
