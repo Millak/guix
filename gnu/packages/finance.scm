@@ -2357,7 +2357,7 @@ interactive controls.  This package provides a GTK+ graphical user interface
 (define-public python-ta-lib
   (package
     (name "python-ta-lib")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        ;; Git repo contains Make rules to regenerate precompiled files
@@ -2367,7 +2367,7 @@ interactive controls.  This package provides a GTK+ graphical user interface
              (commit (string-append "TA_Lib-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qf00rnsn3s38yxqym1q4bdh98yykik5jdw492gn5ymddr499n1f"))))
+        (base32 "12qzk7naflcmlm7shsnxl4hg6cc0xh4937p0jv8y89c3fgx71cv8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
