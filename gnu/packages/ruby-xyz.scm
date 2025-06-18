@@ -5198,13 +5198,13 @@ number, support for interrupted tests, better backtraces, and more.")
 (define-public ruby-mocha
   (package
     (name "ruby-mocha")
-    (version "2.0.4")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "mocha" version))
               (sha256
                (base32
-                "18xn9gm9yypavy9yck71fplan19hy5697mwd1rwzz7vizh3ip7bd"))))
+                "0lsll8iba8612dypk718l9kx73m9syiscb2rhciljys1krc5g1zr"))))
     (build-system ruby-build-system)
     (arguments
      (list
