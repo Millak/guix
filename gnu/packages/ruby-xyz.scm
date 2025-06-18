@@ -13941,7 +13941,7 @@ over many adapters.")
 (define-public ruby-faraday
   (package
     (name "ruby-faraday")
-    (version "2.7.4")
+    (version "2.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13950,9 +13950,18 @@ over many adapters.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ya6jqa7ryr4i62mmzjjxzd8i8y0pyw0cbhifd758rs6lvkzmxa3"))))
+                "1nln6cs42hr99908bfjiyjpfpi1bmpgdf2w1dii2x8fczykgahsk"))))
     (build-system ruby-build-system)
-    (arguments (list #:test-target "spec"))
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'sanitize-dependencies
+            (lambda _
+              (substitute* "spec/spec_helper.rb"
+                ((".*coveralls.*") "")
+                ((", Coveralls::SimpleCov::Formatter") "")))))))
     (native-inputs
      (list ruby-coveralls
            ruby-pry
