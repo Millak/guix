@@ -23704,23 +23704,22 @@ broadly useful for viral amplicon-based sequencing.")
     (name "python-pyliftover")
     (version "0.4")
     ;; The version of pypi does not include test data.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/konstantint/pyliftover")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1j8jp9iynv2l3jv5pr0pn0p3azlama1bqg233piglzm6bqh3m2m3"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/konstantint/pyliftover")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j8jp9iynv2l3jv5pr0pn0p3azlama1bqg233piglzm6bqh3m2m3"))))
     (build-system pyproject-build-system)
-    (arguments `(#:tests? #false)) ; the tests access the web
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+    (arguments
+     `(#:tests? #f)) ;the tests access the web
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/konstantint/pyliftover")
-    (synopsis "Python implementation of UCSC liftOver genome coordinate conversion")
+    (synopsis
+     "Python implementation of UCSC liftOver genome coordinate conversion")
     (description
      "PyLiftover is a library for quick and easy conversion of genomic (point)
 coordinates between different assemblies.")
