@@ -495,13 +495,17 @@ ascending order")
                (("sh \"rspec")
                 "sh \"rspec -Ilib:examples"))))
          (add-after 'extract-gemspec 'delete-failing-tests
-           ;; See: https://github.com/jimweirich/rspec-given/issues/57.
+           ;; See: https://github.com/jimweirich/rspec-given/issues/57
+           ;; and https://github.com/rspec-given/rspec-given/issues/32
            (lambda _
              (substitute* ".gemspec"
+               (("\"spec/lib/given/line_extractor_spec.rb\".freeze, ")
+                "")
                (("\"spec/lib/given/natural_assertion_spec.rb\".freeze, ")
                 "")
                (("\"examples/integration/failing_messages_spec.rb\".freeze, ")
                 ""))
+             (delete-file "spec/lib/given/line_extractor_spec.rb")
              (delete-file "spec/lib/given/natural_assertion_spec.rb")
              (delete-file "examples/integration/failing_messages_spec.rb"))))))
     (native-inputs
