@@ -11693,7 +11693,7 @@ generation.")
 (define-public ruby-hoe-markdown
   (package
     (name "ruby-hoe-markdown")
-    (version "1.4.0")
+    (version "1.7.0")
     (home-page "https://github.com/flavorjones/hoe-markdown")
     (source
      (origin
@@ -11703,18 +11703,21 @@ generation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wb0yjdx9gx9r0cahpx42pblvglgh1i9pdfxjavq7f40nan2g076"))))
+        (base32 "1hkligky33b3rgcsx5qzvackgw6ghln4yp0lpw9wxy0lp14n0vr9"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'disable-bundler-dependency
+          (add-after 'unpack 'disable-bundler-dependency
             (lambda _
               (substitute* "spec/spec_helper.rb"
                 (("require.*bundler/setup.*")
-                 "")))))))
+                 ""))
+              (substitute* "lib/hoe/markdown/standalone.rb"
+                (("Bundler\\.load_gemspec")
+                 "Gem::Specification.load")))))))
     (native-inputs (list ruby-rspec))
     (propagated-inputs (list ruby-rake))
     (synopsis "Hoe plugin with Markdown helpers")
