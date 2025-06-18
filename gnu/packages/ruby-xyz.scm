@@ -4993,20 +4993,24 @@ encoded form.")
   (package
     (name "ruby-insist")
     (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "insist" version))
-              (sha256
-               (base32
-                "0bw3bdwns14mapbgb8cbjmr0amvwz8y72gyclq04xp43wpp5jrvg"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "insist" version))
+       (sha256
+        (base32 "0bw3bdwns14mapbgb8cbjmr0amvwz8y72gyclq04xp43wpp5jrvg"))))
     (build-system ruby-build-system)
-    (arguments (list #:phases #~(modify-phases %standard-phases
-                                  (replace 'check
-                                    (lambda* (#:key tests? #:allow-other-keys)
-                                      (when tests?
-                                        (invoke "ruby" "test/testing.rb")))))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ruby" "test/testing.rb")))))))
     (synopsis "Testing tool for Ruby")
-    (description "This package provides a simple block-driven assertion
+    (description
+     "This package provides a simple block-driven assertion
 library for both testing and for production code that attempts to make test
 definitions more readable.")
     (home-page "https://github.com/jordansissel/ruby-insist/")
