@@ -22353,7 +22353,7 @@ and reflect the fast5 file schema, and tools to convert between
          (sha256
           (base32
            "1im0bik2hxkcb7jzkcxp5nqb30hd8lfraxml6i5ik52j6z3qqln1"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        '(#:tests? #f         ; no tests included
          #:phases
@@ -22370,6 +22370,9 @@ and reflect the fast5 file schema, and tools to convert between
              python-biopython-1.73
              python-scikit-learn
              python-scipy))
+      (native-inputs
+       (list python-setuptools
+             python-wheel))
       (home-page "https://github.com/phoenixding/tbsp/")
       (synopsis "SNP-based trajectory inference")
       (description
