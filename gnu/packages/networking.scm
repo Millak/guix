@@ -3908,7 +3908,7 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03ajv1d034z6sjf2xapy8zq1mq2xkz5dqvn51vz2p26ws5axbzrn"))))
+                "0nzkh9kxk6mz570w4pygmfnyila5mkxcgzifi73wshd4yp7q3f3d"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3927,7 +3927,6 @@ communication over HTTP.")
               (chdir "dev"))))))
     (native-inputs
      (list catch2-3
-           expected-lite
            json-dto))
     (inputs
      (list openssl
@@ -3935,6 +3934,7 @@ communication over HTTP.")
     (propagated-inputs
      ;; These are all #include'd by restinio's .hpp header files.
      (list asio
+           expected-lite
            fmt
            llhttp
            pcre
