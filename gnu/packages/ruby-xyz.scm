@@ -4516,25 +4516,29 @@ use GNU gettext tools for maintenance.")
     (license license:lgpl2.0+)))
 
 (define-public ruby-test-construct
-  (package
-    (name "ruby-test-construct")
-    (version "2.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "test_construct" version))
-       (sha256
-        (base32
-         "17q7rw92l7r4zh6rkvzrn4dyl8p8p77217vaa1wf7nsv8k5541vy"))))
-    (build-system ruby-build-system)
-    (native-inputs
-     (list bundler ruby-mocha-1 ruby-rspec))
-    (synopsis "Creates temporary files and directories for testing")
-    (description
-     "TestConstruct is a @acronym{DSL, Domain Specific Language} for creating
+  (let ((commit "43933e84e63bba2b44bc020d8c8fb78ce8597ac3")
+        (revision "0"))
+    (package
+      (name "ruby-test-construct")
+      (version (git-version "2.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bhb/test_construct")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gif8sap3npvsn4jrppr16jqig8icafk60p74ankhjwrjycccfza"))))
+      (build-system ruby-build-system)
+      (native-inputs
+       (list bundler ruby-mocha ruby-rspec))
+      (synopsis "Creates temporary files and directories for testing")
+      (description
+       "TestConstruct is a @acronym{DSL, Domain Specific Language} for creating
 temporary files and directories during tests.")
-    (home-page "https://github.com/bhb/test_construct")
-    (license license:expat)))
+      (home-page "https://github.com/bhb/test_construct")
+      (license license:expat))))
 
 (define-public ruby-test-unit
   (package
