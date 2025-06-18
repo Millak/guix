@@ -6,7 +6,7 @@
 ;;; Copyright © 2016-2018, 2021-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -21,6 +21,7 @@
 ;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Esther Flashner <esther@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -411,15 +412,27 @@ menu to select one of the installed operating systems.")
      (modify-inputs (package-inputs grub)
        (prepend efibootmgr mtools)))
     (native-inputs
-     ;; The tests are skipped in this package so we remove some test dependencies.
-     (modify-inputs (package-native-inputs grub)
-       (delete "parted" "qemu" "qemu-minimal" "xorriso")))
+     (cond ((or (target-x86-64?)
+                (target-x86-32?)
+                (target-aarch64?)
+                (target-arm32?))
+            ;; We add the firmware needed to run the tests.
+            (modify-inputs (package-native-inputs grub)
+              (prepend
+                (cond ((target-x86-64?) ovmf-x86-64)
+                      ((target-x86-32?) ovmf-i686)
+                      ((target-aarch64?) ovmf-aarch64)
+                      ((target-arm32?) ovmf-arm)
+                      (else pkg-config)))))
+           (else
+            ;; The tests are skipped in this package so we remove some
+            ;; test dependencies.
+            (modify-inputs (package-native-inputs grub)
+              (delete "parted" "qemu-minimal" "xorriso")))))
     (arguments
-     ;; TODO: Tests need a UEFI firmware for qemu. There is one at
-     ;; https://github.com/tianocore/edk2/tree/master/OvmfPkg .
-     ;; Search for 'OVMF' in "tests/util/grub-shell.in".
      (substitute-keyword-arguments (package-arguments grub)
-       ((#:tests? _ #f) #f)
+       ((#:tests? _ #f) (and (not (%current-target-system))
+                             (this-package-native-input "qemu-minimal")))
        ((#:configure-flags flags #~'())
         #~(cons* "--with-platform=efi"
                  #$@(if (string-prefix? "x86_64"
@@ -430,6 +443,32 @@ menu to select one of the installed operating systems.")
                  #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
+            #$@(if (this-package-native-input "qemu-minimal")
+                   #~((add-after 'patch-stuff 'patch-ovmf-path
+                        (lambda* (#:key inputs #:allow-other-keys)
+                          (let ((arch #$(cond ((target-x86-64?) "x64")
+                                              ((target-x86-32?) "ia32")
+                                              ((target-aarch64?) "aarch64")
+                                              ((target-arm32?) "arm")
+                                              (else ""))))
+                            (substitute* "tests/util/grub-shell.in"
+                              (("OVMF-ia32\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("OVMF\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("/usr/share/qemu-efi/QEMU_EFI\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("/usr/share/ovmf-arm/QEMU_EFI\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin"))))))))
+                   #~())
             (add-after 'patch-stuff 'use-absolute-efibootmgr-path
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "grub-core/osdep/unix/platform.c"
@@ -466,14 +505,38 @@ menu to select one of the installed operating systems.")
                           ((target-arm?)
                            #~("--target=arm"))
                           (else #~()))
-                 #$flags))))
+                 #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            #$@(if (or (target-x86?)
+                       (target-arm?))
+                   #~((replace 'patch-ovmf-path
+                        (lambda* (#:key inputs #:allow-other-keys)
+                          (let ((arch #$(cond ((target-x86?) "ia32")
+                                              ((target-arm?) "arm")
+                                              (else ""))))
+                            (substitute* "tests/util/grub-shell.in"
+                              (("OVMF-ia32\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("/usr/share/ovmf-arm/QEMU_EFI\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin"))))))))
+                   #~())))))
     (native-inputs
-     (if (target-aarch64?)
+     (cond
+       ((target-x86-64?)
+        (modify-inputs (package-native-inputs grub-efi)
+          (replace "ovmf-x86-64" ovmf-i686)))
+        ((target-aarch64?)
          (modify-inputs (package-native-inputs grub-efi)
            (prepend
             (cross-gcc "arm-linux-gnueabihf")
-            (cross-binutils "arm-linux-gnueabihf")))
-         (package-native-inputs grub-efi)))))
+            (cross-binutils "arm-linux-gnueabihf"))
+           (replace "ovmf-aarch64" ovmf-arm)))
+        (else (package-native-inputs grub-efi))))))
 
 (define-public grub-emu
   (package/inherit grub
