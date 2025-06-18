@@ -626,23 +626,23 @@ subject.")
   (package
     (name "ruby-rspec-pending-for")
     (version "0.1.16")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/pboling/rspec-pending_for")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "107l560vm0kx25w5iy5rsk9ly8dxzr81b31284j514f4hkd0qv3m"))))
+    (source
+     (origin
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/pboling/rspec-pending_for")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "107l560vm0kx25w5iy5rsk9ly8dxzr81b31284j514f4hkd0qv3m"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-rspec ruby-simplecov))
     (propagated-inputs (list ruby-rspec-core ruby-ruby-engine
                              ruby-ruby-version))
     (synopsis "Skip RSpec tests for specific Ruby engines or versions")
-    (description "This RSpec plugin makes it easy to mark test cases as
-pending or skipped for a specific Ruby engine (e.g. MRI or JRuby) or version
-combinations.")
+    (description
+     "This RSpec plugin makes it easy to mark test cases as pending or skipped
+for a specific Ruby engine (e.g. MRI or JRuby) or version combinations.")
     (home-page "https://github.com/pboling/rspec-pending_for")
     (license license:expat)))
 
