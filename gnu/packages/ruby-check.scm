@@ -71,13 +71,13 @@
 (define-public bundler
   (package
     (name "bundler")
-    (version "2.4.18")
+    (version "2.6.9")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "bundler" version))
               (sha256
                (base32
-                "03ppd60cbwzlrhsidi7frj826ssmxzwd954ikjk7966l45qx5xxn"))))
+                "1sy9alf2pqjpkjwmkfwax242bxjc1c91xk36cwcf2nh5ppzpamm2"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
