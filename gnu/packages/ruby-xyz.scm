@@ -16397,15 +16397,14 @@ export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
 (define-public ruby-unicode-scripts
   (package
     (name "ruby-unicode-scripts")
-    (version "1.8.0")
+    (version "1.11.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "unicode-scripts" version))
               (sha256
                (base32
-                "0rl6mn908yryhrg8j3mmna54gnrid2nph2kym00lbz6jwdih2a1b"))))
+                "0r3d7qms3syx1ijn027vj4fycy5dzh8bwl99i8ykrgyadx01569d"))))
     (build-system ruby-build-system)
-    (native-inputs (list ruby-minitest))
     (arguments (list #:test-target "spec"))
     (home-page "https://github.com/janlelis/unicode-scripts")
     (synopsis "Unicode script classification library")
