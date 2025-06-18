@@ -6219,12 +6219,16 @@ time.")
                   ;; Delete compiled Python files.
                   (for-each delete-file (find-files "." "\\.pyc$"))
                   (delete-file-recursively ".eggs")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
      (list python-bx-python python-numpy python-pybigwig python-pysam
            zlib))
     (native-inputs
-     (list python-cython python-nose python-pyparsing))
+     (list python-cython
+           python-nose
+           python-pyparsing
+           python-setuptools
+           python-wheel))
     (home-page "https://crossmap.sourceforge.net/")
     (synopsis "Convert genome coordinates between assemblies")
     (description
