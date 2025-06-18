@@ -11966,7 +11966,7 @@ for Spatial Transcriptomics data.")
               (sha256
                (base32
                 "0har2g42fvaqpiz66lincy86aj1hvwzds26kxhxfamvyvv4721wk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -11992,6 +11992,9 @@ for Spatial Transcriptomics data.")
            python-taggd
            samtools
            star))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/SpatialTranscriptomicsResearch/st_pipeline")
     (synopsis "Pipeline for spatial mapping of unique transcripts")
     (description
