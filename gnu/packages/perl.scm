@@ -12749,6 +12749,26 @@ controlled with command line parameters.  The default parameter settings
 approximately follow the suggestions in the Perl Style Guide.")
     (license license:gpl2+)))
 
+(define-public perl-tidy
+  (package
+    (name "perl-tidy")
+    (version "20250616")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/S/SH/SHANCOCK/Perl-Tidy-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "16k83qmfdiq5360n3166vkvhi46p8y436r86i6j2938ryviifxdh"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Perl-Tidy")
+    (synopsis "Perl module to indent and reformat Perl scripts")
+    (description "This module makes the functionality of the
+@command{perltidy} command available to Perl scripts.  Any or all of the input
+parameters may be omitted, in which case the @code{@@ARGV} array will be used
+to provide input parameters as described in the @samp{perltidy(1)} man page.")
+    (license license:gpl2+)))
+
 (define-public perl-tie-cycle
   (package
     (name "perl-tie-cycle")
