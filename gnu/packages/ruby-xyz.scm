@@ -7564,6 +7564,14 @@ documents and fragments.  It's built on top of Nokogiri and libxml2.")
                (base32
                 "1gbsb81psgb6xhnwpx4s409jc0mk0gijh039sy5xyi8jpaaadp40"))))
     (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-minitest
+                 (lambda _
+                   (substitute* "test/support/common.rb"
+                     (("MiniTest")
+                      "Minitest")))))))
     (synopsis "Pure Ruby CSS parser")
     (description
      "Crass is a pure Ruby CSS parser based on the CSS Syntax Level 3 spec.")
