@@ -246,6 +246,73 @@ broad range of notification services, such as Telegram, Discord, Slack, Amazon
 SNS, Gotify, etc.")
     (license license:bsd-2)))
 
+(define-public python-blacksheep
+  (package
+    (name "python-blacksheep")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Neoteroi/BlackSheep")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iwlj6vl0rnvddbn9zsdgpya88z0lifr86wz3ci1d67li7w5bjiq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1443 passed, 3 skipped
+      ;;
+      ;; 1. Ignore integration tests.
+      ;; 2. Client tests use test fixture no longer available in
+      ;; pytest-asyncio,
+      ;;
+      ;; See: <https://github.com/Neoteroi/BlackSheep/issues/596>.
+      #:test-flags
+      #~(list "--ignore=itests"
+              "--ignore=tests/client")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'cythonize
+            (lambda _
+              (with-directory-excursion "blacksheep"
+                (for-each (lambda (file)
+                            (invoke "cython" "-3" file "-I" "."))
+                          (find-files "." ".*\\.pyx$"))))))))
+    (native-inputs
+     (list python-cython
+           python-flask
+           python-jinja2
+           python-pydantic
+           python-pyjwt
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs
+     (list python-certifi
+           python-dateutil
+           python-essentials-openapi
+           python-guardpost
+           python-itsdangerous))
+    (home-page "https://github.com/Neoteroi/BlackSheep")
+    (synopsis "Asynchronous framework to build event based web applications")
+    (description
+     "BlackSheep is a lightweight, asynchronous, event driven Web framework.
+
+The framework offers
+@itemize
+@item A rich code API, based on dependency injection and inspired by Flask and
+ASP.NET Core.
+@item A typing-friendly codebase, which enables a comfortable development
+experience thanks to hints when coding with IDEs.
+@item Built-in generation of OpenAPI Documentation, supporting version 3, YAML,
+and JSON.
+@item A cross-platform framework, using the most modern versions of Python.
+@item Good performance.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-devpi-common
   (package
     (name "python-devpi-common")
