@@ -3947,38 +3947,6 @@ HTTP/Websocket server.  It is based on standalone version of ASIO
 and targeted primarily for asynchronous processing of HTTP-requests.")
     (license license:bsd-3)))
 
-(define-public restinio-0.6
-  (package
-    (inherit restinio)
-    (name "restinio")
-    (version "0.6.19")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Stiffstream/restinio")
-                    (commit (string-append "v." version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1qrb1qr075r5059w984c4slgpsiwv94j6fmi9naa5l48dbi1p7jz"))))
-    (arguments
-     (list
-      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
-                                "-DRESTINIO_INSTALL=ON"
-                                "-DRESTINIO_TEST=ON"
-                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
-                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "dev"))))))
-    (native-inputs (list catch2 clara json-dto))
-    ;; These are all #include'd by restinio's .hpp header files.
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs restinio)
-       (replace "llhttp" http-parser)))))
-
 (define-public opendht
     (package
       (name "opendht")
