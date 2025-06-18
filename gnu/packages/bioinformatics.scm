@@ -22225,32 +22225,29 @@ single-cell RNA-seq data.")
        (method url-fetch)
        (uri (pypi-uri "ikarus" version))
        (sha256
-        (base32
-         "086czpvj4yafz4vrq5rx2gy0bj2l8nzwnkk0gw8qvy4w133xjysy"))))
+        (base32 "086czpvj4yafz4vrq5rx2gy0bj2l8nzwnkk0gw8qvy4w133xjysy"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false
-       #:phases
-       (modify-phases %standard-phases
-         ;; See https://github.com/BIMSBbioinfo/ikarus/issues/12
-         (add-after 'unpack 'fix-issue-12
-           (lambda _
-             (substitute* "ikarus/classifier.py"
-               (("pyscenic.genesig") "ctxcore.genesig"))))
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (propagated-inputs
-     (list python-numpy
-           python-pandas
-           python-scipy
-           python-scanpy
-           python-anndata
-           python-ctxcore ;because of issue 12
-           pyscenic))
-    (native-inputs
-     (list python-setuptools python-wheel))
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  ;; See https://github.com/BIMSBbioinfo/ikarus/issues/12
+                  (add-after 'unpack 'fix-issue-12
+                    (lambda _
+                      (substitute* "ikarus/classifier.py"
+                        (("pyscenic.genesig")
+                         "ctxcore.genesig"))))
+                  ;; Numba needs a writable dir to cache functions.
+                  (add-before 'check 'set-numba-cache-dir
+                    (lambda _
+                      (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs (list python-numpy
+                             python-pandas
+                             python-scipy
+                             python-scanpy
+                             python-anndata
+                             python-ctxcore ;because of issue 12
+                             pyscenic))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/BIMSBbioinfo/ikarus")
     (synopsis "Machine learning classifier of tumor cells")
     (description
