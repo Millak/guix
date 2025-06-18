@@ -16279,27 +16279,34 @@ markdown syntax document and passes the Markdown 1.0 test suite.")
 (define-public ruby-bibtex-ruby
   (package
     (name "ruby-bibtex-ruby")
-    (version "6.0.0")
+    (version "6.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "bibtex-ruby" version))
        (sha256
-        (base32 "0vynqa8q9hwghw6sdljr304b5gh11nqzy5nwqqwxmgy7pqyf7qw5"))))
+        (base32 "1ggx2j1gi46f1a6p45l1abk3nryfg1pj0cdlyrnilnqqpr1cfc96"))))
     (build-system ruby-build-system)
-    (propagated-inputs (list ruby-latex-decode ruby-rdf ruby-rdf-vocab))
+    (propagated-inputs (list ruby-latex-decode ruby-racc ruby-rdf
+                             ruby-rdf-vocab))
     (native-inputs (list ruby-cucumber ruby-minitest ruby-yard))
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'extract-gemspec 'avoid-bundler
-            (lambda args
+          (add-after 'extract-gemspec 'sanitize-dependencies
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Gemfile"
+                ((".*(gnuplot|ruby-prof|simplecov|iconv|redcarpet|unicode).*")
+                 ""))
               (substitute* "Rakefile"
                 (("require 'bundler" orig)
                  (string-append "# " orig " # patched for Guix"))
                 (("Bundler\\.setup" orig)
-                 (string-append "true # " orig " # patched for Guix"))))))))
+                 (string-append "true # " orig " # patched for Guix"))
+                (("bundle exec racc")
+                 (string-append "bundle exec "
+                                (search-input-file inputs "/bin/racc")))))))))
     (home-page "https://github.com/inukshuk/bibtex-ruby")
     (synopsis "Rubyist's Swiss Army knife for all things BibTeX")
     (description
