@@ -734,7 +734,7 @@ other enhancements and bug fixes.")
 (define-public epic5
   (package
     (name "epic5")
-    (version "2.0.1")
+    (version "3.0.3")
     (source
      (origin
        (method url-fetch)
@@ -745,11 +745,13 @@ other enhancements and bug fixes.")
                            version
                            ".tar.xz"))
        (sha256
-        (base32 "1ap73d5f4vccxjaaq249zh981z85106vvqmxfm4plvy76b40y9jm"))))
+        (base32 "09nkg66rbkz107xrhqhg2xgda8vm1zqsya6pnmjhn10lbhhi3933"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:test-target "test"
+      ;; XXX: No test-target, altough some tests in regress/
+      ;; The authors claim they run tests manually.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-perl
@@ -757,16 +759,6 @@ other enhancements and bug fixes.")
               (substitute* "regress/crash-irc"
                 (("perl5")
                  (search-input-file inputs "bin/perl")))))
-          (add-after 'unpack 'patch-bsdinstall
-            ;; If we just remove /bin/ some part of the bsdinstall breaks.
-            ;; Furthermore bsdinstalls has a reference to /etc/chmod here, which
-            ;; means if we leave /etc/ in, install fails.
-            (lambda _
-              (substitute* "bsdinstall"
-                (("/bin/(chgrp|chmod|cp|mkdir|mv|rm|strip)" all bin)
-                 bin)
-                (("/etc/")
-                 ""))))
           (replace 'configure
             (lambda* (#:key inputs #:allow-other-keys)
               ;; The tarball uses a very old version of autconf. It does not
