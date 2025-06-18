@@ -21291,14 +21291,12 @@ Torrent.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0f3n7wcmxbnqiisgimhpa6p5chqpb1hj69i6rpg2hv2671i8nn68"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ; there are none
-    (propagated-inputs
-     (list python-numpy))
-    (inputs
-     (list fftw))
-    (native-inputs
-     (list python-cython))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:tests? #f)) ;there are none
+    (propagated-inputs (list python-numpy))
+    (inputs (list fftw))
+    (native-inputs (list python-cython python-setuptools python-wheel))
     (home-page "https://github.com/KlugerLab/pyFIt-SNE")
     (synopsis "FFT-accelerated Interpolation-based t-SNE")
     (description
