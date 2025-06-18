@@ -495,7 +495,7 @@ histogram, lineplot, and scatterplot.")
 (define-public youplot
   (package
     (name "youplot")
-    (version "0.4.5")
+    (version "0.4.6")
     ;; Source at RubyGems.org doesn't have tests.
     (source (origin
               (method git-fetch)
@@ -505,7 +505,7 @@ histogram, lineplot, and scatterplot.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y54apw7hx9mhjnf277w9wayvq954mdnip4dpajhc0qjg2464c2b"))))
+                "1r9s8ls4f8w36fmja9vcl9wqdl9ikf8w7565srcn7i2wyza9bf7j"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-rake ruby-simplecov ruby-test-unit))
     (propagated-inputs (list ruby-unicode-plot))
