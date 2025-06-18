@@ -11327,6 +11327,43 @@ focus concern on individual units of behavior.")
     (home-page "https://rubyworks.github.io/lemon")
     (license license:bsd-2)))
 
+(define-public ruby-leto
+  (package
+    (name "ruby-leto")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "leto" version))
+       (sha256
+        (base32 "1ys0qr95zjbln8mfq2bxia63nkdfj1gxy89j6mdcbn6ljy6mb3ch"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f ; No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'ignore-rubocop
+                 (lambda _
+                   (substitute* "Rakefile"
+                     (("RUBY_VERSION\\.to_f >= 3\\.0")
+                      "false")))))))
+    (native-inputs (list ruby-rake ruby-rspec))
+    (synopsis "Generic object traverser")
+    (description
+     "This package provides a generic object traverser for Ruby.  It takes the
+object and recursively yields:
+@itemize
+@item the given object
+@item instance variables, class variables, constants
+@item Hash keys and values
+@item Enumerable members
+@item Struct members
+@item Data members
+@item Range begins and ends
+@end itemize")
+    (home-page "https://github.com/jaynetics/leto")
+    (license license:expat)))
+
 (define-public ruby-rubytest-cli
   (package
     (name "ruby-rubytest-cli")
