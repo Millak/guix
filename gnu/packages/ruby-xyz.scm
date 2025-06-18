@@ -8471,27 +8471,28 @@ they match.")
     (version "2.6.0")
     (source
      (origin
-       (method git-fetch)               ;bin/test missing from gem
+       (method git-fetch) ;bin/test missing from gem
        (uri (git-reference
              (url "https://github.com/ammar/regexp_parser")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "07dx96gjvpa07dsdnzpwhhwc7qpxakjgws7d7wbnkbs20fyvx55x"))))
+        (base32 "07dx96gjvpa07dsdnzpwhhwc7qpxakjgws7d7wbnkbs20fyvx55x"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "default"
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'compile-scanner.rb
-                    (lambda _
-                      (invoke "rake" "build")
-                      ;; XXX: This is needed otherwise the install
-                      ;; phase fails to delete the installed cached
-                      ;; gem file.
-                      (delete-file-recursively "pkg"))))))
-    (native-inputs
-     (list ragel ruby-ice-nine ruby-regexp-property-values ruby-rspec))
+     (list
+      #:test-target "default"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'compile-scanner.rb
+            (lambda _
+              (invoke "rake" "build")
+              ;; XXX: This is needed otherwise the install
+              ;; phase fails to delete the installed cached
+              ;; gem file.
+              (delete-file-recursively "pkg"))))))
+    (native-inputs (list ragel ruby-ice-nine ruby-regexp-property-values
+                         ruby-rspec))
     (synopsis "Regular expression parser library for Ruby")
     (description "A Ruby gem for tokenizing, parsing, and transforming regular
 expressions.  It comprises the following components:
