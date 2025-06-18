@@ -9034,7 +9034,7 @@ standalone libvirt provider.  @code{fog} is a Ruby cloud services library.")
 (define-public ruby-pry-byebug
   (package
     (name "ruby-pry-byebug")
-    (version "3.10.1")
+    (version "3.11.0")
     (source
      (origin
        (method git-fetch)
@@ -9044,7 +9044,7 @@ standalone libvirt provider.  @code{fog} is a Ruby cloud services library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0z8rhvmr9qmlbk8c8h6jbig5qd5xbdg9qihvx3g0cv1whqzbfikq"))))
+         "15vv1lii895bq6bj7j69vh5dcjfaq1dsrk6dy4p40rwzrzdid6nb"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
