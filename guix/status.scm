@@ -2,6 +2,7 @@
 ;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Esther Flashner <esther@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -372,6 +373,8 @@ the current build phase."
   (color-rules
    ("^(phase)(.*)(succeeded after)(.*)(seconds)(.*)"
     GREEN    BOLD GREEN          RESET  GREEN  BLUE)
+   ("^(PASS)(:)(.*)"
+    GREEN   BOLD RESET)
    ("^(phase)(.*)(failed after)(.*)(seconds)(.*)"
     RED BLUE RED BLUE RED BLUE)
    ("^(.*)(error|fail|failed|\\<FAIL|FAILED)([[:blank:]]*)(:)(.*)"
