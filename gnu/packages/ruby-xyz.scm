@@ -5586,14 +5586,14 @@ reporter.")
 (define-public ruby-minitest-rg
   (package
     (name "ruby-minitest-rg")
-    (version "5.2.0")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "minitest-rg" version))
        (sha256
         (base32
-         "0sq509ax1x62rd0w10b0hcydcxyk5bxxr3fwrgxv02r8drq2r354"))))
+         "0vwgmk9dnvhlcwxi7j5z150sdqyy3fjs8r8wzx64ig3ivpnb188j"))))
     (build-system ruby-build-system)
     (arguments
      ;; Some tests fail even outside Guix, so disable tests.
