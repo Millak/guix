@@ -5005,6 +5005,11 @@ encoded form.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-minitest
+            (lambda _
+              (substitute* "test/testing.rb"
+                (("MiniTest")
+                 "Minitest"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
