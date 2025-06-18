@@ -25006,8 +25006,11 @@ interest.")
               (sha256
                (base32
                 "02ybhzivsxwnb1axlgbs63wni1j27xajnkl4jw1ps5vmsz2l4b0d"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib python-numpy python-scipy))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/huangyh09/vireoSNP")
     (synopsis "Deconvolution based on SNP for multiplexed scRNA-seq data")
     (description
