@@ -11900,24 +11900,20 @@ sequence itself can be retrieved from these databases.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0lv3h5k2pn1pz35kz0wk5xmricxzy8qscs2y7nwh0k6x4pn0m0s5"))))
+        (base32 "0lv3h5k2pn1pz35kz0wk5xmricxzy8qscs2y7nwh0k6x4pn0m0s5"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-biopython
-           python-intervaltree
-           python-joblib
-           python-pandas
-           python-pybedtools
-           python-pysam))
-    (native-inputs
-     (list python-cython
-           python-pytest
-           python-setuptools
-           python-wheel))
+    (propagated-inputs (list python-biopython
+                             python-intervaltree
+                             python-joblib
+                             python-pandas
+                             python-pybedtools
+                             python-pysam))
+    (native-inputs (list python-cython python-pytest python-setuptools
+                         python-wheel))
     (home-page "https://t-neumann.github.io/slamdunk/")
     (synopsis "Streamline SLAM-seq analysis with high sensitivity")
-    (description "SlamDunk is a fully automated tool for automated, robust,
+    (description
+     "SlamDunk is a fully automated tool for automated, robust,
 scalable and reproducible SLAMseq data analysis.  Diagnostic plotting features
 and a MultiQC plugin will make your SLAMseq data ready for immediate QA and
 interpretation.")
