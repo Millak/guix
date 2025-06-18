@@ -6375,28 +6375,17 @@ back to Ruby via the @code{ruby2ruby} library.")
 (define-public ruby-ruby-version
   (package
     (name "ruby-ruby-version")
-    (version "1.0.2")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "ruby_version" version))
               (sha256
                (base32
-                "0lvc7bd5ps3w2vq2wb02i0pi3vfcx2rnckx2ix4rjym1qf52kb2j"))))
+                "1dfcy4bz7kgmp4i7kvqg2w5l9rsf6vp9hhqqfg4ydds60yazjc2r"))))
     (build-system ruby-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'extract-gemspec 'delete-gem-files
-                 ;; There are some pre-built files in the source, and
-                 ;; registered in the .gemspec (see:
-                 ;; https://github.com/janlelis/ruby_version/issues/1).
-                 (lambda _
-                   (delete-file-recursively "pkg")
-                   (substitute* "ruby_version.gemspec"
-                     (("\"pkg/ruby_version-1.0.0.gem\".freeze, ")
-                      "")
-                     (("\"pkg/ruby_version-1.0.1.gem\".freeze, ")
-                      ""))))
                (add-after 'extract-gemspec 'relax-requirements
                  (lambda _
                    (delete-file "Gemfile.lock")
