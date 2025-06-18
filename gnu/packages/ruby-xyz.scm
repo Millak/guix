@@ -14216,7 +14216,7 @@ spawned processes.  It is designed after Python's @code{subprocess} module.")
 (define-public ruby-syntax-tree
   (package
     (name "ruby-syntax-tree")
-    (version "6.1.1")
+    (version "6.2.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -14225,7 +14225,7 @@ spawned processes.  It is designed after Python's @code{subprocess} module.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0356lgvqp22nkqlrgszf7myfdg4arclg278awh34zyby1cx6hb2k"))))
+                "0sbcpybh2m7vqiq4nd6b15iaha6q58210lq8wkdka8934gfizvdk"))))
     (build-system ruby-build-system)
     (arguments
      (list
