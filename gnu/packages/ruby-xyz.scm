@@ -9009,6 +9009,10 @@ services library.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'sanitize-dependencies
+            (lambda _
+              (substitute* "fog-xml.gemspec"
+                ((".*coveralls.*") ""))))
           ;; Run tests via bundler so rake picks up the minitest gem from
           ;; native-inputs, not the one installed otherwise.  This is required
           ;; since turn@0.9.7 needs minitest@4 and can not be upgraded to
