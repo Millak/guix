@@ -15362,6 +15362,16 @@ reference object.  This object is not created until the first method dispatch.")
        (sha256
         (base32 "197wrgqrddgm1xs3yvjvd8vkvil4h4mdrcp16jmd4b57rxrrr769"))))
     (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-citrus-version
+                 (lambda _
+                   (substitute* '("lib/citrus.rb" "citrus.gemspec")
+                     (("require 'citrus/version'")
+                      "")
+                     (("Citrus\\.version")
+                      (format #f "~s" #$version))))))))
     (home-page "https://mjackson.github.io/citrus/")
     (synopsis "Parsing Expressions for Ruby")
     (description "Citrus is a parsing library for Ruby that combines the
