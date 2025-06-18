@@ -1,0 +1,12 @@
+Change the location of the rabbitmq-env.conf file to the current profile
+directory.
+diff -Nur rabbitmq-server-4.1.1.orig/deps/rabbit/scripts/rabbitmq-defaults rabbitmq-server-4.1.1/deps/rabbit/scripts/rabbitmq-defaults
+--- rabbitmq-server-4.1.1.orig/deps/rabbit/scripts/rabbitmq-defaults	2025-06-04 17:59:02.000000000 +0100
++++ rabbitmq-server-4.1.1/deps/rabbit/scripts/rabbitmq-defaults	2025-06-10 10:38:46.598968381 +0100
+@@ -14,5 +14,5 @@
+ BOOT_MODULE="rabbit"
+ 
+ if test -z "$CONF_ENV_FILE" && test -z "$RABBITMQ_CONF_ENV_FILE"; then
+-    CONF_ENV_FILE=${SYS_PREFIX}/etc/rabbitmq/rabbitmq-env.conf
++    CONF_ENV_FILE=/run/current-system/profile/etc/rabbitmq/rabbitmq-env.conf
+ fi
