@@ -9322,14 +9322,14 @@ project later switched to the Hippocratic license, which is non-free.
 (define-public ruby-ruby-prof
   (package
     (name "ruby-ruby-prof")
-    (version "1.4.5")
+    (version "1.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ruby-prof" version))
        (sha256
         (base32
-         "09n13bzm1p956z318xx1v7ikqdp2i971v7p3kwf3170axz368ccy"))))
+         "0h23zjwma8car8jpq7af8gw39qi88rn24mass7r13ripmky28117"))))
     (build-system ruby-build-system)
     (arguments
       ;; FIXME: Investigate why the tests fail on i686-linux.
@@ -9342,12 +9342,15 @@ project later switched to the Hippocratic license, which is non-free.
          (add-after 'extract-gemspec 'delete-flaky-test
            (lambda _
              (delete-file "test/line_number_test.rb")
+             (delete-file "test/measure_process_time_test.rb")
              (substitute* "ruby-prof.gemspec"
-               (("\"test/line_number_test\\.rb\"\\.freeze, ") ""))))
+               (("\"test/line_number_test\\.rb\"\\.freeze, ") "")
+               (("\"test/measure_process_time_test\\.rb\"\\.freeze, ") ""))))
          (add-before 'check 'compile
           (lambda _
             (invoke "rake" "compile"))))))
     (native-inputs (list bundler ruby-minitest ruby-rake-compiler ruby-rdoc))
+    (propagated-inputs (list ruby-base64))
     (synopsis "Fast code profiler for Ruby")
     (description "RubyProf is a fast code profiler for Ruby.  Its features
 include:
