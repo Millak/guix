@@ -164,6 +164,7 @@
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2025, Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -773,6 +774,52 @@ expensive calculations.  It was started as part of
 part of @url{https://github.com/hgrecco/pint, Pint}, the Python units
 package. ")
     (license license:bsd-3)))
+
+(define-public python-huey
+  (package
+    (name "python-huey")
+    (version "2.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coleifer/huey")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "189sin0k9imiddm10xa5llql3953p1jv6dqgxm78hy18qrlbkz02"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-which
+            (lambda _
+              (substitute* "huey/tests/test_kt_huey.py"
+                (("^has_ktserver = sp.call\\(\\['which', 'ktserver'\\].*$")
+                 "has_ktserver = False"))))
+          (add-before 'check 'pre-check
+            (lambda _ (spawn "redis-server" '("redis-server")))))))
+    (native-inputs (list python-setuptools python-wheel redis tzdata-for-tests))
+    (propagated-inputs (list python-redis))
+    (home-page "https://huey.readthedocs.io")
+    (synopsis "Lightweight task queue for Python")
+    (description
+     "Huey is a lightweight task queue for Python applications.  Huey
+supports:
+@itemize
+@item Redis, SQLite, file-system, or in-memory storage
+@item multi-process, multi-thread or greenlet task execution models
+@item scheduling tasks to execute at a given time, or after a given delay
+@item scheduling recurring tasks, like a crontab
+@item automatically retrying tasks that fail
+@item task prioritization
+@item task result storage
+@item task expiration
+@item task locking
+@item task pipelines and chains
+@end itemize")
+    (license license:expat)))
 
 (define-public python-jsonpath-ng
   (package
