@@ -3115,13 +3115,13 @@ cosmological parameters e.g. redshift or luminosity-distance.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "12.1.5")
+    (version "12.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "1na5h1lhz7qqiwxh79h8hl0sjchw3nmaq1638sdqw1s5j68iv9ry"))))
+        (base32 "07nahxxnw89l8lk8grampdni46a3l52098qdf5vkcfqs1kkq80wz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3136,8 +3136,8 @@ cosmological parameters e.g. redshift or luminosity-distance.")
                ;; Network is required to access <https://hst-crds.stsci.edu>.
                "test/bestrefs/"
                "test/submit/"
-               ;; XXX: Excluding test files which tests fail the most, maybe
-               ;; find a way how to enable/fix them.
+               ;; XXX: Ignoring files which tests fail the most, maybe find a
+               ;; way how to enable/fix some of them.
                "test/certify/test_certify.py"
                "test/core/test_cmdline.py"
                "test/core/test_heavy_client.py"
@@ -3160,7 +3160,7 @@ cosmological parameters e.g. redshift or luminosity-distance.")
            python-pytest
            python-pytest-astropy
            python-pytest-doctestplus
-           python-setuptools
+           python-setuptools-next
            python-setuptools-scm
            python-stsynphot
            python-wheel))
