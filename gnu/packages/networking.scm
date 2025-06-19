@@ -278,6 +278,49 @@ on byte-critical systems.  It supports HTTP, HTTPS, FTP and FTPS
 protocols.")
     (license license:gpl2+)))
 
+(define-public lcagent
+  (package
+    (name "lcagent")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/librecast/lcagent")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "120a850dbwy3kq6iw2s9sdffvrxj3a85zjiaw2ldgy4mkr1xbg9a"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-bin-sh
+            (lambda _
+              (substitute* "src/agent.c"
+                (("/bin/sh")
+                 (which "sh"))))))
+      #:make-flags
+      #~(list (string-append "CC="
+                             #$(cc-for-target))
+              (string-append "PREFIX="
+                             #$output))
+      #:test-target "test"))
+    (inputs (list lcrq
+                  libsodium
+                  librecast))
+    (native-inputs (list bison
+                         flex))
+    (synopsis "Librecast multicast agent")
+    (description
+     "lcagent can send and receive data over multicast and to pipe
+data between programs on one computer and as many receivers as the multicast
+network can support simultaneously.")
+    (home-page "https://librecast.net/lcagent.html")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public lcrq
   (package
     (name "lcrq")
