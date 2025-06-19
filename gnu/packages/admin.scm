@@ -6083,6 +6083,29 @@ on a GUI toolkit.")
     (home-page "https://git.sr.ht/~kennylevinsen/gtkgreet")
     (license license:gpl3+)))
 
+(define-public tuigreet
+  (package
+    (name "tuigreet")
+    (version "0.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/apognu/tuigreet")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "15h2b97clllbhlw5jc4lwkmir18njnyk56zghafsas84m6jjsikv"))))
+    (build-system cargo-build-system)
+    (arguments (list #:install-source? #f))
+    (inputs (cargo-inputs 'tuigreet))
+    (home-page "https://github.com/apognu/tuigreet")
+    (synopsis "Graphical console greeter for @code{greetd}")
+    (description
+     "This package provides a graphical console greeter for @code{greetd}.  It
+doesn't need a Wayland compositor to be used.")
+    (license license:gpl3+)))
+
 (define-public libseat
   (package
     (name "libseat")
