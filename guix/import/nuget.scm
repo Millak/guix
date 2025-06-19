@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,7 +50,7 @@
   #:use-module (guix memoization)
   #:use-module (guix utils)
   #:use-module ((guix import utils)
-                #:select (factorize-uri recursive-import flatten))
+                #:select (factorize-uri snake-case recursive-import flatten))
   #:use-module (guix base32)
   #:use-module (guix build utils)
   #:use-module (guix git)
@@ -301,11 +302,7 @@ success, or #f on failure."
         '()))))
 
 (define (nuget-name->guix-name name)
-  (string-downcase (string-append "dotnet-" (string-map (lambda (c)
-                                                          (if (char=? c #\.)
-                                                              #\-
-                                                              c))
-                                                        name))))
+  (string-append "dotnet-" (snake-case name)))
 
 (define nuget->guix-package
   (memoize
