@@ -7311,13 +7311,13 @@ pipelines.")
 (define-public python-stsci-image
   (package
     (name "python-stsci-image")
-    (version "2.3.9")
+    (version "2.3.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stsci_image" version))
        (sha256
-        (base32 "0w7s93jsz61ccbhj7irl28q4jgiwa7y9k8pfj24q8vc9zvs530pj"))))
+        (base32 "0wvqvpq9hfmpjf0w6kbgk6rc3jmshdnxk8s8q61rkfwjl11vi90b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7329,8 +7329,8 @@ pipelines.")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-setuptools-scm
+           python-setuptools-next
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list python-numpy
