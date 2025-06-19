@@ -377,11 +377,8 @@ s-expression and a flat list of its dependency names (strings)."
                                             (uri "FIXME: No source URL found.")
                                             (sha256 (base32 "0sjjj9z1dhilhpc8pq4154czrb79z9cm044jvn75kxcjv6v5l2m5")))))
                              (build-system mono-build-system)
-                             ,@(if (not (null? dependencies))
-                                   `((inputs
-                                      (list ,@(map (compose string->symbol nuget-name->guix-name)
-                                                   dependencies))))
-                                   '())
+                             ,@(maybe-inputs
+                                (map nuget-name->guix-name dependencies))
                              (home-page ,home-page)
                              (synopsis ,synopsis)
                              (description ,description)
