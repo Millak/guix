@@ -313,15 +313,8 @@ Avocado machine readable outputs this one is streamlined (per test results).
     (arguments
      (list
       #:test-flags
-      ;; Two tets fail.
-      #~(list "--exclude-regex" "test_no_arguments|test_help_arg")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Implement in pypproject-build-system's  test-backends.
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "stestr" "run" test-flags)))))))
+      ;; XXX: Two tests fail.
+      #~(list "--exclude-regex" "test_no_arguments|test_help_arg")))
     (native-inputs
      (list python-beautifulsoup4
            python-fixtures
