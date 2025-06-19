@@ -4922,6 +4922,17 @@ information.
 In addition, @command{guix pull} supports all the common build options
 (@pxref{Common Build Options}).
 
+Every time the user invokes a Guix command, Guix detects if the current
+installation has exceeded a certain duration (7 days by default) and
+alerts the user to update with @command{guix pull} if necessary.
+The duration can be configured with the following environment variable:
+
+@defvr {Environment Variable} GUIX_DISTRO_AGE_WARNING
+This environment variable, if set, should be a string representing a
+duration. If the current Guix installation exceeds the duration, Guix
+will raise a warning for outdated installation.
+@end defvr
+
 @node Invoking guix time-machine
 @section Invoking @command{guix time-machine}
 
