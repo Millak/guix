@@ -9321,6 +9321,70 @@ an API for performing input and output operations on different kinds of
 n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
       (license license:cecill))))
 
+(define-public uraniborg
+  (package
+    (name "uraniborg")
+    (version "0.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/astronexus/uraniborg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jr4sj42cg1b1n74yag1a4rbysk53s9a3qbd3sg5qaabvjs534v1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; XXX: tests require some config files which are not in Git
+      #:install-source? #f
+      #:import-path "bitbucket.org/dpnash/uraniborg"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-config
+            ;; TODO: This might be patched in the upstream, see
+            ;; <https://codeberg.org/astronexus/uraniborg/issues/1>.
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "consts.go"
+                  (("config/") (string-append #$output "/etc/uraniborg/"))
+                  (("data/") (string-append #$output "/share/uraniborg/data/")))
+                (substitute* (find-files "config" ".*\\.yaml$")
+                  (("fonts/") (string-append #$output "/share/uraniborg/fonts/"))))))
+          (add-after 'install 'install-runtime-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let ((etc (string-append #$output "/etc/uraniborg"))
+                      (data (string-append #$output "/share/uraniborg/data"))
+                      (fonts (string-append #$output "/share/uraniborg/fonts")))
+                  (copy-recursively "config" etc)
+                  (copy-recursively "fonts" fonts)
+                  (system* "gunzip" "data/athyg_32_subset.csv.gz")
+                  (install-file "data/athyg_32_subset.csv" data))))))))
+    (native-inputs
+     (list go-codeberg-org-astronexus-brahe
+           go-dario-cat-mergo
+           go-github-com-fogleman-gg
+           go-github-com-fsnotify-fsnotify
+           go-gopkg-in-yaml-v3))
+    (home-page "https://codeberg.org/astronexus/uraniborg")
+    (synopsis "CLI star chart application for the AT-HYG catalog")
+    (description
+     "@code{uraniborg} is a CLI visualization tool and star chart \"engine\"
+for the Augmented Tycho + HYG (AT-HYG) star catalog.  The
+@url{https://codeberg.org/astronexus/athyg, AT-HYG} catalog consists of stars
+from the Tycho-2 star catalog, augmented with additional distance and velocity
+information from Gaia DR3, as well as the \"classic\" / historical information
+from the HYG catalog.
+
+@code{uraniborg} lets you view the sky from both the solar system and from any
+star in the AT-HYG catalog with a known distance (over 2.5 million stars
+currently).")
+    (license (list license:asl2.0    ;; Roboto fonts
+                   license:silofl1.1 ;; Noto Sans fonts
+                   license:gpl3+))))
+
 (define-public uranimator
   ;; No release or version tags.
   (let ((commit "f50558c6fbcec4a8e749c37f2368c21170d5bb48")
