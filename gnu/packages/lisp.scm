@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
-;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2022, 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -462,6 +462,13 @@ interface.")
              (lambda* (#:key outputs #:allow-other-keys)
                (install-file "build/boehmprecise/lib/libclasp.so"
                   (string-append (assoc-ref outputs "out") "/lib")))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))
+           (search-path-specification
+            (variable "XDG_CONFIG_DIRS")
+            (files '("etc")))))
     (home-page "https://clasp-developers.github.io/")
     (synopsis "Common Lisp implementation based on LLVM and C++")
     (description "Clasp is a new Common Lisp implementation that seamlessly
