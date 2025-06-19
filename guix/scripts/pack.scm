@@ -1749,7 +1749,10 @@ Create a bundle of PACKAGE.\n"))
                      (load* file user-module)))
                  manifests)))
           (else
-           (packages->manifest packages))))))
+           (packages->manifest packages
+                               #:properties (if (assoc-ref opts 'save-provenance?)
+                                                default-package-properties
+                                                (const '()))))))))
 
     (define (process-file-arg opts name)
       ;; Validate that the file exists and return it as a <local-file> object,
