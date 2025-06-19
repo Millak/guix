@@ -4586,27 +4586,29 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "0hf261l36jxmd0r8sh2vyxaapv8gcdmnnv82k0hqvq6wh1qp5ksv"))))
+        (base32 "0bv073jfdkyh9nqgijw7ihl46000i124ar912lv67pbcq8wpjwz8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-append
-                    ;; Break cycle: python-ndcube -> python-specutils ->
-                    ;; python-ndcube, see
-                    ;; <https://github.com/sunpy/ndcube/issues/733>.
-                    "not test_rebin_specutils"
-                    ;; Introduced with astropy 6.1.3, see
-                    ;; <https://github.com/sunpy/ndcube/issues/758>.
-                    " and not test_2d[celestial_2d_ape14_wcs]"
-                    " and not test_2d[celestial_2d_fitswcs]"))
+              "-k" (string-join
+                    (list
+                     ;; Break cycle: python-ndcube -> python-specutils ->
+                     ;; python-ndcube, see
+                     ;; <https://github.com/sunpy/ndcube/issues/733>.
+                     "not test_rebin_specutils"
+                     ;; Introduced with astropy 6.1.3, see
+                     ;; <https://github.com/sunpy/ndcube/issues/758>.
+                     "test_2d[celestial_2d_ape14_wcs]"
+                     "test_2d[celestial_2d_fitswcs]")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'break-cycle
@@ -4618,13 +4620,6 @@ Carlo.")
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-astropy
-           python-gwcs
-           python-matplotlib
-           python-mpl-animators
-           python-numpy
-           python-reproject))
     (native-inputs
      (list python-dask
            python-pytest
@@ -4637,6 +4632,13 @@ Carlo.")
            python-setuptools-scm-next
            python-sunpy-minimal
            python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-gwcs
+           python-matplotlib
+           python-mpl-animators
+           python-numpy
+           python-reproject))
     (home-page "https://docs.sunpy.org/projects/ndcube/")
     (synopsis "Multi-dimensional contiguous and non-contiguous coordinate aware arrays")
     (description
@@ -4647,8 +4649,9 @@ It combines data, uncertainties, units, metadata, masking, and coordinate
 transformations into classes with unified slicing and generic coordinate
 transformations and plotting/animation capabilities.  It is designed to handle
 data of any number of dimensions and axis types (e.g. spatial, temporal,
-spectral, etc.) whose relationship between the array elements and the real world
-can be described by @acronym{WCS, World Coordinate System} translations.")
+spectral, etc.) whose relationship between the array elements and the real
+world can be described by @acronym{WCS, World Coordinate System}
+translations.")
     (license license:bsd-2)))
 
 (define-public python-petrofit
