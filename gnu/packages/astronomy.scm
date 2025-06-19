@@ -4131,13 +4131,13 @@ observationally-derived galaxy merger catalogs.")
 (define-public python-irispy-lmsal
   (package
     (name "python-irispy-lmsal")
-    (version "0.2.4")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "irispy_lmsal" version))
        (sha256
-        (base32 "0m5rjhz89235kmn30qib27w16qd3g78ygi4n1n5fpfb4rmr4y04m"))))
+        (base32 "0pqwgg89qq75nz7201535ixkcjqbqbdv3qmhcig2h2ah9fpcfpyy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4162,6 +4162,7 @@ observationally-derived galaxy merger catalogs.")
            python-wheel))
     (propagated-inputs
      (list python-dkist
+           python-mpl-animators
            python-ndcube
            python-pandas
            python-scipy
