@@ -312,7 +312,7 @@ within your terminal - no telescope required!")
 (define-public calceph
   (package
     (name "calceph")
-    (version  "4.0.4")
+    (version  "4.0.5")
     (source
      (origin
        (method git-fetch)
@@ -321,7 +321,7 @@ within your terminal - no telescope required!")
              (commit (string-append name "_"
                                     (string-replace-substring version "." "_")))))
        (sha256
-        (base32 "0cs34iwrgja7f47l8cvpxzgljxay5x4bx80hdpclaksilysvlyk0"))
+        (base32 "0a01hglcafgvvi3gfkfh7mz417j4vv9sikgac7rzs1idabff30ap"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
