@@ -193,30 +193,6 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
       ;; Use Python’s zipfile to avoid extra dependency
       (invoke "python" "-m" "zipfile" "-e" file site-dir))
 
-    (define python-hashbang
-      (string-append "#!" python "/bin/python"))
-
-    (define* (merge-directories source destination
-                                #:optional (post-move #f))
-      "Move all files in SOURCE into DESTINATION, merging the two directories."
-      (format #t "Merging directory ~a into ~a~%" source destination)
-      (for-each (lambda (file)
-                  (format #t "~a/~a -> ~a/~a~%"
-                          source file destination file)
-                  (mkdir-p destination)
-                  ;; Use 'copy-recursively' rather than 'rename-file' to guard
-                  ;; against the odd case where DESTINATION is a non-empty
-                  ;; directory, which may happen when using hybrid Python
-                  ;; build systems.
-                  (copy-recursively (string-append source "/" file)
-                                    (string-append destination "/" file))
-                  (delete-file-recursively (string-append source "/" file))
-                  (when post-move
-                    (post-move file)))
-                (scandir source
-                         (negate (cut member <> '("." "..")))))
-      (rmdir source))
-
     (define (expand-data-directory directory)
       "Move files from all .data subdirectories to their respective\ndestinations."
       ;; Python’s distutils.command.install defines this mapping from source to
@@ -224,29 +200,32 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
       (let ((source (string-append directory "/scripts"))
             (destination (string-append out "/bin")))
         (when (file-exists? source)
-          (merge-directories source destination
-                             (lambda (f)
-                               (let ((dest-path (string-append destination
-                                                               "/" f)))
-                                 (chmod dest-path #o755)
-                                 ;; PEP 427 recommends that installers rewrite
-                                 ;; this odd shebang.
-                                 (substitute* dest-path
-                                   (("#!python")
-                                    python-hashbang)))))))
+          (copy-recursively source destination)
+          (delete-file-recursively source)
+          (for-each
+           (lambda (file)
+             (chmod file #o755)
+             ;; PEP 427 recommends that installers rewrite
+             ;; this odd shebang.
+             (substitute* file
+               (("#!python")
+                (string-append "#!" python "/bin/python"))))
+           (find-files destination))))
       ;; Data can be contained in arbitrary directory structures.  Most
       ;; commonly it is used for share/.
       (let ((source (string-append directory "/data"))
             (destination out))
         (when (file-exists? source)
-          (merge-directories source destination)))
+          (copy-recursively source destination)
+          (delete-file-recursively source)))
       (let* ((distribution (car (string-split (basename directory) #\-)))
              (source (string-append directory "/headers"))
              (destination (string-append out "/include/python"
                                          (python-version python)
                                          "/" distribution)))
         (when (file-exists? source)
-          (merge-directories source destination))))
+          (copy-recursively source destination)
+          (delete-file-recursively source))))
 
     (define (list-directories base predicate)
       ;; Cannot use find-files here, because it’s recursive.
