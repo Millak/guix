@@ -1405,33 +1405,35 @@ order to provide IDE functionality for Guile Scheme.")
     (license license:expat)))
 
 (define-public guile-ares-rs
-  (package
-    (name "guile-ares-rs")
-    (version "0.9.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.sr.ht/~abcdw/guile-ares-rs")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "06fc5kbcniysqixadi54vv96hy8l4wx6hqcii134fkb1d93078lq"))))
-    (build-system guile-build-system)
-    (arguments
-     (list
-      #:source-directory "src/guile"))
-    ;; Remove guile-next dependency, when guile package get custom text port
-    (inputs `(("guile" ,guile-next)))
-    (propagated-inputs (list guile-fibers))
-    (home-page "https://git.sr.ht/~abcdw/guile-ares-rs")
-    (synopsis "Asynchronous Reliable Extensible Sleek RPC Server for Guile")
-    (description "Asynchronous Reliable Extensible Sleek RPC Server for
+  ;; Commit to support Guile 3.9 + guile-custom-ports
+  (let ((commit "6ccca2e21457c47917846e07c449d48c66b9420b")
+        (revision "0"))
+    (package
+      (name "guile-ares-rs")
+      (version (git-version "0.9.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~abcdw/guile-ares-rs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "04n42wn6jblhmcx5l43nl7nsy3s0qlsn09l4k9xwgw5hg9nkkmg7"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "src/guile"))
+      (inputs (list guile-3.0))
+      (propagated-inputs (list guile-fibers guile-custom-ports))
+      (home-page "https://git.sr.ht/~abcdw/guile-ares-rs")
+      (synopsis "Asynchronous Reliable Extensible Sleek RPC Server for Guile")
+      (description "Asynchronous Reliable Extensible Sleek RPC Server for
  Guile.  It's based on nREPL protocol and can be used for programmable
  interactions with a running guile processes, for implementing REPLs, IDEs,
  test runners or other tools.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public guile-custom-ports
   (package
