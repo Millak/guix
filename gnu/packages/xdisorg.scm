@@ -2166,64 +2166,67 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
     (license license:gpl3+)))
 
 (define-public ulauncher
-  (package
-    (name "ulauncher")
-    (version "6.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Ulauncher/Ulauncher")
-                    (commit "1e68d47473f8e77d375cb4eca644c3cda68ed7e9")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1c2czlrsf5aq8c88qliqbnqvf04q9cnjc1j6hivqa0w260mzjll1"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'fix-libX11
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (substitute* "ulauncher/utils/xinit.py"
-                              (("libX11.so.6")
-                               (search-input-file inputs "/lib/libX11.so")))))
-                        (add-after 'unpack 'fix-usr
-                          (lambda _
-                            (substitute* "setup.py"
-                              (("\\{sys.prefix\\}")
-                               (string-append #$output)))))
-                        (add-after 'unpack 'fix-os-release
-                          (lambda _
-                            (define (touch file)
-                              (call-with-output-file file
-                                (const #t)))
-                            (let* ((hard-path "/etc/os-release")
-                                   (fixed-path (string-append #$output
-                                                              hard-path)))
-                              ;; Make it relative
-                              ;; Update hardcoded path to something
-                              ;; within the build enviroment.
-                              (substitute* "ulauncher/utils/environment.py"
-                                ((hard-path)
-                                 fixed-path))
-                              ;; Create directory for the dummy file.
-                              (mkdir-p (string-append #$output "/etc"))
-                              (touch fixed-path))))
-                        (add-before 'check 'env-setup
-                          ;; The test require access to home to put temporary files.
-                          (lambda _
-                            (setenv "HOME"
-                                    (getcwd)))))))
-    (native-inputs (list intltool python-distutils-extra python-mock))
-    (inputs (list libx11 python-levenshtein python-pycairo))
-    (propagated-inputs (list keybinder libwnck gsettings-desktop-schemas
-                             python-pygobject webkitgtk-with-libsoup2))
-    (home-page "https://ulauncher.io")
-    (synopsis "Application launcher for Linux")
-    (description
-     "Ulauncher is a fast application launcher for Linux.  It is written in
+  (let ((commit "1e68d47473f8e77d375cb4eca644c3cda68ed7e9")
+        (revision "4"))
+    (package
+      (name "ulauncher")
+      (version (git-version "6.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Ulauncher/Ulauncher")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c2czlrsf5aq8c88qliqbnqvf04q9cnjc1j6hivqa0w260mzjll1"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-libX11
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "ulauncher/utils/xinit.py"
+                  (("libX11.so.6")
+                   (search-input-file inputs "/lib/libX11.so")))))
+            (add-after 'unpack 'fix-usr
+              (lambda _
+                (substitute* "setup.py"
+                  (("\\{sys.prefix\\}")
+                   (string-append #$output)))))
+            (add-after 'unpack 'fix-os-release
+              (lambda _
+                (define (touch file)
+                  (call-with-output-file file
+                    (const #t)))
+                (let* ((hard-path "/etc/os-release")
+                       (fixed-path (string-append #$output hard-path)))
+                  ;; Make it relative
+                  ;; Update hardcoded path to something
+                  ;; within the build enviroment.
+                  (substitute* "ulauncher/utils/environment.py"
+                    ((hard-path)
+                     fixed-path))
+                  ;; Create directory for the dummy file.
+                  (mkdir-p (string-append #$output "/etc"))
+                  (touch fixed-path))))
+            (add-before 'check 'env-setup
+              ;; The test require access to home to put temporary files.
+              (lambda _
+                (setenv "HOME"
+                        (getcwd)))))))
+      (native-inputs (list intltool python-distutils-extra python-mock))
+      (inputs (list libx11 python-levenshtein python-pycairo))
+      (propagated-inputs (list keybinder libwnck gsettings-desktop-schemas
+                               python-pygobject webkitgtk-with-libsoup2))
+      (home-page "https://ulauncher.io")
+      (synopsis "Application launcher for Linux")
+      (description
+       "Ulauncher is a fast application launcher for Linux.  It is written in
 Python, using GTK+, and features: App Search (fuzzy matching), Calculator,
 Extensions, Shortcuts, File browser mode and Custom Color Themes.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public rofi
   (package
