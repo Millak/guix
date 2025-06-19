@@ -5447,13 +5447,13 @@ but has evolved to support other missions as well.")
 (define-public python-specreduce
   (package
     (name "python-specreduce")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "specreduce" version))
        (sha256
-        (base32 "0lx2v6wp5lrn9n7b6i15ib3a2rwndjhrm70h2r9mmx7vx44d9sd2"))))
+        (base32 "096hkb94laqnaz5jl4ggw0w75lhp3dz1562pdr26kk510ridv744"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5479,10 +5479,9 @@ but has evolved to support other missions as well.")
     (propagated-inputs
      (list python-astropy
            python-gwcs
-           python-matplotlib
-           python-photutils
-           python-specutils
-           python-synphot))
+           python-numpy
+           python-scipy
+           python-specutils))
     (home-page "https://specreduce.readthedocs.io/")
     (synopsis "Spectroscopic Reductions")
     (description
