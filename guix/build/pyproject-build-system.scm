@@ -218,10 +218,11 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
            (lambda (file)
              (chmod file #o755)
              ;; PEP 427 recommends that installers rewrite
-             ;; this odd shebang.
-             (substitute* file
-               (("#!python")
-                (string-append "#!" python "/bin/python"))))
+             ;; this odd shebang, but avoid the binary case.
+             (unless (elf-file? file)
+               (substitute* file
+                 (("#!python")
+                  (string-append "#!" python "/bin/python")))))
            (find-files destination))))
       ;; Data can be contained in arbitrary directory structures.  Most
       ;; commonly it is used for share/.
