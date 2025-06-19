@@ -8859,8 +8859,8 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
   ;; XXX: 25.1 does not provide option to build with system MD4C, see
   ;; <https://github.com/Stellarium/stellarium/issues/4267>, using the latest
   ;; commit.
-  (let ((commit "8a3a53aa5d81c6b1b2cd10546c6d40a33204091a")
-        (revision "1"))
+  (let ((commit "045915b9dca754f6eec1bdc311428eb3e98d1002")
+        (revision "2"))
     (package
     (name "stellarium")
     (version (git-version "25.1" revision commit))
@@ -8872,7 +8872,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k9zf29x1nqj1i9qqp5mpn2z2i0izhxplyzcrlhl0i6c863rk5wx"))))
+        (base32 "1nrjfa1aq0inrbr66w8n8lqjkn0nsssjfl0dfrc4maynjp63gqkq"))))
     (build-system qt-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
