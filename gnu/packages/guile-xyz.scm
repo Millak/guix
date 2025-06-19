@@ -5538,6 +5538,9 @@ Conversion between binary and hex-and-dash string UUIDs is also included.")
     (version "0.2.0")
     (source (origin
                 (method git-fetch)
+                ;; This fork contains support for MAJOR.MINOR.PATCH.REVISION .
+                ;; Changes were proposed upstream but there was no reaction.
+                ;; Switched from <https://git.ngyro.com/guile-semver>.
                 (uri (git-reference
                       (url "https://codeberg.org/daym/guile-semver.git")
                       (commit (string-append "v" version))))
