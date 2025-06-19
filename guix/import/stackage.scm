@@ -47,7 +47,7 @@
 ;;;
 
 (define %stackage-url
-  (make-parameter "https://www.stackage.org"))
+  (make-parameter "https://www.stackage.org/api/v1/snapshot"))
 
 ;; Latest LTS version compatible with current GHC.
 (define %default-lts-version "20.26")
