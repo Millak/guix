@@ -8023,19 +8023,19 @@ of the old packages.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.10")
+    (version "0.8.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tweakwcs" version))
        (sha256
-        (base32 "0iiq57aympd0jvri4kjrjyxg276kysq8kfwcxwgwc56pr5v097fy"))))
+        (base32 "0bw9wricq5nkal9h4mdpyzl4f4mq2c5ywadmxjffyyd0c0hpfpzd"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-scipy
-           python-setuptools
-           python-setuptools-scm
+           python-setuptools-next
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list python-astropy
