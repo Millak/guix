@@ -2166,8 +2166,8 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
     (license license:gpl3+)))
 
 (define-public ulauncher
-  (let ((commit "1e68d47473f8e77d375cb4eca644c3cda68ed7e9")
-        (revision "4"))
+  (let ((commit "901ce03beb157ff8fb354558594495eb74c6de7b")
+        (revision "18"))
     (package
       (name "ulauncher")
       (version (git-version "6.0.0" revision commit))
@@ -2179,10 +2179,14 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1c2czlrsf5aq8c88qliqbnqvf04q9cnjc1j6hivqa0w260mzjll1"))))
-      (build-system python-build-system)
+          (base32 "0qrqpbqrrklfgqr48zafzggrbzns2q6h27nh63skfd9w582nsajg"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
+        #:test-flags
+        ;; XXX: Most likely require a running X server.
+        #~(list "--ignore=tests/ui/test_preferences_server.py"
+                "--ignore=tests/ui/test_result_widget.py")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-libX11
@@ -2190,11 +2194,11 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
                 (substitute* "ulauncher/utils/xinit.py"
                   (("libX11.so.6")
                    (search-input-file inputs "/lib/libX11.so")))))
-            (add-after 'unpack 'fix-usr
-              (lambda _
-                (substitute* "setup.py"
-                  (("\\{sys.prefix\\}")
-                   (string-append #$output)))))
+            (add-after 'unpack 'fix-bash
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "tests/modes/shortcuts/test_run_script.py"
+                  (("/bin/bash")
+                   (search-input-file inputs "bin/bash")))))
             (add-after 'unpack 'fix-os-release
               (lambda _
                 (define (touch file)
@@ -2216,10 +2220,19 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
               (lambda _
                 (setenv "HOME"
                         (getcwd)))))))
-      (native-inputs (list intltool python-distutils-extra python-mock))
+      (native-inputs (list intltool
+                           python-mock
+                           python-pytest
+                           python-pytest-mock
+                           python-setuptools
+                           python-wheel))
       (inputs (list libx11 python-levenshtein python-pycairo))
-      (propagated-inputs (list keybinder libwnck gsettings-desktop-schemas
-                               python-pygobject webkitgtk-with-libsoup2))
+      (propagated-inputs (list keybinder
+                               libwnck
+                               gsettings-desktop-schemas
+                               python-pygobject
+                               python-xlib
+                               webkitgtk-with-libsoup2))
       (home-page "https://ulauncher.io")
       (synopsis "Application launcher for Linux")
       (description
