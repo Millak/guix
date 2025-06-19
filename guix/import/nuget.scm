@@ -29,7 +29,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 pretty-print)
-  #:use-module ((rnrs) #:select (open-bytevector-input-port put-bytevector))
+  #:use-module ((rnrs) #:select (put-bytevector))
   #:use-module ((sxml xpath) #:select (sxpath)) ; filter... grr
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
@@ -51,6 +51,7 @@
   #:use-module (guix utils)
   #:use-module ((guix import utils)
                 #:select (factorize-uri snake-case recursive-import flatten))
+  #:use-module (guix import json)
   #:use-module (guix base32)
   #:use-module (guix build utils)
   #:use-module (guix git)
@@ -149,10 +150,9 @@ primitives suitable for the 'semver-range' constructor."
   creation and filtering to avoid type errors."
   (let* ((name-lower (string-downcase name))
          (versions-url (string-append %nuget-v3-package-versions-url name-lower "/index.json")))
-    (let-values (((response body) (http-get versions-url)))
-      (if body
-          (let* ((versions-json (json->scm (open-bytevector-input-port body)))
-                 (available-versions (vector->list (or (assoc-ref versions-json "versions")
+    (let ((versions-json (json-fetch versions-url)))
+      (if versions-json
+          (let* ((available-versions (vector->list (or (assoc-ref versions-json "versions")
                                                        #())))
                  (semver-range (nuget->semver-range range-str)))
             ;; Create a single, clean list of all valid semver objects first.
@@ -194,47 +194,44 @@ primitives suitable for the 'semver-range' constructor."
   correctly handling the paginated structure of the registration index."
   (let* ((name-lower (string-downcase name))
          (index-url (string-append %nuget-v3-registration-url name-lower "/index.json"))
-         (index-response index-body (http-get index-url)))
-      (if index-body
-          (let* ((index-json (json->scm (open-bytevector-input-port index-body)))
-                 ;; Get the list of page objects.
-                 (pages (vector->list (or (assoc-ref index-json "items")
-                                          #()))))
-            (let loop ((pages-to-check pages))
-              (if (null? pages-to-check)
-                  ;; If we've checked all pages and found nothing, fail.
-                  (begin
-                    (warning (G_ "Could not find catalog entry for ~a version ~a in any page.~%") name version)
-                    #f)
-                  (let* ((current-page (car pages-to-check))
-                         ;; Get the items for the current page. This may require another
-                         ;; network request if the items are not inlined.
-                         (page-items
-                          (or (and=> (assoc-ref current-page "items")
-                                     vector->list)
-                              (let-values (((page-response page-body)
-                                            (http-get (assoc-ref current-page "@id"))))
-                                (if page-body
-                                    (let ((page-json (json->scm (open-bytevector-input-port page-body))))
-                                      (vector->list (or (assoc-ref page-json "items")
-                                                        #())))
-                                    '())))))
-                    ;; Search for our specific version within THIS page's items.
-                    (let ((entry-in-page
-                           (find (lambda (item)
-                                   (and=>
-                                    (and=> (assoc-ref item "catalogEntry")
-                                           (cut assoc-ref <> "version"))
-                                    (lambda (v) (string=? v version)))) ; fixme semver equal
-                                 page-items)))
-                      (if entry-in-page
-                          ;; Found it! Return the catalogEntry object.
-                          (assoc-ref entry-in-page "catalogEntry")
-                          ;; Not in this page, recurse to the next page.
-                          (loop (cdr pages-to-check))))))))
-          (begin
-            (warning (G_ "Failed to fetch registration index for ~a~%") name)
-            #f))))
+         (index-json (json-fetch index-url)))
+    (if index-json
+        (let loop ((pages-to-check
+                    ;; Get the list of page objects.
+                    (vector->list (or (assoc-ref index-json "items")
+                                      #()))))
+          (if (null? pages-to-check)
+              ;; If we've checked all pages and found nothing, fail.
+              (begin
+                (warning (G_ "Could not find catalog entry for ~a version ~a in any page.~%") name version)
+                #f)
+              (let* ((current-page (car pages-to-check))
+                     ;; Get the items for the current page. This may require another
+                     ;; network request if the items are not inlined.
+                     (page-items
+                      (or (and=> (assoc-ref current-page "items")
+                                 vector->list)
+                          (let ((page-json (json-fetch (assoc-ref current-page "@id"))))
+                            (if page-json
+                                (vector->list (or (assoc-ref page-json "items")
+                                                  #()))
+                                '())))))
+                ;; Search for our specific version within THIS page's items.
+                (let ((entry-in-page
+                       (find (lambda (item)
+                               (and=>
+                                (and=> (assoc-ref item "catalogEntry")
+                                       (cut assoc-ref <> "version"))
+                                (lambda (v) (string=? v version)))) ; fixme semver equal
+                             page-items)))
+                  (if entry-in-page
+                      ;; Found it! Return the catalogEntry object.
+                      (assoc-ref entry-in-page "catalogEntry")
+                      ;; Not in this page, recurse to the next page.
+                      (loop (cdr pages-to-check)))))))
+        (begin
+          (warning (G_ "Failed to fetch registration index for ~a~%") name)
+          #f))))
 
 (define (car-safe lst)
   (if (null? lst)
