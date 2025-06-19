@@ -37,6 +37,35 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-codeberg-org-astronexus-brahe
+  (package
+    (name "go-codeberg-org-astronexus-brahe")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/astronexus/brahe.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1602xfla22rqhd6b98cbwklpcj7dmzjxywcnq3fajrsgx0ysf8p6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "codeberg.org/astronexus/brahe"))
+    (propagated-inputs (list go-gonum-org-v1-gonum))
+    (home-page "https://codeberg.org/astronexus/brahe")
+    (synopsis "Read and use data from the Augmented Tycho-HYG (AT-HYG) star catalog")
+    (description
+     "Package brahe defines core variable types and basic utility functions
+for astronomy programs using the AT-HYG (Augmented Tycho-HYG) catalog.  The
+base file (brahe.go) defines the most widely used types in these utility
+functions. @code{brahe} uses the
+@code{https://pkg.go.dev/gonum.org/v1/gonum/floats, Gonum floating point
+library} for vector math.")
+    (license license:expat)))
+
 (define-public go-github-com-aclements-go-moremath
   (package
     (name "go-github-com-aclements-go-moremath")
