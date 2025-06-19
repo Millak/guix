@@ -80,6 +80,7 @@
 (define %nuget-v3-package-versions-url "https://api.nuget.org/v3-flatcontainer/")
 (define %nuget-symbol-packages-url "https://globalcdn.nuget.org/symbol-packages/")
 
+(define %nuget-nuspec "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd")
 ;;; Version index https://api.nuget.org/v3-flatcontainer/{id-lower}/index.json
 ;;; nupkg download url https://api.nuget.org/v3-flatcontainer/{id-lower}/{version-lower}/{id-lower}.{version-lower}.nupkg
 ;;; nuspec url https://api.nuget.org/v3-flatcontainer/{id-lower}/{version-lower}/{id-lower}.nuspec
@@ -273,25 +274,28 @@ success, or #f on failure."
                          #f)
                        (call-with-input-file (car nuspec-files)
                          (lambda (port)
-                           (let* ((sxml (xml->sxml port #:trim-whitespace? #t)))
+                           (let* ((sxml
+                                   (xml->sxml
+                                    port
+                                    #:trim-whitespace? #t
+                                    #:namespaces `((#f . ,%nuget-nuspec)))))
                              (car-safe
                               (filter-map
                                (lambda (node)
                                  (sxml-match node
-                                             [(http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd:repository
-                                               (@ . ,attrs-raw)
-                                               . ,_)
-                                              (let ((attrs (map (lambda (attr)
-                                                                  (cons (symbol->string (car attr))
-                                                                        (cadr attr)))
-                                                                attrs-raw)))
-                                                (if (or (assoc-ref attrs "url")
-                                                        (assoc-ref attrs "commit"))
-                                                    attrs
-                                                    #f))]
-                                             [,otherwise #f]))
-                               ((sxpath '(// http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd:metadata
-                                             http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd:repository))
+                                   ((repository
+                                     (@ . ,attrs-raw)
+                                     . ,_)
+                                    (let ((attrs (map (lambda (attr)
+                                                        (cons (symbol->string (car attr))
+                                                              (cadr attr)))
+                                                      attrs-raw)))
+                                      (if (or (assoc-ref attrs "url")
+                                              (assoc-ref attrs "commit"))
+                                          attrs
+                                          #f)))
+                                   (,otherwise #f)))
+                               ((sxpath '(// metadata repository))
                                 sxml)))))))))))))
       (lambda (key . args)
         (warning (G_ "Failed to fetch or process snupkg file: ~a (Reason: ~a ~s)~%")
