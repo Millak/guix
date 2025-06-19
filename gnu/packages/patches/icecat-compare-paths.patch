@@ -1,8 +1,8 @@
 See comment in gnu/build/icecat-extension.scm.
 
---- a/toolkit/mozapps/extensions/internal/XPIDatabase.jsm
-+++ b/toolkit/mozapps/extensions/internal/XPIDatabase.jsm
-@@ -3452,6 +3452,7 @@ const XPIDatabaseReconcile = {
+--- a/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs
++++ b/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs
+@@ -3613,6 +3613,7 @@ const XPIDatabaseReconcile = {
      if (
        newAddon ||
        oldAddon.updateDate != xpiState.mtime ||
@@ -10,7 +10,7 @@ See comment in gnu/build/icecat-extension.scm.
        (aUpdateCompatibility && this.isAppBundledLocation(installLocation))
      ) {
        newAddon = this.updateMetadata(
-@@ -3460,8 +3461,6 @@ const XPIDatabaseReconcile = {
+@@ -3621,8 +3622,6 @@ const XPIDatabaseReconcile = {
          xpiState,
          newAddon
        );

@@ -3,7 +3,7 @@ native manifests) with "$ICECAT_SYSTEM_DIR".
 
 --- a/toolkit/xre/nsXREDirProvider.cpp
 +++ b/toolkit/xre/nsXREDirProvider.cpp
-@@ -293,24 +293,12 @@ nsresult nsXREDirProvider::GetBackgroundTasksProfilesRootDir(
+@@ -296,24 +296,12 @@ nsresult nsXREDirProvider::GetBackgroundTasksProfilesRootDir(
  static nsresult GetSystemParentDirectory(nsIFile** aFile) {
    nsresult rv;
    nsCOMPtr<nsIFile> localDir;
