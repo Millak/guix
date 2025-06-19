@@ -12437,16 +12437,16 @@ generates it as a string.  Please see the homepage for usage examples.")
 (define-public emacs-jedi
   (package
     (name "emacs-jedi")
-    (version "0.2.8")
+    (version "20250602.2107")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/tkf/emacs-jedi/")
-                    (commit (string-append "v" version))))
+                    (commit "0a92f57dcfd76f1daf6d382d1e2eb437784a71e0")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bckxppfzd5gwn0aw4h86igb7igal9axqncq7j8zmflg7zppncf1"))))
+                "0d88nyr689b311abi4zbjifm0llnyd16h3riwkq11y0vjkp5i6vq"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -12462,11 +12462,18 @@ generates it as a string.  Please see the homepage for usage examples.")
           (add-after 'unpack 'avoid-server-installation-for-tests
             (lambda _
               (substitute* "Makefile"
+                ;; Disable tox since it's only configured for python 3.8 and
+                ;; python 3.9 by the project--that's ancient.
+                (("tox")
+                 "echo tox")
                 (("env: .*$")
                  (string-append "env: " #$output "/bin/jediepcserver\n")))))
           (add-after 'unpack 'ensure-no-mtimes-pre-1980
             (assoc-ref python:%standard-phases
                        'ensure-no-mtimes-pre-1980))
+          (add-before 'check 'setenv
+            (lambda _
+              (setenv "HOME" "/tmp")))
           (add-after 'ensure-no-mtimes-pre-1980 'relax-python-requirements
             (lambda _
               ;; Argparse should only be required for Python < 3.2
@@ -12477,7 +12484,10 @@ generates it as a string.  Please see the homepage for usage examples.")
             (assoc-ref python:%standard-phases 'add-install-to-pythonpath))
           (add-after 'python:add-install-to-pythonpath 'python:install
             ;; This is needed to get the Python-built 'jediepcserver' command.
-            (assoc-ref python:%standard-phases 'install))
+            (lambda args
+              (apply (assoc-ref python:%standard-phases 'install)
+                     #:use-setuptools? #t ; make reproducible
+                     args)))
           (add-after 'python:install 'python:wrap
             (assoc-ref python:%standard-phases 'wrap))
           (add-after 'python:wrap 'patch-jedi:server-command
@@ -12485,7 +12495,7 @@ generates it as a string.  Please see the homepage for usage examples.")
               (emacs-substitute-variables "jedi-core.el"
                 ("jedi:server-command"
                  `(list ,(search-input-file outputs "bin/jediepcserver")))))))))
-    (native-inputs (list emacs-mocker python-wrapper))
+    (native-inputs (list emacs-mocker python-wrapper python-tox))
     (inputs (list python-wrapper python-epc python-jedi)) ;wrapped
     (propagated-inputs
      (list emacs-auto-complete emacs-python-environment emacs-epc))
