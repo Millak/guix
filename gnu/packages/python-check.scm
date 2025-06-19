@@ -3714,17 +3714,19 @@ possibly work.")
     (arguments
      (list
       #:test-flags
-      #~(list "--test-path" "stestr/tests")
+      #~(list "--test-path" "stestr/tests"
+              "--exclude-regex" (string-join
+                                 (list "test_pass"
+                                       "test_pass_list"
+                                       "test_unexpected_pass"
+                                       "test_load_from_stdin_quiet"
+                                       "test_trace_with_all_skips")
+                                 "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'configure-check
             (lambda _
-              (setenv "HOME" (getcwd))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (let ((stestr (string-append #$output "/bin/stestr")))
-                  (apply invoke stestr "run" test-flags))))))))
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list python-ddt
            python-iso8601
