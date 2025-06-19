@@ -4175,13 +4175,13 @@ satellite.")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.18.0")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jwst" version))
        (sha256
-        (base32 "1r3gmlsirdf1l2m1z8sxzh6h668zvkjyr463zwp32f6wppcj286l"))
+        (base32 "1zhq9816zx0binny80blvwld8zwd52m29b8vspwr2j4nzq1ijyb5"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -4208,6 +4208,10 @@ satellite.")
               (substitute* "pyproject.toml"
                 ;; stcal<1.13.0,>=1.12.0
                 ((">=1.12.0,<1.13.0") "") ; main branch points to the latest commit
+                ;; "stpipe>=0.8.1,<0.9.0",
+                ((">=0.8.1,<0.9.0") "")
+                ;; "stdatamodels>=3.0.1,<3.1.0",
+                ((">=3.0.1,<3.1.0") "")
                 ;; scipy>=1.14.1
                 (("1.14.1") "1.12.0")
                 ;; XXX: Can't detect opencv-python version. The input opencv
@@ -4219,11 +4223,11 @@ satellite.")
                 (("create_data = .*") "")
                 (("csvconvert = .*") "")))))))
     (native-inputs
-     (list python-colorama
+     (list python-ci-watson
+           python-pysiaf
            python-pytest
            python-pytest-cov
            python-pytest-doctestplus
-           python-pytest-openfiles
            python-requests-mock
            python-setuptools
            python-setuptools-scm
@@ -4239,15 +4243,12 @@ satellite.")
            python-drizzle
            python-gwcs
            python-importlib-metadata
-           python-jplephem
            python-jsonschema
            python-numpy
            python-packaging
            python-photutils
            python-poppy
-           python-psutil
            python-pyparsing
-           python-pysiaf
            python-requests
            python-scikit-image
            python-scipy
