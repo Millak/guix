@@ -4721,13 +4721,13 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
 (define-public python-pixell
   (package
     (name "python-pixell")
-    (version "0.28.4")
+    (version "0.29.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pixell" version))
        (sha256
-        (base32 "1li6gcplqi1az9hf6kl1gsykdrrf62wra91n17r97s041hj70n3a"))))
+        (base32 "17ivl01j2a6j6frzxdmzb4bdbs94n8rkipz2lh3zhhkx17djlbfh"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list gfortran
