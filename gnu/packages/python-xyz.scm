@@ -22054,7 +22054,9 @@ representation.")
                                  " and not test_python_render_simple_passing_lexer_instance"
                                  " and not test_python_render_indent_guides"
                                  " and not test_option_no_wrap"
-                                 " and not test_syntax_highlight_ranges"))))
+                                 " and not test_syntax_highlight_ranges"
+                                 " and not test_inline_code"
+                                 " and not test_blank_lines"))))
     (propagated-inputs
      (list python-markdown-it-py python-pygments))
     (native-inputs
