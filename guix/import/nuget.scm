@@ -49,8 +49,7 @@
   #:use-module (guix http-client)
   #:use-module (guix memoization)
   #:use-module (guix utils)
-  #:use-module ((guix import utils)
-                #:select (factorize-uri snake-case recursive-import flatten))
+  #:use-module (guix import utils)
   #:use-module (guix import json)
   #:use-module (guix base32)
   #:use-module (guix build utils)
@@ -61,6 +60,13 @@
   #:use-module (guix http-client)
   #:export (nuget->guix-package
             nuget-recursive-import))
+
+;; copy from guix/import/pypi.scm
+(define non-empty-string-or-false
+  (match-lambda
+    ("" #f)
+    ((? string? str) str)
+    ((or 'null #f) #f)))
 
 ;;; See also <https://learn.microsoft.com/en-us/nuget/concepts/package-versioning?tabs=semver20sort>.
 ;;; Therefore, excluding prerelease and metadata labels, a version string is Major.Minor.Patch.Revision.
@@ -320,9 +326,12 @@ s-expression and a flat list of its dependency names (strings)."
                  (values #f '())
                  (let* ((name (assoc-ref entry "id"))
                         (guix-name (nuget-name->guix-name name))
-                        (description (assoc-ref entry "description"))
-                        (synopsis (or (assoc-ref entry "summary")
-                                      description))
+                        (description (beautify-description
+                                      (non-empty-string-or-false
+                                       (assoc-ref entry "description"))))
+                        (synopsis (beautify-synopsis
+                                   (non-empty-string-or-false
+                                    (assoc-ref entry "summary"))))
                         (home-page (or (assoc-ref entry "projectUrl")
                                        (string-append "https://www.nuget.org/packages/" name)))
                         (license (license-prefix (or (and=> (assoc-ref entry "licenseExpression")
