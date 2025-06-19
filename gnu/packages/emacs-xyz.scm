@@ -5395,32 +5395,37 @@ rather than the contents of files.")
     (license license:gpl3+)))
 
 (define-public emacs-aio
-  (package
-    (name "emacs-aio")
-    (version "1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/skeeto/emacs-aio")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1y7j10j74r3fy0rcb8g3cm9nlls34qb0pz9xkia7psp77syrlz54"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:test-command '("emacs" "--batch"
-                        "-l" "aio-test.el"
-                        "-f" "ert-run-tests-batch-and-exit")))
-    (propagated-inputs
-     (list emacs-elfeed emacs-skewer-mode))
-    (home-page "https://github.com/skeeto/emacs-aio")
-    (synopsis "Async/Await for Emacs Lisp")
-    (description "@code{aio} is to Emacs Lisp as @code{asyncio} is to Python.
+  (let ((revision "0")
+        (commit "289c1e9530b59b4e2fd88f87f303547b23f2a3e3"))
+    (package
+      (name "emacs-aio")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      ;; Switched from <https://github.com/skeeto/emacs-aio>
+                      ;; since <https://github.com/skeeto/emacs-aio/issues/31>
+                      ;; is open since Jan 1 2025 with no merge.
+                      (url "https://github.com/kiennq/emacs-aio")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1jaq3xbk69ki10bfdphl4ac2hsnvr56bg4fcr0si8q31zgar7xzj"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:test-command '("emacs" "--batch"
+                          "-l" "aio-test.el"
+                          "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs
+       (list emacs-elfeed emacs-skewer-mode))
+      (home-page "https://github.com/skeeto/emacs-aio")
+      (synopsis "Async/Await for Emacs Lisp")
+      (description "@code{aio} is to Emacs Lisp as @code{asyncio} is to Python.
 This package builds upon Emacs generators to provide functions that pause
 while they wait on asynchronous events.  They do not block any thread while
 paused.")
-    (license license:unlicense)))
+      (license license:unlicense))))
 
 (define-public emacs-async
   (package
