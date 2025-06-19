@@ -768,7 +768,7 @@ variable defined below.  It requires guile-json to be installed."
            hunspell
            libnotify
            nspr
-           nss
+           ;; UNBUNDLE-ME! nss  (pending upgrade of 'nss' to 3.90 or later)
            shared-mime-info
            sqlite
            eudev
@@ -866,7 +866,7 @@ variable defined below.  It requires guile-json to be installed."
          ;; UNBUNDLE-ME! "--with-system-libvpx"
          "--with-system-icu"
          "--with-system-nspr"
-         "--with-system-nss"
+         ;; UNBUNDLE-ME! "--with-system-nss" ; pending upgrade of 'nss' to 3.90
 
          ;; UNBUNDLE-ME! "--with-system-harfbuzz"
          ;; UNBUNDLE-ME! "--with-system-graphite2"
