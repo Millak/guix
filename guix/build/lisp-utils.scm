@@ -106,6 +106,8 @@ with PROGRAM."
     ("ecl" `(,(%lisp)
              ,@(spread-statements program "--eval")
              "--eval" "(quit)"))
+    ("clasp" `(,(%lisp) "--non-interactive"
+               ,@(spread-statements program "--eval")))
     (_ (error "The LISP provided is not supported at this time."))))
 
 (define (compile-systems systems directory operation)

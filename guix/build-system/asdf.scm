@@ -3,6 +3,7 @@
 ;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,7 +43,8 @@
             asdf-build-system/ecl
             asdf-build-system/source
             sbcl-package->cl-source-package
-            sbcl-package->ecl-package))
+            sbcl-package->ecl-package
+            sbcl-package->clasp-package))
 
 ;; Commentary:
 ;;
@@ -247,7 +249,12 @@ set up using CL source package conventions."
 (define (lower lisp-type)
   (lambda* (name
             #:key source inputs outputs native-inputs system target
-            (lisp (default-lisp (string->symbol lisp-type)))
+            (lisp (default-lisp
+                    (match lisp-type
+                      ("sbcl" 'sbcl)
+                      ("ecl" 'ecl)
+                      ("clasp" 'clasp-cl)
+                      (_ error "The LISP provided is not supported at this time."))))
             #:allow-other-keys
             #:rest arguments)
     "Return a bag for NAME"
@@ -340,6 +347,12 @@ set up using CL source package conventions."
     (description "The build system for ASDF binary packages using ECL")
     (lower (lower "ecl"))))
 
+(define asdf-build-system/clasp
+  (build-system
+    (name 'asdf/clasp)
+    (description "The build system for ASDF binary packages using Clasp")
+    (lower (lower "clasp"))))
+
 (define asdf-build-system/source
   (build-system
     (name 'asdf/source)
@@ -367,6 +380,20 @@ set up using CL source package conventions."
                                      asdf-build-system/ecl
                                      "sbcl-"
                                      "ecl-"
+                                     #:variant-property property
+                                     #:phases-transformer
+                                     'identity)))
+    (lambda (pkg)
+      (transformer
+       (strip-variant-as-necessary property pkg)))))
+
+(define sbcl-package->clasp-package
+  (let* ((property 'clasp-variant)
+         (transformer
+          (package-with-build-system asdf-build-system/sbcl
+                                     asdf-build-system/clasp
+                                     "sbcl-"
+                                     "clasp-"
                                      #:variant-property property
                                      #:phases-transformer
                                      'identity)))
