@@ -20586,6 +20586,9 @@ and mix text with expressions.")
 (define-public ecl-lorem-ipsum
   (sbcl-package->ecl-package sbcl-lorem-ipsum))
 
+(define-public clasp-lorem-ipsum
+  (sbcl-package->clasp-package sbcl-lorem-ipsum))
+
 (define-public sbcl-lparallel
   (let ((commit "80fc2952a074776abd343d6b5d3ab157f0e1df7a")
         (revision "1"))
