@@ -150,18 +150,26 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
       (let* ((pytest (which "pytest"))
              (nosetests (which "nosetests"))
              (nose2 (which "nose2"))
+             (stestr (which "stestr"))
              (have-setup-py (file-exists? "setup.py"))
+             ;; unittest default pattern
+             ;; See https://docs.python.org/3/library/unittest.html\
+             ;; #cmdoption-unittest-discover-p
+             (tests-found (find-files "." "test.*\\.py$"))
              (use-test-backend
               (or test-backend
                   ;; Prefer pytest
                   (if pytest 'pytest #f)
+                  (if stestr 'stestr #f)
                   (if nosetests 'nose #f)
                   (if nose2 'nose2 #f)
-                  ;; But fall back to setup.py, which should work for most
-                  ;; packages. XXX: would be nice not to depend on setup.py here?
-                  ;; fails more often than not to find any tests at all.  Maybe
-                  ;; we can run `python -m unittest`?
-                  (if have-setup-py 'setup.py #f))))
+                  ;; Fall back to setup.py. The command is deprecated, but is
+                  ;; a superset of unittest, so should work for most packages.
+                  ;; Keep it until setuptools removes `setup.py test'.
+                  ;; See https://setuptools.pypa.io/en/latest/deprecated/\
+                  ;; commands.html#test-build-package-and-run-a-unittest-suite
+                  (if have-setup-py 'setup.py #f)
+                  (if tests-found 'unittest #f))))
         (format #t "Using ~a~%" use-test-backend)
         (match use-test-backend
           ('pytest
@@ -175,7 +183,11 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
                   (if (null? test-flags)
                       '("test" "-v")
                       test-flags)))
-          ('python
+          ('stestr
+           (apply invoke stestr "run" test-flags))
+          ('unittest
+           (apply invoke "python" "-m" "unittest" test-flags))
+          ('custom
            (apply invoke "python" test-flags))
           ;; The developer should explicitly disable tests in this case.
           (else (raise (condition (&test-system-not-found))))))
