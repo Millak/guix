@@ -58,6 +58,9 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-maths)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
@@ -115,6 +118,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system pyproject)
@@ -9316,6 +9320,42 @@ See related paper
 an API for performing input and output operations on different kinds of
 n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
       (license license:cecill))))
+
+(define-public uranimator
+  ;; No release or version tags.
+  (let ((commit "f50558c6fbcec4a8e749c37f2368c21170d5bb48")
+        (revision "0"))
+    (package
+      (name "uranimator")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/astronexus/uranimator.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1icb4c3mfm63zqicixpbaks7a96s82d7q8c5j8kdb548rpsrcxqp"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:go go-1.24
+        #:install-source? #f
+        #:import-path "codeberg.org/astronexus/uranimator"))
+      (native-inputs
+       (list go-codeberg-org-astronexus-brahe
+             go-github-com-jessevdk-go-flags
+             go-gonum-org-v1-gonum
+             go-gopkg-in-yaml-v3))
+      (home-page "https://codeberg.org/astronexus/uranimator")
+      (synopsis "Create sets of astro .png files that can be turned into animations")
+      (description
+       "@code{uranimator} is a CLI tool that works with your existing
+@url{https://codeberg.org/astronexus/uraniborg,(code uraniborg)} install to
+create animations.  See how the sky evolves over a million years or what
+traveling to a star 100 light years away looks like.")
+      (license license:agpl3))))
 
 (define-public wcslib
   (package
