@@ -68,7 +68,6 @@ REQUIRE=(
     "wget"
     "gpg"
     "grep"
-    "which"
     "sed"
     "sort"
     "getent"
@@ -458,11 +457,11 @@ create_account()
     if id "$user" &>/dev/null; then
 	_msg_info "user '$user' is already in the system, reset"
 	usermod -g "$group" -G "$supplementary_groups"	\
-		-d /var/empty -s "$(which nologin)"	\
+		-d /var/empty -s "$(command -v nologin)"	\
 		-c "$comment" "$user"
     else
 	useradd -g "$group" -G "$supplementary_groups"	\
-		-d /var/empty -s "$(which nologin)"	\
+		-d /var/empty -s "$(command -v nologin)"	\
 		-c "$comment" --system "$user"
 	_msg_pass "user added <$user>"
     fi
