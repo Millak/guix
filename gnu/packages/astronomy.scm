@@ -6351,13 +6351,13 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "3.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "0gyv07cz5f5m5hg22cfa2lpdj9lzjg2isz8pjfg22gl311ys584i"))))
+        (base32 "03r9nv3d3rjm70ihqg03aj6ydl91527abfmx7nbf6g9598s01fg1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6371,11 +6371,6 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-asdf
-           python-asdf-astropy
-           python-astropy
-           python-numpy))
     (native-inputs
      (list nss-certs-for-test
            python-crds
@@ -6384,9 +6379,14 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
            python-pytest-doctestplus
            python-pytest-xdist
            python-scipy
-           python-setuptools
-           python-setuptools-scm
+           python-setuptools-next
+           python-setuptools-scm-next
            python-wheel))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-astropy
+           python-astropy
+           python-numpy))
     (home-page "https://github.com/spacetelescope/stdatamodels")
     (synopsis
      "Core support for DataModel classes used in calibration pipelines")
