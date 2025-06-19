@@ -7912,18 +7912,19 @@ to the SolarSoft data analysis environment.")
 (define-public python-sunraster
   (package
     (name "python-sunraster")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunraster" version))
        (sha256
-        (base32 "1kp0bhih4fcx4g60li4s574m493f3z4dq2r30nifq0m7f50w0r87"))))
+        (base32 "1nyrhn7if7xpl97k6nzsxymdi6b77n61xlh1il3m58rdrjyp5q81"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--ignore=docs/data_types/raster.rst"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--ignore=docs/data_types/raster.rst"
               "--ignore=docs/data_types/spectrogram.rst"
               "-k" (string-join
                     ;; XXX: Reported upstream:
@@ -7944,10 +7945,12 @@ to the SolarSoft data analysis environment.")
               ;; '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-extension-helpers
+     (list python-pytest
            python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
+           python-pytest-doctestplus
+           python-pytest-xdist
+           python-setuptools-next
+           python-setuptools-scm-next
            python-sunpy-minimal
            python-wheel))
     (propagated-inputs
