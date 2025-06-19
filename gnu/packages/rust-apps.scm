@@ -38,7 +38,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2025 Gabriel Santos <gabriel.santos.smtp@gmail.com>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

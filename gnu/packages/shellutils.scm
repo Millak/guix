@@ -21,6 +21,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Brian Kubisiak <brian@kubisiak.com>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1133,3 +1134,25 @@ with Guix Home:
    "The fzf-tab package replaces the default completion menu of the zsh
 shell with fzf, enabling fuzzy finding and multi-selection.")
   (license license:expat)))
+
+(define-public pay-respects
+  (package
+    (name "pay-respects")
+    (version "0.7.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pay-respects" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14hrfmwhisc98ba1hyg86v20g9qaa6jhx051m1ylkmajbklvzmgz"))))
+    (build-system cargo-build-system)
+    (arguments (list #:install-source? #f))
+    (inputs (cargo-inputs 'pay-respects))
+    (home-page "https://codeberg.org/iff/pay-respects")
+    (synopsis "Suggest correction for mistyped console commands")
+    (description
+     "@command{pay-respects} provides a shell helper to suggest correction for
+mistyped commands, with @command{guix locate} integration and an alias (default
+to @command{f}) to correct the previous command.")
+    (license license:agpl3+)))
