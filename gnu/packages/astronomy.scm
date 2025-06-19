@@ -7166,21 +7166,14 @@ Grace Roman Space Telescope.")
 (define-public python-radio-beam
   (package
     (name "python-radio-beam")
-    (version "0.3.8")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "radio-beam" version))
+       (uri (pypi-uri "radio_beam" version))
        (sha256
-        (base32 "0dg6vqdhmzh47awdkkcbf455gw6if2qwxyhcqbq2dkhbwsx680gc"))))
+        (base32 "0i76hj6wyijbpxx7n1sm12f0qqw15srk6ikq2cr589lvrixylpwv"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; See <https://github.com/radio-astro-tools/radio-beam/issues/129>.
-     ;; E   astropy.units.core.UnitScaleError: cannot create a unit with a scale of 0.
-     ;;
-     ;; It might happen due to older version of NumPy in Guix, upastream
-     ;; tested with numpy==2.1.2, where we have 1.23.2.
-     (list #:tests? #f))
     (native-inputs
      (list python-pytest-astropy
            python-setuptools
@@ -7190,9 +7183,8 @@ Grace Roman Space Telescope.")
      (list python-astropy
            python-matplotlib
            python-numpy
-           python-scipy
-           python-six))
-    (home-page "https://radio-beam.readthedocs.io/en/latest/")
+           python-scipy))
+   (home-page "https://radio-beam.readthedocs.io/en/latest/")
     (synopsis "Operations for radio astronomy beams with Astropy")
     (description
      "Radio Beam is a simple toolkit for reading beam information from FITS
