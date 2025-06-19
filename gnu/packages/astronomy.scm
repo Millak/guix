@@ -4513,13 +4513,13 @@ on:
 (define-public python-mpl-animators
   (package
     (name "python-mpl-animators")
-    (version "1.2.1")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mpl_animators" version))
        (sha256
-        (base32 "1jscdgx1ynqvidh0kc6jxhjlp7lxhilwnp5pb6ddi7nb10as90kz"))))
+        (base32 "15zsi9apfdj6csr3vpvcw9972xr7036nw6smiwfy0n514l1xh3b1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
