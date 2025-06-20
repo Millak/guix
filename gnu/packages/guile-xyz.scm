@@ -6761,7 +6761,7 @@ The resulting QR codes can be rendered to ASCII art strings or to PNG images (us
 (define-public guile-hygguile
   (package
     (name "guile-hygguile")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -6770,7 +6770,7 @@ The resulting QR codes can be rendered to ASCII art strings or to PNG images (us
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z96lgqm2d90wsn02i4qn2grrw3xfvh9m2l31nk1pfi1kc856hmd"))))
+        (base32 "0iwgbb2ym15l0iz91ycd7ikf42jnhdnzs786d9dc1p2d0fr2l962"))))
     (build-system guile-build-system)
     (native-inputs (list guile-3.0))
     (arguments
