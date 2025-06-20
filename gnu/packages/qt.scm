@@ -137,6 +137,7 @@
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
@@ -2412,7 +2413,24 @@ Server Protocol (LSP) for Qt.")
               (uri (qt-url name version))
               (sha256
                (base32
-                "0ja5rs1z9lx9hns7m1mg1lndl04arhjajqbdg29j446q5xlzkpk2"))))
+                "0ja5rs1z9lx9hns7m1mg1lndl04arhjajqbdg29j446q5xlzkpk2"))
+              (patches
+               (search-patches "qtlocation-5.15.8-mapboxgl-gcc13.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; TODO: Unvendor more deps.
+                   (with-directory-excursion "src/3rdparty/mapbox-gl-native"
+                     (for-each delete-file-recursively
+                               (list "deps/rapidjson"
+                                     "deps/protozero"))
+
+                     (substitute* "mapbox-gl-native.pro"
+                       (("    deps/protozero/1\\.5\\.2 \\\\
+    deps/protozero/1\\.5\\.2/include \\\\
+    deps/rapidjson/1\\.1\\.0 \\\\
+    deps/rapidjson/1\\.1\\.0/include \\\\")
+                        "")))))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
@@ -2422,7 +2440,7 @@ Server Protocol (LSP) for Qt.")
               (lambda _
                 (setenv "HOME" "/tmp")))))))
     (native-inputs (list perl qtdeclarative-5 qtquickcontrols-5 qtserialport-5))
-    (inputs (list icu4c openssl qtbase-5 zlib))
+    (inputs (list icu4c openssl qtbase-5 zlib rapidjson protozero))
     (synopsis "Qt Location and Positioning modules")
     (description "The Qt Location module provides an interface for location,
 positioning and geolocation plugins.")))
