@@ -1481,7 +1481,7 @@ plotting engine by third-party applications like Octave.")
 (define-public hmat
   (package
     (name "hmat")
-    (version "1.9.0")
+    (version "1.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1490,7 +1490,7 @@ plotting engine by third-party applications like Octave.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ssjzf3sdhn80w03bhp694s413222cl0100bf36mx70q3a1b6vi5"))))
+                "1cdaq5j2gknar7hcycll1ra9f0pqvri1bqsj0nf21kc4j2ynaw8s"))))
     (build-system cmake-build-system)
     (arguments
      ;; Examples are the tests.
