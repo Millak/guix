@@ -26234,7 +26234,7 @@ code reviews.")
 (define-public python-icdiff
   (package
     (name "python-icdiff")
-    (version "2.0.5")
+    (version "2.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26243,8 +26243,11 @@ code reviews.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14gr9j2h7sfw47pwfzspm4zinywhqmzm4a0qz5c2k9wbixz120a4"))))
-    (build-system python-build-system)
+                "0kwgglbnpvsv5qb59yl0pvihr1ca5m8l6cq8hjski5y62g33zv2w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no test scripts
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://www.jefftk.com/icdiff")
     (synopsis "Improved colored diff")
     (description "This package provides colored diff functions that highlight
