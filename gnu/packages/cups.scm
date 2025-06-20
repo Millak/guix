@@ -657,6 +657,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                                 " -Wno-error=implicit-function-declaration"
                                 " -Wno-error=implicit-int"
                                 " -Wno-error=incompatible-pointer-types"
+                                " -Wno-error=int-conversion"
                                 " -Wno-error=return-mismatch")))))
           (add-after 'unpack 'fix-hard-coded-file-names
             (lambda* (#:key inputs outputs #:allow-other-keys)
