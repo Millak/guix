@@ -552,6 +552,29 @@ using NumPy-like idioms.")
 line drawing algorithm}.")
     (license license:expat)))
 
+(define-public python-calmjs-parse
+  (package
+    (name "python-calmjs-parse")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/calmjs/calmjs.parse/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08dmi4chamk5dbdpvrc0nb09iybfhj3wqwxgffiqnkj7030qhqb8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-ply))
+    (home-page "https://github.com/calmjs/calmjs.parse/")
+    (synopsis "Parsers for ECMA standards")
+    (description
+     "@code{Calmjs-parse} is a collection of helper libraries for
+understanding ECMA script.")
+    (license license:expat)))
+
 (define-public python-couleur
   (package
     (name "python-couleur")
