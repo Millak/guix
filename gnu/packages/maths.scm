@@ -4066,7 +4066,7 @@ functions.")
 (define-public primecount
   (package
     (name "primecount")
-    (version "7.14")
+    (version "7.19")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4075,7 +4075,7 @@ functions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "097p3wfq6ds56275cra678hzg8cp2vd1ccllsi8wczrf0qvq91rp"))))
+                "1yjqk0q04d8kqkal5vahyfgwas1sz8h3scmk27sr128jcc1cvcx6"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_LIBPRIMESIEVE=OFF"
