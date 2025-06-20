@@ -855,7 +855,7 @@ http://tartarus.org/~martin/PorterStemmer/index.html.")
 
 (define-public go-github-com-alecaivazis-survey-v2
   (package
-    (name "go-github-com-alecaivazis-survey")
+    (name "go-github-com-alecaivazis-survey-v2")
     (version "2.3.7")
     (source
      (origin
@@ -869,22 +869,23 @@ http://tartarus.org/~martin/PorterStemmer/index.html.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/AlecAivazis/survey"
-      #:unpack-path "github.com/AlecAivazis/survey"))
-    (propagated-inputs (list go-golang-org-x-text
-                             go-golang-org-x-term
-                             go-github-com-stretchr-testify
-                             go-github-com-mgutz-ansi
-                             go-github-com-mattn-go-isatty
-                             go-github-com-kballard-go-shellquote
-                             go-github-com-hinshun-vt10x
-                             go-github-com-creack-pty
-                             go-github-com-netflix-go-expect))
+      #:import-path "github.com/AlecAivazis/survey/v2"))
+    (native-inputs
+     (list go-github-com-creack-pty
+           go-github-com-hinshun-vt10x
+           go-github-com-netflix-go-expect
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-kballard-go-shellquote
+           go-github-com-mattn-go-isatty
+           go-github-com-mgutz-ansi
+           go-golang-org-x-term
+           go-golang-org-x-text))
     (home-page "https://github.com/AlecAivazis/survey")
     (synopsis "Interactive and accessible terminal prompts for Go")
     (description
-     "This package provides a library for building interactive and accessible prompts
-on terminals supporting ANSI escape sequences.")
+     "This package provides a library for building interactive and accessible
+prompts on terminals supporting ANSI escape sequences.")
     (license license:expat)))
 
 (define-public go-github-com-alecthomas-chroma
