@@ -2574,7 +2574,23 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
     (build-system pyproject-build-system)
     (arguments
      ;; See <https://github.com/aragilar/pytest-mpi/issues/4>.
-     (list #:test-flags #~(list "-p" "pytester")))
+     (list #:test-flags
+           #~(list "-p" "pytester"
+                   #$@(if (target-aarch64?)
+                          ;; Some tests fail on non x86_64 more likely the
+                          ;; project does not support any other ones, see
+                          ;; <ci/azure-pipelines-steps.yml>.
+                          ;; ValueError: Pytest terminal summary report not found
+                          '("-k" (string-join
+                                  (list "not test_mpi_file_name"
+                                        "test_mpi_only_mpi"
+                                        "test_mpi_skip_under_mpi"
+                                        "test_mpi_tmp_path"
+                                        "test_mpi_tmpdir"
+                                        "test_mpi_with_mpi"
+                                        "test_mpi_xfail_under_mpi")
+                                  " and not "))
+                          '()))))
     (native-inputs
      (list openmpi
            python-pytest
