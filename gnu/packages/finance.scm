@@ -111,6 +111,7 @@
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libedit)
@@ -213,6 +214,36 @@ central authority: managing transactions and issuing money are carried out
 collectively by the network.  Bitcoin Core is the reference implementation
 of the bitcoin protocol.  This package provides the Bitcoin Core command
 line client and a client based on Qt.")
+    (license license:expat)))
+
+(define-public bitcoin-knots
+  (package
+    (inherit bitcoin-core)
+    (name "bitcoin-knots")
+    (version "29.2.knots20251110")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://bitcoinknots.org/files/" (version-major version)
+                    ".x/" version "/bitcoin-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04kh88xklyq5w2x0zykfas6ssxajp1z33c2899fq342jnfr510b6"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments bitcoin-core)
+       ((#:qtbase original-flags #f)
+        qtbase-5)))
+    (native-inputs
+     (modify-inputs (package-native-inputs bitcoin-core)
+       (delete qttools)
+       (append imagemagick
+               librsvg
+               qttools-5)))
+    (home-page "https://bitcoinknots.org")
+    (synopsis "Enhanced Bitcoin node/wallet based on Bitcoin Core")
+    (description "Bitcoin Knots connects to the Bitcoin peer-to-peer network
+to download and fully validate blocks and transactions.  It also includes a
+wallet and graphical user interface.")
     (license license:expat)))
 
 (define-public bitcoin-cash-node
