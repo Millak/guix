@@ -26215,22 +26215,16 @@ code reviews.")
 (define-public python-diff-match-patch
   (package
     (name "python-diff-match-patch")
-    (version "20200713")
+    (version "20241021")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "diff-match-patch" version))
+        (uri (pypi-uri "diff_match_patch" version))
         (sha256
          (base32
-          "063s8zcxz787xfg7d1wxpqh59fxg3iz85ww9zhyz4vaqm80mlvys"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "python" "-m" "unittest"
-                                "diff_match_patch.tests")))))))
+          "0wshhdnxvb7l45pjrj1fhrhvh7b6p1l2kvim559q9054kylmgbmy"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
     (home-page "https://github.com/diff-match-patch-python/diff-match-patch")
     (synopsis "Synchronize plain text")
     (description "Diff Match and Patch libraries offer robust algorithms to
