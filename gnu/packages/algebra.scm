@@ -1455,7 +1455,7 @@ objects.")
 (define-public spectra
   (package
     (name "spectra")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1464,18 +1464,10 @@ objects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1krgx7763g0phrp879rgq10dvfyxrdx9rzwxiyzn6qi3iqr6d8hx"))))
+                "0n080n8ap3b6y7nz0xrlq3x7i4nsf4pl65l5z1r828kkx88agpms"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTS=ON")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; This test failed.
-                     (invoke "ctest" "--exclude-regex"
-                             "GenEigsRealShift")))))))
+     (list #:configure-flags #~(list "-DBUILD_TESTS=ON")))
     (inputs (list eigen))
     (home-page "https://spectralib.org/")
     (synopsis "C++ library for large scale eigenvalue problems")
