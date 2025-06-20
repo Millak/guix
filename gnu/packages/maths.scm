@@ -4504,19 +4504,22 @@ bindings to almost all functions of PETSc.")
 (define-public python-primecountpy
   (package
     (name "python-primecountpy")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "primecountpy" version))
+       (method git-fetch) ; Fetch from GitHub to avoid precompiled files
+       (uri (git-reference
+             (url "https://github.com/dimpase/primecountpy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0xh6zx5zw5scy7jygqirks9y6z4zyfm0zjfp8nd6dw0m471przkq"))))
+        (base32 "0pdmdch5fhzcclrdnb4z3n4a9f00iqr65yzpkhjpz5a6mbz3l5v8"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; there are no tests
     (native-inputs
      (list python-cysignals
-           python-cython
+           python-cython-3
            python-setuptools
            python-wheel))
     (inputs
