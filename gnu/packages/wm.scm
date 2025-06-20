@@ -1929,7 +1929,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public niri
   (package
    (name "niri")
-   (version "25.05")
+   (version "25.05.1")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -1938,7 +1938,7 @@ limited size and a few external dependencies.  It is configurable via
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0r9kw0ya8kdrgza5wh55cdlqnkps5x6xkr5k3rghrdv3fq24130y"))))
+               "0l0nj2zfmdyr058yc84579jxj6m4lilgcy63dna6bp6mv7xl569h"))))
    (build-system cargo-build-system)
    (arguments
     (list #:install-source? #f

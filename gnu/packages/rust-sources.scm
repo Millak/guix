@@ -471,8 +471,8 @@ UTF-32 support.")
      (license (list license:expat license:asl2.0)))))
 
 (define-public rust-smithay-for-niri
-  (let ((commit "c1f13a6b9605c9f7009122a7b2b34f210255dac3")
-        (revision "1"))
+  (let ((commit "ede27079f45eeb7c21796e22f3bc25b741b024ea")
+        (revision "2"))
     (hidden-package
      (package
        (name "rust-smithay")
@@ -485,7 +485,7 @@ UTF-32 support.")
                  (file-name (git-file-name name version))
                  (sha256
                   (base32
-                   "0z5apafihgp7dgyn72b98f6d850rdbmpp995rc9d5w5q58mzx142"))))
+                   "187vdwhy6fjjym9xmyzdhpw1r5xfdfsbbn7y8xv0x9dv12f1var2"))))
        (build-system cargo-build-system)
        (arguments
         (list #:skip-build? #t
