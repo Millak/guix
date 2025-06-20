@@ -1926,9 +1926,6 @@ limited size and a few external dependencies.  It is configurable via
     ;;             LICENSE       LICENSE.dwm   LICENSE.tinywl
     (license (list license:gpl3+ license:expat license:cc0))))
 
-;; FIXME: xdg-desktop-portal-gnome integration (screencasting) is not working.
-;; Only packages using the ‘wlr-screencopy’ protocol (e.g. wf-recorder,
-;; obs with obs-wlrobs) are working.
 (define-public niri
   (package
    (name "niri")
@@ -1968,10 +1965,13 @@ limited size and a few external dependencies.  It is configurable via
                   ;; For tests.
                   (setenv "XDG_RUNTIME_DIR" "/tmp")))
               (add-after 'install 'install-extras
-                (lambda _
+                (lambda* (#:key inputs #:allow-other-keys)
                   (substitute* "resources/niri.desktop"
                     (("niri-session")
-                     (string-append #$output "/bin/niri --session")))
+                     (format #f "~a --dbus-daemon=~a ~a/bin/niri --session"
+                             (search-input-file inputs "bin/dbus-run-session")
+                             (search-input-file inputs "bin/dbus-daemon")
+                             #$output)))
                   (install-file
                    "resources/niri.desktop"
                    (in-vicinity #$output "share/wayland-sessions"))
@@ -1982,6 +1982,7 @@ limited size and a few external dependencies.  It is configurable via
     (list pkg-config))
    (inputs
     (cons* clang
+           dbus
            libdisplay-info
            libinput-minimal
            libseat
