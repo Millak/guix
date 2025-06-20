@@ -216,7 +216,12 @@ chmod -Rf +w "$test_directory"; rm -rf "$test_directory"/*
 # Ensure '-R' applies to propagated inputs.  Failing to do that, it would fail
 # with a profile collision error in this case because 'python-scipy'
 # propagates 'python-numpy'.  See <https://bugs.gnu.org/42510>.
-guix pack -RR python-numpy python-scipy --no-grafts -n
+#
+# 'python-scipy' depends on the package defined with the Guile variable
+# 'python-numpy' but the package specification 'python-numpy' doesn't always
+# refer to the same package (e.g. when multiple versions are defined) so the
+# Guile variable is directly referred to.
+guix pack -RR -e '(@ (gnu packages python-xyz) python-numpy)' python-scipy --no-grafts -n
 
 # Check that packages that mix executable and support files (e.g. git) in the
 # "binary" directories still work after wrapped.
