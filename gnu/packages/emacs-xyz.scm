@@ -19581,6 +19581,30 @@ receive little if no maintenance and there is no guaranty that they are
 compatible with the Org stable version.")
     (license license:gpl3+)))
 
+(define-public emacs-org-count-words
+  ;; No releases.
+  (let ((commit "df4f06905e3020106d6ceaada854ebd7f9a231d2")
+        (revision "0"))
+    (package
+      (name "emacs-org-count-words")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Elilif/org-count-words.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12yxgkqv33i8hcgc5z033fhrar5l937kpsi36v4jffw6lr3wrlbv"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/Elilif/org-count-words")
+      (synopsis "Word count in org-mode")
+      (description "This package calculates a precise word count in org-mode
+by excluding unwanted elements such as code blocks, options, and drawers.  The
+results are displayed on the modeline.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-texlive-collection
   (package
     (name "emacs-org-texlive-collection")
