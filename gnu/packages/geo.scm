@@ -1507,7 +1507,7 @@ development.")
 (define-public pdal
   (package
     (name "pdal")
-    (version "2.8.4")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -1516,17 +1516,20 @@ development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w6cg9akb46xf6h7cw0nrg109d6n9035qxczk2scvaxg76hgnsz7"))))
+        (base32 "0gckixcykp9di4j7w6zkbhpj2ji1hvk8z3rw58dlqcvi81xcyjfa"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list
+      #:configure-flags #~(list "-DUSE_EXTERNAL_GTEST=ON")
+      #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (invoke "ctest" "-E" ;; This test hangs.
-                             "pdal_io_stac_reader_test")))))))
-    (native-inputs (list python))
+                     (invoke "ctest" "-E"
+                             ;; This tests needs network .
+                             "pdal_io_(stac|copc)_reader_test")))))))
+    (native-inputs (list python googletest))
     (inputs (list gdal
                   h3
                   libgeotiff
