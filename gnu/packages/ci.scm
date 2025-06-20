@@ -322,22 +322,22 @@ reinventing them.")
                      (lambda _
                        (rename-file (string-append #$output "/bin/act_runner")
                                     (string-append #$output "/bin/forgejo-runner")))))))
-    (propagated-inputs
-     (list go-github-com-joho-godotenv
+    (native-inputs
+     (list go-code-gitea-io-actions-proto-go-ping
+           go-code-gitea-io-actions-proto-go-runner
+           go-connectrpc-com-connect
            go-github-com-avast-retry-go
-           go-gopkg-in-yaml-v3
-           go-github-com-sirupsen-logrus
-           go-google-golang-org-protobuf
+           go-github-com-avast-retry-go-v4
            go-github-com-google-uuid
-           go-golang-org-x-term
-           go-golang-org-x-time
-           go-github-com-spf13-cobra
+           go-github-com-joho-godotenv
            go-github-com-mattn-go-isatty
            go-github-com-nektos-act
-           go-github-com-avast-retry-go-v4
-           go-connectrpc-com-connect
-           go-code-gitea-io-actions-proto-go-ping
-           go-code-gitea-io-actions-proto-go-runner))
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-cobra
+           go-golang-org-x-term
+           go-golang-org-x-time
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
     (home-page "https://code.forgejo.org/forgejo/runner")
     (synopsis "Run continuous integration jobs for Forgejo")
     (description
