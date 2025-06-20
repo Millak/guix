@@ -8626,9 +8626,9 @@ it provides an elegant coroutine-based API.")
        (sha256
         (base32
          "039hf9knvl4s3hp21bzwsp1g5ri9gxsh504dp48lc6nr1av35byy"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-urllib3))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-urllib3))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page
      "https://github.com/SeleniumHQ/selenium/")
     (synopsis "Python bindings for Selenium")
