@@ -51,3 +51,6 @@
 
 (define-public gcc-cross-i586-pc-gnu-toolchain
   (cross-gcc-toolchain "i586-pc-gnu"))
+
+(define-public gcc-cross-x86_64-pc-gnu-toolchain
+  (cross-gcc-toolchain "x86_64-pc-gnu"))
