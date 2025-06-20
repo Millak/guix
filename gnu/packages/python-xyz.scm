@@ -39281,12 +39281,12 @@ toolkit for Python.")
   (package
     (name "python-srt")
     (version "3.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "srt" version))
-              (sha256
-               (base32
-                "0l24710spxarijmv3h7iicvx0lv6m3d4xg77nd9kyv8jwifav93s"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "srt" version))
+       (sha256
+        (base32 "0l24710spxarijmv3h7iicvx0lv6m3d4xg77nd9kyv8jwifav93s"))))
     (build-system python-build-system)
     (home-page "https://github.com/cdown/srt")
     (synopsis "SRT parsing library")
