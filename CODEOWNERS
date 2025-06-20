@@ -97,10 +97,10 @@ guix/ui\.scm                                       @guix/core
 guix/upstream\.scm                                 @guix/core
 guix/utils\.scm                                    @guix/core
 guix/workers\.scm                                  @guix/core
-^guix/platforms/                                   @guix/core
-^guix/scripts/                                     @guix/core
-^guix/store/                                       @guix/core
-^nix/                                              @guix/core
+guix/platforms/                                    @guix/core
+guix/scripts/                                      @guix/core
+guix/store/                                        @guix/core
+nix/                                               @guix/core
 
 gnu/packages/base\.scm                             @guix/core-packages
 gnu/packages/bootstrap\.scm                        @guix/core-packages
@@ -128,7 +128,7 @@ gnu/packages/engineering\.scm                      @guix/electronics
 
 gnu/packages/aux-files/emacs/guix-emacs\.el        @guix/emacs
 gnu/packages/aux-files/emacs/comp-integrity\.el    @guix/emacs
-^gnu/packages/emacs(-.+|)\.scm$                    @guix/emacs
+gnu/packages/emacs(-.+|)\.scm$                     @guix/emacs
 gnu/packages/tree-sitter\.scm                      @guix/emacs
 guix/build/emacs-build-system\.scm                 @guix/emacs
 guix/build/emacs-utils\.scm                        @guix/emacs
@@ -170,7 +170,7 @@ guix/scripts/import/go\.scm                        @guix/go
 tests/go\.scm                                      @guix/go
 
 gnu/packages/dhall\.scm                            @guix/haskell
-^gnu/packages/haskell(-.+|)\.scm$                  @guix/haskell
+gnu/packages/haskell(-.+|)\.scm$                   @guix/haskell
 gnu/packages/purescript\.scm                       @guix/haskell
 guix/build/haskell-build-system\.scm               @guix/haskell
 guix/build-system/haskell\.scm                     @guix/haskell
@@ -179,7 +179,7 @@ guix/import/hackage\.scm                           @guix/haskell
 guix/import/stackage\.scm                          @guix/haskell
 guix/scripts/import/hackage\.scm                   @guix/haskell
 
-^(gnu|guix/scripts)/home(\.scm$|/)                 @guix/home
+(gnu|guix/scripts)/home(\.scm$|/)                  @guix/home
 tests/guix-home\.sh                                @guix/home
 tests/home-import\.scm                             @guix/home
 tests/home-services\.scm                           @guix/home
@@ -190,14 +190,14 @@ gnu/build/hurd-boot\.scm                           @guix/hurd
 gnu/services/hurd\.scm                             @guix/hurd
 gnu/packages/hurd\.scm                             @guix/hurd
 
-^gnu/installer(\.scm$|/)                           @guix/installer
+gnu/installer(\.scm$|/)                            @guix/installer
 
-^gnu/packages/java(-.+|)\.scm$                     @guix/java
-^gnu/packages/maven(-.+|)\.scm$                    @guix/java
+gnu/packages/java(-.+|)\.scm$                      @guix/java
+gnu/packages/maven(-.+|)\.scm$                     @guix/java
 guix/build/ant-build-system\.scm                   @guix/java
 guix/build/java-utils\.scm                         @guix/java
 guix/build/maven-build-system\.scm                 @guix/java
-^guix/build/maven/                                 @guix/java
+guix/build/maven/                                  @guix/java
 guix/build-system/ant\.scm                         @guix/java
 guix/build-system/maven\.scm                       @guix/java
 
@@ -208,21 +208,21 @@ guix/build/node-build-system\.scm                  @guix/javascript
 guix/import/npm-binary\.scm                        @guix/javascript
 guix/scripts/import/npm-binary\.scm                @guix/javascript
 
-^gnu/packages/julia(-.+|)\.scm$                    @guix/julia
+gnu/packages/julia(-.+|)\.scm$                     @guix/julia
 guix/build/julia-build-system\.scm                 @guix/julia
 guix/build-system/julia\.scm                       @guix/julia
 
-^gnu/packages/(kde)(-.+|)\.scm$                    @guix/kde
+gnu/packages/(kde)(-.+|)\.scm$                     @guix/kde
 gnu/packages/education\.scm                        @guix/kde
 
 gnu/build/linux-modules\.scm                       @guix/kernel
-^gnu/packages/aux-files/linux-libre.*$             @guix/kernel
+gnu/packages/aux-files/linux-libre.*$              @guix/kernel
 gnu/packages/linux\.scm                            @guix/kernel
 gnu/tests/linux-modules\.scm                       @guix/kernel
 guix/build/linux-module-build-system\.scm          @guix/kernel
 guix/build-system/linux-module\.scm                @guix/kernel
 
-^gnu/packages/lisp(-.+|)\.scm$                     @guix/lisp
+gnu/packages/lisp(-.+|)\.scm$                      @guix/lisp
 guix/build/asdf-build-system\.scm                  @guix/lisp
 guix/build/lisp-utils\.scm                         @guix/lisp
 guix/build-system/asdf\.scm                        @guix/lisp
@@ -254,7 +254,7 @@ tests/opam\.scm                                    @guix/ocaml
 
 gnu/packages/django\.scm                           @guix/python
 gnu/packages/jupyter\.scm                          @guix/python
-^gnu/packages/python(-.+|)\.scm$                   @guix/python
+gnu/packages/python(-.+|)\.scm$                    @guix/python
 gnu/packages/sphinx\.scm                           @guix/python
 gnu/packages/tryton\.scm                           @guix/python
 guix/build/pyproject-build-system\.scm             @guix/python
@@ -290,7 +290,7 @@ guix/import/gem\.scm                               @guix/ruby
 guix/scripts/import/gem\.scm                       @guix/ruby
 tests/gem\.scm                                     @guix/ruby
 
-^gnu/packages/(crates|rust)(-.+|)\.scm$            @guix/rust
+gnu/packages/(crates|rust)(-.+|)\.scm$             @guix/rust
 gnu/packages/c2rust\.scm                           @guix/rust
 gnu/packages/sequoia\.scm                          @guix/rust
 guix/build/cargo-build-system\.scm                 @guix/rust
@@ -351,7 +351,7 @@ guix/scripts/import/texlive\.scm                   @guix/tex
 tests/texlive\.scm                                 @guix/tex
 
 etc/news\.scm                                      @guix/translations
-^po/                                               @guix/translations
+po/                                                @guix/translations
 
 gnu/packages/xfce\.scm                             @guix/xfce
 

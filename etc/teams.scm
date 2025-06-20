@@ -1418,7 +1418,12 @@ and REV-END, two git revision strings."
   (string-join (map (lambda (scope)
                       (format #f "~50a @guix/~a"
                               (if (regexp*? scope)
-                                  (regexp*-pattern scope)
+                                  (let ((regexp (regexp*-pattern scope)))
+                                    ;; Caret may not match as expected in
+                                    ;; 'CODEOWNERS' so drop it.
+                                    (if (string-prefix? "^" regexp)
+                                        (string-drop regexp 1)
+                                        regexp))
                                   (regexp-quote scope))
                               (team-id->forgejo-id (team-id team))))
                     (team-scope team))
