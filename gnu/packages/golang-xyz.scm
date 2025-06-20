@@ -1886,13 +1886,9 @@ stored in a Go struct.")
     (arguments
      (list
       #:import-path "github.com/avast/retry-go"
+      #:test-flags #~(list "-skip" "TestMaxDelay")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  (("TestMaxDelay") "OffTestMaxDelay")))))
           (add-after 'unpack 'remove-examples
             (lambda* (#:key import-path #:allow-other-keys)
               (delete-file-recursively
@@ -1921,19 +1917,9 @@ strategies, such as fixed delay, backoff delay, and random delay.")
        (sha256
         (base32 "01mwrzjh2y3xignkivx8kaghjs3gwb3z89zqgxjfaslslazc863b"))))
     (arguments
-     (list
-      #:import-path "github.com/avast/retry-go/v3"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  (("TestMaxDelay") "OffTestMaxDelay")))))
-          (add-after 'unpack 'remove-examples
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file-recursively
-               (string-append "src/" import-path "/examples")))))))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-avast-retry-go)
+       ((#:import-path _) "github.com/avast/retry-go/v3")))))
 
 (define-public go-github-com-avast-retry-go-v4
   (package
@@ -1950,14 +1936,9 @@ strategies, such as fixed delay, backoff delay, and random delay.")
        (sha256
         (base32 "09gs4wmkq7ragyf2xd0h6j8f9xqq66cwa95kwp5qdwz3wwv9xq1b"))))
     (arguments
-     (list
-      #:import-path "github.com/avast/retry-go/v4"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file-recursively
-               (string-append "src/" import-path "/examples")))))))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-avast-retry-go)
+       ((#:import-path _) "github.com/avast/retry-go/v4")))))
 
 (define-public go-github-com-axiomhq-hyperloglog
   (package
