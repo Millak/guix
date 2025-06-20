@@ -29,6 +29,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 pretty-print)
+  #:use-module (ice-9 binary-ports)
   #:use-module ((rnrs) #:select (put-bytevector))
   #:use-module ((sxml xpath) #:select (sxpath)) ; filter... grr
   #:use-module (srfi srfi-1)
@@ -40,6 +41,7 @@
   #:use-module (sxml simple)
   #:use-module (sxml match)
   #:use-module (web client)
+  #:use-module (web uri)
   #:use-module (json)
   #:use-module (semver)
   #:use-module (semver ranges)
@@ -250,28 +252,26 @@ primitives suitable for the 'semver-range' constructor."
 file using the system 'unzip' command, and parse it to find the repository URL
 and commit.  Returns an association list with 'url' and 'commit' keys on
 success, or #f on failure."
-  (let* ((name-lower (string-downcase package-name))
-         (snupkg-url (string-append %nuget-symbol-packages-url
-                                    name-lower "." version ".snupkg")))
+  (let* ((name (string-append (string-downcase package-name) "." version ".snupkg"))
+         (snupkg-url (string-append %nuget-symbol-packages-url name)))
     (format (current-error-port)
             "~%;; Source repository not found in NuGet catalog entry.~%;; ~
              Attempting to find it in symbol package: ~a~%"
             snupkg-url)
     (catch #t
       (lambda ()
-        (let-values (((response body)
-                      (http-get snupkg-url)))
-          (if (not body)
-              (begin
-                (warning (G_ "Failed to download: ~a~%") snupkg-url)
-                #f)
-              (call-with-temporary-directory
-               (lambda (dir)
-                 (let* ((archive-port (mkstemp "/tmp/myfile-XXXXXX"))
-                        (archive-file (port-filename archive-port)))
-                   (put-bytevector archive-port body)
-                   (force-output archive-port)
-                   (invoke "unzip" "-q" archive-file "-d" dir))
+        (guard (c ((http-get-error? c)
+                   (warning (G_ "Failed to download: ~a~%")
+                            (uri->string (http-get-error-uri c)))
+                   #f))
+          (let* ((port (http-fetch snupkg-url))
+                 (body (get-bytevector-all port)))
+            (call-with-temporary-directory
+             (lambda (dir)
+               (with-directory-excursion dir
+                 (call-with-output-file name
+                   (cut put-bytevector <> body))
+                 (invoke "unzip" "-q" name "-d" dir)
                  (let ((nuspec-files (find-files dir "\\.nuspec$")))
                    (chmod (car nuspec-files) #o400) ; some have 000 (example: flurl)
                    (if (null? nuspec-files)
@@ -302,7 +302,7 @@ success, or #f on failure."
                                           #f)))
                                    (,otherwise #f)))
                                ((sxpath '(// metadata repository))
-                                sxml)))))))))))))
+                                sxml))))))))))))))
       (lambda (key . args)
         (warning (G_ "Failed to fetch or process snupkg file: ~a (Reason: ~a ~s)~%")
                  snupkg-url key args)
