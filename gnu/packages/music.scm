@@ -267,14 +267,14 @@ presented by the Linux kernel Focusrite Scarlett2 USB Protocol Mixer Driver.")
 (define-public audacious
   (package
     (name "audacious")
-    (version "4.3.1")
+    (version "4.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://distfiles.audacious-media-player.org/"
                            "audacious-" version ".tar.bz2"))
        (sha256
-        (base32 "0hi0njnw3q7kngmjk837ynagighrbz8a4wpf8bim2nsh85lf5sc5"))))
+        (base32 "01ahr6p7nvzj6mixahifcwv12s7h34sp09yq4023ffy9z029al1l"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -318,14 +318,14 @@ presented by the Linux kernel Focusrite Scarlett2 USB Protocol Mixer Driver.")
            (uri (string-append "https://distfiles.audacious-media-player.org/"
                                "audacious-plugins-" version ".tar.bz2"))
            (sha256
-            (base32 "19n8zpayakszm00bakfzagbbqci95dxv4h7j9ml2sfjqmzijdsid"))))
+            (base32 "1gfl33gsxn69cmxdfk4m3v0578wa29y6d33iza066cbb7dlr9x2h"))))
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for gdbus-codegen
        ("pkg-config" ,pkg-config)))
     (inputs
      (list dbus
-           qtbase-5
-           qtmultimedia-5
+           qtbase
+           qtsvg
            ;; Plugin dependencies
            alsa-lib
            curl
