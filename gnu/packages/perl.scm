@@ -4813,19 +4813,17 @@ errors are rethrown automatically.")
          "0x09mq0q745cxkw3xgr0h7dil7p1pdq3l5299kj3mk2ijkk2gwb6"))))
     (build-system perl-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'install 'wrap-tinyrepl
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out")))
-                        (wrap-program (string-append out "/bin/tinyrepl")
-                          `("PERL5LIB" ":" prefix
-                            (,(getenv "PERL5LIB")
-                             ,(string-append out "/lib/perl5/site_perl"))))
-                        #t))))))
-    (inputs
-     `(("bash" ,bash-minimal))) ; for wrap-program
-    (propagated-inputs
-     (list perl-moo perl-strictures))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-tinyrepl
+            (lambda _
+              (wrap-program (string-append #$output "/bin/tinyrepl")
+                `("PERL5LIB" ":" prefix
+                  (,(getenv "PERL5LIB")
+                   ,(string-append #$output "/lib/perl5/site_perl")))))))))
+    (inputs (list bash-minimal perl-term-readline-gnu)) ;for wrap-program
+    (propagated-inputs (list perl-moo perl-strictures))
     (home-page "https://metacpan.org/release/Eval-WithLexicals")
     (synopsis "Lexical scope evaluation library for Perl")
     (description "The Eval::WithLexicals Perl library provides support for
