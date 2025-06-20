@@ -44,6 +44,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages guile)
@@ -316,7 +317,15 @@ reinventing them.")
       #:go go-1.23
       #:import-path "gitea.com/gitea/act_runner"
       #:embed-files #~(list ".*\\.json" ".*\\.js" ".*\\.sh")
-      #:tests? #f
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list
+                       ;; Should be true.
+                       "Test_ping"
+	               ;; panic: runtime error: invalid memory address or nil
+	               ;; pointer dereference.
+                        "Test_runCreateRunnerFile")
+                       "|"))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'rename-binary
                      (lambda _
@@ -337,7 +346,8 @@ reinventing them.")
            go-golang-org-x-term
            go-golang-org-x-time
            go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3))
+           go-gopkg-in-yaml-v3
+           go-gotest-tools-v3))
     (home-page "https://code.forgejo.org/forgejo/runner")
     (synopsis "Run continuous integration jobs for Forgejo")
     (description
