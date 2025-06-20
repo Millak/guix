@@ -1552,7 +1552,7 @@ NonLinear Programming) problems.  It builds on top of Cbc and Ipopt.")
 (define-public pagmo
   (package
     (name "pagmo")
-    (version "2.19.0")
+    (version "2.19.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1561,7 +1561,7 @@ NonLinear Programming) problems.  It builds on top of Cbc and Ipopt.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g0j0k0cwp8kyyggj80s5cd24bl6gqmf6f5g7j2axswr2bdj16fg"))))
+                "1xx7f06idfhkh4qijh5rcxnldyac2pqb29j09w7k2b2h91xkgnl9"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DPAGMO_BUILD_TESTS=ON"
