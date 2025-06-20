@@ -39288,7 +39288,7 @@ toolkit for Python.")
        (sha256
         (base32 "1h0cxlp66i6wlq3g6dg1f1nw0sipm9nfsy7qs47p9w548d833128"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/cdown/srt")
     (synopsis "SRT parsing library")
     (description
