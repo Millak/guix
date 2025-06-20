@@ -102,6 +102,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
@@ -112,11 +113,13 @@
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages xorg))
 
 (define-public aardvark-dns
@@ -2092,6 +2095,71 @@ recursively searches your current directory for a regex pattern while
 respecting your gitignore rules. @code{ripgrep} is similar to other popular
 search tools like The Silver Searcher, @command{ack} and @command{grep}.")
     (license (list license:unlicense license:expat))))
+
+(define-public ripgrep-all
+  (package
+    (name "ripgrep-all")
+    (version "0.10.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/phiresky/ripgrep-all")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cks8b9z8fl1rs2xgklgsis79w9bylfmxxvns2adwsiilkpsxzxg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:modules
+      '((srfi srfi-26)
+        (guix build utils)
+        (guix build cargo-build-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-with-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (bin)
+                 (wrap-program bin
+                   `("PATH" ":" prefix
+                     (,(string-join
+                        (map (compose dirname
+                                      (cut search-input-file inputs <>))
+                             '("bin/ffmpeg"
+                               "bin/fzf"
+                               "bin/pandoc"
+                               "bin/pdfinfo"
+                               "bin/rg"
+                               "bin/zip"))
+                        ":")))))
+               (find-files (string-append #$output "/bin"))))))))
+    (native-inputs
+     (list pkg-config xz))
+    (inputs
+     (cons* ffmpeg
+            fzf
+            pandoc
+            poppler
+            ripgrep
+            sqlite
+            zip
+            `(,zstd "lib")
+            (cargo-inputs 'ripgrep-all)))
+    (home-page "https://github.com/phiresky/ripgrep-all")
+    (synopsis "Line-oriented search tool for text and binary formats")
+    (description
+     "@command{rga} is a line-oriented search tool for searching in both text
+and binary formats.  It is a wrapper for @code{ripgrep} with adapters for common
+binary formats, enabling it to search in multitude of file types: pdf, docx,
+sqlite, jpg, movie subtitles (mkv, mp4), etc.
+
+This package also supports adding custom adapters in its configuration file,
+matching for mime types or extensions and executing arbitrary executables for
+the parsing.")
+    (license license:agpl3+)))
 
 (define-public rot8
   (package
