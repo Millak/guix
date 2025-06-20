@@ -371,7 +371,7 @@ s-expression and a flat list of its dependency names (strings)."
                                             (uri (git-reference
                                                   (url ,(assoc-ref repository "url"))
                                                   (commit ,(assoc-ref repository "commit"))))
-                                            (file-name (git-file-name ,guix-name ,resolved-version))
+                                            (file-name (git-file-name name version))
                                             (sha256 (base32 "0sjjj9z1dhilhpc8pq4154czrb79z9cm044jvn75kxcjv6v5l2m5")))
                                    `(origin (method url-fetch)
                                             (uri "FIXME: No source URL found.")
