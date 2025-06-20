@@ -917,7 +917,7 @@ tropical varieties.")
 (define-public 4ti2
   (package
     (name "4ti2")
-    (version "1.6.10")
+    (version "1.6.12")
     (source
      (origin
        (method url-fetch)
@@ -927,7 +927,7 @@ tropical varieties.")
                                        version)
                            "/4ti2-" version ".tar.gz"))
        (sha256
-        (base32 "0sx8n4acmqx086a5cfkdkqxnjrlr7nsihnzxwi1vcij2n6z93hgp"))))
+        (base32 "1p82sjwsbyg418jfb1wzff1x10h4yhxgnqnsvz33k3x121k2cwjw"))))
     (build-system gnu-build-system)
     (native-inputs
      (list (@ (gnu packages base) which))) ; for the tests
