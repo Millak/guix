@@ -1505,7 +1505,7 @@ C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
 (define-public cminpack
   (package
     (name "cminpack")
-    (version "1.3.9")
+    (version "1.3.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1514,7 +1514,7 @@ C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05cjb54in7kks70rrnmvczwkg4nsxhwyf23abxqdj143zwbz4yyr"))))
+                "13y5lam0g6imky6wigg8w89k8xqifqawbs9hja6fz37242agyj71"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
