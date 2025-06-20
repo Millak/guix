@@ -12545,6 +12545,8 @@ issues from Emacs.")
                (base32
                 "1ihqapp4dv92794rsgyq0rmhwika60cmradqd4bn9b72ss6plxs1"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f)) ; no "check" target
     (propagated-inputs
      (list emacs-jedi emacs-company))
     (home-page "https://github.com/syohex/emacs-company-jedi")
