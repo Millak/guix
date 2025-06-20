@@ -234,53 +234,90 @@ using the Git pkt-line format used in various Git operations.")
       #:go go-1.23
       #:import-path "github.com/nektos/act"
       #:embed-files #~(list ".*\\.json")
-      #:tests? #f                     ;XXX: one test fails for unknown reasons
-      #:phases #~(modify-phases %standard-phases
-                   ;; The buildkit dependency tree is *massive* and the only
-                   ;; thing that's used is the dockerignore module, which is
-                   ;; just an alias to github.com/moby/patternmatcher which
-                   ;; this library already depends on!
-                   (add-after 'unpack 'fix-dockerignore
-                     (lambda _
-                       (substitute* "src/github.com/nektos/act/pkg/container/docker_build.go"
-                         (("\"github.com/moby/buildkit/frontend/dockerfile/dockerignore\"")
-                          "dockerignore \"github.com/moby/patternmatcher/ignorefile\"")))))))
-    (propagated-inputs (list go-github-com-adrg-xdg
-                             go-github-com-alecaivazis-survey-v2
-                             go-github-com-andreaskoch-go-fswatch
-                             go-github-com-creack-pty
-                             ;; go-dario-cat-mergo
-                             go-github-com-distribution-reference
-                             go-github-com-docker-cli
-                             go-github-com-docker-distribution
-                             go-github-com-docker-docker
-                             go-github-com-docker-go-connections
-                             go-github-com-gobwas-glob
-                             go-github-com-go-git-go-billy-v5
-                             go-github-com-go-git-go-git-v5
-                             go-github-com-golang-jwt-jwt-v5
-                             go-github-com-imdario-mergo
-                             go-github-com-joho-godotenv
-                             go-github-com-julienschmidt-httprouter
-                             go-github-com-kballard-go-shellquote
-                             go-github-com-masterminds-semver
-                             go-github-com-mattn-go-isatty
-                             go-github-com-moby-patternmatcher
-                             go-github-com-opencontainers-image-spec
-                             go-github-com-opencontainers-selinux
-                             go-github-com-pkg-errors
-                             go-github-com-rhysd-actionlint
-                             go-github-com-sabhiram-go-gitignore
-                             go-github-com-sirupsen-logrus
-                             go-github-com-spf13-cobra
-                             go-github-com-spf13-pflag
-                             go-github-com-stretchr-testify
-                             go-github-com-timshannon-bolthold
-                             go-go-etcd-io-bbolt
-                             go-golang-org-x-term
-                             go-google-golang-org-protobuf
-                             go-gopkg-in-yaml-v3
-                             go-gotest-tools-v3))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestArtifactFlow/GHSL-2023-004"
+                             "TestArtifactFlow/upload-and-download"
+                             "TestFindGitRemoteURL"
+                             "TestGitCloneExecutor"
+                             "TestGitFindRef"
+                             "TestHandler_gcCache"
+                             "TestImageExistsLocally"
+                             "TestHandler"
+                             "TestJobExecutor"
+                             ;; Running Docker is required.
+                             "TestDocker"
+                             ;; Something else...
+                             "TestActionCache"
+                             "TestInterpolate"
+                             "TestRunContext_EvalBool"
+                             "TestDryrunEvent"
+                             "TestEvaluateRunContext/toJSON"
+                             "TestEvaluateRunContext/toJson"
+                             "TestGetGitHubContext"
+                             "TestMaskValues"
+                             "TestRunActionInputs"
+                             "TestRunDifferentArchitecture"
+                             "TestRunEvent"
+                             "TestRunEventHostEnvironment"
+                             "TestRunEventPullRequest"
+                             "TestRunEventSecrets"
+                             "TestRunMatrixWithUserDefinedInclusions"
+                             "TestRunSkipped"
+                             "TestRunWithService"
+                             "TestSetupEnv"
+                             "TestStepActionRemotePreThroughActionToken")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The buildkit dependency tree is *massive* and the only thing
+          ;; that's used is the dockerignore module, which is just an alias to
+          ;; github.com/moby/patternmatcher which this library already depends
+          ;; on!
+          (add-after 'unpack 'fix-dockerignore
+            (lambda _
+              (substitute* "src/github.com/nektos/act/pkg/container/docker_build.go"
+                (("\"github.com/moby/buildkit/frontend/dockerfile/dockerignore\"")
+                 "dockerignore \"github.com/moby/patternmatcher/ignorefile\"")))))))
+    (native-inputs
+     (list go-github-com-go-git-go-billy-v5
+           go-github-com-stretchr-testify
+           go-gotest-tools-v3))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-github-com-adrg-xdg
+           go-github-com-alecaivazis-survey-v2
+           go-github-com-andreaskoch-go-fswatch
+           go-github-com-creack-pty
+           go-github-com-distribution-reference
+           go-github-com-docker-cli
+           go-github-com-docker-distribution
+           go-github-com-docker-docker
+           go-github-com-docker-go-connections
+           go-github-com-go-git-go-git-v5
+           go-github-com-gobwas-glob
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-imdario-mergo
+           go-github-com-joho-godotenv
+           go-github-com-julienschmidt-httprouter
+           go-github-com-kballard-go-shellquote
+           go-github-com-masterminds-semver
+           go-github-com-mattn-go-isatty
+           go-github-com-moby-patternmatcher
+           go-github-com-opencontainers-image-spec
+           go-github-com-opencontainers-selinux
+           go-github-com-pkg-errors
+           go-github-com-rhysd-actionlint
+           go-github-com-sabhiram-go-gitignore
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-timshannon-bolthold
+           go-go-etcd-io-bbolt
+           go-golang-org-x-term
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
     (home-page "https://github.com/nektos/act")
     (synopsis "Run GitHub Actions locally")
     (description
