@@ -56,6 +56,7 @@
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2025 Libre en Communs <contact@a-lec.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -867,6 +868,34 @@ you send to a FIFO file.")
      "Guile Documentá is a command-line program and accompanying library to
 generate API documentation for GNU Guile projects.")
     (license license:public-domain)))
+
+(define-public guile-dotenv
+  (package
+   (name "guile-dotenv")
+   (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/fishinthecalculator/dotenv.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m5jg41cipnpl3w9vzwm50ah0haa2hcwwd7mri7kaa8pr9kfx64j"))))
+   (build-system gnu-build-system)
+   (native-inputs
+    (list autoconf
+          automake
+          gettext-minimal
+          pkg-config
+          texinfo))
+   (inputs (list guile-3.0))
+   (synopsis "Read environment variables specifications from @code{.env} files")
+   (description "This package provides a simple Guile interface to @code{.env}
+(or dotenv) files.  It implements parsing of files and setting environment
+variables from them.")
+   (home-page "https://codeberg.org/fishinthecalculator/dotenv")
+   (license license:gpl3+)))
 
 (define-public guile-dsv
   (package
