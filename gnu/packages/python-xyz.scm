@@ -3709,14 +3709,23 @@ module and then similar looking characters are removed.")
     (version "11.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "logwrap" version))
+       (method git-fetch) ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/python-useful-helpers/logwrap")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1idralspy7yn6nyc97zbga64cwj8w4cqg6j9c0nd4ixkw2njancc"))))
+        (base32 "07m4c87pavpdak1lx4bvdz43y2wwzm6fc54x947cssgwqz8mw3zp"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))  ; Tests not included in pypi release.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; Indicate version to setuptools-scm
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(package-version this-package)))))))
     (native-inputs (list python-pytest
                          python-setuptools
                          python-setuptools-scm
