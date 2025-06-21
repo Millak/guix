@@ -980,37 +980,37 @@ Duperemove can also take input from the @command{fdupes} program.")
   (package
     (name "ranger")
     (version "1.9.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ranger.github.io/"
-                                  "ranger-" version ".tar.gz"))
-              (sha256
-               (base32
-                "128ggxfhfmckl7x89flwxks7gxq0m02insdizcsp62193c6mxmvs"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://ranger.github.io/" "ranger-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "128ggxfhfmckl7x89flwxks7gxq0m02insdizcsp62193c6mxmvs"))))
     (build-system pyproject-build-system)
-    (inputs
-     (list bash-minimal w3m))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           ;; Tell 'ranger' where 'w3mimgdisplay' is.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (ranger (string-append out "/bin/ranger"))
-                    (w3m (assoc-ref inputs "w3m"))
-                    (w3mimgdisplay (string-append w3m
-                                   "/libexec/w3m/w3mimgdisplay")))
-               (wrap-program ranger
-                 `("W3MIMGDISPLAY_PATH" ":" prefix (,w3mimgdisplay)))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            ;; Tell 'ranger' where 'w3mimgdisplay' is.
+            (lambda _
+              (let* ((ranger (string-append #$output "/bin/ranger"))
+                     (w3m #$(this-package-input "w3m"))
+                     (w3mimgdisplay (string-append w3m
+                                     "/libexec/w3m/w3mimgdisplay")))
+                (wrap-program ranger
+                  `("W3MIMGDISPLAY_PATH" ":" prefix
+                    (,w3mimgdisplay)))))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (inputs (list bash-minimal w3m))
     (home-page "https://ranger.github.io/")
     (synopsis "Console file manager")
-    (description "ranger is a console file manager with Vi key bindings.  It
-provides a minimalistic and nice curses interface with a view on the directory
-hierarchy.  It ships with @code{rifle}, a file launcher that is good at
-automatically finding out which program to use for what file type.")
+    (description
+     "ranger is a console file manager with Vi key bindings.  It provides a
+minimalistic and nice curses interface with a view on the directory hierarchy.
+It ships with @code{rifle}, a file launcher that is good at automatically
+finding out which program to use for what file type.")
     (license license:gpl3)))
 
 (define-public fff
