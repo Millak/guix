@@ -35113,18 +35113,9 @@ applications and daemons.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1skdihfby2f41zxgwa5zv44vdxjrw301rh88rjmzj4xbdlix6cig"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:test-target "pytest"
-       #:phases
-       (modify-phases %standard-phases
-         ;; Tests need to read and write files.
-         (add-before 'check 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-flaky python-pytest python-pytest-cov python-pytest-runner))
+     (list python-flaky python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-libsass))
     (home-page "https://github.com/spyder-ide/qtsass")
