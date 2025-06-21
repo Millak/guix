@@ -65,6 +65,7 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xml)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
@@ -77,7 +78,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "297")
+    (version "299")
     (source
      (origin
        (method git-fetch)
@@ -86,7 +87,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17ziwnjlsajliky9fvjy6gb0zcyqsp5lk08qjafhfz1dskn08x2x"))))
+        (base32 "0v9clys2w3kmqc3z1q4vsri66z31k9pcyizrsx82cydfwv98iscj"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -168,6 +169,7 @@
             binwalk
             python-pytest
             python-chardet
+            python-defusedxml
             python-h5py
             python-pypdf
             python-progressbar33
