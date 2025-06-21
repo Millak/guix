@@ -3572,8 +3572,8 @@ compile}.")
     (license license:gpl3+)))
 
 (define-public emacs-flymake-perlcritic
-  (let ((commit "c11fee87370d8bd889a6c00d4f689fd5f08f2922")
-        (revision "0"))
+  (let ((commit "311743e97d2f705e76755697eea9ff451a39dd64")
+        (revision "1"))
     (package
       (name "emacs-flymake-perlcritic")
       (version (git-version "1.0.3" revision commit))
@@ -3585,11 +3585,15 @@ compile}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1n2682ly8pw8sjj7bix4qjjxc5x396m6sxbv0k6vs93z4i1gy2qm"))))
+          (base32 "11h5jr7whwdgwq3zqi0wz9l5830qjazwinff2r8iyicp9azqf081"))))
       (build-system emacs-build-system)
       (arguments
        (list
-        #:tests? #f                     ; no tests
+        #:test-command #~'("emacs" "--batch"
+                           "--load" "ert"
+                           "--load" "flymake-perlcritic.el"
+                           "--load" "test/flymake-perlcritic-test.el"
+                           "ert-run-tests-batch-and-exit")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'set-command
