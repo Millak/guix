@@ -26247,20 +26247,24 @@ parts of the lines that were modified.")
 (define-public python-dirsync
   (package
     (name "python-dirsync")
-    (version "2.2.5")
+    (version "2.2.6")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dirsync" version))
         (sha256
          (base32
-          "1gm82jddm1lkazdi8lfsl1b3vi1z0252ng60mzjym8irnv94qfhy"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
+          "1g3h0lva0mgmm4i5z62h8jkv9y1mp5xlvl2w2nfa3galbgn5gdak"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; No tests in PyPI release and GitHub repository does not have the
+     ;; latest release tag.
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/tkhyn/dirsync")
     (synopsis "Advanced directory tree synchronisation tool")
-    (description "Advanced directory tree synchronisation tool.")
+    (description
+     "Dirsync is an advanced directory tree synchronisation tool.")
     (license license:expat)))
 
 (define-public python-levenshtein
