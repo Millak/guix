@@ -24858,7 +24858,7 @@ OpenSSH Server for example.")
 (define-public python-pyelftools
   (package
     (name "python-pyelftools")
-    (version "0.30")
+    (version "0.32")
     (source
      (origin
        (method git-fetch)
@@ -24867,7 +24867,7 @@ OpenSSH Server for example.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gk47mq5cqv6qz35aydn67wma5m70gv5f9f6pg38zny6vsfavmq3"))
+        (base32 "0wx18rj5hcra45ck407vfvg46rs1qcj3qjhfkprf6264zs6z1i77"))
        (snippet
         #~(begin
             ;; Delete bundled readelf and llvm-dwardump executables.  Project
