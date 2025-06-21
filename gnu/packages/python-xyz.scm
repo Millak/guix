@@ -7977,24 +7977,16 @@ possible.")
 (define-public python-markupsafe
   (package
     (name "python-markupsafe")
-    (version "2.1.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "MarkupSafe" version))
+       (uri (pypi-uri "markupsafe" version))
        (sha256
-        (base32
-         "0jqxp5sfrc0byp6bk0gwdmildi4mck2gprp42afri3z4r5y1k4bz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/mitsuhiko/markupsafe")
+        (base32 "1w1b1a5pskpqhx1mb53rgpv9srplhrrkr4hsl67f8rq1z3nx6mgf"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://markupsafe.palletsprojects.com")
     (synopsis "XML/HTML/XHTML markup safe string implementation for Python")
     (description
      "Markupsafe provides an XML/HTML/XHTML markup safe string implementation
