@@ -29,6 +29,7 @@
 ;;; Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1733,6 +1734,37 @@ setup(name=\"clang\", version=\"~a\", packages=[\"clang\"])\n"
 
 (define-public python-clang-13
   (clang-python-bindings clang-13))
+
+(define-public include-what-you-use
+  (package
+    (name "include-what-you-use")
+    ;; Ensure LLVM/Clang input versions match the version declared in the release
+    ;; https://github.com/include-what-you-use/include-what-you-use/blob/master/README.md#clang-compatibility
+    (version "0.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/include-what-you-use/include-what-you-use")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dkk65y6abf7bzv10q1ch3dyzj4d5y89qhh43jn189l861d6pzs0"))))
+    (build-system cmake-build-system)
+    (inputs (list llvm-20 clang-20 python-3))
+    (synopsis
+     "Tool for use with clang to analyze #includes in C and C++ source files")
+    (home-page "https://github.com/include-what-you-use/include-what-you-use")
+    (description
+     "@code{include-what-you-use} lints C and C++ sources to ensure
+@code{#include}s declaring every symbol used in a given file are present.
+When every file directly includes what it uses rather than relying on
+transitive inclusions, builds tend to be more efficient and refactoring
+dependency relationships is easier, particularly for large projects.")
+    ;; The project has not relicensed from the old LLVM license:
+    ;; https://github.com/include-what-you-use/include-what-you-use/issues/849
+    ;; The iwyu_getopt.* files are BSD-3.
+    (license (list license:ncsa license:bsd-3))))
 
 (define-public emacs-clang-format
   (package
