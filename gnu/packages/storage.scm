@@ -69,6 +69,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages)
@@ -84,14 +85,14 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "17.2.7")
+    (version "17.2.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.ceph.com/tarballs/ceph-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1612424yrf39dz010ygz8k5x1vc8731549ckfj1r39dg00m62klp"))
+                "04m4zxp9hjvppl679ilnr90zr6ij08wr4ralr0whzldy0fskc8hp"))
               (patches
                (search-patches
                 "ceph-disable-cpu-optimizations.patch"
@@ -233,7 +234,7 @@
     (outputs
      '("out" "lib"))
     (native-inputs
-     (list gperf pkg-config python-cython python-sphinx yasm))
+     (list git-minimal gperf pkg-config python-cython python-sphinx yasm))
     (inputs
      (list `(,apache-thrift "lib")
            `(,apache-thrift "include")
