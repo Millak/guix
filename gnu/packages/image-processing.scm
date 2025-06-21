@@ -1255,7 +1255,7 @@ libraries designed for computer vision research and implementation.")
            #~(list "-DITK_USE_GPU=ON"
                    "-DITK_USE_SYSTEM_LIBRARIES=ON"
                    "-DITK_USE_SYSTEM_CASTXML=ON"
-                   "-DITK_BUILD_SHARED=ON"
+                   "-DBUILD_SHARED_LIBS=ON"
                    "-DITK_WRAPPING=ON"
                    "-DITK_WRAP_PYTHON=ON"
                    "-DITK_DYNAMIC_LOADING=ON"
