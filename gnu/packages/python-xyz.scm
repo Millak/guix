@@ -33513,17 +33513,17 @@ register external CLI commands via setuptools entry-points.")
 (define-public python-diceware
   (package
     (name "python-diceware")
-    (version "0.9.6")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "diceware" version))
        (sha256
         (base32
-         "0klb0ysybzlh2wihvir82hgq62v0jjmlcqklwajyms7c0p529yby"))))
-    (build-system python-build-system)
+         "0fb61yfqapygnpqawf3z286llkc0qfh1b3m1hlqanmhcky091djl"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage python-pytest python-pytest-runner))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/ulif/diceware/")
     (synopsis "Generates memorable passphrases")
     (description "This package generates passphrases by concatenating words
