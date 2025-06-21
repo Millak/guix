@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022, 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,7 +76,7 @@ to easily create cross-compiled binaries.")
 (define-public libobjc2
   (package
     (name "libobjc2")
-    (version "2.1")
+    (version "2.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -84,20 +84,20 @@ to easily create cross-compiled binaries.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1zjryzvy06gjf36gz6zrkg9icwz6wsf80mp94x6bq1109vkl40b5"))
-              (file-name (git-file-name name version))
-              (patches
-               (search-patches "libobjc2-unbundle-robin-map.patch"))))
+                "1srbmxfz906x1myblr0vzl5rzlw4cyn1sh11fhxwk2nvhvbzdlzq"))
+              (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      (list
-      ;; XXX: Cannot use GCC to compile ObjC code due to
-      ;; https://issues.guix.gnu.org/29644.
+      ;; NOTE: Though the issue of GCC cannot compile ObjC code described
+      ;; in https://issues.guix.gnu.org/29644 is fixed.
+      ;; But libobjc2 says it 'strongly recommended that you compile with clang'
       #:configure-flags #~(list "-DCMAKE_C_COMPILER=clang"
-                                "-DCMAKE_CXX_COMPILER=clang++")))
+                                "-DCMAKE_CXX_COMPILER=clang++"
+                                "-DTESTS=ON")))
     (inputs
      (list clang robin-map))
-    (home-page "http://www.gnustep.org/")
+    (home-page "https://www.gnustep.org/")
     (synopsis "Objective-C runtime library for Clang")
     (description "Libobjc2 is an Objective-C runtime library designed as a
 drop-in replacement for GCC runtime.  It supports following features beyond
