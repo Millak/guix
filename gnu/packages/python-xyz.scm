@@ -24869,18 +24869,26 @@ OpenSSH Server for example.")
        (sha256
         (base32 "0gk47mq5cqv6qz35aydn67wma5m70gv5f9f6pg38zny6vsfavmq3"))
        (snippet
-        ;; Delete bundled readelf executable.
-        '(delete-file "test/external_tools/readelf"))))
+        #~(begin
+            ;; Delete bundled readelf and llvm-dwardump executables.  Project
+            ;; also ships quite a lot binary files mainly for tests, check
+            ;; with:
+            ;;
+            ;; find . -type f ! -size 0 -exec grep -IL . "{}" \;
+            ;;
+            (delete-file "test/external_tools/readelf")
+            (delete-file "test/external_tools/llvm-dwarfdump")))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
-                        ;; Taken from tox.ini.
+                        ;; Run just basic unit and example tests, dwarfdump and
+                        ;; readelf tests are not selected as they they are fragile and
+                        ;; arch-specific.
                         (invoke "python" "test/run_all_unittests.py")
-                        (invoke "python" "test/run_examples_test.py")
-                        (invoke "python" "test/run_readelf_tests.py")))))))
+                        (invoke "python" "test/run_examples_test.py")))))))
     (synopsis
      "Analyze binary and library file information")
     (description "This Python library provides interfaces for parsing and
