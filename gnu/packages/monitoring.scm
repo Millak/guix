@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (gnu packages gnome)               ;libnotify
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages image)
@@ -634,6 +636,55 @@ written in Go with pluggable metric collectors.")
 (define-public go-github-com-prometheus-node-exporter
   (deprecated-package "go-github-com-prometheus-node-exporter"
                       prometheus-node-exporter))
+
+(define-public prometheus-postgres-exporter
+  (package
+    (name "prometheus-postgres-exporter")
+    (version "0.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus-community/postgres_exporter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13ln3lf1arcpj39dz8syfngqyq1my1gs7qrwcng69gb4lg7wpf8p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/prometheus-community/postgres_exporter/cmd/postgres_exporter"
+      #:unpack-path "github.com/prometheus-community/postgres_exporter"
+      #:build-flags
+      #~(list (string-append
+               "-ldflags="
+               "-X github.com/prometheus/common/version.Version=" #$version
+               " -X github.com/prometheus/common/version.Revision=0"
+               " -X github.com/prometheus/common/version.Branch=master"
+               " -X github.com/prometheus/common/version.BuildUser=guix"
+               " -X github.com/prometheus/common/version.BuildDate=n/a"))
+      #:embed-files #~(list "landing_page.css" "landing_page.html")
+      ;; Step away from cmd/postgres_exporte to test the whole project.
+      #:test-subdirs #~(list "../../...")))
+    (native-inputs
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-blang-semver-v4
+           go-github-com-data-dog-go-sqlmock
+           go-github-com-lib-pq
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common
+           go-github-com-prometheus-exporter-toolkit
+           go-github-com-smartystreets-goconvey
+           go-gopkg-in-check-v1
+           go-gopkg-in-yaml-v2
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/prometheus-community/postgres_exporter")
+    (synopsis "PostgreSQL Server Exporter")
+    (description "This package provides a Prometheus exporter for
+@code{PostgreSQL} server metrics.")
+    (license license:asl2.0)))
 
 (define-public temper-exporter
   (let ((commit "a87bbab19c05609d62d9e4c7941178700c1ef84d")
