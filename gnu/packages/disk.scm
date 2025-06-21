@@ -31,6 +31,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -978,25 +979,21 @@ Duperemove can also take input from the @command{fdupes} program.")
 (define-public ranger
   (package
     (name "ranger")
-    (version "1.9.3")
+    (version "1.9.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ranger.github.io/"
                                   "ranger-" version ".tar.gz"))
               (sha256
                (base32
-                "0lfjrpv3z4h0knd3v94fijrw2zjba51mrp3mjqx2c98wr428l26f"))))
-    (build-system python-build-system)
+                "128ggxfhfmckl7x89flwxks7gxq0m02insdizcsp62193c6mxmvs"))))
+    (build-system pyproject-build-system)
     (inputs
      (list bash-minimal w3m))
     (native-inputs
-     (list which
-           ;; For tests.
-           python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (arguments
-     '( ;; The 'test' target runs developer tools like pylint, which fail.
-       #:test-target "test_pytest"
-       #:phases
+     '(#:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-program
            ;; Tell 'ranger' where 'w3mimgdisplay' is.
@@ -1007,11 +1004,7 @@ Duperemove can also take input from the @command{fdupes} program.")
                     (w3mimgdisplay (string-append w3m
                                    "/libexec/w3m/w3mimgdisplay")))
                (wrap-program ranger
-                 `("W3MIMGDISPLAY_PATH" ":" prefix (,w3mimgdisplay))))))
-         (replace 'check
-           ;; The default check phase simply prints 'Ran 0 tests in 0.000s'.
-           (lambda* (#:key test-target #:allow-other-keys)
-             (invoke "make" test-target))))))
+                 `("W3MIMGDISPLAY_PATH" ":" prefix (,w3mimgdisplay)))))))))
     (home-page "https://ranger.github.io/")
     (synopsis "Console file manager")
     (description "ranger is a console file manager with Vi key bindings.  It
