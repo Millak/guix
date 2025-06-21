@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020, 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -1684,6 +1684,30 @@ tools:
     (description "cpp-httplib is a C++11 single-file cross platform blocking
 HTTP/HTTPS library, easy to setup.  It can also be used as a single-header
 library.")
+    (license license:expat)))
+
+(define-public rapidfuzz-cpp
+  (package
+    (name "rapidfuzz-cpp")
+    (version "3.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rapidfuzz/rapidfuzz-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1im0k0pjg1fnzsixl5k7j706kwwdhkw15a9hpkyr8yqbmmbg9q82"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DRAPIDFUZZ_BUILD_TESTING=ON")))
+    (native-inputs (list catch2))
+    (home-page "https://github.com/rapidfuzz/rapidfuzz-cpp")
+    (synopsis "Rapid fuzzy string matching using the Levenshtein Distance")
+    (description "RapidFuzz is a fast string matching library for Python and
+C++, which is using the string similarity calculations from FuzzyWuzzy.")
     (license license:expat)))
 
 (define-public cpplint
