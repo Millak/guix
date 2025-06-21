@@ -79,6 +79,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -86,6 +87,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -273,6 +275,42 @@ console.")
     (description
      "DeSmuME is an emulator for the Nintendo DS handheld gaming console.")
     (license license:gpl2)))
+
+(define-public melonds
+  (package
+   (name "melonds")
+   (version "1.0rc")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/melonDS-emu/melonDS")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1y8ilin758znizmxyq23plx1wnx2pc9zqd2qrvr1cgy0s2wzxr7z"))))
+   (build-system cmake-build-system)
+   (arguments ; no test suite
+    '(#:tests? #f))
+   (native-inputs
+    (list gcc-13
+          extra-cmake-modules
+          pkg-config))
+   (inputs
+    (list enet
+          libarchive
+          sdl2
+          qtbase
+          qtmultimedia
+          qtsvg
+          wayland
+          (list zstd "lib")))
+   (home-page "https://melonds.kuribo64.net")
+   (synopsis "Nintendo DS emulator")
+   (description
+    "melonDS is an emulator for the Nintendo DS handheld gaming console.
+It aims to support Nintendo DSi and 3DS as well.")
+   (license license:gpl3+)))
 
 ;; Building from recent Git because the official 5.0 release no longer builds.
 ;; Following commits and revision numbers of beta versions listed at
