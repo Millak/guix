@@ -3706,27 +3706,21 @@ module and then similar looking characters are removed.")
 (define-public python-logwrap
   (package
     (name "python-logwrap")
-    (version "8.2.0.post0")
+    (version "11.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "logwrap" version))
        (sha256
         (base32
-         "1dv7gny3rfci5cal2ipr6d0pcz3yhka7af96dfsd3ir1mxy8p1j9"))))
-    (build-system python-build-system)
+         "1idralspy7yn6nyc97zbga64cwj8w4cqg6j9c0nd4ixkw2njancc"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f  ; Tests not included in pypi release.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"))
-             #t)))))
-    (native-inputs
-     (list python-cython python-pytest python-setuptools-scm python-toml
-           python-wheel))
+     `(#:tests? #f))  ; Tests not included in pypi release.
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://github.com/python-useful-helpers/logwrap")
     (synopsis "Decorator for logging function arguments")
     (description "This package provides a decorator to log function arguments
