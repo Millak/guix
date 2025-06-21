@@ -22080,14 +22080,10 @@ to support both Python 2 and Python 3 with minimal overhead.")
        (sha256
         (base32 "1syixz6xlmy1pjcr03ij7hcvaklgjy4mmwggssrmmnr9pxnn5xw9"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(;; FIXME: Tests are executed after installation and currently fail
-       ;; when not installing into standard locations; the author is working
-       ;; on a fix.
-       #:tests? #f))
     (native-inputs (list meson-python
                          pkg-config
                          python-cython-3
+                         python-pytest
                          python-sphinx))
     (home-page "https://github.com/sagemath/cysignals")
     (synopsis "Handling of interrupts and signals for Cython")
