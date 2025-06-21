@@ -368,8 +368,8 @@ them in detail for later analysis.")
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list gzip python-docutils))
-    (build-system python-build-system)
+     (list gzip python-docutils python-setuptools python-wheel))
+    (build-system pyproject-build-system)
     (home-page "https://try.diffoscope.org")
     (synopsis "Client for remote diffoscope service")
     (description "This is a client for the @url{https://try.diffoscope.org,
