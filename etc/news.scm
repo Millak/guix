@@ -38,6 +38,39 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "30a5d140aa5a789a362749d057754783fea83dde")
+        (title
+         (en "@command{guix-daemon} privilege escalation vulnerabilities
+fixed (CVE-2025-46415, CVE-2025-46416)"))
+        (body
+         (en "Vulnerabilities in the build daemon, @command{guix-daemon}, were
+identified and fixed.  One vulnerability would allow any user on the system
+that can interact with the daemon to potentially corrupt new packages built
+locally (CVE-2025-46416).  With the other vulnerability (CVE-2025-46415), if
+@command{guix-daemon} is running as root, it is also possible to escalate to
+root privileges.  CVE-2025-52991, CVE-2025-52992, and CVE-2025-52993 were
+identified as additional opportunities that could have prevented the proposed
+exploits.
+
+Everyone is strongly advised to upgrade @command{guix-daemon}.  Guix System
+users can do this with commands along these lines:
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+If you are using Guix on another distro, run @command{info \"(guix) Upgrading
+Guix\"} or visit
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Upgrading-Guix.html} to
+learn how to upgrade Guix.
+
+The root cause of the vulnerability was the ability of a @dfn{fixed-output
+derivation} build process to smuggle a file descriptor to the store or to a
+setuid program to an outside process @i{via} an abstract Unix-domain socket.
+See @uref{https://codeberg.org/guix/guix/pulls/788} for more information.")))
+
  (entry (commit "78d4b1e52c731502b29288ab6975bd9efa91392a")
         (title
          (en "New services for /etc/profile.d and /etc/bashrc.d")
