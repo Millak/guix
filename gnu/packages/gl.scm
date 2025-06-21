@@ -725,6 +725,8 @@ from software emulation to complete hardware acceleration for modern GPUs.")
      (list pkg-config))
     (arguments
      (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'install
