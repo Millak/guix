@@ -947,6 +947,12 @@ tst_qt_cmake_create.cpp"
                        ;; https://bugreports.qt.io/browse/QTBUG-135603).
                        "tst_qguitimer"
 
+                       ;; TODO: Enable this when update qtbase.
+                       ;; tst_QDate::startOfDay_endOfDay fails for BajaMexico
+                       ;; due to IANA timezone update (see:
+                       ;; https://bugreports.qt.io/browse/QTQAINFRA-6757).
+                       "tst_qdate"
+
                        ;; The 'test_standalone_test' fails with a
                        ;; "get_property could not find TARGET Qt6::Core" error
                        ;; (see: https://bugreports.qt.io/browse/QTBUG-123940).
