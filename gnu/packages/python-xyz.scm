@@ -34429,21 +34429,21 @@ are plain text, reStructuredText and HTML.")
 (define-public python-inform
   (package
     (name "python-inform")
-    (version "1.23.0")
+    (version "1.34")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "inform" version))
         (sha256
           (base32
-            "0dvc5klbnbryrvspp45nmlg02g40j7xspcz7lqsm0c0dj0z29zdz"))))
-    (build-system python-build-system)
+            "1dzj09nxqpzrb4gnxi7dhbh2nvbkzl79vhwf2sg73f0l3dp10qy4"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))  ; PyPI tarball lacks tests
     (native-inputs
-      (list python-hypothesis python-pytest-cov python-pytest-runner))
+      (list python-flit-core))
     (propagated-inputs
-      (list python-arrow python-six))
+      (list python-arrow))
     (home-page "https://inform.readthedocs.io")
     (synopsis "Print & logging utilities for communicating with user")
     (description
