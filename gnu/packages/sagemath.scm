@@ -216,17 +216,16 @@ but it can be used independently.")
 (define-public python-gmpy2
   (package
     (name "python-gmpy2")
-    (version "2.1.2")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gmpy2" version))
        (sha256
         (base32
-         "1lc29g3s4z5f1qbsc2x9i9sf6wrpni9pwiwmb1wwx3hjr85i8xfs"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list unzip))
+         "0ch4cnbgnxifcbvkxsc7m5ylxsagrjrhr4a4fnw8rds1fib0fgp8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs
      (list gmp mpfr mpc))
     (home-page "https://github.com/aleaxit/gmpy")
