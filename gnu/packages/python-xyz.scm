@@ -18132,7 +18132,7 @@ specification.")
 (define-public python-libsass
   (package
     (name "python-libsass")
-    (version "0.22.0")
+    (version "0.23.0")
     (source
      (origin
        ;; PyPI tarball is missing some test files.
@@ -18142,8 +18142,8 @@ specification.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j6c7jb1bnpmz76gs5za41qwgrs7v1yd1jkgvsy5ql6dg2ph9vp4"))))
-    (build-system python-build-system)
+        (base32 "04jpk4y15k69chdnd64ks85bfn82071mbfiv2d1hl3y4zpvsn90a"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -18178,11 +18178,9 @@ specification.")
                                       (search-input-file inputs "bin/python"))))
                            "/site-packages/sasstests.py")))))))
     (native-inputs
-     (list python-pytest python-werkzeug))
+     (list python-pytest python-setuptools python-werkzeug python-wheel))
     (inputs
      (list libsass))
-    (propagated-inputs
-     (list python-six))
     (home-page "https://sass.github.io/libsass-python/")
     (synopsis "Straightforward binding of libsass for Python")
     (description
