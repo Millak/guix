@@ -88,7 +88,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "0v9clys2w3kmqc3z1q4vsri66z31k9pcyizrsx82cydfwv98iscj"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -164,6 +164,8 @@
     (native-inputs
      (append
       (list help2man
+            python-setuptools
+            python-wheel
 
             ;; Below are packages used for tests.
             binwalk
