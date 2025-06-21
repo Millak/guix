@@ -15435,14 +15435,11 @@ output.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1fw28swh6jq4myr09j7gv68l241b8vwg470ak5xv0x4xwh2a1m86"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:test-target "pytest"))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-diff-match-patch))
     (native-inputs
-     (list python-flaky python-pytest python-pytest-cov
-           python-pytest-runner python-pytest-timeout))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/spyder-ide/three-merge")
     (synopsis "Library for merging two strings with respect to a base one")
     (description
