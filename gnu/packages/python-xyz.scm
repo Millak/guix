@@ -24859,12 +24859,12 @@ OpenSSH Server for example.")
   (package
     (name "python-pyelftools")
     (version "0.30")
-    (home-page "https://github.com/eliben/pyelftools")
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference (url home-page)
-                           (commit (string-append "v" version))))
+       (uri (git-reference
+             (url "https://github.com/eliben/pyelftools")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0gk47mq5cqv6qz35aydn67wma5m70gv5f9f6pg38zny6vsfavmq3"))
@@ -24878,23 +24878,29 @@ OpenSSH Server for example.")
             ;;
             (delete-file "test/external_tools/readelf")
             (delete-file "test/external_tools/llvm-dwarfdump")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        ;; Run just basic unit and example tests, dwarfdump and
-                        ;; readelf tests are not selected as they they are fragile and
-                        ;; arch-specific.
-                        (invoke "python" "test/run_all_unittests.py")
-                        (invoke "python" "test/run_examples_test.py")))))))
-    (synopsis
-     "Analyze binary and library file information")
-    (description "This Python library provides interfaces for parsing and
-analyzing two binary and library file formats ; the Executable and Linking
-Format (ELF), and debugging information in the Debugging With Attributed
-Record Format (DWARF).")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Run just basic unit and example tests, dwarfdump and
+                ;; readelf tests are not selected as they are fragile and
+                ;; arch-specific.
+                (invoke "python" "test/run_all_unittests.py")
+                (invoke "python" "test/run_examples_test.py")))))))
+    (home-page "https://github.com/eliben/pyelftools")
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (synopsis "Analyze binary and library file information")
+    (description
+     "This Python library provides interfaces for parsing and analyzing two
+binary and library file formats ; the Executable and Linking Format (ELF), and
+debugging information in the Debugging With Attributed Record
+Format (DWARF).")
     (license license:public-domain)))
 
 (define-public python-pefile
