@@ -22072,27 +22072,23 @@ to support both Python 2 and Python 3 with minimal overhead.")
 (define-public python-cysignals
   (package
     (name "python-cysignals")
-    (version "1.11.4")
+    (version "1.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cysignals" version))
        (sha256
-        (base32 "1hrqn976xhrq189x1086f3z9vzznjx21wsm3hqf90zx0alg347hg"))))
-    (build-system python-build-system)
+        (base32 "1syixz6xlmy1pjcr03ij7hcvaklgjy4mmwggssrmmnr9pxnn5xw9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:modules ((guix build python-build-system)
-                  ((guix build gnu-build-system) #:prefix gnu:)
-                  (guix build utils))
-       ;; FIXME: Tests are executed after installation and currently fail
+     `(;; FIXME: Tests are executed after installation and currently fail
        ;; when not installing into standard locations; the author is working
        ;; on a fix.
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'configure
-                    (assoc-ref gnu:%standard-phases 'configure)))))
-    (native-inputs (list python-cython-3 python-sphinx))
-    (inputs (list pari-gp))
+       #:tests? #f))
+    (native-inputs (list meson-python
+                         pkg-config
+                         python-cython-3
+                         python-sphinx))
     (home-page "https://github.com/sagemath/cysignals")
     (synopsis "Handling of interrupts and signals for Cython")
     (description
