@@ -4470,6 +4470,58 @@ pre-alpha code.")
 parameters, which  define* and lambda* special forms")
     (license license:gpl3+)))
 
+(define-public guile-srfi-125
+ (let ((revision "0")
+       (commit "556827a4b88b43acc0b941ac3f7f926ffad27e42"))
+  (package
+   (name "guile-srfi-125")
+   (version (git-version "0.0.1" revision commit))
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url
+            "https://github.com/scheme-requests-for-implementation/srfi-125")
+           (commit commit)))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "0dy839sq14h9y6fi4i27pli4xgz92zsswndad4fi0271rs2c26zy"))
+     (patches (search-patches "guile-srfi-125-fix-r7rs-rename-clause.patch"))
+     (snippet #~(begin
+                 (rename-file "srfi/125.sld" "srfi/srfi-125.scm")
+                 (delete-file "tables-test.sps")))))
+   (build-system guile-build-system)
+   (arguments (list #:not-compiled-file-regexp "body\\.scm$"))
+   (inputs (list guile-3.0))
+   (native-inputs (list guile-3.0 guile-srfi-126 guile-srfi-128))
+   (propagated-inputs (list guile-srfi-126 guile-srfi-128))
+   (home-page
+    "https://github.com/scheme-requests-for-implementation/srfi-125")
+   (synopsis "SRFI 125: Intermediate hash tables")
+   (description
+    "Procedures in this SRFI are drawn primarily from SRFI 69 and R6RS. In
+addition, the following sources are acknowledged:
+@itemize
+@item @code{hash-table-mutable?} procedure and the second argument of
+@code{hash-table-copy} (which allows the creation of immutable hash tables)
+are from R6RS, renamed in the style of this SRFI.
+@item @code{hash-table-intern!} procedure is from Racket, renamed in the style
+of this SRFI.
+@item @code{hash-table-find} procedure is a modified version of
+@code{table-search} in Gambit.
+@item procedures @code{hash-table-unfold} and @code{hash-table-count} were
+suggested by SRFI 1.
+@item procedures @code{hash-table=?} and @code{hash-table-map} were suggested
+by Haskell's @code{Data.Map.Strict} module.
+@item procedure @code{hash-table-map->list} is from Guile.
+@end itemize
+
+    The procedures @code{hash-table-empty?}, @code{hash-table-empty-copy},
+@code{hash-table-pop!}, @code{hash-table-map!},
+@code{hash-table-intersection!}, @code{hash-table-difference!}, and
+@code{hash-table-xor!} were added for convenience and completeness.")
+   (license license:expat))))
+
 (define-public guile-srfi-126
  (let ((revision "0")
        (commit "f480cf2d1a33c1f3d0fab3baf321c0ed5b5eb248"))
