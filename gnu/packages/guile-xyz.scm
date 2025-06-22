@@ -4470,6 +4470,62 @@ pre-alpha code.")
 parameters, which  define* and lambda* special forms")
     (license license:gpl3+)))
 
+(define-public guile-srfi-126
+ (let ((revision "0")
+       (commit "f480cf2d1a33c1f3d0fab3baf321c0ed5b5eb248"))
+  (package
+   (name "guile-srfi-126")
+   (version (git-version "0.0.1" revision commit))
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url
+            "https://github.com/scheme-requests-for-implementation/srfi-126")
+           (commit commit)))
+     (file-name (git-file-name name version))
+     (modules '((guix build utils)))
+     (snippet #~(begin
+                 (delete-file-recursively "r6rs")
+
+                 (delete-file "srfi/126.sld")
+                 (delete-file "srfi/126.sld.in")
+                 (delete-file "srfi/:126.sls")
+                 (delete-file "srfi/:126.sls.in")
+
+                 (delete-file "test-suite.body.scm")
+                 (delete-file "test-suite.r6rs.sps")
+                 (delete-file "test-suite.r6rs.sps.in")
+                 (delete-file "test-suite.r7rs.scm")
+                 (delete-file "test-suite.r7rs.scm.in")))
+     (sha256
+      (base32 "18psw8l798xmbv2h90cz41r51q1mydzg7yr71krfprx5kdfqn32q"))))
+   (build-system guile-build-system)
+   (arguments (list #:not-compiled-file-regexp "body\\.scm$"))
+   (inputs (list guile-3.0))
+   (native-inputs (list guile-3.0))
+   (home-page
+    "https://github.com/scheme-requests-for-implementation/srfi-126")
+   (synopsis "SRFI 126: R6RS-based hashtables")
+   (description
+    "Utility procedures provided by this SRFI in addition to the R6RS API may
+be categorized as follows:
+@itemize
+@item Constructors: @code{alist->eq-hashtable}, @code{alist->eqv-hashtable},
+@code{alist->hashtable}
+@item Access and mutation: @code{hashtable-lookup}, @code{hashtable-intern!}
+@item Copying: @code{hashtable-empty-copy}
+@item Key/value collections: @code{hashtable-values},
+@code{hashtable-key-list}, @code{hashtable-value-list},
+@code{hashtable-entry-lists}
+@item Iteration: @code{hashtable-walk}, @code{hashtable-update-all!},
+@code{hashtable-prune!}, @code{hashtable-merge!}, @code{hashtable-sum},
+@code{hashtable-map->lset}, @code{hashtable-find}
+@item Miscellaneous: @code{hashtable-empty?}, @code{hashtable-pop!},
+@code{hashtable-inc!}, @code{hashtable-dec!}
+@end itemize")
+   (license license:expat))))
+
 (define-public guile-srfi-128
   (package
     (name "guile-srfi-128")
