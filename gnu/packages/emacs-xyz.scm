@@ -7144,20 +7144,20 @@ type, for example: packages, buffers, files, etc.")
     (license license:gpl3+)))
 
 (define-public emacs-guix
-  (let ((commit "455272c5cc72ed4ba5bad13c669f024f51479a58")
-        (revision "7"))
+  (let ((commit "66b935020d93cdbbff0b0ed3b1d2195724a46821")
+        (revision "8"))
     (package
       (name "emacs-guix")
       (version (git-version "0.5.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix/emacs-guix.git")
+                      (url "https://codeberg.org/guix/emacs-guix/")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ihrd7f92p9xidh1mbjk1piykzg46xypnzf1rlxxsymmddlq4jpn"))))
+                  "1pm1nyy1r704wjg4hfdrrxlf1mn327wk0vkghwy8wsp4f84j5j7d"))))
       (build-system gnu-build-system)
       (arguments
        (list
