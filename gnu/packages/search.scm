@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages ebook)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gawk)
@@ -384,67 +386,70 @@ Search Engine.  It is written in C and based on GTK3.")
 (define-public recoll
   (package
     (name "recoll")
-    (version "1.37.5")
+    (version "1.43.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.recoll.org/recoll-" version ".tar.gz"))
        (sha256
-        (base32 "0m9ibpa27xrngk31kxhgqv878knw2xpigckx8pqvfzmfvqr81zdy"))))
-    (build-system gnu-build-system)
+        (base32 "0c9p4vphysf7mfn7c6260a1fdlra0pp037s3i9f4p3m6gf9dgc0m"))))
+    (build-system meson-build-system)
     (arguments
      (list
+      #:imported-modules
+      `((guix build gremlin)
+        ,@%meson-build-system-modules)
+      #:modules
+      '((guix build meson-build-system)
+        (guix build utils)
+        (guix build gremlin)
+        (ice-9 match))
       #:configure-flags
-      #~(list "--disable-webkit"
-              "--disable-python-module"
-              "--without-systemd"
-              "--with-inotify"
-              "--enable-recollq"
-              (string-append "QMAKEPATH=" #$(this-package-input "qtbase")
-                             "/bin/qmake"))
+      #~(list "-Dwebkit=false"
+              "-Dpython-module=false"
+              "-Dsystemd=false"
+              "-Dinotify=false"
+              "-Drecollq=true")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'configure 'set-LDFLAGS
+          ;; XXX: Missing runpath item.
+          (add-before 'shrink-runpath 'patchelf
             (lambda _
-              (setenv "LDFLAGS" (string-append "-Wl,-rpath=" #$output "/lib"))))
+              (let ((binary (string-append #$output "/bin/recoll")))
+                (invoke "patchelf" "--set-rpath"
+                        (string-join (cons* (string-append #$output "/lib")
+                                            (file-runpath binary))
+                                     ":")
+                        binary))))
           (add-after 'unpack 'patch-default-data-dir
             (lambda _
               (substitute* "python/recoll/recoll/rclconfig.py"
                 (("/opt/local") #$output))))
           (add-after 'install 'wrap-filters
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((mapping
-                     '(("rclps"
-                        "poppler")
-                       ("rclpdf.py"
-                        "poppler")
-                       ("rclpurple"
-                        "gawk")
-                       ("rcllyx"
-                        "libiconv")
-                       ("rcltex"
-                        "libiconv")
-                       ("rclkwd"
-                        "unzip" "gzip" "tar" "libxslt")
-                       ("rclman"
-                        "groff")
-                       ("rclgaim"
-                        "gawk" "libiconv")
-                       ("rclaptosidman"
-                        "sed")
-                       ("rclscribus"
-                        "grep" "gawk" "sed"))))
+              (let ((target (string-append #$output "/share/recoll/filters/")))
                 (for-each
-                 (lambda (program packages)
-                   (wrap-program (string-append #$output "/share/recoll/filters/" program)
-                     `("PATH" ":" prefix
-                       ,(map (lambda (i)
-                               (string-append (assoc-ref inputs i) "/bin"))
-                             packages))))
-                 (map car mapping)
-                 (map cdr mapping))
-
-                (wrap-program (string-append #$output "/share/recoll/filters/rclimg")
+                 (match-lambda
+                   ((program . binaries)
+                    (wrap-program (string-append target program)
+                      `("PATH" ":" prefix
+                        ,(map (lambda (bin)
+                                (dirname
+                                 (search-input-file
+                                  inputs
+                                  (string-append "/bin/" bin))))
+                              binaries)))))
+                 '(("rclps"         . ("pdftotext"))
+                   ("rclpdf.py"     . ("pdftotext"))
+                   ("rclpurple"     . ("gawk"))
+                   ("rcllyx"        . ("iconv"))
+                   ("rcltex"        . ("iconv"))
+                   ("rclkwd"        . ("unzip" "gzip" "tar" "xsltproc"))
+                   ("rclman"        . ("groff"))
+                   ("rclgaim"       . ("gawk" "iconv"))
+                   ("rclaptosidman" . ("sed"))
+                   ("rclscribus"    . ("grep" "gawk" "sed"))))
+                (wrap-program (string-append target "rclimg")
                   `("PERL5LIB" ":" prefix
                     (,(getenv "PERL5LIB"))))))))))
     (inputs
@@ -470,7 +475,7 @@ Search Engine.  It is written in C and based on GTK3.")
            sed
            tar))
     (native-inputs
-     (list pkg-config qttools-5 which))
+     (list patchelf pkg-config qttools-5))
     (home-page "https://www.recoll.org")
     (synopsis "Find documents based on their contents or file names")
     (description "Recoll finds documents based on their contents as well as
