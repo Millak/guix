@@ -1494,20 +1494,24 @@ progress, among other things.")
 (define-public python-ueberzug
   (package
     (name "python-ueberzug")
-    (version "18.1.9")
+    (version "18.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ueberzug" version))
        (sha256
         (base32
-         "1hxd45dnwa9yv908acarr98n2drmar66wzq9z2qd3irj24srzr3w"))))
-    (build-system python-build-system)
+         "1sc05s72gvglsxsw4p0z5h47ygygw5h226vnaakas4ihjq9kiffl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no tests
+    (native-inputs
+     (list meson-python pkg-config))
     (inputs
-     (list libx11 libxext))
+     (list libx11 libxext libxres))
     (propagated-inputs
-     (list python-attrs python-docopt python-pillow python-xlib))
-    (home-page "https://github.com/seebye/ueberzug")
+     (list python-attrs python-docopt python-pillow))
+    (home-page "https://github.com/ueber-devel/ueberzug/")
     (synopsis "Command line util to display images in combination with X11")
     (description "Überzug is a command line util which draws images on
 terminals by using child windows.  The advantages of using Überzug are:
