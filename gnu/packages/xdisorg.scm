@@ -3756,7 +3756,7 @@ applications for Sway and other wlroots-based Wayland compositors.")
 (define-public dex
   (package
     (name "dex")
-    (version "0.9.0")
+    (version "0.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3764,15 +3764,18 @@ applications for Sway and other wlroots-based Wayland compositors.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "03aapcywnz4kl548cygpi25m8adwbmqlmwgxa66v4156ax9dqs86"))
+                "1d7fqy63i4q0mw316i5ws1sgdq3f7h3bsf3avvmy0nzshz7i5y6m"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))
-       #:tests? #f))
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests? (invoke "./dex" "--test")))))))
     (inputs
      (list python))
     (native-inputs
@@ -3780,8 +3783,9 @@ applications for Sway and other wlroots-based Wayland compositors.")
     (home-page "https://github.com/jceb/dex")
     (synopsis "Execute DesktopEntry files")
     (description
-     "@command{dex}, @dfn{DesktopEntry Execution}, is a program to generate
-and execute @file{.desktop} files of the Application type.")
+     "@command{dex}, @dfn{DesktopEntry Execution}, is a program to generate and
+execute @file{.desktop} files of the Application type.  It is also an
+autostarter compliant with the XDG autostart specification.")
     (license license:gpl3+)))
 
 (define-public sx
