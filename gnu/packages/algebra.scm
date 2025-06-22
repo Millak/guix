@@ -640,7 +640,6 @@ matrices, and polynomials over the integers and over finite fields.")
           flint
           mpfr
           ntl
-          python-2
           readline))
    (synopsis "Computer algebra system for polynomial computations")
    (description
