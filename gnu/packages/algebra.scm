@@ -218,21 +218,20 @@ the real span of the lattice.")
 (define-public python-fpylll
   (package
     (name "python-fpylll")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fpylll" version))
        (sha256
         (base32
-         "12i4sj6p0z94r1p568jprcnklpi6qh926whzywv23d973jg09x53"))))
+         "1k9fcfcf0p0z0szd1f5973mg9ixl51vmhifc684l2sm4mpc607bi"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs
      (list fplll gmp mpfr pari-gp))
     (propagated-inputs
-     (list python-cysignals python-cython-3 python-flake8 python-numpy
-           python-pytest))
+     (list python-cysignals python-cython-3 python-flake8 python-numpy))
     (home-page "https://github.com/fplll/fpylll")
     (synopsis "Python interface for fplll")
     (description "fpylll is a Python wrapper for fplll.")
