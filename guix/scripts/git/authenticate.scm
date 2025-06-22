@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2024, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,6 +19,7 @@
 
 (define-module (guix scripts git authenticate)
   #:use-module (git)
+  #:use-module (guix build utils)
   #:use-module (guix ui)
   #:use-module (guix scripts)
   #:use-module (guix git-authenticate)
@@ -166,14 +168,16 @@ done\n")
 (define (install-hooks repository)
   "Attempt to install in REPOSITORY hooks that invoke 'guix git authenticate'.
 Bail out if one of these already exists."
-  (define directory
-    (repository-common-directory repository))
+  (define hooks-directory
+    (in-vicinity (repository-common-directory repository) "hooks"))
 
   (define pre-push-hook
-    (in-vicinity directory "hooks/pre-push"))
+    (in-vicinity hooks-directory "pre-push"))
 
   (define post-merge-hook
-    (in-vicinity directory "hooks/post-merge"))
+    (in-vicinity hooks-directory "post-merge"))
+
+  (mkdir-p hooks-directory)
 
   (if (or (file-exists? pre-push-hook)
           (file-exists? post-merge-hook))
