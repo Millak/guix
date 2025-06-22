@@ -3463,13 +3463,13 @@ iotop, uptime, pidof, tty, taskset, pmap.")
 (define-public python-scapy
   (package
     (name "python-scapy")
-    (version "2.5.0")
+    (version "2.6.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "scapy" version))
               (sha256
                (base32
-                "1hpbbmpcn4dwj3z7i7sz4cnbpkaf57p7mvl3p84x9n2gflmhq9jv"))))
+                "1ig6qv1kpk7z9n8xf41y5fzywfv42xzd61bf79f3x19w73idf03n"))))
     (arguments
      '(#:tests? #f)) ; There is a test directory, but apparently no
                      ; automatic testing framework.
@@ -3477,7 +3477,8 @@ iotop, uptime, pidof, tty, taskset, pmap.")
     ;; matplotlib. If functionality is missing, these should be added.
     ;; See
     ;; https://scapy.readthedocs.io/en/latest/installation.html#optional-dependencies
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://scapy.net")
     (synopsis "Python network packet crafting library")
     (description
