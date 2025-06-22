@@ -1682,6 +1682,7 @@ different notification systems.")
            qtdeclarative
            qtmultimedia
            qtwayland
+           qtsvg
            sonnet
            wayland
            modemmanager-qt
