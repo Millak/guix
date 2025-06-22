@@ -448,20 +448,20 @@ for example, for recording or replaying web content.")
 (define-public python-certifi
   (package
     (name "python-certifi")
-    (version "2022.6.15")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "certifi" version))
-              (sha256
-               (base32
-                "03c2l11lgljx0kz17cvdc4hlc3p1594ajdih9zq0a4dig285mj44"))
-              (snippet
-               #~(begin
-                   (delete-file "certifi/cacert.pem")
-                   (delete-file "certifi/core.py")
-                   (with-output-to-file "certifi/core.py"
-                     (lambda _
-                       (display "\"\"\"
+    (version "2025.6.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "certifi" version))
+       (sha256
+        (base32 "0frj2yizgxr1njx1dynyjsbqxwfi5gi17fr2ijxv3fwviddaliyp"))
+       (snippet #~(begin
+                    (delete-file "certifi/cacert.pem")
+                    (delete-file "certifi/core.py")
+                    (with-output-to-file "certifi/core.py"
+                      (lambda _
+                        (display
+                         "\"\"\"
 certifi.py
 ~~~~~~~~~~
 This file is a Guix-specific version of core.py.
@@ -484,8 +484,11 @@ def where() -> str:
 def contents() -> str:
     with open(where(), \"r\", encoding=\"ascii\") as data:
         return data.read()")))))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;no tests
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://certifi.io/")
     (synopsis "Python CA certificate bundle")
     (description
