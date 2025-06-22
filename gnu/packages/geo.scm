@@ -29,6 +29,7 @@
 ;;; Copyright © 2025 Lars Bilke <lars.bilke@ufz.de>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3702,15 +3703,16 @@ SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
            python-dateutil
            python-future
            python-jinja2
+           python-lxml
            python-numpy
            python-owslib
            python-psycopg2
            python-pygments
-           python-pyqt+qscintilla
+           python-pyqt+qscintilla-with-python-sip-6.8
            python-pytz
            python-pyyaml
            python-requests
-           python-sip
+           python-sip-6.8
            python-six
            python-urllib3
            qca
