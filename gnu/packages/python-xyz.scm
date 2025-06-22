@@ -9224,25 +9224,19 @@ public key files.")
 (define-public python-feedgenerator
   (package
     (name "python-feedgenerator")
-    (version "1.9")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "feedgenerator" version))
        (sha256
         (base32
-         "01mirwkm7xfx539hmvj7g9da1j51gw5lsx74dr0glizskjm5vq2s"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove pre-compiled .pyc files from source.
-           (for-each delete-file-recursively
-                     (find-files "." "__pycache__" #:directories? #t))
-           (for-each delete-file (find-files "." "\\.pyc$"))
-           #t))))
-    (build-system python-build-system)
+         "179bshnb0ssx7pspzbyaqvhi5w3c3hb15cingh4py8px50zz4xgh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (propagated-inputs
-     (list python-pytz python-six))
+     (list python-pytz))
     (home-page "https://github.com/getpelican/feedgenerator")
     (synopsis
      "Standalone version of Django's Atom/RSS feed generator")
