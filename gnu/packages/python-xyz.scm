@@ -34565,16 +34565,24 @@ Features
     (name "python-nestedtext")
     (version "3.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "nestedtext" version))
-        (sha256
-          (base32
-            "0vbribl3ja4ldjmiw1hv8a4f5r8hx2v7naskxfwkjlaki4kzwn0a"))))
+     (origin
+       (method git-fetch) ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/KenKundert/nestedtext")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yqarfv6jzl41i44mjn0g4c87g47j819py6gbsfi3fdk96c95nll"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))  ; PyPI tarball lacks tests
-    (native-inputs (list python-flit-core))
+     (list
+      ;; XXX: Tests below need some not yet packaged Python libraries.
+      #:test-flags #~(list "--ignore" "examples/"
+                           "--ignore" "tests/test_nestedtext.py"
+                           "-k" (string-append
+                                 "not techniques.rst"
+                                 " and not nestedtext.nestedtext.dumps"))))
+    (native-inputs (list python-flit-core python-pytest))
     (propagated-inputs
       (list python-inform))
     (home-page "https://nestedtext.org")
