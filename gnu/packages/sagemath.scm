@@ -55,7 +55,7 @@
 (define-public brial
   (package
     (name "brial")
-    (version "1.2.8")
+    (version "1.2.14")
     (source
     (origin
       (method git-fetch)
@@ -64,7 +64,7 @@
              (commit version)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0qhgckd4fvbs40jw14mvw89rccv94d3df27kipd27hxd4cx7y80y"))))
+       (base32 "1bgbpid3xa41449v2mm08c25h3ipbn5viybx3iaqjvssaamfzrxx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
