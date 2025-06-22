@@ -34563,17 +34563,18 @@ Features
 (define-public python-nestedtext
   (package
     (name "python-nestedtext")
-    (version "1.0.0")
+    (version "3.7")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "nestedtext" version))
         (sha256
           (base32
-            "0xjx863n7yd1xmkwhy48lhmqrmlzgbx3civhk386hvrzyq4sx148"))))
-    (build-system python-build-system)
+            "0vbribl3ja4ldjmiw1hv8a4f5r8hx2v7naskxfwkjlaki4kzwn0a"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))  ; PyPI tarball lacks tests
+    (native-inputs (list python-flit-core))
     (propagated-inputs
       (list python-inform))
     (home-page "https://nestedtext.org")
