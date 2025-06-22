@@ -3329,15 +3329,17 @@ two-dimensional renderings such as scatter plots and histograms.
 (define-public python-pandas-flavor
   (package
     (name "python-pandas-flavor")
-    (version "0.5.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas_flavor" version))
        (sha256
         (base32
-         "0473lkbdnsag3w5x65sxwjlyq0i7z938ssxqwn2cpcml282vksx1"))))
-    (build-system python-build-system)
+         "0zmgxnrxlvjgsr5f6yiwdn093kibb48zd16jkgy7l082d7wzjyv1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
     (propagated-inputs
      (list python-lazy-loader python-packaging python-pandas python-xarray))
     (home-page "https://github.com/pyjanitor-devs/pandas_flavor")
