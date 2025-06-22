@@ -28,6 +28,19 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-xyz))
 
+;;; Commentary:
+;;;
+;;; Golang (Go) specific applications which are not inherited from their
+;;; source live here e.g linters, language servers, REPL implementations etc.
+;;;
+;;; If the <cmd/APP> is inherited from its source place it in corresponded
+;;; golang-*.scm file in the end after the section "Executables".
+;;;
+;;; Please: Try to add new variable in alphabetical order.
+;;;
+;;; Code:
+
+
 (define-public godef
   (package
     (name "godef")
