@@ -4545,21 +4545,16 @@ interoperability offered by HDF5.")
 (define-public python-simple-pid
   (package
     (name "python-simple-pid")
-    (version "1.0.1")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "simple-pid" version))
+              (uri (pypi-uri "simple_pid" version))
               (sha256
                (base32
-                "094mz6rmfq1h0gpns5vlxb7xf9297hlkhndw7g9k95ziqfkv7mk0"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest" "discover" "tests/")))))))
+                "17p9bgka5yv5lbnbk374yjccrlizm572wv3xb479072lahf7cwap"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/m-lundberg/simple-pid")
     (synopsis "Easy to use PID controller")
     (description "This package provides a simple and easy-to-use @acronym{PID,
