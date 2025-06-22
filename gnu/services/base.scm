@@ -3954,7 +3954,10 @@ to handle."
   (source-profile? greetd-source-profile? (default #t))
   (default-session-user greetd-default-session-user (default "greeter"))
   (default-session-command greetd-default-session-command
-    (default (greetd-agreety-session))))
+    (default (greetd-agreety-session)))
+  (initial-session-user greetd-initial-session-user (default #f))
+  (initial-session-command greetd-initial-session-command
+    (default #f)))
 
 (define (default-config-file-name config)
   (string-join (list "config-" (greetd-terminal-vt config) ".toml") ""))
@@ -3969,7 +3972,9 @@ to handle."
        (terminal-vt (greetd-terminal-vt config))
        (terminal-switch (greetd-terminal-switch config))
        (default-session-user (greetd-default-session-user config))
-       (default-session-command (greetd-default-session-command config)))
+       (default-session-command (greetd-default-session-command config))
+       (initial-session-user (greetd-initial-session-user config))
+       (initial-session-command (greetd-initial-session-command config)))
     (mixed-text-file
      config-file-name
      "[general]\n"
@@ -3979,7 +3984,13 @@ to handle."
      "switch = " (if terminal-switch "true" "false") "\n"
      "[default_session]\n"
      "user = " default-session-user "\n"
-     "command = " default-session-command "\n")))
+     "command = " default-session-command "\n"
+     (if (and initial-session-user initial-session-command)
+         (string-append
+          "[initial_session]\n"
+          "user = " initial-session-user "\n"
+          "command = " initial-session-command "\n")
+         ""))))
 
 (define %greetd-file-systems
   (list (file-system

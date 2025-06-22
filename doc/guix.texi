@@ -20896,6 +20896,15 @@ Make this terminal active on start of @code{greetd}.
 Whether to source @file{/etc/profile} and @file{~/.profile}, when they
 exist.
 
+@item @code{initial-session-user} (default: @samp{#f})
+The user to use for running the initial session, if any.
+
+@item @code{initial-session-command} (default: @code{#f})
+The command to run the first time the greeter starts up, to auto-login.
+For that to be useful, you should also set @code{initial-session-user}.
+Then, greetd will automatically log in with that user and execute that command.
+When you eventually log out again, the regular greeter will appear.
+
 @item @code{default-session-user} (default: @samp{"greeter"})
 The user to use for running the greeter.
 
