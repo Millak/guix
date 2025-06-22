@@ -74,7 +74,10 @@
      (list
        #:configure-flags
        ;; GNU_SOURCE must be defined for mallocmock_reset() to be defined
-       #~(list "CFLAGS=-O2 -g -D_GNU_SOURCE=1"
+       #~(list (string-append "CFLAGS=-O2 -g -D_GNU_SOURCE=1"
+                              ;; relax gcc-14's strictness, needed for tests.
+                              " -Wno-error=int-conversion"
+                              " -Wno-error=incompatible-pointer-types")
 
                ;; By default, screen supports 16 colors, but we want 256 when
                ;; ~/.screenrc contains 'term xterm-256color'.
