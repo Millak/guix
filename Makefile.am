@@ -20,6 +20,7 @@
 # Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 # Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
 # Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+# Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 #
 # This file is part of GNU Guix.
 #
@@ -1248,7 +1249,12 @@ cuirass-jobs: $(GOBJECTS)
 .PHONY: update-guix-package update-NEWS cuirass-jobs release
 
 # Git auto-configuration.
-.git/hooks/%: etc/git/%
+.git/hooks/:
+	$(AM_V_at)if test -d .git; then \
+	mkdir "$@"; \
+	fi
+
+.git/hooks/%: etc/git/% | .git/hooks/
 	$(AM_V_at)if test -d .git; then \
 	cp "$<" "$@"; \
 	fi
@@ -1260,7 +1266,7 @@ cuirass-jobs: $(GOBJECTS)
 	fi
 
 COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
-.git/hooks/commit-msg: etc/git/commit-msg
+.git/hooks/commit-msg: etc/git/commit-msg | .git/hooks/
 	$(AM_V_at)if test -d .git; then \
 	if test -f $@  && ! grep -qF $(COMMIT_MSG_MAGIC) $@; then \
 	  mkdir -p $@.d && mv $@ $@.d && \
