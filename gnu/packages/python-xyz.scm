@@ -7269,17 +7269,20 @@ to Roman Numerals.")
 (define-public python-rollbar
   (package
     (name "python-rollbar")
-    (version "1.0.0")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rollbar" version))
               (sha256
                (base32
-                "1bzkgp4r79d789q15vnjji2gcb34bnksx9l7q9pjkw12kzjbfiv3"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest-runner python-unittest2))
-    (inputs (list python-requests python-six python-httpx python-blinker
-                  python-webob))
+                "0ydksca7glb7g026f4f8nsvpyj8qpgv74642hjj4zk4vqgm0552i"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-httpx
+                         python-pytest
+                         python-setuptools
+                         python-webob
+                         python-wheel))
+    (inputs (list python-requests))
     (home-page "https://github.com/rollbar/pyrollbar")
     (synopsis "Notifier for exceptions, errors, and log messages to Rollbar")
     (description
