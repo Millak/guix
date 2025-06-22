@@ -2427,7 +2427,7 @@ production-critical data pipelines or reproducible research settings.  With
 (define-public python-pyjanitor
   (package
     (name "python-pyjanitor")
-    (version "0.27.0")
+    (version "0.31.0")
     (source
      (origin
        ;; The build requires the mkdocs directory for the description in
@@ -2438,7 +2438,7 @@ production-critical data pipelines or reproducible research settings.  With
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04vsg189msv8frx4zhpcg61djl7wsfvibmz0zmiih4rvkgly2cdr"))))
+        (base32 "06y6fvydrsjqdpbd20icd194693x127qhb19fgw248jfjyg5ga44"))))
     (build-system pyproject-build-system)
     ;; Pyjanitor has an extensive test suite. For quick debugging, the tests
     ;; marked turtle can be skipped using "-m" "not turtle".
@@ -2449,22 +2449,16 @@ production-critical data pipelines or reproducible research settings.  With
                      ;; Tries to connect to the internet.
                      "-k" (string-append "not test_is_connected"
                                          ;; Test files are not included
-                                         " and not test_read_commandline_bad_cmd"
-                                         ;; This fails due to differences in accuracy
-                                         " and not test_jitter_results")
+                                         " and not test_read_commandline_bad_cmd")
                      ;; Test files are not included
                      "--ignore=tests/io/test_read_csvs.py"
+                     ;; Polars has not been packaged yet.
+                     "--ignore=tests/polars"
                      ;; PySpark has not been packaged yet.
                      "--ignore=tests/spark/functions/test_clean_names_spark.py"
                      "--ignore=tests/spark/functions/test_update_where_spark.py")
       #:phases
       #~(modify-phases %standard-phases
-          ;; Pandas 2.1.1 does not offer the BME frequency.
-          (add-after 'unpack 'pandas-compat
-            (lambda _
-              (substitute* '("tests/functions/test_select_rows.py"
-                             "tests/functions/test_select_columns.py")
-                (("freq=\"BME\"") "freq=\"BM\""))))
           (add-before 'check 'set-env-ci
             (lambda _
               ;; Some tests are skipped if the JANITOR_CI_MACHINE
