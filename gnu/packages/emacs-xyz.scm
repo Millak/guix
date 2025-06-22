@@ -41413,29 +41413,32 @@ backlinks when inserting a link.")
     (license license:gpl3+)))
 
 (define-public emacs-org-roam-bibtex
-  (package
-    (name "emacs-org-roam-bibtex")
-    (version "0.6.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/org-roam/org-roam-bibtex")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "166n1q30xamms4lfqq9vp0yknq33gwlk54qaravxxwz01fdpgb25"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-helm-bibtex emacs-org-ref emacs-org-roam))
-    (home-page "https://github.com/org-roam/org-roam-bibtex")
-    (synopsis "Connector between Org Roam, BibTeX-completion, and Org Ref")
-    (description
-     "Org Roam BibTeX is a library which offers a tighter integration between
+  ;; Latest release from 3 years ago.
+  (let ((commit "b065198f2c3bc2a47ae520acd2b1e00e7b0171e6")
+        (revision "0"))
+    (package
+      (name "emacs-org-roam-bibtex")
+      (version (git-version "0.6.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/org-roam/org-roam-bibtex")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hywqrab07lpssc08aqpwa2asly92dhdn09ikx8jp0bi3l26wryy"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-helm-bibtex emacs-org-ref emacs-org-roam))
+      (home-page "https://github.com/org-roam/org-roam-bibtex")
+      (synopsis "Connector between Org Roam, BibTeX-completion, and Org Ref")
+      (description
+       "Org Roam BibTeX is a library which offers a tighter integration between
 Org Roam, Helm-BibTeX, and Org Ref.  It allows users to access their
 bibliographical notes in Org Roam directory via Helm BibTeX, Ivy BibTeX, or by
 opening Org Ref's @code{cite:} links.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-generate
   (package
