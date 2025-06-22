@@ -1428,30 +1428,20 @@ easy logging and rotating to a console or a file.")
 (define-public python-logbook
   (package
     (name "python-logbook")
-    (version "1.5.3")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Logbook" version))
+       (uri (pypi-uri "logbook" version))
        (sha256
-        (base32 "1s1gyfw621vid7qqvhddq6c3z2895ci4lq3g0r1swvpml2nm9x36"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'cythonize-sources
-           (lambda _
-             (with-directory-excursion "logbook"
-               (invoke "cython" "_speedups.pyx"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Check cython build also
-               (setenv "CYBUILD" "True")
-               (invoke "pytest" "--cov=logbook" "-r" "s" "tests")))))))
+        (base32 "0afk1nmvj9fp3igzmxa4a048fm21sa4aw1z2ix8jzvs62ry7j6bd"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython python-mock python-pytest python-pytest-cov
-           python-brotli))
+     (list python-brotli
+           python-cython-3
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/getlogbook/logbook")
     (synopsis "Logbook is a logging replacement for Python")
     (description
