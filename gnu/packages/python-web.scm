@@ -38,7 +38,7 @@
 ;;; Copyright © 2020 Holger Peters <holger.peters@posteo.de>
 ;;; Copyright © 2020 Noisytoot <noisytoot@gmail.com>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020, 2022, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -2742,22 +2742,34 @@ object graph to and from JSON.")
 (define-public python-mechanicalsoup
   (package
     (name "python-mechanicalsoup")
-    (version "1.0.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "MechanicalSoup" version))
+       (uri (pypi-uri "mechanicalsoup" version))
        (sha256
-        (base32 "01sddjxy3rznh63hnl5lbv1hhk6xyiviwmkiw4x7v4ap35fb3lrp"))))
-    (build-system python-build-system)
+        (base32 "0k1ac77ld6jyjm5fsr44399l5gmiwnz5w6s74i3qqx2scfbsgs6w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; The following dependencies are not directly required, the developer
+      ;; only pinned versions because of vulnerabilities.  They also break
+      ;; sanity-check because it checks for a python-certifi version which is
+      ;; more recent than the one available in Guix.
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'relax-dependencies
+                     (lambda _
+                       (substitute* "requirements.txt"
+                         (("certifi.*") "")
+                         (("urllib3.*") "")))))))
     (propagated-inputs
-     (list python-beautifulsoup4 python-lxml python-requests python-six))
+     (list python-beautifulsoup4 python-lxml python-requests))
     (native-inputs
-     (list python-pytest-cov
+     (list python-pytest
+           python-pytest-cov
            python-pytest-flake8
            python-pytest-httpbin
            python-pytest-mock
-           python-pytest-runner
            python-requests-mock
            python-setuptools
            python-wheel))
