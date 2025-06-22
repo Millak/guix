@@ -9757,8 +9757,21 @@ interested parties to subscribe to events, or \"signals\".")
        (sha256
         (base32 "1n4b8y4vvycxhwmi3z5i96bh0d2rg1mk1hdc6cbkk3c1gd4380mr"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-k" (string-append
+                                 ;; These tests failed with AssertionError.
+                                 "not test_typogrify_ignore_filters"
+                                 " and not test_typogrify_ignore_tags"
+                                 " and not test_error_on_warning"))))
     (native-inputs
-     (list python-pdm-backend))
+     (list python-anyio
+           python-beautifulsoup4
+           python-lxml
+           python-pdm-backend
+           python-pytest
+           python-smartypants
+           python-typogrify))
     (inputs
      (list python-blinker
            python-dateutil
@@ -9774,9 +9787,6 @@ interested parties to subscribe to events, or \"signals\".")
            python-unidecode
            python-watchfiles))
     (home-page "https://blog.getpelican.com/")
-    (arguments
-     `(;; XXX Requires a lot more packages to do unit tests :P
-       #:tests? #f))
     (synopsis "Python-based static site publishing system")
     (description
      "Pelican is a tool to generate a static blog from reStructuredText,
