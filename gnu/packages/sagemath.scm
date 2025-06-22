@@ -189,14 +189,14 @@ represented as strings.")
 (define-public python-cypari2
   (package
     (name "python-cypari2")
-    (version "2.2.1")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cypari2" version))
        (sha256
         (base32
-         "1f43bx3pryc1mg7i9gijl2c6aavijlbcxx9wyw11jn40lak1g85a"))))
+         "080p17yn8wjl973jnw15hz3dhxzp3db1bi4giw3c28d2brrki8qk"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython-3 python-pytest python-setuptools python-wheel))
