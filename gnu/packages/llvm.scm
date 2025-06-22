@@ -172,6 +172,13 @@ as \"x86_64-linux\"."
             ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__filesystem/path.h:623:30: error: use of built-in trait '__remove_pointer(typename std::__Fuzzer::decay<_Tp>::type)’ in function signature; use library traits instead
             (modify-inputs (package-native-inputs llvm)
               (prepend gcc-13)))
+           ((version>=? version "16")
+            ;; clang-16.0.6 doesn't build with gcc-14:
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__type_traits/make_unsigned.h:89:24: error: use of built-in trait ‘__remove_cv(_Tp)’ in function signature; use library traits instead
+            ;; clang-16.0.6 doesn't build with gcc-13:
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__chrono/duration.h:202:28: note:   no known conversion for argument 1 from ‘std::__Fuzzer::chrono::duration<long long int, std::__Fuzzer::ratio<1, 1000000000> >::rep’ {aka ‘long long int’} to ‘std::__Fuzzer::chrono::duration<long long int, std::__Fuzzer::ratio<1, 1000000000> >&&’
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-12)))
            (else (package-native-inputs llvm))))
     (inputs
      (append
