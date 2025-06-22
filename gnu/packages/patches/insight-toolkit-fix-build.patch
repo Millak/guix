@@ -1,0 +1,43 @@
+From 3e90110ece80124d38641b3a1d02a9127f56eb25 Mon Sep 17 00:00:00 2001
+From: David Allemang <david.allemang@kitware.com>
+Date: Mon, 9 Sep 2024 13:19:43 -0400
+Subject: [PATCH] COMP: Fix Python GPU Wrapping
+
+---
+ .../GPUImageFilterBase/wrapping/itkGPUCastImageFilter.wrap    | 4 ++--
+ .../wrapping/itkGPUDiscreteGaussianImageFilter.wrap           | 3 +++
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/Modules/Filtering/GPUImageFilterBase/wrapping/itkGPUCastImageFilter.wrap b/Modules/Filtering/GPUImageFilterBase/wrapping/itkGPUCastImageFilter.wrap
+index 7c1116884d7..c70af7d8446 100644
+--- a/Modules/Filtering/GPUImageFilterBase/wrapping/itkGPUCastImageFilter.wrap
++++ b/Modules/Filtering/GPUImageFilterBase/wrapping/itkGPUCastImageFilter.wrap
+@@ -23,7 +23,7 @@ foreach(from ${from_types})
+ endforeach()
+ itk_end_wrap_class()
+
+-itk_wrap_class("itk::CastImageFilter" POINTER)
++itk_wrap_class("itk::CastImageFilter" POINTER_WITH_SUPERCLASS)
+ foreach(d ${ITK_WRAP_IMAGE_DIMS})
+   # Add from == to pixel type first for preference
+   foreach(to ${to_types})
+@@ -183,7 +183,7 @@ foreach(d ${ITK_WRAP_IMAGE_DIMS})
+ endforeach()
+ itk_end_wrap_class()
+
+-itk_wrap_class("itk::GPUCastImageFilter" POINTER)
++itk_wrap_class("itk::GPUCastImageFilter" POINTER_WITH_SUPERCLASS)
+ foreach(d ${ITK_WRAP_IMAGE_DIMS})
+   # Add from == to pixel type first for preference
+   foreach(to ${to_types})
+diff --git a/Modules/Filtering/GPUSmoothing/wrapping/itkGPUDiscreteGaussianImageFilter.wrap b/Modules/Filtering/GPUSmoothing/wrapping/itkGPUDiscreteGaussianImageFilter.wrap
+index 2477c7876f0..0cfe9c2bd4a 100644
+--- a/Modules/Filtering/GPUSmoothing/wrapping/itkGPUDiscreteGaussianImageFilter.wrap
++++ b/Modules/Filtering/GPUSmoothing/wrapping/itkGPUDiscreteGaussianImageFilter.wrap
+@@ -1,3 +1,6 @@
++set(types "${WRAP_ITK_SCALAR}")
++itk_wrap_include("itkGPUImage.h")
++
+ itk_wrap_class("itk::DiscreteGaussianImageFilter" POINTER)
+ foreach(d ${ITK_WRAP_IMAGE_DIMS})
+   foreach(t ${types})
