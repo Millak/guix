@@ -9749,14 +9749,16 @@ interested parties to subscribe to events, or \"signals\".")
 (define-public pelican
   (package
     (name "pelican")
-    (version "4.7.2")
+    (version "4.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pelican" version))
        (sha256
-        (base32 "0m1kndc98hhnlq0yl05f4lzccw555pkxnrajj6lks18yh491kw8w"))))
-    (build-system python-build-system)
+        (base32 "1n4b8y4vvycxhwmi3z5i96bh0d2rg1mk1hdc6cbkk3c1gd4380mr"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pdm-backend))
     (inputs
      (list python-blinker
            python-dateutil
@@ -9765,11 +9767,12 @@ interested parties to subscribe to events, or \"signals\".")
            python-docutils
            python-feedgenerator
            python-jinja2
-           python-markdown
+           python-ordered-set
            python-pygments
-           python-pytz
            python-rich
-           python-unidecode))
+           python-tzdata
+           python-unidecode
+           python-watchfiles))
     (home-page "https://blog.getpelican.com/")
     (arguments
      `(;; XXX Requires a lot more packages to do unit tests :P
