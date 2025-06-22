@@ -3357,48 +3357,25 @@ of Pandas
 (define-public python-pingouin
   (package
     (name "python-pingouin")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
-     ;; The PyPI tarball does not contain the tests.
      (origin
-       (method git-fetch)
+       (method git-fetch) ; no tests in PyPI tarball
        (uri (git-reference
              (url "https://github.com/raphaelvallat/pingouin")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1j3qkgvyc31604ddl952h4hwza7schg8kwkycmxvpvx7xjj7nn68"))))
+         "0i3yzdlj08di3mzi69ci57jm5myl123hp8c5vn1g35k77m4zpgvd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; This one fails due to minor differences in accuracy
-      '(list "-k" "not test_logistic_regression")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             (substitute* '("requirements.txt" "setup.py")
-               ;; Remove sklearn pinning since it works fine with 1.1.2:
-               ;; https://github.com/raphaelvallat/pingouin/pull/300
-               (("scikit-learn<1\\.1\\.0")
-                "scikit-learn"))))
-         ;; On loading, Pingouin uses the outdated package to check if a newer
-         ;; version is available on PyPI. This check adds an extra dependency
-         ;; and is irrelevant to Guix users. So, disable it.
-         (add-after 'unpack 'remove-outdated-check
-           (lambda _
-             (substitute* "setup.py"
-               (("\"outdated\",") ""))
-             (substitute* "pingouin/__init__.py"
-               (("^from outdated[^\n]*") "")
-               (("^warn_if_outdated[^\n]*") ""))))
-         (add-after 'unpack 'sklearn-compatibility
-           (lambda _
-             (substitute* "pingouin/regression.py"
-               (("kwargs\\[\"penalty\"\\] = \"none\"")
-                "kwargs[\"penalty\"] = None")))))))
+      ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1)
+      ;; failed for 10th keyword liwork: dsyevr:liwork=1
+      #:test-flags #~(list "-k" (string-append
+                                 "not test_box_m"
+                                 " and not test_linear_regression"))))
     (native-inputs
      (list python-pytest python-pytest-cov))
     (propagated-inputs
