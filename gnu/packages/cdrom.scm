@@ -170,46 +170,45 @@ libcdio.")
     (version "1.5.6.pl02")
     (outputs '("out" "gui"))
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/xorriso/xorriso-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "1qfs9ybd9k67r78rp1csijmlrq7mq39f7kpyq6qcap46z5fryvvq"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/xorriso/xorriso-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1qfs9ybd9k67r78rp1csijmlrq7mq39f7kpyq6qcap46z5fryvvq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ,@(if (this-package-native-input "config")
-               `((add-after 'unpack 'update-config-scripts
-                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                     ;; Replace outdated config.guess and config.sub.
-                     (for-each (lambda (file)
-                                 (install-file
-                                  (search-input-file
-                                   (or native-inputs inputs)
-                                   (string-append "/bin/" file)) "."))
-                               '("config.guess" "config.sub")))))
-               '())
-         (add-after 'install 'install-frontends
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-bin (string-append out "/bin")))
-               (install-file "frontend/grub-mkrescue-sed.sh" out-bin))))
-         (add-after 'install 'move-gui-to-separate-output
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gui (assoc-ref outputs "gui")))
-               (for-each
-                 (lambda (file)
-                   (mkdir-p (string-append gui (dirname file)))
-                   (rename-file (string-append out file)
-                                (string-append gui file)))
-                 (list "/bin/xorriso-tcltk"
-                       "/share/info/xorriso-tcltk.info"
-                       "/share/man/man1/xorriso-tcltk.1"))
-               (wrap-program (string-append gui "/bin/xorriso-tcltk")
-                 `("PATH" ":" prefix (,(string-append out "/bin"))))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               #$@(if (this-package-native-input "config")
+                      #~((add-after 'unpack 'update-config-scripts
+                           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                             ;; Replace outdated config.guess and config.sub.
+                             (for-each (lambda (file)
+                                         (install-file
+                                          (search-input-file
+                                           (or native-inputs inputs)
+                                           (string-append "/bin/" file)) "."))
+                                       '("config.guess" "config.sub")))))
+                      '())
+               (add-after 'install 'install-frontends
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (install-file "frontend/grub-mkrescue-sed.sh"
+                                 (string-append #$output "/bin"))))
+               (add-after 'install 'move-gui-to-separate-output
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out #$output)
+                         (gui #$output:gui))
+                     (for-each
+                      (lambda (file)
+                        (mkdir-p (string-append gui (dirname file)))
+                        (rename-file (string-append out file)
+                                     (string-append gui file)))
+                      (list "/bin/xorriso-tcltk"
+                            "/share/info/xorriso-tcltk.info"
+                            "/share/man/man1/xorriso-tcltk.1"))
+                     (wrap-program (string-append gui "/bin/xorriso-tcltk")
+                       `("PATH" ":" prefix (,(string-append out "/bin"))))))))))
     (native-inputs
      (append (if (and (%current-target-system)
                       (target-riscv64?))
