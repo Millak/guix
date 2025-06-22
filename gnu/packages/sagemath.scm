@@ -87,7 +87,7 @@ used as internal storage type for polynomial structures.")
 (define-public lcalc
   (package
     (name "lcalc")
-    (version "2.0.5")
+    (version "2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -96,7 +96,7 @@ used as internal storage type for polynomial structures.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rwyx292y3jbsp88wagn9nhl9z7wsnl2yrs5imxkbxq87pnrj5a7"))))
+                "1p25lpr36xvs26sssdpc3p5g0y5nd07d3bm10lxhsqgrd522n9nh"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags '(list "--with-pari")))
