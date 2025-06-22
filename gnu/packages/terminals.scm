@@ -44,6 +44,7 @@
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1025,16 +1026,18 @@ minimalistic.")
                   `("PATH" ":" prefix (,(string-append ncurses "/bin")))))))
           (add-after 'install 'install-completions
             (lambda* (#:key import-path #:allow-other-keys)
-              (let* ((bash-completion
-                      (string-append #$output "/etc/bash_completion.d"))
+              (let* ((bashrc-functions
+                      (string-append #$output "/etc/bashrc.d"))
                      (fish-functions
                       (string-append #$output "/share/fish/vendor_functions.d"))
                      (zsh-completion
                       (string-append #$output "/share/zsh/site-functions")))
                 (with-directory-excursion (string-append "src/" import-path)
-                  (mkdir-p bash-completion)
+                  (mkdir-p bashrc-functions)
                   (copy-file "shell/completion.bash"
-                             (string-append bash-completion "/fzf"))
+                             (string-append bashrc-functions "/fzf-completion.bash"))
+                  (copy-file "shell/key-bindings.bash"
+                             (string-append bashrc-functions "/fzf-bindings.bash"))
                   (mkdir-p fish-functions)
                   (copy-file "shell/key-bindings.fish"
                              (string-append fish-functions "/fzf_key_bindings.fish"))
