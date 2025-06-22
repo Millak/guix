@@ -610,7 +610,14 @@
                                (string-append (assoc-ref outputs "jdk")
                                               "/jre/lib/security"))))))))
       (native-inputs
-       `(("openjdk-src"
+       ;; XXX: Compiling with gcc-14 will encounter the following error:
+       ;; BUILD FAILED:
+       ;; /tmp/guix-build-icedtea-2.6.13.drv-0/icedtea-2.6.13/openjdk/langtools/
+       ;; make/build.xml:452: The following error occurred while executing this
+       ;; line:
+       ;; java.lang.AbstractMethodError: java.lang.Throwable.toString()Ljava/lang/String;
+       `(("gcc" ,gcc-13)
+         ("openjdk-src"
           ,(drop "openjdk"
                  "0l34ikyf62hbzlf9032alzkkqvf7bpmckz4gvirvph755w7gka8l"))
          ("corba-drop"
