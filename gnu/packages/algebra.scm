@@ -1618,16 +1618,16 @@ finite fields.")
 (define-public m4ri
   (package
     (name "m4ri")
-    (version "20200125")
+    (version "20250128")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://bitbucket.org/malb/m4ri")
-                    (commit (string-append "release-" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dxgbv6zdyki3h61qlv7003wzhy6x14zmcaz9x19md1i7ng07w1k"))))
+                "1nrxylpwjv0b8nqjb93x83il8v6c13l3cwhjp5qxxjsbhwir7032"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
