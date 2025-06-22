@@ -4920,17 +4920,30 @@ tasks rather than a standard compliant master implementation.")
 (define-public python-diskcache
   (package
     (name "python-diskcache")
-    (version "4.1.0")
+    (version "5.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "diskcache" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grantjenks/python-diskcache")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1q2wz5sj16zgyy1zpq516qgbnfwsavk1pl2qks0f4r62z5cmmvmw"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                   ;test suite not included in the release
+         "0mird2yj3xbh71g325admxpif9h20w0xgp9hw6ss2bdbzxsykh6m"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-django
+           python-ipython
+           python-matplotlib
+           python-pytest
+           python-pytest-cov
+           python-pytest-django
+           python-pytest-env
+           python-pytest-xdist
+           python-sphinx
+           python-setuptools
+           python-wheel))
     (home-page "https://www.grantjenks.com/docs/diskcache/")
     (synopsis "Disk and file backed cache library")
     (description "DiskCache is a disk and file backed persistent cache.")
