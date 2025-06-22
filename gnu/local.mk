@@ -341,9 +341,9 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/gnustep.scm			\
   %D%/packages/gnuzilla.scm			\
   %D%/packages/gnu-pw-mgr.scm			\
-  %D%/packages/go-apps.scm			\
   %D%/packages/gobby.scm			\
   %D%/packages/golang.scm			\
+  %D%/packages/golang-apps.scm			\
   %D%/packages/golang-build.scm		\
   %D%/packages/golang-check.scm		\
   %D%/packages/golang-compression.scm		\
