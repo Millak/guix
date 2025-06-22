@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2024 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2025 André Batista <nandre@riseup.net>
@@ -180,6 +180,17 @@ libcdio.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         ,@(if (this-package-native-input "config")
+               `((add-after 'unpack 'update-config-scripts
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     ;; Replace outdated config.guess and config.sub.
+                     (for-each (lambda (file)
+                                 (install-file
+                                  (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                               '("config.guess" "config.sub")))))
+               '())
          (add-after 'install 'install-frontends
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -199,6 +210,12 @@ libcdio.")
                        "/share/man/man1/xorriso-tcltk.1"))
                (wrap-program (string-append gui "/bin/xorriso-tcltk")
                  `("PATH" ":" prefix (,(string-append out "/bin"))))))))))
+    (native-inputs
+     (append (if (and (%current-target-system)
+                      (target-riscv64?))
+                 (list config)
+                 '())
+             (list)))
     (inputs
      (list acl bash-minimal readline tk zlib))
     (home-page "https://www.gnu.org/software/xorriso/")
