@@ -1707,19 +1707,19 @@ polynomials, and the representation theory of Hecke algebras of type A_n.")
 (define-public m4rie
   (package
     (name "m4rie")
-    (version "20150908")
+    (version "20250128")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://bitbucket.org/malb/m4rie")
-                    (commit (string-append "release-" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r8lv46qx5mkz5kp3ay2jnsp0mbhlqr5z2z220wdk73wdshcznss"))))
+                "1la0x8r7ymn9b36rrsjphr6j8abmnpirwxmi81qbyzjar1grj3mp"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake libtool))
+     (list autoconf automake libtool pkg-config))
     (inputs
      (list m4ri))
     (synopsis "Arithmetic of dense matrices over F_{2^e}")
