@@ -21853,7 +21853,7 @@ customization required.")
 (define-public python-textual
   (package
     (name "python-textual")
-    (version "0.50.1")
+    (version "3.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -21862,7 +21862,7 @@ customization required.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10mmmgsq5pblr9ijgyln79p3hc7sah56k2hkzlvm2abrr9gwgpcf"))))
+                "1sldkhy8phk9c7pln70dyb6aya7qpxb5niym9s91z144dv6ykgws"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -21873,18 +21873,29 @@ customization required.")
                    ;; Broken for unknown reason.
                    "not test_textual_env_var"
                    ;; Tests that require python-treesitter-languages.
-                   " and not test_language_binary_missing"
+                   " and not test_widget_construct"
+                   " and not test_setting_builtin_language_via_constructor"
+                   " and not test_setting_builtin_language_via_attribute"
+                   " and not test_setting_language_to_none"
+                   " and not test_setting_unknown_language"
                    " and not test_register_language"
-                   " and not test_register_language_existing_language"))))
+                   " and not test_update_highlight_query"
+                   " and not test_default_theme"
+                   " and not test_setting_builtin_themes"
+                   " and not test_setting_unknown_theme_raises_exception"
+                   " and not test_registering_and_setting_theme"))))
     (propagated-inputs
      (list python-markdown-it-py
-           python-mdit-py-plugins
+           python-platformdirs
            python-rich
            python-tree-sitter
            ;; python-tree-sitter-languages ; optional, not packed yet
            python-typing-extensions))
     (native-inputs
-     (list python-poetry-core python-pytest python-pytest-asyncio))
+     (list python-poetry-core
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist))
     (home-page "https://github.com/Textualize/textual")
     (synopsis "Build text user interfaces in Python")
     (description "Textual is a @acronym{TUI, Text User Interface} framework
