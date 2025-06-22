@@ -2697,14 +2697,16 @@ them.")
 (define-public python-baycomp
   (package
     (name "python-baycomp")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "baycomp" version))
        (sha256
-        (base32 "1c1354a7b3g8slychjgyjxqdm8z40z9kviyl9n4g9kfpdg0p4d64"))))
-    (build-system python-build-system)
+        (base32 "1v6s4mfr6xzjbv9a2v89hywm6fbv5nii0qczvcfjanvdn7bmmcij"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-matplotlib python-numpy python-scipy))
     (home-page "https://github.com/janezd/baycomp")
