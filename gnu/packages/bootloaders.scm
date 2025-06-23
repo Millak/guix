@@ -754,7 +754,8 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                     "dtc-" version ".tar.gz"))
               (sha256
                (base32
-                "1x609axqpkw5d47pz3ag34ycy3w7y1d0i8q4715hvlmgszmya07j"))))
+                "1x609axqpkw5d47pz3ag34ycy3w7y1d0i8q4715hvlmgszmya07j"))
+              (patches (search-patches "dtc-fix-test.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
