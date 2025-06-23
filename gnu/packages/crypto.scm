@@ -1653,7 +1653,9 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
         (list #:tests? #f))     ; TODO: Investigate test failures.
        ((target-mingw?)
         (list #:configure-flags
-              #~(list "CFLAGS=-g -O2 -Wno-error=pedantic"
+              #~(list #$(string-append "CFLAGS=-g -O2"
+                                       " -Wno-error=pedantic"
+                                       " -Wno-error=conversion")
                       "ac_cv_ld_no_undefined=-no-undefined")))
        (else '())))
     (synopsis
