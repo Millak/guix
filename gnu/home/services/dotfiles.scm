@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -126,18 +127,21 @@ user's home directory, excluding files that match any of the patterns in EXCLUDE
 
 (define (home-dotfiles-configuration->files config)
   "Return a list of objects compatible with @code{home-files-service-type}'s
-value, excluding files that match any of the patterns configured."
+value, excluding files and directories that match any of the patterns configured."
   (define stow? (eq? (home-dotfiles-configuration-layout config) 'stow))
   (define excluded
     (home-dotfiles-configuration-excluded config))
   (define exclusion-rx
     (make-regexp (string-append "^.*(" (string-join excluded "|") ")$")))
+  (define* (excluded-file? file stat #:optional result)
+    (not (regexp-exec exclusion-rx file)))
 
   (define* (directory-contents directory #:key (packages #f))
     (define (filter-files directory)
       (find-files directory
-                  (lambda (file stat)
-                    (not (regexp-exec exclusion-rx file)))))
+                  excluded-file?
+                  #:enter?
+                  excluded-file?))
     (if (and stow? packages (maybe-value-set? packages))
         (append-map filter-files
                     (map (lambda (pkg)

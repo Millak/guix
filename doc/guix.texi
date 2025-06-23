@@ -82,7 +82,7 @@ Copyright @copyright{} 2020 Damien Cassou@*
 Copyright @copyright{} 2020 Jakub Kądziołka@*
 Copyright @copyright{} 2020 Jack Hill@*
 Copyright @copyright{} 2020 Naga Malleswari@*
-Copyright @copyright{} 2020, 2021 Brice Waegeneire@*
+Copyright @copyright{} 2020, 2021, 2025 Brice Waegeneire@*
 Copyright @copyright{} 2020 R Veera Kumar@*
 Copyright @copyright{} 2020, 2021, 2022 Pierre Langlois@*
 Copyright @copyright{} 2020 pinoaffe@*
@@ -54180,7 +54180,8 @@ subset of applications.  This field will be ignored if @code{layout} is set
 to @code{'plain}.
 
 @item @code{excluded} (default: @code{'(".*~" ".*\\.swp" "/\\.git/.*" "\\.gitignore")}) (type: list-of-strings)
-The list of file patterns @code{home-dotfiles-service-type} will exclude
+The list of file patterns (including directories)
+@code{home-dotfiles-service-type} will exclude
 while visiting each one of the @code{directories}.
 
 @end table
