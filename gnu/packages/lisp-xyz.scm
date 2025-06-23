@@ -969,6 +969,17 @@ portable between implementations.")
           `(modify-phases ,phases
              (delete 'build-doc))))))))
 
+(define-public clasp-alexandria
+  (let ((pkg (sbcl-package->clasp-package sbcl-alexandria)))
+    (package
+      (inherit pkg)
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'build-doc))))))))
+
 (define-public sbcl-alexandria-plus
   (let ((commit "adafb09838a84895bedb119f8253b89b6a04a2c5")
         (revision "0"))
