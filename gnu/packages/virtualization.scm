@@ -3367,12 +3367,12 @@ create_header"))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs libguestfs-minimal)
        (prepend bash-completion
-                cdrtools
                 gobject-introspection
                 python
                 ruby
                 util-linux
-                vala)))
+                vala
+                xorriso)))
     (inputs
      (modify-inputs (package-inputs libguestfs-minimal)
        (prepend acl
