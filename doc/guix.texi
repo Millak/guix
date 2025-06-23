@@ -15863,11 +15863,29 @@ that Guix uses, as in this example:
                 (cpe-version . "2.3"))))
 @end lisp
 
+A CVE alert can be a false positive when its CPE name matches the one in
+Guix, while actually referring to a distinct product.  These alerts can
+be addressed by setting the correct CPE vendor, or when no vendors
+apply, by ignoring alerts from irrelevant vendors, as in these examples:
+
+@lisp
+(package
+  (name "halibut")
+  ;; @dots{}
+  (properties '((cpe-vendor . "halibut_project"))))
+
+(package
+  (name "cvs")
+  ;; @dots{}
+  (properties '((lint-hidden-cpe-vendors . ("jenkins"
+                                            "vendor2")))))
+@end lisp
+
 @c See <https://www.openwall.com/lists/oss-security/2017/03/15/3>.
-Some entries in the CVE database do not specify which version of a
-package they apply to, and would thus ``stick around'' forever.  Package
-developers who found CVE alerts and verified they can be ignored can
-declare them as in this example:
+Finally, some entries in the CVE database do not specify which version
+of a package they apply to, and would thus ``stick around'' forever.
+Package developers who found CVE alerts and verified they can be ignored
+can declare them as in this example:
 
 @lisp
 (package
