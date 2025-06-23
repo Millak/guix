@@ -73,6 +73,7 @@
 ;;; Copyright © 2025 Junker <dk@junkeria.club>"
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>"
+;;; Copyright © 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,6 +108,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system node)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -2283,6 +2285,54 @@ directions.")
                   (invoke "make" "test-go"))))))))
     (native-inputs
      (list go-github-com-kylelemons-godebug node-lts))))
+
+(define-public node-esbuild
+  (package
+    (name "node-esbuild")
+    (version (package-version esbuild))
+    (source
+      (origin
+        (inherit (package-source esbuild))
+        (file-name (git-file-name name version))
+        (snippet #f)
+        (modules '())))
+    (build-system node-build-system)
+    (inputs (list esbuild))
+    (arguments (list
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+        (add-after 'unpack 'chdir (lambda _
+          (chdir "npm/esbuild")))
+        (add-before 'patch-dependencies 'modify-package (lambda _
+            (modify-json
+              (delete-fields '("optionalDependencies" "scripts")))
+            (substitute* "../../lib/npm/node-platform.ts"
+              (("^export var ESBUILD_BINARY_PATH:.+$")
+                (string-append "export var ESBUILD_BINARY_PATH: string"
+                " = process.env.ESBUILD_BINARY_PATH"
+                " || ESBUILD_BINARY_PATH"
+                " || path.join(__dirname, '..', 'bin', 'esbuild')")))))
+        (replace 'build (lambda* (#:key inputs #:allow-other-keys)
+          ; From scripts/esbuild.js
+          (invoke
+            "esbuild"
+            "../../lib/npm/node.ts"
+            "--outfile=lib/main.js"
+            "--bundle"
+            "--target=node10"
+            "--define:WASM=false"
+            (string-append "--define:ESBUILD_VERSION=\"" #$version "\"")
+            "--external:esbuild"
+            "--platform=node"
+            "--log-level=warning")
+          (copy-file "../../lib/shared/types.ts" "lib/main.d.ts")
+          (install-file
+            (string-append (assoc-ref inputs "esbuild") "/bin/esbuild")
+            "bin"))))))
+    (home-page (package-home-page esbuild))
+    (synopsis "Node module of ESBuild")
+    (description (package-description esbuild))
+    (license (package-license esbuild))))
 
 (define-public wwwoffle
   (package
