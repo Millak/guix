@@ -10021,7 +10021,7 @@ applications.")
 (define-public speed-dreams
   (package
     (name "speed-dreams")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
      (origin
        (method git-fetch)
@@ -10032,7 +10032,7 @@ applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17acjfgffw39w05rha2r89q4cb97z1qg1z5rpy8ipn0v6dipw0i7"))))
+         "0r8liki7rcpi85a829qjbj37cnh00899qr8a09qsfj47cj52qi47"))))
     (build-system cmake-build-system)
     (arguments
      (list
