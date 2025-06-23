@@ -1420,7 +1420,7 @@ compared to the fastest mode of zlib, Snappy is an order of magnitude faster
 for most inputs, but the resulting compressed files are anywhere from 20% to
 100% bigger.")
     (license license:asl2.0)
-    (properties '((cpe-name . "google")))))
+    (properties '((cpe-vendor . "google")))))
 
 ;; We need this for irods.
 (define-public snappy-with-clang6
