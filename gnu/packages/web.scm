@@ -2234,58 +2234,6 @@ directions.")
     (description "Microsocks is a small, efficient SOCKS5 server.")
     (license license:expat)))
 
-;; This is a variant of esbuild that builds and installs the nodejs API.
-;; Eventually, this should probably be merged with the esbuild package.
-(define-public esbuild-node
-  (package
-    (inherit esbuild)
-    (name "esbuild-node")
-    (version "0.14.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/evanw/esbuild")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "09r1xy0kk6c9cpz6q0mxr4why373pwxbm439z2ihq3k1d5kk7x4w"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove prebuilt binaries
-        '(delete-file-recursively "lib/npm/exit0"))))
-    (arguments
-     (list
-      #:import-path "github.com/evanw/esbuild/cmd/esbuild"
-      #:unpack-path "github.com/evanw/esbuild"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'build 'build-platform
-            (lambda* (#:key unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                ;; Must be writable.
-                (for-each make-file-writable (find-files "." "."))
-                (invoke "node" "scripts/esbuild.js"
-                        (string-append #$output "/bin/esbuild"))
-                (let ((modules (string-append #$output "/lib/node_modules/esbuild")))
-                  (mkdir-p modules)
-                  (copy-recursively "npm/esbuild" modules)))))
-          (replace 'check
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (when tests?
-                ;; The "Go Race Detector" is only supported on 64-bit
-                ;; platforms, this variable disables it.
-                ;; TODO: Causes too many rebuilds, rewrite to limit to x86_64,
-                ;; aarch64 and ppc64le.
-                #$(if (target-riscv64?)
-                      `(setenv "ESBUILD_RACE" "")
-                      #~(unless #$(target-64bit?)
-                          (setenv "ESBUILD_RACE" "")))
-                (with-directory-excursion (string-append "src/" unpack-path)
-                  (invoke "make" "test-go"))))))))
-    (native-inputs
-     (list go-github-com-kylelemons-godebug node-lts))))
-
 (define-public node-esbuild
   (package
     (name "node-esbuild")
@@ -2333,6 +2281,9 @@ directions.")
     (synopsis "Node module of ESBuild")
     (description (package-description esbuild))
     (license (package-license esbuild))))
+
+(define-public esbuild-node
+  (deprecated-package "esbuild-node" node-esbuild))
 
 (define-public wwwoffle
   (package
