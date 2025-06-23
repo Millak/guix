@@ -2,6 +2,7 @@
 ;;; Copyright © 2019-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
              (git)
              (gnu packages base)
              (gnu packages compression)
+             (gnu packages fonts)
              (gnu packages gawk)
              (gnu packages gettext)
              (gnu packages guile)
@@ -133,11 +135,12 @@ as well as images, OS examples, and translations."
 
   (define examples
     (file-append* source "gnu/system/examples"))
-
   (define build
     (with-imported-modules '((guix build utils))
       #~(begin
           (use-modules (guix build utils)
+                       (ice-9 binary-ports)
+                       (ice-9 textual-ports)
                        (srfi srfi-19))
 
           (define (make-version-texi language)
@@ -159,6 +162,22 @@ as well as images, OS examples, and translations."
                             (date->string date "~B ~Y")
                             version version))))))
 
+          (define (replace-first-line file replacement)
+            ;; Modify first line of FILE to REPLACEMENT.
+            (with-atomic-file-replacement
+             file
+             (lambda (in out)
+               (get-line in)
+               (display replacement out)
+               (newline out)
+               (letrec ((loop (lambda ()
+                                (let ((bv (get-bytevector-n in 65536)))
+                                  (unless (eof-object? bv)
+                                    (begin
+                                      (put-bytevector out bv)
+                                      (loop)))))))
+                 (loop)))))
+
           (install-file #$(file-append documentation "/htmlxref.cnf")
                         #$output)
 
@@ -167,6 +186,15 @@ as well as images, OS examples, and translations."
                     (append (find-files #$documentation "\\.(texi|scm|json)$")
                             (find-files #$(translated-texi-manuals source)
                                         "\\.texi$")))
+
+          ;; For CJK support in PDF, replace \input line.
+          (with-directory-excursion #$output
+            (replace-first-line
+             "guix.zh_CN.texi"
+             "\\input texinfo-zh")
+            (replace-first-line
+             "guix-cookbook.zh_CN.texi"
+             "\\input texinfo-zh"))
 
           ;; Create 'version.texi'.
           (for-each make-version-texi '#$languages)
@@ -974,19 +1002,22 @@ makeinfo OPTIONS."
   (define texinfo-profile
     (profile
      (content (packages->manifest
-               ;; texi2dvi requires various command line tools.
+               ;; texi2any requires various command line tools.
                (list coreutils
                      diffutils
+                     font-arphic-ukai
+                     font-google-noto-serif-cjk-static
                      gawk
                      grep
                      sed
                      tar
-                     texinfo
-                     ;; This deprecated symbol should not be updated, as the
-                     ;; build farm's Guix (that comes from the guix-daemon
-                     ;; package) doesn't know about it yet.
-                     (texlive-updmap.cfg
-                      (list texlive-epsf texlive-texinfo)))))))
+                     texinfo-7
+                     (texlive-local-tree
+                      (list
+                       texlive-epsf
+                       texlive-texinfo
+                       texlive-xetex
+                       texlive-zhspacing)))))))
 
   (define build
     (with-imported-modules '((guix build utils))
@@ -1007,8 +1038,12 @@ makeinfo OPTIONS."
                                                 "/lib/locale"))
           (setenv "LC_ALL" "en_US.utf8")
           (setenv "PATH" #+(file-append texinfo-profile "/bin"))
+          (setenv "XDG_DATA_DIRS" #+(file-append texinfo-profile "/share"))
           (setenv "GUIX_TEXMF" #+(file-append texinfo-profile
                                               "/share/texmf-dist"))
+
+          ;; Per Texinfo 7.2 manual, we are meant to use xetex for Chinese.
+          (setenv "PDFTEX" "xetex")
 
           (setvbuf (current-output-port) 'line)
           (setvbuf (current-error-port) 'line)
@@ -1034,15 +1069,15 @@ makeinfo OPTIONS."
                         (setenv "LANGUAGE" language)
 
 
-                        ;; FIXME: Unfortunately building PDFs for non-Latin
-                        ;; alphabets doesn't work:
-                        ;; <https://lists.gnu.org/archive/html/help-texinfo/2012-01/msg00014.html>.
+                        ;; FIXME: Building PDFs for non-Latin requires a
+                        ;; changed \input line at the beginning.  Unfortunately,
+                        ;; we don't have one for some languages (Russian).
                         (guard (c ((invoke-error? c)
                                    (format (current-error-port)
                                            "~%~%Failed to produce \
 PDF for language '~a'!~%~%"
                                            language)))
-                         (apply invoke #$(file-append texinfo "/bin/makeinfo")
+                         (apply invoke #$(file-append texinfo-7 "/bin/texi2any")
                                 "--pdf" "-o"
                                 (string-append #$output "/"
                                                (normalize language)
@@ -1265,7 +1300,7 @@ must be the Guix top-level source directory, from which PO files are taken."
                                                   language))
                                ".html")))
                          "HTML, entirely on one page"))
-                  ,@(if (member language '("ru" "zh_CN"))
+                  ,@(if (member language '("ko" "ru"))
                         '()
                         `((li (a (@ (href ,(string-append
                                             #$manual
