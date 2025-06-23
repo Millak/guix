@@ -91,6 +91,7 @@
 ;;; Copyright © 2023-2025 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9965,7 +9966,7 @@ civilized than your own.")
   (hidden-package
    (package
      (name "speed-dreams-data")
-     (version "2.4.1")
+     (version "2.4.2")
      (source
       (origin
         (method git-fetch)
@@ -9976,7 +9977,7 @@ civilized than your own.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1w7j2znqy4ixsild1v0qz7hw3m42gqg1jnq7nnb48d6fc64hv3bn"))))
+          "1igavpsn8v9v866hawmgx47a6wz0bxykmf540961jfzav85j5m7p"))))
      (build-system cmake-build-system)
      (arguments (list #:tests? #f))   ;no test suite
      (home-page "https://www.speed-dreams.net/en")
