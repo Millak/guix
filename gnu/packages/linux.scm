@@ -81,7 +81,7 @@
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2030,7 +2030,7 @@ and the notification, WiFi, and Bluetooth LED.")
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
-    (version "4.12.2")
+    (version "4.14.1")
     (source
      (origin
        (method git-fetch)
@@ -2039,7 +2039,7 @@ and the notification, WiFi, and Bluetooth LED.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h5hjwlphld1ijin08qi1hrpsczpw8dqyw49yjprl959j74nwnmm"))))
+        (base32 "145yk8iv1vprwag5zm2z4843w1wdivlgnrw9cysq3rf37xbydbni"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
