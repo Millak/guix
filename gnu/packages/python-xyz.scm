@@ -18606,29 +18606,29 @@ background.")
 (define-public python-libarchive-c
   (package
     (name "python-libarchive-c")
-    (version "2.9")
+    (version "5.2")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "libarchive-c" version))
+              (uri (pypi-uri "libarchive_c" version))
               (sha256
                (base32
-                "0q7g6a97110bk0j5x81555kajyxh4sybaabab6v5sgr0xi6386cr"))))
-    (build-system python-build-system)
+                "05vl0pjpv5wqy9xybzixjv9anvih9yjx361c4rw6xbq9hpiahi7x"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before
-                   'build 'reference-libarchive
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     ;; Retain the absolute file name of libarchive.so.
-                     (let ((libarchive (assoc-ref inputs "libarchive")))
-                       (substitute* "libarchive/ffi.py"
-                         (("find_library\\('archive'\\)")
-                          (string-append "'" libarchive
-                                         "/lib/libarchive.so'"))))))
-                  (replace 'check
-                    (lambda _ (invoke "pytest" "-vv"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'reference-libarchive
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Retain the absolute file name of libarchive.so.
+              (substitute* "libarchive/ffi.py"
+                (("find_library\\('archive'\\)")
+                 (string-append
+                  "'"
+                  (search-input-file inputs "/lib/libarchive.so")
+                  "'"))))))))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-setuptools python-wheel python-pytest))
     (inputs
      (list libarchive))
     (home-page "https://github.com/Changaco/python-libarchive-c")
