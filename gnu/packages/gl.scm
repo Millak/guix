@@ -383,7 +383,6 @@ also known as DXTn or DXTC) for Mesa.")
     (outputs '("out" "bin"))
     (arguments
      (list
-      #:meson meson-1.8
       #:configure-flags
       #~(list
          #$@(cond
