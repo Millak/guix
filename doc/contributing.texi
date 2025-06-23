@@ -1457,7 +1457,7 @@ If your machine is powerful enough you may check that the whole
 collection has no regression and still can be built successfully:
 @example
 [env: /gnu/store/lzxbi1ps43msyw7m5wblziy8mj6hw5kw-profile]
-> ./pre-inst-env guix build $(./pre-inst-env guix package -A | awk '/astronomy.scm/{print $1"@"$2}')
+> ./pre-inst-env guix build $(./pre-inst-env guix package -A | awk '/astronomy.scm/@{print $1"@@"$2@}')
 @end example
 
 @node Emacs Packages
