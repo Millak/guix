@@ -6716,7 +6716,7 @@ esbuild.build({
                        "inst/assets/garcon/garcon.min.js"))))))
       (propagated-inputs (list r-htmltools r-r6 r-shiny))
       (native-inputs
-       (list esbuild-node node-lts r-knitr
+       (list node-esbuild node-lts r-knitr
              (origin
                (method git-fetch)
                (uri (git-reference
