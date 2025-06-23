@@ -500,6 +500,34 @@ application.")
     (home-page "https://hluk.github.io/CopyQ/")
     (license license:gpl3+)))
 
+(define-public bigbagkbdtrixxkb
+  (let ((commit "d01cfc801fea7118001482b7b2c4184b3aac960e")
+        (revision "0"))
+    (package
+      (name "bigbagkbdtrixxkb")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DreymaR/BigBagKbdTrixXKB")
+               (commit "d01cfc801fea7118001482b7b2c4184b3aac960e")))
+         (file-name (git-file-name name version))
+         (sha256
+          "1ffvqnnghjvzrqj1rn843lkylapvvb15il1wprp12xfdvhfc16n6")))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("xkb-data_xmod/xkb" "share/X11/xkb"))))
+      (home-page "https://dreymar.colemak.org/")
+      (synopsis "DreymaR's Big Bag of Keyboard Tricks")
+      (description
+       "This package includes a variety of xkb keyboard options including
+ergonomic layouts and the 'extend' layer for easy access to modifiers and
+function keys.")
+    (license license:expat))))
+
 (define-public xkeysnail
   (package
     (name "xkeysnail")
