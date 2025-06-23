@@ -3775,7 +3775,8 @@ applications for Sway and other wlroots-based Wayland compositors.")
           (delete 'configure)
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
-              (when tests? (invoke "./dex" "--test")))))))
+              (when tests?
+                (invoke "./dex" "--test" "--verbose")))))))
     (inputs
      (list python))
     (native-inputs
