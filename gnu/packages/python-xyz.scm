@@ -27591,6 +27591,63 @@ in human-readable HTML format.")
 executed more than a given number of times during a given period.")
     (license license:asl2.0)))
 
+(define-public python-rbfly
+  (package
+    (name "python-rbfly")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rbfly" version))
+       (sha256
+        (base32 "019fs94qzbxb43vahcm0va53m5d4nxrib5pkl29m4hx9adcccpf6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "rbfly")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "pyproject.toml"
+                ((".*addopts.*") "")))))))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-setuptools
+           python-wheel))
+    (home-page "https://wrobell.dcmod.org/rbfly/")
+    (synopsis "Work with RabbitMQ Streams in Python")
+    (description
+     "This package implements a functionality to deal with
+@url{https://www.rabbitmq.com/streams.html, RabbitMQ Streams} using
+@url{https://docs.python.org/3/library/asyncio.html, @code{asyncio}}.
+
+It is designed and implemented with the following qualities in mind:
+@itemize
+@item asynchronous Pythonic API with type annotations
+@item use of
+@url{https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol, AMQP}
+1.0 message format to enable interoperability between RabbitMQ Stream. clients
+@item auto reconnection to RabbitMQ broker with lazily created connection
+objects
+@end itemize
+
+Support of many RabbitMQ Streams broker features:
+@itemize
+@item publishing single messages, or in batches, with confirmation
+@item subscribing to a stream at a specific point in time, from a specific
+offset, or using offset reference
+@item stream message filtering
+@item writing stream offset reference
+@item message deduplication
+@item integration with AMQP 1.0 ecosystem at message format level
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public python-jsonrpclib-pelix
   (package
     (name "python-jsonrpclib-pelix")
