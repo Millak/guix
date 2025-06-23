@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014, 2016, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -8551,7 +8551,9 @@ users.")
                                         "NetworkManager/NetworkManager"))
                     (commit version)))
               (file-name (git-file-name name version))
-              (patches (search-patches "network-manager-plugin-path.patch"))
+              (patches (search-patches
+                        "network-manager-plugin-ownership.patch"
+                        "network-manager-plugin-path.patch"))
               (sha256
                (base32
                 "0fx3yvqrwc9fqphhwvchxls0lgizlz7bxww3riijlvx3pkypqbyr"))))

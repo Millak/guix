@@ -1,0 +1,27 @@
+NetworkManager insists that plugins be root-owned.  This is the case when running
+guix-daemon with root privileged, but not when running it unprivileged (in that case,
+file in the store belong to the 'guix-daemon' user.)
+
+Skip that test entirely since it doesn't provide any additional safety on Guix System.
+
+See <https://issues.guix.gnu.org/78047>.
+
+diff --git a/src/core/nm-core-utils.c b/src/core/nm-core-utils.c
+index 895a991..738f8c7 100644
+--- a/src/core/nm-core-utils.c
++++ b/src/core/nm-core-utils.c
+@@ -4319,14 +4319,6 @@ nm_utils_validate_plugin(const char *path, struct stat *st, GError **error)
+         return FALSE;
+     }
+ 
+-    if (st->st_uid != 0) {
+-        g_set_error_literal(error,
+-                            NM_UTILS_ERROR,
+-                            NM_UTILS_ERROR_UNKNOWN,
+-                            "file has invalid owner (should be root)");
+-        return FALSE;
+-    }
+-
+     if (st->st_mode & (S_IWGRP | S_IWOTH | S_ISUID)) {
+         g_set_error_literal(error,
+                             NM_UTILS_ERROR,
