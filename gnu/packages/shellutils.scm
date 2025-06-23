@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Brian Kubisiak <brian@kubisiak.com>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
+;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -343,6 +344,31 @@ highlighting of commands whilst they are typed at a Zsh prompt into an
 interactive terminal.  This helps in reviewing commands before running them,
 particularly in catching syntax errors.")
     (license license:bsd-3)))
+
+(define-public zsh-vi-mode
+  (package
+    (name "zsh-vi-mode")
+    (version "0.11.0")
+    (home-page "https://github.com/jeffreytse/zsh-vi-mode")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jeffreytse/zsh-vi-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        "0bs5p6p5846hcgf3rb234yzq87rfjs18gfha9w0y0nf5jif23dy5")))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("zsh-vi-mode.zsh" "share/zsh/plugins/zsh-vi-mode/")
+          ("zsh-vi-mode.plugin.zsh" "share/zsh/plugins/zsh-vi-mode/"))))
+    (synopsis "Plugin to improve vi keybindings in zsh")
+    (description "This package provides a zsh vimkey plugin with more features,
+which more closely matches the standard behavior of vim.")
+    (license license:expat)))
 
 (define-public grml-zsh-config
   (package
