@@ -10,6 +10,7 @@
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2023 Carlo Zancanaro <carlo@zancanaro.id.au>
+;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -534,19 +535,21 @@ name matches REGEXP."
 (define* (find-files dir #:optional (pred (const #t))
                      #:key (stat lstat)
                      directories?
-                     fail-on-error?)
+                     fail-on-error?
+                     (enter? (const #t)))
   "Return the lexicographically sorted list of files under DIR for which PRED
 returns true.  PRED is passed two arguments: the absolute file name, and its
 stat buffer; the default predicate always returns true.  PRED can also be a
 regular expression, in which case it is equivalent to (file-name-predicate
 PRED).  STAT is used to obtain file information; using 'lstat' means that
-symlinks are not followed.  If DIRECTORIES? is true, then directories will
-also be included.  If FAIL-ON-ERROR? is true, raise an exception upon error."
+symlinks are not followed.  If DIRECTORIES? is true, then directories will also
+be included.  If FAIL-ON-ERROR? is true, raise an exception upon error.  Enter
+sub-directories only when (ENTER? path stat result) returns true."
   (let ((pred (if (procedure? pred)
                   pred
                   (file-name-predicate pred))))
     ;; Sort the result to get deterministic results.
-    (sort (file-system-fold (const #t)
+    (sort (file-system-fold enter?
                             (lambda (file stat result) ; leaf
                               (if (pred file stat)
                                   (cons file result)
