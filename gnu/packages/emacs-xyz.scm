@@ -21661,23 +21661,22 @@ and more predictable implementation.")
  highlighting strace outputs.")
       (license license:gpl3+))))
 
-(define-public emacs-default-encrypt
+(define-public emacs-defaultencrypt
   (package
-    (name "emacs-default-encrypt")
-    (version "4.4")
+    (name "emacs-defaultencrypt")
+    (version "5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://informationelle-selbstbestimmung-im-internet.de"
-             "/emacs/jl-encrypt" version "/jl-encrypt.el"))
-       (file-name (string-append "jl-encrypt-" version ".el"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/lechten/defaultencrypt")
+             (commit (string-append "vs" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0w9ggz075j1zwg7d0rv9k8238g600p7czfnnsnawswi7yps2xk78"))))
+         "1hkcikfms0y5xbr169b3bb00kbjf0zyfby0gipay054jns7y4i5z"))))
     (build-system emacs-build-system)
-    (home-page
-     "https://informationelle-selbstbestimmung-im-internet.de/Emacs.html")
+    (home-page "https://gitlab.com/lechten/defaultencrypt")
     (synopsis "Automatically encrypt or sign Gnus messages in Emacs")
     (description
      "DefaultEncrypt is designed to be used with Gnus in Emacs.  It
@@ -21688,6 +21687,9 @@ sign messages that you send.  For details and instructions on how to use
 DefaultEncrypt, please refer to the home page or read the comments in the
 source file, @file{jl-encrypt.el}.")
     (license license:gpl3+)))
+
+(define-public emacs-default-encrypt
+  (deprecated-package "emacs-default-encrypt" emacs-defaultencrypt))
 
 ;; Package has no release.  Version is extracted from "Version:" keyword in
 ;; main file.
