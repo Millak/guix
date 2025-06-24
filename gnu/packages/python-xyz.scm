@@ -5062,21 +5062,25 @@ for the standard @code{argparse} library.")
 (define-public python-bitstruct
   (package
     (name "python-bitstruct")
-    (version "8.14.0")
+    (version "8.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bitstruct" version))
        (sha256
-        (base32
-         "149c73yrqbph71bbyf925r2mbh2jdymqxc6d49lnylpiflf1j313"))))
-    (build-system python-build-system)
+        (base32 "1b2836hjc2bvnbjngfk9n0995zm3lz65apq7irlgijj5iabf82zz"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools-next
+           python-wheel))
     (home-page "https://github.com/eerimoq/bitstruct")
     (synopsis "Python values to and C bit field structs converter")
-    (description "This module performs conversions between Python values and C
-bit field structs represented as Python byte strings.  It is intended to have
-a similar interface as the @code{struct} module from Python, but working on
-bits instead of primitive data types like @code{char}, @code{int}, etc.")
+    (description
+     "This module performs conversions between Python values and C bit field
+structs represented as Python byte strings.  It is intended to have a similar
+interface as the @code{struct} module from Python, but working on bits instead
+of primitive data types like @code{char}, @code{int}, etc.")
     (license license:expat)))
 
 (define-public python-cantools
