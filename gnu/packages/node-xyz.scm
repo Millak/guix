@@ -1407,6 +1407,56 @@ Node.js Stream API.  The stream is a duplex stream, allowing for reading and
 writing.  It has additional methods for managing the SerialPort
 connection.")))
 
+(define-public node-source-map
+  (package
+    (name "node-source-map")
+    (version "0.6.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/mozilla/source-map")
+        (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0q8qaddi05387y8f58q0xlj7fjxf4mkymmir7wd9c5imqqs378md"))
+      (modules '((guix build utils)))
+      (snippet #~(begin
+        (delete-file-recursively "dist")))))
+    (build-system node-build-system)
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match)
+        (json))
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)
+            (replace-fields (list (cons "scripts.test" "node test/run-tests.js"))))))
+        (replace 'build (lambda _
+          (for-each
+            (match-lambda ((name parameters)
+              (apply invoke (append
+                (list
+                  "esbuild"
+                  "source-map.js"
+                  "--bundle"
+                  "--format=iife"
+                  "--global-name=sourceMap"
+                  (string-append "--outfile=dist/source-map" name ".js"))
+                parameters))))
+            (list
+              (list "" (list))
+              (list ".min" (list "--sourcemap" "--minify")))))))))
+    (synopsis "Generates and consumes source maps")
+    (description "This is a library to generate and consume the source map format\
+ @uref{https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k\
+/edit, described here}.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:bsd-3)))
+
 (define-public node-sqlite3
   (package
     (name "node-sqlite3")
