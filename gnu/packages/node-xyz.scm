@@ -405,6 +405,63 @@ a more fine-grained manner by binding the @env{DEBUG} variable.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-dprint-formatter
+  (package
+    (name "node-dprint-formatter")
+    (version "0.4.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/dprint/js-formatter")
+        (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0ihdspyz7brx1rny2ind715z6rlzncslsigi3yr553xmk18iswm2"))))
+    (build-system node-build-system)
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match)
+        (json))
+      #:tests? #f ; FIXME: Tests require 'deno'.
+      #:phases #~(modify-phases %standard-phases
+        (delete 'patch-dependencies)
+        (delete 'configure)
+        (replace 'build (lambda _
+          (define output "output")
+          (mkdir output)
+          (delete-file "mod_test.ts")
+          (substitute* (list "mod.ts" "v3.ts" "v4.ts")
+            (("\\.ts") ""))
+          (install-file "LICENSE" output)
+          (install-file "README.md" output)
+          (chdir output)
+          (call-with-output-file
+            "package.json"
+            (lambda (out)
+              (scm->json
+                (list
+                  (cons "name" "@dprint/formatter")
+                  (cons "version" #$version)
+                  (cons "main" "./script/mod.js")
+                  (cons "module" "./esm/mod.js"))
+                out)))
+          (for-each
+            (match-lambda ((format outdir)
+              (invoke
+                "esbuild"
+                "../*.ts"
+                (string-append "--format=" format)
+                "--platform=node"
+                (string-append "--outdir=" outdir))))
+            (list (list "cjs" "script") (list "esm" "esm"))))))))
+    (synopsis "Wasm formatter for dprint plugins")
+    (description "A JS formatter which uses WASM plugins for dprint.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-env-variable
   (package
     (name "node-env-variable")
