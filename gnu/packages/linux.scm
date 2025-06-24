@@ -9811,7 +9811,7 @@ framebuffer dump file (copy) to a PNG image.")
 (define-public libcgroup
   (package
     (name "libcgroup")
-    (version "3.1.0")
+    (version "3.2.0")
     (home-page "https://github.com/libcgroup/libcgroup")
     (source
      (origin
@@ -9820,7 +9820,7 @@ framebuffer dump file (copy) to a PNG image.")
              "https://github.com/libcgroup/libcgroup/releases/download/v"
              version "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0n0jkvmagw14vgwx3j5b6vv5h25lasrg2a7xihq9h11ww2qw8vlp"))))
+        (base32 "1zmxhqp8kj2n7yvj82nsy5sx07yrxj4r37w41lz5q8bpqgbc43ws"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests are virtualized with lxc, it is not very feasible
