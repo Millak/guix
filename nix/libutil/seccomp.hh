@@ -1,6 +1,7 @@
 #pragma once
 
 #include "util.hh"
+#include <cstdint>
 #include <linux/audit.h> /* For AUDIT_ARCH_* */
 #include <linux/seccomp.h>
 #include <linux/filter.h>
