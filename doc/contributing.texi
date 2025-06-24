@@ -1431,14 +1431,14 @@ called at the top level.
 
 @cindex packaging, maintenance
 Sometimes you may need to update a monotonic collection of grouped
-packages, in particular module e.g. @code{(gnu packages astronomy)} - it
-would require refreshing package versions, creating commits following
-guidelines and test them. Let's say there are 200+ packages which have
-fresh versions, you may deal with that task by applying the following
-technique.
+packages, in a particular module---e.g., @code{(gnu packages astronomy)}.
+Doing so requires refreshing package versions, creating commits
+following guidelines and testing them. Let's say there are 200+ packages
+with fresh versions, you may deal with this task by applying the
+following technique.
 
 Enter a development shell in your local Guix checkout, assuming you
-already run @code{bootstrap} and @code{configer}:
+already ran @code{bootstrap} and @code{configure}:
 
 @example
 ~$ guix shell --development guix
@@ -1447,14 +1447,14 @@ already run @code{bootstrap} and @code{configer}:
 > ./pre-inst-env etc/commiter.scm
 @end example
 
-The first command will update all packages in @code{(gnu packages
-astronomy)} to the latest versions and write changes back to the file.
-The second will invoke @code{etc/commiter.scm} script, a helper script
-aiming exactly for larger scale updates; it will identify each package
-diff and create corresponding commits with correct style.
+The first command updates all packages in @code{(gnu packages
+astronomy)} to the latest versions and writes changes back to the file.
+The second invokes @code{etc/commiter.scm} script, a helper script for
+larger scale updates; it identifies each package diff and creates
+corresponding commits with the correct style.
 
-If your machine is powerful enough you may check that the whole
-collection has no regression and still can be built successfully:
+If your machine is powerful enough, you may check that the whole
+collection has no regressions and can still be built successfully:
 @example
 [env: /gnu/store/lzxbi1ps43msyw7m5wblziy8mj6hw5kw-profile]
 > ./pre-inst-env guix build $(./pre-inst-env guix package -A | awk '/astronomy.scm/@{print $1"@@"$2@}')
