@@ -1928,23 +1928,24 @@ encryption algorithm if so desired.")
           (base32 "0cwik9v5pspyi0kgq6d2kaqy6gj3dgfn97nbjcbkbrbbc7syyd3v"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:make-flags
-         (let ((out (assoc-ref %outputs "out")))
-           (list (string-append "PREFIX=" out)
-                 (string-append "BASHCOMPDIR=" out "/etc/bash_completion.d")))
-         #:test-target "tests"
-         ;; tests are very dependent on system state (swap partition) and require
-         ;; access to /tmp/zsh which is not in the build container.
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-tomb-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((tomb (assoc-ref inputs "tomb")))
-                 (substitute* "tomb.bash"
-                   ((":-tomb")
-                    (string-append ":-" tomb "/bin/tomb"))))))
-           (delete 'configure))))
+       (list
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output)
+                (string-append "BASHCOMPDIR=" #$output
+                               "/etc/bash_completion.d"))
+        #:test-target "tests"
+        ;; tests are very dependent on system state (swap partition) and require
+        ;; access to /tmp/zsh which is not in the build container.
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-tomb-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((tomb (assoc-ref inputs "tomb")))
+                  (substitute* "tomb.bash"
+                    ((":-tomb")
+                     (string-append ":-" tomb "/bin/tomb"))))))
+            (delete 'configure))))
       (inputs
        (list tomb))
       (home-page "https://github.com/roddhjav/pass-tomb")
