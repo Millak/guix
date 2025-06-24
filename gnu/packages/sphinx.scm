@@ -921,21 +921,24 @@ introspection of @code{zope.interface} instances in code.")
 (define-public python-sphinx-alabaster-theme
   (package
     (name "python-sphinx-alabaster-theme")
-    (version "0.7.13")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "alabaster" version))
-              (sha256
-               (base32
-                "1qjam3hks6a3fa89nhb9ajk62b2m5qmss0qyw0b0wsay9l44lym2"))))
+    (version "0.7.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "alabaster" version))
+       (sha256
+        (base32 "0rcdsl333jjwrb8m77nsj8wdn78jg92dvk7qsw6xbnm552fbka3m"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests provided in PyPI or Git
     (propagated-inputs
      (list python-pygments))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-flit-core))
     (home-page "https://alabaster.readthedocs.io/")
     (synopsis "Configurable sidebar-enabled Sphinx theme")
-    (description "Alabaster is a visually (c)lean, responsive, configurable
-theme for the Sphinx documentation system.  It's the default theme of Sphinx.")
+    (description
+     "Alabaster is a visually (c)lean, responsive, configurable theme for the
+Sphinx documentation system.  It's the default theme of Sphinx.")
     (license license:bsd-3)))
 
 (define-public python-sphinx-argparse
