@@ -2195,6 +2195,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qemu-disable-migration-test.patch	\
   %D%/packages/patches/qemu-glibc-2.27.patch 			\
   %D%/packages/patches/qemu-glibc-2.30.patch 			\
+  %D%/packages/patches/qemu-glibc-2.41.patch 			\
   %D%/packages/patches/qemu-fix-agent-paths.patch 		\
   %D%/packages/patches/qrcodegen-cpp-cmake.patch		\
   %D%/packages/patches/qtbase-absolute-runpath.patch		\
