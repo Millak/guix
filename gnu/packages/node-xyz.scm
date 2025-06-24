@@ -644,6 +644,57 @@ random number generator.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-minipass-5
+  (package
+    (name "node-minipass")
+    (version "5.0.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/isaacs/minipass")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "1xwxk9w290d0xsi9flzlrpdr4rwbq8q47d8hrzv27pzr2gf42nsz"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'tap'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package
+          (lambda _
+            (modify-json
+              (delete-dev-dependencies)
+              (delete-fields (list
+                "scripts.prepare")))))
+        (replace 'build
+          (lambda _
+            (define output "output")
+            (mkdir output)
+            (invoke "node" "./scripts/transpile-to-esm.js")
+            (for-each
+              (lambda (file) (install-file file output))
+              (list "index.js" "index.mjs" "LICENSE" "package.json" "README.md"))
+            (chdir output))))))
+    (synopsis "Minimal implementation of a PassThrough stream")
+    (description "A very minimal implementation of a PassThrough stream
+It's very fast for objects, strings, and buffers.
+Supports pipe()ing (including multi-pipe() and backpressure transmission), buffering\
+ data until either a data event handler or pipe() is added (so you don't lose the first\
+ chunk), and most other cases where PassThrough is a good idea.
+There is a read() method, but it's much more efficient to consume data from this stream\
+ via 'data' events or by calling pipe() into some other stream. Calling read() requires\
+ the buffer to be flattened in some cases, which requires copying memory.
+If you set objectMode: true in the options, then whatever is written will be emitted.\
+ Otherwise, it'll do a minimal amount of Buffer copying to ensure proper Streams\
+ semantics when read(n) is called.
+objectMode can only be set at instantiation. Attempting to write something other than a\
+ String or Buffer without having set objectMode in the options will throw an error.
+This is not a through or through2 stream. It doesn't transform the data, it just passes\
+ it right through. If you want to transform the data, extend the class, and override the\
+ write() method. Once you're done transforming the data however you want, call\
+ super.write() with the transform output.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:isc)))
+
 (define-public node-ms
   (package
     (name "node-ms")
