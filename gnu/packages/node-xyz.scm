@@ -1613,6 +1613,41 @@ strings so that the decoded string does not contain incomplete multibyte
 sequences.")
     (license license:expat)))
 
+; Beware of this package. Version 1.x is for CJS and 2.x for ESM, but they've
+; been publishing the 1.x version by hand, it's not checked into the repo.
+; Currently switching from ESM to CJS in this package definition.
+(define-public node-strnum
+  (package
+    (name "node-strnum")
+    (version "1.1.2")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/NaturalIntelligence/strnum")
+        (commit "6ed1b2fc39f169c35c2fc06ec89e7b7fd17fa0ce")))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0ghi1j76fh6d572jwvh1zw8m9h8g480dj5snkpl7b0di30s8qbyi"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'jasmine'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)
+            (delete-fields (list "type"))
+            (replace-fields (list (cons "version" #$version))))))
+        (replace 'build (lambda _
+          (define problem-file "strnum.js")
+          (substitute* problem-file (("^export default ") ""))
+          (let ((problem-file-port (open-file problem-file "a")))
+            (display "\nmodule.exports = toNumber;" problem-file-port)
+            (close-port problem-file-port)))))))
+    (synopsis "Parse String to Number based on configuration")
+    (description "Javascript library that parses a string into a number.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-tiddlywiki
   (package
     (name "node-tiddlywiki")
