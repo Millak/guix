@@ -876,6 +876,37 @@ It supports lazy decoding and detailed customization of the reading/writing
 code.")
     (license license:bsd-3)))
 
+(define-public node-picocolors
+  (package
+    (name "node-picocolors")
+    (version "1.1.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/alexeyraspopov/picocolors")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "04g0rl3i08fsakadmls21nbyk5srz7qpmic6m8fjxglbf5mvnsq7"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; Test is broken, possibly by being run in guix build.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Small and fast ANSI colors terminal output formatting library")
+    (description "The tiniest and the fastest library for terminal output formatting with\
+ ANSI colors.
+  * No dependencies.
+  * 14 times smaller and 2 times faster than chalk.
+  * Used by popular tools like PostCSS, SVGO, Stylelint, and Browserslist.
+  * Node.js v6+ & browsers support. Support for both CJS and ESM projects.
+  * TypeScript type declarations included.
+  * NO_COLOR friendly.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:isc)))
+
 (define-public node-protocol-buffers-schema
   (package
     (name "node-protocol-buffers-schema")
