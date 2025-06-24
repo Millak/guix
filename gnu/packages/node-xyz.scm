@@ -1368,6 +1368,67 @@ parseMilliseconds(1337000001);
 particular cross-platform spellings of the PATH environment variable key.")
     (license license:expat)))
 
+(define-public node-path-scurry
+  (package
+    (name "node-path-scurry")
+    (version "1.11.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/isaacs/path-scurry")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "1vbmzg2pwmm441d9clk69fpij33ns5mblncy0za1x5f7d04jjyi2"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-lru-cache
+      node-minipass-7))
+    ; Use ESBuild because this is used to build Typescript.
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:tests? #f ; FIXME: Tests require 'tap'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'delete-dependencies
+          (lambda _
+            (modify-json
+              (delete-dev-dependencies)
+              (delete-fields (list "scripts.prepare")))))
+        (replace 'build
+          (lambda _
+            (define output "output")
+            (for-each
+              (match-lambda ((format directory type)
+                (define target-output (string-append output "/dist/" directory))
+                (invoke
+                  "esbuild"
+                  "src/*.ts"
+                  "--platform=node"
+                  "--target=es2022"
+                  (string-append "--format=" format)
+                  "--jsx=transform"
+                  "--sourcemap"
+                  (string-append "--outdir=" target-output))
+                (with-output-to-file
+                  (string-append target-output "/package.json")
+                  (lambda _ (display (string-append "{\"type\": \"" type "\"}"))))))
+              (list
+                (list "cjs" "commonjs" "commonjs")
+                (list "esm" "esm" "module")))
+            (for-each
+              (lambda (file) (install-file file output))
+              (list "LICENSE.md" "package.json" "README.md"))
+            (chdir output))))))
+    (synopsis "Yet another file traversal library.")
+    (description "Extremely high performant utility for building tools that read\
+ the file system, minimizing filesystem and path string munging operations to\
+ the greatest degree possible..")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-pbf
   (package
     (name "node-pbf")
