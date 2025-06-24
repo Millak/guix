@@ -1039,7 +1039,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.7.5")
+    (version "3.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1048,7 +1048,7 @@ desktop environment.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xwp4lrc8mqi3lxs0vkssm16s958k0i9qjxypygmrny7xw020qb0"))))
+                "0981hfic0i11hv9krl230adb1i2glxymv5ybg7ki25xi067w2xiw"))))
     (build-system cmake-build-system)
     (native-inputs (list pkg-config gettext-minimal))
     (inputs (list fontconfig
