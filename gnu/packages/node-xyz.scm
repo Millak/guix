@@ -248,6 +248,31 @@ ABI-stable across Node.js major versions.")
 addons in a wide array of potential locations.")
     (license license:expat)))
 
+(define-public node-brace-expansion
+  (package
+    (name "node-brace-expansion")
+    (version "2.0.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/juliangruber/brace-expansion")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "113banahmr00n1fnyswdsx2jgpfi05f4hn2gc5i8kka7hmj3b5g1"))))
+    (build-system node-build-system)
+    (inputs (list node-balanced-match))
+    (arguments (list
+      #:tests? #f ; FIXME Tests require 'tape'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package
+          (lambda _
+            (modify-json (delete-dev-dependencies)))))))
+    (synopsis "Brace expansion as known from sh/bash, in JavaScript")
+    (description "Return an array of all possible and valid expansions of str. If none\
+ are found, [str] is returned.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-buffer-crc32
   (package
     (name "node-buffer-crc32")
