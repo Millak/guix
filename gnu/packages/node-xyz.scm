@@ -216,6 +216,29 @@ addons in a wide array of potential locations.")
 and fancy character sets, signed or unsigned data and has tests, for Node.")
     (license license:expat)))
 
+(define-public node-buffer-from
+  (package
+    (name "node-buffer-from")
+    (version "1.1.2")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/LinusU/buffer-from")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "15x3iix1z2ggfq3gmnjnz809k02g0zbkf391g1if8s7d3q0r0w1b"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'standard'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "A ponyfill for Buffer.from")
+    (description "A ponyfill for Buffer.from, uses native implementation if available.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-color-name
   (package
     (name "node-color-name")
