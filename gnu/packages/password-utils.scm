@@ -1911,47 +1911,50 @@ encryption algorithm if so desired.")
       (license license:gpl3))))
 
 (define-public pass-tomb
-  (package
-    (name "pass-tomb")
-    (version "1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/roddhjav/pass-tomb")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sjkbdm2i3v77nbnap8sypbfdqwxckc8h66g3ixjnyr6cqgcrdli"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "BASHCOMPDIR=" out "/etc/bash_completion.d")))
-       #:test-target "tests"
-       ;; tests are very dependent on system state (swap partition) and require
-       ;; access to /tmp/zsh which is not in the build container.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-tomb-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tomb (assoc-ref inputs "tomb")))
-               (substitute* "tomb.bash"
-                 ((":-tomb")
-                  (string-append ":-" tomb "/bin/tomb"))))))
-         (delete 'configure))))
-    (inputs
-     (list tomb))
-    (home-page "https://github.com/roddhjav/pass-tomb")
-    (synopsis "Pass extension keeping the tree of passwords encrypted")
-    (description "Pass-tomb provides a convenient solution to put your
+  ;; Latest release is 4 years old.
+  (let ((commit "f4f34f4fc1ce7055fac74ad96686be49f7c28c349")
+        (revision "0"))
+    (package
+      (name "pass-tomb")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/roddhjav/pass-tomb")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0cwik9v5pspyi0kgq6d2kaqy6gj3dgfn97nbjcbkbrbbc7syyd3v"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags
+         (let ((out (assoc-ref %outputs "out")))
+           (list (string-append "PREFIX=" out)
+                 (string-append "BASHCOMPDIR=" out "/etc/bash_completion.d")))
+         #:test-target "tests"
+         ;; tests are very dependent on system state (swap partition) and require
+         ;; access to /tmp/zsh which is not in the build container.
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'set-tomb-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((tomb (assoc-ref inputs "tomb")))
+                 (substitute* "tomb.bash"
+                   ((":-tomb")
+                    (string-append ":-" tomb "/bin/tomb"))))))
+           (delete 'configure))))
+      (inputs
+       (list tomb))
+      (home-page "https://github.com/roddhjav/pass-tomb")
+      (synopsis "Pass extension keeping the tree of passwords encrypted")
+      (description "Pass-tomb provides a convenient solution to put your
 password store in a Tomb and then keep your password tree encrypted when you
 are not using it.  It uses the same GPG key to encrypt passwords and tomb,
 therefore you don't need to manage more key or secret.  Moreover, you can ask
 pass-tomb to automatically close your store after a given time.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public pass-coffin
   (package
