@@ -39,6 +39,7 @@
 ;;; Copyright © 2023-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2023, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
+;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +81,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
@@ -113,6 +115,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -1363,6 +1366,63 @@ supplies a generic doubly-linked list and some string functions.")
 graphics image formats like PNG, BMP, JPEG, TIFF and others.")
     (license license:gpl2+)
     (home-page "https://freeimage.sourceforge.io/")))
+
+(define-public ggg
+  (package
+    (name "ggg")
+    (version "0.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/ggg.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dyqb6p7dyx29nyv1qscin1q5wr0p0kakc4zirvkr1ark0wmslf2"))))
+    (arguments
+     `(#:source-directory "src"
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'remove-guix.scm
+                    (lambda _
+                      (delete-file "guix.scm")))
+                  (add-before 'build 'remove-dist
+                    (lambda _
+                      (delete-file-recursively "dist")))
+                  (add-before 'build 'install-program-files
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((bin (string-append (assoc-ref outputs "out")
+                                                "/bin"))
+                            (share (string-append (assoc-ref outputs "out")
+                                                  "/share")))
+                        (mkdir-p (string-append share "/scripts"))
+                        (mkdir-p (string-append share "/resources"))
+                        (install-file "resources/help.txt"
+                                      (string-append share
+                                                     "/resources/help.txt"))
+                        (copy-recursively "resources/svg-paths"
+                                          (string-append share
+                                           "/resources/svg-paths"))
+                        (install-file "scripts/ggg" bin)
+                        (install-file "scripts/log.sh"
+                                      (string-append share "/scripts/"))
+                        (chmod (string-append bin "/ggg") #o755)))))))
+    (build-system guile-build-system)
+    (native-inputs (list guile-3.0))
+    (inputs (list guile-3.0))
+    (synopsis
+     "GGG is a SVG image generator for project and web badges")
+    (description
+     "GGG (Guile Glyph Generator) is a command-line utility
+that allows you to generate pretty images/badges which can be used for
+your projects, announcing tech used, sponsoring and appreciating
+other projects, distinguishing versions of things supported, etc.
+
+GGG is highly configurable, reads Scheme files where you define your tasks,
+and supports badges between one and three parts.  It leverages SVG generation
+from Lisp and S-expressions, building pixel perfect badges.")
+    (home-page "https://codeberg.org/jjba23/ggg")
+    (license license:agpl3+)))
 
 (define-public vigra
   (package
