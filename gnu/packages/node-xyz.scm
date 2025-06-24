@@ -807,6 +807,43 @@ if desired.")
 while being as light-weight and simple as possible.")
       (license license:expat))))
 
+(define-public node-parse-ms
+  (package
+    (name "node-parse-ms")
+    (version "3.0.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/sindresorhus/parse-ms")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1chq6a4q2ycswkpz16bgm7853g6rh3w1j5dr7061x9h6xip3mphb"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'xo', 'ava', and 'tsd'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Parse milliseconds into an object")
+    (description "Usage
+import parseMilliseconds from 'parse-ms';
+parseMilliseconds(1337000001);
+/*
+{
+	days: 15,
+	hours: 11,
+	minutes: 23,
+	seconds: 20,
+	milliseconds: 1,
+	microseconds: 0,
+	nanoseconds: 0
+}
+*/")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-path-key
   (package
     (name "node-path-key")
