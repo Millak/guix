@@ -5706,11 +5706,11 @@ feedback.")
     (license license:expat)))
 
 (define-public python-pytorch-lightning
-  (let ((commit "9177ec09caadcf88859e1f1e3e10a18e8832069a")
+  (let ((commit "1617f70428a791b2d81c392d6a0b8a078d8e7fb1")
         (revision "0"))
     (package
       (name "python-pytorch-lightning")
-      (version (git-version "2.5.0.post0" revision commit))
+      (version (git-version "2.5.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -5719,7 +5719,7 @@ feedback.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0n1dqqaxga0s02l04vy9jfphx7g20m4as17jaxl5bgwzrjfh6k2f"))))
+                  "1i11n4094a8ysb7cj1lww23nh0mk3d9licw9c9pgzws2m0qy70yd"))))
       (build-system pyproject-build-system)
       (arguments
        (list
