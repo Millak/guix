@@ -14456,8 +14456,8 @@ placed at the margin of the minibuffer for your completion candidates.")
     (license license:gpl3+)))
 
 (define-public emacs-smartparens
-  (let ((commit "7afd647395018a26633673ed92ce7a9cb3ccb8f2")
-        (revision "0"))
+  (let ((commit "b629b4e893ba21ba5a381f6c0054bb72f8e96df2")
+        (revision "1"))
     (package
       (name "emacs-smartparens")
       (version (git-version "1.11.0" revision commit))
@@ -14469,7 +14469,7 @@ placed at the margin of the minibuffer for your completion candidates.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ihvz1w2ggjplk604cdd5alxcq2iy3nm95m7wb6vncrbyb6v0ad2"))))
+          (base32 "1nfd10kxd1l8bmxhaghhxphl424yg5qn6xcqaligwc3b406b566w"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-dash emacs-markdown-mode))
