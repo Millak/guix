@@ -2398,6 +2398,33 @@ tablets.
 function with browser support.")
     (license license:expat)))
 
+(define-public node-which
+  (package
+    (name "node-which")
+    (version "3.0.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/npm/node-which")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1ra5y2l02difjpvgh6la6g7jz782misn0n7d06miqlmvd26mldvk"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-isexe))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'tap'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Find the first instance of an executable in PATH")
+    (description "Like which(1) unix command. Find the first instance of an executable\
+ in the PATH.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:isc)))
+
 (define-public node-wrappy
   (package
     (name "node-wrappy")
