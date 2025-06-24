@@ -1853,6 +1853,30 @@ tablets.
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-undici-types
+  (package
+    (name "node-undici-types")
+    (version "7.8.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/nodejs/undici")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name "node-undici" version))
+      (sha256
+        (base32 "044qy77m15m2pbk83pyyr6ql9imgmj4p8kdkn0v9qh9dnh5w6vdg"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; No tests.
+      #:phases #~(modify-phases %standard-phases
+        (add-after 'unpack 'setup (lambda _
+          (invoke "node" "scripts/generate-undici-types-package-json.js")
+          (chdir "types"))))))
+    (synopsis "Stand-alone types package for Undici")
+    (description "Typescript definition (d.ts) files for Undici.")
+    (home-page "https://undici.nodejs.org")
+    (license license:expat)))
+
 (define-public node-util-deprecate
   (package
     (name "node-util-deprecate")
