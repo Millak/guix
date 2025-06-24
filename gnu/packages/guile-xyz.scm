@@ -797,7 +797,7 @@ you send to a FIFO file.")
 (define-public guile-documenta
   (package
     (name "guile-documenta")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -806,7 +806,7 @@ you send to a FIFO file.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jv8nd7hlrsg2v2p5wacs8x3rzmhxwcg83pjsrnwks346jvsfxnv"))))
+        (base32 "0agqjd4vlgb95ckrxvmn5ghbjsm72akgmd9zf08plk8j02l238ak"))))
     (build-system guile-build-system)
     (inputs
      (list bash-minimal
