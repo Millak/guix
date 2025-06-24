@@ -14468,9 +14468,46 @@ placed at the margin of the minibuffer for your completion candidates.")
                (url "https://github.com/Fuco1/smartparens")
                (commit commit)))
          (file-name (git-file-name name version))
+         (modules '((guix build utils)
+                    (ice-9 ftw)
+                    (srfi srfi-26)))
+         (snippet
+          '(begin
+             ;; Taken from nextpnr package.
+             (define (delete-all-but directory . preserve)
+               (with-directory-excursion directory
+                 (let* ((pred
+                         (negate (cut member <> (append '("." "..") preserve))))
+                        (items (scandir "." pred)))
+                   (for-each delete-file items))))
+             ;; Only activate basic tests.
+             (delete-all-but "test"
+                             "test-helper.el"
+                             "smartparens-advice-test.el"
+                             "smartparens-delete-pair-test.el"
+                             "smartparens-elisp-test.el"
+                             "smartparens-framework-test.el"
+                             "smartparens-get-comment-bounds-test.el"
+                             "smartparens-get-paired-expression-elisp-test.el"
+                             "smartparens-get-prefix-test.el"
+                             "smartparens-get-stringlike-expression-elisp-test.el"
+                             "smartparens-get-stringlike-expression-python-test.el"
+                             "smartparens-get-stringlike-expression-test.el"
+                             "smartparens-get-suffix-test.el"
+                             "smartparens-insertion-specification-parser-test.el"
+                             "smartparens-markdown-test.el"
+                             "smartparens-movement-test.el"
+                             "smartparens-org-test.el"
+                             "smartparens-region-ok-test.el"
+                             "smartparens-rst-test.el"
+                             "smartparens-search-fn-test.el"
+                             "smartparens-settings-sp-pair-test.el"
+                             "smartparens-skip-closing-pair-test.el")))
          (sha256
           (base32 "1nfd10kxd1l8bmxhaghhxphl424yg5qn6xcqaligwc3b406b566w"))))
       (build-system emacs-build-system)
+      (native-inputs
+       (list emacs-ert-runner emacs-yasnippet))
       (propagated-inputs
        (list emacs-dash emacs-markdown-mode))
       (home-page "https://github.com/Fuco1/smartparens")
