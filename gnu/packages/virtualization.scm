@@ -200,7 +200,8 @@
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-bios-tables-test.patch"
                                 "qemu-disable-migration-test.patch"
-                                "qemu-fix-agent-paths.patch"))
+                                "qemu-fix-agent-paths.patch"
+                                "qemu-glibc-2.41.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
