@@ -17,6 +17,7 @@
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -662,9 +663,10 @@ all RFC 2812 commands, and customized color scheme definitions.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0i3gkjv8l7w3smz6dv1734ja91y281bmfr5sajyzcclyc7yq7w24"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f)) ;no tests
     (native-inputs
      (list doxygen
@@ -676,11 +678,11 @@ all RFC 2812 commands, and customized color scheme definitions.")
            openssl
            perl
            python
-           qtbase-5
-           qtmultimedia-5
-           qtsvg-5
-           qtwebengine-5
-           qtx11extras
+           qt5compat
+           qtmultimedia
+           qtsvg
+           qtwebengine
+           qtwayland
            zlib))
     (home-page "https://www.kvirc.net/")
     (synopsis "IRC client based on QT GUI toolkit")
