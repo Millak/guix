@@ -273,6 +273,34 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-color-convert
+  (package
+    (name "node-color-convert")
+    (version "1.9.3")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/Qix-/color-convert")
+        (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0apgv8p1y9hs5z42wwrwrid62vfkfb89kh3a75s9lvqdbyh04390"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-color-name))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'xo' and 'tsd'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Plain color conversion functions")
+    (description "Color-convert is a color conversion library for JavaScript and node. It\
+ converts all ways between rgb, hsl, hsv, hwb, cmyk, ansi, ansi16, hex strings, and CSS\
+ keywords (will round to closest)")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-color-name
   (package
     (name "node-color-name")
