@@ -1932,7 +1932,7 @@ encryption algorithm if so desired.")
         #:make-flags
         #~(list (string-append "PREFIX=" #$output)
                 (string-append "BASHCOMPDIR=" #$output
-                               "/etc/bash_completion.d"))
+                               "/share/bash-completion/completions"))
         #:test-target "tests"
         ;; tests are very dependent on system state (swap partition) and require
         ;; access to /tmp/zsh which is not in the build container.
