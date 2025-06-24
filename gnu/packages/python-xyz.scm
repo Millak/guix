@@ -5086,7 +5086,7 @@ of primitive data types like @code{char}, @code{int}, etc.")
 (define-public python-cantools
   (package
     (name "python-cantools")
-    (version "37.0.7")
+    (version "40.2.3")
     (source
      (origin
        ;; We take the sources from the Git repository as the documentation is
@@ -5097,28 +5097,25 @@ of primitive data types like @code{char}, @code{int}, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1qcf1fcwif7w70qmhxw2b8kqh420igbinq60p1chzf98xcb0ansx"))))
-    (build-system python-build-system)
+        (base32 "09cpsma0qgra7yjvcppripsrhr70ivc2bgcg1vqi64125dpi8a3x"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
+      ;; TODO: Build documentation, it's failing with error:
+      ;; importlib.metadata.PackageNotFoundError: No package metadata was
+      ;; found for cantools.
+      ;; See: https://github.com/eerimoq/cantools/issues/190.
       #~(modify-phases %standard-phases
-          (add-after 'build 'build-doc
+          (add-before 'build 'set-version
             (lambda _
-              ;; See: https://github.com/eerimoq/cantools/issues/190.
-              (substitute* "README.rst"
-                (("https://github.com/eerimoq/cantools/raw/master\
-/docs/monitor.png")
-                 "monitor.png"))
-              (invoke "make" "-C" "docs" "man" "info")))
-          (add-after 'install 'install-doc
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((info (string-append #$output "/share/info"))
-                     (man1 (string-append #$output "/share/man/man1")))
-                (install-file "docs/_build/texinfo/cantools.info" info)
-                (install-file "docs/_build/man/cantools.1" man1)))))))
-    (native-inputs (list python-sphinx texinfo))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-parameterized
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-argparse-addons
            python-bitstruct
@@ -5126,7 +5123,6 @@ of primitive data types like @code{char}, @code{int}, etc.")
            python-crccheck
            python-diskcache
            python-matplotlib
-           python-parameterized
            python-textparser))
     (home-page "https://github.com/eerimoq/cantools")
     (synopsis "Tools for the Controller Area Network (CAN) bus protocol")
