@@ -310,6 +310,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/fpga.scm				\
   %D%/packages/forth.scm			\
   %D%/packages/fortran-check.scm			\
+  %D%/packages/fortran-xyz.scm			\
   %D%/packages/freedesktop.scm			\
   %D%/packages/freeipmi.scm			\
   %D%/packages/fsf.scm				\
