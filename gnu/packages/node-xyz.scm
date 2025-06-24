@@ -7,7 +7,7 @@
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2024 Daniel Khodabakhsh <d.khodabakhsh@gmail.com>
+;;; Copyright © 2024, 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1649,6 +1649,30 @@ and unique content.
 tablets.
 @end enumerate")
     (license license:bsd-3)))
+
+(define-public node-typical
+  (package
+    (name "node-typical")
+    (version "5.2.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/75lb/typical")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "072fqdw7qrgh1cnri19z3rf702hh8p6agh3npkzwrywjmlnndfdm"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'test-runner'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Type-checking library for Javascript")
+    (description "Isomorphic, functional type-checking for Javascript.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
 
 (define-public node-util-deprecate
   (package
