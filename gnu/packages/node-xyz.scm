@@ -623,28 +623,25 @@ random number generator.")
 (define-public node-minimist
   (package
     (name "node-minimist")
-    (version "1.2.6")
+    (version "1.2.8")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/substack/minimist")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0mxj40mygbiy530wskc8l28wxb6fv3f8vrhpwjgprymhpgbaac7d"))))
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/minimistjs/minimist")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "027nxm7pkam89qxdybf7sd1k3h84njykhhxmzn1l6psmvrkwbqb7"))))
     (build-system node-build-system)
-    (arguments
-     '(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'patch-dependencies 'delete-dependencies
-                    (lambda _
-                      (modify-json (delete-dependencies
-                                    '("covert" "tap" "tape"))))))))
-    (home-page "https://github.com/substack/minimist")
+    (arguments (list
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
     (synopsis "Parse CLI arguments in Javascript")
-    (description "This package can scan for CLI flags and arguments in
-Javascript.")
+    (description "This package can scan for CLI flags and arguments in Javascript.")
+    (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
 (define-public node-ms
