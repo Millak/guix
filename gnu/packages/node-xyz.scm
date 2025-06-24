@@ -324,6 +324,30 @@ with a module name as argument provides a function that writes debug output to
 a more fine-grained manner by binding the @env{DEBUG} variable.")
     (license license:expat)))
 
+(define-public node-deep-extend
+  (package
+    (name "node-deep-extend")
+    (version "0.6.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/unclechu/node-deep-extend")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0r2r0wc1c9lq8gplis17pr220c7hk18sq12cipvsa7krb2lb4cpb"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'mocha'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Recursive object extending")
+    (description "Library which allows deeply merging two different objects.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-env-variable
   (package
     (name "node-env-variable")
