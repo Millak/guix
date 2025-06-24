@@ -597,6 +597,66 @@ such as rainbows.")
 user-land JavaScript.")
     (license license:expat))) ; in README
 
+(define-public node-lru-cache
+  (package
+    (name "node-lru-cache")
+    (version "10.4.3")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/isaacs/node-lru-cache")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "1zqpm7d7czbqyymzgs4qadd0hiy6n290y6wwy1gwa46mmd1bxbr3"))))
+    (build-system node-build-system)
+    ; Use ESBuild instead of tshy because this is used to build Typescript.
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:tests? #f ; FIXME: Tests require 'tap'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'delete-dependencies
+          (lambda _
+            (modify-json
+              (delete-dev-dependencies)
+              (delete-fields (list
+                "scripts.prepare")))))
+        (replace 'build
+          (lambda _
+            (define output "output")
+            (for-each
+              (match-lambda ((format directory type)
+                (define target-output (string-append output "/dist/" directory))
+                (invoke
+                  "esbuild"
+                  "src/*.ts"
+                  "--platform=node"
+                  "--target=es2022"
+                  (string-append "--format=" format)
+                  "--jsx=transform"
+                  "--sourcemap"
+                  (string-append "--outdir=" target-output))
+                (with-output-to-file
+                  (string-append target-output "/package.json")
+                  (lambda _
+                    (display (string-append "{\"type\": \"" type "\"}"))))))
+              (list
+                (list "cjs" "commonjs" "commonjs")
+                (list "esm" "esm" "module")))
+            (for-each
+              (lambda (file) (install-file file output))
+              (list "LICENSE" "package.json" "README.md"))
+            (chdir output))))))
+    (synopsis "A fast cache that automatically deletes the least recently used items.")
+    (description "A cache object that deletes the least-recently-used items.
+Specify a max number of the most recently used items that you want to keep, and
+this cache will keep that many of the most recently accessed items.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:isc)))
+
 (define-public node-mersenne
   (package
     (name "node-mersenne")
