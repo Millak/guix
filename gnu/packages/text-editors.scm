@@ -232,8 +232,8 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
       (license license:expat))))
 
 (define-public lem
-  (let ((commit "a951aedc72cd40fb8b0eada8923f088afb25caff")
-        (revision "7"))
+  (let ((commit "0025e1c196b50fbf6b8a97f8b9ef986f8d316cdf")
+        (revision "8"))
     (package
       (name "lem")
       (version (git-version "2.2.0" revision commit))
@@ -244,7 +244,7 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
                (url "https://github.com/lem-project/lem/")
                (commit commit)))
          (sha256
-          (base32 "06zmhkbdaf3mil4pz1x79nld3vy3qcqaig552yqn0pxdr51w143v"))
+          (base32 "06hd0n66q69nr15ypdmwlwl6m9l2pzj6fym7dm8v2zp165pgr7s1"))
          (file-name (git-file-name name version))
          (snippet
           #~(begin
