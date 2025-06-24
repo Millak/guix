@@ -2291,6 +2291,40 @@ sequences.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-supports-color
+  (package
+    (name "node-supports-color")
+    (version "5.5.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/chalk/supports-color")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1wfwzxjh4q7wv8p8wjrhlcdljdydjpcydgdysy9y161xy6r99db9"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-has-flag))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'xo' and 'ava'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Detect whether a terminal supports color")
+    (description "Returns an Object with a stdout and stderr property for testing either\
+ streams. Each property is an Object, or false if color is not supported.
+
+The stdout/stderr objects specifies a level of support for color through a .level\
+ property and a corresponding flag:
+
+  * .level = 1 and .hasBasic = true: Basic color support (16 colors)
+  * .level = 2 and .has256 = true: 256 color support
+  * .level = 3 and .has16m = true: Truecolor support (16 million colors)")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-tiddlywiki
   (package
     (name "node-tiddlywiki")
