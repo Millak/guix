@@ -347,6 +347,32 @@ a more fine-grained manner by binding the @env{DEBUG} variable.")
 @code{localStorage} fallbacks.")
     (license license:expat)))
 
+(define-public node-escape-string-regexp
+  (package
+    (name "node-escape-string-regexp")
+    (version "1.0.5")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/sindresorhus/escape-string-regexp")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0iv0zd2r1mr3w966n023wqghcyaw37w3wl07is45hy74rrnq6z0v"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'xo' and 'ava'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Escape RegExp special characters")
+    (description "This library takes a string and escapes the regex characters such that\
+ the string can be inserted into a regex expression without triggering any special\
+ characters.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-far
   (package
     (name "node-far")
