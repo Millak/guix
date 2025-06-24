@@ -378,6 +378,54 @@ multiple node.js files, while providing useful information about output and exit
 codes.")
     (license license:expat)))
 
+(define-public node-fastest-levenshtein
+  (package
+    (name "node-fastest-levenshtein")
+    (version "1.0.16")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/ka-weihe/fastest-levenshtein")
+        (commit "03d621ba324d0f665b3b7f557429ca622560d9a3")))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "11hpi4ifix8pwx2a2sfj3s1gcwb5mxdrqgdcdppmkl6krv3sxx02"))))
+    (build-system node-build-system)
+    ; Use ESBuild because this package is used to build Typescript.
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:tests? #f ; FIXME: Tests require 'jest'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)
+            (delete-fields (list
+              "scripts.prepare"
+              "scripts.build")))))
+        (replace 'build (lambda _
+          (for-each
+            (match-lambda ((format outdir parameters)
+              (apply invoke (append
+                (list
+                  "esbuild"
+                  "mod.ts"
+                  (string-append "--format=" format)
+                  "--target=es2015"
+                  (string-append "--outdir=" outdir))
+                parameters))))
+            (list
+              (list "esm" "esm" (list "--sourcemap"))
+              (list "cjs" "." (list "--platform=node")))))))))
+    (synopsis "Fastest Levenshtein distance implementation in JS")
+    (description "Fastest JS/TS implemenation of Levenshtein distance.
+Measure the difference between two strings.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-file-uri-to-path
   (package
     (name "node-file-uri-to-path")
