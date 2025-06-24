@@ -457,6 +457,31 @@ projects under a given directory.  It uses the gradle wrapper to execute the
 clean task of each project.")
     (license license:expat)))
 
+(define-public node-has-flag
+  (package
+    (name "node-has-flag")
+    (version "3.0.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/sindresorhus/has-flag")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0wz3ihagci5nk2fawbw2pfprnqbhlvxi79ikvrn4kkhh3vfn85q2"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'xo' and 'ava'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Check if argv has a specific flag")
+    (description "Check if argv has a specific flag
+Correctly stops looking after an -- argument terminator.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-ieee754
   (package
     (name "node-ieee754")
