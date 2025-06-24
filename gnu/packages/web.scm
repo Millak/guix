@@ -74,6 +74,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>"
 ;;; Copyright © 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,6 +108,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system node)
   #:use-module (guix build-system perl)
@@ -6018,6 +6020,58 @@ C.  It is developed as part of the NetSurf project.")
 parse both valid and invalid web content.  It is developed as part of the
 NetSurf project.")
     (license license:expat)))
+
+(define-public iter-vitae
+  (package
+    (name "iter-vitae")
+    (version "0.3.27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/iter-vitae.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "170gldx8ivrcfb345523gcvf1wik2265x0fbpfswq20shrfbsjh8"))))
+    (arguments
+     `(#:source-directory "src"
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'install-program-files
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((bin (string-append (assoc-ref outputs "out")
+                                                "/bin"))
+                            (share (string-append (assoc-ref outputs "out")
+                                                  "/share")))
+                        (mkdir-p (string-append share "/scripts"))
+                        (mkdir-p (string-append share "/resources"))
+                        (install-file "resources/help.txt"
+                                      (string-append share
+                                                     "/resources"))
+                        (copy-recursively "resources/js"
+                                          (string-append share "/resources/js"))
+                        (install-file "scripts/iter-vitae" bin)
+                        (install-file "scripts/log.sh"
+                                      (string-append share "/scripts/"))
+                        (chmod (string-append bin "/iter-vitae") #o755)))))))
+    (build-system guile-build-system)
+    (native-inputs (list guile-3.0))
+    (inputs (list guile-3.0 bash-minimal))
+    (synopsis
+     "Resume / @acronym{CV, Curriculum Vitae} generator written in Guile Scheme")
+    (description
+     "Iter Vitae is a command-line utility that allows you to generate a
+Resume / @acronym{CV, Curriculum Vitae}, by reading a S-expression version
+of your CV details (in Scheme code).
+
+With a @acronym{MVC, model-view-controller} approach,
+it lets you separate the data from the presentation (how the document looks).
+
+This tool creates a web-site version of your CV (using SXML and TailwindCSS),
+and is designed for long-term use, so you can update and evolve your CV over the years.
+The program supports multilingual content and is fully extensible.")
+    (home-page "https://codeberg.org/jjba23/iter-vitae")
+    (license license:agpl3+)))
 
 (define-public ikiwiki
   (package
