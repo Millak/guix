@@ -1440,6 +1440,33 @@ code.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:isc)))
 
+(define-public node-pretty-ms
+  (package
+    (name "node-pretty-ms")
+    (version "8.0.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/sindresorhus/pretty-ms")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "08pyb3lmkn1bn8icsi2r9jlkh24mzi39yr9k81p2hlgm46b8wiar"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-parse-ms))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'xo', 'ava', and 'tsd'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Milliseconds to humand readable string converter")
+    (description "Convert milliseconds to a human readable string:\
+ `1337000000` → `15d 11h 23m 20s`")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-protocol-buffers-schema
   (package
     (name "node-protocol-buffers-schema")
