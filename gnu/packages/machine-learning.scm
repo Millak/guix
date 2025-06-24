@@ -5579,13 +5579,13 @@ AI services.")
 (define-public python-lightning-utilities
   (package
     (name "python-lightning-utilities")
-    (version "0.11.6")
+    (version "0.14.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lightning_utilities" version))
               (sha256
                (base32
-                "016zikn39apig3y6xyipw34w0w02c73z483radddbf68ivpjgz3r"))))
+                "1xg9cngdz9dsxwcpcmzf28q306i15hw58h54allhb41q4wzziqip"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-coverage
