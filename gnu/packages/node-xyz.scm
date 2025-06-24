@@ -164,6 +164,40 @@ It is important to remember that @emph{other} Node.js interfaces such as
 ABI-stable across Node.js major versions.")
     (license license:expat)))
 
+(define-public node-array-back
+  (package
+    (name "node-array-back")
+    (version "4.0.2")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/75lb/array-back")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1xfg4yd155zhi0v2a26kvg3jghcim5xgpwsn4lhikisshmrmf93m"))
+      (modules '((guix build utils)))
+      (snippet #~(begin
+        (delete-file-recursively "dist")))))
+    (build-system node-build-system)
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'esm-runner'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies))))
+        (replace 'build (lambda _
+          (invoke
+            "esbuild"
+            "index.mjs"
+            "--format=cjs"
+            "--outfile=dist/index.js"))))))
+    (synopsis "Isomorphic load-anywhere arrayify function")
+    (description "Takes any input and guarantees an array back.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-bindings
   (package
     (name "node-bindings")
