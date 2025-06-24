@@ -2050,6 +2050,44 @@ connection.")))
     (home-page (git-reference-url (origin-uri source)))
     (license license:bsd-3)))
 
+(define-public node-source-map-support
+  (package
+    (name "node-source-map-support")
+    (version "0.5.21")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/evanw/node-source-map-support")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1r03whfzy5f76wz4cf51gllxndxv9mk75p4aip6bxffv5p7apax3"))
+      (modules '((guix build utils)))
+      (snippet #~(begin
+        (delete-file "browser-source-map-support.js")))))
+    (build-system node-build-system)
+    (inputs (list
+      node-buffer-from
+      node-source-map))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'mocha'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)
+            ; Build only builds browser-source-map-support.js which we don't currently use
+            (delete-fields (list "scripts.build"))))))))
+    (synopsis "Fixes stack traces for files with source maps")
+    (description "This module provides source map support for stack traces in node via\
+ the V8 stack trace API. It uses the source-map module to replace the paths and line\
+ numbers of source-mapped files with their original paths and line numbers. The output\
+ mimics node's stack trace format with the goal of making every compile-to-JS language\
+ more of a first-class citizen. Source maps are completely general (not specific to any\
+ one language) so you can use source maps with multiple compile-to-JS languages in the\
+ same node process.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-sqlite3
   (package
     (name "node-sqlite3")
