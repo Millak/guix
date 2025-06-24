@@ -62,6 +62,38 @@ library for operating on molecular structures and reading and writing common
 geometry file formats.")
     (license license:asl2.0)))
 
+(define-public fortran-mstore
+  (package
+    (name "fortran-mstore")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grimme-lab/mstore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g3jxc96hd7r57kczi5p28g2xm345ad1hk9lm5v6wlkmnrvg3ynd"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dfortran_link_args=-Wl,-rpath="
+                             #$output "/lib"))))
+    (native-inputs
+     (list gfortran
+           pkg-config
+           python-minimal))
+    (inputs
+     (list fortran-mctc-lib))
+    (home-page "https://github.com/grimme-lab/mstore")
+    (synopsis "Molecular structure data for testing")
+    (description
+     "This package contains a Fortran interface to obtain molecular geometries
+used for testing.")
+    (license license:asl2.0)))
+
 (define-public fortran-toml-f
   (package
     (name "fortran-toml-f")
