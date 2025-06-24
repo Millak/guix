@@ -198,6 +198,31 @@ ABI-stable across Node.js major versions.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-balanced-match
+  (package
+    (name "node-balanced-match")
+    (version "1.0.2")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/juliangruber/balanced-match")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "0977r6hv9fyv6f8wvn31vcncxwhffnn05y0h4hmpkg8p2vs9ip0b"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME Tests require 'tape'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package
+          (lambda _
+            (modify-json
+              (delete-dev-dependencies)))))))
+    (synopsis "Match balanced character pairs, like { and }")
+    (description "Match balanced string pairs, like { and } or <b> and </b>. Supports\
+ regular expressions as well!")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-bindings
   (package
     (name "node-bindings")
