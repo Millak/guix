@@ -1254,7 +1254,6 @@ libraries designed for computer vision research and implementation.")
            #:configure-flags
            #~(list "-DITK_USE_GPU=ON"
                    "-DITK_USE_SYSTEM_LIBRARIES=ON"
-                   "-DITK_USE_SYSTEM_GOOGLETEST=ON"
                    "-DITK_USE_SYSTEM_CASTXML=ON"
                    "-DITK_BUILD_SHARED=ON"
                    "-DITK_WRAPPING=ON"
@@ -1268,10 +1267,6 @@ libraries designed for computer vision research and implementation.")
                                           "/lib/python" python-version
                                           "/site-packages")))
                      (string-append "-DPY_SITE_PACKAGES_PATH=" python-lib-path))
-                   ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
-                   ;; variable in the installed CMake files.  This is necessary as other
-                   ;; packages using insight-toolkit could not be configured otherwise.
-                   "-DGTEST_ROOT=gtest"
                    "-DCMAKE_CXX_STANDARD=17")
 
            #:phases #~(modify-phases %standard-phases
@@ -1283,7 +1278,20 @@ libraries designed for computer vision research and implementation.")
                         (add-after 'unpack 'ignore-warnings
                           (lambda _
                             (substitute* "Wrapping/Generators/Python/CMakeLists.txt"
-                              (("-Werror") "")))))))
+                              (("-Werror") ""))))
+                        (add-after 'unpack 'exclude-gtest-target
+                          (lambda _
+                            ;; Prevent ITKGoogleTest from being added to
+                            ;; ITK_MODULES_ENABLED in the installed
+                            ;; ITKConfig.cmake, which in turn prevents
+                            ;; 'GTest::GTest' from being added to the
+                            ;; ITK_LIBRARIES variable.  This is necessary
+                            ;; because projects that use ITK fail to configure
+                            ;; otherwise.  Fixes
+                            ;; <https://codeberg.org/guix/guix/issues/776>.
+                            ;; <https://github.com/microsoft/vcpkg/pull/27187>
+                            (substitute* "Modules/ThirdParty/GoogleTest/itk-module.cmake"
+                              (("DEPENDS") "DEPENDS\n  EXCLUDE_FROM_DEFAULT")))))))
     (inputs
      (list eigen
            expat
@@ -1300,7 +1308,7 @@ libraries designed for computer vision research and implementation.")
            vxl-1
            zlib))
     (native-inputs
-     (list castxml googletest pkg-config swig which))
+     (list castxml pkg-config swig which))
 
     ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
     ;; '-mtune=native -march=corei7', suggesting there's something to be
