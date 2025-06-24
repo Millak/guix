@@ -133,6 +133,7 @@
             profile-derivation
             profile-search-paths
             load-profile
+            default-package-properties
 
             profile
             profile?
@@ -371,7 +372,7 @@ file name."
            #t
            lst)))
 
-(define (default-properties package)
+(define (default-package-properties package)
   "Return the default properties of a manifest entry for PACKAGE."
   ;; Preserve transformation options by default.
   (match (assq-ref (package-properties package) 'transformations)
@@ -380,7 +381,7 @@ file name."
 
 (define* (package->manifest-entry package #:optional (output "out")
                                   #:key (parent (delay #f))
-                                  (properties (default-properties package)))
+                                  (properties (default-package-properties package)))
   "Return a manifest entry for the OUTPUT of package PACKAGE."
   ;; For each dependency, keep a promise pointing to its "parent" entry.
   (letrec* ((deps  (map (match-lambda
