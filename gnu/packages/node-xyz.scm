@@ -575,6 +575,31 @@ It contains functions for colours as well as more complex formatting
 such as rainbows.")
     (license license:expat)))
 
+(define-public node-isexe
+  (package
+    (name "node-isexe")
+    (version "2.0.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/isaacs/isexe")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "18rh937j0m0jkzdxfdvvjv6nsdbrdqipnq7nvv1ab7b7rjyw5id3"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'tap'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Minimal module to check if a file is executable.")
+    (description "Minimal module to check if a file is executable, and a normal file.
+Uses fs.stat.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:isc)))
+
 (define-public node-long-stack-traces
   (package
     (name "node-long-stack-traces")
