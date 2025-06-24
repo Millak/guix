@@ -11028,11 +11028,11 @@ mode.")
     (license license:gpl3+)))
 
 (define-public emacs-combobulate
-  (let ((commit "c7e4670a3047c0b58dff3746577a5c8e5832cfba")
-        (revision "1"))
+  (let ((commit "17c71802eed2df1a6b25199784806da6763fb90c")
+        (revision "2"))
     (package
       (name "emacs-combobulate")
-      (version (git-version "0.1" revision commit))
+      (version (git-version "0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -11041,7 +11041,7 @@ mode.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "063w2sm0c7xhg3ml31xp870azb0sv7z689lnbnjnbl3rfdy4kg50"))))
+          (base32 "14fv5nvll0v1i5zwn7xlf6n7g0yxl7vgkkxwj16dk4f7nxc3mvcv"))))
       (build-system emacs-build-system)
       (arguments (list #:test-command #~(list "ert-runner" "tests")))
       (propagated-inputs
