@@ -1003,19 +1003,19 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "ec2cae0a12cb578a88846cde1980ea98e352b1db")
-        (revision "13"))
+  (let ((commit "f9a5b5524d053ee07fd80943d8ef0e81878c3a17")
+        (revision "14"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/git/guix/bffe")
+                      (url "https://codeberg.org/guix/bffe.git")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0ifhf3hrwxr479lz5wk7n3mw9rzrwmj7is65daj26g24wjlxbick"))
+                  "150596lyfl03v597i5k70jwgyvqfxyaaf7z05xb96l2rjc2lfavs"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
@@ -1046,7 +1046,7 @@ transactions from C or Python.")
              guile-pfds
              guile-prometheus
              guile-lib))
-      (home-page "https://git.cbaines.net/guix/bffe")
+      (home-page "https://codeberg.org/guix/bffe.git")
       (synopsis "Build Farm Front-end for Guix")
       (description
        "The BFFE of Build Farm Front-end is an experimental frontend for Guix
