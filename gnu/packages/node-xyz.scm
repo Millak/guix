@@ -780,6 +780,79 @@ Uses fs.stat.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:isc)))
 
+(define-public node-jsonc-parser
+  (package
+    (name "node-jsonc-parser")
+    (version "3.3.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/microsoft/node-jsonc-parser")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1pf3kxbx9v4h646hqfjw8r70y8vq9zl3l393nfcqzhm8z1skb3iy"))))
+    (build-system node-build-system)
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:tests? #f ; FIXME: Tests require 'mocha'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (delete-file-recursively "src/test")
+          (modify-json
+            (delete-dev-dependencies))))
+        (replace 'build (lambda _
+          (define output "output")
+          (define lib (string-append output "/lib"))
+          (mkdir-p lib)
+          (for-each
+            (match-lambda ((format directory parameters)
+              (apply invoke (append
+                (list
+                  "esbuild"
+                  "src/**/*.ts"
+                  "--platform=node"
+                  (string-append "--format=" format)
+                  "--target=es2020"
+                  (string-append "--outdir=" lib "/" directory))
+                parameters))))
+            (list
+              (list "cjs" "umd" (list "--global-name=jsoncParser"))
+              (list "esm" "esm" (list))))
+          (for-each
+            (lambda (file) (install-file file output))
+            (list
+              "CHANGELOG.md"
+              "LICENSE.md"
+              "package.json"
+              "README.md"
+              "SECURITY.md"))
+          (chdir output))))))
+    (synopsis "Scanner and parser for JSON with comments")
+    (description "JSONC is JSON with JavaScript style comments. This node module provides\
+ a scanner and fault tolerant parser that can process JSONC but is also useful for\
+ standard JSON.
+  * the scanner tokenizes the input string into tokens and token offsets
+  * the visit function implements a 'SAX' style parser with callbacks for the encountered\
+ properties and values.
+  * the parseTree function computes a hierarchical DOM with offsets representing the\
+ encountered properties and values.
+  * the parse function evaluates the JavaScript object represented by JSON string in a\
+ fault tolerant fashion.
+  * the getLocation API returns a location object that describes the property or value\
+ located at a given offset in a JSON document.
+  * the findNodeAtLocation API finds the node at a given location path in a JSON DOM.
+  * the format API computes edits to format a JSON document.
+  * the modify API computes edits to insert, remove or replace a property or value in a\
+ JSON document.
+  * the applyEdits API applies edits to a document.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-long-stack-traces
   (package
     (name "node-long-stack-traces")
