@@ -596,7 +596,7 @@ interface.")
                 (string-append "os.path.join(\""
                                (assoc-ref outputs "out")
                                "\", \"share\", \"qutebrowser\"")))))
-         (add-after 'build 'build-docs
+         (add-before 'build 'build-docs
            (lambda _
                (substitute* "scripts/asciidoc2html.py"
                  (("sys.executable, \"-m\", \"asciidoc\"")
