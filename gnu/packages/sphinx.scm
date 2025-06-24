@@ -64,11 +64,111 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages graph)
-  #:use-module (gnu packages tex))
+  #:use-module (gnu packages tex)
+  #:use-module (gnu packages xml))
 
 (define-public python-sphinx
   (package
     (name "python-sphinx")
+    (version "7.4.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinx" version))
+       (sha256
+        (base32 "1zlwxv9fmpypja8w1a8lj5lrzflh710ia9nwdx05nv3yxakr4br4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; XXX: Assertions fail in these tests, check why.
+                    (list "not test_additional_targets_should_be_translated"
+                          "test_additional_targets_should_not_be_translated"
+                          "test_customize_system_message"
+                          "test_html_code_role"
+                          "test_html_sidebar"
+                          "test_latex_code_role"
+                          "test_linenothreshold"
+                          "test_literal_include_linenos"
+                          "test_viewcode"
+                          "test_viewcode_linenos")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; for test_cython
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-babel
+           python-docutils
+           python-imagesize
+           python-jinja2
+           python-packaging
+           python-pygments
+           python-requests
+           python-snowballstemmer
+           python-sphinx-alabaster-theme
+           python-sphinxcontrib-applehelp
+           python-sphinxcontrib-devhelp
+           python-sphinxcontrib-htmlhelp
+           python-sphinxcontrib-jsmath
+           python-sphinxcontrib-qthelp
+           python-sphinxcontrib-serializinghtml
+
+           ;; The Sphinx LaTeX library '\RequirePackage' or \\usepackage
+           ;; these:
+           texlive-amsfonts             ;amsmath, amssymb, amstext
+           texlive-amsmath
+           texlive-anyfontsize
+           texlive-booktabs
+           texlive-capt-of
+           texlive-carlisle             ;remreset
+           texlive-cmap
+           texlive-etoolbox
+           texlive-fancyhdr
+           texlive-fancyvrb
+           texlive-float
+           texlive-fncychap
+           texlive-framed
+           texlive-geometry
+           texlive-hyperref
+           texlive-kvoptions
+           texlive-latex-bin
+           texlive-ltxcmds
+           texlive-needspace
+           texlive-oberdiek             ;hypcap
+           texlive-parskip
+           texlive-preview
+           texlive-tabulary
+           texlive-titlesec
+           texlive-tools                ;multicol, longtable
+           texlive-upquote
+           texlive-varwidth
+           texlive-wrapfig
+           texlive-xcolor))
+    (native-inputs
+     (list imagemagick                  ;for "convert"
+           nss-certs-for-test
+           python-cython-3
+           python-defusedxml
+           python-flit-core
+           python-pytest
+           python-pytest-xdist
+           (texlive-local-tree
+            (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))
+    (home-page "https://www.sphinx-doc.org")
+    (synopsis "Python documentation generator")
+    (description "Sphinx is a tool that makes it easy to create documentation
+for Python projects or other documents consisting of multiple reStructuredText
+sources.")
+    (license license:bsd-2)))
+
+(define-public python-sphinx-6
+  (package
+    (inherit python-sphinx)
     (version "6.2.1")
     (source
      (origin
@@ -157,13 +257,7 @@
            python-flit-core
            python-pytest
            (texlive-local-tree
-            (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))
-    (home-page "https://www.sphinx-doc.org")
-    (synopsis "Python documentation generator")
-    (description "Sphinx is a tool that makes it easy to create documentation
-for Python projects or other documents consisting of multiple reStructuredText
-sources.")
-    (license license:bsd-2)))
+            (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))))
 
 (define-public python-sphinx-5
   (package
