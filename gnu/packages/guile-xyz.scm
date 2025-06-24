@@ -7134,19 +7134,19 @@ is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
 (define-public guile-knots
-  (let ((commit "cbafdb8668f33c7d3eabeebc60731df0d585636a")
-        (revision "20"))
+  (let ((commit "34ee8bb87b1316fe44452476dd0ba0c4cc5e32bb")
+        (revision "21"))
     (package
     (name "guile-knots")
     (version (git-version "0" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.cbaines.net/git/guile/knots")
+                    (url "https://forge.cbaines.net/cbaines/guile-knots.git")
                     (commit commit)))
               (sha256
                (base32
-                "06khwcjdqvkhyxknn7px1k0qvd6vmb943zgvxabm0bqk0rkp02ld"))
+                "08b8p5wd2ffbzs0appcm8zczpfbvhzvif7blgl00m3wwglfhqfs3"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
@@ -7160,7 +7160,7 @@ is an attempt to combine both into something useful.")
      (list guile-next))
     (propagated-inputs
      (list guile-fibers-next))
-    (home-page "https://git.cbaines.net/guile/knots")
+    (home-page "https://forge.cbaines.net/cbaines/guile-knots")
     (synopsis "Patterns and functionality to use with Guile Fibers")
     (description
      "Guile Knots is a collection of patterns and functionality that is useful
