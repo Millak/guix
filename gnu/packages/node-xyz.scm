@@ -164,6 +164,32 @@ It is important to remember that @emph{other} Node.js interfaces such as
 ABI-stable across Node.js major versions.")
     (license license:expat)))
 
+(define-public node-ansi-styles
+  (package
+    (name "node-ansi-styles")
+    (version "3.2.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/chalk/ansi-styles")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "15b5ggrhxi2zw5qlhr2di1b7rmfyacrl4rf8j3ndf8iqkv9fijqd"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-color-convert))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'xo', 'ava', and 'tsd'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "ANSI escape codes for styling strings in the terminal")
+    (description "Library of ANSI escape codes to be used to style strings in terminals.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-array-back
   (package
     (name "node-array-back")
