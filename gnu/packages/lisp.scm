@@ -918,7 +918,7 @@ interface to the Tk widget system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.37.1")
+    (version "1.38.0")
     (source
      (origin
        (method git-fetch)
@@ -927,7 +927,7 @@ interface to the Tk widget system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06ym80siwvlg3fmha01vsaqilcd7fjx8wq61zql906yjiljq22rb"))))
+        (base32 "1ym852ns8s1m4br33yzw4ak475j5y8svh7bpzd22mhbaqqbc3drw"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
