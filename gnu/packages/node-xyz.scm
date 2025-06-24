@@ -953,6 +953,35 @@ written in Javascript.")
 that behaves the same across different versions.")
     (license license:expat)))
 
+(define-public node-reduce-flatten
+  (package
+    (name "node-reduce-flatten")
+    (version "2.0.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/75lb/reduce-flatten")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0xw23djgi8agv06bbjc3x6wsca1xxnksbv7zd6cgxvmw15xqyb68"))))
+    (build-system node-build-system)
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'test-runner'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Flatten an array into the supplied array")
+    (description "Isomorphic map-reduce function to flatten an array into the supplied\
+ array.
+Example
+> numbers = [ 1, 2, [ 3, 4 ], 5 ]
+> numbers.reduce(flatten, [])
+[ 1, 2, 3, 4, 5 ]")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-resolve-protobuf-schema
   (package
     (name "node-resolve-protobuf-schema")
