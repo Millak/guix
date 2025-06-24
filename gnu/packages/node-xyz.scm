@@ -595,6 +595,49 @@ multiple node.js files, while providing useful information about output and exit
 codes.")
     (license license:expat)))
 
+(define-public node-fast-xml-parser
+  (package
+    (name "node-fast-xml-parser")
+    (version "4.5.3")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/NaturalIntelligence/fast-xml-parser")
+        (commit "f8d4d427a31a52d4df82260ac1973d94ad73335b")))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "1wc5mgihrgync0vj79gk7g367rssqhzmzxl41kdhhcya045bis85"))
+      (modules '((guix build utils)))
+      (snippet #~(begin
+        (delete-file-recursively "lib")))))
+    (build-system node-build-system)
+    (inputs (list node-strnum))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'nyc'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies))))
+        (replace 'build (lambda _
+          (define output "output")
+          (mkdir output)
+          (for-each
+            (lambda (file) (install-file file output))
+            (list "CHANGELOG.md" "LICENSE" "package.json" "README.md"))
+          (copy-recursively "src" (string-append output "/src"))
+          (chdir output))))))
+    (synopsis "Validate XML, Parse XML, Build XML without C/C++ based libraries")
+    (description "Validate XML, Parse XML to JS Object, or Build XML from JS Object\
+ without C/C++ based libraries and no callback.
+  * Validate XML data syntactically. Use detailed-xml-validator to verify business rules.
+  * Parse XML to JS Objectand vice versa
+  * Common JS, ESM, and browser compatible
+  * Faster than any other pure JS implementation.
+It can handle big files (tested up to 100mb). XML Entities, HTML entities, and DOCTYPE\
+ entites are supported. Unpaired tags (Eg <br> in HTML), stop nodes (Eg <script> in HTML)\
+ are supported. It can also preserve Order of tags in JS object")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-fastest-levenshtein
   (package
     (name "node-fastest-levenshtein")
