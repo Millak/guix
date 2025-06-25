@@ -2921,6 +2921,14 @@ tablets.
     "05q0cj2b35z27fv1b00kr8ja5hj2dzl4shx1mwk0jg44z1cwkp0j"
     (delay (list node-undici-types))))
 
+(define-public node-types-source-map-support
+  (node-types
+    "source-map-support"
+    "0.5.10"
+    "05766ab10a4987e93fdee7627f9fe9e7bc6d1a65"
+    "1p2kakd1mhcps5c19wl65w9gkafd13qdy9hszriak4xpad8a2nz7"
+    (delay (list node-source-map))))
+
 (define-public node-typical
   (package
     (name "node-typical")
