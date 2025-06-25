@@ -6768,15 +6768,16 @@ structure is left untouched.")
 (define-public python-exif-read
   (package
     (name "python-exif-read")
-    (version "3.0.0")
+    (version "3.3.2")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "ExifRead" version))
+              (uri (pypi-uri "exifread" version))
               (sha256
                (base32
-                "191c7sa0rca8wkspfq8nlfa6davh743mqkzrcayz5gcx2rja7i8a"))))
-    (build-system python-build-system)
+                "0n0knxfl30riszkbwrq18lxm2f2wsrpj2piwv6jn6bnm9mbadij5"))))
+    (build-system pyproject-build-system)
     (arguments `(#:tests? #f)) ; no tests
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/ianare/exif-py")
     (synopsis "Python library to extract EXIF data from image files")
     (description
