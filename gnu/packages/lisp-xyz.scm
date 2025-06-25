@@ -24414,6 +24414,9 @@ table.")
 (define-public ecl-periodic-table
   (sbcl-package->ecl-package sbcl-periodic-table))
 
+(define-public clasp-periodic-table
+  (sbcl-package->clasp-package sbcl-periodic-table))
+
 (define-public sbcl-periods
   (let ((commit "60383dcef88a1ac11f82804ae7a33c361dcd2949")
         (revision "2"))
