@@ -7,7 +7,7 @@
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2024, 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2024-2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,9 +25,10 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages node-xyz)
+  #:use-module (gnu packages base) ; sed
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages web)
+  #:use-module (gnu packages web) ; node-esbuild
   #:use-module (guix build-system node)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -2928,6 +2929,129 @@ tablets.
     "05766ab10a4987e93fdee7627f9fe9e7bc6d1a65"
     "1p2kakd1mhcps5c19wl65w9gkafd13qdy9hszriak4xpad8a2nz7"
     (delay (list node-source-map))))
+
+(define-public node-typescript
+  (package
+    (name "node-typescript")
+    (version "5.8.3")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/microsoft/TypeScript")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1dlwf83bc9kwnj35ng6ji9vl2hx23c9fl988rqq0hy29bmxl1rhm"))))
+    (build-system node-build-system)
+    (native-inputs (list
+      node-dprint-formatter ; 0.x
+      node-esbuild ; 0.x
+      node-fast-xml-parser ; 4.x
+      node-glob ; 10.x
+      node-hereby ; 1.x
+      node-jsonc-parser
+      node-minimist ; 1.x
+      node-picocolors ; 1.x
+      node-source-map-support ; 0.x
+      node-types-node ; Match the version of node
+      node-types-source-map-support
+      node-which ; 3.x
+      sed))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'chai', 'mocha', and 'eslint'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dependencies (list
+              ; TODO @dprint/typescript needs a rust build but it's only required to
+              ; format the .d.ts files, however they're already somewhat formatted.
+              "@dprint/typescript"
+              "@esfx/canceltoken"
+              "@eslint/js"
+              "@octokit/rest"
+              "@types/chai"
+              "@types/diff"
+              "@types/minimist"
+              "@types/mocha"
+              "@types/ms"
+              "@types/which"
+              "@typescript-eslint/rule-tester"
+              "@typescript-eslint/type-utils"
+              "@typescript-eslint/utils"
+              "azure-devops-node-api"
+              "c8"
+              "chai"
+              "chokidar"
+              "chalk"
+              "diff"
+              "dprint"
+              "eslint"
+              "eslint-formatter-autolinkable-stylish"
+              "eslint-plugin-regexp"
+              "globals"
+              "knip"
+              "mocha"
+              "mocha-fivemat-progress-reporter"
+              "monocart-coverage-reports"
+              "ms"
+              "playwright"
+              "tslib"
+              "typescript"
+              "typescript-eslint")))
+
+          ; Remove imports of dependencies that are not used in building.
+          (substitute*
+            (list
+              "Herebyfile.mjs"
+              "scripts/build/tests.mjs"
+              "scripts/build/utils.mjs")
+            (("^import .* from \"(@esfx/canceltoken|chokidar|glob)\".*") ""))
+
+          ; Replace @esfx/canceltoken CancelError
+          (substitute* "scripts/build/utils.mjs"
+            (("CancelError\\(\\)")
+              "(function() {const error = new Error(\"Operation was canceled\");\
+error.name=\"CancelError\";return error})()"))
+
+          ; TODO: Once @dprint/typescript is added, remove these modifications
+          ; to format typescript.d.ts.
+          (define dtsBundler "scripts/dtsBundler.mjs")
+          (substitute* dtsBundler
+            (("^import .* from \"@dprint/typescript\".*") "")
+            (("^import .* from \"typescript\";")
+              "import * as ts from \"../built/local/typescript.js\";")
+            (("^const buffer =.*") "")
+            (("^const formatter =.*") ""))
+          (invoke "sed" "-i" "/^formatter/,/;/d" dtsBundler)
+          (invoke "sed" "-i"
+            "/^function dprint(/,/^}/c\\function dprint(contents) {return contents;}"
+            dtsBundler)))
+        (replace 'build (lambda _
+          ; First build tsc so it can be used in the rest of the build.
+          (invoke "hereby" "tsc" "--bundle" "--no-typecheck")
+          (invoke "hereby" "lkg" "--bundle" "--no-typecheck" "--built")))
+        (add-after 'check 'prepare-package (lambda _
+          (define output "output")
+          (mkdir output)
+          (for-each
+            (lambda (file) (install-file file output))
+            (list
+              "LICENSE.txt"
+              "package.json"
+              "README.md"
+              "SECURITY.md"
+              "ThirdPartyNoticeText.txt"))
+          (for-each
+            (lambda (dir) (copy-recursively dir (string-append output "/" dir)))
+            (list "bin" "lib"))
+          (chdir output))))))
+    (synopsis "TypeScript language for application scale JavaScript development")
+    (description "TypeScript is a language for application-scale JavaScript. TypeScript\
+ adds optional types to JavaScript that support tools for large-scale JavaScript\
+ applications for any browser, for any host, on any OS. TypeScript compiles to readable,\
+ standards-based JavaScript.")
+    (home-page "https://www.typescriptlang.org/")
+    (license license:expat)))
 
 (define-public node-typical
   (package
