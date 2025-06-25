@@ -1162,6 +1162,67 @@ this cache will keep that many of the most recently accessed items.")
 random number generator.")
     (license license:bsd-3)))
 
+(define-public node-minimatch
+  (package
+    (name "node-minimatch")
+    (version "9.0.5")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/isaacs/minimatch")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "1m9lr4nalzml8l6lz09jmk3nhqm7jf6lkyybvdg0ccqx74si7d44"))))
+    (build-system node-build-system)
+    (inputs (list node-brace-expansion))
+    ; Use ESBuild because this is used to build Typescript.
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:tests? #f ; FIXME: Tests require 'tap'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package
+          (lambda _
+            (modify-json
+              (delete-dev-dependencies)
+              (delete-fields (list
+                "scripts.prepare")))))
+        (replace 'build
+          (lambda _
+            (define output "output")
+            (for-each
+              (match-lambda ((format directory type)
+                (define target-output (string-append output "/dist/" directory))
+                (invoke
+                  "esbuild"
+                  "src/*.ts"
+                  "--platform=node"
+                  "--target=es2022"
+                  (string-append "--format=" format)
+                  "--jsx=transform"
+                  "--sourcemap"
+                  (string-append "--outdir=" target-output))
+                (with-output-to-file
+                  (string-append target-output "/package.json")
+                  (lambda _
+                    (display (string-append "{\"type\": \"" type "\"}"))))))
+              (list
+                (list "cjs" "commonjs" "commonjs")
+                (list "esm" "esm" "module")))
+            (for-each
+              (lambda (file) (install-file file output))
+              (list "LICENSE" "package.json" "README.md"))
+            (chdir output))))))
+    (synopsis "A glob matcher in javascript.")
+    (description "A minimal matching utility.
+This is the matching library used internally by npm.
+It works by converting glob expressions into JavaScript RegExp objects.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:isc)))
+
 (define-public node-minimist
   (package
     (name "node-minimist")
