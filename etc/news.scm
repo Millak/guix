@@ -42,7 +42,9 @@
  (entry (commit "30a5d140aa5a789a362749d057754783fea83dde")
         (title
          (en "@command{guix-daemon} privilege escalation vulnerabilities
-fixed (CVE-2025-46415, CVE-2025-46416)"))
+fixed (CVE-2025-46415, CVE-2025-46416)")
+         (de "Schwachstellen in @command{guix-daemon} zur Rechteausweitung
+behoben (CVE-2025-46415, CVE-2025-46416)"))
         (body
          (en "Vulnerabilities in the build daemon, @command{guix-daemon}, were
 identified and fixed.  One vulnerability would allow any user on the system
@@ -67,9 +69,38 @@ Guix\"} or visit
 learn how to upgrade Guix.
 
 The root cause of the vulnerability was the ability of a @dfn{fixed-output
-derivation} build process to smuggle a file descriptor to the store or to a
+derivation} build process to smuggle a file descriptor to the store or a
 setuid program to an outside process @i{via} an abstract Unix-domain socket.
-See @uref{https://codeberg.org/guix/guix/pulls/788} for more information.")))
+See @uref{https://codeberg.org/guix/guix/pulls/788} for more information.")
+         (de "Schwachstellen im Erstellungs-Daemon @command{guix-daemon} wurden
+erkannt und behoben.  Mit einer der Schwachstellen konnte jeder Benutzer des
+Systems, dem eine Interaktion mit dem Daemon möglich ist, neue lokal erstellte
+Pakete in vielen Fällen manipulieren (CVE-2025-46416).  Mit der anderen
+Schwachstelle (CVE-2025-46415) konnten, sofern @command{guix-daemon} als
+Administratornutzer root läuft, sogar alle Rechte des root-Benutzers erlangt
+werden.  Dabei wurden CVE-2025-52991, CVE-2025-52992 und CVE-2025-52993 als
+zusätzliche Gelegenheiten erkannt, durch die der vorgeschlagene Angriff
+vereitelt hätte werden können.
+
+Wir raten allen deutlich dazu, @command{guix-daemon} zu aktualisieren. Auf
+Guix System können Nutzer dazu Befehle verwenden wie:
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+Wenn Sie Guix auf einer anderen Distribution verwenden, erfahren Sie mit dem
+Befehl @command{info \"(guix.de) Aktualisieren von Guix\"} oder auf
+@uref{https://guix.gnu.org/manual/devel/de/html_node/Aktualisieren-von-Guix.html},
+wie Sie Guix aktualisieren.
+
+Die eigentliche Ursache war, dass der Erstellungsprozess einer @dfn{Ableitung
+mit fester Ausgabe} die Möglichkeit hatte, über einen abstrakten
+Unix-Domain-Socket einen Dateideskriptor in den Store
+hinein oder ein setuid-Programm zu einem Prozess außerhalb heraus zu schmuggeln.
+Siehe @uref{https://codeberg.org/guix/guix/pulls/788} für mehr
+Informationen.")))
 
  (entry (commit "78d4b1e52c731502b29288ab6975bd9efa91392a")
         (title
