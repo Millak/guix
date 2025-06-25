@@ -10574,6 +10574,9 @@ everywhere some dumb user might make a mistake.")
 (define-public ecl-cl-utilities
   (sbcl-package->ecl-package sbcl-cl-utilities))
 
+(define-public clasp-cl-utilities
+  (sbcl-package->clasp-package sbcl-cl-utilities))
+
 (define-public sbcl-cl-variates
   (let ((commit "4e7548754d8a8731a42487fae31174db4bf36d47")
         (revision "0"))
