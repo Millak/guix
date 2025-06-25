@@ -15639,6 +15639,9 @@ basic everyday functions and macros.")
 (define-public ecl-fare-utils
   (sbcl-package->ecl-package sbcl-fare-utils))
 
+(define-public clasp-fare-utils
+  (sbcl-package->clasp-package sbcl-fare-utils))
+
 (define-public sbcl-fast-generic-functions
   (let ((commit "6e9d690ec08dacf9ab4e14aa39a084ef7c7edabb")
         (revision "2"))
