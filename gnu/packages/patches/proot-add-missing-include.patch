@@ -1,0 +1,15 @@
+Add missing include to avoid implicit function declaration, prohibited with
+GCC 14.
+
+diff --git a/src/tracee/tracee.c b/src/tracee/tracee.c
+index 9b16f6aa..39308c32 100644
+--- a/src/tracee/tracee.c
++++ b/src/tracee/tracee.c
+@@ -44,6 +44,7 @@
+ #include "cli/note.h"
+ 
+ #include "compat.h"
++#include "mem.h"
+ 
+ #ifndef __W_STOPCODE
+ #define __W_STOPCODE(sig)	((sig) <<8 | 0x7f)
