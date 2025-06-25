@@ -15038,6 +15038,9 @@ to classes.")
 (define-public ecl-enhanced-find-class
   (sbcl-package->ecl-package sbcl-enhanced-find-class))
 
+(define-public clasp-enhanced-find-class
+  (sbcl-package->clasp-package sbcl-enhanced-find-class))
+
 (define-public sbcl-enhanced-typep
   (package
     (name "sbcl-enhanced-typep")
