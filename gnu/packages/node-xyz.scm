@@ -899,6 +899,49 @@ Correctly stops looking after an -- argument terminator.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-hereby
+  (package
+    (name "node-hereby")
+    (version "1.11.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/jakebailey/hereby")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "0jdfrfvnz97nc2ly8ws98dwi05hcc6qs1p76xy0hjdf4r5yvirsj"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-command-line-usage
+      node-fastest-levenshtein
+      node-minimist
+      node-picocolors
+      node-pretty-ms))
+    ; Use ESBuild because this is used to build Typescript.
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'ava'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies))))
+        (replace 'build (lambda _
+          (delete-file "tsconfig.json")
+          (delete-file-recursively "src/__tests__")
+          (invoke
+            "esbuild"
+            "src/**/*.ts"
+            "--platform=node"
+            "--format=esm"
+            "--sourcemap"
+            "--outdir=dist"))))))
+    (synopsis "Simple task runner")
+    (description "Tasks are defined in Herebyfile.mjs. Exported tasks are available to\
+ run at the CLI, with support for export default.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-ieee754
   (package
     (name "node-ieee754")
