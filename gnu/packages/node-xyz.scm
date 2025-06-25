@@ -2731,6 +2731,36 @@ function with browser support.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:isc)))
 
+(define-public node-wordwrapjs
+  (package
+    (name "node-wordwrapjs")
+    (version "4.0.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/75lb/wordwrapjs")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "126rsbhn2dkxq4dy2p2ylwcjdipgk9mkqp47y5n4l5pjkhyv7lwr"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-reduce-flatten
+      node-typical))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'test-runner'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Word-wrapping library for javascript")
+    (description "Word wrapping, with a few features.
+  * force-break option
+  * wraps hypenated words
+  * multilingual - wraps any language that uses whitespace for word separation.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-wrappy
   (package
     (name "node-wrappy")
