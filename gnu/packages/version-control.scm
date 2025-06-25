@@ -637,12 +637,13 @@ everything from small to very large projects with speed and efficiency.")
                   (invoke "make" "install-doc")
                   (substitute* "git-subtree"
                     (("/bin/sh") (which "sh"))))))
-            (add-after 'install 'install-info-manual
+            (add-after 'install 'install-doc
               (lambda* (#:key parallel-build? #:allow-other-keys)
                 (define job-count (if parallel-build?
                                       (number->string (parallel-job-count))
                                       "1"))
-                (invoke "make" "-C" "Documentation" "install-info"
+                (invoke "make" "-C" "Documentation"
+                        "install-info" "install-man"
                         "-j" job-count
                         ;; The Makefile refer to 'docbook2x-texi', but our
                         ;; binary is named 'docbook2texi'.
@@ -765,26 +766,10 @@ everything from small to very large projects with speed and efficiency.")
                                       (map last
                                            (append-map
                                             package-transitive-propagated-inputs
-                                            perl-inputs)))))))))))
-            (add-after 'split 'install-man-pages
-              (lambda _
-                (let ((man (string-append #$output "/share/man")))
-                  (mkdir-p man)
-                  (with-directory-excursion man
-                    (invoke
-                     "tar" "xvf"
-                     #$(origin
-                         (method url-fetch)
-                         (uri (string-append
-                               "mirror://kernel.org/software/scm/git/"
-                               "git-manpages-" (package-version this-package)
-                               ".tar.xz"))
-                         (sha256
-                          (base32
-                           "04cjpv66p6jp9jhpvvsfc1psn2k9h6wmijs86raw0ynwf593rrsq"))))))))))))
+                                            perl-inputs)))))))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs git-minimal)
-       ;; For subtree documentation.
+       ;; For documentation.
        (append asciidoc
                docbook2x
                docbook-xml-4.5
