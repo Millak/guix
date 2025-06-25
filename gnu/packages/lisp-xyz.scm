@@ -22683,6 +22683,9 @@ readtables, which is akin to package namespacing in Common Lisp.")
 (define-public ecl-named-readtables
   (sbcl-package->ecl-package sbcl-named-readtables))
 
+(define-public clasp-named-readtables
+  (sbcl-package->clasp-package sbcl-named-readtables))
+
 (define-public sbcl-napa-fft3
   (let ((commit "f2d9614c7167da327c9ceebefb04ff6eae2d2236")
         (revision "0"))
