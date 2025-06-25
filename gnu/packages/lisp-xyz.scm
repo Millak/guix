@@ -2044,6 +2044,9 @@ impossible to merge back upstream.")
 (define-public ecl-binding-arrows
   (sbcl-package->ecl-package sbcl-binding-arrows))
 
+(define-public clasp-binding-arrows
+  (sbcl-package->clasp-package sbcl-binding-arrows))
+
 (define-public cl-binding-arrows
   (sbcl-package->cl-source-package sbcl-binding-arrows))
 
