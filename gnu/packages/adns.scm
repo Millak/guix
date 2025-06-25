@@ -151,6 +151,20 @@ multiple clients and programs with graphical user interfaces.")
 (define-public c-ares-for-node-lts
   (hidden-package c-ares))
 
+(define-public c-ares-for-node-bootstrap
+  (hidden-package
+   (package
+     (inherit c-ares)
+     (version "1.18.1")
+     (source (origin
+               (method url-fetch)
+               (uri (string-append
+                     "https://c-ares.haxx.se/download/c-ares-" version
+                     ".tar.gz"))
+               (sha256
+                (base32
+                 "1kxviskwsaa7dcgscvssxa8ps88pdq7kq4z93gxvz7sam2l54z8s")))))))
+
 ;; gRPC requires a c-ares built with CMake in order to get the .cmake modules.
 ;; We can not build c-ares itself with CMake because that would introduce a
 ;; circular dependency through nghttp2.
