@@ -492,6 +492,9 @@ logical continuation of Stefil.  It focuses on interactive debugging.")
 (define-public ecl-fiasco
   (sbcl-package->ecl-package sbcl-fiasco))
 
+(define-public clasp-fiasco
+  (sbcl-package->clasp-package sbcl-fiasco))
+
 (define-public sbcl-fiveam
   (package
     (name "sbcl-fiveam")
