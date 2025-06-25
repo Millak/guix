@@ -1077,6 +1077,7 @@ the date of the most recent commit that modified them
                      "TestScript/branch_create_below_with_downstack_history"
                      "TestScript/branch_create_no_verify"
                      "TestScript/branch_onto_two_stacks_with_downstack_history"
+                     "TestScript/branch_restack_conflict_no_edit"
                      "TestScript/branch_split_reassign_submitted"
                      "TestScript/branch_submit_.*"
                      "TestScript/commit_amend_no_verify"
