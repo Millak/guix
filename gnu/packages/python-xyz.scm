@@ -3881,18 +3881,15 @@ variable bit length encoding, you may find this module useful.")
 (define-public python-boolean.py
   (package
     (name "python-boolean.py")
-    (version "4.0")
+    (version "5.0")
     (source
      (origin
-       ;; There's no source tarball on PyPI.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/bastikr/boolean.py")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "boolean_py" version))
        (sha256
-        (base32 "1s4mrgqf1phwvda81dpnlkdadcbjgpl8mjvmc1yjlrp1c368v9lb"))))
-    (build-system python-build-system)
+        (base32 "15cd64x2m1cbcnjasw0m2977ab1n0mam8j96schkfxbrs2xc9jv0"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/bastikr/boolean.py")
     (synopsis "Boolean algebra in one Python module")
     (description
