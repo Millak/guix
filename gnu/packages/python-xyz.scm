@@ -3835,14 +3835,14 @@ and a list of words that are easier to remember for humans (the
 (define-public python-bitarray
   (package
     (name "python-bitarray")
-    (version "3.3.1")
+    (version "3.4.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "bitarray" version))
               (sha256
                (base32
-                "0ib35sxk46kw2adgikmy4vn9climr0dz99pqf2mia2idcyd232cc"))))
-    (build-system python-build-system)
+                "1w32bybj7qx99pkwyhb4g9c1y5mp89kc838iq30swrkb12zv5pyx"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -3853,6 +3853,7 @@ and a list of words that are easier to remember for humans (the
                      (with-directory-excursion "/tmp"
                        (invoke "python" "-c"
                                "import bitarray; bitarray.test()"))))))))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/ilanschnell/bitarray")
     (synopsis "Efficient arrays of booleans")
     (description "This package provides an object type which efficiently
