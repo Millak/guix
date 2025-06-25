@@ -75,18 +75,6 @@
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Patch for compatibility with ICU 68 and newer, which
-                  ;; removed the public TRUE and FALSE macros.
-                  (substitute* '("deps/v8/src/objects/intl-objects.cc"
-                                 "deps/v8/src/runtime/runtime-intl.cc")
-                    (("TRUE") "true")
-                    (("FALSE") "false"))
-
-                  ;; Patch for compatibility with ICU 75 and newer, which
-                  ;; adds non-breaking narrow spaces.
-                  (substitute* "test/parallel/test-intl.js"
-                    (("12:00:00 AM") "12:00:00 AM"))
-
                   ;; Fix process.versions.XXXX assumption of always having
                   ;; a version string of major.minor.patch and not major.minor.
                   (substitute* "test/parallel/test-process-versions.js"
@@ -115,7 +103,7 @@
                            "--shared-openssl"
                            "--shared-zlib"
                            "--without-snapshot"
-                           "--with-intl=system-icu")
+                           "--without-intl")
        ;; Run only the CI tests.  The default test target requires additional
        ;; add-ons from NPM that are not distributed with the source.
        #:test-target "test-ci-js"
@@ -206,7 +194,6 @@
              (let* ((inputs      (or native-inputs inputs))
                     (c-ares      (assoc-ref inputs "c-ares"))
                     (http-parser (assoc-ref inputs "http-parser"))
-                    (icu4c       (assoc-ref inputs "icu4c"))
                     (nghttp2     (assoc-ref inputs "nghttp2"))
                     (openssl     (assoc-ref inputs "openssl"))
                     (libuv       (assoc-ref inputs "libuv"))
@@ -217,7 +204,6 @@
                                  "'ldflags': ['-Wl,-rpath="
                                  c-ares "/lib:"
                                  http-parser "/lib:"
-                                 icu4c "/lib:"
                                  nghttp2 "/lib:"
                                  openssl "/lib:"
                                  libuv "/lib:"
@@ -307,14 +293,14 @@
                    (format #t "nodedir=~a\n" out)))))))))
     (native-inputs
      ;; Runtime dependencies for binaries used as a bootstrap.
-     (list c-ares
+     (list c-ares-for-node-bootstrap
            http-parser
-           icu4c
            libuv-for-node
            `(,nghttp2 "lib")
            openssl-1.1
            zlib
            ;; Regular build-time dependencies.
+           gcc-11 ; GCC > 11 produces a broken binary
            perl
            pkg-config
            procps
@@ -327,9 +313,8 @@
     (inputs
      (list bash-minimal
            coreutils
-           c-ares
+           c-ares-for-node-bootstrap
            http-parser
-           icu4c
            libuv-for-node
            `(,nghttp2 "lib")
            openssl
