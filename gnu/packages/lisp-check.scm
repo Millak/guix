@@ -945,6 +945,9 @@ This is intended to be a successor of Prove.")
 (define-public ecl-rt
   (sbcl-package->ecl-package sbcl-rt))
 
+(define-public clasp-rt
+  (sbcl-package->clasp-package sbcl-rt))
+
 (define-public sbcl-should-test
   (let ((commit "48facb9f9c07aeceb71fc0c48ce17fd7d54a09d4")
         (revision "0"))
