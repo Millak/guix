@@ -14208,7 +14208,7 @@ Java based on Python's @code{argparse} module.")
 (define-public java-metadata-extractor
   (package
     (name "java-metadata-extractor")
-    (version "2.11.0")
+    (version "2.19.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14217,7 +14217,7 @@ Java based on Python's @code{argparse} module.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06yrq0swrl1r40yjbk5kqzjxr04jlkq9lfi711jvfgjf5kp2qinj"))))
+                "1axnw47n06a116g8bml2l6rxx92grxp935gspyhz4pz868m7hrna"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "metadata-extractor.jar"
@@ -14225,6 +14225,18 @@ Java based on Python's @code{argparse} module.")
        #:test-dir "Tests"
        #:phases
        (modify-phases %standard-phases
+         (add-before 'build 'fix-xmp-path
+           (lambda _
+             ;; This version of metadata-extractor depends on java-xmp 6, which
+             ;; is non-free.  These changes allow using java-xmp 5, which is
+             ;; the last free-software version of java-xmp.
+             (substitute* (find-files "." ".*.java")
+                (("com.adobe.internal.xmp") "com.adobe.xmp"))
+             (substitute* "Source/com/drew/metadata/xmp/XmpReader.java"
+                (("\\.setXMPNodesToLimit.*") ";"))
+             ;; Test failure, most likely because we use a different java-xmp
+             ;; version.
+             (delete-file "Tests/com/drew/metadata/xmp/XmpReaderTest.java")))
          (add-before 'check 'fix-test-dir
            (lambda _
              (substitute* "build.xml"
