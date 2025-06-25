@@ -2885,6 +2885,42 @@ tablets.
 @end enumerate")
     (license license:bsd-3)))
 
+(define (node-types type version commit hash inputs)
+  (package
+    (name (string-append "node-types-" type))
+    (version version)
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/DefinitelyTyped/DefinitelyTyped")
+        (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256 (base32 hash))))
+    (build-system node-build-system)
+    (inputs (force inputs))
+    (arguments (list
+      #:tests? #f ; Static files, no tests.
+      #:phases #~(modify-phases %standard-phases
+        (add-after 'unpack 'setup (lambda _
+          (chdir (string-append "types/" #$type))
+          (modify-json
+            (delete-dev-dependencies)
+            (replace-fields (list
+              (cons "version" #$version)))))))))
+    (synopsis (string-append "TypeScript definitions for " type))
+    (description (string-append "Typescript definition files (*.d.ts) for '" type "'."))
+    (home-page (string-append
+      (git-reference-url (origin-uri source)) "/tree/master/types/" type))
+    (license license:expat)))
+
+(define-public node-types-node
+  (node-types
+    "node"
+    "22.14.0" ; Match with version of node used
+    "1f6ca6ff73af20b951f5ea6ecbea6668eff1750f"
+    "05q0cj2b35z27fv1b00kr8ja5hj2dzl4shx1mwk0jg44z1cwkp0j"
+    (delay (list node-undici-types))))
+
 (define-public node-typical
   (package
     (name "node-typical")
