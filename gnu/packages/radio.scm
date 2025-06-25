@@ -750,7 +750,10 @@ a local network link.")
        (uri (pypi-uri "SimpleSoapy" version))
        (sha256
         (base32 "0bh02m5zj82mp7sxpvwr24ylmrbp3p4r9q7psqcfnxl628w3b4hl"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-numpy soapysdr))
     (home-page "https://github.com/xmikos/simplesoapy")
