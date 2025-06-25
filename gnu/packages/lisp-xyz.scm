@@ -33083,6 +33083,9 @@ files.")
 (define-public ecl-zpb-exif
   (sbcl-package->ecl-package sbcl-zpb-exif))
 
+(define-public clasp-zpb-exif
+  (sbcl-package->clasp-package sbcl-zpb-exif))
+
 (define-public sbcl-zpb-ttf
   (package
     (name "sbcl-zpb-ttf")
