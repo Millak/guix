@@ -17143,6 +17143,9 @@ special variables, especially in the presence of threads.")
 (define-public ecl-global-vars
   (sbcl-package->ecl-package sbcl-global-vars))
 
+(define-public clasp-global-vars
+  (sbcl-package->clasp-package sbcl-global-vars))
+
 (define-public sbcl-glop
   (let ((commit "45e722ab4a0cd2944d550bf790206b3326041e38")
         (revision "1"))
