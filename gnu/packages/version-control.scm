@@ -324,14 +324,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git-minimal
   (package
     (name "git-minimal")
-    (version "2.49.0")
+    (version "2.50.0")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "0a2nm2szhn47dm0m1f1kmg1rikb7saqj67zr25n9yzhbb77r10b1"))))
+              (method url-fetch)
+              (uri (string-append "mirror://kernel.org/software/scm/git/git-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0if0vqn3fj22p95a0125zpgwz3mqfqxqnvwa7fkf7b00wh0c1wyz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -786,7 +786,7 @@ everything from small to very large projects with speed and efficiency.")
                                ".tar.xz"))
                          (sha256
                           (base32
-                           "1my4qax2wxlhxsyf3wjxllsc2jy9lm97w78alllrgfjgihb46irf"))))))))))))
+                           "04cjpv66p6jp9jhpvvsfc1psn2k9h6wmijs86raw0ynwf593rrsq"))))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs git-minimal)
        ;; For subtree documentation.
