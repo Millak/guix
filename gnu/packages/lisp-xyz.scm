@@ -32009,6 +32009,9 @@ It was originally developed for the Cells library.")
 (define-public ecl-utils-kt
   (sbcl-package->ecl-package sbcl-utils-kt))
 
+(define-public clasp-utils-kt
+  (sbcl-package->clasp-package sbcl-utils-kt))
+
 (define-public sbcl-utm-ups
   (let ((commit "f1e6fd469871051470dfaabdf199afb75f2fa302")
         (revision "0"))
