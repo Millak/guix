@@ -4875,17 +4875,17 @@ converting and comparing CAN databases.")
 (define-public python-canopen
   (package
     (name "python-canopen")
-    (version "2.0.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "canopen" version))
        (sha256
-        (base32 "1nb543wb37kj95v6bhh272lm5gkpi41q3pnsl1fxlyizm2gamj5w"))))
-    (build-system python-build-system)
-    (native-inputs (list python-packaging))
+        (base32 "09xqqrb8vfyj3bw61nlgpl1qy86fnm72vpbd80m5p38k7jlq883r"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-wheel))
     (propagated-inputs (list python-can))
-    (home-page "https://github.com/christiansandberg/canopen")
+    (home-page "https://github.com/canopen-python/canopen")
     (synopsis "CANopen stack implementation")
     (description
      "This package provides a Python implementation of the
