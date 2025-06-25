@@ -21341,6 +21341,9 @@ Only minimal changes required to make your CLOS objects serializable.")
 (define-public ecl-marshal
   (sbcl-package->ecl-package sbcl-marshal))
 
+(define-public clasp-marshal
+  (sbcl-package->clasp-package sbcl-marshal))
+
 (define-public sbcl-mathkit
   (let ((commit "fd884f94b36ef5e9bc19459ad0b3cda6303d2a2a"))
     (package
