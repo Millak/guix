@@ -22861,6 +22861,9 @@ In order to make one or several variables file-local, use the macros
 (define-public ecl-net.didierverna.asdf-flv
   (sbcl-package->ecl-package sbcl-net.didierverna.asdf-flv))
 
+(define-public clasp-net.didierverna.asdf-flv
+  (sbcl-package->clasp-package sbcl-net.didierverna.asdf-flv))
+
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
