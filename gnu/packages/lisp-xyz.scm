@@ -11237,6 +11237,9 @@ during initialization or reinitialization of its subcomponents.")
 (define-public ecl-class-options
   (sbcl-package->ecl-package sbcl-class-options))
 
+(define-public clasp-class-options
+  (sbcl-package->clasp-package sbcl-class-options))
+
 (define-public sbcl-classimp
   (let ((commit "6c74f3808e00781a2662f37ddc26ccbbf2687b6b")
         (revision "1"))
