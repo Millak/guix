@@ -3785,37 +3785,24 @@ etc.")
 (define-public python-bidict
   (package
     (name "python-bidict")
-    (version "0.21.2")
+    (version "0.23.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "bidict" version))
+       (method git-fetch) ; no tests in PyPI.
+       (uri (git-reference
+             (url "https://github.com/jab/bidict")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "02dy0b1k7qlhn7ajyzkrvxhyhjj0hzcq6ws3zjml9hkdz5znz92g"))))
-    (build-system python-build-system)
+        (base32 "1qsbxjjsrks3icyq19afr5y47zdrfb0cvaadpprgcszq2ilihkaq"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage
-           python-hypothesis
-           python-py
-           python-pytest
+     (list python-pytest
            python-pytest-benchmark
-           python-pytest-cov
-           python-setuptools-scm
+           python-pytest-xdist
+           python-setuptools
            python-sortedcollections
-           python-sortedcontainers
-           python-sphinx
-           python-sphinx-autodoc-typehints
-           python-tox))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-reqs
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("sortedcollections < 2") "sortedcollections"))
-                      #t))
-                  (replace 'check
-                    (lambda _ (invoke "./run_tests.py"))))))
+           python-wheel))
     (home-page "https://bidict.readthedocs.io")
     (synopsis "Bidirectional mapping library")
     (description "The @code{bidict} library provides several data structures
