@@ -2125,6 +2125,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/procmail-CVE-2017-16844.patch		\
   %D%/packages/patches/proj-7-initialize-memory.patch		\
   %D%/packages/patches/proot-add-clone3.patch			\
+  %D%/packages/patches/proot-add-missing-include.patch		\
   %D%/packages/patches/protobuf-fix-build-on-32bit.patch	\
   %D%/packages/patches/psm-arch.patch				\
   %D%/packages/patches/psm-disable-memory-stats.patch		\

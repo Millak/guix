@@ -9272,7 +9272,8 @@ Text-based output formats: CSV, XML, Netfilter's LOG, Netfilter's conntrack
         (base32 "186qsg4yvisqjgf8w5jxhnlig7x341vpqwcgp8as3r59qmqkpmk7"))
        ;; Waiting for upstream inclusion at
        ;; https://github.com/proot-me/proot/pull/355
-       (patches (search-patches "proot-add-clone3.patch"))))
+       (patches (search-patches "proot-add-clone3.patch"
+                                "proot-add-missing-include.patch"))))
     (build-system gnu-build-system)
     ;; Many architectures are not supported (see:
     ;; https://github.com/proot-me/proot/blob/master/src/arch.h#L51).
