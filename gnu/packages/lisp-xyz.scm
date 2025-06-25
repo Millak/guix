@@ -19630,6 +19630,9 @@ language name mapping.")
 (define-public ecl-language-codes
   (sbcl-package->ecl-package sbcl-language-codes))
 
+(define-public clasp-language-codes
+  (sbcl-package->clasp-package sbcl-language-codes))
+
 (define-public sbcl-langutils
   (let ((commit "38beec7a82eeb35b0bfb0824a41d13ed94fc648b")
         (revision "0"))
