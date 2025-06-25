@@ -398,6 +398,35 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
      "This package provides a JSON list with color names and their values.")
     (license license:expat)))
 
+(define-public node-command-line-usage
+  (package
+    (name "node-command-line-usage")
+    (version "6.1.3")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/75lb/command-line-usage")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "073blk28qdk1bl1l4jsd4a6fmwvl2jv4fi6kfcjykc8x6hkv84cx"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-chalk
+      node-typical
+      node-array-back
+      node-table-layout))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'test-runner'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Generates command-line usage information")
+    (description "A simple, data-driven module for creating a usage guide.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-crx3
   (package
     (name "node-crx3")
