@@ -891,6 +891,9 @@ tester module.")
 (define-public ecl-ptester
   (sbcl-package->ecl-package sbcl-ptester))
 
+(define-public clasp-ptester
+  (sbcl-package->clasp-package sbcl-ptester))
+
 (define-public sbcl-rove
   (let ((commit "6a5dfcdced42879a4eff2a529e7e8ce492fadf41")
         (revision "1"))
