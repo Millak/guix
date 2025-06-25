@@ -19618,6 +19618,9 @@ processing.")
 (define-public ecl-lambda-fiddle
   (sbcl-package->ecl-package sbcl-lambda-fiddle))
 
+(define-public clasp-lambda-fiddle
+  (sbcl-package->clasp-package sbcl-lambda-fiddle))
+
 (define-public sbcl-language-codes
   (let ((commit "e7aa0e37cb97a3d37d6bc7316b479d01bff8f42e"))
     (package
