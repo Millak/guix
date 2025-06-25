@@ -34854,13 +34854,9 @@ utilities.")
     (inherit emacs-treemacs)
     (name "emacs-treemacs-extra")
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments emacs-treemacs)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'copy-extra
-              (lambda _
-                (copy-recursively "../extra" ".")))))))
+     (list
+      #:tests? #f                       ;no test suite
+      #:lisp-directory "src/extra"))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs emacs-treemacs)
        (append emacs-all-the-icons
@@ -34869,6 +34865,7 @@ utilities.")
                emacs-projectile
                emacs-persp-mode
                emacs-perspective
+               emacs-treemacs
                mu)))))
 
 (define-public emacs-treemacs-nerd-icons
