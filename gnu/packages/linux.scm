@@ -7940,7 +7940,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
                                               (search-input-file
                                                %build-inputs "/bin/rst2man.py")))))
     (native-inputs
-     (list pkg-config python-wrapper python-docutils)) ;for 'rst2man'
+     (list pkg-config python-wrapper python-docutils-0.19)) ;for 'rst2man'
     (inputs
      (list libnl eudev))
     (home-page "https://github.com/linux-rdma/rdma-core")

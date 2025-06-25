@@ -126,7 +126,7 @@
             (lambda _
               (delete-file-recursively
                (string-append #$output "/etc/apcupsd")))))))
-    (native-inputs (list mandoc pkg-config python-docutils util-linux))
+    (native-inputs (list mandoc pkg-config python-docutils-0.19 util-linux))
     (inputs (list libusb libusb-compat))
     (home-page "http://www.apcupsd.org")
     (synopsis "Daemon for controlling APC UPSes")

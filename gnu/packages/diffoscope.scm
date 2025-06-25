@@ -376,7 +376,7 @@ them in detail for later analysis.")
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list gzip python-docutils python-setuptools python-wheel))
+     (list gzip python-docutils-0.19 python-setuptools python-wheel))
     (build-system pyproject-build-system)
     (home-page "https://try.diffoscope.org")
     (synopsis "Client for remote diffoscope service")
