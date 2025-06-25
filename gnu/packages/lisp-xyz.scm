@@ -25678,6 +25678,9 @@ values in other options.")
 (define-public ecl-py-configparser
   (sbcl-package->ecl-package sbcl-py-configparser))
 
+(define-public clasp-py-configparser
+  (sbcl-package->clasp-package sbcl-py-configparser))
+
 (define-public sbcl-py4cl
   (let ((commit "2f2a008dd6162d4446803971292fe1b323fe0dd5")
         (revision "2"))
