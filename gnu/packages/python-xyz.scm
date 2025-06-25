@@ -5509,22 +5509,17 @@ in the current session, Python, and the OS.")
 (define-public python-schedule
   (package
     (name "python-schedule")
-    (version "0.4.3")
+    (version "1.2.2")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "schedule" version))
       (sha256
        (base32
-        "0vplyjcbfrq50sphlwya749z8p2pcyi2nycw3518i0qpd9a6189i"))
-      (snippet
-       #~(begin (use-modules (guix build utils))
-                (substitute* "schedule/__init__.py"
-                  (("collections\\.Hashable")
-                   "collections.abc.Hashable"))))))
-    (build-system python-build-system)
+        "1dzhwpnpbvv90z6lavx4z7whh1a2y47cq69zgxibknazzrsrrzhm"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-mock))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/dbader/schedule")
     (synopsis "Schedule periodic function calls in Python")
     (description
