@@ -30821,6 +30821,9 @@ thin compatibility layer for gray streams.")
 (define-public ecl-trivial-gray-streams
   (sbcl-package->ecl-package sbcl-trivial-gray-streams))
 
+(define-public clasp-trivial-gray-streams
+  (sbcl-package->clasp-package sbcl-trivial-gray-streams))
+
 (define-public sbcl-trivial-indent
   (let ((commit "f25275094b80df8aa158af46db980bbc3ce2f88b")
         (revision "1"))
