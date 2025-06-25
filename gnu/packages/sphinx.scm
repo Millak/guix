@@ -1202,25 +1202,22 @@ scientific documentation.")
 (define-public python-sphinx-rtd-theme
   (package
     (name "python-sphinx-rtd-theme")
-    (version "1.0.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx_rtd_theme" version))
        (sha256
-        (base32
-         "0p3abj91c3l72ajj5jwblscsdf1jflrnn0djx2h5y6f2wjbx9ipf"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f ; No tests.
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'allow-newer-docutil
-            (lambda _
-              (substitute* "setup.py"
-                (("docutils<0.18") "docutils<0.20")))))))
-    (propagated-inputs (list python-docutils python-sphinx))
+        (base32 "11azdqbkxcibxgl3x852c2mrx19wjnwp19l6n0h3nwnsbp17nidp"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-docutils
+           python-sphinx
+           python-sphinxcontrib-jquery))
     (home-page "https://github.com/snide/sphinx_rtd_theme/")
     (synopsis "ReadTheDocs.org theme for Sphinx")
     (description "A theme for Sphinx used by ReadTheDocs.org.")
