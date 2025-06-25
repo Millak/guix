@@ -15068,6 +15068,9 @@ in which case it returns the appropriate closure.")
 (define-public ecl-enhanced-typep
   (sbcl-package->ecl-package sbcl-enhanced-typep))
 
+(define-public clasp-enhanced-typep
+  (sbcl-package->clasp-package sbcl-enhanced-typep))
+
 (define-public sbcl-envy
   (let ((commit "26a7faadc981f2a047daa36f715a44faec5dd00c")
 	(revision "2"))
