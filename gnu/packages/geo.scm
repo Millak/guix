@@ -1878,7 +1878,7 @@ extension.")
         (base32 "1nqzlrzxwhvm7z2pl70bwlr37fz95hcm0n8v7y503krh5x4xl9r3"))))
     (build-system pyproject-build-system)
     (arguments
-     (list 
+     (list
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'udunits-path
@@ -2694,7 +2694,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "19253")
+    (version "19412")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -2703,7 +2703,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "1k5v591mkh0xkyfj66qmv1mamqsqw347nhax5hlwyg8hgfk7a6xr"))
+                "152pf0ww16jj5cv94ywlv5nb8pvnyqmvmnwsy3w0lf094faqkv5d"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -2726,11 +2726,11 @@ to the OSM opening hours specification.")
            java-parsson ; runtime dependency
            java-signpost-core
            java-svg-salamander
-           openjdk11))
+           openjdk17))
     (arguments
      `(#:tests? #f
        #:jar-name "josm.jar"
-       #:jdk ,openjdk11
+       #:jdk ,openjdk17
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'rm-build.xml
