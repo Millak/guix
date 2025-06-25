@@ -1734,13 +1734,10 @@ that they are acceptable to modern bowsers")
        (method url-fetch)
        (uri (pypi-uri "fire" version))
        (sha256
-        (base32
-         "1pswm79gi51p596zmfvaskx0i15znbr610yws5dgdsing7q505cn"))))
+        (base32 "1pswm79gi51p596zmfvaskx0i15znbr610yws5dgdsing7q505cn"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-termcolor))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-termcolor))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (synopsis "Library for automatically generating command line interfaces")
     (description
      "Fire is a library for automatically generating command line interfaces
