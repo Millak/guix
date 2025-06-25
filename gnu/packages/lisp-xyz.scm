@@ -24649,6 +24649,9 @@ your own classes.")
 (define-public ecl-plump
   (sbcl-package->ecl-package sbcl-plump))
 
+(define-public clasp-plump
+  (sbcl-package->clasp-package sbcl-plump))
+
 (define-public sbcl-plump-sexp
   (let ((commit "bbcf75e9ecda8fe7603098ab8c15828407bb4f08")
         (revision "0"))
