@@ -792,6 +792,64 @@ URI to a file path.  It accepts a @code{file:} URI and returns a file path
 suitable for use with the @code{fs} module functions.")
     (license license:expat)))
 
+(define-public node-glob
+  (package
+    (name "node-glob")
+    (version "10.1.0")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/isaacs/node-glob")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "19r0q9mxfbbma6z0iapf1jnccrz0hil69kihzbjjxzy9b7cgzmsd"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-minimatch
+      node-minipass-5
+      node-path-scurry))
+    ; Use ESBuild instead of tshy because this is used to build Typescript.
+    (native-inputs (list esbuild))
+    (arguments (list
+      #:modules '(
+        (guix build node-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:tests? #f ; FIXME: Tests require 'c8' and 'tap'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package
+          (lambda _
+            (modify-json
+              (delete-dev-dependencies)
+              (delete-fields (list
+                "scripts.prepare"))
+              (delete-dependencies (list
+                ; Not currently used in other packages, but if there are
+                ; issues we may need to add this in.
+                "fs.realpath")))))
+        (replace 'build
+          (lambda _
+            (define output "output")
+            (for-each
+              (match-lambda ((format directory)
+                (invoke
+                "esbuild"
+                "src/*.ts"
+                "--platform=node"
+                (string-append "--format=" format)
+                "--target=es2022"
+                "--sourcemap"
+                (string-append "--outdir=" output "/dist/" directory))))
+              (list (list "cjs" "cjs") (list "esm" "mjs")))
+            (for-each
+              (lambda (file) (install-file file output))
+              (list "LICENSE" "README.md" "package.json"))
+            (chdir output))))))
+    (synopsis "Match files using the patterns the shell uses")
+    (description "The most correct and second fastest glob implementation in JavaScript.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:isc)))
+
 (define-public node-global-gradle-clean
   (package
     (name "node-global-gradle-clean")
