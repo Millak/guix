@@ -22506,6 +22506,9 @@ of enharmonics and dealing with ties and dots in rhythm notation.")
 (define-public ecl-music-spelling
   (sbcl-package->ecl-package sbcl-music-spelling))
 
+(define-public clasp-music-spelling
+  (sbcl-package->clasp-package sbcl-music-spelling))
+
 (define-public sbcl-mw-equiv
   (let ((commit "3ae871458685b1ef7cd6a996ee22c8c5e738a03d")
         (revision "1"))
