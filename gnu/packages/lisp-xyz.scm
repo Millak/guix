@@ -14938,6 +14938,9 @@ to booleans.")
 (define-public ecl-enhanced-boolean
   (sbcl-package->ecl-package sbcl-enhanced-boolean))
 
+(define-public clasp-enhanced-boolean
+  (sbcl-package->clasp-package sbcl-enhanced-boolean))
+
 (define-public sbcl-enhanced-defclass
   (package
     (name "sbcl-enhanced-defclass")
