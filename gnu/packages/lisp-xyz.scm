@@ -32393,6 +32393,9 @@ has a small codebase that's easy to understand and use.")
 (define-public ecl-vom
   (sbcl-package->ecl-package sbcl-vom))
 
+(define-public clasp-vom
+  (sbcl-package->clasp-package sbcl-vom))
+
 (define-public sbcl-wayflan
   (package
     (name "sbcl-wayflan")
