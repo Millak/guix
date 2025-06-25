@@ -387,6 +387,9 @@ easy to use so that you can quickly start testing.")
 (define-public ecl-clunit2
   (sbcl-package->ecl-package sbcl-clunit2))
 
+(define-public clasp-clunit2
+  (sbcl-package->clasp-package sbcl-clunit2))
+
 (define-public sbcl-confidence
   (let ((commit "5cbc74715348e12e689afb2d459dcb216c640a44")
         (revision "0"))
