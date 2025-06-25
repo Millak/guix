@@ -25635,6 +25635,9 @@ Lisp programs.  It parses URI according to the RFC 2396 specification.")
 (define-public ecl-puri
   (sbcl-package->ecl-package sbcl-puri))
 
+(define-public clasp-puri
+  (sbcl-package->clasp-package sbcl-puri))
+
 (define-public sbcl-py-configparser
   ;; NOTE: (Sharlatan <2021-01-05 Tue> <19:52:19 UTC+0000>) Project updated last
   ;; time 8y ago, it looks like abandoned. VCS of the project:
