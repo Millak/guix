@@ -4116,14 +4116,14 @@ approximate nearest neighbor search with Python bindings.")
   (package
     (name "python-pylatexenc")
     (version "2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pylatexenc" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1ls09z47b5md71gkxcj7fd87ynpvv2walgp2w6z31p26xf2gvn1x"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pylatexenc" version))
+       (sha256
+        (base32 "1ls09z47b5md71gkxcj7fd87ynpvv2walgp2w6z31p26xf2gvn1x"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/phfaist/pylatexenc")
     (synopsis "LaTeX parser for Unicode/LaTeX conversion")
     (description
