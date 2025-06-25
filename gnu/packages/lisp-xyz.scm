@@ -27561,6 +27561,9 @@ little slower than it could be.")
 (define-public ecl-sha1
   (sbcl-package->ecl-package sbcl-sha1))
 
+(define-public clasp-sha1
+  (sbcl-package->clasp-package sbcl-sha1))
+
 (define-public sbcl-shadow
   (let ((commit "b2031adbfba3579b48c9d39ad997e19b79b6852f")
         (revision "1"))
