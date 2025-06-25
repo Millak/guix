@@ -24682,6 +24682,9 @@ between S-expressions and the Plump DOM.")
 (define-public ecl-plump-sexp
   (sbcl-package->ecl-package sbcl-plump-sexp))
 
+(define-public clasp-plump-sexp
+  (sbcl-package->clasp-package sbcl-plump-sexp))
+
 (define-public sbcl-png
   (let ((commit "11b965fe378fd0561abe3616b18ff03af5179648")
         (revision "1"))
