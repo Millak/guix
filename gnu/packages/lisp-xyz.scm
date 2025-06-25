@@ -31978,6 +31978,9 @@ binary stream for Common Lisp.")
 (define-public ecl-utf8-input-stream
   (sbcl-package->ecl-package sbcl-utf8-input-stream))
 
+(define-public clasp-utf8-input-stream
+  (sbcl-package->clasp-package sbcl-utf8-input-stream))
+
 (define-public sbcl-utils-kt
   (let ((commit "4adfe2889036ab5ffdd3cc2182ca2cc692bf11ff"))
     (package
