@@ -349,6 +349,35 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-chalk
+  (package
+    (name "node-chalk")
+    (version "2.4.2")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/chalk/chalk")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1isx2l8a11k5arz1p3kd7mbdb8kjr85l1axdm7yya57vwlkdkc2y"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-ansi-styles
+      node-supports-color
+      node-escape-string-regexp))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests reuire 'xo', 'c8', 'ava', and 'tsd'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Terminal string styling library")
+    (description "Chalk comes with an easy to use composable API where you just chain and\
+ nest the styles you want.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-color-convert
   (package
     (name "node-color-convert")
