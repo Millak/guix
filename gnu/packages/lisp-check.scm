@@ -424,6 +424,9 @@ without a complicated setup, and with explicit functions and decisions.")
 (define-public cl-confidence
   (sbcl-package->cl-source-package sbcl-confidence))
 
+(define-public clasp-confidence
+  (sbcl-package->clasp-package sbcl-confidence))
+
 (define-public sbcl-eos
   (let ((commit "b4413bccc4d142cbe1bf49516c3a0a22c9d99243")
         (revision "2"))
