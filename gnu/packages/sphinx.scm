@@ -723,16 +723,18 @@ documents.")
 (define-public python-sphinxcontrib-serializinghtml
   (package
     (name "python-sphinxcontrib-serializinghtml")
-    (version "1.1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-serializinghtml" version))
-              (sha256
-               (base32
-                "0lk91cl9bi4ynhz971zjs0bsr7jwxx8mx2f40psrx06zvzjnspxa"))))
-    (build-system python-build-system)
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib_serializinghtml" version))
+       (sha256
+        (base32 "0k8x0dq8p3kskwi8fg6jgwzpqchb33r0wgx52y804b47gy115ng9"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-serializinghtml")
     (synopsis "Sphinx extension to serialize HTML files")
     (description
