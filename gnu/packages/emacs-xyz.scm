@@ -367,42 +367,52 @@ buffer, a file on your disk, or a string from the kill ring.")
       (license license:gpl3+))))
 
 (define-public emacs-elisp-autofmt
-  (let ((commit "5b1fdc2761a80674123769ebf8a43fe312c0fa3f")
+  (let ((commit "fa30ffc2320c41fc3827e2a800d40d7d5bcaddbe")
         (revision "0"))
     (package
-     (name "emacs-elisp-autofmt")
-     (version (git-version "0.0.0" revision commit))
-     (source
-      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
-             (commit commit)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "09wxrrqzccq3wv51n0blcln1zggmlm4fzrnj0svv8gir5q5g6l3h"))))
-     (build-system emacs-build-system)
-     (inputs (list python))
-     (arguments
-      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'patch-dependencies
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "elisp-autofmt.el"
-                (("\"python\"")
-                 (string-append "\""
-                                (search-input-file inputs "/bin/python3")
-                                "\"")))))
-           (add-after 'install 'install-python-module
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((destination (elpa-directory (assoc-ref outputs "out"))))
-                 (install-file "elisp-autofmt.py" destination)
-                 (install-file "elisp-autofmt.overrides.json" destination)))))))
-     (home-page "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
-     (synopsis "Auto-format Emacs lisp")
-     (description "This is a package to auto-format Emacs lisp.")
-     (license license:gpl3+))))
+      (name "emacs-elisp-autofmt")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "174cmqszhx42blqc6fjjf3lgaz2hasj15743hcrzj6a97nhx4wsj"))))
+      (build-system emacs-build-system)
+      (inputs (list python))
+      (arguments
+       (list
+        #:test-command #~(list "make" "tests")
+        #:include #~(cons* "elisp-autofmt.py"
+                           "elisp-autofmt.overrides.json"
+                           %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-dependencies
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "elisp-autofmt.el"
+                  (("\"python\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/python3")
+                                  "\"")))))
+            ;; TODO Remove when fixed upstream. See:
+            ;; https://codeberg.org/ideasman42/emacs-elisp-autofmt/issues/36
+            (add-before 'check 'fix-tests
+              (lambda _
+                (setenv "HOME" (getenv "TMPDIR"))
+                (with-atomic-file-replacement "Makefile"
+                  (lambda (in out)
+                    (dump-port in out)
+                    (display "\n.PHONY: tests\n" out)))
+                (substitute* "Makefile"
+                  (("python") "python3")))))))
+      (home-page "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
+      (synopsis "Auto-format Emacs lisp")
+      (description "This is a package to auto-format Emacs lisp.")
+      (license license:gpl3+))))
 
 (define-public emacs-ac-php
   (package
