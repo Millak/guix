@@ -1370,7 +1370,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
 (define-public ggg
   (package
     (name "ggg")
-    (version "0.3.6")
+    (version "0.3.11")
     (source
      (origin
        (method git-fetch)
@@ -1379,16 +1379,10 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dyqb6p7dyx29nyv1qscin1q5wr0p0kakc4zirvkr1ark0wmslf2"))))
+        (base32 "0pn6xp90nnvfbbdyip7hsbf8is17waxk2xar2gc0h6lmq7j14rfv"))))
     (arguments
      `(#:source-directory "src"
        #:phases (modify-phases %standard-phases
-                  (add-before 'build 'remove-guix.scm
-                    (lambda _
-                      (delete-file "guix.scm")))
-                  (add-before 'build 'remove-dist
-                    (lambda _
-                      (delete-file-recursively "dist")))
                   (add-before 'build 'install-program-files
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((bin (string-append (assoc-ref outputs "out")
@@ -1399,7 +1393,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                         (mkdir-p (string-append share "/resources"))
                         (install-file "resources/help.txt"
                                       (string-append share
-                                                     "/resources/help.txt"))
+                                                     "/resources"))
                         (copy-recursively "resources/svg-paths"
                                           (string-append share
                                            "/resources/svg-paths"))
@@ -1409,7 +1403,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                         (chmod (string-append bin "/ggg") #o755)))))))
     (build-system guile-build-system)
     (native-inputs (list guile-3.0))
-    (inputs (list guile-3.0))
+    (inputs (list guile-3.0 bash-minimal))
     (synopsis
      "GGG is a SVG image generator for project and web badges")
     (description
