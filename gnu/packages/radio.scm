@@ -3329,10 +3329,38 @@ of devices than RTL-SDR.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0wfqdcfip1kg5b5a8d01bip5nqvjhs2x8bgc9vwhghn6vk8pqxxg"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; FIXME: Find out how to fix these tests.
+      #~(list "--ignore=tests/test_continuous_modulator.py"
+              ;; This test causes a segmentation fault
+              "--ignore=tests/test_send_recv_dialog_gui.py"
+              ;; This test hangs forever
+              "--ignore=tests/test_spectrogram.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-compiler
+            (lambda _
+              ;; Use gcc as compiler
+              (substitute* "src/urh/dev/native/ExtensionHelper.py"
+                (("compiler = ccompiler\\.new_compiler\\(\\)\n" all)
+                 (string-append
+                  all "    compiler.set_executables(compiler='gcc',"
+                  " compiler_so='gcc', linker_exe='gcc', linker_so='gcc -shared')\n")))))
+          (add-after 'build 'build-cythonext
+            (lambda _
+              (invoke "python" "src/urh/cythonext/build.py")))
+          (add-before 'check 'prepare-x
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0")
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-cython
            python-pytest
+           python-wheel
            xorg-server-for-tests))
     (inputs
      (list airspy
@@ -3345,37 +3373,6 @@ of devices than RTL-SDR.")
            python-pyaudio
            python-pyqt
            rtl-sdr))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure-compiler
-           (lambda _
-             ;; Use gcc as compiler
-             (substitute* "src/urh/dev/native/ExtensionHelper.py"
-               (("compiler = ccompiler\\.new_compiler\\(\\)\n" all)
-                (string-append
-                 all "    compiler.set_executables(compiler='gcc',"
-                 " compiler_so='gcc', linker_exe='gcc', linker_so='gcc -shared')\n")))))
-         (add-after 'unpack 'disable-some-tests
-           (lambda _
-             ;; FIXME
-             (for-each delete-file
-                       '("tests/test_continuous_modulator.py"
-                         ;; This test causes a segmentation fault
-                         "tests/test_send_recv_dialog_gui.py"
-                         ;; This test hangs forever
-                         "tests/test_spectrogram.py"))))
-         (add-after 'build 'build-cythonext
-           (lambda _
-             (invoke "python" "src/urh/cythonext/build.py")))
-         (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               (system (string-append (search-input-file inputs "/bin/Xvfb")
-                                     " :1 &"))
-               (setenv "DISPLAY" ":1")
-               (invoke "pytest")))))))
     (home-page "https://github.com/jopohl/urh")
     (synopsis "Wireless protocol investigation program")
     (description
