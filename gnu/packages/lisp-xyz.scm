@@ -24142,6 +24142,9 @@ else @code{parse-number} signals an error of type @code{invalid-number}.")
 (define-public ecl-parse-number
   (sbcl-package->ecl-package sbcl-parse-number))
 
+(define-public clasp-parse-number
+  (sbcl-package->clasp-package sbcl-parse-number))
+
 (define-public sbcl-parseq
   (package
     (name "sbcl-parseq")
