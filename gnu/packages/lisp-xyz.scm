@@ -16498,6 +16498,9 @@ require code-walking and is easier to extend.")
 (define-public ecl-for
   (sbcl-package->ecl-package sbcl-for))
 
+(define-public clasp-for
+  (sbcl-package->clasp-package sbcl-for))
+
 (define-public sbcl-forge
   (let ((commit "012324e251d91436f4a610e2fe2eb50674c3c3ce")
         (revision "1"))
