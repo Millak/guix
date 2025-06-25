@@ -457,6 +457,9 @@ that of Eos has not.  Thus, Eos is now deprecated in favor of FiveAM.")
 (define-public ecl-eos
   (sbcl-package->ecl-package sbcl-eos))
 
+(define-public clasp-eos
+  (sbcl-package->clasp-package sbcl-eos))
+
 (define-public sbcl-fiasco
   (let ((commit "bb47d2fef4eb24cc16badc1c9a73d73c3a7e18f5")
         (revision "2"))
