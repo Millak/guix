@@ -800,6 +800,9 @@ Each test can contain a bunch of test forms that make up its body.")
 (define-public ecl-parachute
   (sbcl-package->ecl-package sbcl-parachute))
 
+(define-public clasp-parachute
+  (sbcl-package->clasp-package sbcl-parachute))
+
 (define-public sbcl-prove
   (let ((commit "5d71f02795b89e36f34e8c7d50e69b67ec6ca2de")
         (revision "2"))
