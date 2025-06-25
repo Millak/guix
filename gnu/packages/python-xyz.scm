@@ -3189,16 +3189,19 @@ allows one to read and write JPEG 2000 files")
 (define-public python-gphoto2
   (package
     (name "python-gphoto2")
-    (version "2.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "gphoto2" version))
-              (sha256
-               (base32
-                "104yb4g427rqjkaw3i0w30x3sssvmpna802nabjclzq688y7ml4p"))))
-    (build-system python-build-system)
+    (version "2.6.1")
+    (source
+     (origin
+       (method git-fetch)   ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/jim-easterbrook/python-gphoto2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08zwznl3f8j329db747jl2zrpqj58ml39in5gl2gqghw82ssi3gk"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python-pytest python-setuptools python-wheel))
     (inputs
      (list libgphoto2))
     (home-page "https://github.com/jim-easterbrook/python-gphoto2")
