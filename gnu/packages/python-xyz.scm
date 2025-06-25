@@ -1728,26 +1728,19 @@ that they are acceptable to modern bowsers")
 (define-public python-fire
   (package
     (name "python-fire")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fire" version))
        (sha256
         (base32
-         "0rmaw26xjndr7makpiqv4h9aav9xf2h280w0khqc1lyddscmpv2l"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+         "1pswm79gi51p596zmfvaskx0i15znbr610yws5dgdsing7q505cn"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-six python-termcolor))
+     (list python-termcolor))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (synopsis "Library for automatically generating command line interfaces")
     (description
      "Fire is a library for automatically generating command line interfaces
