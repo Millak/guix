@@ -20528,6 +20528,9 @@ Long Painful History of Time\".")
 (define-public ecl-local-time
   (sbcl-package->ecl-package sbcl-local-time))
 
+(define-public clasp-local-time
+  (sbcl-package->clasp-package sbcl-local-time))
+
 (define-public sbcl-cl-postgres+local-time
   (package
     (inherit sbcl-local-time)
