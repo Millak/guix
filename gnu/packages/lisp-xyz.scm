@@ -21165,6 +21165,9 @@ extensible initializers.")
 (define-public ecl-make-hash
   (sbcl-package->ecl-package sbcl-make-hash))
 
+(define-public clasp-make-hash
+  (sbcl-package->clasp-package sbcl-make-hash))
+
 (define-public sbcl-map-bind
   (let ((commit "532d55d93540c632e22b2cd264b5daa5f9d3d900")
         (revision "0"))
