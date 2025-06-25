@@ -27979,6 +27979,9 @@ color palette for a GUI or web page.")
 (define-public ecl-simple-rgb
   (sbcl-package->ecl-package sbcl-simple-rgb))
 
+(define-public clasp-simple-rgb
+  (sbcl-package->clasp-package sbcl-simple-rgb))
+
 (define-public cl-simple-rgb
   (sbcl-package->cl-source-package sbcl-simple-rgb))
 
