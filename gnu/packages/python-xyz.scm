@@ -5283,26 +5283,26 @@ files are easily readable and they work nicely with version control systems.")
 (define-public dosage
   (package
     (name "dosage")
-    (version "2.17")
+    (version "3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dosage" version))
        (sha256
         (base32
-         "0vmxgn9wd3j80hp4gr5iq06jrl4gryz5zgfdd2ah30d12sfcfig0"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-cached-property
-           python-colorama
-           python-imagesize
-           python-importlib-metadata
-           python-lxml
-           python-requests
-           python-six))
-    (native-inputs
-     (list python-pytest-cov python-pytest-xdist python-responses
-           python-setuptools-scm))
+         "03sv1cwjw4zr06h1qqsmqg38lg6sq5hbhzrywq2wsplmq9dpxpfg"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-xdist
+                         python-responses
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (propagated-inputs (list python-imagesize
+                             python-lxml
+                             python-platformdirs
+                             python-requests
+                             python-rich))
     (home-page "https://github.com/webcomics/dosage")
     (synopsis "Comic strip downloader and archiver")
     (description "Dosage is designed to keep a local copy of specific webcomics and other
