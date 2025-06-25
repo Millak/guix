@@ -95,6 +95,9 @@ consists of: @code{test}, @code{is}, @code{signals}, @code{finishes},
 (define-public ecl-2am
   (sbcl-package->ecl-package sbcl-2am))
 
+(define-public clasp-2am
+  (sbcl-package->clasp-package sbcl-2am))
+
 (define-public sbcl-assertion-error
   (let ((commit "8eab692a990d4caa193a46bae99af3e13e717b86")
         (revision "1"))
