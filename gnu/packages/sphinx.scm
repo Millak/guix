@@ -610,6 +610,26 @@ HTML help files.")
 math in HTML via JavaScript.")
     (license license:bsd-2)))
 
+(define-public python-sphinxcontrib-jquery
+  (package
+    (name "python-sphinxcontrib-jquery")
+    (version "4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib-jquery" version))
+       (sha256
+        (base32 "0ymw7a9nahq7xn69dw8v6l3zvcj9zlnil4qskxvjqsp30jgp680n"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sphinx))
+    (native-inputs (list python-flit-core))
+    (home-page "https://github.com/sphinx-contrib/jquery")
+    (synopsis "Extension to include jQuery on newer Sphinx releases")
+    (description
+     "This package provide an extension to include @code{jQuery} on newer
+Sphinx releases.")
+    (license license:bsd-0)))
+
 (define-public python-sphinxcontrib-mermaid
   (package
     (name "python-sphinxcontrib-mermaid")
