@@ -30,6 +30,7 @@
 ;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;; Copyright © 2025 Rivulet Cedar <rivulet_cedar@yeah.net>
+;; Copyright © 2025 jgart <jgart@dismail.de>
 
 ;;
 ;; Copying and distribution of this file, with or without modification, are
@@ -38,6 +39,19 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "4aff8591836e3b4125dcbed651efc8607de53280")
+        (title
+         (en "New build system added for @code{clasp-cl}")
+         (es "Se agregó un nuevo sistema de compilación para @code{clasp-cl}"))
+        (body
+         (en "A new build system has been introduced for @code{clasp-cl}.
+             Common Lisp devs using Guix can start using this new build
+             system similarly to others such as @code{asdf-build-system/ecl}.")
+         (es "Se ha introducido un nuevo sistema de compilación para
+             @code{clasp-cl}. Los devs de Common Lisp que usan Guix pueden
+             empezar a usar este nuevo sistema de compilación de manera
+             similar a otros como @code{asdf-build-system/ecl}.")))
 
  (entry (commit "30a5d140aa5a789a362749d057754783fea83dde")
         (title
