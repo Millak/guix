@@ -1127,6 +1127,9 @@ new fiends in addition to old friends like @command{aif} and
 (define-public ecl-anaphora
   (sbcl-package->ecl-package sbcl-anaphora))
 
+(define-public clasp-anaphora
+  (sbcl-package->clasp-package sbcl-anaphora))
+
 ;;; Split the antik package in two to work around the circular dependency
 ;;; between antik/antik and antik/gsll.
 (define-public sbcl-antik-base
