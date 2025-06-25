@@ -1233,3 +1233,6 @@ on the XPTest package by Craig Brozensky and the JUnit package by Kent Beck.")
 
 (define-public ecl-lisp-critic
   (sbcl-package->ecl-package sbcl-lisp-critic))
+
+(define-public clasp-lisp-critic
+  (sbcl-package->clasp-package sbcl-lisp-critic))
