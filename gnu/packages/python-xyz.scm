@@ -6444,18 +6444,34 @@ server.")
 (define-public python-mir-eval
   (package
     (name "python-mir-eval")
-    (version "0.7")
+    (version "0.8.2")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mir_eval" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mir-evaluation/mir_eval")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pp6xdflqhj2czhb2w3kk2c7mx4h2hj0n5rabiaafrbcfsjvmzp1"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-future python-numpy python-scipy
-                             python-six))
-    (native-inputs (list python-matplotlib))
-    (home-page "https://github.com/craffel/mir_eval")
+                "0mna57q2r0cjsvgz67v6bay1c6a33wl33yna9s083wfqhjmf9bqf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'cd-tests
+            (lambda _
+              ;; Move to 'tests' directory because tests read data files from
+              ;; a relative path.
+              (chdir "tests"))))))
+    (propagated-inputs (list python-decorator python-numpy python-scipy))
+    (native-inputs (list python-matplotlib
+                         python-pytest
+                         python-pytest-cov ; used by default
+                         python-pytest-mpl
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/mir-evaluation/mir_eval")
     (synopsis "Common metrics for common audio/music processing tasks")
     (description "This is a Python library for computing common heuristic
 accuracy scores for various music/audio information retrieval/signal
