@@ -31213,6 +31213,9 @@ PROPER-LIST, ASSOCIATION-LIST, PROPERTY-LIST and TUPLE.")
 (define-public ecl-trivial-types
   (sbcl-package->ecl-package sbcl-trivial-types))
 
+(define-public clasp-trivial-types
+  (sbcl-package->clasp-package sbcl-trivial-types))
+
 (define-public sbcl-trivial-utf-8
   (let ((commit "6ca9943588cbc61ad22a3c1ff81beb371e122394")
         (revision "2"))
