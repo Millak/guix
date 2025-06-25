@@ -3891,6 +3891,44 @@ This package is the fork of hsetroot by Hyriand.")
      "This package provides Hyprland cursor format, library and utilities.")
     (license license:bsd-3)))
 
+(define-public hyprsunset
+  (package
+    (name "hyprsunset")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hyprwm/hyprsunset")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "110cw7nd6a0krsg6764hx2i45lc8n4b1iln3b8jz1x6pziw1qna9"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;No tests.
+    (native-inputs
+     (list gcc-14
+           pkg-config))
+    (inputs
+     (list hyprwayland-scanner
+           hyprutils
+           wayland
+           hyprland-protocols
+           wayland-protocols))
+    (home-page "https://wiki.hypr.land/Hypr-Ecosystem/hyprsunset/")
+    (synopsis "Blue-light filter for Hyprland")
+    (description
+     "This is a small utility to provide a blue light filter for your system.
+This method is preferred to screen shaders as it will not be captured via
+recording / screenshots.
+
+hyprsunset also provides a gamma filter, which can be used to adjust perceived
+display brightness on monitors that do not support software control, or to
+reduce percieved brightness below the monitor's minimum.")
+    (license license:bsd-3)))
+
 (define-public hyprlock
   (package
    (name "hyprlock")
