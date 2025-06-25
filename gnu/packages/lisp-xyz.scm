@@ -4257,6 +4257,9 @@ tables.")
 (define-public ecl-cl-ascii-table
   (sbcl-package->ecl-package sbcl-cl-ascii-table))
 
+(define-public clasp-cl-ascii-table
+  (sbcl-package->clasp-package sbcl-cl-ascii-table))
+
 (define-public sbcl-cl-async
   (let ((commit "f6423e44404a44434d803605e0d2e17199158e28")
         (revision "1"))
