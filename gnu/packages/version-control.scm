@@ -765,12 +765,7 @@ everything from small to very large projects with speed and efficiency.")
                                       (map last
                                            (append-map
                                             package-transitive-propagated-inputs
-                                            perl-inputs))))))))
-
-                  ;; Tell 'git-submodule' where Perl is.
-                  (wrap-program git-sm
-                    `("PATH" ":" prefix
-                      (,(dirname (search-input-file inputs "bin/perl"))))))))
+                                            perl-inputs)))))))))))
             (add-after 'split 'install-man-pages
               (lambda _
                 (let ((man (string-append #$output "/share/man")))
