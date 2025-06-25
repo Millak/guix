@@ -773,7 +773,12 @@ library.")
        (uri (pypi-uri "soapy_power" version))
        (sha256
         (base32 "1rajmygcqvv5ph7yk65r4w581lfszrz0f48csvfmma1ami0lirdm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list python-numpy
            python-scipy
