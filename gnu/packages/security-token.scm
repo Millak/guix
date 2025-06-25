@@ -20,7 +20,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2023, 2025 Maxim Cournoyer <maximguixotic@coop>
+;;; Copyright © 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -52,6 +52,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -390,6 +391,41 @@ OpenSSL provider module that allows accessing PKCS#11 modules in a
 semi-transparent way.
 @end table")
     (license license:lgpl2.1+)))
+
+(define-public pkcs11-provider
+  (package
+    (name "pkcs11-provider")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/latchset/" name
+                                  "/releases/download/v" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0lzn2wj3pxwb0b2xrx1dk96nkbm2bpl75clhkr1cpnfnc3v02gc4"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-provider-path
+                 ;; By default, the modulesdir variable from libcrypto.pc is
+                 ;; used, which points to OpenSSL's installation prefix.
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("provider_path =.*")
+                      (format #f "provider_path = '~a/lib/ossl-modules'~%"
+                              #$output))))))))
+    (native-inputs (list pkg-config))   ;for PKG_CONFIG_PATH
+    (inputs (list openssl p11-kit))
+    (home-page "https://github.com/latchset/pkcs11-provider")
+    (synopsis "Pkcs#11 provider for OpenSSL")
+    (description "This is an OpenSSL provider to access hardware and software
+tokens using the PKCS#11 cryptographic token interface.  Access to tokens
+depends on loading an appropriate PKCS#11 driver that knows how to talk to the
+specific token.  The PKCS#11 provider is a connector that allows OpenSSL to
+make proper use of such drivers.")
+    (license license:asl2.0)))
 
 (define-public opensc
   (package
