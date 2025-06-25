@@ -69,7 +69,7 @@ Guix\"} or visit
 learn how to upgrade Guix.
 
 The root cause of the vulnerability was the ability of a @dfn{fixed-output
-derivation} build process to smuggle a file descriptor to the store or a
+derivation} build process to smuggle a file descriptor to the store or to a
 setuid program to an outside process @i{via} an abstract Unix-domain socket.
 See @uref{https://codeberg.org/guix/guix/pulls/788} for more information.")
          (de "Schwachstellen im Erstellungs-Daemon @command{guix-daemon} wurden
@@ -98,8 +98,8 @@ wie Sie Guix aktualisieren.
 Die eigentliche Ursache war, dass der Erstellungsprozess einer @dfn{Ableitung
 mit fester Ausgabe} die Möglichkeit hatte, über einen abstrakten
 Unix-Domain-Socket einen Dateideskriptor in den Store
-hinein oder ein setuid-Programm zu einem Prozess außerhalb heraus zu schmuggeln.
-Siehe @uref{https://codeberg.org/guix/guix/pulls/788} für mehr
+hinein oder auf ein setuid-Programm zu einem Prozess außerhalb heraus zu
+schmuggeln.  Siehe @uref{https://codeberg.org/guix/guix/pulls/788} für mehr
 Informationen.")))
 
  (entry (commit "78d4b1e52c731502b29288ab6975bd9efa91392a")
