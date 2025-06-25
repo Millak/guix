@@ -3233,7 +3233,7 @@ Caller-ID.")
 (define-public rfcat
   (package
     (name "rfcat")
-    (version "1.9.6")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -3242,8 +3242,11 @@ Caller-ID.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zmgbgf1025ln2v6lc27dmkmwv8pxjgrmhmpk34rkkixhvnk69pf"))))
-    (build-system python-build-system)
+        (base32 "0wf7fh9af24v6yfn83d00f3km4g5afgi8s0h7922si6pn1anrm45"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list python-future
            python-ipython
