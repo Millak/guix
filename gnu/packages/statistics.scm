@@ -1100,19 +1100,19 @@ correlated samples from Markov Chain Monte Carlo (MCMC).")
               (uri (pypi-uri "hdmedians" version))
               (sha256
                (base32
-                "1mn2k8srnmfy451l7zvb2l4hn9701bc5awjm6q3vmqbicyqyqyml"))))
+                "1mn2k8srnmfy451l7zvb2l4hn9701bc5awjm6q3vmqbicyqyqyml"))
+       (patches (search-patches "python-hdmedians-replace-nose.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'build-extensions
-           (lambda _
-             ;; Cython extensions have to be built before running the tests.
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-cython python-numpy python-setuptools
-                             python-wheel))
-    (native-inputs (list python-nose))
+      #:test-flags #~(list "--pyargs" "hdmedians")))
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-cython
+           python-numpy
+           python-setuptools
+           python-wheel))
     (home-page "http://github.com/daleroberts/hdmedians")
     (synopsis "High-dimensional medians")
     (description "Various definitions for a high-dimensional median exist and
