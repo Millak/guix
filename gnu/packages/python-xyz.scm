@@ -8442,7 +8442,7 @@ format.")
 (define-public python-click-repl
   (package
     (name "python-click-repl")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -8451,21 +8451,15 @@ format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16ybsnwlj2jlqcfxflky8jz7i3nhrd3f6mvkpgs95618l8lx994i"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
-    (native-inputs
-     (list python-pytest))
+        (base32 "08asy80wdplbrfff7q7qb9k3kkaw5jxqvy9jnkfvsqy3831zf964"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-cov ; used by default
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs
-     (list python-click python-prompt-toolkit python-six))
-    (home-page "https://github.com/untitaker/click-repl")
+     (list python-click python-prompt-toolkit))
+    (home-page "https://github.com/click-contrib/click-repl")
     (synopsis "REPL plugin for Click")
     (description "This package provides a REPL plugin for Click.")
     (license license:expat)))
