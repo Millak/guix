@@ -4189,6 +4189,9 @@ visualization.")
 (define-public ecl-cl-annot
   (sbcl-package->ecl-package sbcl-cl-annot))
 
+(define-public clasp-cl-annot
+  (sbcl-package->clasp-package sbcl-cl-annot))
+
 (define-public sbcl-cl-ansi-text
   (let ((commit "8b129d83c7511b54cdd9d4123825a2d06349b25c"))
     (package
