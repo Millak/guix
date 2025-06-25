@@ -1468,6 +1468,9 @@ functions for arrays and vectors.  Originally from Plump.")
 (define-public ecl-array-utils
   (sbcl-package->ecl-package sbcl-array-utils))
 
+(define-public clasp-array-utils
+  (sbcl-package->clasp-package sbcl-array-utils))
+
 (define-public sbcl-arrow-macros
   ;; The latest upstream version tag is dated (pushed in 2020), use the latest
   ;; commit instead.
