@@ -3268,6 +3268,9 @@ definition objects.")
 (define-public ecl-cesdi
   (sbcl-package->ecl-package sbcl-cesdi))
 
+(define-public clasp-cesdi
+  (sbcl-package->clasp-package sbcl-cesdi))
+
 (define-public sbcl-cf
   (let ((commit "0aa0dd67f59f88e0dbd50ebe25690fcdaafee4c5")
         (revision "0"))
