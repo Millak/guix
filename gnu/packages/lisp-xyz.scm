@@ -31860,6 +31860,9 @@ precisely controls the behavior of the parser via Common Lisp restarts.")
 (define-public ecl-unix-opts
   (sbcl-package->ecl-package sbcl-unix-opts))
 
+(define-public clasp-unix-opts
+  (sbcl-package->clasp-package sbcl-unix-opts))
+
 (define-public sbcl-usocket
   (package
     (name "sbcl-usocket")
