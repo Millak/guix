@@ -16539,6 +16539,9 @@ macro.  This library provides a set of simple utilities to help with that.")
 (define-public ecl-form-fiddle
   (sbcl-package->ecl-package sbcl-form-fiddle))
 
+(define-public clasp-form-fiddle
+  (sbcl-package->clasp-package sbcl-form-fiddle))
+
 (define-public sbcl-format-colors
   (let ((commit "fecb1d8c6e7a07ff9f10a7a4eb4c3bd629d4969f")
         (revision "0"))
