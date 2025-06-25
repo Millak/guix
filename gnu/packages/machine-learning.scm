@@ -4968,13 +4968,13 @@ PyTorch.")
     (sha256
      (base32
       "19prdpzx34n8y2q6wx9dn9vyms6zidjvfgh58d28rfcf5z7z5ra5"))
-    (patches (search-patches "python-pytorch-system-libraries-2.7.0.patch"
-                             "python-pytorch-runpath-2.7.0.patch"
-                             "python-pytorch-without-kineto-2.7.0.patch"
+    (patches (search-patches "python-pytorch-system-libraries.patch"
+                             "python-pytorch-runpath.patch"
+                             "python-pytorch-without-kineto.patch"
                              ;; Some autogeneration scripts depend on the
                              ;; compile PyTorch library. Therefore, we create
                              ;; dummy versions which are regenerated later.
-                             "python-pytorch-fix-codegen-2.7.0.patch"))
+                             "python-pytorch-fix-codegen.patch"))
     (modules '((guix build utils)))
     (snippet
      '(begin
@@ -5123,11 +5123,18 @@ PyTorch.")
                 (("entry_points\\[\"console_scripts\"\\]\\.append\\(") "("))))
           (add-before 'build 'use-system-libraries
             (lambda _
-              (substitute* '("caffe2/serialize/crc.cc"
-                             "caffe2/serialize/inline_container.cc"
-                             "torch/csrc/inductor/aoti_package/model_package_loader.cpp")
-                (("\"miniz\\.h\"") "<miniz/miniz.h>")
-                (("<miniz\\.h>") "<miniz/miniz.h>"))
+              (for-each
+               (lambda (file)
+                 ;; Check whether the files exist for the
+                 ;; python-pytorch-for-r-torch package
+                 (when (file-exists? file)
+                   (substitute* file
+                     (("\"miniz\\.h\"") "<miniz/miniz.h>")
+                     (("<miniz\\.h>") "<miniz/miniz.h>"))))
+               '("caffe2/serialize/crc.cc"
+                 "caffe2/serialize/inline_container.cc"
+                 "torch/csrc/inductor/aoti_package/model_package_loader.cpp"))
+
               (substitute* "aten/src/ATen/native/vulkan/api/Allocator.h"
                 (("<include/vk_mem_alloc.h>")
                  "<vk_mem_alloc.h>"))

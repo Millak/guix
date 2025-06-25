@@ -2159,15 +2159,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
   %D%/packages/patches/python-pytorch-fix-codegen.patch		\
-  %D%/packages/patches/python-pytorch-fix-codegen-2.7.0.patch		\
   %D%/packages/patches/python-pytorch-for-r-torch-fix-codegen.patch \
   %D%/packages/patches/python-pytorch-for-r-torch-system-libraries.patch \
   %D%/packages/patches/python-pytorch-runpath.patch		\
-  %D%/packages/patches/python-pytorch-runpath-2.7.0.patch		\
   %D%/packages/patches/python-pytorch-system-libraries.patch	\
-  %D%/packages/patches/python-pytorch-system-libraries-2.7.0.patch	\
   %D%/packages/patches/python-pytorch-without-kineto.patch	\
-  %D%/packages/patches/python-pytorch-without-kineto-2.7.0.patch	\
   %D%/packages/patches/python-robotframework-sshlibrary-rf5-compat.patch \
   %D%/packages/patches/python-unittest2-python3-compat.patch	\
   %D%/packages/patches/python-unittest2-remove-argparse.patch	\
