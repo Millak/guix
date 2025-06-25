@@ -2597,6 +2597,37 @@ The stdout/stderr objects specifies a level of support for color through a .leve
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-table-layout
+  (package
+    (name "node-table-layout")
+    (version "1.0.2")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/75lb/table-layout")
+        (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+        (base32 "1k21p0ia995ax1biknalivq444jw9xy31bp52a5sq3rwlnzp0vbx"))))
+    (build-system node-build-system)
+    (inputs (list
+      node-typical
+      node-array-back
+      node-wordwrapjs
+      node-deep-extend))
+    (arguments (list
+      #:tests? #f ; FIXME: Tests require 'test-runner'.
+      #:phases #~(modify-phases %standard-phases
+        (add-before 'patch-dependencies 'modify-package (lambda _
+          (modify-json
+            (delete-dev-dependencies)))))))
+    (synopsis "Stylable text tables for handling ansi colour")
+    (description "Generates plain-text tables from JSON recordset input (array of\
+ objects). Useful for presenting text in column layout or data in table layout in\
+ text-based user interfaces.")
+    (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
 (define-public node-tiddlywiki
   (package
     (name "node-tiddlywiki")
