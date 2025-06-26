@@ -16812,24 +16812,19 @@ pseudo terminal (pty), and interact with both the process and its pty.")
 (define-public python-crccheck
   (package
     (name "python-crccheck")
-    (version "1.1")
+    (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "crccheck" version))
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/MartinScharrer/crccheck")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "15psg7wjfbpmmry54ffwg6pg63mnv7mkwmb0a7884axnr8qj55j5"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
-    (home-page "https://sourceforge.net/projects/crccheck/")
+        (base32 "1sagpmsh95si77nhqmxx6mbal2jbxpl4a3mqjfnz19mf2pfyvs4y"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/MartinScharrer/crccheck")
     (synopsis "Calculation library for CRCs and checksums")
     (description "@code{crccheck} is a calculation library for CRCs and
 checksums.  It implement more than a hundred checksum routines.")
