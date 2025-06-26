@@ -39952,16 +39952,32 @@ with one function call.  IceCream makes print debugging a little sweeter.")
 (define-public python-icegrams
   (package
     (name "python-icegrams")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "icegrams" version))
+       (method git-fetch)
+       (uri (git-reference
+             ;; no tests in the PyPI archive
+             (url "https://github.com/mideind/Icegrams")
+             ;; multiple commits were tagged with 1.1.3
+             ;; 1.1.3-final is what is noted on the Releases page
+             (commit (string-append version "-final"))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ajcjngvr4rlgb0q6p6vjz2sncwhvq3msjy6qaiz5g37vgvw2ij8"))))
+        (base32 "19mgkdpzn8r2bxxyw1yx7ijwnp4bl52g85iv90jfqbm4gh4j7rqh"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; two tests fail because of a hardcoded file path in the package's source code
+         ;; this should be fixed upstream instead of with a substitution here
+         "-k"
+         (string-append "not test_trigrams" " and not test_word_ids")
+         "test/test_ngrams.py")))
     (propagated-inputs (list python-cffi))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools-next
+                         python-setuptools-scm-next python-wheel))
     (home-page "https://github.com/mideind/Icegrams")
     (synopsis "Trigram statistics for Icelandic")
     (description
