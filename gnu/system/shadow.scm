@@ -323,6 +323,7 @@ home-config"))
                        ;; would just copy the symlinks as is.
                        (for-each (match-lambda
                                    ((target source)
+                                    (mkdir-p (dirname target))
                                     (copy-recursively source target)))
                                  '#$skeletons)
                        ;; Make nanorc respect XDG_CONFIG_HOME.
