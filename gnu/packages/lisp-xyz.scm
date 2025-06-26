@@ -30309,6 +30309,9 @@ a simple-array ensuring that the resulting array is still a simple-array.")
 (define-public ecl-trivial-adjust-simple-array
   (sbcl-package->ecl-package sbcl-trivial-adjust-simple-array))
 
+(define-public clasp-trivial-adjust-simple-array
+  (sbcl-package->clasp-package sbcl-trivial-adjust-simple-array))
+
 (define-public sbcl-trivial-arguments
   (let ((commit "ecd84ed9cf9ef8f1e873d7409e6bd04979372aa7")
         (revision "1"))
