@@ -13146,6 +13146,9 @@ well as standard genetic algorithms.")
 (define-public ecl-core-gp
   (sbcl-package->ecl-package sbcl-core-gp))
 
+(define-public clasp-core-gp
+  (sbcl-package->clasp-package sbcl-core-gp))
+
 (define-public sbcl-croatoan
   (let ((commit "470055739ef6ece42655ef0f3878a87a9e3e9b78")
         (revision "2"))
