@@ -712,6 +712,9 @@ testing.  It is an extension of the library written by Chris Riesbeck.")
 (define-public ecl-lisp-unit
   (sbcl-package->ecl-package sbcl-lisp-unit))
 
+(define-public clasp-lisp-unit
+  (sbcl-package->clasp-package sbcl-lisp-unit))
+
 (define-public sbcl-lisp-unit2
   ;; There is a cyclical dependency between symbol-munger and lisp-unit2.
   ;; See https://github.com/AccelerationNet/symbol-munger/issues/4
