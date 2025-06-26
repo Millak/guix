@@ -19028,6 +19028,13 @@ It is similar to the @code{CL:LOOP} macro, with these distinguishing marks:
 (define-public ecl-iterate
   (sbcl-package->ecl-package sbcl-iterate))
 
+(define-public clasp-iterate
+  (package
+    (inherit (sbcl-package->clasp-package sbcl-iterate))
+    (arguments
+     ;; Tests are broken on clasp.
+     (list #:tests? #f))))
+
 (define-public sbcl-ixf
   (let ((commit "ed26f87e4127e4a9e3aac4ff1e60d1f39cca5183")
         (revision "1"))
