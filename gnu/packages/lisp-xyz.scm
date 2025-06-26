@@ -16850,6 +16850,9 @@ timestamp.")
 (define-public ecl-fuzzy-dates
   (sbcl-package->ecl-package sbcl-fuzzy-dates))
 
+(define-public clasp-fuzzy-dates
+  (sbcl-package->clasp-package sbcl-fuzzy-dates))
+
 (define-public sbcl-fuzzy-match
   (let ((commit "e46ca41ef4641461f7be006782e3cfdcf73ba98a")
         (revision "1"))
