@@ -14433,6 +14433,9 @@ docstrings for your library.")
 (define-public ecl-documentation-utils
   (sbcl-package->ecl-package sbcl-documentation-utils))
 
+(define-public clasp-documentation-utils
+  (sbcl-package->clasp-package sbcl-documentation-utils))
+
 (define-public sbcl-documentation-utils-extensions
   (let ((commit "f67f8a05d583174662a594b79356b201c1d9d750"))
     (package
