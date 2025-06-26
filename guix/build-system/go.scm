@@ -229,7 +229,6 @@ commit hash and its date rather than a proper release tag."
                     #:system #$system
                     #:phases #$phases
                     #:outputs #$(outputs->gexp outputs)
-                    #:substitutable? #$substitutable?
                     #:goarch #$goarch
                     #:goos #$goos
                     #:embed-files #$embed-files
@@ -253,6 +252,7 @@ commit hash and its date rather than a proper release tag."
                                                   system #:graft? #f)))
     (gexp->derivation name builder
                       #:system system
+                      #:substitutable? substitutable?
                       #:guile-for-build guile)))
 
 (define* (go-cross-build name
