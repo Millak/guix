@@ -909,30 +909,31 @@ bookmark your favourite commands.")
   ;; test suite, use the latest commit.
   (let ((commit "530e3b6f098c41869f9dc47d1a3005e12ce300c0")
         (revision "0"))
-  (package
-    (name "shell-functools")
-    (version (git-version "0.3.0" revision commit))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/sharkdp/shell-functools")
-                    (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0l23n5anppxds4678qnh84mykbdb7qxyjrxxjzm7kin7izfzczpa"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-hatchling))
-    (home-page "https://github.com/sharkdp/shell-functools/")
-    (synopsis "Functional programming tools for the shell")
-    (description "This package provides higher order functions like map,
-filter, foldl, sort_by and take_while as simple command-line tools.  Following
-the UNIX philosophy, these commands are designed to be composed via pipes.  A
-large collection of functions such as basename, replace, contains or is_dir
-are provided as arguments to these commands.")
-    (license license:expat))))
+    (package
+      (name "shell-functools")
+      (version (git-version "0.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sharkdp/shell-functools")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0l23n5anppxds4678qnh84mykbdb7qxyjrxxjzm7kin7izfzczpa"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-hatchling))
+      (home-page "https://github.com/sharkdp/shell-functools/")
+      (synopsis "Functional programming tools for the shell")
+      (description
+       "This package provides higher order functions like map,filter, foldl,
+sort_by and take_while as simple command-line tools.  Following the UNIX
+philosophy, these commands are designed to be composed via pipes.  A large
+collection of functions such as basename, replace, contains or is_dir are
+provided as arguments to these commands.")
+      (license license:expat))))
 
 (define-public rig
   (package
