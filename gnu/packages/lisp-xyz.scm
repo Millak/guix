@@ -15490,6 +15490,9 @@ NIL means no value.")
 (define-public ecl-fakenil
   (sbcl-package->ecl-package sbcl-fakenil))
 
+(define-public clasp-fakenil
+  (sbcl-package->clasp-package sbcl-fakenil))
+
 (define-public sbcl-fare-csv
   (let ((commit "f877a238dcbf587a89359cccf2128919a94a348c")
         (revision "0"))
