@@ -10777,16 +10777,16 @@ debugger, with which it shares the same interface.")
 (define-public python-pdftotext
   (package
     (name "python-pdftotext")
-    (version "2.1.6")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pdftotext" version))
        (sha256
-        (base32 "1555wbgr5spj8xflrs4mwsrdmba2f9s72nk50xzqk9ghxaxdvy6a"))))
-    (build-system python-build-system)
-    (inputs
-     (list poppler))
+        (base32 "1ahs7c0qh3gyafxwrg9p4gcqwcrnc7y57adzm0ama52f2lcjnrf3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (inputs (list poppler))
     (home-page "https://github.com/jalan/pdftotext")
     (synopsis "Simple PDF text extraction")
     (description "Pdftotext is a Python library of PDF text extraction.")
