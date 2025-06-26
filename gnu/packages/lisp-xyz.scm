@@ -27791,6 +27791,9 @@ format.")
 (define-public ecl-shasht
   (sbcl-package->ecl-package sbcl-shasht))
 
+(define-public clasp-shasht
+  (sbcl-package->clasp-package sbcl-shasht))
+
 (define-public sbcl-shlex
   (let ((commit "3dee1cb7c0140fa7660ca7a3b2ac5e75d1218e5c")
         (revision "2"))
