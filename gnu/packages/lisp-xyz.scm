@@ -16291,6 +16291,9 @@ covered by the Common Lisp standard.")
 (define-public ecl-float-features
   (sbcl-package->ecl-package sbcl-float-features))
 
+(define-public clasp-float-features
+  (sbcl-package->clasp-package sbcl-float-features))
+
 (define-public sbcl-flow
   (let ((commit "6d925af009cdfe033650d7048197a5e6ee937d15")
         (revision "1"))
