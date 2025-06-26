@@ -17876,25 +17876,21 @@ signature of a file or buffer.")
 (define-public python-cachelib
   (package
     (name "python-cachelib")
-    (version "0.4.1")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cachelib" version))
        (sha256
-        (base32 "0p4chkvbvffcllsny5rpzmsq2vyr24ql3kzif4ha0fxp3fp7vqk8"))))
-    (build-system python-build-system)
+        (base32 "0j0s5vyhgka6g16a7n9g1fcc8wqxdl8rgzvlwaz9axf5wfb8k790"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest")))))))
+     ;; These tests use a remote connection.
+     (list #:test-flags #~(list "--ignore" "tests/test_dynamodb_cache.py"
+                                "--ignore" "tests/test_mongodb_cache.py")))
     (native-inputs
-     (list python-pytest python-pytest-xprocess))
-    (home-page "https://github.com/pallets/cachelib")
+     (list python-pytest python-pytest-xprocess python-setuptools python-wheel))
+    (home-page "https://github.com/pallets-eco/cachelib")
     (synopsis "Collection of cache libraries")
     (description "Cachelib is a library extracted from @code{werkzeug} which
 provides a collection of cache libraries in the same API interface.")
