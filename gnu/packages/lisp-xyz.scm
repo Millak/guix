@@ -31805,6 +31805,9 @@ user.")
 (define-public ecl-uax-14
   (sbcl-package->ecl-package sbcl-uax-14))
 
+(define-public clasp-uax-14
+  (sbcl-package->clasp-package sbcl-uax-14))
+
 (define-public sbcl-uax-15
   (package
     (name "sbcl-uax-15")
