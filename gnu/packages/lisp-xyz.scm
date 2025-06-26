@@ -24202,6 +24202,9 @@ JavaScript (ECMAScript 3).  It has basic support for ECMAScript 5.")
 (define-public ecl-parse-js
   (sbcl-package->ecl-package sbcl-parse-js))
 
+(define-public clasp-parse-js
+  (sbcl-package->clasp-package sbcl-parse-js))
+
 (define-public sbcl-parse-number
   (package
     (name "sbcl-parse-number")
