@@ -21053,7 +21053,7 @@ designed to work across multiple versions of Python.")
        (uri (pypi-uri "cookiecutter" version))
        (sha256
         (base32 "0762882zrvf3sslr9r7v8wkdwjckhm2clj4d831gvx54kqbgh8fv"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases #~(modify-phases %standard-phases
@@ -21068,17 +21068,15 @@ designed to work across multiple versions of Python.")
                        (substitute* "tests/test_hooks.py"
                          (("/bin/bash")
                           (string-append #$(this-package-native-input
-                                            "bash-minimal") "/bin/bash")))))
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (invoke "pytest")))))))
+                                            "bash-minimal") "/bin/bash"))))))))
     (native-inputs (list bash-minimal
-                         git
+                         git-minimal
                          python-freezegun
                          python-pytest
                          python-pytest-cov
-                         python-pytest-mock))
+                         python-pytest-mock
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs (list python-arrow
                              python-binaryornot
                              python-click
