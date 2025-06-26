@@ -29538,6 +29538,9 @@ and camel-case rules.")
 (define-public ecl-symbol-munger
   (sbcl-package->ecl-package sbcl-symbol-munger))
 
+(define-public clasp-symbol-munger
+  (sbcl-package->clasp-package sbcl-symbol-munger))
+
 (define-public sbcl-system-load
   (let ((commit "3ff1a40be55866cc5316ac7a530d872b12510294")
         (revision "0"))
