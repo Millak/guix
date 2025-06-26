@@ -1112,7 +1112,7 @@ machine, and more.")
 (define-public exercism
   (package
     (name "exercism")
-    (version "3.5.4")
+    (version "3.5.5")
     (source
      (origin
        (method git-fetch)
@@ -1121,7 +1121,7 @@ machine, and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0shh84g7j977kn9kcm09rj3lz6a3y5qq9yvklsldgb9zvass5szd"))
+        (base32 "1a53caqrxv0rhg79md97vnzcbr9gnz3mzjkk7xyafc3h456b4gsz"))
        (patches (search-patches "exercism-disable-self-update.patch"))))
     (build-system go-build-system)
     (arguments
@@ -1129,6 +1129,8 @@ machine, and more.")
       #:install-source? #f
       #:import-path "github.com/exercism/cli/exercism"
       #:unpack-path "github.com/exercism/cli"
+      ;; Step away from cli/exercism to test the whole project.
+      #:test-subdirs #~(list "../../...")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-completions
@@ -1160,6 +1162,7 @@ machine, and more.")
            go-github-com-spf13-cobra
            go-github-com-spf13-pflag
            go-github-com-spf13-viper
+           go-github-com-stretchr-testify
            go-golang-org-x-net
            go-golang-org-x-text))
     (home-page "https://exercism.org/")
