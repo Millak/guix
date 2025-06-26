@@ -9389,8 +9389,8 @@ previous commands.")
   (sbcl-package->ecl-package sbcl-cl-readline))
 
 (define-public sbcl-cl-redis
-  (let ((commit "7d592417421cf7cd1cffa96043b457af0490df7d")
-        (revision "0"))
+  (let ((commit "06ff30e9f5b7bc2b4c0f4d18ce1823f0de4d32a7")
+        (revision "1"))
     (package
       (name "sbcl-cl-redis")
       (version (git-version "2.3.8" revision commit))
@@ -9402,7 +9402,7 @@ previous commands.")
                (commit commit)))
          (file-name (git-file-name "cl-redis" version))
          (sha256
-          (base32 "0x5ahxb5cx37biyn3cjycshhm1rr9p5cf1a9l5hd1n1xjxm2f8vi"))))
+          (base32 "1jb82zpiwx7ri86z0xqdynr3m40jnlzinyc0b47lvpbqs7cydrrg"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -9411,16 +9411,17 @@ previous commands.")
              (lambda _
                (system "redis-server --port 6379 &"))))))
       (native-inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("redis" ,redis)
-         ("should-test" ,sbcl-should-test)))
+       (list sbcl-bordeaux-threads
+             sbcl-flexi-streams
+             redis
+             sbcl-should-test))
       (inputs
-       `(("babel" ,sbcl-babel)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("rutils" ,sbcl-rutils)
-         ("usocket" ,sbcl-usocket)))
+       (list sbcl-babel
+             sbcl-cl-ppcre
+             sbcl-cl+ssl
+             sbcl-flexi-streams
+             sbcl-rutils
+             sbcl-usocket))
       (home-page "https://github.com/vseloved/cl-redis")
       (synopsis "Common Lisp client for Redis")
       (description "This is a Common Lisp wrapper for interacting with the
