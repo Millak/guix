@@ -179,7 +179,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "6.0.14")
+    (version "7.2.9")
     (source
      (origin
        (method url-fetch)
@@ -187,7 +187,7 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "0n6fqa9vbhh2syxii7ds2x6dnplrgrj98by1zl0ij1wfbnbxa6k3"))
+        (base32 "1rq03lpkz5d04540xiywlzwjva7v0v6isgny8ajslbadv99f6g5a"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
@@ -212,7 +212,7 @@ etc. via a Web interface.  Features include:
     (synopsis "Distributed monitoring solution (client-side agent)")
     (description "This package provides a distributed monitoring
 solution (client-side agent)")
-    (license license:gpl2+)
+    (license license:agpl3)
     (properties
      '((release-monitoring-url . "https://www.zabbix.com/download_sources")
        (upstream-name . "zabbix")))))
@@ -220,6 +220,10 @@ solution (client-side agent)")
 (define-public zabbix-agent2
   (package/inherit zabbix-agentd
     (name "zabbix-agent2")
+    (source
+     (origin
+       (inherit (package-source zabbix-agentd))
+       (patches (search-patches "zabbix-agent2-test-timezone-fix.patch"))))
     (arguments
      (list #:configure-flags
            #~(list "--disable-agent"
@@ -239,7 +243,7 @@ solution (client-side agent)")
                  (lambda _
                    (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list go pkg-config))
+     (list go-1.23 pkg-config))
     (inputs
      (list openssl pcre2 zlib))))
 
