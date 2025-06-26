@@ -970,27 +970,6 @@ commonly called @code{ftoa} or @code{dtoa}.")
                 (("/usr/bin/xdg-open")
                  (search-input-file inputs "/bin/xdg-open")))
 
-              ;; https://issues.guix.gnu.org/43579
-              (substitute* '("sal/rtl/math.cxx"
-                               "sc/source/core/tool/math.cxx")
-                  (("std::(fe[gs]etround|feclearexcept|fetestexcept)" all suffix)
-                   suffix))
-              (let ((gcc-11-dir (dirname
-                                 (dirname
-                                  (dirname
-                                   (search-input-directory
-                                    inputs "share/doc/gcc-11.4.0"))))))
-                (setenv
-                 "CPLUS_INCLUDE_PATH"
-                 (string-join
-                  (remove
-                   (cut member <>
-                        (list
-                         (string-append gcc-11-dir "/include/c++")
-                         (string-append gcc-11-dir "/include")))
-                   (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                  ":")))
-
               (setenv "CPPFLAGS" "-std=c++20")))
           (add-after 'install 'reset-zip-timestamps
             (lambda _
@@ -1119,7 +1098,6 @@ commonly called @code{ftoa} or @code{dtoa}.")
            cppunit
            flex
            frozen                       ;header-only library
-           gcc-12
            pkg-config
            python-wrapper
            which
