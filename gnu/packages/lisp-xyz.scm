@@ -3639,6 +3639,9 @@ the format used by the popular compression tool bzip2.")
 (define-public ecl-chipz
   (sbcl-package->ecl-package sbcl-chipz))
 
+(define-public clasp-chipz
+  (sbcl-package->clasp-package sbcl-chipz))
+
 (define-public sbcl-chirp
   (let ((commit "01c79fa41939688216d1f86d0766a687becb0654")
         (revision "1"))
