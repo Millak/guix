@@ -16231,6 +16231,12 @@ streams which are similar to string streams.")
 (define-public ecl-flexi-streams
   (sbcl-package->ecl-package sbcl-flexi-streams))
 
+(define-public clasp-flexi-streams
+  (package
+    (inherit (sbcl-package->clasp-package sbcl-flexi-streams))
+    (arguments
+     '(#:tests? #f))))
+
 (define-public sbcl-flexichain
   ;; There are no releases.
   (let ((commit "9af644a6323f303a936a391b956babcbfe7b0c67")
