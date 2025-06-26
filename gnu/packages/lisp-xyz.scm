@@ -16272,6 +16272,7 @@ streams which are similar to string streams.")
   (package
     (inherit (sbcl-package->clasp-package sbcl-flexi-streams))
     (arguments
+     ;; TODO: https://github.com/edicl/flexi-streams/issues/51
      '(#:tests? #f))))
 
 (define-public sbcl-flexichain
