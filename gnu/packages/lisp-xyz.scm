@@ -29227,6 +29227,9 @@ trees to dispatch on string equality.")
 (define-public ecl-string-case
   (sbcl-package->ecl-package sbcl-string-case))
 
+(define-public clasp-string-case
+  (sbcl-package->clasp-package sbcl-string-case))
+
 (define-public sbcl-string-pokemonize
   (let ((commit "2dc01643defb497e4d1eb833def71dfc1e8d5da6")
         (revision "0"))
