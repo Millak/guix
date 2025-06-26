@@ -1016,6 +1016,9 @@ portable between implementations.")
 (define-public ecl-alexandria-plus
   (sbcl-package->ecl-package sbcl-alexandria-plus))
 
+(define-public clasp-alexandria-plus
+  (sbcl-package->clasp-package sbcl-alexandria-plus))
+
 (define-public sbcl-alloy
   (let ((commit "628974de537affb5b44ad548347f67c16efffcfc")
         (revision "3"))
