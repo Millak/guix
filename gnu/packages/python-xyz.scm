@@ -11335,8 +11335,10 @@ Jupyter.")
        (sha256
         (base32 "1qrnxhi2rbz737fm9mprfr8ig7kk2r99cbzkw8nsddcv7sh0favg"))))
     (build-system pyproject-build-system)
-    (arguments '(#:tests? #f)) ; tests are not included
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-shapely
+                         python-wheel))
     (propagated-inputs
      (list python-matplotlib python-numpy python-scipy))
     (home-page "https://github.com/konstantint/matplotlib-venn")
