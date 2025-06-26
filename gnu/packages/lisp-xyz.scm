@@ -2702,6 +2702,9 @@ cartesian product.")
 (define-public ecl-bubble-operator-upwards
   (sbcl-package->ecl-package sbcl-bubble-operator-upwards))
 
+(define-public clasp-bubble-operator-upwards
+  (sbcl-package->clasp-package sbcl-bubble-operator-upwards))
+
 (define-public sbcl-burgled-batteries3
   (let ((commit "f65f454d13bb6c40e17e9ec62e41eb5069e09760")
         (revision "2"))
