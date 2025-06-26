@@ -7493,6 +7493,40 @@ All the functionality of the built-in package still exists and is unchanged.
 This package contains a series of small enhancements and additions.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gomarkdown-markdown
+  (package
+    (name "go-github-com-gomarkdown-markdown")
+    (version "0.0.0-20250311123330-531bef5e742b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gomarkdown/markdown")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lw38q8izwflfkqxpr89p0sbriqgbzr240mfzhba2fkk3365y3xs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gomarkdown/markdown"
+      #:test-flags #~(list "-skip" "TestRenderCodeBlock")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples"))))
+          (add-after 'check 'remove-testdata
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "testdata")))))))
+    (home-page "https://github.com/gomarkdown/markdown")
+    (synopsis "Markdown Parser and HTML Renderer for Go")
+    (description
+     "Package markdown implements markdown parser and HTML renderer.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-gomodule-redigo
   (package
     (name "go-github-com-gomodule-redigo")
