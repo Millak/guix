@@ -2082,6 +2082,9 @@ impossible to merge back upstream.")
 (define-public ecl-binpack
   (sbcl-package->ecl-package sbcl-binpack))
 
+(define-public clasp-binpack
+  (sbcl-package->clasp-package sbcl-binpack))
+
 (define-public sbcl-birch
   (let ((commit "30cd24260675c6c4e276daaf28be8d02ac15dd8f")
         (revision "0"))
