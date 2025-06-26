@@ -15255,6 +15255,9 @@ compile-time side-effects of forms.")
 (define-public ecl-evaled-when
   (sbcl-package->ecl-package sbcl-evaled-when))
 
+(define-public clasp-evaled-when
+  (sbcl-package->clasp-package sbcl-evaled-when))
+
 (define-public sbcl-event-emitter
   (let ((commit "cb0e15f9de4c617cef3f5d5a22a41e28f9613d0b")
         (revision "0"))
