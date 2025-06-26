@@ -24679,6 +24679,9 @@ for Common Lisp.")
 (define-public ecl-piping
   (sbcl-package->ecl-package sbcl-piping))
 
+(define-public clasp-piping
+  (sbcl-package->clasp-package sbcl-piping))
+
 (define-public sbcl-plump
   (let ((commit "0c3e0b57b43b6e0c5794b6a902f1cf5bee2a2927")
         (revision "3"))
