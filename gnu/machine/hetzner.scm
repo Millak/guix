@@ -394,7 +394,9 @@ Available locations:~%~%~a~%~%For more details, see: ~a")
                                        (type ,root-fs-type))
                                      %base-file-systems))))
        (services
-        (cons* (service dhcpcd-service-type)
+        ;; guix 1.4.0 does not have dhcpcd-service-type,
+        ;; so we use dhcp-client-service-type here.
+        (cons* (service dhcp-client-service-type)
                (service openssh-service-type
                         (openssh-configuration
                          (openssh openssh-sans-x)
