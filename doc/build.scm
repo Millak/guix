@@ -731,8 +731,8 @@ in SOURCE."
                   (list
                    (menu-item "⊕"
                               (if (string=? #$manual "guix-cookbook")
-                                  "https://translate.fedoraproject.org/projects/guix/documentation-cookbook/"
-                                  "https://translate.fedoraproject.org/projects/guix/documentation-manual/")))))
+                                  "https://translate.codeberg.org/projects/guix/documentation-cookbook/"
+                                  "https://translate.codeberg.org/projects/guix/documentation-manual/")))))
 
             (define (version-menu-items language split-node?)
               ;; Return the menu items to select the version of the manual of

@@ -1326,7 +1326,7 @@ such as @command{guix show} take care of rendering it
 appropriately.
 
 Synopses and descriptions are translated by volunteers
-@uref{https://translate.fedoraproject.org/projects/guix/packages, at
+@uref{https://translate.codeberg.org/projects/guix/packages, at
 Weblate} so that as many users as possible can read them in
 their native language.  User interfaces search them and display them in
 the language specified by the current locale.
@@ -3448,7 +3448,7 @@ section), or @file{doc/guix-cookbook.texi} for the cookbook.  If
 you compiled the Guix repository before, you will have
 many more @file{.texi} files that are translations of these
 documents.  Do not modify them, the translation is managed through
-@uref{https://translate.fedoraproject.org/projects/guix, Weblate}.
+@uref{https://translate.codeberg.org/projects/guix, Weblate}.
 @xref{Translating Guix} for more information.
 
 To render documentation, you must first make sure that you ran
@@ -3482,9 +3482,8 @@ what we can do to help you!
 
 Guix is a big project that has multiple components that can be translated.
 We coordinate the translation effort on a
-@uref{https://translate.fedoraproject.org/projects/guix/,Weblate instance}
-hosted by our friends at Fedora.  You will need an account to submit
-translations.
+@uref{https://translate.codeberg.org/projects/guix/,Weblate instance}
+hosted by Codeberg.  You will need an account to submit translations.
 
 Some of the software packaged in Guix also contain translations.  We do not
 host a translation platform for them.  If you want to translate a package
@@ -3514,7 +3513,7 @@ Guix has five components hosted on Weblate.
 @subsubheading General Directions
 
 Once you get an account, you should be able to select a component from
-@uref{https://translate.fedoraproject.org/projects/guix/,the guix project},
+@uref{https://translate.codeberg.org/projects/guix/,the guix project},
 and select a language.  If your language does not appear in the list, go
 to the bottom and click on the ``Start new translation'' button.  Select
 the language you want to translate to from the list, to start your new

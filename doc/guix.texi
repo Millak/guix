@@ -200,7 +200,7 @@ Spanish (@pxref{Top,,, guix.es, Manual de referencia de GNU Guix}),
 Brazilian Portuguese (@pxref{Top,,, guix.pt_BR, Manual de referência do
 GNU Guix}), and Russian (@pxref{Top,,, guix.ru, Руководство GNU Guix}).  If you
 would like to translate it in your native language, consider joining
-@uref{https://translate.fedoraproject.org/projects/guix/documentation-manual,
+@uref{https://translate.codeberg.org/projects/guix/documentation-manual,
 Weblate} (@pxref{Translating Guix}).
 
 @menu
