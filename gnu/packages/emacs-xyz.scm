@@ -30418,6 +30418,45 @@ and the Zotero research assistant: Insertion of links to Zotero items into an
 Org-mode file, and citations of Zotero items in Pandoc Markdown files.")
     (license license:gpl3+)))
 
+(define-public emacs-zoxide
+  (package
+    (name "emacs-zoxide")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~vonfry/zoxide.el/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cqpldrdr219kdiraf6pcxizfiylnljri4ghwvblk579xvijnbgr"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'avoid-remote-installs
+            (lambda _
+              (substitute* ".ci/check.el"
+                (("\\(load .*" all)
+                 " ")
+                (("package-install")
+                 "require"))))
+          (add-after 'unpack 'patch-bin-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "zoxide.el"
+                ("zoxide-executable"
+                 (search-input-file inputs "bin/zoxide"))))))))
+    (native-inputs (list emacs-package-lint))
+    (inputs (list zoxide))
+    (home-page "https://git.sr.ht/~vonfry/zoxide.el/")
+    (synopsis "Zoxide frontend for Emacs")
+    (description
+     "This package provides an Emacs interface to the command line tool
+@code{zoxide}.")
+    (license license:gpl3+)))
+
 (define-public emacs-evil-multiedit
   (package
     (name "emacs-evil-multiedit")
