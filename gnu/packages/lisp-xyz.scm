@@ -30736,6 +30736,9 @@ consistent across multiple Common Lisp implementations.")
 (define-public ecl-trivial-features
   (sbcl-package->ecl-package sbcl-trivial-features))
 
+(define-public clasp-trivial-features
+  (sbcl-package->clasp-package sbcl-trivial-features))
+
 (define-public sbcl-trivial-file-size
   (let ((commit "1c1d672a01a446ba0391dbb4ffc40be3b0476f23")
         (revision "0"))
