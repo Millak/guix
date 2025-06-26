@@ -11327,20 +11327,18 @@ Jupyter.")
 (define-public python-matplotlib-venn
   (package
     (name "python-matplotlib-venn")
-    (version "0.11.5")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "matplotlib-venn" version ".zip"))
+       (uri (pypi-uri "matplotlib-venn" version))
        (sha256
-        (base32
-         "13w3i1wih0mij08hrgppzg0g9z50y54rc28l6gdi1r5w45l7l0dy"))))
-    (build-system python-build-system)
+        (base32 "1qrnxhi2rbz737fm9mprfr8ig7kk2r99cbzkw8nsddcv7sh0favg"))))
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f)) ; tests are not included
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-matplotlib python-numpy python-scipy))
-    (native-inputs
-     (list unzip))
     (home-page "https://github.com/konstantint/matplotlib-venn")
     (synopsis "Plot area-proportional Venn diagrams")
     (description
