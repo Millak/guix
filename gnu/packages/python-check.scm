@@ -1892,16 +1892,15 @@ Python code formatter \"black\".")
 (define-public python-pytest-check
   (package
     (name "python-pytest-check")
-    (version "2.4.1")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest_check" version))
        (sha256
-        (base32 "0l7n2jhadbkmqr8kzja8zwclhjvhc87qsgr5v867zgsry37fy92j"))))
+        (base32 "1jkhmii6zrgzq0427sy9igm7a6nfvx7p4ms91h6d75f3fzgxfmr3"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core))
-    (propagated-inputs (list python-pytest))
+    (native-inputs (list python-hatchling python-pytest))
     (home-page "https://github.com/okken/pytest-check")
     (synopsis "Pytest plugin to allow multiple failures")
     (description "This package provides a pytest plugin that allows multiple
