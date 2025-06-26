@@ -27755,6 +27755,9 @@ buffer object types (UBO, SSBO currently).")
 (define-public ecl-shared-preferences
   (sbcl-package->ecl-package sbcl-shared-preferences))
 
+(define-public clasp-shared-preferences
+  (sbcl-package->clasp-package sbcl-shared-preferences))
+
 (define-public sbcl-shasht
   (let ((commit "27ba0a8842e103f2d575b3c8bbcfc19bd172d9ea")
         (revision "2"))
