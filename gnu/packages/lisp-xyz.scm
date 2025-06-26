@@ -16338,6 +16338,9 @@ and even allows the generic visualisation of graphs in this format.")
 (define-public ecl-flow
   (sbcl-package->ecl-package sbcl-flow))
 
+(define-public clasp-flow
+  (sbcl-package->clasp-package sbcl-flow))
+
 (define-public sbcl-flute
   (let ((commit "90ebcd6e82f637f49b6de7d625ccc51ec4c92900")
         (revision "1"))
