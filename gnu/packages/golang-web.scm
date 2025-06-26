@@ -3884,6 +3884,59 @@ values that are guaranteed to be safe, by construction or by escaping or
 sanitization, to use in various HTML contexts and with various DOM APIs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gopacket-gopacket
+  (package
+    (name "go-github-com-gopacket-gopacket")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gopacket/gopacket")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10kjn30chywh010zys92idlsfg4kff7amnsnyv1a72mi56107jb8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gopacket/gopacket"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests require network setup or root access.
+                       (list "TestEthernetHandle_Close_WithCancel"
+                             "TestEthernetHandle_Close_WithTimeout"
+                             "TestNgWriterDSB"
+                             "TestRouting")
+                       "|"))
+      ;; TODO: Full tests suite and build requires
+      ;; <https://github.com/ntop/PF_RING>>, run just top level ones.
+      #:test-subdirs #~(list ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples"))))
+          (add-after 'check 'remove-dump-data
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (find-files "." ".*\\.(pcamp|pcapng)$"))))))))
+    (native-inputs
+     (list go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns))
+    (propagated-inputs
+     (list ;; libpcap
+           ;; pf-ring ; <https://github.com/ntop/PF_RING>
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/gopacket/gopacket")
+    (synopsis "Packet processing capabilities for Golang")
+    (description
+     "Package gopacket provides packet decoding for the Go language.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gorilla-context
   (let ((commit "08b5f424b9271eedf6f9f0ce86cb9396ed337a42")
         (revision "0"))
