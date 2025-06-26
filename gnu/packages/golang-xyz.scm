@@ -17738,6 +17738,41 @@ programming language.")
      "This package is a simple Golang implementation of tag parser.")
     (license license:bsd-2)))
 
+(define-public go-github-com-wader-gojq
+  ;; This is a modified fork only for fq.
+  (hidden-package
+   (package
+     (name "go-github-com-wader-gojq")
+     (version "0.12.1-0.20250208151254-0aa7b87b2c2b")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/wader/gojq")
+              (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1byil5r5nzs6fx0si3ipanq1c8vcqbsr0rhyd5380vp7zr5j9cxl"))))
+     (build-system go-build-system)
+     (arguments
+      (list
+       #:import-path "github.com/wader/gojq"))
+     (native-inputs
+      (list go-github-com-google-go-cmp))
+     (propagated-inputs
+      (list go-github-com-itchyny-timefmt-go
+            go-github-com-mattn-go-isatty
+            go-github-com-mattn-go-runewidth
+            go-gopkg-in-yaml-v3))
+     (home-page "https://github.com/wader/gojq")
+     (synopsis "Pure Go implementation of jq")
+     (description
+      "Package gojq provides the parser and the interpreter of gojq.  Please refer to
+@url{https://github.com/itchyny/gojq#usage-as-a-library, Usage as a library} for
+introduction. It's fork of github.com/itchyny/gojq, see github.com/wader/gojq fq
+branc.")
+     (license license:expat))))
+
 (define-public go-github-com-wadey-gocovmerge
   (package
     (name "go-github-com-wadey-gocovmerge")
