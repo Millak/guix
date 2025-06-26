@@ -909,7 +909,8 @@ Detect the differences in markup between two SGML files.
                                "docbook2x-fix-synopsis.patch"
                                "docbook2x-manpage-typo.patch"
                                "docbook2x-preprocessor-declaration.patch"
-                               "docbook2x-static-datadir-evaluation.patch"))
+                               "docbook2x-static-datadir-evaluation.patch"
+                               "docbook2x-entity-lt.patch"))
               (modules '((guix build utils)))
               (snippet
                ;; Fix a failing test (maybe it worked with old texinfo?)
