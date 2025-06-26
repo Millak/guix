@@ -24131,6 +24131,9 @@ high-level way.  This library provides such operators.")
 (define-public ecl-parse-declarations
   (sbcl-package->ecl-package sbcl-parse-declarations))
 
+(define-public clasp-parse-declarations
+  (sbcl-package->clasp-package sbcl-parse-declarations))
+
 (define-public sbcl-parse-float
   (let ((commit "3074765101e41222b6b624a66aaf1e6416379f9c")
         (revision "2"))
