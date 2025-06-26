@@ -852,16 +852,23 @@ auto-completion and syntax highlighting.")
 (define-public python-pgspecial
   (package
     (name "python-pgspecial")
-    (version "1.13.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pgspecial" version))
        (sha256
-        (base32 "00ddkf565rjcxmfml1z4mmkns1aq8x5s5g85xmnz2scln42y4irq"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-click python-sqlparse python-psycopg2))
+        (base32 "17c4qjvi83b3im9fb00cdzzb24v5xis6y1625l9v0yzggg67yv6s"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (propagated-inputs (list python-click
+                             python-configobj
+                             python-psycopg
+                             python-sqlparse
+                             python-typing-extensions))
     (home-page "https://github.com/dbcli/pgspecial")
     (synopsis
      "Python implementation of PostgreSQL meta commands (backslash commands)")
