@@ -44,7 +44,7 @@
         (title
          (en "New build system added for @code{clasp-cl}")
          (de "Neues Erstellungssystem für @code{clasp-cl} hinzugefügt")
-         (es "Se agregó un nuevo sistema de compilación para @code{clasp-cl}"))
+         (es "Se agregó un nuevo sistema de construcción para @code{clasp-cl}"))
         (body
          (en "A new build system has been introduced for @code{clasp-cl}.
              Common Lisp devs using Guix can start using this new build
@@ -53,9 +53,9 @@
              Entwickler für Common Lisp, die Guix nutzen, können dazu jetzt
              dieses Erstellungssystem verwenden ähnlich wie die anderen, etwa
              @code{asdf-build-system/ecl}.")
-         (es "Se ha introducido un nuevo sistema de compilación para
+         (es "Se ha introducido un nuevo sistema de construcción para
              @code{clasp-cl}. Los devs de Common Lisp que usan Guix pueden
-             empezar a usar este nuevo sistema de compilación de manera
+             empezar a usar este nuevo sistema de construcción de manera
              similar a otros como @code{asdf-build-system/ecl}.")))
 
  (entry (commit "30a5d140aa5a789a362749d057754783fea83dde")
