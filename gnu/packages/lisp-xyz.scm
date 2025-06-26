@@ -15613,6 +15613,9 @@ Trivia.")
 (define-public ecl-fare-quasiquote
   (sbcl-package->ecl-package sbcl-fare-quasiquote))
 
+(define-public clasp-fare-quasiquote
+  (sbcl-package->clasp-package sbcl-fare-quasiquote))
+
 (define-public sbcl-fare-utils
   (let ((commit "66e9c6f1499140bc00ccc22febf2aa528cbb5724")
         (revision "1"))
