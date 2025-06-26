@@ -1322,12 +1322,15 @@ download-po:
 .PHONY: download-po
 
 # Regenerate 'CODEOWNERS' when 'teams.scm' is modified so we don't forget.
+if in_git_p
+if !CROSS_COMPILING
 CODEOWNERS: etc/teams.scm scripts/guix
 	./etc/teams.scm codeowners > "$@.tmp"
 	mv "$@.tmp" "$@"
 
 BUILT_SOURCES += CODEOWNERS
-
+endif
+endif
 ## -------------- ##
 ## Silent rules.  ##
 ## -------------- ##
