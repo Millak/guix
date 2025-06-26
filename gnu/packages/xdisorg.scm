@@ -41,7 +41,7 @@
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020-2021, 2023-2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -93,6 +93,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -463,7 +464,7 @@ and preserve leading and trailing whitespace.")
 (define-public copyq
   (package
     (name "copyq")
-    (version "8.0.0")
+    (version "10.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -472,23 +473,25 @@ and preserve leading and trailing whitespace.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "029s1pdp177fnrq5qrwjmd5pf1672l5jhq99is1lczrxi6bsf2qk"))))
-    (build-system cmake-build-system)
+                "0ppr0ijggs9km2m32rnlpn7h346a2iv2xmf2k6ky1n8alwkxczcl"))))
+    (build-system qt-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
+      #:qtbase qtbase
+      #:configure-flags #~(list
+                           "-DWITH_QT6=ON"
+                           "-DCMAKE_BUILD_TYPE=Release")
       #:tests? #f)) ; Test suite is a rather manual process.
     (inputs
-     (list qtbase-5
-           qtscript
-           qtsvg-5
-           qtx11extras
-           qtdeclarative-5
-           qtwayland-5
+     (list libxkbcommon
+           qtsvg
+           qtdeclarative
+           qtwayland
            wayland
-           knotifications-5))
+           knotifications
+           kstatusnotifieritem))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules pkg-config qttools))
     (synopsis "Clipboard manager with advanced features")
     (description "CopyQ is clipboard manager with editing and scripting
 features.  CopyQ monitors system clipboard and saves its content in customized
