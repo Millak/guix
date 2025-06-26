@@ -26,8 +26,10 @@
 #include <grp.h>
 #include <limits.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include <cstring>
 #include <cstdlib>
+#include <cstdint>
 
 #if HAVE_SYS_MOUNT_H
 #include <sys/mount.h>
@@ -852,6 +854,7 @@ int runChildSetupEntry(void *data)
 
 int cloneChild(CloneSpawnContext & ctx)
 {
+#if CLONE_ENABLED
     char stack[32 * 1024];
     /* Ensure proper alignment on the stack.  On aarch64, it has to be 16
        bytes.  */
@@ -860,6 +863,10 @@ int cloneChild(CloneSpawnContext & ctx)
     if(ret == -1)
         throw SysError("clone");
     return ret;
+#else
+    throw Error("clone not supported on this platform");
+#endif
 }
+
 
 }
