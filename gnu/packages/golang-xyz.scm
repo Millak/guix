@@ -8804,6 +8804,39 @@ better way of handling YAML when marshaling to and from structs.")
     (description "Build Go code from arbitrary value in Go.")
     (license license:expat)))
 
+(define-public go-github-com-itchyny-go-flags
+  (package
+    (name "go-github-com-itchyny-go-flags")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/itchyny/go-flags")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qfh7gn95aldlsigk72jl87npmwvx15kb7df1100d6j0nbakd8b5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/itchyny/go-flags"
+      ;; Test is time dependent and not reproducible.
+      ;; -.TH TestMan 1 "1 January 1970"
+      ;;  +.TH TestMan 1 "26 June 2025"
+      #:test-flags #~(list "-skip" "TestMan")))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/itchyny/go-flags")
+    (synopsis "Command line option parser for Golang")
+    (description
+     "Package flags provides an extensive command line option parser.  The
+flags package is similar in functionality to the go built-in flag package but
+provides more options and uses reflection to provide a convenient and succinct
+way of specifying command line options.  It's an alternative fork of
+https://github.com/jessevdk/go-flags.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
