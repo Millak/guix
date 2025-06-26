@@ -3599,6 +3599,9 @@ could just install the chemical-compounds package.")
 (define-public ecl-chemical-compounds
   (sbcl-package->ecl-package sbcl-chemical-compounds))
 
+(define-public clasp-chemical-compounds
+  (sbcl-package->clasp-package sbcl-chemical-compounds))
+
 (define-public sbcl-chipz
   (let ((version "0.8")
         (commit "82a17d39c78d91f6ea63a03aca8f9aa6069a5e11")
