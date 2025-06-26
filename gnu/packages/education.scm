@@ -1172,6 +1172,10 @@ machine, and more.")
 learning for programming languages.")
     (license license:expat)))
 
+(define-public exercism-cli
+  (package/inherit exercism
+    (name "exercism-cli")))
+
 (define-public mazo
   (package
     (name "mazo")
