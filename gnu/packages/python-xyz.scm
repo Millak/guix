@@ -17958,9 +17958,8 @@ primary use case is APIs defined before keyword-only parameters existed.")
        (uri (pypi-uri "langdetect" version))
        (sha256
         (base32 "1805svvb7xjm4sf1j7b6nc3409x37pd1xmabfwwjf1ldkzwgxhfb"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/Mimino666/langdetect")
     (synopsis "Language detection library")
     (description
