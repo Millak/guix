@@ -28889,6 +28889,9 @@ empty object).")
 (define-public ecl-st-json
   (sbcl-package->ecl-package sbcl-st-json))
 
+(define-public clasp-st-json
+  (sbcl-package->clasp-package sbcl-st-json))
+
 (define-public sbcl-staple
   (let ((commit "0ee8e25fe6fe8fa83b2a6c93d4febd468c3eaa4e")
         (revision "1"))
