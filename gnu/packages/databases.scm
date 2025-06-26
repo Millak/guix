@@ -912,27 +912,30 @@ multi-thread access.")
 (define-public pgcli
   (package
     (name "pgcli")
-    (version "3.2.0")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pgcli" version))
        (sha256
-        (base32 "1dy6yzak696107pqv83296h0xhc3ahlfaydm80593gwn37krgpkc"))))
-    (build-system python-build-system)
+        (base32 "1vva1fi5sqrdvmx7jmdjmy8zwly22sbsj5lzy60s822m1iay2nkn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; AttributeError: 'NoneType' object has no attribute 'kwargs'.
+     (list #:test-flags #~(list "-k" "not test_application_name_in_env")))
     (propagated-inputs
      (list python-cli-helpers
            python-click
            python-configobj
-           python-pendulum
            python-pgspecial
            python-prompt-toolkit
-           python-psycopg2
+           python-psycopg
            python-pygments
            python-setproctitle
-           python-sqlparse))
+           python-sqlparse
+           python-tzlocal))
     (native-inputs
-     (list python-ipython-sql))
+     (list python-pytest python-setuptools python-sshtunnel python-wheel))
     (home-page "https://www.pgcli.com")
     (synopsis "PostgreSQL CLI with autocompletion and syntax highlighting")
     (description
