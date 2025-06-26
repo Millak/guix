@@ -9402,7 +9402,7 @@ validation and serialization.")
 (define-public python-pydantic-cli
   (package
     (name "python-pydantic-cli")
-    (version "4.3.0")
+    (version "9.1.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -9412,14 +9412,12 @@ validation and serialization.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1v4dx6n60rbsan5zpw2rgdih7lb3h0xclagn1p6zfwl0r9l9cvym"))))
-    (build-system python-build-system)
+         "1rfffz4kasjihys8qgnvjb8cwm0dycsdj7qnggi9372b9q1ng4zg"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-pydantic))
+     (list python-pydantic-2))
     (native-inputs
-     (list python-black
-           python-mypy
-           python-pytest))
+     (list python-hatchling python-pytest))
     (home-page "https://github.com/mpkocher/pydantic-cli")
     (synopsis "Turn Pydantic defined data models into CLI tools")
     (description
