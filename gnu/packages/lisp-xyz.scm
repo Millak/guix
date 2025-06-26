@@ -8571,6 +8571,9 @@ package locks across supported Common Lisp implementations.")
 (define-public ecl-cl-package-locks
   (sbcl-package->ecl-package sbcl-cl-package-locks))
 
+(define-public clasp-cl-package-locks
+  (sbcl-package->clasp-package sbcl-cl-package-locks))
+
 (define-public sbcl-cl-pango
   (let ((commit "ee4904d19ce22d00eb2fe17a4fe42e5df8ac8701")
         (revision "0"))
