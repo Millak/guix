@@ -5771,6 +5771,33 @@ cannot enforce semantic rules for values.  This plugin adds support to
 protoc-generated code to validate such constraints.")
     (license license:asl2.0)))
 
+(define-public go-github-com-ergochat-readline
+  (package
+    (name "go-github-com-ergochat-readline")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ergochat/readline")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16zyk1dzwix5l9iph61img6qn5kryq3kb03dk2lwmrwyr1xdsip3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/ergochat/readline"))
+    (propagated-inputs (list go-golang-org-x-text go-golang-org-x-sys))
+    (home-page "https://github.com/ergochat/readline")
+    (synopsis "Readline implementation in pure Go")
+    (description
+     "This package provides a pure Go implementation of functionality
+comparable to @url{https://en.wikipedia.org/wiki/GNU_Readline, GNU Readline},
+i.e.  line editing and command history for simple TUI programs.")
+    (license license:expat)))
+
 (define-public go-github-com-erikgeiser-coninput
   (package
     (name "go-github-com-erikgeiser-coninput")
