@@ -8781,6 +8781,29 @@ ABI}.")
 better way of handling YAML when marshaling to and from structs.")
     (license license:expat)))
 
+(define-public go-github-com-itchyny-astgen-go
+  (package
+    (name "go-github-com-itchyny-astgen-go")
+    (version "0.0.0-20250520171007-4331c963041e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/itchyny/astgen-go")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07hzzkczpwsnznwl46jdfqq77b4hjbcxsj1xa2qh8733yym10ap1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:import-path "github.com/itchyny/astgen-go"))
+    (home-page "https://github.com/itchyny/astgen-go")
+    (synopsis "AST build for Golang @code{interface{}} => @code{ast.Node}")
+    (description "Build Go code from arbitrary value in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
