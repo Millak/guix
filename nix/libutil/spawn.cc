@@ -144,19 +144,19 @@ void replacePhase(Phases & phases, string replaceLabel, Action newAction)
 
 /* A curated selection of predefined actions */
 
-void reset_writeToStderrAction(SpawnContext & ctx)
+static void reset_writeToStderrAction(SpawnContext & ctx)
 {
     _writeToStderr = 0;
 }
 
 
-void restoreAffinityAction(SpawnContext & ctx)
+static void restoreAffinityAction(SpawnContext & ctx)
 {
     restoreAffinity();
 }
 
 
-void setsidAction(SpawnContext & ctx)
+static void setsidAction(SpawnContext & ctx)
 {
     /* Puts the current process in a separate session, which implies a
        separate process group, so it doesn't receive group-directed signals
@@ -168,7 +168,7 @@ void setsidAction(SpawnContext & ctx)
 }
 
 
-void earlyIOSetupAction(SpawnContext & ctx)
+static void earlyIOSetupAction(SpawnContext & ctx)
 {
     for(auto i = ctx.earlyCloseFDs.begin(); i != ctx.earlyCloseFDs.end(); i++)
         if(close(*i) == -1)
@@ -198,7 +198,7 @@ void earlyIOSetupAction(SpawnContext & ctx)
 }
 
 
-void dropAmbientCapabilitiesAction(SpawnContext & ctx)
+static void dropAmbientCapabilitiesAction(SpawnContext & ctx)
 {
   /* Drop ambient capabilities such as CAP_CHOWN that might have been granted
      when starting guix-daemon.  */
@@ -211,7 +211,7 @@ void dropAmbientCapabilitiesAction(SpawnContext & ctx)
 }
 
 
-void chrootAction(SpawnContext & ctx)
+static void chrootAction(SpawnContext & ctx)
 {
     if(ctx.doChroot)
 #if HAVE_CHROOT
@@ -223,7 +223,7 @@ void chrootAction(SpawnContext & ctx)
 }
 
 
-void chdirAction(SpawnContext & ctx)
+static void chdirAction(SpawnContext & ctx)
 {
     if(ctx.setcwd)
         if(chdir(ctx.cwd.c_str()) == -1)
@@ -231,7 +231,7 @@ void chdirAction(SpawnContext & ctx)
 }
 
 
-void closeMostFDsAction(SpawnContext & ctx)
+static void closeMostFDsAction(SpawnContext & ctx)
 {
     if(ctx.closeMostFDs) closeMostFDs(ctx.preserveFDs);
     for(auto i = ctx.preserveFDs.begin(); i != ctx.preserveFDs.end(); i++)
@@ -239,7 +239,7 @@ void closeMostFDsAction(SpawnContext & ctx)
 }
 
 
-void setPersonalityAction(SpawnContext & ctx)
+static void setPersonalityAction(SpawnContext & ctx)
 {
   if(ctx.setPersona)
 #ifdef __linux__
@@ -251,7 +251,7 @@ void setPersonalityAction(SpawnContext & ctx)
 }
 
 
-void oomSacrificeAction(SpawnContext & ctx)
+static void oomSacrificeAction(SpawnContext & ctx)
 {
 #ifdef __linux__
     if(ctx.oomSacrifice)
@@ -265,7 +265,7 @@ void oomSacrificeAction(SpawnContext & ctx)
 }
 
 
-void setIDsAction(SpawnContext & ctx)
+static void setIDsAction(SpawnContext & ctx)
 {
     if(ctx.setSupplementaryGroups)
         if(setgroups(ctx.supplementaryGroups.size(),
@@ -285,7 +285,7 @@ void setIDsAction(SpawnContext & ctx)
             throw SysError("setuid failed");
 }
 
-void setNoNewPrivsAction(SpawnContext & ctx)
+static void setNoNewPrivsAction(SpawnContext & ctx)
 {
   if(ctx.setNoNewPrivs)
 #if __linux__ && defined(PR_SET_NO_NEW_PRIVS)
@@ -296,7 +296,7 @@ void setNoNewPrivsAction(SpawnContext & ctx)
 #endif
 }
 
-void addSeccompFilterAction(SpawnContext & ctx)
+static void addSeccompFilterAction(SpawnContext & ctx)
 {
     if(ctx.addSeccompFilter) {
 #if __linux__ && defined(PR_SET_SECCOMP) && defined(SECCOMP_MODE_FILTER)
@@ -316,7 +316,7 @@ void addSeccompFilterAction(SpawnContext & ctx)
 }
 
 
-void restoreSIGPIPEAction(SpawnContext & ctx)
+static void restoreSIGPIPEAction(SpawnContext & ctx)
 {
     /* Restore default handling of SIGPIPE, otherwise some programs will
        randomly say "Broken pipe". */
@@ -328,14 +328,14 @@ void restoreSIGPIPEAction(SpawnContext & ctx)
 }
 
 
-void setupSuccessAction(SpawnContext & ctx)
+static void setupSuccessAction(SpawnContext & ctx)
 {
     if(ctx.signalSetupSuccess)
         writeFull(STDERR_FILENO, "\n");
 }
 
 
-void execAction(SpawnContext & ctx)
+void execAction(SpawnContext & ctx)	  // kept public for use in 'build.cc'
 {
     Strings envStrs;
     std::vector<char *> envPtrs;
@@ -378,7 +378,7 @@ Phases getBasicSpawnPhases()
 }
 
 
-void usernsInitSyncAction(SpawnContext & sctx)
+static void usernsInitSyncAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -397,7 +397,7 @@ void usernsInitSyncAction(SpawnContext & sctx)
 }
 
 
-void usernsSetIDsAction(SpawnContext & sctx)
+static void usernsSetIDsAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -420,7 +420,7 @@ void usernsSetIDsAction(SpawnContext & sctx)
 }
 
 
-void initLoopbackAction(SpawnContext & sctx)
+static void initLoopbackAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -440,7 +440,7 @@ void initLoopbackAction(SpawnContext & sctx)
 }
 
 
-void setHostAndDomainAction(SpawnContext & sctx)
+static void setHostAndDomainAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -456,7 +456,7 @@ void setHostAndDomainAction(SpawnContext & sctx)
 }
 
 
-void makeFilesystemsPrivateAction(SpawnContext & sctx)
+static void makeFilesystemsPrivateAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H && defined(MS_REC) && defined(MS_PRIVATE)
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -468,7 +468,7 @@ void makeFilesystemsPrivateAction(SpawnContext & sctx)
 }
 
 
-void makeChrootSeparateFilesystemAction(SpawnContext & sctx)
+static void makeChrootSeparateFilesystemAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H && defined(MS_BIND)
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -521,7 +521,7 @@ static int statfsToMountFlags(int f_flags)
 }
 
 
-void bindMount(Path source, Path target, bool readOnly)
+static void bindMount(Path source, Path target, bool readOnly)
 {
 #if HAVE_SYS_MOUNT_H && defined(MS_BIND)
     struct stat st;
@@ -595,9 +595,9 @@ void bindMount(Path source, Path target, bool readOnly)
 }
 
 
-void mountIntoChroot(std::map<Path, Path> filesInChroot,
-                     set<Path> readOnlyFiles,
-                     Path chrootRootDir)
+static void mountIntoChroot(std::map<Path, Path> filesInChroot,
+			    set<Path> readOnlyFiles,
+			    Path chrootRootDir)
 {
 #if HAVE_SYS_MOUNT_H && defined(MS_BIND)
     for(auto i = filesInChroot.begin(); i != filesInChroot.end(); i++) {
@@ -612,7 +612,7 @@ void mountIntoChroot(std::map<Path, Path> filesInChroot,
 }
 
 
-void mountIntoChrootAction(SpawnContext & sctx)
+static void mountIntoChrootAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H && defined(MS_BIND)
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -623,7 +623,7 @@ void mountIntoChrootAction(SpawnContext & sctx)
 }
 
 
-void mountProcAction(SpawnContext & sctx)
+static void mountProcAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -637,7 +637,7 @@ void mountProcAction(SpawnContext & sctx)
 }
 
 
-void mountDevshmAction(SpawnContext & sctx)
+static void mountDevshmAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -651,7 +651,7 @@ void mountDevshmAction(SpawnContext & sctx)
 }
 
 
-void mountDevptsAction(SpawnContext & sctx)
+static void mountDevptsAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -673,7 +673,7 @@ void mountDevptsAction(SpawnContext & sctx)
 }
 
 
-void pivotRootAction(SpawnContext & sctx)
+static void pivotRootAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -700,7 +700,7 @@ void pivotRootAction(SpawnContext & sctx)
 }
 
 
-string idMapToIdentityMap(const string & map)
+static string idMapToIdentityMap(const string & map)
 {
     std::vector<string> mapLines =
         tokenizeString<std::vector<string> >(map, "\n");
@@ -720,7 +720,7 @@ string idMapToIdentityMap(const string & map)
  * processes in it after unshare is called.  So fork a child and have it do
  * the initialization. */
 void unshareAndInitUserns(int flags, const string & uidMap,
-                          const string & gidMap, bool allowSetgroups)
+			  const string & gidMap, bool allowSetgroups)
 {
 #if CLONE_ENABLED
     pid_t pid_ = getpid();
@@ -767,7 +767,7 @@ void unshareAndInitUserns(int flags, const string & uidMap,
 }
 
 
-void lockMountsAction(SpawnContext & sctx)
+static void lockMountsAction(SpawnContext & sctx)
 {
 #if CLONE_ENABLED && HAVE_SYS_MOUNT_H
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
@@ -868,7 +868,7 @@ void runChildSetup(SpawnContext & ctx)
 }
 
 
-int runChildSetupEntry(void *data)
+static int runChildSetupEntry(void *data)
 {
     runChildSetup(* (SpawnContext *)data);
     return 1;

@@ -115,58 +115,19 @@ void deletePhase(Phases & phases, string delLabel);
 
 void replacePhase(Phases & phases, string replaceLabel, Action newAction);
 
-Action reset_writeToStderrAction;
-Action restoreAffinityAction;
-Action setsidAction;
-Action earlyIOSetupAction;
-Action dropAmbientCapabilitiesAction;
-Action chrootAction;
-Action chdirAction;
-Action closeMostFDsAction;
-Action setPersonalityAction;
-Action oomSacrificeAction;
-Action setIDsAction;
-Action setNoNewPrivsAction;
-Action addSeccompFilterAction;
-Action restoreSIGPIPEAction;
-Action setupSuccessAction;
-Action execAction;
+Action execAction;				  // used from 'build.cc'
 
 Phases getBasicSpawnPhases();
-
-void bindMount(Path source, Path target, bool readOnly);
-
-void mountIntoChroot(std::map<Path, Path> filesInChroot,
-                     set<Path> readOnlyFiles,
-                     Path chrootRootDir);
-
-Action usernsInitSyncAction;
-Action usernsSetIDsAction;
-Action initLoopbackAction;
-Action setHostAndDomainAction;
-Action makeFilesystemsPrivateAction;
-Action makeChrootSeparateFilesystemAction;
-Action mountIntoChrootAction;
-Action mountProcAction;
-Action mountDevshmAction;
-Action mountDevptsAction;
-Action pivotRootAction;
-Action lockMountsAction;
-
 Phases getCloneSpawnPhases();
 
 /* Helpers */
-string idMapToIdentityMap(const string & map);
+
 void unshareAndInitUserns(int flags, const string & uidMap,
                           const string & gidMap, bool allowSetgroups);
 
 /* Run the phases of ctx in order, catching and reporting any exception, and
  * exiting in all cases. */
 void runChildSetup(SpawnContext & ctx);
-
-/* Helper to call runChildSetup that can be passed to the variant of clone
- * that expects a callback. */
-int runChildSetupEntry(void *data);
 
 /* Create a new process using clone that will immediately call runChildSetup
  * with the provided CloneSpawnContext.  Return the pid of the new process. */
