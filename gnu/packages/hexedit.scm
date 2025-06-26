@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,6 +45,11 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages antivirus)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages pretty-print)
@@ -52,7 +58,8 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system cmake))
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system go))
 
 (define-public hexedit
   (package
@@ -91,6 +98,47 @@ file can be a device as the file is read a piece at a time.  You can modify
 the file and search through it.")
     (home-page "http://rigaux.org/hexedit.html")
     (license license:gpl2+)))
+
+(define-public fq
+  (package
+    (name "fq")
+    (version "0.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wader/fq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c90z44z5i62xzx6h4xwk8lzkx0gb1cgs25rb5rrcmc7diwm697z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:import-path "github.com/wader/fq"))
+    (native-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-creasty-defaults
+           go-github-com-ergochat-readline
+           go-github-com-golang-snappy
+           go-github-com-gomarkdown-markdown
+           go-github-com-gopacket-gopacket
+           go-github-com-mitchellh-copystructure
+           go-github-com-mitchellh-mapstructure
+           go-github-com-wader-gojq
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/wader/fq")
+    (synopsis "Binary formats tool, like @command{jq} but for binary files")
+    (description
+     "This package provides tool, language and decoders for working with
+binary data, aiming to be @command{jq}, @command{hexdump}, @command{dd} and
+@command{gdb} for files combined into one.")
+    (license license:expat)))
 
 (define-public dhex
   (package
