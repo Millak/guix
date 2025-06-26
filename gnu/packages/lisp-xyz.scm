@@ -8901,6 +8901,9 @@ compatible with ANSI-compliant Common Lisp implementations.")
 (define-public ecl-cl-ppcre
   (sbcl-package->ecl-package sbcl-cl-ppcre))
 
+(define-public clasp-cl-ppcre
+  (sbcl-package->clasp-package sbcl-cl-ppcre))
+
 (define-public sbcl-cl-ppcre-unicode
   (package (inherit sbcl-cl-ppcre)
     (name "sbcl-cl-ppcre-unicode")
