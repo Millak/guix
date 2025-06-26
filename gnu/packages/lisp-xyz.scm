@@ -11799,6 +11799,9 @@ Lisp implementations.")
 (define-public ecl-closer-mop
   (sbcl-package->ecl-package sbcl-closer-mop))
 
+(define-public clasp-closer-mop
+  (sbcl-package->clasp-package sbcl-closer-mop))
+
 (define-public sbcl-clostrum
   (let ((commit "c85d38bde9d093f1f132574e9b98b8d64683cd51")
         (revision "0"))
