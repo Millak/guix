@@ -27909,6 +27909,9 @@ using advisors.")
 (define-public ecl-simple-guess
   (sbcl-package->ecl-package sbcl-simple-guess))
 
+(define-public clasp-simple-guess
+  (sbcl-package->clasp-package sbcl-simple-guess))
+
 (define-public sbcl-simple-inferiors
   (let ((commit "deac886354e03f8a9502ce96f12a0459ce3be671"))
     (package
