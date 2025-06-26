@@ -12735,6 +12735,9 @@ or cl-launch for portable processing of command-line arguments.")
 (define-public ecl-command-line-arguments
   (sbcl-package->ecl-package sbcl-command-line-arguments))
 
+(define-public clasp-command-line-arguments
+  (sbcl-package->clasp-package sbcl-command-line-arguments))
+
 (define-public sbcl-common-lisp-jupyter
   (let ((commit "3555a009f6d8734751bda1feadc8a09e7b0099b6")
         (revision "0"))
