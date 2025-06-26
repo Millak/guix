@@ -29207,6 +29207,9 @@ and lowercase characters for a given string.")
 (define-public ecl-string-pokemonize
   (sbcl-package->ecl-package sbcl-string-pokemonize))
 
+(define-public clasp-string-pokemonize
+  (sbcl-package->clasp-package sbcl-string-pokemonize))
+
 (define-public sbcl-stripe
   (let ((commit "b59631d21d63e101de6eb96b56941471504ba644")
         (revision "0"))
