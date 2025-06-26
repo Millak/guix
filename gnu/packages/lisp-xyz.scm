@@ -15004,6 +15004,9 @@ detect the suitable metaclass by analyzing the @code{defclass} form.")
 (define-public ecl-enhanced-defclass
   (sbcl-package->ecl-package sbcl-enhanced-defclass))
 
+(define-public clasp-enhanced-defclass
+  (sbcl-package->clasp-package sbcl-enhanced-defclass))
+
 (define-public sbcl-enhanced-eval-when
   (package
     (name "sbcl-enhanced-eval-when")
