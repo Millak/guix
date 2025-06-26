@@ -15521,6 +15521,9 @@ results when called again with the same arguments rather than repeating the comp
 (define-public ecl-fare-memoization
   (sbcl-package->ecl-package sbcl-fare-memoization))
 
+(define-public clasp-fare-memoization
+  (sbcl-package->clasp-package sbcl-fare-memoization))
+
 (define-public sbcl-fare-mop
   (let ((commit "538aa94590a0354f382eddd9238934763434af30")
         (revision "1"))
