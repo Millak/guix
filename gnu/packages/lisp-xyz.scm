@@ -30808,6 +30808,9 @@ the Common Lisp programming language.")
 (define-public ecl-trivial-garbage
   (sbcl-package->ecl-package sbcl-trivial-garbage))
 
+(define-public clasp-trivial-garbage
+  (sbcl-package->clasp-package sbcl-trivial-garbage))
+
 (define-public sbcl-trivial-gray-streams
   (let ((revision "1")
         (commit "2b3823edbc78a450db4891fd2b566ca0316a7876"))
