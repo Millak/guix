@@ -23819,6 +23819,9 @@ optimizing techniques widely used in the functional programming world.")
 (define-public ecl-optima
   (sbcl-package->ecl-package sbcl-optima))
 
+(define-public clasp-optima
+  (sbcl-package->clasp-package sbcl-optima))
+
 (define-public sbcl-org-sampler
   (let ((commit "ee135a417750e5b1d810bb9574eb85223cb3038a")
         (revision "1"))
