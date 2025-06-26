@@ -1866,6 +1866,9 @@ implementations offer.")
 (define-public ecl-atomics
   (sbcl-package->ecl-package sbcl-atomics))
 
+(define-public clasp-atomics
+  (sbcl-package->clasp-package sbcl-atomics))
+
 (define-public sbcl-authentic
   (let ((commit "4e9194dda227b98f56dda1c2a2480efcc2d1f973")
         (revision "2"))
