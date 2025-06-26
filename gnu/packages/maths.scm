@@ -1956,7 +1956,7 @@ extremely large and complex data collections.")
       ;; Some of the users, notably Flann, need the C++ interface.
       #:configure-flags
       #~(list
-         (string-append "-DHDF5_INSTALL_CMAKE_DIR=" #$output "/lib/cmake")
+         "-DHDF5_INSTALL_CMAKE_DIR=lib/cmake"
          "-DHDF5_BUILD_CPP_LIB=ON"
          "-DHDF5_BUILD_FORTRAN=ON"
          ;; Build a thread-safe library.  Unfortunately, CMakeLists.txt
