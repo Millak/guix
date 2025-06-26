@@ -10514,6 +10514,9 @@ ANSI-compliant Common Lisp implementations.")
 (define-public ecl-cl-unicode
   (sbcl-package->ecl-package sbcl-cl-unicode))
 
+(define-public clasp-cl-unicode
+  (sbcl-package->clasp-package sbcl-cl-unicode))
+
 (define-public sbcl-cl-unification
   (let ((commit "01079f34d197495880aa49ab727d63774d83035c")
         (revision "1"))
