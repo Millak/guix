@@ -16406,6 +16406,9 @@ than the body of the lambda.")
 (define-public ecl-fn
   (sbcl-package->ecl-package sbcl-fn))
 
+(define-public clasp-fn
+  (sbcl-package->clasp-package sbcl-fn))
+
 (define-public sbcl-fof
   (let ((commit "522879e7da110ecf2e841998b197b34062c54b29")
         (revision "1"))
