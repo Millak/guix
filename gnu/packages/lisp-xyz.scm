@@ -24170,6 +24170,9 @@ values from a string in Common Lisp.")
 (define-public ecl-parse-float
   (sbcl-package->ecl-package sbcl-parse-float))
 
+(define-public clasp-parse-float
+  (sbcl-package->clasp-package sbcl-parse-float))
+
 (define-public sbcl-parse-js
   (let ((commit "fbadc6029bec7039602abfc06c73bb52970998f6")
         (revision "1"))
