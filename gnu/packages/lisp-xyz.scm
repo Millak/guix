@@ -16193,11 +16193,11 @@ any existing or future application.")
   (sbcl-package->ecl-package sbcl-flare))
 
 (define-public sbcl-flexi-streams
-  (let ((commit "74a1027311371a57258eba1bc908e050f5702277")
-        (revision "0"))
+  (let ((commit "4951d575b8f73270802a03cc5812b8310409caa9")
+        (revision "1"))
     (package
       (name "sbcl-flexi-streams")
-      (version (git-version "1.0.19" revision commit))
+      (version (git-version "1.0.20" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -16206,7 +16206,7 @@ any existing or future application.")
                (commit commit)))
          (file-name (git-file-name "cl-flexi-streams" version))
          (sha256
-          (base32 "04azqvz11s8dngy49bjl19hrfn0ip1b7m0szm4hlppq364msil7b"))))
+          (base32 "1bk224ryfiwsmnmq2gdfv9gld85z2rvnlx7fxcl2k122vc344akh"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        (list #:phases
