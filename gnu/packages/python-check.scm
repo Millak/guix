@@ -10,7 +10,7 @@
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
@@ -1991,22 +1991,15 @@ interfaces with pytest.")
     (version "0.7.0")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
+       (method git-fetch) ; no tests in PyPI
        (uri (git-reference
              (url "https://github.com/hackebrot/pytest-cookies")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1x7ny6mx1siy9law1cv1i63nvv9ds2g1dlagm40l8qymxry43mjn"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-cookiecutter))
     (home-page "https://github.com/hackebrot/pytest-cookies")
     (synopsis "Pytest plugin for Cookiecutter templates")
