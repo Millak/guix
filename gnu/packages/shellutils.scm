@@ -49,6 +49,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -71,6 +72,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
@@ -657,10 +659,10 @@ between various shells or commands.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1mqs3y9vbph33jsaa5hc0fhk80pklmsn8ylp979k9qj63fgqrnwn"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:modules `((guix build python-build-system)
+      #:modules `((guix build pyproject-build-system)
                   (guix build utils)
                   (ice-9 match))
       #:phases #~(modify-phases %standard-phases
@@ -671,13 +673,6 @@ between various shells or commands.")
                          (substitute* "setup.py"
                            (("add_script\\('")
                             (string-append "add_script('" bin "/"))))))
-                   ;; Whenever setup.py is invoked, scripts in out/bin/ are
-                   ;; replaced. Thus we cannot invoke setup.py for testing.
-                   ;; Upstream also uses pytest.
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (invoke "pytest"))))
                    (add-before 'wrap 'install-completions
                      (lambda _
                        (for-each
@@ -711,8 +706,10 @@ between various shells or commands.")
                          python-mock
                          python-parameterized
                          python-pytest
+                         python-setuptools
                          python-shtab
-                         python-six))
+                         python-six
+                         python-wheel))
     (inputs (list coreutils))
     (propagated-inputs (list python-psutil))
     (home-page "https://github.com/andreafrancia/trash-cli")
