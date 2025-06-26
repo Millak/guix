@@ -30904,6 +30904,9 @@ results.")
 (define-public ecl-trivial-indent
   (sbcl-package->ecl-package sbcl-trivial-indent))
 
+(define-public clasp-trivial-indent
+  (sbcl-package->clasp-package sbcl-trivial-indent))
+
 (define-public sbcl-trivial-macroexpand-all
   (let ((commit "933270ac7107477de1bc92c1fd641fe646a7a8a9")
         (revision "0"))
