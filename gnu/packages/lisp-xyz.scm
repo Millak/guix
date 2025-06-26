@@ -15484,6 +15484,9 @@ which standard exactly.")
 (define-public ecl-fare-csv
   (sbcl-package->ecl-package sbcl-fare-csv))
 
+(define-public clasp-fare-csv
+  (sbcl-package->clasp-package sbcl-fare-csv))
+
 (define-public sbcl-fare-memoization
   (let ((commit "8b43ac6bcc0057d1a92052e39b6d34c05c2eb7e4")
         (revision "0"))
