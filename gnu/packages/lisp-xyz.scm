@@ -12803,6 +12803,9 @@ model, thereby greatly simplifying the definition of class mixins.")
 (define-public ecl-compatible-metaclasses
   (sbcl-package->ecl-package sbcl-compatible-metaclasses))
 
+(define-public clasp-compatible-metaclasses
+  (sbcl-package->clasp-package sbcl-compatible-metaclasses))
+
 (define-public sbcl-compiler-macro
   (let ((commit "7796bda64aec5af3ca175170ad3565167868789c")
         (revision "0"))
