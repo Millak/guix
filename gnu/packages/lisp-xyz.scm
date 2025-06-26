@@ -31414,6 +31414,9 @@ concept of a source-form to report where the error or warning is located.")
   ;; can be loaded on ECL.
   (sbcl-package->ecl-package sbcl-trivial-with-current-source-form))
 
+(define-public clasp-trivial-with-current-source-form
+  (sbcl-package->clasp-package sbcl-trivial-with-current-source-form))
+
 (define-public sbcl-trivial-ws
   (let ((commit "ebf1ec0ea26bdac4007e98e89f3a621dbfb4390a")
         (revision "0"))
