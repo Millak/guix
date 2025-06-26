@@ -21964,6 +21964,9 @@ extensions to Common Lisp.  It contains:
 (define-public ecl-misc-extensions
   (sbcl-package->ecl-package sbcl-misc-extensions))
 
+(define-public clasp-misc-extensions
+  (sbcl-package->clasp-package sbcl-misc-extensions))
+
 (define-public sbcl-mito
   (let ((commit "47ba4865ca4bb2894b53703a49a299e973f8eb86")
 	(revision "3"))
