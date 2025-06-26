@@ -30669,6 +30669,9 @@ and @code{doseq*}.")
 (define-public ecl-trivial-do
   (sbcl-package->ecl-package sbcl-trivial-do))
 
+(define-public clasp-trivial-do
+  (sbcl-package->clasp-package sbcl-trivial-do))
+
 (define-public sbcl-trivial-download
   (let ((commit "d2472061d86b1cf3d32f388daacd4e32a13af699"))
     (package
