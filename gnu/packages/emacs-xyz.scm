@@ -33795,8 +33795,8 @@ shell integration.")
     (license license:gpl3+)))
 
 (define-public emacs-vterm
-  (let ((commit "c3a3a23a5eace137947524c93644204bf6b56cff")
-        (revision "1"))
+  (let ((commit "056ad74653704bc353d8ec8ab52ac75267b7d373")
+        (revision "2"))
     (package
       (name "emacs-vterm")
       (version (git-version "0.0.2" revision commit))
@@ -33808,7 +33808,7 @@ shell integration.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0a3akvqmwh3frgbk1rgmi4b2gwdnpa3fymg7prin3k3jgqih1piv"))))
+                  "0mh1xx3ggrr3kampm1b9cxydbn6csihipaa2bpjv08py98wi0434"))))
       (build-system emacs-build-system)
       (arguments
        `(#:modules ((guix build emacs-build-system)
@@ -33821,6 +33821,11 @@ shell integration.")
          #:include (cons* "^etc/.*" %default-include)
          #:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'replace-bin-bash
+             ;; This is necessary to avoid errors in phase 'patch-el-files'.
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "vterm.el"
+                 (("\\/bin\\/bash") (search-input-file inputs "/bin/bash")))))
            (add-after 'unpack 'substitute-vterm-module-path
              (lambda* (#:key outputs #:allow-other-keys)
                (chmod "vterm.el" #o644)
