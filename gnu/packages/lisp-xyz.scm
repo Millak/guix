@@ -30842,6 +30842,9 @@ operations that interact with sequences.")
 ;; (define-public ecl-trivial-extensible-sequences
 ;;   (sbcl-package->ecl-package sbcl-trivial-extensible-sequences))
 
+(define-public clasp-trivial-extensible-sequences
+  (sbcl-package->clasp-package sbcl-trivial-extensible-sequences))
+
 (define-public sbcl-trivial-features
   (package
     (name "sbcl-trivial-features")
