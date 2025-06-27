@@ -24,7 +24,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
-  #:autoload (system base target) (target-most-positive-fixnum)
   #:export (define-record-type*
             this-record
 
