@@ -18624,6 +18624,9 @@ classes.")
 (define-public ecl-incless
   (sbcl-package->ecl-package sbcl-incless))
 
+(define-public clasp-incless
+  (sbcl-package->clasp-package sbcl-incless))
+
 (define-public sbcl-inferior-shell
   (let ((commit "15c2d04a7398db965ea1c3ba2d49efa7c851f2c2")
         (revision "1"))
