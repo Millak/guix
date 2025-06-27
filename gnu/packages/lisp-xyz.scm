@@ -31486,6 +31486,9 @@ UTF-8 has is that it doesn't depend on any other libraries.")
 (define-public ecl-trivial-utilities
   (sbcl-package->ecl-package sbcl-trivial-utilities))
 
+(define-public clasp-trivial-utilities
+  (sbcl-package->clasp-package sbcl-trivial-utilities))
+
 (define-public sbcl-trivial-with-current-source-form
   (let ((commit "9e343e043a77a5478c1f77bb626db22335fbbfb8")
         (revision "1"))
