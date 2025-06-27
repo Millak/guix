@@ -1370,7 +1370,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
 (define-public ggg
   (package
     (name "ggg")
-    (version "0.3.11")
+    (version "0.3.13")
     (source
      (origin
        (method git-fetch)
@@ -1379,7 +1379,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pn6xp90nnvfbbdyip7hsbf8is17waxk2xar2gc0h6lmq7j14rfv"))))
+        (base32 "0l0pbnp2jqi25s5hcqh2dhbdhcig4zyjx2cxwijbb5nn5shrp1wj"))))
     (arguments
      `(#:source-directory "src"
        #:phases (modify-phases %standard-phases
