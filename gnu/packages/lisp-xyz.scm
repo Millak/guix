@@ -14027,6 +14027,9 @@ replacement, which is called @code{*let}).")
 (define-public ecl-defstar
   (sbcl-package->ecl-package sbcl-defstar))
 
+(define-public clasp-defstar
+  (sbcl-package->clasp-package sbcl-defstar))
+
 (define-public sbcl-deploy
   (let ((commit "9b20e64fe924b9e31832304d87a3a72c383dc6d8")
         (revision "2"))
