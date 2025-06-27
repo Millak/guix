@@ -18902,14 +18902,21 @@ Jupyter Notebook format and Python APIs for working with notebooks.")
 (define-public python-nb-clean
   (package
     (name "python-nb-clean")
-    (version "2.1.0")
+    (version "4.0.1")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "nb-clean" version))
+        (method git-fetch) ; no tests in PyPI
+        (uri (git-reference
+               (url "https://github.com/srstevenson/nb-clean")
+               (commit version)))
+        (file-name (git-file-name name version))
         (sha256
-          (base32 "01qvk9n7rx15dhc23m8bj9bw5wdyxh6y18c5fm8hllmrd3ndsx14"))))
-    (build-system python-build-system)
+          (base32 "1pa4m1qn7gx77lg3vy7y7vlyl45cg9ai9z93ds9ax108mbnrbdw7"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core
+                         python-pytest
+                         python-pytest-cov ; runs by default
+                         python-pytest-mock))
     (propagated-inputs (list python-nbformat))
     (home-page "https://github.com/srstevenson/nb-clean")
     (synopsis "Clean Jupyter notebooks for versioning")
