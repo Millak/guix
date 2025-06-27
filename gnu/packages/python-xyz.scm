@@ -10157,16 +10157,17 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-cython-3
   (package
     (inherit python-cython)
-    ;; Cython 3 is not officially released yet, so distinguish the name
-    ;; for now.
+    ;; Cython 3.x is the current stable version, however there are still a lot
+    ;; of packages, which depend on `python-cython` package. Those need to be
+    ;; upgraded.
     (name "python-cython-next")
-    (version "3.0.11")
+    (version "3.1.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cython" version))
               (sha256
                (base32
-                "1zzsn60cl1qcz11h6c3miqayb7yfxdm1x19i2fk4qav8z0mdsiki"))))
+                "108k6gsn63qkz98xhnm4440ir9ab0lxmw0gcrpz2sxm67yapmgvb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
