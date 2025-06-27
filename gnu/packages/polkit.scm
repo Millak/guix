@@ -31,7 +31,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix memoization)
-  #:use-module ((guix licenses) #:select (lgpl2.0+))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build utils)
@@ -165,7 +165,7 @@ handling the policy that allows unprivileged processes to speak to
 privileged processes.  It is a framework for centralizing the decision
 making process with respect to granting access to privileged operations
 for unprivileged applications.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 (define-public polkit-qt
   (package
@@ -198,7 +198,7 @@ for unprivileged applications.")
 PolicyKit API through a Qt-styled API.  It is mainly a wrapper around
 QAction and QAbstractButton that lets you integrate those two component
 easily with PolicyKit.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 (define-public polkit-qt6
   (package
@@ -227,4 +227,4 @@ easily with PolicyKit.")
 that is used to bring up authentication dialogs used for obtaining
 privileges.")
     (home-page "https://www.freedesktop.org/wiki/Software/polkit/")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
