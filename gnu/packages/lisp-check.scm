@@ -1167,6 +1167,9 @@ parameterization.")
 (define-public ecl-unit-test
   (sbcl-package->ecl-package sbcl-unit-test))
 
+(define-public clasp-unit-test
+  (sbcl-package->clasp-package sbcl-unit-test))
+
 (define-public cl-unit-test
   (sbcl-package->cl-source-package sbcl-unit-test))
 
