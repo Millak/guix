@@ -441,7 +441,7 @@ MPD servers, search and multimedia key support.")
 (define-public ashuffle
   (package
     (name "ashuffle")
-    (version "3.13.4")
+    (version "3.14.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -450,7 +450,7 @@ MPD servers, search and multimedia key support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09dvar0aglyy2h9y115ymgryd8l6npc2y2ccdzij0b70f47ncqmf"))))
+                "06n0mk8cxsw5ycmzxmvwykz7pf6k67qj5g1l8jjwckn7289ll3ba"))))
     (native-inputs (list pkg-config))
     (inputs
      (list abseil-cpp-cxxstd17
@@ -463,7 +463,13 @@ MPD servers, search and multimedia key support.")
            #~'("-Dtests=enabled"
                "-Dunsupported_use_system_absl=true"
                "-Dunsupported_use_system_gtest=true"
-               "-Dunsupported_use_system_yamlcpp=true")))
+               "-Dunsupported_use_system_yamlcpp=true")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-dependencies
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("'absl_low_level_hash',") "")))))))
     (home-page "https://github.com/joshkunz/ashuffle")
     (synopsis "Automatic library-wide shuffle for mpd")
     (description "ashuffle is an application for automatically shuffling your

@@ -2133,7 +2133,7 @@ point and then, after each tween step, plugging back the result.")
                 (("check_target\\(gtest_main\\)") "")
                 (("check_target\\(gmock\\)") "")))))))
     (native-inputs
-     (list googletest))
+     (list googletest-1.12))
     (home-page "https://abseil.io")
     (synopsis "Augmented C++ standard library")
     (description "Abseil is a collection of C++ library code designed to
@@ -2146,7 +2146,7 @@ Google's C++ code base.")
     (package
       (inherit base)
       (name "abseil-cpp")
-      (version "20250127.1")
+      (version "20250814.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -2155,7 +2155,7 @@ Google's C++ code base.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0r2j360csym12jlgmcy92rgwdmng63shchxvfmln3j5402lv0g21"))
+                  "1wm2271hwy2pnfv9b5iy0y9xvbhiwffdf9i6s3dn89k630wh6928"))
                 (patches
                  (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
       (arguments
@@ -2179,7 +2179,28 @@ Google's C++ code base.")
                               (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
                               (invoke "ctest" "-E"
                                       "absl_symbolize_test|absl_log_format_test")))))
-                     #~()))))))))
+                     #~())))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "googletest" googletest))))))
+
+(define-public abseil-cpp-20250127
+  (let ((base abseil-cpp))
+    (package
+      (inherit base)
+      (name "abseil-cpp")
+      (version "20250127.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/abseil/abseil-cpp")
+                      (commit version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0r2j360csym12jlgmcy92rgwdmng63shchxvfmln3j5402lv0g21"))
+                (patches
+                 (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch")))))))
 
 (define (abseil-cpp-for-c++-standard base version)
   (hidden-package

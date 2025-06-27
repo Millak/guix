@@ -1904,7 +1904,7 @@ with a single function call.")
                #:outputs `(("out" . ,#$output:python)))))))))
     (outputs (list "out" "python"))
     (inputs
-     (list abseil-cpp
+     (list abseil-cpp-20250127
            boost
            cpuinfo
            dlpack
