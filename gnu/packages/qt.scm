@@ -5129,31 +5129,34 @@ Qt widgets.")
       (license license:lgpl3+))))
 
 (define-public qtcolorwidgets
-  (package
-    (name "qtcolorwidgets")
-    (version "2.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1fp7sr5a56bjp2abc6ng331q0bwvk6mf2nxdga81aj6cd9afs22q"))))
-    (build-system cmake-build-system)
-    (arguments '(#:tests? #f))          ;there are no tests
-    (native-inputs
-     (list qttools-5))
-    (inputs
-     (list qtbase-5))
-    (home-page "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
-    (synopsis "Color management widgets")
-    (description "QtColorWidgets provides a Qt color dialog that is more
+  (let ((commit "8491078434b24cba295b5e41cc0d2a94c7049a5b")
+        (revision "1"))
+    (package
+      (name "qtcolorwidgets")
+      (version (git-version "2.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/mattbas/Qt-Color-Widgets")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1ixb2v5mjdszkxqq51knaj1pcivnihwlj9qlm9pxmvzl9qsvbcgg"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f ;there are no tests
+             #:configure-flags #~(list "-DQT_VERSION_MAJOR=6")))
+      (native-inputs (list qttools))
+      (inputs (list qtbase))
+      (home-page "https://gitlab.com/mattbas/Qt-Color-Widgets")
+      (synopsis "Color management widgets")
+      (description "QtColorWidgets provides a Qt color dialog that is more
 user-friendly than the default @code{QColorDialog} and several other
 color-related widgets.")
-    ;; Includes a license exception for combining with GPL2 code.
-    (license license:lgpl3+)))
+      ;; Includes a license exception for combining with GPL2 code.
+      (license license:lgpl3+))))
 
 (define-public qcustomplot
   (package
