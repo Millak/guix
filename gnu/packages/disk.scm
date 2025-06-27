@@ -29,7 +29,7 @@
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Grigory Shepelev <shegeley@gmail.com>
@@ -1792,7 +1792,7 @@ wrapper for disk usage querying and visualisation.")
 (define-public qdirstat
   (package
     (name "qdirstat")
-    (version "1.8.1")
+    (version "1.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1801,7 +1801,7 @@ wrapper for disk usage querying and visualisation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04vpdlwk01kgmc4r5rnrmrgd4sf2kfh1rjzb2rjkfxdd4pbghsy9"))))
+                "09amjkg0h097kahscap59imyg4wpjy43lkaiqw60ady3s6b6c1x7"))))
     (build-system qt-build-system)
     (arguments
      (list
