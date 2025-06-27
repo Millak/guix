@@ -30433,6 +30433,9 @@ a simple-array ensuring that the resulting array is still a simple-array.")
 (define-public ecl-trivial-arguments
   (sbcl-package->ecl-package sbcl-trivial-arguments))
 
+(define-public clasp-trivial-arguments
+  (sbcl-package->clasp-package sbcl-trivial-arguments))
+
 (define-public sbcl-trivial-backtrace
   (let ((commit "7f90b4a4144775cca0728791e4b92ac2557b07a1")
         (revision "2"))
