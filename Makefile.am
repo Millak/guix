@@ -310,6 +310,7 @@ MODULES =					\
   guix/import/kde.scm				\
   guix/import/launchpad.scm   			\
   guix/import/minetest.scm   			\
+  guix/import/nuget.scm   			\
   guix/import/npm-binary.scm			\
   guix/import/opam.scm				\
   guix/import/print.scm				\
