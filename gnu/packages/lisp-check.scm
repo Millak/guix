@@ -1217,6 +1217,9 @@ on the XPTest package by Craig Brozensky and the JUnit package by Kent Beck.")
 (define-public ecl-xlunit
   (sbcl-package->ecl-package sbcl-xlunit))
 
+(define-public clasp-xlunit
+  (sbcl-package->clasp-package sbcl-xlunit))
+
 (define-public sbcl-lisp-critic
   (let ((commit "ea19f82a168a6119ac1b10d0f457c01a7119602f")
         (revision "1"))
