@@ -3960,6 +3960,27 @@ instances and can send data to the primary instance from secondary
 instances.")
       (license license:expat))))
 
+(define-public single-application
+  (package/inherit single-application-qt5
+    (name "single-application")
+    (version "3.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/itay-grudev/SingleApplication")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "069aww3aww6968hmipzfbj57a5vw6jxj1mr20nsb1yh98n5c01rv"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments single-application-qt5)
+       ((#:configure-flags flags)
+        #~(cons "-DQT_DEFAULT_MAJOR_VERSION=6" #$flags))))
+    (inputs (list qtbase))))
+
 (define-public pyotherside
   (package
     (name "pyotherside")
