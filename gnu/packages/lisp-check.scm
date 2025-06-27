@@ -639,6 +639,9 @@ to make test code more informative.
 (define-public ecl-kaputt
   (sbcl-package->ecl-package sbcl-kaputt))
 
+(define-public clasp-kaputt
+  (sbcl-package->clasp-package sbcl-kaputt))
+
 (define-public cl-kaputt
   (sbcl-package->cl-source-package sbcl-kaputt))
 
