@@ -4,7 +4,7 @@
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 BonfaceKilz <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
@@ -2192,6 +2192,11 @@ done by Marc Stevens and Dan Shumow, and can be found at:
     (arguments
      (list
       #:import-path "github.com/ProtonMail/go-crypto"
+      #:test-flags
+      (if (target-riscv64?)
+          ;; This test times out on riscv64-linux.
+          #~(list "-skip" "TestEndToEnd")
+          #~'())
       #:phases
       #~(modify-phases %standard-phases
           (delete 'build)))) ; no go files in project's root
