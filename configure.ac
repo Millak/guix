@@ -1,5 +1,22 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
+#
+# GNU Guix --- Functional package management for GNU
+# Copyright © 2012-2021, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2013, 2016 Mark H Weaver <mhw@netris.org>
+# Copyright © 2014-2016 Alex Kost <alezost@gmail.com>
+# Copyright © 2014-2016 David Thompson <davet@gnu.org>
+# Copyright © 2015-2016, 2018 Mathieu Lirzin <mthl@gnu.org>
+# Copyright © 2015-2020 Mathieu Othacehe <m.othacehe@gmail.com>
+# Copyright © 2016 Eric Le Bihan <eric.le.bihan.dev@free.fr>
+# Copyright © 2016, 2018, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
+# Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
+# Copyright © 2018 nikita <nikita@n0.is>
+# Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
+# Copyright © 2017-2018 Eric Bavier <bavier@posteo.net>
+# Copyright © 2020-2021, 2023-204 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 
 AC_PREREQ([2.69])
 AC_INIT([GNU Guix],
