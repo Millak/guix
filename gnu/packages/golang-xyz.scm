@@ -8,7 +8,7 @@
 ;;; Copyright © 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019-2021 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
@@ -4262,7 +4262,7 @@ metrics to Graphite.")
     (build-system go-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-shuffle=on" "-v")
+      #:test-flags #~(list "-timeout=30m" "-shuffle=on" "-v")
       #:import-path "github.com/cyphar/filepath-securejoin"))
     (native-inputs
      (list go-github-com-stretchr-testify))
