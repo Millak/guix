@@ -30545,6 +30545,9 @@ even by adding additional statistical @code{compute}ations.")
 (define-public ecl-trivial-benchmark
   (sbcl-package->ecl-package sbcl-trivial-benchmark))
 
+(define-public clasp-trivial-benchmark
+  (sbcl-package->clasp-package sbcl-trivial-benchmark))
+
 (define-public sbcl-trivial-channels
   (let ((commit "e2370118d8983ba69c0360a7695f8f2e2fd6a8a6")
         (revision "1"))
