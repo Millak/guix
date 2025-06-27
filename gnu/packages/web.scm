@@ -6024,7 +6024,7 @@ NetSurf project.")
 (define-public iter-vitae
   (package
     (name "iter-vitae")
-    (version "0.3.27")
+    (version "0.3.32")
     (source
      (origin
        (method git-fetch)
@@ -6033,7 +6033,7 @@ NetSurf project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "170gldx8ivrcfb345523gcvf1wik2265x0fbpfswq20shrfbsjh8"))))
+        (base32 "0r7zvavjflyl8wzysadgh7zmyamvdkicac7652qckgi1aaqh33nw"))))
     (arguments
      `(#:source-directory "src"
        #:phases (modify-phases %standard-phases
