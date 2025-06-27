@@ -13958,6 +13958,9 @@ wrappers of deflate streams.  It currently does not handle compression.")
 (define-public ecl-deflate
   (sbcl-package->ecl-package sbcl-deflate))
 
+(define-public clasp-deflate
+  (sbcl-package->clasp-package sbcl-deflate))
+
 (define-public sbcl-defpackage-plus
   (let ((revision "0")
         (commit "5492e27e0bdb7b75fa5177ea4388519dc7a75f11"))
