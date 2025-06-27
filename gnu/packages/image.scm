@@ -2161,29 +2161,51 @@ parsing, viewing, modifying, and saving this metadata.")
     (license license:lgpl2.0+)))
 
 (define-public flameshot
-  (package
-    (name "flameshot")
-    (version "12.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/flameshot-org/flameshot")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1p7gqs5vqzbddlgl38lbanchwb14m6lx8f2cn2c5p0vyqwvqqv52"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list qttools-5))
-    (inputs
-     (list qtbase-5 qtsvg-5))
-    (arguments
-     `(#:tests? #f))                    ;no tests
-    (home-page "https://github.com/flameshot-org/flameshot")
-    (synopsis "Powerful yet simple to use screenshot software")
-    (description "Flameshot is a screenshot program.
+  ;; Upstream switched to nightly builds, no release tags anymore.
+  (let ((commit "56019019999defbf722f43f87aaeae6596a12c0a")
+        (revision "1"))
+    (package
+      (name "flameshot")
+      (version (git-version "12.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/flameshot-org/flameshot")
+               (commit (string-append commit))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "11y1x2pc0sdmz4dbrdl9d2i96sxi3v7bfjgcaqy2sc29zjjvynqx"))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:qtbase qtbase
+        #:tests? #f                     ;no tests
+        #:configure-flags
+        #~(list "-DFETCHCONTENT_FULLY_DISCONNECTED=ON"
+                "-DDISABLE_UPDATE_CHECKER=ON")
+        #:phases
+        #~ (modify-phases %standard-phases
+             (add-before 'configure 'add-singleapplication
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((dep (assoc-ref inputs "single-application")))
+                   (substitute* "CMakeLists.txt"
+                     (("^if\\(USE_SINGLEAPPLICATION\\)" all)
+                      (string-append
+                       all
+                       "\nadd_library(SingleApplication::SingleApplication"
+                       " SHARED IMPORTED)"
+                       "\nset_target_properties(SingleApplication::SingleApplication"
+                       " PROPERTIES"
+                       "\n   INTERFACE_INCLUDE_DIRECTORIES \"" dep "/include\""
+                       "\n   IMPORTED_LOCATION " dep "/lib/libSingleApplication.a"
+                       "\n)\n")))))))))
+      (native-inputs (list qttools))
+      (inputs (list single-application qtcolorwidgets qtsvg))
+      (home-page "https://github.com/flameshot-org/flameshot")
+      (synopsis "Powerful yet simple to use screenshot software")
+      (description "Flameshot is a screenshot program.
 Features:
 
 @itemize
@@ -2193,7 +2215,7 @@ Features:
 @item DBus interface.
 @item Upload to Imgur.
 @end itemize\n")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public swappy
   (package
