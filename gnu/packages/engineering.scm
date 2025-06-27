@@ -5597,3 +5597,50 @@ towards field theory.")
 and representations for kinematic structures and their inverse and
 forward kinematics solvers.")
       (license license:lgpl2.1+))))
+
+(define-public python-orocos-kinematics-dynamics
+  (package
+    (inherit orocos-kinematics-dynamics)
+    (name "python-orocos-kinematics-dynamics")
+    (source
+     (origin
+       (inherit (package-source orocos-kinematics-dynamics))
+       (snippet '(begin
+                   (substitute* "python_orocos_kdl/CMakeLists.txt"
+                     ;; Use the system pybind11 instead of the bundled version
+                     (("add_subdirectory\\(pybind11\\)")
+                      "find_package(pybind11)")
+                     ;; change debian-specific python install directory
+                     (("dist-packages")
+                      "site-packages"))
+                   ;; ROS 1 uses some dynamic attributes, which are
+                   ;; disabled by default in pybind11. No harm in enabling them
+                   ;; See "https://github.com/ros2/geometry2/issues/624
+                   ;; and https://pybind11.readthedocs.io/en/stable/classes.html
+                   ;; #dynamic-attributes <Both accessed June 1 2025>
+                   (substitute* "python_orocos_kdl/PyKDL/frames.cpp"
+                     (("m, \"Vector\"")
+                      "m, \"Vector\", py::dynamic_attr()")
+                     (("m, \"Frame\"")
+                      "m, \"Frame\", py::dynamic_attr()")
+                     (("m, \"Twist\"")
+                      "m, \"Twist\", py::dynamic_attr()")
+                     (("m, \"Wrench\"")
+                      "m, \"Wrench\", py::dynamic_attr()"))))))
+    (native-inputs (list python pybind11 python-psutil))
+    (inputs (list orocos-kinematics-dynamics))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "python_orocos_kdl")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "PYTHONPATH" "./")
+              (when tests?
+                (invoke "python3"
+                        "../python_orocos_kdl/tests/PyKDLtest.py")))))))
+    (synopsis "Python bindings for orocos-kinematics-dynamics")
+    (description "Python bindings for orocos-kinematics-dynamics.")))
