@@ -744,143 +744,138 @@ FFC is part of the FEniCS Project.")
     (name "fenics-dolfin")
     (version "2019.1.0.post0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-              "https://bitbucket.org/fenics-project/dolfin/get/"
-              version ".tar.gz"))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-           "1m91hwcq5gfj4qqswp8l8kj58nia48f0n4kq13w0xqj4biq7rla0"))
-        (patches (search-patches "fenics-dolfin-algorithm.patch"
-                                 "fenics-dolfin-demo-init.patch"
-                                 "fenics-dolfin-boost.patch"
-                                 "fenics-dolfin-config-slepc.patch"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Make sure we don't use the bundled test framework.
-            (delete-file-recursively "test/unit/cpp/catch")
-            (substitute* "test/unit/cpp/main.cpp"
-              ;; Use standard search paths for 'catch' header file.
-              (("#include.*")
-               "#include <catch.hpp>\n"))
-            (substitute* "test/unit/cpp/CMakeLists.txt"
-              ;; Specify directory to find the header file.
-              (("(^set\\(CATCH_INCLUDE_DIR ).*(/catch\\))" _ front back)
-               (string-append front
-                              "$ENV{CATCH_DIR}/include" back "\n")))))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://bitbucket.org/fenics-project/dolfin/get/"
+                           version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m91hwcq5gfj4qqswp8l8kj58nia48f0n4kq13w0xqj4biq7rla0"))
+       (patches (search-patches "fenics-dolfin-algorithm.patch"
+                                "fenics-dolfin-demo-init.patch"
+                                "fenics-dolfin-boost.patch"
+                                "fenics-dolfin-config-slepc.patch"
+                                "fenics-dolfin-hdf5-version-check.patch"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Make sure we don't use the bundled test framework.
+                   (delete-file-recursively "test/unit/cpp/catch")
+                   (substitute* "test/unit/cpp/main.cpp"
+                     ;; Use standard search paths for 'catch' header file.
+                     (("#include.*")
+                      "#include <catch.hpp>\n"))
+                   (substitute* "test/unit/cpp/CMakeLists.txt"
+                     ;; Specify directory to find the header file.
+                     (("(^set\\(CATCH_INCLUDE_DIR ).*(/catch\\))" _ front back)
+                      (string-append front "$ENV{CATCH_DIR}/include" back "\n")))))))
     (build-system cmake-build-system)
-    (inputs
-     (list openblas
-           boost
-           eigen
-           hdf5-parallel-openmpi
-           libxml2
-           openmpi
-           python-3
-           pt-scotch32
-           suitesparse
-           sundials-openmpi
-           zlib))
-    (native-inputs
-     (list catch-framework pkg-config))
-    (propagated-inputs
-     (list python-fenics-ffc petsc-openmpi slepc-openmpi))
+    (inputs (list openblas
+                  boost
+                  eigen
+                  hdf5-parallel-openmpi
+                  libxml2
+                  openmpi
+                  python-3
+                  pt-scotch32
+                  suitesparse
+                  sundials-openmpi
+                  zlib))
+    (native-inputs (list catch-framework pkg-config))
+    (propagated-inputs (list python-fenics-ffc petsc-openmpi slepc-openmpi))
     (arguments
-     (list #:configure-flags #~`("-DDOLFIN_ENABLE_DOCS:BOOL=OFF"
-                                 "-DDOLFIN_ENABLE_HDF5:BOOL=ON"
-                                 "-DDOLFIN_ENABLE_MPI:BOOL=ON"
-                                 "-DDOLFIN_ENABLE_PARMETIS:BOOL=OFF"
-                                 "-DDOLFIN_ENABLE_SCOTCH:BOOL=ON"
-                                 "-DDOLFIN_ENABLE_SUNDIALS:BOOL=ON"
-                                 "-DDOLFIN_ENABLE_TRILINOS:BOOL=OFF")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'patch-usr-bin-file 'mpi-setup
-                 #$%openmpi-setup)
-               (add-after 'patch-source-shebangs 'set-paths
-                 (lambda _
-                   ;; Define paths to store locations.
-                   (setenv "BLAS_DIR"
-                           #$(this-package-input "openblas"))
-                   (setenv "CATCH_DIR"
-                           #$(this-package-input "catch"))
-                   (setenv "LAPACK_DIR"
-                           #$(this-package-input "openblas"))
-                   (setenv "PETSC_DIR"
-                           #$(this-package-input "petsc"))
-                   (setenv "SLEPC_DIR"
-                           #$(this-package-input "slepc"))
-                   (setenv "SCOTCH_DIR"
-                           #$(this-package-input "scotch"))
-                   (setenv "SUNDIALS_DIR"
-                           #$(this-package-input "sundials"))
-                   (setenv "UMFPACK_DIR"
-                           #$(this-package-input "suitesparse"))))
-               (add-before 'check 'pre-check
-                 (lambda _
-                   ;; The Dolfin repository uses git-lfs, whereby web links are
-                   ;; substituted for large files.  Guix does not currently support
-                   ;; git-lfs, so only the links are downloaded.  The tests that
-                   ;; require the absent meshes cannot run and are skipped.
-                   ;;
-                   ;; One serial test fails and is skipped.
-                   ;; i) demo_multimesh-stokes_serial:
-                   ;;   Warning: Found no facets matching domain for boundary
-                   ;;   condition.
-                   ;;
-                   ;; One mpi test fails and is skipped.
-                   ;; i) demo_stokes-iterative_mpi:
-                   ;;   The MPI_Comm_rank() function was called before MPI_INIT was
-                   ;;   invoked
-                   (call-with-output-file "CTestCustom.cmake"
-                     (lambda (port)
-                       (display (string-append
-                                 "set(CTEST_CUSTOM_TESTS_IGNORE "
-                                 "demo_bcs_serial "
-                                 "demo_bcs_mpi "
-                                 "demo_eigenvalue_serial "
-                                 "demo_eigenvalue_mpi "
-                                 "demo_navier-stokes_serial "
-                                 "demo_navier-stokes_mpi "
-                                 "demo_stokes-taylor-hood_serial "
-                                 "demo_stokes-taylor-hood_mpi "
-                                 "demo_subdomains_serial "
-                                 "demo_advection-diffusion_serial "
-                                 "demo_advection-diffusion_mpi "
-                                 "demo_auto-adaptive-navier-stokes_serial "
-                                 "demo_contact-vi-snes_serial "
-                                 "demo_contact-vi-snes_mpi "
-                                 "demo_contact-vi-tao_serial "
-                                 "demo_contact-vi-tao_mpi "
-                                 "demo_curl-curl_serial "
-                                 "demo_curl-curl_mpi "
-                                 "demo_dg-advection-diffusion_serial "
-                                 "demo_dg-advection-diffusion_mpi "
-                                 "demo_elasticity_serial "
-                                 "demo_elasticity_mpi "
-                                 "demo_elastodynamics_serial "
-                                 "demo_elastodynamics_mpi "
-                                 "demo_lift-drag_serial "
-                                 "demo_lift-drag_mpi "
-                                 "demo_mesh-quality_serial "
-                                 "demo_mesh-quality_mpi "
-                                 "demo_multimesh-stokes_serial "
-                                 ")\n") port)))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "make" "unittests")
-                     (invoke "make" "demos")
-                     (invoke "ctest" "-R" "unittests")
-                     (invoke "ctest" "-R" "demo" "-R" "serial")
-                     (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
+     (list
+      #:configure-flags
+      #~`("-DDOLFIN_ENABLE_DOCS:BOOL=OFF" "-DDOLFIN_ENABLE_HDF5:BOOL=ON"
+          "-DDOLFIN_ENABLE_MPI:BOOL=ON"
+          "-DDOLFIN_ENABLE_PARMETIS:BOOL=OFF"
+          "-DDOLFIN_ENABLE_SCOTCH:BOOL=ON"
+          "-DDOLFIN_ENABLE_SUNDIALS:BOOL=ON"
+          "-DDOLFIN_ENABLE_TRILINOS:BOOL=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-usr-bin-file 'mpi-setup
+            #$%openmpi-setup)
+          (add-after 'patch-source-shebangs 'set-paths
+            (lambda _
+              ;; Define paths to store locations.
+              (setenv "BLAS_DIR"
+                      #$(this-package-input "openblas"))
+              (setenv "CATCH_DIR"
+                      #$(this-package-input "catch"))
+              (setenv "LAPACK_DIR"
+                      #$(this-package-input "openblas"))
+              (setenv "PETSC_DIR"
+                      #$(this-package-input "petsc"))
+              (setenv "SLEPC_DIR"
+                      #$(this-package-input "slepc"))
+              (setenv "SCOTCH_DIR"
+                      #$(this-package-input "scotch"))
+              (setenv "SUNDIALS_DIR"
+                      #$(this-package-input "sundials"))
+              (setenv "UMFPACK_DIR"
+                      #$(this-package-input "suitesparse"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; The Dolfin repository uses git-lfs, whereby web links are
+              ;; substituted for large files.  Only the links are downloaded.
+              ;; The tests that require the absent meshes cannot run and are
+              ;; skipped.
+              ;;
+              ;; One serial test fails and is skipped.
+              ;; i) demo_multimesh-stokes_serial:
+              ;; Warning: Found no facets matching domain for boundary
+              ;; condition.
+              ;;
+              ;; One mpi test fails and is skipped.
+              ;; i) demo_stokes-iterative_mpi:
+              ;; The MPI_Comm_rank() function was called before MPI_INIT was
+              ;; invoked.
+              (call-with-output-file "CTestCustom.cmake"
+                (lambda (port)
+                  (display (string-append "set(CTEST_CUSTOM_TESTS_IGNORE "
+                            "demo_bcs_serial "
+                            "demo_bcs_mpi "
+                            "demo_eigenvalue_serial "
+                            "demo_eigenvalue_mpi "
+                            "demo_navier-stokes_serial "
+                            "demo_navier-stokes_mpi "
+                            "demo_stokes-taylor-hood_serial "
+                            "demo_stokes-taylor-hood_mpi "
+                            "demo_subdomains_serial "
+                            "demo_advection-diffusion_serial "
+                            "demo_advection-diffusion_mpi "
+                            "demo_auto-adaptive-navier-stokes_serial "
+                            "demo_contact-vi-snes_serial "
+                            "demo_contact-vi-snes_mpi "
+                            "demo_contact-vi-tao_serial "
+                            "demo_contact-vi-tao_mpi "
+                            "demo_curl-curl_serial "
+                            "demo_curl-curl_mpi "
+                            "demo_dg-advection-diffusion_serial "
+                            "demo_dg-advection-diffusion_mpi "
+                            "demo_elasticity_serial "
+                            "demo_elasticity_mpi "
+                            "demo_elastodynamics_serial "
+                            "demo_elastodynamics_mpi "
+                            "demo_lift-drag_serial "
+                            "demo_lift-drag_mpi "
+                            "demo_mesh-quality_serial "
+                            "demo_mesh-quality_mpi "
+                            "demo_multimesh-stokes_serial "
+                            "demo_stokes-iterative_mpi"
+                            ")\n") port)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "unittests")
+                (invoke "make" "demos")
+                (invoke "ctest" "-R" "unittests")
+                (invoke "ctest" "-R" "demo" "-R" "serial")
+                (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
     (home-page "https://bitbucket.org/fenics-project/dolfin/")
     (synopsis "Problem solving environment for differential equations")
     (description
-      "DOLFIN is a computational framework for finding numerical
+     "DOLFIN is a computational framework for finding numerical
 solutions to problems described by differential equations.  Numerical
 models in DOLFIN are constructed using general families of finite
 elements.  Data structures are provided for discretizing the governing
@@ -896,17 +891,15 @@ user interface to the FEniCS core components and external libraries.")
     ;; following exceptions:
     ;;
     ;; public-domain: dolfin/geometry/predicates.cpp
-    ;;                dolfin/geometry/predicates.h
+    ;; dolfin/geometry/predicates.h
     ;;
     ;; zlib:          dolfin/io/base64.cpp
-    ;;                dolfin/io/base64.h
+    ;; dolfin/io/base64.h
     ;;
     ;; expat:         dolfin/io/pugiconfig.hpp
-    ;;                dolfin/io/pugixml.cpp
-    ;;                dolfin/io/pugixml.hpp
-    (license (list license:public-domain
-                   license:zlib
-                   license:expat
+    ;; dolfin/io/pugixml.cpp
+    ;; dolfin/io/pugixml.hpp
+    (license (list license:public-domain license:zlib license:expat
                    license:lgpl3+))))
 
 (define-public fenics

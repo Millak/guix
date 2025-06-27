@@ -1,0 +1,26 @@
+This patch checks the HDF5 API version before selecting the appropriate H5O
+function.  A new function name and an extra argument are required for v1.12
+and above.
+
+See <https://support.hdfgroup.org/documentation/hdf5/latest/api-compat-macros.html> for the Technical Notes.
+
+See <https://bitbucket.org/fenics-project/dolfin/commits/4201e172c88dc51eb8846cb350acbbe23c95246d> for the upstream fix.
+
+--- a/dolfin/io/HDF5Interface.cpp
++++ b/dolfin/io/HDF5Interface.cpp
+@@ -282,8 +282,13 @@
+   }
+ 
+   H5O_info_t object_info;
+-  H5Oget_info_by_name(hdf5_file_handle, group_name.c_str(), &object_info,
+-                      lapl_id);
++  #if H5_VERSION_GE(1, 12, 0)
++    H5Oget_info_by_name3(hdf5_file_handle, group_name.c_str(), &object_info,
++                         H5O_INFO_BASIC, lapl_id);
++  #else
++    H5Oget_info_by_name(hdf5_file_handle, group_name.c_str(), &object_info,
++                        lapl_id);
++  #endif
+ 
+   // Close link access properties
+   status = H5Pclose(lapl_id);
