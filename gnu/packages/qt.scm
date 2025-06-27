@@ -3910,10 +3910,11 @@ system libraries.")
 
 (define-public single-application-qt5
   ;; Change in function signature, nheko requires at least this commit
-  (let ((commit "dc8042b5db58f36e06ba54f16f38b16c5eea9053"))
+  (let ((commit "dc8042b5db58f36e06ba54f16f38b16c5eea9053")
+        (revision "1"))
     (package
       (name "single-application-qt5")
-      (version (string-append "3.2.0-" (string-take commit 7)))
+      (version (git-version "3.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -3927,28 +3928,25 @@ system libraries.")
            "163aa2x2qb0h8w26si5ql833ilj427jjbdwlz1p2p8iaq6dh0vq1"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:tests? #f                    ; no check target
-         ;; Projects can decide how to build this library.  You might need to
-         ;; override this flag (QApplication, QGuiApplication or
-         ;; QCoreApplication).
-         #:configure-flags '("-DQAPPLICATION_CLASS=QApplication")
-         #:phases
-         (modify-phases %standard-phases
-           ;; No install target, install things manually
-           (replace 'install
-             (lambda* (#:key inputs outputs source #:allow-other-keys)
-               (let* ((qt (assoc-ref inputs "qtbase"))
-                      (qt-version ,(version-major (package-version qtbase-5)))
-                      (out (assoc-ref outputs "out")))
-                 (install-file
-                  "libSingleApplication.a" (string-append out "/lib"))
-                 (for-each
-                  (lambda (file)
-                    (install-file
-                     (string-append source "/" file)
-                     (string-append out "/include")))
-                  '("SingleApplication"
-                    "singleapplication.h" "singleapplication_p.h"))))))))
+       (list
+        #:tests? #f                     ; no check target
+        ;; Projects can decide how to build this library.  You might need to
+        ;; override this flag (QApplication, QGuiApplication or
+        ;; QCoreApplication).
+        #:configure-flags #~(list "-DQAPPLICATION_CLASS=QApplication")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; No install target, install things manually
+            (replace 'install
+              (lambda* (#:key source #:allow-other-keys)
+                (install-file
+                 "libSingleApplication.a" (string-append #$output "/lib"))
+                (for-each
+                 (lambda (file)
+                   (install-file (string-append source "/" file)
+                                 (string-append #$output "/include")))
+                 '("SingleApplication"
+                   "singleapplication.h" "singleapplication_p.h")))))))
       (inputs
        (list qtbase-5))
       (home-page "https://github.com/itay-grudev/SingleApplication")
