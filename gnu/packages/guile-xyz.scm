@@ -4478,7 +4478,7 @@ parameters, which  define* and lambda* special forms")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://inqlab.net/git/guile-srfi-128.git")
+             (url "https://codeberg.org/pukkamustard/guile-srfi-128.git")
              (commit (string-append "v" version))))
        (sha256
         (base32
@@ -4487,7 +4487,7 @@ parameters, which  define* and lambda* special forms")
     (build-system guile-build-system)
     (native-inputs
      (list guile-3.0))
-    (home-page "https://inqlab.net/git/guile-srfi-128.git")
+    (home-page "https://codeberg.org/pukkamustard/guile-srfi-128")
     (synopsis "SRFI 128 Comparators (reduced) port for Guile")
     (description
      "This package provides an implementation of SRFI 128 for Guile.
