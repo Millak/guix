@@ -13992,6 +13992,9 @@ predictable cross-platform behavior and some utilities useful for versioning.")
 (define-public ecl-defpackage-plus
   (sbcl-package->ecl-package sbcl-defpackage-plus))
 
+(define-public clasp-defpackage-plus
+  (sbcl-package->clasp-package sbcl-defpackage-plus))
+
 (define-public sbcl-defstar
   (let ((commit "132829dac9f84fa7202a0c5793aa6accb8d2662a"))
     (package
