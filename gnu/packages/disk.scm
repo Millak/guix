@@ -1802,24 +1802,22 @@ wrapper for disk usage querying and visualisation.")
               (sha256
                (base32
                 "04vpdlwk01kgmc4r5rnrmrgd4sf2kfh1rjzb2rjkfxdd4pbghsy9"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (system* "qmake"
-                      (string-append "INSTALL_PREFIX="
-                                     (assoc-ref outputs "out")))))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (string-append
-                            (assoc-ref outputs "out")
-                            "/bin/qdirstat-cache-writer")
-               `("PERL5LIB" ":" prefix
-                 (,(string-append
-                    (assoc-ref inputs "perl-uri-escape")
-                    "/lib/perl5/site_perl")))))))))
     (build-system qt-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (system* "qmake" (string-append "INSTALL_PREFIX=" #$output))))
+          (add-after 'install 'wrap
+            (lambda _
+              (wrap-program (string-append #$output
+                                           "/bin/qdirstat-cache-writer")
+                `("PERL5LIB" ":" prefix
+                  (,(string-append
+                     #$(this-package-input "perl-uri-escape")
+                     "/lib/perl5/site_perl")))))))))
     (inputs
      (list bash-minimal
            perl
@@ -1827,11 +1825,11 @@ wrapper for disk usage querying and visualisation.")
            qtbase-5
            qtwayland-5
            zlib))
+    (home-page "https://github.com/shundhammer/qdirstat")
     (synopsis "Storage utilisation visualization tool")
     (description
      "QDirStat is a graphical application to show where your disk space has
 gone and to help you to clean it up.")
-    (home-page "https://github.com/shundhammer/qdirstat")
     (license license:gpl2)))
 
 (define-public nwipe
