@@ -2219,8 +2219,24 @@ static pid_t spawnSlirp4netns(int tapfd, int notifyReadyFD,
         slirpCtx.supplementaryGroups = {};
         slirpCtx.setSupplementaryGroups = true;
     }
-    slirpCtx.seccompFilter = slirpSeccompFilter();
-    slirpCtx.addSeccompFilter = true;
+    /* Unless built with '--enable-kernel=4.3.0' or similar, glibc on i686
+       uses 'socketcall' instead of dedicated system calls like 'socket' and
+       'bind'.  Since the seccomp filter cannot inspect 'socketcall' arguments
+       in a meaningful way, it can only prohibit all 'socketcall' calls; the
+       other option is to disable the seccomp filter entirely, meaning that
+       slirp4netns would have access to abstract unix sockets in the root
+       network namespace.  */
+#ifdef __NR_socketcall
+#ifndef NO_SOCKETCALL_LIBC
+    if(getenv("GUIX_FORCE_SECCOMP") == NULL)
+        printMsg(lvlInfo, "warning: seccomp filter for slirp4netns presumed unusable with this libc, disabling it");
+    else
+#endif
+#endif
+    {
+        slirpCtx.seccompFilter = slirpSeccompFilter();
+        slirpCtx.addSeccompFilter = true;
+    }
 
     /* Silence slirp4netns output unless requested */
     if(verbosity <= lvlInfo) {
