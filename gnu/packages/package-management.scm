@@ -145,7 +145,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE $GUIX_EXTENSIONS_PATH))
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -806,6 +806,48 @@ module} command.  The @command{guix module create} sub-command creates
 with the @command{module} command commonly found on @acronym{HPC,
 high-performance computing} clusters.")
     (license license:gpl3+)))
+
+(define-public guix-xsearch
+  (package
+    (name "guix-xsearch")
+    (version "2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/Baleine/guix-xsearch.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rx1984841jv6y4wkhlfgdjylfffl6zl07scl1l7wgm5kmaqc6br"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "src"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'add-extension-to-search-path
+            (lambda _
+              (with-directory-excursion #$output
+                (mkdir-p "share/guix/extensions")
+                (symlink (string-append #$output
+                          "/share/guile/site/3.0/guix/extensions/xsearch.scm")
+                         "share/guix/extensions/xsearch.scm")))))))
+    ;; Avoid setting guix as propagated so that we use the user’s profile.
+    (native-inputs (list guile-3.0
+                         guile-xapian
+                         guix))
+    (propagated-inputs (list guile-xapian))
+    ;; This is very important since we want the extension to be available
+    ;; without having to add a vanilla guix to the current profile.
+    (native-search-paths
+     (list $GUIX_EXTENSIONS_PATH))
+    (home-page "https://codeberg.org/Baleine/guix-xsearch")
+    (synopsis "Extension for Guix to provide faster search using Xapian")
+    (description
+     "The Guix Xsearch extension is a new implementation of Guix search sped up
+by using a Xapian cache.")
+    (license (list license:gpl3+ license:cc0))))
 
 
 ;;;
