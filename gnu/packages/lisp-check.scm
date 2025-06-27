@@ -8,7 +8,7 @@
 ;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2022, 2023 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2023 Cage <cage-dev@twistfold.it>
 ;;;
@@ -64,6 +64,9 @@
 
 (define-public ecl-1am
   (sbcl-package->ecl-package sbcl-1am))
+
+(define-public clasp-1am
+  (sbcl-package->clasp-package sbcl-1am))
 
 (define-public sbcl-2am
   (let ((commit "1d2fd21bbd8f26ec91b962705cab098dd7b5f11c")
