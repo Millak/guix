@@ -7706,17 +7706,21 @@ environments and back.")
 (define-public python-pyyaml
   (package
     (name "python-pyyaml")
-    (version "6.0.1")
+    (version "6.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyYAML" version))
        (sha256
-        (base32
-         "0hsa7g6ddynifrwdgadqcx80khhblfy94slzpbr7birn2w5ldpxz"))))
-    (build-system python-build-system)
+        (base32 "0gmwggzm0j0iprx074g5hah91y2f68sfhhldq0f8crddj7ndk16m"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
-     (list libyaml python-cython))
+     (list libyaml))
     (home-page "https://pyyaml.org")
     (synopsis "YAML parser and emitter for Python")
     (description
