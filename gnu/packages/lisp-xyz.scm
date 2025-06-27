@@ -31760,6 +31760,9 @@ implement low-level numerical data types and functionality.")
 (define-public ecl-type-templates
   (sbcl-package->ecl-package sbcl-type-templates))
 
+(define-public clasp-type-templates
+  (sbcl-package->clasp-package sbcl-type-templates))
+
 (define-public sbcl-typo
   (let ((commit "0e883490f81edf2a1be4e5b101d1caec78d7853b")
         (revision "0"))
