@@ -6483,7 +6483,7 @@ JWT.  Supported algorithms: HS256, HS384, HS512.")
       (origin
         (method git-fetch)
         (uri (git-reference
-               (url "https://inqlab.net/git/guile-sodium.git")
+               (url "https://codeberg.org/eris/guile-sodium.git")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256 (base32 "189jsj87hycs57a54x0b9lifwvhr63nypb9vfxdrq7rwrpcvi5f8"))))
@@ -6498,7 +6498,7 @@ JWT.  Supported algorithms: HS256, HS384, HS512.")
      "This package provides Guile bindings to the libsodium cryptographic library
 which provides core cryptographic primitives needed to build higher-level
 tools.")
-    (home-page "https://inqlab.net/git/guile-sodium.git")
+    (home-page "https://codeberg.org/eris/guile-sodium")
     (license license:gpl3+)))
 
 (define-public guile-eris
