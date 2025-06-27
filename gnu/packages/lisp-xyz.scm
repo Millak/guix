@@ -13893,6 +13893,9 @@ of a symbol.")
 (define-public ecl-definitions
   (sbcl-package->ecl-package sbcl-definitions))
 
+(define-public clasp-definitions
+  (sbcl-package->clasp-package sbcl-definitions))
+
 (define-public sbcl-definitions-systems
   (package
     (name "sbcl-definitions-systems")
