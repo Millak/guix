@@ -14279,6 +14279,9 @@ and active restarts.")
 (define-public ecl-dissect
   (sbcl-package->ecl-package sbcl-dissect))
 
+(define-public clasp-dissect
+  (sbcl-package->clasp-package sbcl-dissect))
+
 (define-public sbcl-distributions
   (let ((commit "ea72622073ee7e005dfdc621ce1e5a83b22bb39e")
         (revision "0"))
