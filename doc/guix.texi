@@ -42695,8 +42695,7 @@ machine.
     (map (lambda (target)
            (cons "x86_64-linux" target))
          '("aarch64-linux-gnu"
-           "i586-pc-gnu")))
-   (build-priority (const 0))))
+           "i586-pc-gnu")))))
  #:web-server-args
  '(#:event-source "https://example.com"
    #:controller-args
