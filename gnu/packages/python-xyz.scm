@@ -16058,8 +16058,11 @@ command pipeline functionality.")
        (sha256
         (base32
          "1h7g922a8lsqd69j8blgcgg0lcd8kz51b2p4glfqmgx4vi1nkick"))))
-    (build-system python-build-system)
-    (home-page "http://github.com/sandes/zipfly")
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/sandes/zipfly")
     (synopsis "Zip archive generator")
     (description "ZipFly is a zip archive generator.  It was created to
 generate very large zip archives for immediate sending out to clients, or
