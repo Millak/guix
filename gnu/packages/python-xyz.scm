@@ -14940,7 +14940,7 @@ distance between two or more sequences by many algorithms.")
 (define-public python-urwidtrees
   (package
     (name "python-urwidtrees")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
       (origin
         (method git-fetch)
@@ -14952,12 +14952,12 @@ distance between two or more sequences by many algorithms.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-           "1y1vysx7jg0vbrarlsykhf7nmr8fc6k1fva1q3i98xq2m30s6r68"))))
-    (build-system python-build-system)
+           "17k0gx8i7wrzw6skzdjh9b8v3n6lb5zvg9jrybc3d09p8ipvc31i"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f)) ; no tests
     (propagated-inputs (list python-urwid))
-    (native-inputs (list python-mock))
+    (native-inputs (list python-mock python-setuptools python-wheel))
     (home-page "https://github.com/pazz/urwidtrees")
     (synopsis "Tree widgets for urwid")
     (description "Urwidtrees is a Widget Container API for the @code{urwid}
