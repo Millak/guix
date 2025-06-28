@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,21 +67,22 @@
 (define-public python-docker
   (package
     (name "python-docker")
-    (version "5.0.3")
+    (version "7.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "docker" version))
        (sha256
         (base32
-         "1yr7w8vmdis01myx26pqx7wcyz2cy1mfs421alppq3lpc9ms45nr"))))
-    (build-system python-build-system)
+         "0v7s8q2j0khqcd32h50whgi9jlpanhrbh696m6w6r4pqwgk7135d"))))
+    (build-system pyproject-build-system)
     ;; TODO: Tests require a running Docker daemon.
     (arguments '(#:tests? #f))
+    (native-inputs (list python-hatch-vcs python-hatchling))
     (inputs
-     (list python-requests python-six python-urllib3))
+     (list python-requests python-urllib3))
     (propagated-inputs
-     (list python-docker-pycreds python-paramiko ;adds SSH support
+     (list python-paramiko ;adds SSH support
            python-websocket-client))
     (home-page "https://github.com/docker/docker-py/")
     (synopsis "Python client for Docker")
