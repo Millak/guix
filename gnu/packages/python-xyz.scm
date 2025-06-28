@@ -20564,23 +20564,21 @@ manipulation library.")
 (define-public python-uncertainties
   (package
     (name "python-uncertainties")
-    (version "3.1.5")
+    (version "3.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "uncertainties" version))
        (sha256
         (base32
-         "00z9xl40czmqk0vmxjvmjvwb41r893l4dad7nj1nh6blw3kw28li"))))
-    (build-system python-build-system)
+         "0c9hl35jvld1a1vinh9mdcpfgz4ykqinlm1dj917lqbgd0z6b9bn"))))
+    (build-system pyproject-build-system)
     ;; While there are test files, there is no "tests" directory, so the tests
     ;; fail.
     (arguments '(#:tests? #false))
-    (propagated-inputs
-     (list python-future))
     (native-inputs
-     (list python-nose python-numpy))
-    (home-page "https://uncertainties-python-package.readthedocs.io/")
+     (list python-setuptools python-setuptools-scm python-wheel))
+    (home-page "https://uncertainties.readthedocs.io/en/latest/")
     (synopsis "Calculations with uncertainties")
     (description
      "The uncertainties package transparently handles calculations with
