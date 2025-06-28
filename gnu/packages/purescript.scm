@@ -35,13 +35,13 @@
 (define-public purescript
   (package
     (name "purescript")
-    (version "0.15.10")
+    (version "0.15.15")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "purescript" version))
        (sha256
-        (base32 "08pashk8pm4yjsaq2g94sqa2yd3rfq9fwpxa9qccvjv6in9zybf1"))))
+        (base32 "0rqf4bfn11hf2b7k90h82mffqh6rmfz101i69v1ss2gz8zm26jlw"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "purescript")))
     (inputs (list ghc-aeson
