@@ -28,6 +28,7 @@
 
 (define-module (gnu services databases)
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:autoload   (gnu system accounts) (default-shell)
@@ -786,19 +787,29 @@ port=" (number->string port) "
 ;;; Redis
 ;;;
 
-(define-record-type* <redis-configuration>
-  redis-configuration make-redis-configuration
-  redis-configuration?
-  (redis             redis-configuration-redis ;file-like
-                     (default redis))
-  (bind              redis-configuration-bind
-                     (default "127.0.0.1"))
-  (port              redis-configuration-port
-                     (default 6379))
-  (working-directory redis-configuration-working-directory
-                     (default "/var/lib/redis"))
-  (config-file       redis-configuration-config-file
-                     (default #f)))
+(define-maybe string)
+
+(define (uglify-field-name field-name)
+  (string-delete #\? (symbol->string field-name)))
+
+(define (serialize-field field-name val)
+  #~(format #f "~a=~a\n" #$(uglify-field-name field-name) #$val))
+
+(define serialize-string serialize-field)
+(define serialize-number serialize-field)
+
+(define-configuration redis-configuration
+  (redis (package redis)
+         "The Redis package to use.")
+  (bind (string "127.0.0.1")
+        "Network interface on which to listen.")
+  (port (number 6379)
+        "Port on which to accept connections on,
+a value of 0 will disable listening on a TCP socket.")
+  (working-directory (string "/var/lib/redis")
+                     "Directory in which to store the
+database and related files.")
+  (config-file maybe-string "Default location for config file."))
 
 (define (default-redis.conf bind port working-directory)
   (mixed-text-file "redis.conf"
@@ -832,7 +843,8 @@ port=" (number->string port) "
   (match-lambda
     (($ <redis-configuration> redis bind port working-directory config-file)
      (let ((config-file
-            (or config-file
+            (if (maybe-value-set? config-file)
+                config-file
                 (default-redis.conf bind port working-directory))))
        (list (shepherd-service
               (provision '(redis))
@@ -857,3 +869,9 @@ port=" (number->string port) "
                                           (const %redis-accounts))))
                 (default-value (redis-configuration))
                 (description "Run Redis, a caching key/value store.")))
+
+;;;
+;;; Generate documentation.
+;;;
+(define (redis-generate-doc)
+  (configuration->documentation 'redis-configuration))

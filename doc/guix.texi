@@ -28343,29 +28343,46 @@ Additional command line options to pass to @code{memcached}.
 
 @subsubheading Redis
 
+@uref{https://redis.io/, Redis} is an in-memory data store used
+by millions of developers as a cache, vector database, document
+database, streaming engine, and message broker. Redis has built-in
+replication and different levels of on-disk persistence. It supports
+complex data types (for example, strings, hashes, lists, sets, sorted
+sets, and JSON), with atomic operations defined on those data types.
+
 @defvar redis-service-type
-This is the service type for the @uref{https://redis.io/, Redis}
-key/value store, whose value is a @code{redis-configuration} object.
+Type of the service that runs @command{redis}, an in-memory data store.
+The value for this service is a @code{<redis-configuration>} object.
 @end defvar
 
+@c %start of fragment
+
 @deftp {Data Type} redis-configuration
-Data type representing the configuration of redis.
+Available @code{redis-configuration} fields are:
 
 @table @asis
-@item @code{redis} (default: @code{redis})
+@item @code{redis} (default: @code{redis}) (type: package)
 The Redis package to use.
 
-@item @code{bind} (default: @code{"127.0.0.1"})
+@item @code{bind} (default: @code{"127.0.0.1"}) (type: string)
 Network interface on which to listen.
 
-@item @code{port} (default: @code{6379})
+@item @code{port} (default: @code{6379}) (type: number)
 Port on which to accept connections on, a value of 0 will disable
 listening on a TCP socket.
 
-@item @code{working-directory} (default: @code{"/var/lib/redis"})
+@item @code{working-directory} (default: @code{"/var/lib/redis"}) (type: string)
 Directory in which to store the database and related files.
+
+@item @code{config-file} (type: maybe-string)
+Default location for config file.
+
 @end table
+
 @end deftp
+
+
+@c %end of fragment
 
 @node Mail Services
 @subsection Mail Services
