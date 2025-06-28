@@ -1627,9 +1627,9 @@ Sphinx documentation.")
       '(list "-k" "not test_logo")))
     (propagated-inputs
      (list python-beautifulsoup4
-           python-docutils
+           python-docutils-0.19
            python-jinja2
-           python-sphinx))
+           python-sphinx-6))
     (native-inputs
      (list python-pytest python-pytest-regressions
            python-setuptools python-wheel))
