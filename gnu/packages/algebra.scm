@@ -1523,7 +1523,7 @@ for the Coq proof assistant.")
 (define-public givaro
   (package
     (name "givaro")
-    (version "4.1.1")
+    (version "4.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1532,7 +1532,7 @@ for the Coq proof assistant.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11wz57q6ijsvfs5r82masxgr319as92syi78lnl9lgdblpc6xigk"))))
+                "1nmfn9g859c9lwyifqbr0mi3xfhpx970janvm4smjvd9mac1cadx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
