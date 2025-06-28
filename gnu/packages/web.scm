@@ -5637,6 +5637,12 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
        (snippet
         ;; Remove bundled onigurama.
         '(delete-file-recursively "vendor/oniguruma"))))
+    (arguments
+     (if (or (target-x86-32?)
+             (target-arm32?))
+         ;; requires 64bit time_t
+         (list #:make-flags #~'("XFAIL_TESTS=tests/optionaltest"))
+         '()))
     (inputs
      (list oniguruma))
     (native-inputs
