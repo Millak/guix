@@ -181,14 +181,27 @@ sources.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-join
-                    (list
-                     ;; These require Internet access.
-                     "not test_latex_images"
-                     "test_build_latex_doc[lualatex-manual]"
-                     "est_build_latex_doc[lualatex-howto]"
-                     ;; AssertionError: assert...list of weak references to the object...
-                     "test_autodoc_default_options")
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; 1818 passed, 24 skipped, 97 warnings
+                    ;;
+                    ;; AttributeError: module 'alabaster' has no
+                    ;; attribute 'version'
+                    (list "not test_theme_api"
+                          ;; The alabaster extension used by this project
+                          ;; needs at least Sphinx v3.4; it therefore cannot
+                          ;; be built with this version.
+                          "test_needs_sphinx"
+                          ;; Various assertion errors.
+                          "test_additional_targets_should_be_translated"
+                          "test_additional_targets_should_not_be_translated"
+                          "test_autodoc_default_options"
+                          "test_html_code_role"
+                          "test_latex_code_role"
+                          "test_latex_images"
+                          "test_linenothreshold"
+                          "test_literal_include_linenos"
+                          "test_viewcode")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -199,7 +212,7 @@ sources.")
     (propagated-inputs
      (list python-babel
            python-colorama
-           python-docutils
+           python-docutils-0.19
            python-filelock
            python-html5lib
            python-imagesize
@@ -256,6 +269,7 @@ sources.")
            python-cython
            python-flit-core
            python-pytest
+           python-pytest-xdist
            (texlive-local-tree
             (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))))
 
