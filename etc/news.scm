@@ -33,6 +33,7 @@
 ;; Copyright © 2025 Rivulet Cedar <rivulet_cedar@yeah.net>
 ;; Copyright © 2025 jgart <jgart@dismail.de>
 ;; Copyright © 2025 Steve George <steve@futurile.net>
+;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
@@ -43,6 +44,25 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "36cd50d97249f100065d9b6b8b536fd91fddca37")
+        (title
+         (en "@code{home-dotfiles-configuration-excluded}
+also exclude directories")
+         (de "@code{home-dotfiles-configuration-excluded}
+wird auch Verzeichnisse ausschließen")
+         (fr "@code{home-dotfiles-configuration-excluded}
+exclut aussi les dossiers"))
+        (body
+         (en "All files, including directories, matching a pattern in
+@code{home-dotfiles-configuration-excluded} are now excluded.  Making it behave
+like @code{stow}'s @code{--ignore}.")
+         (de "Alle Dateien, auch Verzeichnisse, die auf ein Muster in
+@code{home-dotfiles-configuration-excluded} passen, werden jetzt ausgeschlossen.
+Dadurch verhält es sich wie @code{--ignore} bei @code{stow}.")
+         (fr "Tous les fichiers, y compris les dossiers, correspondant à un
+motif présent dans @code{home-dotfiles-configuration-excluded} sont exclus.
+Rendant son comportement similaire au @code{--ignore} de @code{stow}.")))
 
  (entry (commit "a6292be30be14986c3bb5dcc89d7b833c080483e")
         (title
