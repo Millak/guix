@@ -70,15 +70,28 @@
     (version "7.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "docker" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/docker-py")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0v7s8q2j0khqcd32h50whgi9jlpanhrbh696m6w6r4pqwgk7135d"))))
+        (base32 "1dd4p0xfv6vja4mgzwn2yfyna7vi7bc1pr5f59jg9yd4nxj96kmj"))))
     (build-system pyproject-build-system)
-    ;; TODO: Tests require a running Docker daemon.
-    (arguments '(#:tests? #f))
-    (native-inputs (list python-hatch-vcs python-hatchling))
+    (arguments
+     (list
+      ;; Integration tests need a running Docker daemon.
+      #:test-flags #~(list "--ignore" "tests/integration")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm,
+            ;; but without the git metadata available, the version string
+            ;; is set to '0.0.0'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(package-version this-package)))))))
+    (native-inputs (list python-hatch-vcs python-hatchling python-pytest))
     (inputs
      (list python-requests python-urllib3))
     (propagated-inputs
