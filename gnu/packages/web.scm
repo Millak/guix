@@ -7328,7 +7328,7 @@ command-line arguments or read from stdin.")
 (define-public python-internetarchive
   (package
     (name "python-internetarchive")
-    (version "5.1.0")
+    (version "5.4.0")
     (source
      (origin
        (method git-fetch)
@@ -7338,7 +7338,7 @@ command-line arguments or read from stdin.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "186nx0dj0lgqrqkg9kzng5h0scbz3m6bk44vj83wzckr8yh3q08z"))))
+         "0wfzz22daiax20v0xc2is3i3plk7mcz9m0is52nwdrvx9dazi0nq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7350,19 +7350,14 @@ command-line arguments or read from stdin.")
               " and not test_upload"
               " and not test_ia"))))
     (propagated-inputs
-     (list python-backports-csv
-           python-clint
-           python-docopt
-           python-importlib-metadata
-           python-jsonpatch
+     (list python-jsonpatch
            python-requests
-           python-six
            python-schema
-           python-tqdm))
+           python-tqdm
+           python-urllib3))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
-           python-pytest-capturelog
            python-responses
            python-setuptools
            python-wheel))
