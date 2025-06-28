@@ -3652,6 +3652,49 @@ Color generation may be constrained to obey ANSI color standards, meet
 minimum contrast levels, and more.")
     (license license:expat)))
 
+(define-public rabbitmqadmin
+  (package
+    (name "rabbitmqadmin")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rabbitmq/rabbitmqadmin-ng")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17x28ph4bgdkv66jv4b2nqwixbmi3j2ld4m842jqp808f0nwj7r7"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f         ;Tests require local instance of RabbitMQ broker.
+           #:install-source? #f))
+    (inputs (cons* mimalloc openssl (cargo-inputs 'rabbitmqadmin)))
+    (home-page "https://www.rabbitmq.com/docs/management-cli")
+    (synopsis "Manage RabbitMQ broker via the management plugin")
+    (description
+      "@command{rabbitmqadmin} is a tool to manage RabbitMQ broker via
+management plugin.
+
+It supports many of the operations available in the management UI:
+
+@itemize
+@item Listing objects like virtual hosts, users, queues, streams, permissions,
+policies, and so on.
+@item Creating objects.
+@item Deleting objects.
+@item Access to cluster and node metrics.
+@item Run health checks.
+@item Listing feature flag state.
+@item Listing deprecated features in use across the cluster.
+@item Definition export, transformations, and import.
+@item Operations on shovels.
+@item Operations on federation upstreams and links.
+@item Closing connections.
+@item Rebalancing of queue leaders across cluster nodes.
+@end itemize")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-xremap
   (package
     (name "rust-xremap")
