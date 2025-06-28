@@ -1226,7 +1226,7 @@ scientific documentation.")
 (define-public python-breathe
   (package
     (name "python-breathe")
-    (version "4.35.0")
+    (version "4.36.0")
     (source (origin
               (method git-fetch) ;git repo has tests
               (uri (git-reference
@@ -1235,17 +1235,14 @@ scientific documentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hlcrhr533yjkz9ds83xnmn8h6z3r6vfzz7qrpy14n9j4ysyz59c"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (with-directory-excursion "tests"
-                                (invoke "python" "-m" "pytest" "-v"))))))))
-    (native-inputs (list python-pytest))
-    (propagated-inputs (list python-docutils python-sphinx))
+                "1jzljqiqyb0jdndakyc69l0as1hhp23ipsbqk4i2giknypqbi8ph"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (propagated-inputs
+     (list python-docutils
+           python-sphinx))
     (home-page "https://www.breathe-doc.org")
     (synopsis "ReStructuredText and Sphinx bridge to Doxygen")
     (description "This package is an extension to reStructuredText and Sphinx
