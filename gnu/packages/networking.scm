@@ -100,6 +100,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
@@ -2031,34 +2032,41 @@ round-robin fashion.")
        (uri (pypi-uri name version))
        (sha256
         (base32 "1h36jahbp7273wn3yd747kbiwjc0bm3sja67bcxdsd54ln0vyndg"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'embed-store-file-names
-           (lambda _
-             (substitute* (list "gandi/cli/modules/cert.py"
-                                "gandi/cli/tests/commands/test_certificate.py")
-               (("openssl") (which "openssl")))
-             #t))
-         (add-after 'install 'install-documentation
-           ;; The included man page may be outdated but we install it anyway,
-           ;; since it's mentioned in 'gandi --help' and better than nothing.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (man1 (string-append out "/share/man/man1")))
-               (mkdir-p man1)
-               (with-output-to-file (string-append man1 "/gandi.1")
-                 (lambda _
-                   (invoke "rst2man.py" "gandicli.man.rst")))
-               #t))))))
+     (list
+      #:test-flags
+      #~(list "--pyargs" "gandi.cli")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'embed-store-file-names
+            (lambda _
+              (substitute* (list "gandi/cli/modules/cert.py"
+                                 "gandi/cli/tests/commands/test_certificate.py")
+                (("openssl") (which "openssl")))))
+          (add-after 'install 'install-documentation
+            ;; The included man page may be outdated but we install it anyway,
+            ;; since it's mentioned in 'gandi --help' and better than nothing.
+            (lambda _
+              (let* ((man1 (string-append #$output "/share/man/man1")))
+                (mkdir-p man1)
+                (with-output-to-file (string-append man1 "/gandi.1")
+                  (lambda _
+                    (invoke "rst2man.py" "gandicli.man.rst")))))))))
     (native-inputs
-     (list python-docutils ; for rst2man.py
-           python-pytest python-pytest-cov python-tox))
-    (propagated-inputs
-     (list openssh))           ; used by gandi/cli/modules/iass.py
+     (list python-docutils-0.19
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (inputs
-     (list openssl python-click-7 python-ipy python-pyyaml python-requests))
+     (list openssl
+           python-click-7
+           python-ipy
+           python-pyyaml
+           python-requests))
+    (propagated-inputs
+     (list openssh))
     (home-page "https://cli.gandi.net")
     (synopsis "Command-line interface to the Gandi.net Web API")
     (description
