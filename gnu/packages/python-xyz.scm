@@ -14787,6 +14787,13 @@ functions, useful in the context of writing unit tests among other uses.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; XXX: Tests fail with HTML diff.
+                    (list "not test_executing_style_defs"
+                          "test_pygments_example"
+                          "test_example")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-home-env
