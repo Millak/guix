@@ -2455,7 +2455,7 @@ that best match text queries.")
 (define-public python-mdit-py-plugins
   (package
     (name "python-mdit-py-plugins")
-    (version "0.4.0")
+    (version "0.4.2")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -2464,16 +2464,14 @@ that best match text queries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1790fcf3nd9c5j37fx87x3ivfyihk6l74jxj1qxvw3qfyb96w4k0"))))
+                "0lyv8k3sdm9i9am47z6zx96l9bbd9g8xp06yf2alafkmp0q873b9"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-markdown-it-py
            python-attrs))
     (native-inputs
-     (list python-coverage
-           python-flit-core
+     (list python-flit-core
            python-pytest
-           python-pytest-cov
            python-pytest-regressions))
     (home-page "https://github.com/executablebooks/mdit-py-plugins")
     (synopsis "Collection of plugins for markdown-it-py")
