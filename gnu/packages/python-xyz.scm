@@ -17818,22 +17818,21 @@ export WEATHER_CLI_API=@var{your OpenWeatherMap API key}
 (define-public python-get-version
   (package
     (name "python-get-version")
-    (version "2.1")
+    (version "3.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "get_version" version))
        (sha256
         (base32
-         "1g15jyx33vkxavv9hwv275cs4g9bp2i1y942raw3fxamq8kbaml1"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pygments
-           python-pytest
-           python-pytest-black
-           python-pytest-cov
-           python-setuptools
-           python-testpath))
+         "01afv4fkgrm8v9hiww3qymmx201b6z3f8lc4g6nzq7djappn581x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No tests in PyPI and building from GitHub fails because of the
+     ;; lack of git metadata in the checkout.
+     (list #:tests? #f))
+    (native-inputs (list python-flit-core))
+    (propagated-inputs (list python-dunamai))
     (home-page "https://github.com/flying-sheep/get_version")
     (synopsis "Version helper in the spirit of versioneer")
     (description
