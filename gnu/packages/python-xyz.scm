@@ -17853,21 +17853,11 @@ your package is installed, via @code{pkg_resources} (part of
        (uri (pypi-uri "filetype" version))
        (sha256
         (base32 "1nxa91szfbhhbhvdwj06jz8zghzwgb9lf0v6aj61vx2b8zb6rdb6"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-k"
-                       (string-append
-                        ;; Both tests fail with FileNotFoundError.
-                        "not test_infer_zip_from_disk"
-                        " and not test_infer_tar_from_disk"))))))))
-    (native-inputs
-     (list python-pytest python-pytest-benchmark))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-benchmark
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/h2non/filetype.py")
     (synopsis "Infer file type and MIME type of any file/buffer")
     (description "@code{filetype} is a small and dependency free Python
