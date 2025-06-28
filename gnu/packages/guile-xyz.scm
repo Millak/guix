@@ -872,7 +872,7 @@ generate API documentation for GNU Guile projects.")
 (define-public guile-dotenv
   (package
    (name "guile-dotenv")
-   (version "0.1.1")
+   (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -881,15 +881,28 @@ generate API documentation for GNU Guile projects.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m5jg41cipnpl3w9vzwm50ah0haa2hcwwd7mri7kaa8pr9kfx64j"))))
+        (base32 "0smwlfggvx3dpc1zx8wva9df8nfawcinzizhvk5f3yf7bdyy4rym"))))
    (build-system gnu-build-system)
+   (arguments
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'install 'drop-bin-entrypoint
+           ;; The entrypoint requires guile-config,
+           ;; so it is shipped through the guile-dotenv-cli package.
+           ;; This way guile-dotenv does not need to depend on guile-config.
+           (lambda _
+             (invoke "rm" "-rfv" (string-append #$output "/bin")))))))
    (native-inputs
     (list autoconf
           automake
           gettext-minimal
+          ;; This is needed only to build the entrypoint.
+          guile-config
           pkg-config
           texinfo))
    (inputs (list guile-3.0))
+   (propagated-inputs (list nyacc))
    (synopsis "Read environment variables specifications from @code{.env} files")
    (description "This package provides a simple Guile interface to @code{.env}
 (or dotenv) files.  It implements parsing of files and setting environment
