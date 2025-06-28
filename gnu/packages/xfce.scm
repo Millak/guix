@@ -1372,22 +1372,13 @@ for and start applications.")
     (version (package-version xfce4-session))
     (source #f)
     (build-system trivial-build-system)
-    (arguments
-     '(#:modules ((guix build union))
-       #:builder
-       (begin
-         (use-modules (ice-9 match)
-                      (guix build union))
-         (match %build-inputs
-           (((names . directories) ...)
-            (union-build (assoc-ref %outputs "out")
-                         directories)
-            #t)))))
-    (inputs
+    (arguments '(#:builder (mkdir %output)))
+    (propagated-inputs
      (list exo
            garcon
            adwaita-icon-theme
            elementary-xfce-icon-theme
+           font-dejavu                  ;default font
            greybird-gtk-theme
            hicolor-icon-theme
            mate-polkit-for-xfce
@@ -1417,9 +1408,6 @@ for and start applications.")
            xfce4-clipman-plugin
            xfce4-pulseaudio-plugin
            xfce4-xkb-plugin))
-    (propagated-inputs
-     ;; Default font that applications such as IceCat require.
-     (list font-dejavu))
     (native-search-paths
      ;; For finding panel and thunar plugins.
      (append
