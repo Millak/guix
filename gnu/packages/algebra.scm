@@ -1552,16 +1552,16 @@ compound objects, such as vectors, matrices and univariate polynomials.")
 (define-public fflas-ffpack
   (package
     (name "fflas-ffpack")
-    (version "2.4.3")
+    (version "2.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/linbox-team/fflas-ffpack")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ynbjd72qrwp0b4kpn0p5d7gddpvj8dlb5fwdxajr5pvkvi3if74"))))
+                "1iv8jpiv5k3gcmvnry1jyaw06y8li0gi464ri5a1aa9j6pd5qfqk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
