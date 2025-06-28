@@ -9713,7 +9713,7 @@ Text-based output formats: CSV, XML, Netfilter's LOG, Netfilter's conntrack
                          coreutils
                          pkg-config
                          ;; For rst2man, used to generate the manual page.
-                         python-docutils))
+                         python-docutils-0.19))
     (inputs (list libarchive talloc))
     (home-page "https://github.com/proot-me/PRoot")
     (synopsis "Unprivileged chroot, bind mount, and binfmt_misc")
