@@ -17,6 +17,7 @@
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,28 +92,6 @@
   #:use-module ((guix licenses) #:hide (freetype))
   #:use-module (guix packages)
   #:use-module (guix utils))
-
-(define-public gtk-xfce-engine
-  (package
-    (name "gtk-xfce-engine")
-    (version "2.10.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0g86ywkx0ghzhhn96k88p67bbzlm1aqckly85izp07w80l1934ja"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config intltool))
-    (inputs (list gtk+-2))
-    (home-page "https://www.xfce.org/")
-    (synopsis "GTK+ theme engine for Xfce")
-    (description
-     "Default GTK+ engine and themes for Xfce Desktop Environment.")
-    (license gpl2+)))
 
 (define-public libxfce4util
   (package
