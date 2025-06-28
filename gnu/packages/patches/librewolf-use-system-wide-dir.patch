@@ -5,33 +5,33 @@ diff --git a/toolkit/xre/nsXREDirProvider.cpp b/toolkit/xre/nsXREDirProvider.cpp
 index 0cbc825738..5c0bf6ae7f 100644
 --- a/toolkit/xre/nsXREDirProvider.cpp
 +++ b/toolkit/xre/nsXREDirProvider.cpp
-@@ -280,25 +280,11 @@ nsresult nsXREDirProvider::GetBackgroundTasksProfilesRootDir(
- static nsresult GetSystemParentDirectory(nsIFile** aFile) {
+@@ -282,25 +282,10 @@
+                                          nsCString aName = "LibreWolf"_ns) {
    nsresult rv;
    nsCOMPtr<nsIFile> localDir;
 -#  if defined(XP_MACOSX)
 -  rv = GetOSXFolderType(kOnSystemDisk, kApplicationSupportFolderType,
 -                        getter_AddRefs(localDir));
 -  if (NS_SUCCEEDED(rv)) {
--    rv = localDir->AppendNative("LibreWolf"_ns);
+-    rv = localDir->AppendNative(aName);
 -  }
 -#  else
--  constexpr auto dirname =
+-  ToLowerCase(aName);
+-  nsCString dirname =
 -#    ifdef HAVE_USR_LIB64_DIR
--      "/usr/lib64/librewolf"_ns
+-      "/usr/lib64/"_ns + aName
 -#    elif defined(__OpenBSD__) || defined(__FreeBSD__)
--      "/usr/local/lib/librewolf"_ns
+-      "/usr/local/lib/"_ns + aName
 -#    else
--      "/usr/lib/librewolf"_ns
+-      "/usr/lib/"_ns + aName
 -#    endif
 -      ;
 -  rv = NS_NewNativeLocalFile(dirname, getter_AddRefs(localDir));
 -#  endif
 +  const char* systemParentDir = getenv("ICECAT_SYSTEM_DIR");
 +  if (!systemParentDir || !*systemParentDir) return NS_ERROR_FAILURE;
- 
 +  rv = NS_NewNativeLocalFile(nsDependentCString(systemParentDir),
 +                             getter_AddRefs(localDir));
+ 
    if (NS_SUCCEEDED(rv)) {
      localDir.forget(aFile);
-   }
