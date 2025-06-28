@@ -910,6 +910,82 @@ variables from them.")
    (home-page "https://codeberg.org/fishinthecalculator/dotenv")
    (license license:gpl3+)))
 
+(define-public guile-dotenv-cli
+  (package
+   (inherit guile-dotenv)
+   (name "guile-dotenv-cli")
+   (arguments
+    (list
+     #:modules `((ice-9 match)
+                 (ice-9 ftw)
+                 ,@%default-gnu-imported-modules)
+     #:phases
+     #~(modify-phases %standard-phases
+         (replace 'install
+           (lambda _
+             (mkdir-p (string-append #$output "/bin"))
+             (install-file "./scripts/dotenv"
+                           (string-append #$output "/bin/"))))
+         (add-after 'install 'wrap-binaries
+           (lambda _
+             (let* ((inputs
+                     (list
+                      #$@(map (lambda (input)
+                                (this-package-input input))
+                              '("guile-config"
+                                "guile-dotenv"))))
+                    (compiled-dir
+                     (lambda (out version)
+                       (string-append out "/lib/guile/"
+                                      version "/site-ccache")))
+                    (uncompiled-dir
+                     (lambda (out version)
+                       (string-append out "/share/guile/site"
+                                      (if (string-null? version) "" "/")
+                                      version)))
+                    (dep-path
+                     (lambda (env modules path)
+                       (list env ":" 'prefix
+                             (cons modules
+                                    (map (lambda (input)
+                                           (string-append input path))
+                                         inputs)))))
+                    (bin (string-append #$output "/bin/"))
+                    (site
+                     (uncompiled-dir #$(this-package-input "guile-dotenv") "")))
+                (match (scandir site)
+                  (("." ".." version)
+                   (for-each
+                    (lambda (file)
+                      (wrap-program (string-append bin file)
+                        (dep-path
+                         "GUILE_LOAD_PATH"
+                         (uncompiled-dir
+                          #$(this-package-input "guile-dotenv") version)
+                         (uncompiled-dir "" version))
+                        (dep-path
+                         "GUILE_LOAD_COMPILED_PATH"
+                         (compiled-dir
+                          #$(this-package-input "guile-dotenv") version)
+                         (compiled-dir "" version))))
+                    '("dotenv"))))))))))
+   (inputs
+     (modify-inputs (package-inputs guile-dotenv)
+       (append bash-minimal)))
+   (native-inputs
+    (modify-inputs (package-native-inputs guile-dotenv)
+      ;; As opposed to guile-config, here we need to propagate it.
+      (delete "guile-config")))
+   (propagated-inputs
+    (modify-inputs (package-propagated-inputs guile-dotenv)
+      (prepend guile-config
+               guile-dotenv)))
+   (description
+    (string-append (package-description guile-dotenv)
+                   "\n\nAdditionally, this package provides a @command{dotenv}
+command, exposes part of the @code{guile-dotenv} Guile API as command lines
+invocations."))))
+
 (define-public guile-dsv
   (package
     (name "guile-dsv")
