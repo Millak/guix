@@ -33861,14 +33861,14 @@ positioning, and keyboard input.")
 (define-public python-readme-renderer
   (package
     (name "python-readme-renderer")
-    (version "41.0")
+    (version "44.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "readme_renderer" version))
        (sha256
         (base32
-         "1xvkf2i075rdqkwdrcrw4xglziqd7qs5lb2rbxr5snizi7ji2jsg"))))
+         "1qfiqm3w1ydpbipns5nifa7h4wraxd72nh7imif819mzmd7064l7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -33883,11 +33883,10 @@ positioning, and keyboard input.")
          " and not test_rst_fixtures[test_rst_008.rst]"
          " and not GFM"))))
     (propagated-inputs
-     (list python-bleach
+     (list python-cmarkgfm
            python-docutils
-           python-pygments
-           ;; Optional dependencies.
-           python-cmarkgfm))           ;required by postorius
+           python-nh3
+           python-pygments))
     (native-inputs
      (list python-pytest
            python-setuptools
