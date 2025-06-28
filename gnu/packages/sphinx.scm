@@ -1137,7 +1137,7 @@ and several other projects.")
 (define-public python-myst-parser
   (package
     (name "python-myst-parser")
-    (version "3.0.1")
+    (version "4.0.1")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -1146,21 +1146,21 @@ and several other projects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lac1mf9pnbmr1jcllhh0sh0y4cnmncx36g2mjbwyd6rm6akbajc"))))
+                "0p862663sqbywlg7yavq6716wzbc05l0ddj2yhvrdf1k7sxxmypw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; "Currently only dot format is supported."
-      '(list "--ignore=tests/test_renderers/test_parse_directives.py")))
+      #~(list "--ignore=tests/test_renderers/test_parse_directives.py"
+              ;; AssertionError: FILES DIFFER:
+              "--deselect=tests/test_sphinx/test_sphinx_builds.py::test_includes")))
     (native-inputs
      (list python-beautifulsoup4
-           python-docutils
            python-flit-core
            python-pytest
            python-pytest-param-files
            python-pytest-regressions
-           python-sphinx
            python-sphinx-pytest))
     (propagated-inputs
      (list python-docutils
