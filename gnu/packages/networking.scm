@@ -2022,9 +2022,9 @@ replies, fping will send out a ping packet and move on to the next target in a
 round-robin fashion.")
     (license license:expat)))
 
-(define-public gandi.cli
+(define-public gandi-cli
   (package
-    (name "gandi.cli")
+    (name "gandi-cli")
     (version "1.6")
     (source
      (origin
@@ -2074,6 +2074,9 @@ round-robin fashion.")
 manage, and delete Internet resources from Gandi.net such as domain names,
 virtual machines, and certificates.")
     (license license:gpl3+)))
+
+(define-public gandi.cli
+  (deprecated-package "gandi.cli" gandi-cli))
 
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
