@@ -28598,6 +28598,9 @@ descent parsers without funky syntax or impenetrable macrology.")
 (define-public ecl-smug
   (sbcl-package->ecl-package sbcl-smug))
 
+(define-public clasp-smug
+  (sbcl-package->clasp-package sbcl-smug))
+
 (define-public sbcl-snakes
   (let ((commit "8c7eae579bb24539dbd584a81a1049f3d3ff8bf8")
         (revision "0"))
