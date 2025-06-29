@@ -480,6 +480,9 @@ alternative 4x4 matrix representation.")
 ;; (define-public ecl-3d-transforms
 ;;   (sbcl-package->ecl-package sbcl-3d-transforms))
 
+(define-public clasp-3d-transforms
+  (sbcl-package->clasp-package sbcl-3d-transforms))
+
 (define-public sbcl-3d-vectors
   (let ((commit "257969402864ac3859d77b981abf0aa5373c4e78")
         (revision "2"))
