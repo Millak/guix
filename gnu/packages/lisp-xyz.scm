@@ -5092,6 +5092,9 @@ transforming Common Lisp code to continuation passing style.")
 (define-public ecl-cl-cont
   (sbcl-package->ecl-package sbcl-cl-cont))
 
+(define-public clasp-cl-cont
+  (sbcl-package->clasp-package sbcl-cl-cont))
+
 (define-public sbcl-cl-containers
   (let ((commit "781ebfe0888bae46f07c018f7d473898b1bd4f5f")
         (revision "4"))
