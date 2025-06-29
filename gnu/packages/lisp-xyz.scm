@@ -21005,6 +21005,9 @@ LispWorks library that are used in software such as ContextL.")
 (define-public ecl-lw-compat
   (sbcl-package->ecl-package sbcl-lw-compat))
 
+(define-public clasp-lw-compat
+  (sbcl-package->clasp-package sbcl-lw-compat))
+
 (define-public sbcl-lzlib
   (let ((commit "22767ca12d1c1bd59a7ae1f9c5ef7d2e937206bb")
         (revision "2"))
