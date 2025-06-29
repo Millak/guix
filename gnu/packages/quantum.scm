@@ -35,12 +35,16 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rigetti/rpcq")
-             (commit (string-append "v" version))))
+              (url "https://github.com/rigetti/rpcq")
+              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-rpcq" version))
        (sha256
         (base32 "1bvppxlacvp0pfdbpn7ls1zxd127jacl225ds7lph5s8f8cyvf17"))))
     (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+      ;; TODO: https://github.com/rigetti/rpcq/issues/161
+      #:tests? #f))
     (native-inputs (list sbcl-fiasco))
     (inputs
      (list sbcl-alexandria
