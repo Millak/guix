@@ -2123,6 +2123,67 @@ tool):
 systemctl restart guix-daemon.service
 @end example
 
+While this works for @file{guix-install.sh}, it will most likely not
+work if you installed Guix through the package manager of another
+distribution (for instance with sudo apt install guix, pacman -S guix,
+etc) because on many distributions @file{guix-daemon.service} will only
+run the Guix daemon provided by the distribution.
+
+Waiting for your distribution to provide security fixes sometimes work,
+but fixing security issues in the Guix package takes times for
+distributions because Guix doesn't backport the security fixes to the
+releases used by the distributions. On some distribution versions, the
+Guix package is never fixed.
+
+However since Guix updates also comes with a new daemon, so you can
+simply configure your distribution to use the guix-daemon provided by
+Guix instead. The following will assume that your distribution uses
+systemd.
+
+You first need to override @file{guix-daemon.service} with the following
+command:
+
+@example
+sudo install -m 644 \
+     /lib/systemd/system/guix-daemon.service \
+     /etc/systemd/system/guix-daemon.service
+@end example
+
+You will then need to edit @file{/etc/systemd/system/guix-daemon.service}. To do
+that open this file with a text editor that has root permissions:
+
+@example
+sudo $EDITOR /etc/systemd/system/guix-daemon.service
+@end example
+
+Then try to find a line with @emph{ExecStart=}, it should look a bit
+like that:
+@example
+...
+[Service]
+ExecStart=/usr/bin/guix-daemon --build-users-group=_guixbuild
+...
+@end example
+
+Then change @emph{/usr/bin/guix-daemon} into
+@emph{/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon} and
+save the changes.
+
+Once done you need to tell systemd that @emph{guix-daemon.service} was
+overriden:
+
+@example
+sudo systemctl daemon-reload
+@end example
+
+Once done you can then update the Guix daemon in the same way than if
+you installed Guix with @file{guix-install.sh}:
+
+@example
+sudo -i guix pull
+sudo systemctl restart guix-daemon.service
+@end example
+
 On Guix System, upgrading the daemon is achieved by reconfiguring the
 system (@pxref{Invoking guix system, @code{guix system reconfigure}}).
 
