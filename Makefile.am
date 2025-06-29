@@ -172,6 +172,7 @@ MODULES =					\
   guix/build-system/haskell.scm		\
   guix/build-system/julia.scm			\
   guix/build-system/linux-module.scm		\
+  guix/build-system/luanti.scm		\
   guix/build-system/maven.scm			\
   guix/build-system/meson.scm			\
   guix/build-system/minetest.scm		\
@@ -238,6 +239,7 @@ MODULES =					\
   guix/build/gnu-build-system.scm		\
   guix/build/gnu-dist.scm			\
   guix/build/guile-build-system.scm		\
+  guix/build/luanti-build-system.scm		\
   guix/build/maven-build-system.scm		\
   guix/build/minetest-build-system.scm		\
   guix/build/mix-build-system.scm		\
@@ -310,6 +312,7 @@ MODULES =					\
   guix/import/json.scm				\
   guix/import/kde.scm				\
   guix/import/launchpad.scm   			\
+  guix/import/luanti.scm   			\
   guix/import/minetest.scm   			\
   guix/import/nuget.scm   			\
   guix/import/npm-binary.scm			\
@@ -366,6 +369,7 @@ MODULES =					\
   guix/scripts/import/hackage.scm		\
   guix/scripts/import/hexpm.scm			\
   guix/scripts/import/json.scm  		\
+  guix/scripts/import/luanti.scm  		\
   guix/scripts/import/minetest.scm  		\
   guix/scripts/import/npm-binary.scm		\
   guix/scripts/import/opam.scm			\
@@ -579,9 +583,9 @@ SCM_TESTS =					\
   tests/inferior.scm				\
   tests/ipfs.scm				\
   tests/lint.scm				\
+  tests/luanti.scm				\
   tests/machine/hetzner.scm                     \
   tests/machine/hetzner/http.scm                 \
-  tests/minetest.scm				\
   tests/modules.scm				\
   tests/monads.scm				\
   tests/nar.scm				\

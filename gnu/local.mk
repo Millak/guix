@@ -470,6 +470,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/loko.scm				\
   %D%/packages/lsof.scm				\
   %D%/packages/lua.scm				\
+  %D%/packages/luanti.scm			\
   %D%/packages/lxde.scm				\
   %D%/packages/lxqt.scm				\
   %D%/packages/m4.scm				\

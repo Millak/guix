@@ -621,10 +621,10 @@ ecosystem."
         #:scope (list "gnu/packages/emulators.scm"
                       "gnu/packages/games.scm"
                       "gnu/packages/game-development.scm"
-                      "gnu/packages/minetest.scm"
+                      "gnu/packages/luanti.scm"
                       "gnu/packages/esolangs.scm" ; granted, rather niche
                       "gnu/packages/motti.scm"
-                      "guix/build/minetest-build-system.scm")))
+                      "guix/build/luanti-build-system.scm")))
 
 (define-team gnome
   (team 'gnome

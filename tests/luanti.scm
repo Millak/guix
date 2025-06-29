@@ -16,17 +16,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (test-minetest)
-  #:use-module (guix build-system minetest)
+(define-module (test-luanti)
+  #:use-module (guix build-system luanti)
   #:use-module (guix upstream)
   #:use-module (guix memoization)
-  #:use-module (guix import minetest)
+  #:use-module (guix import luanti)
   #:use-module (guix import utils)
   #:use-module (guix tests)
   #:use-module (guix packages)
   #:use-module (guix git-download)
-  #:use-module ((gnu packages minetest)
-                #:select (minetest minetest-technic))
+  #:use-module ((gnu packages luanti)
+                #:select (luanti luanti-technic))
   #:use-module ((gnu packages base)
                 #:select (hello))
   #:use-module (json)
@@ -40,7 +40,7 @@
 ;; Some procedures for populating a ‘fake’ ContentDB server.
 
 (define* (make-package-sexp #:key
-                            (guix-name "minetest-foo")
+                            (guix-name "luanti-foo")
                             ;; This is not a proper version number but
                             ;; ContentDB often does not include version
                             ;; numbers.
@@ -66,7 +66,7 @@
         (sha256
          (base32 #f))
         (file-name (git-file-name name version))))
-     (build-system minetest-mod-build-system)
+     (build-system luanti-mod-build-system)
      ,@(maybe-propagated-inputs inputs)
      (home-page ,home-page)
      (synopsis ,synopsis)
@@ -112,7 +112,7 @@
     ("thumbnail" . null)
     ("title" . "The name")
     ("type" . ,type)
-    ("url" . ,(string-append "https://content.minetest.net/packages/"
+    ("url" . ,(string-append "https://content.luanti.net/packages/"
                              author "/" name "/download/"))
     ("website" . ,website)))
 
@@ -120,8 +120,8 @@
   `#((("commit" . ,commit)
       ("downloads" . 469)
       ("id" . 8614)
-      ("max_minetest_version" . null)
-      ("min_minetest_version" . null)
+      ("max_luanti_version" . null)
+      ("min_luanti_version" . null)
       ("release_date" . "2021-07-25T01:10:23.207584")
       ("title" . ,title))))
 
@@ -149,7 +149,7 @@
 (define (call-with-packages thunk . argument-lists)
   ;; Don't reuse results from previous tests.
   (invalidate-memoization! contentdb-fetch)
-  (invalidate-memoization! minetest->guix-package)
+  (invalidate-memoization! luanti->guix-package)
   (define (scm->json-port scm)
     (open-input-string (scm->json-string scm)))
   (define (handle-package url requested-author requested-name . rest)
@@ -215,10 +215,10 @@
         (parameterize ((%contentdb-api "mock://api/"))
           (thunk))))
 
-(define* (minetest->guix-package* #:key (author "Author") (name "foo")
+(define* (luanti->guix-package* #:key (author "Author") (name "foo")
                                   (sort %default-sort-key)
                                   #:allow-other-keys)
-  (minetest->guix-package (string-append author "/" name) #:sort sort))
+  (luanti->guix-package (string-append author "/" name) #:sort sort))
 
 (define (imported-package-sexp* primary-arguments . secondary-arguments)
   "Ask the importer to import a package specified by PRIMARY-ARGUMENTS,
@@ -227,7 +227,7 @@ SECONDARY-ARGUMENTS are available on ContentDB."
   (apply call-with-packages
          (lambda ()
            ;; The memoization cache is reset by call-with-packages
-           (apply minetest->guix-package* primary-arguments))
+           (apply luanti->guix-package* primary-arguments))
    primary-arguments
    secondary-arguments))
 
@@ -247,14 +247,14 @@ during a dynamic extent where that package is available on ContentDB."
     (apply make-package-sexp primary-arguments)
     (imported-package-sexp* primary-arguments extra-arguments ...)))
 
-(test-begin "minetest")
+(test-begin "luanti")
 
 
 ;; Package names
-(test-package "minetest->guix-package")
-(test-package "minetest->guix-package, _ → - in package name"
+(test-package "luanti->guix-package")
+(test-package "luanti->guix-package, _ → - in package name"
               #:name "foo_bar"
-              #:guix-name "minetest-foo-bar"
+              #:guix-name "luanti-foo-bar"
               #:upstream-name "Author/foo_bar")
 
 (test-equal "elaborate names, unambiguous"
@@ -284,19 +284,19 @@ during a dynamic extent where that package is available on ContentDB."
 
 
 ;; Determining the home page
-(test-package "minetest->guix-package, website is used as home page"
+(test-package "luanti->guix-package, website is used as home page"
               #:home-page "web://site"
               #:website "web://site")
-(test-package "minetest->guix-package, if absent, the forum is used"
-              #:home-page '(minetest-topic 628)
+(test-package "luanti->guix-package, if absent, the forum is used"
+              #:home-page '(luanti-topic 628)
               #:forums 628
               #:website 'null)
-(test-package "minetest->guix-package, if absent, the git repo is used"
-              #:home-page "https://github.com/minetest-mods/mesecons"
+(test-package "luanti->guix-package, if absent, the git repo is used"
+              #:home-page "https://github.com/luanti-mods/mesecons"
               #:forums 'null
               #:website 'null
-              #:repo "https://github.com/minetest-mods/mesecons")
-(test-package "minetest->guix-package, all home page information absent"
+              #:repo "https://github.com/luanti-mods/mesecons")
+(test-package "luanti->guix-package, all home page information absent"
               #:home-page #f
               #:forums 'null
               #:website 'null
@@ -316,55 +316,55 @@ during a dynamic extent where that package is available on ContentDB."
 
 
 ;; Dependencies
-(test-package* "minetest->guix-package, unambiguous dependency"
+(test-package* "luanti->guix-package, unambiguous dependency"
   (list #:requirements '(("mesecons" #f
                           ("Jeija/mesecons"
                            "some-modpack/containing-mese")))
-        #:inputs '("minetest-mesecons"))
+        #:inputs '("luanti-mesecons"))
   (list #:author "Jeija" #:name "mesecons")
   (list #:author "some-modpack" #:name "containing-mese" #:type "modpack"))
 
-(test-package* "minetest->guix-package, ambiguous dependency (highest score)"
+(test-package* "luanti->guix-package, ambiguous dependency (highest score)"
   (list #:name "frobnicate"
-        #:guix-name "minetest-frobnicate"
+        #:guix-name "luanti-frobnicate"
         #:upstream-name "Author/frobnicate"
         #:requirements '(("frob" #f
                           ("Author/foo" "Author/bar")))
         ;; #:sort "score" is the default
-        #:inputs '("minetest-bar"))
+        #:inputs '("luanti-bar"))
   (list #:author "Author" #:name "foo" #:score 0)
   (list #:author "Author" #:name "bar" #:score 9999))
 
-(test-package* "minetest->guix-package, ambiguous dependency (most downloads)"
+(test-package* "luanti->guix-package, ambiguous dependency (most downloads)"
   (list #:name "frobnicate"
-        #:guix-name "minetest-frobnicate"
+        #:guix-name "luanti-frobnicate"
         #:upstream-name "Author/frobnicate"
         #:requirements '(("frob" #f
                           ("Author/foo" "Author/bar")))
-        #:inputs '("minetest-bar")
+        #:inputs '("luanti-bar")
         #:sort "downloads")
   (list #:author "Author" #:name "foo" #:downloads 0)
   (list #:author "Author" #:name "bar" #:downloads 9999))
 
-(test-package "minetest->guix-package, optional dependency"
+(test-package "luanti->guix-package, optional dependency"
               #:requirements '(("mesecons" #t
                                 ("Jeija/mesecons"
                                  "some-modpack/containing-mese")))
               #:inputs '())
 
 ;; See e.g. 'orwell/basic_trains'
-(test-package* "minetest->guix-package, multiple dependencies implemented by one mod"
+(test-package* "luanti->guix-package, multiple dependencies implemented by one mod"
   (list #:name "frobnicate"
-        #:guix-name "minetest-frobnicate"
+        #:guix-name "luanti-frobnicate"
         #:upstream-name "Author/frobnicate"
         #:requirements '(("frob" #f ("Author/frob"))
                          ("frob_x" #f ("Author/frob")))
-        #:inputs '("minetest-frob"))
+        #:inputs '("luanti-frob"))
   (list #:author "Author" #:name "frob"))
 
 
 ;; License
-(test-package "minetest->guix-package, identical licenses"
+(test-package "luanti->guix-package, identical licenses"
               #:guix-license 'license:lgpl3+
               #:license "LGPL-3.0-or-later"
               #:media-license "LGPL-3.0-or-later")
@@ -397,7 +397,7 @@ during a dynamic extent where that package is available on ContentDB."
 
 (define* (expected-sexp #:key
                         (repo "https://example.org/foo.git")
-                        (guix-name "minetest-foo")
+                        (guix-name "luanti-foo")
                         (new-version "0.8")
                         (commit "44941798d222901b8f381b3210957d880b90a2fc")
                         #:allow-other-keys)
@@ -410,7 +410,7 @@ during a dynamic extent where that package is available on ContentDB."
                           (commit "44941798d222901b8f381b3210957d880b90a2fc")
                           #:allow-other-keys)
   (package
-    (name "minetest-foo")
+    (name "luanti-foo")
     (version old-version)
     (source
      (if (eq? source 'auto)
@@ -422,7 +422,7 @@ during a dynamic extent where that package is available on ContentDB."
            (sha256 #f) ; not important for the following tests
            (file-name (git-file-name name version)))
          source))
-    (build-system minetest-mod-build-system)
+    (build-system luanti-mod-build-system)
     (license #f)
     (synopsis #f)
     (description #f)
@@ -434,7 +434,7 @@ during a dynamic extent where that package is available on ContentDB."
     (expected-sexp . arguments)
     (and=>
      (call-with-packages
-      (cut latest-minetest-release (example-package . arguments))
+      (cut latest-luanti-release (example-package . arguments))
       (list . arguments))
      upstream-source->sexp)))
 
@@ -442,7 +442,7 @@ during a dynamic extent where that package is available on ContentDB."
   (test-equal test-case
     #f
     (call-with-packages
-     (cut latest-minetest-release (example-package . arguments))
+     (cut latest-luanti-release (example-package . arguments))
      (list . arguments))))
 
 (test-release "same version"
@@ -474,25 +474,25 @@ during a dynamic extent where that package is available on ContentDB."
   #:old-version "2014-11-07" #:title "0.8"
   #:commit "c8855b991880897b2658dc90164e29c96e2aeb3a")
 
-;; Don't let "guix refresh -t minetest" tell there are new versions
+;; Don't let "guix refresh -t luanti" tell there are new versions
 ;; if Guix has insufficient information to actually perform the update,
 ;; when using --with-latest or "guix refresh -u".
 (test-no-release "no commit information, no new release"
   #:old-version "0.8" #:title "0.9.0" #:new-version "0.9.0"
   #:commit #false)
 
-(test-assert "minetest is not a minetest mod"
-  (not (minetest-package? minetest)))
-(test-assert "GNU hello is not a minetest mod"
-  (not (minetest-package? hello)))
-(test-assert "technic is a minetest mod"
-  (minetest-package? minetest-technic))
+(test-assert "luanti is not a luanti mod"
+  (not (luanti-package? luanti)))
+(test-assert "GNU hello is not a luanti mod"
+  (not (luanti-package? hello)))
+(test-assert "technic is a luanti mod"
+  (luanti-package? luanti-technic))
 (test-assert "upstream-name is required"
-  (not (minetest-package?
-        (package (inherit minetest-technic)
+  (not (luanti-package?
+        (package (inherit luanti-technic)
                  (properties '())))))
 
-(test-end "minetest")
+(test-end "luanti")
 
 ;;; Local Variables:
 ;;; eval: (put 'test-package* 'scheme-indent-function 1)

@@ -50,7 +50,8 @@
 ;; The list of all known importers.  These are printed in order by SHOW-HELP, so
 ;; please keep this list alphabetically sorted!
 (define importers '("composer" "cpan" "cran" "crate" "egg" "elm" "elpa"
-                    "gem" "gnu" "go" "hackage" "hexpm" "json" "minetest"
+                    "gem" "gnu" "go" "hackage" "hexpm" "json" "luanti"
+                    "minetest"          ; deprecated
                     "npm-binary" "nuget" "opam" "pypi" "stackage" "texlive"))
 
 (define (resolve-importer name)

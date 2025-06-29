@@ -143,10 +143,10 @@ gnu/packages/firmware\.scm                         @guix/embedded
 gnu/packages/emulators\.scm                        @guix/games
 gnu/packages/games\.scm                            @guix/games
 gnu/packages/game-development\.scm                 @guix/games
-gnu/packages/minetest\.scm                         @guix/games
+gnu/packages/luanti\.scm                           @guix/games
 gnu/packages/esolangs\.scm                         @guix/games
 gnu/packages/motti\.scm                            @guix/games
-guix/build/minetest-build-system\.scm              @guix/games
+guix/build/luanti-build-system\.scm                @guix/games
 
 etc/teams/gnome                                    @guix/gnome
 gnu/packages/glib\.scm                             @guix/gnome
