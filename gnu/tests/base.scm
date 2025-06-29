@@ -176,28 +176,6 @@ grep --version
 info --version")
                                     marionette)))
 
-          (test-assert "/etc/profile.d is sourced"
-            (zero? (marionette-eval '(system "
-. /etc/profile
-set -e -x
-test -f /etc/profile.d/test_profile_d.sh
-test \"$PROFILE_D_OK\" = yes")
-                                    marionette)))
-
-          (test-assert "/etc/bashrc.d is sourced"
-            (zero? (marionette-eval
-                    '(system* "bash"
-                              "-i" ;run interactively
-                              #$(plain-file "test_bashrc_d.sh"
-                                            "\
-. /etc/bashrc
-set -e -x
-test -f /etc/bashrc.d/bash_completion.sh
-test -f /etc/bashrc.d/aliases.sh
-test -f /etc/bashrc.d/test_bashrc_d.sh
-test \"$BASHRC_D_OK\" = yes"))
-                    marionette)))
-
           (test-equal "special files"
             '#$special-files
             (marionette-eval
@@ -634,7 +612,38 @@ functionality tests, using the given KERNEL.")
       ;; 'system-qemu-image/shared-store-script'.
       (run-basic-test (virtualized-operating-system os '())
                       #~(list #$vm)
-                      name)))))
+                      name
+                      ;; Add extra tests for the etc-profile-d-service-type
+                      ;; and etc-bashrc-d-service-type services defined above.
+                      ;; Those tests cannot directly be part of the
+                      ;; run-basic-test procedure that is used in many other
+                      ;; locations.
+                      #:extra-tests
+                      (lambda (marionette)
+                        #~(begin
+                            (test-assert "/etc/profile.d is sourced"
+                              (zero?
+                               (marionette-eval '(system "
+. /etc/profile
+set -e -x
+test -f /etc/profile.d/test_profile_d.sh
+test \"$PROFILE_D_OK\" = yes")
+                                                #$marionette)))
+
+                            (test-assert "/etc/bashrc.d is sourced"
+                              (zero?
+                               (marionette-eval
+                                '(system* "bash"
+                                          "-i" ;run interactively
+                                          #$(plain-file "test_bashrc_d.sh"
+                                                        "\
+. /etc/bashrc
+set -e -x
+test -f /etc/bashrc.d/bash_completion.sh
+test -f /etc/bashrc.d/aliases.sh
+test -f /etc/bashrc.d/test_bashrc_d.sh
+test \"$BASHRC_D_OK\" = yes"))
+                                #$marionette))))))))))
 
 (define %test-basic-os
   (test-basic-os))
