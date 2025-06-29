@@ -21408,6 +21408,9 @@ addition, removal, and random selection.")
 (define-public ecl-map-set
   (sbcl-package->ecl-package sbcl-map-set))
 
+(define-public clasp-map-set
+  (sbcl-package->clasp-package sbcl-map-set))
+
 ;;; The following package is renamed from "markup" to "markup-reader" in order
 ;;; not to conflict with the "cl-markup" package.
 (define-public sbcl-markup-reader
