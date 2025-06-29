@@ -26929,6 +26929,9 @@ portable, safe printable, 7-bit ASCII format.")
 (define-public ecl-s-base64
   (sbcl-package->ecl-package sbcl-s-base64))
 
+(define-public clasp-s-base64
+  (sbcl-package->clasp-package sbcl-s-base64))
+
 (define-public sbcl-s-graphviz
   (let ((commit "a06d9573f0d4e21751b0ae782515b63a40ad6eae")
         (revision "1"))
