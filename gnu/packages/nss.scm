@@ -296,7 +296,7 @@ security standards.")
   (package
    (inherit nss)
    (name "nss-rapid")
-   (version "3.110")
+   (version "3.113")
    (source (origin
              (inherit (package-source nss))
              (uri (let ((version-with-underscores
@@ -307,7 +307,7 @@ security standards.")
                      "nss-" version ".tar.gz")))
              (sha256
               (base32
-               "09xfndqj07wy28l7jnk01gqa4bh55nz6cldlp5qpg8120k211mlw"))))
+               "03qwl3ps3xgc9pkc07qrsa4vd2r57mjwicv3gb483gfk2ashdvxc"))))
    (arguments
     (substitute-keyword-arguments (package-arguments nss)
       ((#:phases phases)
@@ -348,7 +348,7 @@ security standards.")
                      ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                      ;; work around that, set the time to roughly the release date.
                      (invoke #$(if (target-64bit?) "faketime" "datefudge")
-                            "2025-03-28" "./nss/tests/all.sh"))
+                            "2025-06-19" "./nss/tests/all.sh"))
                    (format #t "test suite not run~%"))))))))
    (propagated-inputs
         (modify-inputs (package-propagated-inputs nss)
