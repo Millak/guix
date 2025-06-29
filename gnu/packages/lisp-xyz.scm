@@ -25969,6 +25969,9 @@ writing code that contains string literals that contain code themselves.")
 (define-public ecl-pythonic-string-reader
   (sbcl-package->ecl-package sbcl-pythonic-string-reader))
 
+(define-public clasp-pythonic-string-reader
+  (sbcl-package->clasp-package sbcl-pythonic-string-reader))
+
 (define-public sbcl-pzmq
   (let ((commit "6f7b2ca02c23ea53510a9b0e0f181d5364ce9d32")
         (revision "2"))
