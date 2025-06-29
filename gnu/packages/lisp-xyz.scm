@@ -401,6 +401,9 @@ most modern systems and compilers.")
 ;; (define-public ecl-3d-quaternions
 ;;   (sbcl-package->ecl-package sbcl-3d-quaternions))
 
+(define-public clasp-3d-quaternions
+  (sbcl-package->clasp-package sbcl-3d-quaternions))
+
 (define-public sbcl-3d-spaces
   (let ((commit "a93f4915affcf65617366297ad8bd2ec77bae702")
         (revision "0"))
