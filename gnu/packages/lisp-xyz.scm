@@ -24392,6 +24392,9 @@ features.  Any resemblance to esrap-liquid is merely coincidental.")
 (define-public ecl-parseq
   (sbcl-package->ecl-package sbcl-parseq))
 
+(define-public clasp-parseq
+  (sbcl-package->clasp-package sbcl-parseq))
+
 (define-public sbcl-parser-combinators
   (let ((commit "9c7569a4f6af5e60c0d3a51d9c15c16d1714c845")
         (revision "1"))
