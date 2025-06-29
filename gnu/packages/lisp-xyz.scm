@@ -17427,6 +17427,9 @@ from GLSL as data.")
 (define-public ecl-glsl-spec
   (sbcl-package->ecl-package sbcl-glsl-spec))
 
+(define-public clasp-glsl-spec
+  (sbcl-package->clasp-package sbcl-glsl-spec))
+
 (define-public sbcl-glsl-toolkit
   (let ((commit "4c4889e75c635772c4df70b11d6f14e7a596da43")
         (revision "2"))
