@@ -33108,6 +33108,9 @@ trivially.")
 (define-public ecl-xml-emitter
   (sbcl-package->ecl-package sbcl-xml-emitter))
 
+(define-public clasp-xml-emitter
+  (sbcl-package->clasp-package sbcl-xml-emitter))
+
 (define-public sbcl-xmls
   (package
     (name "sbcl-xmls")
