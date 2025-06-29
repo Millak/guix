@@ -25971,6 +25971,9 @@ the CFFI approach used by burgled-batteries, but has the same goal.")
 (define-public ecl-py4cl
   (sbcl-package->ecl-package sbcl-py4cl))
 
+(define-public clasp-py4cl
+  (sbcl-package->clasp-package sbcl-py4cl))
+
 (define-public sbcl-pythonic-string-reader
   (let ((commit "47a70ba1e32362e03dad6ef8e6f36180b560f86a"))
     (package
