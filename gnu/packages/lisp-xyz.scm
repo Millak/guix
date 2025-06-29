@@ -2016,6 +2016,9 @@ and a variant called ascii85, used by git for binary diff files.")
 (define-public cl-binascii
   (sbcl-package->cl-source-package sbcl-binascii))
 
+(define-public clasp-binascii
+  (sbcl-package->clasp-package sbcl-binascii))
+
 (define-public sbcl-binding-arrows
   ;; Fork of sbcl-arrows that does not have a new tag.
   (let ((commit "46bcba8bb1ff27cd5caab3bda36f000d0489a4f2")
