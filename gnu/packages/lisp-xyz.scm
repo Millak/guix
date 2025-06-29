@@ -25493,6 +25493,9 @@ project and its dependencies.")
 (define-public ecl-print-licenses
   (sbcl-package->ecl-package sbcl-print-licenses))
 
+(define-public clasp-print-licenses
+  (sbcl-package->clasp-package sbcl-print-licenses))
+
 (define-public cl-print-licenses
   (sbcl-package->cl-source-package sbcl-print-licenses))
 
