@@ -1591,7 +1591,7 @@ algebra, such as the row echelon form.")
 (define-public linbox
   (package
     (name "linbox")
-    (version "1.6.3")
+    (version "1.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1600,8 +1600,7 @@ algebra, such as the row echelon form.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10j6dspbsq7d2l4q3y0c1l1xwmaqqba2fxg59q5bhgk9h5d7q571"))
-              (patches (search-patches "linbox-fix-pkgconfig.patch"))))
+                "0kr95ah0ss5s4j8kwxqlg395wraf32rdrmy83jfblg0avxmkhvwr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
