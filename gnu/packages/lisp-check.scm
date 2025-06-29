@@ -127,6 +127,9 @@ minimal dependencies on DISSECT.")
 (define-public ecl-assertion-error
   (sbcl-package->ecl-package sbcl-assertion-error))
 
+(define-public clasp-assertion-error
+  (sbcl-package->clasp-package sbcl-assertion-error))
+
 (define-public cl-assertion-error
   (sbcl-package->cl-source-package sbcl-assertion-error))
 
