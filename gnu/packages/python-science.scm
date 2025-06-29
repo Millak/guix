@@ -706,6 +706,67 @@ possible to interoperate several fitting programs.  Particular interest is
 given to programs dedicated to amplitude analyses.")
     (license license:bsd-3)))
 
+(define-public python-deepdish
+  ;; XXX: The project may no longer be compatible with the version of NumPy
+  ;; packed in Guix (now 1.24.4), use the latest commit containing fixes.
+  ;; See: <https://github.com/uchicago-cs/deepdish/issues/50>.
+  ;; However, there is a maintained fork that appears to be a good
+  ;; replacement: https://github.com/portugueslab/flammkuchen.
+  (let ((commit "3f2dff7a03f1b31f6924b665ad5b8c299329c1cd")
+        (revision "0"))
+    (package
+      (name "python-deepdish")
+      (version (git-version "0.3.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/uchicago-cs/deepdish")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1n3r6z5zd18kdmzyg1gkm9lqi573szlxbls1ck5wjn4a14ar9fw3"))))
+      (arguments
+       ;; Disable few failing tests to pass the build.
+       (list
+        #:test-flags
+        #~(list "-k" (string-append "not test_pad"
+                                    " and not test_pad_repeat_border"
+                                    " and not test_pad_repeat_border_corner"
+                                    " and not test_pad_to_size"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'dont-vendor-six
+              (lambda _
+                (delete-file "deepdish/six.py")
+                (substitute* "deepdish/io/hdf5io.py"
+                  (("from deepdish import six") "import six"))
+                (substitute* "deepdish/io/ls.py"
+                  (("from deepdish import io, six, __version__")
+                   "from deepdish import io, __version__
+import six
+")))))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-pandas
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-numpy
+             python-scipy
+             python-six
+             python-tables))
+      (home-page "https://github.com/uchicago-cs/deepdish")
+      (synopsis "Python library for HDF5 file saving and loading")
+      (description
+       "Deepdish is a Python library to load and save HDF5 files.
+The primary feature of deepdish is its ability to save and load all kinds of
+data as HDF5.  It can save any Python data structure, offering the same ease
+of use as pickling or @code{numpy.save}, but with the language
+interoperability offered by HDF5.")
+      (license license:bsd-3))))
+
 (define-public python-ecos
   (package
     (name "python-ecos")
@@ -1008,6 +1069,81 @@ volume computations for simple domains like regular polygons, disks,
 spheres, cubes, etc.")
     (license license:gpl3+)))
 
+(define-public python-modin
+  (package
+    (name "python-modin")
+    (version "0.32.0")
+    (source
+     (origin
+       ;; The archive on pypi does not include all required files.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/modin-project/modin")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1vb3iffgspryb6nvwiwdnypb922vkn2yvyzc1y0wwxcb0c0fl78d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; These four tests fail because an expected error is not raised.
+              "-k" "not test_binary_bad_broadcast")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'loosen-requirements
+           (lambda _
+             (substitute* "setup.py"
+               ;; Don't depend on a specific version of Pandas.
+               (("pandas==") "pandas>="))))
+         (replace 'check
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
+             (when tests?
+               (setenv "MODIN_ENGINE" "dask")
+               (apply invoke "python" "-m" "pytest"
+                      "modin/tests/numpy" test-flags)
+               (setenv "MODIN_ENGINE" "python")
+               (apply invoke "python" "-m" "pytest"
+                      "modin/tests/numpy" test-flags)))))))
+    (propagated-inputs
+     (list python-cloudpickle
+           python-dask
+           python-distributed
+           python-numpy
+           python-packaging
+           python-pandas
+           python-s3fs))
+    (native-inputs
+     (list python-boto3
+           python-jinja2
+           python-lxml
+           python-matplotlib
+           python-msgpack
+           python-openpyxl
+           python-psutil
+           python-pyarrow
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-xdist
+           python-scipy
+           python-sqlalchemy
+           python-tables
+           python-tqdm
+           python-xarray
+           python-xlrd
+           python-wheel))
+    (home-page "https://github.com/modin-project/modin")
+    (synopsis "Make your pandas code run faster")
+    (description
+     "Modin uses Ray or Dask to provide an effortless way to speed up your
+pandas notebooks, scripts, and libraries.  Unlike other distributed DataFrame
+libraries, Modin provides seamless integration and compatibility with existing
+pandas code.")
+    (license license:asl2.0)))
+
 (define-public python-mpl-scatter-density
   (package
     (name "python-mpl-scatter-density")
@@ -1073,6 +1209,30 @@ density maps, both for interactive and non-interactive use.")
        "Thi package implements a functionality for mean-preserving
 interpolation of 1D data (for example, time series) with splines.")
       (license license:bsd-3))))
+
+(define-public python-msgpack-numpy
+  (package
+    (name "python-msgpack-numpy")
+    (version "0.4.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "msgpack-numpy" version))
+       (sha256
+        (base32
+         "0sbfanbkfs6c77np4vz0ayrwnv99bpn5xgj5fnf2yhhk0lcd6ry6"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-msgpack python-numpy))
+    (home-page "https://github.com/lebedov/msgpack-numpy")
+    (synopsis
+     "Numpy data serialization using msgpack")
+    (description
+     "This package provides encoding and decoding routines that enable the
+serialization and deserialization of numerical and array data types provided
+by numpy using the highly efficient @code{msgpack} format.  Serialization of
+Python's native complex data types is also supported.")
+    (license license:bsd-3)))
 
 (define-public python-ndindex
   (package
@@ -1390,6 +1550,101 @@ quantities: the product of a numerical value and a unit of measurement.  It
 allows arithmetic operations between them and conversions from and to
 different units.")
     (license license:bsd-3)))
+
+(define-public python-pyamg
+  (package
+    (name "python-pyamg")
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyamg" version))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Delete autogenerated files, regenerate in a phase.
+               #~(begin
+                   (for-each
+                    (lambda (file)
+                      (delete-file (string-append "pyamg/amg_core/" file)))
+                    '("air_bind.cpp"
+                      "evolution_strength_bind.cpp"
+                      "graph_bind.cpp"
+                      "krylov_bind.cpp"
+                      "linalg_bind.cpp"
+                      "relaxation_bind.cpp"
+                      "ruge_stuben_bind.cpp"
+                      "smoothed_aggregation_bind.cpp"
+                      "tests/bind_examples_bind.cpp"))))
+              (sha256
+               (base32
+                "0l3dliwynxyjvbgpmi2k8jqvkkw6fc00c8w69h6swhrkfh0ql12z"))))
+    (arguments
+     (list
+      #:test-flags
+      ;; Test installed package in order to find C++ modules.
+      #~(list "--pyargs" "pyamg.tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Regenerate the autogenerated files.
+          (add-after 'unpack 'amg-core-bind-them
+            (lambda _
+              ;; bindthem.py heavily depends on location to produce *_bind.cpp
+              ;; file, make it available in tests as well.
+              (copy-file "pyamg/amg_core/bindthem.py"
+                         "pyamg/amg_core/tests/bindthem.py")
+              (with-directory-excursion "pyamg/amg_core"
+                (substitute* "bindthem.py"
+                  (("/usr/bin/env python3") (which "python3")))
+                (invoke "sh" "generate.sh"))
+              (with-directory-excursion "pyamg/amg_core/tests"
+                (invoke "python" "bindthem.py" "bind_examples.h")))))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list pybind11
+           python-cppheaderparser
+           python-pytest
+           python-pyyaml
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/pyamg/pyamg")
+    (synopsis "Algebraic Multigrid Solvers in Python")
+    (description "PyAMG is a Python library of Algebraic Multigrid
+(AMG) solvers. It features implementations of:
+@itemize
+@item Ruge-Stuben (RS) or Classical AMG
+@item AMG based on Smoothed Aggregation (SA)
+@item Adaptive Smoothed Aggregation (αSA)
+@item Compatible Relaxation (CR)
+@item Krylov methods such as CG, GMRES, FGMRES, BiCGStab, MINRES, etc.
+@end itemize")
+    (license license:expat)))
+
+(define-public python-pyet
+  (package
+    (name "python-pyet")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyet" version))
+       (sha256
+        (base32 "1dblsx0bv1g453hcx5vwij1zgankwgwvhwllqkn47k578h038xvy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pandas
+           python-xarray))
+    (home-page "https://github.com/pyet-org/pyet")
+    (synopsis "Python package for evapotranspiration calculation")
+    (description
+     "This package provides a Python library for calculating
+Evapotranspiration using various standard methods.")
+    (license license:expat)))
 
 (define-public python-pynetdicom
   (package
@@ -2458,101 +2713,6 @@ manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
 
-(define-public python-pyamg
-  (package
-    (name "python-pyamg")
-    (version "5.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyamg" version))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Delete autogenerated files, regenerate in a phase.
-               #~(begin
-                   (for-each
-                    (lambda (file)
-                      (delete-file (string-append "pyamg/amg_core/" file)))
-                    '("air_bind.cpp"
-                      "evolution_strength_bind.cpp"
-                      "graph_bind.cpp"
-                      "krylov_bind.cpp"
-                      "linalg_bind.cpp"
-                      "relaxation_bind.cpp"
-                      "ruge_stuben_bind.cpp"
-                      "smoothed_aggregation_bind.cpp"
-                      "tests/bind_examples_bind.cpp"))))
-              (sha256
-               (base32
-                "0l3dliwynxyjvbgpmi2k8jqvkkw6fc00c8w69h6swhrkfh0ql12z"))))
-    (arguments
-     (list
-      #:test-flags
-      ;; Test installed package in order to find C++ modules.
-      #~(list "--pyargs" "pyamg.tests")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Regenerate the autogenerated files.
-          (add-after 'unpack 'amg-core-bind-them
-            (lambda _
-              ;; bindthem.py heavily depends on location to produce *_bind.cpp
-              ;; file, make it available in tests as well.
-              (copy-file "pyamg/amg_core/bindthem.py"
-                         "pyamg/amg_core/tests/bindthem.py")
-              (with-directory-excursion "pyamg/amg_core"
-                (substitute* "bindthem.py"
-                  (("/usr/bin/env python3") (which "python3")))
-                (invoke "sh" "generate.sh"))
-              (with-directory-excursion "pyamg/amg_core/tests"
-                (invoke "python" "bindthem.py" "bind_examples.h")))))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list pybind11
-           python-cppheaderparser
-           python-pytest
-           python-pyyaml
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs (list python-numpy python-scipy))
-    (home-page "https://github.com/pyamg/pyamg")
-    (synopsis "Algebraic Multigrid Solvers in Python")
-    (description "PyAMG is a Python library of Algebraic Multigrid
-(AMG) solvers. It features implementations of:
-@itemize
-@item Ruge-Stuben (RS) or Classical AMG
-@item AMG based on Smoothed Aggregation (SA)
-@item Adaptive Smoothed Aggregation (αSA)
-@item Compatible Relaxation (CR)
-@item Krylov methods such as CG, GMRES, FGMRES, BiCGStab, MINRES, etc.
-@end itemize")
-    (license license:expat)))
-
-(define-public python-pyet
-  (package
-    (name "python-pyet")
-    (version "1.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyet" version))
-       (sha256
-        (base32 "1dblsx0bv1g453hcx5vwij1zgankwgwvhwllqkn47k578h038xvy"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-mock
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-pandas
-           python-xarray))
-    (home-page "https://github.com/pyet-org/pyet")
-    (synopsis "Python package for evapotranspiration calculation")
-    (description
-     "This package provides a Python library for calculating
-Evapotranspiration using various standard methods.")
-    (license license:expat)))
-
 (define-public python-tspex
   (package
     (name "python-tspex")
@@ -3389,6 +3549,77 @@ UpSet plots are used to visualize set overlaps; like Venn diagrams but more
 readable.")
     (license license:bsd-3)))
 
+(define-public python-vaex-core
+  (package
+    (name "python-vaex-core")
+    (version "4.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://www.github.com/maartenbreddels/vaex")
+             (commit (string-append "core-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sp096msbzgjlwi8c1ink2bp4pjff9pvikqz1y1li8d3in4gpgdr"))
+       (patches
+        (search-patches "python-vaex-core-fix-tsl-use.patch"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (snippet
+        #~(begin
+            ;; Delete everything except for vaex-core itself:
+            (define (delete-except exception)
+              (lambda (file)
+                (unless (member file `("." ".." ,exception))
+                  (delete-file-recursively file))))
+            (for-each (delete-except "packages") (scandir "."))
+            (with-directory-excursion "packages"
+              (for-each (delete-except "vaex-core") (scandir ".")))
+            (for-each (lambda (file)
+                        (unless (member file '("." ".."))
+                          (rename-file
+                           (string-append "packages/vaex-core/" file)
+                           file)))
+                      (scandir "packages/vaex-core"))
+            (delete-file-recursively "packages")
+            (delete-file-recursively "vendor")))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; require vaex.server and others, which require vaex-core.
+     (list #:tests? #false))
+    (inputs
+     (list boost pcre pybind11 string-view-lite tsl-hopscotch-map))
+    (propagated-inputs
+     (list python-aplus
+           python-blake3
+           python-click ;XXX for dask
+           python-cloudpickle
+           python-dask
+           python-filelock
+           python-frozendict
+           python-future
+           python-nest-asyncio
+           python-numpy
+           python-pandas
+           python-progressbar2
+           python-pyarrow
+           python-pydantic-2
+           python-pydantic-settings
+           python-pyyaml
+           python-requests
+           python-rich
+           python-six
+           python-tabulate))
+    (native-inputs
+     (list python-pytest python-cython-3 python-setuptools python-wheel))
+    (home-page "https://www.github.com/maartenbreddels/vaex")
+    (synopsis "Core of Vaex library for exploring tabular datasets")
+    (description "Vaex is a high performance Python library for lazy
+Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
+tabular datasets.  This package provides the core modules of Vaex.")
+    (license license:expat)))
+
 (define-public python-vector
   (package
     (name "python-vector")
@@ -3710,30 +3941,6 @@ objects.")
      "PyTensor is a Python library that allows one to define, optimize, and
 efficiently evaluate mathematical expressions involving multi-dimensional
 arrays.  It is a fork of the Aesara library.")
-    (license license:bsd-3)))
-
-(define-public python-msgpack-numpy
-  (package
-    (name "python-msgpack-numpy")
-    (version "0.4.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "msgpack-numpy" version))
-       (sha256
-        (base32
-         "0sbfanbkfs6c77np4vz0ayrwnv99bpn5xgj5fnf2yhhk0lcd6ry6"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-msgpack python-numpy))
-    (home-page "https://github.com/lebedov/msgpack-numpy")
-    (synopsis
-     "Numpy data serialization using msgpack")
-    (description
-     "This package provides encoding and decoding routines that enable the
-serialization and deserialization of numerical and array data types provided
-by numpy using the highly efficient @code{msgpack} format.  Serialization of
-Python's native complex data types is also supported.")
     (license license:bsd-3)))
 
 (define-public python-scs
@@ -4122,81 +4329,6 @@ parentdir_prefix = distributed-
 computing in Python.  It extends both the @code{concurrent.futures} and
 @code{dask} APIs to moderate sized clusters.")
     (license license:bsd-3)))
-
-(define-public python-modin
-  (package
-    (name "python-modin")
-    (version "0.32.0")
-    (source
-     (origin
-       ;; The archive on pypi does not include all required files.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/modin-project/modin")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1vb3iffgspryb6nvwiwdnypb922vkn2yvyzc1y0wwxcb0c0fl78d"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; These four tests fail because an expected error is not raised.
-              "-k" "not test_binary_bad_broadcast")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; Don't depend on a specific version of Pandas.
-               (("pandas==") "pandas>="))))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               (setenv "MODIN_ENGINE" "dask")
-               (apply invoke "python" "-m" "pytest"
-                      "modin/tests/numpy" test-flags)
-               (setenv "MODIN_ENGINE" "python")
-               (apply invoke "python" "-m" "pytest"
-                      "modin/tests/numpy" test-flags)))))))
-    (propagated-inputs
-     (list python-cloudpickle
-           python-dask
-           python-distributed
-           python-numpy
-           python-packaging
-           python-pandas
-           python-s3fs))
-    (native-inputs
-     (list python-boto3
-           python-jinja2
-           python-lxml
-           python-matplotlib
-           python-msgpack
-           python-openpyxl
-           python-psutil
-           python-pyarrow
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-cov
-           python-pytest-xdist
-           python-scipy
-           python-sqlalchemy
-           python-tables
-           python-tqdm
-           python-xarray
-           python-xlrd
-           python-wheel))
-    (home-page "https://github.com/modin-project/modin")
-    (synopsis "Make your pandas code run faster")
-    (description
-     "Modin uses Ray or Dask to provide an effortless way to speed up your
-pandas notebooks, scripts, and libraries.  Unlike other distributed DataFrame
-libraries, Modin provides seamless integration and compatibility with existing
-pandas code.")
-    (license license:asl2.0)))
 
 (define-public python-plotnine
   (package
@@ -4655,67 +4787,6 @@ writing DICOM medical imaging data.  It can read, modify and write DICOM
 data.")
     (license license:expat)))
 
-(define-public python-deepdish
-  ;; XXX: The project may no longer be compatible with the version of NumPy
-  ;; packed in Guix (now 1.24.4), use the latest commit containing fixes.
-  ;; See: <https://github.com/uchicago-cs/deepdish/issues/50>.
-  ;; However, there is a maintained fork that appears to be a good
-  ;; replacement: https://github.com/portugueslab/flammkuchen.
-  (let ((commit "3f2dff7a03f1b31f6924b665ad5b8c299329c1cd")
-        (revision "0"))
-    (package
-      (name "python-deepdish")
-      (version (git-version "0.3.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/uchicago-cs/deepdish")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1n3r6z5zd18kdmzyg1gkm9lqi573szlxbls1ck5wjn4a14ar9fw3"))))
-      (arguments
-       ;; Disable few failing tests to pass the build.
-       (list
-        #:test-flags
-        #~(list "-k" (string-append "not test_pad"
-                                    " and not test_pad_repeat_border"
-                                    " and not test_pad_repeat_border_corner"
-                                    " and not test_pad_to_size"))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'dont-vendor-six
-              (lambda _
-                (delete-file "deepdish/six.py")
-                (substitute* "deepdish/io/hdf5io.py"
-                  (("from deepdish import six") "import six"))
-                (substitute* "deepdish/io/ls.py"
-                  (("from deepdish import io, six, __version__")
-                   "from deepdish import io, __version__
-import six
-")))))))
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list python-pytest
-             python-pandas
-             python-setuptools
-             python-wheel))
-      (propagated-inputs
-       (list python-numpy
-             python-scipy
-             python-six
-             python-tables))
-      (home-page "https://github.com/uchicago-cs/deepdish")
-      (synopsis "Python library for HDF5 file saving and loading")
-      (description
-       "Deepdish is a Python library to load and save HDF5 files.
-The primary feature of deepdish is its ability to save and load all kinds of
-data as HDF5.  It can save any Python data structure, offering the same ease
-of use as pickling or @code{numpy.save}, but with the language
-interoperability offered by HDF5.")
-      (license license:bsd-3))))
-
 (define-public python-supersmoother
   (package
     (name "python-supersmoother")
@@ -4745,77 +4816,6 @@ interoperability offered by HDF5.")
 Friedman's SuperSmoother} based in Python.  It makes use of numpy for fast
 numerical computation.")
     (license license:bsd-2)))
-
-(define-public python-vaex-core
-  (package
-    (name "python-vaex-core")
-    (version "4.18.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://www.github.com/maartenbreddels/vaex")
-             (commit (string-append "core-v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sp096msbzgjlwi8c1ink2bp4pjff9pvikqz1y1li8d3in4gpgdr"))
-       (patches
-        (search-patches "python-vaex-core-fix-tsl-use.patch"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)))
-       (snippet
-        #~(begin
-            ;; Delete everything except for vaex-core itself:
-            (define (delete-except exception)
-              (lambda (file)
-                (unless (member file `("." ".." ,exception))
-                  (delete-file-recursively file))))
-            (for-each (delete-except "packages") (scandir "."))
-            (with-directory-excursion "packages"
-              (for-each (delete-except "vaex-core") (scandir ".")))
-            (for-each (lambda (file)
-                        (unless (member file '("." ".."))
-                          (rename-file
-                           (string-append "packages/vaex-core/" file)
-                           file)))
-                      (scandir "packages/vaex-core"))
-            (delete-file-recursively "packages")
-            (delete-file-recursively "vendor")))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; require vaex.server and others, which require vaex-core.
-     (list #:tests? #false))
-    (inputs
-     (list boost pcre pybind11 string-view-lite tsl-hopscotch-map))
-    (propagated-inputs
-     (list python-aplus
-           python-blake3
-           python-click ;XXX for dask
-           python-cloudpickle
-           python-dask
-           python-filelock
-           python-frozendict
-           python-future
-           python-nest-asyncio
-           python-numpy
-           python-pandas
-           python-progressbar2
-           python-pyarrow
-           python-pydantic-2
-           python-pydantic-settings
-           python-pyyaml
-           python-requests
-           python-rich
-           python-six
-           python-tabulate))
-    (native-inputs
-     (list python-pytest python-cython-3 python-setuptools python-wheel))
-    (home-page "https://www.github.com/maartenbreddels/vaex")
-    (synopsis "Core of Vaex library for exploring tabular datasets")
-    (description "Vaex is a high performance Python library for lazy
-Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
-tabular datasets.  This package provides the core modules of Vaex.")
-    (license license:expat)))
 
 (define-public python-pylems
   (package
