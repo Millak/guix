@@ -21152,6 +21152,29 @@ in Org buffers and displays matching entries.")
 information inside the Dired buffer.")
       (license license:gpl3+))))
 
+(define-public emacs-dired-quick-sort
+  (package
+    (name "emacs-dired-quick-sort")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/xuhdev/dired-quick-sort/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0wk29rqaczlz1r42xygphpyvhfcrkzilrz9xd4ps0qjybnx9dsgq"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-hydra))
+    (home-page "https://gitlab.com/xuhdev/dired-quick-sort/")
+    (synopsis "Automatic sorting of Dired buffers")
+    (description
+     "@{dired-quick-sort} provides persistent quick sorting of Dired buffers
+in various ways with @code{hydra}.")
+    (license license:gpl3+)))
+
 (define-public emacs-diss
   (let ((commit "8a99a1b34de4575087da49fe1e19bcf33ac49f46")
         (revision "1"))
