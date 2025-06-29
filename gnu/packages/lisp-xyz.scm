@@ -22625,6 +22625,9 @@ for Common Lisp.")
 (define-public ecl-mt19937
   (sbcl-package->ecl-package sbcl-mt19937))
 
+(define-public clasp-mt19937
+  (sbcl-package->clasp-package sbcl-mt19937))
+
 (define-public sbcl-multilang-documentation
   (let ((commit "59e798a07e949e8957a20927f52aca425d84e4a0"))
     (package
