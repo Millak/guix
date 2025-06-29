@@ -297,6 +297,25 @@ specification and test suite in Python.")
 supersedes the RTED algorithm for computing the tree edit distance.")
       (license license:expat))))
 
+(define-public python-asap3
+  (package
+    (name "python-asap3")
+    (version "3.13.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asap3" version))
+       (sha256
+        (base32 "0z6m9ybiy4fdnzlkfkvyxich18iwlwlgj1jd99fylyfwf8l160am"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-ase))
+    (native-inputs (list python-setuptools python-wheel which))
+    (home-page "https://wiki.fysik.dtu.dk/asap")
+    (synopsis "ASAP - classical potentials for Molecular Dynamics with ASE.")
+    (description "This package provides accelerated simulations and potentials
+of solids.")
+    (license license:lgpl3)))
+
 (define-public python-ase
   (package
     (name "python-ase")
@@ -327,6 +346,32 @@ setting up, manipulating, running, visualizing and analyzing atomistic
 simulations.")
     (license license:lgpl2.1+)))
 
+(define-public python-baycomp
+  (package
+    (name "python-baycomp")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "baycomp" version))
+       (sha256
+        (base32 "1v6s4mfr6xzjbv9a2v89hywm6fbv5nii0qczvcfjanvdn7bmmcij"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-scipy))
+    (home-page "https://github.com/janezd/baycomp")
+    (synopsis "Library for comparison of Bayesian classifiers")
+    (description
+     "Baycomp is a library for Bayesian comparison of classifiers.  Functions
+in the library compare two classifiers on one or on multiple data sets.  They
+compute three probabilities: the probability that the first classifier has
+higher scores than the second, the probability that differences are within the
+region of practical equivalence (rope), or that the second classifier has
+higher scores.")
+    (license license:expat)))
+
 (define-public python-boost-histogram
   (package
     (name "python-boost-histogram")
@@ -353,6 +398,62 @@ simulations.")
      "This package provides Python bindings for the Boost::Histogram library,
 one of the fastest libraries for histogramming.")
     (license license:bsd-3)))
+
+(define-public python-clarabel
+  (package
+    (name "python-clarabel")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "clarabel" version))
+       (sha256
+        (base32 "15k32ynvh45n9q905bxwamh5w5cia9bxzmwz69wbribmyhsv22m3"))
+       (patches
+        (search-patches "python-clarabel-blas.patch"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install)))
+      #:cargo-inputs
+      `(("rust-amd" ,rust-amd-0.2)
+        ("rust-blas" ,rust-blas-0.22)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-derive-builder" ,rust-derive-builder-0.11)
+        ("rust-enum-dispatch" ,rust-enum-dispatch-0.3) ;0.3.8
+        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-lapack" ,rust-lapack-0.19)
+        ("rust-lazy-static" ,rust-lazy-static-1) ;1.4
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-derive" ,rust-num-derive-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+      #:features '(list "python")
+      #:install-source? #false))
+    (inputs
+     (list maturin))
+    (native-inputs
+     (list python-wrapper))
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/oxfordcontrol/Clarabel.rs")
+    (synopsis "Interior-point solver for convex conic optimisation problems")
+    (description "Clarabel.rs is a Rust implementation of an interior point
+numerical solver for convex optimization problems using a novel homogeneous
+embedding.")
+    (license license:asl2.0)))
 
 (define-public python-cmocean
   (package
@@ -632,6 +733,31 @@ constants in the HEP System of Units, as derived from the basic units
 originally defined by the CLHEP project.")
     (license license:bsd-3)))
 
+(define-public python-hist
+  (package
+    (name "python-hist")
+    (version "2.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hist" version))
+       (sha256
+        (base32 "17cd46c0ixq18fr2kgzam09w1sr4qkd9l6nsjdbl4vggw80ck9vx"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-boost-histogram
+                             python-histoprint
+                             python-numpy
+                             python-typing-extensions))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-pytest-mpl))
+    (home-page "https://hist.readthedocs.io/en/latest/")
+    (synopsis "Hist classes and utilities")
+    (description
+     "Hist is an analyst-friendly front-end for @code{boost-histogram}.")
+    (license license:bsd-3)))
+
 (define-public python-histoprint
   (package
     (name "python-histoprint")
@@ -842,6 +968,32 @@ allowing the user to specify whether complex-step, central, forward or
 backward differences are used.")
     (license license:bsd-3)))
 
+(define-public python-numpoly
+  (package
+    (name "python-numpoly")
+    (version "1.2.11")
+    (source (origin
+              (method git-fetch) ;; PyPI is missing some Pytest fixtures
+              (uri (git-reference
+                    (url "https://github.com/jonathf/numpoly")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01g21v91f4d66xd0bvap0n6d6485w2fnq1636gx6h2s42550rlbd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata python-numpy))
+    (native-inputs (list python-pytest python-setuptools python-sympy
+                         python-wheel))
+    (home-page "https://numpoly.readthedocs.io/en/master/")
+    (synopsis "Polynomials as a numpy datatype")
+    (description "Numpoly is a generic library for creating, manipulating and
+evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
+    ;; Tests fail with dtype mismatches on 32-bit architectures, suggesting
+    ;; that numpoly only supports 64 bit platforms.
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
+    (license license:bsd-2)))
+
 (define-public python-numpy-groupies
   (package
     (name "python-numpy-groupies")
@@ -921,6 +1073,34 @@ aggregated sum and more.")
     (description "The OSQP (Operator Splitting Quadratic Program) solver is a
 numerical optimization package.")
     (license license:asl2.0)))
+
+(define-public python-particle
+  (package
+    (name "python-particle")
+    (version "0.25.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "particle" version))
+       (sha256
+        (base32 "0as50k5hinxszsm6lnghnmx2cyjy77c0i2gvzf2q64g2x5b7xkvq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-attrs
+                             python-hepunits
+                             python-typing-extensions))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pandas
+                         python-pytest
+                         python-pytest-benchmark
+                         python-tabulate))
+    (home-page "https://github.com/scikit-hep/particle")
+    (synopsis "Extended PDG particle data and MC identification codes")
+    (description
+     "@code{Particle} provides a pythonic interface to the Particle Data Group
+(PDG) particle data tables and particle identification codes, with extended
+particle information and extra goodies.")
+    (license license:bsd-3)))
 
 (define-public python-pint
   (package
@@ -1732,58 +1912,6 @@ its software deployment plugins.")
 Snakemake and its storage plugins.")
     (license license:expat)))
 
-(define-public python-uhi
-  (package
-    (name "python-uhi")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "uhi" version))
-       (sha256
-        (base32 "0753b7yw0zi06g4azafnk3w8i3q6js9i6wwg3pya464gygrbnncm"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-boost-histogram
-                         python-fastjsonschema
-                         python-hatch-vcs
-                         python-hatchling
-                         python-pytest))
-    (home-page "https://github.com/scikit-hep/uhi")
-    (synopsis "Universal Histogram Interface")
-    (description "This is a package meant primarily for documenting histogram
-indexing and the PlottableHistogram Protocol and any future cross-library
-standards.  It also contains the code for the PlottableHistogram Protocol, to
-be used in type checking libraries wanting to conform to the protocol.  It is
-not usually a runtime dependency, but only a type checking, testing, and/or
-docs dependency in support of other libraries.")
-    (license license:bsd-3)))
-
-(define-public python-hist
-  (package
-    (name "python-hist")
-    (version "2.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hist" version))
-       (sha256
-        (base32 "17cd46c0ixq18fr2kgzam09w1sr4qkd9l6nsjdbl4vggw80ck9vx"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-boost-histogram
-                             python-histoprint
-                             python-numpy
-                             python-typing-extensions))
-    (native-inputs (list python-hatch-vcs
-                         python-hatchling
-                         python-pytest
-                         python-pytest-mpl))
-    (home-page "https://hist.readthedocs.io/en/latest/")
-    (synopsis "Hist classes and utilities")
-    (description
-     "Hist is an analyst-friendly front-end for @code{boost-histogram}.")
-    (license license:bsd-3)))
-
 (define-public python-tdda
   (package
     (name "python-tdda")
@@ -1829,63 +1957,6 @@ for the overall process of data analysis, through tools that perform
 reference testing, constraint discovery for data, automatic inference
 of regular expressions from text data and automatic test generation.")
     (license license:expat))) ; MIT License
-
-(define-public python-particle
-  (package
-    (name "python-particle")
-    (version "0.25.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "particle" version))
-       (sha256
-        (base32 "0as50k5hinxszsm6lnghnmx2cyjy77c0i2gvzf2q64g2x5b7xkvq"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-attrs
-                             python-hepunits
-                             python-typing-extensions))
-    (native-inputs (list python-hatch-vcs
-                         python-hatchling
-                         python-pandas
-                         python-pytest
-                         python-pytest-benchmark
-                         python-tabulate))
-    (home-page "https://github.com/scikit-hep/particle")
-    (synopsis "Extended PDG particle data and MC identification codes")
-    (description
-     "@code{Particle} provides a pythonic interface to the Particle Data Group
-(PDG) particle data tables and particle identification codes, with extended
-particle information and extra goodies.")
-    (license license:bsd-3)))
-
-(define-public python-vector
-  (package
-    (name "python-vector")
-    (version "1.6.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "vector" version))
-       (sha256
-        (base32 "1jhfgx54a6l1cz9as2wlwrph86f8s1882biaakx1cl31igdxjnbf"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; This file requires python-papermill (not yet packaged).
-      #:test-flags #~(list "--ignore" "tests/test_notebooks.py")))
-    (propagated-inputs (list python-numpy python-packaging))
-    (native-inputs (list python-awkward
-                         python-hatch-vcs
-                         python-hatchling
-                         python-pytest
-                         python-sympy))
-    (home-page "https://github.com/scikit-hep/vector")
-    (synopsis "Arrays of 2D, 3D, and Lorentz vectors")
-    (description "Vector is a Python library for 2D and 3D spatial vectors, as
-well as 4D space-time vectors.  It is especially intended for performing
-geometric calculations on arrays of vectors, rather than one vector at a time
-in a Python @code{for} loop.")
-    (license license:bsd-3)))
 
 (define-public python-traittypes
   (package
@@ -2863,32 +2934,6 @@ Python module with the same interface, but (hopefully) faster.")
 written in C.")
     (license license:bsd-2)))
 
-(define-public python-numpoly
-  (package
-    (name "python-numpoly")
-    (version "1.2.11")
-    (source (origin
-              (method git-fetch) ;; PyPI is missing some Pytest fixtures
-              (uri (git-reference
-                    (url "https://github.com/jonathf/numpoly")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "01g21v91f4d66xd0bvap0n6d6485w2fnq1636gx6h2s42550rlbd"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-metadata python-numpy))
-    (native-inputs (list python-pytest python-setuptools python-sympy
-                         python-wheel))
-    (home-page "https://numpoly.readthedocs.io/en/master/")
-    (synopsis "Polynomials as a numpy datatype")
-    (description "Numpoly is a generic library for creating, manipulating and
-evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
-    ;; Tests fail with dtype mismatches on 32-bit architectures, suggesting
-    ;; that numpoly only supports 64 bit platforms.
-    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
-    (license license:bsd-2)))
-
 (define-public python-spin
   (package
   (name "python-spin")
@@ -2914,32 +2959,6 @@ distutils was deprecated.  When many of the build and installation commands
 changed, it made sense to abstract away the nuisance of having to re-learn
 them.")
   (license license:bsd-3)))
-
-(define-public python-baycomp
-  (package
-    (name "python-baycomp")
-    (version "1.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "baycomp" version))
-       (sha256
-        (base32 "1v6s4mfr6xzjbv9a2v89hywm6fbv5nii0qczvcfjanvdn7bmmcij"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-matplotlib python-numpy python-scipy))
-    (home-page "https://github.com/janezd/baycomp")
-    (synopsis "Library for comparison of Bayesian classifiers")
-    (description
-     "Baycomp is a library for Bayesian comparison of classifiers.  Functions
-in the library compare two classifiers on one or on multiple data sets.  They
-compute three probabilities: the probability that the first classifier has
-higher scores than the second, the probability that differences are within the
-region of practical equivalence (rope), or that the second classifier has
-higher scores.")
-    (license license:expat)))
 
 (define-public python-fastcluster
   (package
@@ -3022,6 +3041,33 @@ analysis} (PCA), SVD, and eigendecompositions via randomized methods")
 learning frameworks.")
     (license license:expat)))
 
+(define-public python-uhi
+  (package
+    (name "python-uhi")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uhi" version))
+       (sha256
+        (base32 "0753b7yw0zi06g4azafnk3w8i3q6js9i6wwg3pya464gygrbnncm"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-boost-histogram
+                         python-fastjsonschema
+                         python-hatch-vcs
+                         python-hatchling
+                         python-pytest))
+    (home-page "https://github.com/scikit-hep/uhi")
+    (synopsis "Universal Histogram Interface")
+    (description "This is a package meant primarily for documenting histogram
+indexing and the PlottableHistogram Protocol and any future cross-library
+standards.  It also contains the code for the PlottableHistogram Protocol, to
+be used in type checking libraries wanting to conform to the protocol.  It is
+not usually a runtime dependency, but only a type checking, testing, and/or
+docs dependency in support of other libraries.")
+    (license license:bsd-3)))
+
 (define-public python-upsetplot
   (package
     (name "python-upsetplot")
@@ -3045,6 +3091,35 @@ learning frameworks.")
      "This is a Python implementation of UpSet plots by Lex et al.
 UpSet plots are used to visualize set overlaps; like Venn diagrams but more
 readable.")
+    (license license:bsd-3)))
+
+(define-public python-vector
+  (package
+    (name "python-vector")
+    (version "1.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vector" version))
+       (sha256
+        (base32 "1jhfgx54a6l1cz9as2wlwrph86f8s1882biaakx1cl31igdxjnbf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This file requires python-papermill (not yet packaged).
+      #:test-flags #~(list "--ignore" "tests/test_notebooks.py")))
+    (propagated-inputs (list python-numpy python-packaging))
+    (native-inputs (list python-awkward
+                         python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-sympy))
+    (home-page "https://github.com/scikit-hep/vector")
+    (synopsis "Arrays of 2D, 3D, and Lorentz vectors")
+    (description "Vector is a Python library for 2D and 3D spatial vectors, as
+well as 4D space-time vectors.  It is especially intended for performing
+geometric calculations on arrays of vectors, rather than one vector at a time
+in a Python @code{for} loop.")
     (license license:bsd-3)))
 
 (define-public python-xarray
@@ -4246,62 +4321,6 @@ visual integration of spatially referenced datasets.")
 to do spectral analysis in Python.")
     (license license:expat)))
 
-(define-public python-clarabel
-  (package
-    (name "python-clarabel")
-    (version "0.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "clarabel" version))
-       (sha256
-        (base32 "15k32ynvh45n9q905bxwamh5w5cia9bxzmwz69wbribmyhsv22m3"))
-       (patches
-        (search-patches "python-clarabel-blas.patch"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:imported-modules `(,@%cargo-build-system-modules
-                           ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'build 'build-python-module
-            (assoc-ref py:%standard-phases 'build))
-          (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install)))
-      #:cargo-inputs
-      `(("rust-amd" ,rust-amd-0.2)
-        ("rust-blas" ,rust-blas-0.22)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-derive-builder" ,rust-derive-builder-0.11)
-        ("rust-enum-dispatch" ,rust-enum-dispatch-0.3) ;0.3.8
-        ("rust-itertools" ,rust-itertools-0.11)
-        ("rust-lapack" ,rust-lapack-0.19)
-        ("rust-lazy-static" ,rust-lazy-static-1) ;1.4
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-num-derive" ,rust-num-derive-0.2)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-pyo3" ,rust-pyo3-0.20)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-thiserror" ,rust-thiserror-1))
-      #:features '(list "python")
-      #:install-source? #false))
-    (inputs
-     (list maturin))
-    (native-inputs
-     (list python-wrapper))
-    (propagated-inputs (list python-numpy python-scipy))
-    (home-page "https://github.com/oxfordcontrol/Clarabel.rs")
-    (synopsis "Interior-point solver for convex conic optimisation problems")
-    (description "Clarabel.rs is a Rust implementation of an interior point
-numerical solver for convex optimization problems using a novel homogeneous
-embedding.")
-    (license license:asl2.0)))
-
 (define-public python-climin
   (package
     (name "python-climin")
@@ -4923,25 +4942,6 @@ applications.")
      "This package provides a Python library for working with NeuroML descriptions of
 neuronal models")
     (license license:bsd-3)))
-
-(define-public python-asap3
-  (package
-    (name "python-asap3")
-    (version "3.13.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asap3" version))
-       (sha256
-        (base32 "0z6m9ybiy4fdnzlkfkvyxich18iwlwlgj1jd99fylyfwf8l160am"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-ase))
-    (native-inputs (list python-setuptools python-wheel which))
-    (home-page "https://wiki.fysik.dtu.dk/asap")
-    (synopsis "ASAP - classical potentials for Molecular Dynamics with ASE.")
-    (description "This package provides accelerated simulations and potentials
-of solids.")
-    (license license:lgpl3)))
 
 (define-public snakemake
   (package
