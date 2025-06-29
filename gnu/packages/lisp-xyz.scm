@@ -19584,6 +19584,9 @@ Rosenberg's Common Lisp packages.")
 (define-public ecl-kmrcl
   (sbcl-package->ecl-package sbcl-kmrcl))
 
+(define-public clasp-kmrcl
+  (sbcl-package->clasp-package sbcl-kmrcl))
+
 (define-public sbcl-kons-9
   (let ((commit "fe0b3228ca28c316457d35f9e7c67edc83b2a4cc")
         (revision "0"))
