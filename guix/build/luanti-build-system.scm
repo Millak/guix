@@ -158,12 +158,12 @@ error.  If NOT-FOUND is TRUE, call NOT-FOUND instead."
   (when tests?
     (mkdir "guix_testworld")
     ;; Add the mod to the mod search path, such that Luanti can find it.
-    (setenv "MINETEST_MOD_PATH"
+    (setenv "LUANTI_MOD_PATH"
             (list->search-path-as-string
              (cons
               (string-append (assoc-ref outputs "out") "/share/luanti/mods")
               (search-path-as-string->list
-               (or (getenv "MINETEST_MOD_PATH") "")))
+               (or (getenv "LUANTI_MOD_PATH") "")))
              ":"))
     (with-directory-excursion "guix_testworld"
       (setenv "HOME" (getcwd))
@@ -181,7 +181,7 @@ auth_backend = sqlite3
            (lambda (mod)
              (format port "load_mod_~a = true~%" mod))
            (all-mod-names (search-path-as-string->list
-                           (getenv "MINETEST_MOD_PATH"))))))
+                           (getenv "LUANTI_MOD_PATH"))))))
       (receive (port pid)
           ((@@ (guix build utils) open-pipe-with-stderr)
            "xvfb-run" "--" "luanti" "--info" "--world" "." "--go")

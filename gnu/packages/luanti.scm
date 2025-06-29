@@ -69,6 +69,7 @@
        (modules '((guix build utils)
                   (srfi srfi-26)
                   (ice-9 ftw)))
+       (patches (search-patches "luanti-paths.patch"))
        ;; Delete bundled libraries.
        ;; - Keep lib/sha256 because there's no good upstream, see:
        ;;   https://github.com/openssl/openssl/blob/master/crypto/sha/sha512.c
@@ -109,16 +110,16 @@
               ;; when invoked on the target outside of `guix build'.
               (when tests?
                 (setenv "HOME" "/tmp")
-                (setenv "MINETEST_GAME_PATH"
+                (setenv "LUANTI_GAME_PATH"
                         (string-append (getcwd) "/../source/games"))
                 (invoke "../source/bin/luanti" "--run-unittests")
                 (invoke "../source/util/test_multiplayer.sh")))))))
     (native-search-paths
      (list (search-path-specification
-            (variable "MINETEST_GAME_PATH")
+            (variable "LUANTI_GAME_PATH")
             (files '("share/luanti/games")))
            (search-path-specification
-            (variable "MINETEST_MOD_PATH")
+            (variable "LUANTI_MOD_PATH")
             (files '("share/luanti/mods")))))
     (native-inputs (list catch2-3 pkg-config))
     (inputs (list curl
