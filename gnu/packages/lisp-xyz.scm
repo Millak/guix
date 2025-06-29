@@ -25721,6 +25721,9 @@ integrate.")
 (define-public ecl-promise
   (sbcl-package->ecl-package sbcl-promise))
 
+(define-public clasp-promise
+  (sbcl-package->clasp-package sbcl-promise))
+
 (define-public sbcl-prompter
   (let ((commit "7890ed5d02e70aba01ceb964c6ee4f40776e7dc0")
         (revision "0"))
