@@ -13420,6 +13420,9 @@ directly.")
 (define-public ecl-custom-hash-table
   (sbcl-package->ecl-package sbcl-custom-hash-table))
 
+(define-public clasp-custom-hash-table
+  (sbcl-package->clasp-package sbcl-custom-hash-table))
+
 (define-public sbcl-cxml
   (let ((commit "00b22bf4c4cf11c993d5866fae284f95ab18e6bf")
         (revision "1"))
