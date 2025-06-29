@@ -22516,14 +22516,17 @@ It should enable you to implement low-level X11 applications.")
     (synopsis "Emacs X window manager")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/"
-                           "exwm-" version ".tar"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacs-exwm/exwm")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "13wywayvdxpr2z14lri3ggni1wj20r452a0gxnx0cpgif3c1l2sx"))))
+        (base32
+         "1p2b5dvq0i3100wfqgag7qrcvi99q6b42ij53bz4vljv7pcrcrhh"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-xelb))
+     (list emacs-compat emacs-xelb))
     (inputs
      (list xhost dbus))
     ;; The following functions and variables needed by emacs-exwm are
@@ -22533,6 +22536,7 @@ It should enable you to implement low-level X11 applications.")
     (arguments
      (list
       #:emacs emacs
+      #:tests? #f                       ;No test suite.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'build 'install-xsession
@@ -22565,13 +22569,13 @@ It should enable you to implement low-level X11 applications.")
                               ((not (featurep 'exwm))
                                (require 'exwm)
                                (exwm-enable)
-                               (message (concat "exwm configuration not found. "
-                                                "Falling back to minimal configuration. "
-                                                "An example configuration can be found here "
-                                                "https://github.com/emacs-exwm/exwm"
-                                                "/wiki/Configuration-Example")))))))
+                               (message
+                                "exwm configuration not found.
+Falling back to minimal configuration.
+An example configuration can be found here:
+https://github.com/emacs-exwm/exwm/wiki/Configuration-Example"))))))
                 (chmod exwm-executable #o555)))))))
-    (home-page "https://github.com/ch11ng/exwm")
+    (home-page "https://github.com/emacs-exwm/exwm")
     (description
      "EXWM is a full-featured tiling X window manager for Emacs built on top
 of XELB.")
