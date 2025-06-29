@@ -18804,6 +18804,9 @@ codes header file found on Linux and FreeBSD.")
 (define-public ecl-input-event-codes
   (sbcl-package->ecl-package sbcl-input-event-codes))
 
+(define-public clasp-input-event-codes
+  (sbcl-package->clasp-package sbcl-input-event-codes))
+
 (define-public sbcl-inquisitor
   (let ((commit "423fa9bdd4a68a6ae517b18406d81491409ccae8")
         (revision "0"))
