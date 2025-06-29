@@ -331,6 +331,9 @@ of either regular or generic functions with mocks.")
 (define-public ecl-cl-quickcheck
   (sbcl-package->ecl-package sbcl-cl-quickcheck))
 
+(define-public clasp-cl-quickcheck
+  (sbcl-package->clasp-package sbcl-cl-quickcheck))
+
 (define-public sbcl-clunit
   (let ((commit "6f6d72873f0e1207f037470105969384f8380628")
         (revision "1"))
