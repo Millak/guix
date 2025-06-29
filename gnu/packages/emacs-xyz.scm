@@ -22468,13 +22468,16 @@ conflicts.")
   (package
     (name "emacs-xelb")
     (version "0.20")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://elpa.gnu.org/packages/xelb-"
-                                  version ".tar"))
-              (sha256
-               (base32
-                "12ikrnvik1n1fdc6ixx53d0z84v269wi463380k0i5zb6q8ncwpk"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacs-exwm/xelb")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ph09j78pf3f97zxaqcsxfl1aq5rnlib1h6xyga01067lq9ir86m"))))
     (build-system emacs-build-system)
     ;; The following functions and variables needed by emacs-xelb are
     ;; not included in emacs-minimal:
@@ -22499,7 +22502,7 @@ conflicts.")
                         (format #f "EMACS_BIN=~a -Q" emacs))))))))
     (native-inputs (list xcb-proto))
     (propagated-inputs (list emacs-compat))
-    (home-page "https://github.com/ch11ng/xelb")
+    (home-page "https://github.com/emacs-exwm/xelb")
     (synopsis "X protocol Emacs Lisp binding")
     (description "@code{emacs-xelb} is a pure Emacs Lisp implementation of the
 X11 protocol based on the XML description files from the XCB project.  It
