@@ -87,7 +87,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.1046")
+    (version "9.1.1492")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -96,7 +96,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0zfpqx0caczy0gq3xvbkv328z7xq76jbx52vhq8x8l6nqzpyjzbc"))))
+               "0f85psiqf62gbgqfzk09v1rqjs4mjf006j1735vydhcc3x9i9div"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -137,7 +137,7 @@
 
              ;; These tests crash the build environment.
              (substitute* "src/testdir/Make_all.mak"
-               ((".*test_glvs.*") ""))
+               ((".*test_plugin_glvs.*") ""))
 
              ;; These tests check how the terminal looks after executing some
              ;; actions.  The path of the bash binary is shown, which results in
@@ -164,9 +164,13 @@
                  ;; No setfattr in the build environment.
                  ((".*Test_write_with_xattr_support.*" line)
                   (string-append line "return\n"))))
-             ;; These two depend on full bash.
-             (delete-file "runtime/syntax/testdir/input/sh_11.sh")
-             (delete-file "runtime/syntax/testdir/input/sh_12.sh")))
+             ;; These depend on full bash.
+             (with-directory-excursion "runtime/syntax/testdir/input"
+               (for-each delete-file
+                         (list "sh_11.sh"
+                               "sh_12.sh"
+                               "sh_14.sh"
+                               "sh_sundrous.bash")))))
          (add-before 'install 'fix-installman.sh
            (lambda _
              (substitute* "src/installman.sh"
@@ -247,6 +251,12 @@ with the editor vim.")))
        ,@(substitute-keyword-arguments (package-arguments vim)
            ((#:phases phases)
             `(modify-phases ,phases
+               (add-before 'check 'skip-some-more-tests
+                 (lambda _
+                   ;; Fontconfig can't figure out its cache directory
+                   (substitute* "src/testdir/test_startup.vim"
+                     ((".*Test_progname.*" line)
+                      (string-append line "return\n")))))
                (add-before 'check 'start-xserver
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; Some tests require an X server, but does not start one.
