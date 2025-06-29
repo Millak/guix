@@ -13104,6 +13104,9 @@ tasks in Common Lisp.  It is fork of SWANK-BACKEND.")
 (define-public ecl-conium
   (sbcl-package->ecl-package sbcl-conium))
 
+(define-public clasp-conium
+  (sbcl-package->clasp-package sbcl-conium))
+
 (define-public sbcl-constantfold
   (let ((commit "0ff1d97a3fbcb89264f6a2af6ce62b73e7b421f4")
         (revision "1"))
