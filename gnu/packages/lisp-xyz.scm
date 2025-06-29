@@ -8734,6 +8734,9 @@ pure Common Lisp.")
          ;; (INTEGER 0 2305843009213693951)
          ((#:tests? _ #f) #f))))))
 
+(define-public clasp-cl-pcg
+  (sbcl-package->clasp-package sbcl-cl-pcg))
+
 (define-public sbcl-cl-pdf
   (let ((commit "0a1cd33b658c7101766781c534455d4d9e5972bf")
         (revision "4"))
