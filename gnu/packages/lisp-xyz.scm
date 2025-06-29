@@ -32996,6 +32996,9 @@ numbers in a natural way.")
 (define-public ecl-wu-decimal
   (sbcl-package->ecl-package sbcl-wu-decimal))
 
+(define-public clasp-wu-decimal
+  (sbcl-package->clasp-package sbcl-wu-decimal))
+
 (define-public sbcl-xhtmlambda
   (let ((commit "c86376bccebf77ca428e8033df2ba7d8450ea1e8")
         (revision "0"))
