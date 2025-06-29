@@ -22744,6 +22744,9 @@ equality.")
 (define-public ecl-mw-equiv
   (sbcl-package->ecl-package sbcl-mw-equiv))
 
+(define-public clasp-mw-equiv
+  (sbcl-package->clasp-package sbcl-mw-equiv))
+
 (define-public sbcl-myway
   (let ((commit "286230082a11f879c18b93f17ca571c5f676bfb7")
         (revision "1"))
