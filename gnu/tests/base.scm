@@ -181,8 +181,7 @@ test \"$PROFILE_D_OK\" = yes")
           (test-assert "/etc/bashrc.d is sourced"
             (zero? (marionette-eval
                     '(system* "bash"
-                              ;; Ensure Bash runs interactively.
-                              "--init-file"
+                              "-i" ;run interactively
                               #$(plain-file "test_bashrc_d.sh"
                                             "\
 . /etc/bashrc
