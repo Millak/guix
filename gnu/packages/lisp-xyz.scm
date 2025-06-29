@@ -23191,6 +23191,9 @@ also be supported.")
 (define-public ecl-nibbles
   (sbcl-package->ecl-package sbcl-nibbles))
 
+(define-public clasp-nibbles
+  (sbcl-package->clasp-package sbcl-nibbles))
+
 (define-public sbcl-ningle
   (let ((commit "2e85675bbb668d6ef341514fc9f22391a0f506b1")
         (revision "2"))
