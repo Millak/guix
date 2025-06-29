@@ -14247,6 +14247,9 @@ diffs, \"context\" format diffs, and \"vdelta\" format binary diffs.")
 (define-public ecl-diff
   (sbcl-package->ecl-package sbcl-diff))
 
+(define-public clasp-diff
+  (sbcl-package->clasp-package sbcl-diff))
+
 (define-public sbcl-dissect
   (let ((commit "a70cabcd748cf7c041196efd711e2dcca2bbbb2c"))
     (package
