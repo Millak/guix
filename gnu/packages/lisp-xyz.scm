@@ -25564,6 +25564,9 @@ an array-based heap.")
 (define-public ecl-priority-queue
   (sbcl-package->ecl-package sbcl-priority-queue))
 
+(define-public clasp-priority-queue
+  (sbcl-package->clasp-package sbcl-priority-queue))
+
 (define-public sbcl-proc-parse
   (let ((commit "ac3636834d561bdc2686c956dbd82494537285fd"))
     (package
