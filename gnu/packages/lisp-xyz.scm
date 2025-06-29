@@ -17522,6 +17522,9 @@ Lisp, inspired by BODOL (@url{https://github.com/bodil/BODOL}).")
 (define-public ecl-golden-utils
   (sbcl-package->ecl-package sbcl-golden-utils))
 
+(define-public clasp-golden-utils
+  (sbcl-package->clasp-package sbcl-golden-utils))
+
 (define-public sbcl-graph
   (let ((commit "78bf9ec930d8eae4f0861b5be76765fb1e45e24f")
         (revision "0"))
