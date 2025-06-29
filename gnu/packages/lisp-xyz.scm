@@ -27261,6 +27261,9 @@ can coexist and interoperate with other extensions to as CLIM and Iterate.")
 (define-public ecl-screamer
   (sbcl-package->ecl-package sbcl-screamer))
 
+(define-public clasp-screamer
+  (sbcl-package->clasp-package sbcl-screamer))
+
 (define-public sbcl-sdf
   ;; Shinmera's fork required for Alloy.
   (let ((commit "e1ab3ac4ea52c0e0119b832f428c71f580b4d83b")
