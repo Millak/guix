@@ -23491,6 +23491,9 @@ implement Common Lisp streams using generic functions.")
 (define-public ecl-nontrivial-gray-streams
   (sbcl-package->ecl-package sbcl-nontrivial-gray-streams))
 
+(define-public clasp-nontrivial-gray-streams
+  (sbcl-package->clasp-package sbcl-nontrivial-gray-streams))
+
 (define-public sbcl-nsymbols
   (package
    (name "sbcl-nsymbols")
