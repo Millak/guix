@@ -20573,11 +20573,9 @@ manipulation library.")
         (base32
          "0c9hl35jvld1a1vinh9mdcpfgz4ykqinlm1dj917lqbgd0z6b9bn"))))
     (build-system pyproject-build-system)
-    ;; While there are test files, there is no "tests" directory, so the tests
-    ;; fail.
-    (arguments '(#:tests? #false))
     (native-inputs
-     (list python-setuptools python-setuptools-scm python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm python-wheel))
+    (propagated-inputs (list python-numpy))
     (home-page "https://uncertainties.readthedocs.io/en/latest/")
     (synopsis "Calculations with uncertainties")
     (description
