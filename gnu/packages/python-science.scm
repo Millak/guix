@@ -455,6 +455,27 @@ numerical solver for convex optimization problems using a novel homogeneous
 embedding.")
     (license license:asl2.0)))
 
+(define-public python-climin
+  (package
+    (name "python-climin")
+    (version "0.1a1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "climin" version))
+              (sha256
+               (base32
+                "1wpjisd5zzi5yvjff02hnxn84822k8sdxvvd33lil2x79wdb36rv"))))
+    (build-system python-build-system)
+    (native-inputs (list python-nose))
+    (propagated-inputs (list python-numpydoc python-numpy python-scipy))
+    (home-page "https://github.com/BRML/climin")
+    (synopsis "Optimization for machine learning")
+    (description
+     "@command{climin} is a Python package for optimization,
+heavily biased to machine learning scenarios.  It works on top of
+@command{numpy} and (partially) @command{gnumpy}.")
+    (license license:bsd-3)))
+
 (define-public python-cmocean
   (package
     (name "python-cmocean")
@@ -665,6 +686,26 @@ that is 7-15x faster than @code{numpy.histogram}, and a 2D histogram function
 that is 20-25x faster than @code{numpy.histogram2d}.")
     (license license:bsd-3)))
 
+(define-public python-fastcluster
+  (package
+    (name "python-fastcluster")
+    (version "1.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastcluster" version))
+       (sha256
+        (base32 "19labbgnq85p4r4jbli2p045lgh57larhi2g2anagfxnlzpqdf5a"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-scipy python-setuptools python-wheel))
+    (home-page "https://danifold.net/fastcluster.html")
+    (synopsis "Fast hierarchical clustering routines for R and Python")
+    (description "The fastcluster package implements seven common hierarchical
+clustering schemes efficiently.  The package is made with two interfaces to
+standard software: R and Python.")
+    (license license:bsd-2)))
+
 (define-public python-formulaic
   (package
     (name "python-formulaic")
@@ -828,6 +869,38 @@ Features:
 @end itemize")
     (license license:bsd-2)))
 
+(define-public python-libneuroml
+  (package
+    (name "python-libneuroml")
+    (version "0.6.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/NeuralEnsemble/libNeuroML.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04cfff9phm19x87p86xrkhd6wlpxvdwk3rf1c3qgyncfchws0sjh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-numpy
+           python-setuptools
+           python-tables
+           python-wheel))
+    (propagated-inputs
+     (list python-lxml
+           python-natsort
+           python-networkx))
+    (home-page "https://libneuroml.readthedocs.org/en/latest/")
+    (synopsis
+     "Python library for working with NeuroML descriptions of neuronal models")
+    (description
+     "This package provides a Python library for working with NeuroML descriptions of
+neuronal models")
+    (license license:bsd-3)))
+
 (define-public python-meshzoo
   (package
     (name "python-meshzoo")
@@ -909,6 +982,39 @@ density maps, both for interactive and non-interactive use.")
     (description "This package provides a Python library for manipulating
 indices of @code{ndarrays}.")
     (license license:expat)))
+
+(define-public python-nibabel
+  (package
+    (name "python-nibabel")
+    (version "5.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nibabel" version))
+       (sha256
+        (base32 "16snprwgp7qzp51j3mx0zdn7brvx6r14ankldi24ny0w7d8adp0b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; AttributeError: 'dict' object has no attribute 'add'.
+      #:test-flags #~(list "-k" "not test_first and not test_second")))
+    (propagated-inputs (list python-importlib-resources python-numpy
+                             python-packaging python-typing-extensions))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-pytest-httpserver
+                         python-pytest-xdist))
+    (home-page "https://nipy.org/nibabel/")
+    (synopsis "Read and write access to common neuroimaging file formats")
+    (description
+     "@code{nibabel} is a library that provides read and write access to
+common neuroimaging file formats, including: ANALYZE (plain, SPM99, SPM2
+and later), GIFTI, NIfTI1, NIfTI2, CIFTI-2, MINC1, MINC2, AFNI BRIK/HEAD,
+ECAT and Philips PAR/REC.  In addition, NiBabel also supports FreeSurfer’s
+MGH, geometry, annotation and morphometry files, and provides some limited
+support for DICOM.")
+    (license license:expat))) ; and other non-copyleft licenses
 
 (define-public python-numdifftools
   (package
@@ -1016,6 +1122,32 @@ evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
      "This package provides optimized tools for group-indexing operations:
 aggregated sum and more.")
     (license license:bsd-3)))
+
+(define-public python-opt-einsum
+  (package
+    (name "python-opt-einsum")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "opt_einsum" version))
+              (sha256
+               (base32
+                "0jb5lia0q742d1713jk33vlj41y61sf52j6pgk7pvhxvfxglgxjr"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+    (home-page "https://github.com/dgasmith/opt_einsum")
+    (synopsis "Optimizing numpys einsum function")
+    (description
+     "Optimized einsum can significantly reduce the overall execution time of
+einsum-like expressions by optimizing the expression's contraction order and
+dispatching many operations to canonical BLAS, cuBLAS, or other specialized
+routines.  Optimized einsum is agnostic to the backend and can handle NumPy,
+Dask, PyTorch, Tensorflow, CuPy, Sparse, Theano, JAX, and Autograd arrays as
+well as potentially any library which conforms to a standard API. See the
+documentation for more information.")
+    (license license:expat)))
 
 (define-public python-osqp
   (package
@@ -1144,6 +1276,56 @@ allows arithmetic operations between them and conversions from and to
 different units.")
     (license license:bsd-3)))
 
+(define-public python-pynetdicom
+  (package
+    (name "python-pynetdicom")
+    (version "2.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pynetdicom" version))
+              (sha256
+               (base32
+                "1smzrnc93nmv8jz4np9knas74a46b1nhb3hjpf8n9vfpxypgnwcn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests takes about 10-15min to complete.
+      ;; Skip tests that require networking.
+      #~(list "-k" (string-append
+                    " not TestFindSCP"
+                    " and not TestQRGetServiceClass"
+                    " and not TestQRMoveServiceClass"
+                    " and not TestStoreSCP"
+                    " and not test_ae.py"
+                    " and not test_echoscp.py"
+                    " and not test_qrscp_echo.py"
+                    " and not test_storescp.py"
+                    " and not test_pr_level_patient"
+                    " and not test_pr_level_series"
+                    " and not test_scp_cancelled"))))
+    (native-inputs (list python-codespell
+                         python-coverage
+                         python-poetry-core
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-xdist
+                         python-sphinx
+                         python-sphinx-rtd-theme))
+    (propagated-inputs (list python-mypy
+                             python-numpydoc
+                             python-pydicom
+                             python-pyfakefs
+                             python-sqlalchemy))
+    (home-page "https://github.com/pydicom/pynetdicom")
+    (synopsis "Python implementation of the DICOM networking protocol")
+    (description
+     "@code{pynetdicom} is a Python package that implements the DICOM
+networking protocol.  It allows the easy creation of DICOM
+@acronym{SCUs,Service Class Users} and @acronym{SCPs,Service Class
+Providers}.")
+    (license license:expat)))
+
 (define-public python-pyzx
   (package
     (name "python-pyzx")
@@ -1218,6 +1400,37 @@ or as a TikZ file for use in LaTeX documents;
     (description "This package provides a Python interface to the QDLDL LDL
 factorization routine for quasi-definite linear system.")
     (license license:asl2.0)))
+
+(define-public python-ruffus
+  (package
+    (name "python-ruffus")
+    (version "2.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ruffus" version))
+       (sha256
+        (base32
+         "1ai673k1s94s8b6pyxai8mk17p6zvvyi87rl236fs6ls8mpdklvc"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'check)
+         (add-after 'install 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (with-directory-excursion "ruffus/test"
+                 (invoke "bash" "run_all_unit_tests3.cmd"))))))))
+    (native-inputs
+     (list python-pytest))
+    (home-page "http://www.ruffus.org.uk")
+    (synopsis "Light-weight computational pipeline management")
+    (description
+     "Ruffus is designed to allow scientific and other analyses to be
+automated with the minimum of fuss and the least effort.")
+    (license license:expat)))
 
 (define-public python-scikit-allel
   (package
@@ -1746,6 +1959,25 @@ the SciPy stack.  It provides many user-friendly and efficient numerical
 routines such as routines for numerical integration and optimization.")
     (license license:bsd-3)))
 
+(define-public python-simple-pid
+  (package
+    (name "python-simple-pid")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "simple_pid" version))
+              (sha256
+               (base32
+                "17p9bgka5yv5lbnbk374yjccrlizm572wv3xb479072lahf7cwap"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/m-lundberg/simple-pid")
+    (synopsis "Easy to use PID controller")
+    (description "This package provides a simple and easy-to-use @acronym{PID,
+proportional-integral-derivative} controller.")
+    (license license:expat)))
+
 (define-public python-snakemake-interface-common
   (package
     (name "python-snakemake-interface-common")
@@ -2211,39 +2443,6 @@ interpolation of 1D data (for example, time series) with splines.")
      "This package provides a Python library for calculating
 Evapotranspiration using various standard methods.")
     (license license:expat)))
-
-(define-public python-nibabel
-  (package
-    (name "python-nibabel")
-    (version "5.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "nibabel" version))
-       (sha256
-        (base32 "16snprwgp7qzp51j3mx0zdn7brvx6r14ankldi24ny0w7d8adp0b"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; AttributeError: 'dict' object has no attribute 'add'.
-      #:test-flags #~(list "-k" "not test_first and not test_second")))
-    (propagated-inputs (list python-importlib-resources python-numpy
-                             python-packaging python-typing-extensions))
-    (native-inputs (list python-hatch-vcs
-                         python-hatchling
-                         python-pytest
-                         python-pytest-httpserver
-                         python-pytest-xdist))
-    (home-page "https://nipy.org/nibabel/")
-    (synopsis "Read and write access to common neuroimaging file formats")
-    (description
-     "@code{nibabel} is a library that provides read and write access to
-common neuroimaging file formats, including: ANALYZE (plain, SPM99, SPM2
-and later), GIFTI, NIfTI1, NIfTI2, CIFTI-2, MINC1, MINC2, AFNI BRIK/HEAD,
-ECAT and Philips PAR/REC.  In addition, NiBabel also supports FreeSurfer’s
-MGH, geometry, annotation and morphometry files, and provides some limited
-support for DICOM.")
-    (license license:expat))) ; and other non-copyleft licenses
 
 (define-public python-tspex
   (package
@@ -2960,26 +3159,6 @@ changed, it made sense to abstract away the nuisance of having to re-learn
 them.")
   (license license:bsd-3)))
 
-(define-public python-fastcluster
-  (package
-    (name "python-fastcluster")
-    (version "1.2.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastcluster" version))
-       (sha256
-        (base32 "19labbgnq85p4r4jbli2p045lgh57larhi2g2anagfxnlzpqdf5a"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-scipy python-setuptools python-wheel))
-    (home-page "https://danifold.net/fastcluster.html")
-    (synopsis "Fast hierarchical clustering routines for R and Python")
-    (description "The fastcluster package implements seven common hierarchical
-clustering schemes efficiently.  The package is made with two interfaces to
-standard software: R and Python.")
-    (license license:bsd-2)))
-
 (define-public python-fbpca
   (package
     (name "python-fbpca")
@@ -3380,37 +3559,6 @@ serialization and deserialization of numerical and array data types provided
 by numpy using the highly efficient @code{msgpack} format.  Serialization of
 Python's native complex data types is also supported.")
     (license license:bsd-3)))
-
-(define-public python-ruffus
-  (package
-    (name "python-ruffus")
-    (version "2.8.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ruffus" version))
-       (sha256
-        (base32
-         "1ai673k1s94s8b6pyxai8mk17p6zvvyi87rl236fs6ls8mpdklvc"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "ruffus/test"
-                 (invoke "bash" "run_all_unit_tests3.cmd"))))))))
-    (native-inputs
-     (list python-pytest))
-    (home-page "http://www.ruffus.org.uk")
-    (synopsis "Light-weight computational pipeline management")
-    (description
-     "Ruffus is designed to allow scientific and other analyses to be
-automated with the minimum of fuss and the least effort.")
-    (license license:expat)))
 
 (define-public python-scs
   (package
@@ -4321,27 +4469,6 @@ visual integration of spatially referenced datasets.")
 to do spectral analysis in Python.")
     (license license:expat)))
 
-(define-public python-climin
-  (package
-    (name "python-climin")
-    (version "0.1a1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "climin" version))
-              (sha256
-               (base32
-                "1wpjisd5zzi5yvjff02hnxn84822k8sdxvvd33lil2x79wdb36rv"))))
-    (build-system python-build-system)
-    (native-inputs (list python-nose))
-    (propagated-inputs (list python-numpydoc python-numpy python-scipy))
-    (home-page "https://github.com/BRML/climin")
-    (synopsis "Optimization for machine learning")
-    (description
-     "@command{climin} is a Python package for optimization,
-heavily biased to machine learning scenarios.  It works on top of
-@command{numpy} and (partially) @command{gnumpy}.")
-    (license license:bsd-3)))
-
 (define-public python-paramz
   (package
     (name "python-paramz")
@@ -4562,25 +4689,6 @@ of use as pickling or @code{numpy.save}, but with the language
 interoperability offered by HDF5.")
       (license license:bsd-3))))
 
-(define-public python-simple-pid
-  (package
-    (name "python-simple-pid")
-    (version "2.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "simple_pid" version))
-              (sha256
-               (base32
-                "17p9bgka5yv5lbnbk374yjccrlizm572wv3xb479072lahf7cwap"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/m-lundberg/simple-pid")
-    (synopsis "Easy to use PID controller")
-    (description "This package provides a simple and easy-to-use @acronym{PID,
-proportional-integral-derivative} controller.")
-    (license license:expat)))
-
 (define-public python-supersmoother
   (package
     (name "python-supersmoother")
@@ -4610,32 +4718,6 @@ proportional-integral-derivative} controller.")
 Friedman's SuperSmoother} based in Python.  It makes use of numpy for fast
 numerical computation.")
     (license license:bsd-2)))
-
-(define-public python-opt-einsum
-  (package
-    (name "python-opt-einsum")
-    (version "3.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "opt_einsum" version))
-              (sha256
-               (base32
-                "0jb5lia0q742d1713jk33vlj41y61sf52j6pgk7pvhxvfxglgxjr"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
-    (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
-    (home-page "https://github.com/dgasmith/opt_einsum")
-    (synopsis "Optimizing numpys einsum function")
-    (description
-     "Optimized einsum can significantly reduce the overall execution time of
-einsum-like expressions by optimizing the expression's contraction order and
-dispatching many operations to canonical BLAS, cuBLAS, or other specialized
-routines.  Optimized einsum is agnostic to the backend and can handle NumPy,
-Dask, PyTorch, Tensorflow, CuPy, Sparse, Theano, JAX, and Autograd arrays as
-well as potentially any library which conforms to a standard API. See the
-documentation for more information.")
-    (license license:expat)))
 
 (define-public python-vaex-core
   (package
@@ -4755,56 +4837,6 @@ fractional factorial methods.")
 NeuroML2 models.")
     (license license:lgpl3)))
 
-(define-public python-pynetdicom
-  (package
-    (name "python-pynetdicom")
-    (version "2.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pynetdicom" version))
-              (sha256
-               (base32
-                "1smzrnc93nmv8jz4np9knas74a46b1nhb3hjpf8n9vfpxypgnwcn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Tests takes about 10-15min to complete.
-      ;; Skip tests that require networking.
-      #~(list "-k" (string-append
-                    " not TestFindSCP"
-                    " and not TestQRGetServiceClass"
-                    " and not TestQRMoveServiceClass"
-                    " and not TestStoreSCP"
-                    " and not test_ae.py"
-                    " and not test_echoscp.py"
-                    " and not test_qrscp_echo.py"
-                    " and not test_storescp.py"
-                    " and not test_pr_level_patient"
-                    " and not test_pr_level_series"
-                    " and not test_scp_cancelled"))))
-    (native-inputs (list python-codespell
-                         python-coverage
-                         python-poetry-core
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-xdist
-                         python-sphinx
-                         python-sphinx-rtd-theme))
-    (propagated-inputs (list python-mypy
-                             python-numpydoc
-                             python-pydicom
-                             python-pyfakefs
-                             python-sqlalchemy))
-    (home-page "https://github.com/pydicom/pynetdicom")
-    (synopsis "Python implementation of the DICOM networking protocol")
-    (description
-     "@code{pynetdicom} is a Python package that implements the DICOM
-networking protocol.  It allows the easy creation of DICOM
-@acronym{SCUs,Service Class Users} and @acronym{SCPs,Service Class
-Providers}.")
-    (license license:expat)))
-
 (define-public python-pynrrd
   (package
     (name "python-pynrrd")
@@ -4910,38 +4942,6 @@ compagnies.")
 and PySide6.  It is intended for use in mathematics, scientific or engineering
 applications.")
     (license license:expat)))
-
-(define-public python-libneuroml
-  (package
-    (name "python-libneuroml")
-    (version "0.6.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/NeuralEnsemble/libNeuroML.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04cfff9phm19x87p86xrkhd6wlpxvdwk3rf1c3qgyncfchws0sjh"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-numpy
-           python-setuptools
-           python-tables
-           python-wheel))
-    (propagated-inputs
-     (list python-lxml
-           python-natsort
-           python-networkx))
-    (home-page "https://libneuroml.readthedocs.org/en/latest/")
-    (synopsis
-     "Python library for working with NeuroML descriptions of neuronal models")
-    (description
-     "This package provides a Python library for working with NeuroML descriptions of
-neuronal models")
-    (license license:bsd-3)))
 
 (define-public snakemake
   (package
