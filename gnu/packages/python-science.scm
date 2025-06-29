@@ -297,6 +297,36 @@ specification and test suite in Python.")
 supersedes the RTED algorithm for computing the tree edit distance.")
       (license license:expat))))
 
+(define-public python-ase
+  (package
+    (name "python-ase")
+    (version "3.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ase" version))
+       (sha256
+        (base32 "1hk2r5042cs9shqv49w0jvf65wkyq74s6vc5drfz1275kz5ghk1p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list ;; DeprecationWarning.
+              "--deselect"
+              "ase/test/fio/test_espresso.py::test_pw_input_write_nested_flat"
+              ;; UserWarning.
+              "--deselect"
+              "ase/test/fio/test_espresso.py::TestConstraints::test_fix_scaled")))
+    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
+    (native-inputs (list python-pytest python-pytest-xdist python-setuptools
+                         python-wheel))
+    (inputs (list spglib))
+    (home-page "https://wiki.fysik.dtu.dk/ase/")
+    (synopsis "Atomic Simulation Environment")
+    (description "This package provides a set of tools and Python modules for
+setting up, manipulating, running, visualizing and analyzing atomistic
+simulations.")
+    (license license:lgpl2.1+)))
+
 (define-public python-boost-histogram
   (package
     (name "python-boost-histogram")
@@ -560,6 +590,29 @@ that is 20-25x faster than @code{numpy.histogram2d}.")
 formulas for Python.")
     (license license:expat)))
 
+(define-public python-geosketch
+  (package
+    (name "python-geosketch")
+    (version "1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "geosketch" version))
+              (sha256
+               (base32
+                "0knch5h0p8xpm8bi3b5mxyaf1ywwimrsdmbnc1xr5icidcv9gzmv"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #false)) ;there are none
+    (propagated-inputs (list python-fbpca python-numpy python-scikit-learn))
+    (home-page "https://github.com/brianhie/geosketch")
+    (synopsis "Geometry-preserving random sampling")
+    (description "geosketch is a Python package that implements the geometric
+sketching algorithm described by Brian Hie, Hyunghoon Cho, Benjamin DeMeo,
+Bryan Bryson, and Bonnie Berger in \"Geometric sketching compactly summarizes
+the single-cell transcriptomic landscape\", Cell Systems (2019).  This package
+provides an example implementation of the algorithm as well as scripts
+necessary for reproducing the experiments in the paper.")
+    (license license:expat)))
+
 (define-public python-hepunits
   (package
     (name "python-hepunits")
@@ -578,6 +631,30 @@ formulas for Python.")
 constants in the HEP System of Units, as derived from the basic units
 originally defined by the CLHEP project.")
     (license license:bsd-3)))
+
+(define-public python-histoprint
+  (package
+    (name "python-histoprint")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "histoprint" version))
+       (sha256
+        (base32 "07d2lk64gwhjvw4wccvwks3j4ig7g99q627jjxz4ans5a29p5pz1"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-click python-numpy python-uhi))
+    (native-inputs (list python-awkward
+                         python-boost-histogram
+                         python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-rich))
+    (home-page "https://github.com/scikit-hep/histoprint")
+    (synopsis "Pretty print histograms to the console")
+    (description "Histoprint uses a mix of terminal color codes and Unicode
+trickery (i.e. combining characters) to plot overlaying histograms.")
+    (license license:expat)))
 
 (define-public python-imagehash
   (package
@@ -625,6 +702,31 @@ Features:
 @end itemize")
     (license license:bsd-2)))
 
+(define-public python-meshzoo
+  (package
+    (name "python-meshzoo")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/meshzoo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "107byfppbq16fqyp2hw7ydcvvahspzq0hzvlvzqg2zxi1aigbr68"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-numpy))
+    (native-inputs (list python-flit-core python-matplotlib python-pytest))
+    (home-page "https://github.com/diego-hayashi/meshzoo")
+    (synopsis "Mesh generator for simple geometries")
+    (description
+      "@code{meshzoo} is a mesh generator for finite element or finite
+volume computations for simple domains like regular polygons, disks,
+spheres, cubes, etc.")
+    (license license:gpl3+)))
+
 (define-public python-mpl-scatter-density
   (package
     (name "python-mpl-scatter-density")
@@ -657,6 +759,30 @@ Features:
      "This package provides functionality to make it easy to make scatter
 density maps, both for interactive and non-interactive use.")
     (license license:bsd-2)))
+
+(define-public python-ndindex
+  (package
+    (name "python-ndindex")
+    (version "1.7")                     ;newer versions require a newer numpy
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ndindex" version))
+       (sha256
+        (base32 "1lpgsagmgxzsas7g8yiv6wmyss8q57w92h70fn11rnpadsvx16xz"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags #~(list "-c" "/dev/null"))) ;avoid coverage
+    (native-inputs
+     (list python-cython
+           python-numpy
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://quansight-labs.github.io/ndindex/")
+    (synopsis "Python library for manipulating indices of ndarrays")
+    (description "This package provides a Python library for manipulating
+indices of @code{ndarrays}.")
+    (license license:expat)))
 
 (define-public python-numdifftools
   (package
@@ -912,102 +1038,6 @@ or as a TikZ file for use in LaTeX documents;
     (description "This package provides a Python interface to the QDLDL LDL
 factorization routine for quasi-definite linear system.")
     (license license:asl2.0)))
-
-(define-public python-scipy
-  (package
-    (name "python-scipy")
-    (version "1.12.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scipy" version))
-       (sha256
-        (base32 "18rn15wg3lp58z204fbjjhy0h79c53yg3c4qqs9h3liniamspxab"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Step out of the source directory to avoid interference.
-                (with-directory-excursion "/tmp"
-                  (invoke "python" "-c"
-                          (string-append
-                           "import scipy; scipy.test('fast', parallel="
-                           (number->string (parallel-job-count))
-                           ", verbose=2)"))))))
-          (add-after 'check 'install-doc
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; FIXME: Documentation cannot be built because it requires
-              ;; a newer version of pydata-sphinx-theme, which currently
-              ;; cannot build without internet access:
-              ;; <https://github.com/pydata/pydata-sphinx-theme/issues/628>.
-              ;; Keep the phase for easy testing.
-              (let ((sphinx-build (false-if-exception
-                                   (search-input-file input "bin/sphinx-build"))))
-                (if sphinx-build
-                    (let* ((doc (assoc-ref outputs "doc"))
-                           (data (string-append doc "/share"))
-                           (docdir (string-append
-                                    data "/doc/"
-                                    #$(package-name this-package) "-"
-                                    #$(package-version this-package)))
-                           (html (string-append docdir "/html")))
-                      (with-directory-excursion "doc"
-                        ;; Build doc.
-                        (invoke "make" "html"
-                                ;; Building the documentation takes a very long time.
-                                ;; Parallelize it.
-                                (string-append "SPHINXOPTS=-j"
-                                               (number->string (parallel-job-count))))
-                        ;; Install doc.
-                        (mkdir-p html)
-                        (copy-recursively "build/html" html)))
-                    (format #t "sphinx-build not found, skipping~%"))))))))
-    (propagated-inputs
-     (append
-       (if (supported-package? python-jupytext)  ; Depends on pandoc.
-           (list python-jupytext)
-           '())
-       (list python-matplotlib
-             python-mpmath
-             python-mypy
-             python-numpy
-             python-numpydoc
-             python-pydata-sphinx-theme
-             python-pydevtool
-             python-pythran
-             python-rich-click
-             python-sphinx
-             python-threadpoolctl
-             python-typing-extensions)))
-    (inputs (list openblas pybind11-2.10))
-    (native-inputs
-     (list gfortran
-           ;; XXX: Adding gfortran shadows GCC headers, causing a compilation
-           ;; failure.  Somehow also providing GCC works around it ...
-           gcc
-           meson-python
-           pkg-config
-           python-click
-           python-cython-0.29.35
-           python-doit
-           python-hypothesis
-           python-pooch
-           python-pycodestyle
-           python-pydevtool
-           python-pytest
-           python-pytest-cov
-           python-pytest-timeout
-           python-pytest-xdist))
-    (home-page "https://scipy.org/")
-    (synopsis "The Scipy library provides efficient numerical routines")
-    (description "The SciPy library is one of the core packages that make up
-the SciPy stack.  It provides many user-friendly and efficient numerical
-routines such as routines for numerical integration and optimization.")
-    (license license:bsd-3)))
 
 (define-public python-scikit-allel
   (package
@@ -1440,6 +1470,102 @@ utilizing the power of scikit-learn, e.g., for pre-processing or doing
 cross-validation.")
       (license license:gpl3+))))
 
+(define-public python-scipy
+  (package
+    (name "python-scipy")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scipy" version))
+       (sha256
+        (base32 "18rn15wg3lp58z204fbjjhy0h79c53yg3c4qqs9h3liniamspxab"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Step out of the source directory to avoid interference.
+                (with-directory-excursion "/tmp"
+                  (invoke "python" "-c"
+                          (string-append
+                           "import scipy; scipy.test('fast', parallel="
+                           (number->string (parallel-job-count))
+                           ", verbose=2)"))))))
+          (add-after 'check 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; FIXME: Documentation cannot be built because it requires
+              ;; a newer version of pydata-sphinx-theme, which currently
+              ;; cannot build without internet access:
+              ;; <https://github.com/pydata/pydata-sphinx-theme/issues/628>.
+              ;; Keep the phase for easy testing.
+              (let ((sphinx-build (false-if-exception
+                                   (search-input-file input "bin/sphinx-build"))))
+                (if sphinx-build
+                    (let* ((doc (assoc-ref outputs "doc"))
+                           (data (string-append doc "/share"))
+                           (docdir (string-append
+                                    data "/doc/"
+                                    #$(package-name this-package) "-"
+                                    #$(package-version this-package)))
+                           (html (string-append docdir "/html")))
+                      (with-directory-excursion "doc"
+                        ;; Build doc.
+                        (invoke "make" "html"
+                                ;; Building the documentation takes a very long time.
+                                ;; Parallelize it.
+                                (string-append "SPHINXOPTS=-j"
+                                               (number->string (parallel-job-count))))
+                        ;; Install doc.
+                        (mkdir-p html)
+                        (copy-recursively "build/html" html)))
+                    (format #t "sphinx-build not found, skipping~%"))))))))
+    (propagated-inputs
+     (append
+       (if (supported-package? python-jupytext)  ; Depends on pandoc.
+           (list python-jupytext)
+           '())
+       (list python-matplotlib
+             python-mpmath
+             python-mypy
+             python-numpy
+             python-numpydoc
+             python-pydata-sphinx-theme
+             python-pydevtool
+             python-pythran
+             python-rich-click
+             python-sphinx
+             python-threadpoolctl
+             python-typing-extensions)))
+    (inputs (list openblas pybind11-2.10))
+    (native-inputs
+     (list gfortran
+           ;; XXX: Adding gfortran shadows GCC headers, causing a compilation
+           ;; failure.  Somehow also providing GCC works around it ...
+           gcc
+           meson-python
+           pkg-config
+           python-click
+           python-cython-0.29.35
+           python-doit
+           python-hypothesis
+           python-pooch
+           python-pycodestyle
+           python-pydevtool
+           python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-pytest-xdist))
+    (home-page "https://scipy.org/")
+    (synopsis "The Scipy library provides efficient numerical routines")
+    (description "The SciPy library is one of the core packages that make up
+the SciPy stack.  It provides many user-friendly and efficient numerical
+routines such as routines for numerical integration and optimization.")
+    (license license:bsd-3)))
+
 (define-public python-snakemake-interface-common
   (package
     (name "python-snakemake-interface-common")
@@ -1633,30 +1759,6 @@ not usually a runtime dependency, but only a type checking, testing, and/or
 docs dependency in support of other libraries.")
     (license license:bsd-3)))
 
-(define-public python-histoprint
-  (package
-    (name "python-histoprint")
-    (version "2.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "histoprint" version))
-       (sha256
-        (base32 "07d2lk64gwhjvw4wccvwks3j4ig7g99q627jjxz4ans5a29p5pz1"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-click python-numpy python-uhi))
-    (native-inputs (list python-awkward
-                         python-boost-histogram
-                         python-hatch-vcs
-                         python-hatchling
-                         python-pytest
-                         python-rich))
-    (home-page "https://github.com/scikit-hep/histoprint")
-    (synopsis "Pretty print histograms to the console")
-    (description "Histoprint uses a mix of terminal color codes and Unicode
-trickery (i.e. combining characters) to plot overlaying histograms.")
-    (license license:expat)))
-
 (define-public python-hist
   (package
     (name "python-hist")
@@ -1785,6 +1887,45 @@ geometric calculations on arrays of vectors, rather than one vector at a time
 in a Python @code{for} loop.")
     (license license:bsd-3)))
 
+(define-public python-traittypes
+  (package
+    (name "python-traittypes")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "traittypes" version))
+       (sha256
+        (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This one test fails because it doesn't raise an expected exception.
+      #:test-flags '(list "-k" "not test_bad_values")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'numpy-compatibility
+           (lambda _
+             (substitute* "traittypes/tests/test_traittypes.py"
+               (("np\\.int") "int")))))))
+    (propagated-inputs (list python-traitlets))
+    (native-inputs
+     (list python-numpy
+           python-pandas
+           python-nose
+           python-pytest
+           python-setuptools
+           python-xarray
+           python-wheel))
+    (home-page "https://github.com/jupyter-widgets/traittypes")
+    (synopsis "Trait types for NumPy, SciPy and friends")
+    (description "The goal of this package is to provide a reference
+implementation of trait types for common data structures used in the scipy
+stack such as numpy arrays or pandas and xarray data structures.  These are
+out of the scope of the main traitlets project but are a common requirement to
+build applications with traitlets in combination with the scipy stack.")
+    (license license:bsd-3)))
+
 (define-public python-trimesh
   (package
     (name "python-trimesh")
@@ -1871,31 +2012,6 @@ provide a full featured and well tested Trimesh object which allows for easy
 manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
-
-(define-public python-meshzoo
-  (package
-    (name "python-meshzoo")
-    (version "0.9.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/diego-hayashi/meshzoo")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "107byfppbq16fqyp2hw7ydcvvahspzq0hzvlvzqg2zxi1aigbr68"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-      (list python-numpy))
-    (native-inputs (list python-flit-core python-matplotlib python-pytest))
-    (home-page "https://github.com/diego-hayashi/meshzoo")
-    (synopsis "Mesh generator for simple geometries")
-    (description
-      "@code{meshzoo} is a mesh generator for finite element or finite
-volume computations for simple domains like regular polygons, disks,
-spheres, cubes, etc.")
-    (license license:gpl3+)))
 
 (define-public python-mpsplines
   ;; No release on PyPI no git tag, use the latest commit.
@@ -2077,30 +2193,6 @@ support for DICOM.")
      "This package provides a Python package for calculating
 tissue-specificity metrics for gene expression.")
     (license license:gpl3+)))
-
-(define-public python-ndindex
-  (package
-    (name "python-ndindex")
-    (version "1.7")                     ;newer versions require a newer numpy
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ndindex" version))
-       (sha256
-        (base32 "1lpgsagmgxzsas7g8yiv6wmyss8q57w92h70fn11rnpadsvx16xz"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:test-flags #~(list "-c" "/dev/null"))) ;avoid coverage
-    (native-inputs
-     (list python-cython
-           python-numpy
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://quansight-labs.github.io/ndindex/")
-    (synopsis "Python library for manipulating indices of ndarrays")
-    (description "This package provides a Python library for manipulating
-indices of @code{ndarrays}.")
-    (license license:expat)))
 
 (define-public python-pandas-1
   (package
@@ -2889,29 +2981,6 @@ standard software: R and Python.")
 analysis} (PCA), SVD, and eigendecompositions via randomized methods")
     (license license:bsd-3)))
 
-(define-public python-geosketch
-  (package
-    (name "python-geosketch")
-    (version "1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "geosketch" version))
-              (sha256
-               (base32
-                "0knch5h0p8xpm8bi3b5mxyaf1ywwimrsdmbnc1xr5icidcv9gzmv"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ;there are none
-    (propagated-inputs (list python-fbpca python-numpy python-scikit-learn))
-    (home-page "https://github.com/brianhie/geosketch")
-    (synopsis "Geometry-preserving random sampling")
-    (description "geosketch is a Python package that implements the geometric
-sketching algorithm described by Brian Hie, Hyunghoon Cho, Benjamin DeMeo,
-Bryan Bryson, and Bonnie Berger in \"Geometric sketching compactly summarizes
-the single-cell transcriptomic landscape\", Cell Systems (2019).  This package
-provides an example implementation of the algorithm as well as scripts
-necessary for reproducing the experiments in the paper.")
-    (license license:expat)))
-
 (define-public python-einops
   (package
     (name "python-einops")
@@ -2952,6 +3021,31 @@ necessary for reproducing the experiments in the paper.")
      "Einops provides a set of tensor operations for NumPy and multiple deep
 learning frameworks.")
     (license license:expat)))
+
+(define-public python-upsetplot
+  (package
+    (name "python-upsetplot")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "UpSetPlot" version))
+       (sha256
+        (base32
+         "14l5gcj88cclkj1mf74bcy1pxq1hgsiy27fa3vxrsk32ik1nmdwm"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-pandas))
+    (native-inputs
+     (list python-pytest-runner python-pytest-cov
+           python-setuptools python-wheel))
+    (home-page "https://upsetplot.readthedocs.io")
+    (synopsis "Draw UpSet plots with Pandas and Matplotlib")
+    (description
+     "This is a Python implementation of UpSet plots by Lex et al.
+UpSet plots are used to visualize set overlaps; like Venn diagrams but more
+readable.")
+    (license license:bsd-3)))
 
 (define-public python-xarray
   (package
@@ -3331,31 +3425,6 @@ annotations on an existing boxplots and barplots generated by seaborn.")
 units.  It defines the @code{unyt.array.unyt_array} and
 @code{unyt.array.unyt_quantity} classes (subclasses of NumPy’s ndarray class)
 for handling arrays and scalars with units,respectively")
-    (license license:bsd-3)))
-
-(define-public python-upsetplot
-  (package
-    (name "python-upsetplot")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "UpSetPlot" version))
-       (sha256
-        (base32
-         "14l5gcj88cclkj1mf74bcy1pxq1hgsiy27fa3vxrsk32ik1nmdwm"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-matplotlib python-pandas))
-    (native-inputs
-     (list python-pytest-runner python-pytest-cov
-           python-setuptools python-wheel))
-    (home-page "https://upsetplot.readthedocs.io")
-    (synopsis "Draw UpSet plots with Pandas and Matplotlib")
-    (description
-     "This is a Python implementation of UpSet plots by Lex et al.
-UpSet plots are used to visualize set overlaps; like Venn diagrams but more
-readable.")
     (license license:bsd-3)))
 
 (define-public python-vedo
@@ -4177,45 +4246,6 @@ visual integration of spatially referenced datasets.")
 to do spectral analysis in Python.")
     (license license:expat)))
 
-(define-public python-traittypes
-  (package
-    (name "python-traittypes")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "traittypes" version))
-       (sha256
-        (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; This one test fails because it doesn't raise an expected exception.
-      #:test-flags '(list "-k" "not test_bad_values")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'numpy-compatibility
-           (lambda _
-             (substitute* "traittypes/tests/test_traittypes.py"
-               (("np\\.int") "int")))))))
-    (propagated-inputs (list python-traitlets))
-    (native-inputs
-     (list python-numpy
-           python-pandas
-           python-nose
-           python-pytest
-           python-setuptools
-           python-xarray
-           python-wheel))
-    (home-page "https://github.com/jupyter-widgets/traittypes")
-    (synopsis "Trait types for NumPy, SciPy and friends")
-    (description "The goal of this package is to provide a reference
-implementation of trait types for common data structures used in the scipy
-stack such as numpy arrays or pandas and xarray data structures.  These are
-out of the scope of the main traitlets project but are a common requirement to
-build applications with traitlets in combination with the scipy stack.")
-    (license license:bsd-3)))
-
 (define-public python-clarabel
   (package
     (name "python-clarabel")
@@ -4893,36 +4923,6 @@ applications.")
      "This package provides a Python library for working with NeuroML descriptions of
 neuronal models")
     (license license:bsd-3)))
-
-(define-public python-ase
-  (package
-    (name "python-ase")
-    (version "3.25.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ase" version))
-       (sha256
-        (base32 "1hk2r5042cs9shqv49w0jvf65wkyq74s6vc5drfz1275kz5ghk1p"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           #~(list ;; DeprecationWarning.
-              "--deselect"
-              "ase/test/fio/test_espresso.py::test_pw_input_write_nested_flat"
-              ;; UserWarning.
-              "--deselect"
-              "ase/test/fio/test_espresso.py::TestConstraints::test_fix_scaled")))
-    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
-    (native-inputs (list python-pytest python-pytest-xdist python-setuptools
-                         python-wheel))
-    (inputs (list spglib))
-    (home-page "https://wiki.fysik.dtu.dk/ase/")
-    (synopsis "Atomic Simulation Environment")
-    (description "This package provides a set of tools and Python modules for
-setting up, manipulating, running, visualizing and analyzing atomistic
-simulations.")
-    (license license:lgpl2.1+)))
 
 (define-public python-asap3
   (package
