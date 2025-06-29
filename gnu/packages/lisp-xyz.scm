@@ -27587,6 +27587,9 @@ risk of accidentally revealing them.")
 (define-public ecl-secret-values
   (sbcl-package->ecl-package sbcl-secret-values))
 
+(define-public clasp-secret-values
+  (sbcl-package->clasp-package sbcl-secret-values))
+
 (define-public sbcl-seedable-rng
   (let ((commit "aa1a1564b6e07e2698df37c7a98348c4f762cb15")
         (revision "1"))
