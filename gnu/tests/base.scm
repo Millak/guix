@@ -74,7 +74,8 @@
                          #:key
                          initialization
                          root-password
-                         desktop?)
+                         desktop?
+                         extra-tests)
   "Return a derivation called NAME that tests basic features of the OS started
 using COMMAND, a gexp that evaluates to a list of strings.  Compare some
 properties of running system to what's declared in OS, an <operating-system>.
@@ -85,7 +86,12 @@ inserted before the first test.  This is used to introduce an extra
 initialization step, such as entering a LUKS passphrase.
 
 When ROOT-PASSWORD is true, enter it as the root password when logging in.
-Otherwise assume that there is no password for root."
+Otherwise assume that there is no password for root.
+
+When EXTRA-TESTS is true, it must be a one-argument procedure that is
+passed a gexp denoting the marionette. It must then return a gexp that is
+inserted after the last test. This is meant as a way of extending the basic
+tests that are defined within this procedure."
   (define special-files
     (service-value
      (fold-services (operating-system-services os)
@@ -580,6 +586,9 @@ test \"$BASHRC_D_OK\" = yes"))
                     "/sys/module/block/parameters/events_dfl_poll_msecs"
                   (compose string-trim-right get-string-all)))
              marionette))
+
+          #$(and extra-tests
+                 (extra-tests #~marionette))
 
           (test-end))))
 
