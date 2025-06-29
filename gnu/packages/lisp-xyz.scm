@@ -19348,6 +19348,9 @@ building block for higher level libraries.")
 (define-public ecl-json-streams
   (sbcl-package->ecl-package sbcl-json-streams))
 
+(define-public clasp-json-streams
+  (sbcl-package->clasp-package sbcl-json-streams))
+
 (define-public sbcl-jsonrpc
   (let ((commit "a43dd933838bb9596a2bf40e821af0bafd3d5356")
         (revision "1"))
