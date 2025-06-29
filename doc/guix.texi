@@ -2108,7 +2108,8 @@ guix pull
 @cindex upgrading the Guix daemon, on a foreign distro
 @cindex @command{guix pull} for the root user, on a foreign distro
 
-On a foreign distro, you can upgrade the build daemon by running:
+If you installed Guix on a foreign distro with @file{guix-install.sh},
+you can upgrade the build daemon by running:
 
 @example
 sudo -i guix pull
