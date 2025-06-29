@@ -27525,6 +27525,9 @@ conditions.")
 (define-public ecl-sealable-metaobjects
   (sbcl-package->ecl-package sbcl-sealable-metaobjects))
 
+(define-public clasp-sealable-metaobjects
+  (sbcl-package->clasp-package sbcl-sealable-metaobjects))
+
 (define-public sbcl-secret-values
   (let ((commit "72996c0551eea338afa355ee90e20171ac74ebd4")
         (revision "0"))
