@@ -13388,6 +13388,9 @@ of function partial application and composition.")
 (define-public ecl-curry-compose-reader-macros
   (sbcl-package->ecl-package sbcl-curry-compose-reader-macros))
 
+(define-public clasp-curry-compose-reader-macros
+  (sbcl-package->clasp-package sbcl-curry-compose-reader-macros))
+
 (define-public sbcl-custom-hash-table
   (let ((commit "f26983133940f5edf826ebbc8077acc04816ddfa"))
     (package
