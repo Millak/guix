@@ -13352,6 +13352,9 @@ particularly @code{cl:typep} and @code{cl:subtypep}.")
 ;; (define-public ecl-ctype
 ;;   (sbcl-package->ecl-package sbcl-ctype))
 
+(define-public clasp-ctype
+  (sbcl-package->clasp-package sbcl-ctype))
+
 (define-public sbcl-curry-compose-reader-macros
   (let ((commit "beaa92dedf392726c042184bfd6149fa8d9e6ac2")
         (revision "0"))
