@@ -33038,6 +33038,9 @@ arrangements.")
 (define-public cl-xhtmlambda
   (sbcl-package->cl-source-package sbcl-xhtmlambda))
 
+(define-public clasp-xhtmlambda
+  (sbcl-package->clasp-package sbcl-xhtmlambda))
+
 (define-public sbcl-xkbcommon
   (let ((commit "aa9513d93f42d7816f88dd1bd8bd21375e7d7512")
         (revision "0"))
