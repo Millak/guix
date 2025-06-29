@@ -23931,6 +23931,9 @@ text for inclusion into a larger document.")
 (define-public ecl-org-sampler
   (sbcl-package->ecl-package sbcl-org-sampler))
 
+(define-public clasp-org-sampler
+  (sbcl-package->clasp-package sbcl-org-sampler))
+
 (define-public sbcl-origin
   (let ((commit "d646134302456408d6d43580bb05299f1695ab8e")
         (revision "1"))
