@@ -13316,6 +13316,9 @@ JavaScript code.")
 (define-public ecl-css-lite
   (sbcl-package->ecl-package sbcl-css-lite))
 
+(define-public clasp-css-lite
+  (sbcl-package->clasp-package sbcl-css-lite))
+
 (define-public sbcl-ctype
   (let ((commit "6eb84dfbf1d41f251cc0c09f6e69a2b9415fd3d6"))
     (package
