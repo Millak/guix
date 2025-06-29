@@ -34364,7 +34364,7 @@ completion systems for selecting commands, such as Ido and Ivy.")
 (define-public emacs-lorem-ipsum
   ;; Upstream has no tags; release extracted from source code
   (let ((commit "4b39f6fed455d67f635b3837cf5668bf74d0f6cd")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "emacs-lorem-ipsum")
       (version (git-version "0.2" revision commit))
@@ -34378,6 +34378,7 @@ completion systems for selecting commands, such as Ido and Ivy.")
                  (base32
                   "0a3b18p3vdjci89prsgdzjnfxsl8p67vjhf8ai4qdng7zvh50lir"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;No tests.
       (home-page "https://github.com/jschaf/emacs-lorem-ipsum/")
       (synopsis "Insert dummy pseudo Latin text in Emacs")
       (description "This package provides convenience functions to insert
