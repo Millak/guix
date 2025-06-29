@@ -34363,11 +34363,11 @@ completion systems for selecting commands, such as Ido and Ivy.")
 
 (define-public emacs-lorem-ipsum
   ;; Upstream has no tags; release extracted from source code
-  (let ((commit "4b39f6fed455d67f635b3837cf5668bf74d0f6cd")
-        (revision "2"))
+  (let ((commit "4e87a899868e908a7a9e1812831d76c8d072f885")
+        (revision "1"))
     (package
       (name "emacs-lorem-ipsum")
-      (version (git-version "0.2" revision commit))
+      (version (git-version "0.4" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -34376,7 +34376,7 @@ completion systems for selecting commands, such as Ido and Ivy.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0a3b18p3vdjci89prsgdzjnfxsl8p67vjhf8ai4qdng7zvh50lir"))))
+                  "10l0dmnp1kjyca5jqbf4j98xchcbf9grlv0nv3ygf167vps40il6"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ;No tests.
       (home-page "https://github.com/jschaf/emacs-lorem-ipsum/")
