@@ -8008,6 +8008,9 @@ of http://code.google.com/p/mimeparse/, with a Common Lisp flavor.")
 (define-public ecl-cl-mimeparse
   (sbcl-package->ecl-package sbcl-cl-mimeparse))
 
+(define-public clasp-cl-mimeparse
+  (sbcl-package->clasp-package sbcl-cl-mimeparse))
+
 (define-public sbcl-cl-mixed
   (let ((commit "4aaff134d3902d93a2a8605c10de4bcfc62d7afa")
         (revision "0"))
