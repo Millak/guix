@@ -399,6 +399,35 @@ higher scores.")
 one of the fastest libraries for histogramming.")
     (license license:bsd-3)))
 
+(define-public python-bottleneck
+  (package
+    (name "python-bottleneck")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bottleneck" version))
+       (sha256
+        (base32 "1x29yj4yr12v646si63gkxj9b6lx1xk65536wqy4i9fyk4bqx3ps"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'rebuild-ext
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-wheel))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/pydata/bottleneck")
+    (synopsis "Fast NumPy array functions written in C")
+    (description
+     "Bottleneck is a collection of fast, NaN-aware NumPy array functions
+written in C.")
+    (license license:bsd-2)))
+
 (define-public python-clarabel
   (package
     (name "python-clarabel")
@@ -588,6 +617,59 @@ it can be used for displaying many qualitatively different samples.")
      "This package provides a domain-specific language for modeling convex
 optimization problems in Python.")
     (license license:asl2.0)))
+
+(define-public python-dask-expr
+  (package
+    (name "python-dask-expr")
+    (version "1.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dask/dask-expr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c2q8w8wl5d2hycbjp9vavkl5f36kaz390wxlis2d8d43jnqhf0d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;need python-distributed, which needs dask-expr.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'versioneer
+            (lambda _
+              ;; Our version of versioneer needs setup.cfg.  This is adapted
+              ;; from pyproject.toml.
+              (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = dask_expr/_version.py
+versionfile_build = dask_expr/_version.py
+tag_prefix =
+parentdir_prefix = dask_expr-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\""))))))))
+    (propagated-inputs (list python-pandas python-pyarrow))
+    (native-inputs
+     ;; We use python-dask/bootstrap so that python-dask can propagate this
+     ;; package without creating a mutually recursive dependency.
+     (list python-dask/bootstrap
+           python-pytest
+           python-setuptools
+           python-versioneer
+           python-wheel))
+    (home-page "https://github.com/dask/dask-expr")
+    (synopsis "Dask DataFrames with query optimization")
+    (description "This is a rewrite of Dask DataFrame that includes query
+optimization and generally improved organization.")
+    (license license:bsd-3)))
 
 (define-public python-decaylanguage
   (package
@@ -958,6 +1040,39 @@ spheres, cubes, etc.")
      "This package provides functionality to make it easy to make scatter
 density maps, both for interactive and non-interactive use.")
     (license license:bsd-2)))
+
+(define-public python-mpsplines
+  ;; No release on PyPI no git tag, use the latest commit.
+  (let ((commit "4967655fca8f4d0fc0685486c8ec2f1fe2f199d2")
+        (revision "0"))
+    (package
+      (name "python-mpsplines")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jararias/mpsplines")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wqfvjp1d6xzb07qnq72h76f0mx7za9pasgw3qp3ciaycmlkvdr3"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f)) ; no tests provided
+      (native-inputs
+       (list python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-scipy
+             python-numpy
+             python-loguru))
+      (home-page "https://github.com/jararias/mpsplines")
+      (synopsis "Mean preserving interpolation with splines")
+      (description
+       "Thi package implements a functionality for mean-preserving
+interpolation of 1D data (for example, time series) with splines.")
+      (license license:bsd-3))))
 
 (define-public python-ndindex
   (package
@@ -1430,6 +1545,33 @@ factorization routine for quasi-definite linear system.")
     (description
      "Ruffus is designed to allow scientific and other analyses to be
 automated with the minimum of fuss and the least effort.")
+    (license license:expat)))
+
+(define-public python-salib
+  (package
+    (name "python-salib")
+    (version "1.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SALib/SALib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18xfyzircsx2q2lmfc9lxb6xvkxicnc83qzghd7df1jsprr5ymch"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-multiprocess
+                             python-numpy
+                             python-pandas
+                             python-scipy))
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://salib.readthedocs.io/en/latest/")
+    (synopsis "Tools for global sensitivity analysis")
+    (description "SALib provides tools for global sensitivity analysis.  It
+contains Sobol', Morris, FAST, DGSM, PAWN, HDMR, Moment Independent and
+fractional factorial methods.")
     (license license:expat)))
 
 (define-public python-scikit-allel
@@ -2316,39 +2458,6 @@ manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
 
-(define-public python-mpsplines
-  ;; No release on PyPI no git tag, use the latest commit.
-  (let ((commit "4967655fca8f4d0fc0685486c8ec2f1fe2f199d2")
-        (revision "0"))
-    (package
-      (name "python-mpsplines")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jararias/mpsplines")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1wqfvjp1d6xzb07qnq72h76f0mx7za9pasgw3qp3ciaycmlkvdr3"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list #:tests? #f)) ; no tests provided
-      (native-inputs
-       (list python-setuptools
-             python-wheel))
-      (propagated-inputs
-       (list python-scipy
-             python-numpy
-             python-loguru))
-      (home-page "https://github.com/jararias/mpsplines")
-      (synopsis "Mean preserving interpolation with splines")
-      (description
-       "Thi package implements a functionality for mean-preserving
-interpolation of 1D data (for example, time series) with splines.")
-      (license license:bsd-3))))
-
 (define-public python-pyamg
   (package
     (name "python-pyamg")
@@ -3104,35 +3213,6 @@ Python module with the same interface, but (hopefully) faster.")
      "This package provides a Python package for time series classification.")
     (license license:bsd-3)))
 
-(define-public python-bottleneck
-  (package
-    (name "python-bottleneck")
-    (version "1.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "bottleneck" version))
-       (sha256
-        (base32 "1x29yj4yr12v646si63gkxj9b6lx1xk65536wqy4i9fyk4bqx3ps"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'rebuild-ext
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-numpy))
-    (home-page "https://github.com/pydata/bottleneck")
-    (synopsis "Fast NumPy array functions written in C")
-    (description
-     "Bottleneck is a collection of fast, NaN-aware NumPy array functions
-written in C.")
-    (license license:bsd-2)))
-
 (define-public python-spin
   (package
   (name "python-spin")
@@ -3247,6 +3327,43 @@ not usually a runtime dependency, but only a type checking, testing, and/or
 docs dependency in support of other libraries.")
     (license license:bsd-3)))
 
+(define-public python-unyt
+  (package
+    (name "python-unyt")
+    (version "3.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "unyt" version))
+       (sha256
+        (base32 "0jrq2vhan2h280h6cw1sm5hys2nzmf19w4py64k3nrkc320z9mni"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This is a Numpy DeprecationWarning, remove it on next update.
+     (list #:test-flags ''("-k" "not test_h5_io")))
+    ;; Pint is optional, but we do not propagate it due to its size.
+    (native-inputs
+     (list python-pint
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    ;; Astropy is an optional import, but we do not include it as it creates a
+    ;; module cycle: astronomy->python-science->astronomy.
+    (propagated-inputs
+     (list python-h5py        ; optional import
+           python-matplotlib  ; optional import
+           python-numpy
+           python-sympy))
+    (home-page "https://unyt.readthedocs.io")
+    (synopsis "Library for working with data that has physical units")
+    (description
+     "@code{unyt} is a Python library working with data that has physical
+units.  It defines the @code{unyt.array.unyt_array} and
+@code{unyt.array.unyt_quantity} classes (subclasses of NumPy’s ndarray class)
+for handling arrays and scalars with units,respectively")
+    (license license:bsd-3)))
+
 (define-public python-upsetplot
   (package
     (name "python-upsetplot")
@@ -3300,6 +3417,65 @@ well as 4D space-time vectors.  It is especially intended for performing
 geometric calculations on arrays of vectors, rather than one vector at a time
 in a Python @code{for} loop.")
     (license license:bsd-3)))
+
+(define-public python-vedo
+  (package
+    (name "python-vedo")
+    (version "2025.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/marcomusy/vedo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hrqyvcxxbc1wz0cnafc8rvsi5mj19kck4b6pmddh25rlhdcr5qb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: The whole test suite depends on the data from
+      ;; <https://vedo.embl.es/examples> providing samples which need to be
+      ;; downloaded during tests, find the way how to enable it.
+      #:tests? #f
+      #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           ;; vtk does not provide Python metadata.
+           ;;
+           ;; ...checking requirements: ERROR: vedo==2025.5.3
+           ;; DistributionNotFound(Requirement.parse('vtk'), {'vedo'})
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("\"vtk\",") "")))))))
+    (native-inputs
+     (list pkg-config
+           python-pkgconfig
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-deprecated
+           python-matplotlib
+           python-numpy
+           python-pygments
+           vtk))
+    (home-page "https://github.com/marcomusy/vedo")
+    (synopsis
+     "Analysis and visualization of 3D objects and point clouds")
+    (description
+     "@code{vedo} is a fast and lightweight python module for
+scientific analysis and visualization.  The package provides a wide
+range of functionalities for working with three-dimensional meshes and
+point clouds.  It can also be used to generate high quality
+two-dimensional renderings such as scatter plots and histograms.
+@code{vedo} is based on @code{vtk} and @code{numpy}.")
+    ;; vedo is released under the Expat license.  Included fonts are
+    ;; covered by the OFL license and textures by the CC0 license.
+    ;; The earth images are in the public domain.
+    (license (list license:expat
+                   license:silofl1.1
+                   license:cc0
+                   license:public-domain))))
 
 (define-public python-xarray
   (package
@@ -3613,102 +3789,6 @@ SCS (Splitting conic solver) library.")
 annotations on an existing boxplots and barplots generated by seaborn.")
     (license license:expat)))
 
-(define-public python-unyt
-  (package
-    (name "python-unyt")
-    (version "3.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "unyt" version))
-       (sha256
-        (base32 "0jrq2vhan2h280h6cw1sm5hys2nzmf19w4py64k3nrkc320z9mni"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; This is a Numpy DeprecationWarning, remove it on next update.
-     (list #:test-flags ''("-k" "not test_h5_io")))
-    ;; Pint is optional, but we do not propagate it due to its size.
-    (native-inputs
-     (list python-pint
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    ;; Astropy is an optional import, but we do not include it as it creates a
-    ;; module cycle: astronomy->python-science->astronomy.
-    (propagated-inputs
-     (list python-h5py        ; optional import
-           python-matplotlib  ; optional import
-           python-numpy
-           python-sympy))
-    (home-page "https://unyt.readthedocs.io")
-    (synopsis "Library for working with data that has physical units")
-    (description
-     "@code{unyt} is a Python library working with data that has physical
-units.  It defines the @code{unyt.array.unyt_array} and
-@code{unyt.array.unyt_quantity} classes (subclasses of NumPy’s ndarray class)
-for handling arrays and scalars with units,respectively")
-    (license license:bsd-3)))
-
-(define-public python-vedo
-  (package
-    (name "python-vedo")
-    (version "2025.5.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/marcomusy/vedo")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0hrqyvcxxbc1wz0cnafc8rvsi5mj19kck4b6pmddh25rlhdcr5qb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: The whole test suite depends on the data from
-      ;; <https://vedo.embl.es/examples> providing samples which need to be
-      ;; downloaded during tests, find the way how to enable it.
-      #:tests? #f
-      #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           ;; vtk does not provide Python metadata.
-           ;;
-           ;; ...checking requirements: ERROR: vedo==2025.5.3
-           ;; DistributionNotFound(Requirement.parse('vtk'), {'vedo'})
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("\"vtk\",") "")))))))
-    (native-inputs
-     (list pkg-config
-           python-pkgconfig
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-deprecated
-           python-matplotlib
-           python-numpy
-           python-pygments
-           vtk))
-    (home-page "https://github.com/marcomusy/vedo")
-    (synopsis
-     "Analysis and visualization of 3D objects and point clouds")
-    (description
-     "@code{vedo} is a fast and lightweight python module for
-scientific analysis and visualization.  The package provides a wide
-range of functionalities for working with three-dimensional meshes and
-point clouds.  It can also be used to generate high quality
-two-dimensional renderings such as scatter plots and histograms.
-@code{vedo} is based on @code{vtk} and @code{numpy}.")
-    ;; vedo is released under the Expat license.  Included fonts are
-    ;; covered by the OFL license and textures by the CC0 license.
-    ;; The earth images are in the public domain.
-    (license (list license:expat
-                   license:silofl1.1
-                   license:cc0
-                   license:public-domain))))
-
 (define-public python-pandas-flavor
   (package
     (name "python-pandas-flavor")
@@ -3795,59 +3875,6 @@ correlation coefficient
 and more
 @end itemize")
     (license license:gpl3)))
-
-(define-public python-dask-expr
-  (package
-    (name "python-dask-expr")
-    (version "1.0.14")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dask/dask-expr")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0c2q8w8wl5d2hycbjp9vavkl5f36kaz390wxlis2d8d43jnqhf0d"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #false ;need python-distributed, which needs dask-expr.
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'versioneer
-            (lambda _
-              ;; Our version of versioneer needs setup.cfg.  This is adapted
-              ;; from pyproject.toml.
-              (with-output-to-file "setup.cfg"
-                (lambda ()
-                  (display "\
-[versioneer]
-VCS = git
-style = pep440
-versionfile_source = dask_expr/_version.py
-versionfile_build = dask_expr/_version.py
-tag_prefix =
-parentdir_prefix = dask_expr-
-")))
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("versioneer.get_version\\(\\)")
-                 (string-append "\"" #$version "\""))))))))
-    (propagated-inputs (list python-pandas python-pyarrow))
-    (native-inputs
-     ;; We use python-dask/bootstrap so that python-dask can propagate this
-     ;; package without creating a mutually recursive dependency.
-     (list python-dask/bootstrap
-           python-pytest
-           python-setuptools
-           python-versioneer
-           python-wheel))
-    (home-page "https://github.com/dask/dask-expr")
-    (synopsis "Dask DataFrames with query optimization")
-    (description "This is a rewrite of Dask DataFrame that includes query
-optimization and generally improved organization.")
-    (license license:bsd-3)))
 
 (define-public python-distributed
   (package
@@ -4788,33 +4815,6 @@ numerical computation.")
     (description "Vaex is a high performance Python library for lazy
 Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
 tabular datasets.  This package provides the core modules of Vaex.")
-    (license license:expat)))
-
-(define-public python-salib
-  (package
-    (name "python-salib")
-    (version "1.4.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/SALib/SALib")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "18xfyzircsx2q2lmfc9lxb6xvkxicnc83qzghd7df1jsprr5ymch"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-matplotlib
-                             python-multiprocess
-                             python-numpy
-                             python-pandas
-                             python-scipy))
-    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
-    (home-page "https://salib.readthedocs.io/en/latest/")
-    (synopsis "Tools for global sensitivity analysis")
-    (description "SALib provides tools for global sensitivity analysis.  It
-contains Sobol', Morris, FAST, DGSM, PAWN, HDMR, Moment Independent and
-fractional factorial methods.")
     (license license:expat)))
 
 (define-public python-pylems
