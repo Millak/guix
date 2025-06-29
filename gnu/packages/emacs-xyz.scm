@@ -34362,21 +34362,23 @@ completion systems for selecting commands, such as Ido and Ivy.")
     (license license:gpl3+)))
 
 (define-public emacs-lorem-ipsum
-  (let ((commit "4b39f6fed455d67f635b3837cf5668bf74d0f6cd"))
+  ;; Upstream has no tags; release extracted from source code
+  (let ((commit "4b39f6fed455d67f635b3837cf5668bf74d0f6cd")
+        (revision "1"))
     (package
       (name "emacs-lorem-ipsum")
-      (version (git-version "0.2" "1" commit))
-      (home-page "https://github.com/jschaf/emacs-lorem-ipsum/")
+      (version (git-version "0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
+                       (url "https://github.com/jschaf/emacs-lorem-ipsum/")
+                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "0a3b18p3vdjci89prsgdzjnfxsl8p67vjhf8ai4qdng7zvh50lir"))))
       (build-system emacs-build-system)
+      (home-page "https://github.com/jschaf/emacs-lorem-ipsum/")
       (synopsis "Insert dummy pseudo Latin text in Emacs")
       (description "This package provides convenience functions to insert
 dummy Latin text into a buffer.  This can be useful if you need to produce
