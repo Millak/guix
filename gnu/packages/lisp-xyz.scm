@@ -523,6 +523,9 @@ offers them both in non-modifying and modifying versions where applicable.")
 (define-public ecl-3d-vectors
   (sbcl-package->ecl-package sbcl-3d-vectors))
 
+(define-public clasp-3d-vectors
+  (sbcl-package->clasp-package sbcl-3d-vectors))
+
 (define-public sbcl-40ants-doc
   (let ((commit "7725ff67a380e9ebfc6155e14d91e650f256711b")
         (revision "0"))
