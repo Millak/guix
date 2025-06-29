@@ -13070,6 +13070,9 @@ packages and users of those packages.")
 (define-public ecl-conduit-packages
   (sbcl-package->ecl-package sbcl-conduit-packages))
 
+(define-public clasp-conduit-packages
+  (sbcl-package->clasp-package sbcl-conduit-packages))
+
 (define-public sbcl-conium
   (let ((commit "089adfd8759ec7973bb6f67b98d7a246e67aeb05")
         (revision "1"))
