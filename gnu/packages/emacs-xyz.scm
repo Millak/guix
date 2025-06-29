@@ -22467,7 +22467,7 @@ conflicts.")
 (define-public emacs-xelb
   (package
     (name "emacs-xelb")
-    (version "0.20")
+    (version "0.21")
     (source
      (origin
        (method git-fetch)
@@ -22477,7 +22477,7 @@ conflicts.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ph09j78pf3f97zxaqcsxfl1aq5rnlib1h6xyga01067lq9ir86m"))))
+         "1xzjpbzfyb32xhsjbibv4rb4kd3rwrms6xaiag3irdralkkcvyca"))))
     (build-system emacs-build-system)
     ;; The following functions and variables needed by emacs-xelb are
     ;; not included in emacs-minimal:
@@ -22498,8 +22498,7 @@ conflicts.")
                     (emacs (search-input-file (or native-inputs inputs)
                                               "/bin/emacs")))
                 (invoke "make"
-                        (format #f "PROTO_PATH=~a/share/xcb" xcb-proto)
-                        (format #f "EMACS_BIN=~a -Q" emacs))))))))
+                        (format #f "PROTO_PATH=~a/share/xcb" xcb-proto))))))))
     (native-inputs (list xcb-proto))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/emacs-exwm/xelb")
