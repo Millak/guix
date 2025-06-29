@@ -361,6 +361,9 @@ operations in 3D space.")
 (define-public ecl-3d-matrices
   (sbcl-package->ecl-package sbcl-3d-matrices))
 
+(define-public clasp-3d-matrices
+  (sbcl-package->clasp-package sbcl-3d-matrices))
+
 (define-public sbcl-3d-quaternions
   (let ((commit "b79c15cca8d9c409216a6cee8ec9e182dcdec9e2")
         (revision "0"))
