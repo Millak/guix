@@ -2256,28 +2256,41 @@ logic, also known as grey logic.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/scikit-image/scikit-image")
-             (commit (string-append "v" version))))
+              (url "https://github.com/scikit-image/scikit-image")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1bc8i57sjk44vd9k1ilr6fpvfq1zbq9yfi22lz22k26mzrlisym3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disable flaky test
-      #:test-flags #~(list "-k" "not test_ellipse_parameter_stability")
+      #:test-flags
+      ;; To make sure we test compiled and installed module.
+      #~(list (string-append #$output "/lib/python"
+                             #$(version-major+minor (package-version python))
+                             "/site-packages")
+              "--pyargs" "skimage"
+              ;; Disable flaky test
+              "-k" (string-join
+                    (list "not test_ellipse_parameter_stability"
+                          ;; ValueError: Cannot call len() on object with unknown chunk size.
+                          "test_thresholds_dask_compatibility[threshold_triangle-41-43]")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'change-home-dir
             (lambda _
               ;; Change from /homeless-shelter to /tmp for write permission.
               (setenv "HOME" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-v" "--doctest-modules"
-                         (append test-flags (list #$output))))))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; To prevent loading tests twise.
+              ;; 16277 passed, 240 skipped, 4 deselected
+              (delete-file-recursively "skimage")))
+          (add-before 'check 'post-check
+            (lambda _
+              (for-each delete-file-recursively
+                        (find-files #$output "__pycache__" #:directories? #t)))))))
     ;; See requirements/ for the list of build and run time requirements.
     ;; NOTE: scikit-image has an optional dependency on python-pooch, however
     ;; propagating it would enable many more tests that require online data.
