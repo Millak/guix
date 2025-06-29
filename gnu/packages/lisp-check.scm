@@ -367,6 +367,9 @@ experience.")
 (define-public ecl-clunit
   (sbcl-package->ecl-package sbcl-clunit))
 
+(define-public clasp-clunit
+  (sbcl-package->clasp-package sbcl-clunit))
+
 (define-public sbcl-clunit2
   (let ((commit "dd654e199aa3cbbdbcb0c2d8e1d240745bff75e8")
         (revision "1"))
