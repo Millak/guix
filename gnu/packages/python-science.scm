@@ -246,6 +246,23 @@ possibility to differentiate functions that contain matrix functions as
 +,-,*,/, dot, solve, qr, eigh, cholesky.")
     (license license:bsd-3)))
 
+(define-public python-aplus
+  (package
+    (name "python-aplus")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aplus" version))
+       (sha256
+        (base32 "1rznc26nlp641rn8gpdngfp79a3fji38yavqakxi35mx2da04msg"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/xogeny/aplus")
+    (synopsis "Promises/A+ for Python")
+    (description "This package is an implementation of the Promises/A+
+specification and test suite in Python.")
+    (license license:expat)))
+
 (define-public python-apted
   ;; PyPI release lacks tests and there is no Git tag.
   (let ((commit "828b3e3f4c053f7d35f0b55b0d5597e8041719ac")
@@ -280,6 +297,33 @@ possibility to differentiate functions that contain matrix functions as
 supersedes the RTED algorithm for computing the tree edit distance.")
       (license license:expat))))
 
+(define-public python-boost-histogram
+  (package
+    (name "python-boost-histogram")
+    (version "1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "boost_histogram" version))
+       (sha256
+        (base32 "0p2f90p5jwlwrjz3hq2fzaifkmny33g2mpi89nnhi3w41f1jxr2i"))))
+    (build-system pyproject-build-system)
+    ;; This package bundles files from Boost::Histogram and doesn't provide
+    ;; a way to use a system library.
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list cmake-minimal
+                         pybind11
+                         python-pytest
+                         python-pytest-benchmark
+                         python-scikit-build-core
+                         python-setuptools-scm))
+    (home-page "https://boost-histogram.readthedocs.io/en/latest/")
+    (synopsis "Python bindings for the Boost::Histogram library")
+    (description
+     "This package provides Python bindings for the Boost::Histogram library,
+one of the fastest libraries for histogramming.")
+    (license license:bsd-3)))
+
 (define-public python-cmocean
   (package
     (name "python-cmocean")
@@ -306,6 +350,63 @@ supersedes the RTED algorithm for computing the tree edit distance.")
 variables.  Most of the colormaps started from @code{matplotlib} colormaps,
 but have now been adjusted using the viscm tool to be perceptually uniform.")
     (license license:expat)))
+
+(define-public python-corner
+  (package
+    (name "python-corner")
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch) ;no tests in PyPi archive
+       (uri (git-reference
+             (url "https://github.com/dfm/corner.py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i4dk4jxh0saysya2cnsfwlxwpldbdl174i9pwi4qj82av9jr2ii"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Disable tests which failed with mismatched images, check why.
+         "-k" (string-append "not test_labels[png]"
+                             " and not test_title_quantiles[png]"
+                             " and not test_title_quantiles_default[png]"
+                             " and not test_title_quantiles_raises[png]"
+                             " and not test_bins[png]"
+                             " and not test_bins_log[png]"
+                             " and not test_titles1[png]"
+                             " and not test_titles2[png]"
+                             " and not test_pandas[png]"
+                             " and not test_tight[png]"
+                             " and not test_extended_overplotting[png]"
+                             " and not test_reverse_overplotting[png]"
+                             " and not test_arviz[png]"
+                             " and not test_range_fig_arg[png]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; XXX: Make sure you're either building from a fully intact git
+            ;; repository or PyPI tarballs. Most other sources (such as GitHub's
+            ;; tarballs, a git checkout without the .git folder) don't contain
+            ;; the necessary metadata and will not work.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs
+     (list python-matplotlib))
+    (native-inputs
+     (list python-arviz python-pytest python-scipy python-setuptools-scm))
+    (home-page "http://corner.readthedocs.io/")
+    (synopsis "Make some beautiful corner plots")
+    (description
+     "This Python module uses @code{matplotlib} to visualize multidimensional
+samples using a scatterplot matrix. In these visualizations, each one- and
+two-dimensional projection of the sample is plotted to reveal covariances.
+corner was originally conceived to display the results of Markov Chain Monte
+Carlo simulations and the defaults are chosen with this application in mind but
+it can be used for displaying many qualitatively different samples.")
+    (license license:bsd-2)))
 
 (define-public python-cvxpy
   (package
@@ -336,6 +437,41 @@ but have now been adjusted using the viscm tool to be perceptually uniform.")
 optimization problems in Python.")
     (license license:asl2.0)))
 
+(define-public python-decaylanguage
+  (package
+    (name "python-decaylanguage")
+    (version "0.18.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "decaylanguage" version))
+       (sha256
+        (base32 "0kc9i9k51kg2zv8dwywpigiipxzmyxpzb101imjsvv1licip7b8v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This file fails to be collected with "DeprecationWarning: setDaemon()
+      ;; is deprecated, set the daemon attribute instead".
+      #:test-flags #~(list "--ignore" "tests/test_convert.py")))
+    (propagated-inputs (list python-attrs
+                             python-graphviz
+                             python-hepunits
+                             python-lark
+                             python-numpy
+                             python-pandas
+                             python-particle
+                             python-plumbum))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pytest))
+    (home-page "https://decaylanguage.readthedocs.io/en/latest/")
+    (synopsis "Language to describe, manipulate and convert particle decays")
+    (description "DecayLanguage implements a language to describe and convert
+particle decays between digital representations, effectively making it
+possible to interoperate several fitting programs.  Particular interest is
+given to programs dedicated to amplitude analyses.")
+    (license license:bsd-3)))
+
 (define-public python-ecos
   (package
     (name "python-ecos")
@@ -359,6 +495,44 @@ optimization problems in Python.")
      "This is the Python package for ECOS: Embedded Cone Solver.  ECOS is
 numerical software for solving convex second-order cone programs (SOCPs).")
     (license license:gpl3)))
+
+(define-public python-fast-histogram
+  (package
+    (name "python-fast-histogram")
+    (version "0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fast_histogram" version))
+       (sha256
+        (base32 "1sk9xa85cgm4sylzblwv3qr2dmm0ic06zkwxqa2xlazjiawp629r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/astrofrog/fast-histogram")
+    (synopsis "Fast simple 1D and 2D histograms")
+    (description
+     "The fast-histogram mini-package aims to provide simple and fast
+histogram functions for regular bins that don't compromise on performance.  It
+doesn't do anything complicated - it just implements a simple histogram
+algorithm in C and keeps it simple.  The aim is to have functions that are
+fast but also robust and reliable.  The result is a 1D histogram function here
+that is 7-15x faster than @code{numpy.histogram}, and a 2D histogram function
+that is 20-25x faster than @code{numpy.histogram2d}.")
+    (license license:bsd-3)))
 
 (define-public python-formulaic
   (package
@@ -385,6 +559,25 @@ numerical software for solving convex second-order cone programs (SOCPs).")
     (description "Formulaic is a high-performance implementation of Wilkinson
 formulas for Python.")
     (license license:expat)))
+
+(define-public python-hepunits
+  (package
+    (name "python-hepunits")
+    (version "2.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hepunits" version))
+       (sha256
+        (base32 "1n1nf2rz2d86qzjmcwykbc16jzsqb45vs8lyksg98b3jd8nwsd4l"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatch-vcs python-hatchling python-pytest))
+    (home-page "https://github.com/scikit-hep/hepunits")
+    (synopsis "Units and constants in the HEP system of units")
+    (description "@code{hepunits} collects the most commonly used units and
+constants in the HEP System of Units, as derived from the basic units
+originally defined by the CLHEP project.")
+    (license license:bsd-3)))
 
 (define-public python-imagehash
   (package
@@ -430,6 +623,39 @@ Features:
 @item HSV color hashing (colorhash)
 @item crop-resistant hashing
 @end itemize")
+    (license license:bsd-2)))
+
+(define-public python-mpl-scatter-density
+  (package
+    (name "python-mpl-scatter-density")
+    (version "0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mpl_scatter_density" version))
+       (sha256
+        (base32 "0cynk1rk6k2xklgv69difphrz6id77x3xb58kbs4mc4q7z6bvfid"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; See <https://github.com/astrofrog/mpl-scatter-density/issues/42>.
+      #:test-flags #~(list "-k" "not test_default_dpi")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-fast-histogram
+           python-matplotlib
+           python-numpy))
+    (home-page "https://github.com/astrofrog/mpl-scatter-density")
+    (synopsis "Matplotlib helpers to make density scatter plots")
+    (description
+     "This package provides functionality to make it easy to make scatter
+density maps, both for interactive and non-interactive use.")
     (license license:bsd-2)))
 
 (define-public python-numdifftools
@@ -488,6 +714,29 @@ methodology to provide a maximally accurate result.  The user can configure
 many options like; changing the order of the method or the extrapolation, even
 allowing the user to specify whether complex-step, central, forward or
 backward differences are used.")
+    (license license:bsd-3)))
+
+(define-public python-numpy-groupies
+  (package
+    (name "python-numpy-groupies")
+    (version "0.9.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "numpy_groupies" version))
+       (sha256
+        (base32 "000qz0z78rs3l6y0dd2vzvd2lx3mczm2762whwsdnhz6c35axdq1"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-runner
+           python-numba
+           python-numpy))
+    (home-page "https://github.com/ml31415/numpy-groupies")
+    (synopsis "Tools for group-indexing operations: aggregated sum and more")
+    (description
+     "This package provides optimized tools for group-indexing operations:
+aggregated sum and more.")
     (license license:bsd-3)))
 
 (define-public python-osqp
@@ -1032,33 +1281,6 @@ logic, also known as grey logic.")
 and scientific computing.")
     (license license:bsd-3)))
 
-(define-public python-boost-histogram
-  (package
-    (name "python-boost-histogram")
-    (version "1.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "boost_histogram" version))
-       (sha256
-        (base32 "0p2f90p5jwlwrjz3hq2fzaifkmny33g2mpi89nnhi3w41f1jxr2i"))))
-    (build-system pyproject-build-system)
-    ;; This package bundles files from Boost::Histogram and doesn't provide
-    ;; a way to use a system library.
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list cmake-minimal
-                         pybind11
-                         python-pytest
-                         python-pytest-benchmark
-                         python-scikit-build-core
-                         python-setuptools-scm))
-    (home-page "https://boost-histogram.readthedocs.io/en/latest/")
-    (synopsis "Python bindings for the Boost::Histogram library")
-    (description
-     "This package provides Python bindings for the Boost::Histogram library,
-one of the fastest libraries for histogramming.")
-    (license license:bsd-3)))
-
 (define-public python-scikit-opt
   (package
     (name "python-scikit-opt")
@@ -1506,25 +1728,6 @@ reference testing, constraint discovery for data, automatic inference
 of regular expressions from text data and automatic test generation.")
     (license license:expat))) ; MIT License
 
-(define-public python-hepunits
-  (package
-    (name "python-hepunits")
-    (version "2.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hepunits" version))
-       (sha256
-        (base32 "1n1nf2rz2d86qzjmcwykbc16jzsqb45vs8lyksg98b3jd8nwsd4l"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-hatch-vcs python-hatchling python-pytest))
-    (home-page "https://github.com/scikit-hep/hepunits")
-    (synopsis "Units and constants in the HEP system of units")
-    (description "@code{hepunits} collects the most commonly used units and
-constants in the HEP System of Units, as derived from the basic units
-originally defined by the CLHEP project.")
-    (license license:bsd-3)))
-
 (define-public python-particle
   (package
     (name "python-particle")
@@ -1551,41 +1754,6 @@ originally defined by the CLHEP project.")
      "@code{Particle} provides a pythonic interface to the Particle Data Group
 (PDG) particle data tables and particle identification codes, with extended
 particle information and extra goodies.")
-    (license license:bsd-3)))
-
-(define-public python-decaylanguage
-  (package
-    (name "python-decaylanguage")
-    (version "0.18.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "decaylanguage" version))
-       (sha256
-        (base32 "0kc9i9k51kg2zv8dwywpigiipxzmyxpzb101imjsvv1licip7b8v"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; This file fails to be collected with "DeprecationWarning: setDaemon()
-      ;; is deprecated, set the daemon attribute instead".
-      #:test-flags #~(list "--ignore" "tests/test_convert.py")))
-    (propagated-inputs (list python-attrs
-                             python-graphviz
-                             python-hepunits
-                             python-lark
-                             python-numpy
-                             python-pandas
-                             python-particle
-                             python-plumbum))
-    (native-inputs (list python-hatch-vcs
-                         python-hatchling
-                         python-pytest))
-    (home-page "https://decaylanguage.readthedocs.io/en/latest/")
-    (synopsis "Language to describe, manipulate and convert particle decays")
-    (description "DecayLanguage implements a language to describe and convert
-particle decays between digital representations, effectively making it
-possible to interoperate several fitting programs.  Particular interest is
-given to programs dedicated to amplitude analyses.")
     (license license:bsd-3)))
 
 (define-public python-vector
@@ -1728,39 +1896,6 @@ library.")
 volume computations for simple domains like regular polygons, disks,
 spheres, cubes, etc.")
     (license license:gpl3+)))
-
-(define-public python-mpl-scatter-density
-  (package
-    (name "python-mpl-scatter-density")
-    (version "0.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "mpl_scatter_density" version))
-       (sha256
-        (base32 "0cynk1rk6k2xklgv69difphrz6id77x3xb58kbs4mc4q7z6bvfid"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; See <https://github.com/astrofrog/mpl-scatter-density/issues/42>.
-      #:test-flags #~(list "-k" "not test_default_dpi")))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-mpl
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-fast-histogram
-           python-matplotlib
-           python-numpy))
-    (home-page "https://github.com/astrofrog/mpl-scatter-density")
-    (synopsis "Matplotlib helpers to make density scatter plots")
-    (description
-     "This package provides functionality to make it easy to make scatter
-density maps, both for interactive and non-interactive use.")
-    (license license:bsd-2)))
 
 (define-public python-mpsplines
   ;; No release on PyPI no git tag, use the latest commit.
@@ -2713,44 +2848,6 @@ higher scores than the second, the probability that differences are within the
 region of practical equivalence (rope), or that the second classifier has
 higher scores.")
     (license license:expat)))
-
-(define-public python-fast-histogram
-  (package
-    (name "python-fast-histogram")
-    (version "0.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fast_histogram" version))
-       (sha256
-        (base32 "1sk9xa85cgm4sylzblwv3qr2dmm0ic06zkwxqa2xlazjiawp629r"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list python-hypothesis
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/astrofrog/fast-histogram")
-    (synopsis "Fast simple 1D and 2D histograms")
-    (description
-     "The fast-histogram mini-package aims to provide simple and fast
-histogram functions for regular bins that don't compromise on performance.  It
-doesn't do anything complicated - it just implements a simple histogram
-algorithm in C and keeps it simple.  The aim is to have functions that are
-fast but also robust and reliable.  The result is a 1D histogram function here
-that is 7-15x faster than @code{numpy.histogram}, and a 2D histogram function
-that is 20-25x faster than @code{numpy.histogram2d}.")
-    (license license:bsd-3)))
 
 (define-public python-fastcluster
   (package
@@ -3782,29 +3879,6 @@ libraries, Modin provides seamless integration and compatibility with existing
 pandas code.")
     (license license:asl2.0)))
 
-(define-public python-numpy-groupies
-  (package
-    (name "python-numpy-groupies")
-    (version "0.9.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "numpy_groupies" version))
-       (sha256
-        (base32 "000qz0z78rs3l6y0dd2vzvd2lx3mczm2762whwsdnhz6c35axdq1"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-runner
-           python-numba
-           python-numpy))
-    (home-page "https://github.com/ml31415/numpy-groupies")
-    (synopsis "Tools for group-indexing operations: aggregated sum and more")
-    (description
-     "This package provides optimized tools for group-indexing operations:
-aggregated sum and more.")
-    (license license:bsd-3)))
-
 (define-public python-plotnine
   (package
     (name "python-plotnine")
@@ -4142,23 +4216,6 @@ out of the scope of the main traitlets project but are a common requirement to
 build applications with traitlets in combination with the scipy stack.")
     (license license:bsd-3)))
 
-(define-public python-aplus
-  (package
-    (name "python-aplus")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aplus" version))
-       (sha256
-        (base32 "1rznc26nlp641rn8gpdngfp79a3fji38yavqakxi35mx2da04msg"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/xogeny/aplus")
-    (synopsis "Promises/A+ for Python")
-    (description "This package is an implementation of the Promises/A+
-specification and test suite in Python.")
-    (license license:expat)))
-
 (define-public python-clarabel
   (package
     (name "python-clarabel")
@@ -4235,63 +4292,6 @@ embedding.")
 heavily biased to machine learning scenarios.  It works on top of
 @command{numpy} and (partially) @command{gnumpy}.")
     (license license:bsd-3)))
-
-(define-public python-corner
-  (package
-    (name "python-corner")
-    (version "2.2.2")
-    (source
-     (origin
-       (method git-fetch) ;no tests in PyPi archive
-       (uri (git-reference
-             (url "https://github.com/dfm/corner.py")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1i4dk4jxh0saysya2cnsfwlxwpldbdl174i9pwi4qj82av9jr2ii"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; XXX: Disable tests which failed with mismatched images, check why.
-         "-k" (string-append "not test_labels[png]"
-                             " and not test_title_quantiles[png]"
-                             " and not test_title_quantiles_default[png]"
-                             " and not test_title_quantiles_raises[png]"
-                             " and not test_bins[png]"
-                             " and not test_bins_log[png]"
-                             " and not test_titles1[png]"
-                             " and not test_titles2[png]"
-                             " and not test_pandas[png]"
-                             " and not test_tight[png]"
-                             " and not test_extended_overplotting[png]"
-                             " and not test_reverse_overplotting[png]"
-                             " and not test_arviz[png]"
-                             " and not test_range_fig_arg[png]"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; XXX: Make sure you're either building from a fully intact git
-            ;; repository or PyPI tarballs. Most other sources (such as GitHub's
-            ;; tarballs, a git checkout without the .git folder) don't contain
-            ;; the necessary metadata and will not work.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
-    (propagated-inputs
-     (list python-matplotlib))
-    (native-inputs
-     (list python-arviz python-pytest python-scipy python-setuptools-scm))
-    (home-page "http://corner.readthedocs.io/")
-    (synopsis "Make some beautiful corner plots")
-    (description
-     "This Python module uses @code{matplotlib} to visualize multidimensional
-samples using a scatterplot matrix. In these visualizations, each one- and
-two-dimensional projection of the sample is plotted to reveal covariances.
-corner was originally conceived to display the results of Markov Chain Monte
-Carlo simulations and the defaults are chosen with this application in mind but
-it can be used for displaying many qualitatively different samples.")
-    (license license:bsd-2)))
 
 (define-public python-paramz
   (package
