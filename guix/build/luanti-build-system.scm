@@ -190,7 +190,10 @@ auth_backend = sqlite3
         ;; When the player has joined the server, stop luanti.
         (define (error? line)
           (and (string? line)
-               (string-contains line ": ERROR[")))
+               (string-contains line ": ERROR[")
+               ;; Ignore audio errors.
+               ;; TODO: start a sound server reliably…
+               (not (string-contains line "Audio: Global Initialization:"))))
         (define (stop? line)
           (and (string? line)
                (string-contains line "ACTION[Server]: singleplayer [127.0.0.1] joins game.")))
