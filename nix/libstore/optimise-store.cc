@@ -1,5 +1,6 @@
 #include "config.h"
 
+#include "misc.hh"
 #include "util.hh"
 #include "local-store.hh"
 #include "globals.hh"
@@ -250,11 +251,6 @@ void LocalStore::optimiseStore(OptimiseStats & stats)
         startNest(nest, lvlChatty, format("hashing files in `%1%'") % i);
         optimisePath_(stats, i, inodeHash);
     }
-}
-
-static string showBytes(unsigned long long bytes)
-{
-    return (format("%.2f MiB") % (bytes / (1024.0 * 1024.0))).str();
 }
 
 void LocalStore::optimiseStore()

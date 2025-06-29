@@ -433,8 +433,7 @@ void LocalStore::deletePathRecursive(GCState & state, const Path & path)
 	printMsg(lvlInfo, format("[%1%%%] deleting '%2%'") % percentage % path);
     } else {
 	auto freed = state.results.bytesFreed + state.bytesInvalidated;
-	freed /=  1024ULL * 1024ULL;
-	printMsg(lvlInfo, format("[%1% MiB] deleting '%2%'") % freed % path);
+	printMsg(lvlInfo, format("[%1%] deleting '%2%'") % showBytes(freed) % path);
     }
 
     state.results.paths.insert(path);
@@ -629,9 +628,9 @@ void LocalStore::removeUnusedLinks(const GCState & state)
     if (stat(linksDir.c_str(), &st) == -1)
         throw SysError(format("statting `%1%'") % linksDir);
     long long overhead = st.st_size;
+    long long freedbytes = (unsharedSize - actualSize - overhead);
 
-    printMsg(lvlInfo, format("note: currently hard linking saves %.2f MiB")
-        % ((unsharedSize - actualSize - overhead) / (1024.0 * 1024.0)));
+    printMsg(lvlInfo, format("note: currently hard linking saves %1%") % showBytes(freedbytes));
 }
 
 

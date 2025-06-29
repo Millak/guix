@@ -25,5 +25,6 @@ bool willBuildLocally(const Derivation & drv);
 
 bool substitutesAllowed(const Derivation & drv);
 
+string showBytes(long long bytes);
 
 }

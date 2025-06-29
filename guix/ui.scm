@@ -19,6 +19,7 @@
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,7 @@
             make-regexp*
             string->number*
             size->number
+            number->size
             show-derivation-outputs
             build-notifier
             show-what-to-build
@@ -694,6 +696,34 @@ interpreted."
           (""    1)
           (x
            (leave (G_ "unknown unit: ~a~%") unit)))))))
+
+(define (number->size num)
+  "Convert NUM, an integer number of bytes, to a human readable string using
+common storage prefixes."
+  (define (pretty-print-number number exponent)
+    (number->string (inexact->exact (round (/ number (expt 2 exponent))))))
+
+  (unless (number? num)
+    (leave (G_ "invalid number: ~a~%") (object->string num)))
+
+  (cond
+    ((> num (expt 2 80))
+     (string-append (pretty-print-number num 80) " YiB"))
+    ((> num (expt 2 70))
+     (string-append (pretty-print-number num 70) " ZiB"))
+    ((> num (expt 2 60))
+     (string-append (pretty-print-number num 60) " EiB"))
+    ((> num (expt 2 50))
+     (string-append (pretty-print-number num 50) " PiB"))
+    ((> num (expt 2 40))
+     (string-append (pretty-print-number num 40) " TiB"))
+    ((> num (expt 2 30))
+     (string-append (pretty-print-number num 30) " GiB"))
+    ((> num (expt 2 20))
+     (string-append (pretty-print-number num 20) " MiB"))
+    ((> num (expt 2 10))
+     (string-append (pretty-print-number num 10) " KiB"))
+    (#t (string-append (number->string num) " bytes"))))
 
 (define (display-collision-resolution-hint collision)
   "Display hints on how to resolve COLLISION, a &profile-collistion-error."

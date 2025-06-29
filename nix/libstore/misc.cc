@@ -1,4 +1,5 @@
 #include "misc.hh"
+#include <math.h>
 #include "store-api.hh"
 #include "local-store.hh"
 #include "globals.hh"
@@ -92,6 +93,26 @@ Paths topoSortPaths(StoreAPI & store, const PathSet & paths)
     for (const auto& i : paths)
         dfsVisit(store, paths, i, visited, sorted, parents);
     return sorted;
+}
+
+/* Max of LLONG_MAX is 8 EiB */
+string showBytes(long long bytes)
+{
+    if (llabs(bytes > exp2l(60))) {
+        return (format("%7.2f EiB") % (bytes / exp2l(60))).str();
+    } else if (llabs(bytes > exp2l(50))) {
+        return (format("%7.2f PiB") % (bytes / exp2l(50))).str();
+    } else if (llabs(bytes > exp2l(40))) {
+        return (format("%7.2f TiB") % (bytes / exp2l(40))).str();
+    } else if (llabs(bytes > exp2l(30))) {
+        return (format("%7.2f GiB") % (bytes / exp2l(30))).str();
+    } else if (llabs(bytes > exp2l(20))) {
+        return (format("%7.2f MiB") % (bytes / exp2l(20))).str();
+    } else if (llabs(bytes > exp2l(10))) {
+        return (format("%7.2f KiB") % (bytes / exp2l(10))).str();
+    } else {
+        return (format("%4f  bytes") % bytes).str();
+    }
 }
 
 
