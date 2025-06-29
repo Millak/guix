@@ -26896,6 +26896,9 @@ Rucksack with some enhancements.")
 (define-public ecl-rutils
   (sbcl-package->ecl-package sbcl-rutils))
 
+(define-public clasp-rutils
+  (sbcl-package->clasp-package sbcl-rutils))
+
 (define-public sbcl-s-base64
   (let ((commit "ed473e220133ca0e8b5b96618ea2972dec9de6cd")
         (revision "0"))
