@@ -20675,8 +20675,8 @@ a (typically) noncontiguous set of text.")
     (license license:gpl3+)))
 
 (define-public emacs-mu4e-alert
-  (let ((commit "3c9af8c7994df0a1a4f0703552ea3beffb485ace")
-        (revision "0"))
+  (let ((commit "d36eb0c1842dea51ee0465bb3751948c8886617c")
+        (revision "1"))
     (package
       (name "emacs-mu4e-alert")
       (version (git-version "1.0" revision commit))
@@ -20688,8 +20688,9 @@ a (typically) noncontiguous set of text.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "13li5pqqkzj7dwgpnngnk1ff46i100qw9xknlimpy2vf2k5yqv3y"))))
+          (base32 "039kfpwgw0vi6fv2p4ixdh9qx9hdsahl48yl1niq00zmsp7rgg07"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
       (propagated-inputs
        (list emacs-alert emacs-ht emacs-s mu))
       (home-page "https://github.com/xzz53/mu4e-alert")
