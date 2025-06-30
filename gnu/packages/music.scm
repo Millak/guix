@@ -5136,9 +5136,14 @@ provide a very simple interface for editing and playing MIDI loops.")
               (sha256
                (base32
                 "0fxk8q8z5v5l961d9z2ywq49i2fz50h074p81zv6w6j9zzs7fb0g"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-dateutil python-oauthlib python-requests))
+     (list python-dateutil
+           python-oauthlib
+           python-requests))
     (home-page "https://github.com/joalla/discogs_client")
     (synopsis "Python client for the Discogs API")
     (description "This is the continuation of the official Discogs API
