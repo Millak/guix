@@ -2498,6 +2498,7 @@ from multiple records.")
                           "test_coord_transposed"
                           "test_coordinates_pass_0"
                           "test_cube_transposed"
+                          "test_cube_with_deferred_unit_conversion"
                           "test_data_pass_0"
                           "test_destructor"
                           "test_formula_terms_pass_0"
@@ -2559,6 +2560,11 @@ from multiple records.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements/pypi-core.txt"
+                ;; dask[array]>=2022.9.0,!=2024.8.0, <2024.9
+                ((", <2024.9") ""))))
           ;; GeoVista is not packaged yet, "--ignore" option did not work to
           ;; skip test files.
           (add-after 'unpack 'delete-failing-test-files
@@ -2585,8 +2591,8 @@ from multiple records.")
            python-distributed
            python-filelock
            python-imagehash
-           python-pytest-xdist
            python-pytest
+           python-pytest-xdist
            python-setuptools
            python-setuptools-scm
            python-wheel))
