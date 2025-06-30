@@ -1490,6 +1490,57 @@ by numpy using the highly efficient @code{msgpack} format.  Serialization of
 Python's native complex data types is also supported.")
     (license license:bsd-3)))
 
+(define-public python-narwhals
+  (package
+    (name "python-narwhals")
+    (version "1.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "narwhals" version))
+       (sha256
+        (base32 "07fk7b1via9a81ig38316l10avdbrjbdxz2n7ddj48bg9xnn3w4c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; Run a minimal portion of tests, the complete test suite
+              ;; requires Polars, PySpark and SqlFrame packages.
+              "--constructors=pandas"
+              "-k" (string-join
+                    ;; XXX: ValueError: Minimum version of modin supported by Narwhals is
+                    ;; (0, 8, 2), found: (0,)
+                    (list "not test_allow_series"
+                          "test_cross_join_non_pandas"
+                          "test_eager_only_eager"
+                          "test_from_native_roundtrip_identity"
+                          "test_namespace_series_from_iterable"
+                          "test_series_only"
+                          "test_to_native_namespace")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-duckdb
+           python-pytest-env
+           python-hatchling))
+    (propagated-inputs
+     (list python-pandas
+           python-dask
+           python-modin
+           python-pyarrow))
+    (home-page "https://narwhals-dev.github.io/narwhals/")
+    (synopsis "Compatibility layer between dataframe libraries")
+    (description
+     "This package provides an extremely lightweight compatibility layer
+between dataframe libraries.
+@itemize
+@item full API support: cuDF, Modin, pandas, Polars, PyArrow
+@item lazy-only support: Dask, DuckDB, Ibis, PySpark, SQLFrame
+@end itemize")
+    (license license:expat)))
+
 (define-public python-ndindex
   (package
     (name "python-ndindex")
