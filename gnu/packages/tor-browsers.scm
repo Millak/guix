@@ -257,7 +257,7 @@ Browser.")
            hunspell
            libnotify
            nspr
-           ;; UNBUNDLE-ME! nss  (pending upgrade of 'nss' to 3.90 or later)
+           nss-rapid  ; requires v. 3.101, so nss won't cut it for now.
            shared-mime-info
            sqlite
            eudev
@@ -357,7 +357,7 @@ Browser.")
          "--with-system-libvpx"
          "--with-system-icu"
          "--with-system-nspr"
-         ;; UNBUNDLE-ME! "--with-system-nss" ; pending upgrade of 'nss' to 3.90
+         "--with-system-nss"
 
          ;; UNBUNDLE-ME! "--with-system-harfbuzz"
          ;; UNBUNDLE-ME! "--with-system-graphite2"
@@ -407,7 +407,7 @@ Browser.")
                           ;;"nsprpub"
                           ;;
                           ;; FIXME: Some of the bundled NSS sources are used
-                          ;; to build third_party/prio.
+                          ;; to build netwerk/socket/neqo_glue.
                           ;;"security/nss"
                           ;;
                           ;; TODO: Use more system media libraries.  See:
