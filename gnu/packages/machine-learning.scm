@@ -6373,6 +6373,14 @@ models on CPU and GPU.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1) failed for 10th
+      ;; keyword liwork: dsyevr:liwork=1
+      #~(list "-k" (string-join
+                    (list "not test_fit_mcgrory_titterington1d"
+                          "test_common_initialization"
+                          "test_initialization")
+                    " and not "))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'set-core-count
