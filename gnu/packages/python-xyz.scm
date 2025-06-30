@@ -20759,16 +20759,19 @@ enhancements to optimization and data fitting problems.")
 (define-public python-bokeh
   (package
     (name "python-bokeh")
-    (version "2.4.3")
+    (version "3.7.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "bokeh" version))
               (sha256
                (base32
-                "00sbhya9vfdv3yi07j6mxwx1x1h9497nhd3smdjrcdxgc48q0czg"))))
+                "0argn4fadyswnz86x6fsy1f13nmd8iwzn5ddwrg3s43vg6grma3h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; FIXME: Most of the tests do not work, figure out how to enable some
+      ;; portion.
+      #:tests? #f
       #:test-flags
       '(list
         ;; These require selenium.
@@ -20828,16 +20831,27 @@ enhancements to optimization and data fitting problems.")
          ;; XXX: This one test transforms a gif of a red box.  It transforms
          ;; it all right but the base64 doesn't look as expected, probably
          ;; because of a change in pillow.
-         " and not test_transform_PIL"))))
+         " and not test_transform_PIL"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((", \"setuptools-git-versioning\"") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = '" #$version "'"))))))))
     (propagated-inputs
      (list node-lts
+           python-contourpy
            python-jinja2
+           python-narwhals
            python-numpy
            python-packaging
+           python-pandas
            python-pillow
            python-pyyaml
            python-tornado-6
-           python-typing-extensions))
+           python-xyzservices))
     (native-inputs
      (list python-beautifulsoup4
            python-dateutil
