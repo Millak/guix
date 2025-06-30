@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2023 Ivan Gankevich <igankevich@capybaramail.xyz>
+;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1267,3 +1268,32 @@ person-to-person communication services.")
     (description "This package provides @command{callaudiod}, a daemon to
 route audio during phone calls, and a library.")
     (license license:gpl3+)))
+
+(define-public baresip-libre
+  (package
+     (name "baresip-libre")
+     (version "3.24.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/baresip/re")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1k874v9bzipk5x9nr21f3259f5sk7nxnnz618kji0mx9aa0fvjf1"))))
+     (build-system cmake-build-system)
+     (native-inputs (list pkg-config))
+     (inputs (list openssl zlib))
+     (synopsis "Library for real-time communications with async IO support")
+     (description "Libre is a portable and generic library for real-time
+communications with async @acronym{IO, Input Output} support and a complete
+@acronym{SIP, Session Initiation Protocol} stack with support for protocols such
+as @acronym{SDP, Session Description Protocol}, @acronym{RTP, Real-time
+Transport Protocol}/@acronym{RTCP, RTP Control Protocol}, @acronym{STUN, Session
+Traversal Utilities for NAT}/@acronym{TURN, Traversal Using Relays around
+NAT}/@acronym{ICE, Interactive Connectivity Establishment}, @acronym{BFCP,
+Binary Floor Control Protocol}, @acronym{HTTP, Hypertext Transfer Protocol} and
+@acronym{DNS, Domain Name System}.")
+     (home-page "https://github.com/baresip/re")
+     (license license:bsd-3)))
