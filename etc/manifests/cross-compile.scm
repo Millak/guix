@@ -74,8 +74,7 @@ TARGET."
 (define %system-gui-packages
   ;; Key packages proposed by the Guix System installer.
   (append (map specification->package
-               '("enlightenment"
-                 ;; build system `python' does not support cross builds
+               '(;; build system `python' does not support cross builds
                  ;"gnome" "xfce" "mate" "openbox"
                  "awesome"
                  "i3-wm" "i3status" "dmenu" "st"

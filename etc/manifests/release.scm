@@ -45,7 +45,7 @@ TARGET."
   ;; Key packages proposed by the Guix System installer.
   (append (map specification->package
                '("guix" "shepherd"
-                 "gnome" "xfce" "mate" "enlightenment"
+                 "gnome" "xfce" "mate"
                  "icewm" "openbox" "awesome"
                  "i3-wm" "i3status" "dmenu" "st"
                  "ratpoison" "xterm"

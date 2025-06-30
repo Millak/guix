@@ -81,9 +81,6 @@
       (name "MATE")
       (snippet '((service mate-desktop-service-type))))
      (desktop-environment
-      (name "Enlightenment")
-      (snippet '((service enlightenment-desktop-service-type))))
-     (desktop-environment
       (name "Icewm")
       (snippet '((specification->package "icewm"))))
      (desktop-environment
