@@ -59,6 +59,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
@@ -201,6 +202,43 @@ in such a way that they are discoverable.  It also solves problems with
 coordinating the use of PKCS#11 by different components or libraries
 living in the same process.")
     (license license:bsd-3)))
+
+(define-public libp11
+  (package
+    (name "libp11")
+    (version "0.4.16")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/OpenSC/libp11")
+              (commit (string-append "libp11-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sjd3jxpyp61d85n4drmw9rf3bh7hwhrplr5nw6lmcpr2xr4gqds"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-enginesdir
+                 (lambda _
+                   (substitute* "configure.ac"
+                     (("libcrypto`")
+                      (string-append "libcrypto | sed 's#.*/#"
+                                     #$output "/lib/#'`"))))))))
+    (native-inputs
+     (list autoconf automake libtool pkg-config sed))
+    (inputs
+     (list openssl))
+    (home-page "https://github.com/OpenSC/libp11")
+    (synopsis "PKCS#11 wrapper library")
+    (description
+     "@code{libp11} is a library implementing a thin layer on top of PKCS#11
+API to make PKCS#11 implementations easier.")
+    (license (list license:lgpl2.1+
+                   license:bsd-2
+                   license:openssl
+                   (license:fsf-free "file:///src/pkcs11.h")))))
 
 (define-public gnutls
   (package
