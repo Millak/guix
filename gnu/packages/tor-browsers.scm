@@ -506,6 +506,11 @@ Browser.")
           (add-before 'configure 'setenv
             (lambda _
               (setenv "CONFIG_SHELL" (which "bash"))
+              ;; Use Clang, Clang is 2x faster than GCC
+              (setenv "AR" "llvm-ar")
+              (setenv "NM" "llvm-nm")
+              (setenv "CC" "clang")
+              (setenv "CXX" "clang++")
               ;; Install location is prefix/lib/$MOZ_APP_NAME.  Also
               ;; $MOZ_APP_NAME is the executable name.  Default is
               ;; "firefox".
