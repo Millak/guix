@@ -33335,26 +33335,28 @@ of trying to find that piece of text you know you killed a while back?  Then
       (license license:gpl2+))))
 
 (define-public emacs-powerline
-  (package
-    (name "emacs-powerline")
-    (version "2.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/milkypostman/powerline")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1hp3xp18943n0rlggz55150020ivw8gvi1vyxkr4z8xhpwq4gaar"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/milkypostman/powerline/")
-    (synopsis "Mode-line plugin for Emacs")
-    (description "Powerline is a utility plugin which allows you to create
+  (let ((commit "c35c35bdf5ce2d992882c1f06f0f078058870d4a")
+        (revision "0"))
+    (package
+      (name "emacs-powerline")
+      (version (git-version "2.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/milkypostman/powerline")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0k1n5pg8v3ybkqxcipw80jqv94ka0dp63qxl0hvjwlxk16gxp8kb"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/milkypostman/powerline/")
+      (synopsis "Mode-line plugin for Emacs")
+      (description
+       "Powerline is a utility plugin which allows you to create
 a better-looking, more functional Emacs mode-line.  A collection of predefined
 themes comes with the package.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-spaceline
   (package
