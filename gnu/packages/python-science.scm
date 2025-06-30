@@ -3906,8 +3906,17 @@ readable.")
             (delete-file-recursively "vendor")))))
     (build-system pyproject-build-system)
     (arguments
-     ;; require vaex.server and others, which require vaex-core.
-     (list #:tests? #false))
+     (list
+      #:tests? #f ; require vaex.server and others, which require vaex-core.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; "dask!=2022.4.0,<2024.9"; there is a note "fingerprinting
+                ;; in no longer deterministic as of 2024.9.0" which may be
+                ;; resolved in 2024.12.1.
+                ((",<2024.9") "")))))))
     (inputs
      (list boost pcre pybind11 string-view-lite tsl-hopscotch-map))
     (propagated-inputs
