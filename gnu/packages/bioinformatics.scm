@@ -22120,10 +22120,13 @@ pycisTarget and SCENIC.")
               (sha256
                (base32
                 "0l0im8ay7l2d24f7vaha454vsaha9s36bfqhbijg3b8ir8apsd7l"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     ;; Lots of tests fail because python-distributed fails to start the
     ;; "Nanny" process.
     (arguments '(#:tests? #false))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-bokeh
            python-dask
