@@ -1742,6 +1742,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgda-skip-postgresql-tests.patch	\
   %D%/packages/patches/libgdata-fix-tests.patch	\
   %D%/packages/patches/libgit2-mtime-0.patch			\
+  %D%/packages/patches/libgit2-path-max.patch			\
   %D%/packages/patches/libgit2-proxy-reconnection.patch		\
   %D%/packages/patches/libgit2-uninitialized-proxy-settings.patch	\
   %D%/packages/patches/libgnome-encoding.patch			\
