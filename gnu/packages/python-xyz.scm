@@ -35015,15 +35015,16 @@ asyncio applications.")
 (define-public python-pyre-extensions
   (package
     (name "python-pyre-extensions")
-    (version "0.0.18")
+    (version "0.0.32")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "pyre-extensions" version))
+        (uri (pypi-uri "pyre_extensions" version))
         (sha256
           (base32
-            "0c5cbbqrfyjwakdh3kbwxis6mbrbwky1z1fqslgszgpcj4g43q30"))))
-    (build-system python-build-system)
+            "0mayv07djjnysznhjnchix3alkz4lxycb20azpaw8mpa2igp35jk"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
       (list python-typing-extensions python-typing-inspect))
     (home-page "https://pyre-check.org")
