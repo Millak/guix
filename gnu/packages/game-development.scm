@@ -2895,8 +2895,8 @@ of the others")
 
 (define-public ioquake3
   ;; We follow master since it seems that there won't be releases after 1.3.6.
-  (let ((revision "2")
-        (commit "29b0cc3a4d037046eb3247fc04f4b703f6a33452"))
+  (let ((revision "3")
+        (commit "ab18167a09415e9e9f4859c197bad72ec39807d5"))
     (package
       (name "ioquake3")
       (version (git-version "1.3.6" revision commit))
@@ -2908,7 +2908,7 @@ of the others")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fqq2qpnrgpgf3gs71wvxlkcihxcrvhvllh88ii4ip134c1qbs9q"))))
+          (base32 "01s15lfxsd6nd4jvan1gabbidd2v1y29zgwymszwlhrzkm367n08"))))
       (build-system gnu-build-system)
       (inputs
        (list curl
