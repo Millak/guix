@@ -2346,6 +2346,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tlf-support-hamlib-4.2+.patch		\
   %D%/packages/patches/tofi-32bit-compat.patch			\
   %D%/packages/patches/torbrowser-compare-paths.patch           \
+  %D%/packages/patches/torbrowsers-add-store-to-rdd-allowlist.patch     \
   %D%/packages/patches/tpetra-remove-duplicate-using.patch	\
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/transmission-4.0.6-fix-build.patch	\

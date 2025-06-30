@@ -385,6 +385,9 @@ Browser.")
                (lambda (file) (invoke "patch" "--force" "-p1" "-i" file))
                '(#$(local-file
                     (search-patch "torbrowser-compare-paths.patch"))
+		 #$(local-file
+		    (search-patch
+		     "torbrowsers-add-store-to-rdd-allowlist.patch"))
                  #$(local-file
                     (search-patch "icecat-use-system-wide-dir.patch"))))))
           (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
