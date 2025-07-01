@@ -607,13 +607,13 @@ compatible build front-ends to build Poetry managed projects.")
 (define-public python-flit-core-bootstrap
   (package
     (name "python-flit-core-bootstrap")
-    (version "3.8.0")
+    (version "3.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flit" version))
        (sha256
-        (base32 "0dz9sp2zlhkmk6sm5gapbbb30f7xq3n3jn5zxx5pkp25ppsaiwnh"))))
+        (base32 "0h1pxi2hgr95321bgl45l86693zl14l3shj0idsyg4k9v56z700w"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-toml))
