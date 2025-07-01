@@ -130,6 +130,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages uml)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -638,6 +639,49 @@ system, and additional features in the full system.")
 
 (define-public ecl-40ants-doc
   (sbcl-package->ecl-package sbcl-40ants-doc))
+
+(define-public sbcl-40ants-plantuml
+  (let ((commit "928a074051491273450c70a290b11db27fd379e7")
+        (revision "0"))
+    (package
+      (name "sbcl-40ants-plantuml")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/40ants/plantuml")
+                (commit commit)))
+         (sha256
+          (base32 "0bi3i0cw16aa38xp04xwirdfvwjz862q5yzghpprddi1q5mvxpbf"))
+         (file-name (git-file-name "cl-40ants-plantuml" version))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/core.lisp"
+                  (("/usr/share/plantuml/plantuml.jar")
+                   (search-input-file inputs "/bin/plantuml"))))))))
+      (native-inputs (list sbcl-rove))
+      (inputs
+       (list graphviz
+             plantuml
+             sbcl-40ants-asdf-system
+             sbcl-serapeum))
+      (home-page "https://40ants.com/plantuml/")
+      (synopsis "Wrapper around PlantUML jar library")
+      (description
+       "@code{40ants-plantuml} provides a wrapper around the PlantUML jar library.")
+      (license license:unlicense))))
+
+(define-public cl-40ants-plantuml
+  (sbcl-package->cl-source-package sbcl-40ants-plantuml))
+
+(define-public ecl-40ants-plantuml
+  (sbcl-package->ecl-package sbcl-40ants-plantuml))
 
 (define-public sbcl-abstract-classes
   (let ((commit "7fa74f1e057f9ba7c1ffecff14f049f979e45267")
