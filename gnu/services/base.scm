@@ -1997,10 +1997,9 @@ of Guix to the given UID and GID."
                              lstat))
 
          (define (claim-data-ownership uid gid)
-           (format #t "Changing file ownership for /gnu/store \
+           (format #t "Changing file ownership for ~a \
 and data directories to ~a:~a...~%"
-                   uid gid)
-           (change-ownership #$(%store-prefix) uid gid)
+                   #$(%store-prefix) uid gid)
            (let ((excluded '("." ".." "profiles" "userpool")))
              (for-each (lambda (directory)
                          (change-ownership (in-vicinity "/var/guix" directory)
@@ -2012,7 +2011,11 @@ and data directories to ~a:~a...~%"
            (chown "/var/guix" uid gid)
            (change-ownership "/etc/guix" uid gid)
            (mkdir-p "/var/log/guix")
-           (change-ownership "/var/log/guix" uid gid))
+           (change-ownership "/var/log/guix" uid gid)
+
+           ;; Change the store last so that, if this service is interrupted,
+           ;; ownership appears as having yet to be changed.
+           (change-ownership #$(%store-prefix) uid gid))
 
          (match (command-line)
            ((_ (= string->number (? integer? uid))
