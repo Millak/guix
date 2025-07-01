@@ -35282,17 +35282,17 @@ has been created, and the visibility of the icon can be toggled.")
 (define-public python-confuse
   (package
     (name "python-confuse")
-    (version "1.5.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "confuse" version))
        (sha256
         (base32
-         "0bh2kyj8wd7h9gg4nsvrbykl5ly0f70f0wi3fbm204b1f0fcmywj"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pyyaml))
+         "07v1s16nryls3zhaakwz6i6rgdy1c010gk00jsvn5a5a96ns4ybk"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
+    (propagated-inputs (list python-pyyaml))
     (home-page "https://github.com/beetbox/confuse")
     (synopsis "Painless YAML configuration")
     (description "Confuse is a configuration library for Python that uses
