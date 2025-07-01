@@ -15956,6 +15956,9 @@ formats within this framework.")
 (define-public ecl-feeder
   (sbcl-package->ecl-package sbcl-feeder))
 
+(define-public clasp-feeder
+  (sbcl-package->clasp-package sbcl-feeder))
+
 (define-public sbcl-ffa
   (let ((commit "b7012f51c4c37d1e759ff9cf78cea178504d8e07")
         (revision "1"))
