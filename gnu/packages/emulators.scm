@@ -2994,28 +2994,27 @@ This is a part of the TiLP project.")
   (package
     (name "libtifiles2")
     (version "1.1.7")
-    (source (origin
-              (method url-fetch)
-              (uri "https://www.ticalc.org/pub/unix/tilibs.tar.gz")
-              (sha256
-               (base32
-                "07cfwwlidgx4fx88whnlch6y1342x16h15lkvkkdlp2y26sn2yxg"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://www.ticalc.org/pub/unix/tilibs.tar.gz")
+       (sha256
+        (base32 "07cfwwlidgx4fx88whnlch6y1342x16h15lkvkkdlp2y26sn2yxg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (invoke "tar" "xvkf" source)
-             (invoke "tar" "xvkf"
-                     (string-append "tilibs2/libtifiles2-"
-                                    ,version ".tar.bz2"))
-             (chdir (string-append "libtifiles2-" ,version))
-             #t)))))
-    (native-inputs
-     (list autoconf automake gnu-gettext libtool pkg-config))
-    (inputs
-     (list glib libarchive libticonv))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "tar" "xvkf" source)
+              (invoke "tar" "xvkf"
+                      (string-append "tilibs2/libtifiles2-"
+                                     #$version ".tar.bz2"))
+              (chdir (string-append "libtifiles2-"
+                                    #$version)))))))
+    (native-inputs (list autoconf automake gnu-gettext libtool pkg-config))
+    (inputs (list glib libarchive libticonv))
     (synopsis "File functions library for TI calculators")
     (description
      "This package contains libticonv, a library to support working with
