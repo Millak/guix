@@ -29984,6 +29984,9 @@ provides a method for determining which capabilities a terminal
 (define-public ecl-terminfo
   (sbcl-package->ecl-package sbcl-terminfo))
 
+(define-public clasp-terminfo
+  (sbcl-package->clasp-package sbcl-terminfo))
+
 (define-public sbcl-termp
   (let ((commit "29789fe83db624679b6f341e3fae3f2577ce6a45")
         (revision "0"))
