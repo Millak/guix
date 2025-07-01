@@ -25,12 +25,13 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2022 M <matf@disr.it>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
@@ -57,6 +58,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -66,6 +68,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -87,8 +90,11 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages slang)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
 (define-public dos2unix
@@ -1236,6 +1242,101 @@ version 1.x and older StarOffice versions.  To a lesser extent, odt2txt may be
 useful to extract content from OpenDocument spreadsheets (*.ods) and
 OpenDocument presentations (*.odp).")
     (license license:gpl2)))
+
+(define-public cobib
+  (package
+    (name "cobib")
+    (version "5.3.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://gitlab.com/cobib/cobib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13mzwb1rmpz05bn5qr7mwqmj0grxxm1z7b56c8wvyrgm6lsx0a98"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests trying to access api.zotero.org.
+                    (list "not test_fetch"
+                          "test_fetch_custom_user_id"
+                          "test_cache"
+                          "test_event_pre_zotero_import"
+                          "test_event_post_zotero_import"
+                          ;; Tests requiring Git history or failing with
+                          ;; various assertion errors.
+                          "test_absolute_path"
+                          "test_cmdline"
+                          "test_command"
+                          "test_command_context"
+                          "test_command_edit"
+                          "test_command_edit_no_changes"
+                          "test_command_fields"
+                          "test_command_inline"
+                          "test_command_skip"
+                          "test_configured_label_default"
+                          "test_disambiguate_label"
+                          "test_event_post_redo_command"
+                          "test_event_post_undo_command"
+                          "test_event_pre_git_commit"
+                          "test_event_pre_redo_command"
+                          "test_event_pre_undo_command"
+                          "test_lint_auto_format"
+                          "test_overwrite_label"
+                          "test_skipping_redone_commits"
+                          "test_skipping_undone_commits"
+                          "test_stringify"
+                          ;; Tests might be broken as trying to compare $HOME
+                          ;; and "~/".
+                          "test_base_cmd_insufficient_git"
+                          "test_warn_insufficient_config"
+                          "test_event_pre_init_command"
+                          "test_field_cmdline_switch")
+                    " and not ")
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "COBIB_CONFIG" "0")
+              (setenv "HOME" "/tmp")
+              (setenv "TERM" "linux")
+              (setenv "TMPDIR" "/tmp"))))))
+    (native-inputs
+     (list git-minimal/pinned
+           nss-certs-for-test
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-textual-snapshot
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-bibtexparser
+           python-lxml
+           python-mdit-py-plugins
+           python-pylatexenc
+           python-requests
+           python-requests-oauthlib
+           python-rich
+           python-ruamel.yaml
+           python-text-unidecode
+           python-textual-1
+           python-typing-extensions))
+    (home-page "https://gitlab.com/cobib/cobib")
+    (synopsis "Terminal-based bibliography management tool")
+    (description
+     "@command{cobib} is a command-line based bibliography management tool.
+It uses a plain-text database, a location-independent library, and features
+git integration, command-line support, and a curses-based TUI.")
+    (license license:expat)))
+
+(define-public python-cobib
+  (deprecated-package "python-cobib" cobib))
 
 (define-public bibutils
   (package
