@@ -23821,6 +23821,52 @@ expressions.")
 (define-public ecl-one-more-re-nightmare
   (sbcl-package->ecl-package sbcl-one-more-re-nightmare))
 
+(define-public sbcl-open-with
+  (let ((commit "f0682e42ac48311d1a5bb9eb7ca646baacd88a80")
+        (revision "0"))
+    (package
+      (name "sbcl-open-with")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Shinmera/open-with")
+                (commit commit)))
+         (file-name (git-file-name "cl-open-with" version))
+         (sha256
+          (base32 "0j0qv1389wbr84y3mis4qd2zz9qybnq4frvc01pamidsbryxss0r"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "toolkit.lisp"
+                  (("xdg-open")
+                   (search-input-file inputs "/bin/xdg-open"))))))))
+      (inputs
+       (list sbcl-documentation-utils
+             sbcl-trivial-features
+             xdg-utils))
+      (synopsis "Open a file in a suitable external program")
+      (description
+       "This package provides a small utility library to open a thing (usually
+a file or URL) in an appropriate handler (usually an external file manager or
+browser).")
+      (home-page "https://shinmera.github.io/open-with/")
+      (license license:zlib))))
+
+(define-public cl-open-with
+  (sbcl-package->cl-source-package sbcl-open-with))
+
+(define-public ecl-open-with
+  (sbcl-package->ecl-package sbcl-open-with))
+
+(define-public clasp-open-with
+  (sbcl-package->clasp-package sbcl-open-with))
+
 (define-public sbcl-opticl
   (let ((commit "f6fc4dc5fa61ae3f2527b77e4bda99001ba37dcb")
         (revision "1"))
