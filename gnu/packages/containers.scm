@@ -583,7 +583,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
            git-minimal/pinned
            go-1.23
            go-md2man
-           gnu-gettext ; for envsubst
+           gettext-minimal ; for envsubst
            mandoc
            pkg-config
            python))
