@@ -10974,7 +10974,7 @@ to perfectly fit the GNOME desktop.")
     (native-inputs (list blueprint-compiler
                          desktop-file-utils
                          `(,glib "bin")
-                         gnu-gettext
+                         gettext-minimal
                          gobject-introspection
                          `(,gtk "bin")
                          pkg-config))
