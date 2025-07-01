@@ -146,6 +146,9 @@ if test "x$have_guile_git" != "xyes"; then
   AC_MSG_ERROR([Guile-Git is missing; please install it.])
 fi
 
+dnl Check Guile-Git version resp. required recently added symbol.
+GUILE_MODULE_REQUIRED_EXPORT([(git)], [graph-descendant?])
+
 dnl Check for Guile-JSON.
 GUIX_CHECK_GUILE_JSON
 if test "x$guix_cv_have_recent_guile_json" != "xyes"; then
