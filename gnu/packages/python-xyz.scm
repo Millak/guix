@@ -4358,7 +4358,7 @@ to users of that module.")
 (define-public python-ncclient
   (package
     (name "python-ncclient")
-    (version "0.6.12")
+    (version "0.6.19")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI release
@@ -4368,18 +4368,15 @@ to users of that module.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cb568z5syg6hh0dv813bw7s1mjy7ga5xzxbm9naf4zz2qfdg4js"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
+         "0nmyj59k9zbdfhm7qhrq9gd4x6vhjdf18q1kwfgb2gwcb3b8nd2h"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-lxml python-paramiko))
+     (list python-lxml
+           python-paramiko))
     (home-page "https://github.com/ncclient/ncclient")
     (synopsis "Python library for NETCONF clients")
     (description "@code{ncclient} is a Python library that facilitates
