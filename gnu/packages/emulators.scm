@@ -2940,7 +2940,7 @@ play them on systems for which they were never designed!")
     (native-inputs (list autoconf
                          autogen
                          automake
-                         gnu-gettext
+                         gettext-minimal
                          libtool
                          pkg-config))
     (inputs (list glib libusb))
