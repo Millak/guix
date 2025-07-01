@@ -39427,22 +39427,30 @@ Python code as generators in your source files to generate arbitrary text.")
 (define-public python-bsdiff4
   (package
     (name "python-bsdiff4")
-    (version "1.2.2")
+    (version "1.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ilanschnell/bsdiff4")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s64xmgcyzp7x6rcyfcryyz4mv5qm8l7s365rgbi6qfpnblnby0c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "bsdiff4")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/ilanschnell/bsdiff4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1fa0vkmbr0a9xifq7i5gfcf7ifn739i1fdij8awynm299fsqvvhx"))))
-    (build-system python-build-system)
     (synopsis "Binary diff and patch using the BSDIFF4 format")
-    (description "This package provides a Python library for the @code{bsdiff}
-binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
-and @code{bspatch4}.")
+    (description
+     "This package provides a Python library for the @code{bsdiff} binary diff
+utility.  It also provides two command-line tools, @code{bsdiff4} and
+@code{bspatch4}.")
     (license license:bsd-2)))
 
 (define-public python-mpv
