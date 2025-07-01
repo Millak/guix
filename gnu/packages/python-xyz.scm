@@ -4909,27 +4909,34 @@ sending and receiving messages on a CAN bus.")
 (define-public python-canmatrix
   (package
     (name "python-canmatrix")
-    (version "1.0")
+    (version "1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "canmatrix" version))
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/ebroecker/canmatrix")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "046dzmggfm6h0fvfvwrblvih0blhc70ma0pqxzry3cphc08jvsrg"))
-       ;; The test suite uder ./test is a legacy test suite. The new test
-       ;; suite is defined under src/canmatrix/tests.
-       (modules '((guix build utils)))
-       (snippet '(delete-file-recursively "test"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
-    (propagated-inputs (list python-attrs python-click python-future
-                             python-six))
-    (native-inputs (list python-lxml python-pytest python-xlrd python-xlwt))
+        (base32 "05l0hi279y1dc8ifm2223lpn7z9dx2h7kk599bkymvasb2qa1xrx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pathlib2
+           python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-attrs
+           python-canopen
+           python-click
+           ;; python-ldfparser
+           python-lxml
+           python-openpyxl
+           python-pyyaml
+           python-xlrd
+           python-xlwt))
     (home-page "https://github.com/ebroecker/canmatrix")
     (synopsis "@acronym{CAN, Controller Area Network} matrices in Python")
     (description
