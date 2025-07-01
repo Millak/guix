@@ -3895,26 +3895,16 @@ teams extension for python-openid.")
 (define-public python-priority
   (package
     (name "python-priority")
-    (version "1.3.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "priority" version))
        (sha256
-        (base32 "1gpzn9k9zgks0iw5wdmad9b4dry8haiz2sbp6gycpjkzdld9dhbb"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "test" "-k"
-                     ;; This test exceeded the Hypothesis deadline.
-                     "not test_period_of_repetition"))))))
+        (base32 "1h0qpa949bxx7za95v1apwnngkrngi695cwx8wchn3cd3d7xarf9"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-hypothesis python-pytest python-pytest-cov
-           python-pytest-xdist))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://python-hyper.org/projects/priority/en/latest/")
     (synopsis "Pure-Python implementation of the HTTP/2 priority tree")
     (description
