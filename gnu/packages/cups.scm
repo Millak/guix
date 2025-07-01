@@ -332,7 +332,8 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
        ;; Avoid NAME confusion: these are the complete CUPS sources.
        (file-name (git-file-name "cups" version))
        (sha256
-        (base32 "1dk5salizxy1qm19gw93ffdd34hsn1cd4s57nwl7nfhwwirkiri2"))))
+        (base32 "1dk5salizxy1qm19gw93ffdd34hsn1cd4s57nwl7nfhwwirkiri2"))
+       (patches (search-patches "cups-relax-root-ownership-check.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
