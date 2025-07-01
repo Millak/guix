@@ -19456,6 +19456,9 @@ objects themselves.")
 (define-public ecl-jsown
   (sbcl-package->ecl-package sbcl-jsown))
 
+(define-public clasp-jsown
+  (sbcl-package->clasp-package sbcl-jsown))
+
 (define-public sbcl-just-getopt-parser
   (package
     (name "sbcl-just-getopt-parser")
