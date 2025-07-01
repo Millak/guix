@@ -526,6 +526,36 @@ offers them both in non-modifying and modifying versions where applicable.")
 (define-public clasp-3d-vectors
   (sbcl-package->clasp-package sbcl-3d-vectors))
 
+(define-public sbcl-40ants-asdf-system
+  (let ((commit "492bc9b09c100593ceec8375899addcbffa573cc")
+        (revision "0"))
+    (package
+      (name "sbcl-40ants-asdf-system")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/40ants/40ants-asdf-system")
+                (commit commit)))
+         (sha256
+          (base32 "151zfyz7c4xrd4mnyzd5nsla1p70q4iixgm9mlnbm799mr1aprwp"))
+         (file-name (git-file-name "cl-40ants-asdf-system" version))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-rove))
+      (home-page "https://40ants.com/40ants-asdf-system/")
+      (synopsis "Alternative to asdf:package-inferred-system")
+      (description
+       "@code{40ants-asdf-system} provides a class for being used instead of
+@code{asdf:package-inferred-system} in 40ANT systems.")
+      (license license:bsd-3))))
+
+(define-public cl-40ants-asdf-system
+  (sbcl-package->cl-source-package sbcl-40ants-asdf-system))
+
+(define-public ecl-40ants-asdf-system
+  (sbcl-package->ecl-package sbcl-40ants-asdf-system))
+
 (define-public sbcl-40ants-doc
   (let ((commit "7725ff67a380e9ebfc6155e14d91e650f256711b")
         (revision "0"))
