@@ -3048,7 +3048,7 @@ This is a part of the TiLP project.")
                                      #$version ".tar.bz2"))
               (chdir (string-append "libticalcs2-"
                                     #$version)))))))
-    (native-inputs (list autoconf automake gnu-gettext libtool pkg-config))
+    (native-inputs (list autoconf automake gettext-minimal libtool pkg-config))
     (inputs (list glib libarchive libticables2 libticonv libtifiles2))
     (synopsis "Support library for TI calculators")
     (description
