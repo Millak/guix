@@ -63,17 +63,17 @@
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-executable
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/poedit")
                 `("PATH" prefix
-                  ,(list (string-append #$(this-package-input "gettext")
-                                        "/bin")))))))))
+                  ,(list
+                    (dirname (search-input-file inputs "bin/gettext"))))))))))
 
     (native-inputs (list autoconf automake pkg-config))
     (inputs (list bash-minimal
                   boost
                   enchant
-                  gnu-gettext
+                  gettext-minimal
                   gtk+
                   gtkspell3
                   icu4c
