@@ -19479,6 +19479,9 @@ defined.")
 (define-public ecl-just-getopt-parser
   (sbcl-package->ecl-package sbcl-just-getopt-parser))
 
+(define-public clasp-just-getopt-parser
+  (sbcl-package->clasp-package sbcl-just-getopt-parser))
+
 (define-public sbcl-jzon
   (package
     (name "sbcl-jzon")
