@@ -32031,52 +32031,26 @@ itself.")
     (license license:expat)))
 
 (define-public python-argh
-  ;; There are 21 commits since the latest release containing important
-  ;; improvements.
-  (let ((commit "dcd3253f2994400a6a58a700c118c53765bc50a4")
-        (revision "1"))
-    (package
+  (package
       (name "python-argh")
-      (version (git-version "0.26.2" revision commit))
+      (version "0.31.3")
       (source
        (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/neithere/argh")
-               (commit commit)))
-         (file-name (git-file-name name version))
+         (method url-fetch)
+         (uri (pypi-uri "argh" version))
          (sha256
-          (base32
-           "1p5h3dnpbsjmqrvil96s71asc6i3gpinmbrabqmwnrsxprz7r3ns"))))
-      (build-system python-build-system)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-tests
-             (lambda _
-               ;; Fix test failures on Python 3.9.9+.
-               ;; Taken via <https://github.com/neithere/argh/issues/148>.
-               (substitute* "test/test_integration.py"
-                 (("assert run\\(p, '(bar|orig-name|nest bar)', exit=True\\)\
-\\.startswith\\('invalid choice'\\)" _ name)
-                  (string-append "assert 'invalid choice' in \
-run(p, '" name "', exit=True)")))))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "pytest" "-vv")))))))
-      (propagated-inputs
-       (list python-iocapture python-mock python-pytest python-pytest-cov
-             python-pytest-xdist))
+          (base32 "1ycjb2f92iskvp27vq2a8vdbpmsij61apvmkn7k5xjhlpvc2607k"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-flit-core python-pytest))
       (home-page "https://github.com/neithere/argh/")
       (synopsis "Argparse wrapper with natural syntax")
       (description
-       "python-argh is a small library that provides several layers of
-abstraction on top of @code{python-argparse}.  The layers can be mixed.  It is
-always possible to declare a command with the highest possible (and least
-flexible) layer and then tune the behaviour with any of the lower layers
-including the native API of @code{python-argparse}.")
-      (license license:lgpl3+))))
+       "Argh is a small library that provides several layers of abstraction
+on top of @code{python-argparse}.  The layers can be mixed.  It is always
+possible to declare a command with the highest possible (and least flexible)
+layer and then tune the behaviour with any of the lower layers including the
+native API of @code{python-argparse}.")
+      (license license:lgpl3+)))
 
 (define-public python-ppft
   (package
