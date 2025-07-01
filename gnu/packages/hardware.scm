@@ -1431,7 +1431,7 @@ and libtss2-tcti-mssim.")
            automake
            curl
            libtool
-           gnu-gettext
+           gettext-minimal
            openssl
            pandoc
            pkg-config
