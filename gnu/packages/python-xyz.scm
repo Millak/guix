@@ -38784,23 +38784,35 @@ parsing.")
     (license license:expat)))
 
 (define-public python-flatten-json
-  (package
-    (name "python-flatten-json")
-    (version "0.1.13")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "flatten_json" version))
-        (sha256
-          (base32 "007m28gfs7pmz2rqqjxpial6skzw26hrfi8vrdy9agi9x0rj6dgf"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-six))
-    (home-page "https://github.com/amirziai/flatten")
-    (synopsis "Flatten JSON objects")
-    (description
-     "The @code{flatten_json} Python library flattens the hierarchy in your
+  ;; The latest version was not tagged on GitHub, PyPI provides no tests, use
+  ;; the commit assosiated with 0.1.14 version.
+  (let ((commit "900c4feebcfcd831ddb6143c4b246024ecf911ec")
+        (revision "0"))
+    (package
+      (name "python-flatten-json")
+      (version (git-version "0.1.14" revision commit))
+      (source
+       (origin
+         (method git-fetch) ; no tests in PyPI release
+         (uri (git-reference
+                (url "https://github.com/amirziai/flatten")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vk2ykmk4wirsywinxk9v520y6iv857bn0hsizm25s3d08v5a3sb"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-six))
+      (home-page "https://github.com/amirziai/flatten")
+      (synopsis "Flatten JSON objects")
+      (description
+       "The @code{flatten_json} Python library flattens the hierarchy in your
 object, which can be useful if you want to force your objects into a table.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-deepdiff
   (package
