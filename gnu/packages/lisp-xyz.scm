@@ -30017,6 +30017,9 @@ emacs-slime.")
 (define-public ecl-termp
   (sbcl-package->ecl-package sbcl-termp))
 
+(define-public clasp-termp
+  (sbcl-package->clasp-package sbcl-termp))
+
 (define-public sbcl-terrable
   (let ((commit "e4fe23ffa08e8d53a8168105b413861da59cc786")
         (revision "1"))
