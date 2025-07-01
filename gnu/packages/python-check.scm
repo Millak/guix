@@ -3204,6 +3204,52 @@ support and @code{subtests} fixture.")
      "This plug-in auto-selects and reruns tests impacted by recent changes.")
     (license license:expat)))
 
+(define-public python-pytest-textual-snapshot
+  (package
+    (name "python-pytest-textual-snapshot")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_textual_snapshot" version))
+       (sha256
+        (base32 "1ss4hm2xgxx07qn9s7p9fykzvmzxsl4g0rg198xjm1862fq8mm4n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests in PyPI or Git
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-path
+            (lambda _
+              ;; Taken from NixOS package definition.
+              (substitute* "pytest_textual_snapshot.py"
+                (("this_file_path.parent")
+                 (string-append "Path('" #$output
+                                "/share/pytest-textual-snapshot/')")))))
+          (add-after 'install 'post-install
+            (lambda _
+              (install-file "./resources/snapshot_report_template.jinja2"
+                            (string-append #$output
+                                           "/share/pytest-textual-snapshot/resources/")))))))
+    (native-inputs
+     (list python-pytest
+           python-poetry-core))
+    (propagated-inputs
+     (list python-jinja2
+           python-rich
+           python-syrupy
+           python-textual))
+    (home-page "https://github.com/Textualize/pytest-textual-snapshot")
+    (synopsis "Pytest plugin for snapshot testing Textual applications")
+    (description
+     "This package implements a functionality to save an SVG screenshot of a
+running Textual app to disk.  The next time the test runs, it takes another
+screenshot and compares it to the saved one.  If the new screenshot differs
+from the old one, the test fails.  This is a convenient way to quickly and
+automatically detect visual regressions in your applications.")
+    (license license:expat)))
+
 (define-public python-pytest-tornado
   (package
     (name "python-pytest-tornado")
