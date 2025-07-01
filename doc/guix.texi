@@ -37870,6 +37870,113 @@ Base URL to use for links to laminar itself.
 @end table
 @end deftp
 
+@subsubheading Forgejo Runner
+
+@cindex continuous integration, Forgejo
+@cindex Forgejo, continuous integration
+The @code{(gnu services ci)} also provides a service for
+@uref{https://code.forgejo.org/forgejo/runner, Forgejo Runner}, a daemon
+that connects to an instance of the @uref{https://forgejo.org, Forgejo
+code collaboration tool} and runs jobs for continuous integration.
+
+A minimal configuration mostly with default values that can be added to
+the @code{services} field of your operating system looks like this:
+
+@lisp
+(service forgejo-runner-service-type
+         (forgejo-runner-configuration
+          (name "my-runner")
+          (labels '("guix" "linux"))))
+@end lisp
+
+This provides a @code{forgejo-runner} Shepherd service.  That service
+will initially fail to start; you will have to manually @dfn{register}
+the runner against the Forgejo server by running a command like:
+
+@example
+herd register forgejo-runner @var{url} @var{token}
+@end example
+
+@noindent
+... where the arguments are as follows:
+
+@table @var
+@item url
+the URL of the Forgejo server---e.g.,
+@indicateurl{https://codeberg.org};
+@item token
+an access token
+@uref{https://forgejo.org/docs/latest/admin/runner-installation/#standard-registration,
+provided by the Forgejo server}.
+@end table
+
+Once registration has succeeded, you can start the runner:
+
+@example
+herd enable forgejo-runner
+herd start forgejo-runner
+@end example
+
+The runner then receives orders from the Forgejo server to execute
+@dfn{actions}.  Actions are commands and workflows specified by YAML
+files in the @file{.forgejo/workflows} directory of source code
+repositories---see @uref{https://forgejo.org/docs/v7.0/user/actions/,
+the Forgejo Action documentation} for more info.
+
+Note that at the moment @code{forgejo-runner-service-type} lets you run
+only one runner.  Details about the configuration of this service
+follow.
+
+@defvar forgejo-runner-service-type
+This is the service type for Forgejo Runner.  Its value must be a
+@code{forgejo-runner-configuration} record, documented below.
+@end defvar
+
+@deftp {Data Type} forgejo-runner-configuration
+This data type represents the configuration of an instance of
+@code{forgejo-runner-service-type}.  It contains the following fields:
+
+@table @asis
+@item @code{package} (default: @code{forgejo-runner})
+The Forgejo Runner package to use.
+
+@item @code{name} (default: @code{#~(gethostname)})
+Name of the runner as will be shown in the runner management interface
+of Forgejo.
+
+@item @code{labels} (default: @code{'("guix")})
+List of
+@uref{https://forgejo.org/docs/latest/admin/actions/#choosing-labels,
+labels} representing the type of environment the runner provides and
+that actions may refer to.
+
+@item @code{capacity} (default: @code{1})
+Number of tasks to be executed concurrently.
+
+@item @code{timeout} (default: @code{(* 3 3600)})
+Maximum duration of a job, in seconds.
+
+@item @code{fetch-timeout} (default: @code{5})
+Maximum duration for fetching the job from the Forgejo server, in
+seconds.
+
+@item @code{fetch-interval} (default: @code{2})
+Interval (in seconds) for fetching the job from the Forgejo server.
+
+@item @code{report-interval} (default: @code{1})
+Interval (in seconds) for reporting the job status and log to the
+Forgejo server.
+
+@item @code{data-directory} (default: @code{"/var/lib/forgejo-runner"})
+Directory where @command{forgejo-runner} will store persistent data such
+as its configuration and access token.
+
+@item @code{run-directory} (default: @code{"/var/run/forgejo-runner"})
+Directory where @command{forgejo-runner} stores cached data.
+
+@end table
+@end deftp
+
 @node Power Management Services
 @subsection Power Management Services
 

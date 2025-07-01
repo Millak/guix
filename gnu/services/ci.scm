@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019, 2020, 2021 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2025 David Thompson <davet@gnu.org>
+;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +22,7 @@
 (define-module (gnu services ci)
   #:use-module (guix gexp)
   #:use-module (guix records)
+  #:autoload   (guix modules) (source-module-closure)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages ci)
   #:use-module (gnu services)
@@ -39,7 +42,22 @@
             laminar-configuration-archive-url
             laminar-configuration-base-url
 
-            laminar-service-type))
+            laminar-service-type
+
+            forgejo-runner-configuration
+            forgejo-runner-configuration?
+            forgejo-runner-configuration-package
+            forgejo-runner-configuration-data-directory
+            forgejo-runner-configuration-run-directory
+            forgejo-runner-configuration-name
+            forgejo-runner-configuration-labels
+            forgejo-runner-configuration-capacity
+            forgejo-runner-configuration-timeout
+            forgejo-runner-configuration-fetch-timeout
+            forgejo-runner-configuration-fetch-interval
+            forgejo-runner-configuration-report-interval
+
+            forgejo-runner-service-type))
 
 ;;;; Commentary:
 ;;;
@@ -146,3 +164,178 @@
    (default-value (laminar-configuration))
    (description
     "Run the Laminar continuous integration service.")))
+
+
+;;;
+;;; Forgejo runner.
+;;;
+
+(define-record-type* <forgejo-runner-configuration>
+  forgejo-runner-configuration
+  make-forgejo-runner-configuration
+  forgejo-runner-configuration?
+  (package         forgejo-runner-configuration-package
+                   (default forgejo-runner))
+  (data-directory  forgejo-runner-configuration-data-directory
+                   (default "/var/lib/forgejo-runner"))
+  (run-directory   forgejo-runner-configuration-run-directory
+                   (default "/var/run/forgejo-runner"))
+
+  ;; Configuration options for the YAML config file:
+  ;; <https://forgejo.org/docs/latest/admin/runner-installation/#configuration>.
+  (name            forgejo-runner-configuration-name
+                   (default #~(gethostname)))
+  (labels          forgejo-runner-configuration-labels
+                   (default '("guix")))
+  (capacity        forgejo-runner-configuration-job-capacity
+                   (default 1))
+  (timeout         forgejo-runner-configuration-timeout
+                   (default (* 3 3600)))
+  (fetch-timeout   forgejo-runner-configuration-fetch-timeout
+                   (default 5))
+  (fetch-interval  forgejo-runner-configuration-fetch-interval
+                   (default 2))
+  (report-interval forgejo-runner-configuration-report-interval
+                   (default 1)))
+
+(define (create-forgejo-runner-account config)
+  (list (user-account
+          (name "forgejo-runner")
+          (group "forgejo-runner")
+          (system? #t)
+          (comment "Forgejo Runner user")
+          (home-directory
+           (forgejo-runner-configuration-data-directory config)))
+        (user-group
+          (name "forgejo-runner")
+          (system? #t))))
+
+(define (forgejo-runner-activation config)
+  (match-record config <forgejo-runner-configuration>
+    (data-directory run-directory)
+    #~(let* ((user (getpwnam "forgejo-runner")))
+        (mkdir-p #$run-directory)
+        (chown #$run-directory (passwd:uid user) (passwd:gid user)))))
+
+;; Very naive YAML writer that does just enough for our needs.
+(define* (write-yaml port exp depth)
+  (match exp
+    ((? string? str)
+     (write str port))
+    ((? number? n)
+     (display n port))
+    (('seconds (? number? n))
+     (format port "~as" n))
+    (#(values ...)
+     (display "[ " port)
+     (let ((strings
+            (map (lambda (value)
+                   (call-with-output-string
+                     (lambda (port)
+                       (write-yaml port value depth))))
+                 values)))
+       (display (string-join strings ", ") port))
+     (display " ]" port))
+    (() (values))
+    ((((? symbol? k) . v) . rest)
+     (do ((i 0 (1+ i)))
+         ((= i depth))
+       (display "  " port))
+     (display k port)
+     (display ": " port)
+     (match v
+       (((k* . v*) . _)                           ; subtree
+        (newline port)
+        (write-yaml port v (1+ depth)))
+       (_ (write-yaml port v depth)))
+     (newline port)
+     (write-yaml port rest depth))))
+
+(define (yaml-file name exp)
+  (plain-file name
+              (call-with-output-string
+                (lambda (port)
+                  (write-yaml port exp 0)))))
+
+(define (forgejo-runner-shepherd-service config)
+  (match-record config <forgejo-runner-configuration>
+    (package data-directory run-directory name
+             capacity timeout fetch-timeout fetch-interval report-interval
+             labels)
+    (define runner (file-append package "/bin/forgejo-runner"))
+    (define runner-file (string-append data-directory "/runner"))
+    (define config
+      (yaml-file
+       "forgejo-runner-config.yml"
+       `((runner . ((file . ,runner-file)
+                    (capacity . ,capacity)
+                    (timeout . (seconds ,timeout))
+                    (fetch_timeout . (seconds ,fetch-timeout))
+                    (fetch_interval . (seconds ,fetch-interval))
+                    (report_interval . (seconds ,report-interval))
+                    (labels . ,(list->vector labels))))
+         (cache . ((dir . ,(string-append run-directory "/cache"))))
+         (host . ((workdir_parent
+                   . ,(string-append run-directory "/act")))))))
+
+    (list (shepherd-service
+            (provision '(forgejo-runner))
+            (requirement '(user-processes networking))
+            (start #~(make-forkexec-constructor
+                      (list #$runner "daemon" "--config" #$config)
+                      #:user "forgejo-runner"
+                      #:group "forgejo-runner"
+                      #:directory #$run-directory
+                      #:environment-variables
+                      ;; Provide access to a fresh Guix obtained via 'guix
+                      ;; pull'.
+                      (cons* (string-append "PATH="
+                                            #$data-directory "/.config/guix/current/bin"
+                                            ":/run/current-system/profile/bin")
+                             (string-append "HOME=" #$data-directory)
+                             "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
+                             (default-environment-variables))))
+            (stop #~(make-kill-destructor))
+            (actions
+             (list
+              (shepherd-configuration-action config)
+              (shepherd-action
+                (procedure
+                 #~(lambda (running instance token)
+                     (define status
+                       (spawn-command (list #$runner "register"
+                                            "--no-interactive"
+                                            "--config" #$config
+                                            "--name" #$name
+                                            "--instance" instance
+                                            "--token" token)
+                                      #:user "forgejo-runner"
+                                      #:group "forgejo-runner"))
+
+                     (if (zero? status)
+                         (format #t "Successfully registered runner \
+'~a' for '~a'.~%"
+                                 #$name instance)
+                         (format #t "'~a register' failed with status ~a.~%"
+                                 #$runner status))
+                     (zero? status)))
+                (name 'register)
+                (documentation "Register this runner with a Forgejo server.
+This action takes two arguments: the Forgejo server URL and an access
+token."))))
+            (documentation "Forgejo task runner")))))
+
+(define forgejo-runner-service-type
+  (service-type
+   (name 'forgejo-runner)
+   (extensions
+    (list (service-extension activation-service-type
+                             forgejo-runner-activation)
+          (service-extension account-service-type
+                             create-forgejo-runner-account)
+          (service-extension shepherd-root-service-type
+                             forgejo-runner-shepherd-service)))
+   (default-value (forgejo-runner-configuration))
+   (description
+    "Run @command{forgejo-runner}, a daemon to run tasks for the Forgejo
+source code collaboration service.")))
