@@ -32162,13 +32162,13 @@ essential tools are located.")
 (define-public python-flit
   (package
     (name "python-flit")
-    (version "3.8.0") ;same as python-flit-core
+    (version "3.12.0") ;same as python-flit-core
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flit" version))
        (sha256
-        (base32 "0dz9sp2zlhkmk6sm5gapbbb30f7xq3n3jn5zxx5pkp25ppsaiwnh"))))
+        (base32 "0h1pxi2hgr95321bgl45l86693zl14l3shj0idsyg4k9v56z700w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
