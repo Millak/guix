@@ -5767,15 +5767,18 @@ files.")
 (define-public python-jsonalias
   (package
     (name "python-jsonalias")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jsonalias" version))
               (sha256
                (base32
-                "0sd7c3vyvfhhpnan77ax4f0x1whjcb5iz7jhjky7kmcpaf9lvw34"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f)) ; There are no tests.
+                "0k5c2132hbd9wxnj8w05vvpi286l3g3ksw350m85rd0k9958g5z3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or Git
+    (native-inputs
+     (list python-poetry-core))
     (home-page "https://github.com/kevinheavey/jsonalias/")
     (synopsis "JSON type alias for Python")
     (description
