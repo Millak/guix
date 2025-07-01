@@ -5986,15 +5986,44 @@ other Python program.")
 (define-public python-doxypypy
   (package
     (name "python-doxypypy")
-    (version "0.8.8.6")
+    (version "0.8.8.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "doxypypy" version))
               (sha256
                (base32
-                "06z0vbh975g42z5szbfvn9i3bif3xwr5pncqd4fvjzjkbi2p2xb2"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;no test suite
+                "17nh5jjbxrg6ag0gymh8jsp75qnxwgv8fqbj4jlphywj0sxwh6k7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Test files are not in UTF-8 format and attmet to
+                    ;; substitute shebang fails, while tests fail with error:
+                    ;; AssertionError: "#!/bin/env python\n# UTF-32-LE Python
+                    ;; File w[387 chars]g.')" !=
+                    ;; "#!/gnu/store/y5vz9h983i8cg01cxz0zdywz715fxxs[449
+                    ;; chars]g.')"
+                    (list "not test_utf16be_bom"
+                          "test_utf16le_bom"
+                          "test_utf32be_bom"
+                          "test_utf32le_bom"
+                          "test_utf8_bom")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; compile-bytecode phases fails with error: SyntaxError: source
+          ;; code string cannot contain null bytes.
+          (add-after 'unpack 'fix-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("packages=.*") "packages=['doxypypy'],\n")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-chardet))
     (home-page "https://github.com/Feneric/doxypypy")
     (synopsis "Doxygen filter for Python")
     (description
