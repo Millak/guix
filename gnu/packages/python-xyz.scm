@@ -1930,27 +1930,88 @@ decorators, including variants of the Python standard library's
 (define-public python-cobib
   (package
     (name "python-cobib")
-    (version "3.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cobib" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "16nbrbvascbf6cb7yvn9q793dy8zx703pqrmk3mswib9a19mnx3n"))))
-    (build-system python-build-system)
+    (version "5.3.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://gitlab.com/cobib/cobib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13mzwb1rmpz05bn5qr7mwqmj0grxxm1z7b56c8wvyrgm6lsx0a98"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests trying to access api.zotero.org.
+                    (list "not test_fetch"
+                          "test_fetch_custom_user_id"
+                          "test_cache"
+                          "test_event_pre_zotero_import"
+                          "test_event_post_zotero_import"
+                          ;; Tests requiring Git history or failing with
+                          ;; various assertion errors.
+                          "test_absolute_path"
+                          "test_cmdline"
+                          "test_command"
+                          "test_command_context"
+                          "test_command_edit"
+                          "test_command_edit_no_changes"
+                          "test_command_fields"
+                          "test_command_inline"
+                          "test_command_skip"
+                          "test_configured_label_default"
+                          "test_disambiguate_label"
+                          "test_event_post_redo_command"
+                          "test_event_post_undo_command"
+                          "test_event_pre_git_commit"
+                          "test_event_pre_redo_command"
+                          "test_event_pre_undo_command"
+                          "test_lint_auto_format"
+                          "test_overwrite_label"
+                          "test_skipping_redone_commits"
+                          "test_skipping_undone_commits"
+                          "test_stringify"
+                          ;; Tests might be broken as trying to compare $HOME
+                          ;; and "~/".
+                          "test_base_cmd_insufficient_git"
+                          "test_warn_insufficient_config"
+                          "test_event_pre_init_command"
+                          "test_field_cmdline_switch")
+                    " and not ")
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "COBIB_CONFIG" "0")
+              (setenv "HOME" "/tmp")
+              (setenv "TERM" "linux")
+              (setenv "TMPDIR" "/tmp"))))))
+    (native-inputs
+     (list git-minimal/pinned
+           nss-certs-for-test
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-textual-snapshot
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bibtexparser
+           python-lxml
+           python-mdit-py-plugins
            python-pylatexenc
            python-requests
            python-requests-oauthlib
-           python-ruamel.yaml))
-    (native-inputs
-     (list python-future
-           python-pyte
-           python-pytest))
-    (home-page "https://gitlab.com/mrossinek/cobib")
+           python-rich
+           python-ruamel.yaml
+           python-text-unidecode
+           python-textual-1
+           python-typing-extensions))
+    (home-page "https://gitlab.com/cobib/cobib")
     (synopsis "Terminal-based bibliography management tool")
     (description
      "@command{cobib} is a command-line based bibliography management tool.
