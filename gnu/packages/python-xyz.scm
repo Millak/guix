@@ -38716,18 +38716,40 @@ and setting the color of terminal output, via HyDEV.")
 (define-public python-mike
   (package
     (name "python-mike")
-    (version "1.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mike" version))
-              (sha256
-               (base32
-                "0yxp816x7s948xsd0fifvq9shg01xdxlifd9rzf5y2rd9iwz3hsn"))))
-    (build-system python-build-system)
+    (version "2.1.3")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/jimporter/mike")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rgmpxim91rpn8cplyi72g75fhclr40hxcpschn7rbfkqdhj8rbq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Most of integration tests hang or fail.
+      #~(list "--ignore=test/integration/"
+              ;; AttributeError: 'NoneType' object has no attribute 'group'
+              "--ignore=test/unit/test_commands.py"
+              "--deselect=test/unit/test_mkdocs_utils.py::TestVersion::test_version")))
     (native-inputs
-     (list python-coverage python-flake8 python-shtab))
+     (list git-minimal/pinned
+           python-pytest
+           python-setuptools
+           python-shtab
+           python-wheel))
     (propagated-inputs
-     (list python-jinja2 python-mkdocs python-pyyaml python-verspec))
+     (list python-importlib-metadata
+           python-importlib-resources
+           python-jinja2
+           python-mkdocs
+           python-pyparsing
+           python-pyyaml
+           python-pyyaml-env-tag
+           python-verspec))
     (home-page "https://github.com/jimporter/mike")
     (synopsis "Manage multiple versions of MkDocs-powered documentation")
     (description
