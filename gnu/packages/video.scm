@@ -6879,7 +6879,7 @@ included for convenience.")
                     (("gtk4-update-icon-cache")
                      "true")))))))
     (native-inputs
-     (list (list glib "bin") gnu-gettext pkg-config))
+     (list (list glib "bin") gettext-minimal pkg-config))
     (inputs
      (list libevdev eudev libinput glib gtk libadwaita json-glib cairo pango
            libxkbcommon polkit))
