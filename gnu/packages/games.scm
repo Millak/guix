@@ -92,6 +92,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
+;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8597,16 +8598,16 @@ some graphical niceities, and numerous bug-fixes and other improvements.")
   (package
     (inherit quakespasm)
     (name "vkquake")
-    (version "1.01.0")
+    (version "1.32.3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Novum/vkQuake")
-             (commit version)))
+              (url "https://github.com/Novum/vkQuake")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iwin8j5kbyrknbkhjgpy8nmm7pxqzr0daa9gn7p38qhg2mh0a39"))))
+        (base32 "0ch9rd6fckqs9bhh6z8qpdi2byra6lhk00y3vj4804351hpgmj0y"))))
     (arguments
      `(#:make-flags
        (let ((vulkanlib (string-append (assoc-ref %build-inputs
@@ -8643,8 +8644,11 @@ some graphical niceities, and numerous bug-fixes and other improvements.")
        ,@(strip-keyword-arguments '(#:make-flags #:phases)
                                   (package-arguments quakespasm))))
     (inputs (modify-inputs (package-inputs quakespasm)
-              (prepend vulkan-headers vulkan-loader)
-              (replace "sdl2" sdl2-2.0)))
+              (prepend
+               glslang
+               spirv-tools
+               vulkan-loader
+               vulkan-headers)))
     (description "vkquake is a modern engine for id software's Quake 1.
 It includes support for 64 bit CPUs, custom music playback, a new sound driver,
 some graphical niceities, and numerous bug-fixes and other improvements.")
