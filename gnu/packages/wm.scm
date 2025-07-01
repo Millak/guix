@@ -1373,63 +1373,57 @@ drags, snap-to-border support, and virtual desktops.")
     (name "fluxbox")
     (version "1.3.7")
     (synopsis "Small and fast window manager")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/fluxbox/fluxbox/"
-                                  version "/fluxbox-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))
-              (patches
-               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"
-                               "fluxbox-1.3.7-gcc.patch"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/fluxbox/fluxbox/" version
+                           "/fluxbox-" version ".tar.xz"))
+       (sha256
+        (base32 "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))
+       (patches (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"
+                                "fluxbox-1.3.7-gcc.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("CPPFLAGS=-U__TIME__") ;ugly, but for reproducibility
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'force-bootstrap
-           (lambda _
-             (delete-file "configure")))
-         (add-after 'install 'install-vim-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (syntax (string-append
-                              out "/share/vim/vimfiles/pack/guix/start/fluxbox/syntax")))
-               (copy-recursively "3rd/vim/vim/syntax" syntax)
-               #t)))
-         (add-after 'install 'install-xsession
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (xsessions (string-append out "/share/xsessions")))
-               (mkdir-p xsessions)
-               (call-with-output-file
-                 (string-append xsessions "/fluxbox.desktop")
-                 (lambda (port)
-                   (format port "~
-                     [Desktop Entry]~@
-                     Name=~a~@
-                     Comment=~a~@
-                     Exec=~a/bin/startfluxbox~@
-                     Type=Application~%" ,name ,synopsis out)))
-               #t))))))
-    (native-inputs
-     (list autoconf automake gnu-gettext pkg-config))
-    (inputs
-     (list freetype
-           fribidi
-           imlib2
-           libx11
-           libxcursor
-           libxext
-           libxft
-           libxinerama
-           libxpm
-           libxrandr
-           libxrender))
-    (description "Fluxbox is a window manager.  It is light on resources
-and easy to handle yet full of features to make an easy and fast desktop
-experience.")
+     (list
+      #:make-flags
+      #~'("CPPFLAGS=-U__TIME__") ;ugly, but for reproducibility
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'force-bootstrap
+            (lambda _
+              (delete-file "configure")))
+          (add-after 'install 'install-vim-files
+            (lambda _
+              (copy-recursively "3rd/vim/vim/syntax"
+                                (string-append #$output "\
+/share/vim/vimfiles/pack/guix/start/fluxbox/syntax"))))
+          (add-after 'install 'install-xsession
+            (lambda _
+              (let ((apps (string-append #$output "/share/applications")))
+                (mkdir-p apps)
+                (make-desktop-entry-file
+                 (string-append apps "/fluxbox.desktop")
+                 #:name "Fluxbox"
+                 #:generic-name #$synopsis
+                 #:exec (string-append #$output "/bin/startfluxbox %U")
+                 #:comment
+                 `(("en" ,#$synopsis)
+                   (#f ,#$synopsis)))))))))
+    (native-inputs (list autoconf automake gnu-gettext pkg-config))
+    (inputs (list freetype
+                  fribidi
+                  imlib2
+                  libx11
+                  libxcursor
+                  libxext
+                  libxft
+                  libxinerama
+                  libxpm
+                  libxrandr
+                  libxrender))
+    (description
+     "Fluxbox is a window manager.  It is light on resources and easy to
+handle yet full of features to make an easy and fast desktop experience.")
     (home-page "http://fluxbox.org/")
     (license license:expat)))
 
