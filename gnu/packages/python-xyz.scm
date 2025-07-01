@@ -6542,15 +6542,21 @@ matching them against a list of media-ranges.")
 (define-public python-miniboa
   (package
     (name "python-miniboa")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "miniboa" version))
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/shmup/miniboa")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "002c1aki9hsrwj5plrwdrf3sk8rn95fqylqyjx2arrjfpsih4dgs"))))
-    (build-system python-build-system)
+        (base32 "05xa44x61bia2pxjdncz6rj10js8hgp2a9hf56avbfk7g58n3v5y"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/shmup/miniboa")
     (synopsis "Simple, single-threaded Telnet server")
     (description
