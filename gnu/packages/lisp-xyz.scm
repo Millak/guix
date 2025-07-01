@@ -30093,6 +30093,9 @@ determine the cost of certain actions on a given platform and implementation.")
 (define-public ecl-the-cost-of-nothing
   (sbcl-package->ecl-package sbcl-the-cost-of-nothing))
 
+(define-public clasp-the-cost-of-nothing
+  (sbcl-package->clasp-package sbcl-the-cost-of-nothing))
+
 (define-public sbcl-tooter
   (let ((commit "76fbb36552b036ee84ec7fe4773616470b1ce4c2")
         (revision "5"))
