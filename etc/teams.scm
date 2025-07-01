@@ -1264,6 +1264,11 @@ the \"texlive\" importer."
                        "ngraves")
   javascript python ruby)
 
+(define-member (person "Yelninei"
+                       "yelninei@tutamail.com"
+                       "Yelninei")
+  hurd)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
