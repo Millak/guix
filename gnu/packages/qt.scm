@@ -4122,41 +4122,55 @@ module provides support functions to the automatically generated code.")
     (name "python-sip")
     (version "4.19.25")
     (source
-      (origin
-        (method url-fetch)
-        (uri (list (pypi-uri "sip" version)
-                   (string-append "https://www.riverbankcomputing.com/static/"
-                                  "Downloads/sip/" version
-                                  "/sip-" version ".tar.gz")))
-        (sha256
-         (base32
-          "04a23cgsnx150xq86w1z44b6vr2zyazysy9mqax0fy346zlr77dk"))))
+     (origin
+       (method url-fetch)
+       (uri (list (pypi-uri "sip" version)
+                  (string-append "https://www.riverbankcomputing.com/static/"
+                                 "Downloads/sip/"
+                                 version
+                                 "/sip-"
+                                 version
+                                 ".tar.gz")))
+       (sha256
+        (base32 "04a23cgsnx150xq86w1z44b6vr2zyazysy9mqax0fy346zlr77dk"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("python" ,python-wrapper)))
+    (native-inputs `(("python" ,python-wrapper)))
     (propagated-inputs `())
     (arguments
-     `(#:tests? #f ; no check target
+     `(#:tests? #f ;no check target
        #:imported-modules ((guix build python-build-system)
                            ,@%default-gnu-imported-modules)
        #:modules ((srfi srfi-1)
-                  ((guix build python-build-system) #:select (python-version))
+                  ((guix build python-build-system)
+                   #:select (python-version))
                   ,@%default-gnu-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (include (string-append out "/include"))
-                    (python (assoc-ref inputs "python"))
-                    (lib (string-append out "/lib/python"
-                                        (python-version python)
-                                        "/site-packages")))
-               (invoke "python" "configure.py"
-                       "--bindir" bin
-                       "--destdir" lib
-                       "--incdir" include)))))))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'substitute
+                    (lambda _
+                      (substitute* "siplib/siplib.c"
+                        ;; Replaces the internal data-structure usage
+                        ;; that was removed in python 3.11 with the
+                        ;; new official API call so the code will compile
+                        ;; with python > 3.11
+                        (("frame->f_back")
+                         "PyFrame_GetBack(frame)"))))
+                  (replace 'configure
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin"))
+                             (include (string-append out "/include"))
+                             (python (assoc-ref inputs "python"))
+                             (lib (string-append out "/lib/python"
+                                                 (python-version python)
+                                                 "/site-packages")))
+                        (invoke "python"
+                                "configure.py"
+                                "--bindir"
+                                bin
+                                "--destdir"
+                                lib
+                                "--incdir"
+                                include)))))))
     (license license:gpl3)))
 
 (define-public python-pyqt
