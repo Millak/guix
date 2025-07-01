@@ -1927,9 +1927,9 @@ decorators, including variants of the Python standard library's
 @code{lru_cache} function decorator.")
     (license license:expat)))
 
-(define-public python-cobib
+(define-public cobib
   (package
-    (name "python-cobib")
+    (name "cobib")
     (version "5.3.0")
     (source
      (origin
@@ -2018,6 +2018,9 @@ decorators, including variants of the Python standard library's
 It uses a plain-text database, a location-independent library, and features
 git integration, command-line support, and a curses-based TUI.")
     (license license:expat)))
+
+(define-public python-cobib
+  (deprecated-package "python-cobib" cobib))
 
 (define-public python-colorcet
   (package
