@@ -8657,14 +8657,14 @@ some graphical niceities, and numerous bug-fixes and other improvements.")
 (define-public yamagi-quake2
   (package
     (name "yamagi-quake2")
-    (version "8.30")
+    (version "8.51")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://deponie.yamagi.org/quake2/quake2-"
                            version ".tar.xz"))
        (sha256
-        (base32 "11lv22y5ccd80iyhk6zj94wligcbx6x5vwbqh3jkgz96v0x5dng2"))))
+        (base32 "0xk321ph15wgydlmln3k7bdn4zdls2zliggsnkjwlnbax0cfy3z4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
