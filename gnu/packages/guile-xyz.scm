@@ -7356,7 +7356,7 @@ HTTP handler to implement a HTTP GraphQL endpoint.")
        (list autoconf
              automake
              libtool
-             gnu-gettext
+             gettext-minimal
              pkg-config
 
              ;; Use Guile >= 3.0.8 to work around
