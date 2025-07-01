@@ -7292,17 +7292,19 @@ from Python as a referencing-based Schema Registry.")
 (define-public python-schema
   (package
     (name "python-schema")
-    (version "0.6.6")
+    (version "0.7.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "schema" version))
        (sha256
         (base32
-         "1lw28j9w9vxyigg7vkfkvi6ic9lgjkdnfvnxdr7pklslqvzmk2vm"))))
-    (build-system python-build-system)
+         "01qq1amzbjm1kvjrnnhpjs8v761kwp6qihs74pf1k2lmsamm79bx"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/keleshev/schema")
     (synopsis "Simple data validation library")
     (description
