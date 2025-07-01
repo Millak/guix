@@ -2616,15 +2616,32 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
 (define-public python-plotille
   (package
     (name "python-plotille")
-    (version "4.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "plotille" version))
-              (sha256
-               (base32
-                "0fvsk6glxfphhqy405h05rj3v95jd1byl5hv2fyd5l31wln23shj"))))
-    (build-system python-build-system)
-    (native-inputs (list python-six))
+    (version "5.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tammoippen/plotille")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ys8ivsbiv58c8rsrk2m2n3sh2rq6qqaa2mhq0hacsgrvmvv0siz"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+           ;; Without deleting ./imgs setuptools complains as follows: error:
+           ;; Multiple top-level packages discovered in a flat-layout:
+           ;; ['imgs', 'plotille'].
+           (delete-file-recursively "./imgs")))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-mock
+           python-pendulum
+           python-pytest-cov
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/tammoippen/plotille")
     (synopsis "Plot in the terminal using braille dots")
     (description
