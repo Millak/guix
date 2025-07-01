@@ -1099,7 +1099,7 @@ needed is to review and apply the patch.
 * Synopses and Descriptions::   Helping users find the right package.
 * Snippets versus Phases::      Whether to use a snippet, or a build phase.
 * Cyclic Module Dependencies::  Going full circle.
-* Bulk updates::                This Little Maneuver's Gonna Cost Us 51 Years
+* Bulk Updates::                This Little Maneuver's Gonna Cost Us 51 Years.
 * Emacs Packages::              Your Elisp fix.
 * Python Modules::              A touch of British comedy.
 * Perl Modules::                Little pearls.
@@ -1426,14 +1426,14 @@ Care would need to be taken to ensure the above procedure is only ever
 used in a package delayed fields or within another procedure also not
 called at the top level.
 
-@node Bulk updates
-@subsection Bulk updates
+@node Bulk Updates
+@subsection Bulk Updates
 
 @cindex packaging, maintenance
 Sometimes you may need to update a monotonic collection of grouped
 packages, in a particular module---e.g., @code{(gnu packages astronomy)}.
 Doing so requires refreshing package versions, creating commits
-following guidelines and testing them. Let's say there are 200+ packages
+following guidelines and testing them.  Let's say there are 200+ packages
 with fresh versions, you may deal with this task by applying the
 following technique.
 
@@ -1442,9 +1442,9 @@ already ran @code{bootstrap} and @code{configure}:
 
 @example
 ~$ guix shell --development guix
-[env: /gnu/store/lzxbi1ps43msyw7m5wblziy8mj6hw5kw-profile]
+[env: /gnu/store/@dots{}-profile]
 > ./pre-inst-env guix refresh --select=module:astronomy --update
-> ./pre-inst-env etc/commiter.scm
+> ./pre-inst-env etc/committer.scm
 @end example
 
 The first command updates all packages in @code{(gnu packages
@@ -1456,7 +1456,7 @@ corresponding commits with the correct style.
 If your machine is powerful enough, you may check that the whole
 collection has no regressions and can still be built successfully:
 @example
-[env: /gnu/store/lzxbi1ps43msyw7m5wblziy8mj6hw5kw-profile]
+[env: /gnu/store/@dots{}-profile]
 > ./pre-inst-env guix build $(./pre-inst-env guix package -A | awk '/astronomy.scm/@{print $1"@@"$2@}')
 @end example
 
