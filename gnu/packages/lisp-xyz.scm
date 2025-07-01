@@ -1112,6 +1112,9 @@ operator in portable Common Lisp.")
 (define-public ecl-amb
   (sbcl-package->ecl-package sbcl-amb))
 
+(define-public clasp-amb
+  (sbcl-package->clasp-package sbcl-amb))
+
 (define-public sbcl-anaphora
   (package
     (name "sbcl-anaphora")
