@@ -17492,15 +17492,16 @@ names, e.g., @samp{#0000ff} is displayed in white with a blue background.")
 (define-public emacs-indent-bars
   (package
     (name "emacs-indent-bars")
-    (version "0.8.2")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/indent-bars-"
                            version ".tar"))
        (sha256
-        (base32 "1bhdrykkklsscgiz3p29x8kdkw0kbc4mlpnhxghvphx159clhgym"))))
+        (base32 "1jb0jhfin728ld703y392gy99is7jywqak3z2xrrvpmn9q17q8vs"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;No tests.
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/jdtsmith/indent-bars")
     (synopsis "Highlight indentation with bars")
