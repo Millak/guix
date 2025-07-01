@@ -9375,7 +9375,7 @@ devices using the GNOME desktop.")
     (build-system meson-build-system)
     (arguments (list #:glib-or-gtk? #t))
     (inputs (list gtk libadwaita))
-    (native-inputs (list `(,glib "bin") gnu-gettext pkg-config))
+    (native-inputs (list `(,glib "bin") gettext-minimal pkg-config))
     (home-page "https://gitlab.gnome.org/GNOME/tecla")
     (synopsis "Keyboard layout viewer")
     (description "Tecla is a keyboard layout viewer based on GTK 4 and
