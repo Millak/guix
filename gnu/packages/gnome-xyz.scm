@@ -685,7 +685,7 @@ Ubuntu Unity Shell.")
                 "1k1h9haj0qgcv9hm3hw2nz7ppznp9zrpg922mhrfa6nj97carmqh"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
-    (native-inputs (list jq gnu-gettext
+    (native-inputs (list jq gettext-minimal
                          `(,glib "bin")))
     (synopsis "Adds KStatusNotifierItem support to GNOME Shell")
     (description "This extension integrates Ubuntu AppIndicators
