@@ -39781,19 +39781,29 @@ and abstract ELF, PE and MachO formats.")
 (define-public python-eris
   (package
     (name "python-eris")
-    (version "0.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "eris" version))
-              (sha256
-               (base32
-                "16wbmahmfzdzrsjbn8jzi79vhghrzvvlcgnym20q0v3p3i4x47pq"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pycryptodome))
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "eris" version))
+       (sha256
+        (base32 "07a69y8w8n0zvdcd7qfcjf2s9hnd5jlbdl57g39ds2bxprzyc8va"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; No tests in PyPI, tests miss data files in Git:
+     ;; - tests/test-vectors/test_encode
+     ;; - tests/test-vectors/test_decode
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-aiocoap
+           python-pycryptodome))
     (home-page "https://codeberg.org/eris/python-eris")
     (synopsis "Python implementation of ERIS")
     (description
-"Python implementation of the @acronym{ERIS, Encoding for Robust Immutable
+     "Python implementation of the @acronym{ERIS, Encoding for Robust Immutable
 Storage}.")
     (license license:lgpl3+)))
 
