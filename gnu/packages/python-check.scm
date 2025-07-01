@@ -3709,6 +3709,43 @@ parsed examples as part of your normal test run.  Integration is
 provided for the main Python test runners.")
     (license license:expat)))
 
+(define-public python-syrupy
+  (package
+    (name "python-syrupy")
+    (version "4.9.1")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/syrupy-project/syrupy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10q1xdwbcy9jfq8gd4r9q4r2p2zpcfrh4yj58nl9sbr2nc3irbh0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "invoke" "test")))))))
+    (native-inputs
+     (list python-invoke
+           python-debugpy
+           python-twine
+           python-poetry-core
+           python-pytest
+           python-pytest-xdist
+           python-setuptools-scm))
+    (home-page "https://github.com/syrupy-project/syrupy")
+    (synopsis "Pytest Snapshot Test Utility")
+    (description
+     "This package implements a functionality to write tests which assert
+immutability of computed results.")
+    (license license:asl2.0)))
+
 (define-public python-tappy
   (package
     (name "python-tappy")
