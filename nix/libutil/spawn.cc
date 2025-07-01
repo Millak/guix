@@ -538,8 +538,31 @@ void bindMount(Path source, Path target, bool readOnly)
         return;
     }
     else {
+        struct stat st2;
         createDirs(dirOf(target));
-        writeFile(target, "");
+        /* Alternate between trying to create placeholder file at target and
+         * checking for its existence and type */
+        while(true){
+            if(lstat(target.c_str(), &st2) != -1) {
+                if(!S_ISREG(st2.st_mode))
+                    throw Error(format("mount target `%1%' exists but is not a regular file") % target);
+                break;
+            }
+            if(errno != ENOENT) {
+                throw SysError(format("stat'ing path `%1%'") % target);
+            }
+            AutoCloseFD fd = open(target.c_str(),
+                                  O_WRONLY | O_NOFOLLOW | O_CREAT | O_EXCL,
+                                  0600);
+            if(fd != -1) {
+                fd.close(); /* Now exists and is a fresh regular file */
+                break;
+            }
+            /* Note: because of O_CREAT | O_EXCL, EACCES can only mean a
+             * permission issue with the parent directory */
+            if(errno != EEXIST)
+                throw SysError(format("Creating placeholder regular file target mount `%1%'") % target);
+        }
     }
 
     /* This may fail with EINVAL unless we specify MS_REC, specifically if we
