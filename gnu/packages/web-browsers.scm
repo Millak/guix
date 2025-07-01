@@ -270,7 +270,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
       (native-inputs
        (list autoconf
              automake
-             gnu-gettext
+             gettext-minimal
              perl
              pkg-config
              python-minimal))
