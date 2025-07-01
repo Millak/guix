@@ -968,7 +968,7 @@ http, and https via third-party applications.")
      (list autoconf
            automake
            bash-completion
-           gnu-gettext
+           gettext-minimal
            libjpeg-turbo
            imagemagick
            mandoc
