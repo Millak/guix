@@ -5034,6 +5034,9 @@ This library is no longer supported by its author.")
 (define-public ecl-cl-colors2
   (sbcl-package->ecl-package sbcl-cl-colors2))
 
+(define-public clasp-cl-colors2
+  (sbcl-package->clasp-package sbcl-cl-colors2))
+
 (define-public sbcl-cl-conspack
   (let ((commit "6e529d7b3a7223ef1bb5c7b9f18384ba67b50b09")
         (revision "2"))
