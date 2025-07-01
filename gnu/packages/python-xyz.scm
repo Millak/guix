@@ -6666,12 +6666,14 @@ palettes.")
 (define-public python-miniupnpc
   (package
     (name "python-miniupnpc")
-    (version "2.2.3")
+    (version "2.3.3")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
+          ;; The project tags miniupnpd_ as well but with a different version,
+          ;; where updater may select a wrong version.
          (url "https://github.com/miniupnp/miniupnp")
          (commit
           (string-append
@@ -6679,8 +6681,8 @@ palettes.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "03q1rlzvfzm15g1bfw2zqzavlsyaypnaf2k3cz6ha7k5rirkdy0l"))))
-    (build-system python-build-system)
+        (base32 "0ysvx21iaq7f505fpnk3280rwnckr0aih0j5j3v82nv99a2rqigh"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -6696,7 +6698,14 @@ palettes.")
             (lambda _
               (substitute*
                   "miniupnpc/updateminiupnpcstrings.sh"
-                (("^OS_VERSION=`uname -r`") "OS_VERSION=Guix")))))))
+                (("^OS_VERSION=`uname -r`") "OS_VERSION=Guix"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "check")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs (list python))              ;we are building a Python extension
     (synopsis "UPnP client for Python")
     (description "Miniupnpc is a client library for Python programs to set up
