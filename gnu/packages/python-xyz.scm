@@ -5966,14 +5966,17 @@ other Python program.")
 (define-public python-doxyqml
   (package
     (name "python-doxyqml")
-    (version "0.5.1")
+    (version "0.5.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "doxyqml" version))
               (sha256
                (base32
-                "1f0jjqvamly4hn7f1palvq27z6yr694rfzyxrb6g0ysbbawxkvq9"))))
-    (build-system python-build-system)
+                "0skrs5i5pvpzvihgxw766zi1c9bbp33aisdldxgj470mlchvdgyy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://agateau.com/projects/doxyqml")
     (synopsis "Doxygen input filter for QML files")
     (description
