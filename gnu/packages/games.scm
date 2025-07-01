@@ -11952,8 +11952,8 @@ for using any UCI engine and also to connect UCI engines to Lichess and IRC.")
         (base32 "1kkcnpkzgybm7rqg7nafd7sqd5m4alns6l4j5zcf3p41jdc9s3iv"))))
     (build-system glib-or-gtk-build-system)
     (inputs (list automake autoconf pkg-config intltool
-		 gnu-gettext libtool glib gtk+-2 boost))
-    (arguments `(#:tests? #f))
+		  gettext-minimal libtool glib gtk+-2 boost))
+    (arguments (list #:tests? #f))  ; No tests in source.
     (home-page "http://nine-mens-morris.net/downloads.html")
     (synopsis "Implementation of the board game Nine Men's Morris")
     (description "Morris is an implementation of the board game Nine Men's Morris.
