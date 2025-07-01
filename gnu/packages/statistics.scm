@@ -3191,7 +3191,7 @@ files, including Rmarkdown files.")
         (base32 "0aqalr86d7h9sp9zjkydw3ap4s54qgq2ml6p8gd0gnn1jf0ljm72"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake gnu-gettext libtool))
+     (list autoconf automake gettext-minimal libtool))
     (inputs
      (list zlib))
     (home-page "https://github.com/WizardMac/ReadStat")
