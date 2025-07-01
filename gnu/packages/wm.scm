@@ -1409,7 +1409,7 @@ drags, snap-to-border support, and virtual desktops.")
                  #:comment
                  `(("en" ,#$synopsis)
                    (#f ,#$synopsis)))))))))
-    (native-inputs (list autoconf automake gnu-gettext pkg-config))
+    (native-inputs (list autoconf automake gettext-minimal pkg-config))
     (inputs (list freetype
                   fribidi
                   imlib2
