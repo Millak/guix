@@ -2916,34 +2916,34 @@ play them on systems for which they were never designed!")
   (package
     (name "libticables2")
     (version "1.3.5")
-    (source (origin
-              (method url-fetch)
-              (uri "https://www.ticalc.org/pub/unix/tilibs.tar.gz")
-              (sha256
-               (base32
-                "07cfwwlidgx4fx88whnlch6y1342x16h15lkvkkdlp2y26sn2yxg"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://www.ticalc.org/pub/unix/tilibs.tar.gz")
+       (sha256
+        (base32 "07cfwwlidgx4fx88whnlch6y1342x16h15lkvkkdlp2y26sn2yxg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-libusb10")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (invoke "tar" "xvkf" source)
-             (invoke "tar" "xvkf"
-                     (string-append "tilibs2/libticables2-"
-                                    ,version ".tar.bz2"))
-             (chdir (string-append "libticables2-" ,version))
-             #t)))))
-    (native-inputs
-     (list autoconf
-           autogen
-           automake
-           gnu-gettext
-           libtool
-           pkg-config))
-    (inputs
-     (list glib libusb))
+     (list
+      #:configure-flags
+      #~(list "--enable-libusb10")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "tar" "xvkf" source)
+              (invoke "tar" "xvkf"
+                      (string-append "tilibs2/libticables2-"
+                                     #$version ".tar.bz2"))
+              (chdir (string-append "libticables2-"
+                                    #$version)))))))
+    (native-inputs (list autoconf
+                         autogen
+                         automake
+                         gnu-gettext
+                         libtool
+                         pkg-config))
+    (inputs (list glib libusb))
     (synopsis "Link cable library for TI calculators")
     (description
      "This package contains libticables, a library for operations on
