@@ -95,6 +95,7 @@ text-mode :when (bound-and-true-p git-commit-mode)
         "* " (p (or (car (magit-staged-files)) ""))
         " (cl-" (s var)
         ", ecl-" (s var)
+        ", clasp-" (s var)
         ", sbcl-" (s var) "): New variables.")
 
 (https\ "gnu: "
