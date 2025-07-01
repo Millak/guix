@@ -14211,7 +14211,7 @@ historical battery usage and related statistics.")
               ;; This is done so we can override.
               (("`set.PREFIX_BIN") "set(QPREFIX_BIN")))))))
     (native-inputs
-     (list cmake pkg-config intltool gnu-gettext))
+     (list cmake pkg-config intltool gettext-minimal))
     (inputs
      (list glib gtk+ libx11 libsm libxv libxaw libxcb libxkbfile
            shared-mime-info))
