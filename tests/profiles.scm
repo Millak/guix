@@ -521,6 +521,17 @@
            (manifest-entry-search-paths
             (package->manifest-entry mpl)))))
 
+(test-assert "package->manifest-entry, origin in propagated inputs"
+  ;; See <https://codeberg.org/guix/guix/pulls/969>
+  (let ((p1 (dummy-package "pkg"))
+        (p2 (dummy-package "pkg"
+              (propagated-inputs
+               (list (package-source %bootstrap-guile)))))
+        (package->manifest-entry-dependencies
+         (compose manifest-entry-dependencies package->manifest-entry)))
+    (and (null? (package->manifest-entry-dependencies p1))
+         (null? (package->manifest-entry-dependencies p2)))))
+
 (test-assert "packages->manifest, no duplicates"
   (let ((expected
          (manifest

@@ -384,14 +384,17 @@ file name."
                                   (properties (default-package-properties package)))
   "Return a manifest entry for the OUTPUT of package PACKAGE."
   ;; For each dependency, keep a promise pointing to its "parent" entry.
-  (letrec* ((deps  (map (match-lambda
-                          ((label package)
-                           (package->manifest-entry package
-                                                    #:parent (delay entry)))
-                          ((label package output)
-                           (package->manifest-entry package output
-                                                    #:parent (delay entry))))
-                        (package-propagated-inputs package)))
+  (letrec* ((deps  (filter-map
+                    (match-lambda
+                      ((label (? package? package))
+                       (package->manifest-entry package
+                                                #:parent (delay entry)))
+                      ((label (? package? package) output)
+                       (package->manifest-entry package output
+                                                #:parent (delay entry)))
+                      (_
+                       #f))
+                    (package-propagated-inputs package)))
             (entry (manifest-entry
                      (name (package-name package))
                      (version (package-version package))
