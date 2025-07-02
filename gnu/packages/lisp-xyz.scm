@@ -28775,6 +28775,17 @@ multiple inspectors with independent history.")
           `(modify-phases ,phases
              (delete 'build-image))))))))
 
+(define-public clasp-slynk
+  (let ((pkg (sbcl-package->clasp-package sbcl-slynk)))
+    (package
+      (inherit pkg)
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'build-image))))))))
+
 (define-public sbcl-smart-buffer
   (let ((commit "09b9a9a0b3abaa37abe9a730f5aac2643dca4e62")
         (revision "1"))
