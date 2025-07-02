@@ -857,7 +857,7 @@ by using a Xapian cache.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.21.5")
+    (version "2.22.4")
     (source
      (origin
        (method git-fetch)
@@ -866,7 +866,7 @@ by using a Xapian cache.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13bc2ykw19hi4nqs0gz3iz0y773dgrbbv2c72q4q7gd1vsjwpr7z"))
+        (base32 "06mq99ky3l3cfgghxhmw4kh1cx04abcdj3y8k24fq29yq36cjs15"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -910,9 +910,19 @@ by using a Xapian cache.")
               (substitute* "tests/functional/common/vars-and-functions.sh.in"
                 (("export SHELL=\"@bash@\"" all)
                  (string-append all "\nexport shell=\"@bash@\"")))
+              (substitute* "Makefile"
+                (("tests/functional/git-hashing/local.mk")
+                 ""))
               (substitute* "tests/functional/local.mk"
-                (("\
- (debugger|fmt|nix-profile|plugins|shell|flakes/config)\\.sh")
+                (((string-append " (" (string-join
+                                       '("chroot-store"
+                                         "debugger"
+                                         "fmt"
+                                         "nix-profile"
+                                         "plugins"
+                                         "shell"
+                                         "flakes/config")
+                                       "|") ")\\.sh"))
                  "")))))))
     (native-inputs
      (list autoconf
