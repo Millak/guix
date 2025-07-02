@@ -1404,6 +1404,38 @@ safety and thread safety guarantees.")
                            "library/std"
                            "src/tools/cargo")))))))))))
 
+(define-public rust-1.88
+  (let ((base-rust
+         (rust-bootstrapped-package rust-1.87 "1.88.0"
+          "1gngrxjfqiyybyamzn8s4rfbhk7jss1vrmnijg8y72l46i2595rs")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/jemalloc-sys-0.3.2"
+                         "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
+                         "vendor/openssl-src-111.17.0+1.1.1m/openssl"
+                         "vendor/openssl-src-300.4.2+3.4.1/openssl"
+                         "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                         "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* '("vendor/tempfile-3.14.0/Cargo.toml"
+                            "vendor/tempfile-3.17.1/Cargo.toml"
+                            "vendor/tempfile-3.19.0/Cargo.toml"
+                            "vendor/tempfile-3.19.1/Cargo.toml")
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\""))))))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
