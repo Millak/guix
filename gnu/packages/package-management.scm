@@ -857,7 +857,7 @@ by using a Xapian cache.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.23.4")
+    (version "2.24.15")
     (source
      (origin
        (method git-fetch)
@@ -866,7 +866,7 @@ by using a Xapian cache.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lbj7dcg7wqgc8yclmgflsv2wlkc53h55dzwalfp2w126phhgs5f"))
+        (base32 "1xvcj7sws2w8yv3cn58chjjix7rjs63w1m2343v80i3gphf8ayhq"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -915,9 +915,11 @@ by using a Xapian cache.")
                                          "fmt"
                                          "nix-profile"
                                          "plugins"
-                                         "shell"
-                                         "flakes/config")
+                                         "shell")
                                        "|") ")\\.sh"))
+                 ""))
+              (substitute* "tests/functional/flakes/local.mk"
+                ((".*config\\.sh.*")
                  "")))))))
     (native-inputs
      (list autoconf
@@ -948,6 +950,7 @@ by using a Xapian cache.")
                    nlohmann-json
                    openssl
                    sqlite
+                   toml11
                    xz
                    zlib)
              (if (or (target-x86-64?)
