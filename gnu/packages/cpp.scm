@@ -1354,6 +1354,41 @@ intuitive syntax and trivial integration.")
 a cooperatively interruptible thread that is joined upon destruction.")
       (license license:cc-by4.0))))
 
+(define-public toml11
+  (package
+    (name "toml11")
+    (version "3.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ToruNiina/toml11")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "090i2qg88iknldxd6v2mh3jfvkdkwc5m38czhrbm58r3y835fy0y"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/ToruNiina/toml11")
+    (synopsis "TOML for modern C++")
+    (description
+     "@code{toml11} is a C++11 (or later) header-only toml parser/encoder
+depending only on C++ standard library.
+
+@itemize
+@item It is compatible to the latest version of TOML v1.0.0.
+@item It is one of the most TOML standard compliant libraries, tested with
+a language agnostic test suite for TOML parsers.
+@item It shows highly informative error messages.
+@item It has configurable container.  You can use any random-access containers
+and key-value maps as backend containers.
+@item It optionally preserves comments without any overhead.
+@item It has configurable serializer that supports comments, inline tables,
+literal strings and multiline strings.
+@item It supports user-defined type conversion from/into toml values.
+@item It correctly handles UTF-8 sequences, with or without BOM.
+@end itemize")
+    (license license:expat)))
+
 (define-public tomlplusplus
   (package
    (name "tomlplusplus")
