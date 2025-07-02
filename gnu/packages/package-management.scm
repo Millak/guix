@@ -857,7 +857,7 @@ by using a Xapian cache.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.19.7")
+    (version "2.20.9")
     (source
      (origin
        (method git-fetch)
@@ -866,7 +866,7 @@ by using a Xapian cache.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xrx826i44sn7gxnf5cry9jxhzarflxp3y356wfq8q8ivi4gai0a"))
+        (base32 "0w1rdgchsrb3xbzs9213kv966cshyp42fhhil0fgqgybnfnjdfvg"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -907,7 +907,8 @@ by using a Xapian cache.")
                 (("export SHELL=\"@bash@\"" all)
                  (string-append all "\nexport shell=\"@bash@\"")))
               (substitute* "tests/functional/local.mk"
-                ((" (fmt|nix-profile|plugins|shell|flakes/config)\\.sh")
+                (("\
+ (debugger|fmt|nix-profile|plugins|shell|flakes/config)\\.sh")
                  "")))))))
     (native-inputs
      (list autoconf
@@ -930,6 +931,7 @@ by using a Xapian cache.")
                    editline
                    libarchive
                    libgc
+                   libgit2
                    libseccomp
                    libsodium
                    lowdown
