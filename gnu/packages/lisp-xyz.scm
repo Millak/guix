@@ -32662,6 +32662,9 @@ algorithms.")
 (define-public ecl-vas-string-metrics
   (sbcl-package->ecl-package sbcl-vas-string-metrics))
 
+(define-public clasp-vas-string-metrics
+  (sbcl-package->clasp-package sbcl-vas-string-metrics))
+
 (define-public sbcl-verbose
   (let ((commit "c5b7ecd465be61b35af17ef57564697b88397174")
         (revision "1"))
