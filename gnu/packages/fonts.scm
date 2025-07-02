@@ -861,7 +861,7 @@ Cyrillic scripts.")
 (define-public font-adobe-source-han-sans
   (package
     (name "font-adobe-source-han-sans")
-    (version "2.004")
+    (version "2.005")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -870,7 +870,7 @@ Cyrillic scripts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sgfvdigq9vdmf8wizapy8wcyzqrqj8il9sx1xzfm20qy376qvbf"))))
+                "1rda4y30pd9assw9qbr53ra0dg6cp89lnvzzkiw326cv6lf7hnpj"))))
     (outputs '("out"                   ; OpenType/CFF Collection (OTC), 112 MiB.
                "cn" "hk" "jp" "kr" "tw")) ; Region-specific Subset OpenType/CFF.
     (build-system copy-build-system)
