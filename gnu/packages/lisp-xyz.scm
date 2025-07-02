@@ -10207,6 +10207,9 @@ utilities that make it even easier to manipulate text in Common Lisp.  It has
 (define-public ecl-cl-strings
   (sbcl-package->ecl-package sbcl-cl-strings))
 
+(define-public clasp-cl-strings
+  (sbcl-package->clasp-package sbcl-cl-strings))
+
 (define-public sbcl-cl-svg
   (let ((commit "1e988ebd2d6e2ee7be4744208828ef1b59e5dcdc")
         (revision "1"))
