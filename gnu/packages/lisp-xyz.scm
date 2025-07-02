@@ -17512,6 +17512,9 @@ a glsl UBO/SSBO.")
 (define-public ecl-glsl-packing
   (sbcl-package->ecl-package sbcl-glsl-packing))
 
+(define-public clasp-glsl-packing
+  (sbcl-package->clasp-package sbcl-glsl-packing))
+
 (define-public sbcl-glsl-spec
   (let ((commit "f04476f7da89355ae6856b33283c60ba95c6555d")
         (revision "1"))
