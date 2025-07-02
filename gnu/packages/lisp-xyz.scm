@@ -33448,6 +33448,9 @@ JSON interchange format.")
 (define-public ecl-yason
   (sbcl-package->ecl-package sbcl-yason))
 
+(define-public clasp-yason
+  (sbcl-package->clasp-package sbcl-yason))
+
 (define-public sbcl-yxorp
   (let ((commit "c306898a467995e123a22316c9b79fcac442415b")
         (revision "4"))
