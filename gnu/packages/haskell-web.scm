@@ -1007,6 +1007,28 @@ since version 1.3.1, it uses an inlined copy of tagstream-conduit with
 entity decoding bugfixes applied.")
     (license license:expat)))
 
+(define-public ghc-html5-entity
+  (package
+    (name "ghc-html5-entity")
+    (version "0.2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "html5-entity" version))
+       (sha256
+        (base32 "0bmmzshxanzw5y2y0hvgzz9yw18jqgv535i1xq2a5lf7w8wpj1if"))))
+    (build-system haskell-build-system)
+    (home-page "https://github.com/zudov/html5-entity/")
+    (synopsis "Library for looking up and validating HTML5 entities")
+    (description
+     "This package provides a library for looking up and validating HTML5
+entities.  The @url{http://html.spec.whatwg.org/multipage/entities.json,
+following} document is used as an authoritative source of the valid entity names
+and their corresponding codepoints.  You can think of this library as about
+bindings to the data from that file.  For usage see the Text.Html5.Entity
+module.")
+    (license license:bsd-3)))
+
 (define-public ghc-blaze-html
   (package
     (name "ghc-blaze-html")
