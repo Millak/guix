@@ -857,16 +857,16 @@ by using a Xapian cache.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.16.1")
+    (version "2.17.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/NixOS/nix")
-             (commit version)))
+              (url "https://github.com/NixOS/nix")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rca8ljd33dmvh9bqk6sy1zxk97aawcr6k1f7hlm4d1cd9mrcw7x"))
+        (base32 "141c2cr1f7k1iaygk5hy02m6f7zrmj5x3m3kz91rpjvvh1bn15qg"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
