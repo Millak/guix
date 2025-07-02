@@ -20492,16 +20492,16 @@ are common in Chromium-derived projects.")
 (define-public emacs-gnosis
   (package
     (name "emacs-gnosis")
-    (version "0.4.9")
+    (version "0.5.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.thanosapollo.org/gnosis")
-             (commit version)))
+              (url "https://git.thanosapollo.org/gnosis")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08pqz0xfih761hmaq1hs3fzmkxn2jhzfbkqrkisl84ayla8shnrn"))))
+        (base32 "11zw5lw32c6zzgl2h1rmklhmqw35xv07ymdddwa1wc2xf9a7mb3p"))))
     (build-system emacs-build-system)
     (arguments (list #:test-command #~(list "make" "test")
                      #:emacs emacs      ; tests require built-in SQLite support
@@ -20511,8 +20511,12 @@ are common in Chromium-derived projects.")
                            (lambda _
                              (setenv "HOME" (getenv "TMPDIR"))
                              (mkdir-p (string-append (getenv "HOME")
-                                                     "/.emacs.d")))))))
-    (propagated-inputs (list emacs-compat emacs-emacsql))
+                                                     "/.emacs.d"))))
+                         (add-before 'install 'make-info
+                           (lambda _ (invoke "make" "doc"))))))
+    (native-inputs (list texinfo))
+    (propagated-inputs
+     (list emacs-compat emacs-emacsql emacs-org-gnosis emacs-transient))
     (home-page "https://thanosapollo.org/projects/gnosis")
     (synopsis "Spaced repetition system for GNU Emacs")
     (description
