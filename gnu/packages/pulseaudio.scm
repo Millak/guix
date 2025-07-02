@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021, 2025 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -71,6 +71,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -263,25 +264,27 @@ sound server.")
 (define-public pavucontrol
   (package
     (name "pavucontrol")
-    (version "5.0")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://freedesktop.org/software/pulseaudio/pavucontrol/pavucontrol-"
-                   version
-                   ".tar.xz"))
-             (sha256
-              (base32
-               "0yjfiwpaydh5s8v3l78dhwhbsmcl1xsq3p8rvz80m9zinp1p4ayf"))))
-    (build-system glib-or-gtk-build-system)
+    (version "6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://freedesktop.org/software/pulseaudio/pavucontrol/pavucontrol-"
+             version ".tar.xz"))
+       (sha256
+        (base32 "0pa19v96rvkvbb32hzbzasc7xx5gnygbf7qf4x6a1bwf130n3khd"))))
+    (build-system meson-build-system)
     (inputs
      (list adwaita-icon-theme ;hard-coded theme
-           gtkmm-3
+           gtkmm
            json-glib
            libcanberra
            pulseaudio))
     (native-inputs
-     (list intltool pkg-config))
+     (list intltool
+           `(,glib "bin")
+           lynx
+           pkg-config))
     (home-page "https://www.freedesktop.org/software/pulseaudio/pavucontrol/")
     (synopsis "PulseAudio volume control")
     (description
