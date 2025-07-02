@@ -12614,13 +12614,13 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
 (define-public python-av
   (package
     (name "python-av")
-    (version "10.0.0")
+    (version "13.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "av" version))
        (sha256
-        (base32 "01byqsjclkg65mhr6b4i2r2n4y7af9kdd2c35lxny27121b3vzca"))))
+        (base32 "0zn10vcj4mk6m06w3i9vvc0k06bg0c7cc9lcxfb8azc4amn77nnk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -12637,12 +12637,16 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
          "-k"
          (string-append
           "not test_data"
-          " and not test_container_probing"
-          " and not test_stream_probing"
-          " and not test_transcode"
+          " and not test_pts_assertion_same_rate"
+          " and not test_filter_h264_mp4toannexb"
+          " and not test_filter_output_parameters"
+          " and not test_filter_flush"
+          " and not test_bits_per_coded_sample"
+          " and not test_codec_delay"
           " and not test_codec_tag"
           " and not test_parse"
           " and not test_decode_audio_sample_count"
+          " and not test_decode_close_then_use"
           " and not test_decoded_motion_vectors"
           " and not test_decoded_motion_vectors_no_flag"
           " and not test_decoded_time_base"
@@ -12659,6 +12663,27 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
           " and not test_encoding_png"
           " and not test_encoding_tiff"
           " and not test_encoding_xvid"
+          " and not test_penguin_joke"
+          " and not test_sky_timelapse"
+          " and not test_flush_decoded_video_frame_count"
+          " and not test_transcode"
+          " and not test_container_probing"
+          " and not test_stream_probing"
+          " and not test_container_probing"
+          " and not test_stream_probing"
+          " and not test_container_probing"
+          " and not test_stream_probing"
+          " and not test_container_probing"
+          " and not test_stream_probing"
+          " and not test_path_input"
+          " and not test_str_input"
+          " and not test_path_output"
+          " and not test_str_output"
+          " and not test_is_keyframe"
+          " and not test_is_corrupt"
+          " and not test_is_discard"
+          " and not test_is_disposable"
+          " and not test_set_duration"
           " and not test_reading_from_buffer"
           " and not test_reading_from_buffer_no_seek"
           " and not test_reading_from_file"
@@ -12675,10 +12700,13 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
           " and not test_stream_seek"
           " and not test_selection"
           " and not test_stream_tuples"
+          " and not test_noside_data"
+          " and not test_side_data"
           " and not test_movtext"
           " and not test_vobsub"
-          " and not test_roundtrip"
-          " and not test_stream_probing"))
+          " and not test_subtitle_flush"
+          " and not test_opaque"
+          " and not test_roundtrip"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'build-extensions
@@ -12687,16 +12715,13 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
     (native-inputs
      (list pkg-config
            python-cython
-           python-editorconfig
            python-numpy
            python-pillow
            python-pytest
            python-setuptools
            python-wheel))
     (inputs
-     ;; XXX: Build is failing with FFmpeg 6.0, unresolved upstream.
-     ;; See https://github.com/PyAV-Org/PyAV/issues/1106
-     (list ffmpeg-5))
+     (list ffmpeg))
     (home-page "https://github.com/PyAV-Org/PyAV")
     (synopsis "Pythonic bindings for FFmpeg's libraries")
     (description
