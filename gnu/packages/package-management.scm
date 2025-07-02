@@ -857,7 +857,7 @@ by using a Xapian cache.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.24.15")
+    (version "2.25.5")
     (source
      (origin
        (method git-fetch)
@@ -866,7 +866,7 @@ by using a Xapian cache.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xvcj7sws2w8yv3cn58chjjix7rjs63w1m2343v80i3gphf8ayhq"))
+        (base32 "150678l5bw8d8gaagsqy9fxlrxhvdx3cmphbn6b2l2c7pa3d06pp"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -942,8 +942,9 @@ by using a Xapian cache.")
                    curl
                    editline
                    libarchive
+                   libblake3
                    libgc
-                   libgit2
+                   libgit2-1.9
                    libseccomp
                    libsodium
                    lowdown

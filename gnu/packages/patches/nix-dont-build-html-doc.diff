@@ -5,7 +5,7 @@ Author: Zhu Zihao <all_but_last@163.com>
 
 --- a/doc/manual/local.mk
 +++ b/doc/manual/local.mk
-@@ -166,21 +166,6 @@ $(d)/src/SUMMARY-rl-next.md: $(d)/src/release-notes/rl-next.md
+@@ -166,21 +166,6 @@ $(d)/source/SUMMARY-rl-next.md: $(d)/source/release-notes/rl-next.md
  	  true > $@; \
  	fi
  
@@ -27,7 +27,7 @@ Author: Zhu Zihao <all_but_last@163.com>
  # Generate 'nix' manpages.
  .PHONY: manpages
  manpages: $(mandir)/man1/nix3-manpages
-@@ -206,26 +191,3 @@ doc/manual/generated/man1/nix3-manpages: $(d)/src/command-ref/new-cli
+@@ -206,31 +191,3 @@ doc/manual/generated/man1/nix3-manpages: $(d)/source/command-ref/new-cli
  		rm $$tmpFile; \
  	done
  	@touch $@
@@ -36,7 +36,7 @@ Author: Zhu Zihao <all_but_last@163.com>
 -# `@docroot@` is to be preserved for documenting the mechanism
 -# FIXME: maybe contributing guides should live right next to the code
 -# instead of in the manual
--$(docdir)/manual/index.html: $(MANUAL_SRCS) $(d)/book.toml $(d)/anchors.jq $(d)/custom.css $(d)/src/SUMMARY.md $(d)/src/store/types $(d)/src/command-ref/new-cli $(d)/src/development/experimental-feature-descriptions.md $(d)/src/command-ref/conf-file.md $(d)/src/language/builtins.md $(d)/src/release-notes/rl-next.md $(d)/src/figures $(d)/src/favicon.png $(d)/src/favicon.svg
+-$(docdir)/manual/index.html: $(MANUAL_SRCS) $(d)/book.toml $(d)/anchors.jq $(d)/custom.css $(d)/source/SUMMARY.md $(d)/source/store/types $(d)/source/command-ref/new-cli $(d)/source/development/experimental-feature-descriptions.md $(d)/source/command-ref/conf-file.md $(d)/source/language/builtins.md $(d)/source/release-notes/rl-next.md $(d)/source/figures $(d)/source/favicon.png $(d)/source/favicon.svg
 -	$(trace-gen) \
 -		tmp="$$(mktemp -d)"; \
 -		cp -r doc/manual "$$tmp"; \
@@ -44,12 +44,17 @@ Author: Zhu Zihao <all_but_last@163.com>
 -			$(call process-includes,$$file,$$file); \
 -		done; \
 -		find "$$tmp" -name '*.md' ! -name 'documentation.md' | while read -r file; do \
--			docroot="$$(realpath --relative-to="$$(dirname "$$file")" $$tmp/manual/src)"; \
+-			docroot="$$(realpath --relative-to="$$(dirname "$$file")" $$tmp/manual/source)"; \
 -			sed -i "s,@docroot@,$$docroot,g" "$$file"; \
 -		done; \
 -		set -euo pipefail; \
--		RUST_LOG=warn mdbook build "$$tmp/manual" -d $(DESTDIR)$(docdir)/manual.tmp 2>&1 \
--			| { grep -Fv "because fragment resolution isn't implemented" || :; }; \
+-		( \
+-		    cd "$$tmp/manual"; \
+-		    RUST_LOG=warn \
+-		        MDBOOK_SUBSTITUTE_SEARCH=$(d)/source \
+-		        mdbook build -d $(DESTDIR)$(docdir)/manual.tmp 2>&1 \
+-			    | { grep -Fv "because fragment resolution isn't implemented" || :; } \
+-		); \
 -		rm -rf "$$tmp/manual"
 -	@rm -rf $(DESTDIR)$(docdir)/manual
 -	@mv $(DESTDIR)$(docdir)/manual.tmp/html $(DESTDIR)$(docdir)/manual
