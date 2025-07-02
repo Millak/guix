@@ -857,7 +857,7 @@ by using a Xapian cache.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.22.4")
+    (version "2.23.4")
     (source
      (origin
        (method git-fetch)
@@ -866,7 +866,7 @@ by using a Xapian cache.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06mq99ky3l3cfgghxhmw4kh1cx04abcdj3y8k24fq29yq36cjs15"))
+        (base32 "0lbj7dcg7wqgc8yclmgflsv2wlkc53h55dzwalfp2w126phhgs5f"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -905,11 +905,6 @@ by using a Xapian cache.")
                     (setenv "NIX_STORE" original-NIX_STORE))))))
           (add-after 'unpack 'skip-failing-tests
             (lambda _
-              ;; XXX: ${shell} is sometimes used in tests, but
-              ;; this doesn't seem to help much.
-              (substitute* "tests/functional/common/vars-and-functions.sh.in"
-                (("export SHELL=\"@bash@\"" all)
-                 (string-append all "\nexport shell=\"@bash@\"")))
               (substitute* "Makefile"
                 (("tests/functional/git-hashing/local.mk")
                  ""))
