@@ -857,7 +857,7 @@ by using a Xapian cache.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.20.9")
+    (version "2.21.5")
     (source
      (origin
        (method git-fetch)
@@ -866,7 +866,7 @@ by using a Xapian cache.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w1rdgchsrb3xbzs9213kv966cshyp42fhhil0fgqgybnfnjdfvg"))
+        (base32 "13bc2ykw19hi4nqs0gz3iz0y773dgrbbv2c72q4q7gd1vsjwpr7z"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -877,6 +877,10 @@ by using a Xapian cache.")
       #:configure-flags #~(list "--sysconfdir=/etc" "--enable-gc")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'inject-config.sub
+            (lambda* (#:key inputs #:allow-other-keys)
+              (symlink (search-input-file inputs "bin/config.sub")
+                       "config/config.sub")))
           (replace 'install
             ;; Don't try & fail to create subdirectories in /etc, but keep them
             ;; in the output as examples.
@@ -915,6 +919,7 @@ by using a Xapian cache.")
            autoconf-archive
            automake
            bison
+           config
            flex
            googletest
            jq
