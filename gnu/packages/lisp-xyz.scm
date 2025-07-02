@@ -28589,6 +28589,9 @@ processes that doesn't run under Emacs.  Lisp processes created by
 (define-public ecl-slime-swank
   (sbcl-package->ecl-package sbcl-slime-swank))
 
+(define-public clasp-slime-swank
+  (sbcl-package->clasp-package sbcl-slime-swank))
+
 (define-public sbcl-slite
   (let ((commit "942a95330592d30be5ac02fb1b697fb14ccbf1af")
         (revision "0"))
