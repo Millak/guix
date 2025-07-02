@@ -107,6 +107,36 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
+(define-public libblake3
+  (package
+    (name "libblake3")
+    (version "1.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/BLAKE3-team/BLAKE3")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pm7285insrmpfwwal8rnp3yhvc6s2ki8b6ccmbh2qfnnl95a010"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:tests? #f ; XXX: there are some rust tests in the root.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "c"))))))
+    (home-page "https://github.com/BLAKE3-team/BLAKE3")
+    (synopsis "Official C implementation of BLAKE3")
+    (description "This package provides a cryptographic hash function that is
+fast, secure, parallelizable, capable of incremental updates.")
+    (license (list license:asl2.0 license:cc0)))) ; dual licensed
+
 (define-public libdecaf
   (package
     (name "libdecaf")
