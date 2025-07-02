@@ -1359,6 +1359,51 @@ safety and thread safety guarantees.")
                  (substitute* "config.toml"
                    (("\\[rust\\]") "[rust]\nlld = false")))))))))))
 
+(define-public rust-1.87
+  (let ((base-rust
+         (rust-bootstrapped-package rust-1.86 "1.87.0"
+          "0xlfzl24qhs4vlwn7d2hd2zkg6k2y1lgq03rx2j2sndy57yvk6ql")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/jemalloc-sys-0.3.2"
+                         "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
+                         "vendor/openssl-src-111.17.0+1.1.1m/openssl"
+                         "vendor/openssl-src-300.4.2+3.4.1/openssl"
+                         "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                         "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* '("vendor/tempfile-3.14.0/Cargo.toml"
+                            "vendor/tempfile-3.15.0/Cargo.toml"
+                            "vendor/tempfile-3.17.1/Cargo.toml")
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\"")))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'build
+               ;; Just building stage 1 no longer builds cargo.
+               (lambda* (#:key parallel-build? #:allow-other-keys)
+                 (let ((job-spec (string-append
+                                   "-j" (if parallel-build?
+                                          (number->string (parallel-job-count))
+                                          "1"))))
+                   (invoke "./x.py" job-spec "build" "--stage=2"
+                           "library/std"
+                           "src/tools/cargo")))))))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
