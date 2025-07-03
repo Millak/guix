@@ -916,6 +916,51 @@ point (up to 50% contamination) and have a number of nice applications in
 machine learning, computer vision, and high-dimensional statistics.")
     (license license:asl2.0)))
 
+(define-public python-nautilus-sampler
+  (package
+    (name "python-nautilus-sampler")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nautilus_sampler" version))
+       (sha256
+        (base32 "1b73rxg7b5fzpw4ss4py98xdxddkl1dh2dszp2pxv3y179iyniqj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--durations=0"
+              ;; One Dask test hangs.
+              "-k" "not test_pool[dask]")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "OMP_NUM_THREADS" "1"))))))
+    (native-inputs
+     (list python-dask
+           python-distributed
+           python-flit-core
+           python-h5py
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-numpy
+           python-scikit-learn
+           python-scipy
+           python-threadpoolctl))
+    (home-page "https://github.com/johannesulf/nautilus")
+    (synopsis "Neural Network-Boosted Importance Sampling for Bayesian Statistics")
+    (description
+     "Nautilus is an pure-Python package for Bayesian posterior and evidence
+estimation.  It utilizes importance sampling and efficient space exploration
+using neural networks.  Compared to traditional @acronym{MCMC, Markov chain
+Monte Carlo} and Nested Sampling codes, it often needs fewer likelihood calls
+and produces much larger posterior samples.  Additionally, nautilus is highly
+accurate and produces Bayesian evidence estimates with percent precision.  It
+is widely used in many areas of astrophysical research.")
+    (license license:expat)))
+
 (define-public python-nestle
   (package
     (name "python-nestle")
