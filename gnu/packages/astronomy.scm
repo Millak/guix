@@ -3104,6 +3104,66 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 @code{red}, and others (@code{algae}, @code{pastel}, and @code{xray}).")
     (license license:bsd-3)))
 
+(define-public python-cobaya
+  (package
+    (name "python-cobaya")
+    (version "3.5.7")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+              (url "https://github.com/CobayaSampler/cobaya")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17ccka051lknv05dlr1wfb2ha2qj27av2q2s6ir2vrcgx5c2szfp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test options were taken from GitHub action workflow.
+      #~(list "--no-flaky-report"
+              "--numprocesses" (number->string (parallel-job-count))
+              "--skip-not-installed"
+              "-k" "not test_planck_NPIPE_p_CamSpec_camb_install and not test_grid"
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "COBAYA_PACKAGES_PATH" "/tmp"))))))
+    (native-inputs
+     (list python-flaky
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-dill
+           python-fuzzywuzzy
+           python-getdist
+           python-numpy
+           python-packaging
+           python-pandas
+           python-portalocker
+           python-py-bobyqa
+           python-pyyaml
+           python-scipy
+           python-tqdm
+           python-typing-extensions))
+    (home-page "https://github.com/CobayaSampler/cobaya")
+    (synopsis "Code for Bayesian analysis in Cosmology")
+    (description
+     "@acronym{Cobaya, COde for BAYesian Analysis}, and Spanish for Guinea
+Pig) is a framework for sampling and statistical modelling: it allows you to
+explore an arbitrary prior or posterior using a range of Monte Carlo
+samplers (including the advanced MCMC sampler from CosmoMC, and the advanced
+nested sampler PolyChord). The results of the sampling can be analysed with
+GetDist. It supports MPI parallelization (and very soon HPC containerization
+with Docker/Shifter and Singularity).")
+    (license license:lgpl3+)))
+
 (define-public python-colossus
   ;; There is no source distribution in PyPI and no version tags, use the
   ;; commit pointing to the version 1.3.8.
