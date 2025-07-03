@@ -31860,6 +31860,32 @@ modes and text viewing modes respectively.")
 files.  It focuses on highlighting the document to improve readability.")
     (license license:gpl2+)))
 
+(define-public emacs-org-asciidoc
+  (let ((commit "a8d49c44cc9aa8a3f384155f0ae052dbf36df00c")
+        (revision "0"))
+    (package
+      (name "emacs-org-asciidoc")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/yashi/org-asciidoc.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0i77za68sdvp4zxfa3r63vg8pl2jikz0bhvp7znirc71r6wkw3pf"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:test-command #~(list "make" "test")))
+      (native-inputs
+       (list (list emacs-org "test")))
+      (synopsis "Org mode exporter backend for AsciiDoc")
+      (description "This package provides an org-mode exporter backend for
+AsciiDoc.")
+      (home-page "https://github.com/yashi/org-asciidoc")
+      (license license:gpl3+))))
+
 (define-public emacs-racer
   (let ((commit "1e63e98626737ea9b662d4a9b1ffd6842b1c648c")
         (revision "0"))
