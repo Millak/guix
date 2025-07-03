@@ -151,6 +151,59 @@
   #:use-module (gnu packages)
   #:use-module (srfi srfi-1))
 
+(define-public python-aiocoap
+  (package
+    (name "python-aiocoap")
+    (version "0.4.14")
+    (source
+     (origin
+       (method git-fetch) ; tests miss data and module files in PyPI release
+       (uri (git-reference
+             (url "https://github.com/chrysn/aiocoap")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yxvcg5llgmccv0a9hfm4nr7zxv9al4wh257m95a06g5c52v6hxz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; OSError: [Errno 98] error while attempting to bind on address ('::1',
+      ;; 8683, 0, 0): address already in use
+      #~(list "--ignore=tests/test_server.py"
+              "-k" (string-join
+                    ;; TypeError: can only concatenate str (not "NoneType") to
+                    ;; str
+                    (list "not test_options"
+                          "test_uri_parser"
+                          "test_help"    ; returned non-zero exit status 1.
+                          "test_routing" ; address already in use
+                          "test_tls")
+                    " and not "))))
+    (native-inputs
+     (list openssl ;for tests/test_tls.py
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list ;; python-cbor-diag
+           python-cbor2
+           python-cryptography
+           ;; python-dtlssocket
+           python-filelock
+           ;; python-ge25519
+           python-pygments
+           python-termcolor
+           python-websockets))
+    (home-page "https://github.com/chrysn/aiocoap")
+    (synopsis "Python CoAP library")
+    (description
+     "The aiocoap package is an implementation of @url{@acronym{CoAP, the
+Constrained Application Protocol}, http://coap.space/}.  It facilitates
+writing applications that talk to network enabled embedded
+@acronym{IoT,Internet of Things} devices.")
+    (license license:expat)))
+
 (define-public python-devpi-common
   (package
     (name "python-devpi-common")
