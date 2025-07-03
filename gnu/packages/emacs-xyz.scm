@@ -19462,6 +19462,7 @@ federated blogging platform WriteFreely.")
        (sha256
         (base32 "1wi8kj0vhlnzslarjfbi1ljqh71jlsbi4krsx6cr1ch5cm9v78y9"))))
     (build-system emacs-build-system)
+    (outputs (list "out" "test"))
     (arguments
      (list
       #:test-command #~(list "make" "test-dirty")
@@ -19527,6 +19528,11 @@ federated blogging platform WriteFreely.")
                   (("^datadir.*") (string-append "datadir = " elpa "/etc"))
                   (("^infodir.*") (string-append "infodir = " info))))
               (invoke "make" "install" (string-append "ORGVERSION=" #$version))))
+          (add-after 'install 'install-org-test
+            (lambda _
+              (with-directory-excursion "testing"
+                (copy-recursively "."
+                                  (string-append (elpa-directory #$output:test))))))
           (add-after 'install 'install-org-news
             ;; Install ORG-NEWS files in doc directory.
             (lambda _
