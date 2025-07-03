@@ -309,6 +309,7 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
@@ -12611,6 +12612,57 @@ converting, and viewing many of the proprietary file formats used to store
 experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
     (license license:bsd-3)))
 
+;; ~8Mo of test files.
+(define python-av-testdata
+  (file-union
+   "python-av-testdata"
+   (cons*
+    (let ((file "pexels/time-lapse-video-of-night-sky-857195.mp4"))
+      `(,(string-append "pyav-curated/" file)
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://pyav.org/datasets/" file))
+           (sha256
+            (base32 "10fjs2gyha88gzv7pv3njv0fimv61ihz39p1556qazm90xbknzgb")))))
+    (map
+     (match-lambda
+       ((file . hash)
+        (list (string-append "fate-suite/" file)
+              (origin
+                (method url-fetch)
+                (uri (string-append "http://fate.ffmpeg.org/fate-suite/" file))
+                (sha256 (base32 hash))))))
+     '(("aac/latm_stereo_to_51.ts" .
+        "05h8389i944gb7f2y9c7848vqn8xz1mnm602fwala85npj4z8p4m")
+       ("amv/MTV_high_res_320x240_sample_Penguin_Joke_MTV_from_WMV.amv" .
+        "1hiifhdmd0ygzny5mplqdxl3dh9g95384ilkr4ccwv5l9y7hrmiv")
+       ("audio-reference/chorusnoise_2ch_44kHz_s16.wav" .
+        "06xybcnv7max9mmj6f1fw8rwz2aawhcyx2wgj1gmn1142kk431ra")
+       ("h264/interlaced_crop.mp4" .
+        "04bcmwd6scqn63y6p8i5srbjh9jq1sc95q6vy7srwfhzwxl9cma9")
+       ("hap/HAPQA_NoSnappy_127x1.mov" .
+        "1kvf8xs5v29sjqk2p07arl2hlp9z7hb1lb4202v4iqiwva1jmiaq")
+       ("mkv/codec_delay_opus.mkv" .
+        "0ll3qnmxnkhqxbh6s2a3clbkbhw5bsbfw6mh6kxdsa463iyyka8r")
+       ("mov/displaymatrix.mov" .
+        "1d4jp93hdyfhasxhqmx8lliwsa2w1kv2jj1qh6fqs74aqb6kzb82")
+       ("mov/mov-1elist-ends-last-bframe.mov" .
+        "04lyjsm8zncw9aac7vmkc2h45dcyb6y8643s3pg3rgzgcgqkq3nn")
+       ("mov/white_zombie_scrunch-part.mov" .
+        "07wg7mxa799z8dcvnbbrr9f0b5l6r42bd7d414isk3kc3jw0z6ka")
+       ("mpeg2/mpeg2_field_encoding.ts" .
+        "1f3waj8jhp6v655hnqpxi2bx3b36976vdjmr74hjr7jv2hx3724n")
+       ("mxf/track_01_v02.mxf" .
+        "04gpbma4kxvhn4dr1sh2k4pq2kbpmnmk2s2bdhq081jzap2983q1")
+       ("png1/55c99e750a5fd6_50314226.png" .
+        "05rha9vdix0wfibrhpaknh9fzj0cv84q6d2ypxq1wc0y328fc068")
+       ("qtrle/aletrek-rle.mov" .
+        "1n6ksjrqrb7gnbvzhj58y5z5jx6bmpgg7lxwzvnbfg9f9ib2yxdr")
+       ("sub/MovText_capability_tester.mp4" .
+        "07znmm4bhnp5f40yksnpf7ws94yflsbv169ydkga6rdby6ys2sv3")
+       ("sub/vobsub.sub" .
+        "12rwhnv1k7mngvyq026f2xd9dpd9mxmwg82sa9p5r8z54hrw8sjz"))))))
+
 (define-public python-av
   (package
     (name "python-av")
@@ -12626,87 +12678,21 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
      (list
       #:test-flags
       #~(list
-         ;; Tests require outbound access to download data samples from
-         ;; http://fate.ffmpeg.org/fate-suite:
-         ;;
-         ;; E urllib.error.URLError: <urlopen error [Errno -3]
-         ;; Temporary failure in name resolution>
-         ;;
-         "--ignore=tests/test_doctests.py"
-         "--ignore=tests/test_timeout.py"
-         ;; See: <https://github.com/PyAV-Org/PyAV/issues/1942>.
          "-k" (string-join
-               (list "not test_bits_per_coded_sample"
-                     "test_codec_delay"
-                     "test_codec_tag"
-                     "test_container_probing"
-                     "test_data"
-                     "test_decode_audio_sample_count"
-                     "test_decode_close_then_use"
-                     "test_decode_half"
-                     "test_decoded_motion_vectors"
-                     "test_decoded_motion_vectors_no_flag"
-                     "test_decoded_time_base"
-                     "test_decoded_video_frame_count"
-                     "test_encoding_aac"
-                     "test_encoding_dnxhd"
-                     "test_encoding_dvvideo"
-                     "test_encoding_h264"
-                     "test_encoding_mjpeg"
-                     "test_encoding_mp2"
-                     "test_encoding_mpeg1video"
-                     "test_encoding_mpeg4"
-                     "test_encoding_pcm_s24le"
-                     "test_encoding_png"
-                     "test_encoding_tiff"
-                     "test_encoding_xvid"
-                     "test_filter_flush"
-                     "test_filter_h264_mp4toannexb"
-                     "test_filter_output_parameters"
-                     "test_flush_decoded_video_frame_count"
-                     "test_is_corrupt"
-                     "test_is_discard"
-                     "test_is_disposable"
-                     "test_is_keyframe"
-                     "test_movtext"
-                     "test_noside_data"
-                     "test_opaque"
-                     "test_parse"
-                     "test_path_input"
-                     "test_path_output"
-                     "test_penguin_joke"
-                     "test_pts_assertion_same_rate"
-                     "test_reading_from_buffer"
-                     "test_reading_from_buffer_no_seek"
-                     "test_reading_from_file"
-                     "test_reading_from_pipe_readonly"
-                     "test_reading_from_write_readonly"
-                     "test_roundtrip"
-                     "test_seek_end"
-                     "test_seek_float"
-                     "test_seek_int64"
-                     "test_seek_middle"
-                     "test_seek_start"
-                     "test_selection"
-                     "test_set_duration"
-                     "test_side_data"
-                     "test_sky_timelapse"
-                     "test_str_input"
-                     "test_str_output"
-                     "test_stream_probing"
-                     "test_stream_seek"
-                     "test_stream_tuples"
-                     "test_subtitle_flush"
-                     "test_transcode"
-                     "test_vobsub"
-                     "test_writing_to_custom_io_dash"
-                     "test_writing_to_custom_io_image2")
+               (list "not test_pts_assertion_same_rate"
+                     "test_writing_to_custom_io_dash")
                " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'build-extensions
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (invoke "python" "setup.py" "build_ext" "--inplace")))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PYAV_TESTDATA_DIR" #+python-av-testdata)
+              (substitute* "tests/common.py"
+                (("^os\\.environ\\[\"PYAV_TESTDATA_DIR\"\\] = asset\\(\\)")
+                 "os.environ.setdefault(\"PYAV_TESTDATA_DIR\", asset())")))))))
     (native-inputs
      (list pkg-config
            python-cython
