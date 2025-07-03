@@ -1,0 +1,17 @@
+diff --git a/src/bootstrap/src/core/build_steps/dist.rs b/src/bootstrap/src/core/build_steps/dist.rs
+index 25b7e5a1b5d..e564274762d 100644
+--- a/src/bootstrap/src/core/build_steps/dist.rs
++++ b/src/bootstrap/src/core/build_steps/dist.rs
+@@ -526,12 +526,6 @@ fn prepare_image(builder: &Builder<'_>, compiler: Compiler, image: &Path) {
+             // Debugger scripts
+             builder.ensure(DebuggerScripts { sysroot: image.to_owned(), host });
+ 
+-            // HTML copyright files
+-            let file_list = builder.ensure(super::run::GenerateCopyright);
+-            for file in file_list {
+-                builder.install(&file, &image.join("share/doc/rust"), FileType::Regular);
+-            }
+-
+             // README
+             builder.install(
+                 &builder.src.join("README.md"),

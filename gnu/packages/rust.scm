@@ -56,6 +56,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
@@ -1450,7 +1451,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.85))
+  (let ((base-rust rust-1.88))
     (package
       (inherit base-rust)
       (properties (append
@@ -1461,6 +1462,7 @@ safety and thread safety guarantees.")
       (source
        (origin
          (inherit (package-source base-rust))
+         (patches (search-patches "rust-dont-create-html-copyright-files.patch"))
          (snippet
           '(begin
              (for-each delete-file-recursively
@@ -1468,17 +1470,16 @@ safety and thread safety guarantees.")
                          "vendor/jemalloc-sys-0.3.2/jemalloc"
                          "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
                          "vendor/openssl-src-111.17.0+1.1.1m/openssl"
-                         "vendor/openssl-src-111.28.2+1.1.1w/openssl"
+                         "vendor/openssl-src-300.4.2+3.4.1/openssl"
                          "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
                          "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"
                          ;; These are referenced by the cargo output
                          ;; so we unbundle them.
                          "vendor/curl-sys-0.4.52+curl-7.81.0/curl"
-                         "vendor/curl-sys-0.4.74+curl-8.9.0/curl"
-                         "vendor/curl-sys-0.4.78+curl-8.11.0/curl"
-                         "vendor/libffi-sys-2.3.0/libffi"
+                         "vendor/curl-sys-0.4.80+curl-8.12.1/curl"
+                         "vendor/libffi-sys-3.2.0/libffi"
                          "vendor/libz-sys-1.1.3/src/zlib"
-                         "vendor/libz-sys-1.1.20/src/zlib"))
+                         "vendor/libz-sys-1.1.22/src/zlib"))
              ;; Use the packaged nghttp2
              (for-each
               (lambda (ver)
@@ -1491,7 +1492,7 @@ safety and thread safety guarantees.")
                       (format #t "fn main() {~@
                          println!(\"cargo:rustc-link-lib=nghttp2\");~@
                          }~%")))))
-              '("0.1.10+1.61.0"
+              '("0.1.11+1.64.0"
                 "0.1.7+1.45.0"))
              ;; Remove vendored dynamically linked libraries.
              ;; find . -not -type d -executable -exec file {} \+ | grep ELF
@@ -1505,10 +1506,10 @@ safety and thread safety guarantees.")
                   (substitute* f
                     (("features = \\[\"fs\"" all)
                      (string-append all ", \"use-libc\"")))))
-              '("3.3.0"
-                "3.4.0"
-                "3.10.1"
-                "3.14.0"))))))
+              '("3.14.0"
+                "3.17.1"
+                "3.19.0"
+                "3.19.1"))))))
       (arguments
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
@@ -1531,13 +1532,6 @@ safety and thread safety guarantees.")
                     ""))))
              (add-after 'unpack 'disable-tests-requiring-git
                (lambda _
-                 (substitute* "src/tools/cargo/tests/testsuite/git.rs"
-                   ,@(make-ignore-test-list
-                      '("fn fetch_downloads_with_git2_first_"
-                        "fn corrupted_checkout_with_cli")))
-                 (substitute* "src/tools/cargo/tests/testsuite/build.rs"
-                   ,@(make-ignore-test-list
-                      '("fn build_with_symlink_to_path_dependency_with_build_script_in_git")))
                  (substitute* "src/tools/cargo/tests/testsuite/publish_lockfile.rs"
                    ,@(make-ignore-test-list
                       '("fn note_resolve_changes")))))
@@ -1559,17 +1553,6 @@ safety and thread safety guarantees.")
                                   "cargo_remove/update_lock_file/mod.rs")
                      ,@(make-ignore-test-list
                         '("fn case")))
-                   (substitute* "git_shallow.rs"
-                     ,@(make-ignore-test-list
-                        '("fn gitoxide_clones_git_dependency_with_shallow_protocol_and_git2_is_used_for_followup_fetches"
-                          "fn gitoxide_clones_registry_with_shallow_protocol_and_aborts_and_updates_again"
-                          "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_fetch_maintains_shallowness"
-                          "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_with_git2_fetch"
-                          "fn gitoxide_clones_registry_without_shallow_protocol_and_follow_up_fetch_uses_shallowness"
-                          "fn gitoxide_shallow_clone_followed_by_non_shallow_update"
-                          "fn gitoxide_clones_shallow_two_revs_same_deps"
-                          "fn gitoxide_git_dependencies_switch_from_branch_to_rev"
-                          "fn shallow_deps_work_with_revisions_and_branches_mixed_on_same_dependency")))
                    (substitute* "install.rs"
                      ,@(make-ignore-test-list
                         '("fn failed_install_retains_temp_directory")))
@@ -1695,7 +1678,7 @@ safety and thread safety guarantees.")
                      ;; The three tests which are known to fail upstream on QEMU
                      ;; emulation on aarch64 and riscv64 also fail on x86_64 in
                      ;; Guix's build system.  Skip them on all builds.
-                     (substitute* "sys/pal/unix/process/process_common/tests.rs"
+                     (substitute* "sys/process/unix/common/tests.rs"
                        ;; We can't use make-ignore-test-list because we will get
                        ;; build errors due to the double [ignore] block.
                        (("target_arch = \"arm\"" arm)
@@ -1731,6 +1714,15 @@ safety and thread safety guarantees.")
                    (string-append (assoc-ref inputs "clang-source")
                                   "/compiler-rt")
                    "src/llvm-project/compiler-rt")))
+             (add-after 'unpack 'unpack-libunwind
+               ;; Copy libunwind sources to where libprofiler_builtins looks
+               ;; for its vendored copy.
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (mkdir-p "src/llvm-project/libunwind")
+                 (copy-recursively
+                   (string-append (assoc-ref inputs "clang-source")
+                                  "/libunwind")
+                   "src/llvm-project/libunwind")))
              (add-after 'configure 'enable-profiling
                (lambda _
                  (substitute* "config.toml"
@@ -1776,15 +1768,6 @@ safety and thread safety guarantees.")
                ;; Phase overridden to also install more tools.
                (lambda* (#:key outputs #:allow-other-keys)
                  (invoke "./x.py" "install")
-                 ;; This one doesn't have an install target so
-                 ;; we need to install manually.
-                 (install-file (string-append
-                                 "build/"
-                                 ,(platform-rust-target
-                                    (lookup-platform-by-system
-                                      (%current-system)))
-                                 "/stage1-tools-bin/rust-analyzer-proc-macro-srv")
-                               (string-append (assoc-ref outputs "out") "/libexec"))
                  (substitute* "config.toml"
                    ;; Adjust the prefix to the 'cargo' output.
                    (("prefix = \"[^\"]*\"")
@@ -1850,6 +1833,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                       `("clang-source" ,(package-source clang-runtime-19))
                       ;; Add test inputs.
                       `("gdb" ,gdb/pinned)
+                      `("git-minimal" ,git-minimal/pinned)
                       `("procps" ,procps)
                       (package-native-inputs base-rust)))
       (native-search-paths
