@@ -4641,6 +4641,40 @@ bindings to almost all functions of PETSc.")
     ;; <https://github.com/dimpase/primecountpy/issues/16>.
     (license license:gpl2+)))
 
+(define-public python-py-bobyqa
+  (package
+    (name "python-py-bobyqa")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/numericalalgorithmsgroup/pybobyqa")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k9iapdlbp1k2ck1550ckw0y75f71gxzqkv4clz89ym4fwqwszv2"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-scipy
+           python-setuptools))
+    (home-page "https://github.com/numericalalgorithmsgroup/pybobyqa")
+    (synopsis "Derivative-free solver for general objective minimization")
+    (description
+     "Py-BOBYQA is a flexible package for solving bound-constrained general
+objective minimization, without requiring derivatives of the objective.  At
+its core, it is a Python implementation of the BOBYQA algorithm by Powell,but
+Py-BOBYQA has extra features improving its performance on some problems.
+Py-BOBYQA is particularly useful when evaluations of the objective function
+are expensive and/or noisy.")
+    (license license:gpl3)))
+
 (define-public python-pyglm
   (package
     (name "python-pyglm")
