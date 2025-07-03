@@ -8,6 +8,7 @@
 ;;; Copyright © 2017, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -266,11 +267,17 @@ ncursesw library provides wide character support.")
                (base32
                 "0riqmp2xl2j2yxx69nyg8jbm2fyi5fp4clcf6zi5jfm3irn3l8y9"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~'("--with-shared" "--enable-rpath")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'install-lib
+                          (lambda _
+                            (invoke "make" "install-lib"))))))
     (inputs
      (list ncurses))
     (synopsis "Curses widgets")
-    (description "Dialog is a script-interpreter which provides a set of
-curses widgets, such as dialog boxes.")
+    (description "Dialog is a script-interpreter and a library which provides
+a set of curses widgets, such as dialog boxes.")
     (home-page "https://invisible-island.net/dialog/dialog.html")
     (license lgpl2.1)))
 
