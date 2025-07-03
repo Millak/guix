@@ -1,0 +1,35 @@
+From ed3fed8d76a424cea002c5569769e46895c72139 Mon Sep 17 00:00:00 2001
+From: Vagrant Cascadian <vagrant@debian.org>
+Date: Thu, 3 Jul 2025 23:00:06 +0000
+Subject: [PATCH 2/3] Revert "phy: rockchip: samsung-hdptx: Fix clock ratio
+ setup"
+
+This reverts commit e3f71127c6d9b33bd714a957fd62c72abd87c182.
+---
+ drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+index 5547f8df8e71..56d8f25c1852 100644
+--- a/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
++++ b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+@@ -192,7 +192,6 @@
+ #define LN3_TX_SER_RATE_SEL_HBR2	BIT(3)
+ #define LN3_TX_SER_RATE_SEL_HBR3	BIT(2)
+ 
+-#define HDMI14_MAX_RATE			340000000
+ #define HDMI20_MAX_RATE			600000000
+ 
+ struct lcpll_config {
+@@ -854,7 +853,7 @@ static int rk_hdptx_ropll_tmds_mode_config(struct rk_hdptx_phy *hdptx,
+ 
+ 	regmap_write(hdptx->regmap, LNTOP_REG(0200), 0x06);
+ 
+-	if (rate > HDMI14_MAX_RATE / 100) {
++	if (rate >= 3400000) {
+ 		/* For 1/40 bitrate clk */
+ 		rk_hdptx_multi_reg_write(hdptx, rk_hdtpx_tmds_lntop_highbr_seq);
+ 	} else {
+-- 
+2.50.0
+

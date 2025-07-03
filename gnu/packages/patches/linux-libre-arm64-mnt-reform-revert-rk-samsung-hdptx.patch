@@ -1,0 +1,42 @@
+From 678346ae18cd6b705993001826fd1d9e2e69e73b Mon Sep 17 00:00:00 2001
+From: Vagrant Cascadian <vagrant@debian.org>
+Date: Thu, 3 Jul 2025 23:00:26 +0000
+Subject: [PATCH 3/3] Revert "phy: rockchip: samsung-hdptx: Do no set
+ rk_hdptx_phy->rate in case of errors"
+
+This reverts commit 5aac41632fffe7eb4708d9e88e203a2cb13283c9.
+---
+ drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+index 56d8f25c1852..9b99fdd43f5f 100644
+--- a/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
++++ b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+@@ -780,7 +780,9 @@ static int rk_hdptx_ropll_tmds_cmn_config(struct rk_hdptx_phy *hdptx,
+ {
+ 	const struct ropll_config *cfg = NULL;
+ 	struct ropll_config rc = {0};
+-	int ret, i;
++	int i;
++
++	hdptx->rate = rate * 100;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ropll_tmds_cfg); i++)
+ 		if (rate == ropll_tmds_cfg[i].bit_rate) {
+@@ -839,11 +841,7 @@ static int rk_hdptx_ropll_tmds_cmn_config(struct rk_hdptx_phy *hdptx,
+ 	regmap_update_bits(hdptx->regmap, CMN_REG(0086), PLL_PCG_CLK_EN,
+ 			   PLL_PCG_CLK_EN);
+ 
+-	ret = rk_hdptx_post_enable_pll(hdptx);
+-	if (!ret)
+-		hdptx->rate = rate * 100;
+-
+-	return ret;
++	return rk_hdptx_post_enable_pll(hdptx);
+ }
+ 
+ static int rk_hdptx_ropll_tmds_mode_config(struct rk_hdptx_phy *hdptx,
+-- 
+2.50.0
+
