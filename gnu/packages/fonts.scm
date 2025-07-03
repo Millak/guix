@@ -3545,29 +3545,33 @@ and FontForge.")
 (define-public font-plangothic
   (package
     (name "font-plangothic")
-    (version "1.8.5760")
+    (version "2.9.5779")
     (source
+     ;; Use git-fetch because releases are constantly updated and the hashes
+     ;; change.
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/Fitzgerald-Porthmouth-Koenigsegg/"
-             "Plangothic-Project/releases/download/V"
-             version "/Plangothic.ttc"))
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append
+                    "https://github.com/Fitzgerald-Porthmouth-Koenigsegg/"
+                    "Plangothic_Project"))
+              (commit (string-append "V" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ha2hcgy95ibmjk8lqfz0ihfc09swrzz3grlchma7qrwyxqbwpc0"))))
-    (build-system trivial-build-system)
+        (base32 "0mx7aqrdl1m5y5h37xqq7hxv1z3gdfa276hjxyaaspcwlkbw0s4g"))))
+    ;; This font has both OpenType and TrueType in .ttc format, and the font
+    ;; build system automatically identifies .ttc files as TrueType, so classify
+    ;; them manually.
+    (build-system copy-build-system)
+    (outputs '("out" "ttf" "woff"))
     (arguments
      (list
-      #:modules '((guix build utils))
-      #:builder
-      #~(let* ((out #$output)
-               (dest (string-append out "/share/fonts/truetype")))
-          (use-modules (guix build utils))
-          (mkdir-p dest)
-          (copy-file #$(package-source this-package)
-                     (string-append dest "/Plangothic.ttc")))))
+      #:install-plan
+      #~'(("fonts/otf/Plangothic.ttc"    "share/fonts/opentype/" #:output "out" )
+          ("fonts/static/Plangothic.ttc" "share/fonts/truetype/" #:output "ttf" )
+          ("fonts/web"                   "share/fonts/web"       #:output "woff"))))
     (home-page
-     "https://github.com/Fitzgerald-Porthmouth-Koenigsegg/Plangothic-Project")
+     "https://github.com/Fitzgerald-Porthmouth-Koenigsegg/Plangothic_Project")
     (synopsis "Sans font covers most CJK unified ideograph characters")
     (description "Plangothic is a sans font based on Source Han Sans,
 modified to cover most CJK unified ideograph characters.")
