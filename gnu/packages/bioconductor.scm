@@ -23758,7 +23758,7 @@ visualizing RNA-sequencing datasets and differentially expressed genes.")
     (description
      "@code{ChemmineOB} provides an R interface to a subset of cheminformatics
 functionalities implemented by the @code{OpelBabel} C++ project.
-@code{OpenBabel} is an open source cheminformatics toolbox that includes
+@code{OpenBabel} is a free cheminformatics toolbox that includes
 utilities for structure format interconversions, descriptor calculations,
 compound similarity searching and more. @code{ChemineOB} aims to make a subset
 of these utilities available from within R.  For non-developers,
