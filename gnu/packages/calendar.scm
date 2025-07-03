@@ -112,8 +112,8 @@ available in French.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/HowardHinnant/date")
-              (commit (string-append "v" version))))
+             (url "https://github.com/HowardHinnant/date")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1qk7pgnk0bpinja28104qha6f7r1xwh5dy3gra7vjkqwl0jdwa35"))
@@ -125,37 +125,35 @@ available in French.")
     (inputs (list tzdata))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags (list "-DUSE_SYSTEM_TZ_DB=ON"
-                               "-DBUILD_SHARED_LIBS=ON"
-                               "-DBUILD_TZ_LIB=ON"
-                               "-DENABLE_DATE_TESTING=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-bin-bash
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "compile_fail.sh"
-               (("/bin/bash") (which "bash")))
-             #t))
-         (add-after 'unpack 'patch-zoneinfo-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/tz.cpp"
-               (("/usr/share/zoneinfo")
-                (search-input-directory inputs
-                                        "share/zoneinfo")))))
-         (add-after 'unpack 'skip-failing-tests
-           ;; Disable test that requires checking timezone that
-           ;; isn't set in the build environment.
-           (lambda _
-             (for-each delete-file
-                       '("test/solar_hijri_test/parse.pass.cpp"
-                         "test/tz_test/zoned_time_deduction.pass.cpp"))))
-         (replace 'check
-           (lambda _
-             (invoke "make" "testit"))))))
+     (list
+      #:test-target "testit"
+      #:configure-flags
+      #~(list "-DUSE_SYSTEM_TZ_DB=ON" "-DBUILD_SHARED_LIBS=ON"
+              "-DBUILD_TZ_LIB=ON" "-DENABLE_DATE_TESTING=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-bin-bash
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "compile_fail.sh"
+                (("/bin/bash")
+                 (search-input-file inputs "bin/bash")))))
+          (add-after 'unpack 'patch-zoneinfo-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/tz.cpp"
+                (("/usr/share/zoneinfo")
+                 (search-input-directory inputs "share/zoneinfo")))))
+          (add-after 'unpack 'skip-failing-tests
+            ;; Disable test that requires checking timezone that
+            ;; isn't set in the build environment.
+            (lambda _
+              (for-each delete-file
+                        '("test/solar_hijri_test/parse.pass.cpp"
+                          "test/tz_test/zoned_time_deduction.pass.cpp")))))))
     (synopsis "Date and time library for C++11 and C++14")
-    (description "Date is a header only C++ library that extends the chrono
-date algorithms library for calendar dates and durations.  It also provides
-the <tz.h> library for handling time zones and leap seconds.")
+    (description
+     "Date is a header only C++ library that extends the chrono date
+algorithms library for calendar dates and durations.  It also provides the
+<tz.h> library for handling time zones and leap seconds.")
     (home-page "https://howardhinnant.github.io/date/date.html")
     (license license:expat)))
 
