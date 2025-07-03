@@ -12666,22 +12666,23 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
 (define-public python-av
   (package
     (name "python-av")
-    (version "13.1.0")
+    (version "14.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "av" version))
        (sha256
-        (base32 "0zn10vcj4mk6m06w3i9vvc0k06bg0c7cc9lcxfb8azc4amn77nnk"))))
+        (base32 "0hjb0v8pqq2f7w64zcmz216ymykb1n1s1bgdq0lp5xpxlw1zijry"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Upstream is not great in responding to open issues or change requests.
+      ;; See:
+      ;; - <https://github.com/PyAV-Org/PyAV/issues/1942>
+      ;; - <https://github.com/PyAV-Org/PyAV/issues/1946>
+      ;; - <https://github.com/PyAV-Org/PyAV/pull/1944>
       #:test-flags
-      #~(list
-         "-k" (string-join
-               (list "not test_pts_assertion_same_rate"
-                     "test_writing_to_custom_io_dash")
-               " and not "))
+      #~(list "-k" "not test_writing_to_custom_io_dash")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'build-extensions
@@ -12699,10 +12700,10 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
            python-numpy
            python-pillow
            python-pytest
-           python-setuptools
+           python-setuptools-next
            python-wheel))
     (inputs
-     (list ffmpeg))
+     (list ffmpeg-7))
     (home-page "https://github.com/PyAV-Org/PyAV")
     (synopsis "Pythonic bindings for FFmpeg's libraries")
     (description
