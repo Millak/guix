@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -257,7 +257,7 @@ ncursesw library provides wide character support.")
 (define-public dialog
   (package
     (name "dialog")
-    (version "1.3-20201126")
+    (version "1.3-20250116")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -265,7 +265,7 @@ ncursesw library provides wide character support.")
                     version ".tgz"))
               (sha256
                (base32
-                "0riqmp2xl2j2yxx69nyg8jbm2fyi5fp4clcf6zi5jfm3irn3l8y9"))))
+                "1p8n31a2143fw1agh9qshsn925vf9jlj1k2ri453sy3vh8ln6h38"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--with-shared" "--enable-rpath")
