@@ -32,9 +32,8 @@
        (fold-packages
          (lambda (package lst)
            (if (or
-                 (and (eq? (build-system-name (package-build-system package))
-                           (quote cargo))
-                      (not (string-prefix? "rust-" (package-name package))))
+                 (eq? (build-system-name (package-build-system package))
+                      (quote cargo))
                  (any
                    (lambda (pkg)
                      (member (specification->package "rust") pkg))
