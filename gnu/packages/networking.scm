@@ -3537,7 +3537,7 @@ from user-space.  It requires a kernel built with SocketCAN support.")
 (define-public can-utils
   (package
     (name "can-utils")
-    (version "2020.02.04")
+    (version "2025.01")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3546,17 +3546,16 @@ from user-space.  It requires a kernel built with SocketCAN support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a3j1mmnb7pvgc8r7zzp6sdp7903in2hna6bmpraxln7cwlzn4l6"))))
+                "1h8qh3170ign8b37m89i2jnnznzkwglv1kg63s3v1pp3lf3b9sf2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; No tests exist.
-       #:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          (string-append "PREFIX="
-                                         (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (delete 'configure))))
+     (list #:tests? #f                      ; No tests exist.
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'bootstrap)
+               (delete 'configure))))
     (home-page "https://github.com/linux-can/can-utils")
     (synopsis "CAN utilities")
     (description "This package provides CAN utilities in the following areas:
