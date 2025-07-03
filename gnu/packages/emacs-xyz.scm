@@ -32753,7 +32753,7 @@ backends, including the @command{wordnet} offline backend.")
     (build-system emacs-build-system)
     (arguments (list #:test-command #~(list "ert-runner" "ert-tests")))
     (native-inputs (list emacs-ert-runner))
-    (home-page "https://github.com/editorconfig/editorconfig-emacs")
+    (home-page "https://editorconfig.org/")
     (synopsis "Define and maintain consistent coding styles between different
 editors and IDEs")
     (description "The EditorConfig project consists of a file format for
