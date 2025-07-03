@@ -1416,7 +1416,7 @@ tools.")
      (list alsa-lib))
     (home-page "https://audiofile.68k.org/")
     (synopsis "Library to handle various audio file formats")
-    (description "This is an open-source version of SGI's audiofile library.
+    (description "This is a free software version of SGI's audiofile library.
 It provides a uniform programming interface for processing of audio data to
 and from audio files of many common formats.
 
