@@ -3043,7 +3043,7 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 (define-public python-colossus
   ;; There is no source distribution in PyPI and no version tags, use the
   ;; commit pointing to the version 1.3.8.
-  (let ((commit "0lz4n4i4frgsdspmka4pk6q4zq6j1z37g5xx7pr3xzgl9qfiiad2")
+  (let ((commit "e51408a3eaffef073da1df767160cb2441177cc0")
         (revision "0"))
     (package
       (name "python-colossus")
@@ -3056,14 +3056,19 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0mfkgfp6f0ay6kndh7vk8l0g2ijr32k55x3pmj15lp9kd8k3ln4r"))))
+          (base32 "0lz4n4i4frgsdspmka4pk6q4zq6j1z37g5xx7pr3xzgl9qfiiad2"))))
       (build-system pyproject-build-system)
       (arguments
        (list
         #:test-flags
         ;; TODO: Skip test files requiring not packaged lenstronomy.
         #~(list "--ignore=test/api/profiles/light_test.py"
-                "--ignore=test/api/profiles/mass_test.py")))
+                "--ignore=test/api/profiles/mass_test.py")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" "/tmp"))))))
       (native-inputs
        (list python-astropy-minimal
              python-jsonpickle
