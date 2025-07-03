@@ -12351,20 +12351,19 @@ as opposed to a character file or S-expressions.")
   (sbcl-package->ecl-package sbcl-cluster))
 
 (define-public sbcl-clx
-  (let ((commit "69f2ebb761d1ff3400deb10c3edce3725846d739")
-        (revision "1"))
+  (let ((version "0.7.7"))
     (package
       (name "sbcl-clx")
-      (version (git-version "0.7.6" revision commit))
+      (version version)
       (source
        (origin
          (method git-fetch)
          (uri
           (git-reference
            (url "https://github.com/sharplispers/clx")
-           (commit commit)))
+           (commit version)))
          (sha256
-          (base32 "0hcyjj7z1xmjfh4f8zljyinnf2d4ap6gazfxkmiz7vvb8ks6i5y3"))
+          (base32 "12cqmr1h5sn79fifn2jzcx1y1vsc1kf0q231axqc5aa4xg04g2b0"))
          (file-name (git-file-name "cl-clx" version))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
