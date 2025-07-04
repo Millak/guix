@@ -2362,20 +2362,20 @@ supported under @file{/sys/class/backlight/}.")
 (define-public v4l2loopback-linux-module
   (package
     (name "v4l2loopback-linux-module")
-    (version "0.14.0")
+    (version "0.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/umlaeute/v4l2loopback")
+                    (url "https://github.com/v4l2loopback/v4l2loopback")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vrf0mndzcpypz5a48kyjqwvvfh17wgganzml4vwiqhl4whq2a8v"))))
+                "1vp7f3ssvlbsxrwx6ix890yk589na6zhi0z3p1yl00fa813wcidh"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
-    (home-page "https://github.com/umlaeute/v4l2loopback")
+    (home-page "https://github.com/v4l2loopback/v4l2loopback")
     (synopsis "Linux kernel module to create virtual V4L2 video devices")
     (description
      "This Linux module creates virtual video devices.  @acronym{V4L2, Video
