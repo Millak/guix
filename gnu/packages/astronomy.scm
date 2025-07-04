@@ -5506,6 +5506,104 @@ solar physics.")
 PSF} describing how the optical system spreads light from sources.")
     (license license:expat)))
 
+(define-public python-romancal
+  ;; The compatible version is not released yet, use the latest commit.
+  (let ((commit "ae864a407fc16001d3a0370779caa381f994f718")
+        (revision "0"))
+    (package
+      (name "python-romancal")
+      (version (git-version "0.19.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/spacetelescope/romancal")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dxgwy6qva8ss7xb6hlkck6kysikgmn0byprvj4kx1l82gm1sk0g"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list "--color=no"
+                "--numprocesses" (number->string (min 8 (parallel-job-count)))
+                ;; XXX: Tests requiring network access or additional setup,
+                ;; check how to run them locally.
+                "--ignore=romancal/assign_wcs/tests/test_wcs.py"
+                "--ignore=romancal/dark_current/tests/test_dark.py"
+                "--ignore=romancal/dq_init/tests/test_dq_init.py"
+                "--ignore=romancal/flatfield/tests/test_flatfield.py"
+                "--ignore=romancal/flux/tests/test_flux_step.py"
+                "--ignore=romancal/lib/engdb/tests/test_engdb_tools.py"
+                "--ignore=romancal/linearity/tests/test_linearity.py"
+                "--ignore=romancal/multiband_catalog/tests/test_multiband_catalog.py"
+                "--ignore=romancal/orientation/tests/test_set_telescope_pointing.py"
+                "--ignore=romancal/photom/tests/test_photom.py"
+                "--ignore=romancal/ramp_fitting/tests/test_ramp_fit_cas22.py"
+                "--ignore=romancal/ramp_fitting/tests/test_ramp_fit_likelihood.py"
+                "--ignore=romancal/refpix/tests/test_step.py"
+                "--ignore=romancal/resample/tests/test_resample.py"
+                "--ignore=romancal/saturation/tests/test_saturation.py"
+                "--ignore=romancal/skycell/tests/test_skycell.py"
+                "--ignore=romancal/skycell/tests/test_skycell_match.py"
+                "--ignore=romancal/skymatch/tests/test_skymatch.py"
+                "--ignore=romancal/source_catalog/tests/test_psf.py"
+                "--ignore=romancal/source_catalog/tests/test_source_catalog.py"
+                "--ignore=romancal/stpipe/tests/test_core.py"
+                "--ignore=romancal/tweakreg/tests/test_tweakreg.py")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'relax-requirements
+              (lambda _
+                (substitute* "pyproject.toml"
+                  ;; XXX: scipy >=1.14.1
+                  ((" >=1.14.1") ""))))
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                        #$(version-major+minor+point version)))))))
+      (native-inputs
+       (list nss-certs-for-test
+             python-ci-watson
+             python-deepdiff
+             ;; python-edp      ;not packaged
+             python-pytest
+             python-pytest-astropy
+             python-pytest-xdist
+             python-setuptools-next
+             python-setuptools-scm
+             python-stpreview
+             python-wheel))
+      (propagated-inputs
+       (list python-asdf
+             python-asdf-astropy
+             python-astropy
+             python-crds
+             python-drizzle
+             python-gwcs
+             python-jsonschema
+             python-numpy
+             python-pandas
+             python-photutils
+             python-pyarrow
+             python-pyparsing
+             python-requests
+             python-roman-datamodels
+             python-scipy
+             python-spherical-geometry
+             python-stcal
+             python-stpipe
+             python-stpsf
+             python-stsci-imagestats
+             python-tweakwcs))
+      (home-page "https://github.com/spacetelescope/romancal")
+      (synopsis "Nancy Grace Roman Space Telescope observations processing library")
+      (description
+       "This package implements a functionality for calibration of science
+observations from the Nancy Grace Roman Space Telescope.")
+      (license license:bsd-3))))
+
 (define-public python-sep
   (package/inherit libsep
     (name "python-sep")
