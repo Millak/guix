@@ -637,6 +637,11 @@ a C-style programming language from Microsoft that is very similar to Java.")
                            #$prepare-mono-source))
               (patches (search-patches "mono-2.11.4-fixes.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-2.6.4)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'disable-signing)))))
     (native-inputs (modify-inputs (package-native-inputs mono-2.6.4)
                      (replace "mono" mono-2.6.4)))
     (license (list
