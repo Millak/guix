@@ -11,6 +11,7 @@
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2025 Mark Walker <mark.damon.walker@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages time)
@@ -561,6 +563,43 @@ algorithm for a number of different methods.")
     (description "The PyGSP is a Python package to ease signal processing on
 graphs.")
     (license license:bsd-3)))
+
+(define-public qvge
+  (package
+    (name "qvge")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ArsMasiuk/qvge")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mijb0yr71xh9cq43vflbhz6zp1qvhjmvzrs2pbxka63hqk60pfk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key (configure-flags '())
+                      #:allow-other-keys)
+              (chdir "src")
+              (apply invoke "qmake" "-r" configure-flags))))))
+    (inputs
+     (list qtbase-5
+           qtsvg-5
+           qtx11extras))
+    (home-page "https://arsmasiuk.github.io/qvge/")
+    (synopsis "Visual graph editor")
+    (description
+     "QVGE is a multiplatform graph editor written in C++/Qt.  Its main goal
+is to make possible visually edit two-dimensional graphs in a simple and
+intuitive way.")
+    (license license:expat)))
 
 (define-public faiss
   (package
