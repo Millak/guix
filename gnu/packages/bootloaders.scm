@@ -446,7 +446,7 @@ menu to select one of the installed operating systems.")
         #~(modify-phases #$phases
             #$@(if (this-package-native-input "qemu-minimal")
                    #~((add-after 'patch-stuff 'patch-ovmf-path
-                        (lambda* (#:key inputs #:allow-other-keys)
+                        (lambda* (#:key native-inputs inputs #:allow-other-keys)
                           (let ((arch #$(cond ((target-x86-64?) "x64")
                                               ((target-x86-32?) "ia32")
                                               ((target-aarch64?) "aarch64")
@@ -455,20 +455,24 @@ menu to select one of the installed operating systems.")
                             (substitute* "tests/util/grub-shell.in"
                               (("OVMF-ia32\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("OVMF\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("/usr/share/qemu-efi/QEMU_EFI\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("/usr/share/ovmf-arm/QEMU_EFI\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin"))))))))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin"))))))))
                    #~())
             (add-after 'patch-stuff 'use-absolute-efibootmgr-path
               (lambda* (#:key inputs #:allow-other-keys)
