@@ -562,6 +562,17 @@ menu to select one of the installed operating systems.")
                          "i586-gnu" "x86_64-gnu"
                          "powerpc-linux" "powerpc64le-linux"))))
 
+(define-public grub-uboot
+  (let ((base (make-grub "uboot")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ;; Running the tests isn't supported for this grub platform.
+         ((#:tests? _ #t) #f)))
+      (synopsis "GRand Unified Boot loader (u-boot version)")
+      (supported-systems '("armhf-linux")))))
+
 ;; Because grub searches hardcoded paths it's easiest to just build grub
 ;; again to make it find both grub-pc and grub-efi.  There is a command
 ;; line argument which allows you to specify ONE platform - but
