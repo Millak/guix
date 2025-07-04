@@ -917,108 +917,110 @@ user interface to the FEniCS core components and external libraries.")
      (list fenics-dolfin
            python-petsc4py
            python-slepc4py
-
-           ;; 'dolfin/jit/jit.py' parses 'dolfin.pc' at run time.
+           ;; 'dolfin/jit/jit.py' parses 'dolfin.pc' at runtime.
            python-pkgconfig))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                 (lambda _
-                   (substitute* "python/setup.py"
-                     (("pybind11==")
-                      "pybind11>="))))
-               (add-after 'unpack 'set-dolfin-pc-file-name
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Instead of cluttering the user's 'PKG_CONFIG_PATH' environment
-                   ;; variable, hard-code the 'dolfin.pc' absolute file name.
-                   (let ((pc-file (search-input-file inputs
-                                                     "/lib/pkgconfig/dolfin.pc")))
-                     (substitute* "python/dolfin/jit/jit.py"
-                       (("pkgconfig\\.parse\\(\"dolfin\"\\)")
-                        (string-append "pkgconfig.parse(\"" pc-file
-                                       "\")"))))))
-               (add-after 'patch-source-shebangs 'set-paths
-                 (lambda _
-                   ;; Define paths to store locations.
-                   (setenv "PYBIND11_DIR" #$(this-package-input "pybind11"))
-                   ;; Move to python sub-directory.
-                   (chdir "python")))
-               (add-after 'build 'mpi-setup
-                 #$%openmpi-setup)
-               (add-before 'check 'pre-check
-                 (lambda _
-                   ;; Exclude three tests that generate
-                   ;; 'NotImplementedError' in matplotlib version 3.1.2.
-                   ;; See
-                   ;; <https://github.com/matplotlib/matplotlib/issues/15382>.
-                   ;; Also exclude tests that require meshes supplied by
-                   ;; git-lfs.
-                   (substitute* "demo/test.py"
-                     (("(.*stem !.*)" line)
-                      (string-append line
-                                     "\n"
-                                     "excludeList = [\n"
-                                     "'built-in-meshes', \n"
-                                     "'hyperelasticity', \n"
-                                     "'elasticity', \n"
-                                     "'multimesh-quadrature', \n"
-                                     "'multimesh-marking', \n"
-                                     "'mixed-poisson-sphere', \n"
-                                     "'mesh-quality', \n"
-                                     "'lift-drag', \n"
-                                     "'elastodynamics', \n"
-                                     "'dg-advection-diffusion', \n"
-                                     "'curl-curl', \n"
-                                     "'contact-vi-tao', \n"
-                                     "'contact-vi-snes', \n"
-                                     "'collision-detection', \n"
-                                     "'buckling-tao', \n"
-                                     "'auto-adaptive-navier-stokes', \n"
-                                     "'advection-diffusion', \n"
-                                     "'subdomains', \n"
-                                     "'stokes-taylor-hood', \n"
-                                     "'stokes-mini', \n"
-                                     "'navier-stokes', \n"
-                                     "'eigenvalue']\n"
-                                     "demos = ["
-                                     "d for d in demos if d[0].stem not in "
-                                     "excludeList]\n")))
-                   (setenv "HOME"
-                           (getcwd))
-                   ;; Restrict OpenBLAS to MPI-only in preference to MPI+OpenMP.
-                   (setenv "OPENBLAS_NUM_THREADS" "1")))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (with-directory-excursion "test"
-                       (invoke "pytest"
-                               "unit"
-                               ;; The test test_snes_set_from_options() in the file
-                               ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
-                               "--ignore"
-                               "unit/nls/test_PETScSNES_solver.py"
-                               ;; Fails with a segfault.
-                               "--ignore"
-                               "unit/io/test_XDMF.py")))))
-               (add-after 'install 'install-demo-files
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((demos (string-append (assoc-ref outputs "out")
-                                                "/share/python-dolfin/demo")))
-                     (mkdir-p demos)
-                     (with-directory-excursion "demo"
-                       (for-each (lambda (file)
-                                   (let* ((dir (dirname file))
-                                          (tgt-dir (string-append
-                                                    demos "/" dir)))
-                                     (unless (equal? "." dir)
-                                       (mkdir-p tgt-dir)
-                                       (install-file file tgt-dir))))
-                                 (find-files "." ".*\\.(py|gz|xdmf)$")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "python/setup.py"
+                (("pybind11==") "pybind11>="))))
+          (add-after 'unpack 'set-dolfin-pc-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Instead of cluttering the user's PKG_CONFIG_PATH environment
+              ;; variable, hard-code the 'dolfin.pc' absolute file name.
+              (let ((pc-file (search-input-file inputs
+                              "/lib/pkgconfig/dolfin.pc")))
+                (substitute* "python/dolfin/jit/jit.py"
+                  (("pkgconfig\\.parse\\(\"dolfin\"\\)")
+                   (string-append "pkgconfig.parse(\"" pc-file "\")"))))))
+          (add-after 'patch-source-shebangs 'set-paths
+            (lambda _
+              ;; Define paths to store locations.
+              (setenv "PYBIND11_DIR" #$(this-package-input "pybind11"))
+              ;; Move to python sub-directory.
+              (chdir "python")))
+          (add-after 'build 'mpi-setup
+            #$%openmpi-setup)
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Exclude three tests that generate 'NotImplementedError' in
+              ;; matplotlib v3.1.2. See
+              ;; <https://github.com/matplotlib/matplotlib/issues/15382>.
+              ;; Also exclude tests that require meshes supplied by git-lfs.
+              (substitute* "demo/test.py"
+                (("(.*stem !.*)" line)
+                 (string-append line
+                  "\n"
+                  "excludeList = [\n"
+                  "'built-in-meshes', \n"
+                  "'hyperelasticity', \n"
+                  "'elasticity', \n"
+                  "'multimesh-quadrature', \n"
+                  "'multimesh-marking', \n"
+                  "'mixed-poisson-sphere', \n"
+                  "'mesh-quality', \n"
+                  "'lift-drag', \n"
+                  "'elastodynamics', \n"
+                  "'dg-advection-diffusion', \n"
+                  "'curl-curl', \n"
+                  "'contact-vi-tao', \n"
+                  "'contact-vi-snes', \n"
+                  "'collision-detection', \n"
+                  "'buckling-tao', \n"
+                  "'auto-adaptive-navier-stokes', \n"
+                  "'advection-diffusion', \n"
+                  "'subdomains', \n"
+                  "'stokes-taylor-hood', \n"
+                  "'stokes-mini', \n"
+                  "'navier-stokes', \n"
+                  "'eigenvalue']\n"
+                  "demos = ["
+                  "d for d in demos if d[0].stem not "
+                  "in excludeList]\n")))
+              ;; Do not test for expired numpy aliases.
+              (substitute* "test/unit/la/test_vector.py"
+                ((" numpy.float\\(42.0\\),") "")
+                (("^.*numpy.int\\(42.0\\).*$") ""))
+              (substitute* "test/unit/la/test_la_basic.py"
+                ((" int,") " ")
+                (("\\[int,") "["))
+              (setenv "HOME" (getcwd))
+              ;; Restrict OpenBLAS to MPI-only in preference to MPI+OpenMP.
+              (setenv "OPENBLAS_NUM_THREADS" "1")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  (invoke "pytest"
+                   "unit"
+                   ;; This test fails and is ignored.
+                   "--deselect"
+                   "unit/nls/test_PETScSNES_solver.py::test_snes_set_from_options"
+                   ;; FIXME: Tests with binary encoded hdf5 files fail with a
+                   ;; segfault.  See fenics-project DOLFIN commit 6fbc9fb.
+                   "--ignore"
+                   "unit/io/test_XDMF.py")))))
+          (add-after 'install 'install-demo-files
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((demos (string-append (assoc-ref outputs "out")
+                             "/share/python-dolfin/demo")))
+                (mkdir-p demos)
+                (with-directory-excursion "demo"
+                  (for-each (lambda (file)
+                              (let* ((dir (dirname file))
+                                     (tgt-dir (string-append demos
+                                               "/" dir)))
+                                (unless (equal? "." dir)
+                                  (mkdir-p tgt-dir)
+                                  (install-file file tgt-dir))))
+                            (find-files "." ".*\\.(py|gz|xdmf)$")))))))))
     (home-page "https://fenicsproject.org/")
     (synopsis "High-level environment for solving differential equations")
     (description
-      "@code{fenics} is a computing platform for solving general classes of
+     "@code{fenics} is a computing platform for solving general classes of
 problems that involve differential equations.  @code{fenics} facilitates
 access to efficient methods for dealing with ordinary differential
 equations (ODEs) and partial differential equations (PDEs).  Systems of
