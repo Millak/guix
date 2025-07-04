@@ -652,7 +652,8 @@ specified by PEP 517, @code{flit_core.buildapi}.")
     (name "python-flit-core")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-flit-core-bootstrap)
-       (replace "python-toml" python-tomli)))))
+       (delete "python-toml")
+       (prepend python-tomli)))))
 
 (define-public python-flit-core-next
   (package/inherit python-flit-core
