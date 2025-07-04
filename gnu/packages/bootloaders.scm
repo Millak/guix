@@ -109,9 +109,9 @@
      (base32
       "0p2vhnc18cnbmb39vq4m7hzv4mhnm2l0a2s7gx3ar277fwng3hys"))))
 
-(define-public grub
+(define*-public (make-grub platform)
   (package
-    (name "grub")
+    (name (string-append "grub-" platform))
     (version "2.12")
     (source (origin
               (method url-fetch)
@@ -141,7 +141,8 @@
            ;; calling the ‘true’ binary instead.  Python is only needed during
            ;; bootstrapping (for genptl.py), not when building from a release.
            #~(append
-               (list "PYTHON=true")
+               (list "PYTHON=true"
+                     (string-append "--with-platform=" #$platform))
                     ;; This needs to be compiled with clang for powerpc64le.
                     (if #$(and=> (%current-target-system)
                                  target-ppc64le?)
@@ -224,12 +225,7 @@
                    ;; Unifont (9.0.06) than that packaged in Guix.
                    (substitute* "Makefile.in"
                      (("test_unset grub_func_test")
-                      "test_unset")))))
-
-           ;; Disable tests on ARM and AARCH64 platforms or when cross-compiling.
-           #:tests? (not (or (any (cute string-prefix? <> (%current-system))
-                                  '("arm" "aarch64"))
-                             (%current-target-system)))))
+                      "test_unset")))))))
     (inputs
      (append (list gettext-minimal freetype ncurses
 
@@ -316,18 +312,26 @@ menu to select one of the installed operating systems.")
     (license license:gpl3+)
     (properties '((cpe-name . "grub2")))))
 
+(define-public grub-pc
+  (package
+    (inherit (make-grub "pc"))
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "i586-gnu" "x86_64-gnu"))))
+
+(define-public grub grub-pc)
+
 (define-public grub-minimal
   (package
-    (inherit grub)
+    (inherit grub-pc)
     (name "grub-minimal")
     (inputs
-     (modify-inputs (package-inputs grub)
+     (modify-inputs (package-inputs grub-pc)
        (delete "lvm2" "mdadm" "fuse" "console-setup")))
     (native-inputs
      (modify-inputs (package-native-inputs grub)
        (delete "help2man" "texinfo" "parted" "qemu" "qemu-minimal" "xorriso")))
     (arguments
-     (substitute-keyword-arguments (package-arguments grub)
+     (substitute-keyword-arguments (package-arguments grub-pc)
        ((#:tests? _ #t) #f)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
@@ -342,12 +346,12 @@ menu to select one of the installed operating systems.")
                 (system* "gunzip" "unifont.bdf.gz")))))))))
 
 (define-public grub-coreboot
+ (let ((base (make-grub "coreboot")))
   (package
-    (inherit grub)
-    (name "grub-coreboot")
+    (inherit base)
     (synopsis "GRand Unified Boot loader (Coreboot payload version)")
     (arguments
-     (substitute-keyword-arguments (package-arguments grub)
+     (substitute-keyword-arguments (package-arguments base)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-before 'check 'disable-broken-tests
@@ -400,17 +404,16 @@ menu to select one of the installed operating systems.")
                                "grub_cmd_tr"
                                "test_unset"
                                "file_filter_test")
-                         " "))))))
-       ((#:configure-flags flags #~'())
-        #~(cons* "--with-platform=coreboot" #$flags))))))
+                         " "))))))))
+    (supported-systems '("i686-linux" "x86_64-linux")))))
 
 (define-public grub-efi
+ (let ((base (make-grub "efi")))
   (package
-    (inherit grub)
-    (name "grub-efi")
+    (inherit base)
     (synopsis "GRand Unified Boot loader (UEFI version)")
     (inputs
-     (modify-inputs (package-inputs grub)
+     (modify-inputs (package-inputs base)
        (prepend efibootmgr mtools)))
     (native-inputs
      (cond ((or (target-x86-64?)
@@ -418,7 +421,7 @@ menu to select one of the installed operating systems.")
                 (target-aarch64?)
                 (target-arm32?))
             ;; We add the firmware needed to run the tests.
-            (modify-inputs (package-native-inputs grub)
+            (modify-inputs (package-native-inputs base)
               (prepend
                 (cond ((target-x86-64?) ovmf-x86-64)
                       ((target-x86-32?) ovmf-i686)
@@ -428,15 +431,14 @@ menu to select one of the installed operating systems.")
            (else
             ;; The tests are skipped in this package so we remove some
             ;; test dependencies.
-            (modify-inputs (package-native-inputs grub)
+            (modify-inputs (package-native-inputs base)
               (delete "parted" "qemu-minimal" "xorriso")))))
     (arguments
-     (substitute-keyword-arguments (package-arguments grub)
+     (substitute-keyword-arguments (package-arguments base)
        ((#:tests? _ #f) (and (not (%current-target-system))
                              (this-package-native-input "qemu-minimal")))
        ((#:configure-flags flags #~'())
-        #~(cons* "--with-platform=efi"
-                 #$@(if (string-prefix? "x86_64"
+        #~(cons* #$@(if (string-prefix? "x86_64"
                                         (or (%current-target-system)
                                             (%current-system)))
                         #~("--enable-stack-protector") ;EFI-only for now
@@ -548,13 +550,9 @@ menu to select one of the installed operating systems.")
         (else (package-native-inputs grub-efi))))))
 
 (define-public grub-emu
-  (package/inherit grub
-    (name "grub-emu")
-    (synopsis "GRand Unified Boot loader (Emu version)")
-    (arguments
-     (substitute-keyword-arguments (package-arguments grub)
-       ((#:configure-flags flags #~'())
-        #~(cons* "--with-platform=emu" #$flags))))))
+  (package
+    (inherit (make-grub "emu"))
+    (synopsis "GRand Unified Boot loader (Emu version)")))
 
 ;; Because grub searches hardcoded paths it's easiest to just build grub
 ;; again to make it find both grub-pc and grub-efi.  There is a command

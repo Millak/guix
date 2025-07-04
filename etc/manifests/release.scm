@@ -59,7 +59,7 @@ TARGET."
   ;; The bootloaders offered by the Guix System installer.
   (append
     (map specification->package
-         '("grub" "grub-minimal" "grub-efi"))
+         '("grub-pc" "grub-minimal" "grub-efi"))
     ;; Add all the u-boot packages.
     ;; TODO: Filter by target.
     (if (or (target-arm32?)
