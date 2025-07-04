@@ -13,6 +13,7 @@
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Antero Mejr <mail@antr.me>
+;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -635,6 +636,17 @@ specified by PEP 517, @code{flit_core.buildapi}.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-flit-core-bootstrap)
        (replace "python-toml" python-tomli)))))
+
+(define-public python-flit-core-next
+  (package/inherit python-flit-core
+    (name "python-flit-core")
+    (version "3.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flit" version))
+       (sha256
+        (base32 "0h1pxi2hgr95321bgl45l86693zl14l3shj0idsyg4k9v56z700w"))))))
 
 (define-public python-flit-scm
   (package
