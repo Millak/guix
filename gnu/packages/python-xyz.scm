@@ -11424,6 +11424,11 @@ reason=\"unknown minor image differences\")\n" match)))
                           ;; non-deterministically when run in parallel (see:
                           ;; https://github.com/matplotlib/matplotlib/issues/22992).
                           "lib/matplotlib/tests/test_compare_images.py"))))
+          (add-after 'unpack 'patch-dlopen
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/_c_internal_utils.c"
+                (("libX11.so.6")
+                 (search-input-file inputs "lib/libX11.so.6")))))
           (add-before 'build 'configure-environment
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Fix rounding errors when using the x87 FPU.
