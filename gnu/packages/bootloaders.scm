@@ -486,7 +486,11 @@ menu to select one of the installed operating systems.")
                   (("\"mcopy\"")
                    (string-append "\""
                                   (search-input-file inputs "/bin/mcopy")
-                                  "\"")))))))))))
+                                  "\"")))))))))
+    ;; Check configure.ac for the list of supported EFI platforms.
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "i586-gnu" "x86_64-gnu"
+                         "armhf-linux" "aarch64-linux" "riscv64-linux")))))
 
 (define-public grub-efi32
   (package
