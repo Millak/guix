@@ -622,21 +622,13 @@ input via a small child-frame spawned at the position of the cursor.")
         (base32 "194k1bj4ncl9w68s0dkm9ya853hxbm9lxwsckqsmaj57jz7hw46f"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:phases
+     '(#:lisp-directory "elisp"
+       #:phases
        (modify-phases %standard-phases
-         ;; Move the source files to the top level, which is included in
-         ;; the EMACSLOADPATH.
-         (add-after 'unpack 'move-source-files
+         (add-after 'unpack 'make-info
            (lambda _
-             (let ((el-files (find-files "./elisp" ".*\\.el$")))
-               (for-each (lambda (f)
-                           (rename-file f (basename f)))
-                         el-files))))
-         (add-before 'install 'make-info
-           (lambda _
-             (with-directory-excursion "doc"
-               (invoke "makeinfo" "--no-split"
-                       "-o" "geiser.info" "geiser.texi")))))))
+             (invoke "makeinfo" "--no-split"
+                     "-o" "geiser.info" "../doc/geiser.texi"))))))
     (native-inputs
      (list texinfo))
     (home-page "https://www.nongnu.org/geiser/")
