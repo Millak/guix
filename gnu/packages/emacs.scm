@@ -155,7 +155,8 @@
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
                                        "emacs-native-comp-pin-packages.patch"
-                                       "emacs-pgtk-super-key-fix.patch"))
+                                       "emacs-pgtk-super-key-fix.patch"
+                                       "emacs-30-fix-compilation-errors.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "lisp"
