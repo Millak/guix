@@ -554,6 +554,14 @@ menu to select one of the installed operating systems.")
     (inherit (make-grub "emu"))
     (synopsis "GRand Unified Boot loader (Emu version)")))
 
+(define-public grub-ieee1275
+  (package
+    (inherit (make-grub "ieee1275"))
+    (synopsis "GRand Unified Boot loader (ieee1275 version)")
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "i586-gnu" "x86_64-gnu"
+                         "powerpc-linux" "powerpc64le-linux"))))
+
 ;; Because grub searches hardcoded paths it's easiest to just build grub
 ;; again to make it find both grub-pc and grub-efi.  There is a command
 ;; line argument which allows you to specify ONE platform - but
