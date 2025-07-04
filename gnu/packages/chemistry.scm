@@ -70,6 +70,10 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python))
 
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-public avogadrolibs
   (package
     (name "avogadrolibs")
@@ -1361,3 +1365,7 @@ and 3D and descriptor generation for machine learning.")
     ;; other test fail.
     (supported-systems %64bit-supported-systems)
     (license license:bsd-3)))
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above in alphabetical order.
+;;;
