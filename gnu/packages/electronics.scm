@@ -79,14 +79,14 @@
 (define-public comedilib
   (package
     (name "comedilib")
-    (version "0.12.0")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.comedi.org/download/comedilib-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0wzh23iyix4xj211fsd8hwrdcjhg2w5jswk9kywb1gpd3h8afajj"))))
+                "0jdw5gp02d8q3p4ldjrc3zaw0v435kmn3c95pv094gyxj3pwhacm"))))
     (build-system gnu-build-system)
     (synopsis "Library for Comedi")
     (description "Comedilib is a user-space library that provides a
