@@ -52,6 +52,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
@@ -4597,6 +4598,94 @@ machine.")
 Data System,CRDS}-formatted reference files for @acronym{James Webb Space
 Telescope,JWST} from a set of input dark current files and a set of flat field
 files.")
+    (license license:bsd-3)))
+
+(define-public python-lenstronomy
+  (package
+    (name "python-lenstronomy")
+    (version "1.13.2")
+    (source
+     (origin
+       (method git-fetch)       ;no tests data in the PyPI tarball
+       (uri (git-reference
+              (url "https://github.com/lenstronomy/lenstronomy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j0qc8vw53n9sg5yncilkfd6n5s2jixrm83an0q1gv2m2yk5dsn7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; TypeError: SparseSolverBase.__init__() got an
+              ;; unexpected keyword argument 'num_iter_lens'
+              "--ignore=test/test_ImSim/test_image_model_pixelbased.py"
+              "-k" (string-join
+                    ;; AttributeError: 'FlatLambdaCDM' object has no attribute '_Ok0'
+                    (list "not test_angular_diameter_distance"
+                          "test_angular_diameter_distance_array"
+                          "test_angular_diameter_distance_z1z2"
+                          "test_geo_shapiro_delay"
+                          "test_interpol"
+                          "test_set_T_ij_stop"
+                          "test_update_source_redshift"
+                          ;; FileNotFoundError: [Errno 2] No such file or
+                          ;; directory: '/tmp/.../coolest_template.json'
+                          "test_full"
+                          "test_load"
+                          "test_pemd"
+                          "test_pemd_via_epl"
+                          "test_raise"
+                          "test_update"
+                          ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1)
+                          ;; failed for 10th keyword liwork: dsyevr:liwork=1
+                          "test_sampler"
+                          ;; TypeError: SLIT_Starlets.function_2d() got an
+                          ;; unexpected keyword argument 'n_pix_x'
+                          "test_pixelbased_modelling"
+                          ;; AssertionError: Arrays are not almost equal to 1
+                          ;; decimals ACTUAL: 0.8382375738251702
+                          "test_run_fit")
+                    " and not "))))
+    (native-inputs
+     (list python-colossus
+           ;; python-nestcheck
+           ;; python-pymultinest
+           ;; python-starred-astro
+           python-coolest
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-astropy
+           python-cobaya
+           python-configparser
+           python-corner
+           python-dynesty
+           python-emcee
+           python-h5py
+           python-matplotlib
+           python-mpmath
+           python-multiprocess
+           python-nautilus-sampler
+           python-numba
+           python-numpy
+           python-pyxdg
+           python-pyyaml
+           python-schwimmbad
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-slitronomy
+           python-zeus-mcmc))
+    (home-page "https://github.com/lenstronomy/lenstronomy")
+    (synopsis "Multi-purpose lens modeling software")
+    (description
+     "@code{lenstronomy} is a multi-purpose software package to model strong
+gravitational lenses.  @code{lenstronomy} finds application for time-delay
+cosmography and measuring the expansion rate of the Universe, for quantifying
+lensing substructure to infer dark matter properties, morphological
+quantification of galaxies, quasar-host galaxy decomposition and much more.")
     (license license:bsd-3)))
 
 (define-public python-libstempo
