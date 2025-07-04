@@ -209,14 +209,17 @@ locations in the store in '.el' files."
            (build-package-desc-from-library name)
            (concat name "-pkg.el")))
 
-        (condition-case
-         err
-         (let ((name (file-name-base (buffer-file-name))))
-           (generate-package-description-file name)
-           (message (concat name "-pkg.el file generated.")))
-         (error
-          (message "There are some errors during generation of -pkg.el file:")
-          (message "%s" (error-message-string err))))))
+        (let ((name (file-name-base (buffer-file-name)))
+              (backtrace-on-error-noninteractive nil)) ; reduce backtrace noise
+          (condition-case
+           err
+           (progn
+            (generate-package-description-file name)
+            (message (concat name "-pkg.el file generated.")))
+           (error
+            (error
+             "ensure-package-description: could not generate %s-pkg.el: %s"
+             name (error-message-string err)))))))
 
     (unless (file-exists? (string-append name "-pkg.el"))
       (emacs-batch-edit-file (string-append name ".el")
