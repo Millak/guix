@@ -4731,6 +4731,40 @@ quantification of galaxies, quasar-host galaxy decomposition and much more.")
 pulsar timing tool.")
     (license license:expat)))
 
+(define-public python-linetools
+  (package
+    (name "python-linetools")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "linetools" version))
+       (sha256
+        (base32 "1nljcaz0r60wvsy5dwb040wll2dd764dvib5xzkpc59cbw5lz85h"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-ipython
+           python-matplotlib
+           python-numpy
+           python-pyyaml
+           python-qtpy
+           python-scipy))
+    (home-page "http://linetools.readthedocs.org/")
+    (synopsis "Quasar and galaxy spectra 1-D analysis tool")
+    (description
+     "This package implements a functionality for analysing absorption and
+emission lines in 1-D spectra, especially galaxy and quasar spectra.")
+    (license license:bsd-3)))
+
 (define-public python-lofar-h5plot
   (package
     (name "python-lofar-h5plot")
