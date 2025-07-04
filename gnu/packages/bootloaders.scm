@@ -562,6 +562,13 @@ menu to select one of the installed operating systems.")
                          "i586-gnu" "x86_64-gnu"
                          "powerpc-linux" "powerpc64le-linux"))))
 
+(define-public grub-qemu
+  (package
+    (inherit (make-grub "qemu"))
+    (synopsis "GRand Unified Boot loader (qemu version)")
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "i586-gnu" "x86_64-gnu"))))
+
 (define-public grub-uboot
   (let ((base (make-grub "uboot")))
     (package
