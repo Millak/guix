@@ -168,8 +168,6 @@ locations in the store in '.el' files."
 
 (define* (ensure-package-description #:key outputs #:allow-other-keys)
   (define (write-pkg-file name)
-    (define summary-regexp
-      "^;;; [^ ]*\\.el ---[ \t]*\\(.*?\\)[ \t]*\\(-\\*-.*-\\*-[ \t]*\\)?$")
     (define %write-pkg-file-form
       `(progn
         (require 'lisp-mnt)
@@ -188,16 +186,8 @@ locations in the store in '.el' files."
               ;; raises an error if version is invalid
               (and (version-to-list version) version))
             (error "0.0.0"))
-           (or (save-excursion
-                (goto-char (point-min))
-                (and (re-search-forward ,summary-regexp nil t)
-                     (match-string-no-properties 1)))
-               package--default-summary)
-           (let ((require-lines (lm-header-multiline "package-requires")))
-             (and require-lines
-                  (package--prepare-dependencies
-                   (package-read-from-string
-                    (mapconcat 'identity require-lines " ")))))
+           (or (lm-summary) package--default-summary)
+           (lm-package-requires)
            :kind       'single
            :url        (lm-homepage)
            :keywords   (lm-keywords-list)
