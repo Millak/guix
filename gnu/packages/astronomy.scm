@@ -6866,6 +6866,36 @@ implementing calibration pipeline software.")
     ;; LICENSE Association of Universities for Research in Astronomy (AURA)
     (license license:bsd-3)))
 
+(define-public python-stpreview
+  (package
+    (name "python-stpreview")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stpreview" version))
+       (sha256
+        (base32 "1z7zpqyg7rl2sf311idzwckdshm86mkbbpknvq90gkxmqdaqas9q"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-roman-datamodels
+           python-setuptools-next
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-asdf
+           python-astropy
+           python-gwcs
+           python-matplotlib
+           python-numpy
+           python-scikit-image))
+    (home-page "https://github.com/spacetelescope/stpreview")
+    (synopsis "Build downsampled previews of STScI")
+    (description
+     "This package provides build downsampled previews of Space Telescope products.")
+    (license license:bsd-3)))
+
 (define-public python-stpsf
   (package
     (name "python-stpsf")
