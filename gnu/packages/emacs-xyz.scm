@@ -760,6 +760,9 @@ summarizing text using an LLM.")
       #:include #~(cons "^src/" %default-include)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-info
+            (lambda _
+              (invoke "makeinfo" "--no-split" "geiser-guile.texi")))
           (add-after 'unpack 'patch-geiser-guile-binary
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "geiser-guile.el"
@@ -774,6 +777,7 @@ summarizing text using an LLM.")
                 (("\\(geiser-activate-implementation .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))))))))
+    (native-inputs (list texinfo))
     (inputs (list guile-3.0-latest))
     (propagated-inputs (list emacs-geiser))
     (home-page "https://www.nongnu.org/geiser/")
