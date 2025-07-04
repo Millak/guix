@@ -5916,8 +5916,8 @@ of bibliographic references.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/minad/corfu")
-             (commit version)))
+              (url "https://github.com/minad/corfu")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1zyjix22jinbnvc90kv31gzlvpqicfx5iyrwsjmbjcxm1cwpb59y"))))
@@ -5927,8 +5927,8 @@ of bibliographic references.")
       #:tests? #f ; there are no tests
       #:phases
       #~(modify-phases %standard-phases
-          ;; Move the extensions source files to the top level, which is included
-          ;; in the EMACSLOADPATH.
+          ;; Move the extensions source files to the top level, which is
+          ;; included in the EMACSLOADPATH.
           (add-after 'unpack 'move-source-files
             (lambda _
               (let ((el-files (find-files "./extensions" ".*\\.el$")))
