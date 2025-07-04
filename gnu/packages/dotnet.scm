@@ -700,6 +700,11 @@ a C-style programming language from Microsoft that is very similar to Java.")
                            #$(add-external-repos
                               mono-3.0.12-external-repo-specs)
                            #$prepare-mono-source))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-2.11.4)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'disable-mono-mini-timestamps)))))
     (native-inputs (modify-inputs (package-native-inputs mono-2.11.4)
                      (replace "mono" mono-2.11.4)))
     (license (list
