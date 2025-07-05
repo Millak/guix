@@ -2904,6 +2904,7 @@ the bandwidth, loss, and other parameters.")
      (list libpcap ncurses))
     (arguments
      (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "CXX=" #$(cxx-for-target))
                                 (string-append "PREFIX=" #$output)
                                 (string-append "VERSION=" #$version))
        #:phases
