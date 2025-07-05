@@ -1854,12 +1854,13 @@ also find similarities to @code{projectile-commander}.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/roman/golden-ratio.el")
-               (commit commit)))
+                (url "https://github.com/roman/golden-ratio.el")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0a635a3h6jx0clgwmhwc48i14y3xy5q29y37lp2sjnbxx1hlmkli"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ;no tests
       (home-page "https://github.com/roman/golden-ratio.el")
       (synopsis "Automatic resizing of Emacs windows to the golden ratio")
       (description "This package provides an Emacs mode for automatically
