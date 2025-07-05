@@ -9955,7 +9955,7 @@ your score gets higher, you level up and the blocks fall faster.")
 (define-public endless-sky
   (package
     (name "endless-sky")
-    (version "0.10.10")
+    (version "0.10.14")
     (source
      (origin
        (method git-fetch)
@@ -9964,13 +9964,14 @@ your score gets higher, you level up and the blocks fall faster.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nwim56ii3z6f9gxvmf9q4i5chlsgk3kjisz8li6ivr595wq5502"))))
+        (base32 "198ijk95qhq5qicp27f26g0pqsqdgjyb9ll3dmd3dq8b68j3xyfc"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DES_USE_VCPKG=0"
                                      "-DES_USE_SYSTEM_LIBRARIES=1")
            #:make-flags #~(list (string-append "PREFIX=" #$output))
            #:build-type "Release"
+	   #:tests? (not (target-x86-32?))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-paths
@@ -9987,7 +9988,9 @@ your score gets higher, you level up and the blocks fall faster.")
            libjpeg-turbo
            libmad
            libpng
+           minizip
            openal
+           pkgconf
            sdl2
            `(,util-linux "lib"))) ; for libuuid
     (home-page "https://endless-sky.github.io/")
