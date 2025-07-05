@@ -40,6 +40,28 @@
 (channel-news
  (version 0)
 
+ (entry (commit "3e45fc0f37d027516ac3d112ca7768d698eeac74")
+        (title
+         (en "All Rust applications repackaged")
+         (de "Alle Rust-Anwendungen wurden neu verpackt"))
+        (body
+         (en "We have switched to
+@url{https://guix.gnu.org/blog/2025/a-new-rust-packaging-model/, a new Rust
+packaging model} and repackaged all Rust applications.  Rust library
+packages (those previously in @code{(gnu packages crates-*)} modules) have been
+moved to @url{https://codeberg.org/guix/guix-rust-past-crates, the
+@code{guix-rust-past-crates} channel}, compatible with Rust 1.82.  If your
+packages depend on them, please add this additional channel before migrating to
+the new packaging model.")
+         (de "Wir sind auf
+@url{https://guix.gnu.org/blog/2025/a-new-rust-packaging-model/, ein neues
+Paketmodell für Rust} umgestiegen und haben alle Rust-Anwendungen neu verpackt.
+Rust-Bibliothekspakete (die bisher in @code{(gnu packages crates-*)}-Modulen
+verpackt waren) wurden in @url{https://codeberg.org/guix/guix-rust-past-crates,
+den Kanal @code{guix-rust-past-crates}} verschoben, der mit Rust 1.82 kompatibel
+ist.  Wenn Sie Pakete haben, die von diesen abhängen, fügen Sie bitte diesen
+weiteren Kanal hinzu, ehe Sie auf das neue Paketmodell wechseln.")))
+
  (entry (commit "8b7208cb8e6b3de3d26c9cc5129a0024d3900642")
         (title
          (en "Translations moved to Codeberg")
