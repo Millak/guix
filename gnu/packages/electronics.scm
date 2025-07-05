@@ -561,12 +561,12 @@ The following features are currently available:
 
 (define-public opensta
   ;; There are no releases, we use last commit.
-  (let ((commit "eb8d39a7dd81b5ca2582ad9bbce0fb6e094b3e0f")
+  (let ((commit "12f03395ec80d3593f4796b2a3cf5480e75735bd")
         (revision "0"))
     (package
       (name "opensta")
       ;; The version string is taken from the CMakeLists.txt.
-      (version (git-version "2.6.2" revision commit))
+      (version (git-version "2.7.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -575,20 +575,27 @@ The following features are currently available:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0bpc7fj4pd5713yny2vrh542jbag1kj20g0ji01c9scqb9av5qw5"))))
+          (base32 "1gka50p4wv2b49d8jbw5fs3qg7cppa8ynl3diqgdf8mqgskwapzf"))))
       (build-system cmake-build-system)
       (arguments
        (list
+        ;; Tests expect output sta binary inside source tree.
+        #:out-of-source? #f
         #:phases
         #~(modify-phases %standard-phases
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
-                  (invoke "../source/test/regression")))))
+                  (invoke "../test/regression"))))
+            (add-before 'build 'create-build-dir
+              (lambda _
+                (mkdir-p "./build")
+                (chdir "./build"))))
         #:configure-flags
         #~(list
            (string-append "-DCUDD_DIR=" #$(this-package-input "cudd"))
-           (string-append "-DBUILD_SHARED_LIBS=YES"))))
+           (string-append "-DBUILD_SHARED_LIBS=YES")
+           "-B./build")))
       (native-inputs (list bison flex swig))
       (inputs (list cudd eigen tcl tcllib zlib))
       (synopsis "Parallax Static Timing Analyzer")
