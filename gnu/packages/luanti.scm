@@ -466,7 +466,7 @@ closely as the engine allows.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://notabug.org/TenPlus1/mobs_redo")
+             (url "https://codeberg.org/tenplus1/mobs_redo")
              (commit "6a4a02f3fbf1038c69e72aaafa52a1e7d6106da8")))
        (sha256
         (base32 "0vgv7jpm9v3dwq4l9jxdd5z14yq164w8kin1d05jfv3ck4hwlwvr"))
