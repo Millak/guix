@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -77,6 +77,10 @@
   (if (string=? %manual "guix-cookbook")
       %cookbook-languages
       %manual-languages))
+
+(define %latest-guix-version
+  ;; Latest released version.
+  "1.4.0")
 
 (define (texinfo-manual-images source)
   "Return a directory containing all the images used by the user manual, taken
@@ -627,6 +631,7 @@ its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
 
 (define* (stylized-html source input
                         #:key
+                        (latest-version %latest-guix-version)
                         (languages %languages)
                         (manual %manual)
                         (manual-css-url %manual-css-url))
@@ -675,6 +680,14 @@ in SOURCE."
 	                 (href ,url))
                       ,label)))
 
+            (define menu-item-separator
+              ;; Thin horizontal line to separate drop-down menu items.
+              `(img (@ (class "hline")
+                       (src ,(in-vicinity
+                              #$%web-site-url
+                              "themes/initial/img/h-separator.png"))
+                       (alt ""))))
+
             (define* (navigation-bar menus #:key split-node?)
               ;; Return the navigation bar showing all of MENUS.
               `(header (@ (class "navbar"))
@@ -721,7 +734,42 @@ in SOURCE."
                                   "https://translate.fedoraproject.org/projects/guix/documentation-cookbook/"
                                   "https://translate.fedoraproject.org/projects/guix/documentation-manual/")))))
 
-            (define (stylized-html sxml file)
+            (define (version-menu-items language split-node?)
+              ;; Return the menu items to select the version of the manual of
+              ;; the type of medium (PDF, split-node, etc.).
+              (define language-extension
+                (if (string=? language "en")
+                    ""
+                    (string-append "." language)))
+
+              (define pdf-link
+                (string-append (if split-node? "../" "")
+                               #$manual language-extension ".pdf"))
+
+              (define version-links
+                (list (menu-item #$latest-version
+                                 (string-append
+                                  "/manual/" language
+                                  (if split-node? "/html_node" "")))
+                      (menu-item "development"
+                                 (string-append
+                                  "/manual/devel/" language
+                                  (if split-node? "/html_node" "")))
+                      menu-item-separator))
+
+              (append (if (string=? #$manual "guix")
+                          version-links
+                          '())
+                      (list (if split-node?
+                                (menu-item "single page"
+                                           (string-append "../" #$manual
+                                                          language-extension
+                                                          ".html"))
+                                (menu-item "multiple pages"
+                                           "html_node"))
+                            (menu-item "PDF" pdf-link))))
+
+            (define (stylized-html sxml file language)
               ;; Return SXML, which was read from FILE, with additional
               ;; styling.
               (define split-node?
@@ -744,9 +792,16 @@ in SOURCE."
                             ;; TODO: Add "Contribute" menu, to report
                             ;; errors, etc.
                             (list (menu-dropdown
+                                   #:label "Version"
+                                   #:items
+                                   (version-menu-items language
+                                                       split-node?))
+                                  (menu-dropdown
                                    #:label
                                    `(img (@ (alt "Language")
-                                            (src "/themes/initial/img/language-picker.svg")))
+                                            (src #$(string-append
+                                                    %web-site-url
+                                                    "/themes/initial/img/language-picker.svg"))))
                                    #:items
                                    (language-menu-items file)))
                             #:split-node? split-node?)
@@ -758,19 +813,28 @@ in SOURCE."
                   ((? string? str)
                    str))))
 
-            (define (process-html file)
+            (define (process-html file language)
               ;; Parse FILE and add links to translations.  Install the result
               ;; to #$output.
               (format (current-error-port) "processing ~a...~%" file)
               (let* ((shtml        (parameterize ((%strict-tokenizer? #t))
                                      (call-with-input-file file html->shtml)))
-                     (processed    (stylized-html shtml file))
+                     (processed    (stylized-html shtml file language))
                      (base         (string-drop file (string-length #$input)))
                      (target       (string-append #$output base)))
                 (mkdir-p (dirname target))
                 (call-with-output-file target
                   (lambda (port)
                     (write-shtml-as-html processed port)))))
+
+            (define (input-file-language file)
+              ;; Return the language code of FILE, an input file, as a string
+              ;; like "sv" or "zh-cn".
+              (match (string-tokenize (string-drop file
+                                                   (string-length #$input))
+                                      (char-set-complement
+                                       (char-set #\/)))
+                ((language _ ...) language)))
 
             ;; Install a UTF-8 locale so we can process UTF-8 files.
             (setenv "GUIX_LOCPATH"
@@ -782,7 +846,8 @@ in SOURCE."
             (n-par-for-each (parallel-job-count)
                             (lambda (file)
                               (if (string-suffix? ".html" file)
-                                  (process-html file)
+                                  (let ((language (input-file-language file)))
+                                    (process-html file language))
                                   ;; Copy FILE as is to #$output.
                                   (let* ((base   (string-drop file (string-length #$input)))
                                          (target (string-append #$output base)))
