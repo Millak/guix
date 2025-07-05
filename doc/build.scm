@@ -184,11 +184,12 @@ as well as images, OS examples, and translations."
 (define %web-site-url
   ;; URL of the web site home page.
   (or (getenv "GUIX_WEB_SITE_URL")
-      "/software/guix/"))
+      "/"))
 
 (define %manual-css-url
   ;; URL of the main CSS file.
-  "/themes/initial/css/manual.css")
+  (in-vicinity %web-site-url
+               "themes/initial/css/manual.css"))
 
 (define %makeinfo-html-options
   ;; Options passed to 'makeinfo --html'.
