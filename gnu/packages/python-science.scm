@@ -1,11 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2020-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2018, 2020-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2021-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
@@ -14,15 +15,17 @@
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 kiasoc5 <kiasoc5@tutanota.com>
 ;;; Copyright © 2022, 2024 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Marco Baggio <marco.baggio@mdc-berlin.de>
@@ -4329,6 +4332,108 @@ correlation coefficient
 and more
 @end itemize")
     (license license:gpl3)))
+
+(define-public python-plotly
+  (package
+    (name "python-plotly")
+    (version "5.20.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/plotly/plotly.py")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i22sv8p3kl84nkldbv1253kld85rbwp2pdxivxn64wwflfpqvx6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; 2658 passed, 18 skipped, 38 deselected, 574 warnings
+      #~(list "-k" (string-join
+                    ;; python-polars is not packaged yet.
+                    (list "not test_build_df_from_vaex_and_polars"
+                          "test_build_df_with_hover_data_from_vaex_and_polars"
+                          ;; ValueError
+                          "test_bytesio"
+                          "test_ensure_orca_ping_and_proc"
+                          "test_kaleido_engine_to_image_returns_bytes"
+                          "test_kaleido_fulljson"
+                          "test_latex_fig_to_image[eps]"
+                          "test_mimetype_combination"
+                          "test_orca_version_number"
+                          "test_pdf_renderer_show_override"
+                          "test_png_renderer_mimetype"
+                          "test_problematic_environment_variables[eps]"
+                          "test_server_timeout_shutdown"
+                          "test_simple_to_image[eps]"
+                          "test_svg_renderer_show"
+                          "test_to_image_default[eps]"
+                          "test_topojson_fig_to_image[eps]"
+                          "test_validate_orca"
+                          "test_write_image_string[eps]"
+                          "test_write_image_string_bad_extension_override"
+                          "test_write_image_string_format_inference[eps]"
+                          "test_write_image_writeable[eps]"
+                          ;; XXX: check why these tests fail
+                          "test_dependencies_not_imported"
+                          "test_external_server_url"
+                          "test_invalid_figure_json"
+                          "test_lazy_imports"
+                          "test_legend_dots"
+                          "test_linestyle"
+                          "test_orca_executable_path"
+                          "test_sanitize_json[auto]"
+                          "test_sanitize_json[json]"
+                          "test_scraper"
+                          "test_write_image_string_bad_extension_failure")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'skip-npm
+            ;; npm is not packaged so build without it
+            (lambda _
+              (setenv "SKIP_NPM" "T")))
+          (add-after 'unpack 'fix-version
+            ;; TODO: Versioneer in Guix gets its release version from the
+            ;; parent directory, but the plotly package is located inside a
+            ;; depth 3 subdirectory.  Try to use versioneer if possible.
+            (lambda _
+              (substitute* "packages/python/plotly/setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version)))
+              (substitute* "packages/python/plotly/plotly/version.py"
+                (("__version__ = get_versions\\(\\)\\[\"version\"\\]")
+                 (format #f "__version__ = ~s" #$version)))))
+          (add-after 'fix-version 'chdir
+            (lambda _
+              (chdir "packages/python/plotly"))))))
+    (native-inputs
+     (list python-ipywidgets
+           python-pytest
+           python-setuptools
+           python-wheel
+           python-xarray))
+    (propagated-inputs
+     (list python-ipython
+           python-pandas
+           python-pillow
+           ;; python-polars
+           python-requests
+           python-retrying
+           python-scikit-image
+           python-statsmodels
+           python-tenacity
+           python-vaex-core))
+    (home-page "https://plotly.com/python/")
+    (synopsis "Interactive plotting library for Python")
+    (description
+     "Plotly's Python graphing library makes interactive,publication-quality
+graphs online.  Examples of how to make line plots, scatter plots, area
+charts, bar charts, error bars, box plots, histograms, heatmaps, subplots,
+multiple-axes, polar charts, and bubble charts.")
+    (license license:expat)))
 
 (define-public python-plotnine
   (package
