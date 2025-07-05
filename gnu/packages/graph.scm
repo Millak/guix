@@ -366,35 +366,6 @@ plots, area charts, bar charts, error bars, box plots, histograms, heatmaps,
 subplots, multiple-axes, polar charts, and bubble charts.")
     (license license:expat)))
 
-(define-public python-plotly-2.4.1
-  (package (inherit python-plotly)
-    (version "2.4.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "plotly" version))
-        (sha256
-         (base32
-          "0s9gk2fl53x8wwncs3fwii1vzfngr0sskv15v3mpshqmrqfrk27m"))))
-   (native-inputs '())
-   (propagated-inputs
-    (list python-decorator
-          python-nbformat
-          python-pandas
-          python-pytz
-          python-requests
-          python-six))
-   (arguments
-    (list
-     #:tests? #false ;The tests are not distributed in the release
-     #:phases
-     '(modify-phases %standard-phases
-        (add-after 'unpack 'python-compatibility
-          (lambda _
-            (substitute* "plotly/grid_objs/grid_objs.py"
-              (("from collections import MutableSequence")
-               "from collections.abc import MutableSequence")))))))))
-
 (define-public python-louvain
   (package
     (name "python-louvain")
