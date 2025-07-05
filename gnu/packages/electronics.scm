@@ -767,7 +767,7 @@ design.")
 (define-public python-vsg
   (package
     (name "python-vsg")
-    (version "3.31.0")
+    (version "3.32.0")
     (source
      (origin
        (method git-fetch)
@@ -776,7 +776,7 @@ design.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08na5iwn6f1gkvklbslhrvdsk9kcqf7hdcn7g27fy0dr6xw9kd82"))))
+        (base32 "0ql96n291zm4j324q8fmlvy8xvrksb8v6fip0g0sw374z86hda53"))))
     (build-system pyproject-build-system)
     (arguments
      (list
