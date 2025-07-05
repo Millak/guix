@@ -2903,12 +2903,12 @@ the bandwidth, loss, and other parameters.")
     (inputs
      (list libpcap ncurses))
     (arguments
-     `(#:make-flags `(,,(string-append "CC=" (cc-for-target))
-                      ,(string-append "PREFIX=" %output)
-                      ,(string-append "VERSION=" ,version))
+     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output)
+                                (string-append "VERSION=" #$version))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no ./configure script.
+       #~(modify-phases %standard-phases
+           (delete 'configure))))         ; no ./configure script.
     (home-page "https://github.com/raboof/nethogs")
     (synopsis "Per-process bandwidth monitor")
     (description "NetHogs is a small 'net top' tool for Linux.  Instead of
