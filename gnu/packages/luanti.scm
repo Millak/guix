@@ -546,7 +546,7 @@ surface or deep underground.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/VanessaE/pipeworks")
+             (url "https://github.com/mt-mods/pipeworks")
              (commit "db6d1bd9c109e1e543b97cc3fa8a11400da23bcd")))
        (sha256
         (base32 "1flhcnf17dn1v86kcg47a1n4cb0lybd11ncxrkxn3wmf10ibsrm0"))
