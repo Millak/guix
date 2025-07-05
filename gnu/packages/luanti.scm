@@ -522,14 +522,14 @@ bunnies, chickens, cows, kittens, rats, sheep, warthogs, penguins and pandas.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://notabug.org/TenPlus1/mobs_monster")
+             (url "https://codeberg.org/tenplus1/mobs_monster")
              (commit "1b197f9ae136179a764ef45824464b667ade52e6")))
        (sha256
         (base32 "15g8acrzvsiccxchfmgjhyf2lmkbrpdjqv3v7hmqz7xqypi8wm3h"))
        (file-name (git-file-name name version))))
     (build-system luanti-mod-build-system)
     (propagated-inputs (list luanti-mobs))
-    (home-page "https://notabug.org/TenPlus1/mobs_monster")
+    (home-page "https://codeberg.org/tenplus1/mobs_monster")
     (synopsis "Add monsters with Mobs Redo on luanti")
     (description
      "This Luanti mod adds many types of monsters to Luanti, that live on the
