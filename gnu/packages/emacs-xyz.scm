@@ -29930,6 +29930,35 @@ sections for bookmarks, Projectile projects, Org Agenda and more.")
     (description "Lightweight yet very flexible startup screen for Emacs.")
     (license license:gpl3+)))
 
+(define-public emacs-grid
+  ;; No tags; use latest commit
+  (let ((commit "b9f6022539e1082c9117c3de137796a905ccc66d")
+        (revision "0"))
+    (package
+      (name "emacs-grid")
+      ;; Taken from source code
+      (version (git-version "0.1-pre" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ichernyshovvv/grid.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "075rb6nvazh8jkz5clykn3hrv874mffmdzqlz6iqp127vpx3cpgx"))))
+      (build-system emacs-build-system)
+      (arguments
+       ;; No tests
+       (list #:tests? #f))
+      (synopsis "Library for putting text into boxes and align these boxes")
+      (description
+       "This library allows you to put text data into boxes and align them
+horizontally, applying margin, padding, borders.")
+      (home-page "https://github.com/ichernyshovvv/grid.el")
+      (license license:gpl3+))))
+
 (define-public emacs-slime-company
   (package
     (name "emacs-slime-company")
