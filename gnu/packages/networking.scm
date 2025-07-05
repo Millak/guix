@@ -3898,12 +3898,12 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.7.2")
+    (version "0.7.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Stiffstream/restinio")
-                    (commit (string-append "v." version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
