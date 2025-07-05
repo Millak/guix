@@ -183,3 +183,15 @@ index d973de53c8c..8888c7b4fac 100644
  }
  
  /**
+diff -ru a/mcs/class/System.Configuration/System.Configuration/SectionGroupInfo.cs b/mcs/class/System.Configuration/System.Configuration/SectionGroupInfo.cs
+--- a/mcs/class/System.Configuration/System.Configuration/SectionGroupInfo.cs	2025-07-05 12:28:26.634141555 +0200
++++ b/mcs/class/System.Configuration/System.Configuration/SectionGroupInfo.cs	2025-07-05 12:28:53.620591274 +0200
+@@ -293,7 +293,7 @@
+ 					continue;
+ 				}
+ 
+-				if (reader.LocalName == "dllmap") {
++				if (reader.LocalName == "dllmap" || reader.LocalName == "runpath") {
+ 					reader.Skip ();
+ 					continue;
+ 				}
