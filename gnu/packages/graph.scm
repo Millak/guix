@@ -665,35 +665,39 @@ of millions of nodes (as long as they can fit in memory).")
     (version "0.10.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "leidenalg" version))
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/vtraag/leidenalg")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0k1f35bmgff8vc5fcyqa2dqfa1x17rb0vqzwkdqlm0sr5fllfh8g"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f                      ;tests are not included
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("self.external = False")
-                         "self.external = True")
-                        (("self.use_pkgconfig = False")
-                         "self.use_pkgconfig = True")
-                        (("python-igraph >=")
-                         "igraph >=")))))))
+        (base32 "0p46g8drpnsciphy3iagrkagzh8hi3l5xmdab00q9z812bwdb951"))))
+    (build-system pyproject-build-system)
+   (arguments
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-before 'build 'pretend-version
+           (lambda _
+             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list pkg-config python-setuptools-scm))
+     (list pkg-config
+           python-ddt
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (inputs
-     (list igraph libleidenalg))
+     (list igraph
+           libleidenalg))
     (propagated-inputs
      (list python-igraph))
     (home-page "https://github.com/vtraag/leidenalg")
     (synopsis "Community detection in large networks")
-    (description "Leiden is a general algorithm for methods of community
-detection in large networks and is an extension of the Louvain algorithm. This
-packages provides a Python wrapper to the C++ implementation.")
+    (description
+     "Leiden is a general algorithm for methods of community detection in
+large networks and is an extension of the Louvain algorithm. This packages
+provides a Python wrapper to the C++ implementation.")
     (license license:gpl3+)))
 
 (define-public edge-addition-planarity-suite
