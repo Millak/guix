@@ -354,7 +354,7 @@ coloured and cut wood shapes are provided as well.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://notabug.org/TenPlus1/ethereal")
+               (url "https://codeberg.org/tenplus1/ethereal")
                (commit commit)))
          (sha256
           (base32 "1hal8bq4fydsip7s8rqz4vlaaqy9rhzxmryd0j2qnqm9286yjgkk"))
