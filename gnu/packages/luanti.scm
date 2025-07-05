@@ -495,7 +495,7 @@ add some mobs, a mod like e.g. @code{mobs_animal} provided by the
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://notabug.org/TenPlus1/mobs_animal")
+             (url "https://codeberg.org/tenplus1/mobs_animal")
              (commit "3e15456bce7779aa0dc09a8890f7b5180c1ac771")))
        (sha256
         (base32 "08686mj3jh8fsziqp878jpaj5267s4n6i86dr1gnxyxbsrjraqpn"))
@@ -503,7 +503,7 @@ add some mobs, a mod like e.g. @code{mobs_animal} provided by the
     (build-system luanti-mod-build-system)
     (propagated-inputs
      (list luanti-mobs))
-    (home-page "https://notabug.org/TenPlus1/mobs_animal")
+    (home-page "https://codeberg.org/tenplus1/mobs_animal")
     (synopsis "Add animals to Luanti")
     (description
      "This Luanti mod adds various animals to Luanti, such as bees,
