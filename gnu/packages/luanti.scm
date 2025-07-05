@@ -691,7 +691,7 @@ to and from the file system.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/VanessaE/unifieddyes")
+             (url "https://github.com/mt-mods/unifieddyes")
              (commit "ff3b2d30fa0df5c7181fdd401b989de6271c3bb3")))
        (sha256
         (base32 "0rba9n192xcpmxwnq7ixb6mn32gkpic247j3w4mwinrqcyscacsv"))
