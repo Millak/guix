@@ -322,7 +322,7 @@ like steel bars and chains, wire, plastic strips and sheets, and more.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/VanessaE/coloredwood")
+             (url "https://github.com/mt-mods/coloredwood")
              (commit "be4df6fc889419155bed8638bbb752493e78cbd5")))
        (sha256
         (base32 "1swirfk6b4xfbiwv8adyw5yl2lyfpp8ymfipzq9ivyvmif8nl3ki"))
