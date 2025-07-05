@@ -168,6 +168,41 @@
 convert images in more than 100 different formats.")
     (license license:gpl3+)))
 
+(define-public gradia
+  (package
+    (name "gradia")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/AlexanderVanhee/Gradia")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "07hal4h3kkjf7la02nqmqgw19sa6hkd130bkfmgwjimkv9zi8z2i"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-gtk-update-icon-cache
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false")
+                     (("update_desktop_database: true")
+                      "update_desktop_database: false")))))))
+    (inputs (list gtk libadwaita python python-pygobject))
+    (native-inputs
+     (list blueprint-compiler gettext-minimal `(,glib "bin") pkg-config))
+    (home-page "https://github.com/AlexanderVanhee/Gradia")
+    (synopsis "Edit screenshots")
+    (description "Gradia is a GTK 4 application for enhancing and preparing
+screenshots for blogs, social media, and documentation.  It supports background
+customization, annotation tools (pen, arrow, text, highlight, stamp), padding,
+cropping, and various export formats.")
+    (license license:gpl3+)))
+
 (define-public iqa
   (package
     (name "iqa")
