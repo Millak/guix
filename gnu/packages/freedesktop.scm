@@ -34,7 +34,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
-;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024-2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2022 Samuel Culpepper <sculpepper@newstore.com>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
@@ -3329,6 +3329,10 @@ compatible with the well-known scripts of the same name.")
              (for-each (lambda (po)
                          (chmod po #o666))
                        (find-files "po" "\\.po$"))))
+         (add-before 'configure 'relax-gcc-14-strictness
+           (lambda _
+             (setenv "CFLAGS"
+                     "-g -O2 -Wno-error=incompatible-pointer-types")))
          (add-after 'unpack 'set-home-directory
            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
