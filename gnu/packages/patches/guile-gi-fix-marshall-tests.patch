@@ -1,0 +1,27 @@
+From 776c456dc767a261e026865ab5c3a76fe68ff4a2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?No=C3=A9=20Lopez?= <noelopez@free.fr>
+Date: Tue, 12 Aug 2025 12:30:31 +0200
+Subject: [PATCH] Fix marshall tests
+
+See <https://github.com/spk121/guile-gi/pull/142>.
+
+---
+ test/marshall.scm | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/marshall.scm b/test/marshall.scm
+index e15b3ee..fd826de 100644
+--- a/test/marshall.scm
++++ b/test/marshall.scm
+@@ -23,7 +23,7 @@
+               (("Marshall" "1.0")
+                #:renamer (protect* '(sizeof short int long size_t)))
+               (("GLib" "2.0")
+-               #:renamer (protect* '(test-equal test-assert test-skip))))
++               #:renamer (protect* '(test-equal test-assert test-skip int))))
+ 
+ (define-syntax-rule (boolarray-input f)
+   (test-assert (symbol->string (quote f))
+-- 
+2.50.1
+

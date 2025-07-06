@@ -4476,37 +4476,40 @@ list of components.  This module takes care of that for you.")
     (license license:lgpl3+)))
 
 (define-public guile-gi
+  (let ((commit "388653ac9e95802d1a69c585aef1d60e35e6b71c")
+        (revision "0"))
   (package
     (name "guile-gi")
-    (version "0.3.2")
+    (version (git-version "0.3.2" revision commit))
     (source (origin
-              (method url-fetch)
-              (uri (string-append "http://lonelycactus.com/tarball/guile_gi-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/spk121/guile-gi.git")
+                     (commit commit)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "019mbhgyga57k2074kg97mh3qsa8ny9l0kjgqids8cg3c6vbjdby"))))
+                "1ndzqbgy5jbfm2fan6y31xfxdxglzjhgqib4c34b3w5inxzkrm6v"))
+              (patches (search-patches "guile-gi-fix-marshall-tests.patch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags '("CFLAGS=-Wno-error=incompatible-pointer-types"
-                           "--with-gnu-filesystem-hierarchy")
+                           "--with-gnu-filesystem-hierarchy"
+                           "--enable-hardening")
        #:modules ((guix build glib-or-gtk-build-system)
                   (guix build utils)
                   (ice-9 popen)
                   (ice-9 rdelim))
-       #:disallowed-references ,(list gtk+ webkitgtk-for-gtk3)
+       #:disallowed-references ,(list grilo gtk+)
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-dotted-circle-from-combining-character
-           ;; The test/string.scm files contain ◌̀, which is a dotted circle
-           ;; (U+25cc) followed by an upper combining character (U+0300). The
-           ;; old guile 3.0.2 reader incorrectly ignores the dotted circle,
-           ;; and parses it as the combining character alone, but the new
-           ;; guile reader does not.
-           ;; See https://github.com/spk121/guile-gi/issues/112
-           (lambda* _
-             (substitute* "test/string.scm"
-               (("#\\\\◌̀") "#\\x0300"))))
+         (add-after 'unpack 'disable-failing-tests
+           (lambda _
+             (substitute* "test/value.scm"
+               ;; This test segfaults sometimes. Reported at
+               ;; <https://github.com/spk121/guile-gi/issues/143>.
+               (("\\(test-equal \"inout-closure\"")
+                "#;(test-equal \"inout-closure\""))))
          (add-after 'unpack 'patch-references-to-extension
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((effective (read-line
@@ -4534,20 +4537,25 @@ list of components.  This module takes care of that for you.")
              (setenv "DISPLAY" ":1")
              #t)))))
     (native-inputs
-     (list gettext-minimal
+     (list autoconf
+           automake
+           texinfo
+           gettext-minimal
            `(,glib "bin") ; for glib-compile-resources
-           libtool pkg-config xorg-server))
+           grilo
+           gtk+
+           libtool
+           pkg-config
+           xorg-server-for-tests))
     (propagated-inputs (list gobject-introspection))
-    (inputs (list guile-3.0 glib
-                  ;; For tests, only relevant when compiling natively
-                  gtk+ webkitgtk-for-gtk3))
+    (inputs (list guile-3.0 glib))
     (home-page "https://github.com/spk121/guile-gi")
     (synopsis "GObject bindings for Guile")
     (description
      "Guile-GI is a library for Guile that allows using GObject-based
 libraries, such as GTK+3.  Its README comes with the disclaimer: This is
 pre-alpha code.")
-    (license license:gpl3+)))
+    (license license:gpl3+))))
 
 (define-public guile2.2-gi
   (package
