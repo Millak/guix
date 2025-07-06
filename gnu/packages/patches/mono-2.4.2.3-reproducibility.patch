@@ -45,3 +45,60 @@ diff -ru orig/mono-1.9.1-checkout/mono/metadata/reflection.c mono-1.9.1-checkout
  	header->coff.coff_opt_header_size = GUINT16_FROM_LE (sizeof (MonoDotNetHeader) - sizeof (MonoCOFFHeader) - 4);
  	if (assemblyb->pekind == 1) {
  		/* it's a dll */
+--- orig/mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil/ModuleDefinition.cs	2025-06-09 12:02:28.730111085 +0200
++++ mono-1.9.1-checkout/mcs/class/Mono.Cecil/Mono.Cecil/ModuleDefinition.cs	2025-07-06 22:58:49.428864166 +0200
+@@ -157,7 +157,7 @@
+ 			m_asm = asm;
+ 			m_main = main;
+ #if !CF_1_0
+-			m_mvid = Guid.NewGuid ();
++			m_mvid = new Guid ("00000000-0000-0000-0000-000000000000");
+ #endif
+ 			if (reader != null) {
+ 				m_image = reader.Image;
+--- orig/mono-1.9.1-checkout/mcs/tools/linker/Mono.Linker.Steps/RegenerateGuidStep.cs	2025-06-09 12:02:29.661239244 +0200
++++ mono-1.9.1-checkout/mcs/tools/linker/Mono.Linker.Steps/RegenerateGuidStep.cs	2025-07-06 23:24:40.832000925 +0200
+@@ -42,7 +42,7 @@
+ 
+ 		static void RegenerateGuid (AssemblyDefinition asm)
+ 		{
+-			asm.MainModule.Mvid = Guid.NewGuid ();
++			asm.MainModule.Mvid = new Guid ("00000000-0000-0000-0000-000000000000");
+ 		}
+ 	}
+ }
+ --- orig/mono-1.9.1-checkout/mcs/class/PEAPI/Metadata.cs	2025-06-09 12:02:28.806649345 +0200
++++ mono-1.9.1-checkout/mcs/class/PEAPI/Metadata.cs	2025-07-06 23:27:43.307602709 +0200
+@@ -2689,7 +2689,7 @@
+ 
+ 		internal Module(string name, MetaData md) : base(name,md)       
+ 		{
+-			mvid = Guid.NewGuid();
++			mvid = new Guid ("00000000-0000-0000-0000-000000000000"); // not actually used
+ 			mvidIx = md.AddToGUIDHeap(mvid);
+ 			tabIx = MDTable.Module;
+ 		}
+--- orig/mono-1.9.1-checkout/mcs/tools/monodoc/Monodoc/provider.cs	2025-06-09 12:02:29.686320502 +0200
++++ mono-1.9.1-checkout/mcs/tools/monodoc/Monodoc/provider.cs	2025-07-07 00:16:31.017632290 +0200
+@@ -638,6 +638,10 @@
+ 	void PackStream (Stream s, string entry_name, string realPath)
+ 	{
+ 		ZipEntry entry = new ZipEntry (entry_name);
++		string epoch = Environment.GetEnvironmentVariable("SOURCE_DATE_EPOCH");
++		if (epoch != null && epoch != "") {
++			entry.DateTime = new DateTime(1970, 1, 1).AddSeconds(long.Parse(epoch));
++		}
+ 				
+ 		if (realPath != null)
+ 			entry.ExtraData = ConvertToArray (realPath);
+@@ -653,6 +657,11 @@
+ 	public void PackXml (string fname, XmlDocument doc, string real_path)
+ 	{ 
+ 		ZipEntry entry = new ZipEntry (fname); 
++		string epoch = Environment.GetEnvironmentVariable("SOURCE_DATE_EPOCH");
++		if (epoch != null && epoch != "") {
++			entry.DateTime = new DateTime(1970, 1, 1).AddSeconds(long.Parse(epoch));
++		}
++
+ 		if (real_path != null) 
+ 			entry.ExtraData = ConvertToArray(real_path);
