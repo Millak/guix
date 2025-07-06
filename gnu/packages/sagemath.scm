@@ -520,7 +520,7 @@ database.")
     (description
      "SageMath is a mathematics software built on top of many existing
 packages such as NumPy, SciPy, Matplotlib, Sympy, Maxima, GAP, FLINT,
-R and others. Their combined power may be accessed through a common,
+R and others.  Their combined power may be accessed through a common,
 Python-based language or directly via interfaces or wrappers.")
     ;; Documentation under cc-by-sa3.0, see COPYING.txt in the distribution.
     (license license:gpl3)))
