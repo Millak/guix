@@ -1,0 +1,47 @@
+from https://salsa.debian.org/science-team/pandas/-/raw/main/debian/patches/no_pytz_datetime.patch
+
+Description: datetime does not work with non-constant pytz.timezone
+
+This has always been the case (and is explicitly warned about
+in the pytz documentation), but became a test fail when
+tzdata 2024b changed 'CET' and similar to aliases.
+
+Author: Rebecca N. Palmer <rebecca_palmer@zoho.com>
+Forwarded: no
+
+--- a/pandas/tests/arrays/test_array.py
++++ b/pandas/tests/arrays/test_array.py
+@@ -272,7 +272,8 @@ def test_array_copy():
+     assert tm.shares_memory(a, b)
+
+ 
+-cet = pytz.timezone("CET")
++cetfixed = pytz.timezone("Etc/GMT-1") # the wrong-looking sign is because Etc/* use posix convention, as described in the tzdata source
++cetwithdst = pytz.timezone("Europe/Brussels")
+
+ 
+ @pytest.mark.parametrize(
+@@ -313,11 +314,20 @@ cet = pytz.timezone("CET")
+         ),
+         (
+             [
+-                datetime.datetime(2000, 1, 1, tzinfo=cet),
+-                datetime.datetime(2001, 1, 1, tzinfo=cet),
++                datetime.datetime(2000, 1, 1, tzinfo=cetfixed),
++                datetime.datetime(2001, 1, 1, tzinfo=cetfixed),
+             ],
+             DatetimeArray._from_sequence(
+-                ["2000", "2001"], dtype=pd.DatetimeTZDtype(tz=cet, unit="ns")
++                ["2000", "2001"], dtype=pd.DatetimeTZDtype(tz=cetfixed, unit="ns")
++            ),
++        ),
++        (
++            [
++                cetwithdst.localize(datetime.datetime(2000, 1, 1)),
++                cetwithdst.localize(datetime.datetime(2001, 1, 1)),
++            ],
++            DatetimeArray._from_sequence(
++                ["2000", "2001"], dtype=pd.DatetimeTZDtype(tz=cetwithdst, unit="ns")
+             ),
+         ),
+         # timedelta

@@ -3167,7 +3167,8 @@ doing practical, real world data analysis in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00f6jnplwg7iffnxdm4hpfls0ncbarc23933xq1rm5nk5g8dcldx"))))
+        (base32 "00f6jnplwg7iffnxdm4hpfls0ncbarc23933xq1rm5nk5g8dcldx"))
+       (patches (search-patches "python-pandas-2-no-pytz_datetime.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
