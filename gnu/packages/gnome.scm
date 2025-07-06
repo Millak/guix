@@ -4114,7 +4114,12 @@ designed to be accessed through the MIME functions in GnomeVFS.")
                 "1ajg8jb8k3snxc7rrgczlh8daxkjidmcv3zr9w809sq4p2sn9pk2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       ;; Add CFLAGS to relax gcc-14's strictness.
+       (list (string-append
+              "CFLAGS=-g -O2"
+              " -Wno-error=implicit-function-declaration"))
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'ignore-deprecations
            (lambda _
