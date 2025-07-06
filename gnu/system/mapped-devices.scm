@@ -256,7 +256,7 @@ requests is allowed for the underlying device."
                    (zero? (apply system*/tty cryptsetup
                                  cryptsetup-flags))))))))))
 
-(define (close-luks-device source targets)
+(define* (close-luks-device source targets #:rest _)
   "Return a gexp that closes TARGET, a LUKS device."
   (match targets
     ((target)
@@ -296,7 +296,9 @@ requests is allowed for the underlying device."
               ((gnu build file-systems)
                #:select (find-partition-by-luks-uuid system*/tty))))))
 
-(define* (luks-device-mapping-with-options #:key key-file allow-discards?)
+(define-deprecated (luks-device-mapping-with-options #:key
+                                                     key-file allow-discards?)
+  mapped-device-arguments
   "Return a luks-device-mapping object with open modified to pass the arguments
 into the open-luks-device procedure."
   (mapped-device-kind

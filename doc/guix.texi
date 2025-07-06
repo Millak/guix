@@ -18641,6 +18641,9 @@ This must be a @code{mapped-device-kind} object, which specifies how
 @item arguments
 This is a list of arguments specific to @var{type} that are passed to
 its @code{open}, @code{close}, and @code{check} procedures.
+
+As an example, @code{luks-device-mapping} supports keyword
+arguments---see below for details.
 @end table
 @end deftp
 
@@ -18648,15 +18651,13 @@ its @code{open}, @code{close}, and @code{check} procedures.
 This defines LUKS block device encryption using the @command{cryptsetup}
 command from the package with the same name.  It relies on the
 @code{dm-crypt} Linux kernel module.
-@end defvar
 
-@deffn {Procedure} luks-device-mapping-with-options [#:key-file #:allow-discards?]
-Return a @code{luks-device-mapping} object, which defines LUKS block
-device encryption using the @command{cryptsetup} command from the
-package with the same name.  It relies on the @code{dm-crypt} Linux
-kernel module.
+The following options may be passed @i{via} the @code{arguments} field
+of a mapped device:
 
-If @code{key-file} is provided, unlocking is first attempted using that
+@table @code
+@item #:key-file
+If @code{file} is provided, unlocking is first attempted using that
 key file.  This has an advantage of not requiring a password entry, so
 it can be used (for example) to unlock RAID arrays automatically on
 boot.  If key file unlock fails, password unlock is attempted as well.
@@ -18669,19 +18670,19 @@ given location at the time of the unlock attempt.
 (mapped-device
  (source "/dev/sdb1)
  (target "data)
- (type (luks-device-mapping-with-options
-        #:key-file "/crypto.key")))
+ (type luks-device-mapping)
+ (arguments '(#:key-file "/crypto.key")))
 @end lisp
 
-
+@item #:allow-discards?
 @code{allow-discards?} allows the use of discard (TRIM) requests for the
 underlying device.  This is useful for solid state drives.  However,
 this option can have a negative security impact because it can make
 file system level operations visible on the physical device.  For more
 information, refer to the description of the @code{--allow-discards}
 option in the @code{cryptsetup-open(8)} man page.
-
-@end deffn
+@end table
+@end defvar
 
 @defvar raid-device-mapping
 This defines a RAID device, which is assembled using the @code{mdadm}
@@ -46200,19 +46201,19 @@ After it is created, you can use it in this manner:
 @lisp
 ;; Operating system with encrypted boot partition
 (operating-system
-  ...
+  @dots{}
   (bootloader (bootloader-configuration
                (bootloader grub-efi-bootloader)
                (targets '("/boot/efi"))
-               ;; Load the initrd with a key file
+               ;; Load the initrd with a key file...
                (extra-initrd "/key-file.cpio")))
   (mapped-devices
    (list (mapped-device
           (source (uuid "12345678-1234-1234-1234-123456789abc"))
           (target "my-root")
-          (type (luks-device-mapping-with-options
-                 ;; And use it to unlock the root device
-                 #:key-file "/key-file.bin"))))))
+          (type luks-device-mapping)
+          ;; ... and use it to unlock the root device.
+          (arguments '(#:key-file "/key-file.bin"))))))
 @end lisp
 
 Be careful when using this option, since pointing to a file that is not
