@@ -3298,69 +3298,6 @@ pragmas to control it from within your code.  Additionally, it is
 possible to write plugins to add your own checks.")
     (license license:gpl2+)))
 
-(define-public python-setuptools-lint
-  (package
-    (name "python-setuptools-lint")
-    (version "0.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "setuptools-lint" version))
-              (sha256
-               (base32
-                "16a1ac5n7k7sx15cnk03gw3fmslab3a7m74dc45rgpldgiff3577"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-tomli python-pylint))
-    (home-page "https://github.com/johnnoone/setuptools-pylint")
-    (synopsis "Run pylint with @command{python setup.py lint}")
-    (description "This package expose pylint as a lint command into
-setup.py.")
-    (license license:bsd-3)))
-
-(define-public python-paramunittest
-  (package
-    (name "python-paramunittest")
-    (version "0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ParamUnittest" version))
-       (sha256
-        (base32
-         "0kp793hws5xv1wvycxq7jw2pwy36f35k39jg8hx5qikij5a0jid1"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/rik0/ParamUnittest")
-    (synopsis
-     "Simple extension to have parametrized unit tests")
-    (description
-     "This package creates parameterized unit-tests that work with the standard
-unittest package.  A parameterized test case is automatically converted to multiple test
-cases.  Since they are TestCase subclasses, they work with other test suites that
-recognize TestCases.")
-    (license license:bsd-2)))
-
-(define-public python-pytest-warnings
-  (package
-    (name "python-pytest-warnings")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-warnings" version))
-       (sha256
-        (base32
-         "0gf2dpahpl5igb7jh1sr9acj3z3gp7zahqdqb69nk6wx01c8kc1g"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pytest))
-    (home-page "https://github.com/fschulze/pytest-warnings")
-    (synopsis "Pytest plugin to list Python warnings in pytest report")
-    (description
-     "Python-pytest-warnings is a pytest plugin to list Python warnings in
-pytest report.")
-    (license license:expat)
-    (properties `((superseded unquote python-pytest)))))
-
 (define-public python-pytest-capturelog
   (package
     (name "python-pytest-capturelog")
