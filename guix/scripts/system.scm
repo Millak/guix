@@ -680,9 +680,10 @@ procedure of its type."
                             (mapped-device-type md))))
                 ;; We expect CHECK to raise an exception with a detailed
                 ;; '&message' if something goes wrong.
-                (check md
+                (apply check md
                        #:needed-for-boot? (needed-for-boot? md)
-                       #:initrd-modules initrd-modules)))
+                       #:initrd-modules initrd-modules
+                       (mapped-device-arguments md))))
             (operating-system-mapped-devices os)))
 
 (define (check-initrd-modules os)

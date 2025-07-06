@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
@@ -51,6 +51,7 @@
             mapped-device-target
             mapped-device-targets
             mapped-device-type
+            mapped-device-arguments
             mapped-device-location
 
             mapped-device-kind
@@ -83,6 +84,8 @@
   (source    mapped-device-source)                ;string | list of strings
   (targets   mapped-device-targets)               ;list of strings
   (type      mapped-device-type)                  ;<mapped-device-kind>
+  (arguments mapped-device-arguments              ;list passed to open/close/check
+             (default '()))
   (location  mapped-device-location
              (default (current-source-location)) (innate)))
 
@@ -128,13 +131,16 @@ specifications to 'targets'."
    'device-mapping
    (match-lambda
      (($ <mapped-device> source targets
-                         ($ <mapped-device-type> open close modules))
+                         ($ <mapped-device-type> open close modules)
+                         arguments)
       (shepherd-service
        (provision (list (symbol-append 'device-mapping- (string->symbol (string-join targets "-")))))
        (requirement '(udev))
        (documentation "Map a device node using Linux's device mapper.")
-       (start #~(lambda () #$(open source targets)))
-       (stop #~(lambda _ (not #$(close source targets))))
+       (start #~(lambda ()
+                  #$(apply open source targets arguments)))
+       (stop #~(lambda _
+                 (not #$(apply close source targets arguments))))
        (modules (append %default-modules modules))
        (respawn? #f))))
    (description "Map a device node using Linux's device mapper.")))

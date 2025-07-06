@@ -229,7 +229,8 @@ upon error."
                   (targets (mapped-device-targets md))
                   (type    (mapped-device-type md))
                   (open    (mapped-device-kind-open type)))
-             (open source targets)))
+             (apply open source targets
+                    (mapped-device-arguments md))))
          mapped-devices))
 
   (define file-system-scan-commands

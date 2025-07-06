@@ -18637,6 +18637,10 @@ there are several.  The format is identical to @var{target}.
 @item type
 This must be a @code{mapped-device-kind} object, which specifies how
 @var{source} is mapped to @var{target}.
+
+@item arguments
+This is a list of arguments specific to @var{type} that are passed to
+its @code{open}, @code{close}, and @code{check} procedures.
 @end table
 @end deftp
 
