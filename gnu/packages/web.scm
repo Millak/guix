@@ -7099,20 +7099,14 @@ functions of Tidy.")
 (define-public hiawatha
   (package
     (name "hiawatha")
-    (version "10.11")
+    (version "11.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.hiawatha-webserver.org/files/"
                            "hiawatha-" version ".tar.gz"))
-       (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; We use packaged libraries, so delete the bundled copies.
-                   (for-each delete-file-recursively
-                             (list "extra/nghttp2.tgz" "mbedtls"))
-                   #t))
        (sha256
-        (base32 "09wpgilbv13zal71v9lbsqr8c3fignygadykpd1p1pb8blb5vn3r"))))
+        (base32 "1i8vrxbvpcj6yxmshbg19gm9g8vrxds6pdra0sgld4vzj9v4zilr"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests included

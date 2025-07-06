@@ -1024,9 +1024,9 @@ coding footprint.")
 (define-public mbedtls-for-hiawatha
   (hidden-package
    (package
-     (inherit mbedtls-lts)
+     (inherit mbedtls)
      (arguments
-      (substitute-keyword-arguments (package-arguments mbedtls-lts)
+      (substitute-keyword-arguments (package-arguments mbedtls)
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-before 'configure 'configure-extra-features
