@@ -2838,28 +2838,6 @@ enables you to test server connections locally.")
 across test runs.")
     (license license:expat)))
 
-(define-public python-pytest-subtesthack
-  (package
-    (name "python-pytest-subtesthack")
-    (version "0.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-subtesthack" version))
-              (sha256
-               (base32
-                "15kzcr5pchf3id4ikdvlv752rc0j4d912n589l4rifp8qsj19l1x"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pytest))
-    (synopsis "Set-up and tear-down fixtures for unit tests")
-    (description "This plugin allows you to set up and tear down fixtures
-within unit test functions that use @code{py.test}.  This is useful for using
-@command{hypothesis} inside py.test, as @command{hypothesis} will call the
-test function multiple times, without setting up or tearing down fixture state
-as is normally the case.")
-    (home-page "https://github.com/untitaker/pytest-subtesthack/")
-    (license license:unlicense)))
-
 (define-public python-pytest-sugar
   (package
     (name "python-pytest-sugar")
