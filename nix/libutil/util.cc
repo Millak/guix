@@ -223,14 +223,14 @@ Path readLink(const Path & path)
     struct stat st = lstat(path);
     if (!S_ISLNK(st.st_mode))
         throw Error(format("`%1%' is not a symlink") % path);
-    char buf[st.st_size];
-    ssize_t rlsize = readlink(path.c_str(), buf, st.st_size);
+    std::vector<char> buf(st.st_size);
+    ssize_t rlsize = readlink(path.c_str(), buf.data(), st.st_size);
     if (rlsize == -1)
         throw SysError(format("reading symbolic link '%1%'") % path);
     else if (rlsize > st.st_size)
         throw Error(format("symbolic link ‘%1%’ size overflow %2% > %3%")
             % path % rlsize % st.st_size);
-    return string(buf, st.st_size);
+    return string(buf.begin(), buf.end());
 }
 
 
@@ -481,11 +481,11 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 	copyFile(sourceFd, destinationFd);
 	fchown(destinationFd, st.st_uid, st.st_gid);
     } else if (S_ISLNK(st.st_mode)) {
-	char target[st.st_size + 1];
-	ssize_t result = readlinkat(sourceroot, source.c_str(), target, st.st_size);
+    std::vector<char> target(st.st_size + 1);
+	ssize_t result = readlinkat(sourceroot, source.c_str(), target.data(), st.st_size);
 	if (result != st.st_size) throw SysError("reading symlink target");
 	target[st.st_size] = '\0';
-	int err = symlinkat(target, destinationroot, destination.c_str());
+	int err = symlinkat(target.data(), destinationroot, destination.c_str());
 	if (err != 0)
 	    throw SysError(format("creating symlink `%1%'") % destination);
 	fchownat(destinationroot, destination.c_str(),
@@ -749,12 +749,11 @@ string drainFD(int fd)
 
 
 /* Wait on FD until MESSAGE has been read.  */
-void waitForMessage(int fd, const char *message)
+void waitForMessage(int fd, const string & message)
 {
-    size_t size = strlen(message);
-    char str[size] = { '\0' };
-    readFull(fd, (unsigned char*)str, size);
-    if (strncmp(str, message, size) != 0)
+    string str(message.length(), '\0');
+    readFull(fd, (unsigned char*)str.data(), message.length());
+    if (str != message)
 	throw Error(format("did not receive message '%1%' on file descriptor %2%")
 	    % message % fd);
 }
@@ -1348,9 +1347,9 @@ bool hasSuffix(const string & s, const string & suffix)
 
 void expect(std::istream & str, const string & s)
 {
-    char s2[s.size()];
-    str.read(s2, s.size());
-    if (string(s2, s.size()) != s)
+    std::vector<char> s2(s.size());
+    str.read(s2.data(), s2.size());
+    if (string(s2.begin(), s2.end()) != s)
         throw FormatError(format("expected string `%1%'") % s);
 }
 

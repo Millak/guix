@@ -179,7 +179,7 @@ MakeError(EndOfFile, Error)
 /* Read a file descriptor until EOF occurs. */
 string drainFD(int fd);
 
-void waitForMessage(int fd, const char *message);
+void waitForMessage(int fd, const string & message);
 
 
 
