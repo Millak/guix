@@ -165,16 +165,16 @@ comfortable for anyone.")
 (define-public rlwrap
   (package
     (name "rlwrap")
-    (version "0.46.1")
+    (version "0.46.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/hanslub42/rlwrap")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0shck0hb3jssk5l2pfylxgwrhlkwydj2ld6j7qk2ns2zviymg8n8"))))
+        (base32 "0mp3rhq8qifj0gr31qi5sh10ixlpvqv3vi4miaf61v1xiphvd6nk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake perl))
