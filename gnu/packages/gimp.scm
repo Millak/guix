@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021, 2022, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Runciter <runciter@whispers-vpn.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -460,13 +461,21 @@ that is extensible via a plugin system.")
                    (for-each
                     (lambda (prog)
                       (wrap-program prog
-                        ;; Ensure GI_TYPELIB_PATH is not extended from the
+                        ;; Ensure GI_TYPELIB_PATH is not suffixed to the
                         ;; environment, as it could cause Gimp to crash (see
                         ;; bug#77921).
-                        `("GI_TYPELIB_PATH" =
+                        `("GI_TYPELIB_PATH" prefix
                           (,(getenv "GI_TYPELIB_PATH")))
-                        `("GUIX_PYTHONPATH" suffix
-                          (,(getenv "GUIX_PYTHONPATH")))))
+                        `("GUIX_PYTHONPATH" prefix
+                          (,(getenv "GUIX_PYTHONPATH")))
+                        `("GDK_PIXBUF_MODULE_FILE" =
+                          (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                        `("XDG_DATA_DIRS" prefix
+                          (,(string-append #$(this-package-input "gtk+")
+                                           "/share")
+                           ,(string-append #$(this-package-native-input
+                                              "shared-mime-info")
+                                           "/share")))))
                     (find-files (string-append #$output "/bin")
                                 (lambda (_ stat)
                                   (eq? 'regular (stat:type stat))))))))))
@@ -478,7 +487,8 @@ that is extensible via a plugin system.")
     (native-inputs (modify-inputs (package-native-inputs gimp-2)
                      (prepend appstream-glib
                               gi-docgen
-                              libarchive)))))
+                              libarchive
+                              shared-mime-info)))))
 
 (define-public gimp gimp-3)
 (define-public gimp-next
