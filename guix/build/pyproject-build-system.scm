@@ -87,6 +87,9 @@
 ;; Raised, when no wheel has been built by the build system.
 (define-condition-type &no-wheels-built &python-build-error no-wheels-built?)
 
+;; Raised, when no installation candidate wheel has been found.
+(define-condition-type &no-wheels-found &python-build-error no-wheels-found?)
+
 (define* (build #:key outputs build-backend backend-path configure-flags #:allow-other-keys)
   "Build a given Python package."
 
@@ -251,10 +254,15 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
 
     (let* ((wheel-output (assoc-ref outputs "wheel"))
            (wheel-dir (if wheel-output wheel-output "dist"))
-           (wheels (map (cut string-append wheel-dir "/" <>)
-                        (scandir wheel-dir
-                                 (cut string-suffix? ".whl" <>)))))
+           (wheels-found (or (scandir wheel-dir
+                                      (cut string-suffix? ".whl" <>))
+                             '()))
+           (wheels (map (cut string-append wheel-dir "/" <>) wheels-found)))
       (cond
+       ;; This can happen if the 'build phase has been changed or when using
+       ;; the install phase using an alternative build-system.
+       ((null? wheels-found)
+        (raise (condition (&no-wheels-found))))
        ((> (length wheels) 1)
         ;; This code does not support multiple wheels yet, because their
         ;; outputs would have to be merged properly.
