@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021-2025 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -889,6 +890,12 @@ create compilers, making them easier to understand and maintain.")
             ,@#$base-plan))
        ((#:phases base-phases #~%standard-phases)
         #~(modify-phases #$base-phases
+            (add-after 'unpack 'fix-user-guide-date
+              (lambda _
+                ;; Release date: Oct 18, 2020
+                (substitute* "doc/user-guide.stex"
+                  (("^\\\\author.*$" all)
+                   (string-append all "\n" "\\date{October 18, 2020}")))))
             (add-before 'install 'compile-and-test
               (lambda args
                 (invoke "scheme"
@@ -897,6 +904,9 @@ create compilers, making them easier to understand and maintain.")
             (add-after 'compile-and-test 'build-doc
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (with-directory-excursion "doc"
+                  ;; Texlive-libkpathsea attempts to create directory at
+                  ;; '$XDG_CACHE_HOME/.texliveYYYY'.
+                  (setenv "XDG_CACHE_HOME" "/tmp")
                   (invoke "make"
                           (string-append "Scheme="
                                          (search-input-file
