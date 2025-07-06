@@ -296,13 +296,13 @@ things like Dialyzer errors and Observer.")
 (define-public elixir-machete
   (package
     (name "elixir-machete")
-    (version "0.3.3")
+    (version "0.3.11")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "0705qp9l8yakdfpbafsf351b7xzqn86qcma1jm7i1n64r6bxkh31"))))
+        (base32 "0xxfbk888q2x3fdkh4rl3n53sya7cngxax55md2lcd6ggcn0cn1d"))))
     (build-system mix-build-system)
     (native-inputs (list elixir-credo elixir-dialyxir))
     (synopsis "Literate test matchers for ExUnit")
