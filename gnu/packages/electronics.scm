@@ -865,7 +865,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
       #:modules `((guix build gnu-build-system)
                   ((guix build python-build-system) #:prefix python:)
                   (guix build utils))
-      #:imported-modules `(,@%cmake-build-system-modules
+      #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build python-build-system))
       #:make-flags #~(list (string-append "PREFIX=" #$output))
       #:phases
