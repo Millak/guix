@@ -51330,7 +51330,7 @@ an example of a service and its configuration that you could add to the
            (server "irc.oftc.net")
            (nick "sneek")
            (password "snuik is sneeky")
-           (channels '("#reproducible-builds"))))
+           (channels '("#reproducible-builds")))))
 @end lisp
 
 @node Media Home Services
