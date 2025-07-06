@@ -1160,7 +1160,7 @@ libraries for Machine Learning, Neural Nets and statistical estimation.")
 (define-public picolisp
   (package
     (name "picolisp")
-    (version "24.9")
+    (version "25.6")
     (supported-systems '("aarch64-linux"
                          "powerpc64le-linux"
                          "x86_64-linux"))
@@ -1169,7 +1169,7 @@ libraries for Machine Learning, Neural Nets and statistical estimation.")
        (method url-fetch)
        (uri (string-append "https://software-lab.de/picoLisp-" version ".tgz"))
        (sha256
-        (base32 "1bsp14vjzvlav813mxzgigcdrmsxhrrhlhdzfdvdq6havacm0cwf"))))
+        (base32 "0cr1w4lcszipfp7d0pk7v42dzqrd6i7b498f81lqymijgp3v4vkd"))))
     (build-system gnu-build-system)
     (inputs (list clang readline libffi openssl pkg-config))
     (arguments
