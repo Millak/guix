@@ -559,7 +559,8 @@ a C-style programming language from Microsoft that is very similar to Java.")
               (modules '((guix build utils)
                          (ice-9 string-fun)))
               (snippet prepare-mono-source)
-              (patches (search-patches "mono-2.6.4-fixes.patch"))))
+              (patches (search-patches "mono-2.4.2.3-reproducibility.patch"
+                                       "mono-2.6.4-fixes.patch"))))
     (native-inputs (modify-inputs (package-native-inputs mono-2.4.2)
                      (replace "mono" mono-2.4.2)))))
 
