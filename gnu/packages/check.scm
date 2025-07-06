@@ -2669,28 +2669,6 @@ to make testing async code easier.")
            python-setuptools
            python-wheel))))
 
-(define-public python-cov-core
-  (package
-    (name "python-cov-core")
-    (version "1.15.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "cov-core" version))
-        (sha256
-         (base32
-          "0k3np9ymh06yv1ib96sb6wfsxjkqhmik8qfsn119vnhga9ywc52a"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-coverage))
-    (home-page "https://github.com/schlamar/cov-core")
-    (synopsis "Coverage plugin core for pytest-cov, nose-cov and nose2-cov")
-    (description
-     "This is a library package for use by @code{pytest-cov}, @code{nose-cov}
-and @code{nose2-cov}.  It is useful for developing coverage plugins for these
-testing frameworks.")
-    (license license:expat)))
-
 (define-public python-codecov
   (package
     (name "python-codecov")
