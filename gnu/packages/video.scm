@@ -222,6 +222,7 @@
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wget)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
@@ -2631,10 +2632,12 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
       #:configure-flags
       #~(list "-Dlibmpv=true"
               "-Dcdda=enabled"
+              "-Ddmabuf-wayland=enabled"
               "-Ddvdnav=enabled"
               "-Dbuild-date=false")))
     (native-inputs
-     (list perl                         ;for zsh completion file
+     (list libdisplay-info
+           perl                         ;for zsh completion file
            pkg-config
            python-docutils
            python-wrapper))
