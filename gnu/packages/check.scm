@@ -1728,38 +1728,6 @@ and many external plugins.")
            python-wheel))
     (arguments `(#:tests? #f))))
 
-(define-public python-pytest-assume
-  (package
-    (name "python-pytest-assume")
-    (version "2.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-assume" version))
-       (sha256
-        (base32 "0zilqsy9fcjr6l2f9qzfxpkp40h24csnjm5mifhpmzb0fr9r0glq"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
-    (propagated-inputs
-     (list python-pytest python-six))
-    (home-page "https://github.com/astraw38/pytest-assume")
-    (synopsis "Pytest plugin that allows multiple failures per test")
-
-    (description "This package provides a Pytest plugin that allows multiple
-failures per test.  This is a fork from pytest-expect which includes the
-following improvements:
-@itemize
-@item showlocals support (the Pytest option)
-@item global usage support (a fixture is not required)
-@item output refinements and tweaks.
-@end itemize")
-    (license license:expat)))
-
 (define-public python-pytest-cov
   (package
     (name "python-pytest-cov")
