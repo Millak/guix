@@ -2740,24 +2740,6 @@ and commands.  It contains functions to check things on the file system, and
 tools for mocking system commands and recording calls to those.")
     (license license:expat)))
 
-(define-public python-testlib
-  (package
-    (name "python-testlib")
-    (version "0.6.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "testlib" version ".zip"))
-       (sha256
-        (base32 "1mz26cxn4x8bbgv0rn0mvj2z05y31rkc8009nvdlb3lam5b4mj3y"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list unzip))  ; for unpacking the source
-    (synopsis "Python micro test suite harness")
-    (description "A micro unittest suite harness for Python.")
-    (home-page "https://github.com/trentm/testlib")
-    (license license:expat)))
-
 ;;; The software provided by this package was integrated into pytest 2.8.
 (define-public python-pytest-cache
   (package
