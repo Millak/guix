@@ -9848,6 +9848,59 @@ It is to used for inputs in other packages.")
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
 
+(define-public go-github-com-zitadel-oidc-v3
+  (package
+    (name "go-github-com-zitadel-oidc-v3")
+    (version "3.39.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zitadel/oidc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vwqr8p75zxyghcjlm5n2d52amgpqagjwnmba9zhvcnd3cqpdjpb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zitadel/oidc/v3"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests requring Internet access.
+                       (list "TestDiscover/spotify"
+                             "TestIntrospect"
+                             "TestNewResourceServer/spotify-full-discovery"
+                             "TestNewResourceServer/spotify-with-static-introspecturl"
+                             "TestNewResourceServer/spotify-with-static-tokenurl")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bmatcuk-doublestar-v4
+           go-github-com-go-chi-chi-v5
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-golang-mock
+           go-github-com-google-go-github-v31
+           go-github-com-google-uuid
+           go-github-com-gorilla-securecookie
+           go-github-com-jeremija-gosubmit
+           go-github-com-muhlemmer-gu
+           go-github-com-muhlemmer-httpforwarded
+           go-github-com-rs-cors
+           go-github-com-sirupsen-logrus
+           go-github-com-zitadel-logging
+           go-github-com-zitadel-schema
+           go-go-opentelemetry-io-otel
+           go-golang-org-x-oauth2
+           go-golang-org-x-text))
+    (home-page "https://github.com/zitadel/oidc")
+    (synopsis "OpenID Connect client and server library in Golang")
+    (description
+     "This package provide an implementatin of @url{OpenID Connect,
+https://openid.net/developers/how-connect-works/}.")
+    (license license:asl2.0)))
+
 (define-public go-gitlab-com-gitlab-org-api-client-go
   (package
     (name "go-gitlab-com-gitlab-org-api-client-go")
