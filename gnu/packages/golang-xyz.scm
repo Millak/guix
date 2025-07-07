@@ -15224,6 +15224,37 @@ routines querying a database but without sending too much queries in order to
 not overload the given database.")
     (license license:expat)))
 
+(define-public go-github-com-rican7-retry
+  (package
+    (name "go-github-com-rican7-retry")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Rican7/retry")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ly1dh83kiq6ngxqk7s2gys0n49qzqldsqq62a7ggqx1z7s3l5a5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/Rican7/retry/tools
+            (delete-file-recursively "tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Rican7/retry"))
+    (home-page "https://github.com/Rican7/retry")
+    (synopsis "Perform actions repetitively until successful")
+    (description
+     "Package retry provides a simple, stateless, functional mechanism to
+perform actions repetitively until successful.")
+    (license license:expat)))
+
 (define-public go-github-com-rifflock-lfshook
   (package
     (name "go-github-com-rifflock-lfshook")
