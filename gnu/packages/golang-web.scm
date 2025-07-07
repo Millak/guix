@@ -5822,6 +5822,32 @@ language.")
 Coveralls.io} continuous code coverage tracking system.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-ethernet
+  (package
+    (name "go-github-com-mdlayher-ethernet")
+    (version "0.0.0-20220221185849-529eae5b6118")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/ethernet")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "154jx1i5g5nphzlbx0hr2v0rhhri2p9z80hjnnngbzcqzmy1npbm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/ethernet"))
+    (propagated-inputs
+     (list go-github-com-mdlayher-packet))
+    (home-page "https://github.com/mdlayher/ethernet")
+    (synopsis "Encode/decode of IEEE 802.3 Ethernet II frames and IEEE 802.1Q VLAN tags")
+    (description
+     "Package ethernet implements marshaling and unmarshaling of IEEE 802.3
+Ethernet II frames and IEEE 802.1Q VLAN tags.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-ethtool
   (package
     (name "go-github-com-mdlayher-ethtool")
