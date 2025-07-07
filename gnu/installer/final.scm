@@ -220,6 +220,11 @@ or #f.  Return #t on success and #f on failure."
 
              (setenv "PATH" "/run/current-system/profile/bin/")
 
+             (for-each (lambda (line)
+                         (installer-log-line "~a" line))
+                       (with-input-from-file (%installer-configuration-file)
+                         read-lines))
+
              (set! ret (run-command install-command #:tty? #t)))
            (lambda ()
              ;; Stop guix-daemon so that it does no keep the MNT namespace
