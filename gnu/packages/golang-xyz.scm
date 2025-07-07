@@ -712,6 +712,32 @@ scripts (writing systems).  Languages are represented by a defined list of
 constants, while scripts are represented by RangeTable.")
     (license license:expat)))
 
+(define-public go-github-com-adhocore-gronx
+  (package
+    (name "go-github-com-adhocore-gronx")
+    (version "1.19.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/adhocore/gronx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i1q3gy35h8gz0kr93419jnhfwsky0p40i1x8nfz4bpyfh2jxlvd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/adhocore/gronx"))
+    (home-page "https://github.com/adhocore/gronx")
+    (synopsis "Cron expression parser for Golang")
+    (description
+     "@code{gronx} is cron expression parser ported from
+@url{https://github.com/adhocore/php-cron-expr, adhocore/cron-expr} with task
+runner and daemon that supports crontab like task list file.  It may be used
+programatically in Golang or as standalone binary instead of crond.")
+    (license license:expat)))
+
 (define-public go-github-com-adrg-strutil
   (package
     (name "go-github-com-adrg-strutil")
@@ -21464,6 +21490,22 @@ tools."))))
      (string-append (package-description go-github-com-d5-tengo-v2)
                     "\nThis package provides an command line interface (CLI)
 tool."))))
+
+(define-public go-gronx-tasker
+  (package/inherit go-github-com-adhocore-gronx
+    (name "go-gronx-tasker")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-adhocore-gronx)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _) "github.com/adhocore/gronx/cmd/tasker")
+       ((#:unpack-path _ "") "github.com/adhocore/gronx")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-adhocore-gronx))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public go-toml
   (package
