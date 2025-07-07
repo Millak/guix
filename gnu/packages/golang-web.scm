@@ -6025,6 +6025,36 @@ types.")
 sockets (AF_NETLINK).")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-netx
+  (package
+    (name "go-github-com-mdlayher-netx")
+    (version "0.0.0-20230430222610-7e21880baee8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mdlayher/netx")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16l7z3z90im1ny6x9xq892hi4nha6phzv04izgjaaj1vvgs5pdqs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags #~(list "-skip" "TestListenerAddr") ;unexpected UNIX address
+      #:import-path "github.com/mdlayher/netx"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-net
+           go-golang-org-x-sync))
+    (home-page "https://github.com/mdlayher/netx")
+    (synopsis "Collection of small Go networking packages")
+    (description
+     "This package provides a collection of small Go networking packages.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-packet
   (package
     (name "go-github-com-mdlayher-packet")
