@@ -5510,6 +5510,35 @@ Implements string conversion functionality for unit prefixes.
 sizes.  It converts boring ugly numbers to human-friendly strings and back.")
     (license license:expat)))
 
+(define-public go-github-com-eapache-channels
+  (package
+    (name "go-github-com-eapache-channels")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eapache/channels")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "179ryd2rqsccnv5nk35f8j4nfbqr8cgb2bjm0j8isvf5nzks8s9y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/eapache/channels"))
+    (propagated-inputs
+     (list go-github-com-eapache-queue))
+    (home-page "https://github.com/eapache/channels")
+    (synopsis "Portable mmap package for Golang")
+    (description
+     "Package channels provides a collection of helper functions, interfaces
+and implementations for working with and extending the capabilities of
+golang's existing channels.  The main interface of interest is Channel, though
+sub-interfaces are also provided for cases where the full Channel interface
+cannot be met (for example, @code{InChannel} for write-only channels).")
+    (license license:expat)))
+
 (define-public go-github-com-eapache-queue
   (package
     (name "go-github-com-eapache-queue")
