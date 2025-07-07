@@ -4733,6 +4733,34 @@ Call}.")
     (propagated-inputs
      (list go-golang-org-x-net))))
 
+(define-public go-github-com-jeremija-gosubmit
+  (package
+    (name "go-github-com-jeremija-gosubmit")
+    (version "0.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jeremija/gosubmit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x3m4ydwvw9875s9yx9xs6dj11zn02qzk2xknpy0875xfc62ypa7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jeremija/gosubmit"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/jeremija/gosubmit")
+    (synopsis "Go library for parsing and submitting HTML forms")
+    (description
+     "This package implements a functinality to help filling out plain html
+forms during testing.  Will automatically take the existing values from the
+form so there is no need to manually set things like csrf tokens.  Alerts
+about missing required fields, or when pattern validation does not match.")
+    (license license:expat)))
+
 (define-public go-github-com-jhillyerd-enmime
   (package
     (name "go-github-com-jhillyerd-enmime")
