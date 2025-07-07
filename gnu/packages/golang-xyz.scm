@@ -17448,6 +17448,43 @@ anti-fragmentation protection.")
      "Package fasttemplate implements simple and fast template library.")
     (license license:expat)))
 
+(define-public go-github-com-vbatts-go-mtree
+  (package
+    (name "go-github-com-vbatts-go-mtree")
+    (version "0.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vbatts/go-mtree")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18m6dlhl9kl0wy0dficc5yy75qj58z315bcnaypgrm877vmzad9h"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vbatts/go-mtree"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-sirupsen-logrus
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/vbatts/go-mtree")
+    (synopsis "File systems verification utility and library")
+    (description
+     "@code{mtree} is a filesystem hierarchy validation tooling and format.
+This is a library and simple CLI tool for
+@url{https://www.freebsd.org/cgi/man.cgi?mtree(8), mtree(8)} implemented in
+Go.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-vburenin-ifacemaker
   (package
     (name "go-github-com-vburenin-ifacemaker")
@@ -21278,6 +21315,22 @@ tool."))))
      (string-append (package-description go-github-com-tinylib-msgp)
                     " This package provides an command line interface (CLI)
 tool."))))
+
+(define-public go-mtree
+  (package/inherit go-github-com-vbatts-go-mtree
+    (name "go-mtree")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-vbatts-go-mtree)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _) "github.com/vbatts/go-mtree/cmd/gomtree")
+       ((#:unpack-path _ "") "github.com/vbatts/go-mtree")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-vbatts-go-mtree))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public go-numcpus
   (package
