@@ -32,6 +32,7 @@
   #:use-module (srfi srfi-1)
   #:export (%pyproject-build-system-modules
             default-python
+            default-sanity-check.py
             pyproject-build
             pyproject-build-system))
 
@@ -60,17 +61,20 @@
     ;; Using python-toolchain here might cause dependency cycles.
     (module-ref python 'python-sans-pip-wrapper)))
 
-(define sanity-check.py
-  (search-auxiliary-file "python/sanity-check.py"))
+;; TODO: On the next iteration of python-team, migrate the sanity-check to
+;; importlib_metadata instead of setuptools.
+(define (default-sanity-check.py)
+  (local-file (search-auxiliary-file "python/sanity-check.py")))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
                 (python (default-python))
+                (sanity-check.py (default-sanity-check.py))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
   (define private-keywords
-    '(#:target #:python #:inputs #:native-inputs))
+    '(#:target #:python #:inputs #:native-inputs #:sanity-check.py))
 
   (and (not target)                               ;XXX: no cross-compilation
        (bag
@@ -84,7 +88,7 @@
                         ;; Keep the standard inputs of 'gnu-build-system'.
                         ,@(standard-packages)))
          (build-inputs `(("python" ,python)
-                         ("sanity-check.py" ,(local-file sanity-check.py))
+                         ("sanity-check.py" ,sanity-check.py)
                          ,@native-inputs))
          (outputs (append outputs '(wheel)))
          (build pyproject-build)
