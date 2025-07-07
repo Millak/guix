@@ -5510,6 +5510,33 @@ Implements string conversion functionality for unit prefixes.
 sizes.  It converts boring ugly numbers to human-friendly strings and back.")
     (license license:expat)))
 
+(define-public go-github-com-eapache-queue
+  (package
+    (name "go-github-com-eapache-queue")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eapache/queue")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07dp54n94gn3gsvdcki56yqh7py7wqqigxbamhxwgbr05n61fqyg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/eapache/queue"))
+    (home-page "https://github.com/eapache/queue")
+    (synopsis "Fast golang queue using ring-buffer")
+    (description
+     "Package queue provides a fast, ring-buffer queue based on the version
+suggested by Dariusz Górecki.  Using this instead of other, simpler, queue
+implementations
+(slice+append or linked list) provides substantial memory and time benefits, and
+fewer GC pauses.")
+    (license license:expat)))
+
 (define-public go-github-com-edsrzf-mmap-go
   (package
     (name "go-github-com-edsrzf-mmap-go")
