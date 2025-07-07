@@ -1433,6 +1433,33 @@ commands.")
      "This package implements optimal parameters for data-types.")
     (license license:expat)))
 
+(define-public go-github-com-apex-logs
+  (package
+    (name "go-github-com-apex-logs")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/apex/logs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dm4bqwnjlb5xgpym3qwmn3gxr05p29fjd6i8vdbc34cj6lyc35h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Network access is requried.
+      #:test-flags #~(list "-skip" "TestService_GetProjects|TestHTTP")
+      #:import-path "github.com/apex/logs"))
+    (native-inputs
+     (list go-github-com-tj-assert))
+    (home-page "https://github.com/apex/logs")
+    (synopsis "Logs client for Golang")
+    ;; There is no much info in project's README.
+    (description "This package implements a log client.")
+    (license license:expat)))
+
 (define-public go-github-com-apparentlymart-go-dump
   (package
     (name "go-github-com-apparentlymart-go-dump")
