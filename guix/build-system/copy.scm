@@ -30,7 +30,6 @@
   #:use-module (guix packages)
   #:use-module (srfi srfi-1)
   #:export (%copy-build-system-modules
-            default-glibc
             lower
             copy-build
             copy-build-system))
@@ -48,15 +47,8 @@
   `((guix build copy-build-system)
     ,@%default-gnu-imported-modules))
 
-(define (default-glibc)
-  "Return the default glibc package."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages base))))
-    (module-ref module 'glibc)))
-
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
-                (glibc (default-glibc))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME from the given arguments."
