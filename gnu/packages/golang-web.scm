@@ -10784,6 +10784,32 @@ etc)
 @code{FileSet} and Token removed.")
     (license license:bsd-3)))
 
+(define-public go-moul-io-http2curl-v2
+  (package
+    (name "go-moul-io-http2curl-v2")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moul/http2curl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yh07sqj31dg1rm46akp91m953mrxnr2l4sz7wjwqsw3z501c1fk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "moul.io/http2curl/v2"))
+    (native-inputs
+     (list go-github-com-tailscale-depaware))
+    (home-page "https://moul.io/http2curl")
+    (synopsis "Golang's @code{http.Request} to CURL command line")
+    (description
+     "This package implements a functionality to convert Golang's
+@code{http.Request} to CURL command line.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-mvdan-cc-xurls-v2
   (package
     (name "go-mvdan-cc-xurls-v2")
