@@ -13137,6 +13137,32 @@ command line flags, config files, and default struct values.")
 @url{https://github.com/judwhite/go-svc/raw/master/svc/svc_windows_test.go,here}.")
       (license license:expat))))
 
+(define-public go-github-com-mrunalp-fileutils
+  (package
+    (name "go-github-com-mrunalp-fileutils")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mrunalp/fileutils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nanl3vypvjlmjyjmv1ngz3lxvc5l55cn9xgr6k36wck5l37jcpi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mrunalp/fileutils"
+      ;; Not able to Lstat the device: lstat /dev/mem: no such file or directory.
+      #:test-flags #~(list "-skip" "TestDeviceNumbers")))
+    (home-page "https://github.com/mrunalp/fileutils")
+    (synopsis "Collection of utilities for file manipulation in golang")
+    (description
+     "This package provides a collection of utilities for file manipulation in
+golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-msteinert-pam
   (package
     (name "go-github-com-msteinert-pam")
