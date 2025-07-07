@@ -1505,6 +1505,30 @@ process, in order to gradually find an acceptable rate.  The retries
 exponentially increase and stop increasing when a certain threshold is met.")
     (license license:expat)))
 
+(define-public go-github-com-cenkalti-hub
+  (package
+    (name "go-github-com-cenkalti-hub")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cenkalti/hub")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14irdpqh36vyzfxwcv6gv0fl3ak1djzsvg93kr9a24a2qvc2wwj6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cenkalti/hub"))
+    (home-page "https://github.com/cenkalti/hub")
+    (synopsis "Publish/Subscribe library in Golang")
+    (description
+     "Package hub provides a simple event dispatcher for publish/subscribe
+pattern.")
+    (license license:expat)))
+
 (define-public go-github-com-chris-ramon-douceur
   (package
     (name "go-github-com-chris-ramon-douceur")
