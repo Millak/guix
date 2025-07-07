@@ -55,6 +55,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Kjartan Oli Agustsson <kjartanoli@outlook.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1169,7 +1170,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.7.3")
+    (version "3.7.4")
     (source
      (origin
        (method git-fetch)
@@ -1178,7 +1179,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mryrjw76jz16hmqd161frkld75yhy9cxlpykwk08p078mqxnylg"))
+        (base32 "184hak52p00qid0i581gky7076fl5rjxwqly0fw7ix8yi6j8li4h"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
