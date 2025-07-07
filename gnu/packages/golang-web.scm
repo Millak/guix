@@ -6352,6 +6352,34 @@ compatible object storage.")
            go-golang-org-x-crypto
            go-golang-org-x-net))))
 
+(define-public go-github-com-muhlemmer-httpforwarded
+  (package
+    (name "go-github-com-muhlemmer-httpforwarded")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/muhlemmer/httpforwarded")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wgiq97yzyrhfigyg1ndvi3llbmcd59ccc69ccaaigv42gf816c1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muhlemmer/httpforwarded"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/muhlemmer/httpforwarded")
+    (synopsis "Parse the HTTP Forwarded header (RFC-7239) in Golang")
+    (description
+     "Package httpforwarded is a helper package for parsing the Forwarded HTTP
+header as defined in @url{RFC-7239, https://www.rfc-editor.org/rfc/rfc7239}.
+There is a function for parsing the value of multiple Forwarded headers, and a
+function for formatting a Forwarded header.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-multiformats-go-multiaddr
   (package
     (name "go-github-com-multiformats-go-multiaddr")
