@@ -16454,6 +16454,34 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
 converting them to the @code{time.Duration} type.")
     (license license:expat)))
 
+(define-public go-github-com-sourcegraph-conc
+  (package
+    (name "go-github-com-sourcegraph-conc")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sourcegraph/conc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1anqhnpiak7fd6xxrjanwgrfz3c8ypksmx3zgx5f000bsfrlr1wq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sourcegraph/conc"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-uber-org-multierr))
+    (home-page "https://github.com/sourcegraph/conc")
+    (synopsis "Structured concurrency for Golang")
+    (description
+     "This package provides a more structured and controlled goroutines
+implementation.")
+    (license license:expat)))
+
 (define-public go-github-com-spf13-afero
   (package
     (name "go-github-com-spf13-afero")
