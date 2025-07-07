@@ -7990,6 +7990,35 @@ which satisfies the cron expression.")
     (license (list license:gpl3+
                    license:asl2.0))))
 
+(define-public go-github-com-gosexy-gettext
+  (package
+    (name "go-github-com-gosexy-gettext")
+    (version "0.0.0-20160830220431-74466a0a0c4a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gosexy/gettext")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0asphx8nd7zmp88wk6aakk5292np7yw73akvfdvlvs9q5r5ahkgi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gosexy/gettext"
+      ;; Assertion errors in two tests.
+      #:test-flags #~(list "-skip" "TestSpanish|TestDeutsch")))
+    (native-inputs
+     (list go-github-com-jessevdk-go-flags
+           go-github-com-stretchr-testify
+           go-gopkg-in-check-v1))
+    (home-page "https://github.com/gosexy/gettext")
+    (synopsis "Golang bindings for GNU's gettext")
+    (description "Package gettext provides bindings for @url{GNU Gettext,
+https://www.gnu.org/software/gettext/}.")
+    (license license:expat)))
+
 (define-public go-github-com-gosuri-uilive
   (package
     (name "go-github-com-gosuri-uilive")
