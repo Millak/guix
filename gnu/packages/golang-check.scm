@@ -2154,6 +2154,34 @@ strings must or must not be sent to a given local UDP listener.")
      "This package provides JSON equality assertions for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-tailscale-depaware
+  (package
+    (name "go-github-com-tailscale-depaware")
+    (version "0.0.0-20250112153213-b748de04d81b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tailscale/depaware")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x6ljpmmdpi5z1iky56akprbhw0z7xsqvvvxvwwh19lkl75gxdf5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tailscale/depaware"))
+    (propagated-inputs
+     (list go-github-com-pkg-diff
+           go-golang-org-x-tools))
+    (home-page "https://github.com/tailscale/depaware")
+    (synopsis "Dependencies checker for Golang")
+    (description
+     "This package implements a functionality to scan and report for
+dependencies which are checked in to the repository.  It provides a library
+and CLI tool.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tdewolff-test
   (package
     (name "go-github-com-tdewolff-test")
