@@ -5822,6 +5822,33 @@ language.")
 Coveralls.io} continuous code coverage tracking system.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-arp
+  (package
+    (name "go-github-com-mdlayher-arp")
+    (version "0.0.0-20220512170110-6706a2966875")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mdlayher/arp")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18gi06d387pwpl1krlb3y47c2i2rip4n604gv9k9ark3lh9maavx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/arp"))
+    (propagated-inputs
+     (list go-github-com-mdlayher-ethernet
+           go-github-com-mdlayher-packet))
+    (home-page "https://github.com/mdlayher/arp")
+    (synopsis "Implementation of the ARP protocol in Golang")
+    (description
+     "Package arp implements the ARP protocol, as described in
+@url{https://rfc-editor.org/rfc/rfc826.html, RFC 826}.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-ethernet
   (package
     (name "go-github-com-mdlayher-ethernet")
