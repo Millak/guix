@@ -2082,7 +2082,7 @@ and the notification, WiFi, and Bluetooth LED.")
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
-    (version "4.14.1")
+    (version "4.14.2")
     (source
      (origin
        (method git-fetch)
@@ -2091,7 +2091,7 @@ and the notification, WiFi, and Bluetooth LED.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "145yk8iv1vprwag5zm2z4843w1wdivlgnrw9cysq3rf37xbydbni"))))
+        (base32 "0b7qivyd8r58cq84q11b2z919px5p9k5zbinm6ahj07w0lsq2j7b"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
