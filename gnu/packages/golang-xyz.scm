@@ -18635,6 +18635,34 @@ configuration languages, but other uses may be possible too.")
 utilities for cty Golang module.")
     (license license:expat)))
 
+(define-public go-github-com-zitadel-logging
+  (package
+    (name "go-github-com-zitadel-logging")
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zitadel/logging")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04rrp9dhda78z8nidahhix1d2cn26fybk1vqmvnb89savadxqzzw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:import-path "github.com/zitadel/logging"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-gopkg-in-yaml-v2))
+    (propagated-inputs
+     (list go-github-com-sirupsen-logrus))
+    (home-page "https://github.com/zitadel/logging")
+    (synopsis "Logging extension for Golang")
+    (description "This package implements an alternative logging extension.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-zitadel-schema
   (package
     (name "go-github-com-zitadel-schema")
