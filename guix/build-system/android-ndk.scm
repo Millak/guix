@@ -26,7 +26,9 @@
   #:use-module (guix packages)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:export (android-ndk-build-system))
+  #:export (android-ndk-build-system
+            default-android-build
+            default-android-googletest))
 
 (define %android-ndk-build-system-modules
   ;; Build-side modules imported by default.
@@ -91,12 +93,15 @@
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
+                (android-build (default-android-build))
+                (android-googletest (default-android-googletest))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
 
   (define private-keywords
-    '(#:target #:inputs #:native-inputs #:outputs))
+    '(#:target #:inputs #:native-inputs #:outputs
+      #:android-build #:android-googletest))
 
   (and (not target) ;; TODO: support cross-compilation
        (bag
@@ -110,8 +115,8 @@
 
                         ;; Keep the standard inputs of 'gnu-build-system'
                         ,@(standard-packages)))
-         (build-inputs `(("android-build" ,(default-android-build))
-                         ("android-googletest" ,(default-android-googletest))
+         (build-inputs `(("android-build" ,android-build)
+                         ("android-googletest" ,android-googletest)
                          ,@native-inputs))
          (outputs outputs)
          (build android-ndk-build)
