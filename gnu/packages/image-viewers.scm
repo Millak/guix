@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -122,7 +123,7 @@
 (define-public swayimg
   (package
     (name "swayimg")
-    (version "4.2")
+    (version "4.5")
     (source
      (origin
        (method git-fetch)
@@ -131,7 +132,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kaxr5ppikllkaz45njr5p8yl4j6dqqi8qi18h59qwn291sv68px"))))
+        (base32 "11j1xxi0q7fw9ka55yrkwzjg1n61n0i6iyzsmsjg8xqx7wxbsxqf"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '(,(string-append "-Dversion=" version))))
