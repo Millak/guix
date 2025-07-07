@@ -526,7 +526,7 @@ without requiring the source code to be rewritten.")
                   automake
                   libtool
                   flex
-                  gnu-gettext
+                  gettext-minimal
                   texinfo
                   gperf)
          (replace "guile" this-package)))
