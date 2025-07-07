@@ -1529,6 +1529,32 @@ exponentially increase and stop increasing when a certain threshold is met.")
 pattern.")
     (license license:expat)))
 
+(define-public go-github-com-cenkalti-rpc2
+  (package
+    (name "go-github-com-cenkalti-rpc2")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cenkalti/rpc2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04h570v9mm8vmdfadnzds7ynjqps71pwmj0i6hgrcrl66s8qm541"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cenkalti/rpc2"))
+    (propagated-inputs
+     (list go-github-com-cenkalti-hub))
+    (home-page "https://github.com/cenkalti/rpc2")
+    (synopsis "Bi-directional RPC in Golang")
+    (description
+     "Package rpc2 provides bi-directional RPC client and server similar to
+@code{net/rpc}.")
+    (license license:expat)))
+
 (define-public go-github-com-chris-ramon-douceur
   (package
     (name "go-github-com-chris-ramon-douceur")
