@@ -38265,7 +38265,7 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
 (define-public emacs-fj
   (package
     (name "emacs-fj")
-    (version "0.13")
+    (version "0.14")
     (source
      (origin
        (method git-fetch)
@@ -38274,7 +38274,7 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wg4mlkzh15dyqr9qkwwl4xlhg2n48fi3qlbm4bwqxji9j5njkpf"))))
+        (base32 "01b9sfbwc012ki7ysf9fxg5mz4xmxqrdafzxsdzwj0c5xm1w8p07"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list emacs-fedi emacs-magit emacs-tp))
