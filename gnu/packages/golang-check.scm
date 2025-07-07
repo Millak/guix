@@ -96,6 +96,34 @@ testing package automatically and requires to check the returning boolean
 value and call @code{t.Fatal()} if the assertion fails.")
     (license license:expat)))
 
+(define-public go-github-com-adalogics-go-fuzz-headers
+  (package
+    (name "go-github-com-adalogics-go-fuzz-headers")
+    (version "0.0.0-20240806141605-e8a1dd7889d6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AdaLogics/go-fuzz-headers")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "161wky8n1zszn34zgh837lpk6q3cabfhzavv1qyzd0qybmq1n7g2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AdaLogics/go-fuzz-headers"))
+    (home-page "https://github.com/AdaLogics/go-fuzz-headers")
+    (synopsis "Helper functions for Go fuzzing")
+    (description
+     "This project provides various helper functions for @url{Go fuzzing,
+https://go.dev/doc/security/fuzz/}.  It is mostly used in combination with
+@url{https://github.com/dvyukov/go-fuzz, go-fuzz}, but compatibility with
+fuzzing in the standard library will also be supported.  Any coverage guided
+fuzzing engine that provides an array or slice of bytes can be used with
+go-fuzz-headers.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-alecthomas-assert-v2
   (package
     (name "go-github-com-alecthomas-assert-v2")
