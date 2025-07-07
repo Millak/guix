@@ -18635,6 +18635,31 @@ configuration languages, but other uses may be possible too.")
 utilities for cty Golang module.")
     (license license:expat)))
 
+(define-public go-github-com-zitadel-schema
+  (package
+    (name "go-github-com-zitadel-schema")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zitadel/schema")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nvxlqzz12ahhf6cmdy0gjfx8z30in0xamzk9ydag3ddgdqr5370"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zitadel/schema"))
+    (home-page "https://github.com/zitadel/schema")
+    (synopsis "Fills a struct with form values")
+    (description
+     "Package @code{zitadel/schema} converts structs to and from form values.
+It is a maintained fork of @url{gorilla/schema,
+https://github.com/gorilla/schema}")
+    (license license:bsd-3)))
+
 (define-public go-github-com-zyedidia-clipper
   (package
     (name "go-github-com-zyedidia-clipper")
