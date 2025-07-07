@@ -13425,6 +13425,30 @@ Data type that can be converted:
 @end itemize")
       (license license:expat))))
 
+(define-public go-github-com-muhlemmer-gu
+  (package
+    (name "go-github-com-muhlemmer-gu")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/muhlemmer/gu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cgcwl4kv03xxhamngjadqr1yff1x4v7v3s860mmskcq6rxds7ng"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muhlemmer/gu"))
+    (home-page "https://github.com/muhlemmer/gu")
+    (synopsis "Generic utilities for Golang")
+    (description
+     "Package gu provides Generic Utilities for the Go programming language
+with low in complexity.")
+    (license license:unlicense)))
+
 (define-public go-github-com-multiformats-go-base32
   (package
     (name "go-github-com-multiformats-go-base32")
