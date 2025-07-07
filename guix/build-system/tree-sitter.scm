@@ -29,37 +29,46 @@
   #:use-module (ice-9 match)
   #:export (%tree-sitter-build-system-modules
             tree-sitter-build
-            tree-sitter-build-system))
+            tree-sitter-build-system
+            default-node
+            default-tree-sitter
+            default-tree-sitter-cli))
 
 (define %tree-sitter-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build tree-sitter-build-system)
     ,@%node-build-system-modules))
 
+;; Lazily resolve the bindings to avoid circular dependencies.
 (define (default-guile-json)
-  "Return the default guile-json package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
   (let ((mod (resolve-interface '(gnu packages guile))))
     (module-ref mod 'guile-json-4)))
 
+(define (default-node)
+  (let ((mod (resolve-interface '(gnu packages node))))
+    (module-ref mod 'node-lts)))
+
+(define (default-tree-sitter)
+  (let ((mod (resolve-interface '(gnu packages tree-sitter))))
+    (module-ref mod 'tree-sitter)))
+
+(define (default-tree-sitter-cli)
+  (let ((mod (resolve-interface '(gnu packages tree-sitter))))
+    (module-ref mod 'tree-sitter-cli)))
+
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
+                (node (default-node))
+                (tree-sitter (default-tree-sitter))
+                (tree-sitter-cli (default-tree-sitter-cli))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME from the given arguments."
   (define private-keywords
     `(#:inputs #:native-inputs #:outputs ,@(if target
                                                '()
-                                               '(#:target))))
-  (define node
-    (module-ref (resolve-interface '(gnu packages node))
-                'node-lts))
-  (define tree-sitter
-    (module-ref (resolve-interface '(gnu packages tree-sitter))
-                'tree-sitter))
-  (define tree-sitter-cli
-    (module-ref (resolve-interface '(gnu packages tree-sitter))
-                'tree-sitter-cli))
+                                               '(#:target))
+      #:node #:tree-sitter #:tree-sitter-cli))
   ;; Grammars depend on each other via JS modules, which we package into a
   ;; dedicated js output.
   (define grammar-inputs
