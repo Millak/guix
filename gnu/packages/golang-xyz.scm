@@ -14706,6 +14706,46 @@ protocols.")
 on top of the standard library @code{flag} package.")
     (license license:bsd-3)))
 
+(define-public go-github-com-pingcap-errors
+  (package
+    (name "go-github-com-pingcap-errors")
+    (version "0.11.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pingcap/errors")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02k6b30m42aya763fnwx3paq4r8h28yav4i2kv2z4r28r70xxcgn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pingcap/errors"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; XXX: Some parsing issues in these tests.
+                       (list "TestFormatErrorf"
+                             "TestFormatNew"
+                             "TestFormatWithMessage"
+                             "TestFormatWithStack"
+                             "TestFormatWrap"
+                             "TestFormatWrapf"
+                             "TestFrameFormat"
+                             "TestFrameLine"
+                             "TestStackTrace"
+                             "TestStackTraceFormat")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-pkg-errors))
+    (home-page "https://github.com/pingcap/errors")
+    (synopsis "Simple error handling primitives")
+    (description
+     "Package errors provides simple error handling primitives.  It's an
+alternative fork of https://github.com/pkg/errors project.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-pion-logging
   (package
     (name "go-github-com-pion-logging")
