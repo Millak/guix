@@ -5938,6 +5938,34 @@ ethtool-netlink}.")
 types.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-ndp
+  (package
+    (name "go-github-com-mdlayher-ndp")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/ndp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mkffb1wjaigj73vz2hk7gyk83yj7xnn70zn45254xa6fvhpwl9z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/ndp"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/mdlayher/ndp")
+    (synopsis "Implementation of the Neighbor Discovery Protocol in Golang")
+    (description
+     "Package ndp implements the Neighbor Discovery Protocol, as described in
+@url{https://rfc-editor.org/rfc/rfc4861.html, RFC 4861}.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-netlink
   (package
     (name "go-github-com-mdlayher-netlink")
