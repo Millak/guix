@@ -17338,6 +17338,33 @@ types.  BoltDB is an embedded key-value store, and bolthold servers a similar
 use case however with a higher level interface for common uses of BoltDB.")
     (license license:expat)))
 
+(define-public go-github-com-tj-go-buffer
+  (package
+    (name "go-github-com-tj-go-buffer")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tj/go-buffer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xs8dz8m5qy1n80qcpalvfzdjxdr7djmagmhp7mm87rmjkwn05lk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tj/go-buffer"))
+    (native-inputs
+     (list go-github-com-tj-assert))
+    (home-page "https://github.com/tj/go-buffer")
+    (synopsis "Generic buffer for batching entries, such as log events")
+    (description
+     "Package buffer provides a generic buffer or batching mechanism for
+flushing entries at a given size or interval, useful for cases such as
+batching log events.")
+    (license license:expat)))
+
 (define-public go-github-com-tklauser-go-sysconf
   (package
     (name "go-github-com-tklauser-go-sysconf")
