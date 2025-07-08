@@ -3269,7 +3269,7 @@ compatible with the well-known scripts of the same name.")
 (define-public libportal
   (package
     (name "libportal")
-    (version "0.7.1")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3278,7 +3278,7 @@ compatible with the well-known scripts of the same name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ypl9ds5g5jzyirjg4ic0r7lzv39w67yrh8njz1cw566g4j1kfny"))))
+                "1rbqkmvvfig98ig8gsf93waiizrminj7gywxbza15hzx3an3hwh9"))))
     (build-system meson-build-system)
     (arguments
      (list
