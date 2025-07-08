@@ -4594,7 +4594,7 @@ TkDiff is included for browsing and merging your changes.")
 (define-public qgit
   (package
     (name "qgit")
-    (version "2.10")
+    (version "2.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4603,7 +4603,7 @@ TkDiff is included for browsing and merging your changes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10j5xll7ai1rb2ybyblbgqm762bqspffpf33fdr61qdchnp2gkf4"))))
+                "11948zzszi28js3pbxlss8r85jlb6fizxm8f5ljqk67m5qxk2v0f"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f)) ;no tests
