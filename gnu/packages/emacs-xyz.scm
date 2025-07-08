@@ -2087,19 +2087,17 @@ before interacting with non-free LLMs.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:lisp-directory "lisp"
       #:test-command #~(list "make" "-C" ".." "test")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'build-info-manual
             (lambda _
-              (invoke "make" "info")
+              (invoke "make" "-C" ".." "info")
               ;; Copy info files to the lisp directory, which acts as
               ;; the root of the project for the emacs-build-system.
-              (rename-file "docs/magit.info" "lisp/magit.info")))
-          (add-after 'build-info-manual 'chdir-lisp
-            (lambda _
-              (chdir "lisp")))
-          (add-after 'chdir-lisp 'patch-version-executables
+              (rename-file "../docs/magit.info" "../lisp/magit.info")))
+          (add-after 'unpack 'patch-version-executables
             (lambda* (#:key inputs #:allow-other-keys)
               (emacs-substitute-variables "magit.el"
                 ("magit-version" #$version))
