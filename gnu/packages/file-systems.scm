@@ -11,7 +11,7 @@
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021, 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 Brian Cully <bjc@spork.org>
-;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2023, 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
@@ -2467,7 +2467,7 @@ filtering and ordering functionality.
 (define-public sirikali
   (package
     (name "sirikali")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2476,16 +2476,16 @@ filtering and ordering functionality.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l52s8rxkfcxcx3s2fnsh08wy6hhjjvp7gcggdi84aqc4dq3rdnm"))))
+                "06cl7srxaqpzv7gcd17cl78qhrpqhdvpfcj4pr73fr5hhackrf52"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ;No tests
-       #:configure-flags '("-DQT5=true")))
+       #:configure-flags '("-DQT5=true" "-DCMAKE_BUILD_TYPE=RELEASE")))
     (inputs (list xdg-utils libpwquality libgcrypt libsecret qtbase-5))
     (native-inputs (list pkg-config))
     (home-page "https://mhogomchungu.github.io/sirikali/")
-    (synopsis "Graphical program for managing encrypted file-systems")
-    (description "@dfn{SiriKali} is a Qt / C++ @acronym{GUI, graphical user
-interface} application that manages ecryptfs, cryfs, encfs, gocryptfs, fscrypt
-and securefs based encrypted folders.")
-    (license license:gpl2+)))
+    (synopsis "GUI front end to sshfs, ecryptfs, cryfs, gocryptfs, securefs, fscrypt and encfs")
+    (description "@dfn{SiriKali} is a Qt/C++ GUI application that manages
++ecryptfs, cryfs, encfs, gocryptfs, fscrypt and securefs
++based encrypted folders.")
+    (license license:gpl3+)))
