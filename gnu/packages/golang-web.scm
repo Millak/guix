@@ -519,6 +519,58 @@ variable.  The variable can contain a comma-separated list of values, for
 example @code{GOPPROF=http,block}.")
     (license license:expat)))
 
+(define-public go-github-com-apex-log
+  (package
+    (name "go-github-com-apex-log")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/apex/log")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ibqkncnb8wcwilg2kyfyl5541g69rg551iy6m61q6iwdn5vfhi2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/apex/log"))
+    (native-inputs
+     (list go-github-com-tj-assert
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-apex-logs
+           go-github-com-aphistic-golf
+           go-github-com-aws-aws-sdk-go
+           go-github-com-aybabtme-rgbterm
+           go-github-com-fatih-color
+           go-github-com-go-logfmt-logfmt
+           go-github-com-mattn-go-colorable
+           go-github-com-pkg-errors
+           go-github-com-rogpeppe-fastuuid
+           go-github-com-tj-go-buffer
+           go-github-com-tj-go-elastic
+           go-github-com-tj-go-kinesis-bootstrap
+           go-github-com-tj-go-spin))
+    (home-page "https://github.com/apex/log")
+    (synopsis "Structured logging package for Golang")
+    (description
+     "Package log implements a simple structured logging API designed with few
+assumptions.  Designed for centralized logging solutions such as Kinesis which
+require encoding and decoding before fanning-out to handlers.")
+    (license license:expat)))
+
+(define-public go-github-com-apex-log-bootstrap
+  (hidden-package
+   (package/inherit go-github-com-apex-log
+     (arguments
+      (list #:import-path "github.com/apex/log"
+            #:test-subdirs #~(list ".")))
+     (propagated-inputs
+      (list go-github-com-fatih-color
+            go-github-com-pkg-errors)))))
+
 (define-public go-github-com-aphistic-golf
   (package
     (name "go-github-com-aphistic-golf")
