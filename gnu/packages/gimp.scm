@@ -489,7 +489,8 @@ that is extensible via a plugin system.")
                        python
                        python-pygobject
                        gjs
-                       libxslt)))
+                       libxslt
+                       xdg-utils)))
     (native-inputs (modify-inputs (package-native-inputs gimp-2)
                      (prepend appstream-glib
                               gi-docgen
