@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022, 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022-2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Kiran Shila <me@kiranshila.com>
 ;;; Copyright © 2022 Wiktor Zelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
@@ -76,6 +76,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -1829,6 +1830,139 @@ Not all possible optimizations can be directly implemented on ONNX graphs---
 some will need additional backend-specific information---but many can, and the
 aim is to provide all such passes along with ONNX so that they can be re-used
 with a single function call.")
+    (license license:expat)))
+
+(define-public onnxruntime
+  (package
+    (name "onnxruntime")
+    (version "1.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/microsoft/onnxruntime")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z2s79l4wdilssw9lmj319ypyyqi2y0dx0fpwr2yhq8bax3ci50n"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build pyproject-build-system) #:prefix py:))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:configure-flags
+      #~(list "-Donnxruntime_BUILD_UNIT_TESTS=OFF"
+              "-Donnxruntime_BUILD_SHARED_LIB=ON"
+              "-Donnxruntime_ENABLE_LTO=ON"
+              "-Donnxruntime_ENABLE_PYTHON=ON"
+              "-Donnxruntime_USE_FULL_PROTOBUF=OFF"
+              ;; XXX: Fixes build with gcc@14.
+              "-DCMAKE_CXX_FLAGS=-Wl,-z,noexecstack")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "cmake")))
+          (add-after 'unpack 'relax-dependencies
+            (lambda _
+              (with-output-to-file "cmake/external/eigen.cmake"
+                (lambda _
+                  (display "find_package(Eigen3 REQUIRED)\n")))
+              (substitute* "cmake/external/abseil-cpp.cmake"
+                (("20240722")
+                 (car (string-split #$(package-version
+                                       (this-package-input "abseil-cpp"))
+                                    #\.))))))
+          (add-after 'install 'build-python
+            (lambda _
+              (invoke "python3" "../setup.py" "bdist_wheel")))
+          (add-after 'build-python 'install-python
+            (lambda* (#:key inputs #:allow-other-keys)
+              ((assoc-ref py:%standard-phases 'install)
+               #:inputs inputs
+               #:outputs `(("out" . ,#$output:python)))))
+          (add-after 'install-python 'add-install-to-pythonpath
+            (lambda* (#:key inputs #:allow-other-keys)
+              ((assoc-ref py:%standard-phases 'add-install-to-pythonpath)
+               #:inputs inputs
+               #:outputs `(("out" . ,#$output:python)))))
+          (delete 'check)
+          (add-after 'add-install-to-pythonpath 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion "../onnxruntime/test/python"
+                ((assoc-ref py:%standard-phases 'check)
+                 #:tests? tests?
+                 #:test-flags
+                 `(;; XXX: NotImplementedError
+                   "--ignore-glob=quantization/*"
+                   ;; XXX: These tests require transformer models or have
+                   ;; import issues.
+                   "--ignore=transformers/test_generation.py"
+                   "--ignore=transformers/test_gpt2_benchmark.py"
+                   "--ignore=transformers/test_gpt2_to_onnx.py"
+                   "--ignore=transformers/test_optimizer_huggingface_bert.py"
+                   "--ignore=transformers/test_parity_huggingface_gpt_attention.py"
+                   "--ignore=transformers/test_shape_infer_helper.py"
+                   ;; XXX: onnxscript ModuleNotFound
+                   "--ignore=transformers/test_gelu_fusions.py"
+                   "--ignore=transformers/test_gemma3_vision.py"
+                   ;; XXX: Other failing tests.
+                   "-k" ,(string-append
+                          "not test_gelu_is_fused_by_default"
+                          " and not test_inverse"))))))
+          (add-after 'check 'python-sanity-check
+            (lambda* (#:key tests? inputs #:allow-other-keys)
+              ((assoc-ref py:%standard-phases 'sanity-check)
+               #:inputs `(("sanity-check.py" . ,#$(default-sanity-check.py))
+                          ,@inputs)
+               #:outputs `(("out" . ,#$output:python))))))))
+    (outputs (list "out" "python"))
+    (inputs
+     (list abseil-cpp
+           boost
+           cpuinfo
+           dlpack
+           c++-gsl
+           date
+           eigen-for-onnxruntime
+           flatbuffers-23.5
+           googletest
+           nlohmann-json
+           onnx
+           protobuf
+           pybind11
+           re2-next
+           safeint
+           zlib))
+    (native-inputs
+     (list pkg-config
+           python-einops
+           python-wrapper
+           python-numpy
+           python-parameterized
+           python-psutil
+           python-pytest
+           python-pytorch
+           python-sentencepiece
+           python-setuptools-next))
+    (propagated-inputs
+     (list python-coloredlogs
+           python-flatbuffers
+           python-protobuf
+           python-sympy))
+    (home-page "https://github.com/microsoft/onnxruntime")
+    (synopsis "Cross-platform, high performance scoring engine for ML models")
+    (description
+     "ONNX Runtime is a performance-focused complete scoring engine
+for Open Neural Network Exchange (ONNX) models, with an open
+extensible architecture to continually address the latest developments
+in AI and Deep Learning. ONNX Runtime stays up to date with the ONNX
+standard with complete implementation of all ONNX operators, and
+supports all ONNX releases (1.2+) with both future and backwards
+compatibility.")
     (license license:expat)))
 
 (define-public rxcpp
