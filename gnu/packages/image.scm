@@ -270,6 +270,24 @@ library.  It supports almost all PNG features and is extensible.")
    (license license:zlib)
    (home-page "http://www.libpng.org/pub/png/libpng.html")))
 
+(define-public libpng-for-pcsx2
+  (package
+    (inherit libpng)
+    (version "1.6.50")
+    (source (origin
+	      (method url-fetch)
+	      (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
+				        version "/libpng-" version ".tar.xz")
+		         (string-append
+			  "ftp://ftp.simplesystems.org/pub/libpng/png/src"
+			  "/libpng16/libpng-" version ".tar.xz")
+		         (string-append
+			  "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
+			  "/libpng16/libpng-" version ".tar.xz")))
+	      (sha256
+	       (base32
+                "01r34c31gq136jwshdfira44wbl6nb8qfgj4a4vam9r0hr8rdwsd"))))))
+
 (define-public libpng-apng
   ;; The APNG patch is maintained separately and may lag behind upstream libpng.
   (package
