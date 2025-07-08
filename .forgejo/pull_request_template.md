@@ -40,7 +40,7 @@ Tick a box by changing it from [ ] to [x].
   - [ ] Fixed errors reported by `guix lint` (`./pre-inst-env guix lint PACKAGE ...`).
   - [ ] Verified cryptographic signature provided by upstream.
   - [ ] The packages don't use bundled copies of software.
-  - [ ] Synopsis and description are written confirming to [the guidelines](https://guix.gnu.org/manual/devel/en/html_node/Synopses-and-Descriptions.html).
+  - [ ] Synopsis and description are written in conformance with [the guidelines](https://guix.gnu.org/manual/devel/en/html_node/Synopses-and-Descriptions.html).
 
 - [ ] Commit messages follow [the "ChangeLog" style](https://www.gnu.org/prep/standards/html_node/Change-Logs.html).
 - [ ] The change doesn't break `guix pull` (`guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-authentication`).
