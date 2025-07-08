@@ -1909,7 +1909,7 @@ full_split, cut, rcut, etc..")
 (define-public dune-bootstrap
   (package
     (name "dune")
-    (version "3.11.0")
+    (version "3.19.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1918,7 +1918,7 @@ full_split, cut, rcut, etc..")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12k8k2964s1z05mj71f9imwyvk0jyh5h6mpw4hpyr2d73iw53ink"))))
+                "01ys792jnld5yihhyirwkk4jlqm59bk0vrqjvvk5xjn8pp26vryq"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; require odoc
