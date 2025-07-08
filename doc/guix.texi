@@ -1209,7 +1209,7 @@ value, configurable via the @code{overload-threshold} field of its
 @code{build-machine} object.
 
 @item
-Disk space availability.  More than a 100 MiB must be available.
+Disk space availability.  More than 100 MiB must be available.
 @end enumerate
 
 The @file{/etc/guix/machines.scm} file typically looks like this:
@@ -12880,7 +12880,7 @@ guix repl @var{options} [@var{file} @var{args}]
 @end example
 
 When a @var{file} argument is provided, @var{file} is
-executed as a Guile scripts:
+executed as a Guile script:
 
 @example
 guix repl my-script.scm
@@ -46173,13 +46173,13 @@ File name of an additional initrd to load during the boot.  It may or
 may not point to a file in the store, but the main use case is for
 out-of-store files containing secrets.
 
-In order to be able to provide decryption keys for the LUKS device, they
-need to be available in the initial ram disk.  However they cannot be
+In order to be able to provide decryption keys for LUKS devices, they
+need to be available in the initial RAM disk.  However they cannot be
 stored inside the usual initrd, since it is stored in the store and
-being a world-readable (as files in the store are) is not a desired
-property for a initrd containing decryption keys.  You can therefore use
-this field to instruct GRUB to also load a manually created initrd not
-stored in the store.
+being world-readable (as files in the store are) is not a desired
+property for an initrd containing decryption keys.  You can therefore
+use this field to instruct GRUB to also load a manually created initrd
+not stored in the store.
 
 For any use case not involving secrets, you should use regular initrd
 (@pxref{operating-system Reference, @code{initrd}}) instead.

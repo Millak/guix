@@ -708,10 +708,10 @@ similar development experience and they might work better with the
 tools you currently use or help you make the transition to Emacs.
 
 The options listed below only provide the alternatives to the Emacs
-based setup, which is the most widely used in the Guix community. If
-you want to really understand how is the perfect setup for Guix
-development supposed to work, we encourage you to read the section
-before this regardless the editor you choose to use.
+based setup, which is the most widely used in the Guix community.  If
+you want to really understand how the perfect setup for Guix development
+is supposed to work, we encourage you to read the section before this
+regardless of the editor you choose to use.
 
 @menu
 * Guile Studio::                First step in your transition to Emacs.
@@ -2296,7 +2296,7 @@ $ git send-email -@var{NUMBER_COMMITS} -v@var{REVISION} \
 
 If need be, you may use @option{--cover-letter --annotate} to send
 another cover letter, e.g. for explaining what's changed since the last
-revision, and these changes are necessary.
+revision, and why these changes are necessary.
 
 @node Tracking Bugs and Changes
 @section Tracking Bugs and Changes
