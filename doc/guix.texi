@@ -35689,7 +35689,7 @@ some reason.
 
 By using this service, you agree to the ACME Subscriber Agreement, which
 can be found there:
-@url{https://acme-v01.api.letsencrypt.org/directory}.
+@url{https://acme-v02.api.letsencrypt.org/directory}.
 
 @defvar certbot-service-type
 A service type for the @code{certbot} Let's Encrypt client.  Its value
