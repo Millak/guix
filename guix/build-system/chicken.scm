@@ -46,9 +46,7 @@ EXTENSION is the file name extension, such as '.tar.gz'."
 
 (define (default-chicken)
   ;; Lazily resolve the binding to avoid a circular dependency.
-  ;; TODO is this actually needed in every build system?
-  (let ((chicken (resolve-interface '(gnu packages chicken))))
-      (module-ref chicken 'chicken)))
+  (@* (gnu packages chicken) chicken))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

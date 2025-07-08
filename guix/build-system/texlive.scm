@@ -54,16 +54,12 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-texlive-bin)
-  "Return the default texlive-bin package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((tex-mod (resolve-interface '(gnu packages tex))))
-    (module-ref tex-mod 'texlive-bin)))
+  "Return the default texlive-bin package, resolved lazily."
+  (@* (gnu packages tex) texlive-bin))
 
 (define (texlive-latex-bin)
-  "Return the default texlive-latex-bin package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((tex-mod (resolve-interface '(gnu packages tex))))
-    (module-ref tex-mod 'texlive-latex-bin)))
+  "Return the default texlive-latex-bin package, resolved lazily."
+  (@* (gnu packages tex) texlive-latex-bin))
 
 (define* (lower name
                 #:key

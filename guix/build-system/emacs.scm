@@ -49,10 +49,8 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-emacs)
-  "Return the default Emacs package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((emacs-mod (resolve-interface '(gnu packages emacs))))
-    (module-ref emacs-mod 'emacs-minimal)))
+  "Return the default Emacs package, resolved lazily."
+  (@* (gnu packages emacs) emacs-minimal))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

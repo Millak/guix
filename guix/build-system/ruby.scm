@@ -43,10 +43,8 @@ NAME and VERSION."
     ,@%default-gnu-imported-modules))
 
 (define (default-ruby)
-  "Return the default Ruby package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((ruby (resolve-interface '(gnu packages ruby))))
-    (module-ref ruby 'ruby)))
+  "Return the default Ruby package, resolved lazily."
+  (@* (gnu packages ruby) ruby))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

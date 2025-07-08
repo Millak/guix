@@ -51,15 +51,13 @@
     ,@%python-build-system-modules))
 
 (define (default-python)
-  "Return the default Python package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((python (resolve-interface '(gnu packages python))))
-    ;; We are using python-sans-pip-wrapper, because it does not contain
-    ;; setuptools. This allows us to skip the dependency on setuptools for
-    ;; packages which don’t need it. And it allows us to more easily swap
-    ;; out setuptools if a different version is required.
-    ;; Using python-toolchain here might cause dependency cycles.
-    (module-ref python 'python-sans-pip-wrapper)))
+  "Return the default Python package, resolved lazily."
+  ;; We are using python-sans-pip-wrapper, because it does not contain
+  ;; setuptools. This allows us to skip the dependency on setuptools for
+  ;; packages which don’t need it. And it allows us to more easily swap
+  ;; out setuptools if a different version is required.
+  ;; Using python-toolchain here might cause dependency cycles.
+  (@* (gnu packages python) python-sans-pip-wrapper))
 
 ;; TODO: On the next iteration of python-team, migrate the sanity-check to
 ;; importlib_metadata instead of setuptools.

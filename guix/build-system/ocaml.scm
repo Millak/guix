@@ -68,61 +68,43 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-ocaml)
-  "Return the default OCaml package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml)))
+  "Return the default OCaml package, resolved lazily."
+  (@* (gnu packages ocaml) ocaml))
 
 (define (default-findlib)
-  "Return the default OCaml-findlib package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml-findlib)))
+  "Return the default OCaml-findlib package, resolved lazily."
+  (@* (gnu packages ocaml) ocaml-findlib))
 
 (define (default-dune-build-system)
-  "Return the dune-build-system."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(guix build-system dune))))
-    (module-ref module 'dune-build-system)))
+  "Return the dune-build-system, resolved lazily."
+  (@* (guix build-system dune) dune-build-system))
 
 (define (default-ocaml4.07)
-  (let ((ocaml (resolve-interface '(gnu packages ocaml))))
-    (module-ref ocaml 'ocaml-4.07)))
+  (@* (gnu packages ocaml) ocaml-4.07))
 
 (define (default-ocaml4.07-findlib)
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml4.07-findlib)))
+  (@* (gnu packages ocaml) ocaml4.07-findlib))
 
 (define (default-ocaml4.07-dune)
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml4.07-dune)))
+  (@* (gnu packages ocaml) ocaml4.07-dune))
 
 (define (default-ocaml4.09)
-  (let ((ocaml (resolve-interface '(gnu packages ocaml))))
-    (module-ref ocaml 'ocaml-4.09)))
+  (@* (gnu packages ocaml) ocaml-4.09))
 
 (define (default-ocaml4.09-findlib)
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml4.09-findlib)))
+  (@* (gnu packages ocaml) ocaml4.09-findlib))
 
 (define (default-ocaml4.09-dune)
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml4.09-dune)))
+  (@* (gnu packages ocaml) ocaml4.09-dune))
 
 (define (default-ocaml5.0)
-  (let ((ocaml (resolve-interface '(gnu packages ocaml))))
-    (module-ref ocaml 'ocaml-5.0)))
+  (@* (gnu packages ocaml) ocaml-5.0))
 
 (define (default-ocaml5.0-findlib)
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml5.0-findlib)))
+  (@* (gnu packages ocaml) ocaml5.0-findlib))
 
 (define (default-ocaml5.0-dune)
-  (let ((module (resolve-interface '(gnu packages ocaml))))
-    (module-ref module 'ocaml5.0-dune)))
+  (@* (gnu packages ocaml) ocaml5.0-dune))
 
 (define* (package-with-explicit-ocaml ocaml findlib dune old-prefix new-prefix
                                        #:key variant-property)

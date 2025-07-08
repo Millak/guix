@@ -30,20 +30,6 @@
 ;;
 ;; Code:
 
-;; Lazily resolve the bindings to avoid circular dependencies.
-(define (default-optipng)
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (module-ref (resolve-interface '(gnu packages image)) 'optipng))
-
-(define (default-luanti)
-  (module-ref (resolve-interface '(gnu packages luanti)) 'luanti))
-
-(define (default-luanti-game)
-  (module-ref (resolve-interface '(gnu packages luanti)) 'minetest-game))
-
-(define (default-xvfb-run)
-  (module-ref (resolve-interface '(gnu packages xorg)) 'xvfb-run))
-
 (define %luanti-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build luanti-build-system)
@@ -57,11 +43,12 @@
 
 (define (standard-luanti-packages)
   "Return the list of (NAME PACKAGE OUTPUT) or (NAME PACKAGE) tuples of
-standard packages used as implicit inputs of the Luanti build system."
-  `(("xvfb-run" ,(default-xvfb-run))
-    ("optipng" ,(default-optipng))
-    ("luanti" ,(default-luanti))
-    ("luanti-game" ,(default-luanti-game))
+standard packages used as implicit inputs of the Luanti build system,
+resolved lazily."
+  `(("xvfb-run" ,(@* (gnu packages xorg) xvfb-run))
+    ("optipng" ,(@* (gnu packages image) optipng))
+    ("luanti" ,(@* (gnu packages luanti) luanti))
+    ("luanti-game" ,(@* (gnu packages luanti) minetest-game))
     ,@(filter (lambda (input)
                 (member (car input)
                         '("libc" "tar" "gzip" "bzip2" "xz" "locales")))

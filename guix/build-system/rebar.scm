@@ -59,16 +59,12 @@ and VERSION."
     ,@%default-gnu-imported-modules))
 
 (define (default-rebar3)
-  "Return the default Rebar3 package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((erlang-mod (resolve-interface '(gnu packages erlang))))
-    (module-ref erlang-mod 'rebar3)))
+  "Return the default Rebar3 package, resolved lazily."
+  (@* (gnu packages erlang) rebar3))
 
 (define (default-erlang)
-  "Return the default Erlang package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((erlang-mod (resolve-interface '(gnu packages erlang))))
-    (module-ref erlang-mod 'erlang)))
+  "Return the default Erlang package, resolved lazily."
+  (@* (gnu packages erlang) erlang))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

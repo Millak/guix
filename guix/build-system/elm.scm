@@ -97,23 +97,15 @@ given VERSION with sha256 checksum HASH."
     (guix build json)
     (guix build union)))
 
+;; Lazily resolve bindings to avoid circular dependencies.
 (define (default-elm)
-  "Return the default Elm package for builds."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((elm (resolve-interface '(gnu packages elm))))
-    (module-ref elm 'elm-sans-reactor)))
+  (@* (gnu packages elm) elm-sans-reactor))
 
 (define (default-elm-core)
-  "Return the default elm-core package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((elm (resolve-interface '(gnu packages elm))))
-    (module-ref elm 'elm-core)))
+  (@* (gnu packages elm) elm-core))
 
 (define (default-elm-json)
-  "Return the default elm-json package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((elm (resolve-interface '(gnu packages elm))))
-    (module-ref elm 'elm-json)))
+  (@* (gnu packages elm) elm-json))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

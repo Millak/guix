@@ -134,16 +134,12 @@ TRIPLET."
     ,@%glib-or-gtk-build-system-modules))
 
 (define (default-ninja)
-  "Return the default ninja package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((module (resolve-interface '(gnu packages ninja))))
-    (module-ref module 'ninja/pinned)))
+  "Return the default ninja package, resolved lazily."
+  (@* (gnu packages ninja) ninja/pinned))
 
 (define (default-meson)
-  "Return the default meson package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((module (resolve-interface '(gnu packages build-tools))))
-    (module-ref module 'meson)))
+  "Return the default meson package, resolved lazily."
+  (@* (gnu packages build-tools) meson))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

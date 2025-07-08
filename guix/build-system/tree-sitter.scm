@@ -41,20 +41,16 @@
 
 ;; Lazily resolve the bindings to avoid circular dependencies.
 (define (default-guile-json)
-  (let ((mod (resolve-interface '(gnu packages guile))))
-    (module-ref mod 'guile-json-4)))
+  (@* (gnu packages guile) guile-json-4))
 
 (define (default-node)
-  (let ((mod (resolve-interface '(gnu packages node))))
-    (module-ref mod 'node-lts)))
+  (@* (gnu packages node) node-lts))
 
 (define (default-tree-sitter)
-  (let ((mod (resolve-interface '(gnu packages tree-sitter))))
-    (module-ref mod 'tree-sitter)))
+  (@* (gnu packages tree-sitter) tree-sitter))
 
 (define (default-tree-sitter-cli)
-  (let ((mod (resolve-interface '(gnu packages tree-sitter))))
-    (module-ref mod 'tree-sitter-cli)))
+  (@* (gnu packages tree-sitter) tree-sitter-cli))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

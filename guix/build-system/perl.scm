@@ -48,11 +48,8 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-perl)
-  "Return the default Perl package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages perl))))
-    (module-ref module 'perl)))
+  "Return the default Perl package, resolved lazily."
+  (@* (gnu packages perl) perl))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs

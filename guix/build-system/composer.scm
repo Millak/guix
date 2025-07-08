@@ -40,23 +40,18 @@
 ;;
 ;; Code:
 
+;; Lazily resolve bindings to avoid circular dependencies.
 (define (default-php)
-  "Return the default PHP package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages php))))
-    (module-ref module 'php)))
+  "Return the default PHP package, resolved lazily."
+  (@* (gnu packages php) php))
 
 (define (default-findclass)
   "Return the default findclass script."
   (search-auxiliary-file "findclass.php"))
 
 (define (default-composer-classloader)
-  "Return the default composer-classloader package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages php-xyz))))
-    (module-ref module 'composer-classloader)))
+  "Return the default composer-classloader package, resolved lazily."
+  (@* (gnu packages php-xyz) composer-classloader))
 
 (define %composer-build-system-modules
   ;; Build-side modules imported by default.

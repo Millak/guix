@@ -71,10 +71,8 @@ release corresponding to NAME and VERSION."
     ,@%default-gnu-imported-modules))
 
 (define (default-r)
-  "Return the default R package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((r-mod (resolve-interface '(gnu packages statistics))))
-    (module-ref r-mod 'r-minimal)))
+  "Return the default R package, resolved lazily."
+  (@* (gnu packages statistics) r-minimal))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

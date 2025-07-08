@@ -43,9 +43,7 @@
 
 (define (default-esbuild)
   "Return the default package to minify JavaScript source files."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((mod (resolve-interface '(gnu packages web))))
-    (module-ref mod 'esbuild)))
+  (@* (gnu packages web) esbuild))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system
@@ -54,7 +52,7 @@
                 #:rest arguments)
   "Return a bag for NAME."
   (define private-keywords
-    '(#:target #:inputs #:native-inputs))
+    '(#:target #:inputs #:native-inputs #:esbuild))
 
   (bag
     (name name)

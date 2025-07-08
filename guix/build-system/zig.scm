@@ -32,10 +32,8 @@
 
 
 (define (default-zig)
-  "Return the default zig package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((zig (resolve-interface '(gnu packages zig))))
-    (module-ref zig 'zig)))
+  "Return the default zig package, resolved lazily."
+  (@* (gnu packages zig) zig))
 
 (define %zig-build-system-modules
   ;; Build-side modules imported by default.

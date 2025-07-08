@@ -33,8 +33,7 @@
 
 (define (default-agda)
   ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((agda (resolve-interface '(gnu packages agda))))
-    (module-ref agda 'agda)))
+  (@* (gnu packages agda) agda))
 
 (define %agda-build-system-modules
   `((guix build agda-build-system)

@@ -44,10 +44,8 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-node)
-  "Return the default Node package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((node (resolve-interface '(gnu packages node))))
-    (module-ref node 'node-lts)))
+  "Return the default Node package, resolved lazily."
+  (@* (gnu packages node) node-lts))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

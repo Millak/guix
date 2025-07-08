@@ -49,61 +49,22 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-maven)
-  "Return the default maven package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages maven))))
-    (module-ref module 'maven)))
-
-(define (default-maven-compiler-plugin)
-  "Return the default maven compiler plugin package."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages maven))))
-    (module-ref module 'maven-compiler-plugin)))
-
-(define (default-maven-jar-plugin)
-  "Return the default maven jar plugin package."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages maven))))
-    (module-ref module 'maven-jar-plugin)))
-
-(define (default-maven-resources-plugin)
-  "Return the default maven resources plugin package."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages maven))))
-    (module-ref module 'maven-resources-plugin)))
-
-(define (default-maven-surefire-plugin)
-  "Return the default maven surefire plugin package."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages maven))))
-    (module-ref module 'maven-surefire-plugin)))
-
-(define (default-java-surefire-junit4)
-  "Return the default surefire junit4 provider package."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages maven))))
-    (module-ref module 'java-surefire-junit4)))
-
-(define (default-maven-install-plugin)
-  "Return the default maven install plugin package."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages maven))))
-    (module-ref module 'maven-install-plugin)))
+  "Return the default maven package, resolved lazily."
+  (@* (gnu packages maven) maven))
 
 (define (default-jdk)
-  "Return the default JDK package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((jdk-mod (resolve-interface '(gnu packages java))))
-    (module-ref jdk-mod 'icedtea)))
+  "Return the default JDK package, resolved lazily."
+  (@* (gnu packages java) icedtea))
 
 (define (default-maven-plugins)
-  `(("maven-compiler-plugin" ,(default-maven-compiler-plugin))
-    ("maven-jar-plugin" ,(default-maven-jar-plugin))
-    ("maven-resources-plugin" ,(default-maven-resources-plugin))
-    ("maven-surefire-plugin" ,(default-maven-surefire-plugin))
-    ("java-surefire-junit4" ,(default-java-surefire-junit4))
-    ("maven-install-plugin" ,(default-maven-install-plugin))))
+  "Return the default maven plugins, resolved lazily."
+  `(("maven-compiler-plugin" ,(@* (gnu packages maven) maven-compiler-plugin))
+    ("maven-jar-plugin" ,(@* (gnu packages maven) maven-jar-plugin))
+    ("maven-surefire-plugin" ,(@* (gnu packages maven) maven-surefire-plugin))
+    ("java-surefire-junit4" ,(@* (gnu packages maven) java-surefire-junit4))
+    ("maven-install-plugin" ,(@* (gnu packages maven) maven-install-plugin))
+    ("maven-resources-plugin"
+     ,(@* (gnu packages maven) maven-resources-plugin))))
 
 (define %default-exclude
   `(("org.apache.maven.plugins" .

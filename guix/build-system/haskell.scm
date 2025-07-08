@@ -58,10 +58,8 @@ to NAME and VERSION."
     ,@%default-gnu-imported-modules))
 
 (define (default-haskell)
-  "Return the default Haskell package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((haskell (resolve-interface '(gnu packages haskell))))
-    (module-ref haskell 'ghc)))
+  "Return the default Haskell package, resolved lazily."
+  (@* (gnu packages haskell) ghc))
 
 (define (source-url->revision-url url revision)
   "Convert URL (a Hackage source URL) to the URL for the Cabal file at

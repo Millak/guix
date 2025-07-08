@@ -20,7 +20,9 @@
   #:use-module (guix records)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
-  #:export (build-system
+  #:export (@*
+
+            build-system
             build-system?
             build-system-name
             build-system-description
@@ -41,6 +43,10 @@
             make-bag
 
             build-system-with-c-toolchain))
+
+(define-syntax-rule (@* module name)
+  "Like (@ MODULE NAME), but resolves at run time."
+  (module-ref (resolve-interface 'module) 'name))
 
 (define-record-type* <build-system> build-system make-build-system
   build-system?

@@ -77,10 +77,8 @@
 
 (define (default-glib)
   "Return the default glib package from which we use
-\"glib-compile-schemas\"."
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages glib))))
-    (module-ref module 'glib)))
+\"glib-compile-schemas\", resolved lazily."
+  (@* (gnu packages glib) glib))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

@@ -42,10 +42,8 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-scons)
-  "Return the default SCons package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((build-tools (resolve-interface '(gnu packages build-tools))))
-    (module-ref build-tools 'scons)))
+  "Return the default SCons package, resolved lazily."
+  (@* (gnu packages build-tools) scons))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

@@ -45,10 +45,8 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-julia)
-  "Return the default Julia package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((julia-mod (resolve-interface '(gnu packages julia))))
-    (module-ref julia-mod 'julia)))
+  "Return the default Julia package, resolved lazily."
+  (@* (gnu packages julia) julia))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

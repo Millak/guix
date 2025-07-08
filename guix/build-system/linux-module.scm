@@ -45,11 +45,8 @@
     ,@%default-gnu-imported-modules))
 
 (define (default-linux)
-  "Return the default Linux package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages linux))))
-    (module-ref module 'linux-libre)))
+  "Return the default Linux package, resolved lazily."
+  (@* (gnu packages linux) linux-libre))
 
 (define (system->arch system)
   (platform-linux-architecture (lookup-platform-by-target-or-system system)))

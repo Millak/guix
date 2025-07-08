@@ -45,23 +45,18 @@
     (guix build java-utils)
     ,@%default-gnu-imported-modules))
 
+;; Lazily resolve bindings to avoid a circular dependencies.
 (define (default-jdk)
-  "Return the default JDK package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((jdk-mod (resolve-interface '(gnu packages java))))
-    (module-ref jdk-mod 'icedtea)))
+  "Return the default JDK package, resolved lazily."
+  (@* (gnu packages java) icedtea))
 
 (define (default-ant)
-  "Return the default Ant package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((jdk-mod (resolve-interface '(gnu packages java))))
-    (module-ref jdk-mod 'ant)))
+  "Return the default Ant package, resolved lazily."
+  (@* (gnu packages java) ant))
 
 (define (default-zip)
-  "Return the default ZIP package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((zip-mod (resolve-interface '(gnu packages compression))))
-    (module-ref zip-mod 'zip)))
+  "Return the default ZIP package, resolved lazily."
+  (@* (gnu packages compression) zip))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

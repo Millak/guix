@@ -31,30 +31,20 @@
   #:use-module (guix build-system gnu)
   #:export (dub-build-system))
 
+;; Lazily resolve bindings to avoid a circular dependencies.
 (define (default-ldc)
-  "Return the default ldc package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((ldc (resolve-interface '(gnu packages dlang))))
-    (module-ref ldc 'ldc)))
+  (@* (gnu packages dlang) ldc))
 
 (define (default-dub)
-  "Return the default dub package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((ldc (resolve-interface '(gnu packages dlang))))
-    (module-ref ldc 'dub)))
+  (@* (gnu packages dlang) dub))
 
 (define (default-pkg-config)
-  "Return the default pkg-config package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((pkg-config (resolve-interface '(gnu packages pkg-config))))
-    (module-ref pkg-config 'pkg-config)))
+  (@* (gnu packages pkg-config) pkg-config))
 
 (define (default-ld-gold-wrapper)
-  "Return the default ld-gold-wrapper package."
   ;; LDC doesn't work with Guix's default (BFD) linker.
   ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((commencement (resolve-interface '(gnu packages commencement))))
-    (module-ref commencement 'ld-gold-wrapper)))
+  (@* (gnu packages commencement) ld-gold-wrapper))
 
 (define %dub-build-system-modules
   ;; Build-side modules imported by default.

@@ -39,16 +39,13 @@
   #:export (mix-build-system hexpm-uri))
 
 (define (default-elixir-hex)
-  (let ((elixir (resolve-interface '(gnu packages elixir))))
-    (module-ref elixir 'elixir-hex)))
+  (@* (gnu packages elixir) elixir-hex))
 
 (define (default-rebar3)
-  (let ((erlang (resolve-interface '(gnu packages erlang))))
-    (module-ref erlang 'rebar3)))
+  (@* (gnu packages erlang) rebar3))
 
 (define (default-elixir)
-  (let ((elixir (resolve-interface '(gnu packages elixir))))
-    (module-ref elixir 'elixir)))
+  (@* (gnu packages elixir) elixir))
 
 (define* (strip-prefix name #:optional (prefix "elixir-"))
   "Return NAME without the prefix PREFIX."

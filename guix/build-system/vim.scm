@@ -45,15 +45,12 @@
     ,@%copy-build-system-modules))
 
 (define (default-vim)
-  "Return the default Vim package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((vim (resolve-interface '(gnu packages vim))))
-    (module-ref vim 'vim)))
+  "Return the default Vim package, resolved lazily."
+  (@* (gnu packages vim) vim))
 
 (define (default-neovim)
-  "Return the default Neovim package."
-  (let ((vim (resolve-interface '(gnu packages vim))))
-    (module-ref vim 'neovim)))
+  "Return the default Neovim package, resolved lazily."
+  (@* (gnu packages vim) neovim))
 
 (define* (lower name
                 #:key source

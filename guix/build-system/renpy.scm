@@ -34,10 +34,8 @@
             renpy-build-system))
 
 (define (default-renpy)
-  "Return the default Ren'py package."
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((module (resolve-interface '(gnu packages game-development))))
-    (module-ref module 'renpy)))
+  "Return the default Ren'py package, resolved lazily."
+  (@* (gnu packages game-development) renpy))
 
 (define %renpy-build-system-modules
   ;; Build-side modules imported by default.

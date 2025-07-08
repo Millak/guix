@@ -130,17 +130,13 @@ commit hash and its date rather than a proper release tag."
     ,@%default-gnu-imported-modules))
 
 (define (default-go)
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((go (resolve-interface '(gnu packages golang))))
-    (module-ref go 'go)))
+  (@* (gnu packages golang) go))
 
 (define (default-gccgo)
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((gcc (resolve-interface '(gnu packages gcc))))
-    (module-ref gcc 'gccgo-12)))
+  (@* (gnu packages gcc) gccgo-12))
 
 (define (make-go-std)
-  (module-ref (resolve-interface '(gnu packages golang)) 'make-go-std))
+  (@* (gnu packages golang) make-go-std))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

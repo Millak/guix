@@ -62,11 +62,8 @@
     ,@%cmake-build-system-modules))
 
 (define (default-qtbase)
-  "Return the default qtbase package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages qt))))
-    (module-ref module 'qtbase-5)))
+  "Return the default qtbase package, resolved lazily."
+  (@* (gnu packages qt) qtbase-5))
 
 ;; This barely is a copy from (guix build-system cmake), only adjusted to use
 ;; the variables defined here.

@@ -35,15 +35,12 @@
   `((guix build android-ndk-build-system)
     ,@%default-gnu-imported-modules))
 
+;; Lazily resolve bindings to avoid circular dependencies.
 (define (default-android-build)
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((android (resolve-interface '(gnu packages android))))
-    (module-ref android 'android-make-stub)))
+  (@* (gnu packages android) android-make-stub))
 
 (define (default-android-googletest)
-  ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((android (resolve-interface '(gnu packages android))))
-    (module-ref android 'android-googletest)))
+  (@* (gnu packages android) android-googletest))
 
 (define* (android-ndk-build name inputs
                             #:key
