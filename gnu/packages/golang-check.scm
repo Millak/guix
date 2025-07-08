@@ -1802,6 +1802,32 @@ framework.")
 testing type to omit repeated @code{t}.")
     (license license:expat)))
 
+(define-public go-github-com-petermattis-goid
+  (let ((commit "bb94eb51e7a772d09cef11768f3248ac25adf9f9")
+        (revision "2"))
+    (package
+      (name "go-github-com-petermattis-goid")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/petermattis/goid")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hr94frr0rhac4mb9r7ixdgr6hm63rxh6z43rhn2wn7fdy8csw11"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/petermattis/goid"))
+      (home-page "https://github.com/petermattis/goid")
+      (synopsis "Identify the running goroutine")
+      (description
+       "This package offers a method of programmatically retrieving the
+current goroutine's ID.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-pkg-profile
   (package
     (name "go-github-com-pkg-profile")
@@ -1864,32 +1890,6 @@ Go application.")
 original value once the test has been run.")
     (license license:expat)))
 
-(define-public go-github-com-petermattis-goid
-  (let ((commit "bb94eb51e7a772d09cef11768f3248ac25adf9f9")
-        (revision "2"))
-    (package
-      (name "go-github-com-petermattis-goid")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/petermattis/goid")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0hr94frr0rhac4mb9r7ixdgr6hm63rxh6z43rhn2wn7fdy8csw11"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/petermattis/goid"))
-      (home-page "https://github.com/petermattis/goid")
-      (synopsis "Identify the running goroutine")
-      (description
-       "This package offers a method of programmatically retrieving the
-current goroutine's ID.")
-      (license license:asl2.0))))
-
 (define-public go-github-com-rubyist-tracerx
   (package
     (name "go-github-com-rubyist-tracerx")
@@ -1939,6 +1939,104 @@ GIT_TRACE mechanism.")
     (description
      "This package provides tools for detecting deadlocks at run-time in Go.")
     (license license:asl2.0)))
+
+(define-public go-github-com-smarty-assertions
+  (package
+    (name "go-github-com-smarty-assertions")
+    (version "1.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smarty/assertions")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kbl6h76mjvqkgszx81allhjzy8j331dbsb090rx134swbqs0pxc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smarty/assertions"))
+    (home-page "https://github.com/smarty/assertions")
+    (synopsis "Fluent assertion-style functions")
+    (description
+     "Package assertions contains the implementations for all assertions which
+are referenced in goconvey's
+@url{https://github.com/smartystreets/goconvey,@code{convey}} package and
+gunit @url{github.com/smarty/gunit,@code{gunit}} for use with the
+@code{So(...)}  method.  They can also be used in traditional Go test
+functions and even in applications.")
+    (license license:expat)))
+
+(define-public go-github-com-smarty-gunit
+  (package
+    (name "go-github-com-smarty-gunit")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smarty/gunit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13bcb1aq8yshmi5inn7np5lyqhsyy5hksridi8bxbjq35xrknskr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smarty/gunit"
+      ;; Expected: [&{ BowlingGameScoringTests [0xc000080020
+      ;; 0xc000080040 0xc000080060 0xc000080080 0xc0000800a0]}]
+      ;; Actual:   [&{ BowlingGameScoringTests [0xc0000da920
+      ;; 0xc0000da940 0xc0000da960 0xc0000da9a0 0xc0000da9c0]}]
+      #:test-flags
+      #~(list "-skip" "TestParseFileWithValidFixturesAndConstructs")))
+    (home-page "https://github.com/smarty/gunit")
+    (synopsis "Golang xUnit-style test fixture test adapter")
+    (description
+     "Package gunit provides @code{testing} package hooks and convenience
+functions for writing tests in an @code{xUnit} style.")
+    (license license:expat)))
+
+(define-public go-github-com-smartystreets-goconvey
+  (package
+    (name "go-github-com-smartystreets-goconvey")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smartystreets/goconvey")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s9s7yd4jfwgirnz46kw1sfhgcgsdzfxlca6q16i6ixaqczfaap9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smartystreets/goconvey"
+      #:test-flags
+      ;; XXX: Figure out why these test fail.
+      #~(list "-skip" (string-join
+                       (list "TestShellIntegration"
+                             "TestStackModeMultipleInvocationInheritance"
+                             "TestStackModeMultipleInvocationInheritance2"
+                             "TestStackModeMultipleInvocationInheritance3"
+                             "TestWatcher"
+                             #$@(if (target-arm?)
+                                    '("TestInfiniteLoopWithTrailingFail")
+                                    '()))
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-jtolds-gls
+           go-github-com-smarty-assertions
+           go-golang-org-x-tools))
+    (home-page "https://github.com/smartystreets/goconvey")
+    (synopsis "Go testing tool with both a web and terminal user interface")
+    (description
+     "GoConvey is a testing tool for Go.  It integrates with go test, can show
+test coverage and has a web user interface that will refresh automatically.")
+    (license license:expat)))
 
 (define-public go-github-com-stretchr-testify
   (package
@@ -2106,104 +2204,6 @@ such as readers and writers that fail after N consecutive reads/writes.")
 execution when a test fails.")
     (license license:expat)))
 
-(define-public go-github-com-smartystreets-goconvey
-  (package
-    (name "go-github-com-smartystreets-goconvey")
-    (version "1.8.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/smartystreets/goconvey")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0s9s7yd4jfwgirnz46kw1sfhgcgsdzfxlca6q16i6ixaqczfaap9"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/smartystreets/goconvey"
-      #:test-flags
-      ;; XXX: Figure out why these test fail.
-      #~(list "-skip" (string-join
-                       (list "TestShellIntegration"
-                             "TestStackModeMultipleInvocationInheritance"
-                             "TestStackModeMultipleInvocationInheritance2"
-                             "TestStackModeMultipleInvocationInheritance3"
-                             "TestWatcher"
-                             #$@(if (target-arm?)
-                                    '("TestInfiniteLoopWithTrailingFail")
-                                    '()))
-                       "|"))))
-    (propagated-inputs
-     (list go-github-com-jtolds-gls
-           go-github-com-smarty-assertions
-           go-golang-org-x-tools))
-    (home-page "https://github.com/smartystreets/goconvey")
-    (synopsis "Go testing tool with both a web and terminal user interface")
-    (description
-     "GoConvey is a testing tool for Go.  It integrates with go test, can show
-test coverage and has a web user interface that will refresh automatically.")
-    (license license:expat)))
-
-(define-public go-github-com-smarty-assertions
-  (package
-    (name "go-github-com-smarty-assertions")
-    (version "1.16.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/smarty/assertions")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1kbl6h76mjvqkgszx81allhjzy8j331dbsb090rx134swbqs0pxc"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/smarty/assertions"))
-    (home-page "https://github.com/smarty/assertions")
-    (synopsis "Fluent assertion-style functions")
-    (description
-     "Package assertions contains the implementations for all assertions which
-are referenced in goconvey's
-@url{https://github.com/smartystreets/goconvey,@code{convey}} package and
-gunit @url{github.com/smarty/gunit,@code{gunit}} for use with the
-@code{So(...)}  method.  They can also be used in traditional Go test
-functions and even in applications.")
-    (license license:expat)))
-
-(define-public go-github-com-smarty-gunit
-  (package
-    (name "go-github-com-smarty-gunit")
-    (version "1.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/smarty/gunit")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13bcb1aq8yshmi5inn7np5lyqhsyy5hksridi8bxbjq35xrknskr"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/smarty/gunit"
-      ;; Expected: [&{ BowlingGameScoringTests [0xc000080020
-      ;; 0xc000080040 0xc000080060 0xc000080080 0xc0000800a0]}]
-      ;; Actual:   [&{ BowlingGameScoringTests [0xc0000da920
-      ;; 0xc0000da940 0xc0000da960 0xc0000da9a0 0xc0000da9c0]}]
-      #:test-flags
-      #~(list "-skip" "TestParseFileWithValidFixturesAndConstructs")))
-    (home-page "https://github.com/smarty/gunit")
-    (synopsis "Golang xUnit-style test fixture test adapter")
-    (description
-     "Package gunit provides @code{testing} package hooks and convenience
-functions for writing tests in an @code{xUnit} style.")
-    (license license:expat)))
-
 (define-public go-github-com-viant-assertly
   (package
     (name "go-github-com-viant-assertly")
@@ -2261,6 +2261,93 @@ customization
                 (delete 'build))))
       (native-inputs '())
       (propagated-inputs '()))))
+
+(define-public go-github-com-warpfork-go-testmark
+  (package
+    (name "go-github-com-warpfork-go-testmark")
+    (version "0.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/warpfork/go-testmark")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06v2x3c5qgbj585a2abksr3hgvgdx61j153rjarqi9cvvzwh1xpr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/warpfork/go-testmark"))
+    (propagated-inputs
+     (list go-github-com-warpfork-go-fsx))
+    (home-page "https://github.com/warpfork/go-testmark")
+    (synopsis "Parser for @code{testmark} format")
+    (description
+     "@code{go-testmark} is a library to parse, patch data and test fixtures from
+Markdown files, using the
+@url{https://github.com/warpfork/go-testmark?tab=readme-ov-file#what-is-the-testmark-format,
+testmark} format, which itself is a subset of Markdown format.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public go-github-com-warpfork-go-wish
+  (package
+    (name "go-github-com-warpfork-go-wish")
+    (version "0.0.0-20220906213052-39a1cc7a02d0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/warpfork/go-wish")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rqbxmqwzy1q2zwy3mszp0li0pg8zzh3j9l8wlzr6p1pq2idallq"))
+       (patches (search-patches
+                 "go-github-com-warpfork-go-wish-fix-tests.patch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/warpfork/go-wish"
+      #:test-subdirs #~(list "cmp/..." "wishfix" ".")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestDiff"
+                             "TestOptions"
+                             "TestGoTestOutputTree/non-verbose"
+                             "TestGoTestOutputFun/non-verbose")
+                       "|"))))
+    (home-page "https://github.com/warpfork/go-wish")
+    (synopsis "Test assertions for Golang")
+    (description
+     "@code{wish} is a test assertion library for Golang, designed to
+gracefully enhance standard library testing package and behaviors of the
+@command{go test} command.")
+    (license license:expat)))
+
+(define-public go-github-com-zeebo-assert
+  (package
+    (name "go-github-com-zeebo-assert")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zeebo/assert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xfklg04ic4xl5q7xy913jzvn2v9bxmrsnm4lyjqznninysgs9xb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/assert"))
+    (home-page "https://github.com/zeebo/assert")
+    (synopsis "High-level assertions for tests")
+    (description
+     "@code{assert} is a testing library that provides high-level assertions API
+based on Go @code{testing} library procedures.")
+    (license license:cc0)))
 
 (define-public go-go-abhg-dev-requiredfield
   (package
@@ -2369,6 +2456,64 @@ and restore them afterwards.")
      "Package sloglint implements the sloglint analyzer.  The @code{log/slog}
 API allows two different types of arguments: key-value pairs and attributes.")
     (license license:mpl2.0)))
+
+(define-public go-go-uber-org-goleak
+  (package
+    (name "go-go-uber-org-goleak")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/goleak")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14rvkxh3znp9jzbdjqdkrly3zfg3rmhgg5845biqqrq17w8jvv5s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.uber.org/goleak"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://pkg.go.dev/go.uber.org/goleak")
+    (synopsis "Goroutine leak detector")
+    (description
+     "Go package to verify that there are no unexpected goroutines running at
+the end of a test.")
+    (license license:expat)))
+
+(define-public go-go-uber-org-mock
+  (package
+    (name "go-go-uber-org-mock")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/mock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mz1cy02m70mdh7hyaqks8bkh9iyv4jgj6h4psww52nr3b9pnyyy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: The project contains subdirectory which complicate it's testing
+      ;; and it does not produce any binary.
+      #:tests? #f
+      #:import-path "go.uber.org/mock"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-mod go-golang-org-x-tools))
+    (home-page "https://pkg.go.dev/go.uber.org/mock")
+    (synopsis "Mocking framework for the Golang")
+    (description
+     "This package provides a mocking framework which integrates well with
+built-in @code{testing} package, but can be used in other contexts too.")
+    (license license:asl2.0)))
 
 (define-public go-golang-org-sql-mock
   (package
@@ -2531,151 +2676,6 @@ accurate testing of your code.")
         (base32 "1h4amgykpa0djwi619llr3g55p75ia0mi184h9s5zdl8l4rhn9pm"))))
     (arguments
      (list #:import-path "gopkg.in/go-playground/assert.v1"))))
-
-(define-public go-github-com-warpfork-go-testmark
-  (package
-    (name "go-github-com-warpfork-go-testmark")
-    (version "0.12.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/warpfork/go-testmark")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "06v2x3c5qgbj585a2abksr3hgvgdx61j153rjarqi9cvvzwh1xpr"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/warpfork/go-testmark"))
-    (propagated-inputs
-     (list go-github-com-warpfork-go-fsx))
-    (home-page "https://github.com/warpfork/go-testmark")
-    (synopsis "Parser for @code{testmark} format")
-    (description
-     "@code{go-testmark} is a library to parse, patch data and test fixtures from
-Markdown files, using the
-@url{https://github.com/warpfork/go-testmark?tab=readme-ov-file#what-is-the-testmark-format,
-testmark} format, which itself is a subset of Markdown format.")
-    (license (list license:asl2.0 license:expat))))
-
-(define-public go-github-com-warpfork-go-wish
-  (package
-    (name "go-github-com-warpfork-go-wish")
-    (version "0.0.0-20220906213052-39a1cc7a02d0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/warpfork/go-wish")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rqbxmqwzy1q2zwy3mszp0li0pg8zzh3j9l8wlzr6p1pq2idallq"))
-       (patches (search-patches
-                 "go-github-com-warpfork-go-wish-fix-tests.patch"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/warpfork/go-wish"
-      #:test-subdirs #~(list "cmp/..." "wishfix" ".")
-      #:test-flags
-      #~(list "-skip" (string-join
-                       (list "TestDiff"
-                             "TestOptions"
-                             "TestGoTestOutputTree/non-verbose"
-                             "TestGoTestOutputFun/non-verbose")
-                       "|"))))
-    (home-page "https://github.com/warpfork/go-wish")
-    (synopsis "Test assertions for Golang")
-    (description
-     "@code{wish} is a test assertion library for Golang, designed to
-gracefully enhance standard library testing package and behaviors of the
-@command{go test} command.")
-    (license license:expat)))
-
-(define-public go-github-com-zeebo-assert
-  (package
-    (name "go-github-com-zeebo-assert")
-    (version "1.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/zeebo/assert")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0xfklg04ic4xl5q7xy913jzvn2v9bxmrsnm4lyjqznninysgs9xb"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/zeebo/assert"))
-    (home-page "https://github.com/zeebo/assert")
-    (synopsis "High-level assertions for tests")
-    (description
-     "@code{assert} is a testing library that provides high-level assertions API
-based on Go @code{testing} library procedures.")
-    (license license:cc0)))
-
-(define-public go-go-uber-org-goleak
-  (package
-    (name "go-go-uber-org-goleak")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/uber-go/goleak")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14rvkxh3znp9jzbdjqdkrly3zfg3rmhgg5845biqqrq17w8jvv5s"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "go.uber.org/goleak"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://pkg.go.dev/go.uber.org/goleak")
-    (synopsis "Goroutine leak detector")
-    (description
-     "Go package to verify that there are no unexpected goroutines running at
-the end of a test.")
-    (license license:expat)))
-
-(define-public go-go-uber-org-mock
-  (package
-    (name "go-go-uber-org-mock")
-    (version "0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/uber-go/mock")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0mz1cy02m70mdh7hyaqks8bkh9iyv4jgj6h4psww52nr3b9pnyyy"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; XXX: The project contains subdirectory which complicate it's testing
-      ;; and it does not produce any binary.
-      #:tests? #f
-      #:import-path "go.uber.org/mock"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build))))
-    (propagated-inputs
-     (list go-golang-org-x-mod go-golang-org-x-tools))
-    (home-page "https://pkg.go.dev/go.uber.org/mock")
-    (synopsis "Mocking framework for the Golang")
-    (description
-     "This package provides a mocking framework which integrates well with
-built-in @code{testing} package, but can be used in other contexts too.")
-    (license license:asl2.0)))
 
 (define-public go-gotest-tools-v3
   (package
