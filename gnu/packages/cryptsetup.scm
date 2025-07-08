@@ -3,6 +3,7 @@
 ;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,7 +39,7 @@
 (define-public cryptsetup
   (package
    (name "cryptsetup")
-   (version "2.6.1")
+   (version "2.8.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/linux/utils/cryptsetup/v"
@@ -46,7 +47,7 @@
                                 "/cryptsetup-" version ".tar.xz"))
             (sha256
              (base32
-              "14s6vbb9llpgnhmv0badxxzhi73jp4vyvp8swk4bjah7l5jys3a1"))))
+              "18j3a8zzcwc0sragq47vf0b0qyr06bajh2sj6zm1r1ssq8vjv7nc"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags
