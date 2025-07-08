@@ -40,6 +40,41 @@
 (channel-news
  (version 0)
 
+ (entry (commit "8b7208cb8e6b3de3d26c9cc5129a0024d3900642")
+        (title
+         (en "Translations moved to Codeberg")
+         (de "Übersetzungen sind auf Codeberg umgezogen"))
+        (body
+         (en "GNU Guix can now be translated @i{via} Weblate on Codeberg at
+@url{https://translate.codeberg.org/projects/guix/#components} next to where
+the Guix repositories and issue tracker are located.  Reviewing that existing
+translations are useful is of great help as well; please modify where needed.
+We are grateful to Fedora for providing the Weblate translation platform to us
+so far.  Furthermore, Framagit had been hosting the intermediate repository
+where Weblate places translations before maintainers verify their syntax.  The
+intermediate repository is now hosted at
+@url{https://codeberg.org/guix/translations}.  If you had cloned a copy to
+watch the repository previously, please change the repository's upstream URL
+accordingly in your clone's @file{.git/config} file.
+
+See @samp{info \"(guix)Translating Guix\"} for more information on how
+translations are organized.")
+         (de "GNU Guix kann jetzt über Weblate auf Codeberg unter
+@url{https://translate.codeberg.org/projects/guix/#components} übersetzt werden,
+wo auch die Guix-Repositorys und Fehlerberichte abrufbar sind.  Auch zu
+überprüfen, ob bestehende Übersetzungen nützlich sind, hilft uns ebenfalls sehr;
+ändern Sie sie ruhig.  Wir danken Fedora dafür, dass sie uns die
+Weblate-Übersetzungsplattform bisher bereitgestellt haben.  Des Weiteren hatte
+Framagit das zwischengeschaltete Repository gehostet, wo Weblate Übersetzungen
+ablegt, solange Betreuer ihre Syntax noch nicht geprüft haben.  Das
+zwischengeschaltete Repository wird jetzt auf
+@url{https://codeberg.org/guix/translations} gehostet.  Wenn Sie zuvor eine
+Kopie davon geklont hatten, um Änderungen zu verfolgen, ändern Sie bitte die
+Anbieter-URL des Repository in der @file{.git/config}-Datei Ihres Klons.
+
+Siehe @samp{info \"(guix.de)Guix übersetzen\"} für weitere Informationen, wie
+Übersetzungen organisiert sind.")))
+
  (entry (commit "4aff8591836e3b4125dcbed651efc8607de53280")
         (title
          (en "New build system added for @code{clasp-cl}")
