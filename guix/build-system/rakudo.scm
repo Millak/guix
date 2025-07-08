@@ -72,7 +72,8 @@
                 #:rest arguments)
   "Return a bag for NAME."
   (define private-keywords
-    '(#:target #:rakudo #:prove6 #:zef #:inputs #:native-inputs))
+    '(#:target #:inputs #:native-inputs
+      #:rakudo #:prove6 #:zef #:with-prove6? #:with-zef?))
 
   (and (not target)                               ;XXX: no cross-compilation
        (bag
@@ -106,8 +107,6 @@
                        (outputs '("out"))
                        (system (%current-system))
                        (guile #f)
-                       (with-zef? #t)
-                       (with-prove6? #t)
                        (imported-modules %rakudo-build-system-modules)
                        (modules '((guix build rakudo-build-system)
                                   (guix build utils))))
