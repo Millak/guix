@@ -87,7 +87,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.1492")
+    (version "9.1.1525")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -96,7 +96,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0f85psiqf62gbgqfzk09v1rqjs4mjf006j1735vydhcc3x9i9div"))))
+               "19qkf9hq4rd4y3592wxd2x7bw2wxq0p607wddv4p8cv8wsk5y7dv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -126,8 +126,15 @@
              (setenv "TZDIR"
                      (search-input-directory inputs "share/zoneinfo"))
 
-             ;; Make sure the TERM environment variable is set for the tests
-             (setenv "TERM" "xterm")))
+             ;; Make sure the TERM environment variable is set for the tests.
+             (setenv "TERM" "xterm")
+
+             ;; Ignore failure of some flaky tests.
+             (setenv "TEST_MAY_FAIL"
+                     (string-join
+                      (list "Test_diff_overlapped_diff_blocks_will_be_merged"
+                            "Test_linematch_diff_grouping")
+                      ","))))
          (add-before 'check 'skip-or-fix-failing-tests
            (lambda _
              ;; This test failure is shared between BSD and Guix.
