@@ -2511,17 +2511,8 @@ accurate testing of your code.")
         (base32 "1p1a4hbk303k2bv9dmaf770dml71zr3260g5z7yd84vzhj8i0rzb"))))
     (arguments
      (list
-      #:import-path "gopkg.in/dnaeon/go-vcr.v4"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))))
+      #:skip-build? #t
+      #:import-path "gopkg.in/dnaeon/go-vcr.v4"))))
 
 (define-public go-gopkg-in-go-playground-assert-v1
   (package
