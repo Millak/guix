@@ -6203,6 +6203,8 @@ interfaces and the standard higher-level merlin protocol.")
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
+              ;; Tests require a writable cache directory
+              (setenv "HOME" "/tmp")
              (when tests?
                (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
     (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
@@ -6230,6 +6232,8 @@ Atom.")
         (modify-phases %standard-phases
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
+              ;; Tests require a writable cache directory
+              (setenv "HOME" "/tmp")
               (when tests?
                 (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
      (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
