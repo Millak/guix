@@ -16000,7 +16000,7 @@ protocol.")
 (define-public ruby-braintree
   (package
     (name "ruby-braintree")
-    (version "4.12.0")
+    (version "4.24.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -16009,7 +16009,7 @@ protocol.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gfgkymy3655drwgs42bj9ap9qib1l30sajxmypmp6s75m9w3gsh"))))
+        (base32 "1bj229cn37k5m0hb3hw868k8dy4pgvpgfixm61zngbp7p7a2xqpx"))))
     (build-system ruby-build-system)
     (arguments
      (list
