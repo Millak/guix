@@ -17389,6 +17389,28 @@ flushing entries at a given size or interval, useful for cases such as
 batching log events.")
     (license license:expat)))
 
+(define-public go-github-com-tj-go-spin
+  (package
+    (name "go-github-com-tj-go-spin")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tj/go-spin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11xr67991m5pwsy1dira3iwd0sr55vmn1cyjwmlqziw4bwpym64s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tj/go-spin"))
+    (home-page "https://github.com/tj/go-spin")
+    (synopsis "Terminal spinner package for Golang")
+    (description "This package provides a little terminal spinner library.")
+    (license license:expat)))
+
 (define-public go-github-com-tklauser-go-sysconf
   (package
     (name "go-github-com-tklauser-go-sysconf")
