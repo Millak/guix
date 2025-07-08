@@ -8749,6 +8749,51 @@ use gzip compression when serving HTTP requests.")
 provided @code{http.FileSystem}.")
     (license license:expat)))
 
+(define-public go-github-com-smartystreets-go-aws-auth
+  (package
+    (name "go-github-com-smartystreets-go-aws-auth")
+    (version "0.0.0-20180515143844-0c1422d1fdb9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smarty-archives/go-aws-auth")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0krfdpgn3gfii1z9fi8ydfw0wwfqyvp6w3rji7w92m528zkjl93d"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module names have not been changed after repositories changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/smartystreets/assertions")
+               "github.com/smarty/assertions")
+              (("github.com/smartystreets/gunit")
+               "github.com/smarty/gunit"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smartystreets/go-aws-auth"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Assertions are not equal.
+                       (list "TestSign_ExistingCredentials_Version2"
+                             "TestSign_ExistingCredentials_Version3"
+                             "TestSign_Version2"
+                             "TestSign_Version3")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-smarty-assertions
+           go-github-com-smarty-gunit))
+    (home-page "https://github.com/smarty-archives/go-aws-auth")
+    (synopsis "Signs requests to Amazon Web Services using IAM")
+    (description
+     "Package awsauth implements AWS request signing using Signed Signature
+Version 2,Signed Signature Version 3, and Signed Signature Version 4.
+Supports S3 and STS.")
+    (license license:expat)))
+
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
