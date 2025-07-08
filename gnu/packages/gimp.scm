@@ -481,7 +481,8 @@ that is extensible via a plugin system.")
                                   (eq? 'regular (stat:type stat))))))))))
     (inputs (modify-inputs (package-inputs gimp-2)
               (replace "gtk+" gtk+)
-              (prepend libxmu
+              (prepend bash-minimal
+                       libxmu
                        libxt
                        python
                        python-pygobject
