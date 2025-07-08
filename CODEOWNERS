@@ -300,11 +300,17 @@ guix/import/crate\.scm                             @guix/rust
 guix/scripts/import/crate\.scm                     @guix/rust
 tests/crate\.scm                                   @guix/rust
 
+gnu/packages/fortran(-.+|)\.scm$                   @guix/science
 gnu/packages/algebra\.scm                          @guix/science
 gnu/packages/astronomy\.scm                        @guix/science
-gnu/packages/geo\.scm                              @guix/science
 gnu/packages/chemistry\.scm                        @guix/science
+gnu/packages/geo\.scm                              @guix/science
+gnu/packages/graph\.scm                            @guix/science
+gnu/packages/lean\.scm                             @guix/science
 gnu/packages/maths\.scm                            @guix/science
+gnu/packages/medical\.scm                          @guix/science
+gnu/packages/sagemath\.scm                         @guix/science
+gnu/packages/statistics\.scm                       @guix/science
 
 gnu/packages/sugar\.scm                            @guix/sugar
 

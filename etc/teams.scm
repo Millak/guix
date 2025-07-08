@@ -907,11 +907,17 @@ importer."
         #:name "Science team"
         #:description "The main science disciplines and fields related
 packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
-        #:scope (list "gnu/packages/algebra.scm"
+        #:scope (list (make-regexp* "^gnu/packages/fortran(-.+|)\\.scm$")
+                      "gnu/packages/algebra.scm"
                       "gnu/packages/astronomy.scm"
-                      "gnu/packages/geo.scm"
                       "gnu/packages/chemistry.scm"
-                      "gnu/packages/maths.scm")))
+                      "gnu/packages/geo.scm"
+                      "gnu/packages/graph.scm"
+                      "gnu/packages/lean.scm"
+                      "gnu/packages/maths.scm"
+                      "gnu/packages/medical.scm"
+                      "gnu/packages/sagemath.scm"
+                      "gnu/packages/statistics.scm")))
 
 (define-team sugar
   (team 'sugar
