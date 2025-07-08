@@ -108,7 +108,7 @@
 ;;; Copyright © 2021, 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Brandon Lucas <br@ndon.dk>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2022, 2023 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2023, 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
@@ -26221,6 +26221,30 @@ after its registered lisp object has been garbage collected.  This allows
 extra resources, such as buffers and processes, to be cleaned up after the
 object has been freed.")
   (license license:unlicense)))
+
+(define-public emacs-firefox-javascript-repl
+  (package
+    (name "emacs-firefox-javascript-repl")
+    (version "0.9.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://elpa.gnu.org/packages/firefox-javascript-repl-" version
+             ".tar"))
+       (sha256
+        (base32 "07qmp6hfzgljrl9gkwy673xk67b3bgxq4kkw2kzr8ma4a7lx7a8l"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/firefox-javascript-repl.html")
+    (synopsis "Jack into Firefox")
+    (description
+     "This package provides a way to REPL into a new Firefox instance's
+@code{JavaScript} engine.  A new throwaway Firefox profile directory is
+created before each run, so you won't need to modify your existing profiles.
+This mode takes care of starting the new Firefox process in debugging mode,
+which may be tedious to do by hand.  This comint mode is barebones and
+unstructured, meant for quick @code{JavaScript} experiments.")
+    (license license:gpl3+)))
 
 (define-public emacs-emacsql
   (package
