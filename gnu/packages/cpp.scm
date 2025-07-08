@@ -3665,33 +3665,33 @@ getopt(), getopt_long() and getopt_long_only().")
   (package
     (name "safeint")
     (version "3.0.27")
-    (home-page "https://github.com/dcleblanc/SafeInt")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "01d2dpdhyw3lghmamknb6g39w2gg0sv53pgxlrs2la8h694z6x7s"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dcleblanc/SafeInt")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01d2dpdhyw3lghmamknb6g39w2gg0sv53pgxlrs2la8h694z6x7s"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'install
-                          (lambda _
-                            (let ((include-dir (string-append #$output
-                                                              "/include")))
-                              (with-directory-excursion "../source"
-                                (install-file "SafeInt.hpp" include-dir)
-                                (install-file "safe_math.h" include-dir)
-                                (install-file "safe_math_impl.h" include-dir)))))
-                        (add-after 'install 'install-doc
-                          (lambda _
-                            (let ((doc-dir (string-append #$output
-                                                          "/share/doc/safeint")))
-                              (with-directory-excursion "../source"
-                                (install-file "helpfile.md" doc-dir))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (let ((include-dir (string-append #$output "/include")))
+                (with-directory-excursion "../source"
+                  (install-file "SafeInt.hpp" include-dir)
+                  (install-file "safe_math.h" include-dir)
+                  (install-file "safe_math_impl.h" include-dir)))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((doc-dir (string-append #$output "/share/doc/safeint")))
+                (with-directory-excursion "../source"
+                  (install-file "helpfile.md" doc-dir))))))))
+    (home-page "https://github.com/dcleblanc/SafeInt")
     (synopsis "C and C++ library for managing integer overflows")
     (description
      "SafeInt is a class library for C++ that manages integer overflows.  It
