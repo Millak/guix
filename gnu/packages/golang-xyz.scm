@@ -14210,6 +14210,52 @@ syslog, file and memory.  Multiple backends can be utilized with different log
 levels per backend and logger.")
     (license license:bsd-3)))
 
+(define-public go-github-com-opencontainers-cgroups
+  (package
+    (name "go-github-com-opencontainers-cgroups")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/opencontainers/cgroups")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wwfknbj5zj9y07sdbzqg919ddz39xryp3n5vn94cn2zv3c1kwvr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:import-path "github.com/opencontainers/cgroups"
+      #:test-flags
+      ;; Tests requiring root access to /sys/fs/cgroup.
+      #~(list "-skip" (string-join
+                       (list "TestParseCgroups"
+                             "TestHugetlbStatsNoUsageFile"
+                             "TestHugetlbStatsNoMaxUsageFile"
+                             "TestHugetlbStatsBadUsageFile"
+                             "TestHugetlbStatsBadMaxUsageFile"
+                             "TestInvalidCgroupPath"
+                             "TestTryDefaultCgroupRoot"
+                             "TestNilResources")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-cilium-ebpf
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-cyphar-filepath-securejoin
+           go-github-com-godbus-dbus-v5
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-userns
+           go-github-com-sirupsen-logrus
+           go-golang-org-x-sys))
+    (home-page "https://github.com/opencontainers/cgroups")
+    (synopsis "OCI Project Template")
+    (description
+     "This package provides a useful boilerplate and organizational
+information for all OCI projects.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-opencontainers-go-digest
   (package
     (name "go-github-com-opencontainers-go-digest")
