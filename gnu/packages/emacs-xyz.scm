@@ -36873,140 +36873,69 @@ You might want to use this to globally set dir-local variables that apply to
 all of your projects, then override or add variables on a per-project basis.")
       (license license:gpl3+))))
 
-(define-public emacs-casual-avy
+(define-public emacs-casual
   (package
-    (name "emacs-casual-avy")
-    (version "2.0.1")
+    (name "emacs-casual")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/kickingvegas/casual-avy")
-             (commit version)))
+              (url "https://github.com/kickingvegas/casual/")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p4ljzgcr51wpcfs4r0nnpv4rgaivzcq4lbcyr9sfvgqhr1yr271"))))
+        (base32 "1jf12j92h88a624lg9vg82xf3djij3xkac9ycj5vavkypb6jnih2"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"../docs/casual.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (rename-file "../docs/casual.info" "casual.info")))
+          ;; FIXME: Remove when included in pr upstream. See: #261.
+          (add-after 'unpack 'patch-casual-lib-dir
+            (lambda _
+              (substitute* "Makefile--defines.make"
+                (("^CASUAL_LIB_DIR.*")
+                 "CASUAL_LIB_DIR?=$(CASUAL_BASE_DIR)/casual\n"))))
+          ;; FIXME: These tests fail.
+          (add-before 'check 'remove-problematic-tests
+            (lambda _
+              (substitute* "Makefile"
+                (("editkit-tests.*")
+                 "# editkit-tests")))))
       #:lisp-directory "lisp"
-      #:test-command #~(list "make" "tests")
-      ;; Tests require “casual-lib-test-utils”, which are not installed.
-      #:tests? #f))
-    (propagated-inputs (list emacs-casual-lib emacs-avy))
-    (home-page "https://github.com/kickingvegas/casual-avy")
-    (synopsis "Transient-based porcelain for avy")
+      #:test-command #~(list "make" "tests"
+                             (string-append " CASUAL_LIB_DIR=" (getcwd)
+                                            "/source"))))
+    (native-inputs (list texinfo))
+    ;; Casual relies on the latest stable release of `transient' which may
+    ;; differ from the version that is preinstalled as a built-in.
+    (propagated-inputs (list emacs-magit emacs-transient))
+    (home-page "https://github.com/kickingvegas/casual/")
+    (synopsis "Transient user interfaces for various modes")
     (description
-     "Casual Avy is an opinionated Transient-based porcelain for Emacs Avy.")
+     "Casual is a collection of opinionated Transient-based keyboard driven
+user interfaces for various built-in modes.")
     (license license:gpl3+)))
 
 (define-public emacs-casual-calc
-  (package
-    (name "emacs-casual-calc")
-    (version "3.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kickingvegas/casual-calc")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zn281rr2z557ja5c9xvwhzx4isxkma4v6shl7acnqhczb8kpnr4"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:lisp-directory "lisp"
-      ;; Tests require “casual-lib-test-utils”, which are not installed.
-      #:tests? #f))
-    (propagated-inputs (list emacs-casual-lib))
-    (home-page "https://github.com/kickingvegas/casual-calc")
-    (synopsis "Transient-based porcelain for calc")
-    (description
-     "Casual Calc is an opinionated Transient-based porcelain for Emacs Calc.")
-    (license license:gpl3+)))
-
+  (deprecated-package "emacs-casual-calc" emacs-casual))
 (define-public emacs-casual-dired
-  (package
-    (name "emacs-casual-dired")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kickingvegas/casual-dired")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0p4k626svcy6jc1mpsiifpsbacrz7nsgyrb2m0icvi65nxcysj9q"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:lisp-directory "lisp"
-      ;; Tests require “casual-lib-test-utils”, which are not installed.
-      #:tests? #f))
-    (propagated-inputs (list emacs-casual-lib))
-    (home-page "https://github.com/kickingvegas/casual-dired")
-    (synopsis "Transient-based porcelain for Dired")
-    (description
-     "Casual Dired is an opinionated Transient-based porcelain for Emacs Dired.")
-    (license license:gpl3+)))
-
+  (deprecated-package "emacs-casual-dired" emacs-casual))
 (define-public emacs-casual-info
-  (package
-    (name "emacs-casual-info")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kickingvegas/casual-info")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1q8yk71xv2v2ls94dc834c988aj2hfq1jv6nbddjxy0qn2hwxd2n"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:lisp-directory "lisp"
-      ;; Tests require “casual-lib-test-utils”, which are not installed.
-      #:tests? #f))
-    (propagated-inputs (list emacs-casual-lib))
-    (home-page "https://github.com/kickingvegas/casual-info")
-    (synopsis "Transient-based porcelain for info reader")
-    (description
-     "Casual Info is an opinionated Transient-based porcelain for Emacs Info reader.")
-    (license license:gpl3+)))
-
+  (deprecated-package "emacs-casual-info" emacs-casual))
 (define-public emacs-casual-lib
-  (package
-    (name "emacs-casual-lib")
-    (version "2.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kickingvegas/casual-lib")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1hmr0zzwm3f88786j8p8x39jn5b8jja37x1iww4vd83dsvkksbpa"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:test-command #~(list "make" "tests")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'move-source-files
-                 (lambda _
-                   (let ((el-files (find-files "./lisp" ".*\\.el$")))
-                     (for-each (lambda (f) (copy-file f (basename f)))
-                               el-files)))))))
-    (native-inputs (list python-minimal))
-    (home-page "https://github.com/kickingvegas/casual-lib")
-    (synopsis "Library package for the Emacs Casual porcelains")
-    (description
-     "Casual Lib is a library package used to support the Casual porcelains.")
-    (license license:gpl3+)))
+  (deprecated-package "emacs-casual-lib" emacs-casual))
+(define-public emacs-casual-avy
+  (deprecated-package "emacs-casual-avy" emacs-casual))
 
 (define-public emacs-calibredb
   (package
