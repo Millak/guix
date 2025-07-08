@@ -33,6 +33,10 @@
   ;; Regexp to match Scheme files.
   "\\.(scm|sls)$")
 
+(define %documentation-file-regexp
+  ;; Regexp to match README files and the likes.
+  "^(README.*|.*\\.html|.*\\.org|.*\\.md)$")
+
 (define %guile-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build guile-build-system)
@@ -85,6 +89,7 @@
                       (source-directory ".")
                       not-compiled-file-regexp
                       (scheme-file-regexp %scheme-file-regexp)
+                      (documentation-file-regexp %documentation-file-regexp)
                       ;; FIXME: Turn on parallel building of Guile modules by
                       ;; default after the non-determinism issues in the Guile byte
                       ;; compiler are resolved (see bug #20272).
@@ -104,6 +109,7 @@
                        #:source #+source
                        #:source-directory #$source-directory
                        #:scheme-file-regexp #$scheme-file-regexp
+                       #:documentation-file-regexp #$documentation-file-regexp
                        #:not-compiled-file-regexp #$not-compiled-file-regexp
                        #:parallel-build? #$parallel-build?
                        #:compile-flags #$compile-flags
@@ -136,6 +142,7 @@
                             (phases '%standard-phases)
                             (source-directory ".")
                             (scheme-file-regexp %scheme-file-regexp)
+                            (documentation-file-regexp %documentation-file-regexp)
                             not-compiled-file-regexp
                             ;; FIXME: Turn on parallel building of Guile
                             ;; modules by default after the non-determinism
@@ -169,6 +176,7 @@
                        #:source-directory #$source-directory
                        #:scheme-file-regexp #$scheme-file-regexp
                        #:not-compiled-file-regexp #$not-compiled-file-regexp
+                       #:documentation-file-regexp #$documentation-file-regexp
                        #:parallel-build? #$parallel-build?
                        #:compile-flags #$compile-flags
                        #:inputs %build-target-inputs

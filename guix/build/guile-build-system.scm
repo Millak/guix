@@ -66,10 +66,6 @@ determined."
   ;; Regexp to match Scheme files.
   "\\.(scm|sls)$")
 
-(define %documentation-file-regexp
-  ;; Regexp to match README files and the likes.
-  "^(README.*|.*\\.html|.*\\.org|.*\\.md)$")
-
 (define* (set-locale-path #:key inputs native-inputs
                           #:allow-other-keys)
   "Set 'GUIX_LOCPATH'."
@@ -212,9 +208,7 @@ installed; this is useful for files that are meant to be included."
        #:max-processes (if parallel-build? (parallel-job-count) 1)
        #:report-progress report-build-progress))))
 
-(define* (install-documentation #:key outputs
-                                (documentation-file-regexp
-                                 %documentation-file-regexp)
+(define* (install-documentation #:key outputs documentation-file-regexp
                                 #:allow-other-keys)
   "Install files that match DOCUMENTATION-FILE-REGEXP."
   (let* ((out (assoc-ref outputs "out"))
