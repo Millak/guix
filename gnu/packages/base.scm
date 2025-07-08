@@ -1198,6 +1198,30 @@ with the Linux kernel.")
 ;; Below are old libc versions, which we use mostly to build locale data in
 ;; the old format (which the new libc cannot cope with.)
 
+(define-public glibc-2.39
+  (package
+    (inherit glibc)
+    (version "2.39")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "09nrwb0ksbah9k35jchd28xxp2hidilqdgz7b8v5f30pz1yd8yzp"))
+              (patches (search-patches "glibc-2.39-git-updates.patch"
+                                       "glibc-ldd-powerpc.patch"
+                                       "glibc-2.38-ldd-x86_64.patch"
+                                       "glibc-dl-cache.patch"
+                                       "glibc-2.37-versioned-locpath.patch"
+                                       ;; "glibc-allow-kernel-2.6.32.patch"
+                                       "glibc-reinstate-prlimit64-fallback.patch"
+                                       "glibc-supported-locales.patch"
+                                       "glibc-2.37-hurd-clock_t_centiseconds.patch"
+                                       ;; "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
+                                       "glibc-hurd-mach-print.patch"
+                                       "glibc-hurd-gettyent.patch"
+                                       "glibc-hurd-getauxval.patch"))))))
+
 (define-public glibc-2.35
   (package
     (inherit glibc)
