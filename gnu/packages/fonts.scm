@@ -3082,7 +3082,7 @@ of the font.")
 (define-public font-plemoljp
   (package
     (name "font-plemoljp")
-    (version "1.2.7")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3090,7 +3090,7 @@ of the font.")
                     "v" version "/PlemolJP_v" version ".zip"))
               (sha256
                (base32
-                "0pkkys5kl5s79shd1jmwfyk469ih8cymqb4vjwdadj52kzq4m9z6"))))
+                "0gjkhkx5i4clszjx96ya7prqmw94xkzwpzrv7axl8kzya2myazbm"))))
     (build-system font-build-system)
     (home-page "https://github.com/yuru7/PlemolJP")
     (synopsis "Plex Mono Language JP")
