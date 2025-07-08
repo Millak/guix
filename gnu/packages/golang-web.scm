@@ -6966,6 +6966,43 @@ JSON tools. @code{OjG} is optimized to processing huge data sets where data
 does not necessarily conform to a fixed structure.")
     (license license:expat)))
 
+(define-public go-github-com-openfga-go-sdk
+  (package
+    (name "go-github-com-openfga-go-sdk")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/openfga/go-sdk")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z30xiqbvgi9ks0qymyw2k2pn0s07nq05nq75h924nyagm3axz0v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/openfga/go-sdk"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
+    (native-inputs
+     (list go-github-com-jarcoal-httpmock))
+    (propagated-inputs
+     (list go-github-com-sourcegraph-conc
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-golang-org-x-sync))
+    (home-page "https://github.com/openfga/go-sdk")
+    (synopsis "OpenFGA SDK for Golang")
+    (description
+     "This package provides a wrapper around the @url{OpenFGA API,
+https://openfga.dev/api} definition.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-opentracing-contrib-go-stdlib
   (package
     (name "go-github-com-opentracing-contrib-go-stdlib")
