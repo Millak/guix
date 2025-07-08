@@ -11,7 +11,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2023-2024 Iliya Tikhonenko <tikhonenko@mpe.mpg.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023, 2025 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Andy Tai <lichengtai@gmail.com>
 ;;; Copyright © 2024-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -676,6 +676,68 @@ in FITS files.")
              "cfitsio-" version ".tar.gz"))
        (sha256
         (base32 "098x1l8ijwsjp2ivp3v7pamrmpgwj5xmgb4yppm9w3w044zxr8b6"))))))
+
+(define-public cianna
+  (package
+    (name "cianna")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Deyht/CIANNA")
+              (commit (string-append "V-" version ".0"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i7czicyiy9lldsrarsh9lpjm4znx3gnsi1kqqyhiafxjxsji35k"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; no configure
+          (delete 'check)     ; no tests
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((blas #$(this-package-input "openblas")))
+                (substitute* "compile.cp"
+                  (("/usr/bin/gcc")
+                   #$(cc-for-target))
+                  (("/opt/OpenBLAS/include/")
+                   (string-append blas "/include/"))
+                  (("/opt/OpenBLAS/lib")
+                   (string-append blas "/lib")))
+                (substitute* "src/python_module_setup.py"
+                  (("/opt/OpenBLAS/include")
+                   (string-append blas "/include"))
+                  (("/opt/OpenBLAS/lib")
+                   (string-append blas "/lib"))))))
+          (replace 'build
+            (lambda* _
+              (invoke "./compile.cp" "BLAS" "OPEN_MP" "LPTHREAD" "PY_INTERF")))
+          (replace 'install
+            (lambda _
+              (rename-file "main" "cianna-cpu")
+              (install-file "cianna-cpu" (string-append #$output "/bin"))))
+          (add-after 'install 'install-python
+            (lambda _
+              (with-directory-excursion "src"
+                (invoke "python" "python_module_setup.py" "install"
+                        "--root=/"
+                        (string-append "--prefix=" #$output))))))))
+    (native-inputs
+     (list python-wrapper
+           python-numpy
+           python-setuptools))
+    (inputs (list openblas))
+    (home-page "https://github.com/Deyht/CIANNA")
+    (synopsis "Deep learning framework for astronomical data analysis")
+    (description
+     "This package provides a @acronym{CIANNA, Convolutional Interactive
+Artificial Neural Networks by/for Astrophysicists} - a general-purpose deep
+learning framework primarily developed and used for astronomical data
+analysis.")
+    (license license:asl2.0)))
 
 (define-public erfa
   (package
