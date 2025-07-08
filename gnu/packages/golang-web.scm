@@ -9094,6 +9094,51 @@ runtime.  It has zero dependencies, and doesn't rely on CGO.  This means you
 can run applications in other languages and still keep cross compilation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-tj-go-elastic
+  (package
+    (name "go-github-com-tj-go-elastic")
+    (version "0.0.0-20171221160941-36157cbbebc2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tj/go-elastic")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r94vc4hbfvqvjz74n4mvsw4dy3vbyzlivb90kyn8vn76a4wqk69"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tj/go-elastic"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests fail with assertion: unsupported protocol scheme.
+                       (list "TestClient_Bulk"
+                             "TestClient_Bulk_error"
+                             "TestClient_SearchIndex"
+                             "TestClient_Aliases"
+                             "TestIndexes_RemoveOlderThan"
+                             "TestClient_RemoveOldIndexes"
+                             "TestClient_SearchIndexString")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Cycles with <github.com/apex/log>.
+          (add-after 'unpack 'remove-test-file
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "batch/batch_test.go")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-smartystreets-go-aws-auth))
+    (home-page "https://github.com/tj/go-elastic")
+    (synopsis "Elasticsearch client with AWS sigv4 support")
+    (description
+     "Package elastic provides an Elasticsearch client with AWS sigv4 support.")
+    (license license:expat)))
+
 (define-public go-github-com-tomnomnom-linkheader
   (package
     (name "go-github-com-tomnomnom-linkheader")
