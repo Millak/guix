@@ -519,6 +519,34 @@ variable.  The variable can contain a comma-separated list of values, for
 example @code{GOPPROF=http,block}.")
     (license license:expat)))
 
+(define-public go-github-com-aphistic-golf
+  (package
+    (name "go-github-com-aphistic-golf")
+    (version "0.0.0-20180712155816-02c07f170c5a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aphistic/golf")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qixab9bb29wqbr4nc5j3g25hq1j7am93f181rkj7a4qacncx763"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; source only library, tests require go-1.12
+      #:import-path "github.com/aphistic/golf"))
+    (propagated-inputs
+     (list go-github-com-google-uuid))
+    (home-page "https://github.com/aphistic/golf")
+    (synopsis "Integration client for Graylog backed services")
+    (description
+     "This package implement a functionality to send logs to services
+supporting @acronym{GELF, Graylog Extended Log Format} specified in
+@url{Graylog Documentation, https://go2docs.graylog.org/current/home.html}.")
+    (license license:expat)))
+
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
