@@ -4144,6 +4144,48 @@ submodules:
      "This package provides memcache client and server functionality.")
     (license license:expat)))
 
+(define-public go-github-com-cowsql-go-cowsql
+  (package
+    (name "go-github-com-cowsql-go-cowsql")
+    (version "1.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cowsql/go-cowsql")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0my26gndkzzhmkp5n4x2akc6h9572y4lpn9ryw7imdhd958mpjrx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Package <https://github.com/cowsql/cowsql> for the full
+      ;; featured binding support, using as source only as a client code.
+      #:skip-build? #t
+      #:test-subdirs #~(list "logging")         ;minimal tests
+      #:import-path "github.com/cowsql/go-cowsql"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-renameio
+           go-github-com-mattn-go-sqlite3
+           go-github-com-peterh-liner
+           go-github-com-pkg-errors
+           go-github-com-rican7-retry
+           go-github-com-spf13-cobra
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/cowsql/go-cowsql")
+    (synopsis "Golang bindings for libcowsql")
+    (description
+     "This package provides bindings for the @url{cowsql,
+https://github.com/cowsql/cowsql} C library and a pure Golang client for the
+@url{cowsql wire protocol,
+https://github.com/cowsql/cowsql/blob/main/doc/protocol.md}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-crackcomm-go-gitignore
   (package
     (name "go-github-com-crackcomm-go-gitignore")
