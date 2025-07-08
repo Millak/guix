@@ -75,6 +75,7 @@
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>"
 ;;; Copyright © 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6848,14 +6849,14 @@ tools like SSH (Secure Shell) to reach the outside world.")
 (define-public stunnel
   (package
   (name "stunnel")
-  (version "5.66")
+  (version "5.75")
   (source
     (origin
       (method url-fetch)
       (uri (string-append "https://www.stunnel.org/downloads/stunnel-"
                           version ".tar.gz"))
       (sha256
-       (base32 "172pkzp8qilj0gd92bhdi96739gjpgbcav5c7a4gd98s9mq7i0am"))))
+       (base32 "10snpaiq3xyijs3hxlf0qxs38f6njbxp9zllrgf78294hpnz07hc"))))
   (build-system gnu-build-system)
   (arguments
    (list #:configure-flags
@@ -6881,7 +6882,8 @@ tools like SSH (Secure Shell) to reach the outside world.")
    (list iproute
          netcat
          procps
-         python))
+         python
+         python-cryptography))
   (inputs (list openssl perl))
   (home-page "https://www.stunnel.org")
   (synopsis "TLS proxy for clients or servers")
