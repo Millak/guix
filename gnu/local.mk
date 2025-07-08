@@ -1486,6 +1486,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-2.37-hurd-clock_t_centiseconds.patch	\
   %D%/packages/patches/glibc-2.41-hurd-local-clock_gettime_MONOTONIC.patch	\
   %D%/packages/patches/glibc-2.37-versioned-locpath.patch	\
+  %D%/packages/patches/glibc-2.38-ldd-x86_64.patch		\
   %D%/packages/patches/glibc-2.41-ldd-x86_64.patch		\
   %D%/packages/patches/glibc-hurd-clock_t_centiseconds.patch	\
   %D%/packages/patches/glibc-hurd-getauxval.patch		\
