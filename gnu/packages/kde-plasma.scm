@@ -1388,7 +1388,7 @@ KDE Frameworks components.")
 (define-public kwin
   (package
     (name "kwin")
-    (version "6.2.5")
+    (version "6.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1397,7 +1397,7 @@ KDE Frameworks components.")
               (patches (search-patches "kwin-unwrap-executable-name-for-dot-desktop-search.patch"))
               (sha256
                (base32
-                "0j38fxgxqyvhyj84cagvmab7y8rind82bdr9k72ch18iwjk51i2w"))))
+                "19a54h4grbl81zvpmqarzwakn0bmn73w5di0svdlhcjxrkn62jp7"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1429,10 +1429,10 @@ KDE Frameworks components.")
                  (string-append
                   "QByteArrayLiteral(\"" (which "Xwayland") "\")")))
               (substitute* '("src/xwayland/xwaylandlauncher.cpp")
-                (("(m_xwaylandProcess->setProgram.QStringLiteral..)(Xwayland)(...;)"
-                  _ a Xwayland b)
-                 (string-append a
-                                (which "Xwayland") b)))
+                (("findExecutable\\(\"Xwayland\"\\)")
+                 (string-append
+                  "findExecutable(\""
+                  (search-input-file inputs "/bin/Xwayland") "\")")))
               ;; https://github.com/NixOS/nixpkgs/blob/6da4bc6cb07cba1b8e53d139cbf1d2fb8061d967/pkgs/desktops/plasma-5/kwin/0003-plugins-qpa-allow-using-nixos-wrapper.patch
               (substitute* "src/plugins/qpa/main.cpp"
                 (("(\\(QLatin1String\\(\"kwin_wayland\"\\)\\))" _ start)
@@ -1484,6 +1484,7 @@ KDE Frameworks components.")
                           "kwin-testLibinputDevice"
                           "kwin-testLockScreen"
                           "kwin-testTabBox"
+                          "kwin-testKeyboardInput"
                           "kwin-testKeyboardLayout"
                           "kwin-testQuickTiling"
                           "kwin-testDbusInterface"
@@ -1504,7 +1505,6 @@ KDE Frameworks components.")
                          wayland-protocols
                          xorg-server-for-tests
                          python-minimal
-                         gcc-14 ;; for <format> header
                          ;; for QtWaylandScanner
                          qtwayland))
     (inputs (list breeze
