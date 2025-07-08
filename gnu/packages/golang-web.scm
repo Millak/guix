@@ -9139,6 +9139,45 @@ can run applications in other languages and still keep cross compilation.")
      "Package elastic provides an Elasticsearch client with AWS sigv4 support.")
     (license license:expat)))
 
+(define-public go-github-com-tj-go-kinesis
+  (package
+    (name "go-github-com-tj-go-kinesis")
+    (version "0.0.0-20171128231115-08b17f58cb1b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tj/go-kinesis")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "108c6p5j6rhhc2cnc2v5368yfsw73y6lzlvz02vpvvjph8rhmld4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tj/go-kinesis"))
+    (propagated-inputs
+     (list go-github-com-apex-log-bootstrap
+           go-github-com-aws-aws-sdk-go
+           go-github-com-jpillora-backoff))
+    (home-page "https://github.com/tj/go-kinesis")
+    (synopsis "Batch producer for AWS Kinesis")
+    (description
+     "Package kinesis implements a batch producer built on top of the official
+AWS SDK.")
+    (license license:expat)))
+
+(define-public go-github-com-tj-go-kinesis-bootstrap
+  (hidden-package
+   (package/inherit go-github-com-tj-go-kinesis
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "github.com/tj/go-kinesis"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-jpillora-backoff)))))
+
 (define-public go-github-com-tomnomnom-linkheader
   (package
     (name "go-github-com-tomnomnom-linkheader")
