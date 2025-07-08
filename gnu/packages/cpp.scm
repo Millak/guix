@@ -3664,7 +3664,7 @@ getopt(), getopt_long() and getopt_long_only().")
 (define-public safeint
   (package
     (name "safeint")
-    (version "3.0.27")
+    (version "3.0.28")
     (source
      (origin
        (method git-fetch)
@@ -3673,7 +3673,9 @@ getopt(), getopt_long() and getopt_long_only().")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01d2dpdhyw3lghmamknb6g39w2gg0sv53pgxlrs2la8h694z6x7s"))))
+        (base32 "0bgqvyz5zp4mqzkm9545r3564n52bcdnq8bjn6azhxdsmap26g56"))
+       (patches
+        (search-patches "safeint-disable-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
