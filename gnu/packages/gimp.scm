@@ -481,9 +481,12 @@ that is extensible via a plugin system.")
                                   (eq? 'regular (stat:type stat))))))))))
     (inputs (modify-inputs (package-inputs gimp-2)
               (replace "gtk+" gtk+)
-              (prepend libxmu libxt)
-              (prepend python python-pygobject gjs)
-              (prepend libxslt)))
+              (prepend libxmu
+                       libxt
+                       python
+                       python-pygobject
+                       gjs
+                       libxslt)))
     (native-inputs (modify-inputs (package-native-inputs gimp-2)
                      (prepend appstream-glib
                               gi-docgen
