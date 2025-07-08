@@ -87,7 +87,7 @@
                       (search-paths '())
                       (system (%current-system))
                       (source-directory ".")
-                      not-compiled-file-regexp
+                      (not-compiled-file-regexp #f)
                       (scheme-file-regexp %scheme-file-regexp)
                       (documentation-file-regexp %documentation-file-regexp)
                       ;; FIXME: Turn on parallel building of Guile modules by

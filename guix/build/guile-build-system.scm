@@ -62,10 +62,6 @@ determined."
         (substring file 0 dot)
         file)))
 
-(define %scheme-file-regexp
-  ;; Regexp to match Scheme files.
-  "\\.(scm|sls)$")
-
 (define* (set-locale-path #:key inputs native-inputs
                           #:allow-other-keys)
   "Set 'GUIX_LOCPATH'."
@@ -139,14 +135,11 @@ Raise an error if one of the processes exit with non-zero."
   (force-output log-port))
 
 (define* (build #:key outputs inputs native-inputs
-                (source-directory ".")
-                (compile-flags '())
-                ;; FIXME: Turn on parallel building of Guile modules by
-                ;; default after the non-determinism issues in the Guile byte
-                ;; compiler are resolved (see bug #20272).
-                (parallel-build? #f)
-                (scheme-file-regexp %scheme-file-regexp)
-                (not-compiled-file-regexp #f)
+                source-directory
+                compile-flags
+                parallel-build?
+                scheme-file-regexp
+                not-compiled-file-regexp
                 target
                 #:allow-other-keys)
   "Build files in SOURCE-DIRECTORY that match SCHEME-FILE-REGEXP.  Files
