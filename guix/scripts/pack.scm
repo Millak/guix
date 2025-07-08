@@ -55,10 +55,12 @@
   #:use-module ((guix docker) #:select (%docker-image-max-layers))
   #:use-module (gnu compression)
   #:use-module (gnu packages)
-  #:use-module (gnu packages bootstrap)
-  #:use-module ((gnu packages compression) #:hide (zip))
-  #:use-module (gnu packages guile)
-  #:use-module (gnu packages base)
+  #:autoload   (gnu packages bootstrap) (%bootstrap-coreutils&co
+                                         %bootstrap-inputs
+                                         %bootstrap-guile)
+  #:autoload   (gnu packages compression) (gzip squashfs-tools)
+  #:autoload   (gnu packages guile) (guile-json-3 guile-sqlite3)
+  #:autoload   (gnu packages base) (binutils tar libc-utf8-locales-for-target)
   #:autoload   (gnu packages appimage) (appimage-type2-runtime)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:autoload   (gnu packages guile) (guile2.0-json guile-json)
@@ -90,7 +92,7 @@
 ;;; Code:
 
 ;; This one is only for use in this module, so don't put it in %compressors.
-(define bootstrap-xz
+(define (bootstrap-xz)
   (compressor "bootstrap-xz" ".xz"
               #~(append (list #+(file-append %bootstrap-coreutils&co "/bin/xz")
                               "-e")
@@ -104,15 +106,6 @@
     (('gnu _ ...) #t)
     (_ #f)))
 
-(define gcrypt-sqlite3&co
-  ;; Guile-Gcrypt, Guile-SQLite3, and their propagated inputs.
-  (append-map (lambda (package)
-                (cons package
-                      (match (package-transitive-propagated-inputs package)
-                        (((labels packages) ...)
-                         packages))))
-              (list guile-gcrypt guile-sqlite3)))
-
 (define (store-database items)
   "Return a directory containing a store database where all of ITEMS and their
 dependencies are registered."
@@ -125,6 +118,15 @@ dependencies are registered."
     (map (lambda (n)
            (string-append "closure" (number->string n)))
          (iota (length items))))
+
+  (define gcrypt-sqlite3&co
+    ;; Guile-Gcrypt, Guile-SQLite3, and their propagated inputs.
+    (append-map (lambda (package)
+                  (cons package
+                        (match (package-transitive-propagated-inputs package)
+                          (((labels packages) ...)
+                           packages))))
+                (list guile-gcrypt guile-sqlite3)))
 
   (define build
     (with-extensions gcrypt-sqlite3&co
@@ -1828,7 +1830,7 @@ Create a bundle of PACKAGE.\n"))
                    (target      (assoc-ref opts 'target))
                    (bootstrap?  (assoc-ref opts 'bootstrap?))
                    (compressor  (if bootstrap?
-                                    bootstrap-xz
+                                    (bootstrap-xz)
                                     (assoc-ref opts 'compressor)))
                    (archiver    (if (equal? pack-format 'squashfs)
                                     squashfs-tools
