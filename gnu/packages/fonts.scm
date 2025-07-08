@@ -2606,18 +2606,15 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "1.0.29")
+    (version "1.0.31")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/be5invis/Sarasa-Gothic"
-                           "/releases/download/v"
-                           version
-                           "/Sarasa-TTC-"
-                           version
-                           ".7z"))
+                           "/releases/download/v" version
+                           "/Sarasa-TTC-" version ".7z"))
        (sha256
-        (base32 "1y82wp3rgm1xnn92f0jppgiqjsimdy83ljyh5q9dybzx3fp0x8w7"))))
+        (base32 "06pb8pbj66jazlbqq3x0p6cwx0siscmvjqkf2vi7gkng5ry7js43"))))
     (build-system font-build-system)
     (arguments
      (list
@@ -2634,7 +2631,8 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
     (synopsis "CJK programming font based on Iosevka and Source Han Sans")
     (description
      "Sarasa Gothic is a programming font based on Iosevka and Source Han Sans,
-most CJK characters are same height, and double width as ASCII characters.")
+most CJK characters are the same height, and double the width as ASCII
+characters.")
     (properties '((upstream-name . "Sarasa")))))
 
 (define-public font-space-grotesk
