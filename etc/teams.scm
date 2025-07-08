@@ -1168,7 +1168,7 @@ the \"texlive\" importer."
 (define-member (person "Sharlatan Hellseher"
                        "sharlatanus@gmail.com"
                        "Hellseher")
-  go lisp python science sysadmin)
+  go julia python science sysadmin)
 
 (define-member (person "Vivien Kraus"
                        "vivien@planete-kraus.eu")
