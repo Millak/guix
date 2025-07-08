@@ -683,6 +683,29 @@ tests.")
 tests.")
     (license license:expat)))
 
+(define-public go-github-com-go-playground-assert-v2
+  (package
+    (name "go-github-com-go-playground-assert-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-playground/assert")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13mb07dxhcy9ydqbracnrpfj682g6sazjpm56yrlbn2jc1yfy44c"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/go-playground/assert/v2"))
+    (home-page "https://github.com/go-playground/assert")
+    (synopsis "Basic assertion library used alongside native Go testing")
+    (description
+     "This package provides basic assertions along with building blocks for
+custom assertions to be used alongside native Go testing.")
+    (license license:expat)))
+
 (define-public go-github-com-go-playground-validator-v10
   (package
     (name "go-github-com-go-playground-validator-v10")
@@ -2502,6 +2525,7 @@ accurate testing of your code.")
 
 (define-public go-gopkg-in-go-playground-assert-v1
   (package
+    (inherit go-github-com-go-playground-assert-v2)
     (name "go-gopkg-in-go-playground-assert-v1")
     (version "1.2.1")
     (home-page "https://github.com/go-playground/assert")
@@ -2514,31 +2538,8 @@ accurate testing of your code.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1h4amgykpa0djwi619llr3g55p75ia0mi184h9s5zdl8l4rhn9pm"))))
-    (build-system go-build-system)
     (arguments
-     '(#:import-path "gopkg.in/go-playground/assert.v1"))
-    (synopsis "Basic assertion library used alongside native Go testing")
-    (description
-     "This package provides basic assertions along with building blocks for
-custom assertions to be used alongside native Go testing.")
-    (license license:expat)))
-
-(define-public go-github-com-go-playground-assert-v2
-  (package
-    (inherit go-gopkg-in-go-playground-assert-v1)
-    (name "go-github-com-go-playground-assert-v2")
-    (version "2.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-playground/assert")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13mb07dxhcy9ydqbracnrpfj682g6sazjpm56yrlbn2jc1yfy44c"))))
-    (arguments
-     (list #:import-path "github.com/go-playground/assert/v2"))))
+     (list #:import-path "gopkg.in/go-playground/assert.v1"))))
 
 (define-public go-github-com-warpfork-go-testmark
   (package
