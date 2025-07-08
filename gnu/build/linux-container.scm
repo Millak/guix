@@ -85,7 +85,7 @@ exists."
 (define* (mount-file-systems root mounts #:key mount-/sys? mount-/proc?
                              (populate-file-system (const #t))
                              writable-root?)
-  "Mount the essential file systems and the those in MOUNTS, a list of
+  "Mount the essential file systems and those in MOUNTS, a list of
 <file-system> objects, relative to ROOT; then make ROOT the new root directory
 for the process."
   (define (scope dir)
