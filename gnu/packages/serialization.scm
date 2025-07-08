@@ -997,6 +997,26 @@ game development and other performance-critical applications.")
        ((#:configure-flags flags #~'())
         #~(append #$flags '("-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))))))
 
+(define-public flatbuffers-23.5
+  (hidden-package
+   (package
+     (inherit flatbuffers)
+     ;; needed explicitly by onnxruntime
+     (version "23.5.26")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/google/flatbuffers")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name "flatbuffers" version))
+        (sha256
+         (base32 "0cd12dvkzqdafz46q4302mzgpzbz589zmmiga7bq07f2sqy4vrvv"))))
+     (arguments
+      (substitute-keyword-arguments (package-arguments flatbuffers)
+        ((#:configure-flags flags #~'())
+         #~(append #$flags '("-DCMAKE_POSITION_INDEPENDENT_CODE=ON"))))))))
+
 (define-public go-github-com-google-flatbuffers
   (package/inherit flatbuffers
     (name "go-github-com-google-flatbuffers")
