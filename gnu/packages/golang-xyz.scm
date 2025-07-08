@@ -2026,6 +2026,30 @@ multiset.  This implementation offers enhanced performance, flexibility, and
 simplicity while maintaining accuracy.")
     (license license:expat)))
 
+(define-public go-github-com-aybabtme-rgbterm
+  (package
+    (name "go-github-com-aybabtme-rgbterm")
+    (version "0.0.0-20170906152045-cc83f3b3ce59")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aybabtme/rgbterm")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wvmxvjn64968ikvnxrflb1x8rlcwzpfl53fzbxff2axbx9lq50q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aybabtme/rgbterm"))
+    (home-page "https://github.com/aybabtme/rgbterm")
+    (synopsis "RGB colors support in terminal")
+    (description
+     "Package rgbterm colorizes bytes and strings using RGB colors, for a full
+range of pretty terminal strings.")
+    (license license:expat)))
+
 (define-public go-github-com-aymanbagabas-go-osc52-v2
   (package
     (name "go-github-com-aymanbagabas-go-osc52-v2")
