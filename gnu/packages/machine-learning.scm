@@ -221,6 +221,40 @@ representations and sentence classification.")
 family of functions.")
     (license license:expat)))
 
+(define-public python-faster-whisper
+  (package
+    (name "python-faster-whisper")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SYSTRAN/faster-whisper")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g9cdvphifn4rqhh7p4z1d3pp6bhcx0jmcahjigvcgry0qsijgfn"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Currently tests requires model download, which we'd rather avoid
+    ;; in Guix unless we're sure about the FOSS weights. To test in source :
+    ;; guix shell -D python-faster-whisper -- pytest
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list (list onnxruntime "python")
+                             python-av
+                             python-ctranslate2
+                             python-huggingface-hub
+                             python-tokenizers
+                             python-tqdm))
+    (native-inputs (list python-numpy
+                         python-pytest
+                         python-setuptools-next))
+    (home-page "https://github.com/SYSTRAN/faster-whisper")
+    (synopsis "Whisper transcription reimplementation")
+    (description
+     "This package provides a reimplementation of OpenAI's Whisper model using
+CTranslate2, which is a inference engine for transformer models.")
+    (license license:expat)))
+
 (define-public python-fasttext
   (package
     (inherit fasttext)
