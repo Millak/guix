@@ -1305,7 +1305,7 @@ utilities to ease adding new glyphs to the font.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "2025.06.01")
+    (version "2025.07.01")
     (source
      (origin
        (method git-fetch)
@@ -1314,7 +1314,7 @@ utilities to ease adding new glyphs to the font.")
              (commit (string-append "noto-monthly-release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0afv8lw7h23lh8jhnyrs1cyjwwdixmxkpiww7p7mkshz74kcsmpa"))))
+        (base32 "0p27wbxdwi99r5yj33z9jadlv4rbhp5vw5c0ir15bymvdwdr8s8z"))))
     (build-system font-build-system)
     (arguments
      (list
