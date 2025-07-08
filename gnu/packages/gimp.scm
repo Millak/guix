@@ -483,6 +483,7 @@ that is extensible via a plugin system.")
     (inputs (modify-inputs (package-inputs gimp-2)
               (replace "gtk+" gtk+)
               (prepend bash-minimal
+                       libjxl
                        libxmu
                        libxt
                        python
