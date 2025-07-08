@@ -102,10 +102,10 @@ used in the Raspberry Pi")
       (build-system gnu-build-system)
       (synopsis "State dumper for BCM270x GPIOs")
       (description "Tool to help debug / hack at the BCM283x GPIO. You can dump
-  the state of a GPIO or (all GPIOs). You can change a GPIO mode and pulls (and
-  level if set as an output).  Beware this tool writes directly to the BCM283x
-  GPIO reisters, ignoring anything else that may be using them (like Linux
-  drivers).")
+  the state of a GPIO (or all GPIOs). You can change a GPIO mode and pulls (and
+  level, if set as an output).  Beware that this tool writes directly to the
+  BCM283x GPIO registers, ignoring anything else that may be using them (like
+  Linux drivers).")
       (home-page "https://github.com/RPi-Distro/raspi-gpio")
       (supported-systems '("armhf-linux" "aarch64-linux"))
       (license license:bsd-3))))
@@ -337,7 +337,7 @@ kernel LINUX."
   ;; data is usually assumed to be existing on PCs.  It creates firmware
   ;; configuration files and a bootloader-chain with U-Boot to provide an EFI
   ;; API for the final GRUB bootloader.  It also serves as a blue-print to
-  ;; create an a custom bootloader-chain with firmware and device-tree
+  ;; create a custom bootloader-chain with firmware and device-tree
   ;; packages or files.
   (efi-bootloader-chain grub-efi-netboot-removable-bootloader
                         #:packages (list u-boot-rpi-arm64-efi-bin)
