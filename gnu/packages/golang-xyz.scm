@@ -14320,6 +14320,76 @@ specification-runtime-spec.")
      "Common SELinux package used across the container ecosystem.")
     (license license:asl2.0)))
 
+(define-public go-github-com-opencontainers-umoci
+  (package
+    (name "go-github-com-opencontainers-umoci")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/opencontainers/umoci")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10pxiqk4194nbnvlvfvlbk31wp8k35in3g694y20f9261nn0qx6n"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:import-path "github.com/opencontainers/umoci"
+      ;; convert spec to rootless: inspecting mount flags of /etc/resolv.conf:
+      ;; no such file or directory
+      #:test-flags
+      #~(list "-skip" "TestUnpackManifestCustomLayer|TestUnpackStartFromDescriptor")
+      #:test-subdirs
+      ;; cmd/umoci needs older version of image-spec, excluding it.
+      #~(list "." "mutate"
+              "oci/cas/dir"
+              "oci/casext/blobcompress"
+              "oci/config/generate"
+              "pkg/funchelpers"
+              "pkg/hardening"
+              "pkg/idtools"
+              "pkg/mtreefilter"
+              "pkg/pathtrie"
+              "pkg/system"
+              "pkg/unpriv")))
+    (native-inputs
+     (list go-github-com-mohae-deepcopy
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-adalogics-go-fuzz-headers
+           go-github-com-apex-log
+           go-github-com-blang-semver-v4
+           go-github-com-cyphar-filepath-securejoin
+           go-github-com-docker-go-units
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-pgzip
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-rootless-containers-proto-go-proto
+           go-github-com-urfave-cli
+           go-github-com-vbatts-go-mtree
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))
+    (home-page "https://umo.ci/")
+    (synopsis "Modifies Open Container images")
+    (description
+     "umoci modifies Open Container images (pronounced /uːmoˈʨi/) is a
+reference implementation of the @url{OCI image specification,
+https://github.com/opencontainers/image-spec} and provides users with the
+ability to create, manipulate, and otherwise interact with container images.
+It is designed to be as small and unopinonated as possible, so as to act as a
+foundation for larger systems to be built on top of.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-openhistogram-circonusllhist
   (package
     (name "go-github-com-openhistogram-circonusllhist")
