@@ -840,7 +840,7 @@ by GDBus included in Glib.")
 (define-public libaccounts-glib
   (package
     (name "libaccounts-glib")
-    (version "1.26")
+    (version "1.27")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -849,7 +849,7 @@ by GDBus included in Glib.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fdvvzbz23q5c0jnzryinkmcymd0zcs2pdn4fvibg34pvybb4li9"))))
+                "0j181yw0jpw3bkq45hg0vhha5nyjjcssvfjj0y92311bkz15rf4q"))))
     (build-system meson-build-system)
     (native-inputs (list dbus
                          `(,glib "bin")
