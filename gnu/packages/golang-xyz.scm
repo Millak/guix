@@ -15597,6 +15597,36 @@ comments.
       #:import-path "github.com/rogpeppe/go-internal"
       #:test-flags #~(list "-skip" "TestSimple/cover")))))
 
+(define-public go-github-com-rootless-containers-proto-go-proto
+  (package
+    (name "go-github-com-rootless-containers-proto-go-proto")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rootless-containers/proto")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01lmjg70l0ll2sf7kg114nhc1pd848j5xpgwb1xm3k0q81h4x9d3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/rootless-containers/proto"))
+    (propagated-inputs (list go-google-golang-org-protobuf))
+    (home-page "https://github.com/rootless-containers/proto")
+    (synopsis "Protobuf descriptions for rootless containers purposes")
+    (description
+     "This package provides a protobuf definition of the
+@code{user.rootlesscontainers} extended attribute.  The main purpose of this
+attribute is to allow for a interoperable and standardised way of emulating
+persistent syscalls in a @url{rootless container,
+https://rootlesscontaine.rs/} (syscalls such as @code{chown(2)} which would
+ordinarily fail).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-rs-zerolog
   (package
     (name "go-github-com-rs-zerolog")
