@@ -2043,7 +2043,7 @@ config.h files for instance.  Among other things, dune-configurator allows one t
 (define-public ocaml-pp
   (package
     (name "ocaml-pp")
-    (version "1.2.0")
+    (version "2.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2052,7 +2052,7 @@ config.h files for instance.  Among other things, dune-configurator allows one t
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ylwb8lbjzj1prnal3c5p404dvh7bv4s19cvgrplnd7s46lvnj50"))))
+                "1gfd6hrb031qzb54v2zhlfxs54x0vnbaj6a8as07pvpwx7qznyss"))))
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-odoc))
     (native-inputs (list ocaml-ppx-expect))
