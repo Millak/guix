@@ -12892,6 +12892,33 @@ parsing.")
      "This directory contains documents about Docker Image Specification v1.X.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-sys-capability
+  (package
+    (name "go-github-com-moby-sys-capability")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/sys")
+              (commit (go-version->git-ref version
+                                           #:subdir "capability"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1140wqx5mlr9adk74k6bsswqm6dhps02cwv6k8j6nssd7ln3v514"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/capability"
+      #:unpack-path "github.com/moby/sys"))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Basic primitives to work with Linux capabilities")
+    (description
+     "Package capability provides utilities for manipulating POSIX
+capabilities.  It's a maintained fork of
+https://github.com/syndtr/gocapability.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-moby-sys-mountinfo
   (package
     (name "go-github-com-moby-sys-mountinfo")
