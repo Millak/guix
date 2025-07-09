@@ -6862,6 +6862,8 @@ tools like SSH (Secure Shell) to reach the outside world.")
    (list #:configure-flags
          #~(list (string-append "--with-ssl="
                                 #$(this-package-input "openssl")))
+         #:tests? (and (not (%current-target-system))
+                       (this-package-native-input "python-cryptography"))
          #:phases
          #~(modify-phases %standard-phases
              (add-after 'unpack 'patch-output-directories
@@ -6879,11 +6881,13 @@ tools like SSH (Secure Shell) to reach the outside world.")
                    (for-each delete-file (find-files doc "^INSTALL"))))))))
   (native-inputs
    ;; For tests.
-   (list iproute
-         netcat
-         procps
-         python
-         python-cryptography))
+   (if (supported-package? python-cryptography)
+       (list iproute
+             netcat
+             procps
+             python
+             python-cryptography)
+       '()))
   (inputs (list openssl perl))
   (home-page "https://www.stunnel.org")
   (synopsis "TLS proxy for clients or servers")
