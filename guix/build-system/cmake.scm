@@ -54,6 +54,22 @@
     ;; For avr, or1k-elf, xtensa-ath9k-elf
     (_ "Generic")))
 
+(define* (cmake-system-processor-for-target
+          #:optional (target (or (%current-target-system)
+                                 (%current-system))))
+  (match target
+    ((? target-x86-32?)      (substring target 0 4))
+    ((? target-x86-64?)      "x86_64")
+    ((? target-arm32?)       "armv7")
+    ((? target-aarch64?)     "aarch64")
+    ((? target-loongarch64?) "loongarch64")
+    ((? target-ppc64le?)     "ppc64le")
+    ((? target-ppc32?)       "ppc")
+    ((? target-riscv64?)     "riscv64")
+    ((? target-mips64el?)    "mips64el")
+    ((? target-avr?)         "avr")
+    (_                       (car (string-split target #\-)))))
+
 (define %cmake-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build cmake-build-system)
