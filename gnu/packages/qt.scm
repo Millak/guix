@@ -5877,38 +5877,58 @@ policy applications.")
      (list license:bsd-3 ; cmake/*
            license:expat)))) ; everything else
 
+
+(define libkode
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/cornelius/libkode")
+           (commit "2891c9eec984e423bfb56e0284784c85a6e6bb14")))
+    (file-name "libkode")
+    (sha256
+     (base32 "08wvxmk77zrixll8wfhwd7ixvpvj2wbisvq8lqw2b8ym77sbbyz4"))))
+
 (define-public kdsoap
-  (package
-    (name "kdsoap")
-    (version "2.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/KDAB/KDSoap/releases/download/"
-                           "kdsoap-" version "/kdsoap-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0mpkg9iyvzb6mxvhbi6zc052ids2r2nzpmjbljgpq6a2hja13vyr"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:configure-flags
-           #~(list "-DKDSoap_TESTS=true"
-                   ;; remove when next version release.
-                   "-DKDSoap_QT6=true")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ctest" "-E" ;; These tests try connect to the internet.
-                             "(kdsoap-test_webcalls|kdsoap-test_webcalls_wsdl|kdsoap-test_calc)")))))))
-    (home-page "https://www.kdab.com/development-resources/qt-tools/kd-soap/")
-    (synopsis "Qt SOAP component")
-    (description "KD SOAP is a tool for creating client applications for web
+  (let ((commit "b23dcc1b554d98a4b77fb56fff0d0f0714c8f0bf")
+        (revision "0"))
+    (package
+      (name "kdsoap")
+      (version (git-version "2.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/KDAB/KDSoap")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1invsvadfz3l6cf453j4ad4dkg3gas3h85nxvvlif6h7xfx73qhi"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase
+             #:configure-flags
+             #~(list "-DKDSoap_TESTS=true")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'add-libkode
+                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                     (copy-recursively #$(this-package-native-input "libkode")
+                                       "kdwsdl2cpp/libkode")))
+                 (replace 'check
+                   (lambda* (#:key native-inputs inputs tests? #:allow-other-keys)
+                     (when tests?
+                       (setenv "TZDIR" (search-input-directory
+                                        (or native-inputs inputs) "share/zoneinfo"))
+                       (setenv "TZ" "Etc/UTC")
+                       (invoke "ctest" "-E" ;; These tests try connect to the internet.
+                               "(kdsoap-test_webcalls|kdsoap-test_webcalls_wsdl|kdsoap-test_calc)")))))))
+      (native-inputs (list libkode tzdata-for-tests))
+      (home-page "https://www.kdab.com/development-resources/qt-tools/kd-soap/")
+      (synopsis "Qt SOAP component")
+      (description "KD SOAP is a tool for creating client applications for web
 services using the XML based SOAP protocol and without the need for a dedicated
 web server.")
-    (license (list license:gpl2 license:gpl3))))
+      (license (list license:gpl2 license:gpl3)))))
 
 (define-public kdsoap-qt6
   (deprecated-package "kdsoap-qt6" kdsoap))
