@@ -799,9 +799,9 @@ in SOURCE."
                                   (menu-dropdown
                                    #:label
                                    `(img (@ (alt "Language")
-                                            (src #$(string-append
+                                            (src #$(in-vicinity
                                                     %web-site-url
-                                                    "/themes/initial/img/language-picker.svg"))))
+                                                    "themes/initial/img/language-picker.svg"))))
                                    #:items
                                    (language-menu-items file)))
                             #:split-node? split-node?)
