@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -390,12 +390,12 @@
    (check-compiler-for-target
     (dummy-package "x" (arguments '(#:make-flags '("CC=gcc")))))))
 
-
 (test-equal "compiler-for-target: looks through G-expressions"
   "'CC' should be set to '(cc-for-target)' instead of 'gcc'"
   (single-lint-warning-message
    (check-compiler-for-target
-    (dummy-package "x" (arguments '(#:make-flags #~'("CC=gcc")))))))
+    (dummy-package "x" (arguments
+                        (list #:make-flags #~(list "CC=gcc")))))))
 
 (test-equal "compiler-for-target: (cc-for-target) is acceptable"
   '()
