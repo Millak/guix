@@ -582,14 +582,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-1.0
   (package
     (inherit shepherd-0.10)
-    (version "1.0.5")
+    (version "1.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1y05d345s07xgbsdnsx0qxv4shksbfmvp9g5j6202j9bl1lm0irw"))))
+                "0cxyf50s7zzszi591f2974r2x3jkmlwrv0y51xjmwscs97ddyx7w"))))
     (arguments
      (substitute-keyword-arguments (package-arguments shepherd-0.10)
        ((#:configure-flags flags #~'())
