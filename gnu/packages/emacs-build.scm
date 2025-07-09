@@ -431,7 +431,7 @@ files and directories.")
 (define-public emacs-package-lint
   (package
     (name "emacs-package-lint")
-    (version "0.25")
+    (version "0.26")
     (source
      (origin
        (method git-fetch)
@@ -441,7 +441,7 @@ files and directories.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fvi79pwlvvdakcmvf6jv9ba400lqfjsdcshg2q4rnj5v1a797pn"))))
+         "0x1ikwfz1zr8bl8a67kgcbyzrqxnn6bslbz6pdfaczmshy7ry757"))))
     (arguments
      (list #:include #~(cons "^data/" %default-include)
            #:tests? #f                  ; XXX: 8/92 tests failing
