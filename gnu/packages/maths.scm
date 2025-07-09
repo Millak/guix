@@ -2249,14 +2249,16 @@ Swath).")
               (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments hdf5)
-       ((#:configure-flags _ #f)
-        #~(list
-           (string-append "-DHDF5_INSTALL_CMAKE_DIR=" #$output "/lib/cmake")
-           "-DHDF5_ENABLE_THREADSAFE=OFF"
-           "-DHDF5_ENABLE_PARALLEL=ON"
-           "-DHDF5_BUILD_FORTRAN=ON"
-           "-DHDF5_BUILD_CPP_LIB=OFF"
-           "-DHDF5_BUILD_DOC=ON"))
+       ((#:configure-flags flags '())
+        #~(append (filter (lambda (flag)
+                            (not
+                             (or (string-prefix? "-DHDF5_ENABLE_THREADSAFE" flag)
+                                 (string-prefix? "-DHDF5_BUILD_CPP_LIB" flag)
+                                 (string-prefix? "-DALLOW_UNSUPPORTED" flag))))
+                          #$flags)
+                  (list "-DHDF5_ENABLE_THREADSAFE=OFF"
+                        "-DHDF5_ENABLE_PARALLEL=ON"
+                        "-DHDF5_BUILD_CPP_LIB=OFF" )))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'build 'mpi-setup
