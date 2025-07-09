@@ -1962,14 +1962,14 @@ active window on Plasma Desktop.")
 (define-public plasma-browser-integration
   (package
     (name "plasma-browser-integration")
-    (version "6.2.5")
+    (version "6.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1kjxkdnziqn5lc0qghx3650ncbhvcaapv66qkfzs284zcr8r1ni5"))))
+                "0w7dl50hrbbnnrj1fzlv5fgzc3lvjkxhmqm0j2wqljy9s21vkhpq"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     ;; TODO: Figure out how to integrate this package into web browsers
