@@ -87,6 +87,7 @@
   #:use-module (gnu packages node)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages rust)
@@ -1718,6 +1719,8 @@ ca495991b7852b855"))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((lib (string-append #$output "/lib"))
+                     (gpgme #$(this-package-input "gpgme"))
+                     (gpgme-lib (string-append gpgme "/lib"))
                      (gtk #$(this-package-input "gtk+"))
                      (gtk-share (string-append gtk "/share"))
                      (pulseaudio #$(this-package-input "pulseaudio"))
@@ -1729,7 +1732,7 @@ ca495991b7852b855"))
                      (libnotify-lib (string-append libnotify "/lib")))
                 (wrap-program (car (find-files lib "^icedove$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
-                  `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib ,libnotify-lib)))))))))
+                  `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib ,libnotify-lib ,gpgme-lib)))))))))
     (inputs
      (list alsa-lib
            bash-minimal
@@ -1742,6 +1745,7 @@ ca495991b7852b855"))
            freetype
            gdk-pixbuf
            glib
+           gpgme
            gtk+
            gtk+-2
            hunspell
