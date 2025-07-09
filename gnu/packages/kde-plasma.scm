@@ -2925,14 +2925,14 @@ hardware management, and a high degree of customizability.")
 (define-public plasma-workspace-wallpapers
   (package
     (name "plasma-workspace-wallpapers")
-    (version "6.2.5")
+    (version "6.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "105wy5sdaimqkqcbpqv2aa004xgdjsjfj81s9x1i6kfkqcn7mc6q"))))
+                "0jccrbpg0qdfys2gj789zfn0yilkwckd81d9nvpkppljv94p0gfa"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules))
     (home-page "https://community.kde.org/Frameworks")
