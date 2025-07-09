@@ -43,9 +43,12 @@
   #:autoload   (gcrypt hash) (port-sha256)
   #:autoload   (guix base16) (base16-string->bytevector)
   #:autoload   (guix base32) (bytevector->nix-base32-string)
+  #:use-module (guix derivations)
+  #:use-module (guix gexp)
   #:autoload   (guix http-client) (http-fetch)
   #:use-module (guix utils)
   #:use-module (guix memoization)
+  #:use-module (guix monads)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module ((guix ui) #:select (display-hint))
@@ -54,12 +57,14 @@
                            . hyphen-package-name->name+version)
                           find-files
                           invoke
-                          call-with-temporary-output-file))
+                          call-with-temporary-output-file
+                          which))
   #:use-module (guix import utils)
   #:use-module (guix import json)
   #:use-module (json)
   #:use-module (guix build toml)
   #:use-module (guix packages)
+  #:use-module (guix store)
   #:use-module (guix upstream)
   #:use-module ((guix licenses) #:prefix license:)
   #:export (%pypi-base-url
@@ -260,6 +265,26 @@ the input field."
   (any (cut string-contains-ci name <>)
        '("test" "dev")))
 
+;; Adapted from SVN-COMMAND defined in (guix import texlive).
+(define (unzip-command . args)
+  "Execute \"unzip\" command with arguments ARGS, provided as strings, and
+return its output as a string.  Raise an error if the command execution did
+not succeed."
+  (define unzip
+    ;; Resolve this variable lazily so that (gnu packages ...) does not end up
+    ;; in the closure of this module.
+    (module-ref (resolve-interface '(gnu packages compression))
+                'unzip))
+  (let ((unzip-cmd
+         (or (which "unzip")
+             (with-store store
+               (run-with-store store
+                 (mlet* %store-monad
+                     ((drv (lower-object unzip))
+                      (built (built-derivations (list drv))))
+                   (return (string-append (derivation->output-path drv) "/bin/unzip"))))))))
+    (system* (string-append unzip-cmd (string-join args " " 'prefix)))))
+
 (define (parse-requires.txt requires.txt)
   "Given REQUIRES.TXT, a path to a Setuptools requires.txt file, return a list
 of lists of requirements.
@@ -371,7 +396,7 @@ be extracted in a temporary directory."
          (if (zero?
               (parameterize ((current-error-port (%make-void-port "rw+"))
                              (current-output-port (%make-void-port "rw+")))
-                (system* "unzip" wheel-archive "-d" dir metadata)))
+                (unzip-command wheel-archive "-d" dir metadata)))
              (parse-wheel-metadata (string-append dir "/" metadata))
              (begin
                (warning
@@ -431,7 +456,7 @@ no requires.txt file found.~%"))
            (parameterize ((current-error-port (%make-void-port "rw+"))
                           (current-output-port (%make-void-port "rw+")))
              (if (string=? "zip" (file-extension source-url))
-                 (invoke "unzip" archive "-d" dir)
+                 (unzip-command archive "-d" dir)
                  (invoke "tar" "xf" archive "-C" dir)))
                (list (guess-requirements-from-pyproject.toml dir)
                      (guess-requirements-from-requires.txt dir))))
