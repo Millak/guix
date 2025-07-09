@@ -20949,8 +20949,18 @@ been adapted to also work with mu4e.")
                 "104wifdqglk6hxs6z3gr6rmxf3hdqsl3y9bvcp3wwm10yqkpnmkx"))))
     (build-system emacs-build-system)
     (arguments
-     ;; no tests
-     `(#:tests? #f))
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)"))))))
+    (native-inputs (list texinfo))
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/minad/tempel")
