@@ -414,6 +414,50 @@
                    (list #:target #false
                          #:make-flags #~(list "CC=gcc"))))))
 
+(test-equal "misplaced-flags: make-flag is incorrect"
+  "'CMAKE_BUILD_TYPE' should be set with the 'build-type' flag"
+  (single-lint-warning-message
+   (check-misplaced-flags
+     (dummy-package "x"
+                    (arguments
+                     (list #:make-flags #~(list "-DCMAKE_BUILD_TYPE=RELEASE"
+                                                "-DTESTS=ON")))))))
+
+(test-equal "misplaced-flags: configure-flag is incorrect"
+  "'buildtype' should be set with the 'build-type' flag"
+  (single-lint-warning-message
+   (check-misplaced-flags
+     (dummy-package "x"
+                    (arguments
+                     (list #:configure-flags #~(list "--buildtype=release"
+                                                     "--with-tests")))))))
+
+(test-equal "misplaced-flags: cargo feature flags"
+  "'features' should be set with the 'features' flag"
+  (single-lint-warning-message
+   (check-misplaced-flags
+     (dummy-package "x"
+                    (arguments
+                     '(#:cargo-test-flags
+                       '("--features" "force_system_lib")))))))
+
+(test-equal "misplaced-flags: flags without g-exp is incorrect"
+  "'CMAKE_BUILD_TYPE' should be set with the 'build-type' flag"
+  (single-lint-warning-message
+   (check-misplaced-flags
+     (dummy-package "x"
+                    (arguments
+                     '(#:make-flags '("-DCMAKE_BUILD_TYPE=RELEASE"
+                                      "-DTESTS=ON")))))))
+
+(test-equal "misplaced-flags: build-type set correctly"
+  '()
+  (check-misplaced-flags
+    (dummy-package "x"
+                   (arguments
+                    (list #:build-type "RELEASE"
+                          #:make-flags #~(list "-DTESTS=ON"))))))
+
 ;; The emacs-build-system sets #:tests? #f by default.
 (test-equal "tests-true: #:tests? #t acceptable for emacs packages"
   '()
