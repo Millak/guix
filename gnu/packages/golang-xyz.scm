@@ -13029,6 +13029,34 @@ related files.")
 running in a Linux user namespace.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-term
+  (package
+    (name "go-github-com-moby-term")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/term")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05g3dn1hbk9vxzp3dm752j8zn1gy61qzxm33nsj7xisa8s6v8vgw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/term"))
+    (propagated-inputs
+     (list ;; go-github-com-azure-go-ansiterm ; for Windows only
+           go-github-com-creack-pty
+           go-golang-org-x-sys))
+    (home-page "https://github.com/moby/term")
+    (synopsis "Utilities for dealing with terminals")
+    (description
+     "Package term provides structures and helper functions to work with
+terminal (state, sizes).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-modern-go-concurrent
   (package
     (name "go-github-com-modern-go-concurrent")
