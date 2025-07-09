@@ -1195,11 +1195,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-version         linux-libre-6.14-version)
-(define-public linux-libre-gnu-revision    linux-libre-6.14-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-6.14-pristine-source)
-(define-public linux-libre-source          linux-libre-6.14-source)
-(define-public linux-libre                 linux-libre-6.14)
+(define-public linux-libre-version         linux-libre-6.15-version)
+(define-public linux-libre-gnu-revision    linux-libre-6.15-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-6.15-pristine-source)
+(define-public linux-libre-source          linux-libre-6.15-source)
+(define-public linux-libre                 linux-libre-6.15)
 
 (define-public linux-libre-6.12
   (make-linux-libre* linux-libre-6.12-version
@@ -6854,7 +6854,7 @@ and copy/paste text in the console and in xterm.")
 (define-public btrfs-progs
   (package
     (name "btrfs-progs")
-    (version "6.14")
+    (version "6.15")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
@@ -6862,7 +6862,7 @@ and copy/paste text in the console and in xterm.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "189xgsgdzqqcwm7k1ga33cj107md07w630xd88f2jvmkzh2bhnnz"))))
+                "1fvlyv78g65y6dv2vrgp1rj7ikkqav8cmwgchf6xi7qrsa6l5njp"))))
     (build-system gnu-build-system)
     (outputs '("out" "static")) ;static versions of the binaries in "out"
     (arguments
