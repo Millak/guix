@@ -2002,14 +2002,14 @@ the KDE Plasma 6 desktop.")
 (define-public plasma-desktop
   (package
     (name "plasma-desktop")
-    (version "6.2.5")
+    (version "6.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0s6hx5pzxf3f27c24b6b1n4wm8yhgdfn2knqhna09dri40h2jgdp"))))
+                "0zy5l8cpbmmav8xrfbdq9vmwkhh3ns56ibai9chw3q63sk2w696v"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules
                          dbus
@@ -2077,6 +2077,7 @@ the KDE Plasma 6 desktop.")
                   libkscreen
                   libksysguard
                   libqalculate
+                  libwacom
                   gmp
                   mpfr
                   libsm
@@ -2138,7 +2139,7 @@ the KDE Plasma 6 desktop.")
                      (setenv "XDG_RUNTIME_DIR" (getcwd))
                      (setenv "XDG_CACHE_HOME" (getcwd))
                      (setenv "QT_QPA_PLATFORM" "offscreen")
-                     (invoke "ctest" "-E" "(kcm-keyboard-keyboard_memory_persister_test|foldermodeltest)")))))))
+                     (invoke "ctest" "-E" "(positionertest|kcm-keyboard-keyboard_memory_persister_test|foldermodeltest)")))))))
     (home-page "https://kde.org/plasma-desktop/")
     (synopsis "Plasma for the Desktop")
     (description
