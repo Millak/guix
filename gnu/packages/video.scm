@@ -1009,14 +1009,14 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public mkvtoolnix
   (package
     (name "mkvtoolnix")
-    (version "80.0")
+    (version "93.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mkvtoolnix.download/sources/"
                            "mkvtoolnix-" version ".tar.xz"))
        (sha256
-        (base32 "1x9k9pmw7mzm2amvm251a45dlj9p9iqfank5p4w2fizxkapws25v"))
+        (base32 "0y2zhf49s9ajkjl328ayphdzmmlzqk1slc0c8akpj2rf59lac44m"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Delete bundled libraries.
@@ -1038,7 +1038,7 @@ H.264 (MPEG-4 AVC) video streams.")
            libebml
            file
            flac
-           fmt-8
+           fmt-11
            libdvdread
            libmatroska
            libogg
@@ -1061,7 +1061,7 @@ H.264 (MPEG-4 AVC) video streams.")
            pkg-config
            po4a
            qttools
-           ruby-3.2))
+           ruby-3.4))
     (arguments
      (list
       #:configure-flags
