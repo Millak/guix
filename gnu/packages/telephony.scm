@@ -55,6 +55,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -62,6 +63,8 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gstreamer)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libusb)
@@ -88,6 +91,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages video)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
@@ -1297,3 +1301,84 @@ Binary Floor Control Protocol}, @acronym{HTTP, Hypertext Transfer Protocol} and
 @acronym{DNS, Domain Name System}.")
      (home-page "https://github.com/baresip/re")
      (license license:bsd-3)))
+
+(define-public baresip
+  (package
+    (name "baresip")
+    (version "3.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/baresip/baresip")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xwvhpvrs6anw8mq709ff9d6vm0mizf6sj1sz69y85s7p4qz4rfz"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:make-flags (list (string-append "PREFIX=" %output))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'neuter-module_path
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; Never generate a config file with a set module_path.
+                      (substitute* "src/config.c"
+                        (("modpath_valid \\? \"\"")
+                         "modpath_valid ? \"#\""))
+                      ;; If no module_path config is defined, search modules in
+                      ;; this package.
+                      (substitute* "src/module.c"
+                        (("\t\tpl_set_str\\(&path, \"\\.\");")
+                         (string-append "pl_set_str(&path,\""
+                                        (assoc-ref outputs "out")
+                                        "/lib/baresip/modules\");")))))
+                  (add-after 'unpack 'patch-paths
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (substitute* "cmake/FindWEBRTC_AEC.cmake"
+                        (("/usr/include")
+                         (string-append (assoc-ref inputs
+                                                   "webrtc-audio-processing")
+                                        "/include"))
+                        (("/usr/lib/x86_64-linux-gnu")
+                         (string-append (assoc-ref inputs
+                                                   "webrtc-audio-processing")
+                                        "/lib")))
+                      (substitute* "share/com.github.baresip.desktop"
+                        (("env")
+                         (string-append (assoc-ref inputs "coreutils-minimal")
+                                        "/bin/env"))
+                        (("baresip")
+                         (string-append (assoc-ref outputs "out")
+                                        "/bin/baresip"))))))))
+    (native-inputs (list gnuplot pkg-config python ))
+    (inputs (list alsa-lib
+                  baresip-libre
+                  coreutils-minimal          ;for env in .desktop file
+                  ffmpeg
+                  gsm
+                  gstreamer
+                  gtk+
+                  libsndfile
+                  libtiff
+                  libvpx
+                  openssl
+                  opus
+                  pipewire
+                  portaudio
+                  pulseaudio
+                  sdl2
+                  spandsp
+                  webrtc-audio-processing-0.3))
+    (home-page "https://github.com/baresip/baresip")
+    (synopsis "SIP user agent with audio and video support")
+    (description
+     "Baresip is a portable and modular @acronym{SIP, Session Initiation Protocol}
+user agent with support for audio and video, and many
+@acronym{IETF, Internet Engineering Task Force} standards such as
+@acronym{SIP, Session Initiation Protocol}, @acronym{SDP, Session Description Protocol},
+@acronym{RTP, Real-time Transport Protocol}/@acronym{RTCP, RTP Control Protocol},
+@acronym{STUN, Session Traversal Utilities for NAT},
+@acronym{TURN, Traversal Using Relays around NAT},
+@acronym{ICE, Interactive Connectivity Establishment},
+and @acronym{WebRTC, Web Real-Time Communication}.")
+    (license license:bsd-3)))
