@@ -76,8 +76,7 @@
            extra-cmake-modules
            qttools
            shared-mime-info
-           pkg-config
-           gcc-12))
+           pkg-config))
     (inputs
      (list boost
            libaccounts-qt6
