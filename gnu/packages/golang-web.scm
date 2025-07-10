@@ -4698,6 +4698,52 @@ protocol) - used to discover UPnP services on a network
 decisions based on HTTP/1 Host headers and the SNI hostname in TLS connections.")
     (license license:asl2.0)))
 
+(define-public go-github-com-insomniacslk-dhcp
+  (package
+    (name "go-github-com-insomniacslk-dhcp")
+    (version "0.0.0-20250417080101-5f8cf70e8c5f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/insomniacslk/dhcp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1plxb84g7mn1iabgjjw71n16vc17m2kay3snihkydgb628j58hqv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/insomniacslk/dhcp"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-hugelgupf-socketpair
+           go-github-com-jsimonetti-rtnetlink
+           go-github-com-mdlayher-netlink
+           go-github-com-mdlayher-packet
+           go-github-com-u-root-uio
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/insomniacslk/dhcp")
+    (synopsis "DHCPv6 and DHCPv4 packet library")
+    (description
+     "DHCPv4 and DHCPv6 decoding/encoding library for Golang.  This package
+is split in several logical parts:
+
+@itemize
+@item @code{dhcpv4} - implementation of DHCPv4 packet, client and server
+@item @code{netboot} - network booting wrappers on top of dhcpv6 and dhcpv4
+@item @code{iana} - several IANA constants, and helpers used by dhcpv6 and
+dhcpv4
+@item @code{rfc1035label} - simple implementation of RFC1035 labels, used by
+dhcpv6 and dhcpv4
+@item @code{interfaces} - a thin layer of wrappers around network interfaces
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-jackpal-gateway
   (package
     (name "go-github-com-jackpal-gateway")
