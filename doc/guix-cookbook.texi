@@ -1561,7 +1561,7 @@ recommended.)  Other times the resulting package won't be reproducible.
 Should you be stuck, unable to figure out how to fix any sort of packaging
 issue, don't hesitate to ask the community for help.
 
-See the @uref{https://www.gnu.org/software/guix/contact/, Guix homepage} for information on the mailing lists, IRC, etc.
+See the @uref{https://guix.gnu.org/contact/, Guix homepage} for information on the mailing lists, IRC, etc.
 
 @node Conclusion
 @subsection Conclusion
@@ -1589,13 +1589,13 @@ hopefully we will see your contributions soon!
 
 @itemize
 @item
-The @uref{https://www.gnu.org/software/guix/manual/en/html_node/Defining-Packages.html, package reference in the manual}
+The @uref{https://guix.gnu.org/manual/en/html_node/Defining-Packages.html, package reference in the manual}
 
 @item
 @uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotr’s hacking guide to GNU Guix}
 
 @item
-@uref{https://www.gnu.org/software/guix/guix-ghm-andreas-20130823.pdf, ``GNU Guix: Package without a scheme!''}, by Andreas Enge
+@uref{https://guix.gnu.org/guix-ghm-andreas-20130823.pdf, ``GNU Guix: Package without a scheme!''}, by Andreas Enge
 @end itemize
 
 @c *********************************************************************
