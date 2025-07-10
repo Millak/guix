@@ -5727,6 +5727,41 @@ It is inspired by SPDY but is not interoperable with it.")
 intends to be compatible with Avahi.")
     (license license:expat)))
 
+(define-public go-github-com-linbit-golinstor
+  (package
+    (name "go-github-com-linbit-golinstor")
+    (version "0.56.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LINBIT/golinstor")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00aviasdygy6c4wmfpn7whbhryc3gf3dmcjnkzp6w933izyvydw8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:import-path "github.com/LINBIT/golinstor"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-donovanhide-eventsource
+           go-github-com-google-go-querystring
+           go-github-com-sirupsen-logrus
+           go-golang-org-x-time
+           go-moul-io-http2curl-v2))
+    (home-page "https://github.com/LINBIT/golinstor")
+    (synopsis "Golang bindings for @code{linstor}")
+    (description
+     "This package provides bindgings to Java
+@url{https://github.com/LINBIT/linstor-server, Linstore} - Software-Defined
+Block Storage for container, cloud and virtualisation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-macronut-go-tproxy
   (package
     (name "go-github-com-macronut-go-tproxy")
