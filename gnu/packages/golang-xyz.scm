@@ -9916,6 +9916,35 @@ oglematchers.Matcher} for time values
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-jaypipes-pcidb
+  (package
+    (name "go-github-com-jaypipes-pcidb")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaypipes/pcidb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "092wax6i7bn2lvwbz0rbbj17ly60n4b4n5ymy92w4d0mzxrn1ac4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jaypipes/pcidb"
+      ;; Expected no error creating PciInfo, but got No pci-ids DB files found
+      ;; (and network fetch disabled).
+      #:test-flags #~(list "-skip" "TestPCI")))
+    (propagated-inputs
+     (list go-github-com-mitchellh-go-homedir))
+    (home-page "https://github.com/jaypipes/pcidb")
+    (synopsis "Query PCI database information")
+    (description
+     "@code{pcidb} is a small Golang library for programmatic querying of PCI
+vendor,product and class information.")
+    (license (list license:asl2.0 license:asl2.0))))
+
 (define-public go-github-com-jba-templatecheck
   (package
     (name "go-github-com-jba-templatecheck")
