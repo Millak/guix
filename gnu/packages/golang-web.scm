@@ -7179,6 +7179,62 @@ used to read GeoLite2 and GeoIP2 databases, @code{geoip2} provides a
 higher-level API for doing so.")
     (license license:isc)))
 
+(define-public go-github-com-ovn-kubernetes-libovsdb
+  ;; The package go-github-com-ovn-org-libovsdb needs to be inherited from
+  ;; here according to upstream declaimer: "This library has been moved to
+  ;; <https://github.com/ovn-kubernetes/libovsdb>".
+  (package
+    (name "go-github-com-ovn-kubernetes-libovsdb")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ovn-kubernetes/libovsdb")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f3axb7j8ykimiypgarg4icjgykwsvz0fjp7vich5bj7z5qvdslx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ovn-kubernetes/libovsdb"
+      #:test-flags #~(list "-coverprofile=unit.cov"
+                           "-test.short"
+                           "-timeout" "30s")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example"))))
+          (add-after 'remove-examples 'remove-integration-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "modelgen/table_test.go"
+                                "test/ovs/ovs_integration_test.go"))))))))
+    (native-inputs
+     (list ;; go-github-com-ory-dockertest-v3 ;for integration tests
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cenkalti-backoff-v4
+           go-github-com-cenkalti-rpc2
+           go-github-com-go-logr-logr
+           go-github-com-go-logr-stdr
+           go-github-com-google-uuid
+           go-github-com-prometheus-client-golang
+           go-golang-org-x-text))
+    (home-page "https://github.com/ovn-kubernetes/libovsdb")
+    (synopsis "OVSDB Client Library in Golang")
+    (description
+     "This package implements @acronym{OVSDB, Open vSwitch Database Protocol}
+specified in @url{http://tools.ietf.org/html/rfc7047, RFC 7047}.  It's used
+mainly for managing the configuration of Open vSwitch and OVN, but it could
+also be used to manage your stamp collection.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-pascaldekloe-goe
   (package
     (name "go-github-com-pascaldekloe-goe")
