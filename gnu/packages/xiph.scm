@@ -57,14 +57,14 @@
 (define-public libogg
   (package
    (name "libogg")
-   (version "1.3.5")
+   (version "1.3.6")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://downloads.xiph.org/releases/ogg/libogg-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "01b7050bghdvbxvw0gzv588fn4a27zh42ljpwzm4vrf8dziipnf4"))))
+              "0q8hz9vqd044rr6d18ylp82craapcnhkq7yl436l060qir1570jw"))))
    (build-system gnu-build-system)
    (arguments
     '(#:configure-flags '("--disable-static")))
