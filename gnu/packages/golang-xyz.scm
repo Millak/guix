@@ -13980,7 +13980,7 @@ container image format spec (OCI Image Format).")
 (define-public go-github-com-opencontainers-runtime-spec
   (package
     (name "go-github-com-opencontainers-runtime-spec")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -13989,7 +13989,7 @@ container image format spec (OCI Image Format).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "102smpg308dq984f6zkjzwq5jz8jbfswiwfwxcrp1hh197jydxf9"))))
+        (base32 "0bh2awpdmbjh65js45vidm3s2pf42jykgad5wb772pysd7qnphbv"))))
     (build-system go-build-system)
     (arguments
      (list
