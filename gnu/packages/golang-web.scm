@@ -2231,6 +2231,31 @@ Go language.  In particular it provides tools to deal with network address
 translation (NAT), proxies, sockets, and transport layer security (TLS).")
     (license license:asl2.0)))
 
+(define-public go-github-com-donovanhide-eventsource
+  (package
+    (name "go-github-com-donovanhide-eventsource")
+    (version "0.0.0-20210830082556-c59027999da0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/donovanhide/eventsource")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c11zkhr6g5qrrkkhpshghqk1q2ksr32jqfr52kayc0ir2ypp7wq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/donovanhide/eventsource"))
+    (home-page "https://github.com/donovanhide/eventsource")
+    (synopsis "Server Side Events client and server for Golang")
+    (description
+     "Package eventsource implements a client and server to allow streaming
+data one-way over a HTTP connection using the Server-Sent Events API
+http://dev.w3.org/html5/eventsource/.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-dpotapov-go-spnego
   (package
     (name "go-github-com-dpotapov-go-spnego")
