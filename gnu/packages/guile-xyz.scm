@@ -1365,7 +1365,7 @@ It has a nice, simple s-expression based syntax.")
 (define-public guile-scheme-json-rpc
   (package
     (name "guile-scheme-json-rpc")
-    (version "0.4.5a")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1374,7 +1374,7 @@ It has a nice, simple s-expression based syntax.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0356hm6phcfgvwvx3ys6b927v40jzb7qrfgvql7g78na24zp2cmi"))))
+                "05xk12dcs802aa1fmdxx48b6gvgnjp5c5kbpipmg1s0bmn1a8b64"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
