@@ -4592,6 +4592,31 @@ user interface for humans, to read and edit before passing the JSON data to
 the machine.")
     (license license:expat)))
 
+(define-public go-github-com-hugelgupf-socketpair
+  (package
+    (name "go-github-com-hugelgupf-socketpair")
+    (version "0.0.0-20240723164047-9246f217b3fc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hugelgupf/socketpair")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pdaanxirsnw9d63mz3867q8vgfh51099zzm4mm6ngv8a14zxzcl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hugelgupf/socketpair"))
+    (home-page "https://github.com/hugelgupf/socketpair")
+    (synopsis "Bidirectionally connected Conns")
+    (description
+     "This provides bidirectionally connected @code{net.Conns},
+@code{net.PacketConns} made from socketpair(2) as well as bidirectionally
+connected @code{net.TCPConns}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-huin-goupnp
   (package
     (name "go-github-com-huin-goupnp")
