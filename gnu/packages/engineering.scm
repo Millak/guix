@@ -5658,13 +5658,7 @@ towards field theory.")
                (commit commit)))
          (sha256
           (base32 "1c7vimy065908qs5nwhnrk9pp0wh8pjgdvz2hwb12a9wcsj50kf0"))
-         (file-name (git-file-name name version))
-         (modules '((guix build utils)))
-         ;; make tests deterministic by seeding the random number generator
-         (snippet '(substitute* '("orocos_kdl/tests/treeinvdyntest.cpp"
-                                  "orocos_kdl/tests/solvertest.cpp")
-                     (("srand\\( \\(unsigned\\)time\\( NULL \\)\\)")
-                      "srand(0u)")))))
+         (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (native-inputs (list cppunit))
       (propagated-inputs (list eigen))
@@ -5672,10 +5666,20 @@ towards field theory.")
        (list
         #:configure-flags
         #~(list "-DENABLE_TESTS=ON")
-        #:test-target "check"
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
+            (add-after 'unpack 'fix-tests
+              (lambda _
+                ;; Make tests deterministic by seeding the random number generator.
+                (substitute* '("orocos_kdl/tests/treeinvdyntest.cpp"
+                               "orocos_kdl/tests/solvertest.cpp")
+                  (("srand\\( \\(unsigned\\)time\\( NULL \\)\\)")
+                   "srand(0u)"))
+                ;; CTest requires tests to be enabled in the top-level directory.
+                (substitute* "orocos_kdl/CMakeLists.txt"
+                  (("IF\\( ENABLE_TESTS \\)" _all)
+                   (string-append _all "\n" "enable_testing()")))))
+            (add-after 'fix-tests 'chdir
               (lambda _
                 (chdir "orocos_kdl"))))))
       (home-page "https://docs.orocos.org/kdl/overview.html")
