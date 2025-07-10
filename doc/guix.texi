@@ -197,6 +197,7 @@ This manual is also available in Simplified Chinese (@pxref{Top,,, guix.zh_CN,
 GNU Guix参考手册}), French (@pxref{Top,,, guix.fr, Manuel de référence de GNU
 Guix}), German (@pxref{Top,,, guix.de, Referenzhandbuch zu GNU Guix}),
 Spanish (@pxref{Top,,, guix.es, Manual de referencia de GNU Guix}),
+Italian (@pxref{Top,,, guix.it, Manuale di riferimento di GNU Guix}),
 Brazilian Portuguese (@pxref{Top,,, guix.pt_BR, Manual de referência do
 GNU Guix}), and Russian (@pxref{Top,,, guix.ru, Руководство GNU Guix}).  If you
 would like to translate it in your native language, consider joining

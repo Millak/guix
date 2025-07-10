@@ -25,8 +25,8 @@
 # along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 # If adding a language, update the following variables, and info_TEXINFOS.
-MANUAL_LANGUAGES = de es fr pt_BR ru zh_CN
-COOKBOOK_LANGUAGES = de es fr ko pt_BR ru sk sv
+MANUAL_LANGUAGES = de es fr it pt_BR ru zh_CN
+COOKBOOK_LANGUAGES = de es fr it ko pt_BR ru sk sv
 
 # Arg1: A list of languages codes.
 # Arg2: The file name stem.
@@ -38,6 +38,7 @@ info_TEXINFOS = %D%/guix.texi			\
   %D%/guix.de.texi				\
   %D%/guix.es.texi				\
   %D%/guix.fr.texi				\
+  %D%/guix.it.texi				\
   %D%/guix.pt_BR.texi				\
   %D%/guix.ru.texi				\
   %D%/guix.zh_CN.texi				\
@@ -45,6 +46,7 @@ info_TEXINFOS = %D%/guix.texi			\
   %D%/guix-cookbook.de.texi			\
   %D%/guix-cookbook.es.texi			\
   %D%/guix-cookbook.fr.texi			\
+  %D%/guix-cookbook.it.texi			\
   %D%/guix-cookbook.ko.texi			\
   %D%/guix-cookbook.pt_BR.texi			\
   %D%/guix-cookbook.ru.texi			\

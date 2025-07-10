@@ -20,17 +20,19 @@
 # along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 DOC_PO_FILES =					\
-  %D%/guix-manual.de.po				\
-  %D%/guix-manual.es.po				\
-  %D%/guix-manual.fr.po				\
+  %D%/guix-manual.de.po			\
+  %D%/guix-manual.es.po			\
+  %D%/guix-manual.fr.po			\
+  %D%/guix-manual.it.po			\
   %D%/guix-manual.pt_BR.po			\
-  %D%/guix-manual.ru.po				\
+  %D%/guix-manual.ru.po			\
   %D%/guix-manual.zh_CN.po
 
-DOC_COOKBOOK_PO_FILES =				\
+DOC_COOKBOOK_PO_FILES =			\
   %D%/guix-cookbook.de.po			\
   %D%/guix-cookbook.es.po			\
   %D%/guix-cookbook.fr.po			\
+  %D%/guix-cookbook.it.po			\
   %D%/guix-cookbook.ko.po			\
   %D%/guix-cookbook.pt_BR.po			\
   %D%/guix-cookbook.ru.po			\
