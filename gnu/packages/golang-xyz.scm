@@ -10414,6 +10414,30 @@ called concurrently with themselves and each other.")
 for color and styles.")
     (license license:lgpl3)))
 
+(define-public go-github-com-k-sone-critbitgo
+  (package
+    (name "go-github-com-k-sone-critbitgo")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/k-sone/critbitgo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wl0jc42msph8i8fhdz9p9i9j9svn641nf178k2jr1fjqzqc1xrd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/k-sone/critbitgo"))
+    (home-page "https://github.com/k-sone/critbitgo")
+    (synopsis "Crit-bit for Golang")
+    (description
+     "This package provides an implementatioin of
+@url{http://cr.yp.to/critbit.html, Crit-bit trees} in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-k0kubun-go-ansi
   (package
     (name "go-github-com-k0kubun-go-ansi")
