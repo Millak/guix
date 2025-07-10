@@ -14143,6 +14143,33 @@ queue.")
 NSQ protocol @url{https://nsq.io/}.")
     (license license:expat)))
 
+(define-public go-github-com-nvveen-gotty
+  (package
+    (name "go-github-com-nvveen-gotty")
+    (version "0.0.0-20120604004816-cd527374f1e5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Nvveen/Gotty")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ylvr1p6p036ns3g3wdz8f92f69symshkc8j54fa6gpg4hyk0k6q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;no tests provided
+      #:import-path "github.com/Nvveen/Gotty"))
+    (home-page "https://github.com/Nvveen/Gotty")
+    (synopsis "Interpretation and loading of Termcap database files")
+    (description
+     "This package implements a functionality for reading and parsing the
+@url{https://en.wikipedia.org/wiki/Termcap, terminfo database}.")
+    ;; Usage of this source code is governed by a BSD-style license that can be
+    ;; found in the LICENSE file.
+    (license license:bsd-0)))
+
 (define-public go-github-com-nxadm-tail
   (package
     (name "go-github-com-nxadm-tail")
