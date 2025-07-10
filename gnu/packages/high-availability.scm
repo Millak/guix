@@ -61,6 +61,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
@@ -75,6 +76,53 @@
   #:use-module (guix utils)
   #:use-module ((guix licenses)
                 #:prefix license:))
+
+(define-public cowsql
+  ;; Use the latest commit which includs
+  ;; <https://github.com/cowsql/cowsql/pull/37>, revert back to vertion tags
+  ;; when released.
+  (let ((commit "cb624d3263ca22b42ecfa8a1dd8a0c8d990db7b6")
+        (revision "0"))
+    (package
+      (name "cowsql")
+      (version (git-version "1.15.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/cowsql/cowsql")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b4ymmsp9y9zzwanp739bc6p5qzl1h6ny2g50blhda99xcnlaf77"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                (invoke "autoreconf" "-vfi"))))))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             pkg-config))
+      (inputs
+       (list cowsql-raft
+             libuv
+             sqlite))
+      (home-page "https://github.com/cowsql/cowsql")
+      (synopsis "Embeddable, replicated and fault tolerant SQL engine")
+      (description
+       "cowsql (/ˈkaʊ,siːkwəl/ listen) is a C library that implements an
+embeddable and replicated SQL database engine with high availability and
+automatic failover.
+
+cowsql extends SQLite with a network protocol that can connect together
+various instances of your application and have them act as a highly-available
+cluster, with no dependency on external databases.")
+      (license license:gpl3+))))
 
 (define-public cowsql-raft
   (package
