@@ -10425,6 +10425,35 @@ makes it relatively painless to integrate existing codebases using
 database/sql with sqlx.")
     (license license:expat)))
 
+(define-public go-github-com-jochenvg-go-udev
+  (package
+    (name "go-github-com-jochenvg-go-udev")
+    (version "0.0.0-20240801134859-b65ed646224b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jochenvg/go-udev")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fx6pqhcfp1999yk31vajihi8djsz706f3ylivhgg1k2gzcbwfbq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;require root access
+      #:import-path "github.com/jochenvg/go-udev"))
+    (inputs
+     (list eudev))
+    (propagated-inputs
+     (list go-github-com-jkeiser-iter
+           go-golang-org-x-sys))
+    (home-page "https://github.com/jochenvg/go-udev")
+    (synopsis "Golang bindings for @code{libudev}")
+    (description
+     "Package udev provides a cgo wrapper around the libudev C library.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-johnkerl-lumin
   (package
     (name "go-github-com-johnkerl-lumin")
