@@ -3874,6 +3874,44 @@ attachments, etc.")
 dependencies and a simple API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-continuity
+  (package
+    (name "go-github-com-containerd-continuity")
+    (version "0.4.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/continuity")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01p5cqc0lvv6z5m0w23xq38fmc86k490wvylng5sfn90zplgjrwi"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containerd/continuity/cmd/continuity
+            (delete-file-recursively "cmd/continuity")
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/continuity"))
+    (propagated-inputs
+     (list go-github-com-containerd-log
+           ;; go-github-com-microsoft-go-winio ; for Windows only
+           go-github-com-opencontainers-go-digest
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/containerd/continuity")
+    (synopsis "Transport-agnostic, filesystem metadata manifest system")
+    (description
+     "This package provides a transport-agnostic, filesystem metadata manifest system.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-fifo
   (package
     (name "go-github-com-containerd-fifo")
