@@ -375,7 +375,8 @@ implementation of WebRTC.")
                        "webrtc-audio-processing/webrtc-audio-processing-"
                        version ".tar.xz"))
        (sha256
-        (base32 "1gsx7k77blfy171b6g3m0k0s0072v6jcawhmx1kjs9w5zlwdkzd0"))))
+        (base32 "1gsx7k77blfy171b6g3m0k0s0072v6jcawhmx1kjs9w5zlwdkzd0"))
+       (patches (search-patches "webrtc-audio-processing-big-endian.patch"))))
     (build-system gnu-build-system)
     (arguments
      (if (or (target-riscv64?)
@@ -385,36 +386,25 @@ implementation of WebRTC.")
           #~(modify-phases %standard-phases
               (add-after 'unpack 'patch-source
                 (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((patch-file
-                         #$(local-file
-                            (search-patch
-                             "webrtc-audio-processing-big-endian.patch"))))
-                    (invoke "patch" "--force" "-p1" "-i" patch-file)
-                    (substitute* "webrtc/typedefs.h"
-                      (("defined\\(__aarch64__\\)" all)
-                       (string-append
-                        ;; powerpc-linux
-                        "(defined(__PPC__) && __SIZEOF_SIZE_T__ == 4)\n"
-                        "#define WEBRTC_ARCH_32_BITS\n"
-                        "#define WEBRTC_ARCH_BIG_ENDIAN\n"
-                        ;; powerpc64-linux
-                        "#elif (defined(__PPC64__) && defined(_BIG_ENDIAN))\n"
-                        "#define WEBRTC_ARCH_64_BITS\n"
-                        "#define WEBRTC_ARCH_BIG_ENDIAN\n"
-                        ;; aarch64-linux
-                        "#elif " all
-                        ;; riscv64-linux
-                        " || (defined(__riscv) && __riscv_xlen == 64)"
-                        ;; powerpc64le-linux
-                        " || (defined(__PPC64__) && defined(_LITTLE_ENDIAN))"))))))))
+                  (substitute* "webrtc/typedefs.h"
+                    (("defined\\(__aarch64__\\)" all)
+                     (string-append
+                      ;; powerpc-linux
+                      "(defined(__PPC__) && __SIZEOF_SIZE_T__ == 4)\n"
+                      "#define WEBRTC_ARCH_32_BITS\n"
+                      "#define WEBRTC_ARCH_BIG_ENDIAN\n"
+                      ;; powerpc64-linux
+                      "#elif (defined(__PPC64__) && defined(_BIG_ENDIAN))\n"
+                      "#define WEBRTC_ARCH_64_BITS\n"
+                      "#define WEBRTC_ARCH_BIG_ENDIAN\n"
+                      ;; aarch64-linux
+                      "#elif " all
+                      ;; riscv64-linux
+                      " || (defined(__riscv) && __riscv_xlen == 64)"
+                      ;; powerpc64le-linux
+                      " || (defined(__PPC64__) && defined(_LITTLE_ENDIAN))")))))))
          '()))
-    (native-inputs
-     (if (or (target-riscv64?)
-             (target-powerpc?))
-         (list
-          (local-file (search-patch "webrtc-audio-processing-big-endian.patch"))
-          patch)
-         (list pkg-config)))))
+    (native-inputs (list pkg-config))))
 
 (define-public vo-aacenc
   (package
