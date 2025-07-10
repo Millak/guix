@@ -180,19 +180,20 @@ technique.")
 (define-public dfu-programmer
   (package
     (name "dfu-programmer")
-    (version "0.7.2")
+    (version "1.1.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://sourceforge/dfu-programmer/dfu-programmer/"
-                          version "/dfu-programmer-" version ".tar.gz"))
-      (sha256
-       (base32
-        "15gr99y1z9vbvhrkd25zqhnzhg6zjmaam3vfjzf2mazd39mx7d0x"))
-      (patches (search-patches "dfu-programmer-fix-libusb.patch"))))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dfu-programmer/dfu-programmer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1y9ayl97qdy36bmlcf5vrg85jn72pgx7blgxd1albk79r87q2632"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake pkg-config))
     (inputs
      (list libusb))
     (home-page "https://dfu-programmer.github.io/")
