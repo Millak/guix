@@ -699,6 +699,33 @@ that of BeautifulSoup.")
 the parse trees produced by the html package.")
     (license license:bsd-2)))
 
+(define-public go-github-com-armon-go-proxyproto
+  (package
+    (name "go-github-com-armon-go-proxyproto")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/armon/go-proxyproto")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v7zb7wzbw2xzvxlklrava1vni1w4d9z8j6xaq1xylw8fd0wrdy1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/armon/go-proxyproto"))
+    (home-page "https://github.com/armon/go-proxyproto")
+    (synopsis "Handle HAProxy Proxy Protocol in Golang")
+    (description
+     "This package implements a functionality to be used for servers listening
+behind HAProxy of Amazon ELB load balancers.  Those load balancers support the
+use of a @url{http://haproxy.1wt.eu/download/1.5/doc/proxy-protocol.txt, proxy
+protocol}, which provides a simple mechansim for the server to get the address
+of the client instead of the load balancer.")
+    (license license:expat)))
+
 (define-public go-github-com-armon-go-socks5
   (package
     (name "go-github-com-armon-go-socks5")
