@@ -108,8 +108,12 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -120,6 +124,7 @@
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages high-availability)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libusb)
@@ -1326,6 +1331,164 @@ it emulates a variety of hardware and peripherals.")
     (description "Spike, the RISC-V ISA Simulator, implements a functional model
 of one or more RISC-V harts.")
     (license license:bsd-3)))
+
+(define-public incus
+  (package
+    (name "incus")
+    (version "6.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lxc/incus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x0ggs7plc570805x16r5jy7bb9z1qdn0124yi9rv0wwx6l50bd7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:install-source? #f
+      #:tests? #f ;TODO: tests requrie some set up.
+      #:import-path "github.com/lxc/incus/v6"
+      #:embed-files
+      #~(list "children"
+              "form_post.html.tmpl"
+              "nodes"
+              "text")
+      #:test-flags
+      #~(list "-tags" "libsqlite3")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-module-path
+           ;; go-github-com-ovn-kubernetes-libovsdb is a successor of
+           ;; go-github-com-ovn-org-libovsdb.
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\.go$")
+                  (("github.com/ovn-org/libovsdb")
+                   "github.com/ovn-kubernetes/libovsdb")))))
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make" "build"
+                        (string-append "CC=" #$(cc-for-target))
+                        "TAG_SQLITE3=libsqlite3")))))))
+    ;; TODO:
+    ;; - Check and wrap runtime dependencies.
+    ;; - Build documentation.
+    ;; - Write shepherd service.
+    (native-inputs
+     (list go-github-com-adhocore-gronx
+           go-github-com-apex-log
+           go-github-com-armon-go-proxyproto
+           go-github-com-cenkalti-backoff-v4
+           go-github-com-checkpoint-restore-go-criu-v6
+           go-github-com-cowsql-go-cowsql
+           go-github-com-digitalocean-go-smbios
+           go-github-com-dustinkirkland-golang-petname
+           go-github-com-flosch-pongo2-v6
+           go-github-com-fvbommel-sortorder
+           go-github-com-go-chi-chi-v5
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-go-logr-logr
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-google-gopacket
+           go-github-com-google-uuid
+           go-github-com-gorilla-mux
+           go-github-com-gorilla-websocket
+           go-github-com-gosexy-gettext
+           go-github-com-insomniacslk-dhcp
+           go-github-com-jaypipes-pcidb
+           go-github-com-jochenvg-go-udev
+           go-github-com-kballard-go-shellquote
+           go-github-com-linbit-golinstor
+           go-github-com-lxc-go-lxc
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-sqlite3
+           go-github-com-mdlayher-arp
+           go-github-com-mdlayher-ndp
+           go-github-com-mdlayher-netx
+           go-github-com-mdlayher-vsock
+           go-github-com-miekg-dns
+           go-github-com-minio-minio-go-v7
+           go-github-com-mitchellh-mapstructure
+           go-github-com-olekukonko-tablewriter
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-umoci
+           go-github-com-openfga-go-sdk
+           go-github-com-osrg-gobgp-v3
+           go-github-com-ovn-kubernetes-libovsdb
+           go-github-com-pierrec-lz4-v4
+           go-github-com-pkg-sftp
+           go-github-com-pkg-xattr
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-github-com-vishvananda-netlink
+           go-github-com-zitadel-oidc-v3
+           go-go-starlark-net
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-golang-org-x-tools
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2
+           go-k8s-io-utils
+           pkg-config))
+    (inputs
+     (list acl
+           cowsql
+           dbus
+           eudev
+           libcap
+           libdqlite
+           libseccomp
+           libselinux
+           lxc))
+    (home-page "https://github.com/lxc/incus")
+    (synopsis "System container and virtual machine manager")
+    (description
+     "Incus is a modern, secure and powerful system container and virtual
+machine manager.
+
+It provides a unified experience for running and managing full Linux systems
+inside containers or virtual machines.  Incus supports images for a large
+number of Linux distributions (official Ubuntu images and images provided by
+the community) and is built around a very powerful, yet pretty simple, REST
+API.  Incus scales from one instance on a single machine to a cluster in a
+full data center rack, making it suitable for running workloads both for
+development and in production.
+
+This package provides the following commands:
+@itemize
+@item fuidshift - tool to remap a filesystem tree, switching it from one set
+of UID/GID ranges to another
+@item generate-config - tool to generate documentation for Incus
+@item generate-database - entry point for all @code{go:generate} directives
+used in Incus' source code
+@item incus - command line client for Incus
+@item incus-agent -  Incus virtual machine agent
+@item incus-benchmark - tool to benchmark various actions on a local Incus
+daemon
+@item incusd - the Incus daemon
+@item incus-migrate - physical to instance migration tool
+@item incus-simplestreams - tool to manage the files on a static image server
+using simplestreams index files as the publishing mechanism
+@item incus-user - Incus user project daemon
+@item lxc-to-incus - CLI client for container migration
+@item lxd-to-incus -   LXD to Incus migration tool
+@item mini-oidc
+@item sysinfo - basic system stats tool
+@item tls2jwt - TLS to JWT certificate convertor, reference/testing tool
+@end itemize")
+    (license license:asl2.0)))
 
 (define-public libosinfo
   (package
