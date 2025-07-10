@@ -11173,6 +11173,40 @@ metrics SDK.")
      "Package trace provides an implementation of the tracing part of the
 OpenTelemetry API.")))
 
+(define-public go-go-starlark-net
+  (package
+    (name "go-go-starlark-net")
+    (version "0.0.0-20250701195324-d457b4515e0e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/starlark-go")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cy6xxf2hjvd9b0wbdybn46h3qrkhxy9l11mzbrs21y0i1hlyiji"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.starlark.net"
+      ;; Intfallback subcommand failed: fork/exec /bin/sh: no such file or
+      ;; directory.
+      #:test-flags #~(list "-skip" "TestIntFallback")))
+    (propagated-inputs
+     (list go-github-com-chzyer-readline
+           go-github-com-google-go-cmp
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/google/starlark-go")
+    (synopsis "Starlark configuration language, implemented in Golang")
+    (description
+     "This package provides Starlark - a dialect of Python intended for use as
+a configuration language.")
+    (license license:bsd-3)))
+
 (define-public go-goji-io
   (package
     (name "go-goji-io")
