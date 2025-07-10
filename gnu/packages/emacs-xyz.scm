@@ -14213,6 +14213,35 @@ replaced with the directory you choose.")
 Consult.")
       (license license:gpl3+))))
 
+(define-public emacs-consult-notes
+  (let ((commit "7c9cd970c75fae9a6140ca1beefed9532d8e1b96")
+        (revision "0"))
+    (package
+      (name "emacs-consult-notes")
+      (version (git-version "0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/mclear-tools/consult-notes/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lccpnqqaai6vsjn9v65xhpzs0bmhrsyflaxg3n3iszigmsxrfaz"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ;no tests
+      (propagated-inputs (list emacs-consult emacs-dash emacs-s))
+      (home-page "https://github.com/mclear-tools/consult-notes/")
+      (synopsis "Management of personal notes with @code{emacs-consult}")
+      (description
+       "This package allows selecting notes easily.  Its most basic use is to
+integrate directories of files (notes) and to provide easy narrowing via
+@code{emacs-consult}.  @code{consult-notes} can be used with any directory (or
+directories) of note files.  It easily integrates with note systems like
+@code{emacs-zk}, @code{emacs-denote} or @code{emacs-org-roam}.  Additionally, it
+may also search org headings in a set of specified files.")
+      (license license:gpl3+))))
+
 (define-public emacs-consult-notmuch
   (package
     (name "emacs-consult-notmuch")
