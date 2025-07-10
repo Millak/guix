@@ -12042,6 +12042,35 @@ designed to clean up raw terminal output by stripping escape sequences,
 optionally preserving color.")
     (license license:expat)))
 
+(define-public go-github-com-lxc-go-lxc
+  (package
+    (name "go-github-com-lxc-go-lxc")
+    (version "0.0.0-20240606200241-27b3d116511f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lxc/go-lxc")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "020jqzqzcq73jbi82cdxkv5nqa36a2322y2c2hwf8fyw3f2809yd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; The final package needs to include pkg-config and lxc, it is to
+      ;; prevent importing virtualization module here.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/lxc/go-lxc"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/lxc/go-lxc")
+    (synopsis "Golang bindings for LXC")
+    (description
+     "Package lxc provides Go Bindings for LXC (Linux Containers) C API.")
+    (license license:lgpl2.1)))
+
 (define-public go-github-com-lyft-protoc-gen-star-v2
   (package
     (name "go-github-com-lyft-protoc-gen-star-v2")
