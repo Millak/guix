@@ -963,7 +963,10 @@ static void acceptConnection(int fdSocket)
 	    clientPid = cred.pid;
 	    clientUid = cred.uid;
 	    clientGid = cred.gid;
-	    trusted = clientUid == 0;
+
+	    /* The root user is always trusted; additionally, when running as
+	       an unprivileged user, that user is also trusted.  */
+	    trusted = (clientUid == 0) || (clientUid == getuid());
 
             struct passwd * pw = getpwuid(cred.uid);
             string user = pw ? pw->pw_name : std::to_string(cred.uid);
