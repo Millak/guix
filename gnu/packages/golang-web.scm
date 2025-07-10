@@ -7370,6 +7370,60 @@ used to read GeoLite2 and GeoIP2 databases, @code{geoip2} provides a
 higher-level API for doing so.")
     (license license:isc)))
 
+(define-public go-github-com-osrg-gobgp-v3
+  (package
+    (name "go-github-com-osrg-gobgp-v3")
+    (version "3.37.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/osrg/gobgp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kk9ri15a2950z22nw12mb69w7nyjawhjzig7vp3xba74sdhj7in"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.24
+      #:skip-build? #t
+      #:import-path "github.com/osrg/gobgp/v3"))
+    (native-inputs
+     (list go-github-com-go-test-deep
+           go-github-com-google-go-cmp
+           go-github-com-prometheus-client-model
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-dgryski-go-farm
+           go-github-com-eapache-channels
+           go-github-com-fsnotify-fsnotify
+           go-github-com-getsentry-sentry-go
+           go-github-com-google-uuid
+           go-github-com-grpc-ecosystem-go-grpc-prometheus
+           go-github-com-jessevdk-go-flags
+           go-github-com-k-sone-critbitgo
+           go-github-com-kr-pretty
+           go-github-com-prometheus-client-golang
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-cobra
+           go-github-com-spf13-viper
+           go-github-com-vishvananda-netlink
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-golang-org-x-time
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://osrg.github.io/gobgp/")
+    (synopsis "BGP implemented in Golang")
+    (description
+     "@code{GoBGP} is an
+@url{https://en.wikipedia.org/wiki/Border_Gateway_Protocol, @acronym{BGP,
+Border Gateway Protocol}} implementation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ovn-kubernetes-libovsdb
   ;; The package go-github-com-ovn-org-libovsdb needs to be inherited from
   ;; here according to upstream declaimer: "This library has been moved to
