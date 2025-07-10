@@ -5711,6 +5711,32 @@ Implements string conversion functionality for unit prefixes.
 sizes.  It converts boring ugly numbers to human-friendly strings and back.")
     (license license:expat)))
 
+(define-public go-github-com-dustinkirkland-golang-petname
+  (package
+    (name "go-github-com-dustinkirkland-golang-petname")
+    (version "0.0.0-20240428194347-eebcea082ee0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dustinkirkland/golang-petname")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s43l8d8vysjaxq0xmmpzb2w1xnfc1f6j6g0xpfhyjln0r49k6gc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dustinkirkland/golang-petname"))
+    (home-page "https://github.com/dustinkirkland/golang-petname")
+    (synopsis "RFC 1178 pet names implementation in Golang")
+    (description
+     "This package provides an @url{https://tools.ietf.org/html/rfc1178,
+RFC1178} implementation to generate pronounceable, sometimes even memorable,
+\"pet names\", consisting of a random combination of adverbs, an adjective,
+and an animal name")
+    (license license:asl2.0)))
+
 (define-public go-github-com-eapache-channels
   (package
     (name "go-github-com-eapache-channels")
