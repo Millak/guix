@@ -105,6 +105,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages xdisorg)
@@ -16454,6 +16455,36 @@ is undetermined, a customizable spinner is shown.")
      "Package goldie provides test assertions based on golden files.
 It's typically used for testing responses with larger data bodies.")
     (license license:expat)))
+
+(define-public go-github-com-seccomp-libseccomp-golang
+  (package
+    (name "go-github-com-seccomp-libseccomp-golang")
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/seccomp/libseccomp-golang")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lbrs4j8b8w47awczydb8snrky6gjgdfmcsvlwx4wvq20ipqr1nj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/seccomp/libseccomp-golang"))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libseccomp))
+    (home-page "https://github.com/seccomp/libseccomp-golang")
+    (synopsis "Bindings of @code{libseccomp} for Golang")
+    (description
+     "Package seccomp provides bindings for
+@url{https://github.com/seccomp/libseccomp, libseccomp}, a library wrapping
+the Linux seccomp syscall.  Seccomp enables an application to restrict system
+call use for itself and its children.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-segmentio-asm
   (package
