@@ -5139,6 +5139,34 @@ on throughput and hit ratio performance.")
      "Go SDK for @url{https://github.com/dicedb/dice,@code{dicedb}}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-digitalocean-go-smbios
+  (package
+    (name "go-github-com-digitalocean-go-smbios")
+    (version "0.0.0-20180907143718-390a4f403a8e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/digitalocean/go-smbios")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "026nw64rg2lck9hx4bixh6v9b7kz9v4dbraykqy2b655wcnlv8rv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/digitalocean/go-smbios"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/digitalocean/go-smbios")
+    (synopsis "Detection and access to SMBIOS and DMI data and structures")
+    (description
+     "Package @code{smbios} provides detection and access to System Management
+BIOS (@url{https://en.wikipedia.org/wiki/System_Management_BIOS, SMBIOS}) and
+Desktop Management Interface (DMI) data and structures.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-dimchansky-utfbom
   (package
     (name "go-github-com-dimchansky-utfbom")
