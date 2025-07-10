@@ -2789,6 +2789,30 @@ metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
 
+(define-public go-github-com-flosch-pongo2-v6
+  (package
+    (name "go-github-com-flosch-pongo2-v6")
+    (version "6.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/flosch/pongo2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "153na9srg6rwj40jb30m65hihlj657n9pmqrs7qlir1yxdygnxw5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/flosch/pongo2/v6"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/flosch/pongo2")
+    (synopsis "Django-syntax like template-engine for Golang")
+    (description "This package provides a Django-syntax like template-engine.")
+    (license license:expat)))
+
 ;; This project looks like dormant or abandoned, see
 ;; <https://github.com/francoispqt/gojay/issues/150>.
 (define-public go-github-com-francoispqt-gojay
