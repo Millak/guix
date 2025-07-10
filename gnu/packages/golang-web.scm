@@ -4598,6 +4598,32 @@ protocol) - used to discover UPnP services on a network
 @end itemize")
     (license license:bsd-2)))
 
+(define-public go-github-com-inetaf-tcpproxy
+  (package
+    (name "go-github-com-inetaf-tcpproxy")
+    (version "0.0.0-20250222171855-c4b9df066048")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/inetaf/tcpproxy")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m682wk8vs1pqiky2w4gmp8l1ysxlgsm7jw0dqd723mcaxkivy9p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/inetaf/tcpproxy"))
+    (native-inputs
+     (list go-github-com-armon-go-proxyproto))
+    (home-page "https://github.com/inetaf/tcpproxy")
+    (synopsis "Proxy TCP connections based on static rules")
+    (description
+     "Package tcpproxy lets users build TCP proxies, optionally making routing
+decisions based on HTTP/1 Host headers and the SNI hostname in TLS connections.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jackpal-gateway
   (package
     (name "go-github-com-jackpal-gateway")
@@ -11615,6 +11641,23 @@ go-github-com-multiformats-go-multiaddr-dns.")))
       #:unpack-path "github.com/tdewolff/minify"))
     (description "This package provides a CLI binary executable built from
 go-github-com-tdewolff-minify-v2 source.")))
+
+(define-public go-tlsrouter
+  (package/inherit go-github-com-inetaf-tcpproxy
+    (name "go-tlsrouter")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-inetaf-tcpproxy)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/inetaf/tcpproxy/cmd/tlsrouter")
+       ((#:unpack-path _ "") "github.com/inetaf/tcpproxy")))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "TLSRouter is a TLS proxy that routes connections to backends based on
+the TLS @acronym{SNI, Server Name Indication} of the TLS handshake.  It
+carries no encryption keys and cannot decode the traffic that it proxies.")))
 
 (define-public gron
   (package
