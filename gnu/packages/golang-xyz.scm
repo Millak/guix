@@ -4249,7 +4249,7 @@ metrics to Graphite.")
 (define-public go-github-com-cyphar-filepath-securejoin
   (package
     (name "go-github-com-cyphar-filepath-securejoin")
-    (version "0.3.4")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -4258,7 +4258,7 @@ metrics to Graphite.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iflclxcm5a4g2qp980q5qr1g4dwdxn02nnvvx3pi4sa1gk5bmr3"))))
+        (base32 "0cyqbxmrn3qgq8q0v7xmm9knc8nr60s017yrhkghcwg4yqqpmr9l"))))
     (build-system go-build-system)
     (arguments
      (list
