@@ -1293,7 +1293,7 @@ endif
 
 # Downloading up-to-date PO files.
 
-WEBLATE_REPO = https://framagit.org/tyreunom/guix-translations
+WEBLATE_REPO = https://codeberg.org/guix/translations
 
 # Shallow clone the Git repository behind Weblate and copy files from it if
 # they contain at least one translation, and they are well-formed (Scheme
