@@ -18289,6 +18289,34 @@ supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
 stopped.")
     (license license:expat)))
 
+(define-public go-github-com-u-root-uio
+  (package
+    (name "go-github-com-u-root-uio")
+    (version "0.0.0-20240224005618-d2acac8f3701")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/u-root/uio")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ckxps3xbgllij3wnmmp2k9ip3z9v8vyc4wdcv43fxczqfiq25xz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/u-root/uio"))
+    (propagated-inputs
+     (list go-github-com-pierrec-lz4-v4
+           go-golang-org-x-sys))
+    (home-page "https://github.com/u-root/uio")
+    (synopsis "Log and IO utilities")
+    (description
+     "This package provides shared utilities used to break circular
+dependencies of @url{https://u-root.org/, u-root} project.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-urfave-cli
   (package
     (name "go-github-com-urfave-cli")
