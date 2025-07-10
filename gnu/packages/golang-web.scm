@@ -2989,6 +2989,42 @@ OpenAPI v3.1}.")
 logging system.")
       (license license:bsd-3))))
 
+(define-public go-github-com-getsentry-sentry-go
+  (package
+    (name "go-github-com-getsentry-sentry-go")
+    (version "0.33.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/getsentry/sentry-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mq66f0qvcfbafckpjipg6jbmq9115w5rbw795gf6vs0vanqq6v5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/getsentry/sentry-go"
+      ;; XXX: Full tests suite requires more packages.
+      #:test-subdirs #~(list "internal/...")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-go-errors-errors
+           go-github-com-pingcap-errors
+           go-github-com-pkg-errors
+           go-golang-org-x-sys
+           go-golang-org-x-text))
+    (home-page "https://github.com/getsentry/sentry-go")
+    (synopsis "Sentry SDK for Golang")
+    (description
+     "@code{sentry-go} provides a @url{sentry.io, Sentry} client
+implementation for the Go programming language.")
+    (license license:expat)))
+
 (define-public go-github-com-gin-contrib-sse
   (package
     (name "go-github-com-gin-contrib-sse")
