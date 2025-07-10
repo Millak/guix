@@ -14732,6 +14732,33 @@ comparison library, to Go.  Both a library and a command-line tool are
 included in this package.")
     (license license:expat)))
 
+(define-public go-github-com-ostreedev-ostree-go
+  (package
+    (name "go-github-com-ostreedev-ostree-go")
+    (version "0.0.0-20210805093236-719684c64e4f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ostreedev/ostree-go")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "039pf8fdjlnma02m5ymj92m3j5w9pr950qkc7977lw2bjmw95g69"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; The final command needs to include libostree and pkg-config packages.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/ostreedev/ostree-go"))
+    (home-page "https://github.com/ostreedev/ostree-go")
+    (synopsis "Golang bindings for @code{libostree}")
+    (description
+     "This packae provides bindings for
+@code{https://github.com/ostreedev/ostree, OSTree}.")
+    (license license:isc)))
+
 (define-public go-github-com-otiai10-copy
   (package
     (name "go-github-com-otiai10-copy")
