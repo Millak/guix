@@ -36,6 +36,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cluster)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages documentation)
@@ -51,6 +52,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages hardware)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages networking)
@@ -73,6 +75,47 @@
   #:use-module (guix utils)
   #:use-module ((guix licenses)
                 #:prefix license:))
+
+(define-public cowsql-raft
+  (package
+    (name "cowsql-raft")
+    (version "0.22.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cowsql/raft")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cs70jlc2hg3hrcwpc4h54l4zpwm287mlamdm7gxhpdw7c0kyv38"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _
+              (invoke "autoreconf" "-vfi"))))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config))
+    (inputs
+     (list libuv
+           lz4))
+    (home-page "https://github.com/cowsql/raft")
+    (synopsis "Asynchronous C implementation of the Raft consensus protocol")
+    (description
+     "This package implements a Raft algorithm logic (no I/O and no system
+calls).  On top of that, various drivers are provided that implement actual
+network communication and persistent data storage.
+
+The core part of the library is designed to work well with asynchronous or
+non-blocking I/O engines (such as libuv and io_uring), although it can be used
+in threaded or blocking contexts as well.")
+    (license license:lgpl3)))
 
 (define-public haproxy
   (package
