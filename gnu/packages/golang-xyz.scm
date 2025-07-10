@@ -3293,6 +3293,74 @@ package provides an API for comparing Golden files.")
      "This package provides the Windows API used at Charmbracelet.")
     (license license:expat)))
 
+(define-public go-github-com-checkpoint-restore-go-criu-v6
+  (package
+    (name "go-github-com-checkpoint-restore-go-criu-v6")
+    (version "6.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/checkpoint-restore/go-criu")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b7427rqf1il6pjbgzdm8vwcxvcf013d5sa13k7fi8pmifqb81dz"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/checkpoint-restore/go-criu/v6"
+      ;; Failed to get stats.
+      #:test-flags #~(list "-skip" "TestGetDumpStats|TestGetRestoreStats")))
+    (propagated-inputs
+     (list go-github-com-spf13-cobra
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/checkpoint-restore/go-criu")
+    (synopsis "Go bindings for CRIU")
+    (description
+     "This pacakge provides bindings for @url{https://criu.org/, CRIU}.  The
+code is based on the Go-based PHaul implementation from the CRIU repository.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-checkpoint-restore-go-criu-v7
+  (package
+    (inherit go-github-com-checkpoint-restore-go-criu-v6)
+    (name "go-github-com-checkpoint-restore-go-criu-v7")
+    (version "7.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/checkpoint-restore/go-criu")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07qnlmvdzm7gl3lf2kldm83n2bfqnh6qqlhi43734q0dk5bfhpym"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (arguments
+     (list
+      #:import-path "github.com/checkpoint-restore/go-criu/v7"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Error opening binary file: open
+                       ;; test-imgs/pstree.img: no such file or directory.
+                       (list "TestNewMemoryReader"
+                             "TestGetMemPages"
+                             "TestGetPsArgsAndEnvVars"
+                             "TestSearchPattern"
+                             ;; Failed to get stats.
+                             "TestGetDumpStats"
+                             "TestGetRestoreStats")
+                       "|"))))))
+
 (define-public go-github-com-cheggaaa-pb
   (package
     (name "go-github-com-cheggaaa-pb")
