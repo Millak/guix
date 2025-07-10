@@ -872,7 +872,7 @@ style and key ordering are kept, so you can diff the source.")
 (define-public python-ruamel.yaml.clib
   (package
     (name "python-ruamel.yaml.clib")
-    (version "0.2.8")
+    (version "0.2.9")
     (source
       (origin
         ;; pypi release code has cythonized code without corresponding source.
@@ -880,10 +880,10 @@ style and key ordering are kept, so you can diff the source.")
         (uri (hg-reference
                (url "http://hg.code.sf.net/p/ruamel-yaml-clib/code")
                (changeset version)))
-        (file-name (string-append name "-" version "-checkout"))
+        (file-name (hg-file-name name version))
         (sha256
          (base32
-          "0qspqnk72xrjj17b00hjibbzjk3krsrakzf08wxwz7z908cv6278"))
+          "100nyixfikwivsxiwkq2frgbfkqvvl112wkn0sgc57xq0p1s0dv8"))
         (modules '((guix build utils)))
         (snippet
          '(begin
