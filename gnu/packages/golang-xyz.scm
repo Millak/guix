@@ -6566,6 +6566,29 @@ quoting, commenting, and escaping.")
      "File system notifications for Go")
     (license license:bsd-3)))
 
+(define-public go-github-com-fvbommel-sortorder
+  (package
+    (name "go-github-com-fvbommel-sortorder")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fvbommel/sortorder")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01cdxp9bqg1dlsf0nkb70gssr9mh250agfzyksx875m6ys1x37g7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fvbommel/sortorder"))
+    (home-page "https://github.com/fvbommel/sortorder")
+    (synopsis "Sort orders and comparison functions")
+    (description
+     "Package sortorder implements sort orders and comparison functions.")
+    (license license:expat)))
+
 (define-public go-github-com-fxamacker-cbor-v2
   (package
     (name "go-github-com-fxamacker-cbor-v2")
