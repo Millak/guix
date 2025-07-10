@@ -10348,6 +10348,32 @@ destinations: the console and a log file.")
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-jkeiser-iter
+  (package
+    (name "go-github-com-jkeiser-iter")
+    (version "0.0.0-20200628201005-c8aa0ae784d1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jkeiser/iter")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vdmxbhvq8s51i93g6nympmwnww7vh0xw2xznazhf69k4ggr9v2r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jkeiser/iter"))
+    (home-page "https://github.com/jkeiser/iter")
+    (synopsis "Golang library for @code{iteration}")
+    (description
+     "This package is intended to support forward-only iteration in a variety
+of use cases while avoiding the normal errors and leaks that can happen with
+iterators in Go.  It provides mechanisms for map/select filtering, background
+iteration through a goroutine, and error handling throughout.")
+    (license license:expat)))
+
 (define-public go-github-com-jmattheis-goverter
   (package
     (name "go-github-com-jmattheis-goverter")
