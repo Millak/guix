@@ -82,6 +82,38 @@
 exporting @code{OpenCensus} views as Prometheus metrics.")
     (license license:asl2.0)))
 
+(define-public go-github-com-grpc-ecosystem-go-grpc-prometheus
+  (package
+    (name "go-github-com-grpc-ecosystem-go-grpc-prometheus")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc-ecosystem/go-grpc-prometheus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lzk54h7np32b3acidg1ggbn8ppbnns0m71gcg9d1qkkdh8zrijl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Source only package, go-github-com-osrg-gobgp-v3@3.37.0 still needs
+      ;; it while the project is archived. Remove when no longer required.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/grpc-ecosystem/go-grpc-prometheus"))
+    (propagated-inputs
+     (list go-github-com-prometheus-client-golang
+           go-golang-org-x-net
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/grpc-ecosystem/go-grpc-prometheus")
+    (synopsis "Go gRPC Interceptors for Prometheus monitoring")
+    (description
+     "This package implements a Prometheus monitoring for your
+@url{https://github.com/grpc/grpc-go, gRPC Go} servers and clients.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mwitkow-go-conntrack
   (package
     (name "go-github-com-mwitkow-go-conntrack")
