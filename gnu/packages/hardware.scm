@@ -1476,14 +1476,26 @@ management, attestation, encryption, and signing.")
                 (substitute* '("libcpuid/rdmsr.c"
                                "libcpuid/rdcpuid.c")
                   (("modprobe")
-                   (search-input-file inputs "/bin/modprobe")))))))))
+                   (search-input-file inputs "/bin/modprobe"))))
+              ;; TODO: Build kernel module.
+              (when (and #$(target-linux?)
+                         #$(target-arm?))
+                (substitute* "drivers/arm/linux/CMakeLists.txt"
+                  (("/usr/src/") (string-append #$output "/src/")))))))))
     (inputs
-     (if (target-linux?)
-         (list kmod)
-         '()))
+     (append
+       (if (target-linux?)
+           (list kmod)
+           '())
+       (if (and (target-arm?)
+                (target-linux?))
+           (list linux-libre-headers)
+           '())
+       '()))
     (native-inputs (list python-3))   ;required by tests
     (supported-systems
-     (filter (lambda (t) (or (target-x86-64? t) (target-x86-32? t)))
+     (filter (lambda (t) (or (target-x86-64? t) (target-x86-32? t)
+                             (target-aarch64? t) (target-arm32? t)))
              %supported-systems))
     (home-page "https://libcpuid.sourceforge.net/")
     (synopsis "Small library for x86 CPU detection and feature extraction")
