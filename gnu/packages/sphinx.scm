@@ -476,19 +476,23 @@ documents click applications.")
 (define-public python-sphinx-copybutton
   (package
     (name "python-sphinx-copybutton")
-    (version "0.5.0")
+    (version "0.5.2")
+    ;; XXX: PyPI bundles <https://github.com/zenorocha/clipboard.js>.
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-copybutton" version))
        (sha256
-        (base32
-         "1xl7jwcldqvfya2gdp1nfxma7rv35alk998dfnx2fg6hmpd5kh50"))))
-    (build-system python-build-system)
+        (base32 "1g8zxq1l258kk7yja4j2iifn0frsh60c4am9kjyd2ilnzf17rwac"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; XXX: Check requires network access.
-    (propagated-inputs (list python-sphinx))
-    (home-page "https://github.com/choldgraf/sphinx-copybutton")
+     (list #:tests? #f))        ;no tests in PyPI, there are in Git
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-sphinx))
+    (home-page "https://github.com/executablebooks/sphinx-copybutton")
     (synopsis "Sphinx extension to add \"copy\" buttons to code blocks")
     (description
      "This package provides a small sphinx extension to add \"copy\" buttons
