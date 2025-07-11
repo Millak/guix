@@ -13108,104 +13108,105 @@ Jongg tiles from the playing field by taking one matching pair at a time.")
 (define-public sc-controller
   (package
     (name "sc-controller")
-    (version "0.4.8.9")
+    (version "0.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/Ryochan7/sc-controller")
+                    (url "https://github.com/C0rn3j/sc-controller")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1410yj6947yq43wwrj3cwllalalggzmd74sad70jd1niwj85yvna"
-                ))))
-    (build-system python-build-system)
+                "1zczdaxf76n1h6v3daaml7zd2ga808sscfp4bhnagfvw8y3xbf63"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (delete 'sanity-check)
-                        (add-after 'unpack 'remove-bundled-libraries
-                          (lambda _
-                            (with-directory-excursion "scc/lib"
-                              (for-each delete-file
-                                        '("enum.py" "jsonencoder.py"
-                                          "libusb1.py" "usb1.py")))
-                            ;; libusb1 fixes
-                            (substitute* '("scc/uinput.py"
-                                           "scc/drivers/usb.py"
-                                           "scc/drivers/steamdeck.py"
-                                           "scc/drivers/sc_by_cable.py")
-                              (("scc\\.lib\\.libusb1")
-                               "libusb1")
-                              (("scc\\.lib\\.usb1")
-                               "usb1")
-                              (("from scc\\.lib import usb1")
-                               "import usb1"))
-                            ;; enum fixes
-                            (substitute* "scc/cemuhook_server.py"
-                              (("scc\\.lib\\.enum")
-                               "enum"))
-                            ;; simplejson fixes
-                            (substitute* "scc/profile.py"
-                              (("from scc\\.lib\\.jsonencoder")
-                               "from simplejson"))))
-                        (add-after 'unpack 'fix-paths
-                          (lambda _
-                            (substitute* "scc/lib/xwrappers.py"
-                              (("libXfixes.so")
-                               (string-append (assoc-ref %build-inputs
-                                                         "libxfixes")
-                                              "/lib/libXfixes.so"))
-                              (("libXext.so")
-                               (string-append (assoc-ref %build-inputs
-                                                         "libxext")
-                                              "/lib/libXext.so")))
-                            (substitute* "scc/lib/eudevmonitor.py"
-                              (("libudev.so")
-                               (string-append (assoc-ref %build-inputs "eudev")
-                                              "/lib/libudev.so")))
-                            (substitute* "scc/uinput.py"
-                              (("/usr/include")
-                               (string-append (assoc-ref %build-inputs
-                                                         "linux-libre-headers")
-                                              "/include")))
-                            (substitute* '("scc/gui/app.py"
-                                           "scc/osd/inputdisplay.py"
-                                           "scc/paths.py")
-                              (("/usr/share/scc")
-                               (string-append #$output "/share/scc")))))
-                        (add-after 'wrap 'gi-wrap
-                          (lambda _
-                            (for-each (lambda (prog)
-                                        (wrap-program (string-append #$output
-                                                                     "/bin/"
-                                                                     prog)
-                                          `("GI_TYPELIB_PATH" =
-                                            (,(getenv
-                                               "GI_TYPELIB_PATH")))))
-                                      '("sc-controller" "scc"
-                                        "scc-daemon"
-                                        "scc-osd-dialog"
-                                        "scc-osd-keyboard"
-                                        "scc-osd-launcher"
-                                        "scc-osd-menu"
-                                        "scc-osd-message"
-                                        "scc-osd-radial-menu"
-                                        "scc-osd-show-bindings")))))))
-    (inputs (list bash-minimal
-                  gtk+
-                  gtk-layer-shell
-                  eudev
-                  libxext
-                  libxfixes
-                  linux-libre-headers
-                  python-pycairo
-                  python-evdev
-                  python-libusb1
-                  python-pylibacl
-                  python-pygobject
-                  python-simplejson
-                  python-vdf
-                  zlib))
+     (list
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build pyproject-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'sanity-check)
+                   (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+                     (assoc-ref glib-or-gtk:%standard-phases 'generate-gdk-pixbuf-loaders-cache-file))
+                   (add-before 'build 'no-install-udev
+                     (lambda _
+                       ;; Installing udev rules errors out.  Install them manually later
+                       (substitute* "setup.py"
+                         ((".*lib/udev.*") ""))))
+                   (add-before 'build 'set-version
+                     (lambda _
+                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+                   (add-after 'unpack 'remove-bundled-libraries
+                     (lambda _
+                       (delete-file "scc/lib/jsonencoder.py")
+                       (substitute* "scc/profile.py"
+                         (("from scc\\.lib\\.jsonencoder")
+                          "from simplejson"))))
+                   (add-after 'unpack 'fix-paths
+                     (lambda _
+                       (substitute* '("scc/lib/xwrappers.py"
+                                      "scc/lib/eudevmonitor.py")
+                         (("libXfixes\\.so|libXext\\.so|libudev\\.so" library)
+                          (search-input-file %build-inputs (string-append "lib/" library))))
+                       (substitute* "scc/uinput.py"
+                         (("/usr/include")
+                          (string-append (assoc-ref %build-inputs
+                                                    "linux-libre-headers")
+                                         "/include")))
+                       (substitute* '("scc/gui/app.py"
+                                      "scc/osd/inputdisplay.py"
+                                      "scc/paths.py")
+                         (("/usr/share/scc")
+                          (string-append #$output "/share/scc")))))
+                   (add-after 'install 'install-udev
+                     (lambda _
+                       (for-each
+                        (lambda (udev-rule)
+                          (install-file udev-rule
+                                        (string-append
+                                         #$output
+                                         "/lib/udev/rules.d")))
+                        (find-files "./scripts" "\\.rules$"))))
+                     (add-after 'install 'glib-or-gtk-compile-schemas
+                       (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+                     (add-after 'wrap 'glib-or-gtk-wrap
+                       (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+                     (add-after 'glib-or-gtk-wrap 'gi-wrap
+                       (lambda _
+                         (let ((bin (string-append #$output "/bin")))
+                           (for-each (lambda (prog)
+                                       (wrap-program prog
+                                         `("GDK_PIXBUF_MODULE_FILE" =
+                                           (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                                         `("GI_TYPELIB_PATH" =
+                                           (,(getenv "GI_TYPELIB_PATH")))))
+                                     ;; Predicate regex so we don't wrap the existing wrappers
+                                     (find-files bin "^[^.]"))))))))
+    (inputs (list
+             bash-minimal
+             eudev
+             gtk+
+             gtk-layer-shell
+             libxext
+             libxfixes
+             linux-libre-headers
+             python-evdev
+             python-ioctl-opt
+             python-libusb1
+             python-pycairo
+             python-pygobject
+             python-pylibacl
+             python-simplejson
+             python-vdf
+             zlib))
+    (native-inputs
+     (list
+      python-pytest
+      python-setuptools
+      python-setuptools-scm
+      python-wheel))
     (home-page "https://github.com/Ryochan7/sc-controller")
     (synopsis "Driver and configuration tool for game controllers")
     (description
@@ -13213,8 +13214,6 @@ Jongg tiles from the playing field by taking one matching pair at a time.")
 the Steam Controller, Steam Deck, and Dual Shock 4.  Install the included udev
 rules to solve permissions issues.")
     (license (list
-              ;; lib/enum.py, lib/usb1.py, and lib/libusb1.py are deleted but
-              ;; do have other licenses.
               license:cc0 ; images/*, default_profiles/*, profile_examples/*, default_menus/*
               license:zlib ; scripts/gamecontrollerdb.txt
               license:gpl2)))) ; everything else
