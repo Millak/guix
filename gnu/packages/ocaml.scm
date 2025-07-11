@@ -1448,7 +1448,7 @@ Knuth’s LR(1) parser construction technique.")
 (define-public binsec
   (package
     (name "binsec")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -1457,7 +1457,7 @@ Knuth’s LR(1) parser construction technique.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1szfqb6rj19w2jdyaxdgy3plhgr7picijf7l4k5qq80kna2h0zm8"))))
+        (base32 "0mb7n20b1p2np9dchwwcv046ivsan0n2zssp4b8gi7bg5m2nq11m"))))
     (build-system dune-build-system)
     (arguments
       (list #:phases
