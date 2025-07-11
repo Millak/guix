@@ -675,11 +675,32 @@ Go.  It also includes runtime support libraries for these languages.")
 
 (define %gcc-13-x86_64-micro-architectures
   (append %gcc-12-x86_64-micro-architectures
-          '("graniterapids")))                    ;Intel
+          '("graniterapids"                       ;Intel
+            "lujiazui")))
+
+(define %gcc-14-aarch64-micro-architectures
+  (append %gcc-13-aarch64-micro-architectures
+          '("armv9.4-a")))
+
+(define %gcc-14-ppc64le-micro-architectures
+  (append %gcc-10-ppc64le-micro-architectures
+          '("power11")))
 
 (define %gcc-14-x86_64-micro-architectures
   (append %gcc-13-x86_64-micro-architectures
-          '("znver5")))                           ;AMD
+          '("znver5"                              ;AMD
+            "yongfeng")))
+
+(define %gcc-15-aarch64-micro-architectures
+  (append %gcc-14-aarch64-micro-architectures
+          '("armv9.5-a")))
+
+(define %gcc-15-x86_64-micro-architectures
+  (append
+    (fold delete %gcc-14-x86_64-micro-architectures
+          '("knm" "knl"))
+    '("diamondrapids"                             ;Intel
+      "shijidadao")))
 
 (define-public gcc-7
   (package
@@ -887,10 +908,10 @@ It also includes runtime support libraries for these languages.")
                             (("\\.\\./lib64") "../lib"))))))))
     (properties
      `((compiler-cpu-architectures
-        ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
+        ("aarch64" ,@%gcc-14-aarch64-micro-architectures)
         ("armhf" ,@%gcc-13-armhf-micro-architectures)
-        ("i686" ,@%gcc-13-x86_64-micro-architectures)
-        ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
+        ("i686" ,@%gcc-14-x86_64-micro-architectures)
+        ("powerpc64le" ,@%gcc-14-ppc64le-micro-architectures)
         ("x86_64" ,@%gcc-14-x86_64-micro-architectures))
        ,@(package-properties gcc-11)))))
 
@@ -932,11 +953,11 @@ It also includes runtime support libraries for these languages.")
                          (string-append lib "/include"))))))))))))
     (properties
      `((compiler-cpu-architectures
-        ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
+        ("aarch64" ,@%gcc-15-aarch64-micro-architectures)
         ("armhf" ,@%gcc-13-armhf-micro-architectures)
-        ("i686" ,@%gcc-13-x86_64-micro-architectures)
-        ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
-        ("x86_64" ,@%gcc-14-x86_64-micro-architectures))
+        ("i686" ,@%gcc-15-x86_64-micro-architectures)
+        ("powerpc64le" ,@%gcc-14-ppc64le-micro-architectures)
+        ("x86_64" ,@%gcc-15-x86_64-micro-architectures))
        ,@(package-properties gcc-11)))))
 
 
