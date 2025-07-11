@@ -1073,7 +1073,7 @@ version to the original file.")
 (define-public repo2docker
   (package
     (name "repo2docker")
-    (version "2024.03.0")
+    (version "2024.07.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1082,7 +1082,7 @@ version to the original file.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bcnl91j6p3315lk2mmn02jq6mjsn68m9rcw5rkln4c9fx1160rx"))))
+                "1fg71bldvfiln8h91sca4bjhwk7vdh80rhf0514qk6vqpikpx4cb"))))
     (outputs '("out" "doc"))
     (build-system pyproject-build-system)
     (arguments
