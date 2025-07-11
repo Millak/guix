@@ -882,17 +882,16 @@ package docstring.")
 (define-public python-hatch-fancy-pypi-readme
   (package
     (name "python-hatch-fancy-pypi-readme")
-    (version "22.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hatch_fancy_pypi_readme" version))
-              (sha256
-               (base32
-                "0sn2wsfbpsbf2mqhjvw62h1cfy5mz3d7iqyqvs5c20cnl0n2i4fs"))))
+    (version "25.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch_fancy_pypi_readme" version))
+       (sha256
+        (base32 "0i803kq80qx0k1lj3z69zw40ynqxml4p1qsc851izmchzwyysn4w"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;avoid extra test dependencies
-    (propagated-inputs (list python-hatchling python-tomli
-                             python-typing-extensions))
+    (propagated-inputs (list python-hatchling python-tomli))
     (home-page "https://github.com/hynek/hatch-fancy-pypi-readme")
     (synopsis "Fancy PyPI READMEs with Hatch")
     (description "This hatch plugin allows defining a project description in
