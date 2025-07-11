@@ -3157,7 +3157,7 @@ cross-validation.")
            meson-python
            pkg-config
            python-click
-           python-cython-0.29.35
+           python-cython-0
            python-doit
            python-hypothesis
            python-pooch

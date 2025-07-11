@@ -3592,7 +3592,7 @@ player-like clients.")
     (build-system pyproject-build-system)
     (arguments `(#:tests? #f)) ;no tests
     (native-inputs
-     (list python-cython python-setuptools python-wheel))
+     (list python-cython-0 python-setuptools python-wheel))
     (inputs
      (list liblo))
     (home-page "https://das.nasophon.de/pyliblo/")
