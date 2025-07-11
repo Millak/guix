@@ -30477,25 +30477,26 @@ functions, and dictionaries.")
 (define-public python-cytoolz
   (package
     (name "python-cytoolz")
-    (version "0.11.2")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cytoolz" version))
        (sha256
-        (base32
-         "1d12mgaippxxhn24w2hj0my3aqkx80fks5g4wzfdsvl0acqnc8za"))
+        (base32 "1mn7n916w8dfij3zq139a4szv12rwp94xxrnfvnv66wyp1hk3k49"))
        (modules '((guix build utils)))
        (snippet
         '(for-each delete-file (find-files "cytoolz" "\\.c$")))))
-    (build-system python-build-system)
-    ;; FIXME: tests fail with "module 'cytoolz.curried' has no attribute
-    ;; 'exceptions'"
-    (arguments '(#:tests? #f))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "--pyargs" "cytoolz")))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-toolz))
-    (native-inputs
-     (list python-cython))
     (home-page "https://github.com/pytoolz/cytoolz")
     (synopsis "High performance functional utilities")
     (description
