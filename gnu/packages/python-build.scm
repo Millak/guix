@@ -157,16 +157,17 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
 (define-public python-six-bootstrap
   (package
     (name "python-six-bootstrap")
-    (version "1.16.0")
+    (version "1.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "six" version))
        (sha256
-        (base32
-         "09n9qih9rpj95q3r4a40li7hk6swma11syvgwdc68qm1fxsc6q8y"))))
-    (build-system python-build-system)
+        (base32 "109ajcsfhrz33lbwbb337w34crc3lb9rjnxrcpnbczlf8rfk6w7z"))))
+    (build-system pyproject-build-system)
     (arguments `(#:tests? #f))          ;to avoid pytest dependency
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://pypi.org/project/six/")
     (synopsis "Python 2 and 3 compatibility utilities")
     (description
