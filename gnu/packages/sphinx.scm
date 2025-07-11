@@ -644,43 +644,6 @@ user profiles.  Support for GitHub is built-in, but other services can also be
 supported with @code{sphinx-issues}.")
     (license license:expat)))
 
-(define-public python-sphinx-panels
-  (package
-    (name "python-sphinx-panels")
-    (version "0.6.0")
-    (source
-      (origin
-        ;; Tests not included in the pypi release.
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/executablebooks/sphinx-panels")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1ivqz6yv96a2jp59kylg1gbkrmzq6zwilppz3ij0zrkjn25zb97k"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'loosen-requirements
-                 (lambda _
-                   (substitute* "setup.py"
-                     (("sphinx>=2,<5")
-                      "sphinx>=2,<6")))))))
-    (propagated-inputs (list python-docutils-0.16 python-sphinx-5))
-    (native-inputs
-     (list python-pytest
-           python-pytest-regressions
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/executablebooks/sphinx-panels")
-    (synopsis "Sphinx extension for creating panels in a grid layout")
-    (description
-     "This package provides a sphinx extension for creating panels in a
-grid layout.  It is no longer maintained and users are encouraged to use
-@code{sphinx-design} instead.")
-    (license license:expat)))
-
 (define-public python-sphinx-tabs
   (package
     (name "python-sphinx-tabs")
