@@ -249,7 +249,7 @@ data units.")
            python-packaging
            python-pytest
            python-setuptools
-           python-setuptools-scm-next
+           python-setuptools-scm
            python-sphinx
            python-sphinxcontrib-newsfeed
            python-wheel))

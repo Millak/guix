@@ -3371,7 +3371,7 @@ Snakemake and its storage plugins.")
            python-pytest
            python-pytest-cov
            python-setuptools
-           python-setuptools-scm-next
+           python-setuptools-scm
            python-wheel))
     (home-page "https://github.com/pydata/sparse/")
     (synopsis "Library for multi-dimensional sparse arrays")

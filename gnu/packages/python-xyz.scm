@@ -40182,7 +40182,7 @@ with one function call.  IceCream makes print debugging a little sweeter.")
          "test/test_ngrams.py")))
     (propagated-inputs (list python-cffi))
     (native-inputs (list python-pytest python-setuptools
-                         python-setuptools-scm-next python-wheel))
+                         python-setuptools-scm python-wheel))
     (home-page "https://github.com/mideind/Icegrams")
     (synopsis "Trigram statistics for Icelandic")
     (description
