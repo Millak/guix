@@ -10724,47 +10724,50 @@ numpysane has:
                         "texmf-dist/fonts/opentype/public/gnu-freefont"))
               (setenv "GUIX_TEXMF" (string-append (getenv "GUIX_TEXMF") ":"
                                                   (getcwd) "/texmf-dist"))))
-          (delete 'build)
+          (replace 'build
+            (lambda _
+              (chdir "doc")
+              (let ((sphinxopts (string-append
+                                 "SPHINXOPTS=-j"
+                                 (number->string (parallel-job-count)))))
+                ;; Do not treat warnings as errors.
+                (substitute* "Makefile"
+                  ((" -WT ") " -T "))
+                (setenv "HOME" "/tmp")
+                ;; Build the PDF documentation.
+                (invoke "make" "latex-build" sphinxopts)
+                ;; FIXME: PDF build fails
+                ;; (invoke "make" "-C" "build/latex" "all-pdf" sphinxopts)
+                ;; Build the HTML documentation
+                (invoke "make" "html" sphinxopts)
+                ;; Build the Info documentation.  The issues worked around
+                ;; below can be tracked at
+                ;; https://github.com/numpy/numpy/issues/12278.
+                (substitute* "source/conf.py"
+                  ;; The root document should be "index", not "contents".
+                  (("\"contents\"") "'index'")
+                  ;; Disable Sphinx extensions that produce broken Texinfo.
+                  ((".*'numpydoc'.*") "")
+                  ((".*'sphinx.ext.autodoc'.*") "")
+                  ((".*'sphinx.ext.autosummary'.*") ""))
+                (invoke "make" "info" sphinxopts))))
           (replace 'install
             (lambda _
               (let* ((data (string-append #$output "/share"))
                      (doc (string-append data "/doc/numpy"))
                      (html (string-append doc "/html"))
-                     (info (string-append data "/info"))
-                     (sphinxopts (string-append
-                                  "SPHINXOPTS=-j"
-                                  (number->string (parallel-job-count)))))
-                (with-directory-excursion "doc"
-                  ;; Do not treat warnings as errors.
-                  (substitute* "Makefile"
-                    ((" -WT ") " -T "))
-                  (setenv "HOME" "/tmp")
-                  ;; Build the PDF documentation.
-                  (invoke "make" "latex-build" sphinxopts)
-                  (invoke "make" "-C" "build/latex" "all-pdf" sphinxopts)
-                  ;; Build the HTML documentation
-                  (invoke "make" "html" sphinxopts)
-                  ;; Build the Info documentation.  The issues worked around
-                  ;; below can be tracked at
-                  ;; https://github.com/numpy/numpy/issues/12278.
-                  (substitute* "source/conf.py"
-                    ;; The root document should be "index", not "contents".
-                    (("\"contents\"") "'index'")
-                    ;; Disable Sphinx extensions that produce broken Texinfo.
-                    ((".*'numpydoc'.*") "")
-                    ((".*'sphinx.ext.autodoc'.*") "")
-                    ((".*'sphinx.ext.autosummary'.*") ""))
-                  (invoke "make" "info" sphinxopts)
-                  ;; Install the HTML documentation.
-                  (mkdir-p html)
-                  (copy-recursively "build/html" html)
-                  ;; Install the PDF reference and user manuals.
-                  (install-file "build/latex/numpy-ref.pdf" doc)
-                  (install-file "build/latex/numpy-user.pdf" doc)
-                  ;; Install the info manual.
-                  (install-file "build/texinfo/numpy.info" info)
-                  (symlink (string-append html "/_images")
-                           (string-append info "/numpy-figures")))))))))
+                     (info (string-append data "/info")))
+                ;; Install the HTML documentation.
+                (mkdir-p html)
+                (copy-recursively "build/html" html)
+                ;; Install the PDF reference and user manuals.
+                ;; FIXME:
+                ;; (install-file "build/latex/numpy-ref.pdf" doc)
+                ;; (install-file "build/latex/numpy-user.pdf" doc)
+                ;; Install the info manual.
+                (install-file "build/texinfo/numpy.info" info)
+                (symlink (string-append html "/_images")
+                         (string-append info "/numpy-figures"))))))))
     (native-inputs
      (list font-gnu-freefont
            perl
@@ -10778,11 +10781,11 @@ numpysane has:
            python-scipy                 ;used by matplotlib
            python-sphinx
            python-sphinx-design
-           python-sphinx-panels
            texinfo
            (texlive-local-tree
             (list texlive-cbfonts
                   texlive-cm-super
+                  texlive-cmap
                   texlive-expdlist
                   texlive-fandol
                   texlive-greek-fontenc
@@ -10794,7 +10797,7 @@ numpysane has:
     (propagated-inputs '())
     (synopsis "Documentation for the @code{python-numpy} package")
     (description "This package provides the complete NumPy documentation in
-the Texinfo, HTML, and PDF formats.")))
+the Texinfo, and HTML formats.")))
 
 (define-public python-numpy-stl
   (package
