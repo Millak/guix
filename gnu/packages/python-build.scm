@@ -361,23 +361,7 @@ facilitate packaging Python projects, where packaging includes:
     (native-inputs
      (list python-wheel-0.40))))
 
-(define-public python-setuptools-next
-  (package
-    (inherit python-setuptools)
-    (name "python-setuptools")
-    (version "79.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "setuptools" version))
-       (sha256
-        (base32 "127svm8cdpvmq37gcrbvdr9fhrhs0nscnzh63gypjc1wyfwfg30j"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (for-each delete-file
-                      (find-files "setuptools" "^(cli|gui).*\\.exe$"))))))
-    (build-system pyproject-build-system)))
+(define-public python-setuptools-next python-setuptools)
 
 (define-public python-wheel
   (package

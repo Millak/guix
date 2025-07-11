@@ -327,7 +327,7 @@ and adapters that are useful for non-trivial configuration scenarios.")
            python-pytest
            python-pytest-cov ; runs by default
            python-pytest-django
-           python-setuptools-next
+           python-setuptools
            python-shortuuid
            python-wheel))
     (home-page "https://github.com/django-extensions/django-extensions")
@@ -1026,7 +1026,7 @@ to asyncio and Pydantic.")
                 (invoke "django-admin" "test" "tests"
                         "--pythonpath=.")))))))
     (propagated-inputs (list python-asgiref python-django))
-    (native-inputs (list python-pytest python-setuptools-next python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://django-htmx.readthedocs.io/en/latest/")
     (synopsis "Extensions for using Django with htmx")
     (description "This package provides a Django extension to work with

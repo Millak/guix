@@ -3397,7 +3397,7 @@ be written directly in Python without templates.")
       #:test-flags
       ;; XXX: requires network access.
       #~(list "--ignore=tests/unit/credentials_test.py")))
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-certifi python-dateutil python-pytz python-urllib3))
     (home-page "https://github.com/minio/minio-py")
@@ -5128,7 +5128,7 @@ sanitizer Rust crate.")
        (sha256
         (base32 "0sqgg8jmg2j14f4h96h0rs42kr460v65lhanps6lhdvj5zp81cbh"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-psutil python-pytest python-setuptools-next))
+    (native-inputs (list python-psutil python-pytest python-setuptools))
     (home-page "https://github.com/daanzu/py-webrtcvad-wheels")
     (synopsis "Python interface to the WebRTC Voice Activity Detector (VAD)")
     (description
@@ -5239,7 +5239,7 @@ APIs.")
     (arguments
      ;; The test tries to open a connection to a remote server.
      `(#:tests? #f))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-apiron))
     (home-page "https://github.com/teffalump/beren")
     (synopsis "REST client for Orthanc DICOM servers")
@@ -5510,7 +5510,7 @@ protocol, both client and server for Python asyncio module.
       (build-system pyproject-build-system)
       (arguments
        (list #:test-flags #~(list "mohawk/tests.py")))
-      (native-inputs (list python-pytest python-setuptools-next))
+      (native-inputs (list python-pytest python-setuptools))
       (home-page "https://github.com/kumar303/mohawk")
       (synopsis "Library for Hawk HTTP authorization")
       (description
@@ -7541,7 +7541,7 @@ users, gradebooks, and more.")
         (base32 "1gncv3l11za0mpxvmpaf5n5j3jzp282rz62yml4ha4z55q930d8l"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;There are no tests.
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-beautifulsoup4))
     (home-page "https://breakingcode.wordpress.com/")
     (synopsis "Python bindings to the Google search engine")
@@ -9718,7 +9718,7 @@ over IMAP:
        (sha256
         (base32 "1fdbxp176p17sn5xc1418mz2vk00hlcsd5qmi2fdcfphqal6raan"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/nephila/giturlparse")
     (synopsis "Git URL parsing module")
     (description
@@ -9741,7 +9741,7 @@ and rewriting of remote git URLs from various hosting providers.")
         (base32 "02mdzhgdz3sprgc26qb084zy639h2zw2yc8d2vm1r18ap9k51ayq"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; tests require external resources.
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/sethmlarson/hstspreload")
     (synopsis "Chromium HSTS Preload list as a Python package")
     (description
@@ -10106,7 +10106,7 @@ SOCKS5(h), HTTP tunnel).")
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))         ;no tests in PyPI archive
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-azure-nspkg))
     (home-page "https://github.com/Azure/azure-storage-python")
     (synopsis "Microsoft Azure Storage Namespace package")
@@ -10656,7 +10656,7 @@ real-life projects with legacy data and diverse storage providers.")
        (sha256
         (base32 "083ir0nccm14431mmn243862gq731ww98fwpd95zm1yccvpzdy68"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/earwig/mwparserfromhell")
     (synopsis "Python parser for MediaWiki wikicode")
     (description
@@ -11312,7 +11312,7 @@ and FastAPI.")
         (base32 "0psrlvax8249ccs2rvgdygpckzz22vxjcyzr2pql06d48k61gk54"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #false)) ; There are no tests.
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/whereismyip/")
     (synopsis "Queries multiple geolocation services until one succeeds")
     (description

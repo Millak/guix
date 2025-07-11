@@ -425,7 +425,7 @@ cluster/resource management systems.")
               (when tests?
                 (invoke "python" "./pathos/tests/__main__.py")))))))
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (propagated-inputs
      (list python-dill
            python-multiprocess
@@ -464,7 +464,7 @@ execution environment.")
               (when tests?
                 (invoke "python" "./ppft/tests/__main__.py")))))))
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (home-page "https://pypi.org/project/ppft/")
     (synopsis "Fork of Parallel Python")
     (description

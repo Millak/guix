@@ -443,7 +443,7 @@ the Sugar Toolkit.")
               (lambda _
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       (propagated-inputs
        (list gtk+
              gstreamer
@@ -504,7 +504,7 @@ a Tetris-like game.")
            telepathy-glib
            webkitgtk-for-gtk3))
     (inputs (list (list glib "bin")))
-    (native-inputs (list gettext-minimal python-setuptools-next))
+    (native-inputs (list gettext-minimal python-setuptools))
     (home-page "https://help.sugarlabs.org/browse.html")
     (synopsis "Sugar activity to browse the internet")
     (description "Browse is a web browser activity for the Sugar desktop.")
@@ -563,7 +563,7 @@ import pygame
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs (list gtk+ sugar-toolkit-gtk3))
       (inputs (list python-pygame))
-      (native-inputs (list gettext-minimal python-setuptools-next))
+      (native-inputs (list gettext-minimal python-setuptools))
       (home-page "https://github.com/sugarlabs/cellgame")
       (synopsis "Cell game for Sugar")
       (description "This game for the Sugar desktop is based on the mechanisms
@@ -616,7 +616,7 @@ present in gene regulatory networks.")
              python-pygobject
              sugar-toolkit-gtk3
              telepathy-glib))
-      (native-inputs (list gettext-minimal python-setuptools-next))
+      (native-inputs (list gettext-minimal python-setuptools))
       (home-page "https://help.sugarlabs.org/chat.html")
       (synopsis "Sugar activity to chat")
       (description "Chat is an activity used to exchange messages with friends
@@ -664,7 +664,7 @@ or classmates.")
              gtk+
              python-pygobject
              sugar-toolkit-gtk3))
-      (native-inputs (list gettext-minimal python-setuptools-next))
+      (native-inputs (list gettext-minimal python-setuptools))
       (home-page "https://github.com/sugarlabs/classify-cats")
       (synopsis "Classify cats based on various criteria")
       (description "This is a Sugar activity where players classify cats based
@@ -727,7 +727,7 @@ import logging
              python-pygobject
              sugar-toolkit-gtk3))
       (inputs (list python-pygame))
-      (native-inputs (list gettext-minimal python-setuptools-next))
+      (native-inputs (list gettext-minimal python-setuptools))
       (home-page "https://github.com/sugarlabs/sugar-commander")
       (synopsis "Manage your Sugar journal")
       (description
@@ -780,7 +780,7 @@ the Journal.")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
       (native-inputs
-       (list sugar-toolkit-gtk3 python-sphinx python-setuptools-next))
+       (list sugar-toolkit-gtk3 python-sphinx python-setuptools))
       (propagated-inputs (list webkitgtk-for-gtk3))
       (home-page "https://github.com/sugarlabs/help-activity")
       (synopsis "Sugar activity for accessing documentation and manuals")
@@ -823,7 +823,7 @@ users with easy access to documentation and manuals.")
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list gtk+
@@ -901,7 +901,7 @@ and @file{.pls}.")
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs (list gtk+ sugar-toolkit-gtk3))
       (inputs (list coreutils net-tools procps))
-      (native-inputs (list gettext-minimal python-setuptools-next))
+      (native-inputs (list gettext-minimal python-setuptools))
       (home-page "https://help.sugarlabs.org/log.html")
       (synopsis "Log activity for the Sugar learning environment")
       (description
@@ -942,7 +942,7 @@ looking for why an activity or Sugar is not working properly.")
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "install"
                       (string-append "--prefix=" #$output)))))))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     ;; All these libraries are accessed via gobject introspection.
     (propagated-inputs (list gtk+ telepathy-glib))
     (inputs (list sugar-toolkit-gtk3 gettext-minimal))
@@ -999,7 +999,7 @@ for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs (list gtk+ gdk-pixbuf))
       (inputs (list python-pybox2d python-pygame sugar-toolkit-gtk3
@@ -1047,7 +1047,7 @@ life with forces (think gravity, Newton!), friction (scrrrrape), and inertia
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list cairo
@@ -1101,7 +1101,7 @@ Journal entries that have been ‘starred’.")
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "install"
                       (string-append "--prefix=" #$output)))))))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     ;; All these libraries are accessed via gobject introspection.
     (propagated-inputs
      (list evince
@@ -1166,7 +1166,7 @@ import pygame
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       ;; These libraries are accessed via gobject introspection.
       (propagated-inputs (list gtk+))
       (inputs (list python-pygame sugar-toolkit-gtk3 gettext-minimal))
@@ -1214,7 +1214,7 @@ hesitate to feast on the goat.")
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs (list gtk+ vte/gtk+-3 sugar-toolkit-gtk3))
       (inputs (list gettext-minimal))
@@ -1293,7 +1293,7 @@ a Command-Line Interface (CLI) to the system.")
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list gstreamer
@@ -1375,7 +1375,7 @@ import logging
              gtk+
              python-pygobject
              sugar-toolkit-gtk3))
-      (native-inputs (list gettext-minimal python-setuptools-next))
+      (native-inputs (list gettext-minimal python-setuptools))
       (home-page "https://github.com/sugarlabs/turtlepond")
       (synopsis "Turtle-based strategy game")
       (description "Turtle in a Pond is a strategy game.  The goal is to
@@ -1420,7 +1420,7 @@ surround the turtle before it runs off the screen.")
               (invoke "python" "setup.py" "install"
                       (string-append "--prefix=" #$output)))))))
     (native-inputs
-     (list gettext-minimal sugar-toolkit-gtk3 python-setuptools-next))
+     (list gettext-minimal sugar-toolkit-gtk3 python-setuptools))
     (inputs (list setxkbmap))
     (home-page "https://help.sugarlabs.org/en/typing_turtle.html")
     (synopsis "Learn typing")
@@ -1465,7 +1465,7 @@ typist.")
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list abiword

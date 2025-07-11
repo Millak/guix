@@ -671,7 +671,7 @@ and a lot more.")
               "dcor/tests")))
     (native-inputs
      (list python-pytest
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-joblib
            python-numba
@@ -1349,7 +1349,7 @@ Meier, Nelson Aalen and regression.")
                (base32
                 "1bkikqjya6gkds3n4qj6svvyz6czkwrc5s66ffb62l6wi4v2f89a"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pandas python-pytest python-setuptools-next
+    (native-inputs (list python-pandas python-pytest python-setuptools
                          python-wheel))
     (propagated-inputs (list python-numpy python-scikit-learn))
     (home-page "https://github.com/scikit-learn-contrib/MAPIE")
@@ -1404,7 +1404,7 @@ conformal prediction methods intervals.")
     (native-inputs
      (list python-cython-3
            python-matplotlib
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm))
     (home-page
      (string-append "https://www.statsmodels.org/v" version "/"))

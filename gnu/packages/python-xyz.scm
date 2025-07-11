@@ -330,7 +330,7 @@
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm))
     (home-page "https://github.com/Lykos153/AnnexRemote")
     (synopsis "Helper module to easily develop git-annex special remotes")
@@ -2279,7 +2279,7 @@ decorators, including variants of the Python standard library's
                          python-packaging
                          python-pytest
                          python-pytest-mpl
-                         python-setuptools-next
+                         python-setuptools
                          python-setuptools-scm))
     (home-page "https://colorcet.holoviz.org/")
     (synopsis "Collection of perceptually uniform colormaps")
@@ -3527,7 +3527,7 @@ point types:
      (list python-pytest
            python-pytest-xdist
            python-scikit-image
-           python-setuptools-next))
+           python-setuptools))
     (inputs
      (list openjpeg  ; glymur/lib/openjp2.py
            libtiff)) ; glymur/lib/tiff.py
@@ -5397,7 +5397,7 @@ for the standard @code{argparse} library.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools-next
+           python-setuptools
            python-wheel))
     (home-page "https://github.com/eerimoq/bitstruct")
     (synopsis "Python values to and C bit field structs converter")
@@ -6669,7 +6669,7 @@ defined.")
      (list python-pytest
            python-setuptools-scm))
     (propagated-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (home-page "https://extension-helpers.readthedocs.io")
     (synopsis "Astropy ecosystem utilities for building and installing packages")
     (description
@@ -10878,7 +10878,7 @@ objects.")
         (base32 "1yigkhvjgbl9nrlijn4iwcs6k7i5y58drix1331cd1hb9wzn35z7"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-networkx python-numpy))
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/bkmgit/python-colormath2")
     (synopsis "Color math and conversion library")
     (description
@@ -12936,7 +12936,7 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
            python-numpy
            python-pillow
            python-pytest
-           python-setuptools-next
+           python-setuptools
            python-wheel))
     (inputs
      (list ffmpeg-7))
@@ -17960,7 +17960,7 @@ tasks, sockets, files, locks, and queues.")
      (list pkg-config
            python-cython
            python-pytest
-           python-setuptools-next
+           python-setuptools
            python-sphinx))
     (inputs
      (list bzip2
@@ -18135,7 +18135,7 @@ structures.")
                   (rename-file "wfetch/wfetch.py" "wfetch/wfetch")
                   (install-file "wfetch/wfetch" bin)
                   (copy-recursively "wfetch/icons" share)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       (inputs (list python-pyowm python-fire python-termcolor python-requests))
       (synopsis "Command-line tool to display weather info")
       (description
@@ -22298,7 +22298,7 @@ the same purpose: to provide Python bindings for libmagic.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "python" "run-tests.py")))))))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (inputs (list python-dateutil python-magic))
     (home-page "https://s3tools.org/s3cmd")
     (synopsis "Command line tool for S3-compatible storage services")
@@ -24267,7 +24267,7 @@ as well.")
       ;; XXX: There is a tests/run_tests.py file but all it does is a
       ;; sanity check.
       #:tests? #f))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-appdirs python-jedi python-prompt-toolkit python-pygments))
     (home-page "https://github.com/jonathanslenders/ptpython")
@@ -25012,7 +25012,7 @@ numbers, real numbers, mixed types and more, and comes with a shell command
               (when tests?
                 ;; XXX: Taken from tox.ini.
                 (invoke "python" "unittest-core.py")))))))
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-defusedxml python-orjson python-packaging
                              python-psutil))
     (home-page "https://github.com/nicolargo/glances")
@@ -29145,7 +29145,7 @@ jmerle/competitive-companion.")
       #:test-flags
       ;; These tests require network connections
       #~(list "--ignore=tests/command_version.py")))
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list time))
     (propagated-inputs (list python-online-judge-api-client python-colorama
                              python-requests))
@@ -29300,7 +29300,7 @@ compatible with @code{asyncio}.")
                 (("setup\\(") "setup_method(")
                 (("teardown\\(") "teardown_method("))
               (rename-file "test.py" "glob2_test.py"))))))
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/miracle2k/python-glob2/")
     (synopsis "Extended Version of the python buildin glob module")
     (description "This is an extended version of the Python
@@ -30405,7 +30405,7 @@ preload_resources\
                   (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-dill))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/multiprocess/")
     (synopsis "Multiprocessing and multithreading in Python")
     (description
@@ -31660,7 +31660,7 @@ repository is provided via Python API and as a compressed JSON file.")
      (list
       #:tests? #f))                     ; No tests.
     (propagated-inputs (list python-pyyaml))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (home-page "https://apps.fz-juelich.de/jsc/jube/jube2/docu/index.html")
     (synopsis "Benchmarking environment")
     (description
@@ -32239,7 +32239,7 @@ native API of @code{python-argparse}.")
                 (setenv "HOME" "/tmp/guix") ; must end on USERNAME...
                 (invoke "python" "./pox/tests/__main__.py")))))))
     (native-inputs
-     (list python-setuptools-next
+     (list python-setuptools
            which)) ;pox/tests/test_shutils.py
     (home-page "https://pypi.org/project/pox/")
     (synopsis "Python utilities for file system exploration and automated builds")
@@ -32746,7 +32746,7 @@ with features similar to the @command{wget} utility.")
            python-translate-toolkit
            python-translation-finder
            python-watchdog))
-    (native-inputs (list qttools-5 fontforge python-setuptools-next))
+    (native-inputs (list qttools-5 fontforge python-setuptools))
     (home-page "https://framagit.org/tyreunom/offlate")
     (synopsis "Offline translation interface for online translation tools")
     (description
@@ -32779,7 +32779,7 @@ an upload option to send your work back to the platform.")
               (when tests?
                 (apply invoke "python" "-m" "unittest" test-flags)))))))
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (home-page "https://github.com/ppannuto/python-titlecase")
     (synopsis "Capitalize strings similar to book titles")
     (description
@@ -33671,7 +33671,7 @@ dictionaries.")
       #:test-flags
       #~(list "--ignore-glob=pyzo/yoton/tests/*"     ; XXX: yoton is outdated.
               "--ignore=pyzo/codeeditor/_test.py"))) ; XXX: cannot import qt.
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-pyqt))
     (home-page "https://pyzo.org")
     (synopsis "Python IDE for scientific computing")
@@ -36639,7 +36639,7 @@ graph can be output for rendering by GraphViz or yEd.")
     (native-inputs
      (list python-pytest
            python-pytest-benchmark
-           python-setuptools-next))
+           python-setuptools))
     (home-page "https://github.com/mrocklin/multipledispatch/")
     (synopsis "Multiple dispatch for Python based on pattern matching")
     (description
@@ -36761,7 +36761,7 @@ worry whether all dependencies that use LooseVersion have migrated.")
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-pytest
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
@@ -36791,7 +36791,7 @@ cons cells in Python.")
       #~(list "--deselect=tests/test_dispatch.py::test_unification")))
     (native-inputs
      (list python-pytest
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-cons
@@ -36835,7 +36835,7 @@ cons cells in Python.")
                     " and not "))))
     (native-inputs
      (list python-pytest
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-cons
            python-etuples
@@ -36915,7 +36915,7 @@ key-value pairs from a @code{.env} file and set them as environment variables.")
                   (mkdir-p bindir)
                   (copy-file "date2name/__init__.py" binary)
                   (chmod binary #o555)))))))
-      (native-inputs (list python-setuptools-next))
+      (native-inputs (list python-setuptools))
       (synopsis "Handling time-stamps and date-stamps in file names")
       (description
        "By default, date2name gets the modification time of matching files and
@@ -37859,7 +37859,7 @@ and has plugins for many other formats.")
         (base32 "0cxj4zqcxzi3c5kw649jxmdpnbyrkrwx4licxdg6zc317v8gxw54"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-requests))
     (home-page "https://github.com/notebook-sharing-space/nbss-upload")
     (synopsis "Upload notebooks to a notebooksharing.space instance")
@@ -39371,7 +39371,7 @@ Communication.")
     (build-system pyproject-build-system)
     (arguments '(#:tests? #f))                    ;there are no tests
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (propagated-inputs (list python-colorama python-termcolor))
     (home-page "https://github.com/AbhijithAJ/clrprint")
     (synopsis "Print colorful output in the terminal")
@@ -39419,7 +39419,7 @@ files.")
                 "1ckn8n37i7b65h0i385ycn0w8sg9na0iabz0kmhxxc1wj0hddkw9"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/hmillerbakewell/musical-scales")
     (synopsis "Retrieve a scale based on a given mode and starting note")
     (description
@@ -39664,7 +39664,7 @@ window managers.")
         (base32 "0ag3zz4r3cwpj769m2aw3l8yj93phsydzfz02dig5z81cc025rck"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-i3ipc))
     (home-page "https://github.com/nwg-piotr/autotiling")
     (synopsis "Automatically tile windows in i3 and Sway")
@@ -40181,7 +40181,7 @@ with one function call.  IceCream makes print debugging a little sweeter.")
          (string-append "not test_trigrams" " and not test_word_ids")
          "test/test_ngrams.py")))
     (propagated-inputs (list python-cffi))
-    (native-inputs (list python-pytest python-setuptools-next
+    (native-inputs (list python-pytest python-setuptools
                          python-setuptools-scm-next python-wheel))
     (home-page "https://github.com/mideind/Icegrams")
     (synopsis "Trigram statistics for Icelandic")

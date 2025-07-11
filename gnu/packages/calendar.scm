@@ -248,7 +248,7 @@ data units.")
            python-importlib-metadata
            python-packaging
            python-pytest
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm-next
            python-sphinx
            python-sphinxcontrib-newsfeed

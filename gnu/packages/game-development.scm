@@ -1565,7 +1565,7 @@ and multimedia programs in the Python language.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-pytest
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-pygame
            python-pyperclip

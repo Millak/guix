@@ -669,7 +669,7 @@ ksh, and tcsh.")
            python-pytest-subprocess
            python-pytest-timeout
            python-requests
-           python-setuptools-next))
+           python-setuptools))
     (inputs
      (list python-distro
            python-ply

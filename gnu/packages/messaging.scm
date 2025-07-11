@@ -3251,7 +3251,7 @@ designed for experienced users.")
     (native-inputs
      (list python-matrix-nio
            python-pytest
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-click
            python-distro
@@ -3308,7 +3308,7 @@ designed for experienced users.")
      (list python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-setuptools-next))
+           python-setuptools))
     (home-page "https://github.com/zulip/zulip-terminal")
     (synopsis "Zulip's official terminal client")
     (description "This package contains Zulip's official terminal client.")

@@ -827,7 +827,7 @@ install: libbitshuffle.so
     (arguments
      (list #:tests? #f)) ;no tests
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (home-page "https://github.com/kYwzor/uncompresspy")
     (synopsis "Uncompressing LZW files in Python")
     (description

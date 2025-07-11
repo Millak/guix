@@ -2850,7 +2850,7 @@ both binary and text data.")
     (arguments
      '(#:tests? #f)) ; Not clear how to make tests pass.
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (inputs
      (list xclip xsel))
     (home-page "https://github.com/asweigart/pyperclip")

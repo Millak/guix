@@ -2948,7 +2948,7 @@ swarm algorithm.")
     (native-inputs
      (list python-pytest
            python-pytest-xdist
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-joblib
            python-matplotlib

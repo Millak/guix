@@ -243,7 +243,7 @@ family of functions.")
                              python-tqdm))
     (native-inputs (list python-numpy
                          python-pytest
-                         python-setuptools-next))
+                         python-setuptools))
     (home-page "https://github.com/SYSTRAN/faster-whisper")
     (synopsis "Whisper transcription reimplementation")
     (description
@@ -291,7 +291,7 @@ CTranslate2, which is a inference engine for transformer models.")
                          python-pytest
                          python-requests
                          python-scipy
-                         python-setuptools-next
+                         python-setuptools
                          python-torchvision))
     (home-page "https://github.com/pyro-ppl/funsor")
     (synopsis "Tensor-like library for functions and distributions")
@@ -1154,7 +1154,7 @@ cardinality matching from a bipartite graph.")
         (base32 "03d4kgakpgj54c3pl9dkqrkbmj6w13gmczkds5jagf3n85c1hgg1"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools-next))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-deprecated
            python-hopcroftkarp
@@ -1419,7 +1419,7 @@ storing tensors safely.")
             (lambda _
               (chdir "python"))))))
     (native-inputs
-     (list pkg-config protobuf python-pytest python-setuptools-next))
+     (list pkg-config protobuf python-pytest python-setuptools))
     (propagated-inputs (list sentencepiece))
     (synopsis "SentencePiece python wrapper")
     (description "This package provides a Python wrapper for the SentencePiece
@@ -1736,7 +1736,7 @@ operators and standard data types.")
      (append
       (list cmake-minimal
             python-pytest
-            python-setuptools-next)
+            python-setuptools)
       (filter
        (lambda (pkg)
          (member (or (%current-target-system)
@@ -1874,7 +1874,7 @@ with a single function call.")
            python-pytest
            python-pytorch
            python-sentencepiece
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-coloredlogs
            python-flatbuffers
@@ -2385,7 +2385,7 @@ visualizing high-dimensional data sets.")
     ;; python-scikit-learn
     (arguments '(#:tests? #f))
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (propagated-inputs
      (list python-numpy python-scipy python-scikit-learn python-joblib))
     (home-page "https://epistasislab.github.io/scikit-rebate/")
@@ -2498,7 +2498,7 @@ data by providing clean labels during training.")
                           (lambda* (#:key tests? #:allow-other-keys)
                             (when tests?
                               (invoke "python" "-m" "cma.test")))))))
-    (native-inputs (list python-pytest python-setuptools-next))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-numpy))
     (home-page "https://github.com/CMA-ES/pycma")
     (synopsis "Python implementation of CMA-ES")
@@ -3592,7 +3592,7 @@ in a fast and accurate way.")
     (propagated-inputs
      (list python-ipython python-numpy python-pandas python-scipy))
     (native-inputs
-     (list python-nose python-setuptools-next))
+     (list python-nose python-setuptools))
     (home-page "https://github.com/interpretable-ml/iml")
     (synopsis "Interpretable Machine Learning (iML) package")
     (description "Interpretable ML (iML) is a set of data type objects,
@@ -5085,7 +5085,7 @@ as torchvision, torchtext, and others.")
     (native-inputs
      (list python-pytest
            python-pytest-cov
-           python-setuptools-next))
+           python-setuptools))
     (home-page "https://github.com/magmax/python-readchar")
     (synopsis "Library to easily read single chars and key strokes")
     (description "This package provides a Python library to easily read single
@@ -5206,7 +5206,7 @@ feedback.")
              python-psutil
              python-requests-mock
              python-scikit-learn
-             python-setuptools-next))
+             python-setuptools))
       (home-page "https://lightning.ai/")
       (synopsis "Deep learning framework to train, deploy, and ship AI products")
       (description
@@ -5354,7 +5354,7 @@ and common image transformations for computer vision.")
                 (when tests?
                   (invoke "python3" "tests.py")))))))
       (propagated-inputs
-       (list python-numpy python-setuptools-next))
+       (list python-numpy python-setuptools))
       (home-page "https://github.com/bshillingford/python-torchfile")
       (synopsis "Torch7 binary serialized file parser")
       (description "This package enables you to deserialize Lua
@@ -5766,7 +5766,7 @@ algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;tests require launching the server
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (propagated-inputs
      (list python-jsonpatch
            python-networkx
