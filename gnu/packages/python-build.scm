@@ -500,27 +500,22 @@ information.")
 (define-public python-pypa-build
   (package
     (name "python-pypa-build")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "build" version))
-              (sha256
-               (base32
-                "17xqija27x4my1yrnk6q2vwln60r39g2dhby9zg2l99qjgbdrahs"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f                      ;to tests in the PyPI release
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'use-toml-instead-of-tomli
-                    ;; Using toml instead of tomli eases bootstrapping.
-                    (lambda _
-                      (substitute* "setup.cfg"
-                        (("tomli>=.*")
-                         "toml\n")))))))
+    ;; Newer version needs more inputs, consider to move to python-xyz.
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "build" version))
+       (sha256
+        (base32 "0g5w28ban6k9qywqwdqiqms3crg75rsvfphl4f4qkg8wi57741qs"))))
+    (build-system pyproject-build-system)
+    (arguments `(#:tests? #f))         ;disabled to avoid extra dependencies
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     `(("python-packaging" ,python-packaging-bootstrap)
-       ("python-pep517", python-pep517-bootstrap)
-       ("python-toml" ,python-toml)))
+     (list python-packaging-bootstrap
+           python-pep517-bootstrap
+           python-toml))
     (home-page "https://pypa-build.readthedocs.io/en/latest/")
     (synopsis "Simple Python PEP 517 package builder")
     (description "The @command{build} command invokes the PEP 517 hooks to
