@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -127,8 +127,10 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                                     (if-flags rest ...))))))
 
        (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
-                (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
-                (if-flags ("avx512f" "amx_complex" => "graniterapids-d")
+                (or (= 6 (cpu-family cpu))          ;the "Pentium Pro" family
+                    (= 19 (cpu-family cpu)))
+                (if-flags ("avx512f" "amx_transpose" => "diamondrapids")
+                          ("avx512f" "amx_complex" => "graniterapids-d")
                           ("avx512f" "amx_fp16" => "graniterapids")
                           ("avx512f" "avx512vp2intersect" => "tigerlake")
                           ("avx512f" "tsxldtrk" => "sapphirerapids")
@@ -136,9 +138,12 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                           ("avx512f" "wbnoinvd" => "icelake-server")
                           ("avx512f" "avx512bitalg" => "icelake-client")
                           ("avx512f" "avx512vbmi" => "cannonlake")
-                          ("avx512f" "avx5124vnniw" => "knm")
-                          ("avx512f" "avx512er" => "knl")
-                          ("avx512f" => "skylake-avx512")
+                          ;; Knights Mill, Knights Landing removed in GCC-15.
+                          ;; Fall-through, skipping skylake-avx512.
+                          ;; Recommended by GCC is broadwell.
+                          ;("avx512f" "avx5124vnniw" => "knm")
+                          ;("avx512f" "avx512er" => "knl")
+                          ("avx512f" "avx512vl" => "skylake-avx512")
                           ("avx" "prefetchi" => "pantherlake")
                           ("avx" "user_msr" => "clearwaterforest")
                           ("avx" "sm3" => "arrowlake-s")
@@ -195,8 +200,12 @@ corresponds to CPU, a record as returned by 'current-cpu'."
              "lujiazui"
              (cpu->micro-architecture-level cpu))
            (if (and (= 7 (cpu-family cpu))
-                    (>= #x5b (cpu-model cpu)))
+                    (= #x5b (cpu-model cpu)))
              "yongfeng"
+             (cpu->micro-architecture-level cpu))
+           (if (and (= 7 (cpu-family cpu))
+                    (>= #x6b (cpu-model cpu)))
+             "shijidadao"
              (cpu->micro-architecture-level cpu))
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
@@ -217,11 +226,11 @@ corresponds to CPU, a record as returned by 'current-cpu'."
            "armv8.2-a")
           (#xd40
            "armv8.4-a")
-          (#xd15
+          ((or #xd14 #xd15)
            "armv8-r")
           ((or #xd46 #xd47 #xd4d #xd48 #xd4e #xd49 #xd4f)
            "armv9-a")
-          ((or #xd80 #xd81)
+          ((or #xd80 #xd82 #xd83 #xd84 #xd85 #xd87 #xd88 #xd89 #xd8e)
            "armv9.2-a")))
        ("0x42"
         "armv8.1-a")
@@ -236,9 +245,15 @@ corresponds to CPU, a record as returned by 'current-cpu'."
           (#x0b8
            "armv8.3-a")))
        ("0x46"
-        "armv8.2-a")
+        (match (cpu-model cpu)
+          (#x001
+           "armv8.2-a")
+          (#x003
+           "armv9.3a")))
        ("0x48"
         "armv8.2-a")
+       ("0x4e"
+        "armv9.2-a")
        ("0x50"
         "armv8-a")
        ("0x51"
@@ -248,9 +263,19 @@ corresponds to CPU, a record as returned by 'current-cpu'."
           (#x516
            "armv8.1-a")
           (#xC01
-           "armv8.4-a")))
+           "armv8.4-a")
+          (#x001
+           "armv8.6-a")))
        ("0x53"
         "armv8-a")
+       ("0x61"
+        (match (cpu-model cpu)
+          ("#x12"
+           "armv8.3-a")
+          ((or #x20 #x21 #x22 #x23 #x24 #x25 #x28 #x29)
+           "armv8.5-a")
+          ((or #x30 #x31 #x32 #x33 #x34 #x35 #x38 #x39 #x48 #x49)
+           "armv8.6-a")))
        ("0x68"
         "armv8-a")
        ("0x6d"
@@ -310,9 +335,9 @@ CPUs for compilers which don't allow for more focused optimizing."
   ;; AVX512F+ for x86-64-v4, AVX+ for x86-64-v3.
   ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
   (match gcc-architecture
-    ((or "graniterapids-d" "graniterapids" "tigerlake" "sapphirerapids"
-         "cooperlake" "icelake-server" "icelake-client" "cannonlake" "knm"
-         "knl" "skylake-avx512"
+    ((or "diamondrapids" "graniterapids-d" "graniterapids" "tigerlake"
+         "sapphirerapids" "cooperlake" "icelake-server" "icelake-client"
+         "cannonlake" "knm" "knl" "skylake-avx512"
          "znver5" "znver4")
      "x86-64-v4")
     ((or "pantherlake" "clearwaterforest" "arrowlake-s" "sierraforest"
@@ -323,6 +348,6 @@ CPUs for compilers which don't allow for more focused optimizing."
          "nehalem" "bonnell" "core2"
          "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
          "amdfam10"
-         "lujiazui" "yongfeng" "x86-64")
+         "lujiazui" "yongfeng" "shijidadao" "x86-64")
      "x86-64")
     (_ gcc-architecture)))
