@@ -826,14 +826,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-12
   (package
     (inherit gcc-11)
-    (version "12.4.0")
+    (version "12.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gcc/gcc-"
                                   version "/gcc-" version ".tar.xz"))
               (sha256
                (base32
-                "0xcida8l2wykvvzvpcrcn649gj0ijn64gwxbplacpg6c0hk6akvh"))
+                "1cv282mipca0s9f64c3vza7a1hd4q54lvcdmqmk5wq841wykgkbi"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"
                                        "gcc-12-libsanitizer-no-crypt.patch"
