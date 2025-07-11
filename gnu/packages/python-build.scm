@@ -222,13 +222,13 @@ PyPI (pypi.org).")
 (define-public python-typing-extensions
   (package
     (name "python-typing-extensions")
-    (version "4.12.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "typing_extensions" version))
-              (sha256
-               (base32
-                "1f7z47hmz48kgixzb3ffw6zml8j1iflf6ml8xr6xsng5qxasszhs"))))
+    (version "4.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typing_extensions" version))
+       (sha256
+        (base32 "0rhlhs28jndgp9fghdhidn6g7xiwx8vvihxbxhlgl4ncfg8lishc"))))
     (build-system pyproject-build-system)
     ;; Disable the test suite to keep the dependencies to a minimum.  Also,
     ;; the test suite requires Python's test module, not available in Guix.
