@@ -62,7 +62,7 @@
               (file-name (git-file-name "boinc" version))
               (sha256
                (base32
-                "0nn0wzrmm88268vay855hr8bw9im5f8kzjp7k20qav9yrckhfwab"))))
+                "03xcyrnnbm6201apvvrl8ysq7gn3yn96slm9znsymw0cnf3j85jm"))))
     (build-system gnu-build-system)
     (arguments
      (list
