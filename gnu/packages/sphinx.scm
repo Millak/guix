@@ -381,14 +381,14 @@ sources.")
 (define-public python-sphinxcontrib-apidoc
   (package
     (name "python-sphinxcontrib-apidoc")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "sphinxcontrib-apidoc" version))
+       (uri (pypi-uri "sphinxcontrib_apidoc" version))
        (sha256
         (base32
-         "0mfdfxqxksixxpcigrjykaq6p2j5ic4yx5gv2lvq4pra469cvvv5"))))
+         "13fqkbs8lwrm39lv9pmq436x3fzgr26d2svs2a7g9239sq89i6rj"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
