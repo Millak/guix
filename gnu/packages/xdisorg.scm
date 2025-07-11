@@ -4334,6 +4334,45 @@ on the screen and which then writes out the necessary C code for it.")
     (synopsis
      "GUI toolkit for X based on the X11 Xlib library, with OpenGL support")))
 
+(define-public xiccd
+  (let* ((version "0.4.1")
+         (tag (string-append "v" version)))
+    (package
+      (name "xiccd")
+      (version version)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/agalakhov/xiccd")
+               (commit tag)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01favi5v4qbpj6v6k6iab7wxhjy4vjnqwcykhhv2rgcqw5dx4w4a"))
+         (modules '((guix build utils)))
+         (snippet '(begin
+                     (substitute* "configure.ac"
+                       (("m4_esyscmd_s\\([^\n\\(\\)\\[\\]]*\\)")
+                        #$tag)
+                       (("tar-ustar")
+                        "tar-ustar foreign")) #t))))
+      (build-system gnu-build-system)
+      (inputs (list colord glib libx11 libxrandr))
+      (native-inputs (list autoconf automake gettext-minimal libtool
+                           pkg-config))
+      (home-page "https://github.com/agalakhov/xiccd")
+      (synopsis "X color profile daemon")
+      (description
+       "@command{xiccd} provides color profile support for desktop environments
+other than GNOME and KDE.  It does the following tasks:
+@itemize
+@item Enumerates displays and register them in colord.
+@item Creates default ICC profiles based on EDID data.
+@item Applies ICC profiles provided by colord.
+@item Maintains user's private ICC storage directory.
+@end itemize")
+      (license license:gpl3))))
+
 (define-public xxkb
   (package
     (name "xxkb")
