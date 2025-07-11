@@ -201,16 +201,17 @@ Python file, so it can be easily copied into your project.")
 (define-public python-trove-classifiers
   (package
     (name "python-trove-classifiers")
-    (version "2024.10.21.16")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "trove_classifiers" version))
-              (sha256
-               (base32
-                "1wzmij9b84pixms7nk2fawhvryj355rsi4rjwsfrspkxsrax1jqp"))))
+    (version "2025.5.9.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trove_classifiers" version))
+       (sha256
+        (base32 "1dawkrcc353rz1h4mazw25vkbhics5lpqrwc8qad6b3flykwi9vw"))))
     (build-system pyproject-build-system)
-    (arguments (list #:build-backend "setuptools.build_meta"
-                     #:tests? #f))      ;keep dependencies to a minimum
+    (arguments
+     (list #:build-backend "setuptools.build_meta"
+           #:tests? #f))      ;keep dependencies to a minimum
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/pypa/trove-classifiers")
     (synopsis "Canonical source for classifiers on PyPI")
