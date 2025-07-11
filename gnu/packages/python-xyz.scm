@@ -32071,6 +32071,24 @@ bindings for Python 3.")
 standard error channel (stderr) in your program.")
       (license license:expat))))
 
+(define-public python-ioctl-opt
+  (package
+    (name "python-ioctl-opt")
+    (version "1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ioctl-opt" version))
+       (sha256
+        (base32 "1ygjgkzn0i61zk2yr27aqnma08c8xpblhdixli9f20if1nlgkm2y"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "http://github.com/vpelletier/python-ioctl-opt")
+    (synopsis "Functions to compute fnctl.ioctl's opt argument")
+    (description
+     "This package provides functions to compute fnctl.ioctl's opt argument.")
+    (license license:gpl2+)))
+
 (define-public python-anyio
   (package
     (name "python-anyio")
