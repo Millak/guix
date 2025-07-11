@@ -121,16 +121,16 @@ Language (TOML) configuration files.")
 (define-public python-tomli-w
   (package
     (name "python-tomli-w")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tomli_w" version))
        (sha256
-        (base32 "1fg13bfq5qy1ym4x77815nhxh1xpfs0drhn9r9464cz00m1l6qzl"))))
+        (base32 "08ahw9db7qycd4fzh4j51cgzp1rdl7snm5scrplpphj7ban4zl9d"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;to avoid extra dependencies
-    (native-inputs (list python-pypa-build python-flit-core))
+    (native-inputs (list python-flit-core))
     (home-page "https://github.com/hukkin/tomli-w")
     (synopsis "Minimal TOML writer")
     (description "Tomli-W is a Python library for writing TOML.  It is a
