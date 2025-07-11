@@ -903,13 +903,13 @@ parts of files defined using cut-off points or regular expressions.")
 (define-public python-hatch-vcs
   (package
     (name "python-hatch-vcs")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hatch_vcs" version))
-              (sha256
-               (base32
-                "1viz2mdfxfqpsd5f30410q6smj90qfxihvy9idzwd0p4ziy11iff"))))
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch_vcs" version))
+       (sha256
+        (base32 "1yczh2aqrf9p3gs1dayswz5pp9z2yhmlld0c14ah4d20d49gm583"))))
     (arguments (list #:tests? #f))      ;avoid extra test dependencies
     (build-system pyproject-build-system)
     (propagated-inputs (list python-hatchling python-setuptools-scm))
