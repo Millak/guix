@@ -947,20 +947,19 @@ abstractions for handling wheels and installing packages from wheels.")
 (define-public python-pdm-backend
   (package
     (name "python-pdm-backend")
-    (version "2.4.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pdm_backend" version))
-              (sha256
-               (base32
-                "0a0741c1g5vxhrizyxh40mjxdmbsc4xid5vy4aji23f1g9x09nfv"))))
+    (version "2.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pdm_backend" version))
+       (sha256
+        (base32 "0nzyfa4jb0cpfhh0jfqsk4xz8rbyfyxqrh2ps3axm2ih8321kh2n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f)) ; Depends on pytest, which we cannot import into this module.
     (home-page "https://pdm-backend.fming.dev/")
-    (synopsis
-     "PEP 517 build backend for PDM")
+    (synopsis "PEP 517 build backend for PDM")
     (description
      "PDM-Backend is a build backend that supports the latest packaging
 standards, which includes PEP 517, PEP 621 and PEP 660.")
