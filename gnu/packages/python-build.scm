@@ -103,9 +103,11 @@ stripped of Pytest specific details.")
        (uri (pypi-uri "toml" version))
        (sha256
         (base32 "13z6rff86bzdpl094x0vmfvls779931xj90dlbs9kpfm138s3gdk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                     ;no tests suite in release
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/uiri/toml")
     (synopsis "Library for TOML")
     (description
