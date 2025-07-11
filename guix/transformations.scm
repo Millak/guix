@@ -2,7 +2,7 @@
 ;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
-;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -500,7 +500,18 @@ actual compiler."
                           (string=? next (search-next "go")))
                    (cond
                      ((string-prefix? "arm" psabi)
-                      (setenv "GOARM" (string-take-right psabi 1)))
+                      ;; Parse the psabi to set the correct value
+                      (cond ((= 5 (string-length psabi))
+                             (setenv "GOARM" (string-take-right psabi 1)))
+                            ((string=? "a" (string-take-right psabi 1))
+                             (let ((version
+                                     (string-filter
+                                       (string->char-set ".v" char-set:digit)
+                                       psabi)))
+                               (setenv "GOARM64"
+                                       (if (= 2 (string-length version))
+                                           (string-append version ".0")
+                                           version))))))
                      ((string-prefix? "powerpc" psabi)
                       (setenv "GOPPC64" psabi))
                      ((string-prefix? "x86_64" psabi)

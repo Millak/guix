@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2016 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2016, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -1012,6 +1012,17 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      ;; as the bootstrap toolchain.
      (alist-replace "go" (list go-1.21) (package-native-inputs go-1.21)))))
 
+(define %go-1.23-arm64-micro-architectures
+  ;; https://go.dev/wiki/MinimumRequirements#arm64
+  ;; Allowed values are v8.{0-9} and v9.{0-5}. This may be followed by an option
+  ;; specifying extensions implemented by target hardware. Valid options are
+  ;; ,lse and ,crypto.
+  ;; Match Guix's specifications and then rewrite in (guix transformations).
+  (append (map (lambda (suffix) (string-append "armv8" suffix "-a"))
+               '("" ".1" ".2" ".3" ".4" ".5" ".6" ".7" ".8" ".9"))
+          (map (lambda (suffix) (string-append "armv9" suffix "-a"))
+               '("" ".1" ".2" ".3" ".4" ".5"))))
+
 (define-public go-1.23
   (package
     (inherit go-1.22)
@@ -1025,7 +1036,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
              (commit (string-append "go" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06c5cjjqk95p16cb6p8fgqqsddc1a1kj3w2m0na5v91gvwxbd0pq"))))))
+        (base32 "06c5cjjqk95p16cb6p8fgqqsddc1a1kj3w2m0na5v91gvwxbd0pq"))))
+    (properties
+     `((compiler-cpu-architectures
+         ("aarch64" ,@%go-1.23-arm64-micro-architectures)
+         ("armhf" ,@%go-1.17-arm-micro-architectures)
+         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
+         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
 
 (define-public go-1.24
   (package
