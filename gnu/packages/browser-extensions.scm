@@ -3,6 +3,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023, 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
+;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -262,7 +263,7 @@ fill and submit login forms if a matching password entry is found.")
 (define keepassxc-browser
   (package
     (name "keepassxc-browser")
-    (version "1.8.10")
+    (version "1.9.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -272,7 +273,15 @@ fill and submit login forms if a matching password entry is found.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1059kcb95ig18izbchwlb7pz41l4l3vjwzlmhz3w8zw2qxm6hrvx"))))
+                "12m7j7gz5gdhlv3paj9mmv9nb94cf80lridipmbdvk9shr43d0ag"))
+	      ;;  Default 'manifest.json' targets chromium based browsers and
+	      ;;  depends on background.service_worker support.
+	      ;;  See: <https://bugzilla.mozilla.org/show_bug.cgi?id=1573659>
+	      (snippet
+	       #~(begin
+		   (delete-file "keepassxc-browser/manifest.json")
+		   (copy-file "dist/manifest_firefox.json"
+			      "keepassxc-browser/manifest.json")))))
     (build-system copy-build-system)
     (properties
      '((addon-id . "keepassxc-browser@keepassxc.org")))
