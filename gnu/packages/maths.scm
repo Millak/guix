@@ -1948,8 +1948,7 @@ extremely large and complex data collections.")
                  "src/H5Epubgen.h"
                  "src/H5Eterm.h"
                  "src/H5overflow.h"
-                 "src/H5version.h"))))
-       (patches (search-patches "hdf5-config-dependencies.patch"))))
+                 "src/H5version.h"))))))
     (build-system cmake-build-system)
     (arguments
      (list

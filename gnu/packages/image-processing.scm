@@ -1321,7 +1321,6 @@ libraries designed for computer vision research and implementation.")
            fftw
            fftwf
            hdf5
-           libaec
            libjpeg-turbo
            libpng
            libtiff
