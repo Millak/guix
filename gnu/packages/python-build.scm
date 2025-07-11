@@ -614,30 +614,32 @@ compatible build front-ends to build Poetry managed projects.")
        (uri (pypi-uri "flit" version))
        (sha256
         (base32 "0h1pxi2hgr95321bgl45l86693zl14l3shj0idsyg4k9v56z700w"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; flit-core has a test suite, but it requires Pytest.  Disable it so
+      ;; as to not pull pytest as an input.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-license
+            ;; flit_core bundles the 'tomli' TOML parser, to avoid a
+            ;; bootstrapping problem. See
+            ;; <https://github.com/pypa/packaging-problems/issues/342>.
+            (lambda _
+              (delete-file-recursively "flit_core/flit_core/vendor")
+              (substitute* "flit_core/pyproject.toml"
+                (("license-files.*") "license-files = [\"LICENSE*\"]\n"))))
+          (replace 'build
+            ;; flit-core requires itself to build.  Luckily, a
+            ;; bootstrapping script exists, which does so using just
+            ;; the checkout sources and Python.
+            (lambda _
+              (chdir "flit_core")
+              (invoke "python" "build_dists.py")))
+          (delete 'sanity-check))))
     (propagated-inputs
      (list python-toml))
-    (arguments
-     ;; flit-core has a test suite, but it requires Pytest.  Disable it so
-     ;; as to not pull pytest as an input.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           ;; flit-core requires itself to build.  Luckily, a
-           ;; bootstrapping script exists, which does so using just
-           ;; the checkout sources and Python.
-           (lambda _
-             (invoke "python" "flit_core/build_dists.py")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (whl (car (find-files "." "\\.whl$"))))
-               (invoke "pip" "--no-cache-dir" "--no-input"
-                       "install" "--no-deps" "--prefix" out whl))))
-         ;; The sanity-check phase fails because flit depends on tomli at
-         ;; run-time, but this core variant avoids it to avoid a cycle.
-         (delete 'sanity-check))))
     (home-page "https://github.com/pypa/flit")
     (synopsis "Core package of the Flit Python build system")
     (description "This package provides @code{flit-core}, a PEP 517 build
