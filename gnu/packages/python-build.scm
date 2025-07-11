@@ -578,13 +578,13 @@ order to make bootstrapping easier.")
 (define-public python-poetry-core
   (package
     (name "python-poetry-core")
-    (version "1.9.1")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poetry_core" version))
        (sha256
-        (base32 "1f31gwhnfyrdymlm0ym6k6c6r0x98zcr2s4xz4blz2zm9chljbbs"))))
+        (base32 "194nwaig8zkbj2ig4zwf1k7cl4vqlmvs8mmdkb425mky8was08h5"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                      ;disabled to avoid extra dependencies
