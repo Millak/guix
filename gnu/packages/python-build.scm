@@ -177,17 +177,17 @@ Python file, so it can be easily copied into your project.")
 (define-public python-tomli
   (package
     (name "python-tomli")
-    (version "2.1.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tomli" version))
        (sha256
-        (base32 "1f4a9nvy8g82bl0k1wdxz9y1j843ai4l4glp0iyy357c5ap6qr1z"))))
+        (base32 "1zq58p2bplyf0xpi9fnyn4w6vc1fkw8whkj0yxhcwdf8g7ff2ifd"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                      ;disabled to avoid extra dependencies
-    (native-inputs (list python-flit-core-bootstrap python-six-bootstrap))
+    (native-inputs (list python-flit-core-bootstrap))
     (home-page "https://github.com/hukkin/tomli")
     (synopsis "Small and fast TOML parser")
     (description "Tomli is a minimal TOML parser that is fully compatible with
