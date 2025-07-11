@@ -3618,8 +3618,25 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
               (base32
                "1rr2m8jxa5yxyb3pw6h93kvdxg7x0m6sxxxvgn34vq8k8mg1kz21"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-cython python-setuptools python-wheel))
-    (inputs (list liblo))
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/unit.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; long is not available and replaced by int, proposed in
+          ;; <https://github.com/gesellkammer/pyliblo3/pull/15>.
+          (add-after 'unpack 'fix-compilation
+            (lambda _
+              (substitute* "pyliblo3/_liblo.pyx"
+                (("long\\(") "int(")
+                ((", long") "")))))))
+    (native-inputs
+     (list python-cython
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list liblo))
     (home-page "https://github.com/gesellkammer/pyliblo3")
     (synopsis "Python bindings for liblo")
     (description
