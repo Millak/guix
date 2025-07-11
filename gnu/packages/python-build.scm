@@ -663,16 +663,7 @@ specified by PEP 517, @code{flit_core.buildapi}.")
        (delete "python-toml")
        (prepend python-tomli)))))
 
-(define-public python-flit-core-next
-  (package/inherit python-flit-core
-    (name "python-flit-core")
-    (version "3.12.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flit" version))
-       (sha256
-        (base32 "0h1pxi2hgr95321bgl45l86693zl14l3shj0idsyg4k9v56z700w"))))))
+(define-public python-flit-core-next python-flit-core)
 
 (define-public python-flit-scm
   (package
