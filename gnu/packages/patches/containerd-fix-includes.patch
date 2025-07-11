@@ -1,0 +1,11 @@
+diff -u -r a/vendor/github.com/containerd/btrfs/btrfs.c b/vendor/github.com/containerd/btrfs/btrfs.c
+--- a/vendor/github.com/containerd/btrfs/btrfs.c	2025-07-11 22:08:17.013769624 +0200
++++ b/vendor/github.com/containerd/btrfs/btrfs.c	2025-07-11 22:24:52.906525426 +0200
+@@ -15,6 +15,7 @@
+ */
+ 
+ #include <stddef.h>
++#include <string.h>
+ #include <linux/magic.h>
+ #include <btrfs/ioctl.h>
+ #include <btrfs/ctree.h>

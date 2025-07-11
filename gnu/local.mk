@@ -1152,6 +1152,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\
   %D%/packages/patches/compsize-fix-btrfs-progs-compatibility.patch	\
   %D%/packages/patches/containerd-create-pid-file.patch	\
+  %D%/packages/patches/containerd-fix-includes.patch            \
   %D%/packages/patches/converseen-hide-updates-checks.patch	\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
