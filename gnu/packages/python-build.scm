@@ -825,22 +825,22 @@ reflected in the package visible to Python, without needing a reinstall.")
 (define-public python-hatchling
   (package
     (name "python-hatchling")
-    (version "1.26.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hatchling" version))
-              (sha256
-               (base32
-                "1s9lq2x5g5f24j34r7q3zp39wyqwjixfkq8vb4gxzmf5ws96b5cd"))))
+    (version "1.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatchling" version))
+       (sha256
+        (base32 "1mhzjhg7ky8npcrnbwwq30w8s73mm73m5z0j260v7aqrk1njj74p"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))                  ;to keep dependencies to a minimum
-    (propagated-inputs (list python-editables
-                             python-packaging-bootstrap
-                             python-pathspec
-                             python-pluggy
-                             python-tomli
-                             python-trove-classifiers))
+    (propagated-inputs
+     (list python-packaging-bootstrap
+           python-pathspec
+           python-pluggy
+           python-tomli
+           python-trove-classifiers))
     (home-page "https://hatch.pypa.io/latest/")
     (synopsis "Modern, extensible Python build backend")
     (description "Hatch is a modern, extensible Python project manager.  It
