@@ -933,49 +933,49 @@ Sphinx documents in web templates and to handle searches.")
 (define-public python-sphinx-gallery
   (package
     (name "python-sphinx-gallery")
-    (version "0.14.0")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "sphinx-gallery" version))
+       (uri (pypi-uri "sphinx_gallery" version))
        (sha256
-        (base32 "1hj380d5bjhbzxmhjw8f8b71jy1wk8crad0g3n750m990fphljia"))))
+        (base32 "1crfmzl61pj308nj5q4vb98d09gpcw3bmz8jlql2wr5d819cn044"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "--pyargs" "sphinx_gallery" "-k"
-             (string-append
-              ;; These tests require online data.
-              "not test_embed_code_links_get_data"
-              " and not test_run_sphinx"
-              ;; Requires webp support
-              " and not test_image_formats"
-              ;; Needs graphviz
-              " and not test_rebuild"
-              ;; Fails because we've deleted an example file, so the numbers
-              ;; don't match.
-              " and not test_junit"
-              ;; AssertionError.
-              " and not test_embed_links_and_styles"))
-      #:phases
-      '(modify-phases %standard-phases
-         ;; TODO: Our version of matplotlib does not support webp.
-         (add-after 'unpack 'delete-webp-example
-           (lambda _
-             (delete-file "sphinx_gallery/tests/tinybuild/examples/plot_webp.py"))))))
-    (propagated-inputs
-     (list python-jupyterlite-sphinx))
+      #~(list "-k" (string-join
+                    ;; sphinx.errors.ConfigError: 'matplotlib_animations'
+                    ;; specifies file format: mp4; this requires the
+                    ;; sphinxcontrib.video package.
+                    (list "not test_dummy_image"
+                          ;; urllib.error.URLError: <urlopen error [Errno -3]
+                          ;; Temporary failure in name resolution>
+                          "test_embed_code_links_get_data")
+                    " and not "))))
     (native-inputs
-     (list python-joblib
+     (list python-absl-py
+           python-graphviz
+           python-ipython
+           python-joblib
+           python-lxml
+           ;; python-intersphinx-registry ; not packaged yet
            python-matplotlib
            python-numpy
-           python-pillow
+           python-packaging
+           python-plotly
            python-pytest
            python-pytest-cov
+           python-seaborn
            python-setuptools
-           python-sphinx
+           python-setuptools-scm
+           ;; python-sphinxcontrib-video ; not packaged yet
+           ;; python-statsmodels         ;
            python-wheel))
+    (propagated-inputs
+     (list python-jupyterlite-sphinx
+           python-pillow
+           python-sphinx))
     (home-page "https://sphinx-gallery.github.io/stable/index.html")
     (synopsis "Generate an examples gallery automatically")
     (description
