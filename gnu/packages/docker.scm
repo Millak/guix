@@ -203,7 +203,8 @@ Python without keeping their credentials in a Docker configuration file.")
        (sha256
         (base32 "1m31y00sq2m76m1jiq4znws8gxbgkh5adklvqibxiz1b96vvwjk8"))
        (patches
-        (search-patches "containerd-create-pid-file.patch"))))
+        (search-patches "containerd-create-pid-file.patch"
+                        "containerd-fix-includes.patch"))))
     (build-system go-build-system)
     (arguments
      (let ((make-flags #~(list (string-append "VERSION=" #$version)
