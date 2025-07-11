@@ -77,14 +77,14 @@ matching of file paths.")
 (define-public python-pluggy
   (package
     (name "python-pluggy")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pluggy" version))
        (sha256
-        (base32 "1w8c3mpliqm9biqw75ci8cfj1x5pb6g5zwblqp27ijgxjj7aizrc"))))
-    (build-system python-build-system)
+        (base32 "1wr2vnbb7gy9wlz01yvb7rn4iqzd3mwmidk11ywk7395fq5i7k3x"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools
            python-setuptools-scm
