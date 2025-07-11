@@ -146,9 +146,11 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
        (method url-fetch)
        (uri (pypi-uri "pytoml" version))
        (sha256
-        (base32
-         "1rv1byiw82k7mj6aprcrqi2vdabs801y97xhfnrz7kxds34ggv4f"))))
-    (build-system python-build-system)
+        (base32 "1rv1byiw82k7mj6aprcrqi2vdabs801y97xhfnrz7kxds34ggv4f"))))
+    (build-system pyproject-build-system)
+    (arguments `(#:tests? #f))          ;to avoid pytest dependency
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/avakar/pytoml")
     (synopsis "Parser for TOML")
     (description "This package provides a Python parser for TOML-0.4.0.")
