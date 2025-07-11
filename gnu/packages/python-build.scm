@@ -416,13 +416,13 @@ installed with a newer @code{pip} or with wheel's own command line utility.")
 (define-public python-pyparsing
   (package
     (name "python-pyparsing")
-    (version "3.2.1")
+    (version "3.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyparsing" version))
        (sha256
-        (base32 "02jz5rv3vx46xvjszda467l269jz9narlrwd0a83mpk6zma0i631"))))
+        (base32 "1giqgjknzbbh34qf8ij5rsrqlxfysjx39xi85vvl5ddkp0d3zhdr"))))
     (build-system pyproject-build-system)
     (outputs '("out" "doc"))
     (arguments
