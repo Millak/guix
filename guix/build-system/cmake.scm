@@ -129,6 +129,8 @@
                       (build-type "RelWithDebInfo")
                       (tests? #t)
                       (test-exclude "")
+                      (test-repeat-until-pass? #t)
+                      (test-repeat-until-pass-count 5)
                       (parallel-build? #t) (parallel-tests? #t)
                       (validate-runpath? #t)
                       (patch-shebangs? #t)
@@ -170,6 +172,8 @@ provides a 'CMakeLists.txt' file as its build system."
                              #:build-type #$build-type
                              #:tests? #$tests?
                              #:test-exclude #$test-exclude
+                             #:test-repeat-until-pass? #$test-repeat-until-pass?
+                             #:test-repeat-until-pass-count #$test-repeat-until-pass-count
                              #:parallel-build? #$parallel-build?
                              #:parallel-tests? #$parallel-tests?
                              #:validate-runpath? #$validate-runpath?
@@ -209,6 +213,8 @@ provides a 'CMakeLists.txt' file as its build system."
                             (build-type "RelWithDebInfo")
                             (tests? #f) ; nothing can be done
                             (test-exclude "")
+                            (test-repeat-until-pass? #t)
+                            (test-repeat-until-pass-count 5)
                             (parallel-build? #t) (parallel-tests? #t)
                             (validate-runpath? #t)
                             (patch-shebangs? #t)
@@ -273,6 +279,8 @@ build system."
                        #:build-type #$build-type
                        #:tests? #$tests?
                        #:test-exclude #$test-exclude
+                       #:test-repeat-until-pass? #$test-repeat-until-pass?
+                       #:test-repeat-until-pass-count #$test-repeat-until-pass-count
                        #:parallel-build? #$parallel-build?
                        #:parallel-tests? #$parallel-tests?
                        #:validate-runpath? #$validate-runpath?

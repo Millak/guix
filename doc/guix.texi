@@ -9728,6 +9728,16 @@ responsible for writing the input files for the native build system.
 @item #:test-exclude
 Tests matching this regular expression are excluded from testing by
 @url{https://cmake.org/cmake/help/latest/manual/ctest.1.html, ctest}.
+
+@item #:test-repeat-until-pass?
+Directs @url{https://cmake.org/cmake/help/latest/manual/ctest.1.html, ctest} to
+@url{https://cmake.org/cmake/help/latest/manual/ctest.1.html#cmdoption-ctest-repeat, repeat}
+failed tests up to @code{#:test-repeat-until-pass-count} times and is enabled by
+default.
+
+@item #:test-repeat-until-pass-count
+When @code{#:test-repeat-until-pass?} is enabled this parameter sets the maximum
+number of failures for each test. The default is @code{5}.
 @end table
 @end defvar
 

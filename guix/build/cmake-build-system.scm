@@ -110,6 +110,8 @@
 
 (define* (check #:key (tests? #t) (test-exclude "")
                 (parallel-tests? #t)
+                (test-repeat-until-pass? #t)
+                (test-repeat-until-pass-count 5)
                 (test-suite-log-regexp %test-suite-log-regexp)
                 #:allow-other-keys)
   (if tests?
@@ -128,7 +130,12 @@
                          "--test-load"
                          ,(number->string (total-processor-count)))
                        ;; When unset CMake defers to the build system.
-                       '("-j" "1")))))
+                       '("-j" "1"))
+                 ,@(if test-repeat-until-pass?
+                       `("--repeat"
+                         ,(string-append "until-pass:"
+                                         (number->string test-repeat-until-pass-count)))
+                       '()))))
       (format #t "test suite not run~%")))
 
 (define* (install #:rest args)
