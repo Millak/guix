@@ -53,7 +53,7 @@
 
 (define (show-help)
   (display (G_ "Usage: guix time-machine [OPTION] [-- COMMAND ARGS...]
-Execute COMMAND ARGS... in an older version of Guix.
+Execute COMMAND ARGS... in a different version of Guix.
 
 If COMMAND is not provided, print path to the time-machine profile.\n"))
   (display (G_ "
