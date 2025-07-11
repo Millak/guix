@@ -89,6 +89,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
@@ -5461,91 +5462,94 @@ Note: currently this package does not provide GPU support.")
                python-sympy)))))
 
 (define-public python-pytorch-geometric
-  (package
-    (name "python-pytorch-geometric")
-    (version "2.6.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pyg-team/pytorch_geometric/")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0dbxz9d22vzm7fr9kgg66hj3sf8ag2ly8qky58cxvn1hyjl5h3v7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Hangs with AttributeError: 'NoneType' object has no attribute 'rpc_async'
-      '(list "--ignore=test/distributed/test_rpc.py"
-             ;; A message passing jinja template is missing
-             "--ignore=test/nn/conv/test_message_passing.py"
-             "--ignore=test/nn/test_sequential.py"
-             "--ignore=test/nn/models/test_basic_gnn.py"
-             ;; These all fail with a size mismatch error such as
-             ;; RuntimeError: shape '[-1, 2, 1, 1]' is invalid for input of size 3
-             "--ignore=test/explain/algorithm/test_captum_explainer.py"
-             ;; Requires the nonfree MKL on CPU.
-             "--ignore=test/nn/models/test_graph_unet.py"
-             "-k" (string-append
-                   ;; Permissions error
-                   "not test_packaging"
-                   ;; Unknown multiprocessing failure
-                   " and not test_data_share_memory"
-                   ;; This can fail due to accuracy problems
-                   " and not test_gdc"
-                   ;; These refuse to be run on CPU and really want a GPU
-                   " and not test_add_random_walk_pe"
-                   " and not test_asap"
-                   " and not test_two_hop"
-                   ;; Failed when switched to python@3.11
-                   ;; typing module internals
-                   " and not test_type_repr"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-top-level-directories
-           (lambda _
-             ;; The presence of these directories confuses the pyproject build
-             ;; system.
-             (for-each delete-file-recursively
-                       '("conda" "docker" "graphgym")))))))
-    (propagated-inputs
-     (list onnx
-           python-captum
-           python-graphviz
-           python-h5py
-           python-jinja2
-           python-matplotlib
-           python-networkx
-           python-numba
-           python-numpy
-           python-opt-einsum
-           python-pandas
-           python-protobuf
-           python-psutil
-           python-pyparsing
-           python-pytorch-lightning
-           python-rdflib
-           python-requests
-           python-scikit-image
-           python-scikit-learn
-           python-scipy
-           python-statsmodels
-           python-sympy
-           python-tabulate
-           python-torchmetrics
-           python-tqdm))
-    (native-inputs
-     (list python-flit-core
-           python-pytest
-           python-pytest-cov))
-    (home-page "https://pyg.org")
-    (synopsis "Graph Neural Network library for PyTorch")
-    (description
-     "PyG is a library built upon PyTorch to easily write and train Graph
+  (let ((commit "85cf9fc12b1138c1f2adbed8a761356c3f4197e7")
+        (revision "0"))
+    (package
+      (name "python-pytorch-geometric")
+      (version (git-version "2.6.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/pyg-team/pytorch_geometric/")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "104v3w9yv7akyxpyd8aq85mw1mncql8mvr1p1b34ph09csqh68hq"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        ;; Hangs with AttributeError: 'NoneType' object has no attribute 'rpc_async'
+        '(list "--ignore=test/distributed/test_rpc.py"
+               ;; A message passing jinja template is missing
+               "--ignore=test/nn/conv/test_message_passing.py"
+               "--ignore=test/nn/test_sequential.py"
+               "--ignore=test/nn/models/test_basic_gnn.py"
+               ;; These all fail with a size mismatch error such as
+               ;; RuntimeError: shape '[-1, 2, 1, 1]' is invalid for input of size 3
+               "--ignore=test/explain/algorithm/test_captum_explainer.py"
+               ;; Requires the nonfree MKL on CPU.
+               "--ignore=test/nn/models/test_graph_unet.py"
+               "-k" (string-append
+                     ;; Permissions error
+                     "not test_packaging"
+                     ;; Unknown multiprocessing failure
+                     " and not test_data_share_memory"
+                     ;; This can fail due to accuracy problems
+                     " and not test_gdc"
+                     ;; These refuse to be run on CPU and really want a GPU
+                     " and not test_add_random_walk_pe"
+                     " and not test_asap"
+                     " and not test_two_hop"
+                     ;; Failed when switched to python@3.11
+                     ;; typing module internals
+                     " and not test_type_repr"))
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'delete-top-level-directories
+             (lambda _
+               ;; The presence of these directories confuses the pyproject build
+               ;; system.
+               (for-each delete-file-recursively
+                         '("docker" "graphgym")))))))
+      (propagated-inputs
+       (list onnx
+             python-captum
+             python-graphviz
+             python-h5py
+             python-jinja2
+             python-matplotlib
+             python-networkx
+             python-numba
+             python-numpy
+             python-opt-einsum
+             python-pandas
+             python-protobuf
+             python-psutil
+             python-pyparsing
+             python-pytorch-lightning
+             python-rdflib
+             python-requests
+             python-scikit-image
+             python-scikit-learn
+             python-scipy
+             python-statsmodels
+             python-sympy
+             python-tabulate
+             python-torchmetrics
+             python-tqdm
+             python-xxhash))
+      (native-inputs
+       (list python-flit-core-next
+             python-pytest
+             python-pytest-cov))
+      (home-page "https://pyg.org")
+      (synopsis "Graph Neural Network library for PyTorch")
+      (description
+       "PyG is a library built upon PyTorch to easily write and train Graph
 Neural Networks for a wide range of applications related to structured data.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-lightning-cloud
   (package
