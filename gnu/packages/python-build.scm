@@ -256,14 +256,14 @@ Included are implementations of:
 (define-public python-pip
   (package
     (name "python-pip")
-    (version "23.1")
+    (version "25.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pip" version))
        (sha256
         (base32
-         "0jnk639v9h7ghslm4jnlic6rj3v29nygflx1hgxxndg5gs4kk1a0"))
+         "0xwhrng91a48zb5qmb6vagbjr6kzvbc8b08nq9a5139h3m0mvr1x"))
        (snippet
         #~(begin
             (delete-file "src/pip/_vendor/certifi/cacert.pem")
@@ -293,9 +293,11 @@ def where() -> str:
 def contents() -> str:
     with open(where(), \"r\", encoding=\"ascii\") as data:
         return data.read()")))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f))          ; there are no tests in the pypi archive.
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://pip.pypa.io/")
     (synopsis "Package manager for Python software")
     (description
