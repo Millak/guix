@@ -1253,20 +1253,22 @@ side effects when unit testing.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "1.13.0")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mypy" version))
        (sha256
         (base32
-         "0pl3plw815824z5gsncnjg3yn2v5wz0gqp20wdrncgmzdwdsd482"))))
+         "1avv8cj0qfhpw4s36bjhg994rml35fs4ndz78xg1r14l4050ml3b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; It tries to download hatchling and install aditional test
-      ;; dependencies.
-      #:test-flags #~(list "--ignore=mypy/test/testpep561.py")
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; It tries to download hatchling and install aditional test
+              ;; dependencies.
+              "--ignore=mypy/test/testpep561.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
@@ -1277,17 +1279,16 @@ side effects when unit testing.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list nss-certs-for-test
-           python-attrs
            python-lxml
            python-psutil
            python-pytest
-           python-pytest-forked
            python-pytest-xdist
            python-setuptools
-           python-virtualenv
+           python-types-setuptools
            python-wheel))
     (propagated-inputs
      (list python-mypy-extensions
+           python-pathspec
            python-tomli
            python-typing-extensions))
     (home-page "https://www.mypy-lang.org/")
