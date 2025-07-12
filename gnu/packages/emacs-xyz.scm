@@ -43858,25 +43858,6 @@ reading tool that lets you go down the rabbit hole without leaving current
 buffer.")
     (license license:gpl3+)))
 
-(define-public emacs-seq
-  (package
-    (name "emacs-seq")
-    (version "2.24")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/seq-" version ".tar"))
-       (sha256
-        (base32 "1w2cysad3qwnzdabhq9xipbslsjm528fcxkwnslhlkh8v07karml"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/seq.html")
-    (synopsis "Sequence manipulation functions")
-    (description
-     "This Emacs package provides sequence manipulation functions that
-complement basic functions provided by @file{subr.el}.  All its functions
-are prefixed with @code{seq-} and work on lists, strings, and vectors.")
-    (license license:gpl3+)))
-
 (define-public emacs-setup
   (package
     (name "emacs-setup")
