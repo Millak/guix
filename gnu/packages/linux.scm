@@ -10191,7 +10191,15 @@ file systems.")
                     "xfsprogs-" version ".tar.gz"))
               (sha256
                (base32
-                "13xkn9jpmwp4fm9r68vhgznkmxhnv83n2b39mhy2qdaph90w2a1l"))))))
+                "13xkn9jpmwp4fm9r68vhgznkmxhnv83n2b39mhy2qdaph90w2a1l"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments xfsprogs)
+       ((#:configure-flags configure-flags '())
+        `(cons "--enable-gettext=no"
+               ,configure-flags))))
+    (native-inputs
+     (modify-inputs (package-native-inputs xfsprogs)
+       (delete "gettext-minimal")))))
 
 (define-public xfsprogs/static
   (package
