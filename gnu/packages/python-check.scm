@@ -2210,16 +2210,18 @@ advanced doctest support and enables the testing of reStructuredText files.")
 (define-public python-pytest-env
   (package
     (name "python-pytest-env")
-    (version "0.6.2")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-env" version))
+       (uri (pypi-uri "pytest_env" version))
        (sha256
-        (base32 "1hl0ln0cicdid4qjk7mv90lw9xkb0v71dlj7q7rn89vzxxm9b53y"))))
-    (build-system python-build-system)
+        (base32 "1ky11hgb00wdz3mrsfk6zp17r56j99allimcfd83hhqfm909h84i"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest))
     (home-page "https://github.com/MobileDynasty/pytest-env")
     (synopsis "Pytest plugin that allows you to add environment variables")
     (description
