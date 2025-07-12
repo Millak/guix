@@ -3934,18 +3934,6 @@ top, lsof, netstat, ifconfig, who, df, kill, free, nice, ionice, iostat,
 iotop, uptime, pidof, tty, taskset, pmap.")
     (license license:bsd-3)))
 
-(define-public python-psutil-7
-  (package
-    (inherit python-psutil)
-    (name "python-psutil")
-    (version "7.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "psutil" version))
-       (sha256
-        (base32 "0mn42p9pzh0wynhk9i18iyvp8h54hbcsyczajmjcpv4blgmw7sbv"))))))
-
 (define-public python-scapy
   (package
     (name "python-scapy")
