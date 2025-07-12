@@ -116,7 +116,14 @@ Ispell-compatible.")
   (package
     (inherit enchant)
     (version "1.6.0")
-    (arguments '(#:configure-flags '("--disable-static")))
+    (arguments
+     (list #:configure-flags
+           #~(list
+              ;; Add CFLAGS to relax gcc-14's strictness.
+              (string-append
+               "CFLAGS=-g -O2"
+               " -Wno-error=incompatible-pointer-types")
+              "--disable-static")))
     (native-inputs (alist-delete "unittest-cpp"
                                  (package-native-inputs enchant)))
     (source (origin
