@@ -2118,14 +2118,14 @@ same arguments.")
 (define-public python-pytest-xdist
   (package
     (name "python-pytest-xdist")
-    (version "3.6.1")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest_xdist" version))
        (sha256
         (base32
-         "039h0w8qc3d2ix55rrdj6i50i8jqxxl7dx9pjxvfq7i3vfj5dlga"))))
+         "1wd9sgcgmx5nj0n1qmfnjmahi38xkzaz54xac440bilvxhjq2mvy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2133,22 +2133,22 @@ same arguments.")
       ;; Failes with execnet.gateway_base.RemoteError: Traceback (most recent
       ;; call last).
       #~(list "-k" "not test_ignore_sys_path_hook_entry")))
-    (native-inputs (list python-filelock
-                         python-pytest
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
-    (propagated-inputs (list python-execnet python-pytest-forked))
+    (native-inputs
+     (list python-filelock
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-execnet))
     (home-page "https://github.com/pytest-dev/pytest-xdist")
-    (synopsis
-     "Plugin for py.test with distributed testing and loop-on-failing modes")
+    (synopsis "Plugin for py.test with distributed testing and loop-on-failing modes")
     (description
      "The pytest-xdist plugin extends py.test with some unique test execution
-modes: parallelization, running tests in boxed subprocesses, the ability
-to run tests repeatedly when failed, and the ability to run tests on multiple
-Python interpreters or platforms.  It uses rsync to copy the existing
-program code to a remote location, executes there, and then syncs the
-result back.")
+modes: parallelization, running tests in boxed subprocesses, the ability to
+run tests repeatedly when failed, and the ability to run tests on multiple
+Python interpreters or platforms.  It uses rsync to copy the existing program
+code to a remote location, executes there, and then syncs the result back.")
     (license license:expat)))
 
 (define-public python-pytest-timeout
