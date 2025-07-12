@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -250,6 +250,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
       #:configure-flags
       #~(list "-DWITH_DAEMON_SUBMODULE=OFF"
               "-DBUILD_TESTING=ON"
+              (string-append "-DBUILD_VERSION=" #$version)
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.
               "-DWITH_WEBENGINE=OFF"
@@ -260,15 +261,6 @@ QSortFilterProxyModel conveniently exposed for QML.")
               "-DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=ALWAYS")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version-string
-            (lambda _
-              (substitute* "src/app/version.h"
-                (("VERSION_STRING")
-                 "BUILD_DATE")          ;to avoid a redefinition error
-                (("// clang-format on.*" anchor)
-                 (string-append "const char VERSION_STRING[] = \""
-                                #$version "\";\n"
-                                anchor)))))
           (add-after 'unpack 'copy-3rdparty-source-dependencies
             (lambda _
               (copy-recursively #$(package-source sortfilterproxymodel)
