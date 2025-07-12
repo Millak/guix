@@ -1199,8 +1199,8 @@ Onion Service.")
    alist
    "Association list of port to address mappings.  The following example:
 @lisp
-'((22 . \"127.0.0.1:22\")
-  (80 . \"127.0.0.1:8080\"))
+'((22 \"127.0.0.1:22\")
+  (80 \"127.0.0.1:8080\"))
 @end lisp
 maps ports 22 and 80 of the Onion Service to the local ports 22 and 8080."))
 
@@ -1395,8 +1395,8 @@ networking daemon.")))
 @var{mapping}.  @var{mapping} is a list of port/host tuples, such as:
 
 @example
- '((22 . \"127.0.0.1:22\")
-   (80 . \"127.0.0.1:8080\"))
+ '((22 \"127.0.0.1:22\")
+   (80 \"127.0.0.1:8080\"))
 @end example
 
 In this example, port 22 of the hidden service is mapped to local port 22, and
