@@ -8741,6 +8741,13 @@ with Python.")
      "Pygments is a syntax highlighting package written in Python.")
     (license license:bsd-2)))
 
+(define-public python-pygments-bootstrap
+   (package/inherit python-pygments
+     (name "python-pygments-bootstrap")
+     (native-inputs
+      (list python-hatchling))
+     (arguments `(#:tests? #f))))
+
 (define-public python-vdf
   (package
     (name "python-vdf")
