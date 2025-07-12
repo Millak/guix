@@ -11,7 +11,7 @@
 ;;; Copyright © 2019 Miguel <rosen644835@gmail.com>
 ;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
-;;; Copyright © 2022, 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2022, 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -249,7 +249,7 @@ from Markdown files.")
 (define-public po4a
   (package
     (name "po4a")
-    (version "0.73")
+    (version "0.74")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mquinson/po4a"
@@ -257,38 +257,23 @@ from Markdown files.")
                                   version "/po4a-" version ".tar.gz"))
               (sha256
                (base32
-                "184f0cv0w3xa301gwm74srn5s6g8qdn3ksip84wpg8xjihnzh63g"))))
+                "1hp7iy1rl8ci7rirh7r6d3jb0i16jm4vy3mgqd4bsyx35czk5z15"))))
     (build-system perl-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-programs
-            (lambda* (#:key inputs outputs #:allow-other-keys)
+            (lambda _
               ;; Make sure all executables in "bin" find the Perl modules
               ;; required by this package at runtime.
-              (let* ((out  #$output)
-                     (bin  (string-append out "/bin/"))
-                     (path (string-append
-                            out "/lib/perl5/site_perl:"
-                            (string-join
-                             (map (lambda (name)
-                                    (string-append (assoc-ref inputs name)
-                                                   "/lib/perl5/site_perl"))
-                                  (list "perl-gettext"
-                                        "perl-pod-parser"
-                                        "perl-sgmls"
-                                        "perl-syntax-keyword-try"
-                                        "perl-xs-parse-keyword"
-                                        "perl-term-readkey"
-                                        "perl-text-wrapi18n"
-                                        "perl-unicode-linebreak"
-                                        "perl-yaml-tiny"))
-                             ":"))))
-                (for-each (lambda (file)
-                            (wrap-program file
-                              `("PERL5LIB" ":" prefix (,path))))
-                          (find-files bin "\\.*$")))))
+              (for-each
+               (lambda (file)
+                 (wrap-program file
+                   (list "PERL5LIB" 'suffix
+                         (list (string-append #$output "/lib/perl5/site_perl")
+                               (getenv "PERL5LIB")))))
+               (find-files (string-append #$output "/bin/") "\\.*$"))))
           #$@(if (system-hurd?)
                  #~((add-after 'unpack 'skip-tests/hurd
                       (lambda _
@@ -301,6 +286,7 @@ from Markdown files.")
            perl-module-build
            docbook-xsl
            libxslt
+           libxml2 ;xmlcatalog
            ;; For tests.
            docbook-sgml-4.1
            docbook-xml-4.5
@@ -311,6 +297,7 @@ from Markdown files.")
            opensp
            perl-gettext
            perl-pod-parser
+           perl-pod-simple
            perl-sgmls
            perl-syntax-keyword-try
            perl-xs-parse-keyword
