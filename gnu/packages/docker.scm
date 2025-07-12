@@ -611,7 +611,7 @@ runcexecutor/executor.go"
            xz))
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)
-           go-1.20 gotestsum pkg-config))
+           go-1.21 gotestsum pkg-config))
     (synopsis "Container component library and daemon")
     (description "This package provides a framework to assemble specialized
 container systems.  It includes components for orchestration, image
