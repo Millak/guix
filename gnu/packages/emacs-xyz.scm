@@ -41774,6 +41774,7 @@ backlinks when inserting a link.")
          (sha256
           (base32 "1hywqrab07lpssc08aqpwa2asly92dhdn09ikx8jp0bi3l26wryy"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
       (propagated-inputs
        (list emacs-helm-bibtex emacs-org-ref emacs-org-roam))
       (home-page "https://github.com/org-roam/org-roam-bibtex")
