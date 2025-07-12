@@ -51,6 +51,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages version-control))
@@ -2754,7 +2755,7 @@ used to skip the test
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
-    (version "0.4.7")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -2764,10 +2765,11 @@ used to skip the test
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1n58skq2a0vhsgdfdkyqi00d3vv13kiw9b4mxx6xfyb6ysrdy7d1"))))
+         "0y4xbb91mv1rj7aps5g7hz1mhf5pbdc8yp5bxz6dq5ajlmfqwi3s"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:import-path "honnef.co/go/tools"
       #:phases
       #~(modify-phases %standard-phases
@@ -2780,6 +2782,7 @@ used to skip the test
                   (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
+           go-golang-org-x-exp
            go-golang-org-x-exp-typeparams
            go-golang-org-x-mod
            go-golang-org-x-tools))
