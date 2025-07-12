@@ -2505,20 +2505,23 @@ have failed since the last commit or what tests are currently failing.")))
 (define-public python-coverage
   (package
     (name "python-coverage")
-    (version "7.6.8")
+    (version "7.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "coverage" version))
        (sha256
         (base32
-         "1z3wycig8hy7iq9nxwiiiyxn01yblnj69yl2dp424s5hxl1qaawb"))))
+         "12qcm2j4bnc2gp6sci9brly2k406gp4jwjfpzxj04ag3a7x28w4r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list
          "--numprocesses" (number->string (parallel-job-count))
+         ;; TODO: Rework this test options by utilizing "-k" option.
+         ;;
+         ;; 1201 passed, 19 skipped, 389 warnings
          ;; XXX: Unable to properly compare reports.
          "--ignore=tests/test_report.py"
          ;; XXX: PyTracer or missing dependencies.
@@ -2535,13 +2538,20 @@ have failed since the last commit or what tests are currently failing.")))
          "--deselect=tests/test_annotate.py::AnnotationGoldTest::test_multi"
          ;; XXX: Needs C extension
          "--deselect=tests/test_cmdline.py::CmdLineStdoutTest::test_version"
+         "--deselect=tests/test_api.py::NamespaceModuleTest::test_bug_572"
          ;; XXX: Finds more files at toplevel
          "--deselect=tests/test_api.py::RelativePathTest::test_files_up_one_level"
          "--deselect=tests/test_xml.py::XmlReportTest::test_no_duplicate_packages"
          ;; XXX: zip1 module missing.
          "--deselect=tests/test_filereporter.py::FileReporterTest::test_zipfile"
+         ;; No module named 'coverage.tracer'
+         "--deselect=tests/test_api.py::ApiTest::test_completely_zero_reporting"
+         "--deselect=tests/test_api.py::ApiTest::test_warnings"
+         "--deselect=tests/test_oddball.py::RecursionTest::test_long_recursion_recovery"
          ;; XXX: Checking coverage for too much files, not only the target one.
-         "--deselect=tests/test_oddball.py::DoctestTest::test_doctest")
+         "--deselect=tests/test_oddball.py::DoctestTest::test_doctest"
+         ;; Module sys has no Python source
+         "--deselect=tests/test_api.py::ApiTest::test_warnings_suppressed")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-pyproject
@@ -2561,10 +2571,7 @@ have failed since the last commit or what tests are currently failing.")))
      (list python-pytest
            python-pytest-xdist ; hardcoded in tests/conftests.py
            python-flaky
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-tomli))
+           python-setuptools))
     (home-page "https://coverage.readthedocs.io")
     (synopsis "Code coverage measurement for Python")
     (description
