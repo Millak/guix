@@ -1245,7 +1245,6 @@ system.")
                 "19q8qlq4s2kfydpadkq1zd92611dvq7dr8vlhlbd9gplzpx7dhfd"))))
     (build-system emacs-build-system)
     (arguments (list #:test-command #~(list "make" "test")))
-    (propagated-inputs (list emacs-seq))
     (home-page "https://github.com/hsluv/hsluv-emacs")
     (synopsis "HSLuv color space conversions")
     (description
@@ -5061,7 +5060,7 @@ overwrite mode, it will turn into a block cursor.")
            "0v9hmvq6bcr2hwlb09ldsd6pjl19ri5n2hl2bs3x52fqjj6fdzzn"))))
       (build-system emacs-build-system)
       (propagated-inputs
-       (list emacs-hydra emacs-let-alist emacs-seq emacs-spinner))
+       (list emacs-hydra emacs-let-alist emacs-spinner))
       (native-inputs (list emacs-ert-runner emacs-undercover))
       (home-page "https://github.com/Malabarba/paradox")
       (synopsis "Paradox is an extension to Emacs packages menu")
@@ -23074,7 +23073,6 @@ lines, and @code{gc} to comment out the target of a motion.")
            emacs-external-completion
            emacs-jsonrpc
            emacs-project
-           emacs-seq
            emacs-track-changes
            emacs-xref))
     (home-page "https://github.com/joaotavora/eglot")
@@ -27297,7 +27295,7 @@ with (La)TeX mode, Org mode and other Emacs editing modes.")
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; XXX: too many broken tests
     (propagated-inputs
-     (list emacs-dash emacs-let-alist emacs-seq))
+     (list emacs-dash emacs-let-alist))
     (home-page "https://github.com/cpitclaudel/biblio.el")
     (synopsis "Browse and import bibliographic references")
     (description "This package provides an extensible Emacs package for
@@ -43929,7 +43927,7 @@ local macros are documented in the docstring for @code{setup}.")
               (substitute* "test/all-tests.el"
                 (("\\(file-truename \\(vc-git-root default-directory\\)\\)")
                  (format #f "~s" (getcwd)))))))))
-    (propagated-inputs (list emacs-map emacs-seq))
+    (propagated-inputs (list emacs-map))
     (home-page "https://github.com/kaushalmodi/tomelr/")
     (synopsis "Emacs-Lisp library for converting S-expressions to TOML")
     (description
