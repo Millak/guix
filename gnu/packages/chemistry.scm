@@ -937,8 +937,8 @@ electromagnetic properties for molecules and crystals.")
         (origin
           (method git-fetch)
           (uri (git-reference
-                (url "https://github.com/sunqm/qcint")
-                (commit (string-append "v" (package-version base)))))
+                 (url "https://github.com/sunqm/qcint")
+                 (commit (string-append "v" (package-version base)))))
           (file-name (git-file-name name (package-version base)))
           (sha256
            (base32
@@ -951,11 +951,11 @@ electromagnetic properties for molecules and crystals.")
        (arguments
         (substitute-keyword-arguments (package-arguments base)
           ((#:configure-flags flags '())
-           `(cons "-DBUILD_MARCH_NATIVE=OFF"
-                  ,flags))
+           #~(cons "-DBUILD_MARCH_NATIVE=OFF"
+                   #$flags))
           ((#:phases phases)
-           `(modify-phases ,phases
-              (delete 'adjust-build-path)))
+           #~(modify-phases #$phases
+               (delete 'adjust-build-path)))
           ;; Tests require python-pyscf.
           ((#:tests? _ #f) #f)))
        (native-inputs
