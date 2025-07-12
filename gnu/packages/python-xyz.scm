@@ -4817,23 +4817,27 @@ diagrams.")
 (define-public python-semantic-version
   (package
     (name "python-semantic-version")
-    (version "2.8.5")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "semantic_version" version))
        (sha256
-        (base32
-         "0m4avx8zdkzc7qglv5zlr54g8yna5vl098drg5396ql7aph2vjyj"))))
-    (build-system python-build-system)
+        (base32 "0704smz9k6hdd6i5xh0xf0sk47kannjb77abilvvp34r6v9vdaxx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'custom
+                     #:test-flags #~(list "-m" "nose2")))
+    (native-inputs
+     (list python-nose2
+           python-setuptools))
     (home-page "https://github.com/rbarrois/python-semanticversion")
     (synopsis "Semantic versioning module for Python")
     (description
      "The @code{semantic_version} class is a small library for handling
 @uref{https://semver.org/, semantic versioning} (@dfn{SemVer}) in Python.
 
-It can compare versions, generate a new version that represents a bump in one of
-the version levels, and check whether any given string is a proper semantic
+It can compare versions, generate a new version that represents a bump in one
+of the version levels, and check whether any given string is a proper semantic
 version identifier.")
     (license license:bsd-3)))
 
