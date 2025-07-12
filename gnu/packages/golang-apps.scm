@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -124,7 +125,7 @@ import of a 3rd party package at runtime).")
     (name "gopls")
     ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
     ;; needs to be discussed if it may be included in Guix.
-    (version "0.18.1")
+    (version "0.19.1")
     (source
      (origin
        (method git-fetch)
@@ -133,11 +134,11 @@ import of a 3rd party package at runtime).")
              (commit (go-version->git-ref version #:subdir "gopls"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s396bjwac1acrlpbp7k7xfyhmkykyxc08w6hirbdhlq8vg923p7"))))
+        (base32 "1dihdw4nzp21hlbwxf6qyhyfgavi1a55lmlyk36czd85v0jcp6a0"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
+      #:go go-1.24
       #:install-source? #f
       #:import-path "golang.org/x/tools/gopls"
       #:unpack-path "golang.org/x/tools"
@@ -153,9 +154,14 @@ import of a 3rd party package at runtime).")
             (lambda _
               ;; XXX: Write a procedure deleting all but current module source
               ;; to cover case with monorepo.
-              (delete-file-recursively "src/golang.org/x/tools"))))))
+              (delete-file-recursively "src/golang.org/x/tools")))
+          (add-before 'check 'set-env
+            (lambda _
+              ;; Required for fingerprint_test.TestMatches.
+              (setenv "GODEBUG" "gotypesalias=1"))))))
     (native-inputs
-     (list go-github-com-google-go-cmp
+     (list go-github-com-fatih-gomodifytags
+           go-github-com-google-go-cmp
            go-github-com-jba-templatecheck
            go-golang-org-x-mod
            go-golang-org-x-sync
