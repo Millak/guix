@@ -25269,10 +25269,12 @@ Werman's implementation of the Earth Mover's Distance.")
        (method url-fetch)
        (uri (pypi-uri "imagesize" version))
        (sha256
-        (base32
-         "0jndjx26p8qibrx997p3kb6vfbqbdxkv74jsrkav177vmx2085b9"))))
+        (base32 "0jndjx26p8qibrx997p3kb6vfbqbdxkv74jsrkav177vmx2085b9"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/shibukawa/imagesize_py")
     (synopsis "Gets image size of files in various formats in Python")
     (description
