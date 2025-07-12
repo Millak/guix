@@ -26314,15 +26314,18 @@ package attempts to address the shortcomings of @code{isodate}.")
 (define-public python-iniconfig
   (package
     (name "python-iniconfig")
-    (version "1.1.1")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "iniconfig" version))
        (sha256
-        (base32
-         "0ckzngs3scaa1mcfmsi1w40a1l8cxxnncscrxzjjwjyisx8z0fmw"))))
-    (build-system python-build-system)
+        (base32 "1iz1fg3n6pv4q8jzv1q0izl5001diwqggizrg3p3ywrn1gix5frs"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI, tests introduce cycle with pytest
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling))
     (home-page "https://github.com/RonnyPfannschmidt/iniconfig")
     (synopsis "Simple INI-file parser")
     (description "The @code{iniconfig} package provides a small and simple
