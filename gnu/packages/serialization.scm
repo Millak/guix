@@ -742,7 +742,8 @@ This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "03f1862ljdshg7d0rg3j7jzgm3ip55kzd2y91q7p0racax3hxx6i"))))
+                "03f1862ljdshg7d0rg3j7jzgm3ip55kzd2y91q7p0racax3hxx6i"))
+              (patches (search-patches "capnproto-fix-test.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

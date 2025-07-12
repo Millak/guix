@@ -1,0 +1,11 @@
+diff -u a/src/kj/string-test.c++ b/src/kj/string-test.c++
+--- a/src/kj/string-test.c++
++++ b/src/kj/string-test.c++
+@@ -22,6 +22,7 @@
+ #include "string.h"
+ #include <kj/compat/gtest.h>
+ #include <string>
++#include <cstdint>
+ #include "vector.h"
+ 
+ namespace kj {
