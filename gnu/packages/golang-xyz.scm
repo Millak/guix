@@ -65,6 +65,7 @@
 ;;; Copyright © 2025 Formbi <formbi@protonmail.com>
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6064,6 +6065,42 @@ string into a slice of words.")
      "This package provides an ANSI color package to output colorized or SGR
 defined output to the standard output.")
     (license license:expat)))
+
+(define-public go-github-com-fatih-gomodifytags
+  ;; This particular commit (v1.17.1-0.20250423142747-f3939df9aa3c) provides
+  ;; "modifytags" submodule which is required for gopls@0.19.1.
+  (let ((commit "f3939df9aa3cc13eb51e50268af256b4f9272cdb")
+        (revision "0"))
+    (package
+      (name "go-github-com-fatih-gomodifytags")
+      (version (git-version "1.17.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/fatih/gomodifytags")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gr9bs5f94kpnmjsg7dn6gr7yazlgllyypy2g6xvqrhgzrk2ckbr"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:skip-build? #t
+        #:import-path "github.com/fatih/gomodifytags"))
+      (native-inputs
+       (list go-golang-org-x-tools))   ;for the CLI
+      (propagated-inputs
+       (list go-github-com-fatih-camelcase
+             go-github-com-fatih-structtag))
+      (home-page "https://github.com/fatih/gomodifytags")
+      (synopsis "Tool to modify struct field tags in Golang")
+      (description
+       "This package implements a functionality to modify/update field tags in
+structs making it easy to update, add or delete the tags in a struct field
+with possibility to add and remove tag options.  It's intended to be used by
+an editor, but also has modes to run it from the terminal.")
+      (license license:bsd-3))))
 
 (define-public go-github-com-fatih-structs
   (package
@@ -21143,6 +21180,25 @@ Jsonnet C++implementation.")
      (string-append (package-description go-github-com-go-md2man)
                     "\nThis package provides a command line interface (CLI)
 tool."))))
+
+(define-public go-modifytags
+  (package/inherit go-github-com-fatih-gomodifytags
+    (name "go-modifytags")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-fatih-gomodifytags)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)))
+    (native-inputs
+     (append
+      (package-native-inputs go-github-com-fatih-gomodifytags)
+      (package-propagated-inputs go-github-com-fatih-gomodifytags)))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     (string-append (package-description go-github-com-fatih-gomodifytags)
+                    "\nThis package provides a command line interface (CLI) tool."))))
 
 (define-public go-msgio
   (package
