@@ -31,7 +31,7 @@
 ;;; Copyright © 2020, 2021 Masaya Tojo <masaya@tojo.tokyo>
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357@gmail.com>
 ;;; Copyright © 2020 Mike Rosset <mike.rosset@gmail.com>
-;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2020, 2025 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -4923,6 +4923,68 @@ transform, and consume generators.  It also defines procedures that
 return accumulators.  It is implemented by wrapping the sample
 implementation in a thin Guile compatibility layer.")
       (license license:gpl3+))))
+
+(define-public guile-srfi-165
+  (let ((commit "1b441c0edc258e39cb943096bd47dd45071e2f70")
+        (revision "0"))
+    (package
+      (name "guile-srfi-165")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/scheme-requests-for-implementation/srfi-165")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1ac1nmf413sayy0xq4c2l4kmbjkh8ksg3s4fwgk44zcd8phy3kxw"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:scheme-file-regexp "(srfi-165|impl)\\.scm$"
+        #:documentation-file-regexp "srfi-165\\.html$"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'rename-files
+              (lambda _
+                (mkdir-p "srfi/srfi-165")
+                (rename-file "srfi/165.scm" "srfi/srfi-165/impl.scm")
+                (substitute* "srfi/165.sld"
+                  (("\\(include \"165.scm\"\\)")
+                   "(include \"srfi-165/impl.scm\")"))
+                (rename-file "srfi/165.sld" "srfi/srfi-165.scm")))
+            (add-after 'build 'check-installed
+              (lambda _
+                (substitute* "srfi/165/test.sld"
+                  (("srfi 165 test") "srfi #{165}# test"))
+                (define-values (scm go) (target-guile-scm+go #$output))
+
+                (invoke "guile"
+                        "-L" scm "-C" go
+                        "-l" "./srfi/165/test.sld"
+                        "-c"
+                        (format #f "~S"
+                                '(begin
+                                   (use-modules (srfi #{165}# test))
+                                   (run-tests)))))))))
+      (native-inputs (list guile-3.0
+                           guile-srfi-125
+                           guile-srfi-128
+                           guile-srfi-146))
+      (propagated-inputs
+       (list guile-srfi-125 guile-srfi-128 guile-srfi-146))
+      (home-page "https://srfi.schemers.org/srfi-165/")
+      (synopsis "Environment/Reader Monad")
+      (description
+       "This library provides the sample implementation of SRFI-165.
+This SRFI defines an environment monad, which models computations that depend on
+values from a shared environment.  These computations can read values from the
+environment, pass values to subsequent computations, execute sub-computations in
+an extended environment, and modify the environment for future computations.")
+      (license license:expat))))
 
 (define-public guile-srfi-180
   (let ((commit "9188bf9724c6d320ef804579d222e855b007b193")
