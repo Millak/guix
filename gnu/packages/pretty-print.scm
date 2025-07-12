@@ -59,14 +59,14 @@
 (define-public a2ps
   (package
     (name "a2ps")
-    (version "4.15.6")
+    (version "4.15.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/a2ps/a2ps-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1x5xdy8g5640bs11nsn7n15v5rb5bsvgi32v3lc6j6di3j09vzw7"))
+                "1bxqzf5hlg666hli2grdlmf2dbggzrlg808wlx60p5gx19kkhpvi"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove timestamp from the installed 'README' file.
