@@ -2793,24 +2793,26 @@ instantly.")
 (define-public python-hypothesis
   (package
     (name "python-hypothesis")
-    (version "6.54.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hypothesis" version))
-              (sha256
-               (base32
-                "1ivyrjpnahvj359pfndnk8x3h0gw37kqm02fmnzibx4mas15d44a"))))
-    (build-system python-build-system)
+    (version "6.135.26")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hypothesis" version))
+       (sha256
+        (base32 "0073lb8xp789fxs5g8dmi3pr2p8q7imfsksidy0ccfahrm30xbvk"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; XXX: Tests are not distributed with the PyPI archive.
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; XXX: hypothesis requires pytest at runtime, but we can
-               ;; not propagate it due to a circular dependency.
-               (delete 'sanity-check))))
+     (list #:tests? #f))
+    (native-inputs
+     (list python-pytest-bootstrap      ;to pass sanity check
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-attrs-bootstrap python-exceptiongroup python-sortedcontainers))
+     (list python-attrs-bootstrap
+           python-exceptiongroup
+           python-sortedcontainers))
+    (home-page "https://hypothesis.works/")
     (synopsis "Library for property based testing")
     (description "Hypothesis is a library for testing your Python code against a
 much larger range of examples than you would ever want to write by hand.  It’s
