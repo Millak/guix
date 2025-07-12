@@ -23231,6 +23231,9 @@ For any transport plugin you include in this list, appropriate
 configuration line to enable transport plugin will be automatically
 added to the default configuration file.
 
+@item @code{auto-start?} (default: @code{#t})
+Whether or not to start the Tor daemon on boot.
+
 @end table
 @end deftp
 
