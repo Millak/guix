@@ -8,7 +8,7 @@
 ;;; Copyright © 2021 Oskar Köök <oskar@maatriks.ee>
 ;;; Copyright © 2021 Cees de Groot <cg@evrl.com>
 ;;; Copyright © 2024 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2024 Ivan Sokolov <ivan-p-sokolov@ya.ru>
+;;; Copyright © 2024, 2025 Ivan Sokolov <ivan-p-sokolov@ya.ru>
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -200,23 +200,24 @@ being successfully used in web development and the embedded software domain.")
           (delete 'bootstrap)
           (delete 'configure)
           (replace 'build
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (setenv "MIX_ENV" "prod")
               (invoke "mix" "compile")))
           (replace 'install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (define X.Y #$(version-major+minor (package-version elixir)))
-              (define out (string-append (assoc-ref outputs "out")
-                                         "/lib/elixir/" X.Y "/hex"))
-              (mkdir-p out)
-              (let* ((prod-dir "_build/prod/lib/hex")
+            (lambda _
+              (let* ((X.Y #$(version-major+minor
+                             (package-version
+                              (lookup-package-input this-package "elixir"))))
+                     (out (string-append #$output "/lib/elixir/" X.Y "/hex"))
+                     (prod-dir "_build/prod/lib/hex")
                      (prod-dir-mix (string-append prod-dir "/.mix")))
                 (and (directory-exists? prod-dir-mix)
                      (delete-file-recursively prod-dir-mix))
-              (copy-recursively "_build/prod/lib/hex" out)))))))
+                (mkdir-p out)
+                (copy-recursively prod-dir out)))))))
     (synopsis "Package manager for the Erlang VM")
     (description
      "This project provides tasks that integrate with Mix, Elixir's build
 tool.")
-    (home-page "https://hexdocs.pm/makeup_elixir/")
+    (home-page "https://hexdocs.pm/hex/api-reference.html")
     (license license:bsd-2)))
