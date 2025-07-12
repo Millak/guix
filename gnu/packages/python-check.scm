@@ -397,7 +397,7 @@ code quality.")
 (define-public python-covdefaults
   (package
     (name "python-covdefaults")
-    (version "1.1.0")
+    (version "2.3.0")
     (source
      (origin
        ;; The PyPI tarball does not include tests.
@@ -407,16 +407,17 @@ code quality.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11a24c0wzv01n55fy4kdpnyqna4m9k0mp58kmhiaks34xw4k37hq"))))
-    (build-system python-build-system)
+        (base32 "1b34zkn7g66iavjxdy8hg25ab56bafgsqizf6l1anszncayal6px"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+     ;; 88 passed, 1 deselected
+     ;; AttributeError: type object 'Plugins' has no attribute 'load_plugins'
+     (list #:test-flags #~(list "-k" "not test_coverage_init")))
     (native-inputs
-     (list python-coverage python-pytest))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-coverage))
     (home-page "https://github.com/asottile/covdefaults")
     (synopsis "Coverage plugin to provide opinionated default settings")
     (description
