@@ -2874,7 +2874,7 @@ development, not the kernel implementation of ACPI.")
            python-setuptools
            python-wheel))
     (inputs
-     (list python-psutil-7
+     (list python-psutil
            python-urwid-3))
     (home-page "https://github.com/amanusk/s-tui")
     (synopsis "Interactive terminal stress test and monitoring tool")
