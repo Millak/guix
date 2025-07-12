@@ -1955,6 +1955,7 @@ extremely large and complex data collections.")
       ;; Some of the users, notably Flann, need the C++ interface.
       #:configure-flags
       #~(list
+         "-DBUILD_STATIC_LIBS=OFF"
          "-DHDF5_INSTALL_CMAKE_DIR=lib/cmake"
          "-DHDF5_BUILD_CPP_LIB=ON"
          "-DHDF5_BUILD_FORTRAN=ON"
