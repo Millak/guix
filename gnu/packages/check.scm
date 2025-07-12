@@ -1667,48 +1667,37 @@ standard library.")
 (define-public python-pytest
   (package
     (name "python-pytest")
-    (version "8.3.3")
+    (version "8.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest" version))
        (sha256
-        (base32 "1081l7yr9z61ghjkrm8qw85ndg2hkb5fc1ibjnkhi0v4pl3q3fbh"))))
+        (base32 "0g593wjl45yck5g1xi8q31s08arxiapw67ipv6g3axs82xlzsrvw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Tests requiring Pygment, introduces cycle.
-      #~(list "-k" (string-append
-                    "not test_code_highlight"
-                    " and not test_code_highlight_continuation"
-                    " and not test_code_highlight_custom_theme"
-                    " and not test_code_highlight_invalid_theme"
-                    " and not test_code_highlight_invalid_theme_mode"
-                    " and not test_code_highlight_simple"
-                    " and not test_color_yes"
-                    " and not test_comparisons_handle_colors"
-                    " and not test_empty_NO_COLOR_and_FORCE_COLOR_ignored"
-                    " and not test_remove_dir_prefix"))))
+      ;; Just 2 tests fail:
+      ;;   1. access to "/usr/" is required.
+      ;;   2. assertion fails to compare length of the list.
+      ;;
+      ;; 3780 passed, 119 skipped, 3 deselected, 11 xfailed, 1 xpassed
+      #~(list "-k" "not test_remove_dir_prefix and not test_len")))
     (native-inputs
      ;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
      (list bash
+           python-attrs-bootstrap
            python-hypothesis
-           python-nose
-           ;; python-pygments ; introduces cycle
-           python-pytest-bootstrap
            python-setuptools
            python-setuptools-scm
            python-xmlschema
            python-wheel))
     (propagated-inputs
-     (list python-attrs-bootstrap
-           python-iniconfig
+     (list python-iniconfig
            python-packaging-bootstrap
-           python-exceptiongroup
            python-pluggy
-           python-py
-           python-tomli))
+           python-pygments-bootstrap))  ;it is in installation dependencies
     (home-page "https://docs.pytest.org/en/latest/")
     (synopsis "Python testing library")
     (description
