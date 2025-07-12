@@ -157,6 +157,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages hardware)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages ibus)
@@ -228,6 +229,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -8014,6 +8016,97 @@ such as gzip tarballs.")
 configuration program to choose applications starting on login.")
     (home-page "https://wiki.gnome.org/Projects/SessionManagement")
     (license license:gpl2+)))
+
+(define-public gnome-session-shepherd
+  (package
+    (name "gnome-session-shepherd")
+    (version "0.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/noe/gnome-session-shepherd.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1plib5klffnz93scgqwr3f10cpxvdxnfi8m3bbfqwmmxf1gc2bqq"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(let ((inputs (map cdr %build-inputs)))
+          (list
+           "-Dsystem_tests=disabled"      ;requires guix daemon
+           "-Dunit_tests=disabled"        ;requires guile-3.0.11
+           "-Dleader=enabled"
+           "-Dservices=enabled"
+           "-Dstartup=enabled"
+           "-Ddbus_service=enabled"
+           (string-append "-Dgsettings_path="
+                          (search-input-file %build-inputs "/bin/gsettings"))
+           (string-append "-Dguile_load_path="
+                          (string-join
+                           (search-path-as-list
+                            '("/share/guile/site/3.0")
+                            inputs)
+                           ":"))
+           (string-append "-Dguile_load_compiled_path="
+                          (string-join
+                           (search-path-as-list
+                            '("/lib/guile/3.0/site-ccache")
+                            inputs)
+                           ":"))
+           (string-append "-Dshepherd_path="
+                          #$(this-package-input "shepherd")
+                          "/bin/shepherd")))
+      #:phases
+      #~(begin
+          (use-modules (ice-9 ftw))
+          (modify-phases %standard-phases
+            (add-after 'install 'wrap-scripts
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((bin (string-append #$output "/bin")))
+                  (for-each
+                   (lambda (script)
+                     (format #t "Wrapping ~a~%" script)
+                     (wrap-program (string-append bin "/" script)
+                       `("GUILE_LOAD_PATH" ":" prefix
+                         ,(list (string-append #$output "/share/guile/site/3.0")))
+                       `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                         ,(list (string-append #$output "/lib/guile/3.0/site-ccache")))
+                       `("GI_TYPELIB_PATH" ":" = ;FIXME “prefix” or “=”?
+                         (,(getenv "GI_TYPELIB_PATH")))
+                       ;; TODO: this is not good, because it means starting
+                       ;; unwanted services/apps in GDM.
+                       `("XDG_CONFIG_DIRS" suffix
+                         ("/run/current-system/profile/etc/xdg")))
+                     ;; Not needed since the wrapper points directly to
+                     ;; #$output/share/guile/site/3.0/…
+                     (delete-file (string-append bin "/." script "-real")))
+                   '("gnome-session" "gnome-session-leader" "gherd")))))
+            ;; Fails on Guile object files, because DT_RUNPATH is unset. See
+            ;; <https://codeberg.org/guix/guix/pulls/7535>.
+            (delete 'shrink-runpath)))))
+    (native-inputs
+     (list guile-3.0
+           guile-fibers
+           guile-ini
+           guile-gi
+           pkg-config
+           shepherd-1.0
+           texinfo))
+    (inputs
+     (list gsettings-desktop-schemas
+           `(,glib "bin")
+           guile-fibers
+           guile-ini
+           guile-gi
+           shepherd-1.0))
+    (home-page "https://gitlab.gnome.org/noe/gnome-session-shepherd")
+    (synopsis "Session manager for GNOME")
+    (description "Implementation of gnome-session that manages services using
+the GNU Shepherd.")
+    (license license:gpl3+)))
 
 (define-public gjs
   (package
