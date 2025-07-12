@@ -2220,7 +2220,7 @@ Features:
 (define-public swappy
   (package
     (name "swappy")
-    (version "1.4.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2229,7 +2229,7 @@ Features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s2lp3bz30svqdg6467jvncim0qgl0q1b1nqxnnci6kljbp5g0xh"))))
+        (base32 "0fh85brivyz9knby9cda4jd1kw6kkxzbqz9rf2y8i5q8vz5yywzx"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc
