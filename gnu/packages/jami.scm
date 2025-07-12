@@ -79,8 +79,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20250610.0")
-(define %jami-daemon-commit "3280fa373a186c8cd4926849ef94d41bcf97c129")
+(define %jami-nightly-version "20250613.0")
+(define %jami-daemon-commit "41384122a8b61548aae90c9893d065aca216ce85")
 
 (define-public libjami
   (package
@@ -94,7 +94,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sxrm0q4p9al6ar3svnni080cnclgf6yi9sy503n60srg47jvs87"))
+                "136hiippjfbyp4h3pf68kh3cyw6r2idjgq7vj1h9sdipc87a1a2r"))
               (patches (search-patches
                         "libjami-ac-config-files.patch"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
@@ -185,9 +185,9 @@ service definitions.")
 ;;; Private package; this is used in source form: the project build system has
 ;;; no install target.
 (define sortfilterproxymodel
-  ;; Use the latest commit available from the 'qt-6' branch.
-  (let ((commit "6cc21205dbf36640613f0e6e67b2b13b1855c377")
-        (revision "0"))
+  ;; Use the latest commit available from the master branch.
+  (let ((commit "67670eee2c3c5bd758345afa9ba1177dbed32ed2")
+        (revision "1"))
     (package
       (name "sortfilterproxymodel")
       ;; There are no recent release tag; the module version defined in the
@@ -233,7 +233,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11hydcclfllvdsd08fdmsqxldgk957rr0xyjqgr9hdh7y0l95a9a"))
+                "1kb564njmxzyn6lpry58dj14hcwfjhz9kqyi419glbdp98kipd4m"))
               (patches (search-patches
                         "jami-disable-webengine.patch"
                         "jami-enable-testing.patch"
