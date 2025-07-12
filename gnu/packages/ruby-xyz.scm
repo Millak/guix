@@ -16045,19 +16045,9 @@ protocol.")
             (lambda _
               (substitute* "Rakefile"
                 (("sh \"rubocop\"") ""))))
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'disable-bundler
             (lambda _
-              (substitute* "Gemfile"
-                (("gem \"pry\".*") "gem 'pry'\n")
-                (("gem \"rake\".*") "gem 'rake'\n")
-                (("gem \"libxml-ruby\", \"3.2.0\"")
-                 "gem \"libxml-ruby\", \"~> 3.0.0\"")
-                (("gem \"rspec\", \"3.9.0\"")
-                 "gem \"rspec\", \">= 3.9.0\"")
-                (("gem \"webrick\", \"~>1.7.0\"")
-                 "gem \"webrick\", \">=1.7.0\"")
-                ((".*gem \"rubocop\".*") "")
-                ((".*gem \"rspec_junit_formatter\".*") "")))))))
+              (delete-file "Gemfile"))))))
     (native-inputs
      (list ruby-libxml
            ruby-pry
