@@ -1305,22 +1305,27 @@ them using any Python VM with basically no runtime overhead.")
 (define-public python-mypy-extensions
   (package
     (name "python-mypy-extensions")
-    (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mypy_extensions" version))
-              (sha256
-               (base32
-                "10h7mwjjfbwxzq7jzaj1pnv9g6laa1k0ckgw72j44160bnazinvm"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ;no tests
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/python/mypy_extensions")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12a3qs6rckxljlgw8ylkgcgpwllz96rw82lrgmhlzdgqcnqhbl0w"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest
+                     #:test-flags #~(list "discover" "tests")))
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/python/mypy_extensions")
     (synopsis "Experimental extensions for MyPy")
     (description
-     "The @code{python-mypy-extensions} module defines
-experimental extensions to the standard @code{typing} module that are
-supported by the MyPy typechecker.")
+     "The @code{python-mypy-extensions} module defines experimental extensions
+to the standard @code{typing} module that are supported by the MyPy
+typechecker.")
     (license license:expat)))
 
 ;;; This variant exists to break a cycle between python-pylama and python-isort.
