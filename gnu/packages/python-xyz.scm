@@ -27998,18 +27998,19 @@ Git.")
 (define-public python-setuptools-rust
   (package
     (name "python-setuptools-rust")
-    (version "1.6.0")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "setuptools-rust" version))
+       (uri (pypi-uri "setuptools_rust" version))
        (sha256
-        (base32 "0qi274r0fcnvxa8vs8vyhcknnzhq8pd0ig5zk1wmjc63x96p6vn8"))))
+        (base32 "1h3nbg1nlshzrqy7vz4q4g9wbz85dqkn6385p0ad7kjj48ww9avx"))))
     (build-system pyproject-build-system)
-    (arguments '(#:tests? #f))          ;no tests
+    (arguments
+     (list #:tests? #f))        ;tests rquire Cargo
     (propagated-inputs
-     (list python-semantic-version python-typing-extensions))
-    (native-inputs (list python-setuptools python-wheel))
+     (list python-semantic-version
+           python-setuptools))
     (home-page "https://github.com/PyO3/setuptools-rust")
     (synopsis "Setuptools plugin for Rust extensions")
     (description
