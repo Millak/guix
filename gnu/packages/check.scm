@@ -1724,16 +1724,12 @@ and many external plugins.")
 (export python-pytest-7)
 
 (define-public python-pytest-bootstrap
-  (package
-    (inherit python-pytest)
+  (package/inherit python-pytest
     (name "python-pytest-bootstrap")
+    (arguments (list #:tests? #f))
     (native-inputs
-     (list python-iniconfig
-           python-setuptools
-           python-setuptools-scm
-           python-tomli
-           python-wheel))
-    (arguments `(#:tests? #f))))
+     (list python-setuptools
+           python-setuptools-scm))))
 
 (define-public python-pytest-cov
   (package
