@@ -2787,26 +2787,51 @@ extensions.")
 (define-public ruby-libxml
   (package
     (name "ruby-libxml")
-    (version "3.0.0")
+    (version "5.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "libxml-ruby" version))
        (sha256
         (base32
-         "0xy8wmjwjcnv36zi042678ncjzpxvy351ccbv7mzkns2n3kxfp54"))))
+         "1rkahmh2p3mapmcy5x4b3jf80a9jcvx85yky34k2n3lar03gphvq"))))
     (build-system ruby-build-system)
+    (native-inputs (list ruby-minitest ruby-rake-compiler))
     (inputs
      (list zlib libxml2))
     (arguments
-     '(#:tests? #f ; test suite hangs for unknown reason
-       #:gem-flags
+     '(#:gem-flags
        (list "--no-document"            ; TODO: Re-enable when documentation
                                         ; generation works
              "--"
              (string-append "--with-xml2-include="
                             (assoc-ref %build-inputs "libxml2")
-                            "/include/libxml2" ))))
+                            "/include/libxml2" ))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-failing-tests
+           (lambda _
+             (for-each
+              (lambda (method)
+                (substitute* "test/test_canonicalize.rb"
+                  (((string-append "def " method) def)
+                   (string-append def "; skip \"CR/LF mismatch\";"))))
+              '("test_canonicalize_with_w3c_c14n_3_1"
+                "test_canonicalize_with_w3c_c14n_3_2"
+                "test_canonicalize_with_w3c_c14n_3_3"
+                "test_canonicalize_with_w3c_c14n_3_4"))
+             (substitute* "test/test_schema.rb"
+               (("def test_schema_load_from_uri" def)
+                (string-append def "; skip \"missing XLink schema\";")))))
+         (delete 'check)
+         (add-after 'install 'set-gem-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "GEM_PATH"
+                     (string-append
+                      (getenv "GEM_PATH") ":"
+                      (assoc-ref outputs "out") "/lib/ruby/vendor_ruby"))))
+         (add-after 'set-gem-path 'check
+           (assoc-ref %standard-phases 'check)))))
     (synopsis "Ruby bindings for GNOME Libxml2")
     (description "The Libxml-Ruby project provides Ruby language bindings for
 the GNOME Libxml2 XML toolkit.")
