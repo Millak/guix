@@ -1318,8 +1318,9 @@ MakeError(NotDeterministic, BuildError)
 /* Recursively make the file permissions of a path safe for exposure to
    arbitrary users, but without canonicalising its permissions, timestamp, and
    user.  Throw an exception if a file type that isn't explicitly known to be
-   safe is found. */
-static void secureFilePerms(Path path)
+   safe is found; when 'allowSpecialFiles' is true, pipes and sockets are
+   allowed. */
+static void secureFilePerms(Path path, bool allowSpecialFiles = false)
 {
   struct stat st;
   if (lstat(path.c_str(), &st)) return;
@@ -1330,13 +1331,21 @@ static void secureFilePerms(Path path)
 
   case S_IFDIR:
     for (auto & i : readDirectory(path)) {
-      secureFilePerms(path + "/" + i.name);
+      secureFilePerms(path + "/" + i.name, allowSpecialFiles);
     }
     /* FALLTHROUGH */
 
   case S_IFREG:
     chmod(path.c_str(), (st.st_mode & ~S_IFMT) & ~(S_ISUID | S_ISGID | S_IWOTH));
     break;
+
+  case S_IFSOCK:
+  case S_IFIFO:
+    if (allowSpecialFiles) {
+      chmod(path.c_str(), (st.st_mode & ~S_IFMT) & ~(S_ISUID | S_ISGID | S_IWOTH));
+      break;
+    }
+    /* FALLTHROUGH */
 
   default:
     throw Error(format("file `%1%' has an unsupported type") % path);
@@ -3401,8 +3410,9 @@ void DerivationGoal::deleteTmpDir(bool force)
 		gid_t gid = settings.clientGid != 0 ? settings.clientGid : -1;
 		bool reown = false;
 
-		/* First remove setuid/setgid bits.  */
-		secureFilePerms(tmpDir);
+		/* First remove setuid/setgid bits.  Allow sockets and pipes
+		   in the build directory.  */
+		secureFilePerms(tmpDir, true);
 
 		try {
 		    _chown(tmpDir, uid, gid);
