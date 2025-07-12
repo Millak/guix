@@ -26061,32 +26061,20 @@ instead of servers and network commands.")
 (define-public python-attrs
   (package
     (name "python-attrs")
-    (version "24.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "attrs" version))
-              (sha256
-               (base32
-                "0ik35wvcmapzhyzvwhlsrk53pgxnswh3zh5fkdb8dc5m928ipysw"))))
+    (version "25.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "attrs" version))
+       (sha256
+        (base32 "06xgyhxzsc0h3l0pqlkk168f072a9lnl9d415ixp8xmmgzycxmvm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'remove-test-hypothesis-deadlines
-           (lambda _
-             (substitute* "tests/test_make.py"
-               (("assume, given") "assume, given, settings")
-               (("( +)@given" all spaces)
-                (string-append spaces "@settings(deadline=None)\n" all))))))))
     (native-inputs
-     (list python-hatchling
-           python-hatch-fancy-pypi-readme
+     (list python-hatch-fancy-pypi-readme
            python-hatch-vcs
-           python-pympler
-           python-pytest
-           python-pytest-xdist
-           python-zope-interface))
+           python-hatchling
+           python-hypothesis
+           python-pytest))
     (home-page "https://github.com/python-attrs/attrs/")
     (synopsis "Attributes without boilerplate")
     (description "@code{attrs} is a Python package with class decorators that
