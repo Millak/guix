@@ -27612,37 +27612,35 @@ case-folding for case-insensitive matches in Unicode.")
     (license license:psfl)))
 
 (define-public python-rencode
+  ;; TODO: Move to (gnu package serialization)
   (package
-   (name "python-rencode")
-   (version "1.0.5")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "rencode" version))
-     (sha256
-      (base32
-       "0mzwdq1is7kyyr32i5k4iz6g5xxdvmiyc132jnc60p9m6lnwjrpv"))))
-   (build-system python-build-system)
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-before 'check 'delete-bogus-test
-          ;; This test requires /home/aresch/Downloads, which is not provided by
-          ;; the build environment.
-          (lambda _
-            (delete-file "rencode/t.py")
-            #t)))))
-   (native-inputs (list pkg-config python-cython))
-   (home-page "https://github.com/aresch/rencode")
-   (synopsis "Serialization of heterogeneous data structures")
-   (description
-    "The @code{rencode} module is a data structure serialization library,
+    (name "python-rencode")
+    (version "1.0.8")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/aresch/rencode")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dicbm8gdii2bjp85s2p4pnclf25k9x4b4kaj80y8ddhh87glrlk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-poetry-core
+           python-setuptools))
+    (home-page "https://github.com/aresch/rencode")
+    (synopsis "Serialization of heterogeneous data structures")
+    (description
+     "The @code{rencode} module is a data structure serialization library,
 similar to @code{bencode} from the BitTorrent project.  For complex,
 heterogeneous data structures with many small elements, r-encoding stake up
 significantly less space than b-encodings.  This version of rencode is a
 complete rewrite in Cython to attempt to increase the performance over the
 pure Python module.")
-   (license license:bsd-3)))
+    (license license:bsd-3)))
 
 (define-public python-pysocks
   (package
