@@ -1089,6 +1089,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/calls-disable-application-test.patch	\
   %D%/packages/patches/calls-disable-sip-test.patch		\
   %D%/packages/patches/camlboot-dynamically-allocate-stack-signal.patch	\
+  %D%/packages/patches/capnproto-fix-test.patch		\
   %D%/packages/patches/capstone-fix-python-constants.patch	\
   %D%/packages/patches/catdoc-CVE-2017-11110.patch		\
   %D%/packages/patches/ccextractor-add-missing-header.patch	\
