@@ -2836,24 +2836,9 @@ instantly.")
 much larger range of examples than you would ever want to write by hand.  It’s
 based on the Haskell library, Quickcheck, and is designed to integrate
 seamlessly into your existing Python unit testing work flow.")
-    (home-page "https://hypothesis.works/")
     (license license:mpl2.0)))
 
-(define-public python-hypothesis-next
-  (package
-    (inherit python-hypothesis)
-    (name "python-hypothesis")
-    (version "6.131.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hypothesis" version))
-       (sha256
-        (base32 "1wx4ii5dxfp9gajfb5bqd3a2d1a38rbmvb620kj0cvlyvxkv5nk8"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools-next
-           python-wheel))))
+(define-public python-hypothesis-next python-hypothesis)
 
 ;; WARNING: This package is a dependency of mesa.
 (define-public python-lit
