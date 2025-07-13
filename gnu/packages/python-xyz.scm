@@ -30489,15 +30489,18 @@ that is accessible to other projects developed in Cython.")
     (version "2.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sortedcontainers" version))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/grantjenks/python-sortedcontainers")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "126vpywl7aly6zir033a9indgyficlzl68qls61nn2y3djhabji5"))))
-    (build-system python-build-system)
+        (base32 "190w2mvgvx0r5k0r8117slq48nh6k7xidbpsrp02wnmcd0rx45k1"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; TODO: Circular dependency on pytest.
-     '(#:tests? #f))
+     (list #:test-flags #~(list "--pyargs" "sortedcontainers")))
+    (native-inputs
+     (list python-pytest-bootstrap python-setuptools))
     (home-page "https://grantjenks.com/docs/sortedcontainers/")
     (synopsis "Sorted List, Sorted Dict, Sorted Set")
     (description
