@@ -93,6 +93,7 @@
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
 ;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7408,6 +7409,43 @@ This command works on piped data.  Pipe any ASCII or UTF-8 text to nms, and
 it will apply the hollywood effect, initially showing encrypted data, then
 starting a decryption sequence to reveal the original plaintext characters.")
     (license license:expat)))
+
+(define-public asciiquarium
+  (package
+    (name "asciiquarium")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://robobunny.com/projects/asciiquarium/asciiquarium_"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0qfkr5b7sxzi973nh0h84blz2crvmf28jkkgaj3mxrr56mhwc20v"))))
+    (build-system copy-build-system)
+    (inputs (list bash-minimal perl perl-curses perl-term-animation))
+    (arguments
+     (list
+      #:install-plan
+      #~'(("asciiquarium" "bin/")
+          ("README" "share/doc/asciiquarium/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'chmod
+            (lambda _
+              (chmod (string-append #$output "/bin/asciiquarium") #o755)))
+          (add-after 'chmod 'wrap-perl-bin
+            (lambda _
+              (wrap-program (string-append #$output "/bin/asciiquarium")
+                `("PERL5LIB" ":" prefix
+                  (,(getenv "PERL5LIB")))))))))
+    (home-page "https://robobunny.com/projects/asciiquarium/html/")
+    (synopsis "ASCII aquarium for the terminal")
+    (license license:gpl2+)
+    (description
+     "The @code{asciiquarium} package renders a fullscreen animation of an
+aquarium with various fish in the terminal, which can make for a nice
+screensaver.")))
 
 (define-public megaglest-data
   (package
