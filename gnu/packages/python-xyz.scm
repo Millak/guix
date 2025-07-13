@@ -37953,14 +37953,17 @@ Python, with static types.")
 (define-public python-types-setuptools
   (package
     (name "python-types-setuptools")
-    (version "67.6.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "types-setuptools" version))
-              (sha256
-               (base32
-                "0qlrxgl4mz6hs8z4qnl91hsa8mqcfm6397s3s3j21imxqxk8ww1s"))))
-    (build-system python-build-system)
+    (version "80.9.0.20250529")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_setuptools" version))
+       (sha256
+        (base32 "149w6lg8n56k50n08jx450ni9frs2hzbv729sv48c8ds1jx8iq3r"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for setuptools")
     (description "This package provides typing stubs for setuptools.")
