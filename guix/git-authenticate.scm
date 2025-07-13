@@ -246,13 +246,22 @@ key: ~a")
 
   signing-key)
 
-(define (load-keyring-from-blob repository oid keyring)
-  "Augment KEYRING with the keyring available in the blob at OID, which may or
-may not be ASCII-armored."
-  (let* ((blob (blob-lookup repository oid))
+(define (load-keyring-from-blob repository entry keyring)
+  "Augment KEYRING with the keyring available in ENTRY (a tree entry), which
+may or may not be ASCII-armored."
+  (let* ((oid  (tree-entry-id entry))
+         (blob (blob-lookup repository oid))
          (port (open-bytevector-input-port (blob-content blob))))
     (get-openpgp-keyring (if (port-ascii-armored? port)
-                             (open-bytevector-input-port (read-radix-64 port))
+                             (match (read-radix-64 port)
+                               ((? bytevector? radix)
+                                (open-bytevector-input-port radix))
+                               (_
+                                (raise
+                                 (formatted-message (G_ "malformed \
+ASCII-armored key in ~a (blob ~a)")
+                                                    (tree-entry-name entry)
+                                                    (oid->string oid)))))
                              port)
                          keyring)))
 
@@ -266,9 +275,7 @@ an OpenPGP keyring."
     (fold (lambda (name keyring)
             (if (string-suffix? ".key" name)
                 (let ((entry (tree-entry-bypath tree name)))
-                  (load-keyring-from-blob repository
-                                          (tree-entry-id entry)
-                                          keyring))
+                  (load-keyring-from-blob repository entry keyring))
                 keyring))
           %empty-keyring
           (tree-list tree))))
