@@ -3411,14 +3411,14 @@ quotes.")
 (define-public guile-reader
   (package
     (name "guile-reader")
-    (version "0.6.3")
+    (version "0.6.4")
     (source  (origin
                (method url-fetch)
                (uri (string-append "mirror://savannah/guile-reader/guile-reader-"
                                    version ".tar.gz"))
                (sha256
                 (base32
-                 "1fyjckmygkhq22lq8nqc86yl5zzbqd7a944dnz5c1f6vx92b9hiq"))))
+                 "0nqkk4x18i7p3k9jxld4fnk8d69bq9ag6hqsyjzbfw9fmhrh08kb"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config gperf))
     (inputs (list guile-3.0))
