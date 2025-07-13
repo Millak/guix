@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -870,10 +870,8 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
                       (string-drop uri (string-length prefix))))))))))
 
 (define %savannah-base
-  ;; One of the Savannah mirrors listed at
-  ;; <https://download.savannah.gnu.org/mirmon/savannah/> that serves valid
-  ;; HTML (unlike <https://download.savannah.nongnu.org/releases>.)
-  "https://de.freedif.org/savannah/")
+  ;; Primary Savannah release page.
+  "https://download.savannah.gnu.org/releases")
 
 (define* (import-savannah-release package #:key version partial-version?)
   "Return the latest release of PACKAGE. Optionally include a VERSION string
