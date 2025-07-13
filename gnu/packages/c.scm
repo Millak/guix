@@ -133,6 +133,11 @@ reference manual.")
               (sha256
                (base32 "0zmha3xi80vgdcwzb4vwdllf97dvggjpjfgahrpsb5f5qi3yshxa"))))
      (build-system gnu-build-system)
+     (arguments
+      (list #:configure-flags
+            #~(list (string-append
+                   "CFLAGS=-g -O2"
+                  " -Wno-error=incompatible-pointer-types"))))
      (inputs (list libgc))
      (native-inputs (list autoconf automake libtool))
      (home-page "https://github.com/hypirion/c-rrb")
