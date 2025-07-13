@@ -41490,7 +41490,7 @@ structure of all your Org files – headings, links and so on..")
 (define-public emacs-org-node-3
   (package
     (name "emacs-org-node")
-    (version "3.4.1")
+    (version "3.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41499,7 +41499,7 @@ structure of all your Org files – headings, links and so on..")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05sqrf96fs9yx9fw7mwl6y2376rwxk97jd4zdh74f9w56hkf5y6p"))))
+                "1cxzdyiqan4881m7fpzxym1gkplqlyagl3bj1pwa7a5bswhld40y"))))
     (build-system emacs-build-system)
     (arguments
      '(#:tests? #f ; fails
