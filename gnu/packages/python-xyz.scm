@@ -17297,7 +17297,7 @@ from an XML-based format.")
       (propagated-inputs
        (list python-brotli
              python-fs
-             python-lxml
+             python-lxml-4.9
              python-lz4
              python-scipy
              python-unicodedata2
