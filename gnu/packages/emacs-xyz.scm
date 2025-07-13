@@ -36571,11 +36571,13 @@ and searching through @code{Ctags} files.")
       (license license:expat))))
 
 (define-public emacs-org-download
-  (let ((commit "42ac361ef5502017e6fc1bceb00333eba90402f4")
-        (revision "3"))
+  ;; The last tagged release is from 2018.
+  (let ((commit "c8be2611786d1d8d666b7b4f73582de1093f25ac")
+        (revision "0"))
     (package
       (name "emacs-org-download")
-      (version (git-version "0.1.0" revision commit))
+      ;; Not released version.
+      (version (git-version "0.2.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -36583,11 +36585,12 @@ and searching through @code{Ctags} files.")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
-                 (base32 "0cg4y7hy7xbq4vrbdicfzgvyaf3cjbx2zkqd4yl0y2garz71j99l"))))
+                 (base32
+                  "17i4fc0fy8icmw46i49y8vnmvf71r6zq7g2cz55f0v940b3g7ri7"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ; no actual tests
       (propagated-inputs
-       (list emacs-org emacs-async))
+       (list emacs-async))
       (home-page "https://github.com/abo-abo/org-download")
       (synopsis "Facilitate moving images")
       (description "This package provides utilities for managing image files
