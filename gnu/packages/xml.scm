@@ -1901,6 +1901,26 @@ because lxml.etree already has its own implementation of XPath 1.0.")
 libxml2 and libxslt.")
     (license license:bsd-3))) ; and a few more, see LICENSES.txt
 
+(define-public python-lxml-4.9
+  (hidden-package
+   (package
+     (inherit python-lxml)
+     (name "python-lxml")
+     (version "4.9.4")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "lxml" version))
+        (sha256
+         (base32 "03l86qr5xzvz0jcbk669sj8nbw1fjshmf0b7l83gl5cfnx81wm5i"))))
+     (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'relax-gcc-14-strictness
+                  (lambda _
+                    (setenv "CFLAGS"
+                            "-Wno-error=incompatible-pointer-types")))))))))
+
 (define-deprecated python-lxml-4.7 python-lxml)
 (export python-lxml-4.7)
 
