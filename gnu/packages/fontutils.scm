@@ -360,11 +360,23 @@ but also provides many useful font conversion and analysis facilities.
        (sha256
         (base32 "0187xhgw6spzaji93fs1mnhqnq30pxhdj1p2m88673szvzpf10av"))))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'set-CC
-                 (lambda _
-                   (setenv "CC" "gcc"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-gcc14-strictness
+            (lambda _
+              (substitute* (string-append
+                            "c/makeotf/makeotf_lib/build"
+                            "/hotconv/linux/gcc/release/Makefile")
+                (("CFLAGS = ")
+                 "CFLAGS = -Wno-error=int-conversion"))
+              (substitute*
+                  "c/public/lib/build/t1write/linux/gcc/release/Makefile"
+                (("CFLAGS = ")
+                 "CFLAGS = -Wno-error=incompatible-pointer-types"))))
+          (add-before 'build 'set-CC
+            (lambda _
+              (setenv "CC" "gcc"))))))
     (native-inputs
      (list pkg-config
            python-pytest
@@ -379,7 +391,7 @@ but also provides many useful font conversion and analysis facilities.
            python-defcon
            python-fontmath
            python-fonttools
-           python-lxml
+           python-lxml-4.9
            python-tqdm
            python-ufonormalizer
            python-ufoprocessor))))
