@@ -3405,7 +3405,7 @@ from the Cyrus IMAP project.")
            zlib))
     (native-inputs
      (list autoconf
-           automake
+           automake-1.16.5
            bison
            groff                        ;for man pages
            pkg-config))
