@@ -439,6 +439,9 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
          ;; Also enable the tests.
          "-Dbuild-tests=true"
 
+         ;; Re-enable X11 protocol support for the DRI2 extension.
+         "-Dlegacy-x11=dri2"
+
          "-Dllvm=enabled")              ; default is x86/x86_64 only
 
        ;; XXX: 'debugoptimized' causes LTO link failures on some drivers.  The
