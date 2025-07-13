@@ -26374,17 +26374,19 @@ command line utility, a python library and plugins for various editors.")
 (define-public python-configparser
   (package
     (name "python-configparser")
-    (version "4.0.2")
+    (version "7.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "configparser" version))
        (sha256
-        (base32
-         "1priacxym85yjcf68hh38w55nqswaxp71ryjyfdk222kg9l85ln7"))))
+        (base32 "0w3vichm4igwvh7r560rw58xi4s1yf9x1cyi6syszqqnx65cqadn"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm))
-    (build-system python-build-system)
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/jaraco/configparser/")
     (synopsis "Backport of configparser from python 3.5")
     (description "@code{python-configparser} is a backport of
