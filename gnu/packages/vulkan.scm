@@ -9,6 +9,7 @@
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,7 +118,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
 (define-public spirv-cross
   (package
     (name "spirv-cross")
-    (version "1.4.309.0")
+    (version "1.4.313.0")
     (source
      (origin
        (method git-fetch)
@@ -125,7 +126,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
              (url "https://github.com/KhronosGroup/SPIRV-Cross")
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
-        (base32 "1sckwqz67mh48zypgr1r9x101mcq1dlkh8sxi341ynrxzjk8rm3j"))
+        (base32 "1h246sy4hxpb5yw0a34b2bhd5qrrvflqrgr20n0058f6aigggxj6"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
