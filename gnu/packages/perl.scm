@@ -41,6 +41,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2020, 2023 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11923,6 +11924,30 @@ It is intended for use in light-usage, low-memory, or low-cpu templating
 situations, where you may need to upgrade to the full feature set in the
 future, or if you want the retain the familiarity of TT-style templates.")
     (license license:perl-license)))
+
+(define-public perl-term-animation
+  (package
+    (name "perl-term-animation")
+    (version "2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/K/KB/KBAUCOM/"
+                           "Term-Animation-" version ".tar.gz"))
+       (sha256
+        (base32 "0idhhk89jg5z0h1klby7jwpdlap0pcn5wzyf3n5plrcv9wnkqp3x"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-curses))
+    (home-page "https://metacpan.org/dist/Term-Animation")
+    (synopsis "ASCII sprite animation framework")
+    (description
+     "The @code{Term::Animation} Perl module provides a framework to
+produce sprite animations using ASCII art.  Each ASCII 'sprite' is given
+one or more frames, and placed into the animation as an 'animation
+entity'.  An animation entity can have a callback routine that controls
+the position and frame of the entity.  The module can also do collision detection
+between entities.")
+    (license (package-license perl))))
 
 (define-public perl-term-ansicolor
   (package
