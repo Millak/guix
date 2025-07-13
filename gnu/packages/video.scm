@@ -2887,7 +2887,7 @@ images and image hosting sites.")
            xorg-server-for-tests
            xvfb-run))
     (inputs
-     (list ffmpeg glib mpv))
+     (list ffmpeg glib libdisplay-info mpv))
     (home-page "https://github.com/hoyon/mpv-mpris")
     (synopsis "MPRIS plugin for mpv")
     (description "This package provides an @dfn{MPRIS} (Media Player Remote
