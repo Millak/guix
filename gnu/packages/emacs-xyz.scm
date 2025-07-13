@@ -41465,10 +41465,10 @@ org-roam")
 using org mode; faster than org-roam.")
     (license license:gpl3+)))
 
-(define-public emacs-org-mem-0.14
+(define-public emacs-org-mem
   (package
     (name "emacs-org-mem")
-    (version "0.14.1")
+    (version "0.17.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41477,7 +41477,7 @@ using org mode; faster than org-roam.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wvgdb0kk1236xjhpm0bxsqhbwk1fzmwzmd6h622k453k8kxhacr"))))
+                "12aqv1lay6g6vz02s0zqw4620agm0r3s5j87w16gvbawi240x096"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-el-job emacs-llama))
@@ -41514,7 +41514,7 @@ structure of all your Org files – headings, links and so on..")
     (propagated-inputs
      (list emacs-llama
            emacs-magit
-           emacs-org-mem-0.14))
+           emacs-org-mem))
     ;; tests
     (native-inputs
      (list emacs-buttercup
