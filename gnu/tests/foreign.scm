@@ -89,8 +89,10 @@ system is expected to be on DEVICE."
                                        ",format=qcow2,if=virtio,"
                                        "cache=writeback,werror=report,readonly=off")))))
 
-            (marionette-eval '(system* "mount" #$device "/mnt")
-                             marionette)
+            (unless (zero? (marionette-eval '(system* "mount" #$device "/mnt")
+                                            marionette))
+              (error "failed to mount foreign distro image" #$device))
+
             (marionette-eval '(system* "ls" "-la" "/mnt")
                              marionette)
             (marionette-eval '(begin
