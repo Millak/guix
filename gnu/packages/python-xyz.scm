@@ -691,6 +691,7 @@ generates an HTML report displaying copied slices as output.")
        (sha256
         (base32 "1fk175k6l8isx43jmh7n7xyzb18ysdixzr74dxqqhpyd5sbsb5hy"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI, tests depend on Nose
     (native-inputs
      (list python-setuptools
            python-wheel))
