@@ -108,7 +108,14 @@
                   "1x3jc4q6di79x3nlx36394s03yv1j1j5k0x6zljyk5iq78y4mfyz"))))
       (build-system cmake-build-system)
       (arguments
-       '(#:tests? #f))
+       '(#:tests? #f
+         #:phases (modify-phases %standard-phases
+                    (add-before 'build
+                        'patch-missing-include
+                      (lambda _
+                        (substitute* "../source/include/crossguid/guid.hpp"
+                          (("#include <iomanip>")
+                           "#include <iomanip>\n#include <cstdint>")))))))
       (inputs
        `(("libuuid" ,util-linux "lib")))
       (synopsis "Lightweight universal identifier library")
