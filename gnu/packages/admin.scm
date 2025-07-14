@@ -2884,7 +2884,16 @@ utilization, temperature and power.")
                                   version ".orig.tar.gz"))
               (sha256
                (base32
-                "1cg0mklfrwfyzwqkzidd0151r8n2jgbiiqz1v0p3w4q62mkmdand"))))
+                "1cg0mklfrwfyzwqkzidd0151r8n2jgbiiqz1v0p3w4q62mkmdand"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; The build fails with "implicit declaration of function
+                   ;; 'rpl_malloc'; did you mean 'realloc'?" when building
+                   ;; for RISCV64 target if "AC_FUNC_MALLOC" macro is present.
+                   ;; Remove it.
+                   (substitute* "configure.ac"
+                     (("AC_FUNC_MALLOC") ""))))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
