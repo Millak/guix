@@ -11,7 +11,7 @@
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Charles <charles@charje.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -238,6 +238,14 @@ focuses especially on Korean input (Hangul, Hanja, ...).")
         "--disable-system-tray")
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'relax-gcc-14-strictness
+           (lambda _
+             (setenv
+              "CFLAGS"
+              (string-append "-g -O2"
+                             " -Wno-error=incompatible-pointer-types"
+                             " -Wno-error=int-conversion"
+                             " -Wno-error=implicit-function-declaration"))))
          (add-after 'unpack 'patch-std
            (lambda _
              (substitute* "configure"
