@@ -15580,19 +15580,22 @@ Python.")
 (define-public python-amply
   (package
     (name "python-amply")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "amply" version))
        (sha256
-        (base32
-         "0f1db9zp0rsfzxvaz55xwh8h5rfdgr9a2a715g06ic8nknsdq4nb"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-docutils python-pyparsing))
+        (base32 "195fg1n5nsl722hk33f6a7ak3n0hfs8yfpqi2xkhdqgqrh1i2hk1"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-docutils
+           python-pyparsing))
     (home-page "https://github.com/willu47/amply")
     (synopsis "Load and manipulate AMPL/GLPK data as Python data structures")
     (description
