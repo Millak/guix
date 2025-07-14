@@ -1327,22 +1327,22 @@ for AsyncIO and mixed-type iterables.")
 (define-public python-aiosignal
   (package
     (name "python-aiosignal")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiosignal" version))
        (sha256
-        (base32 "1z4cnqww6j0xl6f3vx2r6kfv1hdny1pnlll7difvfj8nbvhrdkal"))))
+        (base32 "1isin9bp256scp59lbr35h48nw5p5i84b6f9kh1c50w08vcyqzpl"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-flags #~(list "tests")))
-    (propagated-inputs (list python-frozenlist))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
            python-pytest-cov
            python-setuptools
            python-wheel))
+    (propagated-inputs
+     (list python-frozenlist))
     (home-page "https://github.com/aio-libs/aiosignal")
     (synopsis "Callback manager for Python @code{asyncio} projects")
     (description "This Python module provides @code{Signal}, an abstraction to
