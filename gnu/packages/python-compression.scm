@@ -394,9 +394,24 @@ Jump conversion filter by CFFI for Python.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-shared-brotli
             (lambda _
-              (setenv "USE_SHARED_BROTLI" "1"))))))
+              (setenv "USE_SHARED_BROTLI" "1")))
+          (add-before 'check 'set-brotli-source
+            (lambda _
+              (let* ((brotli-source
+                      #+(package-source (this-package-input "brotli")))
+                     (brotli-test-data
+                      (string-append brotli-source "/tests/testdata"))
+                     (brotli-version-source
+                      (string-append brotli-source "/c/common/version.h")))
+                (substitute* "test/conftest.py"
+                  (("TEST_DATA_DIR = .*")
+                   (format #f "TEST_DATA_DIR = ~s~%" brotli-test-data)))
+                (substitute* "test/test_compatibility.py"
+                  (("open\\(version_h\\)")
+                   (format #f "open(~s)" brotli-version-source)))))))))
     (native-inputs
-     (list python-setuptools
+     (list python-pytest
+           python-setuptools
            python-wheel))
     (inputs
      (list brotli))
