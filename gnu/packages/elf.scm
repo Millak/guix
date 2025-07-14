@@ -14,6 +14,7 @@
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,7 +38,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module ((guix licenses) #:select (gpl2+ gpl3+ lgpl3+ lgpl2.0+ lgpl2.1 gpl2 bsd-2))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
@@ -72,7 +73,7 @@
     (description "@code{chrpath} allows listing, changing or removing the
 dynamic library load path (RPATH and RUNPATH) of compiled programs and
 libraries.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public elfutils
   (package
@@ -189,7 +190,7 @@ object or archive file), @command{eu-strip} (for discarding symbols),
 @command{eu-elfcompress} (to compress or decompress ELF sections), and more.")
 
     ;; Libraries are dual-licensed LGPLv3.0+ | GPLv2, and programs are GPLv3+.
-    (license lgpl3+)))
+    (license license:lgpl3+)))
 
 (define-public libabigail
   (package
@@ -250,7 +251,7 @@ Analysis and Instrumentation Library.  It is a framework which aims at
 helping developers and software distributors to spot ABI-related issues
 like interface incompatibility in ELF shared libraries by performing a
 static analysis of the ELF binaries at hand.")
-    (license lgpl3+)))
+    (license license:lgpl3+)))
 
 (define-public libelf
   (package
@@ -303,7 +304,7 @@ static analysis of the ELF binaries at hand.")
                               "http://www.mr511.de/software/english.html"))
     (synopsis "ELF object file access library")
     (description "Libelf is a C library to access ELF object files.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 
 ;; This is a shared library version of libelf, currently only needed for ROCm
@@ -362,7 +363,7 @@ static analysis of the ELF binaries at hand.")
     (description
      "PatchELF allows the ELF \"interpreter\" and RPATH of an ELF binary to be
 changed.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 ;; Newer patchelf may break binaries.  e.g. When setting RUNPATH for a Go
 ;; program.
@@ -416,4 +417,4 @@ changed.")
     (description "@code{libdwarf} is a library that handles the DWARF
 debugging information format.")
     ;; See https://www.prevanders.net/dwarflicense.html:
-    (license (list lgpl2.1 gpl2 bsd-2))))
+    (license (list license:lgpl2.1 license:gpl2 license:bsd-2))))
