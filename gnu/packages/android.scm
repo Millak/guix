@@ -421,6 +421,7 @@ various Android core host applications.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (install-file "diagnose_usb.h" (string-append (assoc-ref outputs "out") "/include"))
              #t)))))
+    (native-inputs (list linux-libre-headers-5.4 gcc-11))
     (inputs
      (list android-libbase android-libcutils android-liblog openssl))
     (home-page "https://developer.android.com/studio/command-line/adb.html")
