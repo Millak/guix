@@ -2836,18 +2836,14 @@ seamlessly into your existing Python unit testing work flow.")
         (method url-fetch)
         (uri (pypi-uri "lit" version))
         (sha256
-         (base32
-          "1nsf3ikvlgvqqf185yz5smkvw0268jipdvady0qfh6llhshp9ha7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "lit.py" "tests")))))))
+         (base32 "1nsf3ikvlgvqqf185yz5smkvw0268jipdvady0qfh6llhshp9ha7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'custom
+                     #:test-flags #~(list "lit.py" "tests")))
     ;; This can be built with any version of llvm.
-    (native-inputs (list llvm))
+    (native-inputs
+     (list llvm
+           python-setuptools))
     (home-page "https://llvm.org/")
     (synopsis "LLVM Software Testing Tool")
     (description "@code{lit} is a portable tool for executing LLVM and Clang
