@@ -157,12 +157,15 @@ system is expected to be on DEVICE."
   ;; inferiors.
   (file-append (package-source guix) "/etc/guix-install.sh"))
 
-(define (run-foreign-install-test image name)
+(define* (run-foreign-install-test image name
+                                   #:key (device "/dev/vdb1"))
   "Run an installation of Guix in IMAGE, the QCOW2 image of a systemd-based
-GNU/Linux distro, and check that the installation is functional."
+GNU/Linux distro, and check that the installation is functional.  The root
+partition of IMAGE is expected to be on DEVICE."
   (define instrumented-image
     (qcow-image-with-marionette image
-                                #:name (string-append name ".qcow2")))
+                                #:name (string-append name ".qcow2")
+                                #:device device))
 
   (define (test tarball)
     (with-imported-modules (source-module-closure
