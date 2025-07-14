@@ -70,6 +70,7 @@
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirrottola@inria.fr>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Sören Tempel <soeren@soeren-tempel.net>
+;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3605,6 +3606,22 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                     "https://www.unicode.org/license.html")
                    ;; File src/NCollection/NCollection_StdAllocator.hxx:
                    license:public-domain))))
+
+;; PrusaSlicer has a hard dependency on this slightly older version of
+;; OpenCASCADE. According to them, all newer versions have a bug that causes
+;; chamfers to be triangulated incorrectly.
+;; See https://github.com/prusa3d/PrusaSlicer/commit/c6a02106fd1d3caa9a48a6b7c2bdd04546b24485.
+(define-public opencascade-occt-7.6.1
+  (hidden-package
+    (package/inherit opencascade-occt
+    (name "opencascade-occt")
+    (version "7.6.1")
+    (source
+      (origin
+        (inherit (package-source opencascade-occt))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1cc7n4rs26lm1awwn2bijvjq9b3kz204ffnks02lrpgs7pf8yk8b")))))))
 
 (define-public fast-downward
   (package
