@@ -77,8 +77,7 @@ system is expected to be on DEVICE."
 
           (invoke #+(file-append qemu "/bin/qemu-img")
                   "create" "-b" #$image
-                  "-F" "qcow2" "-f" "qcow2" target-image
-                  "10G")
+                  "-F" "qcow2" "-f" "qcow2" target-image)
 
           ;; Run a VM that will mount IMAGE and populate it.  This is somewhat
           ;; more convenient to set up than 'guestfish' from libguestfs.
