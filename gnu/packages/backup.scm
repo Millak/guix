@@ -1135,12 +1135,12 @@ is format-agnostic, so you can feed virtually any files to it.")
          "1l2gzzxyqhinx1yqvj4yn9k8vx3iyqi1965dxf9kvvdv9zgaq8fh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       `("--sysconfdir=/etc"
-         "--disable-readline"
-         "--disable-rmt"
-         ;; Add CFLAGS to relax gcc-14's strictness.
-         "CFLAGS=-Wno-error=int-conversion")))
+     (list #:configure-flags
+           #~(list "--sysconfdir=/etc"
+                   "--disable-readline"
+                   "--disable-rmt"
+                   ;; Add CFLAGS to relax gcc-14's strictness.
+                   "CFLAGS=-O2 -g -Wno-error=int-conversion")))
     (native-inputs
      (list pkg-config))
     (inputs
