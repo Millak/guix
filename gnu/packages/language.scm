@@ -213,60 +213,60 @@ focuses especially on Korean input (Hangul, Hanja, ...).")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/hime-ime/hime.git")
-         (commit
-          (string-append "v" version))))
+          (url "https://github.com/hime-ime/hime.git")
+          (commit
+           (string-append "v" version))))
        (file-name
         (git-file-name name version))
        (sha256
         (base32 "1wn0ici78x5qh6hvv50bf76ld7ds42hzzl4l5qz34hp8wyvrwakw"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:tests? #f                      ; No target
-       #:imported-modules
-       (,@%glib-or-gtk-build-system-modules
+     (list
+      #:tests? #f                      ; No target
+      #:imported-modules
+      `(,@%glib-or-gtk-build-system-modules
         (guix build cmake-build-system)
         (guix build qt-build-system)
         (guix build qt-utils))
-       #:modules
-       (((guix build qt-build-system) #:prefix qt:)
+      #:modules
+      `(((guix build qt-build-system) #:prefix qt:)
         ,@%glib-or-gtk-build-system-default-modules)
-       #:configure-flags
-       (list
-        ;; FIXME
-        ;; error: unknown type name ‘GtkStatusIcon’
-        "--disable-system-tray")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'relax-gcc-14-strictness
-           (lambda _
-             (setenv
-              "CFLAGS"
-              (string-append "-g -O2"
-                             " -Wno-error=incompatible-pointer-types"
-                             " -Wno-error=int-conversion"
-                             " -Wno-error=implicit-function-declaration"))))
-         (add-after 'unpack 'patch-std
-           (lambda _
-             (substitute* "configure"
-               (("gnu17")
-                "gnu11")
-               (("gnu++17")
-                "gnu++11"))
-             #t))
-         (add-after 'install 'qt-wrap
-           (assoc-ref qt:%standard-phases 'qt-wrap)))))
+      #:configure-flags
+      #~(list
+         ;; FIXME
+         ;; error: unknown type name ‘GtkStatusIcon’
+         "--disable-system-tray")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'relax-gcc-14-strictness
+            (lambda _
+              (setenv
+               "CFLAGS"
+               (string-append "-g -O2"
+                              " -Wno-error=incompatible-pointer-types"
+                              " -Wno-error=int-conversion"
+                              " -Wno-error=implicit-function-declaration"))))
+          (add-after 'unpack 'patch-std
+            (lambda _
+              (substitute* "configure"
+                (("gnu17")
+                 "gnu11")
+                (("gnu++17")
+                 "gnu++11"))))
+          (add-after 'install 'qt-wrap
+            (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("whereis" ,util-linux)))
+     (list gettext-minimal
+           pkg-config
+           util-linux))
     (inputs
-     `(("anthy" ,anthy)
-       ("appindicator" ,libappindicator)
-       ("chewing" ,libchewing)
-       ("gtk+" ,gtk+)
-       ("qtbase" ,qtbase-5)
-       ("xtst" ,libxtst)))
+     (list anthy
+           libappindicator
+           libchewing
+           gtk+
+           qtbase-5
+           libxtst))
     (synopsis "HIME Input Method Editor")
     (description "Hime is an extremely easy-to-use input method framework.  It
 is lightweight, stable, powerful and supports many commonly used input methods,
