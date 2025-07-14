@@ -11785,6 +11785,7 @@ substitute text and perform the substitution outright.")
                  (base32
                   "09835zlfzxby5lpz9njl705nqc2n2h2f7a4vpcyx89f5rb9qhy68"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
       (synopsis "Minor mode for typographic editing")
       (description
        "This package provides two Emacs modes, @code{typo-mode} and
