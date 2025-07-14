@@ -4899,7 +4899,7 @@ specs for Ruby implementations in ruby/spec.")
 (define-public ruby-mysql2
   (package
     (name "ruby-mysql2")
-    (version "0.5.2")
+    (version "0.5.6")
     (source
      (origin
        (method git-fetch)
@@ -4909,7 +4909,7 @@ specs for Ruby implementations in ruby/spec.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11lvfgc2rmvkm52jp0nbi6pvhk06klznghr7llldfw8basl9n5wv"))))
+         "0m68qykz94l2frqc05nfhkls7rmmq8nss2xajz8j8p8n7xahhscb"))))
     (build-system ruby-build-system)
     (arguments
      '(;; TODO: Tests require a running MySQL/MariaDB service
