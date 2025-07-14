@@ -515,6 +515,13 @@ or @command{xorrisofs} to create ISO 9660 images.")
      (list #:parallel-build? #f ; http://hydra.gnu.org/build/49331/nixlog/1/raw
            #:phases
            #~(modify-phases %standard-phases
+               (add-before 'configure 'relax-gcc-14-strictness
+                 (lambda _
+                   (setenv
+                    "CFLAGS"
+                    (string-append "-g -O2"
+                                   " -Wno-error=implicit-function-declaration"
+                                   " -Wno-error=builtin-declaration-mismatch"))))
                (replace 'check
                  (lambda _
                    (with-directory-excursion "regtest"
