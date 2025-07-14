@@ -11254,7 +11254,7 @@ calls the Linux-specific @code{renameat2} system call.")
 (define-public libgpiod
   (package
     (name "libgpiod")
-    (version "1.6.3")
+    (version "2.2.2")
     (source
       (origin
         (method git-fetch)
@@ -11263,23 +11263,21 @@ calls the Linux-specific @code{renameat2} system call.")
             (url "https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git")
             (commit (string-append "v" version))))
         (file-name (git-file-name name version))
-        (sha256 (base32 "0rv8a11hx3pc6sdw6nfc6k35hkp2clb3v53n1381cvip8fzhbsad"))))
+        (sha256 (base32 "10yiwrw80x0057w825zxmdbd54w9lbyf49bgqk1cryqapglfzqri"))))
     (build-system gnu-build-system)
     (arguments
-      `(#:configure-flags
-        '("--enable-tools=yes"
-          "--enable-bindings-cxx"
-          "--enable-bindings-python")))
+     (list #:configure-flags
+           #~(list "--enable-tools=yes"
+                   "--enable-bindings-cxx")))
     (native-inputs
       (list automake
-            autoconf
+            autoconf-2.71
             libtool
             autoconf-archive
-            pkg-config
-            python-3))
+            pkg-config))
     (synopsis "Interact with the Linux GPIO character device")
     (description
-     "This package provides a C library with C++/Python bindings and
+     "This package provides a C library with C++ bindings and
 command-line tools for interacting with GPIO devices that avoids the usage of
 older system-wide @file{/sys} interface.")
     (home-page "https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/")
