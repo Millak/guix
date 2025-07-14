@@ -23,7 +23,7 @@
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
-;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -765,8 +765,17 @@ included.")
    (properties '())))
 
 (define-public binutils-gold
-  (package/inherit binutils
+  (package
+    (inherit binutils)
     (name "binutils-gold")
+    (version "2.44")
+    (source
+     (origin
+       (inherit (package-source binutils))
+       (uri (string-append "mirror://gnu/binutils/binutils-with-gold-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "1j64m2czn9ygd5g1cjjcw7q43b18xh6qkrdl1pkm03ncjnj3wwrl"))))
     (arguments
      (substitute-keyword-arguments (package-arguments binutils)
        ((#:configure-flags flags)
