@@ -377,31 +377,35 @@ Jump conversion filter by CFFI for Python.")
   (package
     (name "python-brotlicffi")
     (version "1.0.9.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "brotlicffi" version))
-              (sha256
-               (base32
-                "15kxgdiqcg0cm6h5xq3vkbhw7674673hcx3n2yicd3wx29l8l90c"))
-              (snippet
-               #~(begin
-                   (use-modules (guix build utils))
-                   (delete-file-recursively "libbrotli")))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "brotlicffi" version))
+       (sha256
+        (base32 "15kxgdiqcg0cm6h5xq3vkbhw7674673hcx3n2yicd3wx29l8l90c"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "libbrotli")))))
     (build-system pyproject-build-system)
     (arguments
      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'use-shared-brotli
-             (lambda _
-               (setenv "USE_SHARED_BROTLI" "1"))))))
-    (propagated-inputs (list python-cffi))
-    (inputs (list brotli))
-    (native-inputs (list python-setuptools python-wheel))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-shared-brotli
+            (lambda _
+              (setenv "USE_SHARED_BROTLI" "1"))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (inputs
+     (list brotli))
+    (propagated-inputs
+     (list python-cffi))
     (home-page "https://github.com/python-hyper/brotlicffi")
     (synopsis "Python CFFI bindings to the Brotli library")
-    (description "This package provides Python CFFI bindings to the Brotli
-library.")
+    (description
+     "This package provides Python CFFI bindings to the Brotli library.")
     (license license:expat)))
 
 (define-public python-inflate64
