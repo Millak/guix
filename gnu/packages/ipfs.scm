@@ -2386,19 +2386,17 @@ types.")
     (version "0.35.0")
     (source
      (origin
-       (method url-fetch/tarbomb)
-       (uri (string-append
-             ;; Permament redirection from <https://ipfs.io>.
-             "https://dist.ipfs.tech/kubo//v" version
-             "/kubo-source.tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ipfs/kubo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "056kkc2jpf743dpdygapks4y94wv668ymma0d8db2nc9mmlxgris"))
-       (file-name (string-append name "-" version "-source"))
-       (modules '((guix build utils)))
-       (snippet '(delete-file-recursively "vendor"))))
+        (base32 "18xkgxy07dz3zxvvrpaiv5m46slcl6hh07qbmmnfihcnx34431qa"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:embed-files #~(list "sorted-network-list.bin" ".*\\.css" ".*\\.html")
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
@@ -2494,7 +2492,6 @@ types.")
                   go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
                   go-go-opentelemetry-io-contrib-propagators-autoprop
                   go-go-opentelemetry-io-otel
-                  go-go-opentelemetry-io-otel-exporters-otlp-otlptrace ; check which module uses it
                   go-go-opentelemetry-io-otel-sdk
                   go-go-opentelemetry-io-otel-trace
                   go-go-uber-org-dig
