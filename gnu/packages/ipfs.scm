@@ -128,8 +128,8 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/boxo")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/boxo")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1siicb0bs4shc220xk2i5d4p5myrh3yg64hm3yl796gjbcqgs66d"))
@@ -149,34 +149,16 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
      (list
       #:skip-build? #t
       #:embed-files #~(list "sorted-network-list.bin")
-      #:test-subdirs #~(list "bitswap/..."
-                             "blockservice/..."
-                             "blockstore/..."
-                             "bootstrap/..."
-                             "chunker/..."
-                             "datastore/..."
-                             "exchange/..."
-                             "fetcher/..."
-                             "files/..."
-                             "filestore/..."
-                             ;; "gateway/..." ; missing packages
-                             "ipld/..."
-                             "ipns/..."
-                             "keystore/..."
-                             "mfs/..."
-                             ;; "namesys/..." ; missing packages
-                             "path/..."
-                             "peering/..."
-                             "pinning/..."
-                             "provider/..."
-                             ;; "routing/..." ; missing packages
-                             "tar/..."
-                             ;; "tracing/..." ; missing packages
-                             "util/..."
-                             "verifcid/...")
-      #:import-path "github.com/ipfs/boxo"))
+      #:import-path "github.com/ipfs/boxo"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestAddNewDNSResolver"
+                             "TestOverrideDNSDefaults")
+                       "|"))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-libp2p-go-libp2p-kad-dht-bootstrap
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-alecthomas-units
            go-github-com-cespare-xxhash-v2
@@ -213,7 +195,6 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-libp2p-go-buffer-pool
            go-github-com-libp2p-go-doh-resolver
            go-github-com-libp2p-go-libp2p
-           ;; go-github-com-libp2p-go-libp2p-kad-dht
            go-github-com-libp2p-go-libp2p-record
            go-github-com-libp2p-go-libp2p-routing-helpers
            go-github-com-libp2p-go-libp2p-testing
@@ -237,6 +218,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-go-opencensus-io
            go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
            go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
            go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
            go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
            go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
