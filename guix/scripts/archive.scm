@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -324,7 +324,8 @@ the input port."
     (let ((acl (public-keys->acl (cons key (acl->public-keys acl)))))
       (mkdir-p (dirname %acl-file))
       (with-atomic-file-output %acl-file
-        (cut write-acl acl <>)))))
+        (cut write-acl acl <>))
+      (chmod %acl-file #o644))))
 
 (define (list-contents port)
   "Read a nar from PORT and print the list of files it contains to the current

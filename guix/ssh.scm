@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2021, 2023-2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -458,7 +458,8 @@ to the system ACL file if it has not yet been authorized."
         (let ((acl (public-keys->acl (cons key (acl->public-keys acl)))))
           (mkdir-p (dirname %acl-file))
           (with-atomic-file-output %acl-file
-            (cut write-acl acl <>)))))
+            (cut write-acl acl <>))
+          (chmod %acl-file #o644))))
    session
    become-command))
 

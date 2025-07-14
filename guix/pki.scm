@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2014, 2016, 2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,7 +87,8 @@ element in KEYS must be a canonical sexp with type 'public-key'."
         (with-atomic-file-output %acl-file
           (lambda (port)
             (write-acl (public-keys->acl (list public-key))
-                       port)))))))
+                       port)))
+        (chmod %acl-file #o644)))))
 
 (define (write-acl acl port)
   "Write ACL to PORT in canonical-sexp format."
