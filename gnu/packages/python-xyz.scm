@@ -132,7 +132,7 @@
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
-;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022-2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
@@ -27855,6 +27855,41 @@ Rust Python extensions implemented with @code{PyO3} or @code{rust-cpython}.")
     (synopsis "Setuptools plugin for gettext")
     (description "This package provides a plugin for Setuptools for gettext.")
     (license license:gpl2+)))
+
+(define-public python-pyclibrary
+  ;; XXX: https://github.com/MatthieuDartiailh/pyclibrary/issues/82
+  (let ((commit "4e1e243a0bdfefa188d93ebdf3b60c6861244855")
+        (revision "0"))
+    (package
+      (name "python-pyclibrary")
+      (version (git-version "0.2.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/MatthieuDartiailh/pyclibrary")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1sza6n2fg8zml0v1s5zwzrlsb79s2abn1n4pr1l8r15al4g9z0c6"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.2.2"))))))
+      (native-inputs (list python-pytest python-setuptools
+                           python-setuptools-scm python-wheel))
+      (propagated-inputs (list python-pyparsing-2.4.7))
+      (home-page "https://github.com/MatthieuDartiailh/pyclibrary")
+      (synopsis "Wrap dynamic libraries in Python")
+      (description
+       "This package helps wrapping dynamic libraries in Python.  It includes
+a pure-Python C parser and an automation library that uses C header file
+definitions to simplify the use of C bindings.")
+      (license license:expat))))
 
 (define-public python-pyclipper
   (package
