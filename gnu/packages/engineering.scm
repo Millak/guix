@@ -4567,10 +4567,10 @@ visualization, matrix manipulation.")
     (license (list license:gpl3 license:mpl2.0))))
 
 (define-public prusa-libbgcode
-  ;; Use the latest commit since there are no proper releases nor tags, see
+  ;; Use the same commit as in the PrusaSlicer repository.
   ;; <https://github.com/prusa3d/libbgcode/issues/31>.
-  (let ((commit "8ae75bd0eea622f0e34cae311b3bd065b55eae9b")
-        (revision "0"))
+  (let ((commit "5041c093b33e2748e76d6b326f2251310823f3df")
+        (revision "1"))
     (package
       (name "prusa-libbgcode")
       (version (git-version "0.0.0" revision commit))
@@ -4582,8 +4582,8 @@ visualization, matrix manipulation.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fjx2ijz9zqpqs486lcrrrhqvmfzrpb8j6v57l0jiynavwv3kznw"))))
-      (native-inputs (list catch2))
+          (base32 "0ivc0zhpf0gz55jfj0gbkff6yw5gpwazk94asldzznn7x9jmbb0i"))))
+      (native-inputs (list catch2-3.8))
       (propagated-inputs (list zlib boost heatshrink))
       (build-system cmake-build-system)
       (home-page "https://github.com/prusa3d/libbgcode")
