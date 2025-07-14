@@ -218,9 +218,14 @@ GNU/Linux distro, and check that the installation is functional."
           (test-assert "install fake dependencies"
             ;; The installation script insists on checking for the
             ;; availability of 'wget' and 'gpg' but does not actually use them
-            ;; when 'GUIX_BINARY_FILE_NAME' is set.  Provide fake binaries.
+            ;; when 'GUIX_BINARY_FILE_NAME' is set.  Provide fake binaries
+            ;; that always succeed.
             (marionette-eval '(begin
+                                (false-if-exception
+                                 (delete-file "/bin/wget"))
                                 (symlink "/bin/true" "/bin/wget")
+                                (false-if-exception
+                                 (delete-file "/bin/gpg"))
                                 (symlink "/bin/true" "/bin/gpg")
                                 #t)
                              marionette))
