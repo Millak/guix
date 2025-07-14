@@ -22911,9 +22911,12 @@ network support library.")
         (method url-fetch)
         (uri (pypi-uri "ply" version))
         (sha256
-          (base32
-            "18qx113g9bi1ac4indd5phma82zcdq601lxncp3vjn43m2mc3iq0"))))
-    (build-system python-build-system)
+          (base32 "18qx113g9bi1ac4indd5phma82zcdq601lxncp3vjn43m2mc3iq0"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;XXX: not tests in PyPI archvie, there are in Git
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "http://www.dabeaz.com/ply/")
     (synopsis "Python Lex & Yacc")
     (description "PLY is a @code{lex}/@code{yacc} implemented purely in Python.
