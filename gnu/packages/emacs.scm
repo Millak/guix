@@ -25,6 +25,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +56,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -201,7 +203,14 @@
                               " -Wno-error=incompatible-pointer-types")
                            "--with-gnutls=no"
                            "--disable-build-details")
-      #:make-flags #~(list (string-append "SELECTOR=" #$%selector))
+      #:make-flags
+      #~(list (string-append "SELECTOR=" #$%selector)
+              (let ((release-date "2025-02-23 17:41:38"))
+                (string-append "RUN_TEMACS= "
+                               #$(this-package-native-input "libfaketime")
+                               "/bin/faketime -m -f '" release-date "'"
+                               " ./temacs")))
+      #:parallel-build? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enable-elogind
@@ -210,6 +219,16 @@
                 (("libsystemd") "libelogind"))
               (when (file-exists? "configure")
                 (delete-file "configure"))))
+          (add-after 'unpack 'avoid-sysinfo-call-at-build-time
+            (lambda _
+              ;; This is a useful trick for reproducibility: when we configured
+              ;; with --disable-build-details, (system-name) is nil at build
+              ;; time on the lisp side.
+              ;; Find those places with strace -k -e sysinfo.
+              (substitute* "lisp/jit-lock.el"
+                (("\\(condition-case nil \\(load-average\\) \\(error\\)\\)"
+                  all)
+                 (format #f "(and (system-name) ~a)" all)))))
           (add-after 'unpack 'patch-program-file-names
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Substitute "sh" command.
@@ -363,7 +382,7 @@
                  (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
                  "bin/emacs")))))))
     (inputs (list bash-minimal coreutils findutils gawk gzip ncurses sed))
-    (native-inputs (list autoconf pkg-config texinfo))
+    (native-inputs (list autoconf libfaketime pkg-config texinfo))
     (home-page "https://www.gnu.org/software/emacs/")
     (synopsis "The extensible text editor (minimal build for byte-compilation)")
     (description
