@@ -3932,31 +3932,23 @@ system.  The code under test requires no modification to work with pyfakefs.")
 (define-public python-aiounittest
   (package
     (name "python-aiounittest")
-    (version "1.4.2")
-    ;; Pypi package lacks tests.
+    (version "1.5.0")
     (source
-     (origin (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/kwarunek/aiounittest.git")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0srahyzrk5awfh4rmppvqkblfmiavdklxl9i5mcr8gl7ahiwwl7f"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "nosetests" "-v")
-                          (format #t "test suite not run~%"))
-                      #t)))))
-    (propagated-inputs (list python-wrapt))
+     (origin
+       (method git-fetch) ;no tets in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/kwarunek/aiounittest.git")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0266i5z589jh75hjzakvwcqx5shgv5zis8mr70qa209v7jjclzfd"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage python-nose))
-    (home-page
-     "https://github.com/kwarunek/aiounittest")
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-wrapt))
+    (home-page "https://github.com/kwarunek/aiounittest")
     (synopsis "Test asyncio code more easily")
     (description "Aiounittest is a library that helps write tests using
 asynchronous code in Python (asyncio).")
