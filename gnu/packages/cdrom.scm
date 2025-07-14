@@ -410,6 +410,14 @@ format, commonly used for VCDs or disks with subchannel data.")
     (arguments
      (list #:make-flags
         #~(list "RM=rm" "LN=ln" "SYMLINK=ln -s"
+                (string-append
+                  "CFLAGS="
+                  ;; The following are needed to placate gcc@14.
+                  "-Wno-error=implicit-int "
+                  "-Wno-error=implicit-function-declaration "
+                  ;; The following is probably there when CFLAGS are not
+                  ;; defined, but needs to be set explicitly now.
+                  "-g -O2 -fPIC")
                 "CONFIG_SHELL=sh"
                 (string-append "CCOM=" #$(cc-for-target))
                 "LINKMODE=dynamic"
