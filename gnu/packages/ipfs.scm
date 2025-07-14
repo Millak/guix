@@ -2110,6 +2110,19 @@ routing interface as specified in @url{https://github.com/libp2p/specs,
 kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-kad-dht-bootstrap
+  (hidden-package
+   (package/inherit go-github-com-libp2p-go-libp2p-kad-dht
+     (arguments
+      (list
+       #:skip-build? #t
+       #:tests? #f
+       #:import-path "github.com/libp2p/go-libp2p-kad-dht"))
+     (propagated-inputs
+      (list go-github-com-libp2p-go-libp2p-kbucket
+            go-github-com-whyrusleeping-go-keyspace
+            go-gonum-org-v1-gonum)))))
+
 (define-public go-github-com-libp2p-go-libp2p-kbucket
   (package
     (name "go-github-com-libp2p-go-libp2p-kbucket")
