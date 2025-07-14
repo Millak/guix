@@ -393,7 +393,7 @@ interface.")
         (base32 "1sf8m0w3d4kagf4chb7viqndnr152crpsy979ll61krcfxaybc4j"))))
     (build-system gnu-build-system)
     (inputs
-     (list boost clang-toolchain-19 fmt `(,gcc "lib") gmp libelf libunwind))
+     (list boost clang-toolchain-19 fmt `(,gcc "lib") gmp elfutils libunwind))
     (native-inputs
      (list binutils-gold ninja pkg-config sbcl))
     (arguments
