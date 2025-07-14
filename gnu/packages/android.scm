@@ -698,6 +698,13 @@ file system.")
                (("libext4_utils_host") "libext4_utils_host libselinux libpcre")
                (("\\$\\(shell git .*\\)") ,version))
              #t))
+         (add-after 'patch-source 'relax-gcc-14-strictness
+           (lambda _
+             (setenv
+              "CXXFLAGS"
+              (string-append "-g -O2"
+                             " -Wno-error=calloc-transposed-args"
+                             " -Wno-error=format-truncation"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
