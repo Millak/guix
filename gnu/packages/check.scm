@@ -56,6 +56,7 @@
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -752,20 +753,19 @@ It allows the specification of behaviour scenarios using a given-when-then
 pattern.")
       (license license:apsl2))))
 
-(define-public catch2-3
+(define-public catch2-3.8
   (package
     (name "catch2")
-    (version "3.5.3")
-    (home-page "https://github.com/catchorg/Catch2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/catchorg/Catch2")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "11yla93vm2896fzhm3fz8lk3y3iz5iy7vd6wa7wnwvhsfd2dbfq3"))))
+    (version "3.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://github.com/catchorg/Catch2")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v1k14n02aiw4rv5sxhc5612cjhkdj59cjpm50qfxhapsdv54n3f"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -774,10 +774,27 @@ pattern.")
               "-DCATCH_ENABLE_WERROR=OFF"
               "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list python-wrapper))
+    (home-page "https://github.com/catchorg/Catch2")
     (synopsis "Automated test framework for C++ and Objective-C")
     (description "Catch2 stands for C++ Automated Test Cases in Headers and is
 a multi-paradigm automated test framework for C++ and Objective-C.")
     (license license:boost1.0)))
+
+
+(define-public catch2-3
+  (package
+    (inherit catch2-3.8)
+    (name "catch2")
+    (version "3.5.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/catchorg/Catch2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11yla93vm2896fzhm3fz8lk3y3iz5iy7vd6wa7wnwvhsfd2dbfq3"))))))
 
 (define-public cmdtest
   (package
