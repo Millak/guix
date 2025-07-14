@@ -11710,15 +11710,19 @@ and generate a data structure representing the class﻿.")
 (define-public python-cppy
   (package
     (name "python-cppy")
-    (version "1.2.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cppy" version))
        (sha256
-        (base32 "06zysv86j7wqb1rl88ab4clbjf7iahhv9gfyqlasr18hggqkpd43"))))
+        (base32 "0s3d7bjgr9af571y7czswjymnymnihwnyf9ml4p28kw725y31dam"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/nucleic/cppy")
     (synopsis "C++ header library for Python extension modules")
     (description "This package is a small C++ header library which makes it
