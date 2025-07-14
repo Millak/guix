@@ -1138,7 +1138,9 @@ is format-agnostic, so you can feed virtually any files to it.")
      `(#:configure-flags
        `("--sysconfdir=/etc"
          "--disable-readline"
-         "--disable-rmt")))
+         "--disable-rmt"
+         ;; Add CFLAGS to relax gcc-14's strictness.
+         "CFLAGS=-Wno-error=int-conversion")))
     (native-inputs
      (list pkg-config))
     (inputs
