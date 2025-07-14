@@ -2932,17 +2932,21 @@ failures.")
 (define-public python-pytest-mypy
   (package
     (name "python-pytest-mypy")
-    (version "0.10.3")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-mypy" version))
+       (uri (pypi-uri "pytest_mypy" version))
        (sha256
-        (base32 "1nyk9xxkwb03sp6avn5l4ysncybnyw4ibrp2lcn3mw934dj8yigq"))))
+        (base32 "0x60ap70ix4blavrwih9aglp3ghviv1frxccnv3cq3f8fpzwlprz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--numprocesses" "auto")
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-p" "no:mypy"
+              ;; Fails to compare warnings.
+              "--deselect=tests/test_pytest_mypy.py::test_mypy_encoding_warnings")
       #:phases
       (if (or (target-riscv64?)
               (target-ppc64le?))
@@ -2954,14 +2958,11 @@ failures.")
                     (("60\\.0") "180.0")))))
           #~%standard-phases)))
     (native-inputs
-     (list python-pexpect
-           python-pytest-xdist
+     (list python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-attrs
-           python-filelock
+     (list python-filelock
            python-mypy
            python-pytest))
     (home-page "https://github.com/dbader/pytest-mypy")
