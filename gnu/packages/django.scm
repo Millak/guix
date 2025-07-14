@@ -899,19 +899,16 @@ entries, photos, book chapters, or anything else.")
 (define-public python-django-ninja
   (package
     (name "python-django-ninja")
-    (version "0.22.2")
+    (version "1.4.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django_ninja" version))
               (sha256
                (base32
-                "0b19w7nvw7c3z19dbza49m24c3384j59w2xcr5l6jshxazkvsgli"))))
+                "0f5hgjkavvk1csb1yl34scqai3ljjhh93k5kbqm8s8hclry4fvg4"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; FIXME: How to configure this test properly?
-     (list #:test-flags #~'("-k" "not test_improperly_configured")))
     (propagated-inputs
-     (list python-django python-pydantic))
+     (list python-django python-pydantic-2))
     (native-inputs
      (list python-flit-core
            python-psycopg2
