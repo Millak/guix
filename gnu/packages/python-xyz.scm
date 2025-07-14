@@ -20264,21 +20264,23 @@ to your log entries.")
 (define-public python-apipkg
   (package
     (name "python-apipkg")
-    (version "1.5")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "apipkg" version))
-             (sha256
-              (base32
-               "1xhak74yj3lqflvpijg15rnkklrigvsp5q7s4as4h6a157d8q8ip"))))
-    (build-system python-build-system)
+    (version "3.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "apipkg" version))
+       (sha256
+        (base32 "03ay7j57mfh4sa8vh9qwid1ggwdc0lasyw3ycsmgv5r6z2j63an7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests in PyPI archvie
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-hatch-vcs
+           python-hatchling))
+    (home-page "https://github.com/pytest-dev/apipkg")
     (synopsis "Namespace control and lazy-import mechanism")
     (description "With apipkg you can control the exported namespace of a Python
 package and greatly reduce the number of imports for your users.  It is a small
 pure Python module that works on virtually all Python versions.")
-    (home-page "https://github.com/pytest-dev/apipkg")
     (license license:expat)))
 
 (define-public python-execnet
