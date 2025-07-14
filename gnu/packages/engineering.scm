@@ -181,6 +181,7 @@
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
@@ -4616,7 +4617,7 @@ G-codes to binary and vice versa.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.7.4")
+    (version "2.9.2")
     (source
      (origin
        (method git-fetch)
@@ -4625,8 +4626,8 @@ G-codes to binary and vice versa.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0s1cfvhfilyv0y98asr61c6rwlgyr1hf5v5hg8q9zwmzm2bkcql3"))
-       (patches (search-patches "prusa-slicer-fix-tests.patch"))
+       (sha256 (base32 "05zwwhqv3fjg9rx6a4ga55f4ic1136f6lwms0kb4kaq50w9dvxwg"))
+       (patches (search-patches "prusa-slicer-add-cmake-module.patch"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -4634,25 +4635,40 @@ G-codes to binary and vice versa.")
            ;; Most of them contain prusa-specific modifications (e.g. avrdude),
            ;; but others do not. Here we replace the latter with Guix packages.
            ;; Remove bundled libraries that were not modified by Prusa Slicer developers.
-           (delete-file-recursively "src/hidapi")
-           (delete-file-recursively "src/eigen")
-           (delete-file-recursively "src/libigl/igl")
+           (delete-file-recursively "bundled_deps/hidapi")
+           (delete-file-recursively "bundled_deps/libigl/igl")
            (substitute* "CMakeLists.txt"
+             (("target_link_libraries\\(libexpat INTERFACE EXPAT::EXPAT\\)")
+              "")
              (("add_library\\(libexpat INTERFACE\\)")
               ""))
-           (substitute* "src/libigl/CMakeLists.txt"
+           (substitute* "bundled_deps/CMakeLists.txt"
+             (("add_subdirectory\\(hidapi\\)")
+              ""))
+           (substitute* "bundled_deps/libigl/CMakeLists.txt"
              (("target_link_libraries\\(libigl INTERFACE igl::core\\)") ""))
            (substitute* "src/CMakeLists.txt"
              (("add_subdirectory\\(hidapi\\)")
               "pkg_check_modules(HIDAPI REQUIRED hidapi-hidraw)")
              (("include_directories\\(hidapi/include\\)")
-              "include_directories()"))
+              "include_directories()")
+            (("add_library\\(libexpat INTERFACE\\)")
+            "")
+            (("target_link_libraries\\(libexpat INTERFACE EXPAT::EXPAT\\)")
+            "")
+            (("list\\(APPEND wxWidgets_LIBRARIES libexpat\\)")
+            "list(APPEND wxWidgets_LIBRARIES expat)"))
+            (substitute* "src/libslic3r/CMakeLists.txt"
+            (("libexpat")
+            "expat"))
            (substitute* "src/slic3r/CMakeLists.txt"
              (("add_library\\(libslic3r_gui.*" all)
               (string-append
+               "find_package(HidAPI REQUIRED)\n"
                all
-               "\ntarget_include_directories(libslic3r_gui PUBLIC ${HIDAPI_INCLUDE_DIRS})\n"))
-             (("\\bhidapi\\b") "${HIDAPI_LIBRARIES}"))))))
+               "\ntarget_include_directories(libslic3r_gui PUBLIC ${HIDAPI_INCLUDE_DIR})\n"))
+             (("    hidapi")
+              "    ${HIDAPI_LIBRARY}"))))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
@@ -4674,7 +4690,7 @@ G-codes to binary and vice versa.")
                      (("#include <libigl/igl/qslim.h>")
                       "#include <igl/qslim.h>")))))))
     (native-inputs
-     (list pkg-config catch2))
+     (list pkg-config catch2-3.8))
     (inputs
      (list boost
            cereal
@@ -4698,7 +4714,8 @@ G-codes to binary and vice versa.")
            mpfr
            nanosvg
            nlopt
-           opencascade-occt
+           opencascade-occt-7.6.1
+           openssl
            openvdb
            pango
            prusa-libbgcode
@@ -4707,11 +4724,18 @@ G-codes to binary and vice versa.")
            prusa-wxwidgets
            qhull
            tbb
+           webkitgtk-for-gtk3
+           webkitgtk-with-libsoup2
+           z3
            zlib))
     (home-page "https://www.prusa3d.com/prusaslicer/")
     (synopsis "G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)")
-    (description "PrusaSlicer takes 3D models (STL, OBJ, AMF) and converts them into
-G-code instructions for FFF printers or PNG layers for mSLA 3D printers.")
+    (description "PrusaSlicer takes 3D models (STL, OBJ, AMF) and converts
+them into G-code instructions for FFF printers or PNG layers for mSLA 3D
+printers.  It is compatible with any modern printer based on the RepRap
+toolchain, including all those based on the Marlin, Prusa, Sprinter and
+Repetier firmware.  It also works with Mach3, LinuxCNC and Machinekit
+controllers.")
     (license license:agpl3)
 
     ;; Mark as tunable to take advantage of SIMD code in Eigen and in libigl.
