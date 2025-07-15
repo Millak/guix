@@ -1718,8 +1718,8 @@ supports AGit-Flow and lifts the requirement to use a manifest file.")
 
 (define-public cgit
   ;; Use the latest commit, as the latest tagged release is 5 years old.
-  (let ((commit "994d3fe1a8fa56d5a1dd36aae62c788169160c3a")
-        (rev "9"))
+  (let ((commit "20ac8f55d43bcc789e8ecca1a5c878087394b5e3")
+        (rev "10"))
     (package
       (name "cgit")
       ;; Update the ‘git-source’ input as well.
@@ -1731,7 +1731,7 @@ supports AGit-Flow and lifts the requirement to use a manifest file.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1c38yh4y5xmc8lnf55q46v63vkwpa3vs9mj17a74i66lm8zhrhk7"))
+                  "0jzik8prgv3cmpliqk6amq5vkp465592p3xibac49c4lhim27ckp"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -1806,10 +1806,10 @@ supports AGit-Flow and lifts the requirement to use a manifest file.")
                ;; Building cgit requires a Git source tree.
                ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
                ;; which may not match the current (package-version git).
-               (uri "mirror://kernel.org/software/scm/git/git-2.49.0.tar.xz")
+               (uri "mirror://kernel.org/software/scm/git/git-2.50.1.tar.xz")
                (sha256
                 (base32
-                 "0a2nm2szhn47dm0m1f1kmg1rikb7saqj67zr25n9yzhbb77r10b1"))
+                 "1i4gbin7ah9azaz68j10q9qkdq2bcyv2vm0lvppg3n6bvqv6qgky"))
                (file-name "git-source.tar.xz"))
              bash-minimal
              openssl
