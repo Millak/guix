@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -429,14 +430,14 @@ size and quality.")
 (define-public python-pytest-django
   (package
     (name "python-pytest-django")
-    (version "4.5.2")
+    (version "4.11.1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "pytest-django" version))
+              (uri (pypi-uri "pytest_django" version))
               (sha256
                (base32
-                "1hp61jbnnhnjxzdrz9ni08lzrv8q7iiycnnxvcwnkhxpkdsny1yr"))))
-    (build-system python-build-system)
+                "14br4bzx07yxrx6xsyyhlpjgb0sz6lflbw90g87cn0z13qd18jd9"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; The test suite is disabled because there are many test failures (see:
      ;; https://github.com/pytest-dev/pytest-django/issues/943).
@@ -459,10 +460,10 @@ size and quality.")
                                         " and not test_urls_cache_is_cleared")))
                (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools python-setuptools-scm python-wheel))
     (propagated-inputs
      (list python-pytest))
-    (home-page "https://pytest-django.readthedocs.org/")
+    (home-page "https://pytest-django.readthedocs.io/")
     (synopsis "Django plugin for py.test")
     (description "Pytest-django is a plugin for py.test that provides a set of
 useful tools for testing Django applications and projects.")
