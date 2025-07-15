@@ -47,19 +47,17 @@
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (srfi srfi-1))
 
-(define-public gdb/pinned
-  ;; This is the fixed version that packages depend on.  Update it rarely
-  ;; enough to avoid massive rebuilds.
+(define-public gdb-14
   (package
     (name "gdb")
-    (version "12.1")
+    (version "14.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))
+                "0wkprsjyyh204fdjlkaz20k847l88i9y8m9zqsv15vcd3l3dhk9d"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -148,21 +146,22 @@ doing while it runs or what it was doing just before a crash.  It allows you
 to specify the runtime conditions, to define breakpoints, and to change how
 the program is running to try to fix bugs.  It can be used to debug programs
 written in C, C++, Ada, Objective-C, Pascal and more.")
-    (properties `((hidden? . #t)))
     (license gpl3+)))
 
-(define-public gdb-14
+(define-public gdb/pinned
+  ;; This is the fixed version that packages depend on.  Update it rarely
+  ;; enough to avoid massive rebuilds.
   (package
-    (inherit gdb/pinned)
-    (version "14.2")
+    (inherit gdb-14)
+    (version "12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0wkprsjyyh204fdjlkaz20k847l88i9y8m9zqsv15vcd3l3dhk9d"))))
-    (properties '())))
+                "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))
+    (properties `((hidden? . #t)))))
 
 (define-public gdb-15
   (package
