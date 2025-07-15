@@ -3245,31 +3245,29 @@ validation.")
                 "038i9nmk85vpxvs546w6cyci0ppdrrp5wnlv1kffxw29x71a3g5l"))))))
 
 (define-public bloomberg-bde-tools
-  (let ((commit "23217675939d434537ef74b91f71b63054e36572"))
-    (package
-      (name "bloomberg-bde-tools")
-      ;; Recent releases are not tagged so commit must be used for checkout.
-      (version "4.13.0.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/bloomberg/bde-tools")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1x440fa8fghigipn6w8zdr60kkvxrkxs2n9a5hf3y33b8aygh8iv"))
-                (patches
-                 (search-patches
-                  "bloomberg-bde-tools-fix-install-path.patch"))))
-      (build-system copy-build-system)
-      ;; Unable to be an inline dependency of bloomberg-bde due to patch.
-      (properties '((hidden? . #t)))
-      (synopsis "Tools for developing and building libraries modeled on BDE")
-      (description
-       "This package provides the cmake imports needed to build bloomberg-bde.")
-      (home-page "https://github.com/bloomberg/bde-tools")
-      (license license:asl2.0))))
+  (package
+    (name "bloomberg-bde-tools")
+    (version "4.27.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bloomberg/bde-tools")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zkf6vdvzp73h6bai6kmd062k0wyqwrrdv2z9m416kgxr6qickl2"))
+              (patches
+               (search-patches
+                "bloomberg-bde-tools-fix-install-path.patch"))))
+    (build-system copy-build-system)
+    ;; Unable to be an inline dependency of bloomberg-bde due to patch.
+    (properties '((hidden? . #t)))
+    (synopsis "Tools for developing and building libraries modeled on BDE")
+    (description
+     "This package provides the cmake imports needed to build bloomberg-bde.")
+    (home-page "https://github.com/bloomberg/bde-tools")
+    (license license:asl2.0)))
 
 (define-public bloomberg-bde
   (let ((commit "445a8ac4223b90ee0a46749b87ffbbd21788e132"))
