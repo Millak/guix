@@ -2905,6 +2905,9 @@ invalidate based on expressions evaluating to different values.")
 (define-public ecl-cache-while
   (sbcl-package->ecl-package sbcl-cache-while))
 
+(define-public clasp-cache-while
+  (sbcl-package->clasp-package sbcl-cache-while))
+
 (define-public sbcl-cacle
   (let ((commit "4cbe8cfe227d2e097eaced14766f4f37aa05e617")
         (revision "1"))
