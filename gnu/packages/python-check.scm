@@ -623,6 +623,7 @@ counterexamples for you.")
      (list python-aiounittest
            python-pytest
            python-setuptools
+           python-six
            python-wheel))
     (propagated-inputs
      (list python-pyyaml))
