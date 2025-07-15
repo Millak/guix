@@ -3869,6 +3869,38 @@ data in a standard way.")
 which make writing and running functional and integration tests easier.")
     (license license:asl2.0)))
 
+(define-public python-test2ref
+  (package
+    (name "python-test2ref")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "test2ref" version))
+       (sha256
+        (base32 "1jx7cdqwpyq3gs9czvz0fwijkqhvmbny5h3zgdqlbrw8y3miv4gq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pdm-backend
+           python-pytest
+           python-pytest-cov))
+    (propagated-inputs
+     (list python-binaryornot))
+    (home-page "https://github.com/nbiotcloud/test2ref")
+    (synopsis "Testing Against Learned Reference Data")
+    (description
+     "This package provides a unit tests framework backed by ML features and
+working in two modes:
+
+@itemize
+@item Testing: Test result in @code{tmp_path} is compared against a known
+reference. Any deviation in the files, causes a fail.
+@item Learning: The test result in @code{tmp_path} is taken as reference and
+is copied to the reference folder, which should be committed to version
+control and kept as reference.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-testfixtures
   (package
     (name "python-testfixtures")
