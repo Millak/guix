@@ -23820,16 +23820,17 @@ times.
 (define-public python-lazy-object-proxy
   (package
     (name "python-lazy-object-proxy")
-    (version "1.10.0")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "lazy-object-proxy" version))
+       (uri (pypi-uri "lazy_object_proxy" version))
        (sha256
-        (base32 "0sdc92bbzy6slcl432j04mr131cy8n0many26ppm4fpl8mnpn93q"))))
+        (base32 "174fswfrsqr7yj72f8fyry34qxgagbfw37vzljxbp7schq8l91qq"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pip
+     (list python-pytest
+           python-pytest-benchmark
            python-setuptools
            python-setuptools-scm
            python-wheel))
