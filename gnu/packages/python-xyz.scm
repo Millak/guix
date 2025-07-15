@@ -5708,28 +5708,41 @@ in the current session, Python, and the OS.")
     (license license:bsd-3)))
 
 (define-public python-six
-  (package/inherit python-six-bootstrap
+  (package
     (name "python-six")
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-v"))))))
+    (version "1.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "six" version))
+       (sha256
+        (base32 "109ajcsfhrz33lbwbb337w34crc3lb9rjnxrcpnbczlf8rfk6w7z"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     `(("python-pytest" ,python-pytest-bootstrap)))))
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-wheel))
+    (home-page "https://pypi.org/project/six/")
+    (synopsis "Python 2 and 3 compatibility utilities")
+    (description
+     "Six is a Python 2 and 3 compatibility library.  It provides utility
+functions for smoothing over the differences between the Python versions with
+the goal of writing Python code that is compatible on both Python versions.
+Six supports every Python version since 2.5.  It is contained in only one
+Python file, so it can be easily copied into your project.")
+    (license license:x11)))
 
 (define-public python2-six
+  ;; XXX: The only one user of this package is qtwebengine-5, consider to
+  ;; remove when no longer required.
   (let ((base (package-with-python2 python-six)))
     (package
       (inherit base)
-      ;; Reduce Python 2 closure by disabling tests and removing the native
-      ;; inputs.
-      (arguments (substitute-keyword-arguments (package-arguments base)
-                   ((#:phases phases)
-                    `(modify-phases ,phases
-                       (delete 'check)))))
-      (native-inputs '()))))
+      ;; Reduce Python 2 closure by disabling tests.
+      (arguments (list #:tests? #f))
+      (native-inputs
+       (list python-setuptools
+             python-wheel)))))
 
 (define-public python-schedule
   (package

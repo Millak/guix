@@ -154,30 +154,6 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
     (description "This package provides a Python parser for TOML-0.4.0.")
     (license license:expat)))
 
-(define-public python-six-bootstrap
-  (package
-    (name "python-six-bootstrap")
-    (version "1.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "six" version))
-       (sha256
-        (base32 "109ajcsfhrz33lbwbb337w34crc3lb9rjnxrcpnbczlf8rfk6w7z"))))
-    (build-system pyproject-build-system)
-    (arguments `(#:tests? #f))          ;to avoid pytest dependency
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://pypi.org/project/six/")
-    (synopsis "Python 2 and 3 compatibility utilities")
-    (description
-     "Six is a Python 2 and 3 compatibility library.  It provides utility
-functions for smoothing over the differences between the Python versions with
-the goal of writing Python code that is compatible on both Python versions.
-Six supports every Python version since 2.5.  It is contained in only one
-Python file, so it can be easily copied into your project.")
-    (license license:x11)))
-
 (define-public python-tomli
   (package
     (name "python-tomli")
