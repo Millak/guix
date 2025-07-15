@@ -1144,6 +1144,23 @@ enhance the quality of scanned pages before performing
         (base32
          "09i88v3wacmx7f96dmq0l3afpyv95lh6jrx16xzm0jd1szdrhn5j"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CFLAGS=-g -O2 "
+                             ;; Placate gcc@14 strictness.
+                             "-Wno-error=deprecated-declarations "
+                             "-Wno-error=implicit-function-declaration"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-includes
+            ;; Inclusion of unistd.h is conditional on HAVE_UNISTD_H being
+            ;; defined, but this comes from config.h.
+            (lambda _
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* "src/ttsubset/sft.h"
+                  (("#include <sys/types.h>")
+                   "#include \"config.h\"\n#include <sys/types.h>"))))))))
     (inputs
      (list gtk+-2 pango poppler glib libgnomecanvas))
     (native-inputs
