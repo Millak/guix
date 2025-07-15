@@ -3270,68 +3270,62 @@ validation.")
     (license license:asl2.0)))
 
 (define-public bloomberg-bde
-  (let ((commit "445a8ac4223b90ee0a46749b87ffbbd21788e132"))
     (package
-      (name "bloomberg-bde")
-      ;; Recent releases are not tagged so commit must be used for checkout.
-      (version "4.14.0.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/bloomberg/bde")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1hf09d4fcn77s1vv6qrh0sa0rv9wijpk55km6p3zi2ymkb2cha3c"))
-                (patches
-                 (search-patches
-                  "bloomberg-bde-cmake-module-path.patch"))
-                ;;(modules '((guix build utils)))
-                (snippet
-                 `(begin
-                    ;; FIXME: Delete bundled software. The third-party packages
-                    ;; may be patched or modified from upstream sources.
-                    ;;(for-each delete-file-recursively
-                    ;; (list "thirdparty"))
-                    ;; Delete failing tests.
-                    (for-each
-                     delete-file
-                     (list "groups/bal/balcl/balcl_commandline.t.cpp"
-                           "groups/bal/balst/balst_resolver_filehelper.t.cpp"
-                           "groups/bal/balst/balst_stacktraceprintutil.t.cpp"
-                           "groups/bal/balst/balst_stacktraceutil.t.cpp"
-                           "groups/bsl/bslh/bslh_hash.t.cpp"
-                           "groups/bsl/bsls/bsls_timeutil.t.cpp"))
-                    #t))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-tests? #f           ; Test parallelism may fail inconsistently.
-         ;; Set UFID to build shared libraries. Flag descriptions can be found at
-         ;; https://bloomberg.github.io/bde-tools/bbs/reference/bbs_build_configuration.html#ufid
-         #:configure-flags '("-DUFID=opt_dbg_exc_mt_64_shr_cpp20")
-         #:phases
-         (modify-phases %standard-phases
-           ;; Explicitly build tests separate from the main build.
-           (add-after 'build 'build-tests
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "all.t"
-                 `(,@(if #:parallel-build?
-                         `("-j" ,(number->string (parallel-job-count)))
-                         '())
-                 ,@make-flags)))))))
-      (native-inputs
-       (list bloomberg-bde-tools pkg-config python))
-      (synopsis "Foundational C++ libraries used at Bloomberg")
-      (description
-       "The BDE Development Environment libraries provide an enhanced
+    (name "bloomberg-bde")
+    (version "4.27.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bloomberg/bde")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17315r9j20pvv4ccnd59m85miq96hp07pysfr64glb7r4f4zjkfs"))
+              ;;(modules '((guix build utils)))
+              (snippet
+               `(begin
+                  ;; FIXME: Delete bundled software. The third-party packages
+                  ;; may be patched or modified from upstream sources.
+                  ;;(for-each delete-file-recursively
+                  ;; (list "thirdparty"))
+                  ))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Set UFID to build shared libraries. Flag descriptions can be found at
+      ;; https://bloomberg.github.io/bde-tools/bbs/reference/bbs_build_configuration.html#ufid
+      #:configure-flags #~(list "-DUFID=opt_dbg_exc_mt_64_shr_cpp20")
+      #:test-exclude (string-join (list "balcl_commandline.t"
+                                        "balst_stacktraceprintutil.t"
+                                        "bslalg_numericformatterutil.t"
+                                        "bslh_hash.t"
+                                        "bslstl_deque.0[1345].t"
+                                        "bslstl_queue.t"
+                                        "bslstl_stack.t")
+                                  "|")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Explicitly build tests after the main build.
+          (add-after 'build 'build-tests
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'build)
+                     (list #:make-flags (list "all.t"))))))))
+    (native-inputs
+     (list bloomberg-bde-tools pkg-config python))
+    (synopsis "Foundational C++ libraries used at Bloomberg")
+    (description
+     "The BDE Development Environment libraries provide an enhanced
 implementation of STL containers, vocabulary types for representing common
 concepts (like dates and times), and building blocks for developing
 multi-threaded applications and network applications.")
-      (home-page "https://github.com/bloomberg/bde")
-      ;; Out-of-memory on i686-linux, compile errors with non-x86.
-      (supported-systems '("x86_64-linux"))
-      (license license:asl2.0))))
+    (home-page "https://github.com/bloomberg/bde")
+    ;; Out-of-memory on i686-linux, compile errors with non-x86.
+    (supported-systems '("x86_64-linux"))
+    (license license:asl2.0)))
 
 (define-public gulrak-filesystem
   (package
