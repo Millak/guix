@@ -6990,13 +6990,17 @@ this it tries to be opinion-free and very extendable.")
     (version "1.1.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ephemeral_port_reserve" version))
+       (method git-fetch)       ;no tests in PyPI archvie
+       (uri (git-reference
+              (url "https://github.com/Yelp/ephemeral-port-reserve")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1chl9hil7ggz6l4sfhmp0l2j55qcskbc3pj9360b0309jwndmxxq"))))
+        (base32 "1ifmf5zcw7mhbm73awmf5jwc4rw8lhk81mn4zp797lwkysjm38s7"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools
+     (list python-pytest
+           python-setuptools
            python-wheel))
     (home-page "https://github.com/Yelp/ephemeral-port-reserve/")
     (synopsis "Find an unused port, reliably")
