@@ -389,6 +389,17 @@ scripts to their final locations) at any later time.  Wheel files can be
 installed with a newer @code{pip} or with wheel's own command line utility.")
     (license license:expat)))
 
+(define-public python-wheel-0.40
+  (package
+    (inherit python-wheel)
+    (version "0.40.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "wheel" version))
+        (sha256
+         (base32 "0ww8fgkvwv35ypj4cnngczdwp6agr4qifvk2inb32azfzbrrc4fd"))))))
+
 ;;; TODO: Deprecate with https://github.com/pypa/pyproject-hooks.
 ;;;
 ;;; From PyPI web page: The core of this package has been renamed to
