@@ -375,7 +375,7 @@ and its related documentation.")
                  (lambda _
                    (substitute* "Makefile.am"
                      (("/bin/sh") (which "sh"))))))))
-    (native-inputs (list autoconf automake))
+    (native-inputs (list autoconf automake-1.16.5))
     (inputs (list pcre2))
     (home-page "https://sourceforge.net/projects/leafnode/")
     (synopsis "NNTP news proxy")
