@@ -1239,6 +1239,34 @@ HostData=lib/qt5"
     (synopsis "Qt module for 3D")
     (description "The Qt3d module provides classes for displaying 3D.")))
 
+(define-public qt3d
+  (package
+    (name "qt3d")
+    (version "6.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "047rwawrlm7n0vifxmsqvs3w3j5c16x8qkpx8xazq6xd47dn9w11"))))
+    (propagated-inputs (list))
+    (native-inputs (list perl))
+    (inputs (list mesa qtbase vulkan-headers zlib libxkbcommon))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-display
+            (lambda _
+              ;; Make Qt render "offscreen", required for tests.
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (synopsis "Qt module for 3D")
+    (description "The Qt3d module provides classes for displaying 3D.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qt5compat
   (package
     (name "qt5compat")
