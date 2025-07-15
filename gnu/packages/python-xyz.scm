@@ -8310,7 +8310,7 @@ alternative representations which do not require this package.")
 (define-public python-anytree
   (package
     (name "python-anytree")
-    (version "2.12.0")
+    (version "2.13.0")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -8319,7 +8319,7 @@ alternative representations which do not require this package.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fagd6h6nixvzf3ps8pbfkxvp9xnpq8hpmzaaq1zab4dzqnpsrgj"))))
+        (base32 "0xp13r0jrz1kdmi9h10bmgqzc7wjil3ghf6gqsi9m0lsqlj5hlwh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8331,10 +8331,11 @@ alternative representations which do not require this package.")
               (mkdir-p "tests/dotexport/"))))))
     (native-inputs
      (list graphviz ;for 'dot'
-           python-poetry-core
-           python-pytest))
-    (propagated-inputs
-     (list python-six))
+           python-pdm-backend
+           python-pytest
+           python-pytest-cov
+           python-pyyaml
+           python-test2ref))
     (home-page "https://github.com/c0fec0de/anytree")
     (synopsis "Lightweight tree data library")
     (description
