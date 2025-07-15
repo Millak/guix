@@ -794,40 +794,30 @@ reflected in the package visible to Python, without needing a reinstall.")
 (define-public python-exceptiongroup
   (package
     (name "python-exceptiongroup")
-    (version "1.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/agronholm/exceptiongroup")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0wcvzwgjs0xmggs6dh92jxdqi988gafzh10hrzvw10kasy0xakfj"))))
-    (build-system python-build-system)
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/agronholm/exceptiongroup")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kygngc6j7hm68w8q327jvym2z4gpyh93g2af6g419qaqqv7axkg"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                       ;TODO: Circular dependency on pytest
+      #:tests? #f       ;to keep dependencies to a minimum
+      #:build-backend "setuptools.build_meta"
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build/install procedures copied from
-          ;; python-isort.
-          (replace 'build
+          (add-before 'build 'set-version
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests")))))))
-    (native-inputs (list python-flit-scm python-pypa-build))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-flit-scm))
+    (propagated-inputs
+     (list python-typing-extensions))
     (home-page "https://github.com/agronholm/exceptiongroup")
     (synopsis "PEP 654 backport from Python 3.11")
     (description "This is a backport of the @code{BaseExceptionGroup} and
