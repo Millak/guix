@@ -805,19 +805,27 @@ Python.")
 (define-public python-zipp
   (package
     (name "python-zipp")
-    (version "1.0.0")
+    (version "3.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zipp" version))
        (sha256
-        (base32
-         "0v3qayhqv7vyzydpydwcp51bqciw8p2ajddw68x5k8zppc0vx3yk"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-more-itertools))
+        (base32 "0rj182i2d7d2bz067zrk39s19j09xsxkzprl82fqql8ji9c5fwd0"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))       ;TODO: Tests requrie extra packaging
     (native-inputs
-     (list python-setuptools-scm))
+     (list ;; python-big-o
+           ;; python-coherent-licensed
+           ;; python-jaraco-functools ; introduces cycle
+           ;; python-jaraco-itertools
+           ;; python-jaraco-test ; introduces cycle
+           python-more-itertools
+           python-pytest
+           ;; python-pytest-ignore-flaky
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/jaraco/zipp")
     (synopsis
      "Backport of pathlib-compatible object wrapper for zip files")
