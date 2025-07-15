@@ -3259,7 +3259,7 @@ prover, version 4.")
 (define-public emacs-lem
   (package
     (name "emacs-lem")
-    (version "0.22")
+    (version "0.23")
     (source
      (origin
        (method git-fetch)
@@ -3269,14 +3269,14 @@ prover, version 4.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12g16gq9qawhlj92jgxr2l7xcc0ikvmwsygjcr3qyxy0bawynzr8"))))
+         "0mi4s4zaq1dam6bnmxlyc22k0nh3wpgar8lwijd0fksylnwjzzwy"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:tests? #f ; no tests
       #:lisp-directory "lisp"))
     (propagated-inputs
-     (list emacs-fedi emacs-markdown-mode emacs-fedi))
+     (list emacs-fedi emacs-markdown-mode))
     (home-page "https://codeberg.org/martianh/lem.el")
     (synopsis "Emacs client for Lemmy")
     (description "@code{lem.el} is an Emacs client for Lemmy, the federated link
