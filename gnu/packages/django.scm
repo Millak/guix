@@ -984,6 +984,39 @@ and JavaScript concatenation and compression, built-in JavaScript template
 support, and optional data-URI image and font embedding.")
     (license license:expat)))
 
+(define-public python-django-cors-headers
+  (package
+    (name "python-django-cors-headers")
+    (version "4.7.0")
+    (source (origin
+              (method git-fetch) ; PyPI does not include settings.py for tests
+              (uri (git-reference
+                    (url "https://github.com/adamchainz/django-cors-headers")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j5h31wfndkva5a6m6zw67yq3sbndl0zq9w4w3v7xx15dd84g9y4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
+                (invoke "django-admin" "test" "tests"
+                        "--pythonpath=.")))))))
+    (propagated-inputs (list python-asgiref python-django))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/adamchainz/django-cors-headers")
+    (synopsis "Django application for handling headers required for CORS")
+    (description
+     "@code{django-cors-headers} is a Django application for handling the
+server headers required for Cross-Origin Resource Sharing (CORS).")
+    (license license:expat)))
+
 (define-public python-django-redis
   (package
     (name "python-django-redis")
