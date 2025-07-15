@@ -45,6 +45,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages geo)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages python)
@@ -1488,6 +1489,53 @@ forms using your favorite CSS framework, without writing template code.")
 CSS in a Django templates into cacheable static files by using the compress
 template tag.")
     (license license:expat)))
+
+(define-public python-django-dbbackup
+  (package
+    (name "python-django-dbbackup")
+    (version "4.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django_dbbackup" version))
+       (sha256
+        (base32 "1p66xs6c2sw1l2zlskpa64zslyawlpgv0vn2l86g4rxizp6chj9m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; To write a .env file.
+              (setenv "HOME" "/tmp")
+              ;; 'env' command is not available in the build environment.
+              (substitute* "dbbackup/tests/test_connectors/test_base.py"
+                (("def test_run_command_with_parent_env")
+                 "def _test_run_command_with_parent_env"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "DJANGO_SETTINGS_MODULE" "dbbackup.tests.settings")
+                (invoke "django-admin" "test" "dbbackup/tests"
+                        "--pythonpath=.")))))))
+    (native-inputs (list gnupg
+                         python-dotenv
+                         python-gnupg
+                         python-pytest
+                         python-pytz
+                         python-setuptools
+                         python-testfixtures
+                         python-tzdata
+                         python-wheel))
+    (propagated-inputs (list python-django))
+    (home-page "https://github.com/Archmonger/django-dbbackup")
+    (synopsis "Backup and restore a Django project database and media")
+    (description
+     "This Django application provides management commands to help backup and
+restore your project database and media files with various storages such as
+Amazon S3, Dropbox, local file storage or any Django storage.")
+    (license license:bsd-3)))
 
 (define-public python-django-override-storage
   (package
