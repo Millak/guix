@@ -1924,16 +1924,19 @@ default) of the repository.")
 (define-public python-gitdb
   (package
     (name "python-gitdb")
-    (version "4.0.2")
+    (version "4.0.12")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gitdb" version))
               (sha256
                (base32
-                "0l113fphn6msjl3cl3kyf332b6lal7daxdd0nfma0x9ipfb013jr"))))
-    (build-system python-build-system)
+                "0wdmzngk870944nc6q5sphzv29jzhgddbh7vzhk366hrbn2izxsy"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     ;; One test fails, probably due to low ulimit: ValueError: Expected to
+     ;; write 1000 objects into pack, but received only 0 from iterators.
+     `(#:test-flags '("-k" "not test_pack_writing")
+       #:phases (modify-phases %standard-phases
                   (add-before 'check 'create-test-repository
                     (lambda _
                       (mkdir "/tmp/testrepo")
@@ -1955,16 +1958,15 @@ default) of the repository.")
                       ;; The repository checkout must be a "bare" clone.
                       (invoke "git" "clone" "--bare" "/tmp/testrepo"
                               "/tmp/testrepo.git")))
-                  (replace 'check
+                  (add-before 'check 'pre-check
                     (lambda _
                       (setenv "GITDB_TEST_GIT_REPO_BASE" "/tmp/testrepo.git")
                       ;; Skip tests that must be run from the gitdb repository.
-                      (setenv "TRAVIS" "1")
-                      (invoke "nosetests" "-v"))))))
+                      (setenv "TRAVIS" "1"))))))
     (propagated-inputs
      (list python-smmap))
     (native-inputs
-     (list git-minimal/pinned python-nose))
+     (list git-minimal/pinned python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/gitpython-developers/gitdb")
     (synopsis "Python implementation of the Git object database")
     (description
