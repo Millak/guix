@@ -1835,65 +1835,67 @@ Keywords: html2pdf, htmltopdf")
     (license license:bsd-3)))
 
 (define-public sioyek
-  (package
-    (name "sioyek")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ahrm/sioyek")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vmmp2s032ygh1byz77pg9aljmp8hx745fr7mmz11831f96mlmhq"))
-       (modules '((guix build utils)))
-       ;; libmupdf-third.so no longer available since mupdf 1.18.0.
-       (snippet '(substitute* "pdf_viewer_build_config.pro"
-                   (("-lmupdf-third") "")))
-       ;; XXX: Fix build with mupdf-0.23.0+.
-       ;; See also: https://github.com/ahrm/sioyek/issues/804
-       (patches (search-patches "sioyek-fix-build.patch"))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "PREFIX=" #$output))
-      #:test-target "check"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-paths
-            (lambda _
-              (substitute* "pdf_viewer/main.cpp"
-                (("/usr/share")
-                 (string-append #$output "/share"))
-                (("/etc")
-                 (string-append #$output "/etc")))))
-          (replace 'configure
-            (lambda* (#:key configure-flags #:allow-other-keys)
-              (apply invoke "qmake" configure-flags)))
-          (add-after 'install 'instal-man-page
-            (lambda _
-              (install-file "resources/sioyek.1"
-                            (string-append #$output "/share/man/man1")))))))
-    (inputs
-     (list freetype
-           gumbo-parser
-           harfbuzz
-           jbig2dec
-           libjpeg-turbo
-           mujs
-           mupdf
-           openjpeg
-           qt3d-5
-           qtbase-5
-           qtwayland-5
-           zlib))
-    (home-page "https://sioyek.info/")
-    (synopsis "PDF viewer with a focus on technical books and research papers")
-    (description
-     "Sioyek is a PDF viewer with a focus on textbooks and research papers.")
-    (license license:gpl3+)))
+  (let ((commit "8d173d993738d78559da035cc051f2eb40df41e6")
+        (revision "1"))
+    (package
+      (name "sioyek")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ahrm/sioyek")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "10d08ajcm5ckvrj5xkgi0dj9ibndi961v2yacw7a8mxkdqki6ck6"))
+         (modules '((guix build utils)))
+         ;; libmupdf-third.so no longer available since mupdf 1.18.0.
+         (snippet '(substitute* "pdf_viewer_build_config.pro"
+                     (("-lmupdf-third") "")))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list (string-append "PREFIX=" #$output))
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda _
+                (substitute* "pdf_viewer/main.cpp"
+                  (("/usr/share")
+                   (string-append #$output "/share"))
+                  (("/etc")
+                   (string-append #$output "/etc")))))
+            (replace 'configure
+              (lambda* (#:key configure-flags #:allow-other-keys)
+                (apply invoke "qmake" configure-flags)))
+            (add-after 'install 'instal-man-page
+              (lambda _
+                (install-file "resources/sioyek.1"
+                              (string-append #$output "/share/man/man1")))))))
+      (inputs
+       (list freetype
+             gumbo-parser
+             harfbuzz
+             jbig2dec
+             libjpeg-turbo
+             mujs
+             mupdf
+             openjpeg
+             qtbase
+             qtdeclarative
+             qtsvg
+             qt3d
+             qtspeech
+             qtwayland
+             zlib))
+      (home-page "https://sioyek.info/")
+      (synopsis "PDF viewer with a focus on technical books and research papers")
+      (description
+       "Sioyek is a PDF viewer with a focus on textbooks and research papers.")
+      (license license:gpl3+))))
 
 (define-public pdftk
   (package
