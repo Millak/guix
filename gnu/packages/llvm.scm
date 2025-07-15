@@ -28,6 +28,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1002,7 +1003,8 @@ Library.")
      (origin
       (method url-fetch)
       (uri (llvm-uri "llvm" version))
-      (patches (search-patches "llvm-8-missing-include.patch"))
+      (patches (search-patches "llvm-8-missing-include.patch"
+                               "llvm-10-missing-include.patch"))
       (sha256
        (base32
         "199yq3a214avcbi4kk2q0ajriifkvsr0l2dkx3a666m033ihi1ff"))))))
@@ -1054,7 +1056,8 @@ Library.")
      (origin
       (method url-fetch)
       (uri (llvm-uri "llvm" version))
-      (patches (search-patches "llvm-8-missing-include.patch"))
+      (patches (search-patches "llvm-8-missing-include.patch"
+                               "llvm-10-missing-include.patch"))
       (sha256
        (base32
         "1wydhbp9kyjp5y0rc627imxgkgqiv3dfirbqil9dgpnbaw5y7n65"))))
