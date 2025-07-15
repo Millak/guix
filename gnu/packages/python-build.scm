@@ -672,21 +672,33 @@ specified by PEP 517, @code{flit_core.buildapi}.")
   (package
     (name "python-flit-scm")
     (version "1.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flit_scm" version))
-              (sha256
-               (base32
-                "1ckbkykfr7f7wzjzgh0gm7h6v3pqzx2l28rw6dsvl6zk4kxxc6wn"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flit_scm" version))
+       (sha256
+        (base32 "1ckbkykfr7f7wzjzgh0gm7h6v3pqzx2l28rw6dsvl6zk4kxxc6wn"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f        ;to avoid extra dependencies
-                     ;; flit-scm wants to use flit-core, which it renames to
-                     ;; 'buildapi', but that isn't found even when adding the
-                     ;; current directory to PYTHONPATH.  Use setuptools'
-                     ;; builder instead.
-                     #:build-backend "setuptools.build_meta"))
-    (propagated-inputs (list python-flit-core python-setuptools-scm python-tomli))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      #:tests? #f        ;no tests in PyPI archive or Git checkout
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-backend
+            ;; flit_scm imports flit_core's buildapi and tries to make it
+            ;; available as "flit_scm:buildapi", see comment in
+            ;; <flit_scm/__init__.py>; but it fails during build phase with
+            ;; error: ModuleNotFoundError: No module named
+            ;; 'flit_scm:buildapi'.
+            ;;
+            ;; Use flit_core.buildapi directly to build flit_scm.
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("flit_scm:buildapi") "flit_core.buildapi")))))))
+    (propagated-inputs
+     (list python-flit-core
+           python-setuptools-scm
+           python-tomli))
     (home-page "https://gitlab.com/WillDaSilva/flit_scm")
     (synopsis "PEP 518 build backend combining flit_core and setuptools_scm")
     (description "This package provides a PEP 518 build backend that uses
