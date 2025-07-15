@@ -8214,27 +8214,26 @@ bookmarks using a declarative input in the form of a markdown file.")
 (define-public python-joblib
   (package
     (name "python-joblib")
-    (version "1.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "joblib" version))
-              (sha256
-               (base32
-                "03izdcvc3fa355cclzgvzmjnfwylvblz9q091b9gndi6df0wb0i3"))))
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "joblib" version))
+       (sha256
+        (base32 "0i5lfraj19fx0dqb5z5ahp1cxr0ymzcc7wm9686kvzir3wsnxy7l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags  ; disabled to avoid having to depend on ipython/jupyter
-      #~(list
-         "--numprocesses" (number->string (parallel-job-count))
-         "-k"
-         (string-append
-          "not test_parallel_call_cached_function_defined_in_jupyter"
-          ;; XXX This test times out.
-          " and not test_no_resource_tracker_on_import"))))
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; Disabled to avoid having to depend on ipython/jupyter.
+              "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
     (native-inputs
-     (list python-pytest python-pytest-xdist python-setuptools python-wheel))
-    (propagated-inputs (list python-psutil))
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (home-page "https://joblib.readthedocs.io/")
     (synopsis "Using Python functions as pipeline jobs")
     (description
