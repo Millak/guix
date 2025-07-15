@@ -3484,7 +3484,6 @@ limits.")
     ;; Text formatting only supported since C++20, which is available in gcc-13.
     ;; https://en.cppreference.com/w/cpp/compiler_support#cpp_lib_format_201907L
     (native-inputs (list catch2-3
-                         gcc-13
                          pkg-config
                          qttools-5))
     (inputs (list dbus
