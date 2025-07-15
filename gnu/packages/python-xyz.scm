@@ -24613,25 +24613,30 @@ pytest-fixtures-style dependency injection.")
   (package
     (name "python-binaryornot")
     (version "0.4.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "binaryornot" version))
-              (sha256
-               (base32
-                "0qc006986rb6bcbmiymwgcl1mns2jphr1j7sr7nk41nlr7gh359m"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "binaryornot" version))
+       (sha256
+        (base32 "0qc006986rb6bcbmiymwgcl1mns2jphr1j7sr7nk41nlr7gh359m"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; TypeError: binary() got an unexpected keyword argument
-             ;; 'average_size'.
-             (substitute* "tests/test_check.py"
-              (("average_size=512") ""))
-             #t)))))
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; TypeError: binary() got an unexpected keyword argument
+              ;; 'average_size'.
+              (substitute* "tests/test_check.py"
+                (("average_size=512") "")))))))
+    (native-inputs
+     (list python-hypothesis
+           python-setuptools))
     (propagated-inputs
-     (list python-chardet python-hypothesis))
+     (list python-chardet))
     (home-page "https://github.com/audreyr/binaryornot")
     (synopsis "Package to check if a file is binary or text")
     (description "Ultra-lightweight pure Python package to check if a file is
