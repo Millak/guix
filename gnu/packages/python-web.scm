@@ -7618,22 +7618,40 @@ high level API for making HTTP requests when using Twisted.")
 (define-public python-autobahn
   (package
     (name "python-autobahn")
-    (version "19.2.1")
+    (version "24.4.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "autobahn" version))
         (sha256
          (base32
-          "1mm7j24ls01c7jb1ad5p5cpyxvzgydiyf8b04ihykh2v8g98j0x7"))))
-    (build-system python-build-system)
+          "1jcjxr16cy93v2kjwpvrcmg7cjbp5kyhbcpq25nhny6gn3qixmx2"))))
+    (build-system pyproject-build-system)
     (arguments
+     (list
       ;; The tests fail to run:
       ;; https://github.com/crossbario/autobahn-python/issues/1117
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-cffi python-twisted python-txaio))
-    (home-page "https://crossbar.io/autobahn/")
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'relax-zope-interface
+                     (lambda _
+                       ;; python-zope-interface is a world rebuild package
+                       ;; and our one-digit lower minor version seems to be
+                       ;; fine.
+                       (substitute* "setup.py"
+                         (("zope.interface>=5.2.0")
+                          "zope.interface>=5.1.0"))))
+                   (add-after 'unpack 'strip-xbr
+                     (lambda _
+                       ;; Strip new XBR feature which isn't available in Guix.
+                       (setenv "AUTOBAHN_STRIP_XBR" "1"))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-cffi
+                             python-cryptography
+                             python-hyperlink
+                             python-twisted
+                             python-txaio))
+    (home-page "https://github.com/crossbario/autobahn-python/")
     (synopsis "Web Application Messaging Protocol implementation")
     (description "This package provides an implementation of the @dfn{Web Application
 Messaging Protocol} (WAMP).  WAMP connects components in distributed
