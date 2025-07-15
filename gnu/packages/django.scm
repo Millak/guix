@@ -438,29 +438,8 @@ size and quality.")
                (base32
                 "14br4bzx07yxrx6xsyyhlpjgb0sz6lflbw90g87cn0z13qd18jd9"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; The test suite is disabled because there are many test failures (see:
-     ;; https://github.com/pytest-dev/pytest-django/issues/943).
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (if tests?
-               (begin
-                 (setenv "PYTEST_DJANGO_TEST_RUNNER" "pytest")
-                 (setenv "DJANGO_SETTINGS_MODULE"
-                         "pytest_django_test.settings_sqlite_file")
-                 (invoke "python" "-m" "pytest" "-vv" "-k"
-                         ;; FIXME: these tests fail to locate Django templates ...
-                         (string-append "not test_django_not_loaded_without_settings"
-                                        " and not test_settings"
-                                        ;; ... and this does not discover
-                                        ;; 'pytest_django_test'.
-                                        " and not test_urls_cache_is_cleared")))
-               (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-setuptools python-setuptools-scm python-wheel))
+     (list python-django python-setuptools python-setuptools-scm python-wheel))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://pytest-django.readthedocs.io/")
