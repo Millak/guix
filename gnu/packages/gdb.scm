@@ -7,6 +7,7 @@
 ;;; Copyright © 2020, 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +71,16 @@
                             #~'("--enable-targets=i586-pc-gnu,x86_64-pc-gnu")
                             #~'())
       #:phases #~(modify-phases %standard-phases
+                   ;; The following phase only applies to gdb@12, which
+                   ;; inherits from this package. Remove it when removing
+                   ;; gdb@12.
+                   #$@(if (target-aarch64?)
+                     #~((add-after 'unpack 'patch-aarch64
+                       (lambda _
+                         (substitute* "sim/aarch64/cpustate.h"
+                           (("aarch64_get_CPSR_bits  \\(sim_cpu \\*, uint32_t\\)")
+                             "aarch64_get_CPSR_bits  (sim_cpu *, FlagMask)")))))
+                     #~())
                    (add-after 'unpack 'patch-paths
                      (lambda* (#:key inputs #:allow-other-keys)
                        (let ((sh (string-append (assoc-ref inputs "bash")
