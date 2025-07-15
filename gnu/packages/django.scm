@@ -1732,6 +1732,27 @@ models that use Django's standard @code{ImageField}, in addition to the
 image files already supported by it.")
     (license license:expat)))
 
+(define-public python-django-environ
+  (package
+    (name "python-django-environ")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django_environ" version))
+       (sha256
+        (base32 "06h4g50qy1h77b4n28xbyzl2wvsblzs9qi63d7kvvm9x8n8whz92"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://django-environ.readthedocs.io/")
+    (synopsis "Configure Django project using environment variables")
+    (description
+     "This Django package allows you to utilize 12factor inspired environment
+variables to configure your Django application.")
+    (license license:expat)))
+
 (define-public python-django-cleanup
   (package
     (name "python-django-cleanup")
