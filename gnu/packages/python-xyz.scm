@@ -27513,16 +27513,18 @@ class ShellOutSSHClientTests"))))
 (define-public python-smmap
   (package
     (name "python-smmap")
-    (version "3.0.1")
+    (version "5.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "smmap" version))
        (sha256
-        (base32 "0ijlnv60y8f41py1wnn5n1a1i81cxd9dfpdhr0k3cgkrcbz8850p"))))
-    (build-system python-build-system)
+        (base32 "1mcai5vf9bgz389y4sqgj6w22wn7zmc7m33y3j50ryjq76h6bsi6"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nosexcover))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Byron/smmap")
     (synopsis "Python sliding window memory map manager")
     (description "@code{smmap} is a pure Python implementation of a sliding
