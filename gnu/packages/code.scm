@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,7 +89,15 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages boost)
+  #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages regex)
+  #:use-module (gnu packages logging)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
+  #:use-module (srfi srfi-1))
 
 ;;; Tools to deal with source code: metrics, cross-references, etc.
 
@@ -1078,6 +1087,96 @@ also be used for C++ code.
 
 Using cscope, you can easily search for where symbols are used and defined.")
     (license license:bsd-3)))
+
+(define-public sourcetrail
+  (package
+    (name "sourcetrail")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenSourceSourceTrail/Sourcetrail")
+             (commit version)
+             (recursive? #t)))
+       (patches (search-patches "sourcetrail-fix-cmakelists-and-paths.patch"))
+       (file-name (git-file-name name version))
+       (sha256
+        "06rp9ba9lkzwm8m7agzajg550h632kqb57bs9srvbgv411bkvgdd")
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (for-each delete-file-recursively
+                              '(".conan" ".devcontainer"
+                                ".github"
+                                "conanfile.txt"
+                                "scripts"
+                                "bin/app/data/install"
+                                "bin/app/user/log"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (let* ((split-version (string-split version
+                                         (lambda (c)
+                                           (or (eqv? c #\.)
+                                               (eqv? c #\-)))))
+            (major-version (first split-version))
+            (minor-version (second split-version))
+            (version-patch (third split-version)))
+       (list #:configure-flags #~(list "-DENABLE_UNIT_TEST=true"
+                                       "-DENABLE_GUI_TEST=true"
+                                       "-DENABLE_INTERGRATION_TEST=true"
+                                       (string-append "-DVERSION_MAJOR="
+                                                      #$major-version)
+                                       (string-append "-DVERSION_MINOR="
+                                                      #$minor-version)
+                                       (string-append "-DVERSION_PATCH="
+                                                      #$version-patch)
+                                       "-DLLVM_ENABLE_PROJECTS:STRING=clang"
+                                       "-DLLVM_ENABLE_RTTI:BOOL=ON"
+                                       "-DCLANG_LINK_CLANG_DYLIB:BOOL=ON"
+                                       "-DLLVM_LINK_LLVM_DYLIB:BOOL=ON"
+                                       "-DLLVM_TARGETS_TO_BUILD=host"
+                                       "-DBUILD_CXX_LANGUAGE_PACKAGE=ON"
+                                       (string-append "-DClang_DIR="
+                                                      #$clang-19
+                                                      "/lib/cmake/clang"))
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'fix-paths
+                            (lambda* (#:key inputs #:allow-other-keys)
+                              (substitute* "src/lib_gui/tests/utilityAppTestSuite.cpp"
+                                (("/usr/bin/bash")
+                                 (search-input-file inputs "/bin/bash")))
+                              (substitute* "CMakeLists.txt"
+                                (("@OUTPUT_DIR@")
+                                 #$output))))
+                          (add-after 'install 'install-projects
+                            (lambda _
+                              (let ((src (string-append #$output
+                                          "/share/sourcetrail/user/projects"))
+                                    (dst (string-append #$output:projects
+                                          "/share/sourcetrail/user/projects")))
+                                (copy-recursively src dst)
+                                (delete-file-recursively src))))))))
+    (inputs (list boost
+                  clang-19
+                  expected-lite
+                  qt5compat
+                  qtbase
+                  qtnetworkauth
+                  qtsvg
+                  qtwayland
+                  range-v3
+                  spdlog-1.13
+                  sqlite
+                  tinyxml))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/OpenSourceSourceTrail/Sourcetrail")
+    (synopsis "Graphical cross-platform source code browser for C/C++")
+    (description
+     "Sourcetrail is a free and open-source cross-platform source explorer
+that helps you get productive on unfamiliar source code.  It includes support
+for C/C++, providing a graphical means for discovering symbols and their place
+in a project.")
+    (license license:gpl3)))
 
 (define-public xenon
   (package

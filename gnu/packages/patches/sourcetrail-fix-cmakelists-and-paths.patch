@@ -1,0 +1,101 @@
+Get rid of `clang-tidy.cmake` as it is not present in cmake installation.
+Change SQLite3's `find_package` to `REQUIRED` as the `sqlite3` package does not provide a .cmake file, so we fall back to cmake's included definition.
+We change the install directory to the store output rather than /usr. `@OUTPUT_DIR@` is substituted to the store path in an added phase.
+For the /data and /user directories, we move them to /share/sourcetrail rather than leaving them in the /bin directory.
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b8b91d9c..d5dbdfa2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -69,7 +69,6 @@ include(cmake/create_symlink.cmake)
+ include(cmake/add_sourcetrail_library.cmake)
+ include(cmake/add_sourcetrail_interface.cmake)
+ include(cmake/add_sourcetrail_test.cmake)
+-include(cmake/clang-tidy.cmake)
+ include(cmake/cppcheck.cmake)
+ include(cmake/coverage.cmake)
+ #---------------------------------------------------------------------------------------------------------------------------------
+@@ -142,12 +141,9 @@ find_package(expected-lite REQUIRED)
+ find_package(fmt CONFIG REQUIRED)
+ find_package(range-v3 CONFIG REQUIRED)
+ find_package(spdlog CONFIG REQUIRED)
+-find_package(SQLite3 CONFIG REQUIRED)
++find_package(SQLite3 REQUIRED)
+ # Boost --------------------------------------------------------------------------------------------------------------------------
+ set(Boost_USE_MULTITHREAD ON)
+-set(Boost_USE_STATIC_LIBS
+-    ON
+-    CACHE BOOL "Set to ON to force the use of the static libraries.")
+ set(Boost_USE_STATIC_RUNTIME OFF)
+ find_package(
+   Boost 1.83
+@@ -384,14 +380,14 @@ execute_process(COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${CMAKE_BINARY
+ create_symlink("${CMAKE_SOURCE_DIR}/bin/app/data" "${CMAKE_BINARY_DIR}/app/data")
+ create_symlink("${CMAKE_SOURCE_DIR}/bin/app/user" "${CMAKE_BINARY_DIR}/app/user")
+ # Install Executables ------------------------------------------------------------------------------------------------------------
+-set(APPIMAGE_ROOT "usr")
++set(APPIMAGE_ROOT "@OUTPUT_DIR@")
+ set(INSTALL_RUNTIME_DIR "${APPIMAGE_ROOT}/bin")
+ 
+ install(TARGETS Sourcetrail Sourcetrail_indexer RUNTIME DESTINATION ${INSTALL_RUNTIME_DIR})
+ 
+-install(DIRECTORY ${CMAKE_SOURCE_DIR}/bin/app/data/ DESTINATION ${INSTALL_RUNTIME_DIR}/data/)
++install(DIRECTORY ${CMAKE_SOURCE_DIR}/bin/app/data/ DESTINATION ${APPIMAGE_ROOT}/share/sourcetrail/data/)
+ 
+-install(DIRECTORY ${CMAKE_SOURCE_DIR}/bin/app/user/ DESTINATION ${INSTALL_RUNTIME_DIR}/user/)
++install(DIRECTORY ${CMAKE_SOURCE_DIR}/bin/app/user/ DESTINATION ${APPIMAGE_ROOT}/share/sourcetrail/user/)
+ 
+ # Install desktop file for application
+ install(FILES "${CMAKE_SOURCE_DIR}/cmake/Sourcetrail.desktop" DESTINATION "${APPIMAGE_ROOT}/share/applications")
+
+We remove the sample projects from the default `ApplicationSettings.xml` as they do not function properly, requiring their installed directory to be mutable,
+which is not possible in the store. They are installed in the `projects` package output.
+
+Submodule bin contains modified content
+diff --git a/bin/app/data/fallback/ApplicationSettings.xml b/bin/app/data/fallback/ApplicationSettings.xml
+index c1d3a78..33cf7d4 100644
+--- a/bin/app/data/fallback/ApplicationSettings.xml
++++ b/bin/app/data/fallback/ApplicationSettings.xml
+@@ -9,10 +9,6 @@
+ 	</indexing>
+ 	<user>
+ 		<recent_projects>
+-			<recent_project>./projects/tutorial/tutorial.srctrlprj</recent_project>
+-			<recent_project>./projects/tictactoe_cpp/tictactoe_cpp.srctrlprj</recent_project>
+-			<recent_project>./projects/tictactoe_py/tictactoe_py.srctrlprj</recent_project>
+-			<recent_project>./projects/javaparser/javaparser.srctrlprj</recent_project>
+ 		</recent_projects>
+ 	</user>
+     <version>8</version>
+diff --git a/bin/app/user/ApplicationSettings.xml b/bin/app/user/ApplicationSettings.xml
+index 7081ab0..755281f 100755
+--- a/bin/app/user/ApplicationSettings.xml
++++ b/bin/app/user/ApplicationSettings.xml
+@@ -22,10 +22,6 @@
+     </indexing>
+     <user>
+         <recent_projects>
+-            <recent_project>C:/Hard/SourceCode/Sourcetrail/build/x64-Debug/Debug/app/user/./projects/tutorial/tutorial.srctrlprj</recent_project>
+-            <recent_project>C:/Hard/SourceCode/Sourcetrail/build/x64-Debug/Debug/app/user/./projects/tictactoe_cpp/tictactoe_cpp.srctrlprj</recent_project>
+-            <recent_project>C:/Hard/SourceCode/Sourcetrail/build/x64-Debug/Debug/app/user/./projects/tictactoe_py/tictactoe_py.srctrlprj</recent_project>
+-            <recent_project>C:/Hard/SourceCode/Sourcetrail/build/x64-Debug/Debug/app/user/./projects/javaparser/javaparser.srctrlprj</recent_project>
+         </recent_projects>
+     </user>
+     <version>8</version>
+
+Set paths to /share/sourcetrail.
+
+diff --git a/src/lib_gui/platform_includes/includesLinux.h b/src/lib_gui/platform_includes/includesLinux.h
+index 79e8be7f..5dadcca5 100644
+--- a/src/lib_gui/platform_includes/includesLinux.h
++++ b/src/lib_gui/platform_includes/includesLinux.h
+@@ -43,6 +43,6 @@ inline void setupApp([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
+   AppPath::setCxxIndexerDirectoryPath(appPath);
+ 
+   // Check if bundled as Linux AppImage
+-  if(appPath.getConcatenated(L"/../share/data").exists()) {
+-    AppPath::setSharedDataDirectoryPath(appPath.getConcatenated(L"/../share").getAbsolute());
++  if(appPath.getConcatenated(L"/../share/sourcetrail/data").exists()) {
++    AppPath::setSharedDataDirectoryPath(appPath.getConcatenated(L"/../share/sourcetrail").getAbsolute());
+   }
+
