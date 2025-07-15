@@ -2926,12 +2926,9 @@ access by following these steps:
 
 @enumerate
 @item
-Find three committers who would vouch for you.  You can view the list of
-committers at
-@url{https://codeberg.org/guix/guix/settings/collaboration}.  Each
-of them should email a statement to @email{guix-maintainers@@gnu.org} (a
-private alias for the collective of maintainers), signed with their
-OpenPGP key.
+Find three committers who would vouch for you.  Each of them should
+email a statement to @email{guix-maintainers@@gnu.org} (a private alias
+for the collective of maintainers), signed with their OpenPGP key.
 
 Committers are expected to have had some interactions with you as a
 contributor and to be able to judge whether you are sufficiently
