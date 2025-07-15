@@ -11085,6 +11085,37 @@ Interface) framework/toolkit for building async web services in Python.")
 and FastAPI.")
     (license license:expat)))
 
+(define-public python-whitenoise
+  (package
+    (name "python-whitenoise")
+    (version "6.9.0")
+    (source (origin
+              (method git-fetch) ; PyPI missing test failes
+              (uri (git-reference
+                    (url "https://github.com/evansd/whitenoise")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y00a59ww9f631m51d5db5xcnbckzcwfm64wabp5vamn7l1kqqsj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-k" "not test_modified"))) ; HTTP 304 error
+    (native-inputs (list python-brotli
+                         python-django
+                         python-requests
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/evansd/whitenoise")
+    (synopsis "Static file serving for WSGI applications")
+    (description
+     "WhiteNoise allows your web app to serve its own static files, making it
+a self-contained unit that can be deployed anywhere without relying on nginx,
+Amazon S3 or any other external service.")
+    (license license:expat)))
+
 (define-public python-suds
   (package
     (name "python-suds")
