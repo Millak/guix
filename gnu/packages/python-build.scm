@@ -341,6 +341,22 @@ facilitate packaging Python projects, where packaging includes:
                    license:asl2.0       ;packaging is dual ASL2/BSD-2
                    license:bsd-2))))
 
+(define-public python-setuptools-67
+  (package
+    (inherit python-setuptools)
+    (version "67.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "setuptools" version))
+       (sha256
+        (base32 "16myxkpa89r045il88zcygdy1zbi2mvvpz5b4a70p9jhklmfjz95"))
+       (modules '((guix build utils)))
+       (snippet
+        '(for-each delete-file (find-files "setuptools" "^(cli|gui).*\\.exe$")))))
+    (native-inputs
+     (list python-wheel-0.40))))
+
 (define-public python-setuptools-next
   (package
     (inherit python-setuptools)
