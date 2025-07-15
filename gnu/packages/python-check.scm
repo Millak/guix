@@ -3937,6 +3937,8 @@ are useful when writing automated tests in Python.")
        (sha256
         (base32 "1qn7cj9lx3m7pwa8ak1106f9c54yvpa996x84gfqmyfjfg1ar6aa"))))
     (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f))          ;no tests in PyPI archive
     (propagated-inputs (list python-dateutil))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/adamchainz/time-machine")
