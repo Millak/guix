@@ -19426,6 +19426,9 @@ and macros, primarily for software projects written in CL by the author.")
 (define-public ecl-jpl-util
   (sbcl-package->ecl-package sbcl-jpl-util))
 
+(define-public clasp-jpl-util
+  (sbcl-package->clasp-package sbcl-jpl-util))
+
 (define-public sbcl-json-streams
   (let ((commit "5da012e8133affbf75024e7500feb37394690752")
         (revision "1"))
