@@ -3177,23 +3177,21 @@ through Python's socket interface")
 (define-public python-pytest-subtests
   (package
     (name "python-pytest-subtests")
-    (version "0.10.0")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-subtests" version))
+       (uri (pypi-uri "pytest_subtests" version))
        (sha256
-        (base32 "05zvnxx0hdrd9w4z51qhchg3nkz5s47agryw68g8q7krq5kim5nr"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
-    (native-inputs (list python-pytest python-setuptools-scm))
+        (base32 "1ph0z3a0lywzfw7illl3khydqffi8im2203dlxqfwa6mbxkahm3i"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-attrs))
     (home-page "https://github.com/pytest-dev/pytest-subtests")
     (synopsis "Unittest subTest() support and subtests fixture")
     (description "This Pytest plugin provides unittest @code{subTest()}
