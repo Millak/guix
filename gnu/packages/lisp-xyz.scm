@@ -15618,6 +15618,9 @@ Common Lisp code.")
 (define-public ecl-f2cl
   (sbcl-package->ecl-package sbcl-f2cl))
 
+(define-public clasp-f2cl
+  (sbcl-package->clasp-package sbcl-f2cl))
+
 (define-public sbcl-fakenil
   (package
     (name "sbcl-fakenil")
