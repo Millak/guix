@@ -11285,6 +11285,41 @@ older system-wide @file{/sys} interface.")
                    license:gpl2+      ;; gpio-tools
                    license:lgpl3+)))) ;; C++ bindings
 
+(define-public python-libgpiod
+  (package
+    (name "python-libgpiod")
+    (version "2.3.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri
+          (git-reference
+            (url "https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git")
+            (commit (string-append "python-v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32 "1lkd7lgpb28pqf7p6lrwl0ss7r5ryiddmdcisnz6ixy796qhr8kr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests require root, see README.md
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cd-to-python-bindings
+            (lambda _
+              (chdir "bindings/python"))))))
+    (native-inputs
+      (list python-setuptools
+            python-wheel
+            libgpiod))
+    (synopsis "Interact with the Linux GPIO character device")
+    (description
+     "This package provides Python bindings for interacting with GPIO devices
+that avoids the usage of older system-wide @file{/sys} interface.")
+    (home-page "https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/")
+    (license (list license:lgpl2.1+   ;; libgpiod
+                   license:gpl2+      ;; gpio-tools
+                   license:lgpl3+)))) ;; C++ bindings
+
 (define-public libtraceevent
   (package
     (name "libtraceevent")
