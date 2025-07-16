@@ -578,6 +578,9 @@ your images.  Among its features are:
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
+       #:configure-flags
+       ;; Fix compilation with gcc-14
+       '("-DCMAKE_C_FLAGS=-D_DEFAULT_SOURCE")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-convert
