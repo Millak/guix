@@ -1830,7 +1830,7 @@ programs.")
 (define-public kokkos
   (package
     (name "kokkos")
-    (version "4.4.00")
+    (version "4.6.02")
     (source
      (origin
        (method git-fetch)
@@ -1839,7 +1839,7 @@ programs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k8xd1m5lvk28i677yj780029gsb56m48wyh8d7rp9yqd4bcchbh"))
+        (base32 "0pfrxqjirm8qccb9k1krlw9fh0qlva62q6gyc6j7yz0zvdrdyi59"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled googletest.
