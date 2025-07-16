@@ -237,6 +237,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages less)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
@@ -7010,23 +7011,21 @@ interfaces.")
 (define-public python-click
   (package
     (name "python-click")
-    (version "8.1.7")
+    (version "8.1.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "click" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets/click")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1pm6khdv88h764scik67jki98xbyj367h591j8hpwy4y8nnm766a"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
+        (base32 "1wqkkim5gmhdrc62c79s5gbzz2x60l1bf9aacpakfv6rr1zjl054"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list less
+           python-flit-core
+           python-pytest))
     (home-page "https://palletsprojects.com/p/click/")
     (synopsis "Command line library for Python")
     (description
