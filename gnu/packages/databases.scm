@@ -205,28 +205,23 @@
 (define-public duckdb
   (package
     (name "duckdb")
-    (version "1.1.3")
+    (version "1.3.2")
     (source
-      (origin
+     (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/duckdb/duckdb")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1b57r4x1lnkdiv0f8r0wyhbil61l9gp1ipr37i12s0x6dv19lxi2"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; There is no git checkout from which to read the version tag.
-            (substitute* "CMakeLists.txt"
-              (("set\\(DUCKDB_VERSION \"[^\"]*\"")
-               (string-append "set(DUCKDB_VERSION \"v" #$version "-dev0\"")))))))
+        (base32 "1dg3g66az17z4snxxw7cslqdkrvbx2nnyry73yi77yp0vpri1lz8"))))
     (arguments
      (list
       #:configure-flags
-      '(list "-DBUILD_EXTENSIONS=autocomplete;fts;icu;json;parquet;tpch;")))
+      #~(list "-DBUILD_EXTENSIONS=autocomplete;icu;json;parquet;tpch;"
+              ;; There is no git checkout from which to read the version tag.
+              (string-append "-DOVERRIDE_GIT_DESCRIBE="
+                             "v" #$version "-0-g0123456789"))))
     (build-system cmake-build-system)
     (home-page "https://duckdb.org")
     (synopsis "In-process SQL OLAP database management system")
