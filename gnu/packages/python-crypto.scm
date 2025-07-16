@@ -635,7 +635,7 @@ ciphers, message digests and key derivation functions.")
            python-pretend
            python-pytest
            python-pytest-rerunfailures
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/pyca/pyopenssl")
     (synopsis "Python wrapper module around the OpenSSL library")
     (description "PyOpenSSL is a high-level wrapper around a subset of the
