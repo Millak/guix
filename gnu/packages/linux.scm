@@ -3420,46 +3420,52 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
 (define-public strace
   (package
     (name "strace")
-    (version "6.4")
-    (home-page "https://strace.io")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append home-page "/files/" version
-                                 "/strace-" version ".tar.xz"))
-             (sha256
-              (base32
-               "0f4jxgsdr76mf51kv2kwhv39ap7kilrchkfvqrhd5pvzqnx7v617"))
-             (patches (search-patches "strace-readlink-tests.patch"))))
+    (version "6.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/strace/strace")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a4xq7lji9iazrjdm0anqg2xgkypl3a9pjcm9j71s9q84ggjgwqm"))
+       (patches (search-patches "strace-readlink-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-/bin/sh
-           (lambda _
-             (substitute* "src/strace.c"
-               (("/bin/sh") (which "sh")))))
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "tests/Makefile.in"
-               ;; XXX: These hang forever even if the test time-out is
-               ;; extended.
-               (("^\tstrace-DD?D?\\.test \\\\.*") "")
-               (("^\tpidns-cache.test \\\\.*") "")
-               (("^\t.*--pidns-translation.test \\\\.*") "")
-               ;; This one fails with an encoding error.
-               (("^\t.*net-yy-unix.test \\\\.*") "")))))
-       ;; Don't fail if the architecture doesn't support different
-       ;; personalities.
-       #:configure-flags '("--enable-mpers=check")
-       ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=32459>.
-       #:parallel-tests? #f))           ; undeterministic failures
-    (native-inputs (list perl))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Needed for the 'bootstrap phase.
+          (add-after 'unpack 'patch-source-shebangs-initial
+            (assoc-ref %standard-phases 'patch-source-shebangs))
+          (add-after 'unpack 'patch-test-shebangs
+            (lambda _
+              (substitute* '("tests/detach-vfork.test"
+                             "tests/gen_tests.sh"
+                             "tests/kill-on-exit.sh")
+                (("#!/bin/sh")
+                 (string-append "#!" (which "sh")))))))
+      #:configure-flags
+      ''("--with-libunwind"
+         ;; Don't fail if the architecture doesn't support different
+         ;; personalities.
+         "--enable-mpers=check")
+      ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=32459>.
+      #:parallel-tests? #f))           ; undeterministic failures
+    (inputs (list libunwind))
+    (native-inputs
+     (list autoconf
+           automake
+           perl
+           m4
+           ;; For some tests
+           util-linux))
+    (home-page "https://strace.io")
     (synopsis "System call tracer for Linux")
     (description
      "strace is a system call tracer, i.e. a debugging tool which prints out a
 trace of all the system calls made by a another process/program.")
-    (properties
-     '((release-monitoring-url . "https://github.com/strace/strace/releases")))
     (license license:lgpl2.1+)))
 
 (define-public ltrace
