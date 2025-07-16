@@ -14039,13 +14039,13 @@ procedures.")
 (define-public python-jaraco-functools
   (package
     (name "python-jaraco-functools")
-    (version "3.5.0")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "jaraco.functools" version))
+       (uri (pypi-uri "jaraco_functools" version))
        (sha256
-        (base32 "186xqzs3bqhjwajnprxy3sc3h0w5vdld8spc1dxjnn9720yykq1i"))))
+        (base32 "0lvk12qbl5zd1ikr6xzflj1jcs3vwgmwgy2k63x5dkmbrjzllqxy"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? (not (%current-target-system))
@@ -14057,11 +14057,6 @@ procedures.")
     (native-inputs
      (list python-jaraco-classes
            python-pytest
-           python-pytest-black
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-flake8
-           python-pytest-mypy
            python-setuptools
            python-setuptools-scm
            python-wheel))
