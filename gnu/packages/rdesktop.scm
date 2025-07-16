@@ -32,6 +32,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -46,7 +47,9 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
@@ -56,6 +59,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -170,6 +174,55 @@ It consists of the @code{xfreerdp} client, libraries for client and server
 functionality, and Windows Portable Runtime (WinPR), a portable implementation
 of parts of the Windows API.")
     (license license:asl2.0)))
+
+(define-public freerdp-3
+  (package
+    (inherit freerdp)
+    (name "freerdp")
+    (version "3.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FreeRDP/FreeRDP")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "093yyfd3lbbavg0scqka2m64xkn8y1hirfjsv01pdnm4fsrhhphw"))
+       (patches
+        (search-patches "freerdp-3.16.0-rpath.patch"))))
+    (inputs
+     (modify-inputs (package-inputs freerdp)
+      (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf)))
+    (arguments
+     (list #:build-type "Release"
+           #:configure-flags
+           #~(list
+              ;; Relax gcc-14's strictness.
+              (string-append "-DCMAKE_C_FLAGS="
+                             " -Wno-error=incompatible-pointer-types"
+                             " -Wno-error=int-conversion")
+              "-DWITH_JPEG=ON"
+              #$@(if (target-x86-64?)
+                     #~("-DWITH_SSE2=ON")
+                     #~())
+              "-DWITH_PULSE=ON"
+              "-DWITH_CAIRO=ON"
+              "-DWITH_CUPS=ON"
+              "-DBUILD_TESTING=ON"
+              "-DWITH_SERVER=ON" ;build servers
+              "-DWITH_SHADOW=ON" ;build shadow server
+              "-DWITH_PROXY=ON"
+              "-DWITH_OPENH264=ON") ; could also use ffmpeg instead
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-dlopen-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "winpr/libwinpr/smartcard/smartcard_pcsc.c"
+                    (("\"libpcsclite[.]so[.]1\"")
+                     (string-append "\""
+                      (search-input-file inputs "/lib/libpcsclite.so.1")
+                      "\""))))))))))
 
 (define-public xrdp
   (package

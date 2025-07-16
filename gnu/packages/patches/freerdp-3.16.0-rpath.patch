@@ -1,0 +1,21 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2025-07-17
+License: Apache Software License 2.0
+
+diff -ru orig/FreeRDP/cmake/ConfigureRPATH.cmake FreeRDP/cmake/ConfigureRPATH.cmake
+--- orig/FreeRDP/cmake/ConfigureRPATH.cmake	2025-07-17 10:42:17.557667810 +0200
++++ FreeRDP/cmake/ConfigureRPATH.cmake	2025-07-17 11:32:13.692935801 +0200
+@@ -15,10 +15,10 @@
+     option(WITH_ADD_PLUGIN_TO_RPATH "Add extension and plugin path to RPATH" OFF)
+     if(WITH_ADD_PLUGIN_TO_RPATH)
+       set(CFG_INSTALL_RPATH
+-          "\$ORIGIN/../${FREERDP_EXTENSION_REL_PATH}:\$ORIGIN/../${FREERDP_PLUGIN_PATH}:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}:\$ORIGIN/.."
++          "\$ORIGIN/../${FREERDP_EXTENSION_REL_PATH}:\$ORIGIN/../${FREERDP_PLUGIN_PATH}:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}:\$ORIGIN/..:\$ORIGIN/../.."
+       )
+     else()
+-      set(CFG_INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}:\$ORIGIN/..")
++      set(CFG_INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}:\$ORIGIN/..:\$ORIGIN/../..")
+     endif()
+   endif()
+ endif(APPLE)
+Only in FreeRDP/: LIBS
