@@ -30843,6 +30843,8 @@ source via the Abstract Syntax Tree.")
     (license license:bsd-3)))
 
 (define-public python-astunparse
+  ;; XXX: No updates since 2019, consider to remove when python-pytorch is
+  ;; updated.
   (package
     (name "python-astunparse")
     (version "1.6.3")
@@ -30852,10 +30854,12 @@ source via the Abstract Syntax Tree.")
        (uri (pypi-uri "astunparse" version))
        (sha256
         (base32 "0wh8jjvwafxc7rvbyb13cdwndkicm7cry1bd8p1q9l7has23mnas"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f))          ; there are none
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-six python-wheel))
+     (list python-six))
     (home-page "https://github.com/simonpercivall/astunparse")
     (synopsis "AST unparser for Python")
     (description "This package provides an AST unparser for Python.  It is a
