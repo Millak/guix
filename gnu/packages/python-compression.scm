@@ -479,16 +479,16 @@ and decompression by implementing Python bindings for the ISA-L library.")
 (define-public python-pylsqpack
   (package
     (name "python-pylsqpack")
-    (version "0.3.17")
+    (version "0.3.22")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pylsqpack" version))
               (sha256
                (base32
-                "1qiwmavmxy6ba89mrdkzk52hqrd4awnp4yca395pxp2np66pf81g"))))
+                "1npcdj416gqc5zvlkyh9z808k381lrm56zvz1zsdjw437hdp2zxn"))))
     ;; FIXME: Unbundle ls-qpack and xxhash!
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/aiortc/pylsqpack")
     (synopsis "Python bindings for @code{ls-qpack}")
     (description
