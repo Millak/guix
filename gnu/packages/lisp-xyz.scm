@@ -18265,6 +18265,9 @@ documentation system, explicit development support, etc.")
 (define-public ecl-hu.dwim.asdf
   (sbcl-package->ecl-package sbcl-hu.dwim.asdf))
 
+(define-public clasp-hu.dwim.asdf
+  (sbcl-package->clasp-package sbcl-hu.dwim.asdf))
+
 (define-public sbcl-hu.dwim.common
   (package
     (name "sbcl-hu.dwim.common")
