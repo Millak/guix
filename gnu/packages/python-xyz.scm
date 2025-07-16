@@ -14753,14 +14753,19 @@ for automated refactoring or highlighting.")
 (define-public python-littleutils
   (package
     (name "python-littleutils")
-    (version "0.2.2")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "littleutils" version))
        (sha256
-        (base32 "0vwijrylppmk0nbddqvn527r9cg3zw8d6zk6r58hslry42jf7jp6"))))
-    (build-system python-build-system)
+        (base32 "069xlm6vp1rprgrl4gsg3fd2vg0nzdw7v2qij7i45v8c080mp0y7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests in PyPIi archive or Git checkout
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/alexmojaki/littleutils")
     (synopsis "Python utility function collection")
     (description "@code{littleutils} is a small collection of Python utility
