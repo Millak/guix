@@ -15759,6 +15759,9 @@ great for REPL interaction and debugging.")
 (define-public ecl-fare-mop
   (sbcl-package->ecl-package sbcl-fare-mop))
 
+(define-public clasp-fare-mop
+  (sbcl-package->clasp-package sbcl-fare-mop))
+
 (define-public cl-fare-mop
   (sbcl-package->cl-source-package sbcl-fare-mop))
 
