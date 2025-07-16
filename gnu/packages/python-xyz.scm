@@ -13920,28 +13920,22 @@ enforced method signatures and consistent documentation.")
 (define-public python-jaraco-classes
   (package
     (name "python-jaraco-classes")
-    (version "3.2.1")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jaraco.classes" version))
        (sha256
-        (base32 "0d6g7qvfv1jlzbzh6asprqdblqd59grvlvr3nwbdqdqrmwlbfm7d"))))
+        (base32 "1k9s7wxhsy15730qab8bry7kpgl4yk3wch45ikfw0f823nsj9827"))))
     (build-system pyproject-build-system)
     (arguments
      (list  ; Do not test the myproject.toml build as it pulls dependencies.
       #:test-flags '(list "-k" "not project")))
     (native-inputs
      (list python-pytest
-           python-pytest-black
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-flake8
-           python-pytest-mypy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs (list python-more-itertools))
+           python-setuptools))
+    (propagated-inputs
+     (list python-more-itertools))
     (home-page "https://github.com/jaraco/jaraco.classes")
     (synopsis "Utility functions for Python class constructs")
     (description "This Python library contains utility functions for Python
