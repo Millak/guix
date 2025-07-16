@@ -864,8 +864,8 @@ to @samp{info \"(guix) Base Services\"} for examples.")
     (license license:asl2.0)))
 
 (define-public python-hdlmake
-  (let ((commit "9338e3e7a8784e63d16496a3fa8234d9e5aa7621")
-        (revision "1"))
+  (let ((commit "48260fb0d7ace3ff2ee124121a5780a226513077")
+        (revision "2"))
     (package
       (name "python-hdlmake")
       (version (git-version "3.3" revision commit))
@@ -877,14 +877,15 @@ to @samp{info \"(guix) Base Services\"} for examples.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "13d0zvpch0k758r2c2vq3vhd9nbydy01jnv2ddfvb6d3xpb4wzrj"))))
+          (base32 "1s36gc5g3v20x2v26d45hfw2x9r7k54lj7sggz94qi7ydbi1ng41"))))
       (build-system pyproject-build-system)
       (arguments (list #:phases #~(modify-phases %standard-phases
                                     (add-before 'check 'chdir
                                       (lambda _
-                                        (chdir "testsuite"))))))
+                                        (chdir "testsuite"))))
+                       #:test-flags #~(list "test_all.py")))
       (native-inputs (list python-pytest python-setuptools python-wheel))
-      (propagated-inputs (list python-six))
+      (propagated-inputs (list python-networkx python-six))
       (home-page "https://gitlab.com/ohwr/project/hdl-make/")
       (synopsis "Generate multi-purpose makefiles for HDL projects")
       (description
