@@ -23613,19 +23613,18 @@ manage (install/update) them for you.")
 (define-public python-pyproject-hooks
   (package
     (name "python-pyproject-hooks")
-    (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyproject_hooks" version))
-              (sha256
-               (base32
-                "1xaf4sharvacqlav6w3b38nc4j0rzg0p4axi7zamanbzp6cb4wgj"))))
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyproject_hooks" version))
+       (sha256
+        (base32 "1y511nblr0lslz1d5s46844f5raryjnp3n1dci499bhgqkarp18y"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flit-core
-           python-testpath
-           python-pytest))
-    (propagated-inputs (list python-tomli))
+           python-pytest
+           python-testpath))
     (home-page "https://github.com/pypa/pyproject-hooks")
     (synopsis "Low-level library for calling @file{pyproject.toml} backends")
     (description
