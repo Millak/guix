@@ -9566,128 +9566,6 @@ core C library, and bindings for Python (PyGTK).")
 easy, safe, and automatic.")
     (license license:lgpl2.1+)))
 
-(define-public tracker-miners
-  (package
-    (name "tracker-miners")
-    (version "3.7.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/tracker-miners/"
-                                  (version-major+minor version)
-                                  "/tracker-miners-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1zm57pih7csgipw3w2b1sgadvfszik70sbz4gr5pn6aw9caqhhz7"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       (list "-Dminer_rss=false"        ; libgrss is required.
-             ;; Ensure the RUNPATH contains all installed library locations.
-             (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/tracker-miners-3.0")
-             ;; TODO: Check if this is only a build-time failure, or add
-             ;; variants to explicitly enable this features, (see:
-             ;; https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/300).
-             "-Dlandlock=disabled"
-             ;; TODO: Enable functional tests. Currently, the following error
-             ;; appears:
-             ;; Exception: The functional tests require DConf to be the default
-             ;; GSettings backend. Got GKeyfileSettingsBackend instead.
-             "-Dfunctional_tests=false"
-             "-Dsystemd_user_services=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-shell
-           (lambda _
-             (setenv "SHELL" (which "bash"))))
-         (add-before 'configure 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((manpage "/etc/asciidoc/docbook-xsl/manpage.xsl")
-                    (file (search-input-file inputs manpage)))
-               (substitute* "docs/manpages/meson.build"
-                 (("/etc/asciidoc[^']+")
-                  file)))))
-         (add-before 'configure 'fix-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Disable those tests that require the functional_tests option
-             ;; to be true and the UPower daemon to be started.
-             (substitute* "examples/python/meson.build"
-               (("foreach example_name:.*")
-                "foreach example_name: []"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Some tests expect to write to $HOME.
-               (setenv "HOME" "/tmp")
-               (setenv "LANG" "en_US.UTF-8")
-               (invoke "dbus-run-session" "--" "meson" "test"
-                       "--print-errorlogs"
-                       ;; Do not run the slow test, which fail (see:
-                       ;; https://gitlab.gnome.org/GNOME/tracker-miners
-                       ;; /-/issues/226).
-                       "--no-suite" "slow")))))))
-    (native-inputs
-     (list dbus
-           gettext-minimal
-           `(,glib "bin")
-           docbook-xsl
-           docbook-xml
-           gsettings-desktop-schemas
-           asciidoc
-           libxslt
-           gobject-introspection
-           pkg-config
-           python-pygobject))
-    (inputs
-     (list exempi
-           ffmpeg
-           flac
-           giflib
-           glib
-           gstreamer
-           gst-plugins-base
-           icu4c
-           json-glib
-           libcue
-           libexif
-           libgsf
-           libgxps
-           libiptcdata
-           libjpeg-turbo
-           libosinfo
-           libpng
-           libseccomp
-           libsoup
-           libtiff
-           libvorbis
-           libxml2
-           poppler
-           shared-mime-info
-           taglib
-           totem-pl-parser
-           tracker
-           upower
-           zlib))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "TRACKER_CLI_SUBCOMMANDS_DIR")
-            (separator #f)              ; single entry
-            (files `(,(string-append "libexec/tracker"
-                                     (version-major version)))))))
-    (synopsis "Metadata database, indexer and search tool")
-    (home-page "https://wiki.gnome.org/Projects/Tracker")
-    (description
-     "Tracker is an advanced framework for first class objects with associated
-metadata and tags.  It provides a one stop solution for all metadata, tags,
-shared object databases, search tools and indexing.")
-    ;; src/libtracker-*/* and src/tracker-extract/* are covered by lgpl2.1+,
-    ;; src/gvdb/* are covered by lgpl2.0+, and the rest is gpl2+.
-    (license (list license:gpl2+
-                   license:lgpl2.1+
-                   license:lgpl2.0+))))
-
 (define-public tinysparql
   (package
     (name "tinysparql")
@@ -9783,8 +9661,117 @@ endpoints for federated queries.")
     ;; the rest is gpl2+.
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public localsearch
+  (package
+    (name "localsearch")
+    (version "3.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/localsearch/"
+                                  (version-major+minor version)
+                                  "/localsearch-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1f8l1kyvsr4lq18yrsf2p66q3xgc3mgvzax9ymagwa7vqf6l0byl"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list ;; Ensure the RUNPATH contains all installed library locations.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        #$output "/lib/localsearch-3.0")
+         ;; TODO: Check if this is only a build-time failure, or add
+         ;; variants to explicitly enable this features, (see:
+         ;; https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/300).
+         "-Dlandlock=disabled"
+         ;; TODO: Enable functional tests. Currently, the following error
+         ;; appears:
+         ;; Exception: The functional tests require DConf to be the default
+         ;; GSettings backend. Got GKeyfileSettingsBackend instead.
+         "-Dfunctional_tests=false"
+         "-Dsystemd_user_services=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-tests
+            (lambda _
+              ;; Disable those tests that require the functional_tests option
+              ;; to be true and the UPower daemon to be started.
+              (substitute* "examples/python/meson.build"
+                (("foreach example_name:.*")
+                 "foreach example_name: []"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Some tests expect to write to $HOME.
+                (setenv "HOME" "/tmp")
+                (setenv "LANG" "en_US.UTF-8")
+                (invoke "dbus-run-session" "--" "meson" "test"
+                        "--print-errorlogs" "-t0"
+                        ;; Do not run the slow test, which fail (see:
+                        ;; https://gitlab.gnome.org/GNOME/tracker-miners
+                        ;; /-/issues/226).
+                        "--no-suite" "slow")))))))
+    (native-inputs
+     (list `(,glib "bin")
+           asciidoc
+           dbus
+           docbook-xml
+           docbook-xsl
+           gettext-minimal
+           gobject-introspection
+           gsettings-desktop-schemas
+           libxslt
+           pkg-config
+           python-pygobject))
+    (inputs
+     (list exempi
+           ffmpeg
+           flac
+           giflib
+           glib
+           gstreamer
+           gst-plugins-base
+           icu4c
+           json-glib
+           libcue
+           libexif
+           libgsf
+           libgxps
+           libiptcdata
+           libjpeg-turbo
+           libosinfo
+           libpng
+           libseccomp
+           libsoup
+           libtiff
+           libvorbis
+           libxml2
+           poppler
+           shared-mime-info
+           taglib
+           totem-pl-parser
+           tinysparql
+           upower
+           zlib))
+    (synopsis "Desktop search framework")
+    (home-page "https://gitlab.gnome.org/GNOME/localsearch")
+    (description
+     "LocalSearch is the file search framework of the GNOME desktop.  It stores
+data about user files structured by the Nepomuk definitions, features a
+sandboxed metadata extractor, and provides facilities to alter file metadata.
+The data is exposed through a SPARQL endpoint, which applications may access
+through portals.")
+    ;; src/common/*, src/cli/* (except src/cli/main.c) and src/extractor/* are
+    ;; covered by lgpl2.1+, src/control/*, src/indexer/* and src/writeback/*
+    ;; is gpl2+.
+    (license (list license:gpl2+ license:lgpl2.1+))))
+
 (define-public tracker
   (deprecated-package "tracker" tinysparql))
+
+(define-public tracker-miners
+  (deprecated-package "tracker-miners" localsearch))
 
 (define-public nautilus
   (package
