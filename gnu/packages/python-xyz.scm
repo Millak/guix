@@ -14030,28 +14030,22 @@ WeightedLookup: A specialized RangeMap for selecting an item by weights.
 (define-public python-jaraco-context
   (package
     (name "python-jaraco-context")
-    (version "4.1.1")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "jaraco.context" version))
+       (uri (pypi-uri "jaraco_context" version))
        (sha256
-        (base32 "0hbjm1rpxf4pzmbdp9rh3ali4zqnlcr8m97bhh1nizxvzcpxim7h"))))
+        (base32 "1cyija3n4481r1ykxdx342m07lrfyg4ygbn0in9i82yganjlxblv"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? (not (%current-target-system))
-           ;; Do not test the myproject.toml build as it pulls dependencies.
-           #:test-flags '(list "-k" "not project")))
+     (list #:tests? #f))        ;no tests in PyPI archive and Git checkout
     (native-inputs
-     (list python-pytest
-           python-pytest-black
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-flake8
-           python-pytest-mypy
-           python-setuptools
+     (list python-setuptools
            python-setuptools-scm
            python-wheel))
+    (propagated-inputs
+     (list python-backports-tarfile))
     (home-page "https://github.com/jaraco/jaraco.context")
     (synopsis "Context managers Python library")
     (description "This Python library provides context managers-related
