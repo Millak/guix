@@ -398,9 +398,9 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
            (method git-fetch)
            (uri (git-reference
                  (url "https://git.sr.ht/~martanne/vis-test")
-                 (commit "bbd2f34ff788e87a51a74069069273ad83c44f1f")))
+                 (commit "783b7ef67aa360f0b9bd44fa5ea47e644bc49d69")))
            (sha256
-            (base32 "1jsvg2lg3xqfgi79x08kx94mc34mh62ivca10vsci6fqsk68jbd0"))
+            (base32 "1lhcizf93gab4hgnpac7l9csmhhvh0i7rd71p3vfk00nrdqrqrb6"))
            (file-name (git-file-name "vis-test" version))))))
     (inputs (list bash-minimal lua ncurses libtermkey lua-lpeg tre))
     (synopsis "Vim-like text editor")
