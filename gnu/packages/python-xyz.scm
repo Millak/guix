@@ -30592,48 +30592,46 @@ append on old values.  Partd excels at shuffling operations.")
 (define-public python-fsspec
   (package
     (name "python-fsspec")
-    (version "2024.12.0")
+    (version "2025.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/fsspec/filesystem_spec")
-             (commit version)))
+              (url "https://github.com/fsspec/filesystem_spec")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14hj13nnqd39z1x0vlf0939a08c5qb0jcwgawgcsr0wgmh2jzkam"))))
+        (base32 "1r7vv64qf7ynw81jn0xn5axz709a8fd0bl7w9131aqzqj7a00ppy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--ignore=fsspec/implementations/tests/test_github.py"
+              "-k" (string-join
+                    ;; Test requirs nentwork access
+                    (list "not test_async_cat_file_ranges"
+                          "test_gist_public_all_files"
+                          "test_gist_public_missing_file"
+                          "test_gist_public_one_file"
+                          ;; Test hangs
+                          "test_processes")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version
+          (add-before 'build 'set-version
             (lambda _
-              (call-with-output-file "fsspec/_version.py"
-                (lambda (port)
-                  (display (string-append "__version__ = \"" #$version "\"")
-                           port)))
-              (substitute* "pyproject.toml"
-                (("\\[tool\\.hatch\\.build\\.hooks\\.vcs\\]")
-                 "")
-                (("^dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\"\n")))))
-          (add-after 'install 'install-version
-            (lambda _
-              (install-file
-               "fsspec/_version.py"
-               (dirname (car (find-files #$output "gui\\.py")))))))
-      #:test-flags
-      '(list
-        ;; XXX: Unclear why this test fail.
-        "-k" "not test_processes")))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-aiohttp python-libarchive-c python-requests python-tqdm))
     (native-inputs
-     (list python-hatchling
+     (list nss-certs-for-test
+           python-hatch-vcs
+           python-hatchling
+           python-numpy
            python-pytest
+           python-pytest-asyncio
            python-pytest-mock
-           python-numpy))
+           python-pytest-rerunfailures))
     (home-page "https://github.com/intake/filesystem_spec")
     (synopsis "File-system specification")
     (description "The purpose of this package is to produce a template or
