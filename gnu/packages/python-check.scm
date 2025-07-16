@@ -2908,15 +2908,19 @@ times.")
 (define-public python-pytest-rerunfailures
   (package
     (name "python-pytest-rerunfailures")
-    (version "10.2")
+    (version "15.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-rerunfailures" version))
+       (uri (pypi-uri "pytest_rerunfailures" version))
        (sha256
-        (base32 "15v68kggjvkflbqr0vz8gp5yp3pcsk0rz05bpg2l4xp0a6nin7ly"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pytest python-setuptools))
+        (base32 "106fiqn3d86xcl2cwmc76svi2mkfgphqna37bf617f6pmdl06166"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools))
+    (propagated-inputs
+     (list python-packaging))
     (home-page "https://github.com/pytest-dev/pytest-rerunfailures")
     (synopsis "Pytest plugin to re-run flaky tests")
     (description "This package provides a pytest plugin to re-run tests to
