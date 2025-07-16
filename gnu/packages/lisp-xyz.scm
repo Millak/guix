@@ -18191,6 +18191,9 @@ immediately.")
 (define-public ecl-html-template
   (sbcl-package->ecl-package sbcl-html-template))
 
+(define-public clasp-html-template
+  (sbcl-package->clasp-package sbcl-html-template))
+
 (define-public sbcl-http-body
   (let ((commit "3e4bedd6a9d9bc4e1dc0a45e5b55360ae30fd388")
         (revision "2"))
