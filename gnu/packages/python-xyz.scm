@@ -28186,34 +28186,27 @@ particularly convenient for use in tests.")
 (define-public python-tempora
   (package
     (name "python-tempora")
-    (version "5.0.1")
+    (version "5.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tempora" version))
        (sha256
-        (base32 "09wirlk5vmxlhl9rnxp7g5qz2nsd6b0gnzk5fczbz0s8lsbz386b"))))
+        (base32 "1k9d6qmlp0i4v3d0dcqcsndvmng3lfdh4y0p8gwy9i8cg7ndkddb"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Do not test the myproject.toml build as it tries to pull
-     ;; dependencies from the Internet.
-     (list #:test-flags #~'("-k" "not project")))
+     (list
+      ;; Do not test the myproject.toml build as it tries to pull dependencies
+      ;; from the Internet.
+      #:test-flags #~(list "-k" "not project"
+                           "tests")))
     (native-inputs
      (list python-freezegun
            python-pytest
-           python-pytest-black
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-enabler
-           python-pytest-flake8
-           python-pytest-freezegun
-           python-pytest-mypy
-           python-setuptools-scm
-           python-types-freezegun
-           python-types-pytz
            python-setuptools
-           python-wheel))
-    (propagated-inputs (list python-jaraco-functools python-pytz))
+           python-setuptools-scm
+           python-tzdata))
+    (propagated-inputs (list python-dateutil python-jaraco-functools))
     (home-page "https://github.com/jaraco/tempora")
     (synopsis "Python date and time objects and routines")
     (description "The @code{tempora} Python library contains miscellaneous
