@@ -15543,6 +15543,9 @@ learn about each of the parameters.")
 (define-public ecl-exponential-backoff
   (sbcl-package->ecl-package sbcl-exponential-backoff))
 
+(define-public clasp-exponential-backoff
+  (sbcl-package->clasp-package sbcl-exponential-backoff))
+
 (define-public sbcl-external-program
   (let ((commit "5888b8f1fd3953feeeacecbba4384ddda584a749")
         (revision "1"))
