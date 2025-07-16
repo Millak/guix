@@ -1510,24 +1510,13 @@ syntax validation, ...
        (sha256
         (base32 "1c89vc40zj5aj2zvbvw875wqpyf0x6xrqhm3q5jg797g5hkhbjbz"))))
     (build-system pyproject-build-system)
+    ;; See: <https://github.com/wolever/parameterized/issues/181>,
+    ;;      <https://github.com/wolever/parameterized/issues/167>,
+    ;;      <https://github.com/wolever/parameterized/pull/162>.
     (arguments
-     (list
-      #:test-flags #~(list "parameterized/test.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              (substitute* "parameterized/test.py"
-                ;; It's taken from NixOS package definition.
-                ;; <https://github.com/wolever/parameterized/issues/167>,
-                ;; <https://github.com/wolever/parameterized/pull/162>.
-                (("assert_equal\\(missing, \\[\\])") "")
-                (("assertRaisesRegexp") "assertRaisesRegex")))))))
+     (list #:tests? #f))
     (native-inputs
-     (list python-pytest
-           python-mock
-           python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/wolever/parameterized")
     (synopsis "Parameterized testing with any Python test framework")
     (description
