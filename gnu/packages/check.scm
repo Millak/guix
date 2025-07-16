@@ -3385,37 +3385,20 @@ directories to be excluded from testing.")
 (define-public python-freezegun
   (package
     (name "python-freezegun")
-    (version "1.2.2")
+    (version "1.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "freezegun" version))
        (sha256
-        (base32 "0ijlq32qvpm5zprfzbyzawpl9qjsknlxhryr1i0q84wl0sxd28nd"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Add an explicit case for static methods as they are callable
-        ;; in Python 3.10, breaking this conditional.
-        ;; XXX Taken from upstream pull request:
-        ;; https://github.com/spulec/freezegun/pull/397
-        '(substitute* "freezegun/api.py"
-           (("if not callable\\(attr_value\\) or \
-inspect\\.isclass\\(attr_value\\):")
-            "if (not callable(attr_value) or inspect.isclass(attr_value)\
-or isinstance(attr_value, staticmethod)):")))))
-    (build-system python-build-system)
+        (base32 "0pmwcjf0vxmars4kncb35pvrckp0j97lya5aqzbzy2m56d721inp"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-dateutil))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The tests are normally executed via `make test`, but the PyPi
-         ;; package does not include the Makefile.
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
     (home-page "https://github.com/spulec/freezegun")
     (synopsis "Test utility for mocking the datetime module")
     (description
