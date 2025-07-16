@@ -12559,25 +12559,37 @@ writable properties, cached properties, etc.")
 (define-public python-executing
   (package
     (name "python-executing")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "executing" version))
        (sha256
-        (base32 "1axrwh7kr7nshzjw6vj9w9hn3rqh9af2c257ll7iba0d4vfpv8lf"))))
+        (base32 "0mb74ajjfhzscvwxr9qazjs2q7il2fvyicm7s58jbzh8h418q42x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; AssertionError: assert 'test failure' in ''
-      #:test-flags #~(list "-k" "not test_two_statement_lookups")))
+      #:test-flags
+      ;; Test needs IPython
+      #~(list "-k" "not test_two_statement_lookups")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; See: <https://github.com/alexmojaki/executing/issues/99>.
+              (substitute* "pyproject.toml"
+                (("ignore_missing_imports = true.*")
+                 "ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+python_functions = \"test_\"\n")))))))
     (native-inputs
      (list python-asttokens
            python-littleutils
            python-pytest
+           python-rich
            python-setuptools
            python-setuptools-scm
-           python-toml
            python-wheel))
     (home-page "https://github.com/alexmojaki/executing")
     (synopsis "Get information about what a Python frame is currently doing")
