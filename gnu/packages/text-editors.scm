@@ -347,7 +347,7 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
 (define-public vis
   (package
     (name "vis")
-    (version "0.8")                     ; also update the vis-test input
+    (version "0.9")                     ; also update the vis-test input
     (source
      (origin
        (method git-fetch)
@@ -355,7 +355,7 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
              (url "https://git.sr.ht/~martanne/vis")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0ija192c9i13gbikm707jynf6my212i040ls0f8pgkbiyvls7xay"))
+        (base32 "0y5b434dg7h5m1z0rz40ypirh99sm77mvvg8r1fp79z1bk73g0s9"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
