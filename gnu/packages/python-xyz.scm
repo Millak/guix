@@ -28768,21 +28768,19 @@ source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
 (define-public python-typeguard
   (package
     (name "python-typeguard")
-    (version "4.4.1")
+    (version "4.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "typeguard" version))
        (sha256
-        (base32 "06y22d1f5dhpyl71wbhsaibig5hvc2v44pw795yb8lxl02fsh8hd"))))
+        (base32 "0x2zkskia5lb1838ys0bhpp9v6y80jkhchzdz874spbhzggx4zrs"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mypy
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-typing-extensions
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-typing-extensions))
     (home-page "https://github.com/agronholm/typeguard")
