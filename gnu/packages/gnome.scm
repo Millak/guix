@@ -9566,138 +9566,6 @@ core C library, and bindings for Python (PyGTK).")
 easy, safe, and automatic.")
     (license license:lgpl2.1+)))
 
-(define-public tracker
-  (package
-    (name "tracker")
-    (version "3.7.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/tracker/"
-                                  (version-major+minor version) "/"
-                                  "tracker-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1yfi53fpfszfjajrqf1g80cri472k6wxpxj6g3nwa13yjd84lgdb"))))
-    (build-system meson-build-system)
-    (arguments
-     (list
-      #:glib-or-gtk? #t
-      #:test-options `(list ,@(if (or (target-riscv64?)
-                                      (target-aarch64?))
-                                  `("--timeout-multiplier" "10")
-                                  '("--timeout-multiplier" "2")))
-      #:configure-flags
-      ;; Otherwise, the RUNPATH will lack the final path component.
-      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
-                             #$output "/lib:"
-                             #$output "/lib/tracker-3.0")
-              "-Ddocs=false"
-              "-Dsystemd_user_services=false"
-              "--wrap-mode=nodownload") ; XXX: to be disabled
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "utils/trackertestutils/__main__.py"
-                (("/bin/bash")
-                 (search-input-file inputs "bin/bash")))))
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              #$@(if (target-32bit?)
-                     ;; On 32-bit systems, the far away dates are incorrect,
-                     ;; and the floats are not parsed exactly.
-                     '((substitute*
-                           "tests/libtracker-sparql/tracker-statement-test.c"
-                         (("g_assert_cmpfloat *\\((.*), ==, ([0-9.e-]+)\\);"
-                           total actual expected)
-                          (string-append "g_assert_cmpfloat_with_epsilon ("
-                                         actual ", " expected ", 1e-12);")))
-                       (substitute* "tests/core/tracker-sparql-test.c"
-                         (("\\{ \"datetime/direct-1\", .* \\},")
-                          "/* datetime test disabled */")))
-                     '())
-              *unspecified*))
-          (add-before 'configure 'set-shell
-            (lambda _
-              (setenv "SHELL" (which "bash"))))
-          (add-before 'configure 'relax-gcc-14-strictness
-            (lambda _
-              (setenv "CFLAGS"
-                      (string-append
-                       "-g -O2"
-                       " -Wno-error=implicit-function-declaration"
-                       " -Wno-error=incompatible-pointer-types"))))
-          (add-before 'configure 'fix-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((manpage "/etc/asciidoc/docbook-xsl/manpage.xsl")
-                     (file (search-input-file inputs manpage)))
-                (substitute* "docs/manpages/meson.build"
-                  (("/etc/asciidoc[^']+")
-                   file)))))
-          (replace 'check
-            (lambda* (#:key tests? test-options #:allow-other-keys)
-              (when tests?
-                ;; Some tests expect to write to $HOME.
-                (setenv "HOME" "/tmp")
-                (apply invoke "dbus-run-session" "--" "meson" "test"
-                       "--print-errorlogs" test-options)))))))
-    (native-inputs
-     (list gettext-minimal
-           `(,glib "bin")
-           (libc-utf8-locales-for-target)
-           gobject-introspection
-           docbook-xsl
-           docbook-xml
-           gsettings-desktop-schemas
-           asciidoc
-           libxslt
-           cmake-minimal
-           python-pygobject
-           gtk-doc/stable
-           dbus
-           pkg-config
-           python
-           vala))
-    (inputs
-     (list bash-minimal
-           dbus
-           libsoup))
-    (propagated-inputs
-     ;; These are in Requires or Requires.private of tracker-sparql-3.0.pc.
-     (list glib
-           icu4c                ;libunistring gets miner-miner-fs test to fail
-           json-glib
-           libxml2
-           sqlite))
-    (synopsis "Metadata database, indexer and search tool")
-    (home-page "https://wiki.gnome.org/Projects/Tracker")
-    (description
-     "Tracker is a search engine and triplestore for desktop, embedded and mobile.
-
-It is a middleware component aimed at desktop application developers who want
-their apps to browse and search user content.  It's not designed to be used
-directly by desktop users, but it provides a commandline tool named
-@command{tracker} for the adventurous.
-
-Tracker allows your application to instantly perform full-text searches across
-all documents.  This feature is used by the @{emph{search} bar in GNOME Files, for
-example.  This is achieved by indexing the user's home directory in the
-background.
-
-Tracker also allows your application to query and list content that the user
-has stored.  For example, GNOME Music displays all the music files that are
-found by Tracker.  This means that GNOME Music doesn't need to maintain a
-database of its own.
-
-If you need to go beyond simple searches, Tracker is also a linked data
-endpoint and it understands SPARQL.")
-    ;; https://gitlab.gnome.org/GNOME/tracker/-/blob/master/COPYING:
-    ;; src/libtracker-*/* and src/tracker-extract/* are covered by lgpl2.1+,
-    ;; libstemmer is bsd-3 and the rest is gpl2+.
-    (license (list license:gpl2+
-                   license:bsd-3
-                   license:lgpl2.1+))))
-
 (define-public tracker-miners
   (package
     (name "tracker-miners")
@@ -9819,6 +9687,104 @@ shared object databases, search tools and indexing.")
     (license (list license:gpl2+
                    license:lgpl2.1+
                    license:lgpl2.0+))))
+
+(define-public tinysparql
+  (package
+    (name "tinysparql")
+    (version "3.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/tinysparql/"
+                                  (version-major+minor version) "/"
+                                  "tinysparql-" version ".tar.xz"))
+              (sha256
+               (base32
+                "13mddmszrk4ihfwi5n67v5ykf01fmld4pkmw4881hphk4j807khl"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list "-Ddocs=false" "-Dsystemd_user_services=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/functional-tests/test_cli.py"
+                (("^([\t ]*)def test_help\\(self\\)" all indent)
+                 (string-append indent "@unittest.skip('apparently broken')\n"
+                                all)))
+              #$@(if (not (target-64bit?))
+                     ;; On 32-bit systems, the far away dates are incorrect,
+                     ;; and the floats are not parsed exactly.
+                     '((substitute*
+                           "tests/libtinysparql/tracker-statement-test.c"
+                         (("g_assert_cmpfloat *\\((.*), ==, ([0-9.e-]+)\\);"
+                           total actual expected)
+                          (string-append "g_assert_cmpfloat_with_epsilon ("
+                                         actual ", " expected ", 1e-12);")))
+                       (substitute* "tests/core/tracker-sparql-test.c"
+                         (("\\{ \"datetime/direct-1\", .* \\},")
+                          "/* datetime test disabled */")))
+                     '())
+              *unspecified*))
+          (add-before 'configure 'set-shell
+            (lambda _
+              (setenv "SHELL" (which "bash"))))
+          (delete 'check)               ;moved after install
+          (add-after 'install 'set-gi-typelib-path
+            (lambda* (#:key outputs #:allow-other-keys)
+              (setenv "GI_TYPELIB_PATH"
+                      (search-input-directory outputs "lib/girepository-1.0"))))
+          (add-after 'set-gi-typelib-path 'check
+            (lambda* (#:key tests? test-options #:allow-other-keys)
+              (when tests?
+                ;; Some tests expect to write to $HOME.
+                (setenv "HOME" "/tmp")
+                (apply invoke "dbus-run-session" "--" "meson" "test"
+                       "--print-errorlogs" "-t0" test-options)))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           (libc-utf8-locales-for-target)
+           gobject-introspection
+           docbook-xsl
+           docbook-xml
+           gsettings-desktop-schemas
+           asciidoc
+           libxslt
+           cmake-minimal
+           python-pygobject
+           gtk-doc/stable
+           dbus
+           pkg-config
+           python
+           vala))
+    (inputs
+     (list bash-minimal
+           dbus
+           libstemmer
+           libsoup))
+    (propagated-inputs
+     ;; These are in Requires or Requires.private of tracker-sparql-3.0.pc.
+     (list glib
+           icu4c                ;libunistring gets miner-miner-fs test to fail
+           json-glib
+           libxml2
+           sqlite))
+    (synopsis "Lightweight RDF triple store")
+    (home-page "https://gitlab.gnome.org/GNOME/tinysparql")
+    (description
+     "TinySPARQL is a RDF triple store with a SPARQL 1.1 interface.  It allows
+creating local databases in memory or the filesystem, and accessing/creating
+endpoints for federated queries.")
+    ;; https://gitlab.gnome.org/GNOME/tinysparql/-/blob/master/COPYING (stale):
+    ;; src/common/* and src/libtinysparql/* are covered by lgpl2.1+,
+    ;; the rest is gpl2+.
+    (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public tracker
+  (deprecated-package "tracker" tinysparql))
 
 (define-public nautilus
   (package
