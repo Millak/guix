@@ -7137,7 +7137,9 @@ with sensible defaults out of the box.")
        (uri (pypi-uri "click" version))
        (sha256
         (base32 "06kbzd6sjfkqan3miwj9wqyddfxc2b6hi7p5s4dvqjb3gif2bdfj"))))
-    (arguments `())))
+    (arguments (list #:tests? #f)) ;no tests in PyPI
+    (native-inputs
+     (list python-setuptools))))
 
 (define-public python-clickgen
   (package
