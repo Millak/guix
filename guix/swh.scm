@@ -2,7 +2,7 @@
 ;;; Copyright © 2018-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2025 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -802,9 +802,13 @@ and #f on failure.
 This procedure uses the \"vault\", which contains \"cooked\" directories in
 the form of tarballs.  If the requested directory is not cooked yet, it will
 wait until it becomes available, which could take several minutes."
-  (match (if (commit-id? reference)
-             (lookup-revision reference)
-             (lookup-origin-revision url reference))
+  (match (catch 'swh-error
+           (lambda ()
+             (if (commit-id? reference)
+                 (lookup-revision reference)
+                 (lookup-origin-revision url reference)))
+           (lambda (key url method response)
+             response))
     ((? revision? revision)
      (format log-port "SWH: found revision ~a with directory at '~a'~%"
              (revision-id revision)
@@ -819,6 +823,11 @@ wait until it becomes available, which could take several minutes."
                            output
                            #:archive-type archive-type
                            #:log-port log-port))
+    ((? response? response)
+     (format log-port
+             "SWH: error: ~a~%"
+             (response-reason-phrase response))
+     #f)
     (#f
      (format log-port
              "SWH: revision ~s originating from ~a could not be found~%"
