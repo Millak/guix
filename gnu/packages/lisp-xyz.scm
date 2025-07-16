@@ -18120,6 +18120,9 @@ starting from one of its nodes (typically when you open a URL in a new tab).")
 (define-public ecl-html-encode
   (sbcl-package->ecl-package sbcl-html-encode))
 
+(define-public clasp-html-encode
+  (sbcl-package->clasp-package sbcl-html-encode))
+
 (define-public sbcl-html-entities
   (let ((commit "4af018048e891f41d77e7d680ed3aeb639e1eedb"))
     (package
