@@ -1130,28 +1130,24 @@ in Python 3.13 by PEP-594.")
 (define-public python-portend
   (package
     (name "python-portend")
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "portend" version))
        (sha256
-        (base32 "0wpvixicc3d0lack65554mvdrrckkn18p1xcgiv9v5cwq59a6l2j"))))
+        (base32 "12b4ikxyv32n33mvm4brp74igl1mvw825x01sjvvs54y3yml17da"))))
     (build-system pyproject-build-system)
     ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
     ;; download dependencies.
     (arguments
      '(#:test-flags '("-k" "not project")))
-    (propagated-inputs (list python-tempora))
-    ;; TODO: Add python-pytest-ruff to native-inputs once it has been packaged.
-    (native-inputs (list python-pytest
-                         python-pytest-black
-                         python-pytest-checkdocs
-                         python-pytest-cov
-                         python-pytest-enabler
-                         python-pytest-mypy
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-tempora))
     (home-page "https://github.com/jaraco/portend")
     (synopsis "Monitor TCP ports for bound or unbound states")
     (description
