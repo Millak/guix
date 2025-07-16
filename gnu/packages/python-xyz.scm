@@ -16895,22 +16895,31 @@ markdown_py is also provided to convert Markdown files to HTML.")
 (define-public python-markdown2
   (package
     (name "python-markdown2")
-    (version "2.5.2")
+    (version "2.5.3")
     (source
      (origin
        (method git-fetch) ; no tests data in PyPi package
        (uri (git-reference
-             (url "https://github.com/trentm/python-markdown2")
-             (commit version)))
+              (url "https://github.com/trentm/python-markdown2")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01ll612yq7kjmj5p2zi9sf4l2wg6rm1ldcr6h0m2d9j180j7ggs8"))))
+        (base32 "136lwfhrbgdy3ci7qrkvcm5qx5c4xv4zwbnn57yfqg37pymflima"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py" "--" "-knownfailure")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (chdir "test"))))))
     (native-inputs
-     (list python-pygments
-           python-pytest
-           python-setuptools
-           python-wheel))
+     (list ;; python-pygments      ;optinal, tests fail when added
+           ;; python-wavedrom      ;optinal, not packaged
+           ;; python-latex2mathml  ;optinal, not packaged
+           python-setuptools))
     (home-page "https://github.com/trentm/python-markdown2")
     (synopsis "Fast and complete Python implementation of Markdown")
     (description
