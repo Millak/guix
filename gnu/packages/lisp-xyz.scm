@@ -16947,11 +16947,11 @@ caching based on arguments (an expanded form of memoization).")
      (license:non-copyleft
       "https://github.com/AccelerationNet/function-cache/blob/master/README.md"))
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("cl-interpol" ,sbcl-cl-interpol)
-       ("iterate" ,sbcl-iterate)
-       ("symbol-munger" ,sbcl-symbol-munger)
-       ("closer-mop" ,sbcl-closer-mop)))
+     (list sbcl-alexandria
+           sbcl-cl-interpol
+           sbcl-iterate
+           sbcl-symbol-munger
+           sbcl-closer-mop))
     (arguments
      `(#:tests? #f))))
 
