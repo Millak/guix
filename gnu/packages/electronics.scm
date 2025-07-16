@@ -873,7 +873,7 @@ design.")
 (define-public python-vsg
   (package
     (name "python-vsg")
-    (version "3.32.0")
+    (version "3.33.0")
     (source
      (origin
        (method git-fetch)
@@ -882,14 +882,20 @@ design.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ql96n291zm4j324q8fmlvy8xvrksb8v6fip0g0sw374z86hda53"))))
+        (base32 "1pnhha7dfika5jv1wrdwjkwrqaz22n0fb845wid5sy62gn549hmb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; Tests are expensive and may introduce race condition on systems with
       ;; high (more than 16) threads count; limit parallel jobs to 8x.
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #~(list
+         "--numprocesses" (number->string (min 8 (parallel-job-count)))
+         ;; TODO: Remove in 3.34.0.
+         ;; "file" command on "utf-8_encoded.vhd" file fails to detect
+         ;; utf-8 formatting. See:
+         ;; https://github.com/jeremiah-c-leary/vhdl-style-guide/issues/1471
+         "-vv" "-k" "not test_utf_8")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'pathch-pytest-options
@@ -900,6 +906,8 @@ design.")
                 ((".*-n.*auto.*") "")))))))
     (native-inputs
      (list python-pytest
+           python-pytest-cov
+           python-pytest-html
            python-pytest-xdist
            python-setuptools
            python-wheel))
