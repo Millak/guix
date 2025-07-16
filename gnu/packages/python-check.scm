@@ -1939,21 +1939,32 @@ failures per test.")
 (define-public python-pytest-checkdocs
   (package
     (name "python-pytest-checkdocs")
-    (version "2.7.1")
+    (version "2.10.0")  ;PyPI contains only the latest version
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-checkdocs" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jaraco/pytest-checkdocs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1bn1wr3yz8avkwacffyh26za7mg20f9pajpakfk4cn7yvmgbhcrb"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f))      ;no tests in pypi archive
+        (base32 "1amw07skzfwy88dqvcsh308lcds7avyyja0qzdqrk4739cm1g0vh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;tests require network access
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-docutils
-           python-importlib-metadata
-           python-pep517
-           python-pytest))
-    (native-inputs (list python-setuptools-scm))
+           python-pypa-build))
     (home-page "https://github.com/jaraco/pytest-checkdocs")
     (synopsis "Check the README when running tests")
     (description
