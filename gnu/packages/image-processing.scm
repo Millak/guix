@@ -50,6 +50,7 @@
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -170,6 +171,58 @@ image-reconstruction framework for Computational Magnetic Resonance Imaging.
 The tools in this software implement various reconstruction algorithms for
 Magnetic Resonance Imaging.")
     (license license:bsd-3)))
+
+(define-public cimg
+  (package
+    (name "cimg")
+    (version "3.5.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GreycLab/CImg")
+             (commit (string-append "v." version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01myf3bjbc46f977r7lvr9g1hcnpfygcv2xnqvhrl2nj7955sm5x"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "examples"
+                  ;; This is from upstream CI but parallelized.
+                  (invoke "make" "-j"
+                          (number->string (parallel-job-count)) "mlinux")
+                  (invoke "./image2ascii")
+                  (invoke "./generate_loop_macros")
+                  ;; Build an example that requires an external library.
+                  ;; Running it requires a display.
+                  (invoke "make" "use_jpeg_buffer"
+                          (string-append "CONF_CFLAGS="
+                                         (string-join '("-Dcimg_display=0"
+                                                        "-O3"
+                                                        "-mtune=generic"
+                                                        "-Dcimg_use_jpeg")
+                                                      " "))
+                          "CONF_LIBS=-ljpeg"))))))
+      #:install-plan
+      #~'(("CImg.h" "include/")
+          ("plugins" "include/CImg/plugins"))))
+    (native-inputs (list libjpeg-turbo)) ;for 'check
+    (home-page "https://cimg.eu")
+    (synopsis "Small C++ image processing library")
+    (description
+     "The @acronym{CImg, Cool Image} Library is a small C++ toolkit for
+image processing.  It is made of a single header file @code{CImg.h}
+that can be compiled using a minimal set of standard C++ and system
+libraries.  It includes a plugin mechanism to extend its functionality
+with external tools and libraries.")
+    ;; Dual-licensed, either license applies.
+    (license (list license:cecill-c license:cecill))))
 
 (define-public dcmtk
   (package
