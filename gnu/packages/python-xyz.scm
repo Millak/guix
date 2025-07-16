@@ -26154,7 +26154,7 @@ instead of servers and network commands.")
 (define-public python-astroid
   (package
     (name "python-astroid")
-    (version "3.3.4")
+    (version "3.3.11")
     (source
      (origin
        (method git-fetch)
@@ -26163,10 +26163,18 @@ instead of servers and network commands.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16cnfis2d0cyqxxx7iqi3n7ljhd55yv9v9yl1kl59k4a5jg4cnpx"))))
+        (base32 "1x5903kmi47pc87r949lym2cwl0xg885xyy730adxv0g6r083zwn"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; UserWarning: pkg_resources is deprecated as an API. See
+     ;; https://setuptools.pypa.io/en/latest/pkg_resources.html. The
+     ;; pkg_resources package is slated for removal as early as
+     ;; 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+     (list #:test-flags
+           #~(list "-k" "not test_identify_old_namespace_package_protocol")))
     (native-inputs
-     (list python-pytest
+     (list python-mypy-minimal
+           python-pytest
            python-setuptools
            python-wheel))
     (propagated-inputs
