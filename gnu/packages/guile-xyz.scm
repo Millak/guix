@@ -4806,7 +4806,7 @@ denote the invalidity of certain code paths in a Scheme program.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://inqlab.net/git/guile-srfi-146.git")
+             (url "https://codeberg.org/pukkamustard/guile-srfi-146")
              (commit (string-append "v" version))))
        (sha256
         (base32
@@ -4830,7 +4830,7 @@ keys and another using a hash function on the keys.  The
 datastructures and procedures are by default purely-functional.  This
 package re-uses the SRFI sample implementation that is based on
 red-black trees and Hash Array Mapped Trie (HAMT).")
-    (home-page "https://inqlab.net/git/guile-srfi-146.git")
+    (home-page "https://codeberg.org/pukkamustard/guile-srfi-146")
     (license
      (list license:lgpl3+
            ;; contains ISC code from the SRFI sample implementation
