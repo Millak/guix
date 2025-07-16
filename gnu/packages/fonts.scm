@@ -256,16 +256,15 @@ mediums.")
 (define-public font-lilex
   (package
     (name "font-lilex")
-    (version "2.600")
+    (version "2.601")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/mishamyrt/Lilex/releases/download/"
-                    version
-                    "/Lilex.zip"))
+                    version "/Lilex.zip"))
               (sha256
                (base32
-                "0k0zh5d1nlknkjig16bxfx5g071h1cn3s7h63bkpm2cjjvgydk0v"))))
+                "0n4fwnbrx1fy1140hw0nn7vn3fnpas10jhzv5jmif4sqvha1ln5a"))))
     (build-system font-build-system)
     (home-page "https://github.com/mishamyrt/Lilex")
     (synopsis "IBM Plex typeface with extended character sets and ligatures")
