@@ -762,6 +762,29 @@ Sorensen distance, plus some bonuses.  All distance computations are
 implemented in pure Python, and most of them are also implemented in C.")
     (license license:gpl2+)))
 
+(define-public python-domdf-python-tools
+  (package
+    (name "python-domdf-python-tools")
+    (version "3.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "domdf_python_tools" version))
+       (sha256
+        (base32 "16727afn92bp6hj4hvp27scc5ldz1y27z9abbxgi9sgiyk90iqra"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatch-requirements-txt))
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (propagated-inputs
+     (list python-natsort
+           python-typing-extensions))
+    (home-page "https://github.com/domdfcoding/domdf_python_tools")
+    (synopsis "Helpful functions for Python")
+    (description
+     "This package provide helpfull functions for Python's testing and
+packaging tasks.")
+    (license license:expat)))
+
 (define-public python-fastnumbers
   (package
     (name "python-fastnumbers")
