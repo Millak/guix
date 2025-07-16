@@ -27722,15 +27722,18 @@ design and layout.")
 (define-public python-pkginfo
   (package
     (name "python-pkginfo")
-    (version "1.10.0")
+    (version "1.12.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pkginfo" version))
        (sha256
         (base32
-          "15v2mycr7m4ld5wp1sl9flqjjv8zdgc5rkgfz1wxn44d74skixsx"))))
+          "0ysbl0rhy8chvx58zi5qb61jli76dcyblklnc0118vy39a15gnaw"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; Wheel metatda version mismatched: AssertionError: assert '2.4' == '2.3'
+     (list #:test-flags #~(list "-k" "not test_installed_ctor_w_dist_info")))
     (native-inputs
      (list python-pytest
            python-setuptools
