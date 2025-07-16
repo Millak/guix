@@ -905,6 +905,26 @@ terms of concatenated fragments that are based on static strings, files and
 parts of files defined using cut-off points or regular expressions.")
     (license license:expat)))
 
+(define-public python-hatch-requirements-txt
+  (package
+    (name "python-hatch-requirements-txt")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch_requirements_txt" version))
+       (sha256
+        (base32 "083xakilrmy0ymh34s9wm8x8s7s8vn7ij33xz9avn1gxb1bnws1c"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;avoid extra test dependencies
+    (propagated-inputs (list python-hatchling python-packaging-bootstrap))
+    (home-page "https://github.com/repo-helper/hatch-requirements-txt")
+    (synopsis "Hatchling plugin to read requirements.txt")
+    (description
+     "This package implements a functionality to read project dependencies
+from requirements.txt.")
+    (license license:expat)))
+
 (define-public python-hatch-vcs
   (package
     (name "python-hatch-vcs")
