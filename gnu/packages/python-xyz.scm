@@ -26176,6 +26176,7 @@ builds partial trees by inspecting living objects.")
        (sha256
         (base32 "1n8vpa9fckhc5934kp7m83wq81dhkvw987v7mjg2fdbr2car0bxc"))))
     (build-system pyproject-build-system)
+    (arguments '(#:tests? #f))          ;no tests in PyPI archive
     (propagated-inputs (list python-arrow))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/bolsote/isoduration")
