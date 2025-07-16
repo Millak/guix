@@ -14176,26 +14176,25 @@ module with a few extra procedures.")
 (define-public python-jaraco-packaging
   (package
     (name "python-jaraco-packaging")
-    (version "6.1")
+    (version "9.4.0") ;the latest version compatible with python-pypa-build@0.9.0
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jaraco.packaging" version))
         (sha256
           (base32
-            "0zimrnkh33b9g8ffw11mjh6kvs54cy5gcjw1h5cl1r7dc833dmkm"))))
+            "1djpwmw2gmb6i9by1bc4lh4qlkvifgsqfj5alb9xz7pa80fcm416"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           '(list "-k" "not project and not test_revived_distribution")))
+     (list #:tests? #f))         ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-pytest
-           python-pytest-checkdocs
-           python-pytest-flake8
-           python-rst.linker
-           python-setuptools
-           python-setuptools-scm
-           python-six
+     (list python-pypa-build
+           python-virtualenv
+           python-domdf-python-tools
+           python-jaraco-context
            python-sphinx))
     (home-page "https://github.com/jaraco/jaraco.packaging")
     (synopsis "Tools to supplement packaging Python releases")
