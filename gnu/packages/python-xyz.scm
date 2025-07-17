@@ -35776,26 +35776,26 @@ entities
 (define-public python-typogrify
   (package
     (name "python-typogrify")
-    (version "2.0.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "typogrify" version))
-              (sha256
-               (base32
-                "0f6b2gnnxjbx1fbmkcscc6qjr4hi78kwm1wx4b766ha3va66dr4b"))))
-    (build-system python-build-system)
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typogrify" version))
+       (sha256
+        (base32 "1vk17q04sax8rpdqll5zldnf6l3ixgknbnn9wimnwah3k1701aph"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "nosetests" "-v"))))))
+     (list
+      #:test-flags
+      #~(list "--doctest-modules"
+              "typogrify/filters.py"
+              "typogrify/packages/titlecase/tests.py")))
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
     (propagated-inputs
      (list python-smartypants))
-    (native-inputs
-     ;; For tests.
-     (list python-nose))
-    (home-page "https://github.com/mintchaos/typogrify")
+    (home-page "https://github.com/justinmayer/typogrify")
     (synopsis "Filters to transform text into typographically-improved HTML")
     (description
      "@code{typogrify} provides a set of custom filters that automatically
