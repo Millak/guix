@@ -519,3 +519,68 @@ sampling profiler for games and other applications.")
               (delete "libxkbcommon" "wayland")
               (prepend glfw)))
     (synopsis "Frame profiler (X11 version)")))
+
+(define-public scalasca
+  (package
+    (name "scalasca")
+    (version "2.6.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://apps.fz-juelich.de/scalasca/releases/scalasca/2.6/"
+               "dist/scalasca-" version ".tar.gz"))
+        (sha256
+          (base32
+            "18022bzdlzdgngcc5zlmsakvsk9dfg14kvg4ancqfhxy13cjzrqp"))
+        ;; Remove bundled dependencies that can be replaced by inputs
+        (snippet
+          #~(begin
+              (use-modules (guix build utils))
+              (delete-file-recursively "vendor/cubew/")
+              (delete-file-recursively "vendor/otf2/")))))
+    (build-system gnu-build-system)
+    (arguments
+      (list
+        #:configure-flags
+        #~(list "--enable-shared" "--disable-static")
+        #:phases
+        #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-scripts
+            ;; Use wrap-program on some outputs to resolve runtime dependency
+            ;; on coreutils, sed... without propagating these inputs.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion
+                (string-append #$output "/bin")
+                (for-each
+                  (lambda (file)
+                    (wrap-program file
+                      `("PATH" ":" prefix ,(search-path-as-string->list
+                        (getenv "PATH")))))
+                  (list "scalasca" "skin" "square"))))))))
+    (inputs
+      (list openmpi
+            cubew
+            otf2
+            zlib
+            libiberty
+            which ; configure and runtime dependency
+            findutils ; runtime dependency
+            gawk ; runtime dependency
+            scorep-openmpi ; runtime dependency
+            cubelib ; otherwise "ERROR: cube_dump is not available!"
+            cubegui ; needed at runtime
+            bash-minimal)) ; needed for using "wrap-program" in the recipe
+    (home-page "https://scalasca.org")
+    (synopsis "Performance analysis of parallel programs through runtime
+measurements")
+    (description
+     "Scalasca targets mainly scientific and engineering applications based on
+the programming interfaces MPI and OpenMP, including hybrid applications based
+on a combination of the two.  Unlike Scalasca 1.x, the Scalasca 2.x release
+series is based on the community instrumentation and measurement infrastructure
+Score-P.  This significantly improves interoperability with other performance
+analysis tool suites such as Vampir and TAU due to the usage of the two common
+data formats CUBE4 for profiles and the Open Trace Format 2 (OTF2) for event
+trace data.")
+    (license license:bsd-3)))
