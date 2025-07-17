@@ -2097,17 +2097,18 @@ XML data to JSON and other formats.")
 (define-public python-xmltodict
   (package
     (name "python-xmltodict")
-    (version "0.12.0")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xmltodict" version))
        (sha256
         (base32
-         "08cadlb9vsb4pmzc99lz3a2lx6qcfazyvgk10pcqijvyxlwcdn2h"))))
+         "0lx521w5nlmb937fxym5m38hxar354wfdpfik54kf3i1pcl7q7i0"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage python-nose python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/martinblech/xmltodict")
     (synopsis "Work with XML like you are working with JSON")
     (description "This package provides a Python library to convert XML to
