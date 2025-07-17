@@ -2868,29 +2868,24 @@ failures.")
 (define-public python-pytest-enabler
   (package
     (name "python-pytest-enabler")
-    (version "1.2.1")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-enabler" version))
+       (uri (pypi-uri "pytest_enabler" version))
        (sha256
-        (base32 "023ymm0r2gpn5q7aikvx567s507j0zk46w41w6gxb69c688zgs73"))))
+        (base32 "0gxsr0wk8kzf8rqfnhy84yh1zi0b55j76c0m9n006d8q4bzy1v25"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f
-                     #:test-flags '(list "tests")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-jaraco-context
+     (list python-importlib-resources
+           python-jaraco-context
            python-jaraco-functools
            python-toml))
-    (native-inputs (list python-pytest
-                         python-pytest-black
-                         python-pytest-checkdocs
-                         python-pytest-cov
-                         python-pytest-flake8
-                         python-pytest-mypy
-                         python-setuptools
-                         python-setuptools-scm
-                         python-types-toml))
     (home-page "https://github.com/jaraco/pytest-enabler")
     (synopsis "Enable installed pytest plugins")
     (description "Enable installed pytest plugins")
