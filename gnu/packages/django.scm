@@ -1662,7 +1662,7 @@ image files already supported by it.")
 (define-public python-django-cleanup
   (package
     (name "python-django-cleanup")
-    (version "6.0.0")
+    (version "9.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1671,35 +1671,14 @@ image files already supported by it.")
              (commit (string-append version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c1nghn1bnlq0a4d3sy3s363ksqsnxksixbimdy3cc6a0vk4sjps"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests-settings
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; django-cleanup optionally integrates with
-             ;; sorl-thumbnail, which is not available in Guix yet, so
-             ;; this patch comments it out to avoid import failures in
-             ;; test settings.
-             (substitute* "django_cleanup/testapp/settings.py"
-               (("'sorl\\.thumbnail',") "# 'sorl.thumbnail',"))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Add CWD to PYTHONPATH so that the tests can find the
-               ;; testapp package in the source.
-               (setenv "PYTHONPATH" (getcwd))
-               (invoke "pytest")))))))
+        (base32 "02ipa8d8ndnj8bs4dqhk03id4vmrvyr25vkpfqcfhmwipbhx8dc0"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list ;; python-django-sorl-thumbnail  ; TODO: Add to Guix.
-           python-easy-thumbnails
-           python-pillow
-           python-pytest
-           python-pytest-cov
+     (list python-pytest
+           python-pytest-cov ; runs by default
            python-pytest-django
-           python-pytest-xdist))
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-django))
     (home-page "https://github.com/un1t/django-cleanup")
