@@ -3836,15 +3836,17 @@ immutability of computed results.")
 (define-public python-tappy
   (package
     (name "python-tappy")
-    (version "3.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "tap.py" version))
+       (uri (pypi-uri "tap_py" version))
        (sha256
-        (base32
-         "0w4w6pqjkv54j7rv6vdrpfxa72c5516bnlhpcqr3vrb4zpmyxvpm"))))
-    (build-system python-build-system)
+        (base32 "026n47b46z07yh5z5vpffcfq2xp6850g2s8w9ycssvx5y1m9wg6h"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'custom
+                     #:test-flags #~(list "tests/run.py")))
+    (native-inputs (list python-hatchling))
     (home-page "https://github.com/python-tap/tappy")
     (synopsis "Tools for Test Anything Protocol")
     (description "Tappy is a set of tools for working with the Test Anything
