@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2018, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -126,7 +126,7 @@ COMMIT.  PROC receives the temporary directory file name as an argument."
          (invoke "git" "worktree" "remove" "--force" tmp-directory))))))
 
 (define %guix-git-repo-push-url-regexp
-  "(git.guix.gnu.org|codeberg.org/guix)/guix(.git)? \\(push\\)")
+  "(git.guix.gnu.org|codeberg.org/guix|git@codeberg.org:guix)/guix(.git)? \\(push\\)")
 
 (define-syntax-rule (with-input-pipe-to-string prog arg ...)
   (let* ((input-pipe (open-pipe* OPEN_READ prog arg ...))
