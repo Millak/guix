@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
@@ -2136,7 +2136,14 @@ already effective."
 
 (define %precious-variables
   ;; Environment variables in the default 'load-profile' white list.
-  '("HOME" "USER" "LOGNAME" "DISPLAY" "XAUTHORITY" "TERM" "TZ" "PAGER"))
+  '("HOME" "USER" "LOGNAME" "DISPLAY" "XAUTHORITY" "TERM" "TZ" "PAGER"
+
+    ;; These Bash variables (which can also be environment variables) must be
+    ;; preserved.  Failure to preserve 'HISTSIZE', for instance, would lead
+    ;; Bash to use its default history size of 500 entries, possibly
+    ;; truncating the user's ~/.bash_history.
+    "HISTCONTROL" "HISTFILE" "HISTFILESIZE" "HISTIGNORE"
+    "HISTSIZE" "HISTTIMEFORMAT"))
 
 (define (purify-environment white-list white-list-regexps)
   "Unset all environment variables except those that match the regexps in
