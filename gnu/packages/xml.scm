@@ -655,7 +655,9 @@ with XML in Perl.  libxml-perl software works in combination with
                            "XML-LibXML-" version ".tar.gz"))
        (sha256
         (base32
-         "1ks69xymv6zkj7hvaymjvb78ch81abri7kg4zrwxhdfsqb8a9g7h"))))
+         "1ks69xymv6zkj7hvaymjvb78ch81abri7kg4zrwxhdfsqb8a9g7h"))
+       ;; Remove patch with update to version 2.0210.
+       (patches (search-patches "perl-xml-libxml-fix-function-prototypes.patch"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-xml-namespacesupport perl-xml-sax))
