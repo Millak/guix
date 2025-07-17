@@ -13728,53 +13728,21 @@ storage.")
 (define-public python-importlib-resources
   (package
     (name "python-importlib-resources")
-    (version "5.12.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "importlib_resources" version))
               (sha256
                (base32
-                "1xi2ggdfdj1bg7w728lvy6j3rjqhklalaanzmscpj7awpy4jbs2b"))))
+                "0b7dizkjyjpwqm2dsmb40fy7iskwl3xv93yr9622ik2vxynqfpqq"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; The build system insists on ignoring the existing environment and
-         ;; running "pip install".
-         (add-after 'unpack 'do-not-use-pip-install
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("^build-backend.*") "\
-build-backend = \"backend\"
-backend_path = [\"_custom_build\"]\n")
-               (("requires = .*") "requires = []\n"))
-             (mkdir-p "_custom_build")
-             (with-output-to-file "_custom_build/backend.py"
-               (lambda _
-                 (display "\
-from setuptools import build_meta as _orig
-from setuptools.build_meta import *
-def get_requires_for_build_wheel(config_settings=None):
-    return []
-def get_requires_for_build_sdist(config_settings=None):
-    return []
-")))
-             (setenv "PYTHONPATH"
-                     (string-append (getcwd) "/_custom_build")))))))
     (native-inputs
-     (list python-flake8
+     (list python-jaraco-test
+           python-jaraco-collections
            python-pytest
-           python-pytest-black
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-enabler
-           python-pytest-flake8
-           python-pytest-mypy
            python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-zipp))
+           python-setuptools-scm
+           python-zipp))
     (home-page "https://importlib-resources.readthedocs.io/")
     (synopsis "Read resources from Python packages")
     (description
