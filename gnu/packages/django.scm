@@ -1365,11 +1365,19 @@ provides features like a Web-browsable API and authentication policies.")
         (sha256
          (base32
           "1bfdag32yqjq3vqvyi9izdkmfcs2qip42rcmxpphqp0bmv5kdjia"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; Tests not included with release.
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
+                         (invoke "django-admin" "test" "--pythonpath=.")))))))
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-django python-django-classy-tags))
-    (home-page "https://github.com/divio/django-sekizai")
+    (home-page "https://github.com/django-cms/django-sekizai")
     (synopsis "Template blocks for Django projects")
     (description "Sekizai means blocks in Japanese, and that is what this app
 provides.  A fresh look at blocks.  With @code{django-sekizai} you can define
