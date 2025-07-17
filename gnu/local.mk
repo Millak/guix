@@ -2437,6 +2437,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/vtk-7-gcc-11-compat.patch		\
   %D%/packages/patches/vtk-7-hdf5-compat.patch			\
   %D%/packages/patches/vtk-7-python-compat.patch		\
+  %D%/packages/patches/vulkan-tools-wayland-1.24.patch          \
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
   %D%/packages/patches/warzone2100-unbundle-libs.patch		\
   %D%/packages/patches/wcstools-extend-makefiles.patch	\

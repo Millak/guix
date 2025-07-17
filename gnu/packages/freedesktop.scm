@@ -1363,7 +1363,7 @@ in and for C++.")
 (define-public wayland
   (package
     (name "wayland")
-    (version "1.23.1")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.freedesktop.org/" name
@@ -1371,12 +1371,11 @@ in and for C++.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1vg5h6d94hglh7724q6wx9dpg4y0afvxksankp1hwbcy76lb4kw6"))))
+                "0dh5bldg24ajxz7xmylwm01nmj572x1vb0ya9qrppmhsl23j92c2"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     (list #:parallel-tests? #f
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'move-doc
                  (lambda _
