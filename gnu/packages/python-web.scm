@@ -8988,25 +8988,26 @@ according to the standard set by PasteDeploy")
 (define-public python-hupper
   (package
     (name "python-hupper")
-    (version "1.10.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hupper" version))
-              (sha256
-               (base32
-                "1nbc648d110jx6ziji980cdmzsd14p8fqrcarsdvr1vm5jvm2vyd"))))
-    (build-system python-build-system)
-    (arguments '(#:test-target "pytest"))
+    (version "1.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hupper" version))
+       (sha256
+        (base32 "1srj7sqxdgxr0nnhh9lw8jmp64chwgg8iwfm9b4g9v7l1wbm9gq6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; RuntimeError: timeout waiting for change to
+      ;; file=/tmp/guix-build-python-hupper-1.12.1.drv-0/tmpm9n4697p
+      #:test-flags #~(list "--ignore=tests/test_it.py")))
     (native-inputs
-     (list python-mock
-           python-pytest
+     (list python-pytest
            python-pytest-cov
-           python-pytest-runner
            python-setuptools
-           python-watchdog
            python-wheel))
     (propagated-inputs
-     (list python-pytz))
+     (list python-watchdog))
     (home-page "https://readthedocs.org/projects/hupper")
     (synopsis "Integrated process monitor tracking changes to imported Python files")
     (description
