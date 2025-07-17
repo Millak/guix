@@ -1215,20 +1215,23 @@ the order of added relations.")
 (define-public python-django-appconf
   (package
     (name "python-django-appconf")
-    (version "1.0.4")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-appconf" version))
               (sha256
                (base32
-                "101k8nkc7xlffpjdi2qbrp9pc4v8hzvmkzi12qp7vms39asxwn5y"))))
-    (build-system python-build-system)
+                "1r23cb8g680p4lc8q4gikarcn1y0x5x4whw9w4gg58425wvsvklz"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (setenv "DJANGO_SETTINGS_MODULE" "tests.test_settings")
-                      (invoke "django-admin" "test" "--pythonpath=."))))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "DJANGO_SETTINGS_MODULE" "tests.test_settings")
+                         (invoke "django-admin" "test" "--pythonpath=.")))))))
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-django))
     (home-page "https://github.com/django-compressor/django-appconf")
