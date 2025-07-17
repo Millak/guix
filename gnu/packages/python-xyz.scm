@@ -3628,13 +3628,13 @@ command-line applications.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "2.0.5")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shapely" version))
        (sha256
-        (base32 "0cpyziixzdj7xqkya4k6fwr0qmrw8k84fsrx6p5sdgw6qxmkdwmz"))))
+        (base32 "0wi71vyjyb04lbw6kkl9vcsmn7n28j8002288m19dziggyb221jh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
