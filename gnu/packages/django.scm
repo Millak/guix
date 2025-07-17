@@ -232,7 +232,7 @@ and adapters that are useful for non-trivial configuration scenarios.")
 (define-public python-django-extensions
   (package
     (name "python-django-extensions")
-    (version "3.0.6")
+    (version "4.1")
     (source
      (origin
        (method git-fetch)
@@ -242,24 +242,21 @@ and adapters that are useful for non-trivial configuration scenarios.")
              (commit version)))
        (file-name (string-append name "-" version))
        (sha256
-        (base32
-         "0sra6hazqvspxd1pnx5cj7gia1rkaz3hn06ib4wd0frc167f5afy"))))
-    (build-system python-build-system)
+        (base32 "1qayan9za7ylvzkwp6p0l0735gavnzd1kdjsfc178smq6xnby0ss"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f)) ;XXX: requires a Postgres or MySQL database
     (propagated-inputs
-     (list python-six python-vobject python-werkzeug python-dateutil
-           python-django))
+     (list python-django))
     (native-inputs
-     (list python-mock
-           python-factory-boy
-           python-tox
+     (list python-factory-boy
            python-pytest
            python-pytest-cov
            python-pytest-django
-           python-shortuuid))
-    (home-page
-     "https://github.com/django-extensions/django-extensions")
+           python-setuptools-next
+           python-shortuuid
+           python-wheel))
+    (home-page "https://github.com/django-extensions/django-extensions")
     (synopsis "Custom management extensions for Django")
     (description
      "Django-extensions extends Django providing, for example, management
