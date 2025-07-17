@@ -22,6 +22,7 @@
 (define-module (gnu packages medical)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -39,11 +40,14 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks) ; kirigami
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -431,3 +435,41 @@ Medicine} server instead of SQLite.")
               (prepend `(,mariadb "dev")
                        `(,mariadb "lib"))))
     (synopsis "MariaDB plugins for Orthanc")))
+
+(define-public xmedcon
+  (package
+    (name "xmedcon")
+    (version "0.25.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "git://git.code.sf.net/p/xmedcon/code")
+             (commit (string-append "Version-"
+                                    (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rvh1i967s87d8vpm5fgz07c9vnvwbh3cdphwp806jcvw93y90kw"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--disable-static"
+              (string-append "--with-nifti-prefix="
+                             #$(this-package-input "niftilib")))))
+    (inputs (list glib gtk+ libpng niftilib))
+    (native-inputs (list pkg-config))
+    (home-page "https://xmedcon.sourceforge.io")
+    (synopsis "Medical image conversion utility")
+    (description
+     "@acronym{(X)MedCon, Medical Image Conversion} can be used to convert
+between different file formats used in medical imaging.  The supported formats
+are @acronym{ACR, American College of Radiology}-@acronym{NEMA, National
+Electrical Manufacturers Association} 2.0, Analyze (@acronym{SPM, Statistical
+Parametric Mapping}), Concorde/μPET, @acronym{DICOM, Digital Imaging and
+Communications in Medicine} 3.0, CTI ECAT 6/7, @acronym{NIfTI, Neuroimaging
+Informatics Technology Initiative}-1, Interfile 3.3, @acronym{PNG, Portable
+Network Graphics}, and @acronym{GIF, Graphics Interchange Format}87a/89a.
+This package includes a command-line utility (@code{medcon}) and a GTK+ based
+GUI application (@code{xmedcon}).")
+    (license license:lgpl2.0+)))
