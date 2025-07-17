@@ -848,23 +848,27 @@ project aims to bulk update given objects using one query over Django ORM.")
 (define-public python-django-contact-form
   (package
     (name "python-django-contact-form")
-    (version "1.9")
+    (version "5.2.0")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "django-contact-form" version))
+              (uri (pypi-uri "django_contact_form" version))
               (sha256
                (base32
-                "1my9hkrylckp5vfqg9b0kncrdlxjnwxll56sdciqn4v19i4wbq1y"))))
-    (build-system python-build-system)
+                "091nji94c6d2n8zfpsfhwdv417ligi1hfwr4vvydbggf3s4q392n"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "coverage" "run" "--source" "contact_form"
-                     "runtests.py"))))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         ;; This file contains a single test that requires
+                         ;; python-akismet (not yet packaged).
+                         (delete-file "tests/test_akismet_integration.py")
+                         (setenv "DJANGO_SETTINGS_MODULE" "tests.test_settings")
+                         (invoke "django-admin" "test" "--pythonpath=.")))))))
     (native-inputs
-     (list python-coverage))
+     (list python-pdm-backend python-tzdata))
     (propagated-inputs
      (list python-django))
     (home-page "https://github.com/ubernostrum/django-contact-form")
