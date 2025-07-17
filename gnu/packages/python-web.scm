@@ -8768,7 +8768,8 @@ files.")
          "1dx3rf6fmg4ir9cfcn1fil446qz879cwrjq2rcz5zvl71xkw6hb3"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:test-backend #~'unittest
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'extend-test-timeout
                  (lambda _
