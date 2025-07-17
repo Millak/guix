@@ -566,34 +566,21 @@ for sigrok.")
 (define-public python-cocotb
   (package
     (name "python-cocotb")
-    (version "1.9.2")
+    (version "2.0.0b1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cocotb/cocotb")
-             (commit (string-append "v" version))))
+              (url "https://github.com/cocotb/cocotb")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19mybnhqa2jz134jj8686310fniav5nldiq0y7kbgml81ppai87c"))))
+        (base32 "14aas4vw9cb9krnvw21vfmwqivvc2cwzi9rvmvap6xcw9f2dsyy9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Tests requiring a verilog simulator.
-      #~(list "-k" (string-join
-                    (list "not parallel_cocotb"
-                          "cocotb"
-                          "vhdl_libraries_multiple")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Tests requiring a vhdl simulator.
-          (add-after 'check 'check-vhdl
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "SIM" "nvc")
-                (invoke "pytest" "-vv" "-k" "vhdl_libraries_multiple")))))))
+      #~(list "-k" "not test_toplevel_library")));requires questasim simulator
     (native-inputs
      (list iverilog
            nvc
