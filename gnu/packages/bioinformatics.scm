@@ -12114,13 +12114,9 @@ complexity samples.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-importlib-resources
-           python-pycodestyle
            python-pytest
-           python-pytest-cov
            python-setuptools
-           python-setuptools-scm
-           python-setuptools-scm-git-archive
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/dib-lab/screed/")
     (synopsis "Short read sequence database utilities")
     (description "Screed parses FASTA and FASTQ files and generates databases.
