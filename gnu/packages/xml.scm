@@ -703,7 +703,9 @@ XML parser and the high performance DOM implementation.")
                            "XML-LibXSLT-" version ".tar.gz"))
        (sha256
         (base32
-         "0wyl8klgr65j8y8fzgwz9jlvfjwvxazna8j3dg9gksd2v973fpia"))))
+         "0wyl8klgr65j8y8fzgwz9jlvfjwvxazna8j3dg9gksd2v973fpia"))
+       ;; Remove patch with update to version 2.003000.
+       (patches (search-patches "perl-xml-libxslt-fix-configure.patch"))))
     (build-system perl-build-system)
     (inputs
      (list libxslt))
