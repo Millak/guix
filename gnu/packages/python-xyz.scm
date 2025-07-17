@@ -12227,6 +12227,8 @@ used as the basis for third-party packaging tools.")
        (base32
         "0lx15kcbby9zisx33p2h5hgakgwh2bvh0ibag8z0px4j6ifhs41x"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;tests are outdated and broken
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://launchpad.net/python-distutils-extra/")
     (synopsis "Enhancements to Python's distutils")
