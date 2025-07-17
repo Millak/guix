@@ -805,27 +805,29 @@ applications with a @var{SEARCH_URL} variable.")
 (define-public python-django-picklefield
   (package
     (name "python-django-picklefield")
-    (version "3.2.0")
-    (home-page "https://github.com/gintas/django-picklefield")
-    ;; Use a git checkout because the PyPI release lacks tests.
+    (version "3.3.0")
     (source
       (origin
-        (method git-fetch)
+        (method git-fetch) ; no tests in PyPI
         (uri (git-reference
-              (url home-page)
+              (url "https://github.com/gintas/django-picklefield")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0ykcw0wb064zv17piwiz6ldy2d2jil93x1ckk5pcfnc7hhk1phsh"))))
-    (build-system python-build-system)
+          "19qiyb3i9s72qanxzrgy1a10707138zq8sclhdfn4zpnqykaqzpw"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "-m" "django" "test" "-v2"
-                              "--settings=tests.settings"))))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "python" "-m" "django" "test" "-v2"
+                                 "--settings=tests.settings")))))))
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs (list python-django))
+    (home-page "https://github.com/gintas/django-picklefield")
     (synopsis "Pickled object field for Django")
     (description "Pickled object field for Django")
     (license license:expat)))
