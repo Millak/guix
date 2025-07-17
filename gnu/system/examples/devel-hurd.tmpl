@@ -58,8 +58,10 @@
 (define guix-packages
   (filter-map input->package
               (fold alist-delete (package-direct-inputs guix)
-                    ;; These are not essential and do not build yet.
-                    '("graphviz" "guile-avahi" "po4a"))))
+                    ;; These are not essential and do not build yet,
+                    '("graphviz" "guile-avahi" "po4a"
+                      ;; or are linux-only.
+                      "slirp4netns"))))
 
 (define hurd-packages
   (filter-map input->package
