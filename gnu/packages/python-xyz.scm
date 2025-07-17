@@ -14113,14 +14113,11 @@ releases.")
     (arguments
      (list #:test-flags '(list "-k" "http")))
     (native-inputs
-     (list python-jaraco-collections
-           python-pytest
-           python-pytest-checkdocs
-           python-pytest-enabler
-           python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-jaraco-context
+     (list python-jaraco-collections
+           python-jaraco-context
            python-jaraco-functools))
     (home-page "https://github.com/jaraco/jaraco.test")
     (synopsis "Testing support by jaraco")
