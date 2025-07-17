@@ -14134,31 +14134,28 @@ releases.")
 (define-public python-jaraco-text
   (package
     (name "python-jaraco-text")
-    (version "3.12.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "jaraco.text" version))
+       (uri (pypi-uri "jaraco_text" version))
        (sha256
-        (base32 "0b2rmx0sa61f75lkkr4nfaj3mkgmn3x9c1akpwarfbmksk42b7iq"))))
+        (base32 "1c0dy5jvhigcyryi2h8n1m87dnhyxr7w01n9shwzkdlslv7gwwav"))))
     (build-system pyproject-build-system)
     ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
     ;; download dependencies.
     (arguments
      '(#:test-flags '("-k" "not project")))
-    (propagated-inputs (list python-autocommand python-inflect
-                             python-jaraco-context python-jaraco-functools
-                             python-more-itertools))
-    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
-    ;; packaged.
-    (native-inputs (list python-pytest
-                         python-pytest-black
-                         python-pytest-checkdocs
-                         python-pytest-cov
-                         python-pytest-enabler
-                         python-pytest-mypy
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-autocommand
+           python-inflect
+           python-jaraco-context
+           python-jaraco-functools
+           python-more-itertools))
     (home-page "https://github.com/jaraco/jaraco.text")
     (synopsis "Provides various routines for text manipulation")
     (description
