@@ -18536,15 +18536,10 @@ invoked on those path objects directly.")
     (native-inputs
      (modify-inputs (package-native-inputs python-path-bootstrap)
        (append python-appdirs
+               python-more-itertools
                python-packaging
                python-pygments
-               python-pytest
-               python-pytest-black
-               python-pytest-checkdocs
-               python-pytest-cov
-               python-pytest-enabler
-               python-pytest-flake8
-               python-pytest-mypy)))
+               python-pytest)))
     (properties (alist-delete 'hidden?
                               (package-properties
                                python-path-bootstrap)))))
