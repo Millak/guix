@@ -27915,40 +27915,6 @@ version is a fork of jsonrpclib by Josh Marshall, usable with Pelix remote
 services.")
     (license license:asl2.0)))
 
-(define-public python-setuptools-scm-git-archive
-  (package
-    (name "python-setuptools-scm-git-archive")
-    (version "1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "setuptools_scm_git_archive" version))
-       (sha256
-        (base32
-         "1nii1sz5jq75ilf18bjnr11l9rz1lvdmyk66bxl7q90qan85yhjj"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'dont-install-defunct-egginfo
-                    (lambda _
-                      ;; When a ".git" directory is missing, the setup.py
-                      ;; script invokes setuptools.setup twice, once with
-                      ;; "0" as the version.  Prevent that.
-                      (substitute* "setup.py"
-                        (("if not isdir\\('\\.git'\\):")
-                         "if False:")))))))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-setuptools-scm))
-    (home-page "https://github.com/Changaco/setuptools_scm_git_archive/")
-    (synopsis "Setuptools_scm plugin for git archives")
-    (description
-     "The setuptools_scm_git_archive package is a plugin to
-setuptools_scm, which supports obtaining versions from git archives that
-belong to tagged versions.")
-    (license license:expat)))
-
 (define-public python-setuptools-git
   (package
     (name "python-setuptools-git")
