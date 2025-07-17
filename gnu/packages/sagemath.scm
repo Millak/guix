@@ -409,7 +409,6 @@ database.")
             freetype
             gap
             gd
-            giac
             givaro
             glpk
             gmp
