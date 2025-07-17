@@ -1528,7 +1528,7 @@ libebml is a C++ library to read and write EBML files.")
 (define-public libplacebo
   (package
     (name "libplacebo")
-    (version "7.349.0")
+    (version "7.351.0")
     (source
      (origin
        (method git-fetch)
@@ -1537,7 +1537,7 @@ libebml is a C++ library to read and write EBML files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q12yf04z570a2l3vkig2iqm7bgqr90hdxmn78sk2injrsyx124q"))))
+        (base32 "094mzr4cvvryxr7rpxqhvrs018r89m116cpkmmfy3d3sk8b09jki"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
