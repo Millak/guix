@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -79,6 +80,7 @@
   #:use-module (guix modules)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -1945,6 +1947,39 @@ hierarchies and multiple types of execution resources.")
     (properties '((tunable? . #t)))
 
     (license license:asl2.0))) ; With LLVM exception
+
+(define-public kokkos-fft
+  (package
+    (name "kokkos-fft")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kokkos/kokkos-fft")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0skajkzkrmlsfzrzkvspzqf6z9wqvs529cmknzhk4mhn917pykh6"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DKokkosFFT_DEPENDENCY_POLICIES=INSTALLED"
+                   "-DKokkosFFT_ENABLE_TESTS=ON")))
+    (inputs
+     (list kokkos
+           fftw
+           fftwf))
+    (native-inputs
+     (list googletest))
+    (home-page "https://kokkosfft.readthedocs.io/")
+    (synopsis "Shared-memory FFT for the Kokkos ecosystem")
+    (description "Kokkos-fft is an experimental FFT interface for the
+Kokkos C++ environment.  It implements local interfaces between Kokkos
+and FFT libraries such as FFTW, cufft, hipfft (rocfft), and oneMKL.
+\"Local\" means not using MPI, or running within a single MPI process
+without knowing about MPI.")
+    ;; dual licensed, asl2.0 with LLVM exception
+    (license (list license:expat license:asl2.0))))
 
 (define-public tweeny
   (package
