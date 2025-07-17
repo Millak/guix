@@ -18649,13 +18649,7 @@ $ rm -rf /tmp/env
      (modify-inputs (package-native-inputs python-pip-run-bootstrap)
        (append python-nbformat
                python-pygments
-               python-pytest
-               python-pytest-black
-               python-pytest-checkdocs
-               python-pytest-cov
-               python-pytest-enabler
-               python-pytest-flake8
-               python-pytest-mypy)))
+               python-pytest)))
     (properties (alist-delete 'hidden? (package-properties
                                         python-pip-run-bootstrap)))))
 
