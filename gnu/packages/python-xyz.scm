@@ -16907,17 +16907,18 @@ Python.")
 (define-public python-markdown
   (package
     (name "python-markdown")
-    (version "3.3.4")
+    (version "3.8.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Markdown" version))
+       (uri (pypi-uri "markdown" version))
        (sha256
         (base32
-         "0jbs73nincha8fkfxx267sfxac6pl0ckszjbqbb8gk4dhs8v9d9i"))))
-    (build-system python-build-system)
+         "0ibw4didlgfffpzc807rak96df3mwqijbrhw8dkpzqhjvmq9lyr4"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nose python-pyyaml))
+     (list python-pyyaml
+           python-setuptools))
     (home-page "https://python-markdown.github.io/")
     (synopsis "Python implementation of Markdown")
     (description
