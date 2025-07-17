@@ -1002,7 +1002,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/aria2-unbundle-wslay.patch		\
   %D%/packages/patches/ark-skip-xar-test.patch			\
   %D%/packages/patches/asli-use-system-libs.patch		\
-  %D%/packages/patches/aspell-CVE-2019-25051.patch		\
   %D%/packages/patches/aspell-default-dict-dir.patch		\
   %D%/packages/patches/ath9k-htc-firmware-binutils.patch	\
   %D%/packages/patches/ath9k-htc-firmware-gcc.patch		\
