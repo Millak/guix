@@ -13956,29 +13956,25 @@ class constructs.")
 (define-public python-jaraco-collections
   (package
     (name "python-jaraco-collections")
-    (version "5.0.0")
+    (version "5.2.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "jaraco.collections" version))
+       (uri (pypi-uri "jaraco_collections" version))
        (sha256
-        (base32 "0s7y3jr7c173k38pck1b17kxnvx2fl0qh9m9gdf64pr9kz8fi00n"))))
+        (base32 "1v8qza70spm4d822bm7wq3j2cyd33nqg2i87n99spw6np9q1kf6s"))))
     (build-system pyproject-build-system)
     ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
     ;; download dependencies.
     (arguments
      '(#:test-flags '("-k" "not project")))
-    (propagated-inputs (list python-jaraco-text))
-    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
-    ;; packaged.
-    (native-inputs (list python-pytest
-                         python-pytest-black
-                         python-pytest-checkdocs
-                         python-pytest-cov
-                         python-pytest-enabler
-                         python-pytest-mypy
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-jaraco-text))
     (home-page "https://github.com/jaraco/jaraco.collections")
     (synopsis "Provides various collection objects")
     (description
