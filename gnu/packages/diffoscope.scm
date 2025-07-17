@@ -99,6 +99,13 @@
             (lambda _
               (delete-file "tests/comparators/test_berkeley_db.py")
               (delete-file "tests/comparators/test_wasm.py")))
+          (add-after 'compress-documentation 'make-extract-vmlinux-executable
+            ;; The script extract-vmlinux needs to be marked executable to be
+            ;; able to extract vmlinux files.
+            (lambda _
+              (for-each (lambda (file)
+                          (chmod file #o755))
+                        (find-files #$output "extract-vmlinux"))))
           (add-after 'unpack 'embed-tool-references
             (lambda* (#:key inputs #:allow-other-keys)
               (define (bin command)
