@@ -1979,14 +1979,14 @@ allowing to handle large objects with a small memory footprint.")
 (define-public python-gitpython
   (package
     (name "python-gitpython")
-    (version "3.1.24")
+    (version "3.1.44")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "GitPython" version))
+              (uri (pypi-uri "gitpython" version))
               (sha256
                (base32
-                "1rarp97cpjnhi106k2yhb7kygdyflmlgq0icxv3ggzl4wvszv0yz"))))
-    (build-system python-build-system)
+                "0scj4hqk6msyzqvq70wk6583qzwn33w601hvn0c59gskcar30zn8"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ;XXX: tests can only be run within the GitPython repository
            #:phases
@@ -2001,9 +2001,9 @@ allowing to handle large objects with a small memory footprint.")
     (inputs
      (list git-minimal/pinned))
     (propagated-inputs
-     (list python-gitdb python-typing-extensions))
+     (list python-gitdb))
     (native-inputs
-     (list python-ddt python-nose))
+     (list python-setuptools))
     (home-page "https://github.com/gitpython-developers/GitPython")
     (synopsis "Python library for interacting with Git repositories")
     (description
