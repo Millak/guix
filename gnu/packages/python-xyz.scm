@@ -16076,7 +16076,7 @@ the columns and tie-resolvement is accelerated by numba.")
 (define-public python-xlib
   (package
     (name "python-xlib")
-    (version "0.29")
+    (version "0.33")
     (source
      (origin
        (method git-fetch)
@@ -16085,8 +16085,8 @@ the columns and tie-resolvement is accelerated by numba.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17cwd2knqm2vwrii3kqii9abwsnydhpg4byqx1vy7rjs6i1vbqfc"))))
-    (build-system python-build-system)
+        (base32 "03d28lx6sz0724ps6lnn4m6s0cfspgwqdf2l773lqf88add8wkmv"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -16096,10 +16096,12 @@ the columns and tie-resolvement is accelerated by numba.")
                ;; There must be a running X server and make check doesn't
                ;; start one.  Therefore we must do it.
                (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-               (setenv "DISPLAY" ":1")
-               #t))))))
+               (setenv "DISPLAY" ":1")))))))
     (native-inputs
-     (list python-mock python-setuptools-scm xorg-server))
+     (list python-mock
+           python-pytest
+           python-setuptools
+           xorg-server))
     (propagated-inputs
      (list python-six))
     (home-page "https://github.com/python-xlib/python-xlib")
