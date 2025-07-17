@@ -152,7 +152,7 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
             (lambda _
               (setenv "PYTHON_EGG_CACHE" "/tmp"))))))
     (native-inputs
-     (list python-nose python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-argon2-cffi python-bcrypt python-cryptography))
     (home-page "https://bitbucket.org/ecollins/passlib")
