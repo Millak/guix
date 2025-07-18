@@ -4571,17 +4571,18 @@ that have uses outside of the Zope framework.")
 (define-public python-zope-testing
   (package
     (name "python-zope-testing")
-    (version "5.0.1")
+    (version "5.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "zope.testing" version))
+       (uri (pypi-uri "zope_testing" version))
        (sha256
-        (base32 "0jfnycp9kzmmkk0rard8chd81v5yp6vnm09ky7d3qmv6svcd0z78"))))
+        (base32 "0iyc3ahiyibqqzk8s4i07c7all9ng89dp6hs95p7jf1xxjmfndbi"))))
     (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'custom
+                     #:test-flags #~(list "src/zope/testing/tests.py")))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://zopetesting.readthedocs.io/")
     (synopsis "Zope testing helpers")
     (description
