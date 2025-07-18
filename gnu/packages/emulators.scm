@@ -960,7 +960,7 @@ The following systems are supported:
     (inputs
      (list ffmpeg
            libedit
-           libelf
+           elfutils
            libepoxy
            libpng
            mesa
