@@ -12966,33 +12966,38 @@ arguments.  It handles arbitrarily large (directed-acyclic) signal graphs.")
 
 (define-public python-imageio-ffmpeg
   (package
-   (name "python-imageio-ffmpeg")
-   (version "0.5.1")
-   (source (origin
-            (method url-fetch)
-            (uri (pypi-uri "imageio-ffmpeg" version))
-            (sha256
-             (base32
-              "0k284r1xsdp5h1s4k6nfsfzbkphf8g6r2llwjafhq2sn3yrskmqf"))))
-   (arguments
-    (list #:phases
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'hardcode-ffmpeg
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (substitute* "imageio_ffmpeg/_utils.py"
-                    (("os\\.getenv\\(\"IMAGEIO_FFMPEG_EXE\".*\\)" all)
-                     (string-append "(" all " or \""
-                                    (search-input-file inputs "bin/ffmpeg")
-                                    "\")"))))))))
-   (inputs (list ffmpeg))
-   (native-inputs (list python-setuptools python-wheel))
-   (build-system python-build-system)
-   (home-page "https://github.com/imageio/imageio-ffmpeg")
-   (synopsis "FFMPEG wrapper for Python")
-   (description "This package provides an FFMPEG wrapper for working with video
-files.  It implements generator functions for reading and writing data to and
-from FFMPEG, reliably terminating the process when done.")
-   (license license:bsd-2)))
+    (name "python-imageio-ffmpeg")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "imageio-ffmpeg" version))
+       (sha256
+        (base32 "0k284r1xsdp5h1s4k6nfsfzbkphf8g6r2llwjafhq2sn3yrskmqf"))))
+    (build-system pypthon-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-ffmpeg
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "imageio_ffmpeg/_utils.py"
+                (("os\\.getenv\\(\"IMAGEIO_FFMPEG_EXE\".*\\)" all)
+                 (string-append "(" all " or \""
+                                (search-input-file inputs "bin/ffmpeg")
+                                "\")"))))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (inputs
+     (list ffmpeg))
+    (home-page "https://github.com/imageio/imageio-ffmpeg")
+    (synopsis "FFMPEG wrapper for Python")
+    (description
+     "This package provides an FFMPEG wrapper for working with video files.
+It implements generator functions for reading and writing data to and from
+FFMPEG, reliably terminating the process when done.")
+    (license license:bsd-2)))
 
 (define-public python-imageio-freeimage
   (package
