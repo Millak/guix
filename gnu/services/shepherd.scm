@@ -718,6 +718,9 @@ with @command{herd status} and stop with @command{herd stop}.")))
 (define (gexp-or-integer? x)
   (or (gexp? x) (integer? x)))
 
+(define (gexp-or-integer-or-false? x)
+  (or (not x) (gexp-or-integer? x)))
+
 (define (gexp-or-string? x)
   (or (gexp? x) (string? x)))
 
@@ -744,7 +747,7 @@ procedure.")
   (date-format
    (gexp-or-string #~default-logfile-date-format)
    "String or string-valued gexp specifying how to format timestamps in log
-file.  It must be a valid string for @code{strftime} (@pxref{Time,,, guile,
+files.  It must be a valid string for @code{strftime} (@pxref{Time,,, guile,
 GNU Guile Reference Manual}), including delimiting space---e.g., @code{\"%c
 \"} for a format identical to that of traditional syslogd implementations.")
   (history-size
@@ -752,9 +755,9 @@ GNU Guile Reference Manual}), including delimiting space---e.g., @code{\"%c
    "Number of logging messages kept in memory for the purposes of making them
 available to @command{herd status system-log}.")
   (max-silent-time
-   (gexp-or-integer #~(default-max-silent-time))
+   (gexp-or-integer-or-false #~(default-max-silent-time))
    "Time after which a mark is written to log files if nothing was logged
-during that time frame."))
+during that time frame.  When set to @code{#f}, this feature is disabled."))
 
 (define shepherd-system-log-service-type
   (shepherd-service-type

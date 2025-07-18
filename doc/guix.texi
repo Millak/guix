@@ -48964,10 +48964,10 @@ This service is part of @code{%base-services} (@pxref{Base Services}).
 Available @code{system-log-configuration} fields are:
 
 @table @asis
-@item @code{provision} (default: @code{'(system-log syslogd)}) (type: list-of-symbols)
+@item @code{provision} (default: @code{(system-log syslogd)}) (type: list-of-symbols)
 The name(s) of the system log service.
 
-@item @code{requirement} (default: @code{'(root-file-system)}) (type: list-of-symbols)
+@item @code{requirement} (default: @code{(root-file-system)}) (type: list-of-symbols)
 Dependencies of the system log service.
 
 @item @code{kernel-log-file} (type: gexp-or-string-or-false)
@@ -48991,9 +48991,10 @@ implementations.
 Number of logging messages kept in memory for the purposes of making
 them available to @command{herd status system-log}.
 
-@item @code{max-silent-time} (type: gexp-or-integer)
+@item @code{max-silent-time} (type: gexp-or-integer-or-false)
 Time after which a mark is written to log files if nothing was logged
-during that time frame.
+during that time frame.  When set to @code{#f}, this feature is
+disabled.
 
 @end table
 
