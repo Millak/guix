@@ -572,43 +572,43 @@ to all types of devices that provide serial consoles.")
         (base32 "0dgrb5yg4ys1fa4hs95iz3m2yhryfzzw0j6g6yf6vhbys4ihcf40"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "CC=" #$(cc-for-target))
-                   (string-append "prefix=" #$output))
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)      ; no configure script
-               (add-before 'check 'patch-tests
-                 (lambda _
-                   (substitute* "GNUmakefile"
-                     (("/bin/bash")
-                      (which "bash"))
-                     ;; XXX In the build environment, $(PWD) is the *parent* directory
-                     ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
-                     (("\\$\\(PWD\\)" pwd)
-                      (string-append pwd "/source")))
-                   (substitute* (find-files "tests" "\\.expected")
-                     ;; The build environment lacks /dev/{console,tty*}.
-                     ;; In fact, even nckx's regular Guix System lacks ttyS1…
-                     ((": Permission denied")
-                      ": No such file or directory"))))
-               (add-before 'install 'install-rules
-                 (lambda _
-                   (mkdir-p (string-append #$output "/etc/udev/rules.d"))
-                   (with-output-to-file
-                       (string-append #$output
-                                      "/etc/udev/rules.d/70-pcspkr-beep.rules")
-                     (lambda _
-                       (display (string-append "\
-ACTION==\"add\", SUBSYSTEM==\"input\", ATTRS{name}==\"PC Speaker\", "
-                                               "ENV{DEVNAME}!=\"\", "
-                                               "TAG+=\"uaccess\"")))))))))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ;no configure script
+          (add-before 'check 'patch-tests
+            (lambda _
+              (substitute* "GNUmakefile"
+                (("/bin/bash")
+                 (which "bash"))
+                ;; XXX In the build environment, $(PWD) is the *parent* directory
+                ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
+                (("\\$\\(PWD\\)" pwd)
+                 (string-append pwd "/source")))
+              (substitute* (find-files "tests" "\\.expected")
+                ;; The build environment lacks /dev/{console,tty*}.
+                ;; In fact, even nckx's regular Guix System lacks ttyS1…
+                ((": Permission denied")
+                 ": No such file or directory"))))
+          (add-before 'install 'install-rules
+            (lambda _
+              (mkdir-p (string-append #$output "/etc/udev/rules.d"))
+              (with-output-to-file (string-append #$output
+                                                  "/etc/udev/rules.d/70-pcspkr-beep.rules")
+                (lambda _
+                  (display (string-append
+                            "ACTION==\"add\", SUBSYSTEM==\"input\", ATTRS{name}==\"PC Speaker\", "
+                            "ENV{DEVNAME}!=\"\", " "TAG+=\"uaccess\"")))))))))
     (synopsis "Linux command-line utility to control the PC speaker")
-    (description "beep allows the user to control the PC speaker with precision,
-allowing different sounds to indicate different events.  While it can be run
-quite happily on the command line, its intended place of residence is within
-scripts, notifying the user when something interesting occurs.  Of course, it
-has no notion of what's interesting, but it's very good at that notifying part.")
+    (description
+     "beep allows the user to control the PC speaker with precision, allowing
+different sounds to indicate different events.  While it can be run quite
+happily on the command line, its intended place of residence is within scripts,
+notifying the user when something interesting occurs.  Of course, it has no
+notion of what's interesting, but it's very good at that notifying part.")
     (home-page "https://github.com/spkr-beep/beep")
     (license license:gpl2+)))
 
