@@ -23,17 +23,21 @@
 (define-module (gnu packages kde-systemtools)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages glib)
@@ -434,6 +438,45 @@ This package is part of the KDE administration module.")
     (synopsis "Screenshot capture utility for KDE")
     (description "Spectacle is a screenshot taking utility for the KDE.")
     (license license:gpl2+)))
+
+(define-public spectacle-ocr-screenshot
+  (package
+    (name "spectacle-ocr-screenshot")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/funinkina/spectacle-ocr-screenshot")
+             (commit version)))
+       (sha256
+        (base32 "06dyvv4h4m4j8cm3f7ivcczql26rfajkmw84qh7kik71f70qvwjw"))
+       (file-name (git-file-name name version))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (invoke "qmake" (string-append "PREFIX=" #$output))))
+               (replace 'install
+                 (lambda _
+                   (install-file "spectacle-ocr-screenshot"
+                                 (string-append #$output "/bin")))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list leptonica
+           tesseract-ocr
+           zxing-cpp))
+    (home-page "https://github.com/funinkina/spectacle-ocr-screenshot")
+    (synopsis "Utility to extract text from Spectacle")
+    (description "This package provides an application that integrates with KDE
+Spectacle screenshot tool with Tesseract OCR to extract text from screenshots
+as well as QR codes.")
+    (license license:expat)))
 
 (define-public yakuake
   (package
