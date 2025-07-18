@@ -21087,21 +21087,20 @@ the Emacs TempEl package.")
       (license license:gpl3+))))
 
 (define-public emacs-yasnippet
-  (let ((commit "297546f0853a6a51f5b05e954d0c6aea8caa5ec2")) ;version bump
+  (let ((commit "dd570a6b22364212fff9769cbf4376bdbd7a63c5"))
     (package
       (name "emacs-yasnippet")
-      (version "0.14.1")
+      ;; Missing Git tags, version bumped in package file.
+      (version "0.14.3")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/joaotavora/yasnippet")
-               (commit commit)))
+                (url "https://github.com/joaotavora/yasnippet")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0b1fdigwjshfim6zyzkn2wa6k8xd4qlafrf7zgj5bsx6alrzac8v"))
-         (patches
-          (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"))))
+          (base32 "1s7zsdw83v5v7alsnzzrrr3m177qnm7x4hr8w7f84a4lamd0h6s3"))))
       (build-system emacs-build-system)
       (arguments
        (list
