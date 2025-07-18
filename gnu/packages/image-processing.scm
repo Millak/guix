@@ -88,6 +88,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages opencl)
@@ -108,6 +109,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages textutils)
@@ -1747,6 +1749,122 @@ this project.
 Scan Tailer Advanced is a fork of Scan Tailer that merges Scan Tailor Featured
 and Scan Tailor Enhanced versions as well as including many more bug fixes.")
       (license license:gpl3+))))
+
+(define-public simpleitk
+  (package
+    (name "simpleitk")
+    (version "2.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SimpleITK/SimpleITK")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ykrfrfh2012cg1122689w23pan2y731sszfpb701zhsb6fwv7j7"))))
+    (build-system cmake-build-system)
+    (outputs '("out" "python" "r"))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              "-DWRAP_LUA=OFF"
+              "-DWRAP_PYTHON=ON"
+              "-DWRAP_R=ON"
+              "-DSimpleITK_PYTHON_USE_VIRTUALENV=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'early-GTest-discovery
+            (lambda _
+              ;; Find GTest before targets link to 'GTest::GTest'.
+              (substitute* "Testing/Unit/CMakeLists.txt"
+                (("add_subdirectory\\(TestBase\\)" anchor)
+                 (string-append "find_package(GTest REQUIRED)\n" anchor)))))
+          (add-after 'unpack 'extract-test-data
+            (lambda _
+              (invoke "tar" "xvf"
+                      #$(this-package-native-input
+                         (string-append "SimpleITKData-" version ".tar.gz"))
+                      "--strip-components=1")))
+          (add-after 'unpack 'fix-runpath
+            (lambda _
+              ;; The SWIG-generated shared libraries do not have SimpleITK's
+              ;; libraries in their RUNPATH.
+              (define (cmake-snippet start)
+                (string-append
+                 start
+                 "set_target_properties(${SWIG_MODULE_SimpleITK_TARGET_NAME} "
+                 "PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE "
+                 "INSTALL_RPATH \"" #$output "/lib\")\n"))
+              (substitute* "Wrapping/Python/CMakeLists.txt"
+                (("^set\\(SWIG_MODULE_SimpleITKPython.*" anchor)
+                 (cmake-snippet anchor)))
+              (substitute* "Wrapping/R/CMakeLists.txt"
+                (("^set\\(SWIG_MODULE_SimpleITKR.*" anchor)
+                 (cmake-snippet anchor)))))
+          (add-after 'unpack 'patch-cmake-config-itk-path
+            (lambda _
+              ;; Allow building SimpleITK C++ projects without ITK installed
+              ;; in the profile.
+              #$(let*
+                  ((itk (this-package-input "insight-toolkit"))
+                   (itk-version (package-version itk))
+                   (itk-version-major+minor
+                         (version-major+minor itk-version)))
+                  #~(substitute* "SimpleITKConfig.cmake.in"
+                      (((string-append
+                          "find_package\\(ITK \"@ITK_VERSION@\" "
+                          "EXACT REQUIRED\\)"))
+                       (string-append
+                         "find_package(ITK \"" #$itk-version
+                         "\" EXACT REQUIRED PATHS " #$itk
+                         "/lib/cmake/ITK-"
+                         #$itk-version-major+minor ")"))))))
+          (add-after 'install 'install-language-extension-modules
+            (lambda _
+              (with-directory-excursion "Wrapping/Python"
+                (invoke "python3" "setup.py" "bdist_wheel")
+                (apply invoke "pip" "--no-cache-dir" "--no-input" "install"
+                       "--no-deps" "--prefix" #$output:python
+                       (find-files "dist" "\\.whl$")))
+              (let ((r-package-path
+                     (string-append #$output:r "/site-library/SimpleITK")))
+                (mkdir-p r-package-path)
+                (copy-recursively "Wrapping/R/R_libs/SimpleITK"
+                                  r-package-path))))
+          (delete 'check)
+          (add-after 'install 'check-after-install
+            ;; Run the tests when the SimpleITK libraries are where the
+            ;; language extension modules expect them to be.
+            (assoc-ref %standard-phases 'check)))))
+    (home-page "https://simpleitk.org")
+    (inputs (list insight-toolkit python r-minimal))
+    (native-inputs
+     (list googletest
+           lua
+           python-numpy                 ;for tests
+           python-pip
+           python-setuptools
+           python-wheel
+           swig-next
+           (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://github.com/SimpleITK/SimpleITK/releases/download/v"
+                   version "/SimpleITKData-" version ".tar.gz"))
+             (sha256
+              (base32
+               "13y44qqsgsvbrm84073i8clhggdgk8f36i6102sjg4j3fq790gal")))))
+    (synopsis "Simplified interface to @acronym{ITK, Insight Toolkit}")
+    (description
+     "SimpleITK is an image analysis toolkit built on top of @acronym{ITK,
+Insight Toolkit}.  It provides a simplified interface to most of the
+image filters and the input/output and registration frameworks in
+@acronym{ITK, Insight Toolkit}.  It is written in C++ and provides
+bindings for interpreted languages.  This package includes the C++,
+Python and R interfaces.")
+    (license license:asl2.0)))
 
 (define-public stiff
   (package
