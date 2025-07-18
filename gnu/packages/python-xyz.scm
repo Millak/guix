@@ -7633,15 +7633,16 @@ Capabilities include:
 (define-public python-unidecode
   (package
     (name "python-unidecode")
-    (version "1.3.8")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "Unidecode" version))
-             (sha256
-              (base32
-               "1x620s4dk4d501pivhlfzbi2d1r5fnm9cssqwkn76f7d8sfk9nyg"))))
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Unidecode" version))
+       (sha256
+        (base32 "08rbx8vxsnj06cvrdxy80zrn9hk25lwcqfh2fdjng2rk1189hdff"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://pypi.org/project/Unidecode/")
     (synopsis "ASCII transliterations of Unicode text")
     (description
