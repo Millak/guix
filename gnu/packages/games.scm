@@ -11241,7 +11241,7 @@ play with up to four players simultaneously.  It has network support.")
            (sdl-union
             (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image))))
     (native-inputs
-     (list clang-9 ghc pkg-config qttools-5))
+     (list clang ghc pkg-config qttools-5))
     (home-page "https://hedgewars.org/")
     (synopsis "Turn-based artillery game featuring fighting hedgehogs")
     (description
