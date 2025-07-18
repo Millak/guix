@@ -81,7 +81,7 @@
 ;;; Copyright © 2020, 2021, 2022 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2020 Marco Grassi <marco.au.grassi98@protonmail.com>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
-;;; Copyright © 2020-2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2020-2022, 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020 Adam Kandur <rndd@tuta.io>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
@@ -21104,19 +21104,21 @@ the Emacs TempEl package.")
           (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:test-command
-         '("emacs" "--batch"
+       (list
+        #:test-command
+        #~(list
+           "emacs" "--batch"
            "-l" "yasnippet-tests.el"
            ;; XXX: one test is broken…
            "--eval"
            "(ert-run-tests-batch-and-exit
              '(not yas-org-native-tab-in-source-block-emacs-lisp))")
-         #:phases
-         (modify-phases %standard-phases
-           ;; Set HOME, otherwise test-rebindings fails.
-           (add-before 'check 'set-home
-             (lambda _
-               (setenv "HOME" (getcwd)))))))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Set HOME, otherwise test-rebindings fails.
+            (add-before 'check 'set-home
+              (lambda _
+                (setenv "HOME" (getcwd)))))))
       (home-page "https://github.com/joaotavora/yasnippet")
       (synopsis "Yet another snippet extension for Emacs")
       (description "YASnippet is a template system for Emacs.  It allows you to
