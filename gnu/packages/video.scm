@@ -158,6 +158,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
@@ -5235,6 +5236,59 @@ post-processing of video formats like MPEG2, H.264/AVC, and VC-1.")
     (description
      "Openh264 is a library which can decode H264 video streams.")
     (license license:bsd-2)))
+
+(define-public opentimelineio
+  (package
+    (name "opentimelineio")
+    (version "0.17.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/AcademySoftwareFoundation/OpenTimelineIO")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qram9cb77x0f29v6nbzwsd5mwdfw9m1k4d8pcny3ij7p26rfwp7"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "CMakeLists.txt"
+                    (("add_subdirectory\\(src/deps\\)") ""))
+                  (substitute* "src/opentimelineio/serializableObject.h"
+                    (("#include \"ImathBox.h\"")
+                     "#include <Imath/ImathBox.h>"))
+                  (substitute* '("src/opentimelineio/mediaReference.h"
+                                 "src/opentimelineio/composable.h")
+                    (("#include <ImathBox.h>")
+                     "#include <Imath/ImathBox.h>"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           '(list "-DOTIO_PYTHON_INSTALL=off"
+                  "-DOTIO_AUTOMATIC_SUBMODULES=off")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-imath
+                 (lambda _
+                   (symlink (string-append
+                             #$(this-package-input "imath")
+                             "/include/Imath")
+                            (string-append
+                             #$output "/include/opentimelineio/deps")))))))
+    (inputs (list imath rapidjson))
+    (home-page "https://opentimeline.io")
+    (synopsis "API and interchange format for editorial timeline information")
+    (description "OpenTimelineIO is an interchange format and API for
+editorial cut information.  OTIO contains information about the order and
+length of cuts and references to external media.  It is not however, a
+container format for media.
+
+For integration with applications, the core OTIO library is implemented in C++
+and provides an in-memory data model, as well as library functions for
+interpreting, manipulating, and serializing that data model.  Within the core
+is a dependency-less library for dealing strictly with time, @code{opentime}.")
+    (license license:gpl2+)))
 
 (define-public libmp4v2
   (package
