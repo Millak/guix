@@ -34762,87 +34762,103 @@ the standard @code{Dockerfile} file format.")
     (license license:asl2.0)))
 
 (define-public emacs-lsp-mode
-  (package
-    (name "emacs-lsp-mode")
-    (version "9.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/emacs-lsp/lsp-mode")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1p4979qbmllmmszmnyml0msxkza4pm14rdacmqczbfs3cs9n6bd3"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:emacs emacs                     ;need libxml support
-      #:test-command #~(list "ert-runner" "-L" "." "-L" "clients"
-                             "-t" "!no-win" "-t" "!org")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'move-clients-libraries
-            ;; Move all clients libraries at top-level, as is done, e.g., in
-            ;; MELPA.
-            (lambda _
-              (for-each (lambda (f)
-                          (install-file f "."))
-                        (find-files "clients/" "\\.el$"))))
-          (add-before 'check 'skip-failing-tests
-            (lambda _
-              (substitute* "test/lsp-common-test.el"
-                (("\\(require 'elenv" all)
-                 (string-append all " nil t"))
-                (("\\(ert-deftest lsp--path-to-uri-1 .*" all)
-                 (string-append all "(skip-unless (featurep 'elenv))"))
-                (("\\(ert-deftest lsp-byte-compilation-test .*" all)
-                 (string-append all "(skip-unless nil)"))
-                (("\\(ert-deftest lsp--build-.*-response-test-[34] .*" all)
-                 (string-append all "(skip-unless nil)")))
-              (substitute* "test/lsp-mode-test.el"
-                (("\\(ert-deftest lsp--merge-results .*" all)
-                 (string-append all "(skip-unless nil)")))
-              (substitute* "test/lsp-integration-test.el"
-                (("\\(ert-deftest lsp-.*-hover-request(-tick)? .*" all)
-                 (string-append all "(skip-unless nil)"))
-                (("\\(ert-deftest lsp-test-current-buffer-mode .*" all)
-                 (string-append all "(skip-unless nil)")))
-              (delete-file "test/lsp-clangd-test.el")))
-          (add-before 'check 'set-home
-            (lambda _ (setenv "HOME" (getenv "TMPDIR"))))
-          (add-after 'unpack 'enable-plists
-            (lambda _
-              (substitute* "lsp-protocol.el"
-               ;; This is faster, and it's officially recommended,
-               ;; and it's required by emacs-lsp-booster.
-               ;; See also:
-               ;; <https://emacs-lsp.github.io/lsp-mode/page/performance/>.
-               (("\\(getenv \"LSP_USE_PLISTS\"\\)") "t"))))
-          (add-before 'move-clients-libraries 'fix-patch-el-files
-            ;; /bin/ksh is only used on macOS, which we don't support, so we
-            ;; don't want to add it as input.
-            (lambda _
-              (substitute* '("clients/lsp-csharp.el" "clients/lsp-fsharp.el")
-                (("/bin/ksh") "ksh")))))))
-    (propagated-inputs
-     (list emacs-dash
-           emacs-f
-           emacs-ht
-           emacs-hydra
-           emacs-markdown-mode
-           emacs-spinner))
-    (native-inputs (list emacs-deferred
-                         emacs-el-mock
-                         emacs-ert-runner))
-    (home-page "https://emacs-lsp.github.io/lsp-mode/")
-    (synopsis "Emacs client and library for the Language Server Protocol")
-    (description
-     "LSP mode is a client and library implementation for the Language
+  ;; Last release is one year old.
+  ;; Latest revision enables support for new lsp spec 3.17 features.
+  (let ((commit "147233313576c844e2bf56640827b0d0e5c2ee6c")
+        (revision "0"))
+    (package
+      (name "emacs-lsp-mode")
+      (version (git-version "9.0.1" revision commit)) ;taken from lsp-mode.el
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/emacs-lsp/lsp-mode/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14317wgi0mrxbcrlgrfqyf80lh86n7x6bv07b43cxl3k4c4fqk0l"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:emacs emacs                   ;need libxml support
+        #:test-command #~(list "ert-runner"
+                               "-L" "."
+                               "-L" "clients"
+                               "-t" "!no-win"
+                               "-t" "!org")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Move libraries to the top-level.
+            (add-after 'unpack 'move-libraries
+              (lambda _
+                ;; REVIEW; Improve style, pair-for-each ?
+                (for-each (lambda (d)
+                            (for-each (lambda (f)
+                                        (rename-file f (basename f)))
+                                      (find-files d "\\.el$")))
+                          (list "use-package/" "clients/"))))
+            (add-before 'check 'skip-failing-tests
+              (lambda _
+                (substitute* "test/lsp-mock-server-test.el"
+                  (("\\(ert-deftest lsp-mock-server-reports.*" all)
+                   (string-append all "(skip-unless nil)"))
+                  (("\\(ert-deftest lsp-mock-server-updates-.*" all)
+                   (string-append all "(skip-unless nil)")))
+                (substitute* "test/lsp-common-test.el"
+                  (("\\(require 'elenv" all)
+                   (string-append all " nil t"))
+                  (("\\(ert-deftest lsp--path-to-uri-1 .*" all)
+                   (string-append all "(skip-unless (featurep 'elenv))"))
+                  (("\\(ert-deftest lsp-byte-compilation-test .*" all)
+                   (string-append all "(skip-unless nil)"))
+                  (("\\(ert-deftest lsp--build-.*-response-test-[34] .*" all)
+                   (string-append all "(skip-unless nil)")))
+                (substitute* "test/lsp-mode-test.el"
+                  (("\\(ert-deftest lsp--merge-results .*" all)
+                   (string-append all "(skip-unless nil)")))
+                (substitute* "test/lsp-integration-test.el"
+                  (("\\(ert-deftest lsp-.*-hover-request(-tick)? .*" all)
+                   (string-append all "(skip-unless nil)"))
+                  (("\\(ert-deftest lsp-test-current-buffer-mode .*" all)
+                   (string-append all "(skip-unless nil)")))
+                (delete-file "test/lsp-clangd-test.el")))
+            (add-before 'check 'set-home
+              (lambda _ (setenv "HOME" (getenv "TMPDIR"))))
+            (add-after 'unpack 'enable-plists
+              (lambda _
+                (substitute* "lsp-protocol.el"
+                  ;; This is faster, and it's officially recommended,
+                  ;; and it's required by emacs-lsp-booster.
+                  ;; See also:
+                  ;; <https://emacs-lsp.github.io/lsp-mode/page/performance/>.
+                  (("\\(getenv \"LSP_USE_PLISTS\"\\)") "t"))))
+            (add-before 'move-libraries 'fix-patch-el-files
+              ;; /bin/ksh is only used on macOS, which we don't support, so we
+              ;; don't want to add it as input.
+              (lambda _
+                (substitute* '("clients/lsp-csharp.el"
+                               "clients/lsp-fsharp.el")
+                  (("/bin/ksh") "ksh")))))))
+      (propagated-inputs
+       (list emacs-dash
+             emacs-f
+             emacs-ht
+             emacs-hydra
+             emacs-markdown-mode
+             emacs-spinner))
+      (native-inputs
+       (list emacs-deferred
+             emacs-el-mock
+             emacs-ert-runner))
+      (home-page "https://emacs-lsp.github.io/lsp-mode/")
+      (synopsis "Emacs client and library for the Language Server Protocol")
+      (description
+       "LSP mode is a client and library implementation for the Language
 Server Protocol.  This mode creates an IDE-like experience by providing
 optional integration with other popular Emacs packages like Company, Flycheck,
 and Projectile.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define* (%emacs-lsp-treemacs-upstream-source #:key commit version hash)
   (origin
