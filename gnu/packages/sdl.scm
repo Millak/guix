@@ -428,7 +428,14 @@ WEBP, XCF, XPM, and XV.")
     (arguments
      `(#:tests? #f ; No check target.
        #:configure-flags
-       '("--enable-music-mp3-mad-gpl" ; Use libmad instead of smpeg.
+        `(,(string-append "CFLAGS=-g -O2"
+                          " -Wno-error=implicit-function-declaration"
+                          " -Wno-error=incompatible-pointer-types"
+                          " -Wno-error=return-mismatch")
+          "--enable-music-mp3-mad-gpl" ; Use libmad instead of smpeg.
+          ;; Explicitly link against shared libraries instead of dlopening them.
+          "--disable-music-flac-shared"
+          "--disable-music-fluidsynth-shared"
          ;; Explicitly link against shared libraries instead of dlopening them.
          "--disable-music-flac-shared"
          "--disable-music-fluidsynth-shared"
