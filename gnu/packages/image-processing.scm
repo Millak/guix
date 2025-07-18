@@ -1286,9 +1286,16 @@ libraries designed for computer vision research and implementation.")
   ;; For a remote MODULE, use the commit in
   ;; 'Modules/Remote/MODULE.remote.cmake'.
   ;; MorphologicalContourInterpolation is required by itk-snap.
-  (let* ((module-commit "821bf9b3ef8eaaab10391ed060dc9ca5e4d37b39")
-         (module-file (git-file-name "ITKMorphologicalContourInterpolation"
-                                     module-commit)))
+  ;; SimpleITKFilters and GenericLabelInterpolator are required by simpleitk.
+  (let* ((module-mci-commit "821bf9b3ef8eaaab10391ed060dc9ca5e4d37b39")
+         (module-mci-file (git-file-name "ITKMorphologicalContourInterpolation"
+                                         module-mci-commit))
+         (module-sitkf-commit "bb896868fc6480835495d0da4356d5db009592a6")
+         (module-sitkf-file (git-file-name "ITKSimpleITKFilters"
+                                           module-sitkf-commit))
+         (module-gli-commit "ebf2436469ccf82c08fab54b7446f699ad0eae01")
+         (module-gli-file (git-file-name "ITKGenericLabelInterpolator"
+                                         module-gli-commit)))
     (package
       (name "insight-toolkit")
       (version "5.4.4")
@@ -1343,6 +1350,8 @@ libraries designed for computer vision research and implementation.")
                 ;; Python is not built with Py_LIMITED_API.
                 "-DITK_USE_PYTHON_LIMITED_API=OFF"
                 "-DModule_MorphologicalContourInterpolation=ON"
+                "-DModule_SimpleITKFilters=ON"
+                "-DModule_GenericLabelInterpolator=ON"
                 "-DCMAKE_CXX_STANDARD=17"
                 "-DBUILD_TESTING=OFF")
 
@@ -1376,12 +1385,21 @@ libraries designed for computer vision research and implementation.")
               (lambda _
                 ;; ITK module MorphologicalContourInterpolation
                 ;; is for ITK-SNAP.
-                (symlink #$(this-package-native-input module-file)
+                (symlink #$(this-package-native-input module-mci-file)
                          "Modules/Remote/MorphologicalContourInterpolation")
                 (delete-file
                   (string-append
                     "Modules/Remote/"
-                    "MorphologicalContourInterpolation.remote.cmake"))))
+                    "MorphologicalContourInterpolation.remote.cmake"))
+                ;; ITK modules SimpleITKFilters and GenericLabelInterpolator
+                ;; are for SimpleITK.
+                (symlink #$(this-package-native-input module-sitkf-file)
+                         "Modules/Remote/SimpleITKFilters")
+                (delete-file "Modules/Remote/SimpleITKFilters.remote.cmake")
+                (symlink #$(this-package-native-input module-gli-file)
+                         "Modules/Remote/GenericLabelInterpolator")
+                (delete-file
+                 "Modules/Remote/GenericLabelInterpolator.remote.cmake")))
             (add-after 'unpack 'fix-numpy-bool
               (lambda _
                 ;; <https://github.com/InsightSoftwareConsortium/ITK/pull/5402>
@@ -1423,11 +1441,33 @@ libraries designed for computer vision research and implementation.")
                    (url (string-append
                           "https://github.com/KitwareMedical/"
                           "ITKMorphologicalContourInterpolation"))
-                   (commit module-commit)))
-               (file-name module-file)
+                   (commit module-mci-commit)))
+               (file-name module-mci-file)
                (sha256
                  (base32
-                   "00myhgvlk3n062i8bnknz1d10zkv3jlvs7f4jnk24727gd4v2n4i")))))
+                   "00myhgvlk3n062i8bnknz1d10zkv3jlvs7f4jnk24727gd4v2n4i")))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                      (url (string-append
+                            "https://github.com/InsightSoftwareConsortium/"
+                            "ITKSimpleITKFilters"))
+                      (commit module-sitkf-commit)))
+               (file-name module-sitkf-file)
+               (sha256
+                (base32
+                 "13nys94wl4k77f89i8y1dm3y4pmgmw3rrc0la1rzl0vi9h1qixii")))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                      (url (string-append
+                            "https://github.com/InsightSoftwareConsortium/"
+                            "ITKGenericLabelInterpolator"))
+                      (commit module-gli-commit)))
+               (file-name module-gli-file)
+               (sha256
+                (base32
+                 "1khakqh6pzdg6csli8jypzrhcdr9xmhnzgwz265krv8r5mbnndrg")))))
 
       ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
       ;; '-mtune=native -march=corei7', suggesting there's something to be
