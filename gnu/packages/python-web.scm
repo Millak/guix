@@ -8231,8 +8231,8 @@ cython_always = true"))))))))
        ;; PyPI tarball has no tests.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/encode/uvicorn")
-             (commit version)))
+              (url "https://github.com/encode/uvicorn")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "05lkxnpzmr0kik81kdcvavjvvc4d1lgmw88mr4vbwsqk147wgqbc"))))
@@ -8259,7 +8259,7 @@ cython_always = true"))))))))
            python-hatchling
            python-httpx-bootstrap
            python-pytest
-           python-pytest-asyncio
+           python-pytest-asyncio-0.26
            python-pytest-mock
            python-requests
            python-trustme
