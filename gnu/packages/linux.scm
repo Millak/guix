@@ -7970,7 +7970,7 @@ graphically visualizing a @file{perf.data} file.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
                    (util-linux (assoc-ref inputs "util-linux"))
-                   (cryptsetup (assoc-ref inputs "cryptsetup"))
+                   (cryptsetup (assoc-ref inputs "cryptsetup-minimal"))
                    (linux-pam (assoc-ref inputs "linux-pam"))
                    (lvm2 (assoc-ref inputs "lvm2")))
                (substitute* '("src/utils/ecryptfs-mount-private"
