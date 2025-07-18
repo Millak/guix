@@ -6981,7 +6981,7 @@ or @code{LuaBind} but for Scheme.")
       (origin
         (method git-fetch)
         (uri (git-reference
-               (url "https://inqlab.net/git/guile-cbor.git")
+               (url "https://codeberg.org/pukkamustard/guile-cbor/")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256 (base32 "0bdqg3ifayf7m2j09lqrgdfprbdaa67azf09bcq9b4k71inxfnxl"))))
@@ -6996,7 +6996,7 @@ or @code{LuaBind} but for Scheme.")
 a binary data serialization format.  CBOR is similar to JSON but serializes to
 binary which is smaller and faster to generate and parse.  This package provides
 a Guile implementation of CBOR.")
-    (home-page "https://inqlab.net/git/guile-cbor.git")
+    (home-page "https://codeberg.org/pukkamustard/guile-cbor/")
     (license license:gpl3+)))
 
 (define-public guile-qr-code
