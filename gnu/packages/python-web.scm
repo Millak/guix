@@ -4066,6 +4066,29 @@ teams extension for python-openid.")
 set out in RFC 7540 Section 5.3 (Stream Priority).")
     (license license:expat)))
 
+(define-public python-weblate-language-data
+  (package
+    (name "python-weblate-language-data")
+    (version "2025.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "weblate_language_data" version))
+       (sha256
+        (base32 "0byj1xl6xldam790b6wg62dk1b4i6qdlsp4lqzlv65wnp2klvrkf"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;not tests, just data files
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-translate-toolkit))
+    (home-page "https://github.com/WeblateOrg/language-data")
+    (synopsis "Language definitions for Weblate")
+    (description
+     "This package provides language definitions used by
+@url{https://weblate.org/, Weblate}i.")
+    (license license:expat)))
+
 (define-public python-wsproto
   (package
     (name "python-wsproto")
