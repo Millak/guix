@@ -68,7 +68,7 @@ performance of memory-intensive applications.")
 (define-public dictd
   (package
     (name "dictd")
-    (version "1.13.1")
+    (version "1.13.3")
     (source
      (origin
        (method url-fetch)
@@ -79,12 +79,20 @@ performance of memory-intensive applications.")
                            version
                            ".tar.gz"))
        (sha256
-        (base32 "06racmv25ihwgwf67fgj2703ik0m5i2cjzcxasa88kc92rysdwg4"))))
+        (base32 "0w8i7w3xs53kj5v72xf1zq24kz4qa6fcg1lmibs279wgnggjj88r"))))
     (inputs (list libmaa zlib))
     (native-inputs (list libtool bison flex))
     (arguments
      (list
-      #:test-target "test"))
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-configure
+            (lambda _
+              ;; workaround for missing yylex in yywrap lex check
+              (substitute* "configure"
+                (("yywrap [(]void[)];")
+                 "yywrap (void); int yylex () { return 0; }")))))))
     (build-system gnu-build-system)
     (synopsis "@command{dict}, @command{dictd} and @command{dictfmt} programs")
     (description
