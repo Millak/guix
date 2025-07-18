@@ -580,10 +580,10 @@ to all types of devices that provide serial consoles.")
       #~(modify-phases %standard-phases
           (delete 'configure) ;no configure script
           (add-before 'check 'patch-tests
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "GNUmakefile"
                 (("/bin/bash")
-                 (which "bash"))
+                 (search-input-file inputs "bin/bash"))
                 ;; XXX In the build environment, $(PWD) is the *parent* directory
                 ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
                 (("\\$\\(PWD\\)" pwd)
@@ -595,13 +595,18 @@ to all types of devices that provide serial consoles.")
                  ": No such file or directory"))))
           (add-before 'install 'install-rules
             (lambda _
-              (mkdir-p (string-append #$output "/etc/udev/rules.d"))
-              (with-output-to-file (string-append #$output
-                                                  "/etc/udev/rules.d/70-pcspkr-beep.rules")
-                (lambda _
-                  (display (string-append
-                            "ACTION==\"add\", SUBSYSTEM==\"input\", ATTRS{name}==\"PC Speaker\", "
-                            "ENV{DEVNAME}!=\"\", " "TAG+=\"uaccess\"")))))))))
+              (let ((rules.d (string-append #$output "/etc/udev/rules.d")))
+                (mkdir-p rules.d)
+                (with-output-to-file
+                    (string-append rules.d "/70-pcspkr-beep.rules")
+                  (lambda _
+                    (display
+                     (string-join (list "ACTION==\"add\""
+                                        "SUBSYSTEM==\"input\""
+                                        "ATTRS{name}==\"PC Speaker\""
+                                        "ENV{DEVNAME}!=\"\""
+                                        "TAG+=\"uaccess\"")
+                                  ", "))))))))))
     (synopsis "Linux command-line utility to control the PC speaker")
     (description
      "beep allows the user to control the PC speaker with precision, allowing
