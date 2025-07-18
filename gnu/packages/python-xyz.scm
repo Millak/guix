@@ -37870,16 +37870,19 @@ Python, with static types.")
 (define-public python-types-requests
   (package
     (name "python-types-requests")
-    (version "2.30.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "types-requests" version))
-              (sha256
-               (base32
-                "0cas3cjkhrvsz2rmqnhqiihy9j79wxi9xbih8jk0p9r48c2q3iyy"))))
+    (version "2.32.4.20250611")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_requests" version))
+       (sha256
+        (base32 "09pqdfa66d3p5dig26chrd6rpxs5wamxcm0yyl5q69b4xmvqf73l"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-types-urllib3))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-urllib3))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for requests")
     (description "This package provides typing stubs for requests.")
