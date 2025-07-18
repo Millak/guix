@@ -1971,7 +1971,16 @@ audio/video codec library.")
                  "--disable-postproc"
                  "--disable-avfilter"
                  "--disable-shared"
-                 "--enable-static"))))
+                 "--enable-static"))
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'configure 'relax-gcc-14-strictness
+               (lambda _
+                 (substitute* "config.mak"
+                   (("CFLAGS *=" all)
+                    (string-append all
+                                   " -Wno-error=incompatible-pointer-types"
+                                   " -Wno-error=int-conversion ")))))))))
      (inputs '()))))
 
 (define-public ffmpeg-for-friction
