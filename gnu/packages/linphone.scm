@@ -422,7 +422,9 @@ such as conferencing.")
       #:tests? #f                       ;requires networking
       #:configure-flags '(list "-DENABLE_STATIC=NO"
                                "-DENABLE_DOC=NO" ;XXX: missing link for b64
-                               "-DENABLE_TESTS=YES")
+                               "-DENABLE_TESTS=YES"
+                               ;; fix build error with GCC 14.
+                               "-DCMAKE_C_FLAGS=-Wno-incompatible-pointer-types")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-version-strings
