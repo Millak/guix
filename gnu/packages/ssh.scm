@@ -758,7 +758,7 @@ monitor it, restarting it as necessary should it die or stop passing traffic.")
 (define-public pdsh
   (package
     (name "pdsh")
-    (version "2.34")
+    (version "2.35")
     (source
      (origin
        (method url-fetch)
@@ -766,7 +766,7 @@ monitor it, restarting it as necessary should it die or stop passing traffic.")
                            "releases/download/pdsh-" version
                            "/pdsh-" version ".tar.gz"))
        (sha256
-        (base32 "1s91hmhrz7rfb6h3l5k97s393rcm1ww3svp8dx5z8vkkc933wyxl"))))
+        (base32 "1ziw142im1hzj0wr20msrp97sp709x1c9ybgilzz9zs8g0s1bvvm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
