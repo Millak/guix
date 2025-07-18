@@ -56,6 +56,31 @@ also provides the means for generating a textual description of the command
 line syntax.")
     (license lgpl2.0+)))
 
+(define-public argtable3
+  (package
+    (name "argtable3")
+    (version "3.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/argtable/argtable3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d7549c9hppjjp0a64yhwsgy44i14j6mgzvb2980r3yaw6l2jvi1"))))
+    (build-system cmake-build-system)
+    (home-page "https://www.argtable.org/")
+    (synopsis "Command line option parsing library")
+    (description
+     "Argtable3 is an ANSI C library that simplifies parsing GNU-style
+command-line options.  It provides a declarative API to define your
+command-line syntax, and because it's built on the standard getopt library, it
+ensures 100% GNU-compliant behavior.  Argtable3 automatically generates the
+error-handling logic and usage descriptions that are essential for any robust
+command-line program, saving you from tedious boilerplate code.")
+    (license bsd-3)))
+
 (define-public popt
   (package
     (name "popt")
