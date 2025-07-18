@@ -925,6 +925,30 @@ supports:
 @end itemize")
     (license license:expat)))
 
+(define-public python-id
+  (package
+    (name "python-id")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "id" version))
+       (sha256
+        (base32 "07acfgq7vmbz94p5axn9d40m8qjcgfllfkr4jz7dpfxcksjbhb19"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pretend
+           python-pytest))
+    (propagated-inputs
+     (list python-requests))
+    (home-page "https://github.com/di/id")
+    (synopsis "Tool for generating OIDC identities")
+    (description
+     "This package provides a tool for generating @code{OIDC, OpenID Connect}
+identities.")
+    (license #f)))
+
 (define-public python-jsonpath-ng
   (package
     (name "python-jsonpath-ng")
