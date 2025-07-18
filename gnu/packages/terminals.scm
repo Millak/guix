@@ -554,68 +554,71 @@ to all types of devices that provide serial consoles.")
     (license license:gpl2+)))
 
 (define-public beep
-  (package
-    (name "beep")
-    (version "1.4.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             ;; The original beep 1.3 at <http://www.johnath.com/beep> has been
-             ;; unmaintained for some time, and vulnerable to at least two CVEs:
-             ;; https://github.com/johnath/beep/issues/11#issuecomment-454056858
-             ;; Use this maintained fork instead.
-             (url "https://github.com/spkr-beep/beep")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0dgrb5yg4ys1fa4hs95iz3m2yhryfzzw0j6g6yf6vhbys4ihcf40"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "prefix=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure) ;no configure script
-          (add-before 'check 'patch-tests
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "GNUmakefile"
-                (("/bin/bash")
-                 (search-input-file inputs "bin/bash"))
-                ;; XXX In the build environment, $(PWD) is the *parent* directory
-                ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
-                (("\\$\\(PWD\\)" pwd)
-                 (string-append pwd "/source")))
-              (substitute* (find-files "tests" "\\.expected")
-                ;; The build environment lacks /dev/{console,tty*}.
-                ;; In fact, even nckx's regular Guix System lacks ttyS1…
-                ((": Permission denied")
-                 ": No such file or directory"))))
-          (add-before 'install 'install-rules
-            (lambda _
-              (let ((rules.d (string-append #$output "/etc/udev/rules.d")))
-                (mkdir-p rules.d)
-                (with-output-to-file
-                    (string-append rules.d "/70-pcspkr-beep.rules")
-                  (lambda _
-                    (display
-                     (string-join (list "ACTION==\"add\""
-                                        "SUBSYSTEM==\"input\""
-                                        "ATTRS{name}==\"PC Speaker\""
-                                        "ENV{DEVNAME}!=\"\""
-                                        "TAG+=\"uaccess\"")
-                                  ", "))))))))))
-    (synopsis "Linux command-line utility to control the PC speaker")
-    (description
-     "beep allows the user to control the PC speaker with precision, allowing
-different sounds to indicate different events.  While it can be run quite
-happily on the command line, its intended place of residence is within scripts,
-notifying the user when something interesting occurs.  Of course, it has no
-notion of what's interesting, but it's very good at that notifying part.")
-    (home-page "https://github.com/spkr-beep/beep")
-    (license license:gpl2+)))
+  (let ((commit "1cba97210748ac9f478c0f93334a1eb31eb002d7")
+        (revision "0"))
+    (package
+      (name "beep")
+      (version (git-version "1.4.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                ;; The original beep 1.3 at <http://www.johnath.com/beep> has been
+                ;; unmaintained for some time, and vulnerable to at least two CVEs:
+                ;; https://github.com/johnath/beep/issues/11#issuecomment-454056858
+                ;; Use this maintained fork instead.
+                (url "https://github.com/spkr-beep/beep")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1di7j1n7svn6hyvs3fac0n1wnc3wiyxk47jyafwla0zifnwf0xwy"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure) ;no configure script
+            (add-before 'check 'patch-tests
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "GNUmakefile"
+                  (("/bin/bash")
+                   (search-input-file inputs "bin/bash"))
+                  ;; XXX In the build environment, $(PWD) is the *parent* directory
+                  ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
+                  (("\\$\\(PWD\\)" pwd)
+                   (string-append pwd "/source")))
+                (substitute* (find-files "tests" "\\.expected")
+                  ;; The build environment lacks /dev/{console,tty*}.
+                  ;; In fact, even nckx's regular Guix System lacks ttyS1…
+                  ((": Permission denied")
+                   ": No such file or directory"))))
+            (add-before 'install 'install-rules
+              (lambda _
+                (let ((rules.d (string-append #$output "/etc/udev/rules.d")))
+                  (mkdir-p rules.d)
+                  (with-output-to-file
+                      (string-append rules.d "/70-pcspkr-beep.rules")
+                    (lambda _
+                      (display
+                       (string-join (list "ACTION==\"add\""
+                                          "SUBSYSTEM==\"input\""
+                                          "ATTRS{name}==\"PC Speaker\""
+                                          "ENV{DEVNAME}!=\"\""
+                                          "TAG+=\"uaccess\"")
+                                    ", "))))))))))
+      (synopsis "Linux command-line utility to control the PC speaker")
+      (description
+       "beep allows the user to control the PC speaker with precision,
+allowing different sounds to indicate different events.  While it can be run
+quite happily on the command line, its intended place of residence is within
+scripts, notifying the user when something interesting occurs.  Of course, it
+has no notion of what's interesting, but it's very good at that notifying
+part.")
+      (home-page "https://github.com/spkr-beep/beep")
+      (license license:gpl2+))))
 
 (define-public unibilium
   (package
