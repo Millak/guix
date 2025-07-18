@@ -272,7 +272,21 @@ a fast alternative to @code{IOStreams}.")
        (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
                            version "/fmt-" version ".zip"))
        (sha256
-        (base32 "15n9yi6xzzs7g9rm87kg8y5yhl2zrqj3bjr845saa63f6swlrsyc"))))))
+        (base32 "15n9yi6xzzs7g9rm87kg8y5yhl2zrqj3bjr845saa63f6swlrsyc"))))
+    (arguments
+     (list
+      #:configure-flags ''("-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      (cond
+       ((string-prefix? "i686" (%current-system))
+        #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (invoke
+               "patch" "-p1" "-i"
+               #$(local-file
+                  (search-patch "fmt-9-overspecified-tests.patch")))))))
+       (else #~%standard-phases))))))
 
 (define-public fmt-8
   (package
