@@ -27678,36 +27678,24 @@ created by running @code{python setup.py develop}).")
 (define-public python-twine
   (package
     (name "python-twine")
-    (version "5.1.1")
+    (version "6.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "twine" version))
        (sha256
-        (base32 "1nr24gd5gm22b0jzb5qmw4swh8bshixmqm0kv4s38ay0758q584s"))))
+        (base32 "1gcd990456sk0g05ln6x6mwn9z1jybnm3wlkxq3ivyggf9i4ycmy"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags  ;; Disable failing tests.
-           #~(list "-k" (string-append
-                         "not test_fails_rst_no_content"
-                         " and not test_fails_rst_syntax_error"
-                         " and not test_passes_markdown_description[text/markdown]"
-                         " and not test_passes_markdown_description[text/plain]"
-                         " and not test_passes_rst_description"
-                         " and not test_warns_missing_description[False]"
-                         " and not test_warns_missing_description[True]"
-                         " and not test_warns_missing_file"))))
     (native-inputs
      (list python-pretend
            python-pytest
            python-pytest-socket
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-importlib-metadata
+     (list python-id
            python-keyring
-           python-pkginfo
+           python-packaging
            python-readme-renderer
            python-requests
            python-requests-toolbelt
