@@ -8355,26 +8355,26 @@ for HTTP/2 is planned.")
 (define-public python-translation-finder
   (package
     (name "python-translation-finder")
-    (version "1.7")
+    (version "2.22")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "translation-finder" version))
-        (sha256
-         (base32
-          "1pcy9z8gmb8x41gjhw9x0lkr0d2mv5mdxcs2hwg6q8mxs857j589"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "translation_finder" version))
+       (sha256
+        (base32 "1hav99ccijvk2w8wpvba2pc7ba1z150vja2wvaimd069mc08pjd2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'remove-failing-test
-            (lambda _
-              (delete-file "translation_finder/test_api.py"))))))
-    (propagated-inputs
-     (list python-chardet python-ruamel.yaml))
+      #:test-flags
+      ;; AssertionError: 31 != 30 : Mismatched count of results
+      #~(list "--deselect=translation_finder/test_api.py::APITest::test_discover_file")))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-charset-normalizer-3
+           python-ruamel.yaml
+           python-weblate-language-data))
     (home-page "https://weblate.org/")
     (synopsis "Translation file finder for Weblate")
     (description "This package provides a function to find translation file in
