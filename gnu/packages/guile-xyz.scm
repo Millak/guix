@@ -6978,24 +6978,23 @@ or @code{LuaBind} but for Scheme.")
     (name "guile-cbor")
     (version "0.1.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://codeberg.org/pukkamustard/guile-cbor/")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256 (base32 "0bdqg3ifayf7m2j09lqrgdfprbdaa67azf09bcq9b4k71inxfnxl"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/pukkamustard/guile-cbor/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bdqg3ifayf7m2j09lqrgdfprbdaa67azf09bcq9b4k71inxfnxl"))))
     (build-system gnu-build-system)
-    (arguments `())
-    (native-inputs
-     (list autoconf automake pkg-config texinfo))
+    (native-inputs (list autoconf automake pkg-config texinfo))
     (inputs (list guile-3.0))
     (synopsis "Guile implementation of CBOR")
     (description
-     "The Concise Binary Object Representation (CBOR), as specified by RFC 8949, is
-a binary data serialization format.  CBOR is similar to JSON but serializes to
-binary which is smaller and faster to generate and parse.  This package provides
-a Guile implementation of CBOR.")
+     "The Concise Binary Object Representation (CBOR), as specified by RFC
+8949, is a binary data serialization format.  CBOR is similar to JSON but
+serializes to binary which is smaller and faster to generate and parse.  This
+package provides a Guile implementation of CBOR.")
     (home-page "https://codeberg.org/pukkamustard/guile-cbor/")
     (license license:gpl3+)))
 
