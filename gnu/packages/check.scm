@@ -3127,29 +3127,6 @@ pragmas to control it from within your code.  Additionally, it is
 possible to write plugins to add your own checks.")
     (license license:gpl2+)))
 
-(define-public python-nosexcover
-  (package
-    (name "python-nosexcover")
-    (version "1.0.11")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "nosexcover" version))
-              (sha256
-               (base32
-                "10xqr12qv62k2flxwqhh8cr00cjhn7sfjrm6p35gd1x5bmjkr319"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-coverage python-nose))
-    (home-page "https://github.com/cmheisel/nose-xcover")
-    (synopsis "Extends nose.plugins.cover to add Cobertura-style XML reports")
-    (description "Nose-xcover is a companion to the built-in
-@code{nose.plugins.cover}.  This plugin will write out an XML coverage report
-to a file named coverage.xml.
-
-It will honor all the options you pass to the Nose coverage plugin,
-especially -cover-package.")
-    (license license:expat)))
-
 (define-public python-discover
   (package
     (name "python-discover")
