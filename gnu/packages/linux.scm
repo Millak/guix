@@ -11137,7 +11137,7 @@ persistent over reboots.")
                                                  ;; user API (uAPI) headers.
                                                  "install_uapi_headers")
                                            make-flags)))))))))
-    (native-inputs (list linux-libre-headers-latest pkg-config))
+    (native-inputs (list pkg-config))
     (propagated-inputs (list elfutils zlib)) ;in Requires.private of libbpf.pc
     (home-page "https://github.com/libbpf/libbpf")
     (synopsis "BPF CO-RE (Compile Once – Run Everywhere)")

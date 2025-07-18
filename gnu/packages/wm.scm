@@ -444,7 +444,6 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            udis86
            wayland
            wayland-protocols
-           linux-libre-headers-6.14
            xcb-util-errors
            xcb-util-wm
            xorg-server-xwayland))

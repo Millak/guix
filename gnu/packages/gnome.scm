@@ -8247,7 +8247,6 @@ to display dialog boxes from the commandline and shell scripts.")
            libxkbfile
            libxrandr
            libxtst
-           linux-libre-headers-6.1      ; for dma_buf_export_sync_file
            pipewire
            startup-notification
            sysprof
