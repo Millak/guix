@@ -250,6 +250,16 @@ data as produced by digital cameras.")
                (base32
                 "1d0g3ixxfz3sfm5rzibydqd9ccflls86pq0ls48zfp5dqvda2qgf"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'relax-gcc-14-strictness
+                 ;; Required on i686, but not x86_64.
+                 (lambda _
+                   (setenv "CFLAGS"
+                           (string-append
+                             "-g -O2 "
+                             "-Wno-incompatible-pointer-types")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list libjpeg-turbo libltdl libusb libxml2))
