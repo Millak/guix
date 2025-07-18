@@ -781,15 +781,16 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.5.6")
+    (version "0.5.12")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://pwmt.org/projects/zathura/download/zathura-"
-                              version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/pwmt/zathura.git/")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nhhdww8z6i2cmj7n6qjgyh49dy4jf0xq4j13djpvrfchxgf6y5l"))))
+                "1wrr9vr0d83kawkg0wj4i91g293cbjgyhmfspf4bxbs62x77zb9m"))))
     (build-system meson-build-system)
     (arguments
      (list
