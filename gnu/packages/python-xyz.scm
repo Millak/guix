@@ -16155,56 +16155,41 @@ applications.")
 (define-public python-pyzmq
   (package
     (name "python-pyzmq")
-    (version "25.1.0")
+    (version "27.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyzmq" version))
        (sha256
-        (base32 "0mw9zf0h9sgn2cchw24vyxgyi2nfpyfacr0mh072hdjx8qii1i40"))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils))
-            ;; The bundled zeromq source code.
-            (delete-file-recursively "bundled")
-            ;; Delete cythonized files.
-            (for-each delete-file
-                      (list "zmq/backend/cython/context.c"
-                            "zmq/backend/cython/_device.c"
-                            "zmq/backend/cython/error.c"
-                            "zmq/backend/cython/message.c"
-                            "zmq/backend/cython/_poll.c"
-                            "zmq/backend/cython/_proxy_steerable.c"
-                            "zmq/backend/cython/socket.c"
-                            "zmq/backend/cython/utils.c"
-                            "zmq/backend/cython/_version.c"
-                            "zmq/devices/monitoredqueue.c"))))))
-    (build-system python-build-system)
+        (base32 "0jznvl7v41241pbbvwzjxi028mrfy1n5ymfjzy2783n29ch4kia5"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--zmq=" (assoc-ref %build-inputs "zeromq")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'configure
-           (lambda _
-             ;; Our zeromq package is built with '--enable-drafts'; also
-             ;; enable draft support for pyzmq so the draft test passes.
-             (setenv "ZMQ_DRAFT_API" "1")))
-         (add-before 'check 'build-extensions
-           (lambda _
-             ;; Cython extensions have to be built before running the tests.
-             (invoke "python" "setup.py" "build_ext" "--inplace")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
-    (inputs (list zeromq))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda _
+              ;; Our zeromq package is built with '--enable-drafts'; also
+              ;; enable draft support for pyzmq so the draft test passes.
+              (setenv "ZMQ_DRAFT_API" "1")
+              ;; Make sure to prevent building bundled libzmq.
+              (setenv "PYZMQ_NO_BUNDLE" "1")))
+          (add-before 'check 'delete-source
+            ;; To prevent loading it and skip build extensions one more times.
+            (lambda _
+              (delete-file-recursively "zmq"))))))
     (native-inputs
-     (list pkg-config
+     (list cmake-minimal
+           ;; python-cffi ; for PyPy
            python-cython
+           python-packaging
            python-pytest
            python-pytest-asyncio
-           python-tornado-6))
+           python-scikit-build-core
+           python-tornado))
+    (inputs
+     (list libsodium
+           zeromq))
     (home-page "https://github.com/zeromq/pyzmq")
     (synopsis "Python bindings for 0MQ")
     (description
