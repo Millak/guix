@@ -38028,15 +38028,17 @@ Python, with static types.")
 (define-public python-types-urllib3
   (package
     (name "python-types-urllib3")
-    (version "1.26.25.12")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "types-urllib3" version))
-              (sha256
-               (base32
-                "0zcipjdnbnc8ymk8mh9n5mypa0qr03rqj98lbmahldcdrrap6md1"))))
+    (version "1.26.25.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-urllib3" version))
+       (sha256
+        (base32 "13ys7c7k9pg3lb11qvdgs9xq8j8bvcpjpg61j8dqq6wmgibpz6r2"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for urllib3")
     (description "This package provides typing stubs for urllib3.")
