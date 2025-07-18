@@ -10151,7 +10151,10 @@ via the in-game download manager.")
            (substitute* "extern/CMakeLists.txt"
              (("include\\(CMakeProject-png.cmake\\)") ""))
            (delete-file-recursively "extern/libpng")
-           #t))))
+           ;; Include missing <ctime> header.
+           (substitute* "src/arch/ArchHooks/ArchHooks.h"
+             (("#define ARCH_HOOKS_H" all)
+              (string-append all "\n#include <ctime> // struct tm")))))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;FIXME: couldn't find how to run tests
