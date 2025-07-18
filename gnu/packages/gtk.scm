@@ -2306,16 +2306,16 @@ and routines to assist in editing internationalized text.")
   ;; of 2024-03)
   (package
     (name "girara")
-    (version "0.4.3")
+    (version "0.4.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.pwmt.org/pwmt/girara")
-             (commit version)))
+              (url "https://github.com/pwmt/girara/")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cbcs3810frgdmal5ia9pf3rk3k5h4xyzw1d2ia3rcg4nms5gcpx"))))
+        (base32 "04igidbihgq5k7fh0jd5n26w00qlb47riky6q7qlp5k314d6cd2y"))))
     (arguments
      (list
       #:phases
