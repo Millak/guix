@@ -52,7 +52,7 @@
 ;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
@@ -4228,7 +4228,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
 (define-public wvkbd
   (package
     (name "wvkbd")
-    (version "0.14.1")
+    (version "0.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4237,7 +4237,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1aha9ylzbkhbf45172l3wyp65kqj6zs5gxqyj62ahj3gp944wmbb"))))
+                "0hn3fkkskynhqcy3f2j4y74cq488ss6my752zc8asyskpkgf6djn"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no tests
@@ -4252,8 +4252,10 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
                               (("pkg-config")
                                #$(pkg-config-for-target)))))
                         (delete 'configure))))
-    (native-inputs (list wayland ;for wayland-scanner
-                         pkg-config))
+    (native-inputs
+     (list scdoc
+           wayland ; For wayland-scanner.
+           pkg-config))
     (inputs (list libxkbcommon cairo pango harfbuzz wayland))
     (home-page "https://git.sr.ht/~proycon/wvkbd")
     (synopsis "On-screen keyboard for wlroots compositors")
