@@ -372,7 +372,7 @@ left it off the last time it was used.")
 (define-public tmux-plugin-mem-cpu-load
   (package
     (name "tmux-plugin-mem-cpu-load")
-    (version "3.7.0")
+    (version "3.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -380,7 +380,7 @@ left it off the last time it was used.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "03bax7g9jlsci44ccs50drh617ya3fzvlplwyvxfyb7mgmh85r72"))
+                "041hd6s6prk63r121yggxmzhbp40h6r04mrby0q51x43lfgvmvw3"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (synopsis "CPU, RAM, and load monitor for use with tmux")
