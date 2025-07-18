@@ -257,11 +257,20 @@ console.")
                                      "-Dfrontend-gtk=true"
                                      "-Dgdb-stub=true"
                                      "-Dopenal=true")
-           #:phases #~(modify-phases %standard-phases
-                        ;; meson.build is in a subdirectory.
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "desmume/src/frontend/posix"))))))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-gcc-14-strictness
+                 (lambda _
+                   (setenv
+                    "CFLAGS"
+                    (string-append
+                     "-g -O2"
+                     " -Wno-error=implicit-function-declaration"
+                     " -Wno-error=int-conversion"))))
+               ;; meson.build is in a subdirectory.
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir "desmume/src/frontend/posix"))))))
     (native-inputs (list `(,glib "bin") gettext-minimal intltool pkg-config))
     (inputs (list agg
                   alsa-lib
