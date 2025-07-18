@@ -363,24 +363,24 @@ annotating features.")
 (define-public kdenlive
   (package
     (name "kdenlive")
-    (version "24.12.3")
+    (version "25.07.80")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://invent.kde.org/multimedia/kdenlive")
-             (commit (string-append "v" version))))
+              (url "https://invent.kde.org/multimedia/kdenlive")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m1s27vska60qswrqfnjlrj9p787n5p8zx7gldn95sj1mdw9s7cr"))))
+        (base32 "1mvd3sfwdihfw94s1wrlyp66a7z5m4d95bcsq7pszjqbj8pq10wq"))))
     (build-system qt-build-system)
     (arguments
-     ;; XXX: there is a single test that spawns other tests and
-     ;; 1/3 tests failed and 1/327 assertions failed.  It seems
-     ;; that individual tests can't be skipped.
+     ;; XXX otiotest seemingly freezes.  Additionally, tests/mixtest.cpp:818
+     ;; fails with an unexpected exception.
      (list
       #:qtbase qtbase
-      #:configure-flags #~(list "-DBUILD_TESTING=off")
+      #:configure-flags #~(list "-DBUILD_TESTING=off"
+                                "-DFETCH_OTIO=off")
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -405,10 +405,11 @@ annotating features.")
      (list extra-cmake-modules kdoctools pkg-config qttools))
     (inputs
      (list bash-minimal
-           breeze                       ; make dark them available easily
+           breeze                       ; make dark theme available easily
            breeze-icons                 ; recommended icon set
            ffmpeg
            frei0r-plugins
+           imath
            karchive
            kcrash
            kdbusaddons
@@ -426,6 +427,7 @@ annotating features.")
            ktextwidgets
            ladspa
            mlt
+           opentimelineio
            purpose
            qqc2-desktop-style
            qtbase
