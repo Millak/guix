@@ -12967,16 +12967,17 @@ arguments.  It handles arbitrarily large (directed-acyclic) signal graphs.")
 (define-public python-imageio-ffmpeg
   (package
     (name "python-imageio-ffmpeg")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "imageio-ffmpeg" version))
+       (uri (pypi-uri "imageio_ffmpeg" version))
        (sha256
-        (base32 "0k284r1xsdp5h1s4k6nfsfzbkphf8g6r2llwjafhq2sn3yrskmqf"))))
-    (build-system pypthon-build-system)
+        (base32 "0m8ppa4ap5vnic3jb25hsrq2gn0283x7mfr5z6ln8m80ivnnnmg2"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f       ;XXX: tests requrie network access to get FFmpeg data
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'hardcode-ffmpeg
