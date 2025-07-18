@@ -1426,7 +1426,7 @@ more.  This package does @emph{not} provide the game assets.")
   ;; us today is a bunch of fixes that other distros shipped as patches.
   (package
     (name "cowsay")
-    (version "3.8.3")
+    (version "3.8.4")
     (source
      (origin
        (method git-fetch)
@@ -1435,7 +1435,7 @@ more.  This package does @emph{not} provide the game assets.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xdrpqj0lf3x1aib4s1bqfq4p7dxxlw1560pp1kw6pk3mzyvxih5"))))
+        (base32 "0as4axm1v37d2bm86sksi6wrd0yc4jm2lyfdhr5k179b1mvnfx4v"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
