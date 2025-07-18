@@ -234,7 +234,7 @@ them, etc., by attaching to the corresponding pane in tmux.")
 (define-public tmux-xpanes
   (package
     (name "tmux-xpanes")
-    (version "4.1.3")
+    (version "4.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -243,7 +243,7 @@ them, etc., by attaching to the corresponding pane in tmux.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09fmnn1q76r1l4cv7clmfr3j9cjmd053kq238d0qj2i486948ivv"))))
+                "0k37zswn6s9iclm9yasil9jhy768qn9fv3m489irfwrx1vc8lp9w"))))
     (build-system trivial-build-system)
     (inputs
      (list bash))
