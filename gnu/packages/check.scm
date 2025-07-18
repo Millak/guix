@@ -3997,19 +3997,19 @@ skipped if any of the dependencies did fail or has been skipped.")
 (define-public python-pytest-datadir
   (package
     (name "python-pytest-datadir")
-    (version "1.3.1")
+    (version "1.7.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-datadir" version))
+       (uri (pypi-uri "pytest_datadir" version))
        (sha256
         (base32
-         "066bg6wlzgq2pqnjp73dfrcmk8951xw3aqcxa3p1axgqimrixbyk"))))
-    (build-system python-build-system)
+         "0gj49053hzb3xchzrsp14hj7d4fakhxmvrv895g218yh6n525x8m"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm))
-    (propagated-inputs
-     (list python-pytest python-wheel))
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/gabrielcnr/pytest-datadir")
     (synopsis "Pytest plugin for manipulating test data directories and files")
     (description
