@@ -10526,7 +10526,7 @@ capabilities.")
   (package
     (inherit python-numpy)
     (name "python-numpy")
-    (version "2.2.5")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
@@ -10534,7 +10534,7 @@ capabilities.")
              "https://github.com/numpy/numpy/releases/download/v"
              version "/numpy-" version ".tar.gz"))
        (sha256
-        (base32 "14f28cpmw3z8sk4lp5pylrk58220fclqnbkprfqr3n8cd2adkh59"))))
+        (base32 "0aqx8hsw54wfp7iv0h0ljlpsygvmrmi3rjic6rsa6v92lhhaxj8y"))))
     (arguments
      (list
       #:modules '((guix build utils)
@@ -10542,7 +10542,11 @@ capabilities.")
                   (ice-9 format))
       #:test-flags
       #~(list "-m" "not slow"
-              "--numprocesses" (number->string (min 8 (parallel-job-count))))
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; See: <https://github.com/numpy/numpy/issues/27531>,
+              ;;      <https://github.com/numpy/numpy/issues/17685>,
+              ;;      <https://github.com/numpy/numpy/issues/17635>.
+              "-k" "not test_api_importable")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-executable-paths
