@@ -251,7 +251,8 @@ endif()~%~%"
                               "cli_export-ps-level_2_check_output"
                           ;; These fail on i686 but not x86-64
                           #$@(if (target-x86-32?)
-                                 '("cli_pdfinput-font-spacing_check_output"
+                                 '("cli_actions-path-simplify_check_output"
+                                   "cli_pdfinput-font-spacing_check_output"
                                    "cli_pdfinput-font-style_check_output"
                                    "cli_pdfinput-latex_check_output"
                                    "cli_pdfinput-multi-page-sample_check_output"
