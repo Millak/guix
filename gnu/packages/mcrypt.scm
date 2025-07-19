@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,10 +19,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages mcrypt)
-  #:use-module (guix packages)
-  #:use-module ((guix licenses) #:select (gpl2+))
-  #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module ((guix licenses) #:select (gpl2+))
+  #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl))
@@ -70,6 +72,16 @@ them.")
        (base32
         "0gipgb939vy9m66d3k8il98rvvwczyaw2ixr8yn6icds9c3nrsz4"))))
     (build-system gnu-build-system)
+    (arguments
+      (list
+        #:phases
+        #~(modify-phases %standard-phases
+          (add-before 'configure 'set-CFLAGS
+            (lambda _
+              ;; Setting STDC_HEADERS causes inclusion of standard
+              ;; headers in lib/libdefs.h.
+              (setenv "CFLAGS" (string-append "-g -O2 -DSTDC_HEADERS "
+                                              "-Wno-error=implicit-int")))))))
     (home-page "https://mcrypt.sourceforge.net/")
     (synopsis "Encryption algorithm library")
     (description
