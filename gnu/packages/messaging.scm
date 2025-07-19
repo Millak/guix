@@ -982,7 +982,7 @@ authentication.")
 (define-public pidgin
   (package
     (name "pidgin")
-    (version "2.14.13")
+    (version "2.14.14")
     (source
      (origin
        (method url-fetch)
@@ -990,7 +990,7 @@ authentication.")
         (string-append "mirror://sourceforge/pidgin/Pidgin/"
                        version "/pidgin-" version ".tar.bz2"))
        (sha256
-        (base32 "1a3by4niw5ls67mwgj20p2mr317zj4hzysi5glm9mq0pivf4j00j"))
+        (base32 "0mi3ir2vsir7k07cqlalhflw93gsxqni7kamibwn00pivsa9kz0g"))
        (patches
         (search-patches "pidgin-add-search-path.patch"))
        (modules '((guix build utils)))
@@ -1051,10 +1051,6 @@ authentication.")
     (arguments
      `(#:configure-flags
        (list
-        (string-append "CFLAGS=-I"
-                       (assoc-ref %build-inputs "gst-plugins-base")
-                       "/include/gstreamer-1.0"
-                       " -Wno-error=incompatible-pointer-types")
         ;; XXX: Disable voice and video calls until Farstream is back to life:
         ;; <https://issues.guix.gnu.org/75739>.
         "--disable-vv"
