@@ -636,31 +636,24 @@ using libarchive.")
 (define-public zathura-ps
   (package
     (name "zathura-ps")
-    (version "0.2.7")
+    (version "0.2.8")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://pwmt.org/projects/zathura-ps/download/zathura-ps-"
-                              version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/pwmt/zathura-ps")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ilf63wxn1yzis9m3qs8mxbk316yxdzwxrrv86wpiygm9hhgk5sq"))))
+                "04nv4cpxhx2f1m6iagrhj3dx3mranljl604sj2yn11anhnm0igc5"))))
     (native-inputs (list pkg-config))
     (inputs (list libspectre zathura))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; package does not contain tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-plugin-directory
-           ;; Something of a regression in 0.2.7: the new Meson build system
-           ;; now hard-codes an incorrect plugin directory.  Fix it.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "meson.build"
-               (("(install_dir:).*" _ key)
-                (string-append key
-                               "'" (assoc-ref outputs "out") "/lib/zathura'\n")))
-             #t)))))
+     (list
+      #:tests? #f                       ;package does not contain tests
+      #:configure-flags
+      #~(list (string-append "-Dplugindir=" #$output "/lib/zathura"))))
     (home-page "https://pwmt.org/projects/zathura-ps/")
     (synopsis "PS support for zathura (libspectre backend)")
     (description "The zathura-ps plugin adds PS support to zathura
