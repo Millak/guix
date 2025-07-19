@@ -4236,28 +4236,44 @@ of the netcdf4 package before.")
 (define-public python-netcdf4
   (package
     (name "python-netcdf4")
-    (version "1.6.0")
+    (version "1.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "netCDF4" version))
        (sha256
         (base32
-         "0qxs8r1qmsmg760wm5q0wqlcm7hdd3k7cghryw6wvqd3v5rs7vwm"))))
-    (build-system python-build-system)
+         "0lxfykqdkpbmqma72m2mhwdz8lgl83n5vj7ydygl3252yqpv10h3"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'configure-locations
+          (add-before 'build 'set-configure-flags
             (lambda _
-              (setenv "HDF5_DIR" #$(this-package-input "hdf5")))))))
+              (setenv "CFLAGS" (string-join
+                                (list "-Wno-error=incompatible-pointer-types"
+                                      "-Wno-error=implicit-function-declaration"
+                                      "-Wno-error=int-conversion")
+                                " "))
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))
+              (setenv "NETCDF4_DIR" #$(this-package-input "netcdf"))
+              (setenv "USE_NCCONFIG" "0")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  (setenv "NO_NET" "1")
+                  (setenv "NO_CDL" "1")
+                  (invoke "python" "run_all.py"))))))))
     (native-inputs
-     (list python-cython))
+     (list python-cython-3
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-numpy python-cftime))
     (inputs
-     (list netcdf hdf4 hdf5))
+     (list netcdf hdf5 zlib))
     (home-page "https://github.com/Unidata/netcdf4-python")
     (synopsis "Python/numpy interface to the netCDF library")
     (description "Netcdf4-python is a Python interface to the netCDF C
