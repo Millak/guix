@@ -90,14 +90,14 @@ Python.  It is a C++ library.")
 (define-public tre
   (package
     (name "tre")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://laurikari.net/tre/"
-                                  name "-" version ".tar.bz2"))
+              (uri (string-append "https://github.com/laurikari/tre/releases/download/v"
+                                  version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0n36cgqys59r2gmb7jzbqiwsy790v8nbxk82d2n2saz0rp145ild"))))
+                "0xr4b8xr51ngsxlwy22by5i13zhnb5q722zv25nm3zpxrac5czzm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
