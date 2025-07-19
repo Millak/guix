@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
+;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -27,7 +28,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Adam Faiz <adam.faiz@disroot.org>
-;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2024, 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages chez)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages fontutils)
@@ -72,6 +74,8 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
@@ -87,6 +91,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -1435,6 +1440,70 @@ as well as light.  The implementation is based on an ad-hoc Virtual
 Machine.  STklos can also be compiled as a library and embedded in an
 application.")
     (license license:gpl2+)))
+
+(define-public loko-scheme
+  (package
+    (name "loko-scheme")
+    (version "0.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/weinholt/loko")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "127cbrnpmanzd2daxd6vwdq09sqfvbm9ialpjaxd46n5j97fl5g9"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; r7rs tests are a work in progress as of 0.7.0.
+      #:tests? #f
+      #:strip-binaries? #f
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'akku-fixes
+            (lambda _
+              (delete-file "Akku.lock")
+              (substitute* "Akku.manifest"
+                (("\\(depends.*") "(depends)"))
+              (invoke "akku" "install")
+              (let ((dest "./.akku/lib/")
+                    (source "/share/guile/site/3.0/"))
+                (for-each
+                 (lambda (name prefix)
+                   ;; Symlink the scheme libraries so that Akku can find them
+                   (symlink (string-append prefix source name)
+                            (string-append dest name)))
+                 '("struct" "laesare" "pfds" "machine-code")
+                 (list #$(this-package-native-input "guile-struct-pack")
+                       #$(this-package-native-input "guile-laesare")
+                       #$(this-package-native-input "guile-pfds")
+                       #$(this-package-native-input "guile-machine-code"))))
+              (substitute* ".akku/env"
+                (("/bin/sh") (which "sh")))
+              (substitute* "scheme-wrapper"
+                (("which ")
+                 "command -v "))
+              #t)))))
+    (native-inputs
+     (list akku
+           chez-scheme
+           guile-struct-pack
+           guile-laesare
+           guile-pfds
+           guile-machine-code))
+    (home-page "https://scheme.fail")
+    (synopsis "Implementation of the algorithmic language Scheme")
+    (description
+     "Loko Scheme is intended to be a platform for application and operating
+system development.  It is written purely in Scheme and some assembler
+(i.e. no C code at the bottom).  Both the R6RS and the R7RS standards are
+supported.")
+    (license license:agpl3+)))
 
 (define-public r7rs-small-texinfo
   (let ((commit "38a703976ea6353e32b52a5187dbdaf77fb2f050")
