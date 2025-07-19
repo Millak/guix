@@ -1051,6 +1051,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/bash-linux-pgrp-pipe.patch		\
   %D%/packages/patches/bastet-change-source-of-unordered_set.patch	\
   %D%/packages/patches/bc-fix-cross-compilation.patch		\
+  %D%/packages/patches/bdb-4-5-configure.patch                  \
   %D%/packages/patches/bdb-5.3-atomics-on-gcc-9.patch		\
   %D%/packages/patches/biboumi-cmake-ignore-git.patch		\
   %D%/packages/patches/brightnessctl-elogind-support.patch	\

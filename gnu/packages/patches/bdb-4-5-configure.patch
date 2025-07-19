@@ -1,0 +1,258 @@
+Taken from https://lists.debian.org/debian-qa-packages/2024/10/msg00088.html,
+modified to also be applicable to bdb-5.3
+by Vagrant Cascadian <vagrant@debian.org>
+
+
+diff -ur db-4.8.30-pristine/dist/aclocal/mutex.m4 dist/aclocal/mutex.m4
+--- db-4.8.30-pristine/dist/aclocal/mutex.m4	2025-07-19 10:38:23.425962695 -0700
++++ dist/aclocal/mutex.m4	2025-07-19 10:40:42.146993750 -0700
+@@ -4,12 +4,12 @@
+ AC_DEFUN(AM_PTHREADS_SHARED, [
+ AC_TRY_RUN([
+ #include <pthread.h>
+-main() {
++int main() {
+ 	pthread_cond_t cond;
+ 	pthread_mutex_t mutex;
+ 	pthread_condattr_t condattr;
+ 	pthread_mutexattr_t mutexattr;
+-	exit (
++	return (
+ 	pthread_condattr_init(&condattr) ||
+ 	pthread_condattr_setpshared(&condattr, PTHREAD_PROCESS_SHARED) ||
+ 	pthread_mutexattr_init(&mutexattr) ||
+@@ -29,7 +29,7 @@
+ 	pthread_mutex_t mutex;
+ 	pthread_condattr_t condattr;
+ 	pthread_mutexattr_t mutexattr;
+-	exit (
++	return (
+ 	pthread_condattr_init(&condattr) ||
+ 	pthread_condattr_setpshared(&condattr, PTHREAD_PROCESS_SHARED) ||
+ 	pthread_mutexattr_init(&mutexattr) ||
+@@ -46,12 +46,12 @@
+ AC_DEFUN(AM_PTHREADS_PRIVATE, [
+ AC_TRY_RUN([
+ #include <pthread.h>
+-main() {
++int main() {
+ 	pthread_cond_t cond;
+ 	pthread_mutex_t mutex;
+ 	pthread_condattr_t condattr;
+ 	pthread_mutexattr_t mutexattr;
+-	exit (
++	return (
+ 	pthread_condattr_init(&condattr) ||
+ 	pthread_mutexattr_init(&mutexattr) ||
+ 	pthread_cond_init(&cond, &condattr) ||
+@@ -69,7 +69,7 @@
+ 	pthread_mutex_t mutex;
+ 	pthread_condattr_t condattr;
+ 	pthread_mutexattr_t mutexattr;
+-	exit (
++	return (
+ 	pthread_condattr_init(&condattr) ||
+ 	pthread_mutexattr_init(&mutexattr) ||
+ 	pthread_cond_init(&cond, &condattr) ||
+@@ -163,7 +163,7 @@
+ 		static lwp_cond_t ci = SHAREDCV;
+ 		lwp_mutex_t mutex = mi;
+ 		lwp_cond_t cond = ci;
+-		exit (
++		return (
+ 		_lwp_mutex_lock(&mutex) ||
+ 		_lwp_mutex_unlock(&mutex));
+ 	], [db_cv_mutex=Solaris/lwp])
+@@ -178,7 +178,7 @@
+ 		mutex_t mutex;
+ 		cond_t cond;
+ 		int type = USYNC_PROCESS;
+-		exit (
++		return (
+ 		mutex_init(&mutex, type, NULL) ||
+ 		cond_init(&cond, type, NULL) ||
+ 		mutex_lock(&mutex) ||
+@@ -193,7 +193,7 @@
+ 		mutex_t mutex;
+ 		cond_t cond;
+ 		int type = USYNC_PROCESS;
+-		exit (
++		return (
+ 		mutex_init(&mutex, type, NULL) ||
+ 		cond_init(&cond, type, NULL) ||
+ 		mutex_lock(&mutex) ||
+@@ -213,7 +213,7 @@
+ 	# x86/gcc: FreeBSD, NetBSD, BSD/OS, Linux
+ 	AC_TRY_COMPILE(,[
+ 	#if (defined(i386) || defined(__i386__)) && defined(__GNUC__)
+-		exit(0);
++		return(0);
+ 	#else
+ 		FAIL TO COMPILE/LINK
+ 	#endif
+@@ -222,7 +222,7 @@
+ 	# x86_64/gcc: FreeBSD, NetBSD, BSD/OS, Linux
+ 	AC_TRY_COMPILE(,[
+ 	#if (defined(x86_64) || defined(__x86_64__)) && defined(__GNUC__)
+-		exit(0);
++		return(0);
+ 	#else
+ 		FAIL TO COMPILE/LINK
+ 	#endif
+@@ -245,7 +245,7 @@
+ 	AC_TRY_COMPILE(,[
+ 	#if defined(__sparc__) && defined(__GNUC__)
+ 		asm volatile ("membar #StoreStore|#StoreLoad|#LoadStore");
+-		exit(0);
++		return(0);
+ 	#else
+ 		FAIL TO COMPILE/LINK
+ 	#endif
+@@ -287,7 +287,7 @@
+ 	msem_init(&x, 0);
+ 	msem_lock(&x, 0);
+ 	msem_unlock(&x, 0);
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -304,7 +304,7 @@
+ 	msem_init(&x, 0);
+ 	msem_lock(&x, 0);
+ 	msem_unlock(&x, 0);
+-	exit(0);
++	return(0);
+ ], [db_cv_mutex=UNIX/msem_init])
+ fi
+ 
+@@ -326,7 +326,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(__USLC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -383,7 +383,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(__alpha) && defined(__DECC)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -394,7 +394,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(__alpha) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -405,7 +405,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(__arm__) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -416,7 +416,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if (defined(__mips) || defined(__mips__)) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -427,7 +427,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if (defined(__hppa) || defined(__hppa__)) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -438,7 +438,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if (defined(__powerpc__) || defined(__ppc__)) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -449,7 +449,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if (defined(mc68020) || defined(sun3)) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -460,7 +460,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(__MVS__) && defined(__IBMC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -471,7 +471,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(__s390__) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -482,7 +482,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(__ia64) && defined(__GNUC__)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -493,7 +493,7 @@
+ if test "$db_cv_mutex" = no; then
+ AC_TRY_COMPILE(,[
+ #if defined(_UTS)
+-	exit(0);
++	return(0);
+ #else
+ 	FAIL TO COMPILE/LINK
+ #endif
+@@ -814,9 +814,9 @@
+ if test "$db_cv_atomic" = no; then
+ 	AC_TRY_COMPILE(,[
+ 	#if ((defined(i386) || defined(__i386__)) && defined(__GNUC__))
+-		exit(0);
++		return(0);
+ 	#elif ((defined(x86_64) || defined(__x86_64__)) && defined(__GNUC__))
+-		exit(0);
++		return(0);
+ 	#else
+ 		FAIL TO COMPILE/LINK
+ 	#endif
+@@ -827,7 +827,7 @@
+ AC_TRY_LINK([
+ #include <sys/atomic.h>],[
+ 	volatile unsigned val = 1;
+-	exit (atomic_inc_uint_nv(&val) != 2 ||
++	return (atomic_inc_uint_nv(&val) != 2 ||
+ 	      atomic_dec_uint_nv(&val) != 1 ||
+ 	      atomic_cas_32(&val, 1, 3) != 3);
+ ], [db_cv_atomic="solaris/atomic"])
+Nur in db-4.8.30/dist/aclocal: mutex.m4~.
