@@ -722,12 +722,16 @@ precision floating point numbers.")
                     ;; There are rounding issues with these tests on i686:
                     ;; https://lists.gnu.org/archive/html/bug-gsl/2016-10/msg00000.html
                     ;; https://lists.gnu.org/archive/html/bug-gsl/2020-04/msg00000.html
+                    ;; https://codeberg.org/guix/guix/issues/1234#issuecomment-5874172
                     #~((add-before 'check 'disable-failing-tests
                          (lambda _
                            (substitute* "spmatrix/test.c"
                              ((".*test_all.*") "\n")
                              ((".*test_float.*") "\n")
                              ((".*test_complex.*") "\n"))
+
+                           (substitute* "specfunc/test_legendre.c"
+                             ((".*= test_legendre_schmidt.*") "\n"))
 
                            ;; XXX: These tests abort with:
                            ;; gsl: cholesky.c:645: ERROR: matrix is not positive definite
