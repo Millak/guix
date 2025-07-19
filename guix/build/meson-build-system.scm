@@ -64,6 +64,7 @@
                                             includedir "/include"))
                        '())
                  ,(string-append "--buildtype=" build-type)
+                 "--wrap-mode=nofallback"
                  ,(string-append "-Dc_link_args=-Wl,-rpath="
                                  (assoc-ref outputs "out") "/lib")
                  ,(string-append "-Dcpp_link_args=-Wl,-rpath="
