@@ -2630,21 +2630,28 @@ automatically set update and create date and time based fields in a table.")
         (base32 "0y4djb048i09dk19av7mzfb3khr72vw11p3ayw2p82jsy4gm8j2g"))))
     (build-system perl-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'skip-library-detection
-           ;; Avoid dependencies on perl-devel-checklib, openssl, and zlib.  They
-           ;; are really only needed for the test suite; their absence does not
-           ;; affect the build or the end result.
-           (lambda _
-             (substitute* "Makefile.PL"
-               (("use Devel::CheckLib;" match)
-                (string-append "# " match))
-               (("assert_lib")
-                "print"))
-             #t)))
-       ;; Tests require running MySQL server.
-       #:tests? #f))
+      (list
+        ;; Tests require running MySQL server.
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+          (add-after 'configure 'add-cflags
+            (lambda _
+              (substitute* "Makefile"
+                (("OPTIMIZE = -O2")
+                 (string-append "OPTIMIZE = -O2 "
+                                "-Wno-error=incompatible-pointer-types "
+                                "-Wno-error=implicit-function-declaration")))))
+          (add-before 'configure 'skip-library-detection
+            ;; Avoid dependencies on perl-devel-checklib, openssl, and zlib.  They
+            ;; are really only needed for the test suite; their absence does not
+            ;; affect the build or the end result.
+            (lambda _
+              (substitute* "Makefile.PL"
+                (("use Devel::CheckLib;" match)
+                 (string-append "# " match))
+                (("assert_lib")
+                 "print")))))))
     (propagated-inputs
      `(("perl-dbi" ,perl-dbi)
        ("mysql" ,mariadb "lib")
