@@ -231,8 +231,8 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
     (license license:gpl1+)))
 
 (define-public elinks
-  (let ((commit "5e6ea2669c69db492a5c3e920e4a47a8a9af70fc")
-        (revision "1"))
+  (let ((commit "9b8ae3ebb7ca73fbb364262b3a5ff5377b0dfa26")
+        (revision "2"))
     (package
       (name "elinks")
       (version (git-version "0.18.0" revision commit))
@@ -245,7 +245,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1rjq66kwq4d44fwv3wphycxldw7mnyngadcgq9lnk8vz2f8026kw"))))
+           "0klvgnvii8pzpf5c0m11caz22in3yy631n480pp0mwpj0mvpnpa7"))))
       (build-system meson-build-system)
       (arguments
        (list
@@ -266,7 +266,9 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
                 "-Dreproducible=true"
                 "-Dsource-date-epoch=1"
                 "-Dtest=true"
-                "-Dtrue-color=true")))
+                "-Dtrue-color=true"
+                ;; Fix GCC 14 build
+                "-Dc_args=-Wno-implicit-function-declaration")))
       (native-inputs
        (list autoconf
              automake
