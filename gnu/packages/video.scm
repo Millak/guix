@@ -4772,7 +4772,7 @@ Wayland compositors.")
 (define-public obs-vkcapture
   (package
     (name "obs-vkcapture")
-    (version "1.5.0")
+    (version "1.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4781,7 +4781,7 @@ Wayland compositors.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00a69rg1inkssccqmwp1j85vrw17j2k6d5pidvzfdq94vvad10w5"))))
+                "0p4v3c6wsgkvh3kszdl47w8j0f4q5n1rv6bk8alvipf97r4x25w2"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f)) ;no tests
