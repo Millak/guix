@@ -2797,48 +2797,54 @@ support for high performance Telegram Bot creation.")
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference (url "https://github.com/gkdr/lurch")
-                       (commit (string-append "v" version))))
+       (uri (git-reference
+              (url "https://github.com/gkdr/lurch")
+              (commit (string-append "v" version))))
        (modules '((guix build utils)))
        (snippet
-        `(begin
-           ;; Submodules
-           (delete-file-recursively "lib")))
+        #~(begin
+            ;; Submodules
+            (delete-file-recursively "lib")))
        (file-name
         (git-file-name name version))
        (sha256
         (base32 "1ipd9gwh04wbqv6c10yxi02lc2yjsr02hwjycgxhl4r9x8b33psd"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (substitute* "Makefile"
-                          (("^PURPLE_PLUGIN_DIR = .*")
-                           (string-append "PURPLE_PLUGIN_DIR = " out
-                                          "/lib/purple-2\n")))
-                        (setenv "CC" "gcc")))))
-       #:parallel-tests? #f))
-    (native-inputs (list cmocka pkg-config))
-    (inputs (list axc
-                  glib
-                  libgcrypt
-                  libomemo
-                  libsignal-protocol-c
-                  libxml2
-                  minixml
-                  pidgin
-                  sqlite))
-    (synopsis "OMEMO Encryption for libpurple")
-    (description "Purple-lurch plugin adds end-to-end encryption support
-through the Double Ratchet (Axolotl) algorithm, to @code{libpurple}
-applications using @acronym{XMPP, Extensible Messaging and Presence Protocol},
-through its standard XEP-0384: @acronym{OMEMO, OMEMO Multi-End Message and
-Object Encryption} Encryption.  It provides confidentiality, (weak) forward
-secrecy, break-in recovery, authentication, integrity, deniability, and
-asynchronicity.")
+     (list
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (substitute* "Makefile"
+                (("^PURPLE_PLUGIN_DIR = .*")
+                 (string-append "PURPLE_PLUGIN_DIR = " #$output
+                                "/lib/purple-2\n")))
+              (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs
+     (list cmocka
+           pkg-config))
+    (inputs
+     (list axc
+           glib
+           libgcrypt
+           libomemo
+           libsignal-protocol-c
+           libxml2
+           minixml
+           pidgin
+           sqlite))
     (home-page "https://github.com/gkdr/lurch")
+    (synopsis "OMEMO Encryption for libpurple")
+    (description
+     "Purple-lurch plugin adds end-to-end encryption support through the
+Double Ratchet (Axolotl) algorithm, to @code{libpurple} applications using
+@acronym{XMPP, Extensible Messaging and Presence Protocol},through its
+standard XEP-0384: @acronym{OMEMO, OMEMO Multi-End Message and Object
+Encryption} Encryption.  It provides confidentiality, (weak) forward secrecy,
+break-in recovery, authentication, integrity, deniability, and
+asynchronicity.")
     (license license:gpl3+)))
 
 (define-public libphonenumber
