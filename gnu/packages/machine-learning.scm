@@ -1036,7 +1036,9 @@ optimizing, and searching weighted finite-state transducers (FSTs).")
        (uri (string-append "http://www.openfst.org/twiki/pub/FST/"
                            "FstDownload/openfst-" version ".tar.gz"))
        (sha256
-        (base32 "0h2lfhhihg63b804hrcljnkggijbjmp84i5g8q735wb09y9z2c4p"))))
+        (base32 "0h2lfhhihg63b804hrcljnkggijbjmp84i5g8q735wb09y9z2c4p"))
+       (patches
+        (search-patches "openfst-for-vosk-fix-unique-ptr.patch"))))
     (arguments
      '(#:configure-flags
        '("--enable-shared" "--enable-far" "--enable-ngram-fsts"
