@@ -10050,10 +10050,14 @@ writing C extensions for Python as easy as Python itself.")
               (when tests?
                 (apply invoke "python" "runtests.py" test-flags)))))))
     (native-inputs
-     (list gcc-13                       ;does not compile with gcc-14
-           libxcrypt
-           python-setuptools
-           python-wheel))
+     ;; does not compile with gcc-14
+     (list
+      (cond
+       ((target-x86-32?) gcc-11)
+       (else gcc-13))
+      libxcrypt
+      python-setuptools
+      python-wheel))
     (properties '())))
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
