@@ -436,7 +436,7 @@ secondary errors.")
            eudev
            ffmpeg
            flac
-           flatbuffers
+           flatbuffers-next
            fmt
            fontconfig
            freetype
