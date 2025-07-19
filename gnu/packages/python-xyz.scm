@@ -1169,13 +1169,13 @@ similar XML files, in the same way the @command{diff} utility does it.")
 (define-public python-xmlsec
   (package
     (name "python-xmlsec")
-    (version "1.3.14")
+    (version "1.3.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xmlsec" version))
        (sha256
-        (base32 "1nd2jbrfbmnd566i1v39xrh3a0b1nqvf5bhydywcsnw95x7q0kwk"))))
+        (base32 "178zg6jl3v7j4cdxxzqzr16m3wqfisai98xa0sh4q7bd9ia70v1b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1202,7 +1202,7 @@ similar XML files, in the same way the @command{diff} utility does it.")
                          python-setuptools
                          python-setuptools-scm
                          python-wheel))
-    (home-page "https://github.com/mehcode/python-xmlsec")
+    (home-page "https://github.com/xmlsec/python-xmlsec")
     (synopsis "Python bindings for the XML Security Library")
     (description "This package provides Python bindings for the XML Security
 Library.")
