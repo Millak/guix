@@ -23454,7 +23454,7 @@ some degree most natural languages too.")
 (define-public python-find-libpython
   (package
     (name "python-find-libpython")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -23463,7 +23463,7 @@ some degree most natural languages too.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z1r9nix2z75sv41j97pnl6jgj2lk6k8la23vavxjpprsc9ld1dd"))))
+        (base32 "173qxif277vc23kgidwbkxx7z7b7676f8lv5kxy9pd82228m8m79"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools python-wheel
                          ;; tests
