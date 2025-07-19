@@ -262,15 +262,15 @@ XMPP-based sessions.")
 (define-public libgnt
   (package
     (name "libgnt")
-    (version "2.14.3")
+    (version "2.14.4")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/pidgin/libgnt/"
-                       version "/libgnt-" version ".tar.xz"))
+                       version "/libgnt-" version "-dev" ".tar.xz"))
        (sha256
-        (base32 "08v14fjcx2wx6c573wllq015l6zc8qkpz8rrl6qhp7crf9zlbxap"))))
+        (base32 "1v4n9hb7x8d2mb626k4w3rg72amdq1fbm0dqj5bmglrilylk6n8r"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
