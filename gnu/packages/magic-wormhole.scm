@@ -4,6 +4,7 @@
 ;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,22 +38,14 @@
 (define-public magic-wormhole-mailbox-server
   (package
     (name "magic-wormhole-mailbox-server")
-    (version "0.4.1")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "magic-wormhole-mailbox-server" version))
        (sha256
         (base32
-         "1yw8i8jv5iv1kkz1aqimskw7fpichjn6ww0fq0czbalwj290bw8s"))))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-read-mode-in-setup.py
-            (lambda _
-              (substitute* "setup.py"
-                (("'rU'") "'r'")))))))
+         "18cc00dfmri648psx6kzqlbmhvax0h1gbnw1frjh8ci9f8va01x0"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mock
@@ -64,9 +57,7 @@
            python-autobahn
            python-idna
            python-service-identity
-           python-six
-           python-treq
-           python-twisted))
+           python-treq))
     (home-page "https://github.com/magic-wormhole/magic-wormhole-mailbox-server")
     (synopsis "Magic-Wormhole central mailbox server")
     (description
