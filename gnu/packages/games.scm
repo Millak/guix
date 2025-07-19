@@ -1287,7 +1287,7 @@ high a score as possible.")
     (outputs '("out"
                "tiles"))                ;for tile graphics and sound support
     (native-inputs
-     (list astyle gettext-minimal pkg-config))
+     (list astyle gcc-13 gettext-minimal pkg-config))
     (inputs
      (list freetype
            libogg
