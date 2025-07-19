@@ -1444,7 +1444,7 @@ application.")
 (define-public loko-scheme
   (package
     (name "loko-scheme")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
@@ -1452,7 +1452,7 @@ application.")
              (url "https://gitlab.com/weinholt/loko")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "127cbrnpmanzd2daxd6vwdq09sqfvbm9ialpjaxd46n5j97fl5g9"))
+        (base32 "05fl1y024rsixaw991zavaq370nazndqrxr05lcmw8293dvrhhfa"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
