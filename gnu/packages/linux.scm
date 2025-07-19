@@ -4266,24 +4266,34 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
         (base32 "10vbk4vplmzp3p1mhwnhj81g6i5xvam9pdvmiy6cmd0xvnmdyy77"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list "LDFLAGS=-pthread")
-       #:phases
-       (modify-phases %standard-phases
-         ;; TODO: Patch some hardcoded "wlan0" in calibrate/calibrate.cpp to
-         ;; allow calibrating the network interface in Guix System.
-         (add-after 'unpack 'patch-absolute-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((kmod (assoc-ref inputs "kmod")))
-               (substitute* (find-files "src" "\\.cpp$")
-                 ;; Give the right 'modprobe' file name so that essential
-                 ;; modules such as msr.ko can be loaded.
-                 (("/sbin/modprobe") (string-append kmod "/bin/modprobe"))
-                 ;; These programs are only needed to calibrate, so using
-                 ;; relative file names avoids adding extra inputs.  When they
-                 ;; are missing powertop gracefully handles it.
-                 (("/usr/s?bin/(hciconfig|hcitool|xset)" _ command)
-                  command))))))))
+      (list
+        #:configure-flags #~(list "LDFLAGS=-pthread")
+        #:phases
+        #~(modify-phases %standard-phases
+          ;; TODO: Patch some hardcoded "wlan0" in calibrate/calibrate.cpp to
+          ;; allow calibrating the network interface in Guix System.
+          (add-after 'unpack 'patch-absolute-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((kmod (assoc-ref inputs "kmod")))
+                ;; Fix for using a more modern gettext.
+                (substitute* "autogen.sh"
+                  (("autoreconf")
+                   "autoreconf --force"))
+                (substitute* "configure.ac"
+                  (("^AM_GNU_GETTEXT_VERSION.*$")
+                   (string-append "AM_GNU_GETTEXT_VERSION(["
+                     #$(package-version (this-package-native-input "gettext-minimal"))
+                     "])\n")))
+                ;; Give the right 'modprobe' file name so that essential
+                ;; modules such as msr.ko can be loaded.
+                (substitute* (find-files "src" "\\.cpp$")
+                  (("/sbin/modprobe") (string-append kmod "/bin/modprobe"))
+                  ;; These programs are only needed to calibrate, so using
+                  ;; relative file names avoids adding extra inputs.  When they
+                  ;; are missing powertop gracefully handles it.
+                  (("/usr/s?bin/(hciconfig|hcitool|xset)" _ command)
+                   command
+                   command))))))))
     (native-inputs
      (list autoconf
            autoconf-archive
