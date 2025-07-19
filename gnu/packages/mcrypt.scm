@@ -47,6 +47,18 @@
     (build-system gnu-build-system)
     (inputs
      (list zlib libmcrypt libmhash))
+    (arguments
+      (list
+        #:phases
+        #~(modify-phases %standard-phases
+          (add-before 'configure 'set-CFLAGS
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append
+                        "-g -O2 "
+                        "-Wno-error=pointer-sign "
+                        "-Wno-error=implicit-function-declaration "
+                        "-Wno-error=address")))))))
     (home-page "https://mcrypt.sourceforge.net/")
     (synopsis "Replacement for the popular Unix crypt command")
     (description
