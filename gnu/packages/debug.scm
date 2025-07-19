@@ -157,30 +157,20 @@ program to exhibit a bug.")
        ("regex-common"    ,perl-regexp-common)
        ("term-readkey"    ,perl-term-readkey)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "tests"
-               ;; Running all tests can take a looong time, and tests 4 and 5
-               ;; require frama-c or kcc.  So run just one for sanity.
-               (invoke "./run_tests" "1"))))
-         (add-after 'install 'set-load-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Tell creduce where to find the perl modules it needs.
-             (let* ((out (assoc-ref outputs "out"))
-                    (prog (string-append out "/bin/creduce")))
-               (wrap-program
-                   prog
-                 `("PERL5LIB" ":" prefix
-                   ,(map (lambda (p)
-                           (string-append (assoc-ref inputs p)
-                                          "/lib/perl5/site_perl/"
-                                          ,(package-version perl)))
-                         '("term-readkey"    "exporter-lite"
-                           "file-which"      "getopt-tabular"
-                           "regex-common")))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (with-directory-excursion "tests"
+                ;; Running all tests can take a looong time, and tests 4 and 5
+                ;; require frama-c or kcc.  So run just one for sanity.
+                (invoke "./run_tests" "1"))))
+          (add-after 'install 'set-load-paths
+            (lambda _
+              ;; Tell creduce where to find the perl modules it needs.
+              (wrap-program (string-append #$output "/bin/creduce")
+                `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))
     (home-page "https://embed.cs.utah.edu/creduce")
     (synopsis "Reducer for interesting code")
     (description
