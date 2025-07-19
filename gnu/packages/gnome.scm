@@ -4817,8 +4817,10 @@ editors, IDEs, etc.")
     (arguments
      ;; Disable -Werror and such, to avoid build failures on compilation
      ;; warnings.
-     '(#:configure-flags '("--enable-compile-warnings=minimum"
-                           "CFLAGS=-O2 -g -fcommon")
+     '(#:configure-flags `("--enable-compile-warnings=minimum"
+                           ,(string-append "CFLAGS=-O2 -g -fcommon "
+                                           "-Wno-implicit-int "
+                                           "-Wno-incompatible-pointer-types"))
        #:phases
        (modify-phases %standard-phases
          (add-before 'install 'skip-gtk-update-icon-cache
