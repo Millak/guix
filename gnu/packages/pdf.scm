@@ -697,47 +697,35 @@ using the DjVuLibre library.")
 (define-public zathura-pdf-mupdf
   (package
     (name "zathura-pdf-mupdf")
-    (version "0.4.3")
+    (version "0.4.4")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://pwmt.org/projects/zathura-pdf-mupdf"
-                              "/download/zathura-pdf-mupdf-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/pwmt/zathura-pdf-mupdf")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xk7fxgx5fiafczwqlpb3hkfmfhhq2ljabxvi272m9vy13p89kwc"))))
+                "1g1wiazyqdjd40qvq5vkxqabxzd0qlk6wvfvllm4y8x1jcc11vbs"))))
     (native-inputs (list pkg-config))
     (inputs
-     (list gumbo-parser
-           jbig2dec
-           libjpeg-turbo
-           mujs
-           mupdf
-           openjpeg
-           openssl
-           tesseract-ocr
-           zathura))
+     (list mupdf zathura))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; package does not contain tests
-       #:configure-flags (list (string-append "-Dplugindir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/zathura"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-libmupdfthird.a-requirement
-           (lambda _
-             ;; Ignore a missing (apparently superfluous) static library.
-             (substitute* "meson.build"
-               (("mupdfthird = .*")
-                "")
-               ((", mupdfthird")
-                ""))))
-         (add-after 'unpack 'fix-mupdf-detection
-           (lambda _
-             (substitute* "meson.build"
-               (("dependency\\('mupdf', required: false\\)")
-                "cc.find_library('mupdf')")))))))
+     (list
+      #:tests? #f ;package does not contain tests
+      #:configure-flags
+      #~(list (string-append "-Dplugindir=" #$output "/lib/zathura"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-libmupdfthird.a-requirement
+            (lambda _
+              ;; Ignore a missing (apparently superfluous) static library.
+              (substitute* "meson.build"
+                (("mupdfthird = .*")
+                 "")
+                ((", mupdfthird")
+                 "")))))))
     (home-page "https://pwmt.org/projects/zathura-pdf-mupdf/")
     (synopsis "PDF support for zathura (mupdf backend)")
     (description "The zathura-pdf-mupdf plugin adds PDF support to zathura
