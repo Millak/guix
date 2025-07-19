@@ -2821,6 +2821,8 @@ support for high performance Telegram Bot creation.")
                 (("^PURPLE_PLUGIN_DIR = .*")
                  (string-append "PURPLE_PLUGIN_DIR = " #$output
                                 "/lib/purple-2\n")))
+              ;; Fix for gcc@14.
+              (setenv "CFLAGS" "-Wno-error=implicit-function-declaration")
               (setenv "CC" #$(cc-for-target)))))))
     (native-inputs
      (list cmocka
