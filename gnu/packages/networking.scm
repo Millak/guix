@@ -1207,14 +1207,14 @@ residing in IPv4-only networks, even when they are behind a NAT device.")
 (define-public ndisc6
   (package
     (name "ndisc6")
-    (version "1.0.7")
+    (version "1.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.remlab.net/files/ndisc6/ndisc6-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "02b6r4mwqj3kkia3nnqlr5nq8qqg1pg47lirb8d35mqh0pbk3i7d"))))
+                "0kqbxagjys3qr83f699fbv657dyq8j576fcxl2jhlxvj27fb4bqz"))))
     (build-system gnu-build-system)
     (home-page "https://www.remlab.net/ndisc6/")
     (synopsis "IPv6 diagnostic tools")
