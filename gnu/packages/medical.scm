@@ -329,13 +329,12 @@ Medicine} server instead of SQLite.")
                 ;; file.
                 (chdir "MySQL")))
             (add-after 'unpack 'fix-mysql-include-path
-              (lambda _
+              (lambda* (#:key inputs #:allow-other-keys)
                 ;; Help it find mysql.h, either from mysql in this package or
                 ;; from mariadb:dev in orthanc-mariadb.
                 (substitute* "Resources/CMake/MariaDBConfiguration.cmake"
                   (("/usr/include/mysql")
-                   (string-append #$(this-package-input "mysql")
-                                  "/include/mysql")))))
+                   (search-input-directory inputs "include/mysql")))))
             ;; There is no test target; simply run the binary.
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
