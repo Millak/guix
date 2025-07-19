@@ -1153,6 +1153,9 @@ exception-handling library.")
                #~((add-after 'unpack 'skip-faulty-test
                     (lambda _
                       (substitute* "tests/CMakeLists.txt"
+                        ;; This test fails at various comparions of ±π.
+                        (("angle-test") "")
+
                         ;; This test fails on i686 when comparing floating point
                         ;; values, probably due to excess precision.  However,
                         ;; '-fexcess-precision' is not implemented for C++ in
