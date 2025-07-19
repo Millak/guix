@@ -73,6 +73,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gimp)
@@ -2811,39 +2812,47 @@ Format) file format decoder and encoder.")
     (name "mtpaint")
     ;; The author neither releases tarballs nor uses git version tags.
     ;; Instead, author puts version in git commit title.
-    (version "3.49.33")
+    (version "3.50.12")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/wjaguar/mtPaint")
-             (commit "5272e2b1e773c8e02ac3506b2d3bde82ad946b21")))
+             (commit "7cae5d663ed835a365d89a535536c39e18862a83")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bmq4m0dxczl18n1yiqb75g05a4c3pal1vdcyypkilx7ijsr0cmc"))))
+        (base32 "0rcblsdikn5659gzqwq3xdws5k03xyvd4yj7r0rm78daamki1wsv"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list
+       gettext-minimal
+       perl
+       pkg-config
+       which))
     (inputs
-     `(("imlib2" ,imlib2)
-       ("libtiff" ,libtiff)
-       ("libpng" ,libpng)
-       ("libungif" ,libungif)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libwebp" ,libwebp)
-       ("openjpeg" ,openjpeg)
-       ("lcms" ,lcms)
-       ("zlib" ,zlib)
-       ("glib" ,glib)
-       ;; Support for gtk3 is in the testing stage.
-       ("gtk+" ,gtk+-2)))
+     (list
+       glib
+       gtk+
+       imlib2
+       libjpeg-turbo
+       libpng
+       libtiff
+       libungif
+       libwebp
+       openjpeg
+       lcms
+       zlib))
     (arguments
-     `(#:configure-flags
-       (list "intl"                     ; build internationalized version
-             "man")                     ; build the man page
-       #:tests? #f))                    ; no test suite
+      (list
+        #:tests? #f                    ; no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; Do not use "--enable-fast-install".
+            (lambda _
+              (invoke "./configure"
+                      (string-append "--prefix=" #$output)
+                      "intl" "man"))))))
     (home-page "https://mtpaint.sourceforge.net/")
     (synopsis "Create pixel art and manipulate digital images")
     (description
