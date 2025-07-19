@@ -143,19 +143,6 @@ program to exhibit a bug.")
        (sha256
         (base32 "0ygzn32mzqn02wslaw1gwgx498mvfgpgkgir3pp1mgd3k18l3pqr"))))
     (build-system gnu-build-system)
-    (native-inputs (list flex))
-    (inputs
-     `(("astyle"          ,astyle)
-       ("bash"            ,bash-minimal) ; for wrap-program
-       ("llvm"            ,llvm-9)
-       ("clang"           ,clang-9)
-       ("indent"          ,indent)
-       ("perl"            ,perl)
-       ("exporter-lite"   ,perl-exporter-lite)
-       ("file-which"      ,perl-file-which)
-       ("getopt-tabular"  ,perl-getopt-tabular)
-       ("regex-common"    ,perl-regexp-common)
-       ("term-readkey"    ,perl-term-readkey)))
     (arguments
      (list
       #:phases
@@ -171,6 +158,18 @@ program to exhibit a bug.")
               ;; Tell creduce where to find the perl modules it needs.
               (wrap-program (string-append #$output "/bin/creduce")
                 `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))
+    (native-inputs (list flex))
+    (inputs (list astyle
+                  bash-minimal ;for wrap-program
+                  llvm-9
+                  clang-9
+                  indent
+                  perl
+                  perl-exporter-lite
+                  perl-file-which
+                  perl-getopt-tabular
+                  perl-regexp-common
+                  perl-term-readkey))
     (home-page "https://embed.cs.utah.edu/creduce")
     (synopsis "Reducer for interesting code")
     (description
