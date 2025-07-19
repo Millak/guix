@@ -135,12 +135,13 @@ program to exhibit a bug.")
     (version "2.10.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (list
-            (string-append "http://embed.cs.utah.edu/creduce/"
-                           "creduce-" version ".tar.gz")))
-      (sha256
-       (base32 "0qx0zq8jxzx2as2zf0740g7kvgq163ayn3041di4vwk77490y76v"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/csmith-project/creduce")
+             (commit (string-append "creduce-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ygzn32mzqn02wslaw1gwgx498mvfgpgkgir3pp1mgd3k18l3pqr"))))
     (build-system gnu-build-system)
     (native-inputs (list flex))
     (inputs
