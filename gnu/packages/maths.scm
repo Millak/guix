@@ -10898,6 +10898,13 @@ computation is supported via MPI.")
                       "modules/scicos/src/translator/makefile.mak"
                       "modules/scicos/src/modelica_compiler/makefile.mak")
                   (("nums\\.cmx?a") ""))))
+            ;; See https://gitlab.com/scilab/scilab/-/issues/17462
+            (add-after 'unpack 'fix-call-scilab-examples
+              (lambda _
+                (substitute*
+                    (find-files "modules/call_scilab/examples" "\\.c$")
+                  (("StartScilab\\((.*), NULL\\)" all args)
+                   (string-append "StartScilab(" args ", 0)")))))
             (add-after 'unpack 'fix-linking
               (lambda _
                 (substitute* "modules/Makefile.am"
