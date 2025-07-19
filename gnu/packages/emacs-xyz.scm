@@ -8490,29 +8490,23 @@ column by drawing a thin line down the length of the editing window.")
     (license license:gpl3+)))
 
 (define-public emacs-greader
-  (let ((commit "d58c1ee051afe384e23455b7c8b72ee1eae4850f")) ;version bump
+  (let ((commit "07266f027f9e3d4b690142f525b5bbde2cb4b19e")) ;version bump
     (package
       (name "emacs-greader")
-      (version "0.12.5")
+      (version "0.12.7")
       (source
        (origin
          (uri (git-reference
-               (url "https://gitlab.com/michelangelo-rodriguez/greader")
-               (commit commit)))
+                (url "https://gitlab.com/michelangelo-rodriguez/greader")
+                (commit commit)))
          (method git-fetch)
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1wh9xbz4az4b90m2r2ffmrvwlv2ig75bxycmkqghaz4hhx2gkvaz"))))
+          (base32 "1qg9a3msnh95rj4jmih2j48r8dsisiqd8nlrj1qf3mfl4xr1kb7c"))))
       (build-system emacs-build-system)
       (arguments
-       (list
-        #:phases #~(modify-phases %standard-phases
-                     (add-after 'unpack 'add-requires
-                       (lambda _
-                         (substitute* "greader-dict.el"
-                           ((";;; Code:")
-                            ";;; Code:\n(require 'greader)\n")))))))
-      (inputs (list espeak-ng))
+       (list #:tests? #f))              ;no tests
+      (inputs (list emacs-compat espeak-ng))
       (home-page "https://gitlab.com/michelangelo-rodriguez/greader")
       (synopsis
        "Gnamù Reader, or Greader, sends buffer contents to a speech engine")
@@ -8521,7 +8515,7 @@ column by drawing a thin line down the length of the editing window.")
 Text To Speech} engine, such as Espeak-NG or Speech Dispatcher.
 
 The mode supports timer reading, automatic scrolling of buffers in modes like
-Info mode, and repeating reading of regions or the whole buffer. It also
+Info mode, and repeating reading of regions or the whole buffer.  It also
 includes a feature to facilitate the compilation of Espeak-NG
 pronunciations.")
       (license license:gpl3+))))
