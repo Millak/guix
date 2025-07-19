@@ -1,27 +1,50 @@
-From d250434e6c8eb4f8c8cb47ef3cc6e6de8fa8f828 Mon Sep 17 00:00:00 2001
+From f77bb3648eb998b9225499f85463fcbbda305474 Mon Sep 17 00:00:00 2001
 From: Alexey Abramov <levenson@mmer.org>
-Date: Fri, 15 Jan 2021 17:07:17 +0100
+Date: Sat, 19 Jul 2025 11:08:04 +0200
 Subject: [PATCH] Use environment variable for a default module location
 
 diff --git a/libobs/obs-nix.c b/libobs/obs-nix.c
-index 382fa0546..481ea0f14 100644
---- a.c	2025-02-10 12:48:39.885858056 +0800
-+++ b.c	2025-02-10 12:57:18.913869843 +0800
-@@ -83,6 +83,17 @@ void add_default_module_paths(void)
- 	bfree(module_bin_path);
- 	bfree(module_data_path);
+index d28269687..a0950a0b1 100644
+--- a/libobs/obs-nix.c
++++ b/libobs/obs-nix.c
+@@ -67,26 +67,18 @@ static const struct obs_nix_hotkeys_vtable *hotkeys_vtable = NULL;
  
-+	module_bin_path = getenv("OBS_PLUGINS_DIRECTORY");
-+	module_data_path = getenv("OBS_PLUGINS_DATA_DIRECTORY");
-+	if (module_bin_path && module_data_path) {
+ void add_default_module_paths(void)
+ {
+-	char *module_bin_path = os_get_executable_path_ptr("../" OBS_PLUGIN_PATH);
+-	char *module_data_path = os_get_executable_path_ptr("../" OBS_DATA_PATH "/obs-plugins/%module%");
++	char *bin_directory = getenv("OBS_PLUGINS_DIRECTORY");
++	char *data_directory = getenv("OBS_PLUGINS_DATA_DIRECTORY");
++	if (bin_directory && data_directory) {
 +		struct dstr dstr_data_directory;
-+		dstr_init_copy(&dstr_data_directory, module_data_path);
++		dstr_init_copy(&dstr_data_directory, data_directory);
 +		dstr_cat(&dstr_data_directory, "/%module%");
-+		obs_add_module_path(module_bin_path, dstr_data_directory.array);
++		obs_add_module_path(bin_directory, dstr_data_directory.array);
 +		dstr_free(&dstr_data_directory);
-+               return;
-+	}
-+
- 	for (int i = 0; i < module_patterns_size; i++) {
- 		obs_add_module_path(module_bin[i], module_data[i]);
+ 
+-	if (module_bin_path && module_data_path) {
+-		char *abs_module_bin_path = os_get_abs_path_ptr(module_bin_path);
+-		char *abs_module_install_path = os_get_abs_path_ptr(OBS_INSTALL_PREFIX "/" OBS_PLUGIN_DESTINATION);
+-
+-		if (abs_module_bin_path &&
+-		    (!abs_module_install_path || strcmp(abs_module_bin_path, abs_module_install_path) != 0)) {
+-			obs_add_module_path(module_bin_path, module_data_path);
+-		}
+-		bfree(abs_module_install_path);
+-		bfree(abs_module_bin_path);
+-	}
+-
+-	bfree(module_bin_path);
+-	bfree(module_data_path);
+-
+-	for (int i = 0; i < module_patterns_size; i++) {
+-		obs_add_module_path(module_bin[i], module_data[i]);
++	} else {
++		for (int i = 0; i < module_patterns_size; i++)
++			obs_add_module_path(module_bin[i], module_data[i]);
  	}
+ }
+ 
+-- 
+2.50.1
+

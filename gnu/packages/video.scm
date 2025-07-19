@@ -168,6 +168,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
@@ -4140,7 +4141,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "31.0.1")
+    (version "31.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4150,7 +4151,7 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02l1qr7pbmg0va1m9ydmzamg3kh4h05if1hbg0kzfngq93vvy13p"))
+                "0dddcvwlh3skd2hd8cmgy74r6l6pmcya9a6hrl9x402y7ywxd50m"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -4202,6 +4203,7 @@ be used for realtime video capture via Linux-specific APIs.")
       bash-minimal
       curl
       eudev
+      extra-cmake-modules
       ffmpeg
       fontconfig
       freetype
