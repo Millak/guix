@@ -4246,12 +4246,12 @@ of the netcdf4 package before.")
          "0qxs8r1qmsmg760wm5q0wqlcm7hdd3k7cghryw6wvqd3v5rs7vwm"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure-locations
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "HDF5_DIR" (assoc-ref inputs "hdf5"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-locations
+            (lambda _
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5")))))))
     (native-inputs
      (list python-cython))
     (propagated-inputs
