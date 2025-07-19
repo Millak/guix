@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
 ;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Rodion Goritskov <rodion@goritskov.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,8 +41,10 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu services admin)
   #:use-module (gnu services configuration)
+  #:use-module (gnu services databases)
   #:use-module (gnu services getmail)
   #:use-module (gnu services mail)
+  #:use-module (gnu system file-systems)
   #:use-module (gnu system pam)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
@@ -59,7 +62,9 @@
   #:use-module (gnu packages mail)
   #:use-module (gnu packages rust-apps)
   #:autoload   (guix i18n) (G_)
+  #:autoload   (gnu build linux-container) (%namespaces)
   #:use-module (guix diagnostics)
+  #:use-module (guix least-authority)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix modules)
@@ -74,6 +79,7 @@
   #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 regex)
   #:export (httpd-configuration
             httpd-configuration?
             httpd-configuration-package
@@ -328,7 +334,23 @@
             agate-configuration-group
             agate-configuration-log-file
 
-            agate-service-type))
+            agate-service-type
+
+            miniflux-configuration
+            miniflux-configuration?
+            miniflux-configuration-listen-address
+            miniflux-configuration-base-url
+            miniflux-configuration-create-administrator-account?
+            miniflux-configuration-administrator-account-name
+            miniflux-configuration-administrator-account-password
+            miniflux-configuration-run-migrations?
+            miniflux-configuration-database-url
+            miniflux-configuration-user
+            miniflux-configuration-group
+            miniflux-configuration-log-file
+            miniflux-configuration-extra-settings
+
+            miniflux-service-type))
 
 ;;; Commentary:
 ;;;
@@ -2279,3 +2301,173 @@ root=/srv/gemini
    (default-value (agate-configuration))
    (description "Run Agate, a simple Gemini protocol server written in
 Rust.")))
+
+(define (serialize-string field-name val)
+  (format #f "~a=~a\n" field-name val))
+
+(define (string-or-file-path? val)
+  (string? val))
+(define (serialize-string-or-file-path field-name val)
+  (serialize-string (if (absolute-file-name? val)
+                        (format #f "~a_FILE" field-name) field-name) val))
+(define-maybe string-or-file-path)
+
+(define (serialize-list field-name val)
+  (string-append (string-join val "\n") "\n"))
+(define-maybe list)
+
+(define (serialize-boolean field-name val)
+  (if val (serialize-string field-name "1") (serialize-string field-name "0")))
+
+(define-configuration/no-serialization miniflux-configuration
+  (listen-address
+   (string "127.0.0.1:8080")
+   "Address to listen on.
+Use absolute path like @code{\"/var/run/miniflux/miniflux.sock\"} for a Unix socket.")
+  (base-url
+   (string "http://127.0.0.1/")
+   "Base URL to generate HTML links and base path for cookies.")
+  (create-administrator-account?
+   (boolean #f)
+   "Create an initial administrator account.")
+  (administrator-account-name
+   maybe-string-or-file-path
+   "Initial administrator account name as a string or an absolute path to a file with a account name inside.")
+  (administrator-account-password
+   maybe-string-or-file-path
+   "Initial administrator account password as a string or an absolute path to a file with a password inside.")
+  (run-migrations?
+   (boolean #t)
+   "Run database migrations during application startup.")
+  (database-url
+   (string "host=/var/run/postgresql")
+   "PostgreSQL connection string.")
+  (user
+   (string "miniflux")
+   "User name for Postgresql and system account.")
+  (group
+   (string "miniflux")
+   "Group for the system account.")
+  (log-file
+   (string "/var/log/miniflux.log")
+   "Path to the log file.")
+  (extra-settings
+   maybe-list
+   "Extra configuration parameters as a list of strings."))
+
+(define (miniflux-serialize-configuration config)
+  (match-record config <miniflux-configuration>
+                (listen-address base-url create-administrator-account?
+                                administrator-account-name administrator-account-password
+                                run-migrations? database-url extra-settings)
+    (string-append (serialize-string "LISTEN_ADDR" listen-address)
+                   (serialize-string "BASE_URL" base-url)
+                   (serialize-boolean "CREATE_ADMIN" create-administrator-account?)
+                   (serialize-maybe-string-or-file-path "ADMIN_USERNAME" administrator-account-name)
+                   (serialize-maybe-string-or-file-path "ADMIN_PASSWORD" administrator-account-password)
+                   (serialize-boolean "RUN_MIGRATIONS" run-migrations?)
+                   (serialize-string "DATABASE_URL" database-url)
+                   (serialize-maybe-list #f extra-settings))))
+
+(define (miniflux-configuration-file config)
+  (mixed-text-file "miniflux.conf" (miniflux-serialize-configuration config)))
+
+(define (pair->file-system-mapping pair previous)
+  (if (pair? pair)
+      (let ((path (car pair))
+            (writable (cdr pair)))
+        (if (or (and (string? path)
+                     (absolute-file-name? path))
+                (computed-file? path))
+            (append previous (list (file-system-mapping
+                                     (source path)
+                                     (target source)
+                                     (writable? writable))))
+            previous))
+      previous))
+
+(define (miniflux-shepherd-service config)
+  (match-record config <miniflux-configuration>
+                (user group log-file database-url listen-address
+                      administrator-account-name administrator-account-password)
+    (let ((config-file (miniflux-configuration-file config)))
+      (list (shepherd-service
+	      (documentation "Run Miniflux server")
+	      (provision '(miniflux))
+	      (requirement '(postgres networking))
+	      (start #~(make-forkexec-constructor
+		        (list #$(least-authority-wrapper
+                                 (file-append miniflux "/bin/miniflux")
+                                 #:name "miniflux"
+                                 #:user user
+                                 #:group group
+                                 #:preserved-environment-variables
+                                 (append %default-preserved-environment-variables
+                                         '("SSL_CERT_FILE"))
+                                 #:mappings
+                                 (fold pair->file-system-mapping
+                                       '()
+                                       `((,log-file . #t)
+                                         (,config-file . #f)
+                                         ("/etc/ssl/certs/ca-certificates.crt" . #f)
+                                         (,administrator-account-name . #f)
+                                         (,administrator-account-password . #f)
+                                         (,(dirname listen-address)  . #t)
+                                         ,(let* ((db-socket-match (string-match ".*host=(/[^ ]*).*" database-url))
+                                                 (db-socket (if db-socket-match (match:substring db-socket-match 1) #f)))
+                                            (if db-socket
+                                                `(,db-socket . #t)))))
+                                 #:namespaces
+                                 (fold delq %namespaces '(net user)))
+                              "-config-file"
+                              #$config-file)
+		        #:log-file #$log-file))
+              (stop #~(make-kill-destructor)))))))
+
+(define (miniflux-accounts config)
+  (match-record config <miniflux-configuration>
+                (user group)
+    `(,(user-group
+         (name group)
+         (system? #t))
+      ,(user-account
+         (name user)
+         (group group)
+         (system? #t)
+         (comment "miniflux server user")
+         (home-directory "/var/empty")
+         (shell (file-append shadow "/sbin/nologin"))))))
+
+(define (miniflux-postgresql-role config)
+  (list (postgresql-role
+          (name (miniflux-configuration-user config))
+          (create-database? #t))))
+
+(define (miniflux-log-files config)
+  (list (miniflux-configuration-log-file config)))
+
+(define (miniflux-activation-service-type config)
+  (match-record config <miniflux-configuration>
+                (user listen-address)
+    #~(begin
+        (use-modules (gnu build activation))
+        (let ((user (getpwnam #$user)))
+          (if (absolute-file-name? #$listen-address)
+              (mkdir-p/perms (dirname #$listen-address) user #o755))))))
+
+(define miniflux-service-type
+  (service-type
+    (name 'miniflux)
+    (default-value (miniflux-configuration))
+    (extensions
+     (list (service-extension account-service-type
+			      miniflux-accounts)
+	   (service-extension postgresql-role-service-type
+			      miniflux-postgresql-role)
+	   (service-extension shepherd-root-service-type
+			      miniflux-shepherd-service)
+           (service-extension log-rotation-service-type
+                              miniflux-log-files)
+           (service-extension activation-service-type
+                              miniflux-activation-service-type)))
+    (description "Run Miniflux, minimalist feed reader")))

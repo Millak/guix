@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Rodion Goritskov <rodion@goritskov.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages guile-xyz)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages python)
   #:use-module (gnu packages tls)
@@ -56,7 +58,10 @@
             %test-hpcguix-web
             %test-anonip
             %test-patchwork
-            %test-agate))
+            %test-agate
+            %test-miniflux-admin-string
+            %test-miniflux-admin-file
+            %test-miniflux-socket))
 
 (define %index.html-contents
   ;; Contents of the /index.html file.
@@ -848,3 +853,190 @@ HTTP-PORT."
    (name "agate")
    (description "Connect to a running Agate service.")
    (value (run-agate-test name %agate-os %index.gmi-contents))))
+
+
+;;;
+;;; Miniflux
+;;;
+
+(define %miniflux-create-admin-credentials
+  #~(begin
+      (mkdir "/var/miniflux")
+      (call-with-output-file "/var/miniflux/admin-username"
+        (lambda (port)
+          (display "test" port)))
+      (call-with-output-file "/var/miniflux/admin-password"
+        (lambda (port)
+          (display "testpassword" port)))))
+
+(define miniflux-base-system
+  (lambda (miniflux-config)
+    (simple-operating-system
+     (simple-service 'create-admin-credentials
+                     activation-service-type
+                     %miniflux-create-admin-credentials)
+     (service dhcpcd-service-type)
+     (service postgresql-service-type
+	      (postgresql-configuration
+	        (postgresql postgresql-13)))
+     (service miniflux-service-type
+              miniflux-config))))
+
+(define %miniflux-with-admin-as-string
+  (miniflux-base-system
+   (miniflux-configuration
+    (listen-address "0.0.0.0:8080")
+    (create-administrator-account? #t)
+    (administrator-account-name "test")
+    (administrator-account-password "testpassword"))))
+
+(define %miniflux-with-admin-as-file
+  (miniflux-base-system
+   (miniflux-configuration
+    (listen-address "0.0.0.0:8080")
+    (create-administrator-account? #t)
+    (administrator-account-name "/var/miniflux/admin-username")
+    (administrator-account-password "/var/miniflux/admin-password"))))
+
+(define %miniflux-with-socket
+  (miniflux-base-system
+   (miniflux-configuration
+    (listen-address "/var/run/miniflux/miniflux.sock"))))
+
+(define* (run-miniflux-test name test-os)
+  (define os
+    (marionette-operating-system
+     test-os
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))))
+
+  (define forwarded-port 8080)
+
+  (define vm
+    (virtual-machine
+      (operating-system os)
+      (memory-size 512)
+      (port-forwardings `((8080 . ,forwarded-port)))))
+
+  (define test
+    (with-extensions (list guile-gcrypt)
+      (with-imported-modules '((gnu build marionette))
+        #~(begin
+            (use-modules (srfi srfi-64)
+		         (srfi srfi-11)
+                         (gnu build marionette)
+		         (web client)
+		         (web uri)
+                         (web response)
+		         (ice-9 match)
+                         (ice-9 iconv)
+                         (gcrypt base64))
+
+            (define marionette
+              (make-marionette (list #$vm)))
+
+            (test-runner-current (system-test-runner #$output))
+            (test-begin #$name)
+
+	    (test-assert "Check Miniflux service is running"
+	      (begin
+	        (#$retry-on-error
+	         (lambda ()
+		   (marionette-eval
+		    '(begin
+		       (use-modules (gnu services herd))
+		       (match (start-service '#$(string->symbol "miniflux"))
+		         (#f #f)
+		         (('service response-parts ...)
+			  (match (assq-ref response-parts 'running)
+			    (#f #f)
+			    ((running) #t)))))
+		    marionette))
+	         #:delay 1
+	         #:times 10)))
+
+            (test-assert "Miniflux TCP port ready, IPv4"
+              (wait-for-tcp-port #$forwarded-port marionette))
+
+	    (test-assert "Miniflux login page is opened"
+              (begin
+                (wait-for-tcp-port #$forwarded-port marionette)
+                (#$retry-on-error
+                 (lambda ()
+                   (let-values (((_ text)
+                                 (http-get
+				  #$(format #f "http://localhost:~A/" forwarded-port)
+				  #:decode-body? #t)))
+                     (string-contains text "<title>Sign In - Miniflux</title>")))
+                 #:times 10
+                 #:delay 2)))
+
+            (define authorization-header
+              (let ((encoded (base64-encode (string->bytevector "test:testpassword" "utf-8"))))
+                `(authorization . (basic . ,encoded))))
+
+            (test-equal "Miniflux initial admin API call is successful"
+              200
+              (begin
+                (wait-for-tcp-port #$forwarded-port marionette)
+                (#$retry-on-error
+                 (lambda ()
+                   (let-values (((response _)
+                                 (http-get #$(format #f "http://localhost:~A/v1/me" forwarded-port)
+                                           #:headers (list authorization-header)
+                                           #:decode-body? #t)))
+
+                     (response-code response)))
+                 #:times 10
+                 #:delay 2)))
+
+            (test-end)))))
+  (gexp->derivation (string-append name "-test") test))
+
+(define* (run-miniflux-socket-test name test-os)
+  (define os
+    (marionette-operating-system
+     test-os
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))))
+
+  (define vm
+    (virtual-machine
+      (operating-system os)
+      (memory-size 512)))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin #$name)
+
+          (test-assert "Check socket file is created"
+            (wait-for-unix-socket "/var/run/miniflux/miniflux.sock" marionette))
+
+          (test-end))))
+  (gexp->derivation (string-append name "-test") test))
+
+(define %test-miniflux-admin-string
+  (system-test
+   (name "miniflux-admin-string")
+   (description "Run Miniflux with initial admin credentials as string.")
+   (value (run-miniflux-test name %miniflux-with-admin-as-string))))
+
+(define %test-miniflux-admin-file
+  (system-test
+   (name "miniflux-admin-file")
+   (description "Run Miniflux with initial admin credentials as file.")
+   (value (run-miniflux-test name %miniflux-with-admin-as-file))))
+
+(define %test-miniflux-socket
+  (system-test
+   (name "miniflux-socket")
+   (description "Run Miniflux on unix socket.")
+   (value (run-miniflux-socket-test name %miniflux-with-socket))))
