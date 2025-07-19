@@ -45,6 +45,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages geo)
+  #:use-module (gnu packages mail)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -245,13 +246,23 @@ and adapters that are useful for non-trivial configuration scenarios.")
         (base32 "1qayan9za7ylvzkwp6p0l0735gavnzd1kdjsfc178smq6xnby0ss"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ;XXX: requires a Postgres or MySQL database
+     (list
+      ;; The 5 tests in test_dumbscript.py fail (OperationalError).
+      #:test-flags
+      #~(list "--ignore" "tests/test_dumpscript.py"
+              "-k" (string-append
+                    ;; These fail for unknown reasons.
+                    "not test_do_export_emails_format_vcard_start"
+                    " and not test_initialize_runserver_plus"
+                    " and not test_should_highlight_python_syntax_with_name"))))
     (propagated-inputs
      (list python-django))
     (native-inputs
-     (list python-factory-boy
+     (list python-aiosmtpd
+           python-factory-boy
+           python-pygments
            python-pytest
-           python-pytest-cov
+           python-pytest-cov ; runs by default
            python-pytest-django
            python-setuptools-next
            python-shortuuid
