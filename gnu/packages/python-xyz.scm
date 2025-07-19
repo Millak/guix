@@ -14350,15 +14350,18 @@ without using the configuration machinery.")
 (define-public python-treelib
   (package
     (name "python-treelib")
-    (version "1.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "treelib" version))
-              (sha256
-               (base32
-                "0qgv61g1p06kzf5fd2hcim5s49nzbv8k210frnk45rmr2vs1mzwv"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-six))
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/caesar0301/treelib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jd3rdaq8v7ykb626cm1gxa03higqnn2pmnv46fc0lc55xbrkxlf"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/caesar0301/treelib")
     (synopsis "Implementation of a tree structure in Python")
     (description
