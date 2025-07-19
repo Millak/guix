@@ -4817,28 +4817,28 @@ editors, IDEs, etc.")
     (arguments
      ;; Disable -Werror and such, to avoid build failures on compilation
      ;; warnings.
-     '(#:configure-flags `("--enable-compile-warnings=minimum"
-                           ,(string-append "CFLAGS=-O2 -g -fcommon "
-                                           "-Wno-implicit-int "
-                                           "-Wno-incompatible-pointer-types"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'skip-gtk-update-icon-cache
-           (lambda _
-             ;; Don't create 'icon-theme.cache'
-             (substitute* (find-files "." "^Makefile$")
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
-         (add-after 'unpack 'patch-configure
-           (lambda _
-             (substitute* "configure"
-               (("freerdp") "freerdp2"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "--enable-compile-warnings=minimum"
+              (string-append "CFLAGS=-O2 -g -fcommon "
+                             "-Wno-implicit-int "
+                             "-Wno-incompatible-pointer-types"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'skip-gtk-update-icon-cache
+            (lambda _
+              ;; Don't create 'icon-theme.cache'
+              (substitute* (find-files "." "^Makefile$")
+                (("gtk-update-icon-cache") (which "true")))))
+          (add-after 'unpack 'patch-configure
+            (lambda _
+              (substitute* "configure"
+                (("freerdp") "freerdp2")))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("glib-bin" ,glib "bin")))                 ;for glib-compile-schemas
+     (list pkg-config
+           intltool
+           itstool
+           (list glib "bin")))                 ;for glib-compile-schemas
     (inputs
      (list libxml2
            gtk-vnc
