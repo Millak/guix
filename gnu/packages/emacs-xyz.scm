@@ -17694,6 +17694,34 @@ of its name.")
 names, e.g., @samp{#0000ff} is displayed in white with a blue background.")
     (license license:gpl3+)))
 
+(define-public emacs-colorful-mode
+  (package
+    (name "emacs-colorful-mode")
+    (version "1.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DevelopmentCool2449/colorful-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cm5bpw2x15h6pf5vxcp2f7jf1rkpnq7qq8idlv9n9p5nnxwik1d"))))
+    (build-system emacs-build-system)
+    ;; No automated tests.  The test directory contains sample files for
+    ;; visual inspection.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/DevelopmentCool2449/colorful-mode")
+    (synopsis "Highlight color strings in buffers")
+    (description
+     "@code{colorful-mode} is a minor mode to highlight any color
+format, such as hex codes or HTML color names, in buffers in real time.  It is
+inspired by @code{rainbow-mode} but uses overlays instead of text properties
+to support a different feature set.  It also supports conversion of color
+strings between formats.")
+    (license license:gpl3+)))
+
 (define-public emacs-indent-bars
   (package
     (name "emacs-indent-bars")
