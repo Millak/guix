@@ -130,55 +130,57 @@ program to exhibit a bug.")
     (license license:bsd-3)))
 
 (define-public c-reduce
-  (package
-    (name "c-reduce")
-    (version "2.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/csmith-project/creduce")
-             (commit (string-append "creduce-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ygzn32mzqn02wslaw1gwgx498mvfgpgkgir3pp1mgd3k18l3pqr"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda _
-              (with-directory-excursion "tests"
-                ;; Running all tests can take a looong time, and tests 4 and 5
-                ;; require frama-c or kcc.  So run just one for sanity.
-                (invoke "./run_tests" "1"))))
-          (add-after 'install 'set-load-paths
-            (lambda _
-              ;; Tell creduce where to find the perl modules it needs.
-              (wrap-program (string-append #$output "/bin/creduce")
-                `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))
-    (native-inputs (list flex))
-    (inputs (list astyle
-                  bash-minimal ;for wrap-program
-                  llvm-9
-                  clang-9
-                  indent
-                  perl
-                  perl-exporter-lite
-                  perl-file-which
-                  perl-getopt-tabular
-                  perl-regexp-common
-                  perl-term-readkey))
-    (home-page "https://embed.cs.utah.edu/creduce")
-    (synopsis "Reducer for interesting code")
-    (description
-     "C-Reduce is a tool that takes a large C or C++ program that has a
+  (let ((commit "31e855e290970cba0286e5032971509c0e7c0a80")
+        (revision "0"))
+    (package
+      (name "c-reduce")
+      (version (git-version "2.10.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/csmith-project/creduce")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1yd3wvnkj7qgn2jj5byp58p3qq04w5d6agagrkgi5z5gb6z4qyqk"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda _
+                (with-directory-excursion "tests"
+                  ;; Running all tests can take a looong time, and tests 4 and 5
+                  ;; require frama-c or kcc.  So run just one for sanity.
+                  (invoke "./run_tests" "1"))))
+            (add-after 'install 'set-load-paths
+              (lambda _
+                ;; Tell creduce where to find the perl modules it needs.
+                (wrap-program (string-append #$output "/bin/creduce")
+                  `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))
+      (native-inputs (list flex))
+      (inputs (list astyle
+                    bash-minimal ;for wrap-program
+                    llvm-18
+                    clang-18
+                    indent
+                    perl
+                    perl-exporter-lite
+                    perl-file-which
+                    perl-getopt-tabular
+                    perl-regexp-common
+                    perl-term-readkey))
+      (home-page "https://embed.cs.utah.edu/creduce")
+      (synopsis "Reducer for interesting code")
+      (description
+       "C-Reduce is a tool that takes a large C or C++ program that has a
 property of interest (such as triggering a compiler bug) and automatically
 produces a much smaller C/C++ program that has the same property.  It is
 intended for use by people who discover and report bugs in compilers and other
 tools that process C/C++ code.")
-    (license license:ncsa)))
+      (license license:ncsa))))
 
 (define-public cppdap
   (package
