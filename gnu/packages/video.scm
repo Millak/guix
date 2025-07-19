@@ -4683,7 +4683,7 @@ different filters than the original.")
 (define-public obs-source-copy
   (package
     (name "obs-source-copy")
-    (version "0.2.4")
+    (version "0.2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4692,7 +4692,7 @@ different filters than the original.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l3ls3j57yh03vkwiah6yj1xnnmq7q2ngjjn1k4h1sqqk0dxn86j"))))
+                "0hkjpjli1bw090asc0a9km1gqjachv3hsx5z642kqc5mrnq7fnq3"))))
     (build-system cmake-build-system)
     (arguments
      (list
