@@ -166,7 +166,10 @@ code to handle abstract syntax trees and operations upon the trees.")
                    (list #:configure-flags #~(list "--with-jit"))
                    '())
                (list #:make-flags
-                     #~(list "CFLAGS=-O2 -g -Wno-pointer-to-int-cast"))))
+                     #~(list (string-append
+                              "CFLAGS=-O2 -g -Wno-pointer-to-int-cast"
+                              " -Wno-error=implicit-function-declaration"
+                              " -Wno-error=incompatible-pointer-types")))))
       (native-search-paths
        (list (search-path-specification
               (variable "CSCC_LIB_PATH")
