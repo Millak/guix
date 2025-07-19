@@ -1910,7 +1910,11 @@ organized in a hash table or B+ tree.")
            #~(list "--disable-static"
                    (string-append "--with-bash-headers="
                                   (search-input-directory %build-inputs
-                                                          "include/bash")))
+                                                          "include/bash"))
+                   ;; Add CFLAGS to relax gcc-14's strictness.
+                   (string-append "CFLAGS=-g -O2"
+                                  " -Wno-error=implicit-function-declaration"
+                                  " -Wno-error=incompatible-pointer-types"))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'symlink-bash-loadables
