@@ -27,6 +27,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Adam Faiz <adam.faiz@disroot.org>
+;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,10 +46,7 @@
 
 (define-module (gnu packages scheme)
   #:use-module (gnu packages)
-  #:use-module ((guix licenses)
-                #:select (gpl2 gpl2+ lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3+ asl2.0
-                          bsd-0 bsd-3 cc-by-sa4.0 non-copyleft expat
-                          public-domain))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -254,7 +252,7 @@
      "GNU/MIT Scheme is an implementation of the Scheme programming
 language.  It provides an interpreter, a compiler and a debugger.  It also
 features an integrated Emacs-like editor and a large runtime library.")
-    (license gpl2+)
+    (license license:gpl2+)
     (properties '((ftp-directory . "/gnu/mit-scheme/stable.pkg")))))
 
 (define-public bigloo
@@ -357,7 +355,7 @@ programming languages but not offered by Scheme and functional programming.
 Bigloo compiles Scheme modules.  It delivers small and fast stand alone binary
 executables.  Bigloo enables full connections between Scheme and C programs
 and between Scheme and Java programs.")
-      (license gpl2+))))
+      (license license:gpl2+))))
 
 (define-public hop
   (package
@@ -408,7 +406,7 @@ so-called diffuse Web.  It is designed for programming interactive web
 applications in many fields such as multimedia (web galleries, music players,
 ...), ubiquitous and house automation (SmartPhones, personal appliance),
 mashups, office (web agendas, mail clients, ...), etc.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public scheme48
   (package
@@ -431,7 +429,7 @@ interpreter and is designed to be used as a testbed for experiments in
 implementation techniques and as an expository tool.")
 
     ;; Most files are BSD-3; see COPYING for the few exceptions.
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public scheme48-prescheme
   (package
@@ -561,7 +559,7 @@ implementation techniques and as an expository tool.")
      "Pre-Scheme is a statically compilable dialect of Scheme, used to implement the
 Scheme 48 virtual machine.  Scheme 48 ships with a Pre-Scheme to C compiler written
 in Scheme, and a runtime library which allows Pre-Scheme code to run as Scheme.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public gambit-c
   (package
@@ -593,7 +591,7 @@ compiler can produce standalone executables or compiled modules which can be
 loaded at run time.  Interpreted code and compiled code can be freely
 mixed.")
     ;; Dual license.
-    (license (list lgpl2.1+ asl2.0))))
+    (license (list license:lgpl2.1+ license:asl2.0))))
 
 (define-public chibi-scheme
   (package
@@ -634,7 +632,7 @@ intended for use as an extension and scripting language in C programs.  In
 addition to support for lightweight VM-based threads, each VM itself runs in
 an isolated heap allowing multiple VMs to run simultaneously in different OS
 threads.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public unsyntax
   (let ((commit "144772eeef4a812dd79515b67010d33ad2e7e890")
@@ -696,7 +694,7 @@ Unsyntax evaluates Scheme expressions and compiles and runs Scheme programs by
 first expanding them into a minimal dialect of R7RS (small) without any
 syntactic extensions.  The resulting expression or program is then evaluated
 by an existing Scheme implementation.")
-      (license expat))))
+      (license license:expat))))
 
 (define-public sicp
   (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
@@ -739,7 +737,7 @@ a textbook aiming to teach the principles of computer programming.
 Using Scheme, a dialect of the Lisp programming language, the book explains
 core computer science concepts such as abstraction in programming,
 metalinguistic abstraction, recursion, interpreters, and modular programming.")
-      (license cc-by-sa4.0))))
+      (license license:cc-by-sa4.0))))
 
 (define-public scheme48-rx
   (let* ((commit "dd9037f6f9ea01019390614f6b126b7dd293798d")
@@ -779,7 +777,7 @@ metalinguistic abstraction, recursion, interpreters, and modular programming.")
       (description
        "String pattern-matching library for scheme48 based on the SRE
 regular-expression notation.")
-      (license bsd-3))))
+      (license license:bsd-3))))
 
 (define-public slib
   (package
@@ -812,7 +810,7 @@ regular-expression notation.")
     (synopsis "Compatibility and utility library for Scheme")
     (description "SLIB is a portable Scheme library providing compatibility and
 utility functions for all standard Scheme implementations.")
-    (license (non-copyleft
+    (license (license:non-copyleft
               "http://people.csail.mit.edu/jaffer/SLIB_COPYING.txt"
               "Or see COPYING in the distribution."))))
 
@@ -868,7 +866,7 @@ utility functions for all standard Scheme implementations.")
 implementation includes Hobbit, a Scheme-to-C compiler, which can
 generate C files whose binaries can be dynamically or statically
 linked with a SCM executable.")
-    (license lgpl3+)))
+    (license license:lgpl3+)))
 
 (define-public tinyscheme
   (package
@@ -935,7 +933,7 @@ As an embedded interpreter, it allows multiple interpreter states to coexist in
 the same program, without any interference between them.  Foreign functions in C
 can be added and values can be defined in the Scheme environment.  Being quite a
 small program, it is easy to comprehend, get to grips with, and use.")
-    (license bsd-3)))                   ; there are no licence headers
+    (license license:bsd-3)))                   ; there are no licence headers
 
 (define-public tr7
   (package
@@ -993,7 +991,7 @@ R7RS small of scheme programming language.
 It is meant to be used as an embedded scripting interpreter for other
 programs.  A lot of functionality in TR7 is included conditionally, to allow
 developers freedom in balancing features and footprint.")
-    (license bsd-0)))
+    (license license:bsd-0)))
 
 (define-public stalin
   (let ((commit "ed1c9e339c352b7a6fee40bb2a47607c3466f0be"))
@@ -1070,7 +1068,7 @@ conversion, flow-directed interprocedural lifetime analysis, automatic
 in-lining, unboxing, and flow-directed program-specific and
 program-point-specific low-level representation selection and code
 generation.")
-      (license gpl2+))))
+      (license license:gpl2+))))
 
 (define-public s9fes
   (package
@@ -1109,7 +1107,7 @@ comprehensible public-domain interpreter for R4RS Scheme offering:
 @item an integrated online help system
 @item loads of useful library functions
 @end itemize")
-    (license public-domain)))
+    (license license:public-domain)))
 
 (define-public femtolisp
   (let ((commit "ec7601076a976f845bc05ad6bd3ed5b8cde58a97")
@@ -1160,7 +1158,7 @@ comprehensible public-domain interpreter for R4RS Scheme offering:
 simple, elegant Scheme dialect.  It is a lisp-1 with lexical scope.
 The core is 12 builtin special forms and 33 builtin functions.")
       (home-page "https://github.com/JeffBezanson/femtolisp")
-      (license bsd-3))))
+      (license license:bsd-3))))
 
 (define-public gauche
   (package
@@ -1219,7 +1217,7 @@ large scripts quickly.  Quick startup, built-in system interface, native
 multilingual support are some of the goals.  Gauche comes with a package
 manager/installer @code{gauche-package} which can download, compile, install
 and list gauche extension packages.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public sbcl-airship-scheme
   (let ((commit "1862db81dfa67729444916c361f39f9f1c5a2ccd")
@@ -1248,7 +1246,7 @@ and list gauche extension packages.")
        "This is a R7RS Scheme implementation designed to run within
 a Common Lisp environment.")
       (home-page "https://gitlab.com/mbabich/airship-scheme")
-      (license expat))))
+      (license license:expat))))
 
 (define-public cl-airship-scheme
   (sbcl-package->cl-source-package sbcl-airship-scheme))
@@ -1337,7 +1335,8 @@ system, similar to PLT Scheme's (sorry, Racket) modules.  The main difference fr
 is that Gerbil modules are single instantiation, supporting high performance ahead of
 time compilation and compiled macros.")
     (home-page "https://cons.io")
-    (license `(,lgpl2.1 ,asl2.0))))
+    (license (list license:lgpl2.1
+                   license:asl2.0))))
 
 (define-public emacs-gerbil-mode
   (package
@@ -1388,7 +1387,7 @@ Gerbil code within Emacs.")))
 portable system for writing standalone programs in a subjectively pleasant
 dialect of Lisp.  It has a minimal core and runtime, purely functional
 operation, and support for asynchronous evaluation.")
-    (license expat)))
+    (license license:expat)))
 
 (define-public stklos
   (package
@@ -1435,7 +1434,7 @@ features defined in R7RS small.  The aim of this implementation is to be fast
 as well as light.  The implementation is based on an ad-hoc Virtual
 Machine.  STklos can also be compiled as a library and embedded in an
 application.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public r7rs-small-texinfo
   (let ((commit "38a703976ea6353e32b52a5187dbdaf77fb2f050")
@@ -1480,4 +1479,4 @@ application.")
        "R7RS Small standard of the Scheme programming language in Info format")
       (description
        "Revised^7 Report of the Algorithmic Language Scheme adapted to Texinfo format.")
-      (license (non-copyleft "file://COPYING")))))
+      (license (license:non-copyleft "file://COPYING")))))
