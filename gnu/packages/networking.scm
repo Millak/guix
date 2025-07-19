@@ -4311,7 +4311,7 @@ and signal strength.")
 (define-public libyang
   (package
     (name "libyang")
-    (version "3.4.2")
+    (version "3.12.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4320,7 +4320,7 @@ and signal strength.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07skjr3r4na12kadca2dyk45clpcpnp4zkkwfaa8sqyslx7vhj56"))))
+                "1gnnhm28zcla42wm1qpps5336msmhxcnrs8gc1prw6c0n5g0fwl8"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
