@@ -1040,6 +1040,35 @@ configuration language which makes it trivial to write your own themes.")
 Common Lisp or Smalltalk, but for Emacs Lisp.")
       (license license:gpl3+))))
 
+(define-public emacs-inspirehep
+  ;; No tags or releases.
+  (let ((commit "9675ef63833d3f876e2f1dd8f7a8d91eef420aab")
+        (revision "0"))
+    (package
+      (name "emacs-inspirehep")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://codeberg.org/rahguzar/inspirehep.el/")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1rjclz658vca3mlwhil9kz4ffk382l1csrh7wr8ch63babmc7kzy"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (propagated-inputs
+       (list emacs-map emacs-pdf-tools emacs-companion-mode))
+      (home-page "https://codeberg.org/rahguzar/inspirehep.el/")
+      (synopsis "Search literature references for high energy physics")
+      (description
+       "This package provides an Emacs interface to the online service
+@uref{https://inspirehep.net/, Inspirehep}")
+      (license license:gpl3+))))
+
 (define-public emacs-treebundel
   (package
     (name "emacs-treebundel")
