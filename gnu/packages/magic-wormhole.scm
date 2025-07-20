@@ -70,14 +70,14 @@ connection, or through a transit-relay.")
 (define-public magic-wormhole-transit-relay
   (package
     (name "magic-wormhole-transit-relay")
-    (version "0.2.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "magic-wormhole-transit-relay" version))
        (sha256
         (base32
-         "0ppsx2s1ysikns1h053x67z2zmficbn3y3kf52bzzslhd2s02j6b"))))
+         "134yh50xyrr2jrws3w4q1gy660l0wnswj78ifxn2c48vl9fq6bci"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -89,14 +89,21 @@ connection, or through a transit-relay.")
                      (docs (string-append out "/share/doc/magic-wormhole-transit-relay")))
                 (for-each (lambda (file)
                             (install-file file docs))
-                          (find-files "docs/"))))))))
+                          (find-files "docs/")))))
+          (add-before 'check 'fix-test
+            (lambda _
+              ;; Fix for failing test (test_buffer_fills).
+              (substitute* "src/wormhole_transit_relay/test/test_backpressure.py"
+                (("reactor\\.spawnProcess\\(proto, exe, args\\)")
+                 "reactor.spawnProcess(proto, exe, args, None)")))))))
     (native-inputs
      (list python-mock
            python-pytest
            python-setuptools
            python-wheel))
     (propagated-inputs
-     (list python-twisted))
+     ;; python-service-identity should be propagated from python-twisted.
+     (list python-autobahn python-service-identity python-twisted))
     (home-page "https://github.com/magic-wormhole/magic-wormhole-transit-relay")
     (synopsis "Magic-Wormhole relay server")
     (description
