@@ -30,6 +30,8 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix utils)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp))
 
@@ -92,16 +94,21 @@ Python.  It is a C++ library.")
     (name "tre")
     (version "0.9.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/laurikari/tre/releases/download/v"
-                                  version "/" name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/laurikari/tre")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xr4b8xr51ngsxlwy22by5i13zhnb5q722zv25nm3zpxrac5czzm"))))
+                "1zy91a0jfc5galvd7xrvkn17i3wfiwnv9ikys4qiyjgy7fmk5vz4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             (invoke "autoreconf" "-vif")))
          (add-before 'check 'install-locales
            (lambda _
              ;; The tests require the availability of the
@@ -110,6 +117,11 @@ Python.  It is a C++ library.")
              (invoke "localedef" "--no-archive"
                      "--prefix" (getcwd) "-i" "en_US"
                      "-f" "ISO-8859-1" "./en_US.ISO-8859-1"))))))
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal ;for autopoint
+           libtool))
     (synopsis "Approximate regex matching library and agrep utility")
     (description "Superset of the POSIX regex API, enabling approximate
 matching.  Also ships a version of the agrep utility which behaves similar to
