@@ -67,7 +67,8 @@
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
                    (pkg-config (assoc-ref inputs "pkg-config")))
-               (setenv "CFLAGS" "-fcommon")
+               ;; fix building with GCC 14
+               (setenv "CFLAGS" "-fcommon -Wno-incompatible-pointer-types")
                (setenv "LDFLAGS"
                        ,@(if (target-ppc32?)
                            `((string-append "-Wl,-rpath=" out "/lib" " -latomic"))
