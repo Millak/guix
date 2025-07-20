@@ -8589,6 +8589,11 @@ arbitrary solar system observers.")
        (sha256
         (base32 "0m2b21mim3a7wgfg3ph2w5hv7mdvr03jmmhzipc0wcahijglcw9j"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CFLAGS=-g -O2"
+                             " -Wno-error=implicit-function-declaration"))))
     (home-page "https://www.eso.org/sci/software/eclipse/qfits/")
     (synopsis "C library offering access to astronomical FITS files")
     (description
