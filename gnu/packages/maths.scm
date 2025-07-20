@@ -1799,9 +1799,11 @@ incompatible with HDF5.")
                            "--enable-threadsafe"
                            "--with-pthread"
                            "--enable-unsupported")
-       ;; Use -fPIC to allow the R bindings to link with the static libraries
-       #:make-flags (list "CFLAGS=-fPIC"
-                          "CXXFLAGS=-fPIC")
+       ;; Use -fPIC to allow the R bindings to link with the static libraries.
+       ;; Declare warnings as non-errors to fix build with gcc@14
+       #:make-flags
+       (list "CFLAGS=-g -O2 -fPIC -Wno-error=incompatible-pointer-types"
+             "CXXFLAGS=-g -O2 -fPIC")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'patch-configure
