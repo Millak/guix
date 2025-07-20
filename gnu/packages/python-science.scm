@@ -3878,8 +3878,8 @@ readable.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://www.github.com/maartenbreddels/vaex")
-             (commit (string-append "core-v" version))))
+              (url "https://www.github.com/maartenbreddels/vaex")
+              (commit (string-append "core-v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sp096msbzgjlwi8c1ink2bp4pjff9pvikqz1y1li8d3in4gpgdr"))
@@ -3917,7 +3917,14 @@ readable.")
                 ;; "dask!=2022.4.0,<2024.9"; there is a note "fingerprinting
                 ;; in no longer deterministic as of 2024.9.0" which may be
                 ;; resolved in 2024.12.1.
-                ((",<2024.9") "")))))))
+                ((",<2024.9") ""))))
+          (add-before 'build 'patch-missing-include
+            (lambda _
+              ;; See: <https://github.com/vaexio/vaex/issues/2382>.
+              ;; TODO: Update to the latest version including the fix.
+              (substitute* "src/string_utils.hpp"
+                (("#include <nonstd/string_view.hpp>")
+                 "#include <cstdint>\n#include <nonstd/string_view.hpp>")))))))
     (inputs
      (list boost pcre pybind11 string-view-lite tsl-hopscotch-map))
     (propagated-inputs
