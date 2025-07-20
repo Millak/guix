@@ -1647,7 +1647,7 @@ compositor.")
 (define-public waylandpp
   (package
     (name "waylandpp")
-    (version "0.2.9")
+    (version "1.0.1")
     (home-page "https://github.com/NilsBrause/waylandpp")
     (source (origin
               (method git-fetch)
@@ -1655,7 +1655,7 @@ compositor.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z4m30r609as3kpcgipivddr98y7h529r7ldn9ba4snhk341mfvk"))))
+                "0y7k6hr4azy6fx54m9k74n47bcrvyvk0yawxf786i5mrg98hm9mw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests
