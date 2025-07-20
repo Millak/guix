@@ -366,15 +366,24 @@ for use with .NET-capable runtime engines and applications.")
                            (string-append "EXTERNAL_RUNTIME="
                                           #+(this-package-native-input "pnet-git")
                                           "/bin/ilrun")
-                           "CFLAGS=-O2 -g -DARG_MAX=500"
+                           "CFLAGS=-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch"
                            #$(string-append "CC=" (cc-for-target))
                            "V=1")
       ;; build fails nondeterministically without this
       #:parallel-build? #f
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-includes
+            (lambda _
+              ;; Upstream forgot to #include that.
+              (substitute* "mono/metadata/security.c"
+               (("#include <mono/metadata/image.h>")
+                "#include <mono/metadata/image.h>
+#include <mono/metadata/assembly.h>"))))
           (add-after 'unpack 'set-env
             (lambda _
+              ;; Configure script for sock_un.sun_path uses exit() without importing it.
+              (setenv "CFLAGS" "-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch")
               ;; All tests under mcs/class fail trying to access $HOME
               (setenv "HOME" "/tmp")
               ;; ZIP files have "DOS time" which starts in Jan 1980.
