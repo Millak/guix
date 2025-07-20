@@ -1100,66 +1100,66 @@ projections and coordinate transformations library.")
     (name "python-fiona")
     (version "1.9.4.post1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Fiona" version))
-        (sha256
-          (base32
-            "083120rqc4rrqzgmams0yjd8b1h4p5xm4n9fnxg064ymw3vx6yan"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Fiona" version))
+       (sha256
+        (base32
+         "083120rqc4rrqzgmams0yjd8b1h4p5xm4n9fnxg064ymw3vx6yan"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
           (add-before 'build 'set-configure-flags
             (lambda _
               (setenv "CFLAGS" "-Wno-error=incompatible-pointer-types")))
-         (add-before 'check 'remove-local-fiona
-           (lambda _
-             ; This would otherwise interfere with finding the installed
-             ; fiona when running tests.
-             (delete-file-recursively "fiona")))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (setenv "GDAL_ENABLE_DEPRECATED_DRIVER_GTM" "YES")
-             (when tests?
-               (invoke "pytest"
-                       "-m" "not network and not wheel"
-                       ;; FIXME: Find why the
-                       ;;   test_no_append_driver_cannot_append[PCIDSK]
-                       ;; test is failing.
-                       "-k" "not test_no_append_driver_cannot_append")))))))
+          (add-before 'check 'remove-local-fiona
+            (lambda _
+              ;; This would otherwise interfere with finding the installed
+              ;; fiona when running tests.
+              (delete-file-recursively "fiona")))
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs)
+              (setenv "GDAL_ENABLE_DEPRECATED_DRIVER_GTM" "YES")
+              (when tests?
+                (invoke "pytest"
+                        "-m" "not network and not wheel"
+                        ;; FIXME: Find why the
+                        ;;   test_no_append_driver_cannot_append[PCIDSK]
+                        ;; test is failing.
+                        "-k" "not test_no_append_driver_cannot_append")))))))
     (inputs
-      (list gdal))
+     (list gdal))
     (propagated-inputs
-      (list python-attrs
-            python-certifi
-            python-click
-            python-click-plugins
-            python-cligj
-            python-importlib-metadata
-            python-six))
+     (list python-attrs
+           python-certifi
+           python-click
+           python-click-plugins
+           python-cligj
+           python-importlib-metadata
+           python-six))
     (native-inputs
-      (list gdal ; for gdal-config
-            python-boto3
-            python-cython
-            python-pytest
-            python-pytest-cov
-            python-pytz
-            python-setuptools
-            python-wheel))
+     (list gdal ; for gdal-config
+           python-boto3
+           python-cython
+           python-pytest
+           python-pytest-cov
+           python-pytz
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Toblerity/Fiona")
     (synopsis
-      "Fiona reads and writes spatial data files")
+     "Fiona reads and writes spatial data files")
     (description
-      "Fiona is GDAL’s neat and nimble vector API for Python programmers.
-Fiona is designed to be simple and dependable.  It focuses on reading
-and writing data in standard Python IO style and relies upon familiar
-Python types and protocols such as files, dictionaries, mappings, and
-iterators instead of classes specific to OGR.  Fiona can read and write
-real-world data using multi-layered GIS formats and zipped virtual file
-systems and integrates readily with other Python GIS packages such as
-pyproj, Rtree, and Shapely.")
+     "Fiona is GDAL’s neat and nimble vector API for Python programmers. Fiona
+is designed to be simple and dependable.  It focuses on reading and writing
+data in standard Python IO style and relies upon familiar Python types and
+protocols such as files, dictionaries, mappings, and iterators instead of
+classes specific to OGR.  Fiona can read and write real-world data using
+multi-layered GIS formats and zipped virtual file systems and integrates
+readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
     (license license:bsd-3)))
 
 (define-public python-geopack
