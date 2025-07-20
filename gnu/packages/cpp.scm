@@ -3970,7 +3970,8 @@ for C++17 string-view.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0m344qq3d57balzvc26fjx985nj2xwnfb1a7prkv3njj5lfcf127"))))
+          (base32 "0m344qq3d57balzvc26fjx985nj2xwnfb1a7prkv3njj5lfcf127"))
+         (patches (search-patches "strutcpp-fix-includes.patch"))))
       (build-system cmake-build-system)
       (arguments
        (list

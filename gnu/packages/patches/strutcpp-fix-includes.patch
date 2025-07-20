@@ -1,0 +1,11 @@
+Reported upstream by email to Ingo Ruhnke <grumbel@gmail.com>.
+
+diff -u -r a/test/numeric_less_test.cpp b/test/numeric_less_test.cpp
+--- a/test/numeric_less_test.cpp	2025-07-20 13:02:31.088465392 +0200
++++ b/test/numeric_less_test.cpp	2025-07-20 13:03:49.283025547 +0200
+@@ -1,4 +1,5 @@
+ #include <gtest/gtest.h>
++#include <algorithm>
+ 
+ #include "strut/numeric_less.hpp"
+

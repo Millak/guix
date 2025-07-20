@@ -2336,6 +2336,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/sssd-system-directories.patch		\
   %D%/packages/patches/steghide-fixes.patch			\
   %D%/packages/patches/suitesparse-mongoose-cmake.patch		\
+  %D%/packages/patches/strutcpp-fix-includes.patch              \
   %D%/packages/patches/superlu-dist-awpm-grid.patch		\
   %D%/packages/patches/superlu-dist-scotchmetis.patch		\
   %D%/packages/patches/supertux-unbundle-squirrel.patch		\
