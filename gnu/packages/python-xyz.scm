@@ -25398,16 +25398,17 @@ Mustache templating language renderer.")
 (define-public python-duckdb
   (package
     (name "python-duckdb")
-    (version "1.0.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "duckdb" version))
               (sha256
                (base32
-                "0lyl6di1c7j31i2mk384j711kzyyf9rjd3nqx5mbgmf7gfvmk852"))))
+                "1x8zb47y8lzc4w0g013sim8x9vd1h96ra3dd0bvh91y73f5dyn66"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ;FIXME: See <https://codeberg.org/guix/guix/issues/1436>.
       #:test-flags
       #~(list "--ignore=tests/slow/test_h2oai_arrow.py"
               ;; Do not relay on mypy.
@@ -25427,11 +25428,6 @@ Mustache templating language renderer.")
           ;; Tests need this
           (add-before 'check 'set-HOME
             (lambda _ (setenv "HOME" "/tmp")))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
-              (substitute* "setup.py"
-                (("\"setuptools_scm<7.0.0\",") ""))))
           ;; Later versions of pybind replace "_" with "const_name".
           (add-after 'unpack 'pybind-compatibility
             (lambda _
@@ -25445,13 +25441,11 @@ Mustache templating language renderer.")
     (native-inputs
      (list pybind11
            python-fsspec
-           python-google-cloud-storage
+           ;; python-google-cloud-storage ;python-grpcio fails (see: guix/guix#1436)
            python-numpy
            python-pandas
            python-psutil
-           python-pyarrow
-           python-pytest
-           python-pytest-runner
+           ;; python-pytest
            python-setuptools-scm
            python-setuptools
            python-wheel))
