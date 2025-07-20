@@ -9348,8 +9348,8 @@ See related paper
 
 (define-public unsio
   ;; There is no versioned tag, use the latest commit.
-  (let ((commit "25e52468298e1194c9726ef5dba9d5fbb46870f5")
-        (revision "0"))
+  (let ((commit "ac48210ec24432ec3ad330c4203e7eb21876a921")
+        (revision "1"))
     (package
       (name "unsio")
       (version (git-version "1.3.3" revision commit))
@@ -9361,7 +9361,7 @@ See related paper
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "110i2p5608zhh5w3pf3b5r2651hykw2ayspgq6vpqsffhya1p170"))
+                  "0diiiflwz5yw2hpk3xj5x5iviyfibim4lhs02qn07hfw86qi9vn2"))
                 (modules '((guix build utils)))
                 (snippet
                   ;; force installation into lib/ instead of lib64/
