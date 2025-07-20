@@ -681,8 +681,9 @@ and enhance them.")
        (list cmocka
              desktop-file-utils
              ;; With the default GCC configuration fails with: Unsupported
-             ;; libstdc++ version: 11
-             gcc-12
+             ;; libstdc++ version: 11.  Updated to gcc-14 for ABI
+             ;; compatibility with libheif/openexr.
+             gcc-14
              `(,glib "bin")
              gobject-introspection
              intltool
