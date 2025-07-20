@@ -205,10 +205,10 @@ as required.")
     (license gpl2+)))
 
 (define-public libfilezilla
-  (let ((revision 10763))
+  (let ((revision 11287))
     (package
       (name "libfilezilla")
-      (version "0.39.2")
+      (version "0.51.0")
       (source
        (origin
          (method svn-fetch)
@@ -217,7 +217,7 @@ as required.")
                (revision revision)))
          (file-name (string-append name "-" version "-" (number->string revision)))
          (sha256
-          (base32 "0x7lx8474xcqgp181kg8bw5c10nxd19hw8lhxa5fkry50mfqyzmj"))))
+          (base32 "1ylapyyi1lj41w3c73dzq2r43vwmmk820z2gd0qfs3sdi9wb95z1"))))
       (build-system gnu-build-system)
       (arguments
        `(#:configure-flags (list "--disable-static")))
