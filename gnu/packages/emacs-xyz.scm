@@ -11049,6 +11049,34 @@ Combobulate absolute clarity of all aspects of your code, enabling more
 correct movement and editing than you would otherwise have.")
       (license license:gpl3+))))
 
+(define-public emacs-companion-mode
+  ;; No tags or releases.
+  (let ((commit "2c3c794c583058db83e92e69b8cb1bf0c84551eb")
+        (revision "0"))
+    (package
+      (name "emacs-companion-mode")
+      ;; Version is extracted from the main file.
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://codeberg.org/rahguzar/companion-mode/")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0bi3y3r0y1n7kl6nrr0mpdp0zyr1mgcg8mrm5yxldfvdh2245jgq"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/rahguzar/companion-mode/")
+      (synopsis "Pairing buffers for simulatenous display")
+      (description
+       "This package defines a global minor mode to pair buffers with a
+companion, such that when the buffer is displayed in a window, the companion is
+also displayed.")
+      (license license:gpl3+))))
+
 (define-public emacs-company
   (package
     (name "emacs-company")
