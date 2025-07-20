@@ -1346,7 +1346,8 @@ Language.")
                 (("basedir=\"\"")
                  (string-append "basedir=\"" out "\""))
                 (("\\$basedir/share/mysql")
-                 (string-append lib "/share/mysql")))
+                 (string-append lib "/share/mysql"))
+                (("bindir=\"\\$basedir//") "bindir=\"/"))
 
               (with-directory-excursion lib
                 ;; Remove tests.
