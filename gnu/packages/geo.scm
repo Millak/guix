@@ -1109,6 +1109,11 @@ projections and coordinate transformations library.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-m" "not network and not wheel"
+              ;; FIXME: Find why the
+              ;; test_no_append_driver_cannot_append[PCIDSK] test is failing.
+              "-k" "not test_no_append_driver_cannot_append")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-configure-flags
@@ -1118,18 +1123,7 @@ projections and coordinate transformations library.")
             (lambda _
               ;; This would otherwise interfere with finding the installed
               ;; fiona when running tests.
-              (delete-file-recursively "fiona")))
-          (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs)
-              (setenv "GDAL_ENABLE_DEPRECATED_DRIVER_GTM" "YES")
-              (when tests?
-                (invoke "pytest"
-                        "-m" "not network and not wheel"
-                        ;; FIXME: Find why the
-                        ;;   test_no_append_driver_cannot_append[PCIDSK]
-                        ;; test is failing.
-                        "-k" "not test_no_append_driver_cannot_append")))))))
+              (delete-file-recursively "fiona"))))))
     (inputs
      (list gdal))
     (propagated-inputs
