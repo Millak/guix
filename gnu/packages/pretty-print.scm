@@ -290,7 +290,7 @@ a fast alternative to @code{IOStreams}.")
 
 (define-public fmt-8
   (package
-    (inherit fmt-9)
+    (inherit fmt-10)
     (version "8.1.1")
     (source
      (origin
