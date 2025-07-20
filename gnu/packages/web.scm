@@ -1784,20 +1784,29 @@ C.")
 (define-public libwebsockets
   (package
     (name "libwebsockets")
-    (version "4.3.2")
-    (source (origin
-              ;; The project does not publish tarballs, so we have to take
-              ;; things from Git.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/warmcat/libwebsockets")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "0rxgb05f6jignb0y367rs88cla2s1ndd9jfl4ms77q8w0wnbq762"))
-              (file-name (git-file-name name version))))
+    (version "4.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/warmcat/libwebsockets")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1qlrfa1vqr89yfrqpk99zkfl8k4cpdbvbdvikdbj6l5xz5z2gxsy"))
+       (file-name (git-file-name name version))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test-cert-generation
+            (lambda _
+              (substitute* "lib/tls/CMakeLists.txt"
+                (("-config /etc/ssl/openssl.cnf ")
+                 "")))))
+      #:configure-flags
+      #~'("-DLWS_CTEST_INTERNET_AVAILABLE=0")))
     (build-system cmake-build-system)
-    (native-inputs (list perl))             ; to build the HTML doc
+    (native-inputs (list perl)) ;to build the HTML doc
     (inputs (list zlib openssl))
     (synopsis "WebSockets library written in C")
     (description
@@ -1812,11 +1821,14 @@ for efficient socket-like bidirectional reliable communication channels.")
    (package
      (inherit libwebsockets)
      (arguments
-      (list
-       ;; Mosquitto requires some tweaks for libwebsockets, see:
-       ;; https://github.com/NixOS/nixpkgs/blob/1750f3c1c89488e2ffdd47cab9d05454dddfb734/pkgs/by-name/mo/mosquitto/package.nix#L20
-       #:configure-flags '(list "-DLWS_WITH_EXTERNAL_POLL=ON"
-                                "-DLWS_WITH_HTTP2=OFF"))))))
+      (substitute-keyword-arguments
+          (package-arguments libwebsockets)
+        ((#:configure-flags flags)
+         ;; Mosquitto requires some tweaks for libwebsockets, see:
+         ;; https://github.com/NixOS/nixpkgs/blob/1750f3c1c89488e2ffdd47cab9d05454dddfb734/pkgs/by-name/mo/mosquitto/package.nix#L20
+         #~(cons* "-DLWS_WITH_EXTERNAL_POLL=ON"
+                  "-DLWS_WITH_HTTP2=OFF"
+                  #$flags)))))))
 
 (define-public wabt
   (package
