@@ -35908,20 +35908,15 @@ number of words, syllables, and sentences.")
                 "13nfy2v0pbbf62jn9qwgi489gg97hbb22q6w3f78mnvjxd2m19rh"))
               (snippet
                #~(begin (delete-file "readability/compat/two.py")))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "pytest" "-v" "tests/")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-chardet
                              python-cssselect
                              python-lxml
                              python-lxml-html-clean))
-    (native-inputs (list python-timeout-decorator python-pytest))
+    (native-inputs (list python-timeout-decorator
+                         python-setuptools
+                         python-pytest
+                         python-wheel))
     (home-page "http://github.com/buriy/python-readability")
     (synopsis "HTML to text parser")
     (description
