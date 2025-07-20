@@ -1,6 +1,6 @@
-From adbf7ce2c2b03ce5ee25d4c68f9bb247b0dcbc2b Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
-Date: Thu, 30 May 2024 14:48:04 -0400
+From bf900311b84185b01dd4d03c0ff6f3a6e0ade2ed Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim@guixotic.coop>
+Date: Wed, 16 Jul 2025 09:55:22 +0900
 Subject: [PATCH] bootstrap: Use gnulib-tool from PATH if available.
 
 Some distributions such as GNU Guix include in their package for
@@ -14,28 +14,32 @@ mechanism to support such installation layout.
 
 * build-aux/bootstrap (autogen) <gnulib_tool>: Prefer to use from
 PATH, else from $GNULIB_SRCDIR/../../bin/gnulib-tool, else from
-$GNULIB_SRCDIR/gnulib-tool.
+$GNULIB_SRCDIR/gnulib-tool.  Invoke script via 'sh' from PATH, for
+portability.
 * gnulib-tool.sh (func_gnulib_dir): Honor GNULIB_SRCDIR to locate
 gnulib's main directory.
+(func_version): Explicitly invoke git-version-gen via 'sh' to avoid
+relying on the exact location of 'sh' hard-coded in the script
+shebang.
 ---
- build-aux/bootstrap | 11 +++++++++--
- gnulib-tool.sh      |  6 +++++-
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ build-aux/bootstrap | 13 ++++++++++---
+ gnulib-tool.sh      |  8 ++++++--
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/build-aux/bootstrap b/build-aux/bootstrap
-index 6295b8a128..06271eea8b 100755
+index dc9fb43834..5b2984316c 100755
 --- a/build-aux/bootstrap
 +++ b/build-aux/bootstrap
 @@ -3,7 +3,7 @@
  
  # Bootstrap this package from checked-out sources.
  
--scriptversion=2024-04-13.15; # UTC
-+scriptversion=2024-05-30.20; # UTC
+-scriptversion=2025-06-10.02; # UTC
++scriptversion=2025-07-16.00; # UTC
  
- # Copyright (C) 2003-2024 Free Software Foundation, Inc.
+ # Copyright (C) 2003-2025 Free Software Foundation, Inc.
  #
-@@ -1164,7 +1164,14 @@ autogen()
+@@ -1211,7 +1211,14 @@ autogen()
    fi
  
    if $use_gnulib; then
@@ -51,10 +55,28 @@ index 6295b8a128..06271eea8b 100755
      <$gnulib_tool || return
    fi
  
+@@ -1297,7 +1304,7 @@ autogen()
+       esac
+     fi
+     echo "$0: $gnulib_tool $gnulib_tool_options --import ..."
+-    $gnulib_tool $gnulib_tool_options --import $gnulib_modules \
++    sh $gnulib_tool $gnulib_tool_options --import $gnulib_modules \
+       || die "gnulib-tool failed"
+ 
+     if test $with_gettext = yes && test ! -f $m4_base/gettext.m4; then
 diff --git a/gnulib-tool.sh b/gnulib-tool.sh
-index 12f0b82461..0aefbe2b2b 100755
+index e0a8cbba82..c4b05195b5 100755
 --- a/gnulib-tool.sh
 +++ b/gnulib-tool.sh
+@@ -360,7 +360,7 @@ q
+     date=`cd "$gnulib_dir" && git log -n 1 --format=medium --date=iso ChangeLog | sed -n -e "$sed_extract_first_date"`
+     # Use GNU date to compute the time in GMT.
+     date=`date -d "$date" -u +"%Y-%m-%d %H:%M:%S"`
+-    version=' '`cd "$gnulib_dir" && ./build-aux/git-version-gen /dev/null | sed -e 's/-dirty/-modified/'`
++    version=' '`cd "$gnulib_dir" && sh ./build-aux/git-version-gen /dev/null | sed -e 's/-dirty/-modified/'`
+   else
+     # gnulib copy without versioning information.
+     date=`sed -e 's/ .*//;q' "$gnulib_dir"/ChangeLog`
 @@ -518,7 +518,11 @@ func_gnulib_dir ()
        * ) self_abspathname=`echo "$self_abspathname" | sed -e 's,/[^/]*$,,'`/"$linkval" ;;
      esac
@@ -68,8 +90,6 @@ index 12f0b82461..0aefbe2b2b 100755
  }
  
  # func_tmpdir
-
-base-commit: ac4b301ae15223c98b51cd5a0eda2e2cf57c817b
 -- 
-2.41.0
+2.50.1
 

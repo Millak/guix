@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
-;;; Copyright © 2021, 2023, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -1016,9 +1016,9 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
                                         "CaseFolding.txt")
                          (list #$(package-version (this-package-native-input "ucd")))))
                 (invoke "clisp" "-C" "uniname/gen-uninames.lisp"
-                        (find-ucd-file "UnicodeData.txt")
-                        "uniname/uninames.h"
-                        (find-ucd-file "NameAliases.txt"))
+                        (find-ucd-file "UnicodeData.txt") ;input file
+                        (find-ucd-file "NameAliases.txt") ;alias file
+                        "uniname/uninames.h")             ;output file
                 (for-each
                  (match-lambda
                   ((ucd-file . directory)
@@ -1069,9 +1069,9 @@ maintenance-related files, for convenience.")
 
 (define-public gnulib
   (gnulib-checkout
-   #:version "2024-05-30"
-   #:commit "ac4b301ae15223c98b51cd5a0eda2e2cf57c817b"
-   #:hash (base32 "0f4w56fc97clg13mmdghx84dh9xqmaqr3j672ppfh3h66gmmmvzs")))
+   #:version "2025-06-30"       ;date from last commit on stable-202507 branch
+   #:commit "9297749090b01720888dceeb5f6dab3d52dcef40"
+   #:hash (base32 "10qyhji7q71fhq2956aszj6bipbf11hn0xcrrpkwj9azwindw7ch")))
 
 (define-public pdpmake
   (package
