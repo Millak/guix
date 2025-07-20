@@ -524,7 +524,8 @@ a C-style programming language from Microsoft that is very similar to Java.")
     (arguments
      (substitute-keyword-arguments (package-arguments mono-1.9.1)
        ((#:make-flags _ #f)
-        #~(list #$(string-append "CC=" (cc-for-target))
+        #~(list "CFLAGS=-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=int-conversion "
+                #$(string-append "CC=" (cc-for-target))
                 "V=1"))
        ((#:tests? _ #f)
         ;; When it tries building iltests.il in mono/mini, it gets: error
