@@ -35917,7 +35917,10 @@ number of words, syllables, and sentences.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "python" "-m" "pytest" "-v" "tests/")))))))
-    (propagated-inputs (list python-chardet python-cssselect python-lxml))
+    (propagated-inputs (list python-chardet
+                             python-cssselect
+                             python-lxml
+                             python-lxml-html-clean))
     (native-inputs (list python-timeout-decorator python-pytest))
     (home-page "http://github.com/buriy/python-readability")
     (synopsis "HTML to text parser")
