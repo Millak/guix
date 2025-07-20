@@ -1881,14 +1881,20 @@ extension.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'udunits-path
+          (add-after 'unpack 'set-configure-flags
             (lambda _
               (setenv "UDUNITS2_XML_PATH"
                       (format #f "~a/share/udunits/udunits2.xml"
-                              #$(this-package-input "udunits")))))
+                              #$(this-package-input "udunits")))
+              (setenv "CFLAGS"
+                      (string-join
+                       (list "-Wno-error=implicit-function-declaration"
+                             "-Wno-error=int-conversion")
+                       " "))))
           (replace 'check
-          ;; To load built module and bypath error: ImportError: cannot import
-          ;; name '_udunits2' from partially initialized module 'cf_units'.
+            ;; To load built module and bypath error: ImportError: cannot
+            ;; import name '_udunits2' from partially initialized module
+            ;; 'cf_units'.
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (with-directory-excursion #$output
                 (apply invoke "pytest" "-vv" test-flags)))))))
