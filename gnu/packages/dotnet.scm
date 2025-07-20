@@ -444,7 +444,8 @@ a C-style programming language from Microsoft that is very similar to Java.")
     (arguments
      (substitute-keyword-arguments (package-arguments mono-1.2.6)
        ((#:make-flags _ #f)
-        #~(list #$(string-append "CC=" (cc-for-target))
+        #~(list "CFLAGS=-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch "
+                #$(string-append "CC=" (cc-for-target))
                 "NO_SIGN_ASSEMBLY=yes" ; non-reproducible otherwise.
                 "V=1"))
        ((#:phases phases #~%standard-phases)
@@ -473,7 +474,11 @@ a C-style programming language from Microsoft that is very similar to Java.")
                 (let ((original (getenv "CFLAGS")))
                   (setenv "CFLAGS" (string-append (or original "")
                                                   (if original " " "")
-                                                  "-DARG_MAX=500")))))
+                                                  "-DARG_MAX=500 "
+                                                  "-Wno-error=implicit-function-declaration "
+                                                  "-Wno-error=incompatible-pointer-types "
+                                                  "-Wno-error=implicit-int "
+                                                  "-Wno-error=return-mismatch ")))))
             (add-before 'configure 'set-create-image-version
               (lambda _
                 ;; pnet produces v2.x assemblies.  Mono does this weird thing
