@@ -35,6 +35,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
@@ -253,44 +254,44 @@ output.
       (license gpl2+))))
 
 (define-public filezilla
-  (package
-    (name "filezilla")
-    (version "3.62.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (list (string-append "https://qbilinux.org/pub/source/"
-                                 "FileZilla_" version "_src.tar.bz2")
-                  (string-append "https://downloads.sourceforge.net/project/"
-                            "portableapps/Source/FileZilla/"
-                            "FileZilla_" version "_src.tar.bz2")))
-       (sha256
-        (base32 "04lcffmvl1356iyc14pikq3z6jikj6qn0v0zd57lgsm0biihjrx7"))))
-    (build-system gnu-build-system)
-    (arguments
-      ;; Don't let filezilla phone home to check for updates.
-     '(#:configure-flags '("--disable-autoupdatecheck")))
-    (native-inputs
-     (list cppunit gettext-minimal pkg-config xdg-utils))
-    (inputs
-     (list dbus
-           gnutls
-           gtk+
-           libfilezilla
-           libidn
-           nettle
-           pugixml
-           sqlite
-           wxwidgets-3.0))
-    (home-page "https://filezilla-project.org")
-    (synopsis "Full-featured graphical FTP/FTPS/SFTP client")
-    (description
-     "Filezilla client supports FTP, FTP over SSL/TLS (FTPS),
+  (let ((revision 11290))
+    (package
+      (name "filezilla")
+      (version "3.69.2")
+      (source
+       (origin
+         (method svn-fetch)
+         (uri (svn-reference
+               (url "https://svn.filezilla-project.org/svn/FileZilla3/trunk")
+               (revision revision)))
+         (sha256
+          (base32 "0pz8fhzgm4kyax64bkkpsq3p1lcypjacr05bvk4wxp80lfqiv32k"))))
+      (build-system gnu-build-system)
+      (arguments
+        ;; Don't let filezilla phone home to check for updates.
+       '(#:configure-flags '("--disable-autoupdatecheck")))
+      (native-inputs
+       (list autoconf automake cppunit gettext-minimal libtool pkg-config xdg-utils))
+      (inputs
+       (list boost
+             dbus
+             gnutls
+             gtk+
+             libfilezilla
+             libidn
+             nettle
+             pugixml
+             sqlite
+             wxwidgets))
+      (home-page "https://filezilla-project.org")
+      (synopsis "Full-featured graphical FTP/FTPS/SFTP client")
+      (description
+       "Filezilla client supports FTP, FTP over SSL/TLS (FTPS),
 SSH File Transfer Protocol (SFTP), HTTP/1.1, SOCKS5, FTP-Proxy, IPv6
 and others features such as bookmarks, drag and drop, filename filters,
 directory comparison and more.")
-    (license gpl2+)
-    (properties '((upstream-name . "FileZilla")))))
+      (license gpl2+)
+      (properties '((upstream-name . "FileZilla"))))))
 
 (define-public vsftpd
   (package
