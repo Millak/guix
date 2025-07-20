@@ -3159,7 +3159,8 @@ useful with system integration.")
       (propagated-inputs
        (list gtk+ libdbusmenu))
       (arguments
-       `(#:configure-flags '("--with-gtk=3")
+       `(#:parallel-build? #f ; race condition for application-service-marshal.h
+         #:configure-flags '("--with-gtk=3")
          #:make-flags '("CFLAGS=-Wno-error")
          #:tests? #f ; One test does not pass (it succeeds when it should fail).
          #:phases
