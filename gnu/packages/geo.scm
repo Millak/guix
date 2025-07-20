@@ -1110,6 +1110,9 @@ projections and coordinate transformations library.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+          (add-before 'build 'set-configure-flags
+            (lambda _
+              (setenv "CFLAGS" "-Wno-error=incompatible-pointer-types")))
          (add-before 'check 'remove-local-fiona
            (lambda _
              ; This would otherwise interfere with finding the installed
