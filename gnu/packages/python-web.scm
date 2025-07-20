@@ -10180,39 +10180,46 @@ library for Python.")
 (define-public python-smart-open
   (package
     (name "python-smart-open")
-    (version "6.0.0")
+    (version "7.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "smart_open" version))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/piskvorky/smart_open")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1c12ilanx9hgpcc5chjkaqnx1hx14iazyindy7syvjhbdywhc0fn"))))
-    (build-system python-build-system)
+        (base32 "1jk3dj0j7idv94g1ga5wyvybakj4l150g26cbsjkrjfpy017vxab"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false ;none included
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+     (list
+      #:test-flags
+      #~(list "--ignore=ci_helpers/"
+              "--ignore=integration-tests/"
+              ;; FIXME: Enable when guix/guix#1436 is resolved.
+              "--deselect=tests/test_smart_open.py::ParseUriTest::test_gs_uri"
+              "--deselect=tests/test_smart_open.py::ParseUriTest::test_gs_uri_contains_question_mark"
+              "--deselect=tests/test_smart_open.py::ParseUriTest::test_gs_uri_contains_slash"
+              "--deselect=tests/test_smart_open.py::ParseUriTest::test_scheme"
+              "--ignore=tests/test_gcs.py")))
     (propagated-inputs
      (list python-azure-common
            python-azure-core
            python-azure-storage-blob
            python-boto3
-           python-google-cloud-storage
-           python-requests))
-    (native-inputs
-     (list python-flask
-           python-flask-cors
-           python-graphql-core
-           python-moto
+           ;; python-google-cloud-storage ;see guix/guix#1436
            python-paramiko
-           python-pathlib2
+           python-requests
+           python-wrapt
+           python-zstandard))
+    (native-inputs
+     (list python-numpy
+           python-moto
            python-pytest
            python-pytest-rerunfailures
-           python-responses))
+           python-responses
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/piskvorky/smart_open")
     (synopsis "Utilities for streaming large files")
     (description
