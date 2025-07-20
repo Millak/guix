@@ -952,20 +952,19 @@ to generate and parse.  The two primary functions are @code{cbor.loads} and
 @code{cbor.dumps}.")
     (license license:asl2.0)))
 
-(define-public flatbuffers
+(define-public flatbuffers-next
   (package
     (name "flatbuffers")
-    (version "2.0.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/google/flatbuffers")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1zbf6bdpps8369r1ql00irxrp58jnalycc8jcapb8iqg654vlfz8"))))
+    (version "24.12.23")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/flatbuffers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "flatbuffers" version))
+              (sha256
+               (base32
+                "01g64kmjw8dfhj12j5fgyx70avix9p1ml4w25lm726dixmpq9gp8"))))
     (build-system cmake-build-system)
     (arguments
      '(#:build-type "Release"
@@ -987,7 +986,7 @@ game development and other performance-critical applications.")
 (define-public flatbuffers-23.1
     ;; needed explicitly by tensorflow-lite 2.13.1
   (package
-    (inherit flatbuffers)
+    (inherit flatbuffers-next)
     (version "23.1.21")
     (source (origin
               (method git-fetch)
@@ -999,23 +998,9 @@ game development and other performance-critical applications.")
                (base32
                 "1z3a6l8g2y53i5xzraswfs2i0i3kk52zv7nzc2q3fgisbyiri3pz"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments flatbuffers)
+     (substitute-keyword-arguments (package-arguments flatbuffers-next)
        ((#:configure-flags flags #~'())
         #~(append #$flags '("-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))))))
-
-(define-public flatbuffers-next
-  (package
-    (inherit flatbuffers)
-    (version "24.12.23")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/google/flatbuffers")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "flatbuffers" version))
-              (sha256
-               (base32
-                "01g64kmjw8dfhj12j5fgyx70avix9p1ml4w25lm726dixmpq9gp8"))))))
 
 (define-public go-github-com-google-flatbuffers
   (package/inherit flatbuffers-next
