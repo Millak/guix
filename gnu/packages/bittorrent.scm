@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system glib-or-gtk)
@@ -608,7 +610,7 @@ the following features:
        (sha256
         (base32
          "1kbac1qjbddcib0bldqaf0dcq5mqi9i2jv2fd4fayam4bcmjgfmr"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs (list bash-minimal))
     (propagated-inputs
      (list gtk+
@@ -625,11 +627,10 @@ the following features:
            python-rencode
            python-service-identity
            python-setproctitle
-           python-six
            python-twisted
            python-zope-interface))
     (native-inputs
-     (list intltool python-wheel
+     (list intltool python-setuptools python-wheel
            (librsvg-for-system)))
     (native-search-paths
      (list $SSL_CERT_DIR
@@ -642,7 +643,7 @@ the following features:
      `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'install 'wrap
+         (add-before 'wrap 'wrap-deluge
            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
                    ;; "librsvg" input is only needed at build time and it
