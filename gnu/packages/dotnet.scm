@@ -792,6 +792,10 @@ a C-style programming language from Microsoft that is very similar to Java.")
      (substitute-keyword-arguments (package-arguments mono-3.0)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (replace 'set-cflags
+              (lambda _
+                (setenv "CFLAGS" "-O2 -g -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=int-conversion")
+))
             (add-after 'unpack 'set-TZ
               (lambda _
                 ;; for some reason a default is only used if this is empty, not
