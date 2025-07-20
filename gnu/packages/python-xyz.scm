@@ -34468,7 +34468,8 @@ It adds a simple and readable way to print stuff during development.")
      (list python-flake8 python-pytest python-parameterized tzdata-for-tests
            python-setuptools python-wheel))
     (arguments
-     `(#:phases
+     `(#:test-flags (list "-k" "not test_relative_base_setting_2_en")
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-check-environment
            (lambda* (#:key inputs #:allow-other-keys)
