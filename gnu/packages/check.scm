@@ -36,7 +36,7 @@
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
@@ -1148,6 +1148,21 @@ package.")
 discovery, death tests, assertions, parameterized tests and XML test report
 generation.")
     (license license:bsd-3)))
+
+(define-public googletest-1.17
+  (package
+    (inherit googletest)
+    (name "googletest")
+    (version "1.17.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/googletest")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zn701fgmbk29y45p49sajaswm01i2bv89ds2kkbiq8i0p2cr08w"))))))
 
 (define-public googletest-1.8
   (package
