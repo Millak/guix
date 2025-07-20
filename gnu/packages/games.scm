@@ -8409,6 +8409,13 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
                       (string-append
                        (search-input-directory inputs "/include/SDL2")
                        ":" (or (getenv "CPATH") "")))))
+          (add-after 'set-sdl-paths 'set-cflags
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append
+                        "-g -O2 "
+                        "-Wno-error=incompatible-pointer-types "
+                        "-Wno-error=implicit-function-declaration"))))
           ;; premake doesn't provide install target
           (replace 'install
             (lambda* (#:key inputs outputs #:allow-other-keys)
