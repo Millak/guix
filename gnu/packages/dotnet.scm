@@ -1873,6 +1873,7 @@ most of the heavy lifting.")
                                   "merp-json-valid.exe"))))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (delete 'patch-sgen-linking)
             (delete 'patch-sub-autogen.sh-shebang)
             ;; Our 5.10.0 compiler has been rather souped up.
             (add-after 'unpack 'disable-profile-version-check
