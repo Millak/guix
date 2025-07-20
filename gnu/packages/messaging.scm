@@ -1944,14 +1944,14 @@ with several different talk daemons at the same time.")
 (define-public gloox
   (package
     (name "gloox")
-    (version "1.0.24")
+    (version "1.0.28")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://camaya.net/download/gloox-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1jgrd07qr9jvbb5hcmhrqz4w4lvwc51m30jls1fgxf1f5az6455f"))))
+        (base32 "0v4nqmf22h57jxpihbpxlhdrrvz81nn9jszgl580pply4hnd26sr"))))
     (build-system gnu-build-system)
     (inputs
      (list libidn gnutls zlib))
