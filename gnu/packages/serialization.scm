@@ -952,7 +952,7 @@ to generate and parse.  The two primary functions are @code{cbor.loads} and
 @code{cbor.dumps}.")
     (license license:asl2.0)))
 
-(define-public flatbuffers-next
+(define-public flatbuffers
   (package
     (name "flatbuffers")
     (version "24.12.23")
@@ -986,7 +986,7 @@ game development and other performance-critical applications.")
 (define-public flatbuffers-23.1
     ;; needed explicitly by tensorflow-lite 2.13.1
   (package
-    (inherit flatbuffers-next)
+    (inherit flatbuffers)
     (version "23.1.21")
     (source (origin
               (method git-fetch)
@@ -998,12 +998,12 @@ game development and other performance-critical applications.")
                (base32
                 "1z3a6l8g2y53i5xzraswfs2i0i3kk52zv7nzc2q3fgisbyiri3pz"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments flatbuffers-next)
+     (substitute-keyword-arguments (package-arguments flatbuffers)
        ((#:configure-flags flags #~'())
         #~(append #$flags '("-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))))))
 
 (define-public go-github-com-google-flatbuffers
-  (package/inherit flatbuffers-next
+  (package/inherit flatbuffers
     (name "go-github-com-google-flatbuffers")
     (build-system go-build-system)
     (arguments

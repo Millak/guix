@@ -5304,7 +5304,7 @@ PyTorch.")
             clog
             cpp-httplib
             eigen
-            flatbuffers-next
+            flatbuffers
             fmt
             fp16
             fxdiv
