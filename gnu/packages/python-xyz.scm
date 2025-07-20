@@ -9688,32 +9688,32 @@ Server (PLS).")
 (define-public python-lsp-server
   (package
     (name "python-lsp-server")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python_lsp_server" version))
        (sha256
         (base32
-         "0fq5vkwkvn29rwf5l19iicmj913franc6q8ymjdvs0ys53qkd8xn"))))
+         "0s8dipxkdshg27a7a2nnkgg3kmksvbkfa7g39n310k6g7sv2d3rp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       '(list "-c" "/dev/null"           ;avoid coverage
+             "--ignore-glob" "**/test_autopep8_format.py"  ;avoid autopep8 dep
              "-k"
              (string-append
-              "not test_pyqt_completion " ;avoid pyqt5
-              ;; This test fails with "AssertionError: assert 'isabs(s)' ==
-              ;; 'commonprefix(m)'" (see:
-              ;; https://github.com/python-lsp/python-lsp-server/issues/602).
-              "and not test_jedi_completion_with_fuzzy_enabled"))
+              "not test_concurrent_ws_requests "  ; flaky
+              "and not test_pyqt_completion "  ; avoid pyqt5
+              "and not test_pandas_completion"))  ; avoid pandas
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-docstring-to-markdown
+     (list python-black
+           python-docstring-to-markdown
            python-importlib-metadata
            python-jedi
            python-lsp-jsonrpc
@@ -9724,17 +9724,15 @@ Server (PLS).")
            python-whatthepatch
            python-yapf))
     (native-inputs
-     (list python-autopep8
-           python-flake8
+     (list python-flake8
            python-flaky
            python-matplotlib
-           python-numpy
-           python-pandas
            python-pylint
            python-pytest
            python-rope
            python-setuptools
            python-setuptools-scm
+           python-websockets
            python-wheel))
     (home-page "https://github.com/python-lsp/python-lsp-server")
     (synopsis "Python implementation of the Language Server Protocol")
