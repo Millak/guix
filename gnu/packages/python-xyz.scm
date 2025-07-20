@@ -10473,20 +10473,6 @@ writing C extensions for Python as easy as Python itself.")
               ;; time of the test suite.
               (setenv "CFLAGS" "-O0"))))))))
 
-;; Needed for scipy and numpy
-(define-public python-cython-0.29.35
-  (package
-    (inherit python-cython-0)
-    (name "python-cython")
-    (version "0.29.35")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Cython" version))
-              (sha256
-               (base32
-                "09y5r22nyswqpwc02agla1bnzh2jx2db25pnq9pc5cq8pyh1yf3f"))))
-    (properties '())))
-
 (define-public python-cython-3 python-cython)
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
