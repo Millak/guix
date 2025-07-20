@@ -874,6 +874,12 @@ a C-style programming language from Microsoft that is very similar to Java.")
                 "--with-csc=mcs"))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (delete 'fix-includes)
+            (add-after 'unpack 'patch-sgen-linking
+              (lambda _
+                (substitute* "tools/monograph/Makefile.am"
+                 (("/mono/metadata/libmonoruntimesgen-static[.]la")
+                  "/mono/metadata/libmonoruntimesgen-static.la $(top_builddir)/mono/sgen/libmonosgen-static.la"))))
             (add-before 'configure 'set-TZDIR
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (search-input-directory (or native-inputs inputs)
