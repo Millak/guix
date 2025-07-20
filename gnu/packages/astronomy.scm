@@ -802,8 +802,8 @@ corrections.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.lam.fr/jclamber/glnemo2")
-             (commit version)))
+              (url "https://gitlab.lam.fr/jclamber/glnemo2")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1jmmxszh8d2jmfghig36nhykff345mqnpssfa64d0r7l9cnfp3cn"))))
@@ -811,7 +811,12 @@ corrections.")
     (arguments
      (list
       #:tests? #f        ; No test target
-      #:configure-flags #~(list "CPPFLAGS=-fcommon")
+      #:configure-flags
+      #~(list "CPPFLAGS=-fcommon"
+              (string-append "-DCMAKE_C_FLAGS="
+                             " -Wno-error=implicit-function-declaration"
+                             " -Wno-error=implicit-int"
+                             " -Wno-error=int-conversion"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-libraries-paths
