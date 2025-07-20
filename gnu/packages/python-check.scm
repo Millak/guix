@@ -3362,6 +3362,35 @@ friendly library for concurrency and async I/O in Python.")
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
 
+(define-public python-pytest-twisted
+  (package
+    (name "python-pytest-twisted")
+    (version "1.14.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_twisted" version))
+       (sha256
+        (base32 "0gkz7ybdj45v4mmfyyryx6lz75hizi23zi9n5mcsdnqfpk5m1q9p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; AssertionError
+                    "not test_sigint_for_regular_tests"
+                    ;; TimeoutExpired
+                    " and not test_sigint_for_inline_callbacks_tests"))))
+    (propagated-inputs (list python-decorator python-greenlet))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-twisted
+                         python-wheel))
+    (home-page "https://github.com/pytest-dev/pytest-twisted")
+    (synopsis "Twisted plugin for Pytest")
+    (description "This package provides a Twisted plugin for Pytest.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-vcr
   ;; This commit fixes integration with pytest-5
   (let ((commit "4d6c7b3e379a6a7cba0b8f9d20b704dc976e9f05")
