@@ -320,97 +320,102 @@ for use with .NET-capable runtime engines and applications.")
          "#define MONO_TLS_FAST __attribute__((used)) "))))
 
 (define-public mono-1.2.6
-  (package
-    (version "1.2.6")
-    (name "mono")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://download.mono-project.com/sources/mono/"
-                    "mono-" version ".tar.bz2"))
-              (sha256
-               (base32 "03sn7wyvrjkkkbrqajpmqifxfn83p30qprizpb3m6c5cdhwlzk14"))
-              (modules '((guix build utils)
-                         (ice-9 string-fun)))
-              (snippet #~(begin
-                           #$prepare-mono-source
-                           (with-directory-excursion
-                             "mcs/class/System/System.Text.RegularExpressions"
-                             (delete-file "BaseMachine.cs")
-                             ;; Can't patch a file with different line endings,
-                             ;; so the patch creates a new one, and we overwrite
-                             ;; the old one here.
-                             (rename-file "BaseMachine.cs-2"
-                                          "BaseMachine.cs"))))
-              (patches (search-patches "mono-1.2.6-bootstrap.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf
-           automake
-           bison
-           libtool
-           pnet-git
-           pnetlib-git
-           pkg-config))
-    (inputs
-     (list glib
-           libgc
-           libx11
-           zlib))
-    (arguments
-     (list
-      #:configure-flags #~(list "--with-gc=boehm")
-      #:make-flags #~(list (string-append "EXTERNAL_MCS="
-                                          #+(this-package-native-input "pnet-git")
-                                          "/bin/cscc")
-                           (string-append "EXTERNAL_RUNTIME="
-                                          #+(this-package-native-input "pnet-git")
-                                          "/bin/ilrun")
-                           "CFLAGS=-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch"
-                           #$(string-append "CC=" (cc-for-target))
-                           "V=1")
-      ;; build fails nondeterministically without this
-      #:parallel-build? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-includes
-            (lambda _
-              ;; Upstream forgot to #include that.
-              (substitute* "mono/metadata/security.c"
-               (("#include <mono/metadata/image.h>")
-                "#include <mono/metadata/image.h>
+  (let ((cflags (string-append "-O2 -g -DARG_MAX=500 "
+                               "-Wno-error=implicit-function-declaration "
+                               "-Wno-error=incompatible-pointer-types "
+                               "-Wno-error=implicit-int "
+                               "-Wno-error=return-mismatch")))
+    (package
+      (version "1.2.6")
+      (name "mono")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append
+                      "http://download.mono-project.com/sources/mono/"
+                      "mono-" version ".tar.bz2"))
+                (sha256
+                 (base32 "03sn7wyvrjkkkbrqajpmqifxfn83p30qprizpb3m6c5cdhwlzk14"))
+                (modules '((guix build utils)
+                           (ice-9 string-fun)))
+                (snippet #~(begin
+                             #$prepare-mono-source
+                             (with-directory-excursion
+                               "mcs/class/System/System.Text.RegularExpressions"
+                               (delete-file "BaseMachine.cs")
+                               ;; Can't patch a file with different line endings,
+                               ;; so the patch creates a new one, and we overwrite
+                               ;; the old one here.
+                               (rename-file "BaseMachine.cs-2"
+                                            "BaseMachine.cs"))))
+                (patches (search-patches "mono-1.2.6-bootstrap.patch"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf
+             automake
+             bison
+             libtool
+             pnet-git
+             pnetlib-git
+             pkg-config))
+      (inputs
+       (list glib
+             libgc
+             libx11
+             zlib))
+      (arguments
+       (list
+        #:configure-flags #~(list "--with-gc=boehm")
+        #:make-flags #~(list (string-append "EXTERNAL_MCS="
+                                            #+(this-package-native-input "pnet-git")
+                                            "/bin/cscc")
+                             (string-append "EXTERNAL_RUNTIME="
+                                            #+(this-package-native-input "pnet-git")
+                                            "/bin/ilrun")
+                             (string-append "CFLAGS=" #$cflags)
+                             #$(string-append "CC=" (cc-for-target))
+                             "V=1")
+        ;; build fails nondeterministically without this
+        #:parallel-build? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-includes
+              (lambda _
+                ;; Upstream forgot to #include that.
+                (substitute* "mono/metadata/security.c"
+                 (("#include <mono/metadata/image.h>")
+                  "#include <mono/metadata/image.h>
 #include <mono/metadata/assembly.h>"))))
-          (add-after 'unpack 'set-env
-            (lambda _
-              ;; Configure script for sock_un.sun_path uses exit() without importing it.
-              (setenv "CFLAGS" "-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch")
-              ;; All tests under mcs/class fail trying to access $HOME
-              (setenv "HOME" "/tmp")
-              ;; ZIP files have "DOS time" which starts in Jan 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800"))))
-      ;; System.Object isn't marked as serializable because it causes issues
-      ;; with compiling with pnet (circular class reference between Object and
-      ;; SerializableAttribute), and this causes tests to fail.
-      #:tests? #f))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "MONO_PATH")
-            (files (list "lib/mono")))))
-    (synopsis "Compiler and libraries for the C# programming language")
-    (description "Mono is a compiler, vm, debugger and set of libraries for C#
+            (add-after 'unpack 'set-env
+              (lambda _
+                ;; Configure script for sock_un.sun_path uses exit() without importing it.
+                (setenv "CFLAGS" #$cflags)
+                ;; All tests under mcs/class fail trying to access $HOME
+                (setenv "HOME" "/tmp")
+                ;; ZIP files have "DOS time" which starts in Jan 1980.
+                (setenv "SOURCE_DATE_EPOCH" "315532800"))))
+        ;; System.Object isn't marked as serializable because it causes issues
+        ;; with compiling with pnet (circular class reference between Object and
+        ;; SerializableAttribute), and this causes tests to fail.
+        #:tests? #f))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "MONO_PATH")
+              (files (list "lib/mono")))))
+      (synopsis "Compiler and libraries for the C# programming language")
+      (description "Mono is a compiler, vm, debugger and set of libraries for C#
 a C-style programming language from Microsoft that is very similar to Java.")
-    (home-page "https://www.mono-project.com/")
-    ;; See ./LICENSE
-    (license (list
-              ;; most of mcs/tools, mono/man, most of mcs/class, tests by
-              ;; default, mono/eglib
-              license:x11
-              ;; mcs/mcs, mcs/gmcs, some of mcs/tools
-              license:gpl1+ ;; note: ./mcs/LICENSE.GPL specifies no version
-              ;; mono/mono (the mono VM, I think they meant mono/mini)
-              license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
-              ;; mcs/jay
-              license:bsd-4))))
+      (home-page "https://www.mono-project.com/")
+      ;; See ./LICENSE
+      (license (list
+                ;; most of mcs/tools, mono/man, most of mcs/class, tests by
+                ;; default, mono/eglib
+                license:x11
+                ;; mcs/mcs, mcs/gmcs, some of mcs/tools
+                license:gpl1+ ;; note: ./mcs/LICENSE.GPL specifies no version
+                ;; mono/mono (the mono VM, I think they meant mono/mini)
+                license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
+                ;; mcs/jay
+                license:bsd-4)))))
 
 (define-public mono-1.9.1
   (package
@@ -444,7 +449,11 @@ a C-style programming language from Microsoft that is very similar to Java.")
     (arguments
      (substitute-keyword-arguments (package-arguments mono-1.2.6)
        ((#:make-flags _ #f)
-        #~(list "CFLAGS=-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch "
+        #~(list (string-append "CFLAGS=-O2 -g -DARG_MAX=500 "
+                               "-Wno-error=implicit-function-declaration "
+                               "-Wno-error=incompatible-pointer-types "
+                               "-Wno-error=implicit-int "
+                               "-Wno-error=return-mismatch")
                 #$(string-append "CC=" (cc-for-target))
                 "NO_SIGN_ASSEMBLY=yes" ; non-reproducible otherwise.
                 "V=1"))
@@ -524,7 +533,12 @@ a C-style programming language from Microsoft that is very similar to Java.")
     (arguments
      (substitute-keyword-arguments (package-arguments mono-1.9.1)
        ((#:make-flags _ #f)
-        #~(list "CFLAGS=-O2 -g -DARG_MAX=500 -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=int-conversion "
+        #~(list (string-append "CFLAGS=-O2 -g -DARG_MAX=500 "
+                               "-Wno-error=implicit-function-declaration "
+                               "-Wno-error=incompatible-pointer-types "
+                               "-Wno-error=implicit-int "
+                               "-Wno-error=return-mismatch "
+                               "-Wno-error=int-conversion ")
                 #$(string-append "CC=" (cc-for-target))
                 "V=1"))
        ((#:tests? _ #f)
@@ -794,8 +808,13 @@ a C-style programming language from Microsoft that is very similar to Java.")
         #~(modify-phases #$phases
             (replace 'set-cflags
               (lambda _
-                (setenv "CFLAGS" "-O2 -g -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=int-conversion")
-))
+                (setenv "CFLAGS"
+                 (string-append "-O2 -g"
+                                "-Wno-error=implicit-function-declaration"
+                                "-Wno-error=incompatible-pointer-types"
+                                "-Wno-error=implicit-int"
+                                "-Wno-error=return-mismatch"
+                                "-Wno-error=int-conversion"))))
             (add-after 'unpack 'set-TZ
               (lambda _
                 ;; for some reason a default is only used if this is empty, not
@@ -874,12 +893,16 @@ a C-style programming language from Microsoft that is very similar to Java.")
                 "--with-csc=mcs"))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            ;; The files moved and were fixed upstream anyway.
             (delete 'fix-includes)
+            ;; GCC static library linking dependency resolution got stricter--so
+            ;; we have to add a dependency.
             (add-after 'unpack 'patch-sgen-linking
               (lambda _
                 (substitute* "tools/monograph/Makefile.am"
                  (("/mono/metadata/libmonoruntimesgen-static[.]la")
-                  "/mono/metadata/libmonoruntimesgen-static.la $(top_builddir)/mono/sgen/libmonosgen-static.la"))))
+                  (string-append "/mono/metadata/libmonoruntimesgen-static.la "
+                                 "$(top_builddir)/mono/sgen/libmonosgen-static.la")))))
             (add-before 'configure 'set-TZDIR
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (search-input-directory (or native-inputs inputs)
