@@ -2611,7 +2611,12 @@ conversions to and from strings, iteration and related functionality.")
                 "0r48rfghjm90pkdyr4khxg783g9v98rdx2n69xn8f6c5i0hl96rv"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:configure-flags #~(list "--enable-mcpplib" "--disable-static")))
+     (list #:configure-flags
+           #~(list "--enable-mcpplib"
+                   "--disable-static"
+                   (string-append "CFLAGS=-g -O2"
+                                  " -Wno-error=incompatible-pointer-types"
+                                  " -Wno-error=implicit-function-declaration"))))
     (home-page "https://mcpp.sourceforge.net/")
     (synopsis "C/C++ preprocessor")
     (description
