@@ -1945,6 +1945,39 @@ libxml2 and libxslt.")
 (define-deprecated python-lxml-4.7 python-lxml)
 (export python-lxml-4.7)
 
+(define-public python-lxml-html-clean
+  (package
+    (name "python-lxml-html-clean")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lxml_html_clean" version))
+       (sha256
+        (base32 "1cxwrrv4kdkxwkwm12a6rh38xmb415257g31yjmk0m5rbmxiwaci"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "unittest" "-v" "tests.test_clean")
+                (invoke "python" "-m" "doctest"
+                        "tests/test_clean_embed.txt"
+                        "tests/test_clean.txt"
+                        "tests/test_autolink.txt")))))))
+    (propagated-inputs (list python-lxml))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/fedora-python/lxml_html_clean/")
+    (synopsis "Remove superfluous content from HTML files")
+    (description "This package provides a Cleaner for cleaning up HTML pages.
+It supports removing embedded or script content, special tags and CSS style
+annotations among other features.  Its main purpose is removing superfluous
+content, it is not appropriate for security sensitive environments.")
+    (license license:bsd-3)))
+
 (define-public python-untangle
   ;; The latest tagged release is from 2014; use the latest commit.
   (let ((revision "1")
