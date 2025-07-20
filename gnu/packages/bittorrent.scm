@@ -630,8 +630,7 @@ the following features:
            python-twisted
            python-zope-interface))
     (native-inputs
-     (list intltool python-setuptools python-wheel
-           (librsvg-for-system)))
+     (list intltool python-setuptools python-wheel))
     (native-search-paths
      (list $SSL_CERT_DIR
            $SSL_CERT_FILE))
@@ -640,34 +639,19 @@ the following features:
     ;; started, some of the tests still fail.  There are likely some tests
     ;; that require a network connection.
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'wrap 'wrap-deluge
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   ;; "librsvg" input is only needed at build time and it
-                   ;; conflit with the "librsvg" propageted by "gtk+", so we
-                   ;; make sure there is no reference to it in the wrapper.
-                   (gi-typelib-path
-                    (string-join (filter
-                                  (lambda (x) (not (string-prefix?
-                                                    (assoc-ref
-                                                     (or native-inputs inputs)
-                                                     "librsvg")
-                                                    x)))
-                                  (string-split
-                                   (getenv "GI_TYPELIB_PATH")
-                                   #\:))
-                                 ":")))
-               (for-each
-                (lambda (program)
-                  (wrap-program program
-                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                (map (lambda (name)
-                       (string-append out "/bin/" name))
-                     '("deluge" "deluge-gtk"))))
-             #t)))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'wrap 'wrap-deluge
+            (lambda _
+              (for-each
+               (lambda (program)
+                 (wrap-program program
+                   `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))
+               (map (lambda (name)
+                      (string-append #$output "/bin/" name))
+                    (list "deluge" "deluge-gtk"))))))))
     (home-page "https://www.deluge-torrent.org/")
     (synopsis  "Fully-featured cross-platform ​BitTorrent client")
     (description
