@@ -714,6 +714,9 @@ in FITS files.")
                    (string-append blas "/lib"))))))
           (replace 'build
             (lambda* _
+                (substitute* "compile.cp"
+                  (("-Wno-unknown-pragmas")
+                   "-Wno-unknown-pragmas -Wno-error=maybe-uninitialized"))
               (invoke "./compile.cp" "BLAS" "OPEN_MP" "LPTHREAD" "PY_INTERF")))
           (replace 'install
             (lambda _
