@@ -38,9 +38,15 @@ do
 	# and thus there are no signatures or news updates to be verified.
         if [ "$local_hash" != $z40 ]
         then
-                # Skip the hook when performing a pull-request.
+                # Skip the hook when performing a pull-request...
                 case "$remote_ref" in
                     refs/for/*)
+                        exit 0
+                        ;;
+                    # ... or when pushing a new PGP key to the keyring branch,
+                    # as this branch doesn't share ancestry with the master
+                    # branch and fails the 'guix git authenticate' check.
+                    refs/heads/keyring)
                         exit 0
                         ;;
                 esac
