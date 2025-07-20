@@ -1,4 +1,4 @@
-;;; copyright.el --- Insert a Guix copyright.
+;;; copyright.el --- Insert a Guix copyright.  -*- lexical-binding: t; -*-
 
 ;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 
