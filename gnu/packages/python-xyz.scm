@@ -10140,11 +10140,7 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
     (native-inputs
      (list libxcrypt
            python-setuptools
-           python-wheel
-           ;; does not compile with gcc-14
-           (cond
-            ((target-x86-32?) gcc-11)
-            (else gcc-13))))
+           python-wheel))
     ;; we need the full python package and not just the python-wrapper
     ;; because we need libpython3.3m.so
     (inputs
