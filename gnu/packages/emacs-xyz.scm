@@ -9692,16 +9692,16 @@ with Emacs.")
 (define-public emacs-vhdl-ts-mode
   (package
     (name "emacs-vhdl-ts-mode")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gmlarumbe/vhdl-ts-mode/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gmlarumbe/vhdl-ts-mode/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vqq1819czzliicanv00hhv13zy9apvj4326pnj9n3iqx45q6a96"))))
+        (base32 "0pv68hv7l7z54xf7pyr5n5bplidkxkr0bgw35hjp1gg9pq7m4wfd"))))
     (build-system emacs-build-system)
     (arguments
      ;; the testing framework, test-hdl, requires network
