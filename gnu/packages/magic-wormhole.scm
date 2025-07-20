@@ -30,6 +30,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -117,19 +118,20 @@ together, allowing them to pretend they have a direct connection.")
 (define-public magic-wormhole
   (package
     (name "magic-wormhole")
-    (version "0.16.0")
+    (version "0.19.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "magic-wormhole" version))
+       (uri (pypi-uri "magic_wormhole" version))
        (sha256
         (base32
-         "1jcldlyj6bdd9bb39r77cd9ra6cllqijc9lhs6kaggcdi53c3rhl"))))
+         "0wbwz5kzqgr4352xbp08z8syg9cl8dkqy8rsa3y4rzq9ry5agd5j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; One test fails with error: twisted.trial.unittest.FailTest: 1 != 0
-      #:test-flags #~(list "-k" "not test_log_other_errors")
+      #:test-flags #~(list "-k" (string-append
+                                 "not test_receive_send"
+                                 " and not test_receive_receive"))
       #:phases
       #~(modify-phases %standard-phases
           ;; XXX I can't figure out how to build the docs properly.
@@ -141,6 +143,7 @@ together, allowing them to pretend they have a direct connection.")
     (native-inputs
      (list python-mock
            python-pytest
+           python-pytest-twisted
            python-setuptools
            python-wheel
            magic-wormhole-mailbox-server
@@ -148,12 +151,13 @@ together, allowing them to pretend they have a direct connection.")
     (propagated-inputs
      (list python-attrs
            python-autobahn
+           python-automat
            python-click
-           python-hkdf
            python-humanize
            python-iterable-io
            python-noiseprotocol
            python-pynacl
+           python-qrcode
            python-spake2
            python-tqdm
            python-twisted
