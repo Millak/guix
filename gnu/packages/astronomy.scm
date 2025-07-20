@@ -305,7 +305,7 @@ wide set of telescopes.")
     (native-inputs
      (list pkg-config python-wrapper specification-ybsc xxd))
     (inputs
-     (list ncurses argtable))
+     (list ncurses argtable3))
     (home-page "https://github.com/da-luce/astroterm")
     (synopsis "Planetarium for your terminal")
     (description
