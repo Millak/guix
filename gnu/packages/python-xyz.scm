@@ -34461,30 +34461,37 @@ It adds a simple and readable way to print stuff during development.")
         (base32
          "19fbgq1zrwx10kljmdbs3p0y2m2xsgww20pqzw4kv6161zipsymf"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(cons* "-k" "not test_relative_base_setting_2_en"
+               (map
+                (lambda (name)
+                  (string-append "--ignore=tests/" name ".py"))
+                '("test_dateparser_data_integrity"
+                  "test_hijri"
+                  "test_jalali"
+                  "test_language_detect")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-check-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
     (propagated-inputs
-     (list python-dateutil python-pytz python-regex python-ruamel.yaml
+     (list python-dateutil
+           python-pytz
+           python-regex
+           python-ruamel.yaml
            python-tzlocal))
     (native-inputs
-     (list python-flake8 python-pytest python-parameterized tzdata-for-tests
-           python-setuptools python-wheel))
-    (arguments
-     `(#:test-flags (list "-k" "not test_relative_base_setting_2_en")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-check-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZ" "UTC")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo"))))
-         (add-before 'check 'delete-failing-tests
-           (lambda _
-             (with-directory-excursion "tests"
-               (for-each delete-file
-                         '("test_dateparser_data_integrity.py"
-                           "test_hijri.py"
-                           "test_jalali.py"
-                           "test_language_detect.py"))))))))
+     (list python-parameterized
+           python-pytest
+           python-setuptools
+           python-wheel
+           tzdata-for-tests))
     (home-page "https://github.com/scrapinghub/dateparser")
     (synopsis
      "Date parsing library designed to parse dates from HTML pages")
