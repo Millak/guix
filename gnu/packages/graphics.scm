@@ -1561,7 +1561,19 @@ graphics.")
                                (("TEST\\( testB44ACompression, \"core_compression\" \\);")
                                 "")
                                (("TEST \\(testOptimizedInterleavePatterns, \"basic\"\\);")
-                                "")))))))))
+                                ""))))))
+               #$@(if (target-aarch64?)
+                      #~((add-after 'patch-test-directory 'disable-broken-aarch64-tests
+                           ;; Disable tests known to fail on aarch64. Remove once
+                           ;; https://github.com/AcademySoftwareFoundation/openexr/issues/1460
+                           ;; is fixed.
+                           (lambda _
+                             (substitute* '("src/test/OpenEXRCoreTest/main.cpp")
+                               (("TEST \\(testDWAACompression, \"core_compression\"\\);")
+                                "")
+                               (("TEST \\(testDWABCompression, \"core_compression\"\\);")
+                                "")))))
+                      #~()))))
     (inputs (list imath))
     (propagated-inputs
      (list libdeflate ; Marked as Requires.private in OpenEXR.pc.
