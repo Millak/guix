@@ -1338,8 +1338,11 @@ tmux.")
           (delete 'configure)   ;no configure script
           (replace 'build
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; Don't fail on deprecation warnings from GCC
-              (setenv "CFLAGS" "-Wno-error=deprecated-declarations")
+              ;; Don't fail on deprecation warnings from GCC or when not using
+              ;; sizeof in one of the two arguments of calloc
+              (setenv "CFLAGS"
+                      (string-append "-Wno-error=deprecated-declarations "
+                                     "-Wno-error=calloc-transposed-args"))
               ;; The "kitty" sub-directory must be writable prior to
               ;; configuration (e.g., un-setting updates).
               (for-each make-file-writable (find-files "kitty"))
