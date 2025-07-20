@@ -1537,69 +1537,71 @@ R. Seaman's protocol}
   ;; and compatability with indi@2, use the latest commit from master branch.
   (let ((commit "cc00236e79810da48e691e6a4785eb7e10b794ac")
         (revision "0"))
-  (package
-    (name "phd2")
-    (version (git-version "2.6.13" revision commit))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OpenPHDGuiding/phd2")
-             (commit commit)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1b6fzniy5w9bx4627761nd4laargy728zvhw4k69dinwdwdi8jjw"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
-              (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
-            (delete-all-but "thirdparty" "thirdparty.cmake")))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-DOPENSOURCE_ONLY=yes"
-                                     "-DUSE_SYSTEM_CFITSIO=yes"
-                                     "-DUSE_SYSTEM_EIGEN3=yes"
-                                     "-DUSE_SYSTEM_GTEST=yes"
-                                     "-DUSE_SYSTEM_LIBINDI=yes"
-                                     "-DUSE_SYSTEM_LIBUSB=yes")))
-    (native-inputs
-     (list gettext-minimal
-           googletest
-           perl
-           pkg-config
-           python))
-    (inputs
-     (list cfitsio
-           curl
-           eigen
-           gtk+
-           indi
-           libnova
-           libusb
-           opencv
-           wxwidgets
-           zlib))
-    (home-page "https://openphdguiding.org")
-    (synopsis "Teleskope guiding software")
-    (description
-     "PHD2 is the enhanced, second generation version of the PHD guiding software
-from Stark Labs.")
-    (license license:bsd-3))))
+    (package
+      (name "phd2")
+      (version (git-version "2.6.13" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/OpenPHDGuiding/phd2")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1b6fzniy5w9bx4627761nd4laargy728zvhw4k69dinwdwdi8jjw"))
+         (modules '((guix build utils)
+                    (ice-9 ftw)
+                    (srfi srfi-26)))
+         (snippet
+          #~(begin
+              ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+              (define (delete-all-but directory . preserve)
+                (define (directory? x)
+                  (and=> (stat x #f)
+                         (compose (cut eq? 'directory <>) stat:type)))
+                (with-directory-excursion directory
+                  (let* ((pred
+                          (negate (cut member <> (append '("." "..") preserve))))
+                         (items (scandir "." pred)))
+                    (for-each (lambda (item)
+                                (if (directory? item)
+                                    (delete-file-recursively item)
+                                    (delete-file item)))
+                              items))))
+              (delete-all-but "thirdparty" "thirdparty.cmake")))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DOPENSOURCE_ONLY=yes"
+                "-DUSE_SYSTEM_CFITSIO=yes"
+                "-DUSE_SYSTEM_EIGEN3=yes"
+                "-DUSE_SYSTEM_GTEST=yes"
+                "-DUSE_SYSTEM_LIBINDI=yes"
+                "-DUSE_SYSTEM_LIBUSB=yes")))
+      (native-inputs
+       (list gettext-minimal
+             googletest
+             perl
+             pkg-config
+             python))
+      (inputs
+       (list cfitsio
+             curl
+             eigen
+             gtk+
+             indi
+             libnova
+             libusb
+             opencv
+             wxwidgets
+             zlib))
+      (home-page "https://openphdguiding.org")
+      (synopsis "Teleskope guiding software")
+      (description
+       "PHD2 is the enhanced,second generation version of the PHD guiding
+software from Stark Labs.")
+      (license license:bsd-3))))
 
 (define-public psfex
   (package
