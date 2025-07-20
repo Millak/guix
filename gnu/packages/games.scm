@@ -6902,7 +6902,13 @@ with the \"Stamp\" tool within Tux Paint.")
              (base32
               "1xkr3ka2sxp5s0spp84iv294i29s1vxqzazb6kmjc0n415h0x57p"))
             (patches
-             (search-patches "supertux-unbundle-squirrel.patch"))))
+             (search-patches "supertux-unbundle-squirrel.patch"))
+            (modules '((guix build utils)))
+            (snippet
+             #~(substitute* "external/partio_zip/zip_manager.hpp"
+                            (("^#include <vector>" include-vector)
+                             (string-append "#include <memory>\n"
+                                            include-vector))))))
    (arguments
     '(#:tests? #f
       #:configure-flags '("-DINSTALL_SUBDIR_BIN=bin"
