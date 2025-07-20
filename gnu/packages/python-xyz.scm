@@ -10088,8 +10088,77 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
     (license license:expat)))
 
 (define-public python-cython
+  ;; TODO: Move to python-build.
   (package
     (name "python-cython")
+    (version "3.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cython" version))
+       (sha256
+        (base32 "108k6gsn63qkz98xhnm4440ir9ab0lxmw0gcrpz2sxm67yapmgvb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-vv"
+              "-j" (number->string (parallel-job-count))
+              "-x" (string-join
+                    (list "annotate_html"
+                          "Debugger"
+                          ;; It introduces cycle.
+                          "numpy_test"
+                          ;; It fails with AssertionError: Failed doctest test
+                          ;; for complex_numbers_cpp.double_abs.
+                          "complex_numbers_cpp"
+                          ;; This test fails when running on 24 cores.
+                          "cpp_stl_conversion"
+                          ;; XXX: On 32-bit architectures, running the
+                          ;; parallel tests fails on many-core systems, see
+                          ;; <https://github.com/cython/cython/issues/2807>.
+                          #$@(if (not (target-64bit?))
+                                 '("run.parallel")
+                                 '())
+                          #$@(if (system-hurd?)
+                                 '("test_class_ref"
+                                   "test_compiler_directives"
+                                   "test_lang_version")
+                                 '()))
+                    "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              ;; Disable compiler optimizations to greatly reduce the running
+              ;; time of the test suite.
+              (setenv "CFLAGS" "-O0")
+              ;; Some tests require access to "$HOME/.cython".
+              (setenv "HOME" "/tmp")
+              (when tests?
+                (apply invoke "python" "runtests.py" test-flags)))))))
+    (native-inputs
+     (list libxcrypt
+           python-setuptools
+           python-wheel
+           ;; does not compile with gcc-14
+           (cond
+            ((target-x86-32?) gcc-11)
+            (else gcc-13))))
+    ;; we need the full python package and not just the python-wrapper
+    ;; because we need libpython3.3m.so
+    (inputs
+     (list python))
+    (home-page "https://cython.org/")
+    (synopsis "C extensions for Python")
+    (description "Cython is an optimising static compiler for both the Python
+programming language and the extended Cython programming language.  It makes
+writing C extensions for Python as easy as Python itself.")
+    (license license:asl2.0)))
+
+(define-public python-cython-0
+  (package
+    (inherit python-cython)
     (version "0.29.32")
     (source
      (origin
@@ -10143,7 +10212,7 @@ writing C extensions for Python as easy as Python itself.")
 ;; Needed for scipy and numpy
 (define-public python-cython-0.29.35
   (package
-    (inherit python-cython)
+    (inherit python-cython-0)
     (name "python-cython")
     (version "0.29.35")
     (source (origin
@@ -10154,69 +10223,7 @@ writing C extensions for Python as easy as Python itself.")
                 "09y5r22nyswqpwc02agla1bnzh2jx2db25pnq9pc5cq8pyh1yf3f"))))
     (properties '())))
 
-(define-public python-cython-3
-  (package
-    (inherit python-cython)
-    ;; Cython 3.x is the current stable version, however there are still a lot
-    ;; of packages, which depend on `python-cython` package. Those need to be
-    ;; upgraded.
-    (name "python-cython-next")
-    (version "3.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cython" version))
-              (sha256
-               (base32
-                "108k6gsn63qkz98xhnm4440ir9ab0lxmw0gcrpz2sxm67yapmgvb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-vv"
-              "-j" (number->string (parallel-job-count))
-              "-x" (string-join
-                    (list "annotate_html"
-                          "Debugger"
-                          ;; It introduces cycle.
-                          "numpy_test"
-                          ;; It fails with AssertionError: Failed doctest test
-                          ;; for complex_numbers_cpp.double_abs.
-                          "complex_numbers_cpp"
-                          ;; This test fails when running on 24 cores.
-                          "cpp_stl_conversion"
-                          ;; XXX: On 32-bit architectures, running the
-                          ;; parallel tests fails on many-core systems, see
-                          ;; <https://github.com/cython/cython/issues/2807>.
-                          #$@(if (not (target-64bit?))
-                                 '("run.parallel")
-                                 '())
-                          #$@(if (system-hurd?)
-                                 '("test_class_ref"
-                                   "test_compiler_directives"
-                                   "test_lang_version")
-                                 '()))
-                    "|"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              ;; Disable compiler optimizations to greatly reduce the running
-              ;; time of the test suite.
-              (setenv "CFLAGS" "-O0")
-              ;; Some tests require access to "$HOME/.cython".
-              (setenv "HOME" "/tmp")
-              (when tests?
-                (apply invoke "python" "runtests.py" test-flags)))))))
-    (native-inputs
-     ;; does not compile with gcc-14
-     (list
-      (cond
-       ((target-x86-32?) gcc-11)
-       (else gcc-13))
-      libxcrypt
-      python-setuptools
-      python-wheel))
-    (properties '())))
+(define-public python-cython-3 python-cython)
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
 ;; python-pandas and python-scipy still build, as these three packages are
