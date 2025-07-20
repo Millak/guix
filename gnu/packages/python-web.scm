@@ -10201,7 +10201,12 @@ library for Python.")
               "--deselect=tests/test_smart_open.py::ParseUriTest::test_gs_uri_contains_question_mark"
               "--deselect=tests/test_smart_open.py::ParseUriTest::test_gs_uri_contains_slash"
               "--deselect=tests/test_smart_open.py::ParseUriTest::test_scheme"
-              "--ignore=tests/test_gcs.py")))
+              "--ignore=tests/test_gcs.py")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-azure-common
            python-azure-core
@@ -10219,6 +10224,7 @@ library for Python.")
            python-pytest-rerunfailures
            python-responses
            python-setuptools
+           python-setuptools-scm
            python-wheel))
     (home-page "https://github.com/piskvorky/smart_open")
     (synopsis "Utilities for streaming large files")
