@@ -2896,7 +2896,8 @@ popovers.")
      (list cairo glib gtk+ python-pygobject))
     (arguments
      `(#:configure-flags '("--disable-rebuilds"
-                           "--disable-static")
+                           "--disable-static"
+                           "CFLAGS=-Wno-error=incompatible-pointer-types")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-install-path
