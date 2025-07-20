@@ -4526,6 +4526,10 @@ simulation, and a number of other applications.")
        (sha256
         (base32 "08i6l5lr14mh4n3qbmx6kyx7vjqvzdnh3j9yfvgjppqik2dnq270"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; fix build with GCC 14
+     '(#:configure-flags
+       (list "CFLAGS=-Wno-implicit-function-declaration")))
     (home-page "https://sourceforge.net/projects/wake-on-lan/")
     (synopsis "Implements Wake On LAN functionality in a small program")
     (description "Tool to send a magic packet to wake another host on the
