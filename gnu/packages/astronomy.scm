@@ -1147,20 +1147,6 @@ more.")
                    license:lgpl2.0+
                    license:lgpl2.1+))))
 
-(define-public indi-1
-  (package
-    (inherit indi)
-    (version "1.9.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/indilib/indi")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "indi" version))
-       (sha256
-        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))))
-
 (define-public iraf-community
   (package
     (name "iraf-community")
