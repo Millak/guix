@@ -2227,13 +2227,13 @@ files.")
 (define-public python-s3path
   (package
     (name "python-s3path")
-    (version "0.6.0")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "s3path" version))
        (sha256
-        (base32 "0gbvyr60mkpm7jbjiya0pmx26q6cfp27p5czw08jwn3k5cp77krk"))))
+        (base32 "1lp5243jjf9ngqmajgnfr1px1kmpkfmgh248xlqz0nkww4wcy1hh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
