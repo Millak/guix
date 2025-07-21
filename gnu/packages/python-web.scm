@@ -3919,6 +3919,7 @@ Databricks REST APIs.")
     (license license:asl2.0)))
 
 (define-public python-openid-cla
+  ;; XXX: Last updated in 2015.
   (package
     (name "python-openid-cla")
     (version "1.2")
@@ -3929,8 +3930,9 @@ Databricks REST APIs.")
        (sha256
         (base32
          "102hy2qisvjxp5s0v9lvwqi4f2dk0dhns40vjgn008yxc7k0h3cr"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs (list python-openid python-six))
     (home-page "https://github.com/puiterwijk/python-openid-cla/")
     (synopsis "Implementation of the OpenID CLA extension for python-openid")
