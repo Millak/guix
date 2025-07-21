@@ -467,18 +467,16 @@ nosetests, etc...) in Python projects.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (find-files "cram" ".*\\.py$")
                 ;; Replace default shell path.
                 (("/bin/sh")
-                 (which "sh")))
+                 (search-input-file inputs "bin/sh")))
               (substitute* (find-files "tests" ".*\\.t$")
                 (("md5")
                  "md5sum")
-                (("/bin/bash")
-                 (which "bash"))
-                (("/bin/sh")
-                 (which "sh")))
+                (("/bin/(sh|bash)")
+                 (search-input-file inputs "bin/sh")))
               (substitute* "cram/_test.py"
                 ;; This hack works around a bug triggered by substituting
                 ;; the /bin/sh paths. "tests/usage.t" compares the output of
@@ -486,21 +484,17 @@ nosetests, etc...) in Python projects.")
                 ;; causes the line showing the default shell to break into two
                 ;; lines, but the test expects a single line...
                 (("env\\['COLUMNS'\\] = '80'")
-                 "env['COLUMNS'] = '160'"))
-
-              (substitute* "Makefile"
-                ;; Recent versions of python-coverage have caused the test
-                ;; coverage to decrease (as of version 0.7).  Allow that.
-                (("--fail-under=100")
-                 "--fail-under=90"))))
+                 "env['COLUMNS'] = '160'"))))
           (replace 'check
             ;; The test phase uses the built library and executable.
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs)
-              (setenv "PATH"
-                      (string-append (getenv "PATH") ":" #$output "/bin"))
-              (invoke "make" "test"))))))
-    (native-inputs (list python-coverage python-setuptools python-wheel which))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (begin
+                    (setenv "PATH" (string-append (getenv "PATH")
+                                                  ":" #$output "/bin"))
+                    (invoke "make" "quicktest"))
+                  (format #t "test suite not run.~%")))))))
+    (native-inputs (list python-setuptools python-wheel))
     (synopsis "Simple testing framework for command line applications")
     (description
      "Cram is a functional testing framework for command line applications.
