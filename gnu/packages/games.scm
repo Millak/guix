@@ -4999,6 +4999,17 @@ This package expects the game(s) to be placed in subdirectories of
                    "-DUSE_IPV6=FALSE")
            #:phases
            #~(modify-phases %standard-phases
+               (add-before 'configure 'gcc14
+                 (lambda _
+                   (setenv "CXXFLAGS" "-g -O2 -std=c++11")
+                   (substitute* "lib/graphics_engine/include/vk_mem_alloc.h"
+                     (("#define AMD_VULKAN_MEMORY_ALLOCATOR_H" all)
+                       (string-append all "\n#include <cstdio>\n")))
+                   (substitute*
+                     '("lib/graphics_engine/include/ge_main.hpp"
+                       "lib/graphics_engine/include/ge_vulkan_driver.hpp")
+                     (("#include <string>" all)
+                       (string-append all "\n#include <stdexcept>")))))
                (add-before 'configure 'disable-data-install
                  (lambda _
                    (substitute* "CMakeLists.txt"
