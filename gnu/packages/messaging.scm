@@ -74,6 +74,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages certs)
@@ -2390,7 +2391,7 @@ notifications, and Python scripting support.")
 (define-public libqmatrixclient
   (package
     (name "libqmatrixclient")
-    (version "0.6.11")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -2399,16 +2400,29 @@ notifications, and Python scripting support.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "072d3irpdd0p4w77s5pp0baqf74hk7vqggw7ic7i42lzjdwp3yql"))))
-    (build-system cmake-build-system)
+        (base32 "0liidazw1ff1f73lb476pvrhzkmmk9dbgf5qsfajkxdj4xvy047k"))))
+    (build-system qt-build-system)
     (inputs
-     (list qtbase-5 qtmultimedia-5))
+     (list olm openssl qtkeychain-qt6 qtmultimedia))
     (arguments
-     `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")
-       #:tests? #f))                    ; no tests
-    (home-page "https://matrix.org/docs/projects/sdk/libqmatrixclient.html")
-    (synopsis "Qt5 client library for the Matrix instant messaging protocol")
-    (description "libqmatrixclient is a Qt5 library to write clients for the
+     (list #:qtbase qtbase
+           #:cmake cmake-next
+           #:configure-flags
+           #~(list "-DBUILD_TESTING=ON"
+                   "-DBUILD_SHARED_LIBS=ON")
+           #:phases
+           #~[modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "HOME" "/tmp")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; This test requires internet.
+                     (invoke "ctest" "-E" "testolmaccount"))))]))
+    (home-page "https://quotient-im.github.io/libQuotient/")
+    (synopsis "Qt client library for the Matrix instant messaging protocol")
+    (description "libqmatrixclient is a Qt library to write clients for the
 Matrix instant messaging protocol.  Quaternion is the reference client
 implementation.  Quaternion and libqmatrixclient together form the
 QMatrixClient project.")
