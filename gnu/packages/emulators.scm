@@ -409,6 +409,10 @@ It aims to support Nintendo DSi and 3DS as well.")
                       (libvulkan
                        (search-input-file inputs "/lib/libvulkan.so")))
                   (chdir "docs")
+                  ;; Include a missing header, needed for gcc@14.
+                  (substitute* "gc-font-tool.cpp"
+                    (("#include <cstring>" all)
+                      (string-append all "\n#include <cstdint>")))
                   (invoke "bash" "-c" "g++ -O2 $(freetype-config \
 --cflags --libs) gc-font-tool.cpp -o gc-font-tool")
                   (invoke "./gc-font-tool" "a" fontfile "font_western.bin")
