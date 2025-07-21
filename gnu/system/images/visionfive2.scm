@@ -93,7 +93,7 @@
                              (baud-rate "115200")
                              (term "vt100")
                              (tty "ttyS0")))
-                   (service dhcp-client-service-type))
+                   (service dhcpcd-service-type))
              %base-services))))
 
 (define visionfive2-disk-image

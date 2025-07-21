@@ -55,7 +55,7 @@
                               (baud-rate "115200")
                               (term "vt100")
                               (tty "ttySIF0")))
-                    (service dhcp-client-service-type))
+                    (service dhcpcd-service-type))
               %base-services))))
 
 (define unmatched-disk-image

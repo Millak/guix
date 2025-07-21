@@ -45,7 +45,7 @@
   ;; Globally-installed packages.
   (packages (append (list screen openssh) %base-packages))
 
-  (services (append (list (service dhcp-client-service-type)
+  (services (append (list (service dhcpcd-service-type)
                           ;; mingetty does not work on serial lines.
                           ;; Use agetty with board-specific serial parameters.
                           (service agetty-service-type

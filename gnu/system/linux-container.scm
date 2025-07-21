@@ -134,7 +134,7 @@ containerized OS.  EXTRA-FILE-SYSTEMS is a list of file systems to add to OS."
                 ;; Replace these with dummy-networking-service-type below.
                 (list
                  static-networking-service-type
-                 dhcp-client-service-type
+                 dhcpcd-service-type
                  network-manager-service-type
                  connman-service-type)
                 (list static-networking-service-type)))) ;loopback

@@ -58,7 +58,7 @@
     (packages (cons* openssh
                      %base-packages))
     (services (cons* (service avahi-service-type)
-                     (service dhcp-client-service-type)
+                     (service dhcpcd-service-type)
                      (service ntp-service-type)
                      (service openssh-service-type
                               (openssh-configuration

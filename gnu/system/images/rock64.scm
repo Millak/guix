@@ -48,7 +48,7 @@
                           (mount-point "/")
                           (type "ext4"))
                         %base-file-systems))
-    (services (append (list (service dhcp-client-service-type))
+    (services (append (list (service dhcpcd-service-type))
                       %base-services))))
 
 (define rock64-image-type

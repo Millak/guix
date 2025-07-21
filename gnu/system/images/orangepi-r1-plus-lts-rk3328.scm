@@ -53,7 +53,7 @@
                                            (baud-rate "1500000")
                                            (term "vt100")
                                            (tty "ttyS2")))
-            (service dhcp-client-service-type)
+            (service dhcpcd-service-type)
             (service ntp-service-type) %base-services))))
 
 (define orangepi-r1-plus-lts-rk3328-image-type

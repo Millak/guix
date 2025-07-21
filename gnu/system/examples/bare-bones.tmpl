@@ -47,7 +47,7 @@
 
   ;; Add services to the baseline: a DHCP client and an SSH
   ;; server.  You may wish to add an NTP service here.
-  (services (append (list (service dhcp-client-service-type)
+  (services (append (list (service dhcpcd-service-type)
                           (service openssh-service-type
                                    (openssh-configuration
                                     (openssh openssh-sans-x)
