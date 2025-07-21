@@ -1660,14 +1660,14 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.8.2")
+    (version "6.9.2")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0mkd6hqvg21dg63022iq1b6sskp2s5wfchsifc4mkdcbvim8fk8l"))
+                "0r16qima008y2999r1djvwry01l295nmwwhqg081d2fr1cn2szs7"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (outputs '("out" "debug"))
     (build-system cmake-build-system)
@@ -1712,8 +1712,18 @@ with JavaScript and C++.")))
             (lambda _
               (invoke "cmake" "--install" ".")))
           (add-after 'install 'check
-            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+            (lambda* (#:key tests? parallel-tests?
+                      native-inputs inputs #:allow-other-keys)
               (when tests?
+                (setenv "TZDIR" (search-input-directory
+                                 (or native-inputs inputs) "share/zoneinfo"))
+                (setenv "TZ" "Etc/UTC")
+                (setenv "CMAKE_PREFIX_PATH"
+                          (string-append #$output
+                                         ":" (getenv "CMAKE_PREFIX_PATH")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-append #$output "/include/qt6/:"
+                                       (getenv "CPLUS_INCLUDE_PATH")))
                 ;; The tests expect to find the modules provided by this
                 ;; package; extend the environment variables needed to do so.
                 (setenv "QML_IMPORT_PATH"
@@ -1801,7 +1811,8 @@ with JavaScript and C++.")))
            pkg-config
            python
            qtshadertools
-           vulkan-headers))
+           vulkan-headers
+           tzdata-for-tests))
     (inputs
      (list at-spi2-core
            libxkbcommon
