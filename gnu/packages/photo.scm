@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2024. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
@@ -581,7 +581,10 @@ photographic equipment.")
     (native-inputs
      (list cmocka
            desktop-file-utils
-           gcc-13             ; gcc-11 too old for darktable, 12+ required
+           ;; XXX: Need to explicitly specify gcc-14 here or else the build
+           ;; fails with missing Graphite/isl support in gcc for unknown
+           ;; reasons.
+           gcc-14
            `(,glib "bin")
            gobject-introspection
            intltool
