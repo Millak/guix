@@ -1267,6 +1267,12 @@ include cursor in the resulting image.")
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
+       #:make-flags
+       (list (string-append "CFLAGS=-g -O2 "
+                            ;; Relax GCC 14's checks.
+                            "-Wno-error=implicit-int "
+                            "-Wno-error=builtin-declaration-mismatch "
+                            "-Wno-error=implicit-function-declaration"))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
