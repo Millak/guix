@@ -752,6 +752,7 @@ asynchronous messaging environments.")
     (license license:gpl3)))
 
 (define-public python-pyaes
+  ;; XXX: Last updated in 2017.
   (package
     (name "python-pyaes")
     (version "1.6.1")
@@ -760,9 +761,9 @@ asynchronous messaging environments.")
        (method url-fetch)
        (uri (pypi-uri "pyaes" version))
        (sha256
-        (base32
-         "13vdaff15k0jyfcss4b4xvfgm8xyv0nrbyw5n1qc7lrqbi0b3h82"))))
-    (build-system python-build-system)
+        (base32 "13vdaff15k0jyfcss4b4xvfgm8xyv0nrbyw5n1qc7lrqbi0b3h82"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/ricmoo/pyaes")
     (synopsis "Implementation of AES in Python")
     (description "This package contains a pure-Python implementation of the
