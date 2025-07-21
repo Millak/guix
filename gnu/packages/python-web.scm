@@ -657,6 +657,35 @@ Note: In Guix, this package assumes the environment variable
 to anything else.")
     (license license:expat)))
 
+(define-public python-gdown
+  (package
+    (name "python-gdown")
+    (version "5.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gdown" version))
+       (sha256
+        (base32 "11y7xx6zjipx15a5626lhiwmwb2jxp4mdcwqrnij0mfqc981ci91"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;network access is required
+    (native-inputs
+     (list python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling))
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-filelock
+           python-requests
+           python-tqdm))
+    (home-page "https://github.com/wkentaro/gdown")
+    (synopsis "Google Drive Public File/Folder Downloader")
+    (description
+     "This package implements a functionality to download large files
+recursivly from Google Drive with option to filter them by file
+formats (PDF/XML/CSV).")
+    (license license:expat)))
+
 (define-public python-globus-sdk
   (package
     (name "python-globus-sdk")
