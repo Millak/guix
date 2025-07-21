@@ -7,6 +7,7 @@
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -473,7 +474,8 @@ and not propagated to upstream.")
                                            (cons* "." ".." keep)))))))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f                      ; No target
+     (list #:qtbase qtbase
+           #:tests? #f                      ; No target
            #:imported-modules
            `(,@%qt-build-system-modules
              (guix build glib-or-gtk-build-system))
@@ -574,8 +576,8 @@ and not propagated to upstream.")
            gtk+
            hime
            hunspell
-           kcoreaddons-5
-           kimageformats-5
+           kcoreaddons
+           kimageformats
            libdispatch
            libexpected
            libjpeg-turbo
@@ -591,11 +593,10 @@ and not propagated to upstream.")
            pulseaudio
            protobuf
            qrcodegen-cpp
-           qtbase-5
-           qtdeclarative-5
-           qtimageformats-5
-           qtsvg-5
-           qtwayland-5
+           qtdeclarative
+           qtimageformats
+           qtsvg
+           qtwayland
            range-v3
            rlottie-for-telegram-desktop
            rnnoise
