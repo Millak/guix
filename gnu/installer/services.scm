@@ -148,7 +148,7 @@
      (system-service
       (name (G_ "DHCP client (dynamic IP address assignment)"))
       (type 'network-management)
-      (snippet '((service dhcp-client-service-type))))
+      (snippet '((service dhcpcd-service-type))))
      (system-service
       (name (G_ "Static networking service."))
       (type 'network-management)
