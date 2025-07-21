@@ -5747,7 +5747,8 @@ data.")
                (base32
                 "14h6j3cf36lylb01drpbzmbm7nyq4vgc3bgp64436nws0k0ig59d"))))
     (build-system cmake-build-system)
-    (inputs (list qtbase qtwebsockets))
+    (inputs (list qtbase))
+    (propagated-inputs (list qtwebsockets)) ;dependency of cmake module
     (home-page (package-home-page qtbase))
     (synopsis "HTTP server module for Qt")
     (description "Qt HTTP Server supports building HTTP server functionality
