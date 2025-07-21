@@ -3038,7 +3038,7 @@ and communicating with them using a pty.")
 (define-public kunitconversion
   (package
     (name "kunitconversion")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3047,13 +3047,17 @@ and communicating with them using a pty.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1shp01hx5nga6ldi2374v0f38b9s3dbqbbqapgh9kyc9h1z073r0"))))
+                "038fif7abb1sz3yvjym9d6w396k7qjdx01ylblcr2haqpzlp5955"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list ki18n qtbase))
-    (arguments `(#:tests? #f)) ;; Requires network.
+    (arguments (list
+                #:configure-flags
+                ;; XXX: build python bindings.
+                #~(list "-DBUILD_PYTHON_BINDINGS=OFF")
+                #:tests? #f)) ;; Requires network.
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Converting physical units")
     (description "KUnitConversion provides functions to convert values in
