@@ -2363,13 +2363,13 @@ popular web engines, Qt WebKit 2 and Qt WebEngine.")))
 (define-public qtwebchannel
   (package
     (name "qtwebchannel")
-    (version "6.8.2")
+    (version "6.9.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1b5pd0f3zbz4q6cygjn8fbrsbfb7rlwi4nq0f1vaaws6yi9ix7w6"))))
+                "0rcf7i1wamdf1qynq3yi88r77ch5dg1jinxywlfjlb2dmlvn72l7"))))
     (build-system cmake-build-system)
     (arguments
      (list
