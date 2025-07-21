@@ -20163,14 +20163,9 @@ minimal and fast API targeting the following uses:
               (sha256
                (base32
                 "1an5lkkqk1zha47198p42ji3m94xmzx1a03dn7866m87n4r4q8h5"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "py.test" "-v"))))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-args))
     (home-page "https://github.com/kennethreitz/clint")
