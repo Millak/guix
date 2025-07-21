@@ -323,6 +323,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
            qtnetworkauth
            qtpositioning
            qtsvg
+           qtwayland
            qwindowkit
            tidy-html                    ;used by src/app/htmlparser.h
            vulkan-loader
