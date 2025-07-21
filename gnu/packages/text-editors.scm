@@ -78,6 +78,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -1258,27 +1259,29 @@ in plain text file format.")
          (base32 "05qllpls3r95nfl14gqq3cv4lisf07fgn85n52w8blc5pfl1h93g"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'insert-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tests (assoc-ref inputs "tests")))
-               (copy-recursively tests "tests"))
-             #t))
-         (add-after 'insert-tests 'disable-failing-tests
-           (lambda _
-             (substitute* "tests/parser/CMakeLists.txt"
-               (("# Test max property name and values")
-                "# Disabled: test max property name and values\nif(FALSE)\n")
-               (("# Test max section names")
-                "endif()\n\n# Test max section names"))))
-         (add-after 'install 'delete-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib")))
-               (with-directory-excursion lib
-                 (delete-file "libeditorconfig_static.a"))
-               #t))))))
+     (list
+      #:cmake cmake-3.25
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'insert-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((tests (assoc-ref inputs "tests")))
+                (copy-recursively tests "tests"))
+              #t))
+          (add-after 'insert-tests 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/parser/CMakeLists.txt"
+                (("# Test max property name and values")
+                 "# Disabled: test max property name and values\nif(FALSE)\n")
+                (("# Test max section names")
+                 "endif()\n\n# Test max section names"))))
+          (add-after 'install 'delete-static-library
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (lib (string-append out "/lib")))
+                (with-directory-excursion lib
+                  (delete-file "libeditorconfig_static.a"))
+                #t))))))
     (native-inputs
      `(("tests"
         ,(origin
