@@ -5961,6 +5961,63 @@ but has evolved to support other missions as well.")
     ;; known as New or Revised BSD).
     (license license:bsd-3)))
 
+(define-public python-space-dolphin
+  (package
+    (name "python-space-dolphin")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "space_dolphin" version))
+       (sha256
+        (base32 "0qxpb6ss0w4f6mnisri3i3a5g5dfa12a7iimdchzqql7r53x7xiq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;TODO: Enable when tensorflow is fixed.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;;  RuntimeError: cannot cache function 'rotate': no locator
+              ;;  available for file '<...>/lenstronomy/Util/util.py'.
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs
+     (list ;; python-pytest
+           python-setuptools-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-corner
+           python-emcee
+           python-gdown
+           python-h5py
+           python-lenstronomy
+           python-matplotlib
+           python-numpy
+           python-pyyaml
+           python-schwimmbad
+           python-scipy
+           python-tqdm
+           #;tensorflow)) ;XXX: currenlty broken on master, see guix/guix#1436.
+    (home-page "https://github.com/ajshajib/dolphin")
+    (synopsis "Automated pipeline for lens modeling based on lenstronomy")
+    (description
+     "This package implements a functionality of AI-powered automated pipeline
+for lens modeling, with lenstronomy as the modeling engine.
+
+Features:
+@itemize
+@item AI-automated forward modeling for large samples of galaxy-scale lenses
+@item flexible: supports both fully automated and semi-automated (with user
+tweaks) modes
+@item multi-band lens modeling made simple
+@item supports both galaxy–galaxy and galaxy–quasar systems
+@item effortless syncing between local machines and @acronym{High-Performance
+Computing Cluster, HPCC}
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-specreduce
   (package
     (name "python-specreduce")
