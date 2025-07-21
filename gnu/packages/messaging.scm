@@ -2562,7 +2562,7 @@ notification, emojis, E2E encryption, and voip calls.")
 (define-public quaternion
   (package
     (name "quaternion")
-    (version "0.0.95.1")
+    (version "0.0.97.1")
     (outputs '("out" "debug"))
     (source
      (origin
@@ -2572,28 +2572,28 @@ notification, emojis, E2E encryption, and voip calls.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10mzcr4rpyq5bl3h8wzxxlk8rdz7slhiq863xs77bmsq2pzf6lp8"))))
+        (base32 "1628rnj025zz84vvp3zrhq912n27maznhszky2yd4w7ackg08zhf"))))
     (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f)) ;no tests
+    (native-inputs
+     (list qttools))
     (inputs
      (list libqmatrixclient
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtmultimedia-5
-           qtquickcontrols-5
-           qtquickcontrols2-5
-           qtsvg-5
-           qttools-5
-           qtwayland-5
+           olm
+           openssl
+           qtdeclarative
+           qtkeychain-qt6
+           qtmultimedia
+           qtsvg
+           qtwayland
            xdg-utils))
-    (arguments
-     `(#:tests? #f))                    ; no tests
-    (home-page "https://matrix.org/docs/projects/client/quaternion.html")
+    (home-page "https://matrix.org/ecosystem/clients/quaternion/")
     (synopsis "Graphical client for the Matrix instant messaging protocol")
-    (description "Quaternion is a Qt5 desktop client for the Matrix instant
+    (description "Quaternion is a Qt desktop client for the Matrix instant
 messaging protocol.  It uses libqmatrixclient and is its reference client
-implementation.  Quaternion and libqmatrixclient together form the
-QMatrixClient project.")
+implementation.")
     (license (list license:gpl3+        ; all source code
                    license:lgpl3+))))   ; icons/breeze
 
