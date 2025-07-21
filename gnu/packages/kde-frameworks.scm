@@ -4538,7 +4538,7 @@ typed.")
 (define-public kservice
   (package
     (name "kservice")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4547,7 +4547,7 @@ typed.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1m8w3jgrnsq0kdgpfl58616wwf02nnz2xahjrhyvwc4xf8pm9nb5"))))
+                "07h8rjqrfj73rciqa2i6qi2xkwxqigdy2v9y5pjx3a8mjgmcjppf"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfig kcoreaddons kdoctools))
