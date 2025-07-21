@@ -2813,7 +2813,7 @@ asynchronous jobs.")
 (define-public knotifications
   (package
     (name "knotifications")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2822,9 +2822,13 @@ asynchronous jobs.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1pgrd42wgd6ffy52mfs9ii1l87lvx772w4blr05p03z898fjzcfj"))))
+                "17rvm4y5ig6bwbxg4q41cwzybpg0n2555mz98miljyk5b48a8ga2"))))
     (build-system cmake-build-system)
-    (arguments (list #:tests? #f))
+    (arguments
+     (list #:tests? #f
+           #:configure-flags
+           ;; XXX: build python bindings.
+           #~(list "-DBUILD_PYTHON_BINDINGS=OFF")))
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
     (propagated-inputs (list qtdeclarative))
