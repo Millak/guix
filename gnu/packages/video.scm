@@ -1867,7 +1867,19 @@ audio/video codec library.")
                 "0s7r2qv8gh2a3w568n9xxgcz0q8j5ww1jdsci1hm9f4l1yqg9146"))
               (patches
                (search-patches
-                "ffmpeg-add-av_stream_get_first_dts-for-chromium.patch"))))))
+                "ffmpeg-add-av_stream_get_first_dts-for-chromium.patch"))))
+    (arguments
+     (if (target-x86-32?)
+         (substitute-keyword-arguments (package-arguments ffmpeg-7)
+           ((#:phases phases)
+            #~(modify-phases #$phases
+                (add-before 'configure 'relax-gcc-14-strictness
+                  (lambda _
+                    (setenv
+                     "CFLAGS"
+                     (string-append "-g -O2"
+                                    " -Wno-error=incompatible-pointer-types")))))))
+         (package-arguments ffmpeg-7)))))
 
 (define-public ffmpeg-5
   (package
@@ -1936,13 +1948,16 @@ audio/video codec library.")
                   "--enable-libsvtav1")))
        ((#:phases phases)
         #~(modify-phases #$phases
+            #$@(if (target-x86-32?)
+                   #~((delete 'relax-gcc-14-strictness))
+                   #~())
             (add-after 'configure 'relax-gcc-14-strictness
               (lambda _
-              (substitute* "ffbuild/config.mak"
-                (("CFLAGS *=" all)
-                 (string-append all
-                                " -Wno-error=incompatible-pointer-types"
-                                " -Wno-error=int-conversion")))))))))
+                (substitute* "ffbuild/config.mak"
+                  (("CFLAGS *=" all)
+                   (string-append all
+                                  " -Wno-error=incompatible-pointer-types"
+                                  " -Wno-error=int-conversion")))))))))
     (inputs (modify-inputs (package-inputs ffmpeg-4)
               (delete "dav1d" "libaom" "rav1e" "srt")))))
 
