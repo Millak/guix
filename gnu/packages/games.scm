@@ -4935,8 +4935,7 @@ This package expects the game(s) to be placed in subdirectories of
   ;; There are no tags or releases for the stk-assets data, nor indication of
   ;; which revision is bundled into the released SuperTuxKart-*-src tarball;
   ;; use the latest SVN revision available.
-  (let ((commit "18593")
-        (revision "0"))
+  (let ((commit "18612"))
     (hidden-package
      (package
        (name "supertuxkart-data")
@@ -4953,7 +4952,7 @@ This package expects the game(s) to be placed in subdirectories of
           (file-name (string-append name "-" commit "-checkout"))
           (sha256
            (base32
-            "0x2l45w1ahgkw9mrbcxzwdlqs7rams6rsga9m40qjapfiqmvlvbg"))))
+            "1r21m1aginn4wmgrasv2a0cky75l2wk50pqja80k3fbc1gs3hbhz"))))
        (build-system copy-build-system)
        (arguments
         (list #:install-plan
