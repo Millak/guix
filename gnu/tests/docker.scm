@@ -50,7 +50,7 @@
 
 (define %docker-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service dbus-root-service-type)
    (service polkit-service-type)
    (service elogind-service-type)
@@ -352,7 +352,7 @@ docker-image} inside Docker.")
 
 (define %oci-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service dbus-root-service-type)
    (service polkit-service-type)
    (service elogind-service-type)

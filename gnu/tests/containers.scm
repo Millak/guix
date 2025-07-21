@@ -51,7 +51,7 @@
              (subuids
               (list (subid-range (name "dummy"))))))
 
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service dbus-root-service-type)
    (service polkit-service-type)
    (service elogind-service-type)

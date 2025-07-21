@@ -82,7 +82,7 @@
 
 (define (run-mympd-test)
   (define os (marionette-operating-system
-              (simple-operating-system (service dhcp-client-service-type)
+              (simple-operating-system (service dhcpcd-service-type)
                                        (service mympd-service-type))
               #:imported-modules '((gnu services herd))))
 

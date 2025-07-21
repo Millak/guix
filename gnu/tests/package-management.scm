@@ -99,7 +99,7 @@
   (let ((base-os
          (simple-operating-system
           (service nix-service-type)
-          (service dhcp-client-service-type))))
+          (service dhcpcd-service-type))))
     (operating-system
       (inherit base-os)
       (packages (cons nix (operating-system-packages base-os))))))

@@ -91,7 +91,7 @@
 
 (define %prometheus-node-exporter-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service prometheus-node-exporter-service-type
             (prometheus-node-exporter-configuration))))
 
@@ -303,7 +303,7 @@ zabbix||{}
   ;; Return operating system under test.
   (let ((base-os
          (simple-operating-system
-          (service dhcp-client-service-type)
+          (service dhcpcd-service-type)
           (service postgresql-service-type
                    (postgresql-configuration
                     (postgresql postgresql)))

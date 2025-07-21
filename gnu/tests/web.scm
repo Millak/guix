@@ -170,7 +170,7 @@ the tests."
 
 (define %httpd-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service httpd-service-type
             (httpd-configuration
              (config
@@ -199,7 +199,7 @@ the tests."
 (define %nginx-os
   ;; Operating system under test.
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service nginx-service-type
             (nginx-configuration
              (log-directory "/var/log/nginx")
@@ -216,7 +216,7 @@ the tests."
 
 (define %nginx+anonip-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service anonip-service-type
             (anonip-configuration
              (input "/var/run/anonip/access.log")
@@ -265,7 +265,7 @@ sub vcl_synth {
 
 (define %varnish-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    ;; Pretend to be a web server that serves %index.html-contents.
    (service varnish-service-type
             (varnish-configuration
@@ -314,7 +314,7 @@ echo(\"Computed by php:\".((string)(2+3)));
 (define %php-fpm-os
   ;; Operating system under test.
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service php-fpm-service-type)
    (service nginx-service-type
             (nginx-configuration
@@ -467,7 +467,7 @@ HTTP-PORT, along with php-fpm."
 
 (define %hpcguix-web-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service hpcguix-web-service-type
             (hpcguix-web-configuration
              (specs %hpcguix-web-specs)
@@ -483,7 +483,7 @@ HTTP-PORT, along with php-fpm."
 (define %tailon-os
   ;; Operating system under test.
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service tailon-service-type
             (tailon-configuration
              (config-file
@@ -713,7 +713,7 @@ HTTP-PORT."
 
 (define (patchwork-os patchwork)
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service httpd-service-type
             (httpd-configuration
              (config
@@ -844,7 +844,7 @@ HTTP-PORT."
 
 (define %agate-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (simple-service 'make-agate-root activation-service-type
                    %make-agate-root)
    (service agate-service-type

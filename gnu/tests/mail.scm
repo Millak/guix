@@ -46,7 +46,7 @@
 
 (define %opensmtpd-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service opensmtpd-service-type
             (opensmtpd-configuration
              (config-file
@@ -170,7 +170,7 @@ match from any for local action inbound
 
 (define %exim-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service mail-aliases-service-type '())
    (service exim-service-type
             (exim-configuration
@@ -294,7 +294,7 @@ acl_check_data:
 
 (define %dovecot-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service dovecot-service-type
             (dovecot-configuration
              (extensions (list dovecot-pigeonhole))
@@ -474,7 +474,7 @@ addheader \"X-Sieve-Filtered\" \"Guix\";
                   (supplementary-groups '("wheel" "audio" "video")))
                  %base-user-accounts))
 
-    (services (cons* (service dhcp-client-service-type)
+    (services (cons* (service dhcpcd-service-type)
                      (service dovecot-service-type
                               (dovecot-configuration
                                (disable-plaintext-auth? #f)

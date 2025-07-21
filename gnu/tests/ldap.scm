@@ -33,7 +33,7 @@
 (define %ldap-os
   (let ((simple
          (simple-operating-system
-          (service dhcp-client-service-type)
+          (service dhcpcd-service-type)
           (service nslcd-service-type))))
     (operating-system
       (inherit simple)

@@ -38,7 +38,7 @@
 (define %laminar-os
   ;; Operating system under test.
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service laminar-service-type)))
 
 (define* (run-laminar-test #:optional (http-port 8080))

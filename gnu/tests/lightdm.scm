@@ -77,7 +77,7 @@
                                     (user-session "ratpoison"))))))
 
             ;; For debugging.
-            (service dhcp-client-service-type)
+            (service dhcpcd-service-type)
             (service openssh-service-type
                      (openssh-configuration
                       (permit-root-login #t)

@@ -34,7 +34,7 @@
 
 (define %dicod-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service dicod-service-type
             (dicod-configuration
              (interfaces '("0.0.0.0"))

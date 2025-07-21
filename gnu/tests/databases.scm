@@ -42,7 +42,7 @@
 
 (define %memcached-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service memcached-service-type)))
 
 (define* (run-memcached-test #:optional (port 11211))

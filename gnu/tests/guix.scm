@@ -49,7 +49,7 @@
 
 (define %guix-build-coordinator-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service guix-build-coordinator-service-type)))
 
 (define (run-guix-build-coordinator-test)
@@ -155,7 +155,7 @@
 
 (define %guix-data-service-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service postgresql-service-type
             (postgresql-configuration
              (postgresql postgresql)
@@ -331,7 +331,7 @@ host	all	all	::1/128 	trust"))))))
 
 (define %nar-herder-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service nar-herder-service-type
             (nar-herder-configuration
              (host "0.0.0.0")
@@ -407,7 +407,7 @@ host	all	all	::1/128 	trust"))))))
 
 (define %bffe-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service guix-build-coordinator-service-type)
    (service bffe-service-type
             (bffe-configuration

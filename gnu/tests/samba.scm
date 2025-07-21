@@ -42,7 +42,7 @@
                                       (chown "/srv/samba/guest"
                                              (passwd:uid (getpw "nobody"))
                                              (passwd:gid (getpw "nobody")))))
-                  (service dhcp-client-service-type)
+                  (service dhcpcd-service-type)
                   (service samba-service-type
                            (samba-configuration
                             (config-file (plain-file "smb.conf" "
@@ -165,7 +165,7 @@
 
 (define %wsdd-os
   (let ((base-os (simple-operating-system
-                  (service dhcp-client-service-type)
+                  (service dhcpcd-service-type)
                   (service wsdd-service-type))))
     (operating-system
       (inherit base-os)

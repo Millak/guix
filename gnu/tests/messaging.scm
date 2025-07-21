@@ -48,7 +48,7 @@
   "Run a test of an OS running XMPP-SERVICE, which writes its PID to PID-FILE."
   (define os
     (marionette-operating-system
-     (simple-operating-system (service dhcp-client-service-type)
+     (simple-operating-system (service dhcpcd-service-type)
                               xmpp-service)
      #:imported-modules '((gnu services herd))))
 
@@ -177,7 +177,7 @@
 (define (run-bitlbee-test)
   (define os
     (marionette-operating-system
-     (simple-operating-system (service dhcp-client-service-type)
+     (simple-operating-system (service dhcpcd-service-type)
                               (service bitlbee-service-type
                                        (bitlbee-configuration
                                         (interface "0.0.0.0"))))
@@ -239,7 +239,7 @@
     (packages (cons* ii screen %base-packages))
     (services
      (cons*
-      (service dhcp-client-service-type)
+      (service dhcpcd-service-type)
       (service ngircd-service-type
                (ngircd-configuration
                 (debug? #t)
@@ -403,7 +403,7 @@
              %base-packages))
     (services
      (cons*
-      (service dhcp-client-service-type)
+      (service dhcpcd-service-type)
       (service ngircd-tls-cert-service-type)
       (service ngircd-service-type
                (ngircd-configuration
@@ -549,7 +549,7 @@ OPENSSL:localhost:7000,verify=0 &")
 (define (run-quassel-test)
   (define os
     (marionette-operating-system
-      (simple-operating-system (service dhcp-client-service-type)
+      (simple-operating-system (service dhcpcd-service-type)
                                (service quassel-service-type))
      #:imported-modules (source-module-closure
                          '((gnu services herd)))))

@@ -49,7 +49,7 @@
   (define os
     (marionette-operating-system
      (simple-operating-system
-      (service dhcp-client-service-type)
+      (service dhcpcd-service-type)
       (service vnstat-service-type
                vnstat-config)
       (service inetd-service-type

@@ -136,7 +136,7 @@ PORT."
   ;; Return operating system under test.
   (let ((base-os
          (simple-operating-system
-          (service dhcp-client-service-type)
+          (service dhcpcd-service-type)
           (service rsync-service-type
                    (rsync-configuration
                     (modules (list (rsync-module

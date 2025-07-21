@@ -60,7 +60,7 @@
                %base-packages))
     (services (cons*
                (service rpcbind-service-type)
-               (service dhcp-client-service-type)
+               (service dhcpcd-service-type)
                %base-services))))
 
 (define (run-nfs-test name socket)
@@ -148,7 +148,7 @@
                                  (mkdir "/remote")
                                  (chmod "/remote" #o777)
                                  #t))
-             (service dhcp-client-service-type)
+             (service dhcpcd-service-type)
              (service nfs-service-type
                       (nfs-configuration
                        (debug '(nfs nfsd mountd))

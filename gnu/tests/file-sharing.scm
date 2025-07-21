@@ -71,7 +71,7 @@
   (define os
     (marionette-operating-system
      (simple-operating-system
-      (service dhcp-client-service-type)
+      (service dhcpcd-service-type)
       (service transmission-daemon-service-type
                %transmission-daemon-test-configuration))
      #:imported-modules '((gnu services herd)

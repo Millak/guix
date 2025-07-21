@@ -359,7 +359,7 @@ passed an invalid device.")
 (define %inetd-os
   ;; Operating system with 2 inetd services.
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service inetd-service-type
             (inetd-configuration
              (entries (list
@@ -692,7 +692,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 
 (define %dnsmasq-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service dnsmasq-service-type
             (dnsmasq-configuration
              (extra-options
@@ -996,7 +996,7 @@ COMMIT
   (define os
     (marionette-operating-system
      (simple-operating-system
-      (service dhcp-client-service-type)
+      (service dhcpcd-service-type)
       (service inetd-service-type
                (inetd-configuration
                 (entries (list
@@ -1100,7 +1100,7 @@ COMMIT
 
 (define (make-nftables-os ruleset)
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service inetd-service-type
             (inetd-configuration
              (entries (list

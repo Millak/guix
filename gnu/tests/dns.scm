@@ -31,7 +31,7 @@
   ;; TODO: Unbound config
   (let ((base-os
           (simple-operating-system
-            (service dhcp-client-service-type)
+            (service dhcpcd-service-type)
             (service unbound-service-type
                      (unbound-configuration
                        (server

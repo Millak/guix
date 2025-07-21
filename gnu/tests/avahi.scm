@@ -43,7 +43,7 @@
     (services (cons* (service avahi-service-type
                               (avahi-configuration (debug? #t)))
                      (service dbus-root-service-type)
-                     (service dhcp-client-service-type) ;needed for multicast
+                     (service dhcpcd-service-type) ;needed for multicast
 
                      ;; Enable heavyweight debugging output.
                      (modify-services (operating-system-user-services

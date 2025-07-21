@@ -84,7 +84,7 @@
 
 (define %cups-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service cups-service-type
             (cups-configuration
              (web-interface? #t)

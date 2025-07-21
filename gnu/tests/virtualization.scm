@@ -54,7 +54,7 @@
 
 (define %libvirt-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service dbus-root-service-type)
    (service polkit-service-type)
    (service libvirt-service-type)))
@@ -266,7 +266,7 @@
 
 (define %childhurd-os
   (simple-operating-system
-   (service dhcp-client-service-type)
+   (service dhcpcd-service-type)
    (service hurd-vm-service-type
             (hurd-vm-configuration
              (os (operating-system

@@ -47,7 +47,7 @@
   (define os
     (marionette-operating-system
      (simple-operating-system
-      (service dhcp-client-service-type)
+      (service dhcpcd-service-type)
       (service readymedia-service-type
                %readymedia-configuration-test))
      #:imported-modules '((gnu services herd)

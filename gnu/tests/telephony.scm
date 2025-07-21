@@ -111,7 +111,7 @@
                      (service dbus-root-service-type)
                      ;; The following services/packages are added for
                      ;; debugging purposes.
-                     (service dhcp-client-service-type)
+                     (service dhcpcd-service-type)
                      (service openssh-service-type
                               (openssh-configuration
                                (permit-root-login #t)
