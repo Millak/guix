@@ -1632,6 +1632,52 @@ Amazon S3, Dropbox, local file storage or any Django storage.")
 FileFields during tests.")
     (license license:expat)))
 
+(define-public python-django-storages
+  (package
+    (name "python-django-storages")
+    (version "1.14.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django_storages" version))
+       (sha256
+        (base32 "1ja1jgh7alypsb46ncbc6acsxxw771hf51yfqz4rmxhl8a7ww9bs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'delete-some-tests
+                     (lambda _
+                        (delete-file
+                         ;; python-google-cloud-storage broken in the CI
+                         "tests/test_gcloud.py")
+                        (delete-file
+                         ;; python-moto can't find 'mock_s3'
+                         "tests/test_s3.py")
+                       (substitute* "tests/test_utils.py"
+                         ;; This test depends on a file which is likely
+                         ;; unavailble in PyPI (FileNotFoundError).
+                         (("def test_with_string_file_detect_encoding")
+                          "def _test_with_string_file_detect_encoding"))))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
+                         (invoke "django-admin" "test" "tests"
+                                 "--pythonpath=.")))))))
+    (propagated-inputs (list python-django))
+    (native-inputs (list python-azure-storage-blob ; azure backend
+                         python-dropbox ; dropbox backend
+                         python-paramiko ; sftp backend
+                         python-pytest
+                         python-setuptools python-wheel))
+    (home-page "https://django-storages.readthedocs.io/en/latest/")
+    (synopsis "Support for many storage backends in Django")
+    (description
+     "@code{django-storages} is a project to provide a variety of storage
+backends in a single library.")
+    (license license:bsd-3)))
+
 (define-public python-django-auth-ldap
   (package
     (name "python-django-auth-ldap")
