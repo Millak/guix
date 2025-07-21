@@ -42,6 +42,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1305,6 +1306,11 @@ it emulates a variety of hardware and peripherals.")
      (list
        #:phases
        #~(modify-phases %standard-phases
+           (add-before 'configure 'gcc14
+             (lambda _
+               (substitute* "fesvr/device.h"
+                 (("#include <string>" all)
+                  (string-append all "\n#include <cstdint>")))))
            (add-before 'configure 'configure-dtc-path
              (lambda* (#:key inputs #:allow-other-keys)
                ;; Reference dtc by its absolute store path.
