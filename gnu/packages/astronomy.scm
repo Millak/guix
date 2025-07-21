@@ -4340,6 +4340,67 @@ is based on the Hierarchical Equal Area isoLatitude Pixelization (HEALPix)
 scheme and builds with the HEALPix C++ library.")
     (license license:gpl2+)))
 
+(define-public python-hierarc
+  (package
+    (name "python-hierarc")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)       ;no tests data in the PyPI archive
+       (uri (git-reference
+              (url "https://github.com/sibirrer/hierArc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02078a745hrb3m8fj739rwzk4wwxrfk40sr4yvs722aj5xk8j00w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Some tests are computation intensive and not thread safe, failing
+      ;; during parallel invocation:
+      ;;   109 passed, 32 deselected, 43 warnings in 634.59s
+      #~(list "--durations" "5"
+              ;; AttributeError: 'LambdaCDM' object has no attribute '_Ok0'.
+              "-k" (string-join
+                    (list "not test_cosmo_instance"
+                          "test_kde_likelihood_integration"
+                          "test_log_likelihood"
+                          "test_mcmc_emcee"
+                          "test_sne_likelihood_integration")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;;  RuntimeError: cannot cache function 'rotate': no locator
+              ;;  available for file '<...>/lenstronomy/Util/util.py'.
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-emcee
+           python-h5py
+           python-lenstronomy
+           python-matplotlib
+           python-mpmath
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/sibirrer/hierarc")
+    (synopsis "Hierarchical analysis of strong lensing systems")
+    (description
+     "This package implements a funtionality for hierarchical analysis of
+strong lensing systems to infer lens properties and cosmological parameters
+simultaneously.  It allows to fit lenses with measured time delays, imaging
+information, kinematics constraints and standardizable magnifications with
+parameters described on the ensemble level.")
+    (license license:bsd-3)))
+
 (define-public python-holodeck
   (package
     (name "python-holodeck")
