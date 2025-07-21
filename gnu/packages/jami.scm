@@ -96,7 +96,8 @@
                (base32
                 "136hiippjfbyp4h3pf68kh3cyw6r2idjgq7vj1h9sdipc87a1a2r"))
               (patches (search-patches
-                        "libjami-ac-config-files.patch"))))
+                        "libjami-ac-config-files.patch"
+                        "libjami-sdbus-cpp-v2.patch"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
@@ -158,7 +159,7 @@
            openssl
            pjproject-jami
            pulseaudio
-           sdbus-c++-1.4.0
+           sdbus-c++
            speex
            speexdsp
            webrtc-audio-processing-0.3
