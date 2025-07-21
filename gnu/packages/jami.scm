@@ -360,13 +360,12 @@ P2P-DHT.")
         #~(modify-phases %standard-phases
             (add-after 'unpack 'build
               (lambda _
-                (invoke "make" "info" "html" "man" "LANGS="
+                (invoke "make" "info" "man" "LANGS="
                         "-j" (number->string
                               (parallel-job-count))))))
         #:install-plan
         ;; TODO: Install localized info manuals and HTML.
         ''(("_build/out/texinfo/jami.info" "share/info/")
-           ("_build/out/html" "share/doc/jami/")
            ("_build/out/man/jami.1" "share/man/man1/"))))
       (native-inputs
        (list python-minimal
