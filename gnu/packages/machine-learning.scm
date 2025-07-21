@@ -433,6 +433,42 @@ machine learning algorithms based on GPs.")
      (list python))
     (synopsis "Python bindings of libSVM")))
 
+(define-public python-mcfit
+  ;; PyPI variant fails during compile-bytecode phase: "IndentationError:
+  ;; expected an indented block after function definition on line 10
+  ;; (mkfit.py, line 15)".
+  ;; GitHub provides no release tags, use the latest commit from the master
+  ;; branch.
+  ;; See: <https://github.com/eelregit/mcfit/issues/5>.
+  (let ((commit "be3a5cf9c474e16875126adcd35ba785fb781ebb")
+        (revision "0"))
+    (package
+      (name "python-mcfit")
+      (version (git-version "0.0.22" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/eelregit/mcfit")
+                (commit commit)))
+         (sha256
+          (base32 "120ybwhrqpn9a9q96m6l8pw8a7cdz705vzqn3s87wnffa8nslbsi"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-mpmath
+             python-numpy
+             python-scipy))
+      (home-page "https://github.com/eelregit/mcfit")
+      (synopsis "Multiplicatively convolutional fast integral transforms")
+      (description
+       "This package provides multiplicatively convolutional fast integral
+transforms.")
+      (license license:gpl3+))))
+
 (define-public python-ml-collections
   (package
     (name "python-ml-collections")
