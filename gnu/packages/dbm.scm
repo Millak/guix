@@ -120,14 +120,15 @@
                          (symlink (string-append automake-files "/" file) file))
                        (for-each replace '("config.sub" "config.guess"
                                            "install-sh"))))))
-               #$@(if (target-arm?)
-                 #~((add-after 'unpack 'bdb-configure-patch
-                   (lambda _
-                     (invoke
-                      "patch" "-p1" "-i"
-                      #$(local-file
-                         (search-patch "bdb-4-5-configure.patch"))))))
-                 #~())
+               #$@(if (or (target-arm?)
+                          (target-riscv64?))
+                      #~((add-after 'unpack 'bdb-configure-patch
+                           (lambda _
+                             (invoke
+                              "patch" "-p1" "-i"
+                              #$(local-file
+                                 (search-patch "bdb-4-5-configure.patch"))))))
+                      #~())
                (add-before 'configure 'pre-configure
                  (lambda _
                    (chdir "dist")
