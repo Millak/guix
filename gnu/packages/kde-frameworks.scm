@@ -744,7 +744,7 @@ KColorScheme.")
 (define-public kconfig
   (package
     (name "kconfig")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -753,10 +753,10 @@ KColorScheme.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0icl7wclnpa499x8xlv0ilhvcvr61ra51fisrhplgpw8cacnriif"))))
+                "099m39k98ynrjvh6h8y4jasm7460nxkpj3v4phjrbvsz0a7wav5s"))))
     (build-system qt-build-system)
     (native-inputs
-     (list dbus extra-cmake-modules inetutils qttools))
+     (list dbus extra-cmake-modules inetutils qttools tzdata-for-tests))
     (propagated-inputs (list qtdeclarative))
     (arguments
      (list
@@ -764,7 +764,7 @@ KColorScheme.")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'check-setup
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key inputs tests? #:allow-other-keys)
               (when tests?
                 (with-output-to-file "autotests/BLACKLIST"
                   (lambda _
@@ -776,6 +776,9 @@ KColorScheme.")
                            "testNotify"
                            "testSignal"
                            "testDataUpdated"))))
+                (setenv "TZDIR"
+                        (search-input-directory inputs
+                                                "share/zoneinfo"))
                 (setenv "HOME" (getcwd))
                 (setenv "QT_QPA_PLATFORM" "offscreen")))))))
     (home-page "https://community.kde.org/Frameworks")
