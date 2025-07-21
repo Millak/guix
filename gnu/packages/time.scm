@@ -732,7 +732,7 @@ printing the returned time and/or setting the system clock.")
 (define-public datefudge
   (package
     (name "datefudge")
-    (version "1.26")
+    (version "1.27")
     (source (origin
               ;; Source code is available from
               ;; <https://salsa.debian.org/debian/datefudge.git>.  However,
@@ -746,11 +746,11 @@ printing the returned time and/or setting the system clock.")
                      ;; Update the Debian snapshot URL when updating the package.
                      (string-append
                        "https://snapshot.debian.org/archive/debian/"
-                       "20240115T092401Z/pool/main/d/datefudge/"
-                       "datefudge_1.26.tar.xz")))
+                       "20240830T084547Z/pool/main/d/datefudge/"
+                       "datefudge_1.27.tar.xz")))
               (sha256
                (base32
-                "09cjds76gzkwk6ssmsk3cgkcfhglfi9kmbahi1h17v4311v432iz"))))
+                "0b9azg6z92s74f0rmm3hdd5l5dcldgiq5bza06mgc3ibpnlhqz0g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
