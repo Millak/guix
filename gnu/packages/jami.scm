@@ -298,10 +298,10 @@ QSortFilterProxyModel conveniently exposed for QML.")
                   ;; "ctest" "-R" "Qml_Tests" ctest-args)
                   )))))))
     (native-inputs
-     (list git
+     (list git-minimal
            googletest
            pkg-config
-           python
+           python-minimal
            qthttpserver
            qttools
            qtwebsockets
