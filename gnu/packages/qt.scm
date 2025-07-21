@@ -2832,22 +2832,23 @@ also contains functionality to support data models and executable content.")))
 (define-public qtscxml
   (package
     (name "qtscxml")
-    (version "6.8.2")
+    (version "6.9.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "14x1iv7wdaifly06dh5w0iqa46va0hikg1c4rh0yj0a0l88llg38"))
+                "1dpb687zbw4akx42kfpbb5cpdlq3hcqn8l3l0x7sd5i9061z2sp0"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "tests/3rdparty")))))
+               '(delete-file-recursively "tests/3rdparty"))))
+    (build-system cmake-build-system)
     (arguments
      (list
-      ;; This failing test is run by the cmake-build-system phases but not
-      ;; by the gnu-build-system phases.
-      #:test-exclude "tst_scion"
+      ;; tst_scion fails with "Test data requested, but no testdata
+      ;; available", while tst_qstatemachine has multiple unexplained failures
+      ;; (see: https://bugreports.qt.io/browse/QTBUG-139847).
+      #:test-exclude "(tst_scion|tst_qstatemachine)"
       #:phases
       #~(modify-phases %standard-phases
           (delete 'check)               ;move after the install phase
@@ -2855,12 +2856,10 @@ also contains functionality to support data models and executable content.")))
             (assoc-ref %standard-phases 'check))
           (add-before 'check 'check-setup
             (lambda _
-              (setenv "ARGS" "-E tst_scion")
               (setenv "QT_QPA_PLATFORM" "offscreen")
               (setenv "QML_IMPORT_PATH"
                       (string-append #$output "/lib/qt6/qml:"
                                      (getenv "QML_IMPORT_PATH"))))))))
-    (build-system cmake-build-system)
     (inputs (list qtbase qtdeclarative libxkbcommon))
     (synopsis "Qt SCXML module")
     (description "The Qt SCXML module provides functionality to create state
