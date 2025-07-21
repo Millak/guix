@@ -843,7 +843,7 @@ kconfiggui-kstandardshortcutwatchertest)"
 (define-public kcoreaddons
   (package
     (name "kcoreaddons")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -852,13 +852,16 @@ kconfiggui-kstandardshortcutwatchertest)"
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1nyvzmnhy89lj2k38ip2bl2i6m5j5qyajfid7sngnhf50crvq451"))))
+                "18721a9rkhrh52mlf8aajib6kzd607cfbmxddqhkplcnq922g2kr"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules qttools shared-mime-info))
     (inputs (list qtdeclarative))
     (arguments
      (list
       #:qtbase qtbase
+      #:configure-flags
+      ;; XXX: build python bindings.
+      #~(list "-DBUILD_PYTHON_BINDINGS=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'blacklist-failing-test
