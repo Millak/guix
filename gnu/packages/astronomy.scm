@@ -5272,6 +5272,61 @@ position-frequency slice.")
       (list python-setuptools
             python-wheel)))))
 
+(define-public python-pyhalo
+  (package
+    (name "python-pyhalo")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyhalo" version))
+       (sha256
+        (base32 "06zdcr82fzzn6zkjralmv9qv7qjyjkni1p1rg60bvl8h013v3xp6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; ValueError: The truth value of an array with more than one element is
+      ;; ambiguous. Use a.any() or a.all()
+      #:test-flags #~(list "-k" "not test_vmax")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-setupup.py
+            ;; XXX: ModuleNotFoundError: No module named 'pyHalo.cli'.
+            (lambda _
+              (substitute* "setup.py"
+                ((".pyHalo=pyHalo.cli:main.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; RuntimeError: cannot cache function 'rotate': no locator
+              ;; available for file '<...>/lenstronomy/Util/util.py'.
+              (setenv "NUMBA_CACHE_DIR" "/tmp")
+              ;; PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-click
+           python-colossus
+           python-h5py
+           python-lenstronomy
+           python-mcfit
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/dangilman/pyHalo")
+    (synopsis "Render populations of dark matter halos")
+    (description
+     "pyHalo renders full mass distributions for substructure lensing
+simulations with gravitational lensing software package lenstronomy.  The main
+purpose of the code is to quickly render full populations of dark matter
+subhalos and line of sight halos for gravitational lensing simulations.  It
+also transltes halo properties (mass, concentration, redshift, etc) into
+angular units for lensing computations with lenstronomy.")
+    (license license:expat)))
+
 (define-public python-pyregion
   (package
     (name "python-pyregion")
