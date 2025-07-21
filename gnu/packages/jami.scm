@@ -242,7 +242,8 @@ QSortFilterProxyModel conveniently exposed for QML.")
                         "jami-qwindowkit.patch"
                         "jami-skip-tests-requiring-internet.patch"
                         "jami-tests-qtwebengine-ifdef-to-if.patch"
-                        "jami-unbundle-dependencies.patch"))))
+                        "jami-unbundle-dependencies.patch"
+                        "jami-unittests-fix-build.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments

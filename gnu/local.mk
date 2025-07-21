@@ -1646,6 +1646,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/jami-skip-tests-requiring-internet.patch	\
   %D%/packages/patches/jami-tests-qtwebengine-ifdef-to-if.patch	\
   %D%/packages/patches/jami-unbundle-dependencies.patch		\
+  %D%/packages/patches/jami-unittests-fix-build.patch		\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
