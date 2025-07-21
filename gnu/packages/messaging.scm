@@ -628,9 +628,10 @@ by Dino to provide OMEMO support.")))
         (git-file-name name version))
        (sha256
         (base32 "0b02b9flri374f8aw6xfz7mm9s57rb7393r8mdphv7kcsf76i7i5"))))
-    (build-system cmake-build-system)
+    (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     `(#:test-target "test"
+       #:phases (modify-phases %standard-phases
                   (replace 'configure
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out")))
