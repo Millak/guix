@@ -1304,7 +1304,7 @@ Some codes examples can be find at:
 (define-public sdbus-c++
   (package
     (name "sdbus-c++")
-    (version "2.0.0")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1313,7 +1313,7 @@ Some codes examples can be find at:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s6vhzln0rvac2r3v8nq08hsjhyz3y46fsy18i23ppjm30apkiav"))))
+                "1rnrc196kr2byypbh8lc6r9p590183knnza5n75l587v39ndly16"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1330,7 +1330,7 @@ Some codes examples can be find at:
             (lambda _
               (substitute* "tests/CMakeLists.txt"
                 (("/etc/dbus-1/system.d") "/tmp")))))))
-    (native-inputs (list googletest pkg-config))
+    (native-inputs (list googletest-1.17 pkg-config))
     (inputs (list expat))
     (propagated-inputs (list elogind)) ;required by sdbus-c++.pc
     (home-page "https://github.com/Kistler-Group/sdbus-cpp")
