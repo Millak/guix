@@ -142,6 +142,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -3066,35 +3067,37 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
 (define-public qtremoteobjects
   (package
     (name "qtremoteobjects")
-    (version "6.8.2")
+    (version "6.9.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0adnbqdppawy4k8j5d87h59v9mdfhdrj4yfbhy0vy2qvw7nx6anh"))))
+                "09lby6dqc2sfig1krcszg6fkypgxlz2r7hgjjfi95g7g9gqlwqnz"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:test-exclude (format
+                      #f "(~{~a~^|~})"
+                      ;; This test fails with "invalid index", but could
+                      ;; pass in `guix shell --container'.
+                      '("tst_modelview"
+                        ;; This test fails in Guix and is known to be flaky
+                        ;; (see:
+                        ;; https://bugreports.qt.io/browse/QTBUG-105895).
+                        "tst_external_IODevice"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-display
-            (lambda _
-              ;; Make Qt render "offscreen", required for tests.
-              (setenv "QT_QPA_PLATFORM" "offscreen")))
-          (delete 'check)               ;move after the install phase
-          (add-after 'install 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "ctest" "-E"
-                        ;; This test fails with "invalid index", but could
-                        ;; pass in `guix shell --container'.
-                        "tst_modelview"))))
           (add-before 'check 'prepare-for-tests
             (lambda _
+              ;; Make Qt render "offscreen", required for tests.
+              (setenv "QT_QPA_PLATFORM" "offscreen")
               (setenv "QML_IMPORT_PATH"
                       (string-append #$output "/lib/qt6/qml:"
-                                     (getenv "QML_IMPORT_PATH"))))))))
+                                     (getenv "QML_IMPORT_PATH")))))
+          (delete 'check)               ;move after the install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check)))))
     (native-inputs (list perl vulkan-headers))
     (inputs (list libxkbcommon qtbase qtdeclarative))
     (synopsis "Qt Remote Objects module")
