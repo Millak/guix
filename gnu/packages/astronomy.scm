@@ -353,7 +353,7 @@ moment, supported SPICE files are:
 (define-public calcmysky
   (package
     (name "calcmysky")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method git-fetch)
@@ -362,7 +362,7 @@ moment, supported SPICE files are:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0blp1w1bghskfi0ysds51r2a7nvvjc9yqp5nlf8l3gciig97nhdg"))))
+        (base32 "03h93jxpxfa7gy4z3pvh8xy60z2f5n5id9k2wkzmf81zrvakbvgv"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
