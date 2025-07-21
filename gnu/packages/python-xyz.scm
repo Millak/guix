@@ -37865,7 +37865,8 @@ collection.")
               (sha256
                (base32
                 "000f8n6d4ilihiaf590k73rx3327jh8ima5q5dpxlwz3frj45qrn"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for @code{protobuf}")
     (description "This package contains typing stubs for @code{protobuf}, a
