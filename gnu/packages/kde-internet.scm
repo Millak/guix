@@ -429,6 +429,40 @@ creation and downloaded data verification, magnet links, advanced peer
 management, IP blocking lists.")
     (license license:gpl2+)))
 
+(define-public kunifiedpush
+  (package
+    (name "kunifiedpush")
+    (version "25.04.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "0hzhbn8rrlgkml47r6qqpcqg01az2za20kcsrasgmc5bf1cwclqw"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" "connectortest")))))))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kcmutils
+           kcoreaddons
+           ki18n
+           kservice
+           qtwebsockets))
+    (home-page "https://invent.kde.org/libraries/kunifiedpush")
+    (synopsis "UnifiedPush client components")
+    (description "KUnifiedPush is a @uref{https://unifiedpush.org/,
+UnifiedPush} client library and distributor daemon.")
+    (license license:lgpl2.0+)))
+
 (define-public ruqola
   (package
     (name "ruqola")
