@@ -1698,7 +1698,7 @@ represented by a QPoint or a QSize.")
 (define-public kwidgetsaddons
   (package
     (name "kwidgetsaddons")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1707,13 +1707,16 @@ represented by a QPoint or a QSize.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "01kl3j7qnx64zpaaqb5kya6f3d3r9zl7mva402pzh6bkk4lqhlx1"))))
+                "0p4ifbqyjc6c52irhi0j9y48w8pz0jnvw2zyp53sk37xaa0ghqvn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
     (arguments
      (list
       #:qtbase qtbase
+      #:configure-flags
+      ;; XXX: build python bindings.
+      #~(list "-DBUILD_PYTHON_BINDINGS=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
