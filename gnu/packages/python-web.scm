@@ -898,24 +898,38 @@ datasets and other repos on the @url{huggingface.co} hub.")
 (define-public python-lazr-restfulclient
   (package
     (name "python-lazr-restfulclient")
-    (version "0.14.4")
+    (version "0.14.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lazr.restfulclient" version))
        (sha256
-        (base32 "11yhlqmdf2cqbdfzn8gdmzvmcivh4fflr18zf412sflvfjrdc3xz"))))
-    (build-system python-build-system)
-    ;; Disable the test suite to avoid the lazr.authentication requirement,
-    ;; which requires the ancient 'oauth', a Python 2 only library.
-    (arguments (list #:tests? #f))
-    (propagated-inputs
-     (list python-distro
-           python-httplib2
-           python-oauthlib
-           python-pyparsing
-           python-six
-           python-wadllib))
+        (base32 "1nzzmp9aaaxh25jy3wm71cpf9dfw56s4g303c8a3nij874fjmwa3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Disable part of the test suite to avoid the lazr.authentication
+          ;; requirement, which requires 'oauth', a Python 2 only library.
+          (add-after 'unpack 'remove-some-checks
+            (lambda _
+              (with-directory-excursion "src/lazr/restfulclient/tests"
+                (for-each delete-file '("test_oauth.py" "test_docs.py")))
+              (substitute* "setup.py"
+                (("\"(oauth|lazr\\.(authentication|restful>=0\\.11\\.0))\",")
+                 "")))))))
+    (native-inputs (list python-setuptools
+                         python-testtools
+                         python-wheel
+                         python-wsgi-intercept
+                         python-zope-testrunner))
+    (propagated-inputs (list python-distro
+                             python-httplib2
+                             python-oauthlib
+                             python-pyparsing
+                             python-setuptools
+                             python-wadllib))
     (home-page "https://launchpad.net/lazr.restfulclient")
     (synopsis "Web client Python library extending wadlib")
     (description "This package provides a programmable client library that
