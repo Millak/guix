@@ -177,7 +177,7 @@ backed by Git Annex.")
          (file-name (string-append name "-" version "-checkout"))
          (sha256
           (base32 "0c8zn7l0xq65wp07h7mxnb5ww56d1443l2vkjvx5sj6wpcchfn0s"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
         #:phases
@@ -188,7 +188,7 @@ backed by Git Annex.")
                     (invoke "cram" "tests")
                     (format #t "test suite not run.~%")))))))
       (native-inputs
-       (list python-cram))
+       (list python-cram python-setuptools python-wheel))
       (home-page "https://github.com/sjl/t")
       (synopsis "Command-line todo list manager")
       (description
