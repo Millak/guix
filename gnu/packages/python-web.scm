@@ -3774,19 +3774,18 @@ authentications)
        (sha256
         (base32
          "1bxf9a3ny1js422j962zfzl4a9dhj192pvai05whn7j0iy9gdyrk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-        (replace 'check
-          (lambda* (#:key tests? #:allow-other-keys)
-            (when tests?
-              (invoke "coverage" "run" "-m"
-                      "unittest" "openid.test.test_suite")))))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "openid.test.test_suite")))))))
     (propagated-inputs
      (list python-defusedxml))
     (native-inputs
-     (list python-coverage python-psycopg2 python-django))
+     (list python-psycopg2 python-django python-setuptools python-wheel))
     (home-page "https://github.com/necaris/python3-openid")
     (synopsis "OpenID support for servers and consumers")
     (description "This library provides OpenID authentication for Python, both
