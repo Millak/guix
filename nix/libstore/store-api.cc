@@ -3,7 +3,7 @@
 #include "util.hh"
 
 #include <climits>
-
+#include <format>
 
 namespace nix {
 
@@ -32,14 +32,14 @@ bool isStorePath(const Path & path)
 void assertStorePath(const Path & path)
 {
     if (!isStorePath(path))
-        throw Error(format("path `%1%' is not in the store") % path);
+        throw Error(std::format("path `{}' is not in the store", path));
 }
 
 
 Path toStorePath(const Path & path)
 {
     if (!isInStore(path))
-        throw Error(format("path `%1%' is not in the store") % path);
+        throw Error(std::format("path `{}' is not in the store", path));
     Path::size_type slash = path.find('/', settings.nixStore.size() + 1);
     if (slash == Path::npos)
         return path;
@@ -61,15 +61,14 @@ void checkStoreName(const string & name)
     /* Disallow names starting with a dot for possible security
        reasons (e.g., "." and ".."). */
     if (string(name, 0, 1) == ".")
-        throw Error(format("invalid name: `%1%' (can't begin with dot)") % name);
+        throw Error(std::format("invalid name: `{}' (can't begin with dot)", name));
     for (const auto& i : name)
         if (!((i >= 'A' && i <= 'Z') ||
               (i >= 'a' && i <= 'z') ||
               (i >= '0' && i <= '9') ||
               validChars.find(i) != string::npos))
         {
-            throw Error(format("invalid character `%1%' in name `%2%'")
-                % i % name);
+            throw Error(std::format("invalid character `{}' in name `{}'", i, name));
         }
 }
 
@@ -211,13 +210,13 @@ string StoreAPI::makeValidityRegistration(const PathSet & paths,
 
         if (showHash) {
             s += printHash(info.hash) + "\n";
-            s += (format("%1%\n") % info.narSize).str();
+            s += std::format("{}\n", info.narSize);
         }
 
         Path deriver = showDerivers ? info.deriver : "";
         s += deriver + "\n";
 
-        s += (format("%1%\n") % info.references.size()).str();
+        s += std::format("{}\n", info.references.size());
 
         for (auto& j : info.references)
             s += j + "\n";

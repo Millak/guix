@@ -5,8 +5,9 @@
 #include <string>
 #include <list>
 #include <set>
+#include <vector>
+#include <string_view>
 
-#include <boost/format.hpp>
 
 /* Before 4.7, gcc's std::exception uses empty throw() specifiers for
  * its (virtual) destructor and what() in c++11 mode, in violation of spec
@@ -26,16 +27,6 @@ using std::string;
 using std::list;
 using std::set;
 using std::vector;
-using boost::format;
-
-
-struct FormatOrString
-{
-    string s;
-    FormatOrString(const string & s) : s(s) { };
-    FormatOrString(const format & f) : s(f.str()) { };
-    FormatOrString(const char * s) : s(s) { };
-};
 
 
 /* BaseError should generally not be caught, as it has Interrupted as
@@ -47,7 +38,7 @@ protected:
     string err;
 public:
     unsigned int status; // exit status
-    BaseError(const FormatOrString & fs, unsigned int status = 1);
+    BaseError(std::string_view fs, unsigned int status = 1);
 #ifdef EXCEPTION_NEEDS_THROW_SPEC
     ~BaseError() throw () { };
     const char * what() const throw () { return err.c_str(); }
@@ -56,14 +47,14 @@ public:
 #endif
     const string & msg() const { return err; }
     const string & prefix() const { return prefix_; }
-    BaseError & addPrefix(const FormatOrString & fs);
+    BaseError & addPrefix(std::string fs);
 };
 
 #define MakeError(newClass, superClass) \
     class newClass : public superClass                  \
     {                                                   \
     public:                                             \
-        newClass(const FormatOrString & fs, unsigned int status = 1) : superClass(fs, status) { }; \
+        newClass(std::string_view fs, unsigned int status = 1) : superClass(fs, status) { }; \
     };
 
 MakeError(Error, BaseError)
@@ -72,7 +63,7 @@ class SysError : public Error
 {
 public:
     int errNo;
-    SysError(const FormatOrString & fs);
+    SysError(std::string_view fs);
 };
 
 

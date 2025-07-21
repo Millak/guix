@@ -4,6 +4,9 @@
 #include "util.hh"
 #include "misc.hh"
 
+#include <format>
+
+#include <cassert>
 
 namespace nix {
 
@@ -20,7 +23,7 @@ void DerivationOutput::parseHashInfo(bool & recursive, HashType & hashType, Hash
 
     hashType = parseHashType(algo);
     if (hashType == htUnknown)
-        throw Error(format("unknown hash algorithm `%1%'") % algo);
+        throw Error(std::format("unknown hash algorithm `{}'", algo));
 
     hash = parseHash(hashType, this->hash);
 }
@@ -48,7 +51,7 @@ static Path parsePath(std::istream & str)
 {
     string s = parseString(str);
     if (s.size() == 0 || s[0] != '/')
-        throw FormatError(format("bad path `%1%' in derivation") % s);
+        throw FormatError(std::format("bad path `{}' in derivation", s));
     return s;
 }
 
@@ -117,7 +120,7 @@ Derivation readDerivation(const Path & drvPath)
     try {
         return parseDerivation(readFile(drvPath));
     } catch (FormatError & e) {
-        throw Error(format("error parsing derivation `%1%': %2%") % drvPath % e.msg());
+        throw Error(std::format("error parsing derivation `{}': {}", drvPath, e.msg()));
     }
 }
 

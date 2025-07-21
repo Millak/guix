@@ -22,6 +22,7 @@
 
 #include <unistd.h>
 #include <cstdlib>
+#include <format>
 
 namespace nix {
 
@@ -53,7 +54,7 @@ static void builtinDownload(const Derivation &drv,
     const string program = settings.guixProgram;
     execv(program.c_str(), (char *const *) argv);
 
-    throw SysError(format("failed to run download program '%1%'") % program);
+    throw SysError(std::format("failed to run download program '{}'", program));
 }
 
 static const std::map<std::string, derivationBuilder> builtins =

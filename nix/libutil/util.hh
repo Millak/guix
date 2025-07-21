@@ -2,6 +2,9 @@
 
 #include "types.hh"
 
+#include <sstream>
+#include <string_view>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -139,11 +142,11 @@ private:
 public:
     Nest();
     ~Nest();
-    void open(Verbosity level, const FormatOrString & fs);
+    void open(Verbosity level, std::string_view fs);
     void close();
 };
 
-void printMsg_(Verbosity level, const FormatOrString & fs);
+void printMsg_(Verbosity level, std::string_view fs);
 
 #define startNest(varName, level, f) \
     Nest varName; \
@@ -160,7 +163,7 @@ void printMsg_(Verbosity level, const FormatOrString & fs);
 
 #define debug(f) printMsg(lvlDebug, f)
 
-void warnOnce(bool & haveWarned, const FormatOrString & fs);
+void warnOnce(bool & haveWarned, std::string_view fs);
 
 void writeToStderr(const string & s);
 
@@ -367,7 +370,7 @@ bool hasSuffix(const string & s, const string & suffix);
 
 
 /* Read string `s' from stream `str'. */
-void expect(std::istream & str, const string & s);
+void expect(std::istream & str, std::string_view s);
 
 MakeError(FormatError, Error)
 

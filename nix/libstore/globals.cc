@@ -6,7 +6,7 @@
 
 #include <map>
 #include <algorithm>
-
+#include <format>
 
 namespace nix {
 
@@ -156,8 +156,8 @@ void Settings::_get(bool & res, const string & name)
     if (i == settings.end()) return;
     if (i->second == "true") res = true;
     else if (i->second == "false") res = false;
-    else throw Error(format("configuration option `%1%' should be either `true' or `false', not `%2%'")
-        % name % i->second);
+    else throw Error(std::format("configuration option `{}' should be either `true' or `false', not `{}'",
+        name, i->second));
 }
 
 
@@ -183,7 +183,7 @@ template<class N> void Settings::_get(N & res, const string & name)
     SettingsMap::iterator i = settings.find(name);
     if (i == settings.end()) return;
     if (!string2Int(i->second, res))
-        throw Error(format("configuration setting `%1%' should have an integer value") % name);
+        throw Error(std::format("configuration setting `{}' should have an integer value", name));
 }
 
 

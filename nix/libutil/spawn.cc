@@ -30,6 +30,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
+#include <cassert>
+#include <format>
 
 #if HAVE_SYS_MOUNT_H
 #include <sys/mount.h>
@@ -61,8 +63,11 @@
 #define pivot_root(new_root, put_old) (syscall(SYS_pivot_root, new_root,put_old))
 #endif
 
-
-#define CLONE_ENABLED defined(CLONE_NEWNS)
+#if defined(CLONE_NEWNS)
+#define CLONE_ENABLED 1
+#else
+#define CLONE_ENABLED 0
+#endif
 
 #if CLONE_ENABLED
 #include <sys/ioctl.h>
@@ -84,7 +89,7 @@ void addPhaseAfter(Phases & phases, string afterLabel, string addLabel, Action a
             phases.insert(i, p);
             return;
         }
-    throw Error(format("label `%1%' not found in phases") % afterLabel);
+    throw Error(std::format("label `{}' not found in phases", afterLabel));
 }
 
 
@@ -98,7 +103,7 @@ void addPhaseBefore(Phases & phases, string beforeLabel, string addLabel, Action
             phases.insert(i, p);
             return;
         }
-    throw Error(format("label `%1%' not found in phases") % beforeLabel);
+    throw Error(std::format("label `{}' not found in phases", beforeLabel));
 }
 
 
@@ -127,7 +132,7 @@ void deletePhase(Phases & phases, string delLabel)
             phases.erase(i);
             return;
         }
-    throw Error(format("label `%1%' not found in phases") % delLabel);
+    throw Error(std::format("label `{}' not found in phases", delLabel));
 }
 
 
@@ -138,7 +143,7 @@ void replacePhase(Phases & phases, string replaceLabel, Action newAction)
             (*i).action = newAction;
             return;
         }
-    throw Error(format("label `%1' not found in phases") % replaceLabel);
+    throw Error(std::format("label `{}' not found in phases", replaceLabel));
 }
 
 
@@ -190,7 +195,7 @@ static void earlyIOSetupAction(SpawnContext & ctx)
             /* Doesn't make sense for it to be writable, but compatibility... */
             AutoCloseFD fd = open(ctx.stdinFile.c_str(), O_RDWR);
             if(fd == -1)
-                throw SysError(format("cannot open `%1%'") % ctx.stdinFile);
+                throw SysError(std::format("cannot open `{}'", ctx.stdinFile));
             if(dup2(fd, STDIN_FILENO) == -1)
                 throw SysError("cannot dup2 fd into stdin fd");
         }
@@ -216,7 +221,7 @@ static void chrootAction(SpawnContext & ctx)
     if(ctx.doChroot)
 #if HAVE_CHROOT
         if(chroot(ctx.chrootRootDir.c_str()) == -1)
-            throw SysError(format("cannot change root directory to '%1%'") % ctx.chrootRootDir);
+            throw SysError(std::format("cannot change root directory to '{}'", ctx.chrootRootDir));
 #else
     throw Error("chroot is not supported on this system");
 #endif
@@ -227,7 +232,7 @@ static void chdirAction(SpawnContext & ctx)
 {
     if(ctx.setcwd)
         if(chdir(ctx.cwd.c_str()) == -1)
-            throw SysError(format("changing into `%1%'") % ctx.cwd);
+            throw SysError(std::format("changing into `{}'", ctx.cwd));
 }
 
 
@@ -353,7 +358,7 @@ void execAction(SpawnContext & ctx)	  // kept public for use in 'build.cc'
         env = envPtrs.data();
     }
     if(execvpe(ctx.program.c_str(), stringsToCharPtrs(ctx.args).data(), env) == -1)
-        throw SysError(format("executing `%1%'") % ctx.program);
+        throw SysError(std::format("executing `{}'", ctx.program));
 }
 
 
@@ -478,11 +483,11 @@ static void makeChrootSeparateFilesystemAction(SpawnContext & sctx)
            a tmpfs on it. */
         if(ctx.mountTmpfsOnChroot) {
             if(mount("none", ctx.chrootRootDir.c_str(), "tmpfs", 0, 0) == -1)
-                throw SysError(format("unable to mount tmpfs on `%1%'") % ctx.chrootRootDir);
+                throw SysError(std::format("unable to mount tmpfs on `{}'", ctx.chrootRootDir));
         }
         else {
             if(mount(ctx.chrootRootDir.c_str(), ctx.chrootRootDir.c_str(), 0, MS_BIND, 0) == -1)
-                throw SysError(format("unable to bind mount ‘%1%’") % ctx.chrootRootDir);
+                throw SysError(std::format("unable to bind mount `{}'", ctx.chrootRootDir));
         }
     }
 #endif
@@ -526,7 +531,7 @@ static void bindMount(Path source, Path target, bool readOnly)
 #if HAVE_SYS_MOUNT_H && defined(MS_BIND)
     struct stat st;
     if (lstat(source.c_str(), &st) == -1)
-        throw SysError(format("getting attributes of path `%1%'") % source);
+        throw SysError(std::format("getting attributes of path `{}'", source));
 
     if(S_ISDIR(st.st_mode))
         createDirs(target);
@@ -545,11 +550,11 @@ static void bindMount(Path source, Path target, bool readOnly)
         while(true){
             if(lstat(target.c_str(), &st2) != -1) {
                 if(!S_ISREG(st2.st_mode))
-                    throw Error(format("mount target `%1%' exists but is not a regular file") % target);
+                    throw Error(std::format("mount target `{}' exists but is not a regular file", target));
                 break;
             }
             if(errno != ENOENT) {
-                throw SysError(format("stat'ing path `%1%'") % target);
+                throw SysError(std::format("stat'ing path `{}'", target));
             }
             AutoCloseFD fd = open(target.c_str(),
                                   O_WRONLY | O_NOFOLLOW | O_CREAT | O_EXCL,
@@ -561,7 +566,7 @@ static void bindMount(Path source, Path target, bool readOnly)
             /* Note: because of O_CREAT | O_EXCL, EACCES can only mean a
              * permission issue with the parent directory */
             if(errno != EEXIST)
-                throw SysError(format("Creating placeholder regular file target mount `%1%'") % target);
+                throw SysError(std::format("Creating placeholder regular file target mount `{}'", target));
         }
     }
 
@@ -569,7 +574,7 @@ static void bindMount(Path source, Path target, bool readOnly)
        are in an unprivileged mount namespace and not specifying MS_REC would
        reveal subtrees that had been covered up. */
     if (mount(source.c_str(), target.c_str(), 0, MS_BIND|MS_REC, 0) == -1)
-        throw SysError(format("bind mount from `%1%' to `%2%' failed") % source % target);
+        throw SysError(std::format("bind mount from `{}' to `{}' failed", source, target));
     if(readOnly) {
 #if defined(MS_REMOUNT) && defined(MS_RDONLY)
         /* Extra flags passed with MS_BIND are ignored, hence the extra
@@ -581,12 +586,12 @@ static void bindMount(Path source, Path target, bool readOnly)
 #if HAVE_STATVFS
         struct statvfs stvfs;
         if(statvfs(target.c_str(), &stvfs) == -1)
-            throw SysError(format("statvfs of `%1%'") % target);
+            throw SysError(std::format("statvfs of `{}'", target));
         mount_flags |= statfsToMountFlags(stvfs.f_flag);
 #endif
 
         if (mount(source.c_str(), target.c_str(), 0, mount_flags, 0) == -1)
-            throw SysError(format("read-only remount of `%1%' failed") % target);
+            throw SysError(std::format("read-only remount of `{}' failed", target));
 #else
         throw Error("remounting read-only is not supported on this platform");
 #endif
@@ -631,7 +636,7 @@ static void mountProcAction(SpawnContext & sctx)
         Path target = (ctx.doChroot ? ctx.chrootRootDir : "") + "/proc";
         createDirs(target);
         if(mount("none", target.c_str(), "proc", 0, 0) == -1)
-            throw SysError(format("mounting `%1%'") % target);
+            throw SysError(std::format("mounting `{}'", target));
     }
 #endif
 }
@@ -645,7 +650,7 @@ static void mountDevshmAction(SpawnContext & sctx)
         Path target = (ctx.doChroot ? ctx.chrootRootDir : "") + "/dev/shm";
         createDirs(target);
         if(mount("none", target.c_str(), "tmpfs", 0, 0) == -1)
-            throw SysError(format("mounting `%1%'") % target);
+            throw SysError(std::format("mounting `{}'", target));
     }
 #endif
 }
@@ -661,13 +666,13 @@ static void mountDevptsAction(SpawnContext & sctx)
         if(pathExists(chroot + "/dev/ptmx")) return;
         createDirs(target);
         if(mount("none", target.c_str(), "devpts", 0, "newinstance,mode=0620") == -1)
-            throw SysError(format("mounting `%1%'") % target);
+            throw SysError(std::format("mounting `{}'", target));
         createSymlink("/dev/pts/ptmx", chroot + "/dev/ptmx");
         /* Make sure /dev/pts/ptmx is world-writable.  With some Linux
            versions, it is created with permissions 0.  */
         Path targetPtmx = chroot + "/dev/pts/ptmx";
         if (chmod(targetPtmx.c_str(), 0666) == -1)
-            throw SysError(format("setting permissions on `%1%'") % targetPtmx);
+            throw SysError(std::format("setting permissions on `{}'", targetPtmx));
     }
 #endif
 }
@@ -679,16 +684,16 @@ static void pivotRootAction(SpawnContext & sctx)
     CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
     if((ctx.cloneFlags & CLONE_NEWNS) != 0 && ctx.doChroot) {
         if (chdir(ctx.chrootRootDir.c_str()) == -1)
-            throw SysError(format("cannot change directory to '%1%'") % ctx.chrootRootDir);
+            throw SysError(std::format("cannot change directory to '{}'", ctx.chrootRootDir));
 
         if (mkdir("real-root", 0) == -1)
             throw SysError("cannot create real-root directory");
 
         if (pivot_root(".", "real-root") == -1)
-            throw SysError(format("cannot pivot old root directory onto '%1%'") % (ctx.chrootRootDir + "/real-root"));
+            throw SysError(std::format("cannot pivot old root directory onto '{}'", (ctx.chrootRootDir + "/real-root")));
 
         if (chroot(".") == -1)
-            throw SysError(format("cannot change root directory to '%1%'") % ctx.chrootRootDir);
+            throw SysError(std::format("cannot change root directory to '{}'", ctx.chrootRootDir));
 
         if (umount2("real-root", MNT_DETACH) == -1)
             throw SysError("cannot unmount real root filesystem");
@@ -761,7 +766,7 @@ void unshareAndInitUserns(int flags, const string & uidMap,
                 throw SysError("reaping userns init process");
         }
         if(!(WIFEXITED(status) != 0 && WEXITSTATUS(status) == EXIT_SUCCESS))
-            throw Error(format("userns init child exited with status %1%") % WEXITSTATUS(status));
+            throw Error(std::format("userns init child exited with status {}", WEXITSTATUS(status)));
     }
 #endif
 }

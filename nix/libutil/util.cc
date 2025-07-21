@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <sstream>
 #include <cstring>
+#include <cassert>
+#include <format>
 
 #include <sys/wait.h>
 #include <unistd.h>
@@ -35,22 +37,22 @@ extern char * * environ;
 namespace nix {
 
 
-BaseError::BaseError(const FormatOrString & fs, unsigned int status)
+BaseError::BaseError(std::string_view fs, unsigned int status)
     : status(status)
 {
-    err = fs.s;
+    err = fs;
 }
 
 
-BaseError & BaseError::addPrefix(const FormatOrString & fs)
+BaseError & BaseError::addPrefix(std::string fs)
 {
-    prefix_ = fs.s + prefix_;
+    prefix_ = fs + prefix_;
     return *this;
 }
 
 
-SysError::SysError(const FormatOrString & fs)
-    : Error(format("%1%: %2%") % fs.s % strerror(errno))
+SysError::SysError(std::string_view fs)
+    : Error(std::format("{}: {}", fs, strerror(errno)))
     , errNo(errno)
 {
 }
@@ -114,7 +116,7 @@ Path canonPath(const Path & path, bool resolveSymlinks)
     string s;
 
     if (path[0] != '/')
-        throw Error(format("not an absolute path: `%1%'") % path);
+        throw Error(std::format("not an absolute path: `{}'", path));
 
     string::const_iterator i = path.begin(), end = path.end();
     string temp;
@@ -150,7 +152,7 @@ Path canonPath(const Path & path, bool resolveSymlinks)
                the symlink target might contain new symlinks). */
             if (resolveSymlinks && isLink(s)) {
                 if (++followCount >= maxFollow)
-                    throw Error(format("infinite symlink recursion in path `%1%'") % path);
+                    throw Error(std::format("infinite symlink recursion in path `{}'", path));
                 temp = absPath(readLink(s), dirOf(s))
                     + string(i, end);
                 i = temp.begin(); /* restart */
@@ -168,7 +170,7 @@ Path dirOf(const Path & path)
 {
     Path::size_type pos = path.rfind('/');
     if (pos == string::npos)
-        throw Error(format("invalid file name `%1%'") % path);
+        throw Error(std::format("invalid file name `{}'", path));
     return pos == 0 ? "/" : Path(path, 0, pos);
 }
 
@@ -177,7 +179,7 @@ string baseNameOf(const Path & path)
 {
     Path::size_type pos = path.rfind('/');
     if (pos == string::npos)
-        throw Error(format("invalid file name `%1%'") % path);
+        throw Error(std::format("invalid file name `{}'", path));
     return string(path, pos + 1);
 }
 
@@ -195,7 +197,7 @@ struct stat lstat(const Path & path)
 {
     struct stat st;
     if (lstat(path.c_str(), &st))
-        throw SysError(format("getting status of `%1%'") % path);
+        throw SysError(std::format("getting status of `{}'", path));
     return st;
 }
 
@@ -212,7 +214,7 @@ bool pathExists(const Path & path)
 #endif
     if (!res) return true;
     if (errno != ENOENT && errno != ENOTDIR)
-        throw SysError(format("getting status of %1%") % path);
+        throw SysError(std::format("getting status of {}", path));
     return false;
 }
 
@@ -222,14 +224,14 @@ Path readLink(const Path & path)
     checkInterrupt();
     struct stat st = lstat(path);
     if (!S_ISLNK(st.st_mode))
-        throw Error(format("`%1%' is not a symlink") % path);
+        throw Error(std::format("`{}' is not a symlink", path));
     std::vector<char> buf(st.st_size);
     ssize_t rlsize = readlink(path.c_str(), buf.data(), st.st_size);
     if (rlsize == -1)
-        throw SysError(format("reading symbolic link '%1%'") % path);
+        throw SysError(std::format("reading symbolic link '{}'", path));
     else if (rlsize > st.st_size)
-        throw Error(format("symbolic link ‘%1%’ size overflow %2% > %3%")
-            % path % rlsize % st.st_size);
+        throw Error(std::format("symbolic link `{}' size overflow {} > {}",
+            path, rlsize, st.st_size));
     return string(buf.begin(), buf.end());
 }
 
@@ -253,7 +255,7 @@ static DirEntries readDirectory(DIR *dir)
         if (name == "." || name == "..") continue;
         entries.emplace_back(name, dirent->d_ino, dirent->d_type);
     }
-    if (errno) throw SysError(format("reading directory"));
+    if (errno) throw SysError("reading directory");
 
     return entries;
 }
@@ -261,7 +263,7 @@ static DirEntries readDirectory(DIR *dir)
 DirEntries readDirectory(const Path & path)
 {
     AutoCloseDir dir = opendir(path.c_str());
-    if (!dir) throw SysError(format("opening directory `%1%'") % path);
+    if (!dir) throw SysError(std::format("opening directory `{}'", path));
     return readDirectory(dir);
 }
 
@@ -273,7 +275,7 @@ static DirEntries readDirectory(int fd)
     if (fdcopy < 0) throw SysError("dup");
 
     AutoCloseDir dir = fdopendir(fdcopy);
-    if (!dir) throw SysError(format("opening directory from file descriptor `%1%'") % fd);
+    if (!dir) throw SysError(std::format("opening directory from file descriptor `{}'", fd));
     return readDirectory(dir);
 }
 
@@ -304,7 +306,7 @@ string readFile(const Path & path, bool drain)
 {
     AutoCloseFD fd = open(path.c_str(), O_RDONLY);
     if (fd == -1)
-        throw SysError(format("reading file `%1%'") % path);
+        throw SysError(std::format("reading file `{}'", path));
     return drain ? drainFD(fd) : readFile(fd);
 }
 
@@ -313,7 +315,7 @@ void writeFile(const Path & path, const string & s)
 {
     AutoCloseFD fd = open(path.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666);
     if (fd == -1)
-        throw SysError(format("writing file '%1%'") % path);
+        throw SysError(std::format("writing file '{}'", path));
     writeFull(fd, s);
 }
 
@@ -349,7 +351,7 @@ static void _deletePathAt(int fd, const Path & path, const Path & fullPath, unsi
 {
     checkInterrupt();
 
-    printMsg(lvlVomit, format("%1%") % fullPath);
+    printMsg(lvlVomit, std::format("{}", fullPath));
 
 #ifdef HAVE_STATX
 # define st_mode stx_mode
@@ -364,7 +366,7 @@ static void _deletePathAt(int fd, const Path & path, const Path & fullPath, unsi
     struct stat st;
 #endif
     if (fstatat(fd, path.c_str(), &st, AT_SYMLINK_NOFOLLOW))
-        throw SysError(format("getting status of `%1%'") % fullPath);
+        throw SysError(std::format("getting status of `{}'", fullPath));
 
     /* Note: if another process modifies what is at 'path' between now and
        when we actually delete it, this may be inaccurate, but I know of no
@@ -380,17 +382,17 @@ static void _deletePathAt(int fd, const Path & path, const Path & fullPath, unsi
                                  O_NOFOLLOW |
                                  O_CLOEXEC);
       if(!dirfd.isOpen())
-        throw SysError(format("opening `%1%'") % fullPath);
+        throw SysError(std::format("opening `{}'", fullPath));
 
       /* st.st_mode may currently be from a different file than what we
          actually opened, get it straight from the file instead */
       if(fstat(dirfd, &st))
-        throw SysError(format("re-getting status of `%1'") % fullPath);
+        throw SysError(std::format("re-getting status of `{}'", fullPath));
 
       /* Make the directory writable. */
       if (!(st.st_mode & S_IWUSR)) {
         if (fchmod(dirfd, st.st_mode | S_IWUSR) == -1)
-          throw SysError(format("making `%1%' writable") % fullPath);
+          throw SysError(std::format("making `{}' writable", fullPath));
       }
 
       for (auto & i : readDirectory(dirfd))
@@ -400,7 +402,7 @@ static void _deletePathAt(int fd, const Path & path, const Path & fullPath, unsi
     int ret;
     ret = unlinkat(fd, path.c_str(), S_ISDIR(st.st_mode) ? AT_REMOVEDIR : 0 );
     if (ret == -1)
-        throw SysError(format("cannot unlink `%1%'") % fullPath);
+        throw SysError(std::format("cannot unlink `{}'", fullPath));
 
 #undef st_mode
 #undef st_size
@@ -425,7 +427,7 @@ void deletePath(const Path & path)
 void deletePath(const Path & path, unsigned long long & bytesFreed, size_t linkThreshold)
 {
     startNest(nest, lvlDebug,
-        format("recursively deleting path `%1%'") % path);
+        std::format("recursively deleting path `{}'", path));
     bytesFreed = 0;
     _deletePath(path, bytesFreed, linkThreshold);
 }
@@ -447,14 +449,14 @@ static void copyFile(int sourceFd, int destinationFd)
 	}
     } else {
 	if (result < 0)
-	    throw SysError(format("copy_file_range `%1%' to `%2%'") % sourceFd % destinationFd);
+	    throw SysError(std::format("copy_file_range `{}' to `{}'", sourceFd, destinationFd));
 
 	/* If 'copy_file_range' copied less than requested, try again.  */
 	for (ssize_t copied = result; copied < st.st_size; copied += result) {
 	    result = copy_file_range(sourceFd, NULL, destinationFd, NULL,
 				     st.st_size - copied, 0);
 	    if (result < 0)
-		throw SysError(format("copy_file_range `%1%' to `%2%'") % sourceFd % destinationFd);
+		throw SysError(std::format("copy_file_range `{}' to `{}'", sourceFd, destinationFd));
 	}
     }
 }
@@ -465,18 +467,18 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 {
     struct stat st;
     if (fstatat(sourceroot, source.c_str(), &st, AT_SYMLINK_NOFOLLOW) == -1)
-	throw SysError(format("statting file `%1%'") % source);
+	throw SysError(std::format("statting file `{}'", source));
 
     if (S_ISREG(st.st_mode)) {
 	AutoCloseFD sourceFd = openat(sourceroot, source.c_str(),
 				      O_CLOEXEC | O_NOFOLLOW | O_RDONLY);
-	if (sourceFd == -1) throw SysError(format("opening `%1%'") % source);
+	if (sourceFd == -1) throw SysError(std::format("opening `{}'", source));
 
 	AutoCloseFD destinationFd = openat(destinationroot, destination.c_str(),
 					   O_CLOEXEC | O_CREAT | O_WRONLY | O_TRUNC
 					   | O_NOFOLLOW | O_EXCL,
 					   st.st_mode);
-	if (destinationFd == -1) throw SysError(format("opening `%1%'") % source);
+	if (destinationFd == -1) throw SysError(std::format("opening `{}'", source));
 
 	copyFile(sourceFd, destinationFd);
 	fchown(destinationFd, st.st_uid, st.st_gid);
@@ -487,37 +489,37 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 	target[st.st_size] = '\0';
 	int err = symlinkat(target.data(), destinationroot, destination.c_str());
 	if (err != 0)
-	    throw SysError(format("creating symlink `%1%'") % destination);
+	    throw SysError(std::format("creating symlink `{}'", destination));
 	fchownat(destinationroot, destination.c_str(),
 		 st.st_uid, st.st_gid, AT_SYMLINK_NOFOLLOW);
     } else if (S_ISDIR(st.st_mode)) {
 	int err = mkdirat(destinationroot, destination.c_str(), 0755);
 	if (err != 0)
-	    throw SysError(format("creating directory `%1%'") % destination);
+	    throw SysError(std::format("creating directory `{}'", destination));
 
 	AutoCloseFD destinationFd = openat(destinationroot, destination.c_str(),
 					   O_CLOEXEC | O_RDONLY | O_DIRECTORY
 					   | O_NOFOLLOW);
 	if (err != 0)
-	    throw SysError(format("opening directory `%1%'") % destination);
+	    throw SysError(std::format("opening directory `{}'", destination));
 
 	AutoCloseFD sourceFd = openat(sourceroot, source.c_str(),
 				      O_CLOEXEC | O_NOFOLLOW | O_RDONLY);
 	if (sourceFd == -1)
-	    throw SysError(format("opening `%1%'") % source);
+	    throw SysError(std::format("opening `{}'", source));
 
         if (deleteSource && !(st.st_mode & S_IWUSR)) {
 	    /* Ensure the directory is writable so files within it can be
 	       deleted.  */
             if (fchmod(sourceFd, st.st_mode | S_IWUSR) == -1)
-                throw SysError(format("making `%1%' directory writable") % source);
+                throw SysError(std::format("making `{}' directory writable", source));
         }
 
         for (auto & i : readDirectory(sourceFd))
 	    copyFileRecursively((int)sourceFd, i.name, (int)destinationFd, i.name,
 				deleteSource);
 	fchown(destinationFd, st.st_uid, st.st_gid);
-    } else throw Error(format("refusing to copy irregular file `%1%'") % source);
+    } else throw Error(std::format("refusing to copy irregular file `{}'", source));
 
     if (deleteSource)
 	unlinkat(sourceroot, source.c_str(),
@@ -534,9 +536,9 @@ static Path tempName(Path tmpRoot, const Path & prefix, bool includePid,
 {
     tmpRoot = canonPath(tmpRoot.empty() ? getEnv("TMPDIR", "/tmp") : tmpRoot, true);
     if (includePid)
-        return (format("%1%/%2%-%3%-%4%") % tmpRoot % prefix % getpid() % counter++).str();
+        return std::format("{}/{}-{}-{}", tmpRoot, prefix, getpid(), counter++);
     else
-        return (format("%1%/%2%-%3%") % tmpRoot % prefix % counter++).str();
+        return std::format("{}/{}-{}", tmpRoot, prefix, counter++);
 }
 
 
@@ -560,11 +562,11 @@ Path createTempDir(const Path & tmpRoot, const Path & prefix,
                "wheel", then "tar" will fail to unpack archives that
                have the setgid bit set on directories. */
             if (chown(tmpDir.c_str(), (uid_t) -1, getegid()) != 0)
-                throw SysError(format("setting group of directory `%1%'") % tmpDir);
+                throw SysError(std::format("setting group of directory `{}'", tmpDir));
             return tmpDir;
         }
         if (errno != EEXIST)
-            throw SysError(format("creating directory `%1%'") % tmpDir);
+            throw SysError(std::format("creating directory `{}'", tmpDir));
     }
 }
 
@@ -578,15 +580,15 @@ Paths createDirs(const Path & path)
     if (lstat(path.c_str(), &st) == -1) {
         created = createDirs(dirOf(path));
         if (mkdir(path.c_str(), 0777) == -1 && errno != EEXIST)
-            throw SysError(format("creating directory `%1%'") % path);
+            throw SysError(std::format("creating directory `{}'", path));
         st = lstat(path);
         created.push_back(path);
     }
 
     if (S_ISLNK(st.st_mode) && stat(path.c_str(), &st) == -1)
-        throw SysError(format("statting symlink `%1%'") % path);
+        throw SysError(std::format("statting symlink `{}'", path));
 
-    if (!S_ISDIR(st.st_mode)) throw Error(format("`%1%' is not a directory") % path);
+    if (!S_ISDIR(st.st_mode)) throw Error(std::format("`{}' is not a directory", path));
 
     return created;
 }
@@ -595,7 +597,7 @@ Paths createDirs(const Path & path)
 void createSymlink(const Path & target, const Path & link)
 {
     if (symlink(target.c_str(), link.c_str()))
-        throw SysError(format("creating symlink from `%1%' to `%2%'") % link % target);
+        throw SysError(std::format("creating symlink from `{}' to `{}'", link, target));
 }
 
 
@@ -623,12 +625,12 @@ static string escVerbosity(Verbosity level)
 }
 
 
-void Nest::open(Verbosity level, const FormatOrString & fs)
+void Nest::open(Verbosity level, std::string_view fs)
 {
     if (level <= verbosity) {
         if (logType == ltEscapes)
             std::cerr << "\033[" << escVerbosity(level) << "p"
-                      << fs.s << "\n";
+                      << fs << "\n";
         else
             printMsg_(level, fs);
         nest = true;
@@ -648,7 +650,7 @@ void Nest::close()
 }
 
 
-void printMsg_(Verbosity level, const FormatOrString & fs)
+void printMsg_(Verbosity level, std::string_view fs)
 {
     checkInterrupt();
     if (level > verbosity) return;
@@ -658,15 +660,15 @@ void printMsg_(Verbosity level, const FormatOrString & fs)
             prefix += "|   ";
     else if (logType == ltEscapes && level != lvlInfo)
         prefix = "\033[" + escVerbosity(level) + "s";
-    string s = (format("%1%%2%\n") % prefix % fs.s).str();
+    string s = std::format("{}{}\n", prefix, fs);
     writeToStderr(s);
 }
 
 
-void warnOnce(bool & haveWarned, const FormatOrString & fs)
+void warnOnce(bool & haveWarned, std::string_view fs)
 {
     if (!haveWarned) {
-        printMsg(lvlError, format("warning: %1%") % fs.s);
+        printMsg(lvlError, std::format("warning: {}", fs));
         haveWarned = true;
     }
 }
@@ -685,7 +687,7 @@ void writeToStderr(const string & s)
            write errors in exception handlers to ensure that cleanup
            code runs to completion if the other side of stderr has
            been closed unexpectedly. */
-        if (!std::uncaught_exception()) throw;
+        if (std::uncaught_exceptions() == 0) throw;
     }
 }
 
@@ -754,8 +756,8 @@ void waitForMessage(int fd, const string & message)
     string str(message.length(), '\0');
     readFull(fd, (unsigned char*)str.data(), message.length());
     if (str != message)
-	throw Error(format("did not receive message '%1%' on file descriptor %2%")
-	    % message % fd);
+	throw Error(std::format("did not receive message '{}' on file descriptor {}",
+	    message, fd));
 }
 
 
@@ -777,7 +779,7 @@ AutoDelete::~AutoDelete()
                 deletePath(path);
             else {
                 if (remove(path.c_str()) == -1)
-                    throw SysError(format("cannot unlink `%1%'") % path);
+                    throw SysError(std::format("cannot unlink `{}'", path));
             }
         }
     } catch (...) {
@@ -848,7 +850,7 @@ void AutoCloseFD::close()
     if (fd != -1) {
         if (::close(fd) == -1)
             /* This should never happen. */
-            throw SysError(format("closing file descriptor %1%") % fd);
+            throw SysError(std::format("closing file descriptor {}", fd));
         fd = -1;
     }
 }
@@ -1024,13 +1026,13 @@ void Pid::kill(bool quiet)
     if (pid == -1 || pid == 0) return;
 
     if (!quiet)
-        printMsg(lvlError, format("killing process %1%") % pid);
+        printMsg(lvlError, std::format("killing process {}", pid));
 
     /* Send the requested signal to the child.  If it has its own
        process group, send the signal to every process in the child
        process group (which hopefully includes *all* its children). */
     if (::kill(separatePG ? -pid : pid, killSignal) != 0)
-        printMsg(lvlError, (SysError(format("killing process %1%") % pid).msg()));
+        printMsg(lvlError, (SysError(std::format("killing process {}", pid)).msg()));
 
     /* Wait until the child dies, disregarding the exit status. */
     int status;
@@ -1038,7 +1040,7 @@ void Pid::kill(bool quiet)
         checkInterrupt();
         if (errno != EINTR) {
             printMsg(lvlError,
-                (SysError(format("waiting for process %1%") % pid).msg()));
+                (SysError(std::format("waiting for process {}", pid)).msg()));
             break;
         }
     }
@@ -1079,7 +1081,7 @@ void Pid::setKillSignal(int signal)
 
 void killUser(uid_t uid)
 {
-    debug(format("killing all processes running under uid `%1%'") % uid);
+    debug(std::format("killing all processes running under uid `{}'", uid));
 
     assert(uid != 0); /* just to be safe... */
 
@@ -1109,7 +1111,7 @@ void killUser(uid_t uid)
 #endif
             if (errno == ESRCH) break; /* no more processes */
             if (errno != EINTR)
-                throw SysError(format("cannot kill processes for uid `%1%'") % uid);
+                throw SysError(std::format("cannot kill processes for uid `{}'", uid));
         }
 
         _exit(0);
@@ -1121,7 +1123,7 @@ void killUser(uid_t uid)
     if (status == SIGKILL) return;
 #endif
     if (status != 0)
-        throw Error(format("cannot kill processes for uid `%1%': %2%") % uid % statusToString(status));
+        throw Error(std::format("cannot kill processes for uid `{}': {}", uid, statusToString(status)));
 
     /* !!! We should really do some check to make sure that there are
        no processes left running under `uid', but there is no portable
@@ -1193,9 +1195,9 @@ string runProgram(Path program, bool searchPath, const Strings & args)
         else
             execv(program.c_str(), stringsToCharPtrs(args_).data());
 
-	int err = errno;
-        printMsg(lvlError, format("executing `%1%': %2%") % program % strerror(err));
-	_exit(127);
+        int err = errno;
+        printMsg(lvlError, std::format("executing `{}': {}", program, strerror(err)));
+        _exit(127);
     });
 
     pipe.writeSide.close();
@@ -1205,8 +1207,8 @@ string runProgram(Path program, bool searchPath, const Strings & args)
     /* Wait for the child to finish. */
     int status = pid.wait(true);
     if (!statusOk(status))
-        throw ExecError(format("program `%1%' %2%")
-            % program % statusToString(status));
+        throw ExecError(std::format("program `{}' {}",
+            program, statusToString(status)));
 
     return result;
 }
@@ -1256,7 +1258,7 @@ void _interrupted()
     /* Block user interrupts while an exception is being handled.
        Throwing an exception while another exception is being handled
        kills the program! */
-    if (!std::uncaught_exception()) {
+    if (std::uncaught_exceptions() == 0) {
         _isInterrupted = 0;
         throw Interrupted("interrupted by the user");
     }
@@ -1319,14 +1321,14 @@ string statusToString(int status)
 {
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
         if (WIFEXITED(status))
-            return (format("failed with exit code %1%") % WEXITSTATUS(status)).str();
+            return std::format("failed with exit code {}", WEXITSTATUS(status));
         else if (WIFSIGNALED(status)) {
             int sig = WTERMSIG(status);
 #if HAVE_STRSIGNAL
             const char * description = strsignal(sig);
-            return (format("failed due to signal %1% (%2%)") % sig % description).str();
+            return std::format("failed due to signal {} ({})", sig, description);
 #else
-            return (format("failed due to signal %1%") % sig).str();
+            return std::format("failed due to signal {}", sig);
 #endif
         }
         else
@@ -1347,12 +1349,12 @@ bool hasSuffix(const string & s, const string & suffix)
 }
 
 
-void expect(std::istream & str, const string & s)
+void expect(std::istream & str, std::string_view s)
 {
     std::vector<char> s2(s.size());
     str.read(s2.data(), s2.size());
     if (string(s2.begin(), s2.end()) != s)
-        throw FormatError(format("expected string `%1%'") % s);
+        throw FormatError(std::format("expected string `{}'", s));
 }
 
 
@@ -1411,7 +1413,7 @@ void ignoreException()
     try {
         throw;
     } catch (std::exception & e) {
-        printMsg(lvlError, format("error (ignored): %1%") % e.what());
+        printMsg(lvlError, std::format("error (ignored): {}", e.what()));
     }
 }
 
@@ -1425,7 +1427,7 @@ void commonChildInit(Pipe & logPipe)
        that e.g. ssh cannot open /dev/tty) and it doesn't receive
        terminal signals. */
     if (setsid() == -1)
-        throw SysError(format("creating a new session"));
+        throw SysError("creating a new session");
 
     /* Close the read end so only the parent holds a reference to it.  */
     logPipe.readSide.close();
@@ -1441,7 +1443,7 @@ void commonChildInit(Pipe & logPipe)
     /* Reroute stdin to /dev/null. */
     int fdDevNull = open(pathNullDevice.c_str(), O_RDWR);
     if (fdDevNull == -1)
-        throw SysError(format("cannot open `%1%'") % pathNullDevice);
+        throw SysError(std::format("cannot open `{}'", pathNullDevice));
     if (dup2(fdDevNull, STDIN_FILENO) == -1)
         throw SysError("cannot dup null device into stdin");
     close(fdDevNull);
@@ -1451,7 +1453,7 @@ void commonChildInit(Pipe & logPipe)
 
 Agent::Agent(const string &command, const Strings &args, const std::map<string, string> &env)
 {
-    debug(format("starting agent '%1%'") % command);
+    debug(std::format("starting agent '{}'", command));
 
     /* Create a pipe to get the output of the child. */
     fromAgent.create();
@@ -1487,7 +1489,7 @@ Agent::Agent(const string &command, const Strings &args, const std::map<string, 
 
         execv(command.c_str(), stringsToCharPtrs(allArgs).data());
 
-        throw SysError(format("executing `%1%'") % command);
+        throw SysError(std::format("executing `{}'", command));
     });
 
     pid.setSeparatePG(true);

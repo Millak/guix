@@ -37,6 +37,7 @@
 #include <strings.h>
 #include <exception>
 #include <iostream>
+#include <format>
 
 #include <libintl.h>
 #include <locale.h>
@@ -187,7 +188,7 @@ string_to_bool (const char *arg, bool dflt = true)
   else if (strcasecmp (arg, "no") == 0)
     return false;
   else
-    throw nix::Error (format ("'%1%': invalid Boolean value") % arg);
+    throw nix::Error(std::format("'{}': invalid Boolean value", arg));
 }
 
 /* Parse a single option. */
@@ -201,10 +202,8 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case GUIX_OPT_CHROOT_DIR:
       {
-	std::string chroot_dirs;
+	std::string chroot_dirs {settings.get("build-extra-chroot-dirs", "")};
 
-	chroot_dirs = settings.get ("build-extra-chroot-dirs",
-				    (std::string) "");
 	if (chroot_dirs == "")
 	  chroot_dirs = arg;
 	else
@@ -337,7 +336,8 @@ open_unix_domain_socket (const char *file)
   struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   if (fileRel.size () >= sizeof (addr.sun_path))
-    throw Error (format (_("socket file name '%1%' is too long")) % fileRel);
+    throw Error (std::vformat( (_("socket file name '%1%' is too long")), 
+      std::make_format_args(fileRel)));
   strcpy (addr.sun_path, fileRel.c_str ());
 
   unlink (file);
@@ -349,13 +349,15 @@ open_unix_domain_socket (const char *file)
   int res = bind (fdSocket, (struct sockaddr *) &addr, sizeof addr);
   umask (oldMode);
   if (res == -1)
-    throw SysError (format (_("cannot bind to socket '%1%'")) % file);
+    throw SysError (std::vformat( (_("cannot bind to socket '{}'")),
+      std::make_format_args(file)));
 
   if (chdir ("/") == -1) /* back to the root */
     throw SysError (_("cannot change current directory"));
 
   if (listen (fdSocket, 5) == -1)
-    throw SysError (format (_("cannot listen on socket '%1%'")) % file);
+    throw SysError (std::vformat( (_("cannot listen on socket '{}'")),
+      std::make_format_args(file)));
 
   return fdSocket.borrow ();
 }
@@ -373,7 +375,7 @@ open_inet_socket (const struct sockaddr *address, socklen_t length)
     throw SysError (_("cannot bind TCP socket"));
 
   if (listen (fd, 5) == -1)
-    throw SysError (format (_("cannot listen on TCP socket")));
+    throw SysError (_("cannot listen on TCP socket"));
 
   return fd.borrow ();
 }
@@ -423,11 +425,9 @@ listening_sockets (const std::list<std::string> &options)
 				 &hints, &res);
 
 	  if (err != 0)
-	    throw Error(format ("failed to look up '%1%': %2%")
-			% option % gai_strerror (err));
+	    throw Error(std::format("failed to look up '{}': {}", option, gai_strerror(err)));
 
-	  printMsg (lvlDebug, format ("listening on '%1%', port '%2%'")
-		    % host % port);
+	  printMsg(lvlDebug, std::format("listening on '{}', port '{}'", host, port));
 
 	  /* XXX: Pick the first result, RES.  */
 	  result.push_back (open_inet_socket (res->ai_addr,
@@ -530,17 +530,19 @@ main (int argc, char *argv[])
 	/* We were not "socket-activated" so open the sockets specified by
 	   LISTEN_OPTIONS.  */
 	sockets = listening_sockets (listen_options);
-      else
-	printMsg (lvlInfo,
-		  format (ngettext ("socket-activated with %1% socket",
-				    "socket-activated with %1% sockets",
-				    sockets.size ()))
-		  % sockets.size ());
+      else {
+        auto size = sockets.size();
+	      printMsg (lvlInfo,
+		      std::vformat((ngettext ("socket-activated with %1% socket",
+				                  "socket-activated with %1% sockets",
+				                  size)),
+		        std::make_format_args(size)));
+      }
 
       /* Effect all the changes made via 'settings.set'.  */
       settings.update ();
       printMsg(lvlDebug,
-	       format ("build log compression: %1%") % settings.logCompression);
+	      std::format("build log compression: {}", int(settings.logCompression)));
 
       if (geteuid () == 0 && settings.buildUsersGroup.empty ())
 	fprintf (stderr, _("warning: daemon is running as root, so \
@@ -553,7 +555,7 @@ using `--build-users-group' is highly recommended\n"));
 	  chroot_dirs = settings.get ("build-extra-chroot-dirs",
 				      (std::string) "");
 	  printMsg (lvlDebug,
-		    format ("extra chroot directories: '%1%'") % chroot_dirs);
+		  std::format("extra chroot directories: '{}'", chroot_dirs));
 	}
 
       if (useDiscover)
@@ -568,9 +570,8 @@ using `--build-users-group' is highly recommended\n"));
         });
       }
 
-      printMsg (lvlDebug,
-		format ("automatic deduplication set to %1%")
-		% settings.autoOptimiseStore);
+      printMsg(lvlDebug,
+		    std::format("automatic deduplication set to {}", settings.autoOptimiseStore));
 
       run (sockets);
     }

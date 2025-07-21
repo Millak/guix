@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
-
+#include <format>
 
 namespace nix {
 
@@ -24,9 +24,9 @@ static void makeWritable(const Path & path)
 {
     struct stat st;
     if (lstat(path.c_str(), &st))
-        throw SysError(format("getting attributes of path `%1%'") % path);
+        throw SysError(std::format("getting attributes of path `{}'", path));
     if (chmod(path.c_str(), st.st_mode | S_IWUSR) == -1)
-        throw SysError(format("changing writability of `%1%'") % path);
+        throw SysError(std::format("changing writability of `{}'", path));
 }
 
 
@@ -52,7 +52,7 @@ LocalStore::InodeHash LocalStore::loadInodeHash()
     InodeHash inodeHash;
 
     AutoCloseDir dir = opendir(linksDir.c_str());
-    if (!dir) throw SysError(format("opening directory `%1%'") % linksDir);
+    if (!dir) throw SysError(std::format("opening directory `{}'", linksDir));
 
     struct dirent * dirent;
     while (errno = 0, dirent = readdir(dir)) { /* sic */
@@ -60,9 +60,9 @@ LocalStore::InodeHash LocalStore::loadInodeHash()
         // We don't care if we hit non-hash files, anything goes
         inodeHash.insert(dirent->d_ino);
     }
-    if (errno) throw SysError(format("reading directory `%1%'") % linksDir);
+    if (errno) throw SysError(std::format("reading directory `{}'", linksDir));
 
-    printMsg(lvlTalkative, format("loaded %1% hash inodes") % inodeHash.size());
+    printMsg(lvlTalkative, std::format("loaded {} hash inodes", inodeHash.size()));
 
     return inodeHash;
 }
@@ -73,14 +73,14 @@ Strings LocalStore::readDirectoryIgnoringInodes(const Path & path, const InodeHa
     Strings names;
 
     AutoCloseDir dir = opendir(path.c_str());
-    if (!dir) throw SysError(format("opening directory `%1%'") % path);
+    if (!dir) throw SysError(std::format("opening directory `{}'", path));
 
     struct dirent * dirent;
     while (errno = 0, dirent = readdir(dir)) { /* sic */
         checkInterrupt();
 
         if (inodeHash.count(dirent->d_ino)) {
-            printMsg(lvlDebug, format("`%1%' is already linked") % dirent->d_name);
+            printMsg(lvlDebug, std::format("`{}' is already linked", dirent->d_name));
             continue;
         }
 
@@ -88,7 +88,7 @@ Strings LocalStore::readDirectoryIgnoringInodes(const Path & path, const InodeHa
         if (name == "." || name == "..") continue;
         names.push_back(name);
     }
-    if (errno) throw SysError(format("reading directory `%1%'") % path);
+    if (errno) throw SysError(std::format("reading directory `{}'", path));
 
     return names;
 }
@@ -100,7 +100,7 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
 
     struct stat st;
     if (lstat(path.c_str(), &st))
-        throw SysError(format("getting attributes of path `%1%'") % path);
+        throw SysError(std::format("getting attributes of path `{}'", path));
 
     if (S_ISDIR(st.st_mode)) {
         Strings names = readDirectoryIgnoringInodes(path, inodeHash);
@@ -121,13 +121,13 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
        Guix System (example: $fontconfig/var/cache being modified).  Skip
        those files.  FIXME: check the modification time. */
     if (S_ISREG(st.st_mode) && (st.st_mode & S_IWUSR)) {
-        printMsg(lvlError, format("skipping suspicious writable file `%1%'") % path);
+        printMsg(lvlError, std::format("skipping suspicious writable file `{}'", path));
         return;
     }
 
     /* This can still happen on top-level files. */
     if (st.st_nlink > 1 && inodeHash.count(st.st_ino)) {
-        printMsg(lvlDebug, format("`%1%' is already linked, with %2% other file(s).") % path % (st.st_nlink - 2));
+        printMsg(lvlDebug, std::format("`{}' is already linked, with {} other file(s).", path, (st.st_nlink - 2)));
         return;
     }
 
@@ -141,7 +141,7 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
        contents of the symlink (i.e. the result of readlink()), not
        the contents of the target (which may not even exist). */
     Hash hash = hashPath(htSHA256, path).first;
-    printMsg(lvlDebug, format("`%1%' has hash `%2%'") % path % printHash(hash));
+    printMsg(lvlDebug, std::format("`{}' has hash `{}'", path, printHash(hash)));
 
     /* Check if this is a known hash. */
     Path linkPath = linksDir + "/" + printHash32(hash);
@@ -164,12 +164,12 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
 	    /* On ext4, that probably means the directory index is full.  When
 	       that happens, it's fine to ignore it: we just effectively
 	       disable deduplication of this file.  */
-	    printMsg(lvlInfo, format("cannot link `%1%' to `%2%': %3%")
-		     % linkPath % path % strerror(ENOSPC));
+	    printMsg(lvlInfo, std::format("cannot link `{}' to `{}': {}",
+		    linkPath, path, strerror(ENOSPC)));
 	    return;
 
 	default:
-            throw SysError(format("cannot link `%1%' to `%2%'") % linkPath % path);
+            throw SysError(std::format("cannot link `{}' to `{}'", linkPath, path));
 	}
     }
 
@@ -177,20 +177,20 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
        current file with a hard link to that file. */
     struct stat stLink;
     if (lstat(linkPath.c_str(), &stLink))
-        throw SysError(format("getting attributes of path `%1%'") % linkPath);
+        throw SysError(std::format("getting attributes of path `{}'", linkPath));
 
     if (st.st_ino == stLink.st_ino) {
-        printMsg(lvlDebug, format("`%1%' is already linked to `%2%'") % path % linkPath);
+        printMsg(lvlDebug, std::format("`{}' is already linked to `{}'", path, linkPath));
         return;
     }
 
     if (st.st_size != stLink.st_size) {
-        printMsg(lvlError, format("removing corrupted link ‘%1%’") % linkPath);
+        printMsg(lvlError, std::format("removing corrupted link `%1%'", linkPath));
         unlink(linkPath.c_str());
         goto retry;
     }
 
-    printMsg(lvlTalkative, format("linking ‘%1%’ to ‘%2%’") % path % linkPath);
+    printMsg(lvlTalkative, std::format("linking `%1%' to `%2%'", path, linkPath));
 
     /* Make the containing directory writable, but only if it's not
        the store itself (we don't want or need to mess with its
@@ -202,8 +202,7 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
        its timestamp back to 0. */
     MakeReadOnly makeReadOnly(mustToggle ? dirOf(path) : "");
 
-    Path tempLink = (format("%1%/.tmp-link-%2%-%3%")
-        % settings.nixStore % getpid() % rand()).str();
+    Path tempLink = std::format("{}/.tmp-link-{}-{}", settings.nixStore, getpid(), rand());
 
     if (link(linkPath.c_str(), tempLink.c_str()) == -1) {
         if (errno == EMLINK) {
@@ -211,27 +210,27 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
                systems).  This is likely to happen with empty files.
                Just shrug and ignore. */
             if (st.st_size)
-                printMsg(lvlInfo, format("`%1%' has maximum number of links") % linkPath);
+                printMsg(lvlInfo, std::format("`{}' has maximum number of links", linkPath));
             return;
         }
-	    throw SysError(format("cannot link `%1%' to `%2%'") % tempLink % linkPath);
+	    throw SysError(std::format("cannot link `{}' to `{}'", tempLink, linkPath));
 	}
 
     /* Atomically replace the old file with the new hard link. */
     if (rename(tempLink.c_str(), path.c_str()) == -1) {
 	int renameErrno = errno;
         if (unlink(tempLink.c_str()) == -1)
-            printMsg(lvlError, format("unable to unlink `%1%'") % tempLink);
+            printMsg(lvlError, std::format("unable to unlink `{}'", tempLink));
         if (renameErrno == EMLINK) {
             /* Some filesystems generate too many links on the rename,
                rather than on the original link.  (Probably it
                temporarily increases the st_nlink field before
                decreasing it again.) */
             if (st.st_size)
-                printMsg(lvlInfo, format("`%1%' has maximum number of links") % linkPath);
+                printMsg(lvlInfo, std::format("`{}' has maximum number of links", linkPath));
             return;
         }
-        throw SysError(format("cannot rename `%1%' to `%2%'") % tempLink % path);
+        throw SysError(std::format("cannot rename `{}' to `{}'", tempLink, path));
     }
 
     stats.filesLinked++;
@@ -248,7 +247,7 @@ void LocalStore::optimiseStore(OptimiseStats & stats)
     for (auto& i : paths) {
         addTempRoot(i);
         if (!isValidPath(i)) continue; /* path was GC'ed, probably */
-        startNest(nest, lvlChatty, format("hashing files in `%1%'") % i);
+        startNest(nest, lvlChatty, std::format("hashing files in `{}'", i));
         optimisePath_(stats, i, inodeHash);
     }
 }
@@ -260,9 +259,9 @@ void LocalStore::optimiseStore()
     optimiseStore(stats);
 
     printMsg(lvlError,
-        format("%1% freed by hard-linking %2% files")
-        % showBytes(stats.bytesFreed)
-        % stats.filesLinked);
+        std::format("{} freed by hard-linking {} files",
+        showBytes(stats.bytesFreed),
+        stats.filesLinked));
 }
 
 void LocalStore::optimisePath(const Path & path)

@@ -4,6 +4,7 @@
 #include "local-store.hh"
 #include "globals.hh"
 
+#include <format>
 
 namespace nix {
 
@@ -65,7 +66,7 @@ static void dfsVisit(StoreAPI & store, const PathSet & paths,
     PathSet & parents)
 {
     if (parents.find(path) != parents.end())
-        throw BuildError(format("cycle detected in the references of `%1%'") % path);
+        throw BuildError(std::format("cycle detected in the references of `{}'", path));
 
     if (visited.find(path) != visited.end()) return;
     visited.insert(path);
@@ -99,19 +100,19 @@ Paths topoSortPaths(StoreAPI & store, const PathSet & paths)
 string showBytes(long long bytes)
 {
     if (llabs(bytes > exp2l(60))) {
-        return (format("%7.2f EiB") % (bytes / exp2l(60))).str();
+        return std::format("{:7.2f} EiB", bytes / exp2l(60));
     } else if (llabs(bytes > exp2l(50))) {
-        return (format("%7.2f PiB") % (bytes / exp2l(50))).str();
+        return std::format("{:7.2f} PiB", bytes / exp2l(50));
     } else if (llabs(bytes > exp2l(40))) {
-        return (format("%7.2f TiB") % (bytes / exp2l(40))).str();
+        return std::format("{:7.2f} TiB", bytes / exp2l(40));
     } else if (llabs(bytes > exp2l(30))) {
-        return (format("%7.2f GiB") % (bytes / exp2l(30))).str();
+        return std::format("{:7.2f} GiB", bytes / exp2l(30));
     } else if (llabs(bytes > exp2l(20))) {
-        return (format("%7.2f MiB") % (bytes / exp2l(20))).str();
+        return std::format("{:7.2f} MiB", bytes / exp2l(20));
     } else if (llabs(bytes > exp2l(10))) {
-        return (format("%7.2f KiB") % (bytes / exp2l(10))).str();
+        return std::format("{:7.2f} KiB", bytes / exp2l(10));
     } else {
-        return (format("%4f  bytes") % bytes).str();
+        return std::format("{:4}  bytes", bytes);
     }
 }
 

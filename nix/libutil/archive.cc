@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#include <format>
 
 #include <strings.h> // for strcasecmp
 
@@ -35,7 +36,7 @@ static void dumpContents(const Path & path, size_t size,
     writeLongLong(size, sink);
 
     AutoCloseFD fd = open(path.c_str(), O_RDONLY);
-    if (fd == -1) throw SysError(format("opening file `%1%'") % path);
+    if (fd == -1) throw SysError(std::format("opening file `{}'", path));
 
     unsigned char buf[65536];
     size_t left = size;
@@ -55,7 +56,7 @@ static void dump(const Path & path, Sink & sink, PathFilter & filter)
 {
     struct stat st;
     if (lstat(path.c_str(), &st))
-        throw SysError(format("getting attributes of path `%1%'") % path);
+        throw SysError(std::format("getting attributes of path `{}'", path));
 
     writeString("(", sink);
 
@@ -98,7 +99,7 @@ static void dump(const Path & path, Sink & sink, PathFilter & filter)
         writeString(readLink(path), sink);
     }
 
-    else throw Error(format("file `%1%' has an unsupported type") % path);
+    else throw Error(std::format("file `{}' has an unsupported type", path));
 
     writeString(")", sink);
 }
@@ -227,7 +228,7 @@ static void parse(ParseSink & sink, Source & source, const Path & path)
                 } else if (s == "name") {
                     name = readString(source);
                     if (name.empty() || name == "." || name == ".." || name.find('/') != string::npos || name.find((char) 0) != string::npos)
-                        throw Error(format("NAR contains invalid file name `%1%'") % name);
+                        throw Error(std::format("NAR contains invalid file name `{}'", name));
                     if (name <= prevName)
                         throw Error("NAR directory is not sorted");
                     prevName = name;
@@ -274,7 +275,7 @@ struct RestoreSink : ParseSink
     {
         Path p = dstPath + path;
         if (mkdir(p.c_str(), 0777) == -1)
-            throw SysError(format("creating directory `%1%'") % p);
+            throw SysError(std::format("creating directory `{}'", p));
     };
 
     void createRegularFile(const Path & path)
@@ -282,7 +283,7 @@ struct RestoreSink : ParseSink
         Path p = dstPath + path;
         fd.close();
         fd = open(p.c_str(), O_CREAT | O_EXCL | O_WRONLY, 0666);
-        if (fd == -1) throw SysError(format("creating file `%1%'") % p);
+        if (fd == -1) throw SysError(std::format("creating file `{}'", p));
     }
 
     void isExecutable()
@@ -304,7 +305,7 @@ struct RestoreSink : ParseSink
                OpenSolaris).  Since preallocation is just an
                optimisation, ignore it. */
             if (errno && errno != EINVAL)
-                throw SysError(format("preallocating file of %1% bytes") % len);
+                throw SysError(std::format("preallocating file of {} bytes", len));
         }
 #endif
     }

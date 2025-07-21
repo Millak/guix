@@ -3,6 +3,7 @@
 #include <functional>
 #include <string>
 #include <cstdint>
+#include <string_view>
 
 #include "types.hh"
 
@@ -85,7 +86,7 @@ struct SQLiteTxn
 MakeError(SQLiteError, Error);
 MakeError(SQLiteBusy, SQLiteError);
 
-[[noreturn]] void throwSQLiteError(sqlite3 * db, const format & f);
+[[noreturn]] void throwSQLiteError(sqlite3 * db, std::string_view f);
 
 /* Convenience function for retrying a SQLite transaction when the
    database is busy. */

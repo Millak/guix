@@ -1,11 +1,14 @@
 #include "sqlite.hh"
 #include "util.hh"
 
+#include <format>
+#include <cassert>
+
 #include <sqlite3.h>
 
 namespace nix {
 
-[[noreturn]] void throwSQLiteError(sqlite3 * db, const format & f)
+[[noreturn]] void throwSQLiteError(sqlite3 * db, std::string_view f)
 {
     int err = sqlite3_errcode(db);
     if (err == SQLITE_BUSY || err == SQLITE_PROTOCOL) {
@@ -28,10 +31,10 @@ namespace nix {
 #else
         sleep(1);
 #endif
-        throw SQLiteBusy(format("%1%: %2%") % f.str() % sqlite3_errmsg(db));
+        throw SQLiteBusy(std::format("{}: {}", f, sqlite3_errmsg(db)));
     }
     else
-        throw SQLiteError(format("%1%: %2%") % f.str() % sqlite3_errmsg(db));
+        throw SQLiteError(std::format("{}: {}", f, sqlite3_errmsg(db)));
 }
 
 SQLite::~SQLite()

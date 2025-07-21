@@ -21,7 +21,6 @@
 #pragma once
 
 #include <derivations.hh>
-#include <map>
 #include <string>
 
 namespace nix {

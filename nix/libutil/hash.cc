@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <cstring>
+#include <cassert>
+#include <string_view>
+#include <format>
 
 #include "hash.hh"
 #include "archive.hh"
@@ -73,18 +76,18 @@ string printHash(const Hash & hash)
 }
 
 
-Hash parseHash(HashType ht, const string & s)
+Hash parseHash(HashType ht, std::string_view s)
 {
     Hash hash(ht);
     if (s.length() != hash.hashSize * 2) {
 	string algo = gcry_md_algo_name(ht);
-        throw Error(format("invalid %1% hash '%2%' (%3% bytes but expected %4%)")
-		    % algo % s % (s.length() / 2) % hash.hashSize);
+        throw Error(std::format("invalid {} hash '{}' ({} bytes but expected {})",
+		    algo, s, (s.length() / 2), hash.hashSize));
     }
     for (unsigned int i = 0; i < hash.hashSize; i++) {
         string s2(s, i * 2, 2);
         if (!isxdigit(s2[0]) || !isxdigit(s2[1]))
-            throw Error(format("invalid hash `%1%'") % s);
+            throw Error(std::format("invalid hash `{}'", s));
         std::istringstream str(s2);
         int n;
         str >> std::hex >> n;
@@ -132,7 +135,7 @@ string printHash16or32(const Hash & hash)
 }
 
 
-Hash parseHash32(HashType ht, const string & s)
+Hash parseHash32(HashType ht, std::string_view s)
 {
     Hash hash(ht);
     unsigned int len = hashLength32(ht);
@@ -144,7 +147,7 @@ Hash parseHash32(HashType ht, const string & s)
         for (digit = 0; digit < base32Chars.size(); ++digit) /* !!! slow */
             if (base32Chars[digit] == c) break;
         if (digit >= 32)
-            throw Error(format("invalid base-32 hash '%1%'") % s);
+            throw Error(std::format("invalid base-32 hash '{}'", s));
         unsigned int b = n * 5;
         unsigned int i = b / 8;
         unsigned int j = b % 8;
@@ -156,7 +159,7 @@ Hash parseHash32(HashType ht, const string & s)
 }
 
 
-Hash parseHash16or32(HashType ht, const string & s)
+Hash parseHash16or32(HashType ht, std::string_view s)
 {
     Hash hash(ht);
     if (s.size() == hash.hashSize * 2)
@@ -166,13 +169,13 @@ Hash parseHash16or32(HashType ht, const string & s)
         /* base-32 representation */
         hash = parseHash32(ht, s);
     else
-        throw Error(format("hash `%1%' has wrong length for hash type `%2%'")
-            % s % printHashType(ht));
+        throw Error(std::format("hash `{}' has wrong length for hash type `{}'",
+            s, printHashType(ht)));
     return hash;
 }
 
 
-bool isHash(const string & s)
+bool isHash(std::string_view s)
 {
     if (s.length() != 32) return false;
     for (int i = 0; i < 32; i++) {
@@ -247,13 +250,13 @@ Hash hashFile(HashType ht, const Path & path)
     start(ht, ctx);
 
     AutoCloseFD fd = open(path.c_str(), O_RDONLY);
-    if (fd == -1) throw SysError(format("computing hash of file `%1%'") % path);
+    if (fd == -1) throw SysError(std::format("computing hash of file `{}'", path));
 
     unsigned char buf[8192];
     ssize_t n;
     while ((n = read(fd, buf, sizeof(buf)))) {
         checkInterrupt();
-        if (n == -1) throw SysError(format("reading file `%1%'") % path);
+        if (n == -1) throw SysError(std::format("reading file `{}'", path));
         update(ht, ctx, buf, n);
     }
 

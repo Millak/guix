@@ -3,7 +3,7 @@
 
 #include <cstring>
 #include <cerrno>
-
+#include <cassert>
 
 namespace nix {
 

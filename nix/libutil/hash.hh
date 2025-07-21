@@ -51,7 +51,7 @@ struct Hash
 string printHash(const Hash & hash);
 
 /* Parse a hexadecimal representation of a hash code. */
-Hash parseHash(HashType ht, const string & s);
+Hash parseHash(HashType ht, std::string_view s);
 
 /* Returns the length of a base-32 hash representation. */
 unsigned int hashLength32(const Hash & hash);
@@ -63,13 +63,13 @@ string printHash32(const Hash & hash);
 string printHash16or32(const Hash & hash);
 
 /* Parse a base-32 representation of a hash code. */
-Hash parseHash32(HashType ht, const string & s);
+Hash parseHash32(HashType ht, std::string_view s);
 
 /* Parse a base-16 or base-32 representation of a hash code. */
-Hash parseHash16or32(HashType ht, const string & s);
+Hash parseHash16or32(HashType ht, std::string_view s);
 
 /* Verify that the given string is a valid hash code. */
-bool isHash(const string & s);
+bool isHash(std::string_view s);
 
 /* Compute the hash of the given string. */
 Hash hashString(HashType ht, const string & s);

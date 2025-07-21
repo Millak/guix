@@ -5,7 +5,8 @@
 
 #include <map>
 #include <cstdlib>
-
+#include <cassert>
+#include <format>
 
 namespace nix {
 
@@ -37,8 +38,7 @@ static void search(const unsigned char * s, unsigned int len,
         if (!match) continue;
         string ref((const char *) s + i, refLength);
         if (hashes.find(ref) != hashes.end()) {
-            debug(format("found reference to `%1%' at offset `%2%'")
-                  % ref % i);
+            debug(std::format("found reference to `{}' at offset `{}'", ref, i));
             seen.insert(ref);
             hashes.erase(ref);
         }
@@ -93,7 +93,7 @@ PathSet scanForReferences(const string & path,
         string baseName = baseNameOf(i);
         string::size_type pos = baseName.find('-');
         if (pos == string::npos)
-            throw Error(format("bad reference `%1%'") % i);
+            throw Error(std::format("bad reference `{}'", i));
         string s = string(baseName, 0, pos);
         assert(s.size() == refLength);
         assert(backMap.find(s) == backMap.end());

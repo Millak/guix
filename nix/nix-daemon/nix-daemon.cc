@@ -10,8 +10,10 @@
 #include "builtins.hh"
 
 #include <algorithm>
+#include <format>
 
 #include <cstring>
+#include <cassert>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -640,7 +642,7 @@ static void performOp(bool trusted, unsigned int clientVersion,
                     if (pw != NULL)
                         store->createUser(value, pw->pw_uid);
                     else
-                        printMsg(lvlInfo, format("user name %1% not found") % value);
+                        printMsg(lvlInfo, std::format("user name {} not found", value));
 		}
                 else
                     settings.set(trusted ? name : "untrusted-" + name, value);
@@ -772,7 +774,7 @@ static void performOp(bool trusted, unsigned int clientVersion,
     }
 
     default:
-        throw Error(format("invalid operation %1%") % op);
+        throw Error(std::format("invalid operation {}", op));
     }
 }
 
@@ -834,7 +836,7 @@ static void processConnection(bool trusted, uid_t userId)
             if (pw != NULL && pw->pw_name != NULL)
                 store->createUser(pw->pw_name, userId);
             else
-                printMsg(lvlInfo, format("user with UID %1% not found") % userId);
+                printMsg(lvlInfo, std::format("user with UID {} not found", userId));
 	}
 
         stopWork();
@@ -882,7 +884,7 @@ static void processConnection(bool trusted, uid_t userId)
 
     canSendStderr = false;
     _isInterrupted = false;
-    printMsg(lvlDebug, format("%1% operations") % opCount);
+    printMsg(lvlDebug, std::format("{} operations", opCount));
 }
 
 
@@ -971,9 +973,8 @@ static void acceptConnection(int fdSocket)
             struct passwd * pw = getpwuid(cred.uid);
             string user = pw ? pw->pw_name : std::to_string(cred.uid);
 
-	    printMsg(lvlInfo,
-		     format((string) "accepted connection from pid %1%, user %2%")
-		     % clientPid % user);
+	    printMsg(lvlInfo, std::format("accepted connection from pid {}, user {}",
+		    clientPid, user));
 #endif
 	} else {
 	    char address_str[128];
@@ -992,9 +993,7 @@ static void acceptConnection(int fdSocket)
 	    }
 
 	    if (result != NULL) {
-		printMsg(lvlInfo,
-			 format("accepted connection from %1%")
-			 % address_str);
+		printMsg(lvlInfo, std::format("accepted connection from {}", address_str));
 	    }
 	}
 
@@ -1004,7 +1003,7 @@ static void acceptConnection(int fdSocket)
 
                 /* Background the daemon. */
                 if (setsid() == -1)
-                    throw SysError(format("creating a new session"));
+                    throw SysError("creating a new session");
 
                 /* Restore normal handling of SIGCHLD. */
                 setSigChldAction(false);
@@ -1033,7 +1032,7 @@ static void acceptConnection(int fdSocket)
     } catch (Interrupted & e) {
 	throw;
     } catch (Error & e) {
-	printMsg(lvlError, format("error processing connection: %1%") % e.msg());
+	printMsg(lvlError, std::format("error processing connection: {}", e.msg()));
     }
 }
 
@@ -1072,7 +1071,7 @@ static void daemonLoop(const std::vector<int>& sockets)
 	    int err = errno;
 	    if (err == EINTR)
 		continue;
-	    throw SysError(format("select error: %1%") % strerror(err));
+	    throw SysError(std::format("select error: {}", strerror(err)));
 	}
 
 	for (unsigned int i = 0; i < sockets.size(); i++) {

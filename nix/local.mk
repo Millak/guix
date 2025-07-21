@@ -25,31 +25,10 @@
 BUILT_SOURCES += %D%/libstore/schema.sql.hh
 CLEANFILES += %D%/libstore/schema.sql.hh
 
-noinst_LIBRARIES = libformat.a libutil.a libstore.a
+noinst_LIBRARIES = libutil.a libstore.a
 
-# Use '-std=c++11' for 'std::shared_ptr', 'auto', lambdas, and more.
-AM_CXXFLAGS = -Wall -std=c++11
-
-libformat_a_SOURCES =				\
-  %D%/boost/format/free_funcs.cc		\
-  %D%/boost/format/parsing.cc			\
-  %D%/boost/format/format_implementation.cc
-
-libformat_headers =				\
-  %D%/boost/throw_exception.hpp			\
-  %D%/boost/format.hpp				\
-  %D%/boost/assert.hpp				\
-  %D%/boost/format/macros_default.hpp		\
-  %D%/boost/format/format_fwd.hpp		\
-  %D%/boost/format/format_class.hpp		\
-  %D%/boost/format/exceptions.hpp		\
-  %D%/boost/format/group.hpp			\
-  %D%/boost/format/feed_args.hpp		\
-  %D%/boost/format/internals_fwd.hpp		\
-  %D%/boost/format/internals.hpp
-
-libformat_a_CPPFLAGS =				\
-  -I$(top_srcdir)/nix
+# Use '-std=c++20' for 'std::shared_ptr', 'auto', lambdas, and more.
+AM_CXXFLAGS = -Wall -std=c++20
 
 libutil_a_SOURCES =				\
   %D%/libutil/archive.cc			\
@@ -73,7 +52,6 @@ libutil_headers =				\
 libutil_a_CPPFLAGS =				\
   -I$(top_builddir)/nix				\
   -I$(top_srcdir)/%D%/libutil			\
-  $(libformat_a_CPPFLAGS)			\
   $(LIBGCRYPT_CPPFLAGS)
 
 libstore_a_SOURCES =				\
@@ -131,7 +109,7 @@ guix_daemon_LDFLAGS = 				\
   $(LIBGCRYPT_LDFLAGS)
 
 guix_daemon_LDADD =				\
-  libstore.a libutil.a libformat.a -lz		\
+  libstore.a libutil.a -lz		\
   $(SQLITE3_LIBS) $(LIBGCRYPT_LIBS)
 
 guix_daemon_headers =				\
@@ -144,7 +122,7 @@ guix_daemon_LDADD += -lbz2
 endif HAVE_LIBBZ2
 
 noinst_HEADERS =						\
-  $(libformat_headers) $(libutil_headers) $(libstore_headers)	\
+  $(libutil_headers) $(libstore_headers)	\
   $(guix_daemon_headers)
 
 %D%/libstore/schema.sql.hh: guix/store/schema.sql
