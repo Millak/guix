@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2018 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -587,7 +587,7 @@ capacity is user-selectable.")
 (define-public dvdstyler
   (package
     (name "dvdstyler")
-    (version "3.0.4")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
@@ -595,7 +595,7 @@ capacity is user-selectable.")
                             version "/DVDStyler-" version ".tar.bz2"))
        (sha256
         (base32
-         "0lwc0hn94m9r8fi07sjqz3fr618l6lnw3zsakxw7nlgnxbjsk7pi"))))
+         "0n3mfjsazvlzk9hl23q3iz7bmxjq7b5lx0ab8nbk1jgl763k9cqb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -609,6 +609,11 @@ capacity is user-selectable.")
                             "/xml/dtd/docbook"))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'sanitize-source
+           (lambda _
+             (substitute* "wxVillaLib/PropDlg.cpp"
+               ;; Header not installed by wxwidgets on Linux.
+               (("^#include <wx/generic/colrdlgg.h>") ""))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out") "/bin/dvdstyler")
@@ -631,7 +636,7 @@ capacity is user-selectable.")
        ("fontconfig" ,fontconfig)
        ("libexif" ,libexif)
        ("libjpeg" ,libjpeg-turbo)
-       ("ffmpeg" ,ffmpeg-3.4)))
+       ("ffmpeg" ,ffmpeg-4)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("flex" ,flex)
