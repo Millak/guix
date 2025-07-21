@@ -20122,28 +20122,32 @@ minimal and fast API targeting the following uses:
     (license license:bsd-2)))
 
 (define-public python-args
-  (let ((commit "9460f1a35eb3055e9e4de1f0a6932e0883c72d65") (revision "0"))
+  (let ((commit "9460f1a35eb3055e9e4de1f0a6932e0883c72d65")
+        (revision "0"))
     (package
       (name "python-args")
       (version (git-version "0.1.0" revision commit))
-      (home-page "https://github.com/kennethreitz-archive/args")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zfxpbp9vldqdrjmd0c6y3wisl35mx5v8zlyp3nhwpy1730wrc9j"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kennethreitz-archive/args")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zfxpbp9vldqdrjmd0c6y3wisl35mx5v8zlyp3nhwpy1730wrc9j"))))
       (build-system pyproject-build-system)
       (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'patch-args.py
-                      (lambda _
-                        (substitute* "args.py"
-                          (("basestring") "str")))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-args.py
+              (lambda _
+                (substitute* "args.py"
+                  (("basestring")
+                   "str")))))))
       (native-inputs (list python-nose python-setuptools python-wheel))
+      (home-page "https://github.com/kennethreitz-archive/args")
       (synopsis "Command-line argument parser")
       (description
        "This library provides a Python module to parse command-line arguments.")
