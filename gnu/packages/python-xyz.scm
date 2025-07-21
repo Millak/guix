@@ -37847,7 +37847,8 @@ package.")
        (uri (pypi-uri "types-freezegun" version))
        (sha256
         (base32 "08g926s8343zwq140zcfwly3qfgmahm7lp0vgb3ics549b2hifzl"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for @code{freezegun}")
     (description "This package contains typing stubs for for @code{freezegun}, a
