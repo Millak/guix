@@ -938,6 +938,38 @@ and Python type hints.  It is designed to be fast and easy to use thanks
 to asyncio and Pydantic.")
     (license license:expat)))
 
+(define-public python-django-htmx
+  (package
+    (name "python-django-htmx")
+    (version "1.23.2")
+    (source (origin
+              (method git-fetch) ; PyPI does not include settings.py for tests
+              (uri (git-reference
+                    (url "https://github.com/adamchainz/django-htmx")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gr6zahrqvx8sjsy7wr1k7rgavz7bjx32kky4900gff70wrqbmvy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
+                (invoke "django-admin" "test" "tests"
+                        "--pythonpath=.")))))))
+    (propagated-inputs (list python-asgiref python-django))
+    (native-inputs (list python-pytest python-setuptools-next python-wheel))
+    (home-page "https://django-htmx.readthedocs.io/en/latest/")
+    (synopsis "Extensions for using Django with htmx")
+    (description "This package provides a Django extension to work with
+@url{https://htmx.org/,htmx}.")
+    (license license:expat)))
+
 (define-public python-django-pipeline
   (package
     (name "python-django-pipeline")
