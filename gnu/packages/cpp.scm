@@ -876,7 +876,7 @@ same name.")
 (define-public google-highway
   (package
     (name "google-highway")
-    (version "1.0.7")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -885,7 +885,7 @@ same name.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cx38hnislqyd4vd47mlpgjpr1zmpf1fms2bj6nb00fjv53q1sb7"))))
+        (base32 "0ykhc6n3ai18dijdmi38fm1d7pa8i6nbgh64jrxd4499k7jhg568"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on"
