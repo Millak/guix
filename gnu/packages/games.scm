@@ -914,7 +914,8 @@ feedback support.")
      `(#:tests? #f                      ;no test
        #:make-flags
        (list ,(string-append "CC=" (cc-for-target))
-             (string-append "DESTDIR=" (assoc-ref %outputs "out")))
+             (string-append "DESTDIR=" (assoc-ref %outputs "out"))
+             "CFLAGS=-g -O2 -Wno-error=implicit-int")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
