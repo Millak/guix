@@ -906,14 +906,14 @@ permit managing file systems not included in libparted.")
 (define-public testdisk
   (package
     (name "testdisk")
-    (version "7.1")
+    (version "7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.cgsecurity.org/testdisk-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1zlh44w67py416hkvw6nrfmjickc2d43v51vcli5p374d5sw84ql"))))
+                "0gr87j0ynbwzb958j443dnp013rr33cvrqx2j5fiq05l1ki3nd7q"))))
     (build-system gnu-build-system)
     (inputs
      (list ntfs-3g
