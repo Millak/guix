@@ -20136,18 +20136,14 @@ minimal and fast API targeting the following uses:
                 (sha256
                  (base32
                   "1zfxpbp9vldqdrjmd0c6y3wisl35mx5v8zlyp3nhwpy1730wrc9j"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        `(#:phases (modify-phases %standard-phases
                     (add-after 'unpack 'patch-args.py
                       (lambda _
                         (substitute* "args.py"
-                          (("basestring") "str"))))
-                    (replace 'check
-                      (lambda* (#:key tests? #:allow-other-keys)
-                        (when tests?
-                          (invoke "nosetests" "-v")))))))
-      (native-inputs (list python-nose))
+                          (("basestring") "str")))))))
+      (native-inputs (list python-nose python-setuptools python-wheel))
       (synopsis "Command-line argument parser")
       (description
        "This library provides a Python module to parse command-line arguments.")
