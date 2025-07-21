@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
-;;; Copyright © 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
@@ -492,6 +492,33 @@ HTML help files.")
     (description
      "@code{sphinxcontrib-jsmath} is a Sphinx extension which renders display
 math in HTML via JavaScript.")
+    (license license:bsd-2)))
+
+(define-public python-sphinxcontrib-mermaid
+  (package
+    (name "python-sphinxcontrib-mermaid")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+              (url "https://github.com/mgaitan/sphinxcontrib-mermaid")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0cs5qcb48aigxba0g8va7xszq68d8fq2dlb843nbia3ns1p9zv9q"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pyyaml python-sphinx))
+    (native-inputs
+     (list python-myst-parser
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/mgaitan/sphinxcontrib-mermaid")
+    (synopsis "Sphinx extension for drawing Mermaid diagrams")
+    (description "This extension makes it possible to draw Mermaid diagrams in
+Sphinx documentation.")
     (license license:bsd-2)))
 
 (define-public python-sphinxcontrib-newsfeed
