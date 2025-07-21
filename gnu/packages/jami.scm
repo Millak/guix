@@ -339,8 +339,8 @@ P2P-DHT.")
 
 (define-public jami-docs
   ;; There aren't any tags, so use the latest commit.
-  (let ((revision "2")
-        (commit "a48997de84cc4933bd111fa93fbf6a58189b166d"))
+  (let ((revision "3")
+        (commit "4764cc83ccac2a64d7d9051ad915bbf762c6a624"))
     (package
       (name "jami-docs")
       (version (git-version "0.0.0" revision commit))
@@ -352,7 +352,7 @@ P2P-DHT.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0a1kcflvk39aag2vk83cn4m0ifkgb3gvwkr8pbbvf0hcd2cj2j31"))))
+                  "1aj63ba6v0vnvn3si97xf1zk5b4y2hpk7g6mx75jbb2q9qybzn0i"))))
       (build-system copy-build-system)
       (arguments
        (list
@@ -369,9 +369,10 @@ P2P-DHT.")
            ("_build/out/html" "share/doc/jami/")
            ("_build/out/man/jami.1" "share/man/man1/"))))
       (native-inputs
-       (list python
+       (list python-minimal
              python-myst-parser
              python-sphinx
+             python-sphinxcontrib-mermaid
              python-sphinx-rtd-theme
              texinfo))
       (home-page "https://git.jami.net/")
