@@ -2071,13 +2071,13 @@ Vulkan, OpenGL and other main graphic APIs.")
 (define-public qtmultimedia
   (package
     (name "qtmultimedia")
-    (version "6.8.2")
+    (version "6.9.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0s8mxd7pwm9v8x5qa3h6124w91k0zjbbah6h9b68n5bvq3yn3x9l"))))
+                "04mbwl1mg4rjgai027chldslpjnqrx52c3jxn20j2hx7ayda3y3v"))))
     (build-system cmake-build-system)
     (arguments
      (list
