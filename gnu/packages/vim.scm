@@ -862,7 +862,15 @@ is based on Vim's builtin plugin support.")
                    ;; doubles its size.  We remove the reference here.
                    (substitute* "cmake.config/versiondef.h.in"
                      (("\\$\\{CMAKE_C_COMPILER\\}") "/gnu/store/.../bin/gcc"))
-                   #t)))))
+                   #t))
+               (add-after 'install 'install-guix-nvim.vim
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((nvimdir (string-append (assoc-ref outputs "out")
+                                                 "/share/nvim")))
+                     (mkdir-p nvimdir)
+                     (copy-file
+                       #$(local-file (search-auxiliary-file "guix-nvim.vim"))
+                       (string-append nvimdir "/sysinit.vim"))))))))
     (inputs (list libuv-for-luv
                   msgpack
                   libtermkey
