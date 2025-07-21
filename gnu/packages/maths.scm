@@ -3108,37 +3108,56 @@ fixed point (16.16) format.")
   (package
     (name "glucose")
     (version "4.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/audemard/glucose")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zrn4hnkf8k95dc3s3acydl1bqkr8a0axw56g7n562lx7zj7sd62"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/audemard/glucose")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zrn4hnkf8k95dc3s3acydl1bqkr8a0axw56g7n562lx7zj7sd62"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove code related to the parallel version as non-free;
+        ;; from parallel/Main.cc:
+        ;; "The parallel version of Glucose (all files modified
+        ;; since Glucose 3.0 releases, 2013) cannot be used in any
+        ;; competitive event"
+        '(begin
+           (delete-file-recursively "parallel")
+           (substitute* "CMakeLists.txt"
+             (("^add_library\\(glucosep.*$")
+              "")
+             (("^add_executable\\(glucose-syrup.*$")
+              "")
+             (("^target_link_libraries\\(glucose-syrup.*$")
+              ""))))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f ; there are no tests
+      #:tests? #f ;there are no tests
       #:configure-flags
       #~(list "-DBUILD_SHARED_LIBS=ON"
               (string-append "-DCMAKE_BUILD_RPATH=" #$output "/lib"))
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'install
-                     (lambda _
-                       (for-each
-                        (lambda (bin)
-                          (install-file bin (string-append #$output "/bin")))
-                        '("glucose-simp" "glucose-syrup"))
-                       (for-each
-                        (lambda (lib)
-                          (install-file lib (string-append #$output "/lib")))
-                        '("libglucose.so" "libglucosep.so")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (install-file "libglucose.so"
+                            (string-append #$output "/lib"))
+              (install-file "glucose-simp"
+                            (string-append #$output "/bin"))
+              ;; Add a symbolic link with the customary name used until
+              ;; the parallel version was written, and which is expected
+              ;; by Sage.
+              (symlink "glucose-simp"
+                       (string-append #$output "/bin/glucose")))))))
     (inputs (list zlib))
     (home-page "https://www.labri.fr/perso/lsimon/research/glucose/")
     (synopsis "SAT Solver")
-    (description "Glucose is a SAT solver based on a scoring scheme introduced
+    (description
+     "Glucose is a SAT solver based on a scoring scheme introduced
 in 2009 for the clause learning mechanism of so called “Modern” SAT solvers.
 It is designed to be parallel.")
     (license license:expat)))
