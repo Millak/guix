@@ -4149,7 +4149,7 @@ KIO enabled infrastructure.")
 (define-public knewstuff
   (package
     (name "knewstuff")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4158,7 +4158,7 @@ KIO enabled infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "166p4r15jpizw76ysz8vy9cv06zxs3wf8ch7fqxg14q5rb77721k"))))
+                "0qjfw7b26vcm1w69sapsr5j53sryw2p1p1g2b3qw3a6pkfl0kr2k"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list attica
