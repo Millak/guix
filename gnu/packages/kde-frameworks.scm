@@ -3160,7 +3160,7 @@ maintaining an index of the contents of your files.")
 (define-public plasma-activities
   (package
     (name "plasma-activities")
-    (version "6.3.6")
+    (version "6.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -3168,7 +3168,7 @@ maintaining an index of the contents of your files.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0a1rj0i6kbg0a003zr55sjgas0f3wnvjq6rv7879rc4g0q529nrk"))))
+                "1w4fp6h6kmjzk94mvk73wzkkn3bhq4vyd6jv976zmph2crscm38w"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -3181,8 +3181,8 @@ maintaining an index of the contents of your files.")
            solid))
     (arguments
      (list
-       #:tests? #f
-       #:qtbase qtbase))
+      #:tests? #f
+      #:qtbase qtbase))
     (home-page "https://invent.kde.org/plasma/plasma-activities")
     (synopsis "Core components for the KDE Activity System")
     (description "KActivities provides the infrastructure needed to manage a
