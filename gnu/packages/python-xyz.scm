@@ -37749,7 +37749,8 @@ Python, with static types.")
               (sha256
                (base32
                 "0kpaxg3lg5wg5ww5kxmzi2z2d7arsx13ci915d8a2pf17lqza7bn"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (inputs (list postgresql))
     (arguments
      ;; Tests are disable because they need a live instance of PostgreSQL.
