@@ -63,6 +63,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Zacchaeus <eikcaz@zacchae.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2150,7 +2151,15 @@ delivery.")
                    ;; same source tree and varies across different (parallel?)
                    ;; builds.  Make it a ‘constant number’ instead.
                    (substitute* "src/version.c"
-                     (("#include \"cnumber.h\"") "1")))))
+                     (("#include \"cnumber.h\"") "1"))))
+               (add-after 'build 'install-docs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Compiling spec.info requires us to build from git
+                   ;; instead of the exim tarball.  Add spec.txt instead.
+                   (install-file "doc/spec.txt"
+                                 (string-append (assoc-ref outputs "out")
+                                                "/share/doc/"
+                                                #$name "-" #$version)))))
            #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
                    "INSTALL_ARG=-no_chown")
