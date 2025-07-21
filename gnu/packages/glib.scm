@@ -1340,40 +1340,6 @@ to provide easy-to-use yet powerful API in modern C++.  It adds another layer
 of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
     (license license:lgpl2.1+)))
 
-;; TODO: Remove once libjami can use newer sdbus-c++.
-(define-public sdbus-c++-1.4.0
-  (package
-    (inherit sdbus-c++)
-    (name "sdbus-c++")
-    (version "1.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Kistler-Group/sdbus-cpp")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "111l2rl0pg9r5cdrhqpac4v22cnq41skxxfk3cng81l0n05v1sh0"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments sdbus-c++)
-       ((#:configure-flags flags ''())
-        #~(list "-DBUILD_CODE_GEN=ON"
-                "-DBUILD_TESTS=ON"
-                ;; Do not install tests.
-                "-DTESTS_INSTALL_PATH=/tmp"
-                "-DCMAKE_VERBOSE_MAKEFILE=ON"))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'fix-elogind-requirement
-              (lambda _
-                ;; sdbus-c++.pc requires 'elogind', but it should
-                ;; require 'libelogind'. Fixed after 1.4.0 with
-                ;; fb9e4ae37152648a67814458d3ff673b1d3ca089
-                (substitute* "pkgconfig/sdbus-c++.pc.in"
-                  (("@LIBSYSTEMD@")
-                   "libelogind"))))))))))
-
 (define-public appstream-glib
   (package
     (name "appstream-glib")
