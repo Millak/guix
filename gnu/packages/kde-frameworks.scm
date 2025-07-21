@@ -4887,7 +4887,7 @@ to separate the structure of documents from the data they contain.")
 (define-public kwallet
   (package
     (name "kwallet")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4896,7 +4896,7 @@ to separate the structure of documents from the data they contain.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0dnbm0y46k5ybz7pyy234jyldjvdg5rwh2mhlsyk7930yv6g4vqs"))))
+                "1vafhnkbqh3gnmrbdkbpmdsql44l48jhj5qc0lsx6hs65h6k7pfq"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
@@ -4907,7 +4907,7 @@ to separate the structure of documents from the data they contain.")
                      (invoke "ctest" "-E"
                              "(fdo_secrets_test)")))))))
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools pkg-config))
     (inputs
      (list gpgme
            kauth
@@ -4925,6 +4925,7 @@ to separate the structure of documents from the data they contain.")
            kwidgetsaddons
            kwindowsystem
            libgcrypt
+           libsecret
            phonon
            qgpgme
            qca-qt6
