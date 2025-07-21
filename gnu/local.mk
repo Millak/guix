@@ -2218,6 +2218,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
   %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
   %D%/packages/patches/qtwayland-update-wayland-xml.patch	\
+  %D%/packages/patches/qtwebsockets-6.9-fix-tst_QWebSocket.patch\
   %D%/packages/patches/rabbitmq-defaults.patch		\
   %D%/packages/patches/ragel-char-signedness.patch		\
   %D%/packages/patches/randomjungle-disable-static-build.patch	\
