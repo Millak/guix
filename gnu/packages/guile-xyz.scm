@@ -7186,7 +7186,7 @@ GitLab instance.")
 (define-public guile-smc
   (package
     (name "guile-smc")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        (method git-fetch)
@@ -7196,35 +7196,35 @@ GitLab instance.")
        (file-name (string-append name "-" version))
        (sha256
         (base32
-         "1gjwz1l2ls4xkkgg4d2vw3a1klc4var03ab4k6lq1jifdvc8n51f"))))
+         "12zg0blap8rxjx9m5bkgz5bc4ym1shii3bs3w5j41a55f0fn3p68"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
-       #:modules (((guix build guile-build-system)
+     (list
+      #:make-flags #~(list "GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
+      #:modules `(((guix build guile-build-system)
                    #:select (target-guile-effective-version))
                   ,@%default-gnu-modules)
-       #:imported-modules ((guix build guile-build-system)
+      #:imported-modules `((guix build guile-build-system)
                            ,@%default-gnu-imported-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'strip)
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (bin       (string-append out "/bin"))
-                    (guile-lib (assoc-ref inputs "guile-lib"))
-                    (version   (target-guile-effective-version))
-                    (scm       (string-append "/share/guile/site/"
-                                              version))
-                    (go        (string-append  "/lib/guile/"
-                                               version "/site-ccache")))
-               (wrap-program (string-append bin "/smc")
-                 `("GUILE_LOAD_PATH" prefix
-                   (,(string-append out scm)
-                    ,(string-append guile-lib scm)))
-                 `("GUILE_LOAD_COMPILED_PATH" prefix
-                   (,(string-append out go)
-                    ,(string-append guile-lib go))))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+        (delete 'strip)
+        (add-after 'install 'wrap-program
+          (lambda* (#:key inputs #:allow-other-keys)
+            (let* ((bin       (string-append #$output "/bin"))
+                   (guile-lib (assoc-ref inputs "guile-lib"))
+                   (version   (target-guile-effective-version))
+                   (scm       (string-append "/share/guile/site/"
+                                             version))
+                   (go        (string-append  "/lib/guile/"
+                                              version "/site-ccache")))
+              (wrap-program (string-append bin "/smc")
+                `("GUILE_LOAD_PATH" prefix
+                  (,(string-append #$output scm)
+                   ,(string-append guile-lib scm)))
+                `("GUILE_LOAD_COMPILED_PATH" prefix
+                  (,(string-append #$output go)
+                   ,(string-append guile-lib go))))))))))
     (native-inputs
      (list autoconf
            automake
