@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2021, 2024 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -3484,46 +3484,50 @@ from various forks of Gens, and improved platform portability.")
     (license license:gpl2+)))
 
 (define-public bsnes
-  (package
-    (name "bsnes")
-    (version "115")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/bsnes-emu/bsnes")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j054x38fwai61vj36sc04r3zkzay5acq2cgd9zqv5hs51s36g5b"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags #~(list "-C" "bsnes"
-                           ;; Remove march=native
-                           "local=false"
-                           (string-append "prefix=" #$output))
-      #:tests? #f                       ;No tests.
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure))))
-    (native-inputs (list pkg-config))
-    (inputs
-     (list alsa-lib
-           ao
-           cairo
-           eudev
-           gtksourceview-2
-           libxrandr
-           libxv
-           openal
-           pulseaudio
-           sdl2))
-    (home-page "https://github.com/bsnes-emu/bsnes")
-    (synopsis "Emulator for the Super Nintendo / Super Famicom systems")
-    (description
-     "bsnes is a Super Nintendo / Super Famicom emulator that focuses on
+  ;; Use a snapshot of the latest master branch, as it includes unreleased
+  ;; build fixes.
+  (let ((commit "ddc3dc2d472aa0bb93ae0663b774734dfd94ab4b")
+        (revision "0"))
+    (package
+      (name "bsnes")
+      (version (git-version "115" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/bsnes-emu/bsnes")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03slkk1117vv5p2zhvmyb4l18gb0j9nq2szsravl94zb3v6lbfl0"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags #~(list "-C" "bsnes"
+                             ;; Remove march=native
+                             "local=false"
+                             (string-append "prefix=" #$output))
+        #:tests? #f                       ;No tests.
+        #:phases #~(modify-phases %standard-phases
+                     (delete 'configure))))
+      (native-inputs (list pkg-config))
+      (inputs
+       (list alsa-lib
+             ao
+             cairo
+             gtk+
+             eudev
+             libxrandr
+             libxv
+             openal
+             pulseaudio
+             sdl2))
+      (home-page "https://github.com/bsnes-emu/bsnes")
+      (synopsis "Emulator for the Super Nintendo / Super Famicom systems")
+      (description
+       "bsnes is a Super Nintendo / Super Famicom emulator that focuses on
 performance, features, and ease of use.")
-    (license license:gpl3)))
+      (license license:gpl3+))))
 
 (define-public bsnes-hd
   (package
