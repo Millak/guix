@@ -42,6 +42,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -8798,7 +8799,7 @@ It can be used to calculate the trajectory of satellites.")
 (define-public siril
   (package
     (name "siril")
-    (version "1.3.3")
+    (version "1.4.0-beta3")
     (source
      (origin
        (method git-fetch)
@@ -8806,7 +8807,7 @@ It can be used to calculate the trajectory of satellites.")
              (url "https://gitlab.com/free-astro/siril")
              (commit version)))
        (sha256
-        (base32 "1fxjfr9kak9vb899xpgr1vmiv3cc2l4apyp0mn0ghg7mqlyl9qmw"))
+        (base32 "1frvi6879zh4bzm5smdy0scpjmj5pg2i81wb2wa4ikq1dq227x8k"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -8845,6 +8846,7 @@ It can be used to calculate the trajectory of satellites.")
            ffms2
            fftwf
            gdk-pixbuf
+           gtksourceview-4
            gsl
            gtk+
            json-glib
@@ -8866,7 +8868,8 @@ It can be used to calculate the trajectory of satellites.")
            lz4
            opencv
            pugixml
-           wcslib))
+           wcslib
+           yyjson))
     (home-page "https://siril.org/")
     (synopsis "Image processing software for amateur astronomy")
     (description
