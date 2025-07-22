@@ -6296,13 +6296,13 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 (define-public python-specutils
   (package
     (name "python-specutils")
-    (version "1.19.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "specutils" version))
        (sha256
-        (base32 "1iwkrs436z8xrzwl5rkla8nimyfrx5ydklghm41xgzr27nkvqa12"))))
+        (base32 "0ngq4r7awkbwdbi7a8isj6iw66xk3s26yjp0c0qvl6wvf9hby59r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6320,6 +6320,12 @@ of axis order, spatial projections, and spectral units that exist in the wild.
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                ;; scipy>=1.14.1; all tests passed, it will remove after
+                ;; python-team is merged.
+                ((">=1.14") ">=1.12.0"))))
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
