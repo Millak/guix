@@ -890,39 +890,6 @@ scale and pixel depth, and pixelwise masking, blending, enhancement, and
 arithmetic ops.")
     (license license:bsd-2)))
 
-(define-public leptonica-1.80
-  (package
-    (inherit leptonica)
-    (name "leptonica")
-    (version "1.80.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/DanBloomberg/leptonica")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "12ddln72z5l3icz0i9rpsfkg5xik8fcwcn8lb0cp3jigjxi8gvkg"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments leptonica)
-       ((#:tests? _ #t)
-        ;; The pngio_reg test fails, probably because the libpng used is
-        ;; newer.
-        #f)
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'provide-absolute-giflib-reference
-              (lambda _
-                (let ((giflib #$(this-package-input "giflib")))
-                  ;; Add an absolute reference to giflib to avoid propagation.
-                  ;; This is the same as for the parent package, but at that
-                  ;; time the file name was 'liblept.la, not libleptonica.la.
-                  (with-directory-excursion (string-append #$output "/lib")
-                    (substitute* '("liblept.la" "pkgconfig/lept.pc")
-                      (("-lgif")
-                       (string-append "-L" giflib "/lib -lgif")))))))))))))
-
 (define-public jbig2dec
   (package
     (name "jbig2dec")
