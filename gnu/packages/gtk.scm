@@ -2512,7 +2512,9 @@ Redmond95 and ThinIce.")
     (arguments
      `(#:configure-flags
        `("--enable-animation"
-         "--enable-animationrtl")))
+         "--enable-animationrtl"
+         ;; Relax GCC 14's checks.
+         "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (native-inputs
      (list pkg-config intltool))
     (propagated-inputs
