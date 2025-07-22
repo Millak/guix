@@ -911,7 +911,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
 (define-public hyprgraphics
   (package
     (name "hyprgraphics")
-    (version "0.1.3")
+    (version "0.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -922,9 +922,9 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
               (snippet #~(substitute* "CMakeLists.txt" (("libjxl_cms") "")))
               (sha256
                (base32
-                "14yfb8vl1bbldlv12cg3dhd6z9bdaxvlz7kx671dqpi9m8j3kd56"))))
+                "0q7bpywn8ljsj3dymvv19cm7n0r51vg5hj1jsapdl5bwpwf7bf41"))))
     (build-system cmake-build-system)
-    (native-inputs (list gcc-14 pkg-config))
+    (native-inputs (list gcc-15 pkg-config))
     (arguments (list #:cmake cmake-next))
     (inputs (list cairo
                   hyprutils
@@ -933,7 +933,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
                   libwebp
                   pixman
                   spng))
-    (home-page "https://wiki.hyprland.org/Hypr-Ecosystem/hyprgraphics/")
+    (home-page "https://wiki.hypr.land/Hypr-Ecosystem/hyprgraphics/")
     (synopsis "Hyprland graphics/resource utilities")
     (description
      "Hyprgraphics is a small C++ library with graphics/resource related
