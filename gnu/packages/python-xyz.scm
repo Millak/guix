@@ -30244,12 +30244,12 @@ that is accessible to other projects developed in Cython.")
        (method url-fetch)
        (uri (pypi-uri "sortedcollections" version))
        (sha256
-        (base32
-         "1kfabpnjyjm5ml2zspry9jy3xq49aybchgaa4ahic2jqdjfn1sfq"))))
-    (build-system python-build-system)
+        (base32 "1kfabpnjyjm5ml2zspry9jy3xq49aybchgaa4ahic2jqdjfn1sfq"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #f))  ; Tests not included in release tarball.
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-sortedcontainers))
-    (arguments '(#:tests? #f))  ; Tests not included in release tarball.
     (home-page "https://www.grantjenks.com/docs/sortedcollections/")
     (synopsis "Python Sorted Collections")
     (description "Sorted Collections is a Python sorted collections library.")
