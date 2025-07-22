@@ -2356,27 +2356,27 @@ main monitor/GPU.")
                 "1nypczyb3fp3cnfdg13grxjhg9361i44zialsdkxcfxb0c9g79jf"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/opencontainers/runc"
-       #:install-source? #f
-       ;; XXX: 20/139 tests fail due to missing /var, cgroups and apparmor in
-       ;; the build environment.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key import-path #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (invoke "make" "all" "man"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "make" "localunittest"))))
-         (replace 'install
-           (lambda* (#:key import-path outputs #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (let ((out (assoc-ref outputs "out")))
-                 (invoke "make" "install" "install-bash" "install-man"
-                         (string-append "PREFIX=" out)))))))))
+     (list
+      #:import-path "github.com/opencontainers/runc"
+      #:install-source? #f
+      ;; XXX: 20/139 tests fail due to missing /var, cgroups and apparmor in
+      ;; the build environment.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make" "all" "man"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "localunittest"))))
+          (replace 'install
+            (lambda* (#:key import-path outputs #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "make" "install" "install-bash" "install-man"
+                          (string-append "PREFIX=" #$output))))))))
     (native-inputs
      (list go-md2man pkg-config))
     (inputs
