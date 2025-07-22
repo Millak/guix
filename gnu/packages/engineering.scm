@@ -1044,7 +1044,7 @@ input and outputs an XML dataset.")
 (define-public qucs-s
   (package
     (name "qucs-s")
-    (version "24.4.1")
+    (version "25.1.2")                  ;update qucsator-rf accordingly
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1053,13 +1053,11 @@ input and outputs an XML dataset.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0307046h3vf6pprbvv47r46mpm764w49ci2cg0i3l1w9rbqlypln"))
-              (patches (search-patches "qucs-s-qucsator-rf-search.patch"))))
+                "07wrpqgbj77rmh1yxy233lk1y4ys1x0721b3jsldp058dcgf24zv"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase                   ;for Qt 6
-      #:configure-flags #~(list "-DWITH_QT6=ON")
       #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
@@ -1069,9 +1067,18 @@ input and outputs an XML dataset.")
                 (("\"ngspice\"")
                  (format #f "~s" (search-input-file inputs "bin/ngspice")))
                 (("\"octave\"")
-                 (format #f "~s" (search-input-file inputs "bin/octave")))))))))
+                 (format #f "~s" (search-input-file inputs "bin/octave"))))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/qucs-s")
+                `("PATH" ":" prefix
+                  (,(string-append #$(this-package-input "ngspice") "/bin")
+                   ,(string-append
+                     #$(this-package-input "qucsator-rf") "/bin")))))))))
     (native-inputs (list qttools))
-    (inputs (list ngspice octave qtbase qtcharts qtsvg qtwayland))
+    (inputs
+     ;; TODO Add xyce-serial to the list.
+     (list bash-minimal octave qtbase qtcharts qtsvg qtwayland qucsator-rf ngspice))
     (synopsis "GUI for different circuit simulation kernels")
     (description
      "@acronym{Qucs-S, Quite universal circuit simulator with SPICE} provides
