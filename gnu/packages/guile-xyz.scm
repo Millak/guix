@@ -7070,6 +7070,34 @@ which functions should satisfy, as Scheme code and then check whether they hold
 in a large number of randomly generated test cases.")
     (license license:gpl3+)))
 
+(define-public guile-veritas
+  (package
+    (name "guile-veritas")
+    (version "0.0.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/veritas.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "068yhsaiz2l4wim6iagfjl059fdsfnmkxnhwp64dri556viijjdj"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "src"))
+    (native-inputs (list guile-3.0))
+    (propagated-inputs (list guile-fibers))
+    (home-page "https://codeberg.org/jjba23/veritas")
+    (synopsis "Testing framework for Guile")
+    (description
+     "Veritas is a testing framework for Guile with an @acronym{EDSL,
+embedded domain specific language} to define test suites.  Emphasis is placed
+on legibility and maintainability of tests.  Veritas shuffles tests and
+runs them concurrently by default to ensure robust testing practices.")
+    (license license:lgpl3+)))
+
 (define-public guile-fslib
   (package
     (name "guile-fslib")
