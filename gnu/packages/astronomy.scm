@@ -6527,13 +6527,13 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.13.0")
+    (version "1.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "00xfx7hpcadwf3dm0lddh1raw7qnr5nrg30dclmjcrxhsp27spjg"))))
+        (base32 "1y3w1nlb4f56f9w7ql1al35mj2xv53cagrnpqknl1kh6r6qg7pqj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6576,11 +6576,11 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
            python-pytest
            python-pytest-xdist
            python-pytest-doctestplus
-           python-setuptools
+           python-setuptools-next
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
-     (list opencv ;Provides OpenCV-Python
+     (list opencv        ;Provides OpenCV-Python
            python-asdf
            python-astropy
            python-drizzle
