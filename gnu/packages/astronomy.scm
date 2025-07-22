@@ -3886,31 +3886,32 @@ pick/FWHM, thumbnails, etc.")
 (define-public python-glue-astronomy
   (package
     (name "python-glue-astronomy")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "glue_astronomy" version))
        (sha256
-        (base32 "0qaaf3n69ird5b00igkxnwyh80nvwffvfmaz7gbkavxnf6km940p"))))
+        (base32 "0b65kybnknrnz1nh1kjvsh9k9smia0gyigwn5rc3zrg1qys3wlk4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; 77 passed, 3 deselected
       #:test-flags
       #~(list "--pyargs" "glue_astronomy"
-              ;; XXX: Findout why these tests fail to load:
-              ;; E ModuleNotFoundError: No module named 'glue.qglue'
-              ;; E ImportError: cannot import name 'make_2dspec_image' from
-              ;; 'specreduce.utils.synth_data'
-              "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
-              "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
-              "--ignore=glue_astronomy/translators/tests/test_trace.py"
-              "--ignore=glue_astronomy/translators/tests/test_trace.py"
-              ;; This is a Numpy DeprecationWarning, remove it on next update.
-              "-k" "not test_spectral_cube_io")))
+              "-k" (string-join
+                    ;; Not equal to tolerance rtol=1e-07, atol=0
+                    (list "not test_from_spectrum1d[wcs3d]"
+                          ;; ValueError: WCS is 1D but flux is
+                          ;; multi-dimensional. Please specify
+                          ;; spectral_axis_index.
+                          "test_spectrum1d_2d_data[2]"
+                          "test_spectrum1d_2d_data[3]")
+                    " and not "))))
     (propagated-inputs
      (list python-astropy
            python-glue-core
+           python-glue-qt
            python-regions
            python-specreduce
            python-spectral-cube
