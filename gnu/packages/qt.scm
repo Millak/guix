@@ -2406,6 +2406,36 @@ WebGL.  WebGL is a JavaScript API for rendering 2D and 3D graphics within any
 compatible web browser without the use of plug-ins.  The API is similar to
 OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
 
+(define-public qtwebview
+  (package
+    (name "qtwebview")
+    (version "6.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "0hyhpr3ai77pwdc69q73r1wkibdn2vn6v1pqkc8minck24kkdd46"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-display
+                 (lambda _
+                   ;; Make Qt render "offscreen", required for tests.
+                   (setenv "QT_QPA_PLATFORM" "offscreen")
+                   ;; Set writable HOME for teststing cache directory.
+                   (setenv "HOME" "/tmp"))))))
+    (native-inputs (list perl))
+    (inputs (list qtbase qtdeclarative qtwebengine))
+    (synopsis "Display web content in a QML application")
+    (description "Qt WebView provides a way to display web content in a QML
+application without necessarily including a full web browser stack by using
+native APIs where it makes sense.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtwebview-5
   (package
     (inherit qtsvg-5)
