@@ -18851,8 +18851,8 @@ JSON Reference and JSON Pointer.")
        (snippet '(for-each delete-file (find-files "." "\\.c$")))
        (sha256
         (base32 "15x1in22gwam7wwga5lbj1pd8hc9jk741pia3pv1m29n2xywpq2z"))))
-    (build-system python-build-system)
-    (native-inputs (list python-cython-3))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython-3 python-setuptools python-wheel))
     (home-page "https://github.com/breezy-team/fastbencode")
     (synopsis "Python Bencode (de)serializer with optional fast C extensions")
     (description
