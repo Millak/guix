@@ -1333,7 +1333,13 @@ provide LAPACK for someone who does not have access to a Fortran compiler.")
                       ;; <https://github.com/amd/scalapack/commit/d3b6248b26f615b118ff4d72a00b3028f59a47f6>.
                       (substitute* "TESTING/CMakeLists.txt"
                         (("^add_test\\(x[cz]heevr.*" all)
-                         (string-append "# " all "\n"))))))))
+                         (string-append "# " all "\n")))))
+                  (add-before 'configure 'fix-gcc14-errors
+                    (lambda _
+                      (setenv "CFLAGS"
+                        (string-append
+                          "-g -O2 -DNDEBUG"
+                          " -Wno-error=implicit-function-declaration")))))))
     (home-page "https://www.netlib.org/scalapack/")
     (synopsis "Library for scalable numerical linear algebra")
     (description
