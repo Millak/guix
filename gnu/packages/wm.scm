@@ -373,7 +373,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.49.0")
+    (version "0.50.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -390,7 +390,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                               "subprojects"))))
               (sha256
                (base32
-                "0c2pvi9cdg6jv9wiz966q1sj8mjmxsgvcplsmfhhknpy7h2gp5px"))))
+                "0mn97wlzc5ccywbq87ka7a27jajkdkgypkfzkcan014viph80wif"))))
     (build-system cmake-build-system)
     (arguments
      (list #:cmake cmake-next
@@ -419,7 +419,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                      (("hyprland-update-screen" cmd)
                       (search-input-file inputs (in-vicinity "bin" cmd)))))))))
     (native-inputs
-     (list gcc-14
+     (list gcc-15
            hyprwayland-scanner
            (module-ref (resolve-interface
                   '(gnu packages commencement))
@@ -435,7 +435,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            hyprland-qtutils
            hyprlang
            hyprutils
-           libinput-minimal
+           libinput-minimal-next
            libxcursor
            libxkbcommon
            mesa
@@ -449,7 +449,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            xcb-util-errors
            xcb-util-wm
            xorg-server-xwayland))
-    (home-page "https://hyprland.org/")
+    (home-page "https://hypr.land/")
     (synopsis "Dynamic tiling Wayland compositor")
     (description
      "Hyprland is a dynamic tiling Wayland compositor that doesn't sacrifice on
