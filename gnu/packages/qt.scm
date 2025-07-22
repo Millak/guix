@@ -1101,7 +1101,12 @@ tst_qt_cmake_create.cpp"
                        "test_qt_add_ui_8"
                        "test_qt_add_ui_9"
                        ;; This test is susceptible to the 600 ms timeout used:
-                       "tst_qpauseanimation")
+                       "tst_qpauseanimation"
+
+                       ;; This test may fail non-deterministically as reported
+                       ;; in Guix bug#73233 and upstream at
+                       ;; https://bugreports.qt.io/browse/QTBUG-119321.
+                       "tst_qsharedmemory")
                       #$@(cond
                            ((target-ppc64le?)
                              #~((list
