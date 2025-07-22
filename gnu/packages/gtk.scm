@@ -836,6 +836,30 @@ ever use this library.")
     (home-page "https://gitlab.gnome.org/Archive/gdk-pixbuf-xlib")
     (license license:lgpl2.1+)))
 
+(define-public xpm-pixbuf
+  (let ((commit "d290a0c846687b22d2a8c5aaec83a6689f30e1c3")
+        (revision "1"))
+    (package
+      (name "xpm-pixbuf")
+      (version "0.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://gitlab.gnome.org/ZanderBrown/xpm-pixbuf")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1aljnfa28wvfanizphnz3c28076n25f8cc3wzw2yf8f8xqlsfkid"))))
+      (build-system meson-build-system)
+      (native-inputs (list pkg-config))
+      (inputs (list gdk-pixbuf glib))
+      (home-page "https://gitlab.gnome.org/ZanderBrown/xpm-pixbuf")
+      (synopsis "XPM image loader for GdkPixbuf")
+      (description "This package provides a GdkPixbuf module for loading XMP
+images.")
+      (license license:lgpl2.1+))))
+
 ;;; A minimal variant used to prevent a cycle with Inkscape.
 (define-public at-spi2-core
   (hidden-package
