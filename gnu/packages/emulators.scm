@@ -778,95 +778,66 @@ and a game metadata scraper.")
       (license license:expat))))
 
 (define-public higan
-  (package
-    (name "higan")
-    (version "110")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/higan-emu/higan")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11rvm53c3p2f6zk8xbyv2j51xp8zmqnch7zravhj3fk590qrjrr2"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("bash" ,bash-minimal) ; for wrap-program
-       ("ao" ,ao)
-       ("eudev" ,eudev)
-       ("gtk+" ,gtk+-2)
-       ("gtksourceview-2" ,gtksourceview-2)
-       ("libxrandr" ,libxrandr)
-       ("libxv" ,libxv)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("pulseaudio" ,pulseaudio)
-       ("sdl2" ,sdl2)))
-    (arguments
-     '(#:phases
-       (let ((build-phase (assoc-ref %standard-phases 'build))
-             (install-phase (assoc-ref %standard-phases 'install)))
-         (modify-phases %standard-phases
-           ;; The higan build system has no configure phase.
-           (delete 'configure)
-           (add-before 'build 'chdir-to-higan
-             (lambda _
-               (chdir "higan")
-               #t))
-           (add-before 'install 'create-/share/applications
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 ;; It seems the author forgot to do this in the Makefile.
-                 (mkdir-p (string-append out "/share/applications"))
-                 #t)))
-           (add-after 'install 'chdir-to-icarus
-             (lambda _
-               (chdir "../icarus")
-               #t))
-           (add-after 'chdir-to-icarus 'build-icarus build-phase)
-           (add-after 'build-icarus 'install-icarus install-phase)
-           (add-after 'install-icarus 'wrap-higan-executable
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (higan (string-append bin "/higan"))
-                      (higan-original (string-append higan "-original"))
-                      (bash (search-input-file inputs "/bin/bash"))
-                      (coreutils (assoc-ref inputs "coreutils"))
-                      (mkdir (string-append coreutils "/bin/mkdir"))
-                      (cp (string-append coreutils "/bin/cp"))
-                      (cp-r (string-append cp " -r --no-preserve=mode")))
-                 ;; First, have the executable make sure ~/.local/share/higan
-                 ;; contains up to date files.  Higan insists on looking there
-                 ;; for these data files.
-                 (rename-file higan higan-original)
-                 (with-output-to-file higan
-                   (lambda ()
-                     (display
-                      (string-append
-                       "#!" bash "\n"
-                       ;; higan doesn't respect $XDG_DATA_HOME
-                       mkdir " -p ~/.local/share\n"
-                       cp-r " " out "/share/higan ~/.local/share\n"
-                       "exec " higan-original))))
-                 (chmod higan #o555)
-                 ;; Second, make sure higan will find icarus in PATH.
-                 (wrap-program higan
-                   `("PATH" ":" prefix (,bin)))
-                 #t)))))
-       #:make-flags
-       (list "compiler=g++"
-             (string-append "prefix=" (assoc-ref %outputs "out")))
-       ;; There is no test suite.
-       #:tests? #f))
-    (home-page "https://github.com/higan-emu/higan/")
-    (synopsis "Multi-system emulator")
-    (description
-     "higan is a multi-system emulator with an uncompromising focus on
+  ;; There are no recent releases; use the latest commit of the master branch.
+  (let ((commit "ad0e11e7b73053eb1bcd5bdeabbe2de92c356286")
+        (revision "0"))
+    (package
+      (name "higan")
+      (version (git-version "110" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/higan-emu/higan")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dlx5vqxv8mr8faw0wggsd10bk51p258l56yixjarv0dyhv6nkbq"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list alsa-lib
+             bash-minimal                 ; for wrap-program
+             ao
+             eudev
+             gtk+
+             gtksourceview-3
+             libxrandr
+             libxv
+             mesa
+             openal
+             pulseaudio
+             sdl2))
+      (arguments
+       (list
+        #:tests? #f                       ;no test suite
+        #:make-flags #~(list "compiler=g++"
+                             "higan.path=../higan"
+                             "platform=linux"
+                             (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The higan build system has no configure phase.
+            (delete 'configure)
+            (add-before 'build 'chdir-to-higan-ui
+              (lambda _
+                (chdir "higan-ui")))
+            (add-after 'install 'chdir-to-icarus
+              (lambda _
+                (chdir "../icarus")))
+            (add-after 'chdir-to-icarus 'build-icarus
+              (assoc-ref %standard-phases 'build))
+            (add-after 'build-icarus 'install-icarus
+              (assoc-ref %standard-phases 'install))
+            (add-after 'install-icarus 'wrap-higan-executable
+              (lambda _
+                (wrap-program (string-append #$output "/bin/higan")
+                  `("PATH" prefix (,(string-append #$output "/bin")))))))))
+      (home-page "https://github.com/higan-emu/higan/")
+      (synopsis "Multi-system emulator")
+      (description
+       "higan is a multi-system emulator with an uncompromising focus on
 accuracy and code readability.
 
 It currently emulates the following systems: Famicom, Famicom Disk System,
@@ -875,7 +846,7 @@ Game Boy Player, SG-1000, SC-3000, Master System, Game Gear, Mega Drive, Mega
 CD, PC Engine, SuperGrafx, MSX, MSX2, ColecoVision, Neo Geo Pocket, Neo Geo
 Pocket Color, WonderSwan, WonderSwan Color, SwanCrystal, Pocket Challenge
 V2.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public mednafen
   (package
