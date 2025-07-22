@@ -32,7 +32,7 @@
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022-2023, 2025 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2025 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
@@ -82,6 +82,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
@@ -1072,44 +1073,59 @@ It is capable of creating games for SCUMM version 6 and partially version 7.")
 (define-public sfml
   (package
     (name "sfml")
-    (version "2.5.1")
-    (source (origin
-              (method git-fetch)
-              ;; Do not fetch the archives from
-              ;; http://mirror0.sfml-dev.org/files/ because files there seem
-              ;; to be changed in place.
-              (uri (git-reference
-                    (url "https://github.com/SFML/SFML")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0abr8ri2ssfy9ylpgjrr43m6rhrjy03wbj9bn509zqymifvq5pay"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Ensure system libraries are used.
-                  (delete-file-recursively "extlibs")
-                  #t))))
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Do not fetch the archives from
+       ;; http://mirror0.sfml-dev.org/files/ because files there seem
+       ;; to be changed in place.
+       (uri (git-reference
+              (url "https://github.com/SFML/SFML")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "12f1d45995qf5sazjmmfdydllcd6alhqs1s4xwv3jiq1fw66hcy9"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        '(begin
+           ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+           (define (delete-all-but directory . preserve)
+             (with-directory-excursion directory
+               (let* ((pred (negate (cut member <> (cons* "." ".." preserve))))
+                      (items (scandir "." pred)))
+                 (for-each (cut delete-file-recursively <>) items))))
+           (delete-all-but "extlibs/headers"
+                           "glad")))))  ;pre-generated headers
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DSFML_INSTALL_PKGCONFIG_FILES=TRUE"
-             "-DSFML_OS_PKGCONFIG_DIR=lib/pkgconfig")
-       #:tests? #f)) ; no tests
+     (list #:tests? #f             ;attempts to fetch catch2 from the internet
+           #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON"
+                   (string-append "-DCMAKE_CXX_FLAGS=-I"
+                                  (search-input-directory %build-inputs
+                                                          "include/vulkan")))))
     (native-inputs
-     (list pkg-config))
+     (list miniaudio                    ;header-only library
+           minimp3                      ;header-only library
+           pkg-config))
     (inputs
-     `(("mesa" ,mesa)
-       ("glew" ,glew)
-       ("libx11" ,libx11)
-       ("xcb-util-image" ,xcb-util-image)
-       ("libxrandr" ,libxrandr)
-       ("eudev" ,eudev)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libsndfile" ,libsndfile)
-       ("stb-image" ,stb-image)
-       ("stb-image-write" ,stb-image-write)))
+     (list eudev
+           glew
+           libjpeg-turbo
+           libsndfile
+           libx11
+           libxcursor
+           libxi
+           libxrandr
+           mesa
+           stb-image
+           stb-image-write
+           vulkan-headers
+           xcb-util-image))
     (propagated-inputs
      ;; In Requires.private of pkg-config files.
      (list flac freetype libvorbis openal))
@@ -1121,10 +1137,29 @@ to ease the development of games and multimedia applications.  It is composed
 of five modules: system, window, graphics, audio and network.")
     (license license:zlib)))
 
+(define-public sfml-2
+  (package
+    (inherit sfml)
+    (name "sfml")
+    (version "2.6.2")
+    (source (origin
+              (inherit (package-source sfml))
+              (method git-fetch)
+              ;; Do not fetch the archives from
+              ;; http://mirror0.sfml-dev.org/files/ because files there seem
+              ;; to be changed in place.
+              (uri (git-reference
+                    (url "https://github.com/SFML/SFML")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04qjfp23db0ga4lckil9jqigmjr3253p190r568kpaksrrf5bhcv"))))))
+
 (define-public csfml
   (package
     (name "csfml")
-    (version "2.5.1")
+    (version "2.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1133,13 +1168,13 @@ of five modules: system, window, graphics, audio and network.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wj1p798myyavld2xdhvvflb5h4nf1vgxxzs6nh5qad44vj9b3kb"))))
+                "19xxlan0yy9f92bmzkzqg3hjc18g6ds4mhg0rrs62qg9434p8aqh"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DCSFML_BUILD_DOC=TRUE")
            #:tests? #f)) ;no tests
     (native-inputs (list doxygen))
-    (inputs (list sfml))
+    (inputs (list sfml-2))
     (synopsis "C bindings for the SFML multimedia library")
     (description
      "CSFML is the official C binding to the SFML libraries.  SFML provides a

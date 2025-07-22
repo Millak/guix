@@ -4444,9 +4444,7 @@ for common mesh file formats, and collision detection.")
     (license license:zlib)))
 
 (define-public mars
-  ;; The latest release on SourceForge relies on an unreleased version of SFML
-  ;; with a different API, so we take the latest version from the official
-  ;; repository on Github.
+  ;; No official release since 2013: use the latest commit.
   (let ((commit   "84664cda094efe6e49d9b1550e4f4f98c33eefa2")
         (revision "2"))
     (package
@@ -4476,7 +4474,7 @@ for common mesh file formats, and collision detection.")
                                 (assoc-ref outputs "out")
                                 "/share/games/marsshooter/\";"))))))))
       (inputs
-       (list mesa fribidi taglib sfml))
+       (list mesa fribidi taglib sfml-2))
       (home-page "https://mars-game.sourceforge.net/")
       (synopsis "2D space shooter")
       (description
@@ -4796,7 +4794,7 @@ Protocol).")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list glu sfml))
+     (list glu sfml-2))
     (synopsis "High-speed arctic racing game based on Tux Racer")
     ;; Snarfed straight from Debian.
     (description "Extreme Tux Racer, or etracer as it is called for short, is
@@ -11018,7 +11016,7 @@ current computer, the world, and eventually the universe itself.")
                  (install-file "MarbleMarcher" bin))
                #t)))))
       (inputs
-       (list eigen mesa sfml))
+       (list eigen mesa sfml-2))
       (native-inputs
        (list pkg-config))
       (home-page "https://codeparade.itch.io/marblemarcher")
@@ -12801,7 +12799,7 @@ to start over several times to find the most satisfactory ending.")
        `(#:tests? #f                              ; no tests
          #:build-type "Release"))
       (inputs
-       (list sfml))
+       (list sfml-2))
       (home-page "https://github.com/sandsmark/Schiffbruch/")
       (synopsis "Pixelart survival game")
       (description

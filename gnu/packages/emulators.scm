@@ -519,7 +519,7 @@ It aims to support Nintendo DSi and 3DS as well.")
              pulseaudio
              qtbase-5
              sdl2
-             sfml
+             sfml-2
              soil
              soundtouch-1/integer-samples
              vulkan-loader
