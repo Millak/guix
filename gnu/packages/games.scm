@@ -3263,6 +3263,34 @@ To run, you must put your official game data, @code{Levels} and @code{Help} in
 @code{~/.local/share/Serious-Engine/{serioussam,serioussamse}/gamedata/}.}")
     (license license:gpl2)))
 
+(define-public serious-sam-classic-vk
+  (package
+    (inherit serious-sam-classic)
+    (name "serious-sam-classic-vk")
+    (version "1.10.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tx00100xt/SeriousSamClassic-VK")
+             (commit version)))
+       (sha256
+        (base32 "1av3ll3pfdsadm10dz3srxfw9ld1xbg8i5xrgv7qynqsd0x8jxby"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (patches (search-patches
+                 "serious-sam-classic-engine-patch-paths.patch"))))
+    (inputs (modify-inputs (package-inputs serious-sam-classic)
+              (prepend vulkan-loader vulkan-headers)))
+    (synopsis
+     "SeriousSam engine and Serious Sam: TFE and TSE with Vulkan renderer")
+    (description
+     "This is an open-source port of the Serious Engine from
+Serious Sam: The First Encounter and Serious Sam: The Second Encounter.
+This variant includes a Vulkan renderer.
+To run, you must put your official game data, @code{Levels} and @code{Help} in
+@code{~/.local/share/Serious-Engine/{serioussam,serioussamse}/gamedata/}.}")))
+
 (define-public solarus
   (package
     (name "solarus")
