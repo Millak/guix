@@ -5293,13 +5293,13 @@ solar physics.")
 (define-public python-regularizepsf
   (package
     (name "python-regularizepsf")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regularizepsf" version))
        (sha256
-        (base32 "1ial8i9nshhpn3lsgnjqm94dfrzxwz2qgpd8bjzmml1ls0j7sm9v"))))
+        (base32 "16kk2rfcs7dkasij225j9z99gwdnxxlamj704d7f3h1lj7yl3vdv"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
