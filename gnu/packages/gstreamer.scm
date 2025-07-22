@@ -10,7 +10,7 @@
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -172,56 +172,58 @@ module for the DMA capture of the video flow.")
     (license license:lgpl2.0+)))
 
 (define-public ccextractor
-  (package
-    (name "ccextractor")
-    (version "0.94")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/CCExtractor/ccextractor")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       ;; FIXME: Delete the 'src/thirdparty directory and unbundle the
-       ;; libraries it contains, such as freetype, libpng, zlib, and others.
-       (patches (search-patches "ccextractor-add-missing-header.patch"
-                                "ccextractor-autoconf-tesseract.patch"
-                                "ccextractor-fix-ocr.patch"))
-       (sha256
-        (base32 "1hrk4xlzkvk9pnv0yr4whcsh8h4fzk42mrf30dsr3xzh1lgpfslg"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "--enable-ffmpeg"
-                   "--enable-ocr"
-                   "--enable-hardsubx"
-                   ;; Disable Rust support, as there's no rust source included
-                   ;; and cargo wants to fetch the crates from the network
-                   ;; (see:
-                   ;; https://github.com/CCExtractor/ccextractor/issues/1502).
-                   "--without-rust")
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "linux")))
-                        (add-after 'chdir 'patch-pre-build.sh
-                          (lambda _
-                            (substitute* "pre-build.sh"
-                              (("/usr/bin/env") (which "env")))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              ;; There is no test suite; simply run the binary
-                              ;; to validate there are no obvious problems.
-                              (invoke "./ccextractor" "--help")))))))
-    (native-inputs (list autoconf automake pkg-config))
-    (inputs (list ffmpeg-3.4 leptonica-1.80 tesseract-ocr-4))
-    (synopsis "Closed Caption Extractor")
-    (description "CCExtractor is a tool that analyzes video files and produces
+  (let ((commit "81fdecd5af683ff25b953339fdb0d84e141d60c1")
+        (revision "0"))
+    (package
+      (name "ccextractor")
+      (version (git-version "0.94" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/CCExtractor/ccextractor")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         ;; FIXME: Delete the 'src/thirdparty directory and unbundle the
+         ;; libraries it contains, such as freetype, libpng, zlib, and others.
+         (sha256
+          (base32 "0rcig2zma4nrvlx90pkcy1spc1ha2ig0jixm2dnc0f04bzf2n00q"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags
+             #~(list "--enable-ffmpeg"
+                     "--enable-ocr"
+                     "--enable-hardsubx"
+                     ;; Disable Rust support, as there's no rust source included
+                     ;; and cargo wants to fetch the crates from the network
+                     ;; (see:
+                     ;; https://github.com/CCExtractor/ccextractor/issues/1502).
+                     "--without-rust"
+                     ;; Workaround the lack of a link directive to tesseract
+                     ;; for the hardsubx module.
+                     "LDFLAGS=-ltesseract")
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'chdir
+                            (lambda _
+                              (chdir "linux")))
+                          (add-after 'chdir 'patch-pre-build.sh
+                            (lambda _
+                              (substitute* "pre-build.sh"
+                                (("/usr/bin/env") (which "env")))))
+                          (replace 'check
+                            (lambda* (#:key tests? #:allow-other-keys)
+                              (when tests?
+                                ;; There is no test suite; simply run the binary
+                                ;; to validate there are no obvious problems.
+                                (invoke "./ccextractor" "--help")))))))
+      (native-inputs (list autoconf-2.72 automake pkg-config))
+      (inputs (list ffmpeg gpac leptonica tesseract-ocr))
+      (synopsis "Closed Caption Extractor")
+      (description "CCExtractor is a tool that analyzes video files and produces
 independent subtitle files from the closed captions data.  It is portable, small,
 and very fast.")
-    (home-page "https://www.ccextractor.org/")
-    (license license:gpl2+)))
+      (home-page "https://www.ccextractor.org/")
+      (license license:gpl2+))))
 
 (define-public libvisual
   (package

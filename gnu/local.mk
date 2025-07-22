@@ -1094,9 +1094,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/capnproto-fix-test.patch		\
   %D%/packages/patches/capstone-fix-python-constants.patch	\
   %D%/packages/patches/catdoc-CVE-2017-11110.patch		\
-  %D%/packages/patches/ccextractor-add-missing-header.patch	\
-  %D%/packages/patches/ccextractor-autoconf-tesseract.patch	\
-  %D%/packages/patches/ccextractor-fix-ocr.patch		\
   %D%/packages/patches/chez-scheme-bin-sh.patch			\
   %D%/packages/patches/circos-remove-findbin.patch		\
   %D%/packages/patches/cdparanoia-fpic.patch			\
