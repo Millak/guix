@@ -862,7 +862,7 @@ with the sfArk algorithm.")
 (define-public minizip-ng
   (package
     (name "minizip-ng")
-    (version "4.0.5")
+    (version "4.0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -871,7 +871,7 @@ with the sfArk algorithm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lgx4s4aykxn8x3b4m4c4isasd2608bbyfm4lxc2spcc4xqwhzkz"))))
+                "1y6yvswzl1gzrv1am3yhr6r2zpsh50d1l7g381ccccn9sz19jw13"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
