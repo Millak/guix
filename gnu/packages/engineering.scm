@@ -2203,18 +2203,42 @@ multiple services and devices with hundreds of supported integrations.")
 (define-public python-esptool
   (package
     (name "python-esptool")
-    (version "3.0")
+    (version "5.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "esptool" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/espressif/esptool")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0d69rd9h8wrzjvfrc66vmz4qd5hly2fpdcwj2bdrlb7dbwikv5c7"))))
-    (build-system python-build-system)
+        (base32 "04asqw6g4lhkz6fqn22wwk2wjq5q8c00m2k8wylksrc0v2f582i9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Requires python2 package pkcs11.
+         "--ignore=test/test_espsecure_hsm.py"
+         ;; XXX: Requires python-requests, most likely to use network.
+         "--ignore=test/test_uf2_ids.py"
+         ;; XXX: Various errors (device access, server not started...)
+         "--ignore=test/test_esptool.py"
+         ;; XXX: "not supported by this version of OpenSSL"
+         "-k" "not test_sign_v1_data and not test_sign_v1_data_pkcs8")))
     (propagated-inputs
-     (list python-ecdsa python-pyaes python-pyserial python-reedsolo
-           python-cryptography python-bitstring))
+     (list python-bitstring
+           python-click
+           python-cryptography
+           python-intelhex
+           python-pyserial
+           python-pyyaml
+           python-reedsolo
+           python-rich-click-next))
+    (native-inputs (list python-pyelftools
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/espressif/esptool")
     (synopsis "Bootloader utility for Espressif ESP8266 & ESP32 chips")
     (description
