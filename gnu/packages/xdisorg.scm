@@ -3970,7 +3970,7 @@ reduce percieved brightness below the monitor's minimum.")
 (define-public hyprlock
   (package
    (name "hyprlock")
-   (version "0.8.2")
+   (version "0.9.0")
    (source
     (origin
      (method git-fetch)
@@ -3979,7 +3979,7 @@ reduce percieved brightness below the monitor's minimum.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1wrndp1bkyfp741mgvjflkbq4pvdlccrh6xaz41y1f9967j8magm"))))
+      (base32 "1f0vcp0c9d3m9v3avajprpv14khnv3wk3y9fi3pcwr5xf2alaxv2"))))
    (build-system cmake-build-system)
    (arguments
     `(#:cmake ,cmake-next
@@ -3994,7 +3994,7 @@ reduce percieved brightness below the monitor's minimum.")
                           (("OpenGL REQUIRED")
                            "OpenGL REQUIRED COMPONENTS GLES2 EGL")))))
       #:tests? #f)) ;; no test
-   (native-inputs (list gcc-14 pkg-config))
+   (native-inputs (list gcc-15 pkg-config))
    (inputs (list cairo
                  file
                  hyprgraphics
@@ -4011,7 +4011,7 @@ reduce percieved brightness below the monitor's minimum.")
                  sdbus-c++
                  wayland
                  wayland-protocols))
-   (home-page "https://hyprland.org/")
+   (home-page "https://hypr.land/")
    (synopsis "Hyprland's screen locking utility")
    (description
     "This package provides Hyprland's simple, yet multi-threaded and
