@@ -1002,7 +1002,7 @@ prompt.")
 (define-public i3lock-color
   (package
     (name "i3lock-color")
-    (version "2.13.c.4")
+    (version "2.13.c.5")
     (source
      (origin
        (method git-fetch)
@@ -1011,10 +1011,14 @@ prompt.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lnyh8spbf1ar4xan5v7q8i2i51aq1i60kzbfkn9w3wa0jzf9f3d"))))
+        (base32 "1ya7h4ql5znjapfw67b8mkmflvcyywial494pgmnczv2aj1dxqky"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f))                    ; no tests included
+     (list
+      #:tests? #f ;no tests included
+      #:configure-flags
+      #~(list (string-append "--with-zsh-completion-dir="
+                             #$output "/share/zsh/site-functions"))))
     (inputs
      (list cairo
            libev
@@ -1026,7 +1030,7 @@ prompt.")
            xcb-util-image
            xcb-util-xrm))
     (native-inputs
-     (list autoconf automake pkg-config))
+     (list autoconf automake bash-completion pkg-config))
     (home-page "https://github.com/Raymo111/i3lock-color")
     (synopsis "Screen locker with color configuration support")
     (description
