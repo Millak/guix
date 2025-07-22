@@ -3251,13 +3251,13 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "12.1.10")
+    (version "12.1.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "07nahxxnw89l8lk8grampdni46a3l52098qdf5vkcfqs1kkq80wz"))))
+        (base32 "1h4n5wyv23pa1fld2nfqph6app8zxb8zkzv5p1w6dm11n7zbnxih"))))
     (build-system pyproject-build-system)
     (arguments
      (list
