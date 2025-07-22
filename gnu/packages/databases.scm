@@ -5820,6 +5820,15 @@ simultaneous database connections by using this framework.")
        #:tests? #f  ; FIXME: Find why the tests get stuck forever.
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'gcc14
+           (lambda _
+             (setenv "CFLAGS"
+                     (string-append
+                       "-g -O2 "
+                       "-Wno-error=int-conversion "
+                       "-Wno-error=incompatible-pointer-types "
+                       "-Wno-error=implicit-function-declaration"))))
+
          (add-after 'unpack 'fix-tests
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "tests/test_mysql.sh"
