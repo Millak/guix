@@ -2022,6 +2022,31 @@ strategies, such as fixed delay, backoff delay, and random delay.")
 interfaces.")
     (license license:bsd-3)))
 
+(define-public go-github-com-awesome-gocui-keybinding
+  (package
+    (name "go-github-com-awesome-gocui-keybinding")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/awesome-gocui/keybinding")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d1nvxs2pd6nc10gm3md2rsd0v33025b8dik1l1iy8klzhiqfd1q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;broken tests
+      #:import-path "github.com/awesome-gocui/keybinding"))
+    (propagated-inputs (list go-github-com-awesome-gocui-gocui))
+    (home-page "https://github.com/awesome-gocui/keybinding")
+    (synopsis "Wrapper for parsing gocui keybindings in Golang")
+    (description
+     "This package provides a golang wrapper for parsing gocui keybindings.")
+    (license license:expat)))
+
 (define-public go-github-com-axiomhq-hyperloglog
   (package
     (name "go-github-com-axiomhq-hyperloglog")
