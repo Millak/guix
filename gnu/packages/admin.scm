@@ -423,7 +423,10 @@ late.")
        (file-name (git-file-name name version))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     (list #:phases
+     (list
+       #:configure-flags
+         #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+       #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-file-names
                  (lambda _
