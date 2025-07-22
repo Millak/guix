@@ -1,6 +1,6 @@
 -*- mode: org -*-
 
-[[https://www.gnu.org/software/guix/][GNU Guix]] (IPA: /ɡiːks/) is a purely functional package manager, and
+[[https://www.gnu.org/software/guix/][GNU Guix]] (IPA: /​ɡiːks/) is a purely functional package manager, and
 associated free software distribution, for the [[https://www.gnu.org/gnu/gnu.html][GNU system]].  In addition
 to standard package management features, Guix supports transactional
 upgrades and roll-backs, unprivileged package management, per-user
