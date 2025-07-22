@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022-2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +60,11 @@
                   ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fixup-gcc14
+            (lambda _
+              (substitute* "test/all/blocking_shell/c++/main.cc"
+                (("provides") "provide")
+                (("requires") "require"))))
           (add-before 'configure 'setenv
             (lambda _
               (setenv "GUILE_AUTO_COMPILE" "0")))
