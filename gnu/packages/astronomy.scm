@@ -3365,13 +3365,13 @@ Cesium.")
 (define-public python-dkist
   (package
     (name "python-dkist")
-    (version "1.13.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dkist" version))
        (sha256
-        (base32 "07mnm9fl6igbhblg4dihg5w187n6ily5aglg40qjxl6yvxr63b2x"))))
+        (base32 "061hgrg69cpnn2j6gaivjbkxwiz6rpmyf6igxq58h82g4r7yl6ya"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3416,7 +3416,7 @@ Cesium.")
            python-sunpy
            python-tqdm))
     (home-page "https://github.com/DKISTDC/dkist")
-    (synopsis "Library for obtaining, processing and interacting with calibrated DKIST data")
+    (synopsis "Obtaining, processing and interacting with calibrated DKIST data")
     (description
      "The @acronym{DKIST, Daniel K. Inouye Solar Telescope} package aims to
 help you search, obtain and use DKIST data as part of your Python software.")
