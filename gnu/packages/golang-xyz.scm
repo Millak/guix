@@ -15495,6 +15495,30 @@ editor with history, inspired by @url{https://github.com/antirez/linenoise/,
 linenoise}.  Xterm as well as WIN32 terminal codes are supported.")
     (license license:expat)))
 
+(define-public go-github-com-phayes-permbits
+  (package
+    (name "go-github-com-phayes-permbits")
+    (version "0.0.0-20190612203442-39d7c581d2ee")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/phayes/permbits")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jixy4m65agyyly5mg4icszwzs5hjgj1x7cwvc9a3df6j5lwd41x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/phayes/permbits"))
+    (home-page "https://github.com/phayes/permbits")
+    (synopsis "Easy file permissions for Golang")
+    (description
+     "This package makes it a breeze to check and modify file permission
+bits.")
+    (license license:expat)))
+
 (define-public go-github-com-philhofer-fwd
   (package
     (name "go-github-com-philhofer-fwd")
