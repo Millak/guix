@@ -35198,27 +35198,21 @@ has been created, and the visibility of the icon can be toggled.")
 (define-public python-bitstring
   (package
     (name "python-bitstring")
-    (version "3.1.7")
+    (version "4.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "bitstring" version))
         (sha256
-         (base32
-          "0jl6192dwrlm5ybkbh7ywmyaymrc3cmz9y07nm7qdli9n9rfpwzx"))))
-    (build-system python-build-system)
+         (base32 "0nm9l77sgyqai8ggnm6j9yvc473g0l8icaj11x66s8ap72fw12x0"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "test"
-                 (invoke "pytest")))
-             #t)))))
+     (list
+      #:test-flags #~(list "--ignore=tests/test_benchmarks.py")))
     (native-inputs
-     (list python-pytest))
+     (list python-gfloat python-pytest python-setuptools python-wheel))
+    (propagated-inputs
+     (list python-bitarray))
     (home-page "https://github.com/scott-griffiths/bitstring")
     (synopsis
      "Simple construction, analysis and modification of binary data")
