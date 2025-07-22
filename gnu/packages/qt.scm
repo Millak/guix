@@ -4848,8 +4848,8 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
                      "${CMAKE_INSTALL_PREFIX}/share/qt6/translations")))))))))))
 
 (define-public qtsolutions
-  (let ((commit "9568abd142d581b67b86a5f63d823a34b0612702")
-        (revision "53"))
+  (let ((commit "777e95ba69952f11eaec0adfb0cb987fabcdecb3")
+        (revision "54"))
     (package
       (name "qtsolutions")
       (version (git-version "0" revision commit))
@@ -4861,7 +4861,7 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "17fnmassflm3vxi0krpr6fff368jy38cby31a48rban4nqqmgx7n"))
+          (base32 "044dzxxhjldzmxd1pqi7p1ppppjvqjdr42bm60gbl8902rda6qrk"))
          (modules '((guix build utils)
                     (ice-9 ftw)
                     (srfi srfi-1)))
