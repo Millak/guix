@@ -15622,6 +15622,30 @@ digests with little effort.")
 container image format spec (OCI Image Format).")
     (license license:asl2.0)))
 
+;; For umoci@1.5.0, remove when a fresh version is released.
+(define-public go-github-com-opencontainers-image-spec-1.0.2
+  (hidden-package
+   (package
+     (inherit go-github-com-opencontainers-image-spec)
+     (name "go-github-com-opencontainers-image-spec")
+     (version "1.0.2")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+           (url "https://github.com/opencontainers/image-spec")
+           (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1wcw1z39wjx338406ga86a41f5ird0yc4ab3c70nfhkpkvjjzhkm"))))
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "github.com/opencontainers/image-spec"))
+     (propagated-inputs
+      (list go-github-com-pkg-errors)))))
+
 (define-public go-github-com-opencontainers-runc
   (package
     (name "go-github-com-opencontainers-runc")
