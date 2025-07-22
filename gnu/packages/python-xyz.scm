@@ -553,6 +553,34 @@ line drawing algorithm}.")
 understanding ECMA script.")
     (license license:expat)))
 
+(define-public python-copydetect
+  (package
+    (name "python-copydetect")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blingenf/copydetect")
+              (commit version)))
+       (sha256
+        (base32 "0hp9994bbnzp79xxprgwsbgc0w06sb4n82nghl90w1z9zbvwn6gz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-jinja2
+                             python-matplotlib
+                             python-numpy
+                             python-pygments
+                             python-tqdm))
+    (native-inputs (list python-setuptools
+                         python-pytest
+                         python-wheel))
+    (home-page "https://github.com/blingenf/copydetect")
+    (synopsis "Code plagiarism detection tool")
+    (description "Copydetect is a tool to detect likely instances of plagiarism
+based on the winnowing algorithm.  It takes a list of directories as input and
+generates an HTML report displaying copied slices as output.")
+    (license license:expat)))
+
 (define-public python-couleur
   (package
     (name "python-couleur")
