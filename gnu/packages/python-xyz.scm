@@ -6765,29 +6765,17 @@ from git information.
 (define-public python-pyrsistent
   (package
     (name "python-pyrsistent")
-    (version "0.16.0")
+    (version "0.20.0")
     (home-page "https://github.com/tobgu/pyrsistent")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyrsistent" version))
               (sha256
                (base32
-                "1lrsjgblnapfimd0alsi1as5nz2lfqv97131l7d6anbjzq2rjri8"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  ;; The package works fine with newer Pytest and Hypothesis, but
-                  ;; has pinned older versions to stay compatible with Python 2.
-                  (add-before 'check 'loosen-pytest-requirement
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("pytest<5") "pytest")
-                        (("hypothesis<5") "hypothesis"))
-                      #t)))))
+                "1935ybwdxszmzlzshwkc7m7swm1js46ls246j1knqndbca7zfj2c"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-hypothesis python-pytest python-pytest-runner))
-    (propagated-inputs
-     (list python-six))
+     (list python-pytest python-setuptools python-wheel))
     (synopsis "Persistent data structures for Python")
     (description
      "Pyrsistent is a number of persistent collections (by some referred to as
