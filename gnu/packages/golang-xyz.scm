@@ -15547,6 +15547,24 @@ levels per backend and logger.")
 information for all OCI projects.")
     (license license:asl2.0)))
 
+;; For runc@1.3.0, remove when a fresh version is released.
+(define-public go-github-com-opencontainers-cgroups-0.0.1
+  (hidden-package
+   (package
+     (inherit go-github-com-opencontainers-cgroups)
+     (name "go-github-com-opencontainers-cgroups")
+     (version "0.0.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+           (url "https://github.com/opencontainers/cgroups")
+           (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "173izkgmh33chamkn099gkvz914k726hbv8xhf0xl1rcrv335sa5")))))))
+
 (define-public go-github-com-opencontainers-go-digest
   (package
     (name "go-github-com-opencontainers-go-digest")
