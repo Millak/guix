@@ -3081,6 +3081,49 @@ of a loop structure or other iterative computation.")
 Python library and command line interface.")
     (license license:expat)))
 
+(define-public python-gfloat
+  (package
+    (name "python-gfloat")
+    (version "0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gfloat" version))
+       (sha256
+        (base32 "0ffxg4igsx4mv4llig79zwla6al4wv9ny9sbnx25ha2ldq41a022"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Package python-ml-dtypes (tried unsuccessfully).
+         "--ignore=test/test_decode.py"
+         "--ignore=test/test_finfo.py"
+         "--ignore=test/test_jax.py"
+         "--ignore=test/test_microxcaling.py"
+         "--ignore=test/test_round.py"
+         ;; Jupyter.
+         "--ignore-glob=docs/source/*.ipynb")))
+    (propagated-inputs (list python-more-itertools python-numpy))
+    (native-inputs (list python-nbval
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/graphcore-research/gfloat")
+    (synopsis "Generic floating point handling in Python")
+    (description
+     "This package provides an implementation of generic floating point encode
+and decode logic in Python.  It handles various current and proposed floating
+point types:
+
+@itemize
+@item IEEE 754: Binary16, Binary32
+@item OCP Float8: E5M2, E4M3
+@item IEEE WG P3109
+@item OCP MX Formats: E2M1, M2M3, E3M2, E8M0, INT8, and the MX block formats.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-glymur
   (package
     (name "python-glymur")
