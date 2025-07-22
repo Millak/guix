@@ -32118,11 +32118,11 @@ that take parsers as their arguments and return them as result values.")
        (uri (pypi-uri "speg" version ".zip"))
        (sha256
         (base32 "0w9y4jf4787dzhy6rvhwi0mpl0r8qkqmqmyv2hpwdpv8w53yzjqh"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;FIXME: tests fail, not sure why
     (native-inputs
-     (list unzip))
-    (build-system python-build-system)
+     (list python-setuptools python-wheel unzip))
     (home-page "https://github.com/avakar/speg")
     (synopsis "PEG-based parser interpreter with memoization")
     (description "This package is a PEG-based parser and interpreter with
