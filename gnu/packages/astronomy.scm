@@ -8980,7 +8980,7 @@ astronomical fields.  SkyMaker is part of the
 (define-public splash
   (package
     (name "splash")
-    (version "3.11.3")
+    (version "3.11.4")
     (source
      (origin
        (method git-fetch)
@@ -8989,7 +8989,7 @@ astronomical fields.  SkyMaker is part of the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vyshywwbk2746jdhrnn7vn1gj336zzwcifrfyf38byj41691svm"))))
+        (base32 "13p4hjdpr0yacgh8v3lf5vy1d0hdh5axbwpgi91wafm0xx6zpgkv"))))
     (build-system gnu-build-system)
     (arguments
      ;; FIXME: Tests failed
