@@ -187,25 +187,6 @@ default.  To add support for more languages, the
 @code{tesseract-ocr-tessdata-fast} package should be installed.")
     (license license:asl2.0)))
 
-(define-public tesseract-ocr-4
-  (package
-    (inherit tesseract-ocr)
-    (name "tesseract-ocr")
-    (version "4.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tesseract-ocr/tesseract")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1ksds8n26kq0acprjn4ycdr163hr9kmkwij7fc973mrjg7kz0pdi"))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs tesseract-ocr)
-       (replace "leptonica" leptonica-1.80)))))
-
 (define-public gimagereader
   (package
     (name "gimagereader")
