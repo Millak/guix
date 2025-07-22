@@ -440,6 +440,53 @@ concept.")
     (home-page "https://invent.kde.org/plasma/kactivitymanagerd")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public klassy
+  (package
+    (name "klassy")
+    (version "6.4.breeze6.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/paulmcauley/klassy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hrr8kg988qzpk8mccc8kk9lah9b89wx0h47s1981wvb9bci5dpr"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list qtsvg
+                  kirigami
+                  qtdeclarative
+                  kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  kcolorscheme
+                  kdecoration
+                  kcmutils
+                  kguiaddons
+                  kiconthemes
+                  kwindowsystem
+                  ki18n))
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:tests? #f ; No tests.
+      #:configure-flags
+      #~(list "-DBUILD_QT5=OFF")))
+    (home-page "https://github.com/paulmcauley/klassy")
+    (synopsis "Customizable window decoration for the KDE Plasma desktop")
+    (description
+     "Klassy is a highly customizable binary Window Decoration,
+Application Style and Global Theme plugin for recent versions of the KDE Plasma
+desktop.")
+    (license (list license:bsd-3
+                   license:cc0
+                   license:expat
+                   license:gpl2
+                   license:gpl2+
+                   license:gpl3))))
+
 (define-public krdp
   (package
     (name "krdp")
