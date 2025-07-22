@@ -11419,6 +11419,8 @@ list, create, update, or delete resources (e.g. Order, Product, Collection).")
                          python-nox
                          python-pillow
                          python-pytest
+                         python-setuptools
+                         python-wheel
                          python-xmldiff))
     (home-page "https://github.com/google/pybadges")
     (synopsis "Generate Github-style badges on the command-line")
