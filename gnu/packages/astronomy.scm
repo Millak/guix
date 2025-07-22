@@ -6598,16 +6598,17 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "3.1.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "03r9nv3d3rjm70ihqg03aj6ydl91527abfmx7nbf6g9598s01fg1"))))
+        (base32 "1lyxwfq55ngnsjr25bj3v6mjibx17074z28qi3xc9wpib5dn887i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; 1571 passed
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Disable tests requiring access to CRDS servers to download
