@@ -549,7 +549,9 @@ in LXDE.")
                      (find-files "." generated-c-file?))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-gtk3")
+     `(#:configure-flags (list "--enable-gtk3"
+                               ;; Fix build with GCC 14.
+                               "CFLAGS=-Wno-error=incompatible-pointer-types")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'rm-stamp
