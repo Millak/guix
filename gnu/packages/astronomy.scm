@@ -8431,13 +8431,13 @@ using (multivariate) polynomials.")
 (define-public python-yt
   (package
     (name "python-yt")
-    (version "4.4.0")
+    (version "4.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yt" version))
        (sha256
-        (base32 "1mf084wp0wrhi17npzbyz42lh3xwlc2hggr8h4pmighsnafdy58f"))))
+        (base32 "099w4n38c13vk98wsj698wxmskw3pr7zcf56dqiwl8c3nhjn9wrd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
