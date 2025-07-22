@@ -354,7 +354,7 @@ or musca).
                   "1f75vfd5fv8zhd7hy7lg26wmlaslxqj2knf3zi6wnv21n63m3wa1"))))
       (build-system cmake-build-system)
       (arguments (list #:tests? #f)) ;No tests.
-      (native-inputs (list gcc-14 pkg-config))
+      (native-inputs (list gcc-15 pkg-config))
       (inputs
        (list hyprland-protocols
              hyprlang
