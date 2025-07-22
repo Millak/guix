@@ -8277,17 +8277,38 @@ object.")
 (define-public python-synphot
   (package
     (name "python-synphot")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "synphot" version))
        (sha256
-        (base32 "0xifg0fbh2rj3jn5i504c0qh51dlzgr1l2k962nh38synjhq9csc"))))
+        (base32 "0vcai5kdfv6286qdyhg58i6f980s028dh5r4fmlhdk872qci574r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "synphot")))
+      ;; 394 passed, 29 skipped, 12 deselected, 4 xfailed
+      #:test-flags
+      #~(list "--pyargs" "synphot"
+              ;; Not harmful deprecation warning as synphot is compatible with
+              ;; specutils now, remove or silent error in the next refresh
+              ;; cycle.
+              ;;
+              ;; See: <https://github.com/spacetelescope/synphot_refactor/issues/411>.
+              "-k" (string-join
+                    (list "not test_from_spectrum1d_Empirical1D_bandpass"
+                          "test_from_spectrum1d_Empirical1D_bandpass_masked"
+                          "test_from_spectrum1d_Empirical1D_source"
+                          "test_from_spectrum1d_Empirical1D_source_masked"
+                          "test_spectrum1d_source"
+                          "test_to_spectrum1d_Const1D"
+                          "test_to_spectrum1d_ConstFlux1D"
+                          "test_to_spectrum1d_Empirical1D_bandpass"
+                          "test_to_spectrum1d_Empirical1D_source"
+                          "test_to_spectrum1d_GaussianFlux1D"
+                          "test_to_spectrum1d_compound_bandpass"
+                          "test_to_spectrum1d_compound_source")
+                    " and not "))))
     (native-inputs
      (list python-pytest
            python-pytest-astropy
@@ -8299,7 +8320,7 @@ object.")
            python-dust-extinction
            python-numpy
            python-scipy
-           python-specutils ))
+           python-specutils))
     (home-page "https://github.com/spacetelescope/synphot_refactor")
     (synopsis "Synthetic photometry using Astropy")
     (description
