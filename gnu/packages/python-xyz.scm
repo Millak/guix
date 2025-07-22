@@ -32973,36 +32973,18 @@ replacement for dictionaries where immutability is desired.")
     (version "2.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "unpaddedbase64" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matrix-org/python-unpaddedbase64")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "01ghlmw63fgslwj8j74vkpf1kqvr7a4agm6nyn89vqwx106ccwvj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
-             (when tests?
-               (copy-recursively (string-append
-                                  (assoc-ref inputs "tests") "/tests")
-                                 "tests")
-               (invoke "python" "-m" "pytest" "-vv")))))))
-    (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("tests"
-        ;; The release on pypi comes without tests.  We can't build from this
-        ;; checkout, though, because installation requires an invocation of
-        ;; poetry.
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/matrix-org/python-unpaddedbase64")
-                 (commit (string-append "v" version))))
-           (file-name (git-file-name name version))
-           (sha256
-            (base32
-             "1n6har8pxv0mqb96lanzihp1xf76aa17jw3977drb1fgz947pnmz"))))))
+        (base32 "1n6har8pxv0mqb96lanzihp1xf76aa17jw3977drb1fgz947pnmz"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/matrix-org/python-unpaddedbase64")
     (synopsis "Encode and decode Base64 without “=” padding")
     (description
