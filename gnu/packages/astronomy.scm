@@ -2908,13 +2908,13 @@ astronomy library.")
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
-    (version "2.4.3")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ccdproc" version))
        (sha256
-        (base32 "1crc565n0x1krd59cjm2vnmzyi0p83yc8vpxq6hldj7vdnqgl8yq"))))
+        (base32 "1ymx9ssapv52m6flfvlhgjnvwmqdgv1qimyjvci8w66k9j4446q5"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatch-vcs
