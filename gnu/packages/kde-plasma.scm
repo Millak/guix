@@ -1883,12 +1883,13 @@ KF5/Qt5 to KF6/Qt6")
            kirigami-addons
            ki18n
            kwindowsystem
+           mpvqt
            purpose
            qtdeclarative
            qtmultimedia
            qtsvg
            qtkeychain-qt6
-           mpvqt
+           qtwayland
            yt-dlp))
     (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/plasmatube/")
