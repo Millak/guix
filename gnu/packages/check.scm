@@ -4125,8 +4125,12 @@ loaded.")
                         ;; to find it in "virtest/vir/" instead of "vir/vir/".
                         (substitute* "CMakeLists.txt"
                           (("DESTINATION include/vir")
-                           "DESTINATION include/virtest"))
-                        #t)))))
+                           "DESTINATION include/virtest"))))
+                    (add-after 'unpack 'gcc14
+                      (lambda _
+                        (substitute* "vir/test.h"
+                          (("#include <cmath>" all)
+                            (string-append all "\n#include <cstdint>"))))))))
       (synopsis "Header-only test framework")
       (description
        "@code{virtest} is a small header-only test framework for C++.  It
