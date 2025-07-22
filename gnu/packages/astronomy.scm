@@ -1922,8 +1922,8 @@ Astropy objects.")
 
 (define-public python-asdf-compression
   ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "68ed09f670a9f1c5f81b3db88ef594e87bdbc9fd")
-        (revision "2"))
+  (let ((commit "579c153a453dc0d650f2cca01d2c5dae0dc02051")
+        (revision "3"))
     (package
       (name "python-asdf-compression")
       (version (git-version "0.0.1" revision commit))
@@ -1935,7 +1935,7 @@ Astropy objects.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0644hn0pris8f872rbb5bklsw2ialryf4sicwshgjs3zcsyxnjf8"))))
+          (base32 "03cq4x40xy5micipg4qp2j0v1h6hxqrrzpzyjybm6j82zi92c770"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -1947,7 +1947,7 @@ Astropy objects.")
       (native-inputs
        (list python-numpy
              python-pytest
-             python-setuptools
+             python-setuptools-next
              python-setuptools-scm
              python-wheel))
       (propagated-inputs
