@@ -30,6 +30,7 @@
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -851,17 +852,17 @@ preloading.")
 (define-public chafa
   (package
     (name "chafa")
-    (version "1.14.0")
+    (version "1.16.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hpjansson.org/chafa/releases/chafa-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1170g2qkcj2amsfl7sn81r42lwb2hy4z15xxhy0lrkayig15a3k7"))))
+                "1pv1g2gcn4qn27bkwm1g1k87nb1yq0gzw7jclhq53d49kbfrhy35"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list pkg-config which))
     (inputs
      (list freetype libjpeg-turbo glib imagemagick))
     (synopsis "Convert images to ANSI/Unicode characters")
