@@ -31801,20 +31801,10 @@ bindings for Python 3.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1mkbhqibxvgwg0p7slr8dfraa3g2s6bsayladhax2jccwj4kcndz"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'check)
-           (add-after 'install 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (add-installed-pythonpath inputs outputs)
-               (invoke "py.test" "-v" "tests")
-               #t)))))
-      (propagated-inputs
-       (list python-flexmock python-pytest python-pytest-cov python-six))
+          (base32 "1mkbhqibxvgwg0p7slr8dfraa3g2s6bsayladhax2jccwj4kcndz"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-flexmock python-pytest python-pytest-cov
+                           python-setuptools python-wheel))
       (home-page "https://github.com/oinume/iocapture")
       (synopsis "Python capturing tool for stdout and stderr")
       (description
