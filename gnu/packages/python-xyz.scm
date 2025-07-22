@@ -6769,15 +6769,17 @@ structure is left untouched.")
   (package
     (name "python-exif-read")
     (version "3.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "exifread" version))
-              (sha256
-               (base32
-                "0n0knxfl30riszkbwrq18lxm2f2wsrpj2piwv6jn6bnm9mbadij5"))))
+    (source
+     (origin
+       (method git-fetch) ;PyPI doesn't contain the test images
+       (uri (git-reference
+             (url "https://github.com/ianare/exif-py")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0igvqhalrllidyccy7rlqbhx277rv7mf6bf0w6xjr0dj2dk3jw76"))))
     (build-system pyproject-build-system)
-    (arguments `(#:tests? #f)) ; no tests
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/ianare/exif-py")
     (synopsis "Python library to extract EXIF data from image files")
     (description
