@@ -7418,16 +7418,17 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.25.0")
+    (version "0.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "07pkz0fybhpzrlch5gcw4c90rd2y2mypli23h2lz1pa7q6gyaifd"))))
+        (base32 "0vxkjsj9bdl84076lbric4jn531jv46i2wwfxak50i5mik8r7zjg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; 1131 passed, 1 skipped
       #:test-flags
       ;; Ignore tests requiring python-crds to break cycle:
       ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
@@ -7439,7 +7440,6 @@ and the use of a modern programming language, techniques, and libraries
               "--ignore=tests/test_latest.py")))
     (native-inputs
      (list python-pytest
-           python-pytest
            python-pytest-doctestplus
            python-semantic-version
            python-setuptools-next
