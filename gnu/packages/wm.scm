@@ -1030,7 +1030,7 @@ prompt.")
            xcb-util-image
            xcb-util-xrm))
     (native-inputs
-     (list autoconf automake bash-completion pkg-config))
+     (list autoconf automake-1.16.5 bash-completion pkg-config))
     (home-page "https://github.com/Raymo111/i3lock-color")
     (synopsis "Screen locker with color configuration support")
     (description
