@@ -6478,13 +6478,13 @@ over many parameters:
 (define-public python-statmorph
   (package
     (name "python-statmorph")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statmorph" version))
        (sha256
-        (base32 "0q9h8yqd8w8ckakn3hx7r5mag3vpgaah077rvi3bdmkmix5ky7r9"))))
+        (base32 "0qrxm0aigsjsqv39vxc85jv1id8b7sry76dx44143ii9hpd9dg4l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6500,8 +6500,9 @@ over many parameters:
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "setup.py"
-                ;; scikit-image>=0.25.0
-                ((">=0.25.0") ">=0.23.2")))))))
+                ;; scikit-image>=0.25.0; tests passed, remove when python-team
+                ;; is merged.
+                ((">=0.25.2") ">=0.23.2")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
