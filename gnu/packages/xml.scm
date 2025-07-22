@@ -27,7 +27,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -253,6 +253,23 @@ hierarchical form with variable field lengths.")
      "Libxml2 is the XML C parser and toolkit developed for the Gnome
 project (but it is usable outside of the Gnome platform).")
     (license license:x11)))
+
+(define-public libxml2-next
+  (package
+    (inherit libxml2)
+    (name "libxml2")
+    (version "2.14.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libxml2/"
+                                  (version-major+minor version)"/libxml2-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0jylv2kkyzih710blg24al7b43iaqg6xsfn52qy865knagrhdl03"))))
+    (native-inputs (modify-inputs (package-native-inputs libxml2)
+                     (append pkg-config
+                             python-minimal)))))
 
 (define-public libxml2-xpath0
   (package/inherit libxml2
