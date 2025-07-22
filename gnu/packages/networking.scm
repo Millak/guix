@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -2734,17 +2734,19 @@ HTTP proxies.")
 (define-public enet
   (package
     (name "enet")
-    (version "1.3.17")
+    (version "1.3.18")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://enet.bespin.org/download/"
-                           "enet-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lsalzman/enet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1p6f9mby86af6cs7pv6h48032ip9g32c05cb7d9mimam8lchz3x3"))))
+        (base32
+         "0yavjrmvn34b67z8kkzp68s2wwd1nrriwkl2jc5pvwhgf51aar6c"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
+    (native-inputs (list autoconf automake libtool pkg-config))
     (synopsis "Network communication layer on top of UDP")
     (description
      "ENet's purpose is to provide a relatively thin, simple and robust network
