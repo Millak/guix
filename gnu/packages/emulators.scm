@@ -913,34 +913,41 @@ The following systems are supported:
 (define-public mgba
   (package
     (name "mgba")
-    (version "0.10.4")
+    (version "0.10.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mgba-emu/mgba")
-             (commit version)))
+              (url "https://github.com/mgba-emu/mgba")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lfn5jhgqb06f1i1b8w8fvbi4fy4k8dvialblwg8h49qjqmf610q"))
-       (modules '((guix build utils)))
+         "1scyvcp8l5z1sy1hcr0wgdf8zrirg07fzqjdmhkjnyhxmb9sibb5"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
        (snippet
-        ;; Make sure we don't use the bundled software.
-        '(begin
-           (for-each
-            (lambda (subdir)
-              (let ((lib-subdir (string-append "src/third-party/" subdir)))
-                (delete-file-recursively lib-subdir)))
-            '("libpng" "lzma" "sqlite3" "zlib"))))))
-    (build-system cmake-build-system)
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <> (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+
+            (delete-all-but "src/third-party"
+                            "blip_buf"
+                            "inih")))))
+    (build-system qt-build-system)
     (arguments
-     `(#:tests? #f                      ;no "test" target
-       #:configure-flags
-       (list "-DBUILD_LTO=OFF" ;FIXME: <https://github.com/mgba-emu/mgba/issues/3115>
-             "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
-             "-DUSE_LIBZIP=OFF")))      ;use "zlib" instead
-    (native-inputs (list pkg-config qttools-5))
+     (list
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DBUILD_SUITE=ON"
+              "-DUSE_DISCORD_RPC=OFF"   ;avoid bundled copy
+              "-DUSE_LIBZIP=OFF"        ;use "zlib" instead
+              "-DUSE_LZMA=OFF")))       ;do not use bundled LZMA
+    (native-inputs (list cmocka pkg-config qttools))
     (inputs
      (list ffmpeg
            libedit
@@ -950,8 +957,8 @@ The following systems are supported:
            mesa
            minizip
            ncurses
-           qtbase-5
-           qtmultimedia-5
+           qtbase
+           qtmultimedia
            sdl2
            sqlite
            zlib))
@@ -961,10 +968,10 @@ The following systems are supported:
      "mGBA is an emulator for running Game Boy Advance games.  It aims to be
 faster and more accurate than many existing Game Boy Advance emulators, as
 well as adding features that other emulators lack.  It also supports Game Boy
-and Game Boy Color games.")
-    ;; Code is mainly MPL 2.0. "blip_buf.c" is LGPL 2.1+, "inih.c" is
-    ;; BSD-3, and "discord-rpc" is Expat.
-    (license (list license:mpl2.0 license:lgpl2.1+ license:bsd-3 license:expat))))
+and Game Boy Color games")
+    (license (list license:mpl2.0       ;mgba itself
+                   license:lgpl2.1+     ;blip_buf bundled library
+                   license:bsd-3))))    ;inih bundled library
 
 (define-public sameboy
   (package
