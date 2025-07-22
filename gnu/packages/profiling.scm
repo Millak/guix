@@ -88,7 +88,8 @@
            `(,infiniband-diags "lib")
            net-tools))
     (native-inputs
-     (list gfortran))
+     (list gcc-13
+           gfortran-13))
     (arguments
      (list #:tests? #f                            ;no check target
            #:configure-flags
