@@ -24039,14 +24039,14 @@ etc.")
        (uri (pypi-uri "PyVirtualDisplay" version))
        (sha256
         (base32 "0nb1s7nilakrkcm0vq08pz9mh8rzyhjm9jkyn1gp5sxnrv1mnx89"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests fail with:
      ;; FileNotFoundError: [Errno 2] No such file or directory: 'Xvnc'.
      `(#:tests? #f))
     (native-inputs
      (list python-entrypoint2 python-psutil python-pytest
-           python-pytest-runner))
+           python-pytest-runner python-setuptools python-wheel))
     (propagated-inputs
      (list python-easyprocess python-pillow))
     (home-page "https://github.com/ponty/pyvirtualdisplay")
