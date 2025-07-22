@@ -24,7 +24,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -564,7 +564,7 @@ diagrams.")
 (define-public gtksourceview-2
   (package
     (name "gtksourceview")
-    (version "2.10.5") ; This is the last version which builds against gtk+2
+    (version "2.10.5")   ;this is the last version which builds against gtk+2
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -574,12 +574,12 @@ diagrams.")
                (base32
                 "07hrabhpl6n8ajz10s0d960jdwndxs87szxyn428mpxi8cvpg1f5"))
               (patches
-                (search-patches
-                  "gtksourceview-2-add-default-directory.patch"))))
+               (search-patches
+                "gtksourceview-2-add-default-directory.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool
-           `(,glib "bin") ; for glib-genmarshal, etc.
+           `(,glib "bin")               ; for glib-genmarshal, etc.
            pkg-config
            ;; For testing.
            xorg-server-for-tests
@@ -589,27 +589,32 @@ diagrams.")
      `(("gtk" ,gtk+-2)
        ("libxml2" ,libxml2)))
     (arguments
-     `(#:phases
-       ;; Unfortunately, some of the tests in "make check" are highly dependent
-       ;; on the environment therefore, some black magic is required.
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xserver
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                   (mime (assoc-ref inputs "shared-mime-info")))
+     (list
+      ;; Fix build with GCC 14.
+      #:configure-flags #~(list "CFLAGS=-Wno-error=incompatible-pointer-types")
+      #:phases
+      ;; Unfortunately, some of the tests in "make check" are highly dependent
+      ;; on the environment therefore, some black magic is required.
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; There must be a running X server and make check doesn't
+              ;; start one.  Therefore we must do it.
+              (system (format #f "~a :1 &"
+                              (search-input-file (or native-inputs inputs)
+                                                 "bin/Xvfb")))
+              (setenv "DISPLAY" ":1")
 
-               ;; There must be a running X server and make check doesn't start one.
-               ;; Therefore we must do it.
-               (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-               (setenv "DISPLAY" ":1")
+              ;; The .lang files must be found in
+              ;; $XDG_DATA_HOME/gtksourceview-2.0
+              (system "ln -s gtksourceview gtksourceview-2.0")
+              (setenv "XDG_DATA_HOME" (getcwd))
 
-               ;; The .lang files must be found in $XDG_DATA_HOME/gtksourceview-2.0
-               (system "ln -s gtksourceview gtksourceview-2.0")
-               (setenv "XDG_DATA_HOME" (getcwd))
-
-               ;; Finally, the mimetypes must be available.
-               (setenv "XDG_DATA_DIRS" (string-append mime "/share/")))
-             #t)))))
+              ;; Finally, the mimetypes must be available.
+              (setenv "XDG_DATA_DIRS"
+                      (string-append
+                       #$(this-package-native-input "shared-mime-info")
+                       "/share")))))))
     (synopsis "Widget that extends the standard GTK+ 2.x 'GtkTextView' widget")
     (description
      "GtkSourceView is a portable C library that extends the standard GTK+
