@@ -222,7 +222,7 @@ module for the DMA capture of the video flow.")
       (description "CCExtractor is a tool that analyzes video files and produces
 independent subtitle files from the closed captions data.  It is portable, small,
 and very fast.")
-      (home-page "https://www.ccextractor.org/")
+      (home-page "https://ccextractor.org/")
       (license license:gpl2+))))
 
 (define-public libvisual
