@@ -2418,43 +2418,58 @@ Open Container Initiative specification.")
 (define-public umoci
   (package
     (name "umoci")
-    (version "0.4.7")
-    ;; XXX: Source contain vendor, consider to pack all missing dependencies.
+    (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/opencontainers/umoci/releases/download/v"
-             version "/umoci.tar.xz"))
-       (file-name (string-append "umoci-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/opencontainers/umoci")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0fvljj9k4f83wbqzd8nbijz0p1zaq633f8yxyvl5sy3wjf03ffk9"))))
+        (base32 "10pxiqk4194nbnvlvfvlbk31wp8k35in3g694y20f9261nn0qx6n"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/opencontainers/umoci"
-      #:test-subdirs #~(list ".")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'unpack
-            (lambda* (#:key source import-path #:allow-other-keys)
-              ;; Unpack the tarball into 'umoci' instead of "runc-${version}".
-              (let ((dest (string-append "src/" import-path)))
-                (mkdir-p dest)
-                (invoke "tar" "-C" (string-append "src/" import-path)
-                        "--strip-components=1"
-                        "-xvf" source))))
-          (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                ;; TODO: build manpages with 'go-md2man'.
-                (invoke "make" "SHELL=bash"))))
-          (replace 'install
-            (lambda* (#:key import-path outputs #:allow-other-keys)
-              (let ((bindir (string-append #$output "/bin")))
-                (install-file (string-append "src/" import-path "/umoci")
-                              bindir)))))))
+      #:import-path "github.com/opencontainers/umoci/cmd/umoci"
+      #:unpack-path "github.com/opencontainers/umoci"
+      #:test-flags
+      ;; Two tests fail with error: unpack config.json: convert spec to
+      ;; rootless: inspecting mount flags of /etc/resolv.conf: no such file or
+      ;; directory
+      #~(list "-skip" (string-append "TestUnpackManifestCustomLayer"
+                                     "|TestUnpackStartFromDescriptor"))
+      #:test-subdirs #~(list "../../...")       ;test the whole libary
+      #:build-flags
+      #~(list (string-append "-ldflags="
+                             "-X github.com/opencontainers/umoci.version="
+                             #$version))))
+    ;; TODO: build manpages from <doc/man> with 'go-md2man'.
+    (native-inputs
+     (list go-github-com-adalogics-go-fuzz-headers
+           go-github-com-apex-log
+           go-github-com-blang-semver-v4
+           go-github-com-cyphar-filepath-securejoin
+           go-github-com-docker-go-units
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-pgzip
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-github-com-mohae-deepcopy
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec-1.0.2
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-rootless-containers-proto-go-proto
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli
+           go-github-com-vbatts-go-mtree
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))
     (home-page "https://umo.ci/")
     (synopsis "Tool for modifying Open Container images")
     (description
