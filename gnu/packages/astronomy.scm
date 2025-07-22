@@ -3330,7 +3330,7 @@ files and provide related services.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method git-fetch)
@@ -3341,7 +3341,7 @@ files and provide related services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ws26kx975c48s6zzj57fyi1d0aiv0arxcrb4hg7jdvhrcyh3nlk"))))
+        (base32 "1c2nw1rdllla76z8gkfv2a1dqc302cayhhkqn3xn4b0vgsn1z1k2"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
