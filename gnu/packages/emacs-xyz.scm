@@ -20298,8 +20298,8 @@ you to deal with multiple log levels.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/protesilaos/denote")
-             (commit version)))
+              (url "https://github.com/protesilaos/denote")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1np3hyqcw6p5ajx102ng5nyc5gp1is88vk6803gf5alfbw0fzvj4"))))
@@ -20309,20 +20309,18 @@ you to deal with multiple log levels.")
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'build-info-manual
                      (lambda _
-                       (import (guix build utils))
-                       (invoke (string-append #$emacs "/bin/emacs")
-                               "README.org"
+                       (invoke "emacs"
                                "--batch"
-                               "-f"
-                               "org-texinfo-export-to-info"
-                               "--kill") #t)))))
+                               "--eval=(require 'ox-texinfo)"
+                               "--eval=(find-file \"README.org\")"
+                               "--eval=(org-texinfo-export-to-info)"))))))
     (native-inputs (list texinfo))
     (home-page "https://protesilaos.com/emacs/denote/")
     (synopsis "Simple notes for Emacs")
     (description
-"Denote is a simple note-taking tool for Emacs.  It is based on the idea that
-notes should follow a predictable and descriptive file-naming scheme.  The
-file name must offer a clear indication of what the note is about, without
+     "Denote is a simple note-taking tool for Emacs.  It is based on the idea
+that notes should follow a predictable and descriptive file-naming scheme.
+The file name must offer a clear indication of what the note is about, without
 reference to any other metadata.  Denote basically streamlines the creation of
 such files while providing facilities to link between them.")
     (license license:gpl3+)))
