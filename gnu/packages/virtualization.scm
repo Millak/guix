@@ -2431,31 +2431,30 @@ Open Container Initiative specification.")
         (base32 "0fvljj9k4f83wbqzd8nbijz0p1zaq633f8yxyvl5sy3wjf03ffk9"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/opencontainers/umoci"
-       #:install-source? #f
-       #:test-subdirs '(".")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key source import-path #:allow-other-keys)
-             ;; Unpack the tarball into 'umoci' instead of "runc-${version}".
-             (let ((dest (string-append "src/" import-path)))
-               (mkdir-p dest)
-               (invoke "tar" "-C" (string-append "src/" import-path)
-                       "--strip-components=1"
-                       "-xvf" source))))
-         (replace 'build
-           (lambda* (#:key import-path #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               ;; TODO: build manpages with 'go-md2man'.
-               (invoke "make" "SHELL=bash"))))
-         (replace 'install
-           (lambda* (#:key import-path outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bindir (string-append out "/bin")))
-               (install-file (string-append "src/" import-path "/umoci")
-                             bindir)
-               #t))))))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/opencontainers/umoci"
+      #:test-subdirs #~(list ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source import-path #:allow-other-keys)
+              ;; Unpack the tarball into 'umoci' instead of "runc-${version}".
+              (let ((dest (string-append "src/" import-path)))
+                (mkdir-p dest)
+                (invoke "tar" "-C" (string-append "src/" import-path)
+                        "--strip-components=1"
+                        "-xvf" source))))
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; TODO: build manpages with 'go-md2man'.
+                (invoke "make" "SHELL=bash"))))
+          (replace 'install
+            (lambda* (#:key import-path outputs #:allow-other-keys)
+              (let ((bindir (string-append #$output "/bin")))
+                (install-file (string-append "src/" import-path "/umoci")
+                              bindir)))))))
     (home-page "https://umo.ci/")
     (synopsis "Tool for modifying Open Container images")
     (description
