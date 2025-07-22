@@ -2303,6 +2303,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/scons-test-environment.patch		\
   %D%/packages/patches/scotch-cmake-remove-metis.patch		\
   %D%/packages/patches/screen-hurd-path-max.patch		\
+  %D%/packages/patches/serious-sam-classic-engine-patch-paths.patch		\
   %D%/packages/patches/scsh-nonstring-search-path.patch	\
   %D%/packages/patches/seed-webkit.patch			\
   %D%/packages/patches/sendgmail-accept-ignored-gsuite-flag.patch	\

@@ -1,0 +1,582 @@
+diff --git a/SamTFE/Sources/Engine/Base/Stream.cpp b/SamTFE/Sources/Engine/Base/Stream.cpp
+index f30213a..8f2aa82 100644
+--- a/SamTFE/Sources/Engine/Base/Stream.cpp
++++ b/SamTFE/Sources/Engine/Base/Stream.cpp
+@@ -78,7 +78,9 @@ ULONG _ulVirtuallyAllocatedSpaceTotal = 0;
+ // global string with application path (utf-8)
+ CTFileName _fnmApplicationPath;
+ CTFileName _fnmApplicationPathTMP; // home dir or application path
+-
++#ifdef PLATFORM_UNIX
++CTFileName _fnmAdditionalDirPath; // additional search path
++#endif
+ // global string with filename of the started application
+ CTFileName _fnmApplicationExe;
+ // global string with user-specific writable directory.
+@@ -220,6 +222,17 @@ void InitStreams(void)
+   }
+   delete files;
+ 
++#ifdef PLATFORM_UNIX
++  // additional search path
++  files = _pFileSystem->FindFiles(_fnmAdditionalDirPath, "*.gro");
++  max = files->Count();
++  for (i = 0; i < max; i++) {
++    UNZIPAddArchive( _fnmAdditionalDirPath + ((*files)[i]) );
++  }
++  UNZIPAddArchive( _fnmApplicationPath + "share/serioussam/SE1_10b.gro");
++  delete files;
++#endif
++
+   // if there is a mod active
+   if (_fnmMod!="") {
+     // for each group file in mod directory
+@@ -1655,19 +1668,20 @@ INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExp
+ 
+   int _savegame       = strncmp((const char *)fnmFile, (const char *) "SaveGame", (size_t) 8 );
+   int _usercontrols   = strncmp((const char *)fnmFile, (const char *) "Controls", (size_t) 8 );
+-  int _persistentsym  = strncmp((const char *)fnmFile, (const char *) "Scripts/PersistentSymbols.ini", (size_t) 29 );
+-  int _gamesgms       = strncmp((const char *)fnmFile, (const char *) "Data/SeriousSam.gms", (size_t) 19 );
+-  int _comsolehistory = strncmp((const char *)fnmFile, (const char *) "Temp/ConsoleHistory.txt", (size_t) 23 );
+-  int _userdemos      = strncmp((const char *)fnmFile, (const char *) "Demos/Demo", (size_t) 10 );
++  int _persistentsym  = strncmp((const char *)fnmFile, (const char *) "Scripts", (size_t) 7 );
++  int _gamesgms       = strncmp((const char *)fnmFile, (const char *) "Data", (size_t) 4 );
++  int _comsolehistory = strncmp((const char *)fnmFile, (const char *) "Temp", (size_t) 4 );
++  int _userdemos      = strncmp((const char *)fnmFile, (const char *) "Demo", (size_t) 4 );
+   int _playersplr     = strncmp((const char *)fnmFile, (const char *) "Players", (size_t) 7 );
+   int _screenshots    = strncmp((const char *)fnmFile, (const char *) "ScreenShots", (size_t) 11 );
+   int _levelsvis      = strncmp((const char *)fnmFile, (const char *) "Levels", (size_t) 6 );
+-
+-  //CPrintF("ExpandFilePath: %s\n",(const char *) fnmFile);
++  int _help           = strncmp((const char *)fnmFile, (const char *) "Help", (size_t) 4 );
+ 
+   if(( _savegame == 0 || _persistentsym == 0 || _gamesgms == 0 ||
+     _comsolehistory == 0 || _userdemos == 0 || _playersplr == 0 || _screenshots == 0) && ( _bPortableVersion == FALSE)) {
+        _fnmApplicationPathTMP = _fnmUserDir;
++  } else if (_help == 0) {
++    _fnmApplicationPathTMP = _fnmAdditionalDirPath;
+   } else {
+        _fnmApplicationPathTMP = _fnmApplicationPath;
+   }
+@@ -1675,6 +1689,8 @@ INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExp
+   if( _levelsvis == 0 && _bPortableVersion == FALSE) {
+     if (fnmFileAbsolute.FileExt()==".vis") {
+        _fnmApplicationPathTMP = _fnmUserDir;
++    } else {
++     _fnmApplicationPathTMP = _fnmAdditionalDirPath;
+     }
+   }
+ 
+diff --git a/SamTFE/Sources/Engine/Base/Stream.h b/SamTFE/Sources/Engine/Base/Stream.h
+index 8ff3de6..1e5aeae 100644
+--- a/SamTFE/Sources/Engine/Base/Stream.h
++++ b/SamTFE/Sources/Engine/Base/Stream.h
+@@ -391,6 +391,10 @@ ENGINE_API void MakeDirList(
+ 
+ // global string with application path
+ ENGINE_API extern CTFileName _fnmApplicationPath;
++#ifdef PLATFORM_UNIX
++// global string with additional search path
++ENGINE_API extern CTFileName _fnmAdditionalDirPath;
++#endif
+ // global string with user-specific writable directory.
+ ENGINE_API extern CTFileName _fnmUserDir;
+ // global string with current MOD path
+diff --git a/SamTFE/Sources/Engine/Engine.cpp b/SamTFE/Sources/Engine/Engine.cpp
+index e6f7c4f..2b6cda5 100644
+--- a/SamTFE/Sources/Engine/Engine.cpp
++++ b/SamTFE/Sources/Engine/Engine.cpp
+@@ -115,6 +115,7 @@ static CTString sys_strModExt  = "";
+ // Path vars
+ static INDEX sys_iGameBits = 0;
+ ENGINE_API INDEX sys_iSysPath = 0;
++ENGINE_API INDEX sys_iGameDataNotFound = 0;
+ 
+ // Entities Adjesters
+ ENGINE_API FLOAT _fPlayerFOVAdjuster = 1.0f;
+@@ -676,10 +677,12 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
+   _fnmApplicationPath = CTString(strDirPath);
+   _fnmApplicationExe = CTString(strExePath);
+ #ifdef PLATFORM_UNIX
++  //_fnmAdditionalDirPath = "/usr/share/" + strGameID + "/";
+     // rcg01012002 calculate user dir.
+   char buf[MAX_PATH];
+   _pFileSystem->GetUserDirectory(buf, sizeof (buf));
+   _fnmUserDir = CTString(buf);
++  _fnmAdditionalDirPath = _fnmUserDir + "/gamedata/";
+ #endif
+   try {
+     _fnmApplicationExe.RemoveApplicationPath_t();
+@@ -742,147 +745,17 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
+   CPrintF(TRANSV("Running %d-bit version\n"), sys_iGameBits);
+ 
+ #ifdef PLATFORM_UNIX
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-  int _isystempath = strncmp((const char *)strExePath, (const char *) "/usr/local/bin/", (size_t) 15 );
+-#elif defined(__NetBSD__)
+-  int _isystempath = strncmp((const char *)strExePath, (const char *) "/usr/pkg/bin/", (size_t) 13 );
+-#else
+-  int _isystempath = strncmp((const char *)strExePath, (const char *) "/usr/bin/", (size_t) 9 );
+-#endif
+-  if( _isystempath == 0 ) {
+-       sys_iSysPath = 1; // using system path
+-  } else {
+-       sys_iSysPath = 0; // using standarted path
+-  }
+-
+-  // get library path for mods
+-  _fnmModLibPath = "";
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-  if( sys_iSysPath == 1 ) {
+-    _fnmModLibPath = "/usr/local/lib/" + strGameID + "/";
+-#elif defined(__NetBSD__)
+-  if( sys_iSysPath == 1 ) {
+-    _fnmModLibPath = "/usr/pkg/lib/" + strGameID + "/";
+-#else
+-  if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/aarch64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/aarch64-linux-gnu/" + strGameID + "/"; 
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 32 && _pFileSystem->IsDirectory((const char *) "/usr/lib/arm-linux-gnueabihf/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/arm-linux-gnueabihf/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/riscv64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/riscv64-linux-gnu/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/s390x-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/s390x-linux-gnu/" + strGameID + "/"; 
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/powerpc64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/powerpc64-linux-gnu/" + strGameID + "/"; 
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/x86_64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/x86_64-linux-gnu/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 32 && _pFileSystem->IsDirectory((const char *) "/usr/lib/i386-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/i386-linux-gnu/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib64/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib64/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 32 && _pFileSystem->IsDirectory((const char *) "/usr/lib//" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/" + strGameID + "/";
+-#endif
+-  } else if( sys_iSysPath == 0 ) {
+-    _fnmModLibPath = _fnmApplicationPath;
+-  } else {
+-    CPrintF(TRANSV("ERROR: Game libraries not ound!\n"));
+-    FatalError(TRANSV("Failed to search game libraries installed!\nPlease reinstall the game.\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID);
+-  }
+ 
+-  if( sys_iSysPath == 1 ) { // search game data
+-    CTFileName _fnm_usr_TestFile, _fnm_local_TestFile, _fnm_home_TestFile;
+-    CTString _fnmUserDataPath, _fnm_TestFile;
+-    int _fd;
+-
+-    if( access((const char *) _fnmUserDir+_strLogFile+".cfg", F_OK) == 0 ) {
+-      _fd = open((const char *) _fnmUserDir+_strLogFile+".cfg", O_RDONLY,S_IRUSR);
+-      size_t x = read(_fd, _path, 2048);
+-      _fnmUserDataPath = (CTString)_path + "/";
+-      close(_fd);
+-      CPrintF(TRANSV("Testing home path: %s\n"), (const char *) _fnmUserDataPath);
+-    } else { 
+-      _fnmUserDataPath = "";
+-    }
+-
+-    // set testing files
+-    if( strGameID == "serioussamse") {
+-      _fnm_TestFile = "SE1_00_Levels.gro";
+-    } else {
+-      _fnm_TestFile = "1_00_music.gro";
+-    }
+-    CPrintF(TRANSV("Testing file: %s\n"), (const char *) _fnm_TestFile);
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-    _fnm_usr_TestFile = "/usr/local/share/" + strGameID + "/" + _fnm_TestFile; //  data in usr
+-#elif defined(__NetBSD__)
+-    _fnm_usr_TestFile = "/usr/pkg/share/" + strGameID + "/" + _fnm_TestFile; //  data in usr
+-#else
+-    _fnm_usr_TestFile = "/usr/share/" + strGameID + "/" + _fnm_TestFile; //  data in usr
+-#endif
+-    _fnm_local_TestFile = _fnmUserDir + _fnm_TestFile;                   //  data in home .local
+-    _fnm_home_TestFile = (const char *)_fnmUserDataPath  + _fnm_TestFile;
+-    // test
+-    if( access((const char *) _fnm_home_TestFile, F_OK) != 0 ) {
+-      CPrintF(TRANSV("Testing system path: %s\n"), (const char *) _fnm_usr_TestFile);
+-      CPrintF(TRANSV("Testing local  path: %s\n"), (const char *) _fnm_local_TestFile);
+-      if( access((const char *) _fnm_usr_TestFile, F_OK) == 0 ) {
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-        _fnmApplicationPath = "/usr/local/share/" + strGameID + "/";                       // all game data
+-#elif defined(__NetBSD__)
+-        _fnmApplicationPath = "/usr/pkg/share/" + strGameID + "/";                       // all game data
+-#else
+-        _fnmApplicationPath = "/usr/share/" + strGameID + "/";                       // all game data
+-#endif
+-        CPrintF(TRANSV("Found usr path: %s\n"), (const char *) _fnmUserDataPath);
+-      } else if( access((const char *) _fnm_local_TestFile, F_OK) == 0 ) {
+-        _fnmApplicationPath = _fnmUserDir;                                           // all game data
+-        CPrintF(TRANSV("Found local path: %s\n"), (const char *) _fnmUserDataPath);
+-      } else {
+-        // search in home dir 
+-        // BOOL YesNoMessage(const char *strFormat, ...)
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-        InfoMessage(TRANS("No game files were found in /usr/local/share/%s/\n or %s\nThe home directory will be searched."),(const char *) strGameID,(const char *) _fnmUserDir);
+-#elif defined(__NetBSD__)
+-        InfoMessage(TRANS("No game files were found in /usr/pkg/share/%s/\n or %s\nThe home directory will be searched."),(const char *) strGameID,(const char *) _fnmUserDir);
+-#else
+-        InfoMessage(TRANS("No game files were found in /usr/share/%s/\n or %s\nThe home directory will be searched."),(const char *) strGameID,(const char *) _fnmUserDir);
+-#endif
+-        struct passwd *pw = getpwuid(getuid());
+-        const char *_homedir = pw->pw_dir;
+-        _testfiledone = 0;
+-        _list_dir(_homedir, 0, strGameID);
+-        CTString _PATH;
+-        _PATH = (CTString)_path;
+-        _fnmApplicationPath = (CTFileName) _PATH + "/";
+-        _fnm_home_TestFile  = (CTFileName) _PATH + "/" + _fnm_TestFile; 
+-        if( access((const char *) _fnm_home_TestFile, F_OK) == 0 ) {
+-          //_fnmApplicationPath = (CTFileName) _PATH + "/";
+-          CPrintF(TRANSV("Found home path: %s\n"), (const char *) _fnm_home_TestFile);
+-          _fd = open((const char *) _fnmUserDir+_strLogFile+".cfg", O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+-          size_t x = write(_fd, _path, 2048);
+-          close(_fd);
+-        } else {
+-          CPrintF(TRANSV("ERROR: Game data not ound!\n"));
+-          _fnmUserDataPath = "";
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-          FatalError(TRANSV("Failed to search game data!\nPlease put the game data in the paths:\n/usr/local/share/%s/\n or %s\n or somewhere in your home directory\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID,(const char *) _fnmUserDir,(const char *) strGameID);
+-#elif defined(__NetBSD__)
+-          FatalError(TRANSV("Failed to search game data!\nPlease put the game data in the paths:\n/usr/pkg/share/%s/\n or %s\n or somewhere in your home directory\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID,(const char *) _fnmUserDir,(const char *) strGameID);
+-#else
+-          FatalError(TRANSV("Failed to search game data!\nPlease put the game data in the paths:\n/usr/share/%s/\n or %s\n or somewhere in your home directory\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID,(const char *) _fnmUserDir,(const char *) strGameID);
+-#endif
+-        }
+-      } 
+-    } else {
+-      CPrintF(TRANSV("Found path: %s\n"), (const char *) _fnmUserDataPath);
+-      _fnmApplicationPath = _fnmUserDataPath;                                         // all game data
+-    }
+-  }
++  // using system path
++  sys_iSysPath = 1;
++  // library path for mods
++  _fnmModLibPath = _fnmApplicationPath + "lib/" + strGameID + "/";
+ 
+   // print info on the started application
+   CPrintF(TRANSV("Executable: %s\n"), (const char *) strExePath);
+   CPrintF(TRANSV("Assumed engine data directory: %s\n"), (const char *) _fnmApplicationPath);
+   CPrintF(TRANSV("Assumed mods library directory: %s\n"), (const char *) _fnmModLibPath);
++  CPrintF(TRANSV("Assumed additional data directory: %s\n"), (const char *) _fnmAdditionalDirPath);
+ #endif
+ 
+   CPrintF("\n");
+diff --git a/SamTFE/Sources/Engine/Engine.h b/SamTFE/Sources/Engine/Engine.h
+index 8307f70..6ba88a4 100644
+--- a/SamTFE/Sources/Engine/Engine.h
++++ b/SamTFE/Sources/Engine/Engine.h
+@@ -207,6 +207,7 @@ extern ENGINE_API BOOL _bWorldEditorApp; // is this world edtior app
+ extern ENGINE_API CTString _strLogFile;
+ extern ENGINE_API CTFileName _fnmModLibPath;
+ extern ENGINE_API INDEX sys_iSysPath;
++extern ENGINE_API INDEX sys_iGameDataNotFound;
+ #ifdef PLATFORM_WIN32
+ //
+ extern ENGINE_API FLOAT _fPlayerFOVAdjuster;
+diff --git a/SamTSE/Sources/Engine/Base/Stream.cpp b/SamTSE/Sources/Engine/Base/Stream.cpp
+index f30213a..9a2ffaf 100644
+--- a/SamTSE/Sources/Engine/Base/Stream.cpp
++++ b/SamTSE/Sources/Engine/Base/Stream.cpp
+@@ -78,7 +78,9 @@ ULONG _ulVirtuallyAllocatedSpaceTotal = 0;
+ // global string with application path (utf-8)
+ CTFileName _fnmApplicationPath;
+ CTFileName _fnmApplicationPathTMP; // home dir or application path
+-
++#ifdef PLATFORM_UNIX
++CTFileName _fnmAdditionalDirPath; // additional search path
++#endif
+ // global string with filename of the started application
+ CTFileName _fnmApplicationExe;
+ // global string with user-specific writable directory.
+@@ -194,15 +196,16 @@ void InitStreams(void)
+     }
+   }
+   // find eventual extension for the mod's dlls
+-  _strModExt = "";
++  _strModExt = "MP";
+   // DG: apparently both ModEXT.txt and ModExt.txt exist in the wild.
++/*
+   CTFileName tmp;
+   if(ExpandFilePath(EFP_READ, CTString("ModEXT.txt"), tmp) != EFP_NONE) {
+     LoadStringVar(CTString("ModEXT.txt"), _strModExt);
+   } else {
+     LoadStringVar(CTString("ModExt.txt"), _strModExt);
+   }
+-
++*/
+ 
+   CPrintF(TRANSV("Loading group files...\n"));
+ 
+@@ -220,6 +223,17 @@ void InitStreams(void)
+   }
+   delete files;
+ 
++#ifdef PLATFORM_UNIX
++  // additional search path
++  files = _pFileSystem->FindFiles(_fnmAdditionalDirPath, "*.gro");
++  max = files->Count();
++  for (i = 0; i < max; i++) {
++    UNZIPAddArchive( _fnmAdditionalDirPath + ((*files)[i]) );
++  }
++  UNZIPAddArchive( _fnmApplicationPath + "share/serioussamse/SE1_10b.gro");
++  delete files;
++#endif
++
+   // if there is a mod active
+   if (_fnmMod!="") {
+     // for each group file in mod directory
+@@ -1655,19 +1669,20 @@ INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExp
+ 
+   int _savegame       = strncmp((const char *)fnmFile, (const char *) "SaveGame", (size_t) 8 );
+   int _usercontrols   = strncmp((const char *)fnmFile, (const char *) "Controls", (size_t) 8 );
+-  int _persistentsym  = strncmp((const char *)fnmFile, (const char *) "Scripts/PersistentSymbols.ini", (size_t) 29 );
+-  int _gamesgms       = strncmp((const char *)fnmFile, (const char *) "Data/SeriousSam.gms", (size_t) 19 );
+-  int _comsolehistory = strncmp((const char *)fnmFile, (const char *) "Temp/ConsoleHistory.txt", (size_t) 23 );
+-  int _userdemos      = strncmp((const char *)fnmFile, (const char *) "Demos/Demo", (size_t) 10 );
++  int _persistentsym  = strncmp((const char *)fnmFile, (const char *) "Scripts", (size_t) 7 );
++  int _gamesgms       = strncmp((const char *)fnmFile, (const char *) "Data", (size_t) 4 );
++  int _comsolehistory = strncmp((const char *)fnmFile, (const char *) "Temp", (size_t) 4 );
++  int _userdemos      = strncmp((const char *)fnmFile, (const char *) "Demo", (size_t) 4 );
+   int _playersplr     = strncmp((const char *)fnmFile, (const char *) "Players", (size_t) 7 );
+   int _screenshots    = strncmp((const char *)fnmFile, (const char *) "ScreenShots", (size_t) 11 );
+   int _levelsvis      = strncmp((const char *)fnmFile, (const char *) "Levels", (size_t) 6 );
+-
+-  //CPrintF("ExpandFilePath: %s\n",(const char *) fnmFile);
++  int _help           = strncmp((const char *)fnmFile, (const char *) "Help", (size_t) 4 );
+ 
+   if(( _savegame == 0 || _persistentsym == 0 || _gamesgms == 0 ||
+     _comsolehistory == 0 || _userdemos == 0 || _playersplr == 0 || _screenshots == 0) && ( _bPortableVersion == FALSE)) {
+        _fnmApplicationPathTMP = _fnmUserDir;
++  } else if (_help == 0) {
++    _fnmApplicationPathTMP = _fnmAdditionalDirPath;
+   } else {
+        _fnmApplicationPathTMP = _fnmApplicationPath;
+   }
+@@ -1675,6 +1690,8 @@ INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExp
+   if( _levelsvis == 0 && _bPortableVersion == FALSE) {
+     if (fnmFileAbsolute.FileExt()==".vis") {
+        _fnmApplicationPathTMP = _fnmUserDir;
++    } else {
++     _fnmApplicationPathTMP = _fnmAdditionalDirPath;
+     }
+   }
+ 
+diff --git a/SamTSE/Sources/Engine/Base/Stream.h b/SamTSE/Sources/Engine/Base/Stream.h
+index 8ff3de6..1e5aeae 100644
+--- a/SamTSE/Sources/Engine/Base/Stream.h
++++ b/SamTSE/Sources/Engine/Base/Stream.h
+@@ -391,6 +391,10 @@ ENGINE_API void MakeDirList(
+ 
+ // global string with application path
+ ENGINE_API extern CTFileName _fnmApplicationPath;
++#ifdef PLATFORM_UNIX
++// global string with additional search path
++ENGINE_API extern CTFileName _fnmAdditionalDirPath;
++#endif
+ // global string with user-specific writable directory.
+ ENGINE_API extern CTFileName _fnmUserDir;
+ // global string with current MOD path
+diff --git a/SamTSE/Sources/Engine/Engine.cpp b/SamTSE/Sources/Engine/Engine.cpp
+index e6f7c4f..97baa59 100644
+--- a/SamTSE/Sources/Engine/Engine.cpp
++++ b/SamTSE/Sources/Engine/Engine.cpp
+@@ -110,11 +110,12 @@ static INDEX sys_iHDDMisc = 0;
+ 
+ // MOD info
+ static CTString sys_strModName = "";
+-static CTString sys_strModExt  = "";
++static CTString sys_strModExt  = "MP";
+ 
+ // Path vars
+ static INDEX sys_iGameBits = 0;
+ ENGINE_API INDEX sys_iSysPath = 0;
++ENGINE_API INDEX sys_iGameDataNotFound = 0;
+ 
+ // Entities Adjesters
+ ENGINE_API FLOAT _fPlayerFOVAdjuster = 1.0f;
+@@ -676,10 +677,12 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
+   _fnmApplicationPath = CTString(strDirPath);
+   _fnmApplicationExe = CTString(strExePath);
+ #ifdef PLATFORM_UNIX
++  //_fnmAdditionalDirPath = "/usr/share/" + strGameID + "/";
+     // rcg01012002 calculate user dir.
+   char buf[MAX_PATH];
+   _pFileSystem->GetUserDirectory(buf, sizeof (buf));
+   _fnmUserDir = CTString(buf);
++  _fnmAdditionalDirPath = _fnmUserDir + "/gamedata/";
+ #endif
+   try {
+     _fnmApplicationExe.RemoveApplicationPath_t();
+@@ -742,147 +745,16 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
+   CPrintF(TRANSV("Running %d-bit version\n"), sys_iGameBits);
+ 
+ #ifdef PLATFORM_UNIX
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-  int _isystempath = strncmp((const char *)strExePath, (const char *) "/usr/local/bin/", (size_t) 15 );
+-#elif defined(__NetBSD__)
+-  int _isystempath = strncmp((const char *)strExePath, (const char *) "/usr/pkg/bin/", (size_t) 13 );
+-#else
+-  int _isystempath = strncmp((const char *)strExePath, (const char *) "/usr/bin/", (size_t) 9 );
+-#endif
+-  if( _isystempath == 0 ) {
+-       sys_iSysPath = 1; // using system path
+-  } else {
+-       sys_iSysPath = 0; // using standarted path
+-  }
+-
+-  // get library path for mods
+-  _fnmModLibPath = "";
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-  if( sys_iSysPath == 1 ) {
+-    _fnmModLibPath = "/usr/local/lib/" + strGameID + "/";
+-#elif defined(__NetBSD__)
+-  if( sys_iSysPath == 1 ) {
+-    _fnmModLibPath = "/usr/pkg/lib/" + strGameID + "/";
+-#else
+-  if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/aarch64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/aarch64-linux-gnu/" + strGameID + "/"; 
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 32 && _pFileSystem->IsDirectory((const char *) "/usr/lib/arm-linux-gnueabihf/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/arm-linux-gnueabihf/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/riscv64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/riscv64-linux-gnu/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/s390x-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/s390x-linux-gnu/" + strGameID + "/"; 
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/powerpc64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/powerpc64-linux-gnu/" + strGameID + "/"; 
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib/x86_64-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/x86_64-linux-gnu/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 32 && _pFileSystem->IsDirectory((const char *) "/usr/lib/i386-linux-gnu/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/i386-linux-gnu/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 64 && _pFileSystem->IsDirectory((const char *) "/usr/lib64/" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib64/" + strGameID + "/";
+-  } else if( sys_iSysPath == 1 && sys_iGameBits == 32 && _pFileSystem->IsDirectory((const char *) "/usr/lib//" + strGameID)) {
+-    _fnmModLibPath = "/usr/lib/" + strGameID + "/";
+-#endif
+-  } else if( sys_iSysPath == 0 ) {
+-    _fnmModLibPath = _fnmApplicationPath;
+-  } else {
+-    CPrintF(TRANSV("ERROR: Game libraries not ound!\n"));
+-    FatalError(TRANSV("Failed to search game libraries installed!\nPlease reinstall the game.\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID);
+-  }
+-
+-  if( sys_iSysPath == 1 ) { // search game data
+-    CTFileName _fnm_usr_TestFile, _fnm_local_TestFile, _fnm_home_TestFile;
+-    CTString _fnmUserDataPath, _fnm_TestFile;
+-    int _fd;
+-
+-    if( access((const char *) _fnmUserDir+_strLogFile+".cfg", F_OK) == 0 ) {
+-      _fd = open((const char *) _fnmUserDir+_strLogFile+".cfg", O_RDONLY,S_IRUSR);
+-      size_t x = read(_fd, _path, 2048);
+-      _fnmUserDataPath = (CTString)_path + "/";
+-      close(_fd);
+-      CPrintF(TRANSV("Testing home path: %s\n"), (const char *) _fnmUserDataPath);
+-    } else { 
+-      _fnmUserDataPath = "";
+-    }
+-
+-    // set testing files
+-    if( strGameID == "serioussamse") {
+-      _fnm_TestFile = "SE1_00_Levels.gro";
+-    } else {
+-      _fnm_TestFile = "1_00_music.gro";
+-    }
+-    CPrintF(TRANSV("Testing file: %s\n"), (const char *) _fnm_TestFile);
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-    _fnm_usr_TestFile = "/usr/local/share/" + strGameID + "/" + _fnm_TestFile; //  data in usr
+-#elif defined(__NetBSD__)
+-    _fnm_usr_TestFile = "/usr/pkg/share/" + strGameID + "/" + _fnm_TestFile; //  data in usr
+-#else
+-    _fnm_usr_TestFile = "/usr/share/" + strGameID + "/" + _fnm_TestFile; //  data in usr
+-#endif
+-    _fnm_local_TestFile = _fnmUserDir + _fnm_TestFile;                   //  data in home .local
+-    _fnm_home_TestFile = (const char *)_fnmUserDataPath  + _fnm_TestFile;
+-    // test
+-    if( access((const char *) _fnm_home_TestFile, F_OK) != 0 ) {
+-      CPrintF(TRANSV("Testing system path: %s\n"), (const char *) _fnm_usr_TestFile);
+-      CPrintF(TRANSV("Testing local  path: %s\n"), (const char *) _fnm_local_TestFile);
+-      if( access((const char *) _fnm_usr_TestFile, F_OK) == 0 ) {
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-        _fnmApplicationPath = "/usr/local/share/" + strGameID + "/";                       // all game data
+-#elif defined(__NetBSD__)
+-        _fnmApplicationPath = "/usr/pkg/share/" + strGameID + "/";                       // all game data
+-#else
+-        _fnmApplicationPath = "/usr/share/" + strGameID + "/";                       // all game data
+-#endif
+-        CPrintF(TRANSV("Found usr path: %s\n"), (const char *) _fnmUserDataPath);
+-      } else if( access((const char *) _fnm_local_TestFile, F_OK) == 0 ) {
+-        _fnmApplicationPath = _fnmUserDir;                                           // all game data
+-        CPrintF(TRANSV("Found local path: %s\n"), (const char *) _fnmUserDataPath);
+-      } else {
+-        // search in home dir 
+-        // BOOL YesNoMessage(const char *strFormat, ...)
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-        InfoMessage(TRANS("No game files were found in /usr/local/share/%s/\n or %s\nThe home directory will be searched."),(const char *) strGameID,(const char *) _fnmUserDir);
+-#elif defined(__NetBSD__)
+-        InfoMessage(TRANS("No game files were found in /usr/pkg/share/%s/\n or %s\nThe home directory will be searched."),(const char *) strGameID,(const char *) _fnmUserDir);
+-#else
+-        InfoMessage(TRANS("No game files were found in /usr/share/%s/\n or %s\nThe home directory will be searched."),(const char *) strGameID,(const char *) _fnmUserDir);
+-#endif
+-        struct passwd *pw = getpwuid(getuid());
+-        const char *_homedir = pw->pw_dir;
+-        _testfiledone = 0;
+-        _list_dir(_homedir, 0, strGameID);
+-        CTString _PATH;
+-        _PATH = (CTString)_path;
+-        _fnmApplicationPath = (CTFileName) _PATH + "/";
+-        _fnm_home_TestFile  = (CTFileName) _PATH + "/" + _fnm_TestFile; 
+-        if( access((const char *) _fnm_home_TestFile, F_OK) == 0 ) {
+-          //_fnmApplicationPath = (CTFileName) _PATH + "/";
+-          CPrintF(TRANSV("Found home path: %s\n"), (const char *) _fnm_home_TestFile);
+-          _fd = open((const char *) _fnmUserDir+_strLogFile+".cfg", O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+-          size_t x = write(_fd, _path, 2048);
+-          close(_fd);
+-        } else {
+-          CPrintF(TRANSV("ERROR: Game data not ound!\n"));
+-          _fnmUserDataPath = "";
+-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+-          FatalError(TRANSV("Failed to search game data!\nPlease put the game data in the paths:\n/usr/local/share/%s/\n or %s\n or somewhere in your home directory\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID,(const char *) _fnmUserDir,(const char *) strGameID);
+-#elif defined(__NetBSD__)
+-          FatalError(TRANSV("Failed to search game data!\nPlease put the game data in the paths:\n/usr/pkg/share/%s/\n or %s\n or somewhere in your home directory\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID,(const char *) _fnmUserDir,(const char *) strGameID);
+-#else
+-          FatalError(TRANSV("Failed to search game data!\nPlease put the game data in the paths:\n/usr/share/%s/\n or %s\n or somewhere in your home directory\nSee the log for more details.\nGame log is here: ~/.local/share/Serious-Engine/%s/SeriousSam.log"),(const char *) strGameID,(const char *) _fnmUserDir,(const char *) strGameID);
+-#endif
+-        }
+-      } 
+-    } else {
+-      CPrintF(TRANSV("Found path: %s\n"), (const char *) _fnmUserDataPath);
+-      _fnmApplicationPath = _fnmUserDataPath;                                         // all game data
+-    }
+-  }
+ 
++  // using system path
++  sys_iSysPath = 1;
++  // library path for mods
++  _fnmModLibPath = _fnmApplicationPath + "lib/" + strGameID + "/";
+   // print info on the started application
+   CPrintF(TRANSV("Executable: %s\n"), (const char *) strExePath);
+   CPrintF(TRANSV("Assumed engine data directory: %s\n"), (const char *) _fnmApplicationPath);
+   CPrintF(TRANSV("Assumed mods library directory: %s\n"), (const char *) _fnmModLibPath);
++  CPrintF(TRANSV("Assumed additional data directory: %s\n"), (const char *) _fnmAdditionalDirPath);
+ #endif
+ 
+   CPrintF("\n");
+@@ -969,7 +841,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
+   InitStreams();
+   // keep mod name in sys cvar
+   sys_strModName = _strModName;
+-  sys_strModExt  = _strModExt;
++  sys_strModExt  = "MP";
+ 
+ // checking of crc
+ #if 0
+diff --git a/SamTSE/Sources/Engine/Engine.h b/SamTSE/Sources/Engine/Engine.h
+index 8307f70..6ba88a4 100644
+--- a/SamTSE/Sources/Engine/Engine.h
++++ b/SamTSE/Sources/Engine/Engine.h
+@@ -207,6 +207,7 @@ extern ENGINE_API BOOL _bWorldEditorApp; // is this world edtior app
+ extern ENGINE_API CTString _strLogFile;
+ extern ENGINE_API CTFileName _fnmModLibPath;
+ extern ENGINE_API INDEX sys_iSysPath;
++extern ENGINE_API INDEX sys_iGameDataNotFound;
+ #ifdef PLATFORM_WIN32
+ //
+ extern ENGINE_API FLOAT _fPlayerFOVAdjuster;

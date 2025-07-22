@@ -3212,6 +3212,57 @@ and defeat them with your bubbles!")
     ;; GPL2+ is for code, CC0 is for art.
     (license (list license:gpl2+ license:cc0))))
 
+(define-public serious-sam-classic
+  (package
+    (name "serious-sam-classic")
+    (version "1.10.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tx00100xt/SeriousSamClassic")
+             (commit version)))
+       (sha256
+        (base32 "1s1mbj2qpaxdrx0pfhdyk3v1vh7f2dp33w2i5ifpgphkchdx61jg"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (patches (search-patches "serious-sam-classic-engine-patch-paths.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no upstream tests
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_PREFIX:PATH="
+                             #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda _
+              (substitute* (list "CMakeLists.txt"
+                                 "SamTFE/Sources/CMakeLists.txt"
+                                 "SamTSE/Sources/CMakeLists.txt")
+                (("\"Install to systems directories\" Off")
+                 "\"Install to systems directories\" On")
+                (("march=native") "mtune=generic")
+                (("CMAKE_SKIP_RPATH ON") "CMAKE_SKIP_RPATH OFF")
+                (("/usr") #$output)
+                (("lib64") "lib"))))
+          (add-after 'fix-cmake 'fix-paths
+            (lambda _
+              (substitute* (list "SamTFE/Sources/Engine/Engine.cpp"
+                                 "SamTSE/Sources/Engine/Engine.cpp")
+                (("@OUTPUT_DIR@") #$output)))))))
+    (inputs (list sdl2 libvorbis))
+    (native-inputs (list flex bison nasm imagemagick))
+    (home-page "https://github.com/tx00100xt/SeriousSamClassic")
+    (synopsis "SeriousSam engine and Serious Sam: TFE and TSE")
+    (description
+     "This is an open-source port of the Serious Engine from
+Serious Sam: The First Encounter and Serious Sam: The Second Encounter.
+To run, you must put your official game data, @code{Levels} and @code{Help} in
+@code{~/.local/share/Serious-Engine/{serioussam,serioussamse}/gamedata/}.}")
+    (license license:gpl2)))
+
 (define-public solarus
   (package
     (name "solarus")
