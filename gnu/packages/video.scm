@@ -50,7 +50,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
-;;; Copyright © 2021-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
@@ -182,6 +182,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ocr)
+  #:use-module (gnu packages openkinect)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
@@ -2395,6 +2396,79 @@ perform RMS-based normalization (where the mean is lifted or attenuated),
 or peak normalization to a certain target level.  Batch processing of several
 input files is possible, including video files.")
     (license license:expat)))
+
+(define-public gpac
+  (let ((commit "68875fcff08d7422bbf10cb0327403189589d9b6")
+        (revision "0"))
+    (package
+      (name "gpac")
+      ;; Use a git snapshot of the master branch, as it fixes build issues
+      ;; when using a recent ffmpeg release.
+      (version (git-version "2.4.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/gpac/gpac")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rnbpcgnw31hadanwvmy0nr7prr4kypw0bmch75j6gvndy63bpgi"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags
+             #~(list (string-append "--cc=" #$(cc-for-target))
+                     (string-append "--cxx=" #$(cxx-for-target))
+                     ;; Help the configure script correctly detect the
+                     ;; availability of freetype (see:
+                     ;; <https://github.com/gpac/gpac/issues/3307>).
+                     (format #f "--extra-cflags=-I~a"
+                             (search-input-directory %build-inputs
+                                                     "include/freetype2"))
+                     ;; The gpac modules do not have a rpath to the main
+                     ;; library, failing the validate-runpath phase (see:
+                     ;; <https://github.com/gpac/gpac/issues/3306>).
+                     (format #f "--extra-ldflags=-Wl,-rpath=~a/lib"
+                             #$output)
+                     "--verbose")
+             ;; The test suite is a git submodule that must synchronize its data
+             ;; from the network.
+             #:tests? #f))
+      (inputs
+       (list alsa-lib
+             curl
+             faad2
+             ffmpeg
+             freetype
+             glu
+             jack-2
+             liba52
+             libcaca
+             ;; The build currently fails with libcaption 0.7 (see:
+             ;; <https://github.com/gpac/gpac/issues/3305>).
+             ;;libcaption
+             libfreenect
+             libjpeg-turbo
+             libmad
+             libpng
+             libtheora
+             libvorbis
+             libx11
+             libxv
+             mesa
+             openssl
+             pulseaudio
+             sdl2
+             xvid
+             zlib))
+      (home-page "https://gpac.io/")
+      (synopsis "Video streaming and multimedia transcoding toolkit")
+      (description "GPAC is a multimedia framework focused on modularity and
+standards compliance.  GPAC provides tools to process, inspect, package,
+stream, playback and interact with media content.  Such content can be any
+combination of audio, video, subtitles, metadata, scalable graphics, encrypted
+media, 2D/3D graphics and ECMAScript.")
+      (license license:lgpl2.1+))))
 
 (define-public vlc
   (package
