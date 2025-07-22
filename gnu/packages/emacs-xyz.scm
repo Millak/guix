@@ -20313,7 +20313,13 @@ you to deal with multiple log levels.")
                                "--batch"
                                "--eval=(require 'ox-texinfo)"
                                "--eval=(find-file \"README.org\")"
-                               "--eval=(org-texinfo-export-to-info)"))))))
+                               "--eval=(org-texinfo-export-to-info)"))))
+      #:test-command #~(list "emacs" "--batch"
+                             "-l" "tests/denote-test.el"
+                             "--eval"
+                             "(ert-run-tests-batch-and-exit
+             `(not ,(rx (or \"make-denote-directory\" \"date-convert\"
+\"--denote-directory\" \"get-identifier\"))))")))
     (native-inputs (list texinfo))
     (home-page "https://protesilaos.com/emacs/denote/")
     (synopsis "Simple notes for Emacs")
