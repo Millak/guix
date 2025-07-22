@@ -650,7 +650,7 @@ automated testing of HDL code.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.16.2")
+    (version "1.17.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -659,7 +659,7 @@ automated testing of HDL code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kzlr99viw652p8wiz0nb1705hyh4mkx7j9zk1yzrspqfmh6pcq3"))))
+                "1grbz8gm2rc9qz14ik0fgxd5qv1kix4aiha3zv60h9wbvssw592v"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
@@ -671,6 +671,7 @@ automated testing of HDL code.")
                    "--enable-server"
                    "--with-ncurses"
                    "--enable-parallel-make"
+                   "--enable-vital"
                    (string-append "--with-bash-completion=" #$output
                                   "/share/bash-completion/completions"))
            #:phases #~(modify-phases %standard-phases
@@ -685,8 +686,7 @@ automated testing of HDL code.")
            gettext-minimal
            libtool
            pkg-config
-           python
-           ruby
+           python-minimal
            which))
     (inputs
      (list jansson
