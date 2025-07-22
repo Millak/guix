@@ -9682,7 +9682,17 @@ program to produce realistic astronomical fields.  Stuff is part of the
 @uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
       (license license:gpl3+))))
 
-(define-public sunclock
+;; TODO: This is not an original source, and currently fails to build:
+;; <https://directory.fsf.org/wiki/Sunclock>
+;;  -> <https://github.com/mdoege/Sunclock> dead link
+;;   -> <http://www.arvernes.com/wiki/index.php/Sunclock> dead link
+;; <https://github.com/nongiach/Sunclock> is unmaintained.
+;;
+;; Maybe use Debian's fork instead
+;; <https://salsa.debian.org/debian/sunclock>, it would need to apply 12
+;; patches from <debian/patches>?
+;; Mark as not public for now.
+(define sunclock
   (let ((commit "f4106eb0a81f7594726d6b2859efd8fc64cc1225")
         (revision "1"))
     (package
