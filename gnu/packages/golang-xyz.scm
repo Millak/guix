@@ -1995,6 +1995,33 @@ strategies, such as fixed delay, backoff delay, and random delay.")
          (package-arguments go-github-com-avast-retry-go)
        ((#:import-path _) "github.com/avast/retry-go/v4")))))
 
+(define-public go-github-com-awesome-gocui-gocui
+  (package
+    (name "go-github-com-awesome-gocui-gocui")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/awesome-gocui/gocui")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "082ziwxj239nxcclv54d783933s6c5ks592mq3ilcvg1vfyfkjz8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/awesome-gocui/gocui"))
+    (propagated-inputs
+     (list go-github-com-gdamore-tcell-v2
+           go-github-com-mattn-go-runewidth))
+    (home-page "https://github.com/awesome-gocui/gocui")
+    (synopsis "Console User Interface in Golang")
+    (description
+     "This package implements a functionality to create console user
+interfaces.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-axiomhq-hyperloglog
   (package
     (name "go-github-com-axiomhq-hyperloglog")
