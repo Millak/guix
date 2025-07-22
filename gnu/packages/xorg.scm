@@ -3479,6 +3479,11 @@ X server.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (setenv "CC" (which "gcc"))
+               (setenv "CFLAGS"
+                       (string-append
+                         "-g -O2 "
+                         "-Wno-error=incompatible-pointer-types "
+                         "-Wno-error=stringop-truncation"))
                (setenv "DESTDIR" out)
                (invoke "./configure" "--with-x86emu"))))
          (add-after 'build 'build-testvbe
