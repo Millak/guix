@@ -2034,44 +2034,56 @@ and system administrators.")
    (license license:cc-by3.0)))
 
 (define-public dia
-  ;; This version from GNOME's repository includes fixes for compiling with
-  ;; recent versions of the build tools.  The latest activity on the
-  ;; pre-GNOME version has been in 2014, while GNOME has continued applying
-  ;; fixes since.
-  (let ((commit "b903dd83aa5aab1b41c7864dd5027d1b6a0a190c")
-        (revision "4"))
+  ;; There are no recent releases; use the latest commit from the master
+  ;; branch.
+  (let ((commit "ac4954a1f5ab5bfbde77534daa05cf4495c0b5e6")
+        (revision "5"))
     (package
       (name "dia")
       (version (git-version "0.97.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.gnome.org/GNOME/dia.git/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0j5q7whwpzzfsinjryp3g0xh3cyy88drwyr0w8x0666mj6h70h6a"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.gnome.org/GNOME/dia.git/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0n2sp0nkgwvwc7va85qqlamlgvkqfbybc29svj4mibaz9qn8hvhm"))))
       (build-system meson-build-system)
-      ;; XXX: Parallel builds may cause: [74/566] [...]
-      ;; fatal error: dia-lib-enums.h: No such file or directory
-      (arguments '(#:parallel-build? #f))
+      (arguments
+       (list
+        ;; FIXME: 1/5 tests currently fail, possible due to
+        ;; <https://gitlab.gnome.org/GNOME/dia/-/issues/569>.
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'disable-gtk-update-icon-cache
+              (lambda _
+                (substitute* "meson.build"
+                  (("gtk_update_icon_cache: true")
+                   "gtk_update_icon_cache: false")
+                  (("update_desktop_database: true")
+                   "update_desktop_database: false")))))))
+      (native-inputs
+       (list appstream
+             docbook-xml-4.5
+             docbook-xsl
+             `(,glib "bin")
+             gettext-minimal
+             pkg-config))
       (inputs
        (list graphene
-             gtk+-2
-             libxml2
+             gtk+
+             libxml2-next
              libxslt
-
-             ;; XXX: PDF plugin fails to build with poppler 21.07.0.
-             ;; poppler
-
-             python))
-      (native-inputs
-       (list appstream-glib docbook-xsl
-             `(,glib "bin") gettext-minimal pkg-config))
+             poppler
+             python-minimal
+             xpm-pixbuf))
       (home-page "https://wiki.gnome.org/Apps/Dia")
       (synopsis "Diagram creation for GNOME")
-      (description "Dia can be used to draw different types of diagrams, and
+      (description
+       "Dia can be used to draw different types of diagrams, and
 includes support for UML static structure diagrams (class diagrams), entity
 relationship modeling, and network diagrams.  The program supports various file
 formats like PNG, SVG, PDF and EPS.")
