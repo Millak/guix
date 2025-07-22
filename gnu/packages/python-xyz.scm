@@ -5250,7 +5250,8 @@ messages in color.")
        (sha256
         (base32
          "0v55z351p9qkyp3bbspwywwn28sbcknhirngjbj779n3z52z63hv"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://editorconfig.org/")
     (synopsis "EditorConfig bindings for python")
     (description "The EditorConfig project consists of a file format for
