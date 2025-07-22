@@ -568,7 +568,6 @@ and not propagated to upstream.")
            cppgir-for-telegram-desktop
            crc32c
            expected-lite
-           fcitx-qt5
            fcitx5-qt
            ffmpeg
            glib
