@@ -3530,27 +3530,35 @@ performance, features, and ease of use.")
       (license license:gpl3+))))
 
 (define-public bsnes-hd
-  (package
-    (inherit bsnes)
-    (name "bsnes-hd")
-    ;; As of 10.6, there only ever was beta releases -- treat these as the
-    ;; stable releases for now.
-    (version "10.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/DerKoun/bsnes-hd")
-                    (commit (string-append
-                             "beta_"
-                             (string-replace-substring version "." "_")))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0f3cd89fd0lqskzj98cc1pzmdbscq0psdjckp86w94rbchx7iw4h"))))
-    (build-system gnu-build-system)
-    (home-page "https://github.com/DerKoun/bsnes-hd/")
-    (synopsis "Fork of bsnes with added HD video features")
-    (description "bsnes-hd (called ``HD Mode 7 mod, for bsnes'' in early
+  ;; Use a git snapshot of the master branch, which includes unreleased build
+  ;; fixes.
+  (let ((commit "0bb7b8645e22ea2476cabd58f32e987b14686601")
+        (revision "0"))
+    (package
+      (inherit bsnes)
+      (name "bsnes-hd")
+      ;; As of 10.6, there only ever was beta releases -- treat these as the
+      ;; stable releases for now.
+      (version (git-version "10.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/DerKoun/bsnes-hd")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0z9wqmx351f9160jsmprznqw5sx5lslyisbr41b9igzsr5j94db3"))))
+      (build-system gnu-build-system)
+      (arguments (substitute-keyword-arguments (package-arguments bsnes)
+                   ((#:make-flags flags ''())
+                    ;; This is needed because the modified bsnes code that
+                    ;; bsnes-hd uses is based on an older copy that still
+                    ;; defaults to gtk2.
+                    #~(cons "hiro=gtk3" #$flags))))
+      (home-page "https://github.com/DerKoun/bsnes-hd/")
+      (synopsis "Fork of bsnes with added HD video features")
+      (description "bsnes-hd (called ``HD Mode 7 mod, for bsnes'' in early
 betas) is a fork of bsnes (the great SNES emulator by Near) that adds HD video
 features, such as:
 @table @asis
@@ -3567,7 +3575,7 @@ Color calculation are done at true color instead of the SNES color depth (3x8
 instead of 3x5 bit).  With the optional line color smoothing color ``steps''
 turn into actual gradients (without influencing the sharpness of the artwork).
 @end table")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public libretro-bsnes-hd
   (package/inherit bsnes-hd
