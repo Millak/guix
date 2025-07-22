@@ -393,7 +393,9 @@ with freedesktop.org standard.")
                 (string-append "graphical_su="
                                (search-input-file inputs "/bin/ktsuss")))))))
        #:configure-flags (list
-                          "CFLAGS=-fcommon"
+                          (string-append
+                            "CFLAGS=-fcommon -g -O2 "
+                            "-Wno-error=incompatible-pointer-types")
                           (string-append "--with-preferable-sudo="
                                          (assoc-ref %build-inputs "ktsuss")
                                          "/bin/ktsuss")
