@@ -1472,6 +1472,9 @@ management, attestation, encryption, and signing.")
     (arguments
      (list
       #:configure-flags #~(list "-DLIBCPUID_ENABLE_TESTS=ON")
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'absolutize
@@ -1486,7 +1489,11 @@ management, attestation, encryption, and signing.")
               (when (and #$(target-linux?)
                          #$(target-arm?))
                 (substitute* "drivers/arm/linux/CMakeLists.txt"
-                  (("/usr/src/") (string-append #$output "/src/")))))))))
+                  (("/usr/src/") (string-append #$output "/src/"))))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "test" args))))))
     (inputs
      (append
        (if (target-linux?)
