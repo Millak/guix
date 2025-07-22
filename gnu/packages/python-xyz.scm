@@ -1152,6 +1152,28 @@ not require any changes to the original source code, such as marking strings
 for translation.")
     (license license:expat)))
 
+(define-public python-vendetect
+  (package
+    (name "python-vendetect")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vendetect" version))
+       (sha256
+        (base32 "0hi13sbgr8y66mih2xyzczjfff4lwymkn9cw5215ms2nn6qq9rhi"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-copydetect python-rich))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page "https://github.com/trailofbits/vendetect")
+    (synopsis "Detect vendored and copy-pasted code")
+    (description
+     "Vendetect helps identify copied or vendored code between repositories,
+making it easier to detect when code has been copied with or without
+attribution.  It uses similarity detection algorithms to compare code files
+and highlight matching sections.")
+    (license license:agpl3+)))
+
 (define-public python-xmldiff
   (package
     (name "python-xmldiff")
