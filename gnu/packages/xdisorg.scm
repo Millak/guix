@@ -249,7 +249,7 @@ command line, without displaying a keyboard at all.")
 (define-public aquamarine
   (package
     (name "aquamarine")
-    (version "0.8.0")
+    (version "0.9.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -258,14 +258,14 @@ command line, without displaying a keyboard at all.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01lmzmb5bzphichbyim7iy04405af5mqcqf8ki3if4wdxkdmbfn9"))))
+                "0cwbd9cdbg40frhircwfbaxdqh11s8jqq9dqy228j9zvb27y2b72"))))
     (build-system cmake-build-system)
     (arguments
      (list #:cmake cmake-next
            ;; TODO: Figure out what's expected in the test environment.
            #:tests? #f))
     (native-inputs
-     (list gcc-14 hyprwayland-scanner pkg-config))
+     (list gcc-15 hyprwayland-scanner pkg-config))
     (inputs
      (list eudev
            hwdata
