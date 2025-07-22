@@ -36483,7 +36483,8 @@ needed and registers the function with its annotations.")
        (sha256
         (base32
          "0j57953hi7kg2rl0163vzjzsvzdyjimnklhx6idf5vaqqf1d3p1j"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-multipledispatch python-toolz))
     (home-page "https://github.com/pythological/unification/")
