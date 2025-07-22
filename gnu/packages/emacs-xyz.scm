@@ -38549,16 +38549,16 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
 (define-public emacs-fj
   (package
     (name "emacs-fj")
-    (version "0.16")
+    (version "0.17")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/martianh/fj.el")
-             (commit version)))
+              (url "https://codeberg.org/martianh/fj.el")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qjix6jdsq2zbxdz4gg2p4zcf70fshdcqm1kzplckqm2wvn0nrqg"))))
+        (base32 "0857h9pkzdmf2cgd3ss4q405n219gfdsfryp6w4mr0mp87dpgz84"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list emacs-fedi emacs-magit emacs-tp))
