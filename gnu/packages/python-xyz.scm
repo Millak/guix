@@ -35737,15 +35737,13 @@ result.")
        (sha256
         (base32
          "0rvdd2ikdr0yg6cx6594fdzn53cmdc0g0i6qsbcdq8i2kxjdpd5x"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-commonmark python-docutils python-sphinx))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'delete-test-sphinx
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out")))
-                        (delete-file "tests/test_sphinx.py")))))))
+     (list
+      ;; XXX: Some of those fail for no good reason.
+      #:test-flags #~(list "--ignore=tests/test_sphinx.py")))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-commonmark python-docutils python-sphinx))
     (home-page "https://github.com/readthedocs/recommonmark")
     (synopsis "Docutils-compatibility bridge to CommonMark")
     (description
