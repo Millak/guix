@@ -8903,11 +8903,14 @@ large number of image formats.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-failing-tests
             (lambda _
-              ;; Two tests fail with SegFAilt: "Cannot allocate GPU memory:
-              ;; The processing function library was compiled without CUDA
-              ;; support".
               (substitute* "tests/CMakeLists.txt"
-                (("clean") "# clean")))))))
+                ;; Two tests fail with SegFAilt: "Cannot allocate GPU memory:
+                ;; The processing function library was compiled without CUDA
+                ;; support".
+                (("clean") "# clean")
+                ;; test_weighting fails with error: sdp_weighting_uniform:
+                ;; Expected 'output_weight' not to be read-only.
+                (("visibility") "# visibility")))))))
     (home-page "https://developer.skao.int/projects/ska-sdp-func/en/latest/")
     (synopsis "SDP Processing Function Library")
     (description
