@@ -274,7 +274,7 @@ external dependencies.")
            (list python-cryptography)
            '())
        (list python-dnspython
-             python-iso8601
+             python-iso8601/pinned
              python-markdown
              rpcsvc-proto               ;for 'rpcgen'
              python-pyasn1              ;for krb5 tests
