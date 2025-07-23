@@ -461,7 +461,7 @@ nosetests, etc...) in Python projects.")
                   (pypi-uri "cram" version)))
        (sha256
         (base32 "0bvz6fwdi55rkrz3f50zsy35gvvwhlppki2yml5bj5ffy9d499vx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
