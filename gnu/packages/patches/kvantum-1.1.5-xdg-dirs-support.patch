@@ -1,0 +1,468 @@
+This patch is copied from
+https://github.com/tsujan/Kvantum/commit/01989083f9ee75a013c2654e760efd0a1dea4a68.patch
+(URL taken from NixOS).
+The author of Kvantum refused to allow searching themes from XDG_DATA_DIRS:
+https://github.com/tsujan/Kvantum/issues/210.
+
+From 01989083f9ee75a013c2654e760efd0a1dea4a68 Mon Sep 17 00:00:00 2001
+From: Mark Sagi-Kazar <mark.sagikazar@gmail.com>
+Date: Fri, 1 Apr 2022 21:10:31 +0200
+Subject: [PATCH] wip: add xdg dirs support
+
+Signed-off-by: Mark Sagi-Kazar <mark.sagikazar@gmail.com>
+---
+ Kvantum/kvantummanager/KvCommand.cpp      |  38 ++++-
+ Kvantum/kvantummanager/KvantumManager.cpp |  53 +++++-
+ Kvantum/style/Kvantum.cpp                 | 199 +++++++++++++++-------
+ 3 files changed, 224 insertions(+), 66 deletions(-)
+
+diff --git a/Kvantum/kvantummanager/KvCommand.cpp b/Kvantum/kvantummanager/KvCommand.cpp
+index 8dd20820..481ed74b 100644
+--- a/Kvantum/kvantummanager/KvCommand.cpp
++++ b/Kvantum/kvantummanager/KvCommand.cpp
+@@ -18,6 +18,7 @@
+ #include "KvCommand.h"
+ #include <QDir>
+ #include <QSettings>
++#include <QStandardPaths>
+ 
+ namespace KvManager {
+ 
+@@ -148,6 +149,36 @@ static const QStringList getAllThemes()
+ 
+     /* now add the root themes */
+     QStringList rootList;
++    const QStringList xdgKvantumDirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QString("Kvantum"), QStandardPaths::LocateDirectory);
++    for (const QString &xdgKvantumDir : xdgKvantumDirs)
++    {
++      kv = QDir(xdgKvantumDir);
++      if (kv.exists())
++      {
++          const QStringList folders = kv.entryList (QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
++          for (const QString &folder : folders)
++          {
++              QString path = QString ("%1/%2").arg (xdgKvantumDir).arg (folder);
++              if (!folder.contains ("#") && isThemeDir (path))
++              {
++                if (!list.contains (folder) // a user theme with the same name takes priority
++                    && !list.contains (folder + "#")
++                    // a root theme inside 'XDG_DATA_DIRS/Kvantum/' with the same name takes priority
++                    && !rootList.contains (folder))
++                {
++                    rootList << folder;
++                }
++                if (isLightWithDarkDir (path)
++                    && !list.contains (folder + "Dark")
++                    && !list.contains (folder + "Dark" + "#")
++                    && !rootList.contains (folder + "Dark"))
++                {
++                    rootList << (folder + "Dark");
++                }
++              }
++          }
++      }
++    }
+     kv = QDir (QString (DATADIR) + QString ("/Kvantum"));
+     if (kv.exists())
+     {
+@@ -158,13 +189,16 @@ static const QStringList getAllThemes()
+             if (!folder.contains ("#") && isThemeDir (path))
+             {
+                 if (!list.contains (folder) // a user theme with the same name takes priority
+-                    && !list.contains (folder + "#"))
++                    && !list.contains (folder + "#")
++                    // a root theme inside 'XDG_DATA_DIRS/Kvantum/' with the same name takes priority
++                    && !rootList.contains (folder))
+                 {
+                     rootList << folder;
+                 }
+                 if (isLightWithDarkDir (path)
+                     && !list.contains (folder + "Dark")
+-                    && !list.contains (folder + "Dark" + "#"))
++                    && !list.contains (folder + "Dark" + "#")
++                    && !rootList.contains (folder + "Dark"))
+                 {
+                     rootList << (folder + "Dark");
+                 }
+diff --git a/Kvantum/kvantummanager/KvantumManager.cpp b/Kvantum/kvantummanager/KvantumManager.cpp
+index 958af9ff..a747ff46 100644
+--- a/Kvantum/kvantummanager/KvantumManager.cpp
++++ b/Kvantum/kvantummanager/KvantumManager.cpp
+@@ -500,6 +500,22 @@ QString KvantumManager::rootThemeDir (const QString &themeName) const
+     {
+         return QString();
+     }
++    // XDG_DATA_DIRS/Kvantum
++    const QStringList xdgKvantumDirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QString("Kvantum"), QStandardPaths::LocateDirectory);
++    for (const QString &xdgKvantumDir : xdgKvantumDirs)
++    {
++      QString themeDir = QString ("%1/%2").arg (xdgKvantumDir).arg (themeName);
++      if (fileBelongsToThemeDir (themeName, themeDir))
++          return themeDir;
++      QString lightFolder;
++      if (themeName.size() > 4 && themeName.endsWith ("Dark"))
++      {
++          lightFolder = themeName.left (themeName.size() - 4);
++          themeDir = QString ("%1/%2").arg (xdgKvantumDir).arg (lightFolder);
++          if (fileBelongsToThemeDir (themeName, themeDir))
++              return themeDir;
++      }
++    }
+     // /usr/share/Kvantum
+     QString themeDir = QString (DATADIR) + QString ("/Kvantum/") + themeName;
+     if (fileBelongsToThemeDir (themeName, themeDir))
+@@ -1968,6 +1984,36 @@ void KvantumManager::updateThemeList (bool updateAppThemes)
+ 
+     /* now add the root themes */
+     QStringList rootList;
++    const QStringList xdgKvantumDirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QString("Kvantum"), QStandardPaths::LocateDirectory);
++    for (const QString &xdgKvantumDir : xdgKvantumDirs)
++    {
++      kv = QDir(xdgKvantumDir);
++      if (kv.exists())
++      {
++          const QStringList folders = kv.entryList (QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
++          for (const QString &folder : folders)
++          {
++              QString path = QString ("%1/%2").arg (xdgKvantumDir).arg (folder);
++              if (!folder.contains ("#") && isThemeDir (path))
++              {
++                if (!list.contains (folder) // a user theme with the same name takes priority
++                    && !list.contains (folder + modifiedSuffix_)
++                    // a root theme inside 'DATADIR/Kvantum/' with the same name takes priority
++                    && !rootList.contains (folder))
++                {
++                    rootList.append (folder);
++                }
++                if (isLightWithDarkDir (path)
++                    && !list.contains (folder + "Dark")
++                    && !list.contains (folder + "Dark" + modifiedSuffix_)
++                    && !rootList.contains (folder + "Dark"))
++                {
++                    rootList.append (folder + "Dark");
++                }
++              }
++          }
++      }
++    }
+     kv = QDir (QString (DATADIR) + QString ("/Kvantum"));
+     if (kv.exists())
+     {
+@@ -1978,13 +2024,16 @@ void KvantumManager::updateThemeList (bool updateAppThemes)
+             if (!folder.contains ("#") && isThemeDir (path))
+             {
+                 if (!list.contains (folder) // a user theme with the same name takes priority
+-                    && !list.contains (folder + modifiedSuffix_))
++                    && !list.contains (folder + modifiedSuffix_)
++                    // a root theme inside 'DATADIR/Kvantum/' with the same name takes priority
++                    && !rootList.contains (folder))
+                 {
+                     rootList.append (folder);
+                 }
+                 if (isLightWithDarkDir (path)
+                     && !list.contains (folder + "Dark")
+-                    && !list.contains (folder + "Dark" + modifiedSuffix_))
++                    && !list.contains (folder + "Dark" + modifiedSuffix_)
++                    && !rootList.contains (folder + "Dark"))
+                 {
+                     rootList.append (folder + "Dark");
+                 }
+diff --git a/Kvantum/style/Kvantum.cpp b/Kvantum/style/Kvantum.cpp
+index f198187b..f5c2f443 100644
+--- a/Kvantum/style/Kvantum.cpp
++++ b/Kvantum/style/Kvantum.cpp
+@@ -642,44 +642,68 @@ void Style::setTheme(const QString &baseThemeName, bool useDark)
+       else if (userSvg.isEmpty() // otherwise it's a user theme without config file
+                && !themeName.endsWith(QLatin1String("#"))) // root theme names can't have the ending "#"
+       { // root theme
+-        temp = QString(DATADIR)
+-               + QString("/Kvantum/%1/%1.kvconfig").arg(themeName);
+-        if (QFile::exists(temp))
+-          themeSettings_ = new ThemeConfig(temp);
+-        else if (!isThemeDir(QString(DATADIR) + "/Kvantum", themeName) // svg shouldn't be found
+-                 && isThemeDir(QString(DATADIR) + "/Kvantum", lightName))
++        temp = QString("");
++        const QStringList xdgKvantumDirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QString("Kvantum"), QStandardPaths::LocateDirectory);
++        for (const QString &xdgKvantumDir : xdgKvantumDirs)
+         {
+-          temp = QString(DATADIR)
+-                 + QString("/Kvantum/%1/%2.kvconfig").arg(lightName).arg(themeName);
+-          if (QFile::exists(temp))
++          temp = xdgKvantumDir
++                 + QString("/%1/%1.kvconfig").arg(themeName);
++          if (QFile::exists(temp)) {
+             themeSettings_ = new ThemeConfig(temp);
++            break;
++          }
++          else if (!isThemeDir(xdgKvantumDir, themeName) // svg shouldn't be found
++                   && isThemeDir(xdgKvantumDir, lightName))
++          {
++            temp = xdgKvantumDir
++                   + QString("/%1/%2.kvconfig").arg(lightName).arg(themeName);
++            if (QFile::exists(temp)) {
++              themeSettings_ = new ThemeConfig(temp);
++              break;
++            }
++          }
+         }
+-
+         if (!QFile::exists(temp))
+         {
+           temp = QString(DATADIR)
+-                 + QString("/Kvantum/%1/%1.svg").arg(themeName);
+-          if (!QFile::exists(temp)) // otherwise the checked root theme was just an SVG image
++                 + QString("/Kvantum/%1/%1.kvconfig").arg(themeName);
++          if (QFile::exists(temp))
++            themeSettings_ = new ThemeConfig(temp);
++          else if (!isThemeDir(QString(DATADIR) + "/Kvantum", themeName) // svg shouldn't be found
++                   && isThemeDir(QString(DATADIR) + "/Kvantum", lightName))
+           {
+             temp = QString(DATADIR)
+-                   + QString("/themes/%1/Kvantum/%1.kvconfig").arg(themeName);
++                   + QString("/Kvantum/%1/%2.kvconfig").arg(lightName).arg(themeName);
+             if (QFile::exists(temp))
+               themeSettings_ = new ThemeConfig(temp);
+           }
+ 
+-          if (!QFile::exists(temp)
+-              && !isThemeDir(QString(DATADIR) + "/themes", themeName)
+-              && isThemeDir(QString(DATADIR) + "/themes", lightName))
++          if (!QFile::exists(temp))
+           {
+             temp = QString(DATADIR)
+-                   + QString("/Kvantum/%1/%2.svg").arg(lightName).arg(themeName);
+-            if (!QFile::exists(temp))
++                   + QString("/Kvantum/%1/%1.svg").arg(themeName);
++            if (!QFile::exists(temp)) // otherwise the checked root theme was just an SVG image
+             {
+               temp = QString(DATADIR)
+-                     + QString("/themes/%1/Kvantum/%2.kvconfig").arg(lightName).arg(themeName);
++                     + QString("/themes/%1/Kvantum/%1.kvconfig").arg(themeName);
+               if (QFile::exists(temp))
+                 themeSettings_ = new ThemeConfig(temp);
+             }
++
++            if (!QFile::exists(temp)
++                && !isThemeDir(QString(DATADIR) + "/themes", themeName)
++                && isThemeDir(QString(DATADIR) + "/themes", lightName))
++            {
++              temp = QString(DATADIR)
++                     + QString("/Kvantum/%1/%2.svg").arg(lightName).arg(themeName);
++              if (!QFile::exists(temp))
++              {
++                temp = QString(DATADIR)
++                       + QString("/themes/%1/Kvantum/%2.kvconfig").arg(lightName).arg(themeName);
++                if (QFile::exists(temp))
++                  themeSettings_ = new ThemeConfig(temp);
++              }
++            }
+           }
+         }
+       }
+@@ -697,33 +721,43 @@ void Style::setTheme(const QString &baseThemeName, bool useDark)
+         {
+           if (userConfig.isEmpty()) // otherwise it's a user theme without SVG image
+           { // root theme
+-            temp = QString(DATADIR)
+-                   + QString("/Kvantum/%1/%1.svg").arg(themeName);
+-            if (QFile::exists(temp))
++            temp = QString("");
++            const QStringList xdgKvantumDirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QString("Kvantum"), QStandardPaths::LocateDirectory);
++            for (const QString &xdgKvantumDir : xdgKvantumDirs)
+             {
+-              themeRndr_ = new QSvgRenderer();
+-              themeRndr_->load(temp);
++              temp = xdgKvantumDir
++                     + QString("/%1/%1.svg").arg(themeName);
++              if (QFile::exists(temp)) {
++                themeRndr_ = new QSvgRenderer();
++                themeRndr_->load(temp);
++                break;
++              }
++              else if (!isThemeDir(xdgKvantumDir, themeName) // svg shouldn't be found
++                       && isThemeDir(xdgKvantumDir, lightName))
++              {
++                temp = xdgKvantumDir
++                       + QString("/%1/%2.svg").arg(lightName).arg(themeName);
++                if (QFile::exists(temp)) {
++                  themeRndr_ = new QSvgRenderer();
++                  themeRndr_->load(temp);
++                  break;
++                }
++              }
+             }
+-            else if (!isThemeDir(QString(DATADIR) + "/Kvantum", themeName) // config shouldn't be found
+-                     && isThemeDir(QString(DATADIR) + "/Kvantum", lightName))
++            if (!QFile::exists(temp))
+             {
+               temp = QString(DATADIR)
+-                     + QString("/Kvantum/%1/%2.svg").arg(lightName).arg(themeName);
++                     + QString("/Kvantum/%1/%1.svg").arg(themeName);
+               if (QFile::exists(temp))
+               {
+                 themeRndr_ = new QSvgRenderer();
+                 themeRndr_->load(temp);
+               }
+-            }
+-
+-            if (!QFile::exists(temp))
+-            {
+-              temp = QString(DATADIR)
+-                     + QString("/Kvantum/%1/%1.kvconfig").arg(themeName);
+-              if (!QFile::exists(temp)) // otherwise the checked root theme was just a config file
++              else if (!isThemeDir(QString(DATADIR) + "/Kvantum", themeName) // config shouldn't be found
++                       && isThemeDir(QString(DATADIR) + "/Kvantum", lightName))
+               {
+                 temp = QString(DATADIR)
+-                       + QString("/themes/%1/Kvantum/%1.svg").arg(themeName);
++                       + QString("/Kvantum/%1/%2.svg").arg(lightName).arg(themeName);
+                 if (QFile::exists(temp))
+                 {
+                   themeRndr_ = new QSvgRenderer();
+@@ -731,22 +765,38 @@ void Style::setTheme(const QString &baseThemeName, bool useDark)
+                 }
+               }
+ 
+-              if (!QFile::exists(temp)
+-                  && !isThemeDir(QString(DATADIR) + "/themes", themeName)
+-                  && isThemeDir(QString(DATADIR) + "/themes", lightName))
++              if (!QFile::exists(temp))
+               {
+                 temp = QString(DATADIR)
+-                       + QString("/Kvantum/%1/%2.kvconfig").arg(lightName).arg(themeName);
+-                if (!QFile::exists(temp))
++                       + QString("/Kvantum/%1/%1.kvconfig").arg(themeName);
++                if (!QFile::exists(temp)) // otherwise the checked root theme was just a config file
+                 {
+                   temp = QString(DATADIR)
+-                         + QString("/themes/%1/Kvantum/%2.svg").arg(lightName).arg(themeName);
++                         + QString("/themes/%1/Kvantum/%1.svg").arg(themeName);
+                   if (QFile::exists(temp))
+                   {
+                     themeRndr_ = new QSvgRenderer();
+                     themeRndr_->load(temp);
+                   }
+                 }
++
++                if (!QFile::exists(temp)
++                    && !isThemeDir(QString(DATADIR) + "/themes", themeName)
++                    && isThemeDir(QString(DATADIR) + "/themes", lightName))
++                {
++                  temp = QString(DATADIR)
++                         + QString("/Kvantum/%1/%2.kvconfig").arg(lightName).arg(themeName);
++                  if (!QFile::exists(temp))
++                  {
++                    temp = QString(DATADIR)
++                           + QString("/themes/%1/Kvantum/%2.svg").arg(lightName).arg(themeName);
++                    if (QFile::exists(temp))
++                    {
++                      themeRndr_ = new QSvgRenderer();
++                      themeRndr_->load(temp);
++                    }
++                  }
++                }
+               }
+             }
+           }
+@@ -756,32 +806,41 @@ void Style::setTheme(const QString &baseThemeName, bool useDark)
+           QString _themeName = themeName.left(themeName.length() - 1);
+           if (!_themeName.isEmpty() && !_themeName.contains(QLatin1String("#")))
+           {
+-            temp = QString(DATADIR)
+-                   + QString("/Kvantum/%1/%1.svg").arg(_themeName);
+-            if (QFile::exists(temp))
++            temp = QString("");
++            const QStringList xdgKvantumDirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QString("Kvantum"), QStandardPaths::LocateDirectory);
++            for (const QString &xdgKvantumDir : xdgKvantumDirs)
+             {
+-              themeRndr_ = new QSvgRenderer();
+-              themeRndr_->load(temp);
++              temp = xdgKvantumDir
++                     + QString("/%1/%1.svg").arg(_themeName);
++              if (QFile::exists(temp)) {
++                themeRndr_ = new QSvgRenderer();
++                themeRndr_->load(temp);
++                break;
++              }
++              else if (isThemeDir(xdgKvantumDir, lightName))
++              {
++                temp = xdgKvantumDir
++                       + QString("/%1/%2.svg").arg(lightName).arg(_themeName);
++                if (QFile::exists(temp)) {
++                  themeRndr_ = new QSvgRenderer();
++                  themeRndr_->load(temp);
++                  break;
++                }
++              }
+             }
+-            else if (isThemeDir(QString(DATADIR) + "/Kvantum", lightName))
++            if (!QFile::exists(temp))
+             {
+               temp = QString(DATADIR)
+-                     + QString("/Kvantum/%1/%2.svg").arg(lightName).arg(_themeName);
++                     + QString("/Kvantum/%1/%1.svg").arg(_themeName);
+               if (QFile::exists(temp))
+               {
+                 themeRndr_ = new QSvgRenderer();
+                 themeRndr_->load(temp);
+               }
+-            }
+-
+-            if (!QFile::exists(temp))
+-            {
+-              temp = QString(DATADIR)
+-                     + QString("/Kvantum/%1/%1.kvconfig").arg(_themeName);
+-              if (!QFile::exists(temp)) // otherwise the checked root theme was just a config file
++              else if (isThemeDir(QString(DATADIR) + "/Kvantum", lightName))
+               {
+                 temp = QString(DATADIR)
+-                       + QString("/themes/%1/Kvantum/%1.svg").arg(_themeName);
++                       + QString("/Kvantum/%1/%2.svg").arg(lightName).arg(_themeName);
+                 if (QFile::exists(temp))
+                 {
+                   themeRndr_ = new QSvgRenderer();
+@@ -789,22 +848,38 @@ void Style::setTheme(const QString &baseThemeName, bool useDark)
+                 }
+               }
+ 
+-              if (!QFile::exists(temp)
+-                  && !isThemeDir(QString(DATADIR) + "/themes", _themeName)
+-                  && isThemeDir(QString(DATADIR) + "/themes", lightName))
++              if (!QFile::exists(temp))
+               {
+                 temp = QString(DATADIR)
+-                       + QString("/Kvantum/%1/%2.kvconfig").arg(lightName).arg(_themeName);
+-                if (!QFile::exists(temp))
++                       + QString("/Kvantum/%1/%1.kvconfig").arg(_themeName);
++                if (!QFile::exists(temp)) // otherwise the checked root theme was just a config file
+                 {
+                   temp = QString(DATADIR)
+-                         + QString("/themes/%1/Kvantum/%2.svg").arg(lightName).arg(_themeName);
++                         + QString("/themes/%1/Kvantum/%1.svg").arg(_themeName);
+                   if (QFile::exists(temp))
+                   {
+                     themeRndr_ = new QSvgRenderer();
+                     themeRndr_->load(temp);
+                   }
+                 }
++
++                if (!QFile::exists(temp)
++                    && !isThemeDir(QString(DATADIR) + "/themes", _themeName)
++                    && isThemeDir(QString(DATADIR) + "/themes", lightName))
++                {
++                  temp = QString(DATADIR)
++                         + QString("/Kvantum/%1/%2.kvconfig").arg(lightName).arg(_themeName);
++                  if (!QFile::exists(temp))
++                  {
++                    temp = QString(DATADIR)
++                           + QString("/themes/%1/Kvantum/%2.svg").arg(lightName).arg(_themeName);
++                    if (QFile::exists(temp))
++                    {
++                      themeRndr_ = new QSvgRenderer();
++                      themeRndr_->load(temp);
++                    }
++                  }
++                }
+               }
+             }
+           }

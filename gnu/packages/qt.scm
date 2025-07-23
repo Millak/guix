@@ -372,7 +372,9 @@ Qt.  Some of its features include:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17fjhnc8dpxb27dmv1c8mkcy2jwdny06zzqgd9zpamlqi97alp0v"))))
+                "17fjhnc8dpxb27dmv1c8mkcy2jwdny06zzqgd9zpamlqi97alp0v"))
+              (patches
+               (search-patches "kvantum-1.1.5-xdg-dirs-support.patch"))))
     (build-system qt-build-system)
     (arguments
      (list
