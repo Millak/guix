@@ -182,23 +182,28 @@ guidelines}.")
         (uri (pypi-uri "mox3" version))
         (patches (search-patches "python-mox3-python3.6-compat.patch"))
         (sha256
-          (base32
-           "0w58adwv7q9wzvmq9mlrk2asfk73myq9fpwy7mjkzsz3baa95zf5"))))
-    (build-system python-build-system)
+          (base32 "0w58adwv7q9wzvmq9mlrk2asfk73myq9fpwy7mjkzsz3baa95zf5"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-fixtures python-pbr))
     (native-inputs
-      (list python-openstackdocstheme python-sphinx python-subunit
-            python-testrepository python-testtools))
+     (list python-openstackdocstheme
+           python-setuptools
+           python-sphinx
+           python-subunit
+           python-testrepository
+           python-testtools
+           python-wheel))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-for-python-3.11'
-                 (lambda _
-                   ;; The getargspec function has been removed in python 3.11.
-                   (substitute* "mox3/mox.py"
-                     (("self\\._args, varargs, varkw, defaults = inspect\\.getargspec\\(method\\)")
-                      "inspect_result = inspect.getfullargspec(method)
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-for-python-3.11
+            (lambda _
+              ;; The getargspec function has been removed in python 3.11.
+              (substitute* "mox3/mox.py"
+                (("self\\._args, varargs, varkw, defaults = inspect\\.getargspec\\(method\\)")
+                 "inspect_result = inspect.getfullargspec(method)
             self._args = inspect_result.args
             varargs = inspect_result.varargs
             varkw = inspect_result.varkw
