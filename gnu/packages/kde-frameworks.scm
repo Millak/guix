@@ -4433,7 +4433,7 @@ to easily extend the contacts collection.")
 (define-public krunner
   (package
     (name "krunner")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4442,7 +4442,7 @@ to easily extend the contacts collection.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0fzm0h7yay24vvm4m1khyr5x2rg9vspqm6qgh5r3pbsxdrd7gqax"))))
+                "1g2xmgy12hs6ff06znfh02qbya1081q7sw40b23i8bam648p84gk"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kcoreaddons))
