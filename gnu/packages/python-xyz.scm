@@ -13781,41 +13781,26 @@ storage.")
 (define-public python-importlib-metadata
   (package
     (name "python-importlib-metadata")
-    (version "5.2.0")
+    (version "8.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "importlib_metadata" version))
        (sha256
         (base32
-         "1kf7qclcz820xl5wwjpzcwpfy6shj7ymwh4xzxvpl2xs5gb4hka0"))))
-    (build-system python-build-system)
+         "004h71gl22rg57wxd0hgy72pdksn62ng4waldjhhm29v4anq2fyi"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build/install procedures copied from
-          ;; python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests")))))))
-    (propagated-inputs (list python-zipp))
+     (list #:test-flags #~(list "tests")))
     (native-inputs
-     (list python-pypa-build
+     (list python-jaraco-test
+           python-packaging-bootstrap
            python-pyfakefs
-           python-pytest
+           python-pytest-bootstrap
+           python-setuptools
            python-setuptools-scm))
+    (propagated-inputs
+     (list python-zipp))
     (home-page "https://importlib-metadata.readthedocs.io/")
     (synopsis "Read metadata from Python packages")
     (description
