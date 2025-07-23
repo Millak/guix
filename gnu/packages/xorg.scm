@@ -2741,6 +2741,9 @@ as USB mice.")
        (sha256
         (base32 "0qf0kjh6pww5abxmqa4c9sfa2qq1hq4p8qcgqpfd1kpkcvmg012g"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -2765,6 +2768,9 @@ X server.")
           (base32
            "0p88blr3zgy47jc4aqivc6ypj4zq9pad1cl70wwz9xig29w9xk2s"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -2832,6 +2838,9 @@ X server.")
                (base32
                 "14sx6dm0nmbf1fs8cazmak0aqjpjpv9wv7v09w86ff04m7f4gal6"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (synopsis "ASpeed Technologies video driver for X server")
@@ -2857,6 +2866,9 @@ X server.")
          (sha256
           (base32 "1n49wx0v13jh8vv17sxgrmmpi1mk3n2wph07jfmxmzqahpcn4lkn"))))
       (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags
+             #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
       (inputs (list mesa xorgproto xorg-server))
       (native-inputs
        (list pkg-config autoconf automake libtool))
@@ -2882,6 +2894,9 @@ X server.")
           (base32
             "00b468w01hqjczfqz42v2vqhb14db4wazcqi1w29lgfyhc0gmwqf"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -2905,6 +2920,9 @@ X server.")
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Dummy video driver for X server")
     (description
@@ -2928,6 +2946,9 @@ X server.")
             "11zk8whari4m99ad3w30xwcjkgya4xbcpmg8710q14phkbxw0aww"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Framebuffer device video driver for X server")
@@ -2968,7 +2989,8 @@ framebuffer device.")
        `(#:configure-flags
          (list (string-append "--with-xorg-conf-dir="
                               (assoc-ref %outputs "out")
-                              "/share/X11/xorg.conf.d"))
+                              "/share/X11/xorg.conf.d")
+               "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
          #:phases
          (modify-phases %standard-phases
            (replace 'bootstrap
@@ -3052,6 +3074,9 @@ compositing.  Both support Xv overlay and dynamic rotation with XRandR.")
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://www.x.org/wiki/")
     (synopsis "I128 video driver for X server")
     (description
@@ -3089,8 +3114,6 @@ X server.")
        (filter (lambda (system) (or (string-prefix? "i686-" system)
                                     (string-prefix? "x86_64-" system)))
                %supported-systems))
-      (arguments
-       '(#:configure-flags '("--with-default-accel=uxa")))
       (home-page "https://www.x.org/wiki/")
       (synopsis "Intel video driver for X server")
       (description
@@ -3114,6 +3137,9 @@ It supports a variety of Intel graphics chipsets.")
            "0917498pgm629v84h7ddsmhqa6nc3z2msbv1x9nxrlkwl93npffn"))))
     (build-system gnu-build-system)
     (inputs (list mesa xorgproto xorg-server))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (native-inputs
       (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -3144,6 +3170,9 @@ the same level of support for generic VGA or 8514/A adapters.")
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (synopsis "Matrox video driver for X server")
     (description
      "xf86-video-mga is a Matrox video driver for the Xorg X server.")
@@ -3167,6 +3196,9 @@ the same level of support for generic VGA or 8514/A adapters.")
     (inputs (list xorgproto xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (synopsis "NeoMagic video driver for X server")
     (description
      "xf86-video-neomagic is a NeoMagic video driver for the Xorg X server.")
@@ -3213,6 +3245,9 @@ the same level of support for generic VGA or 8514/A adapters.")
           (base32
            "1jlap6xjn4pfwg9ab8fxm5mwf4dqfywp70bgc0071m7k66jbv3f6"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -3265,7 +3300,10 @@ graphics cards.")
     (inputs
       (list libxfont2 spice-protocol xorg-server xorgproto))
     (native-inputs
-      (list pkg-config))
+     (list pkg-config))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (synopsis "Qxl video driver for X server")
     (description "xf86-video-qxl is a video driver for the Xorg X server.
 This driver is intended for the spice qxl virtio device.")
@@ -3287,6 +3325,9 @@ This driver is intended for the spice qxl virtio device.")
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs
      (list pkg-config))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://www.x.org/wiki/")
     (synopsis "ATI Rage 128 video driver for X server")
     (description
@@ -3311,6 +3352,9 @@ This driver is intended for ATI Rage 128 based cards.")
     (build-system gnu-build-system)
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs (list pkg-config))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Savage video driver for X server")
     (description
@@ -3334,7 +3378,9 @@ This driver is intended for ATI Rage 128 based cards.")
         (patches (search-patches "xf86-video-siliconmotion-fix-ftbfs.patch"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config))(arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Silicon Motion video driver for X server")
     (description
@@ -3357,6 +3403,10 @@ Xorg X server.")
          (base32
           "0nrs6cjldlhakx5987fiiggjrlzilsbdc7l9pz22x1iwslbkz78i"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs
      (list pkg-config))
@@ -3384,6 +3434,10 @@ This driver supports SiS chipsets of 300/315/330/340 series.")
     (build-system gnu-build-system)
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs (list pkg-config))
+
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://www.x.org/wiki/")
     (synopsis "3Dfx video driver for X server")
     (description
@@ -3410,6 +3464,9 @@ This driver supports SiS chipsets of 300/315/330/340 series.")
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://www.x.org/wiki/")
     (synopsis "VESA video driver for X server")
     (description
