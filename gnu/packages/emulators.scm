@@ -973,6 +973,34 @@ and Game Boy Color games")
                    license:lgpl2.1+     ;blip_buf bundled library
                    license:bsd-3))))    ;inih bundled library
 
+(define-public mgba-for-dolphin
+  ;; The commit should match that of the mgba git submodule in dolphin (see:
+  ;; <https://github.com/dolphin-emu/dolphin/tree/master/Externals/mGBA>).
+  (let ((commit "8739b22fbc90fdf0b4f6612ef9c0520f0ba44a51")
+        (revision "0"))
+    (hidden-package
+     (package
+       (inherit mgba)
+       (name "mgba-for-dolphin")
+       (version (git-version "0.9.1" revision commit))
+       (source
+        (origin
+          (inherit (package-source mgba))
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/mgba-emu/mgba")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "1bbcsikgcycf3cp9ciicg4yckjyamdfvgk4fgw079la59q8aw13q"))))
+       (arguments
+        (substitute-keyword-arguments (package-arguments mgba)
+          ((#:configure-flags flags ''())
+           ;; Relax error checks to avoid a build failure with GCC 14.
+           #~(cons "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
+                   #$flags))))))))
+
 (define-public sameboy
   (package
     (name "sameboy")
