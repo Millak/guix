@@ -600,14 +600,14 @@ Dropbox API v2.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.39.1")
+    (version "0.40.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "04051hmlq49kvdymf56hp08vjc6251937fh6vvnj2h1d51sn92ja"))))
+         "1c6qr1cnam79wxm1sh5y04061iyy3shs02yd0mlh47bngwknqqs2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -635,14 +635,12 @@ Dropbox API v2.")
                 (("os\\.environ\\.get\\(\"EVENTLET_NO_GREENDNS\", ''\\)")
                  "os.environ.get(\"EVENTLET_NO_GREENDNS\", \"yes\")")))))))
     (native-inputs
-     (list python-hatch-vcs
+     (list python-pypa-build
+           python-hatch-vcs
            python-hatchling
-           python-pytest
-           python-twine))
+           python-pytest))
     (propagated-inputs
-     (list python-dnspython
-           python-greenlet
-           python-monotonic))
+     (list python-dnspython python-greenlet))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
