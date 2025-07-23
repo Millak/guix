@@ -2398,8 +2398,8 @@ input files is possible, including video files.")
     (license license:expat)))
 
 (define-public gpac
-  (let ((commit "68875fcff08d7422bbf10cb0327403189589d9b6")
-        (revision "0"))
+  (let ((commit "9c1da9ec7e4d16b162856495f8ba284844a1b976")
+        (revision "1"))
     (package
       (name "gpac")
       ;; Use a git snapshot of the master branch, as it fixes build issues
@@ -2413,7 +2413,7 @@ input files is possible, including video files.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1rnbpcgnw31hadanwvmy0nr7prr4kypw0bmch75j6gvndy63bpgi"))))
+                  "0q3j9l8khq7cgzv0lwll65vhmsi9gqj1sfnz7az4mz3wqfv23vri"))))
       (build-system gnu-build-system)
       (arguments
        (list #:configure-flags
@@ -2425,11 +2425,6 @@ input files is possible, including video files.")
                      (format #f "--extra-cflags=-I~a"
                              (search-input-directory %build-inputs
                                                      "include/freetype2"))
-                     ;; The gpac modules do not have a rpath to the main
-                     ;; library, failing the validate-runpath phase (see:
-                     ;; <https://github.com/gpac/gpac/issues/3306>).
-                     (format #f "--extra-ldflags=-Wl,-rpath=~a/lib"
-                             #$output)
                      "--verbose")
              ;; The test suite is a git submodule that must synchronize its data
              ;; from the network.
