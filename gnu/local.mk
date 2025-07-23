@@ -2204,7 +2204,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/qemu-fix-test-virtio-version.patch       \
   %D%/packages/patches/qrcodegen-cpp-cmake.patch		\
   %D%/packages/patches/qtbase-absolute-runpath.patch		\
-  %D%/packages/patches/qtbase-fix-thread-test.patch             \
   %D%/packages/patches/qtbase-qmake-fix-includedir.patch 	\
   %D%/packages/patches/qtbase-qmlimportscanner-qml-import-path.patch 	\
   %D%/packages/patches/qtbase-moc-ignore-gcc-macro.patch	\
