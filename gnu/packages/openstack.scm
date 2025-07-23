@@ -47,6 +47,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
+  #:use-module (guix utils)
   #:use-module ((guix licenses)
                 #:select (asl2.0))
   #:use-module (guix packages)
@@ -596,6 +597,20 @@ in an application or library.")
 configuration for all OpenStack projects.  It also provides custom formatters,
 handlers and support for context specific logging (like resource id’s etc).")
   (license asl2.0)))
+
+(define-public python-oslo-log-bootstrap
+  (hidden-package
+   (package/inherit python-oslo-log
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-oslo-log)
+        ((#:tests? t? #t)
+         #f)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (delete 'sanity-check)))))
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-oslo-log)
+        (delete "python-oslo-config"))))))
 
 (define-public python-oslo-serialization
   (package
