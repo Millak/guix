@@ -27,9 +27,10 @@
   #:use-module (guix build-system gnu)
   #:use-module (srfi srfi-26)
   #:export (%guile-build-system-modules
-            guile-build-system))
+            guile-build-system
+            default-scheme-file-regexp))
 
-(define %scheme-file-regexp
+(define default-scheme-file-regexp
   ;; Regexp to match Scheme files.
   "\\.(scm|sls)$")
 
@@ -88,7 +89,7 @@
                       (system (%current-system))
                       (source-directory ".")
                       (not-compiled-file-regexp #f)
-                      (scheme-file-regexp %scheme-file-regexp)
+                      (scheme-file-regexp default-scheme-file-regexp)
                       (documentation-file-regexp %documentation-file-regexp)
                       ;; FIXME: Turn on parallel building of Guile modules by
                       ;; default after the non-determinism issues in the Guile byte
@@ -141,7 +142,7 @@
 
                             (phases '%standard-phases)
                             (source-directory ".")
-                            (scheme-file-regexp %scheme-file-regexp)
+                            (scheme-file-regexp default-scheme-file-regexp)
                             (documentation-file-regexp %documentation-file-regexp)
                             not-compiled-file-regexp
                             ;; FIXME: Turn on parallel building of Guile
