@@ -9887,8 +9887,8 @@ generic reader and writer API.")
                    license:bsd-3))))    ; blif2aig
 
 (define-public btor2tools
-  (let ((commit "b8456dda4780789e882f5791eb486f295ade4da4")
-        (revision "1"))
+  (let ((commit "fb69ee3b95e8baa5f0a9a6b0b19ee8beaad52932")
+        (revision "2"))
    (package
    (name "btor2tools")
    (version (git-version "1.0.0-pre" revision commit))
@@ -9900,7 +9900,7 @@ generic reader and writer API.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0r3cm69q5xhnbxa74yvdfrsf349s4cxmiqlb4aq8appi7yg3qhww"))))
+              "1vxgcjgs90ywvclp1dvk0j202fcfdp0sjzxjrzsx0v96a2frq02p"))))
    (build-system cmake-build-system)
    (arguments
     (list #:out-of-source? #f
