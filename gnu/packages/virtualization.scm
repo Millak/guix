@@ -169,6 +169,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wget)
+  #:use-module (gnu packages vnc)
+  #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -2659,28 +2661,54 @@ by default and can be made read-only.")
 (define-public bochs
   (package
     (name "bochs")
-    (version "2.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://sourceforge.net/projects/bochs/files/bochs/"
-                           version "/bochs-" version ".tar.gz"))
-       (sha256
-        (base32 "0n80v8wjd9i3rhc51sq7n7xw2paz7g1scsrmkxx1yhfqyypi6nx8"))))
+    (version "3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/bochs/bochs/" version
+                                  "/bochs-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1al1fx8dbb0ny7a4wbngnz8pqav0nl6rhakb434jqnpka4mm8vyb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f))                    ; no tests exist
-    (inputs
-     (list libxrandr))
-    (home-page "https://bochs.sourceforge.net/")
-    (synopsis "Emulator for x86 PC")
-    (description
-     "Bochs is an emulator which can emulate Intel x86 CPU, common I/O
-devices, and a custom BIOS.  It can also be compiled to emulate many different
-x86 CPUs, from early 386 to the most recent x86-64 Intel and AMD processors.
-Bochs can run most Operating Systems inside the emulation including Linux,
-DOS or Microsoft Windows.")
-    (license license:lgpl2.0+)))
+     (list #:tests? #f                  ;no test suite
+           #:configure-flags
+           ;; Enable support for more modern machine emulation not enabled by
+           ;; default.
+           #~(list "--enable-x86-64"
+                   "--enable-smp"
+                   "--enable-all-optimizations"
+                   "--enable-readline"
+                   "--enable-avx"
+                   "--enable-evex"
+                   "--enable-amx"
+                   "--enable-vmx=2"
+                   "--enable-svm"
+                   "--enable-protection-keys"
+                   "--enable-cet"
+                   "--enable-es1370"
+                   "--enable-sb16"
+                   "--enable-uintr"
+                   "--enable-3dnow"
+                   "--enable-usb"
+                   "--enable-usb-ohci"
+                   "--enable-usb-ehci"
+                   "--enable-usb-xhci"
+                   "--enable-pnic"
+                   "--enable-e1000"
+                   "--enable-using-libslirp"
+                   "--with-vncsrv")))
+    (native-inputs (list pkg-config))
+    (inputs (list libslirp libx11 libvnc readline wxwidgets))
+    (home-page "https://bochs.sourceforge.io/")
+    (synopsis "IA-32 (x86) PC emulator")
+    (description "Bochs is a highly portable IA-32 (x86) PC emulator written
+in C++.  It includes emulation of the Intel x86 CPU, common I/O devices, and a
+custom BIOS.  Bochs can be compiled to emulate many different x86 CPUs, from
+early 386 to the most recent x86-64 Intel and AMD processors.  Bochs is
+capable of running most operating systems inside the emulation including
+GNU/Linux, DOS or Microsoft Windows.")
+    (license license:lgpl2.1+)))
 
 (define-public xen
   (package
