@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,11 +57,17 @@
       #:tests? #f ;; tests require a running x server
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-null
+          (add-after 'unpack 'fix-includes
             (lambda _
               (substitute* "src/lib/base/Event.h"
                 (("#include \"common/stdmap\\.h\"")
-                 "#include \"common/stdmap.h\"\n#include <cstddef>")))))))
+                 "#include \"common/stdmap.h\"\n#include <cstddef>"))
+              (substitute*
+                '("src/lib/base/String.h"
+                  "src/lib/net/FingerprintData.h"
+                  "src/lib/net/FingerprintDatabase.h")
+                (("#include <vector>" all)
+                 (string-append all "\n#include <cstdint>"))))))))
     (native-inputs
      (list googletest pkg-config))
     (inputs
