@@ -3690,26 +3690,23 @@ possibly work.")
 (define-public python-stestr
   (package
     (name "python-stestr")
-    ;; XXX: The latest version needs flit-core=>3.12.
-    (version "4.1.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stestr" version))
        (sha256
-        (base32 "12p96kzanzzssr6z4hq6k62pdbsql4mf369ms69c4qyfxrlw6qaz"))))
+        (base32 "17623fqkg3a0z7rx8jcxwvgx6afg6wzvj4q6cgip5hqw5ngn7v25"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Two tets fail.
-      #~(list "--exclude-regex" (string-join
-                                 (list "test_initialise_expands_user_directory"
-                                       "test_open_expands_user_directory")
-                                 "|"))
+      #~(list "--test-path" "stestr/tests")
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Implement in pypproject-build-system's  test-backends.
+          (add-before 'check 'configure-check
+            (lambda _
+              (setenv "HOME" (getcwd))))
           (replace 'check
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
@@ -3718,8 +3715,8 @@ possibly work.")
     (native-inputs
      (list python-ddt
            python-iso8601
-           python-setuptools
-           python-wheel))
+           python-flit-core-next ;requires >=3.12
+           python-setuptools))
     (propagated-inputs
      (list python-cliff
            python-fixtures
