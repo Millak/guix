@@ -235,9 +235,6 @@ Browser.")
            libgnome
            libjpeg-turbo
            libpng-apng
-           ;; UNBUNDLE-ME! libogg
-           ;; UNBUNDLE-ME! libtheora ; wants theora-1.2, not yet released
-           ;; UNBUNDLE-ME! libvorbis
            libwebp
            libxft
            libevent
@@ -351,9 +348,6 @@ Browser.")
          "--with-system-webp"
          "--with-system-zlib"
          "--with-system-libevent"
-         ;; UNBUNDLE-ME! "--with-system-ogg"
-         ;; UNBUNDLE-ME! "--with-system-vorbis"
-         ;; UNBUNDLE-ME! "--with-system-theora" ; wants theora-1.2, not yet released
          "--with-system-libvpx"
          "--with-system-icu"
          "--with-system-nspr"
@@ -410,26 +404,11 @@ Browser.")
                           ;; to build netwerk/socket/neqo_glue.
                           ;;"security/nss"
                           ;;
-                          ;; TODO: Use more system media libraries.  See:
-                          ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=517422>
-                          ;;   * libtheora: esr60 wants v1.2, not yet released.
-                          ;;   * soundtouch: avoiding the bundled library would
-                          ;;     result in some loss of functionality.  There's
-                          ;;     also an issue with exception handling
-                          ;;     configuration.  It seems that this is needed in
-                          ;;     some moz.build:
-                          ;;       DEFINES['ST_NO_EXCEPTION_HANDLING'] = 1
-                          ;;   * libopus
-                          ;;   * speex
-                          ;;
                           "modules/freetype2"
                           ;; "media/libjpeg"  ; needed for now, because media/libjpeg/moz.build is referenced from config/external/moz.build
                           "modules/zlib"
                           "ipc/chromium/src/third_party/libevent"
                           "media/libvpx"
-                          ;; UNBUNDLE-ME! "media/libogg"
-                          ;; UNBUNDLE-ME! "media/libvorbis"
-                          ;; UNBUNDLE-ME! "media/libtheora" ; wants theora-1.2, not yet released
                           ;; UNBUNDLE-ME! "media/libtremor"
                           "media/libwebp"
                           ;; UNBUNDLE-ME! "gfx/harfbuzz"
