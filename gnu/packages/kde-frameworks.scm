@@ -4976,7 +4976,7 @@ the passwords on KDE work spaces.")
 (define-public kxmlgui
   (package
     (name "kxmlgui")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4985,7 +4985,7 @@ the passwords on KDE work spaces.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rhdfp9dalw1l4ya0x33bjdnp8iw1w7jwm5mxvyplpxi7cnlh1p1"))))
+                "0km76b722a08jjyg33g87fy891hfnb27zd6m52lcaaahv5sm7zi6"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list
@@ -5012,7 +5012,10 @@ the passwords on KDE work spaces.")
            qtdeclarative
            sonnet))
     (arguments
-     (list #:phases
+     (list #:configure-flags
+           ;; XXX: build python bindings.
+           #~(list "-DBUILD_PYTHON_BINDINGS=OFF")
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'check-setup
                  (lambda* (#:key tests? #:allow-other-keys)
