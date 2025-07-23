@@ -66,6 +66,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -1194,6 +1195,10 @@ fonts to gEDA.")
               (lambda args
                 (apply (assoc-ref guile:%standard-phases 'build)
                        #:source-directory "../source/libfive/bind/guile"
+                       #:compile-flags '()
+                       #:parallel-build? #f
+                       #:scheme-file-regexp #$default-scheme-file-regexp
+                       #:not-compiled-file-regexp #f
                        args)))
             (add-after 'install 'wrap-studio
               (lambda _
