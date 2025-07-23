@@ -2080,9 +2080,7 @@ Vulkan, OpenGL and other main graphic APIs.")
               ;; RHI backend. Using CPU conversion." (see:
               ;; https://bugreports.qt.io/browse/QTBUG-123749).
               (substitute* "tests/auto/unit/multimedia/CMakeLists.txt"
-                (("add_subdirectory\\(qvideoframecolormanagement\\)") "")
-                ;; The 'qmediaplayer_gstreamer' test times out.
-                (("add_subdirectory\\(qmediaplayer_gstreamer\\)") ""))))
+                (("add_subdirectory\\(qvideoframecolormanagement\\)") ""))))
           (add-before 'check 'prepare-for-tests
             (lambda _
               (setenv "HOME" (getcwd))
@@ -2097,12 +2095,10 @@ Vulkan, OpenGL and other main graphic APIs.")
            vulkan-headers))
     (inputs
      (list alsa-lib
+           ffmpeg
            glib
-           gstreamer
-           gst-plugins-base             ;gstreamer-gl
-           gst-plugins-good             ;camera support, additional plugins
-           gst-libav                    ;ffmpeg plugin
            libxkbcommon
+           libxrandr
            mesa
            qtbase
            qtdeclarative
@@ -2110,8 +2106,7 @@ Vulkan, OpenGL and other main graphic APIs.")
     (home-page (package-home-page qtbase))
     (synopsis "Qt Multimedia module")
     (description "The Qt Multimedia module provides set of APIs to play and
-record media, and manage a collection of media content.  It also contains a
-set of plugins for interacting with pulseaudio and GStreamer.")
+record media, and manage a collection of media content.")
     (license (package-license qtbase))))
 
 (define-public qtwayland-5
