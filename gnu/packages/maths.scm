@@ -9931,6 +9931,8 @@ Boolector.")
               "0hyw9q42ir92vcaa7bwv6f631n85rfsxp463rnmklniq1wf6dyn9"))))
    (build-system gnu-build-system)
    (arguments (list #:configure-flags #~(list "--enable-shared")))
+   (native-inputs
+       (list gcc-13)) ;XXX: 1 test fails with gcc@14.
    ;; The original home-page was lost to time, so we reference the "unofficial"
    ;; Github mirror.  For what it's worth, the author of the library appears to
    ;; have been involved with this mirror at some point in time.
