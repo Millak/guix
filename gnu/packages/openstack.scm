@@ -558,14 +558,14 @@ in an application or library.")
 (define-public python-oslo-log
   (package
   (name "python-oslo-log")
-  (version "5.0.0")
+  (version "7.2.0")
   (source
     (origin
       (method url-fetch)
-      (uri (pypi-uri "oslo.log" version))
+      (uri (pypi-uri "oslo_log" version))
       (sha256
         (base32
-          "00adkm465xcaxg15pncsmwxhicdj3kx4v1vcabghpmd2m0s75avk"))))
+          "1siw60x15ysfbf88hiisdn556y4anixj3clciky4xcwsiz8a6gwn"))))
   (build-system python-build-system)
   (arguments
    '(#:phases (modify-phases %standard-phases
@@ -578,12 +578,17 @@ in an application or library.")
          python-oslo-config
          python-oslo-context
          python-oslo-i18n
-         python-oslo-utils
          python-oslo-serialization
-         python-pyinotify))
-  (native-inputs
-   (list python-fixtures python-oslotest python-stestr python-testtools
+         python-oslo-utils
          python-pbr))
+  (native-inputs
+   (list python-coverage
+         python-eventlet
+         python-fixtures
+         python-oslotest
+         python-pbr
+         python-stestr
+         python-testtools))
   (home-page "https://launchpad.net/oslo")
   (synopsis "Python logging library of the Oslo project")
   (description
