@@ -56,24 +56,26 @@
 (define-public python-cliff
   (package
     (name "python-cliff")
-    (version "3.10.1")
+    (version "4.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cliff" version))
        (sha256
-        (base32
-         "180059m5ky3hlw2m9fszh4h2ykja8zl7ql5dsxjijiv47hzywnh4"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))
+        (base32 "0vd8b4lypkc65xb4cih2b4l9qkhxyj52xj078q63p8214xl5n7wc"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pbr))
+     (list python-coverage
+           python-fixtures
+           python-setuptools
+           python-sphinx-5
+           python-stestr
+           python-testscenarios
+           python-wheel))
     (propagated-inputs
      (list python-autopage
            python-cmd2
            python-prettytable
-           python-pyparsing
            python-pyyaml
            python-stevedore))
     (home-page "https://opendev.org/openstack/cliff")
