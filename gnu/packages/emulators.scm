@@ -513,7 +513,7 @@ It aims to support Nintendo DSi and 3DS as well.")
              mbedtls-lts
              mesa
              miniupnpc
-             minizip-ng
+             minizip-ng-compat
              openal
              pugixml
              pulseaudio

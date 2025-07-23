@@ -33,7 +33,7 @@
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
@@ -876,7 +876,8 @@ with the sfArk algorithm.")
     (arguments
      (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
                                      "-DMZ_BUILD_TESTS=ON"
-                                     "-DMZ_BUILD_UNIT_TESTS=ON")))
+                                     "-DMZ_BUILD_UNIT_TESTS=ON"
+                                     "-DMZ_COMPAT=OFF")))
     (native-inputs (list googletest pkg-config))
     (inputs (list openssl zlib `(,zstd "lib")))
     (home-page "https://github.com/zlib-ng/minizip-ng")
@@ -884,6 +885,14 @@ with the sfArk algorithm.")
     (description "@code{minizip-ng} is a zip manipulation library written in
 C, forked from the zip manipulation library found in the zlib distribution.")
     (license license:bsd-3)))
+
+(define-public minizip-ng-compat
+  (package/inherit minizip-ng
+    (name "minizip-ng-compat")
+    (arguments
+     (substitute-keyword-arguments (package-arguments minizip-ng)
+       ((#:configure-flags flags)
+        #~(delete "-DMZ_COMPAT=OFF" #$flags))))))
 
 (define-public sfarkxtc
   (let ((commit "13cd6f93725a90d91ec5ea75babf1dbd694ac463")
