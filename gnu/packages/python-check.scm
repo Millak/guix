@@ -3718,7 +3718,7 @@ possibly work.")
            python-flit-core-next ;requires >=3.12
            python-setuptools))
     (propagated-inputs
-     (list python-cliff
+     (list python-cliff-bootstrap
            python-fixtures
            python-pyyaml
            python-subunit

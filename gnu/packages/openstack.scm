@@ -87,6 +87,22 @@ sub-command to do the work.  It uses plugins to define sub-commands, output
 formatters, and other extensions.")
     (license asl2.0)))
 
+(define-public python-cliff-bootstrap
+  (hidden-package
+   (package/inherit python-cliff
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-cliff)
+        ((#:tests? t? #t)
+         #f)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (delete 'sanity-check)))))
+     (native-inputs
+      (list python-setuptools python-wheel))
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-cliff)
+        (replace "python-stevedore" python-stevedore-bootstrap))))))
+
 (define-public python-debtcollector
   (package
     (name "python-debtcollector")
