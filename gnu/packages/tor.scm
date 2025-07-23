@@ -338,12 +338,7 @@ networks.")
           (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (setenv "HOME" "/tmp")
-                ;; Greendns is not needed for testing, and if eventlet tries
-                ;; to load it, an OSError is thrown when getprotobyname is
-                ;; called.  Thankfully there is an environment variable to
-                ;; disable the greendns import, so use it:
-                (setenv "EVENTLET_NO_GREENDNS" "yes")))))))
+                (setenv "HOME" "/tmp")))))))
     (home-page "https://onionshare.org/")
     (synopsis "Securely and anonymously share files")
     (description "OnionShare lets you securely and anonymously share files,
@@ -385,8 +380,6 @@ OnionShare.")
                   (substitute* "tests/conftest.py"
                     (("\"cli\",")
                      "\"/nonexistent\""))
-                  ;; Avoid `getprotobyname` issues:
-                  (setenv "EVENTLET_NO_GREENDNS" "yes")
                   ;; Make Qt render "offscreen":
                   (setenv "QT_QPA_PLATFORM" "offscreen")
                   (setenv "HOME" "/tmp")

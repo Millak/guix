@@ -18762,9 +18762,6 @@ libmagic.")))
           (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; Without this we get this error: type object 'GreenSocket'
-                ;; has no attribute 'sendmsg'.
-                (setenv "EVENTLET_NO_GREENDNS" "YES")
                 (setenv "PYDEVD_USE_CYTHON" "YES"))))
           (add-after 'install 'install-attach-binary
             (lambda _

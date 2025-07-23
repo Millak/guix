@@ -623,13 +623,17 @@ Dropbox API v2.")
               " and not test_patcher_existing_locks"
               " and not test_dns_methods_are_green"))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'avoid-OSError
-           (lambda _
-             ;; If eventlet tries to load greendns, an OSError is thrown when
-             ;; getprotobyname is called.  Thankfully there is an environment
-             ;; variable to disable the greendns import, so use it:
-             (setenv "EVENTLET_NO_GREENDNS" "yes"))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-OSError
+            (lambda _
+              ;; If eventlet tries to load greendns, an OSError is thrown when
+              ;; getprotobyname is called.  Thankfully there is an environment
+              ;; variable to disable the greendns import, so use it.  Note that
+              ;; this error is propagated to child packages too, so enforce the
+              ;; changed default.
+              (substitute* "eventlet/green/socket.py"
+                (("os\\.environ\\.get\\(\"EVENTLET_NO_GREENDNS\", ''\\)")
+                 "os.environ.get(\"EVENTLET_NO_GREENDNS\", \"yes\")")))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
@@ -648,7 +652,11 @@ It uses @code{epoll} or @code{libevent} for highly scalable non-blocking I/O.
 Coroutines ensure that the developer uses a blocking style of programming
 that is similar to threading, but provide the benefits of non-blocking I/O.
 The event dispatch is implicit, which means you can easily use @code{Eventlet}
-from the Python interpreter, or as a small part of a larger application.")
+from the Python interpreter, or as a small part of a larger application.
+
+Note: In Guix, this package assumes the environment variable
+@code{EVENTLET_NO_GREENDNS} defaults to @code{yes}.  To try to use it, set it
+to anything else.")
     (license license:expat)))
 
 (define-public python-globus-sdk
@@ -781,12 +789,7 @@ of a fake DNS resolver.")
                           "test_request_parse_querystring"
                           "test_request_string_representation"
                           "test_request_stubs_internals")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv"EVENTLET_NO_GREENDNS" "yes"))))))
+                    " and not "))))
     (native-inputs
      (list nss-certs-for-test
            python-freezegun
