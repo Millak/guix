@@ -9845,6 +9845,9 @@ optimized algorithms and implementation.")
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no check target
+           #:make-flags
+           #~(list (string-append "CFLAGS=-g -O2"
+                                  " -Wno-error=implicit-function-declaration"))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-source
