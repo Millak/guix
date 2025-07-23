@@ -6861,26 +6861,31 @@ includes @code{dvdxchap} tool for extracting chapter information from DVD.")
     (home-page "https://www.bunkus.org/videotools/ogmtools/")))
 
 (define-public libcaption
-  (package
-    (name "libcaption")
-    (version "0.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/szatmary/libcaption")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "16mhw8wpl7wdjj4n7rd1c294p1r8r322plj7z91crla5aah726rq"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f ; Cannot figure out how to run the unit tests
-       #:configure-flags '("-DENABLE_RE2C=ON")))
-    (native-inputs
-     (list re2c))
-    (synopsis "CEA608 / CEA708 closed-caption codec")
-    (description "Libcaption creates and parses closed-caption data,
+  ;; This is the latest commit of the 'develop' branch, which corresponds to
+  ;; the de facto, never-released v0.8 version that most applications using
+  ;; libcaption rely on.
+  (let ((commit "e8b6261090eb3f2012427cc6b151c923f82453db")
+        (revision "0"))
+    (package
+      (name "libcaption")
+      (version (git-version "0.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/szatmary/libcaption")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1m9rw3r502923sch8rz2s1v8wz2klgbi7hqd37l63l3plh837nzn"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f ; Cannot figure out how to run the unit tests
+                  #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                                      "-DENABLE_RE2C=ON")))
+      (native-inputs (list re2c))
+      (synopsis "CEA608 / CEA708 closed-caption codec")
+      (description "Libcaption creates and parses closed-caption data,
 providing an encoder / decoder for the EIA608 and CEA708 closed-caption
 standards.
 
@@ -6894,8 +6899,8 @@ structure.
 In addition, utility functions to create h.264 SEI (Supplementary enhancement
 information) NALUs (Network Abstraction Layer Unit) for inclusion into an h.264
 elementary stream are provided.")
-    (home-page "https://github.com/szatmary/libcaption")
-    (license license:expat)))
+      (home-page "https://github.com/szatmary/libcaption")
+      (license license:expat))))
 
 (define-public video-contact-sheet
   (package
