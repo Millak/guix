@@ -7445,15 +7445,48 @@ Border Gateway Protocol}} implementation.")
      (list
       #:skip-build? #t
       #:import-path "github.com/ovn-kubernetes/libovsdb"
-      #:test-flags #~(list "-coverprofile=unit.cov"
-                           "-test.short"
-                           "-timeout" "30s")
+      #:test-flags
+      #~(list "-coverprofile=unit.cov"
+              "-test.short"
+              "-timeout" "30s"
+              "-skip" (string-join
+                       (list
+                        ;; cannot parse column object json: cannot unmarshal
+                        ;; number 4294967295 into Go struct field .type of
+                        ;; type int
+                        #$@(if (not (target-64bit?))
+                               #~("TestCheckIndexes.*"
+                                  "TestClientServer.*"
+                                  "TestModelUpdates.*"
+                                  "TestMonitorFilter.*"
+                                  "TestMultipleOps.*"
+                                  "TestMutateOp"
+                                  "TestOvsdbServer.*"
+                                  "TestReferentialIntegrity"
+                                  "TestTableCache_ApplyModelUpdates"
+                                  "TestTransactionLogger"
+                                  "TestUnsetOptional"
+                                  "TestUpdateOptional"
+                                  "TestUpdates_AddOperation"
+                                  "TestWaitOpEquals"
+                                  "TestWaitOpNotEquals"
+                                  "Test_merge")
+                               #~()))
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "example"))))
+          #$@(if (not (target-64bit?))
+                 ;; cannot use 4294967295 (untyped int constant) as int value
+                 ;; in assignment (overflows)
+                 #~((add-after 'unpack 'remove-problematic-test-files
+                     (lambda* (#:key tests? import-path #:allow-other-keys)
+                       (with-directory-excursion (string-append "src/" import-path)
+                         (delete-file "ovsdb/schema_test.go")))))
+                 #~())
           (add-after 'remove-examples 'remove-integration-tests
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
