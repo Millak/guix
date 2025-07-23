@@ -39,7 +39,7 @@
 ;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2019-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -2036,8 +2036,8 @@ and system administrators.")
 (define-public dia
   ;; There are no recent releases; use the latest commit from the master
   ;; branch.
-  (let ((commit "ac4954a1f5ab5bfbde77534daa05cf4495c0b5e6")
-        (revision "5"))
+  (let ((commit "c99c6e2c85ce28e82a89384a83800d6efb91dfb1")
+        (revision "6"))
     (package
       (name "dia")
       (version (git-version "0.97.3" revision commit))
@@ -2049,13 +2049,10 @@ and system administrators.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0n2sp0nkgwvwc7va85qqlamlgvkqfbybc29svj4mibaz9qn8hvhm"))))
+          (base32 "11ak07pw1d9bgrkmpzlk287aphqscdnh4l36vc821v0srkas9335"))))
       (build-system meson-build-system)
       (arguments
        (list
-        ;; FIXME: 1/5 tests currently fail, possible due to
-        ;; <https://gitlab.gnome.org/GNOME/dia/-/issues/569>.
-        #:tests? #f
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'disable-gtk-update-icon-cache
