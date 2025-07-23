@@ -6329,6 +6329,41 @@ Ellama natively supports streaming output, making it effortless to use with
 your preferred text editor.")
     (license license:gpl3+)))
 
+(define-public emacs-ollama-buddy
+  (package
+    (name "emacs-ollama-buddy")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/captainflasmr/ollama-buddy/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17jrpmj5wnafwsbvwrdfds9c92nflcf5sipd37ci4gsjckd83wvq"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons* "ollama-buddy-presets" "ollama-buddy-mini"
+                         %default-include)
+      ;; See: https://github.com/captainflasmr/ollama-buddy/issues/17
+      #:tests? #f
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (invoke "make" "-C" "docs" "docs")
+              (rename-file "docs/ollama-buddy.info" "ollama-buddy.info"))))))
+    (native-inputs (list texinfo))
+    (home-page "https://github.com/captainflasmr/ollama-buddy/")
+    (synopsis "Interface for interacting with Ollama models")
+    (description
+     "@code{Ollama-buddy} offers a convenient way to integrate to Ollama's
+local LLM capabilities from Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-org-fc
   (package
     (name "emacs-org-fc")
