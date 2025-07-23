@@ -205,7 +205,8 @@ framebuffer graphics, audio output and input event.")
         (base32 "0bs3yzb7hy3mgydrj8ycg7pllrd2b6j0gxj596inyr7ihssr3i0y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:parallel-build? #f
+       #:configure-flags
        '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
        #:phases
        (modify-phases %standard-phases
