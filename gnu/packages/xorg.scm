@@ -14,13 +14,14 @@
 ;;; Copyright © 2017-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2020, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Yoshinori Arai <kumagusu08@gmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2019 Todor Kondić <tk.code@protonmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
@@ -65,6 +66,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
@@ -81,11 +83,13 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fltk)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -95,6 +99,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-check)
@@ -121,7 +126,9 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages spice)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vnc)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xdisorg))
@@ -5362,6 +5369,238 @@ draggable titlebars and borders.")
   (hidden-package
    (package
      (inherit xorg-server))))
+
+;;; XXX: Not really at home, but unless we break the inheritance between
+;;; tigervnc-server and xorg-server, it must live here to avoid cyclic module
+;;; dependencies.
+(define-public tigervnc-client
+  (package
+    (name "tigervnc-client")
+    (version "1.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TigerVNC/tigervnc")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1n6slj7i93gvf0ji4mb3azycv3c4wqzfd7zlx9260b79jv8jvsln"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f                   ; tests that do exists are not automated
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (with-directory-excursion "vncviewer"
+                        (invoke "make" "install")))))))
+    (native-inputs
+     (list autoconf gettext-minimal automake))
+    (inputs
+     (list zlib
+           gnutls
+           libjpeg-turbo
+           ;;ffmpeg                     ;TODO: add this for h264 encoding
+           fltk-1.3
+           linux-pam
+           libx11
+           libxext
+           libxtst
+           libxrandr
+           libxdamage
+           pixman))
+    (home-page "https://tigervnc.org/")
+    (synopsis "High-performance VNC remote desktop client")
+    (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
+client and server.  @dfn{VNC} is a remote display system that lets you view and
+interact with a virtual desktop environment running on another computer on the
+network.  Client and server may be running on different operating systems and
+architectures.
+
+TigerVNC uses a variant of Tight encoding that is greatly accelerated by the use
+of the libjpeg-turbo JPEG codec and performs fast enough to run even 3D or video
+applications.  It also provides extensions for advanced authentication methods
+and @acronym{TLS, Transport-Level Security} encryption.
+
+This package installs only the VNC client (@command{vncviewer}), the application
+used to connect to VNC servers such as the tigervnc-server package.")
+    (license license:gpl2)))
+
+(define %tigervnc-client-source (package-source tigervnc-client))
+
+;; A VNC server is, in fact, an X server so it seems like a good idea to build
+;; on the work already done for xorg-server package.  This is not entirely
+;; compatible with the recommendation in BUILDING.txt where the client is
+;; built first, then the source code of the X server is copied into a subdir
+;; of the build directory, patched with VNC additions and then build and
+;; installed as Xvnc.  The procedure was turned around, where TigerVNC code is
+;; downloaded and built inside the Guix X server build dir.  Also, the VNC
+;; patching process for the X server is automated in a straightforward manner.
+(define-public tigervnc-server
+  (package
+    (inherit xorg-server)
+    (name "tigervnc-server")
+    (version (package-version tigervnc-client))
+    (source
+     (origin
+       (inherit (package-source xorg-server))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Copy the VNC extension into the xorg-server sources.
+            (copy-recursively #$(file-append %tigervnc-client-source
+                                             "/unix/xserver")
+                              ".")
+            ;; Include a full copy of tigervnc-client sources, so that the
+            ;; complete sources involved are available and can be edited during
+            ;; the build.
+            (copy-recursively #$%tigervnc-client-source "tigervnc-client")
+            ;; Adjust the VNC extension build system files so that it refers
+            ;; to it.
+            (substitute* "hw/vnc/Makefile.am"
+              (("(TIGERVNC_SRCDIR=).*" _ head)
+               (string-append head "$(CURDIR)/../../tigervnc-client\n"))
+              (("(TIGERVNC_BUILDDIR=).*" _ head)
+               (string-append head
+                              "$(CURDIR)/../../tigervnc-client/build\n")))
+            ;; Ensure the Autotools build system gets re-bootstrapped.
+            (delete-file "configure")))
+       ;; Patch the xorg-server build system so that it builds the VNC
+       ;; extension.
+       (patches (cons (file-append %tigervnc-client-source
+                                   "/unix/xserver21.patch")
+                      (origin-patches (package-source xorg-server))))
+       (file-name (string-append name "-" version ".tar.xz"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments xorg-server)
+       ((#:tests? #f #f)
+        #f)
+       ((#:configure-flags flags)
+        #~(cons* "--with-pic"           ; taken from BUILDING.txt
+                 "--without-dtrace"
+                 "--disable-static"
+                 "--disable-dri2"
+                 "--disable-xinerama"
+                 "--disable-xvfb"
+                 "--disable-xnest"
+                 "--disable-xorg"
+                 "--disable-dmx"
+                 "--disable-xwin"
+                 "--disable-xephyr"
+                 "--disable-kdrive"
+                 "--disable-config-hal"
+                 "--disable-config-udev"
+                 "--disable-dri2"
+                 "--enable-glx"
+                 (delete "--enable-xephyr" #$flags)))
+       ((#:modules modules)
+        `(append '((ice-9 ftw)
+                   (ice-9 match)
+                   (guix build utils)
+                   (guix build gnu-build-system))
+                 modules))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'adjust-pam-config
+              (lambda _
+                (substitute* "tigervnc-client/unix/vncserver/tigervnc.pam"
+                  (("pam_systemd.so")
+                   "pam_elogind.so"))))
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "tigervnc-client/unix/vncserver/vncserver.in"
+                  (("`mcookie`")
+                   (format #f "`~a`" (search-input-file inputs "bin/mcookie")))
+                  ;; Adjust the places where the vncserver script looks for
+                  ;; X11 fonts.
+                  (("'/usr/share/X11/fonts'" all)
+                   (format #f "'~a', '~a', ~a"
+                           "/run/current-system/profile/share/fonts/X11"
+                           (string-append #$(this-package-input "font-alias")
+                                          "share/fonts/X11")
+                           all))
+                  ;; Adjust the location where .desktop files will be saved.
+                  (("/usr/share/xsessions")
+                   "/run/current-system/profile/share/xsessions")
+                  ;; Do not require a system-provided Xsession shell script.
+                  ;; Guix System has none, causing the for loop to iterate
+                  ;; over an empty list.
+                  (("\"/etc/X11/xinit/Xsession\", \"/etc/X11/Xsession\"")
+                   "()")
+                  (("if \\(not defined \\$Xsession)")
+                   "if (0)")
+                  (("@cmd, \\$Xsession,")
+                   "@cmd,"))))
+            (add-before 'build 'build-tigervnc
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (mkdir-p "tigervnc-client/build")
+                (with-directory-excursion "tigervnc-client/build"
+                  (invoke "cmake" "-G" "Unix Makefiles"
+                          (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+                          "..")
+                  (invoke "make" "-j" (number->string (if parallel-build?
+                                                          (parallel-job-count)
+                                                          1))))))
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (invoke "make" "-j" (number->string (if parallel-build?
+                                                        (parallel-job-count)
+                                                        1)))))
+            (add-before 'install 'install-tigervnc-aux
+              (lambda _
+                (invoke "make" "-C" "tigervnc-client/build/unix" "install")))
+            (replace 'install
+              (lambda _
+                (invoke "make" "install")))
+            (add-after 'install 'wrap-vncserver
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-script (search-input-file outputs "libexec/vncserver")
+                  (list "PATH" 'prefix
+                        (map (lambda (p)
+                               (dirname (search-input-file inputs p)))
+                             '("bin/uname"
+                               "bin/xauth"
+                               "bin/xinit"))))))))))
+    (native-inputs
+     (modify-inputs (append (package-native-inputs xorg-server)
+                            (package-native-inputs tigervnc-client))
+       (append (package-source tigervnc-client)
+               autoconf
+               automake
+               libtool
+               gettext-minimal
+               font-util
+               cmake
+               perl)))
+    (inputs
+     (modify-inputs (append (package-inputs xorg-server)
+                            (package-inputs tigervnc-client))
+       (prepend coreutils
+                font-alias
+                guile-3.0
+                perl
+                util-linux
+                xauth
+                xinit)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs xorg-server)
+       (prepend xauth)))
+    (synopsis "High-performance VNC remote desktop server based on Xorg")
+    (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
+client and server.  @dfn{VNC} is a remote display system that lets you view and
+interact with a virtual desktop environment running on another computer on the
+network.  Client and server may be running on different operating systems and
+architectures.
+
+TigerVNC uses a variant of Tight encoding that is greatly accelerated by the use
+of the libjpeg-turbo JPEG codec and performs fast enough to run even 3D or video
+applications.  It also provides extensions for advanced authentication methods
+and @acronym{TLS, Transport-Level Security} encryption.
+
+This package installs the VNC server.  Permitted users can log into a graphical
+session on the machine where the server is running, using a VNC client such as
+the tigervnc-client package.")))
 
 (define-public eglexternalplatform
   (package

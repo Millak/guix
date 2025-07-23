@@ -19,6 +19,7 @@
 (define-module (gnu services vnc)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages vnc)
+  #:use-module (gnu packages xorg)
   #:use-module ((gnu services) #:hide (delete))
   #:use-module (gnu system shadow)
   #:use-module (gnu services configuration)
