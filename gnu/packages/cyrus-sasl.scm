@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,7 +53,8 @@
     (native-inputs (list autoconf automake libtool))
     (arguments
      (list
-      #:configure-flags #~(list (string-append
+      #:configure-flags #~(list "--enable-login"
+                                (string-append
                                  "CFLAGS=-g -O2"
                                  " -Wno-error=implicit-function-declaration")
                                 (string-append "--with-plugindir="
