@@ -646,6 +646,11 @@ Browser.")
               ;; system/architecture-specific file name.
               (install-file (first (find-files "." "geckodriver"))
                             (string-append #$output "/bin"))))
+	  (add-after 'install 'remove-duplicate-bin
+            (lambda* (#:key outputs #:allow-other-keys)
+              (delete-file (string-append #$output "/lib/"
+					  #$moz-app-name "/"
+					  #$moz-app-name "-bin"))))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((gtk #$(this-package-input "gtk+"))
