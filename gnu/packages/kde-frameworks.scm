@@ -4795,7 +4795,7 @@ library.")
 (define-public ktextwidgets
   (package
     (name "ktextwidgets")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4804,7 +4804,7 @@ library.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0bnz3ryxsxsnvgyq9vvynr11rdbp167mgr5gmbzhjzr45gq9pwhz"))))
+                "189fl1q95aw10lkpnhzzsmnrmadf47qhhbsm5rzv38985khqlwfb"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list ki18n sonnet))
