@@ -55,6 +55,11 @@
 
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-includes
+           (lambda _
+             (substitute* "src/libots.h"
+               (("#include <glib.h>" all)
+                 (string-append all "\n#include <math.h>")))))
          (add-after 'configure 'set-shared-lib-extension
            (lambda _
              ;; For some reason, the 'libtool' script (from Libtool
@@ -63,8 +68,7 @@
              ;; This leads to the creation of 'libots-1' instead of
              ;; 'libots-1.so'.  Fix that.
              (substitute* "libtool"
-               (("shrext_cmds") "shrext"))
-             #t)))))
+               (("shrext_cmds") "shrext")))))))
     (inputs
       (list glib popt libxml2 zlib))
     (native-inputs
