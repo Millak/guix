@@ -14201,15 +14201,29 @@ completion using Consult.")
 (define-public emacs-consult-denote
   (package
     (name "emacs-consult-denote")
-    (version "0.2.4")
+    (version "0.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/consult-denote-"
-                           version ".tar"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/protesilaos/consult-denote/")
+              (commit version)))
        (sha256
-        (base32 "1a5gxrm8qw638hdplvlizwmyvm84ispm5w751vd7ngmcsiaabvmp"))))
+        (base32 "1wj0aylm0jzh5mmkzayqgzw22dlavd9bliggjq2s4cs5lv77w05l"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)"))))))
+    (native-inputs (list texinfo))
     (propagated-inputs (list emacs-consult emacs-denote))
     (home-page "https://github.com/protesilaos/consult-denote")
     (synopsis "Consult interface for Denote")
