@@ -503,16 +503,16 @@ Maildir, MH, MMDF or mbox folders.")
 (define-public nmail
   (package
     (name "nmail")
-    (version "4.54")
+    (version "5.5.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/d99kris/nmail/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/d99kris/nmail/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bk2kq0pk1r4w5xv94yh37vrwxs8lczjg11gfraxh9cxyjigwsrp"))))
+        (base32 "1ikl5n6s08gh62cs54mr874walm440w0nxmi0fgnx8giaj3mc436"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -530,9 +530,9 @@ Maildir, MH, MMDF or mbox folders.")
            ncurses
            openssl
            sqlite
-           (list util-linux "lib")
            xapian
-           zlib))
+           zlib
+           (list util-linux "lib")))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/d99kris/nmail")
     (synopsis "Terminal-based email client")
