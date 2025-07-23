@@ -674,23 +674,27 @@ and building documentation from them.")
        (method url-fetch)
        (uri (pypi-uri "oslosphinx" version))
        (sha256
-        (base32
-         "1xm41857vzrzjmnyi6bqirg4i5qa61v7wxcsdc4q1nzgr3ndgz5k"))))
-    (build-system python-build-system)
+        (base32 "1xm41857vzrzjmnyi6bqirg4i5qa61v7wxcsdc4q1nzgr3ndgz5k"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "test-requirements.txt"
-               (("hacking!=0.13.0,<0.14,>=0.12.0")
-                "hacking!=0.13.0,>=0.12.0"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                (("hacking.*")
+                 "hacking")))))))
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list python-hacking python-openstackdocstheme python-pbr
-           python-reno python-sphinx))
+     (list python-hacking
+           python-openstackdocstheme
+           python-pbr
+           python-reno
+           python-setuptools
+           python-sphinx
+           python-wheel))
     (home-page "https://www.openstack.org/")
     (synopsis "OpenStack sphinx extensions and theme")
     (description "This package provides themes and extensions for Sphinx
