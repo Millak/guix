@@ -10694,16 +10694,21 @@ comments.  Trailing comma is also supported.")
 (define-public python-html-text
   (package
     (name "python-html-text")
-    (version "0.5.2")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "html_text" version))
        (sha256
-        (base32 "1v9x171l3bmyayc1144nrkn9410lp4lhlrrjii54j7b5f2xipmmg"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
-    (propagated-inputs (list python-lxml))
+        (base32 "10lixghras86av966ha9piqfl1iscf7nffg69dmz13sxjh371jrx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-lxml
+           python-lxml-html-clean))
     (home-page "https://github.com/TeamHG-Memex/html-text")
     (synopsis "Extract text from HTML")
     (description "HTML to Text is a Python library for extract text from HTML.
