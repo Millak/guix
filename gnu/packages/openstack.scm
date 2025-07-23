@@ -472,18 +472,44 @@ for running external processes.")
        (method url-fetch)
        (uri (pypi-uri "oslo.config" version))
        (sha256
-        (base32
-         "0q3v4yicqls9zsfxkmh5mrgz9dailaz3ir25p458gj6dg3bldhx0"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;XXX circular dependency on oslo.log
+        (base32 "0q3v4yicqls9zsfxkmh5mrgz9dailaz3ir25p458gj6dg3bldhx0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Disable failing tests.
+      #:test-flags
+      #~(list "--exclude-regex" (string-join
+                                 (list "test_print_help"
+                                       "test_print_strOpt_with_choices_help")
+                                 "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
     (propagated-inputs
-     (list python-debtcollector
-           python-netaddr
-           python-oslo-i18n
-           python-rfc3986
+     (list python-netaddr
+           python-oslo-i18n-bootstrap
+           python-pyyaml
            python-requests
-           python-stevedore
-           python-pyyaml))
+           python-rfc3986
+           python-stevedore))
+    (native-inputs
+     (list python-coverage
+           python-docutils
+           python-fixtures
+           python-mypy
+           python-oslo-log-bootstrap
+           python-oslotest-bootstrap
+           python-pbr
+           python-requests-mock
+           python-setuptools
+           python-sphinx
+           python-stestr
+           python-testscenarios
+           python-testtools
+           python-wheel))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo Configuration API")
     (description
