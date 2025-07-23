@@ -1238,7 +1238,7 @@ including a built-in database engine and a GUI system.")
 (define-public roswell
   (package
    (name "roswell")
-   (version "23.10.14.114")
+   (version "24.10.115")
    (home-page "https://github.com/roswell/roswell")
    (source
     (origin
@@ -1248,7 +1248,7 @@ including a built-in database engine and a GUI system.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "05w5sjh1bfy2wnblc09cb9qs8h7hxkx5hcqlbgpn7md32b0m4h7g"))))
+      (base32 "1az9295cp2swyms0bkrb7l00x5s04b9zk8b4yf67cgfi1ka019nr"))))
    (build-system gnu-build-system)
    (arguments
     (list #:configure-flags #~(list (string-append "--prefix=" #$output))
