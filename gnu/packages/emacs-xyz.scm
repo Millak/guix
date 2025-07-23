@@ -780,6 +780,31 @@ summarizing text using an LLM.")
 for multiple backends.")
     (license license:gpl3+)))
 
+(define-public emacs-dall-e-shell
+  (let ((commit "efec43ab3338e59f12165110e6c6c957345f6257")
+        (revision "0"))
+    (package
+      (name "emacs-dall-e-shell")
+      (version (git-version "0.43.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/xenodium/dall-e-shell/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1fab097pgqc9by9dhjmsgn3grp905h7pivnz46w9s52pa1pvbrmv"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ;no tests
+      (propagated-inputs (list emacs-shell-maker))
+      (home-page "https://github.com/xenodium/dall-e-shell/")
+      (synopsis "Emacs shell for Dall-e")
+      (description
+       "Dall-e Shell is a comint-based Dall-e shell for Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
