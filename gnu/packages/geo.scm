@@ -1185,14 +1185,14 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "1.0.1")
+    (version "1.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "1aq8rb1a97n9h0yinrcr6nhfj7gvh8h6wr2ng9dj1225afjp1gxq"))))
+            "0g993nzdxf6dp0fy1wi49cjph5i7plypb3p0f8zc95fhchzp2i8p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1202,7 +1202,10 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
          "--ignore=geopandas/tests/test_overlay.py"
          "--ignore=geopandas/io/tests/test_file.py"
          ;; Number of open figures changed during test
-         "-k" "not test_pandas_kind"
+         "-k" (string-append "not test_pandas_kind"
+                           ;; OSError: Baseline image '<...>' does not exist.
+                           " and not test_plot_polygon_with_holes[png]"
+                           " and not test_multipolygons_with_interior[png]")
          ;; Disable tests that require internet access.
          "-m" "not web")))
     (propagated-inputs
@@ -1213,10 +1216,7 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
             python-pyproj
             python-shapely))
     (native-inputs
-      (list python-codecov
-            python-pytest
-            python-pytest-cov
-            python-pytest-xdist
+      (list python-pytest
             python-setuptools
             python-wheel))
     (home-page "https://geopandas.org")
