@@ -49,6 +49,9 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
@@ -231,6 +234,53 @@ runtime (like runc or crun) for a single container.")
      "Distrobox is a fancy wrapper around Podman or Docker to create and start
 containers highly integrated with the hosts.")
     (license license:gpl3)))
+
+(define-public dive
+  (package
+    (name "dive")
+    (version "0.12.0") ;newer version needs docker/docker@28+
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wagoodman/dive")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p60bq0lc820p7x3nq8kxc8cx646c0z7zxqc7vav77zc4qbm3r8a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:install-source? #f
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main.version=" #$version))
+      #:import-path "github.com/wagoodman/dive"))
+    (native-inputs
+     (list go-github-com-awesome-gocui-gocui
+           go-github-com-awesome-gocui-keybinding
+           go-github-com-cespare-xxhash
+           go-github-com-docker-cli
+           go-github-com-docker-docker
+           go-github-com-dustin-go-humanize
+           go-github-com-fatih-color
+           go-github-com-google-uuid
+           go-github-com-logrusorgru-aurora
+           go-github-com-lunixbochs-vtclean
+           go-github-com-mitchellh-go-homedir
+           go-github-com-phayes-permbits
+           go-github-com-sergi-go-diff
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-afero
+           go-github-com-spf13-cobra
+           go-github-com-spf13-viper
+           go-golang-org-x-net))
+    (home-page "https://github.com/wagoodman/dive")
+    (synopsis "Tool for exploring each layer in a docker image")
+    (description
+     "This package provides a tool for exploring a Docker image, layer
+contents, and discovering ways to shrink the size of Docker/OCI image.")
+    (license license:expat)))
 
 (define-public libslirp
   (package
