@@ -497,7 +497,7 @@ It is the default icon theme for the KDE Plasma desktop.")
 (define-public kapidox
   (package
     (name "kapidox")
-    (version "6.13.0")
+    (version "6.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -506,7 +506,7 @@ It is the default icon theme for the KDE Plasma desktop.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0c9nrf9a7wbsxig4mrnibyq3d4hfcam5vy65r3s4ff8v2fk0fvgk"))))
+                "06yfql6pfjnn6h8ax7r4i4qs3n3qqcsccp7q61hfddbl6cn6mliw"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f ; test need network
