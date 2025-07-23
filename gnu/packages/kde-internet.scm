@@ -31,18 +31,22 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages serialization)
@@ -462,6 +466,81 @@ management, IP blocking lists.")
     (description "KUnifiedPush is a @uref{https://unifiedpush.org/,
 UnifiedPush} client library and distributor daemon.")
     (license license:lgpl2.0+)))
+
+(define-public neochat
+  (package
+    (name "neochat")
+    (version "25.04.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "00kj66kij8vsmfhzr8cc6vz2bh7vi6w7r5aa0nrcpdgnxi7g30lg"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DSKIP_LICENSE_TESTS=ON")))
+    (native-inputs
+     (list extra-cmake-modules kdoctools pkg-config python-minimal))
+    (inputs
+     (list cmark
+           icu4c
+           kcolorscheme
+           kconfig
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kiconthemes
+           kio
+           kirigami
+           kirigami-addons
+           kitemmodels
+           knotifications
+           kquickcharts
+           kquickimageeditor
+           kstatusnotifieritem
+           ksyntaxhighlighting
+           kunifiedpush
+           kwindowsystem
+           libqmatrixclient
+           olm
+           openssl
+           prison
+           purpose
+           qcoro-qt6
+           qqc2-desktop-style
+           qtkeychain-qt6
+           qtlocation
+           qtmultimedia
+           qtsvg
+           qtwayland
+           qtwebview
+           sonnet))
+    (home-page "https://apps.kde.org/neochat/")
+    (synopsis "Matrix client for KDE")
+    (description "Neochat is an instant messaging application using the Matrix
+protocol, supporting end-to-end encryption.  Its features include:
+@itemize
+@item individual chats,
+@item rooms,
+@item spaces,
+@item stickers and emojis,
+@item spell checking,
+@item uploading auttachments,
+@item media playback,
+@item message URL previews,
+@item searching messages,
+@item showing unread message information,
+@item registering and configuring accounts,
+@item importing and exporting encryption keys,
+@item multiple accounts and
+@item notifications.
+@end itemize")
+    (license license:gpl3+)))
 
 (define-public ruqola
   (package
