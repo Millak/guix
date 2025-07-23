@@ -5536,8 +5536,8 @@ interact with distribution components.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/moby/moby")
-             (commit (string-append "v" version))))
+              (url "https://github.com/moby/moby")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0852mrvs8602azqzx2zhb1xl0vs7baw8qfmkgrl625xm5hxrigvq"))
@@ -5550,17 +5550,20 @@ interact with distribution components.")
       #:import-path "github.com/docker/docker"
       #:skip-build? #t
       #:tests? #f))
-    (propagated-inputs (list go-github-com-docker-go-units
-                             go-github-com-containerd-containerd
-                             go-github-com-containerd-log
-                             go-github-com-gogo-protobuf
-                             go-go-opentelemetry-io-otel
-                             go-github-com-moby-sys-user
-                             go-github-com-moby-sys-userns
-                             go-github-com-moby-sys-sequential
-                             go-go-opentelemetry-io-contrib
-                             go-github-com-klauspost-compress
-                             go-github-com-moby-docker-image-spec))
+    (propagated-inputs
+     (list go-github-com-containerd-containerd
+           go-github-com-containerd-log
+           go-github-com-distribution-reference
+           go-github-com-docker-go-connections
+           go-github-com-docker-go-units
+           go-github-com-gogo-protobuf
+           go-github-com-klauspost-compress
+           go-github-com-moby-docker-image-spec
+           go-github-com-moby-sys-sequential
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-go-opentelemetry-io-contrib
+           go-go-opentelemetry-io-otel))
     (home-page "https://github.com/docker/docker")
     (synopsis "The Moby Project")
     (description
