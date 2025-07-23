@@ -3897,30 +3897,24 @@ development.")
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
-    (version "4.0.35")
+    (version "5.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyodbc" version))
        (sha256
-        (base32 "1j7577acd2f16zifw49ajg0aw7vm0pdg6jxrr1dlaa5rx14azfcj"))
+        (base32 "1xd88k6rngm9n8z3klb0g94csa9m8sk7df544vpfxpf816cf72yy"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete precompiled binaries.  The corresponding source is included.
         #~(for-each delete-file (find-files "." "\\.pyc$")))))
-    (build-system python-build-system)
-    (inputs
-     (list unixodbc))
+    (build-system pyproject-build-system)
+    (inputs (list unixodbc))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (arguments
-     ;; XXX Tests fail with ‘Can't open lib 'SQL Server Native Client 10.0' :
-     ;; file not found (0) (SQLDriverConnect)")’.
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python3" "tests3/test.py")))))))
+     ;; XXX Tests fail with [unixODBC][Driver Manager]Data source name not
+     ;; found and no default driver specified (0) (SQLDriverConnect)
+     (list #:tests? #f))
     (home-page "https://github.com/mkleehammer/pyodbc")
     (synopsis "Python ODBC Library")
     (description "@code{python-pyodbc} provides a Python DB-API driver
