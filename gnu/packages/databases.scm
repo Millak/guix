@@ -4527,33 +4527,6 @@ async versions of all the standard connection and cursor methods, and context
 managers for automatically closing connections.")
     (license license:expat)))
 
-(define-public python-aiosqlite-0.17
-  (package
-    (inherit python-aiosqlite)
-    (version "0.17.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/omnilib/aiosqlite")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name (package-name python-aiosqlite)
-                                        version))
-              (sha256
-               (base32
-                "1agh7b9g7rgryvb8flph85i8m80ai1rinpljxzlsrs0s0y616qgg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "python" "-m" "unittest" "aiosqlite.tests")
-                          (format #t "test suite not run~%")))))))
-    (propagated-inputs
-     (list python-typing-extensions))
-    (native-inputs
-     (list python-flit-core python-aiounittest))))
-
 (define-public python-databases
   (package
     (name "python-databases")
