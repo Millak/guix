@@ -746,7 +746,7 @@ summarizing text using an LLM.")
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
-    (version "2.16.1")
+    (version "2.24.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -755,7 +755,7 @@ summarizing text using an LLM.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xq4hfr3m5sgi9wrr3nrp6fsnnw8d044gz0y50d4h46cvq8c6f2g"))))
+                "01havy6nidbw2ipyxh2h82xgk3jb32bjl5mpqa4g0p6rgb8dklhr"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases
@@ -774,9 +774,10 @@ summarizing text using an LLM.")
                                   "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs (list emacs-shell-maker))
     (home-page "https://github.com/xenodium/chatgpt-shell")
-    (synopsis "ChatGPT and DALL-E Emacs shells and Org Babel libraries")
+    (synopsis "Multi-llm Emacs shell")
     (description
-     "Chatgpt Shell is a Comint-based ChatGPT shell for Emacs.")
+     "@code{Chatgpt-shell} is a comint-based LLM shell for Emacs, with support
+for multiple backends.")
     (license license:gpl3+)))
 
 (define-public emacs-geiser-guile
