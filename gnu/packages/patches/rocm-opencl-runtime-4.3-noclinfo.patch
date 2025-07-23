@@ -1,11 +1,11 @@
 Do not build and install clinfo.
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 0dc5bf4..95a12af 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -27,7 +27,7 @@ else()
-   find_package(OpenCL REQUIRED)
+diff --git a/opencl/CMakeLists.txt b/opencl/CMakeLists.txt
+index 7b97cfdef..23eec15b2 100644
+--- a/opencl/CMakeLists.txt
++++ b/opencl/CMakeLists.txt
+@@ -33,7 +33,7 @@ if(BUILD_ICD)
+   add_subdirectory(khronos/icd)
  endif()
  add_subdirectory(amdocl)
 -add_subdirectory(tools/clinfo)
@@ -13,15 +13,16 @@ index 0dc5bf4..95a12af 100644
  add_subdirectory(tools/cltrace)
  if(BUILD_TESTS)
    add_subdirectory(tests/ocltst)
-diff --git a/packaging/CMakeLists.txt b/packaging/CMakeLists.txt
-index a703f58..c07546a 100644
---- a/packaging/CMakeLists.txt
-+++ b/packaging/CMakeLists.txt
-@@ -12,6 +12,6 @@ endif()
+diff --git a/opencl/packaging/CMakeLists.txt b/opencl/packaging/CMakeLists.txt
+index 7d9e6366f..f8d08e0fc 100644
+--- a/opencl/packaging/CMakeLists.txt
++++ b/opencl/packaging/CMakeLists.txt
+@@ -16,7 +16,7 @@ endif()
  set(CPACK_DEB_COMPONENT_INSTALL ON)
  set(CPACK_RPM_COMPONENT_INSTALL ON)
  
 -install(TARGETS clinfo DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT binary)
 +#install(TARGETS clinfo DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT binary)
  install(TARGETS amdocl DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT binary)
- install(FILES ${CMAKE_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DOCDIR} COMPONENT binary)
+ install(TARGETS amdocl DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT asan)
+ install(FILES ${opencl_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DOCDIR} COMPONENT binary)

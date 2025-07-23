@@ -1,16 +1,30 @@
-#From xuhuisheng
-#at https://github.com/RadeonOpenCompute/ROCm/issues/1659#issuecomment-1041026624
+See <https://github.com/ROCm/clr/pull/97>.
 
-diff --git a/utils/flags.hpp b/utils/flags.hpp
-index 8f0228cc..2eaa47c5 100644
---- a/utils/flags.hpp
-+++ b/utils/flags.hpp
-@@ -245,7 +245,7 @@ release(bool, ROC_SYSTEM_SCOPE_SIGNAL, true,                                  \
-         "Enable system scope for signals (uses interrupts).")                 \
- release(bool, ROC_SKIP_COPY_SYNC, false,                                      \
-         "Skips copy syncs if runtime can predict the same engine.")           \
--release(bool, ROC_ENABLE_PRE_VEGA, false,                                     \
-+release(bool, ROC_ENABLE_PRE_VEGA, true,                                     \
-         "Enable support of pre-vega ASICs in ROCm path")                      \
- release(bool, HIP_FORCE_QUEUE_PROFILING, false,                               \
-         "Force command queue profiling by default")                           \
+From 909fa3dcb644f7ca422ed1a980a54ac426d831b1 Mon Sep 17 00:00:00 2001
+From: Jeremy Newton <Jeremy.Newton@amd.com>
+Date: Fri, 27 Sep 2024 13:29:12 -0400
+Subject: [PATCH] Fix gfx8 opencl
+
+This condition was added when we supported PAL openCL on gfx8, but when
+ROC_ENABLE_PRE_VEGA was dropped and PAL OpenCL on Linux was deprecated,
+this logic should have been dropped completely.
+
+Change-Id: I0a68ef4723d9ebde7d958c58dbb0b6991f69d817
+Signed-off-by: Jeremy Newton <Jeremy.Newton@amd.com>
+---
+ rocclr/device/device.hpp | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/rocclr/device/device.hpp b/rocclr/device/device.hpp
+index ef82630325..6409cebc90 100644
+--- a/rocclr/device/device.hpp
++++ b/rocclr/device/device.hpp
+@@ -1431,8 +1431,5 @@ class Isa {
+ 
+   /// @returns If the ROCm runtime supports the ISA.
+   bool runtimeRocSupported() const {
+-    if (!IS_HIP && (versionMajor_ == 8)) {
+-      return false;
+-    }
+     return runtimeRocSupported_;
+   }

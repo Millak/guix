@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify it
 ;;; under the terms of the GNU General Public License as published by
@@ -31,13 +31,27 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages xdisorg))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and update hashes below.
-(define %rocm-version "5.6.0")
+(define %rocm-version "6.4.2")
+
+;; As of version 6.1.0 several of the ROCm projects are contained within their
+;; forked LLVM repository.  This is the same as the source for llvm-for-rocm.
+(define %rocm-llvm-origin
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/RadeonOpenCompute/llvm-project.git")
+           (commit (string-append "rocm-" %rocm-version))))
+    (file-name (git-file-name "llvm-for-rocm" %rocm-version))
+    (sha256
+     (base32
+      "1j2cr362k7snsh5c1z38ikyihmjvy0088rj0f0dhng6cjwgysryp"))))
 
 (define-public rocm-cmake
   (package
@@ -51,11 +65,11 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "183s2ksn142r7nl7l56qvyrgvvkdgqfdzmgkfpp4a6g9mjp88ady"))))
+                "1af9z59bm8pj577x43q614v3ff039wijvcdpgw6sdsq1c0ssj260"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Tests try to use git commit
     (native-inputs (list git))
-    (home-page "https://github.com/RadeonOpenCompute/rocm-cmake")
+    (home-page "https://github.com/ROCm/rocm-cmake")
     (synopsis "ROCm cmake modules")
     (description "ROCm cmake modules provides cmake modules for common build
 tasks needed for the ROCM software stack.")
@@ -65,22 +79,20 @@ tasks needed for the ROCM software stack.")
   (package
     (name "rocm-device-libs")
     (version %rocm-version)
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/ROCm-Device-Libs.git")
-                    (commit (string-append "rocm-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jg96ycy99s9fis8sk1b7qx5p33anw16mqlm07zqbnhry2gqkcbh"))))
+    (source %rocm-llvm-origin)
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:build-type "Release"
+       #:configure-flags
        (list "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
-             "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE")))
+             "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "amd/device-libs"))))))
     (inputs (list llvm-for-rocm))
-    (home-page "https://github.com/RadeonOpenCompute/ROCm-Device-Libs")
+    (home-page "https://github.com/ROCm/ROCm-Device-Libs")
     (synopsis "ROCm Device libraries")
     (description "AMD-specific device-side language runtime libraries, namely
 oclc, ocml, ockl, opencl, hip and hc.")
@@ -90,49 +102,45 @@ oclc, ocml, ockl, opencl, hip and hc.")
   (package
     (name "rocm-comgr")
     (version %rocm-version)
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/ROCm-CompilerSupport.git")
-                    (commit (string-append "rocm-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "15s2dx0pdvjv3xfccq5prkplcbwps8x9jas5qk93q7kv8wx57p3b"))
-              (patches
-               (search-patches "rocm-comgr-3.1.0-dependencies.patch"))))
+    (source %rocm-llvm-origin)
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "lib/comgr"))))))
-    (inputs (list llvm-for-rocm rocm-device-libs))
-    (home-page "https://github.com/RadeonOpenCompute/ROCm-CompilerSupport")
+     (list
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-to-build
+            (lambda _
+              (chdir "amd/comgr")
+              (setenv "ROCM_PATH"
+                      #$(this-package-input "rocm-device-libs")))))))
+    (inputs (list rocm-device-libs))
+    (native-inputs (list llvm-for-rocm python))
+    (home-page "https://github.com/ROCm/ROCm-CompilerSupport")
     (synopsis "ROCm Code Object Manager")
     (description "The Comgr library provides APIs for compiling and inspecting
 AMDGPU code objects.")
     (license license:ncsa)))
 
+;; This package is deprecated; this is the last version released.
 (define-public roct-thunk-interface
   (package
     (name "roct-thunk-interface")
-    (version %rocm-version)
+    (version "6.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/ROCT-Thunk-Interface.git")
+                    (url "https://github.com/ROCm/ROCT-Thunk-Interface.git")
                     (commit (string-append "rocm-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v8j4gkbb21gqqmz1b4nmampx5ywva99ipsx8lcjr5ckcg84fn9x"))))
+                "1y3mn4860z7ca71cv4hhag7racpc208acy8rws8ldw5k8yjc68m0"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Not sure how to run tests.
     (inputs (list libdrm numactl))
     (native-inputs (list `(,gcc "lib") pkg-config))
-    (home-page "https://github.com/RadeonOpenCompute/ROCT-Thunk-Interface")
+    (home-page "https://github.com/ROCm/ROCT-Thunk-Interface")
     (synopsis "Radeon Open Compute Thunk Interface")
     (description "User-mode API interfaces used to interact with the ROCk
 driver.")
@@ -145,62 +153,42 @@ driver.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/ROCR-Runtime.git")
+                    (url "https://github.com/ROCm/ROCR-Runtime.git")
                     (commit (string-append "rocm-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07wh7s1kgvpw8ydxmr2wvvn05fdqcmcc20qjbmnc3cbbhxviksyr"))))
+                "01gqbzqm5m28dw9b2calrbp9a23w2cc2gwi3pay8yl8qvk4jgkff"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f ; No tests.
+      #:build-type "Release"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'add-rocm-device-lib-path
             (lambda _
-              (substitute* "src/image/blit_src/CMakeLists.txt"
-                (("-O2")
-                 (string-append
-                  "-O2 --rocm-device-lib-path="
-                  #$(this-package-input "rocm-device-libs")
-                  "/amdgcn/bitcode/")))))
-          (add-after 'add-rocm-device-lib-path 'chdir
-            (lambda _
-              (chdir "src"))))))
+              (setenv "ROCM_PATH"
+                      #$(this-package-input "rocm-device-libs")))))))
     (inputs
      (list libdrm
-           libelf
+           libelf-shared
            llvm-for-rocm
            numactl
            rocm-device-libs ; For bitcode.
            roct-thunk-interface))
     (native-inputs (list pkg-config xxd))
-    (home-page "https://github.com/RadeonOpenCompute/ROCR-Runtime")
+    (home-page "https://github.com/ROCm/ROCR-Runtime")
     (synopsis "ROCm Platform Runtime")
     (description "User-mode API interfaces and libraries necessary for host
 applications to launch compute kernels to available HSA ROCm kernel agents.")
     (license license:ncsa)))
 
-;; This is the source only for ROCclr as from v4.5 it should only be built as
-;; part of a client.  A warning is output if attempting to build stand-alone
-;; and there is no install.
-(define rocclr-src
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://github.com/ROCm-Developer-Tools/ROCclr.git")
-          (commit (string-append "rocm-" %rocm-version))))
-    (sha256
-     (base32
-      "1fzvnngxcvxscn718cqfglm4izccx88zjdr3g5ldfqw7hyd034sk"))
-    (patches (search-patches "rocclr-5.6.0-enable-gfx800.patch"))))
-
 (define-public rocm-opencl-runtime
   (package
     (name "rocm-opencl-runtime")
     (version %rocm-version)
-    (home-page "https://github.com/RadeonOpenCompute/ROCm-OpenCL-Runtime")
+    (home-page "https://github.com/ROCm/clr")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -209,20 +197,21 @@ applications to launch compute kernels to available HSA ROCm kernel agents.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1azfxf0ac3mnbyfgn30bz5glwlmaigzdz0cd29jzc4b05hks1yr3"))
+                "00zr1fw84nifn2b2zd4wxf00f1171hjmz1lypzzmydsk5yw01q0c"))
               (patches
                (search-patches
+                "rocclr-5.6.0-enable-gfx800.patch"
                 ;; Guix includes a program clinfo already.
                 "rocm-opencl-runtime-4.3-noclinfo.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f ; Not sure how to run them.
+      #:build-type "Release"
       #:configure-flags
       #~(list
          (string-append "-DAMD_OPENCL_PATH=" #$(package-source this-package))
-         ;; The ROCclr source is needed to build the runtime.
-         (string-append "-DROCCLR_PATH=" #$rocclr-src)
+         "-DCLR_BUILD_OCL=ON"
          (string-append "-DROCM_PATH=" #$output)
          ;; Don't build the ICD loader as we have the opencl-icd-loader
          ;; package already.
@@ -231,6 +220,11 @@ applications to launch compute kernels to available HSA ROCm kernel agents.")
          "-DFILE_REORG_BACKWARD_COMPATIBILITY=OFF")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'no-os-release
+            (lambda _
+              (substitute* "opencl/packaging/CMakeLists.txt"
+                (("\"/etc/os-release\"")
+                 "\"/dev/null\""))))
           (add-after 'install 'create-icd
             ;; Manually install ICD, which simply consists of dumping
             ;; the path of the .so into the correct file.
@@ -260,12 +254,12 @@ and in-process/in-memory compilation.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/rocminfo.git")
+                    (url "https://github.com/ROCm/rocminfo.git")
                     (commit (string-append "rocm-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "150bvyxp9krq8f7jqd1g5b4l85rih4ch322y4sg1hnciqpabn6a6"))))
+                "15mzmxz011sg42jg0dbxz57f4fagmxzdjc6zhd0yab3cq7k1kiv2"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -280,7 +274,7 @@ and in-process/in-memory compilation.")
                 (("grep") (search-input-file inputs "bin/grep"))))))))
     (inputs
      (list rocr-runtime kmod))
-    (home-page "https://github.com/RadeonOpenCompute/rocminfo")
+    (home-page "https://github.com/ROCm/rocminfo")
     (synopsis "ROCm Application for Reporting System Info")
     (description "List @acronym{HSA,Heterogeneous System Architecture} Agents
 available to ROCm and show their properties.")
@@ -293,17 +287,16 @@ available to ROCm and show their properties.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/rocm_bandwidth_test.git")
+                    (url "https://github.com/ROCm/rocm_bandwidth_test.git")
                     (commit (string-append "rocm-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ca6r8xijw3a3hrlgkqqsf3iqyia6sdmidgmjl12f5vypxzp5kmm"))
-              (patches (search-patches "rocm-bandwidth-test-5.5.0-fix-includes.patch"))))
+                "1afmyx0dkif7djdcm5rfhnsibbrkj4py6dvh0gw4x3v750ms69wv"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; No tests.
     (inputs (list rocr-runtime))
-    (home-page "https://github.com/RadeonOpenCompute/rocm_bandwidth_test")
+    (home-page "https://github.com/ROCm/rocm_bandwidth_test")
     (synopsis "Bandwidth test for ROCm")
     (description "RocBandwidthTest is designed to capture the performance
 characteristics of buffer copying and kernel read/write operations.  The help

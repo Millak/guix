@@ -50,7 +50,7 @@
 # Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 # Copyright © 2022, 2024, 2025 Remco van 't Veer <remco@remworks.net>
 # Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-# Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+# Copyright © 2022, 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 # Copyright © 2022 muradm <mail@muradm.net>
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
@@ -2252,8 +2252,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
   %D%/packages/patches/rocclr-5.6.0-enable-gfx800.patch		\
-  %D%/packages/patches/rocm-bandwidth-test-5.5.0-fix-includes.patch	\
-  %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch 	\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
   %D%/packages/patches/rottlog-direntry.patch 			\
   %D%/packages/patches/ruby-actionpack-remove-browser-tests.patch	\

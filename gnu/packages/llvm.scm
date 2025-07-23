@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022, 2024 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
@@ -1661,30 +1661,30 @@ Library.")
 
 (define-public llvm-for-rocm
   (package
-    ;; Based on LLVM 14 as of v5.0.0
-    (inherit llvm-14)
+    ;; Currently based on LLVM 19.
+    (inherit llvm-19)
     (name "llvm-for-rocm")
-    (version "5.6.0")                         ;this must match '%rocm-version'
+    (version "6.4.2")                         ;this must match '%rocm-version'
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/llvm-project.git")
+                    (url "https://github.com/ROCm/llvm-project.git")
                     (commit (string-append "rocm-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kg6q6aqijjrwaznj0gr3nd01gykrnqqnk8vz8wyfifr18l9jrgx"))))
+                "1j2cr362k7snsh5c1z38ikyihmjvy0088rj0f0dhng6cjwgysryp"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-14)
+     (substitute-keyword-arguments (package-arguments llvm-19)
        ((#:configure-flags flags)
-        #~(list"-DLLVM_ENABLE_PROJECTS=llvm;clang;lld"
-           "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
-           "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
-           "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
-           "-DBUILD_SHARED_LIBS:BOOL=TRUE"
-           "-DLLVM_VERSION_SUFFIX="))))
+        #~(list "-DLLVM_ENABLE_PROJECTS=llvm;clang;lld"
+                "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
+                "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
+                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
+                "-DBUILD_SHARED_LIBS:BOOL=TRUE"
+                "-DLLVM_VERSION_SUFFIX="))))
     (properties `((hidden? . #t)
-                  ,@(package-properties llvm-14)))))
+                  ,@(package-properties llvm-19)))))
 
 
 
