@@ -20457,7 +20457,7 @@ complement those of another.")
 (define-public emacs-denote-explore
   (package
     (name "emacs-denote-explore")
-    (version "3.3")
+    (version "4.0")
     (source
      (origin
        (method git-fetch)
@@ -20466,9 +20466,22 @@ complement those of another.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0773691jxyv039y407c8dppkky41b3icacavddcv9m8v481763b7"))))
+        (base32 "04lc5fw11wixbjdkzbl63g03rdybv6q4mh1dc6c9y322g8qq3r0k"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-denote emacs-dash))
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"denote-explore.org\")"
+                      "--eval=(org-texinfo-export-to-info)"))))))
+    (native-inputs (list texinfo))
     (home-page "https://github.com/pprevos/denote-explore")
     (synopsis "Analyse and visualise a collection of Denote notes")
     (description
