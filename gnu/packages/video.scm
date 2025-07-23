@@ -2444,9 +2444,7 @@ input files is possible, including video files.")
              jack-2
              liba52
              libcaca
-             ;; The build currently fails with libcaption 0.7 (see:
-             ;; <https://github.com/gpac/gpac/issues/3305>).
-             ;;libcaption
+             libcaption
              libfreenect
              libjpeg-turbo
              libmad
