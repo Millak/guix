@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Daniel Maksymow <daniel.maksymow@tuta.io>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -303,6 +304,18 @@ static analysis of the ELF binaries at hand.")
     (synopsis "ELF object file access library")
     (description "Libelf is a C library to access ELF object files.")
     (license lgpl2.0+)))
+
+
+;; This is a shared library version of libelf, currently only needed for ROCm
+;; packages in (gnu packages rocm).
+(define-public libelf-shared
+  (package
+    (inherit libelf)
+    (arguments
+      (substitute-keyword-arguments (package-arguments libelf)
+        ((#:make-flags flags #~'())
+         #~(append #$flags '("CFLAGS=-fPIC")))))
+    (properties `((hidden? . #t) ,@(package-properties libelf)))))
 
 (define-public patchelf
   (package
