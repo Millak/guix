@@ -390,12 +390,6 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                (("#include <rpc/pmap_prot.h>" m)
                 (string-append "#include <rpc/types.h>\n#include <rpc/xdr.h>\n" m)))
              #t))
-         ,@(if (%current-target-system)
-               '((add-after 'configure 'fixup-cross-configure
-                   (lambda _
-                     (substitute* "config.make"
-                       (("HAVE_LIBRUMP = no") "HAVE_LIBRUMP = yes")))))
-               '())
          (add-before 'build 'pre-build
            (lambda _
              ;; Don't change the ownership of any file at this time.
@@ -584,7 +578,9 @@ exec ${system}/rc \"$@\"
                          (string-append datadir "/vga-system.bdf"))))))
        #:configure-flags
        ,#~(list (string-append "LDFLAGS=-Wl,-rpath="
-                               #$output "/lib")
+                               #$output "/lib"
+                               ;; Linking with librump.so
+                               " -Wl,--as-needed")
                 "--enable-static-progs=ext2fs,iso9660fs,rumpdisk,pci-arbiter,acpi"
                 "--disable-ncursesw"
                 "--without-libbz2"
