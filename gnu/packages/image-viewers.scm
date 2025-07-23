@@ -864,7 +864,7 @@ preloading.")
     (native-inputs
      (list pkg-config which))
     (inputs
-     (list freetype libjpeg-turbo glib imagemagick))
+     (list freetype libjpeg-turbo librsvg libtiff libwebp glib imagemagick))
     (synopsis "Convert images to ANSI/Unicode characters")
     (description
      "Chafa is a command-line utility that converts all kinds of images,
