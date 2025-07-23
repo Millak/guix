@@ -10219,8 +10219,8 @@ true in all models.")
                   (apply (assoc-ref %standard-phases 'install) args))))))))))
 
 (define-public louvain-community
-  (let ((commit "8cc5382d4844af127b1c1257373740d7e6b76f1e")
-        (revision "1"))
+  (let ((commit "681a711a530ded0b25af72ee4881d453a80ac8ac")
+        (revision "2"))
     (package
       (name "louvain-community")
       (version (git-version "1.0.0" revision commit))
@@ -10232,7 +10232,7 @@ true in all models.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ss00hkdvr9bdkd355hxf8zd7xycb3nm8qpy7s75gjjf6yng0bfj"))))
+                  "1ria6s5p7iw86mq1arbrhlbadll1k79j9y5c1bdg76zdwjfs17cs"))))
       (build-system cmake-build-system)
       (arguments
        (list #:tests? #f                ; tests appear to require missing files
