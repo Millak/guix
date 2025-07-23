@@ -947,11 +947,13 @@ required for Fritzing app.")
     (version "0.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://git.tuxfamily.org/qet/qet.git/"
-                           "snapshot/qet-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/qelectrotech/qelectrotech-source-mirror")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qkgagx2bk2jfzs3d91kki01y5bs5p85f4c8xjxn45hmw4rl512b"))))
+        (base32 "17rrr9l11wc2ni3pxybq595dc4l1lklaba7rd562r8qc00f5r7zl"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: tests are built for the CMake build option but it seems to be
