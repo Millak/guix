@@ -8635,19 +8635,47 @@ it provides an elegant coroutine-based API.")
 (define-public python-selenium
   (package
     (name "python-selenium")
-    (version "3.141.0")
+    (version "4.28.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "selenium" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SeleniumHQ/selenium")
+              (commit (string-append "selenium-" version "-python"))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "039hf9knvl4s3hp21bzwsp1g5ri9gxsh504dp48lc6nr1av35byy"))))
+        (base32 "1q52qdd33wadxa8ir34kl5nxlrgjbqqk2yx2m1v5xxjf0agazjfl"))))
+    (arguments
+     (list
+      ;; XXX: Disable failing tests.
+      #:test-flags
+      #~(list "--ignore-glob=test/selenium/webdriver/*"
+              ;; Probably requires those.
+              "--ignore-glob=test/unit/selenium/webdriver/chrome/*"
+              "--ignore-glob=test/unit/selenium/webdriver/firefox/*"
+              ;; XXX: SSL certificates access.
+              "--ignore=test/unit/selenium/webdriver/remote/remote_connection_tests.py"
+              "-k" "not test_missing_cdp_devtools_version_falls_back")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "py"))))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-urllib3))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page
-     "https://github.com/SeleniumHQ/selenium/")
+    (propagated-inputs (list python-certifi
+                             python-trio
+                             python-trio-websocket
+                             python-typing-extensions
+                             python-urllib3
+                             python-websocket-client))
+    (native-inputs (list python-filetype
+                         python-pytest
+                         python-pytest-mock
+                         python-pytest-trio
+                         python-setuptools
+                         python-setuptools-rust
+                         python-wheel))
+    (home-page "https://www.selenium.dev")
     (synopsis "Python bindings for Selenium")
     (description "Selenium enables web browser automation.
 Selenium specifically provides infrastructure for the W3C WebDriver specification
