@@ -296,7 +296,7 @@ their devices.")
 (define-public librecad
   (package
     (name "librecad")
-    (version "2.2.1.1")
+    (version "2.2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -305,7 +305,7 @@ their devices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nal6xfh9qcvn96gapb1jn3nyz3n3wwidqdc864rv38lrigms66i"))))
+                "1km7n85arh818ka1bgdz0nx7ib48djipgwkml0rm4s5vv2p2kzbb"))))
     (build-system qt-build-system)
     (arguments
      (list
