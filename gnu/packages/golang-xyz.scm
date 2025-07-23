@@ -5456,8 +5456,8 @@ is an actively maintained fork of @url{https://github.com/ogier/pflag}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/docker/cli")
-             (commit (string-append "v" version))))
+              (url "https://github.com/docker/cli")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0gaz2pkivky94z8148aa27kdxn548j3r96xa3a9xfqpi6b1rhy27"))
@@ -5472,10 +5472,13 @@ is an actively maintained fork of @url{https://github.com/ogier/pflag}.")
       #:embed-files #~(list ".*\\.json")
       #:skip-build? #t
       #:tests? #f))
-    (propagated-inputs (list go-github-com-mitchellh-mapstructure
-                             go-gopkg-in-yaml-v2
-                             go-github-com-google-shlex
-                             go-github-com-docker-docker-credential-helpers))
+    (propagated-inputs
+     (list go-github-com-docker-docker-credential-helpers
+           go-github-com-fvbommel-sortorder
+           go-github-com-google-shlex
+           go-github-com-mitchellh-mapstructure
+           go-github-com-pkg-errors
+           go-gopkg-in-yaml-v2))
     (home-page "https://github.com/docker/cli")
     (synopsis "Docker command-line interface")
     (description "This repository is the home of the Docker command-line
