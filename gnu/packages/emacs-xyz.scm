@@ -720,8 +720,8 @@ files rather than customizing the variable directly.")
       (license license:gpl2+))))
 
 (define-public emacs-gptel-quick
-  (let ((commit "d7a3aedefdc656a136d5664f2dac165a1f6ebf0e")
-        (revision "1"))
+  (let ((commit "495b5e0b5348dbced1448bd12cbf8847e30b5175")
+        (revision "2"))
     (package
       (name "emacs-gptel-quick")
       (version (git-version "0.0.5" revision commit))
@@ -732,7 +732,7 @@ files rather than customizing the variable directly.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "05khdra5aig8466flwl62nsngyn9cz11zwjn0vyyig9c48n8nfka"))
+          (base32 "1k4n0qmaw4cbybw502wnn1mv2pr9giaickq830ly6bxrc5wz7jn4"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-gptel))
