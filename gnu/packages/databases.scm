@@ -3626,16 +3626,19 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
 (define-public python-pypika-tortoise
   (package
     (name "python-pypika-tortoise")
-    (version "0.1.6")
+    (version "0.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pypika-tortoise" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tortoise/pypika-tortoise")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0dmzpsnlqjjz0vm0r9xjk69xfsm235bpnk3jccr8ww4s8y7qc0nq"))))
+        (base32 "1pz7i9vgjwzzvacjjkvr5xbcmphn52xv993zbks602is844k0pp0"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list poetry python-setuptools))
+     (list python-poetry-core python-pytest))
     (home-page "https://github.com/tortoise/pypika-tortoise")
     (synopsis "Pypika fork for tortoise-orm")
     (description "Pypika-tortoise is a fork of pypika which has been
