@@ -251,19 +251,36 @@ to docs.openstack.org and developer.openstack.org.")
 (define-public python-os-service-types
   (package
     (name "python-os-service-types")
-    (version "1.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "os-service-types" version))
-              (sha256
-               (base32
-                "0v4chwr5jykkvkv4w7iaaic7gb06j6ziw7xrjlwkcf92m2ch501i"))))
-    (build-system python-build-system)
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "os_service_types" version))
+       (sha256
+        (base32 "0gk0lgg862pwpisjz36jlrnr5ij75c8ja01znb1398rc2d7yf349"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; The tests are disabled to avoid a circular dependency with
-     ;; python-keystoneauth1.
-     `(#:tests? #f))
-    (native-inputs (list python-pbr))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                (("(coverage|hacking).*")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
+    (native-inputs
+     (list python-keystoneauth1
+           python-oslotest
+           python-pbr-next
+           python-requests-mock
+           python-setuptools
+           python-stestr
+           python-testscenarios
+           python-wheel))
     (home-page "https://docs.openstack.org/os-service-types/latest/")
     (synopsis "Library for consuming OpenStack Service Types Authority data")
     (description "The @emph{OpenStack Service Types Authority} contains
