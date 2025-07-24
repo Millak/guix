@@ -37866,6 +37866,10 @@ collection.")
                (base32
                 "000f8n6d4ilihiaf590k73rx3327jh8ima5q5dpxlwz3frj45qrn"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No tests in PyPi source, but it's also unclear how to get the
+     ;; right files from source, so ignore them for now.
+     (list #:tests? #f))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for @code{protobuf}")
