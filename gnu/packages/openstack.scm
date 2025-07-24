@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1245,64 +1246,89 @@ regardless of whether they are bundled or not.")
 (define-public python-openstacksdk
   (package
     (name "python-openstacksdk")
-    (version "0.100.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "openstacksdk" version))
-              (sha256
-               (base32
-                "0iq7rxw59ibl6xsqh3jw56yg3zfbz3cqgx1239n6xd9iv86mcgq1"))))
-    (build-system python-build-system)
+    (version "4.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "openstacksdk" version))
+       (sha256
+        (base32 "0gbxjz8dg5ar5mgbk896cpq5vgp4j3a1iri8aakaxs9j8xn1czp4"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (with-output-to-file "exclusion-list.txt"
-                          (lambda _
-	                    (display
-                             (string-append
-                              ;; tests timing out
-                              "test_create_dynamic_large_object$\n"
-                              "test_create_object_index_rax$\n"
-                              "test_create_object_skip_checksum$\n"
-                              "test_inspect_machine_inspect_failed$\n"
-                              "test_inspect_machine_wait$\n"
-                              "test_status_fails_different_attribute$\n"
-                              "test_status_match$\n"
-                              "test_status_match_different_attribute$\n"
-                              "test_status_match_with_none$\n"
-                              "test_wait_for_baremetal_node_lock_locked$\n"
-                              "test_wait_for_task_error_396$\n"
-                              "test_wait_for_task_wait$\n"))))
-                        (invoke "stestr" "run"
-                                "--exclude-list" "exclusion-list.txt")))))))
-    (native-inputs (list python-ddt
-                         python-hacking
-                         python-jsonschema
-                         python-pbr
-                         python-prometheus-client
-                         python-requests-mock
-                         python-statsd
-                         python-stestr
-                         python-testscenarios
-                         python-oslo-config
-                         python-oslotest))
-    (propagated-inputs (list python-appdirs
-                             python-cryptography
-                             python-decorator
-                             python-dogpile-cache
-                             python-importlib-metadata
-                             python-iso8601
-                             python-jmespath
-                             python-jsonpatch
-                             python-keystoneauth1
-                             python-munch
-                             python-netifaces
-                             python-os-service-types
-                             python-pbr   ; run-time dependency actually
-                             python-pyyaml
-                             python-requestsexceptions))
+     (list
+      #:test-flags
+      #~(list "--exclude-regex"
+              (string-join
+               (list
+                ;; tests timing out
+                "test_create_dynamic_large_object"
+                "test_create_object_index_rax"
+                "test_create_object_skip_checksum"
+                "test_inspect_machine_inspect_failed"
+                "test_inspect_machine_wait"
+                "test_status_fails_different_attribute"
+                "test_status_match"
+                "test_status_match_different_attribute"
+                "test_status_match_with_none"
+                "test_wait_for_baremetal_node_lock_locked"
+                "test_wait_for_task_error_396"
+                "test_wait_for_task_wait"
+                ;; XXX: Most fail due to network issues.
+                "test_callback"
+                "test_callback_without_progress"
+                "test_create_data"
+                "test_create_image_task"
+                "test_create_no_data"
+                "test_delete_autocreated_image_objects"
+                "test_delete_firewall_policy"
+                "test_delete_firewall_policy_filters"
+                "test_delete_firewall_rule"
+                "test_delete_firewall_rule_filters"
+                "test_delete_image_task"
+                "test_delete_volume_backup_wait"
+                "test_get_object"
+                "test_ost_version"
+                "test_slo_manifest_fail"
+                "test_status"
+                "test_stream_object"
+                "test_success_not_found")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
+    (native-inputs
+     (list python-debtcollector
+           python-ddt
+           python-hacking
+           python-jsonschema
+           python-oslo-config
+           python-oslotest
+           python-pbr
+           python-prometheus-client
+           python-requests-mock
+           python-setuptools
+           python-statsd
+           python-stestr
+           python-testscenarios
+           python-wheel))
+    (propagated-inputs
+     (list python-cryptography
+           python-decorator
+           python-dogpile-cache
+           python-iso8601
+           python-jmespath
+           python-jsonpatch
+           python-keystoneauth1
+           python-os-service-types
+           python-pbr
+           python-platformdirs
+           python-psutil
+           python-pyyaml
+           python-requestsexceptions
+           python-typing-extensions))
     (home-page "https://docs.openstack.org/openstacksdk/latest/")
     (synopsis "SDK for building applications to work with OpenStack")
     (description "This package provides a client library for building
