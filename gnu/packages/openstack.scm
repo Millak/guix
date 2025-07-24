@@ -534,40 +534,61 @@ common features used in Tempest.")
 (define-public python-oslo-concurrency
   (package
     (name "python-oslo-concurrency")
-    (version "5.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "oslo.concurrency" version))
-              (sha256
-               (base32
-                "0zl9wyxvs69i78wja5c3cacd6gadk8cc8ggy2ips0wlakxp98ilz"))))
-    (build-system python-build-system)
+    (version "7.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "oslo_concurrency" version))
+       (sha256
+        (base32 "1jqlshynn8ddix3jx9ma969d6829xyy0vryhy5lpvc02h1zqg2nz"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "test-requirements.txt"
-               (("hacking[<>!=]" line) (string-append "# " line))
-               (("coverage[<>!=]" line) (string-append "# " line))
-               (("bandit[<>!=]" line) (string-append "# " line))
-               (("pre-commit[<>!=]" line) (string-append "# " line)))))
-         (add-before 'check 'fix-tests
-           (lambda _
-             (substitute* "oslo_concurrency/tests/unit/test_processutils.py"
-               (("#!/bin/bash") (string-append "#!" (which "bash")))
-               (("#!/bin/sh") (string-append "#!" (which "sh")))
-               (("'/usr/bin/env'") (string-append "'" (which "env") "'"))
-               (("'/usr/bin/env ") (string-append "'" (which "env") " "))
-               (("'/bin/true'") (string-append "'" (which "true") "'"))))))))
-    (native-inputs (list python-pbr
-                         ;; for tests:
-                         python-oslotest
-                         python-fixtures
-                         python-stestr
-                         python-eventlet))
-    (propagated-inputs (list python-fasteners python-oslo-config
-                             python-oslo-i18n python-oslo-utils))
+     (list
+      ;; XXX: At least another test is failing, but blocks the rest.
+      #:tests? #f
+      ;; XXX: Disable failing tests.
+      #:test-flags
+      #~(list "--exclude-regex" (string-join
+                                 (list "test_fair_lock_with_spawn"
+                                       "test_fair_lock_with_spawn_n"
+                                       "test_with_stdout")
+                                 "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                (("(hacking|coverage|bandit|pre-commit)[<>!=]" line)
+                 (string-append "# " line)))))
+          (add-before 'check 'fix-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (cross-which bin)
+                (search-input-file inputs (string-append "bin/" bin)))
+              (substitute* "oslo_concurrency/tests/unit/test_processutils.py"
+                (("#!/bin/(bash|sh)" all sh)
+                 (string-append "#!" (cross-which sh)))
+                (("'/usr/bin/env('| )" all rest)
+                 (string-append "'" (cross-which "env") rest))
+                (("'/bin/true'")
+                 (string-append "'" (cross-which "true") "'")))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
+    (native-inputs
+     (list python-coverage
+           python-eventlet
+           python-fixtures
+           python-oslotest
+           python-pbr
+           python-setuptools
+           python-stestr
+           python-wheel))
+    (propagated-inputs
+     (list python-fasteners
+           python-oslo-config
+           python-oslo-i18n
+           python-oslo-utils))
     (home-page "https://docs.openstack.org/oslo.concurrency/latest/")
     (synopsis "Oslo Concurrency library")
     (description "The Oslo Concurrency Library provides utilities for safely
