@@ -388,6 +388,19 @@ classes for implementing common patterns for using dynamically loaded
 extensions.")
     (license asl2.0)))
 
+(define-public python-stevedore-bootstrap
+  (hidden-package
+   (package/inherit python-stevedore
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-stevedore)
+        ((#:tests? t? #t)
+         #f)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (delete 'sanity-check)))))
+     (native-inputs
+      (list python-setuptools python-wheel)))))
+
 (define-public python-tempest
   (package
     (name "python-tempest")
