@@ -1297,13 +1297,13 @@ HostData=lib/qt5"
 (define-public qt3d
   (package
     (name "qt3d")
-    (version "6.5.2")
+    (version "6.8.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "047rwawrlm7n0vifxmsqvs3w3j5c16x8qkpx8xazq6xd47dn9w11"))))
+                "0i4cgcvhngq716009r4yjn1ma67vpr4cj2ks13yxba4iy1966yjp"))))
     (propagated-inputs (list))
     (native-inputs (list perl))
     (inputs (list mesa qtbase vulkan-headers zlib libxkbcommon))
