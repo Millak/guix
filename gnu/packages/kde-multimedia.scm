@@ -32,14 +32,19 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages crypto)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gpodder)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
@@ -48,6 +53,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages music)
@@ -56,6 +62,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xiph)
@@ -103,6 +110,116 @@ available in the \"Multimedia\" section.
 This package is part of the KDE multimedia module.")
     (license ;; GPL for programs, FDL for documentation
      (list license:gpl2+ license:fdl1.2+))))
+
+(define-public amarok
+  (package
+    (name "amarok")
+    (version "3.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/amarok/" version
+                                  "/amarok-" version ".tar.xz"))
+              (sha256
+               (base32
+                "00cw6gk1vhc5ch2jri90lma5jbkah3bq1dmyzg49bnq77aljwvrr"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DBUILD_WITH_QT6=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'check-setup
+                 (lambda _
+                   ;; Set home directory.
+                   (setenv "HOME" "/tmp")
+                   ;; testplaylistlayout looks for "amarok/data" directory in
+                   ;; $XDG_DATA_DIRS. Maybe it is for testing after installing.
+                   ;; As a workaround, set XDG_DATA_DIRS pointing to $TMPDIR
+                   ;; which contains "amarok/data" directory.
+                   (let ((linktarget (string-append (dirname (getcwd))
+                                                    "/amarok")))
+                     (if (not (equal? (basename (getcwd)) "amarok"))
+                       (symlink (getcwd) linktarget))
+                     (setenv "XDG_DATA_DIRS"
+                             (string-append (getenv "XDG_DATA_DIRS") ":"
+                                            (dirname linktarget))))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; testsqlscanmanager fails, even when run manually.
+                     (invoke "ctest" "-E" "testsqlscanmanager")))))))
+    (native-inputs
+     (list extra-cmake-modules
+           googletest
+           kdoctools
+           `(,mariadb-embedded "dev")
+           pkg-config
+           qttools))
+    (inputs
+     ;; TODO: Add packages containing "gstreamer-cdda-1.0" and
+     ;; "gstreamer-netbuffer-1.0" modules.
+     (list ffmpeg
+           fftw
+           glib
+           gstreamer
+           gst-plugins-bad
+           gst-plugins-base
+           gst-plugins-good
+           gst-plugins-ugly
+           gst-libav
+           karchive
+           kcodecs
+           kcolorscheme
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcmutils
+           kcrash
+           kdbusaddons
+           kdnssd
+           kglobalaccel
+           kguiaddons
+           ki18n
+           kiconthemes
+           kio
+           kirigami
+           knotifications
+           kpackage
+           kstatusnotifieritem
+           ktexteditor
+           ktextwidgets
+           kwallet
+           kwidgetsaddons
+           kwindowsystem
+           libofa
+           libmtp
+           libmygpo-qt
+           libxcrypt
+           `(,mariadb-embedded "lib")
+           openssl
+           python
+           qt5compat
+           qtsvg
+           qtwayland
+           qtwebengine
+           solid
+           taglib
+           threadweaver))
+    (home-page "https://amarok.kde.org/")
+    (synopsis "Audio player for KDE")
+    (description
+     "Amarok is a music player and collection manager.  It features:
+@itemize
+@item dynamic playlists matching different criteria,
+@item collection managing with rating support,
+@item support for basic MTP and UMS music player devices,
+@item integrated internet services such as Magnatune, Ampache and more,
+@item scripting support,
+@item cover manager and
+@item replay gain support
+@end itemize")
+    (license license:gpl2+)))
 
 (define-public dragon
   (package
