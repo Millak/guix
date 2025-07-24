@@ -30241,15 +30241,19 @@ that is accessible to other projects developed in Cython.")
     (version "2.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sortedcollections" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grantjenks/python-sortedcollections")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1kfabpnjyjm5ml2zspry9jy3xq49aybchgaa4ahic2jqdjfn1sfq"))))
+        (base32 "1y2xsbh31jp9fsjy53g5ma974z7a9vcds6ij1vlh00nllzqlwihs"))))
     (build-system pyproject-build-system)
-    (arguments '(#:tests? #f))  ; Tests not included in release tarball.
-    (native-inputs (list python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-sortedcontainers))
+    (native-inputs (list python-setuptools
+                         python-pytest
+                         python-pytest-cov
+                         python-wheel))
+    (propagated-inputs (list python-sortedcontainers))
     (home-page "https://www.grantjenks.com/docs/sortedcollections/")
     (synopsis "Python Sorted Collections")
     (description "Sorted Collections is a Python sorted collections library.")
