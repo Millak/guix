@@ -5242,16 +5242,28 @@ messages in color.")
 (define-public python-editorconfig
   (package
     (name "python-editorconfig")
-    (version "0.12.2")
+    (version "0.17.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "EditorConfig" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/editorconfig/editorconfig-core-py")
+              (commit (string-append "v" version))
+              (recursive? #t)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0v55z351p9qkyp3bbspwywwn28sbcknhirngjbj779n3z52z63hv"))))
+        (base32 "107lh5pds1iwgb2q1da2k7g5vs6w0rk84679k6yi8a01agc1c0fz"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))
+              (invoke "cmake" ".")
+              (invoke "ctest" "."))))))
+    (native-inputs (list cmake python-setuptools python-wheel))
     (home-page "https://editorconfig.org/")
     (synopsis "EditorConfig bindings for python")
     (description "The EditorConfig project consists of a file format for
