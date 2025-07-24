@@ -1061,30 +1061,39 @@ process of writing new clients.")
 (define-public python-keystoneclient
   (package
     (name "python-keystoneclient")
-    (version "5.0.0")
+    (version "5.6.0")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "python-keystoneclient" version))
+        (uri (pypi-uri "python_keystoneclient" version))
         (sha256
          (base32
-          "0gza5fx3xl3l6vrc6pnhbzhipz1fz9h98kwxqp7mmd90pwrxll0g"))))
-    (build-system python-build-system)
+          "1rqhxvych2a41dxlizz0qy37vs8jcxxy4kk7khw7c03iqypf47bj"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f   ; FIXME: Many tests are failing.
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "test-requirements.txt"
-                        ;; unused, code-quality checks only
-                        (("hacking[<>!=]" line) (string-append "# " line))
-                        (("flake8-.*[<>!=]" line) (string-append "# " line))
-                        (("pycodestyle[<>!=]" line) (string-append "# " line))
-                        (("bandit[<>!=]" line) (string-append "# " line))
-                        (("coverage[<>!=]" line) (string-append "# " line))
-                        (("reno[<>!=]" line) (string-append "# " line))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda _
+              ;; XXX: Mostly tests for outdated os-client-config.
+              (delete-file-recursively "keystoneclient/tests/functional/v3")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                ;; XXX: Outdated/discontinued.
+                (("os-client-config[<>!=]" line) (string-append "# " line))
+                ;; unused, code-quality checks only
+                (("(hacking|flake8-.*|pycodestyle|coverage|bandit|reno)[<>!=]"
+                  line)
+                 (string-append "# " line))))))))
     (native-inputs
      (list openssl
+           python-bandit
            python-fixtures
            python-keyring
            python-lxml
@@ -1093,24 +1102,23 @@ process of writing new clients.")
            python-oslotest
            python-pbr
            python-requests-mock
+           python-setuptools
            python-stestr
+           python-tempest
            python-tempest-lib
            python-testresources
            python-testscenarios
-           python-testtools))
+           python-testtools
+           python-wheel))
     (propagated-inputs
-     (list python-babel
-           python-debtcollector
-           python-iso8601
-           python-keystoneauth1
-           python-netaddr
+     (list python-keystoneauth1
            python-oslo-config
            python-oslo-i18n
            python-oslo-serialization
            python-oslo-utils
-           python-prettytable
+           python-packaging
+           python-pbr
            python-requests
-           python-six
            python-stevedore))
     (home-page "https://www.openstack.org/")
     (synopsis "Client Library for OpenStack Identity")
