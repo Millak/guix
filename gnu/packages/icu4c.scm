@@ -51,7 +51,7 @@
    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
    "-src.tgz"))
 
-(define-public icu4c
+(define-public icu4c-73
   (package
     (name "icu4c")
     (version "73.1")
@@ -125,6 +125,8 @@ globalisation support for software applications.  This package contains the
 C/C++ part.")
     (license x11)
     (home-page "http://site.icu-project.org/")))
+
+(define-public icu4c icu4c-73)
 
 (define-public icu4c-71
   (package
