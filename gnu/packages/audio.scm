@@ -4282,14 +4282,14 @@ using Guix System.")
 (define-public libshout-idjc
   (package
     (name "libshout-idjc")
-    (version "2.4.6")
+    (version "2.4.6-r2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/libshoutidjc.idjc.p"
                            "/libshout-idjc-" version ".tar.gz"))
        (sha256
-        (base32 "1cgbym1qms408l4anc0imlcf091yk9kic4s9n7zcri3xzbi8lv1z"))))
+        (base32 "0cmvvkixx771mgap266yiji87kgv5bnqbj2y1j20r1d4adk9zy98"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
