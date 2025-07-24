@@ -783,7 +783,8 @@ otherwise simply ignore them."
                   (filter-map (match-lambda
                                 ((hash-algo . hash)
                                  (let ((file (strip-store-file-name file)))
-                                   (string->uri (make-url file hash-algo hash)))))
+                                   (and=> (make-url file hash-algo hash)
+                                          string->uri))))
                               hashes))
                 content-addressed-mirrors))
 
