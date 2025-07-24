@@ -2826,16 +2826,9 @@ used to skip the test
     (arguments
      (list
       #:go go-1.23
+      #:skip-build? #t
       #:import-path "honnef.co/go/tools"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:unpack-path "honnef.co/go/tools"))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
            go-golang-org-x-exp
@@ -3017,13 +3010,18 @@ without needing to use a tool like Wireshark.")))
 tool."))))
 
 (define-public go-staticcheck
-  (package
-    (inherit go-honnef-co-go-tools)
+  (package/inherit go-honnef-co-go-tools
     (name "go-staticcheck")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/staticcheck"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
+     (substitute-keyword-arguments
+         (package-arguments go-honnef-co-go-tools)
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "honnef.co/go/tools/cmd/staticcheck")))
+    (native-inputs (package-propagated-inputs go-honnef-co-go-tools))
+    (propagated-inputs '())
+    (inputs '())
     (synopsis "Staticcheck advanced Go linter")
     (description
      "Staticcheck is a state of the art linter for the Go programming language.
@@ -3031,13 +3029,18 @@ Using static analysis, it finds bugs and performance issues, offers
 simplifications, and enforces style rules.")))
 
 (define-public go-structlayout
-  (package
-    (inherit go-honnef-co-go-tools)
+  (package/inherit go-honnef-co-go-tools
     (name "go-structlayout")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
+     (substitute-keyword-arguments
+         (package-arguments go-honnef-co-go-tools)
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "honnef.co/go/tools/cmd/structlayout")))
+    (native-inputs (package-propagated-inputs go-honnef-co-go-tools))
+    (propagated-inputs '())
+    (inputs '())
     (synopsis "Display the layout (field sizes and padding) of structs in Go")
     (description "This package prints the layout of a struct in Go, which is
 the byte offset and size of each field, respecting padding.  This information
@@ -3045,26 +3048,36 @@ is printed in human-readable form by default, or as JSON with the @code{-json}
 flag.")))
 
 (define-public go-structlayout-optimize
-  (package
-    (inherit go-honnef-co-go-tools)
+  (package/inherit go-honnef-co-go-tools
     (name "go-structlayout-optimize")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
+     (substitute-keyword-arguments
+         (package-arguments go-honnef-co-go-tools)
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "honnef.co/go/tools/cmd/structlayout-optimize")))
+    (native-inputs (package-propagated-inputs go-honnef-co-go-tools))
+    (propagated-inputs '())
+    (inputs '())
     (synopsis "Reorder struct fields to minimize the amount of padding in Go")
     (description "This package reads @code{go-structlayout} JSON on stdin and
 reorders fields to minimize the amount of padding.  It can emit JSON to feed
 into @code{go-structlayout-pretty}.")))
 
 (define-public go-structlayout-pretty
-  (package
-    (inherit go-honnef-co-go-tools)
+  (package/inherit go-honnef-co-go-tools
     (name "go-structlayout-pretty")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
+     (substitute-keyword-arguments
+         (package-arguments go-honnef-co-go-tools)
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "honnef.co/go/tools/cmd/structlayout-pretty")))
+    (native-inputs (package-propagated-inputs go-honnef-co-go-tools))
+    (propagated-inputs '())
+    (inputs '())
     (synopsis "Format the output of go-structlayout with ASCII art in Go")
     (description "This package takes @code{go-structlayout}-like JSON and
 prints an ASCII fraphic representing the memory layout.")))
