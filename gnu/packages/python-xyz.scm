@@ -10101,8 +10101,10 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
       #:test-flags
-      #~(list "-vv"
+      #~(list "runtests.py"
+              "-vv"
               "-j" (number->string (parallel-job-count))
               "-x" (string-join
                     (list "annotate_html"
@@ -10114,11 +10116,14 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
                           "complex_numbers_cpp"
                           ;; This test fails when running on 24 cores.
                           "cpp_stl_conversion"
-                          ;; XXX: On 32-bit architectures, running the
-                          ;; parallel tests fails on many-core systems, see
-                          ;; <https://github.com/cython/cython/issues/2807>.
                           #$@(if (not (target-64bit?))
-                                 '("run.parallel")
+                                 ;; XXX: On 32-bit architectures, running the
+                                 ;; parallel tests fails on many-core systems.
+                                 ;; See: <https://github.com/cython/cython/issues/2807>.
+                                 '("run.parallel"
+                                   ;; Test cpp_stl_any.cast_test fails.
+                                   ;; See: <https://github.com/cython/cython/issues/5928>.
+                                   "cpp_stl_any")
                                  '())
                           #$@(if (system-hurd?)
                                  '("test_class_ref"
@@ -10128,15 +10133,13 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
                     "|"))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
+          (add-before 'check 'pre-check
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               ;; Disable compiler optimizations to greatly reduce the running
               ;; time of the test suite.
               (setenv "CFLAGS" "-O0")
               ;; Some tests require access to "$HOME/.cython".
-              (setenv "HOME" "/tmp")
-              (when tests?
-                (apply invoke "python" "runtests.py" test-flags)))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list libxcrypt
            python-setuptools
