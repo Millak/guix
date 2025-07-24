@@ -860,7 +860,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.23.0")
+    (version "1.23.1")
     (home-page "https://codeberg.org/dnkl/foot")
     (source
      (origin
@@ -870,7 +870,7 @@ eye-candy, customizable, and reasonably lightweight.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qjsqydfhajr7q89rljlaygf24jaypc8vd0s9ma0za7shq80mc87"))))
+        (base32 "1rs0i8i6li38sdf1nqp4jkq6a7i7zwn14hibrxpry0hjnbiypwcc"))))
     (build-system meson-build-system)
     (arguments
      (list
