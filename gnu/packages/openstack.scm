@@ -905,20 +905,23 @@ documentation from the OpenStack project.")
 (define-public python-oslotest
   (package
     (name "python-oslotest")
-    (version "4.4.1")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "oslotest" version))
        (sha256
-        (base32
-         "0r50sz55m8ljv2vk1k7sp88iz1iqq4p9w6kb8hn8g8c50r9zdi5i"))))
-    (build-system python-build-system)
-    (arguments
-     ;; The tests are disabled to avoid a circular dependency with oslo.config.
-     `(#:tests? #f))
+        (base32 "1vp85v81p2vx66j973hc7fa65shp0ilhaypyyny01jwcip94152s"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-fixtures python-six python-subunit python-testtools))
+     (list python-fixtures python-subunit python-testtools))
+    (native-inputs
+     (list python-coverage
+           python-debtcollector
+           python-oslo-config
+           python-stestr
+           python-setuptools
+           python-wheel))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo test framework")
     (description "The Oslo Test framework provides common fixtures, support
