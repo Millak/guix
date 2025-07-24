@@ -43,6 +43,11 @@
   (let ((module (make-fresh-user-module)))
     (module-use! module (resolve-interface '(guix base32)))
     module))
+(define* (read/safe #:optional (port (current-input-port)))
+  (with-fluids ((read-eval? #f))
+    (parameterize ((read-hash-procedures '()))
+      (read port))))
+
 
 (define* (perform-download drv output
                            #:key print-build-trace?)
@@ -60,7 +65,7 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
     (unless url
       (leave (G_ "~a: missing URL~%") (derivation-file-name drv)))
 
-    (let* ((url        (call-with-input-string url read))
+    (let* ((url        (call-with-input-string url read/safe))
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
@@ -68,21 +73,21 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
       (when (parameterize ((%download-methods
                             (and download-methods
                                  (call-with-input-string download-methods
-                                   read))))
+                                   read/safe))))
               (url-fetch url output
                          #:print-build-trace? print-build-trace?
                          #:mirrors (if mirrors
-                                       (call-with-input-file mirrors read)
+                                       (call-with-input-file mirrors read/safe)
                                        '())
                          #:content-addressed-mirrors
                          (if content-addressed-mirrors
                              (call-with-input-file content-addressed-mirrors
                                (lambda (port)
-                                 (eval (read port) %user-module)))
+                                 (eval (read/safe port) %user-module)))
                              '())
                          #:disarchive-mirrors
                          (if disarchive-mirrors
-                             (call-with-input-file disarchive-mirrors read)
+                             (call-with-input-file disarchive-mirrors read/safe)
                              '())
                          #:hashes `((,algo . ,hash))
 
@@ -108,9 +113,9 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
     (unless commit
       (leave (G_ "~a: missing Git commit~%") (derivation-file-name drv)))
 
-    (let* ((url        (call-with-input-string url read))
+    (let* ((url        (call-with-input-string url read/safe))
            (recursive? (and recursive?
-                            (call-with-input-string recursive? read)))
+                            (call-with-input-string recursive? read/safe)))
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
@@ -123,7 +128,7 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
       (parameterize ((%download-methods
                       (and download-methods
                            (call-with-input-string download-methods
-                             read))))
+                             read/safe))))
         ;; Note: When doing a '--check' build, DRV-OUTPUT and OUTPUT are
         ;; different, hence the #:item argument below.
         (git-fetch-with-fallback url commit output
@@ -152,6 +157,12 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
     (match (getenv "_NIX_OPTIONS")
       (#f #f)
       (str (string-contains str "print-extended-build-trace=1"))))
+
+  ;; We read untrusted input, best to be sure this is #f!
+  (fluid-set! read-eval? #f)
+  ;; ... and out of an abundance of caution, remove the ability to use '#.'
+  ;; constructs entirely
+  (read-hash-procedures '())
 
   ;; This program must be invoked by guix-daemon under an unprivileged UID to
   ;; prevent things downloading from 'file:///etc/shadow' or arbitrary code
