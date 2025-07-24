@@ -1955,7 +1955,7 @@ maintain the Noto Fonts project.")
 (define-public fcft
   (package
     (name "fcft")
-    (version "3.3.1")
+    (version "3.3.2")
     (home-page "https://codeberg.org/dnkl/fcft")
     (source (origin
               (method git-fetch)
@@ -1963,7 +1963,7 @@ maintain the Noto Fonts project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08fr6zcqk4qp1k3r0di6v60qfyd3q5k9jnxzlsx2p1lh0nils0xa"))))
+                "1saqi8fxrz2lddx9pj6ym4ikx11sgqlyp8w10ngdlci384p49sbb"))))
     (build-system meson-build-system)
     (native-inputs
      (list check pkg-config scdoc))
