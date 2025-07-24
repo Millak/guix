@@ -485,40 +485,44 @@ OpenStack deployment.")
     (version "1.0.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "tempest-lib" version))
-      (sha256
-       (base32
-        "1cpp2vwmawpd29hjsklsps181lq2ah91cl412qvpnz228nf9sqn5"))))
-    (build-system python-build-system)
+       (method url-fetch)
+       (uri (pypi-uri "tempest-lib" version))
+       (sha256
+        (base32 "1cpp2vwmawpd29hjsklsps181lq2ah91cl412qvpnz228nf9sqn5"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; FIXME: Requires oslo.log >= 1.14.0.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "requirements.txt"
-               (("jsonschema[<>!=].*") "jsonschema\n"))))
-         (add-before
-          'check 'pre-check
-          (lambda _
-            (substitute* "tempest_lib/tests/cli/test_execute.py"
-              (("/bin/ls") (which "ls"))))))))
+     (list
+      #:tests? #f ; FIXME: Requires a lot of ancient packages.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                (("jsonschema[<>!=].*") "jsonschema\n"))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tempest_lib/tests/cli/test_execute.py"
+                (("/bin/ls")
+                 (search-input-file inputs "bin/ls"))))))))
     (propagated-inputs
-      (list python-fixtures
-            python-httplib2
-            python-iso8601
-            python-jsonschema
-            python-oslo-log
-            python-paramiko
-            python-six))
+     (list python-fixtures
+           python-httplib2
+           python-iso8601
+           python-jsonschema
+           python-oslo-log
+           python-paramiko))
     (native-inputs
-      (list python-babel python-mock python-os-testr python-oslotest
-            python-pbr))
+     (list python-babel
+           python-mock
+           python-os-testr
+           python-oslotest
+           python-pbr
+           python-setuptools
+           python-wheel))
     (home-page "https://www.openstack.org/")
     (synopsis "OpenStack functional testing library")
     (description
-      "Tempest-lib is a functional testing library for OpenStack.  It provides
+     "Tempest-lib is a functional testing library for OpenStack.  It provides
 common features used in Tempest.")
     (license asl2.0)))
 
