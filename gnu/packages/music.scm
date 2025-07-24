@@ -587,7 +587,7 @@ enables iPod support in music players such as Clementine.")
              gst-plugins-good
              gst-libav
              libcdio
-             libmygpo-qt
+             libmygpo-qt5
              libgpod
              libmtp
              libxml2

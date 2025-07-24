@@ -141,9 +141,11 @@ locally for later listening.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list qtbase-5))
+     (list qtbase))
     (arguments
-     (list #:phases
+     (list #:configure-flags
+           #~(list "-DBUILD_WITH_QT6=ON")
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
@@ -157,6 +159,17 @@ locally for later listening.")
 @url{https://gpodder.net} APIs.  It allows applications to discover, manage
 and track podcasts.")
     (license license:lgpl2.1+)))
+
+(define-public libmygpo-qt5
+  (package/inherit libmygpo-qt
+    (name "libmygpo-qt5")
+    (inputs
+     (modify-inputs (package-inputs libmygpo-qt)
+       (replace "qtbase" qtbase-5)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libmygpo-qt)
+       ((#:configure-flags flags)
+        #~(delete "-DBUILD_WITH_QT6=ON" #$flags))))))
 
 (define-public python-mygpoclient
   (package
