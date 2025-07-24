@@ -1134,29 +1134,33 @@ LDAP.")
 (define-public python-swiftclient
   (package
     (name "python-swiftclient")
-    (version "4.0.1")
+    (version "4.8.0")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "python-swiftclient" version))
+        (uri (pypi-uri "python_swiftclient" version))
         (sha256
-         (base32
-          "1zwb4zcln454fzcnbwqhyzxb68wrsr1i2vvvrn5c7yy5k4vcfs1v"))))
-    (build-system python-build-system)
+         (base32 "0qrq9fdcmqhg1374hsj58hddpfd2jm78q32yqbywls4k8smjq5j4"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'relax-requirements
-                    (lambda _
-                      (delete-file "test-requirements.txt")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "stestr" "run")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'relax-requirements
+            (lambda _
+              (delete-file "test-requirements.txt")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
     (native-inputs
-     (list python-keystoneclient
-           python-keystoneauth1
+     (list python-keystoneauth1
+           python-keystoneclient
            python-openstacksdk
-           python-stestr))
+           python-pbr
+           python-setuptools
+           python-stestr
+           python-wheel))
     (propagated-inputs
      (list python-requests))
     (home-page "https://www.openstack.org/")
