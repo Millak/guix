@@ -1456,7 +1456,7 @@ the XDG Autostart specification.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.7.1")
+    (version "1.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1465,7 +1465,7 @@ the XDG Autostart specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1061p4vxm0nb5pk5q5dw3kpj4q6kzw70skd3zijfjwdb6fkayh8b"))))
+                "00b1dcq48lq7wbihvnvydy58b52nn8ka2mdxhcbzrfdq7s51z3r0"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"
                  #:phases
