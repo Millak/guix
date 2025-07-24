@@ -307,24 +307,35 @@ is for some reason not possible and local caching of the fetched data.")
 (define-public python-os-testr
   (package
     (name "python-os-testr")
-    (version "2.0.1")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "os-testr" version))
        (sha256
-        (base32
-         "10xaqg3wxly13652hdvh9c69y4s12ird0ircffya3kvpl5pky0pz"))))
-    (build-system python-build-system)
+        (base32 "0vik5sjl0qhz6xqqg6gnaf5jva31m7xykyc0azb53jfq7y57ladv"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; os-testr uses itself to run the tests. It seems like pbr writes the
-     ;; exectuable in the virtualenv when using tox. Not sure how to do this
-     ;; when building the package. Skip the tests for now.
-     `(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                (("(coverage|hacking).*")
+                 "")))))))
     (propagated-inputs
      (list python-stestr))
     (native-inputs
-     (list python-babel python-pbr python-testrepository python-testtools))
+     (list python-babel
+           python-ddt
+           python-oslotest
+           python-pbr
+           python-setuptools
+           python-testrepository
+           python-testscenarios
+           python-testtools
+           python-wheel))
     (home-page "https://www.openstack.org/")
     (synopsis "Testr wrapper to provide functionality for OpenStack projects")
     (description
