@@ -928,6 +928,19 @@ documentation from the OpenStack project.")
 for debugging, and better support for mocking results.")
     (license asl2.0)))
 
+(define-public python-oslotest-bootstrap
+  (hidden-package
+   (package/inherit python-oslotest
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-oslotest)
+        ((#:tests? t? #t)
+         #f)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (delete 'sanity-check)))))
+     (native-inputs
+      (list python-setuptools python-wheel)))))
+
 (define-public python-oslo-utils
   (package
     (name "python-oslo-utils")
