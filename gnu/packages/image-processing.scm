@@ -1331,7 +1331,7 @@ libraries designed for computer vision research and implementation.")
            vxl-1
            zlib))
     (native-inputs
-     (list castxml git-minimal pkg-config swig-next which))
+     (list castxml gcc-13 git-minimal pkg-config swig-next which))
 
     ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
     ;; '-mtune=native -march=corei7', suggesting there's something to be
