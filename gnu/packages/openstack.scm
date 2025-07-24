@@ -803,16 +803,19 @@ handlers and support for context specific logging (like resource id’s etc).")
         (base32 "1rrvdhv82gklj45z6xs1h4l51jcz8fmdjijya2rkj1mqjzfx7i5x"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests? (invoke "stestr" "run")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
     (propagated-inputs
       (list python-msgpack python-oslo-utils python-tzdata))
     (native-inputs
      (list python-netaddr
-           python-oslo-i18n
-           python-oslotest
+           python-oslo-i18n-bootstrap
+           python-oslotest-bootstrap
            python-setuptools
            python-stestr
            python-wheel))
