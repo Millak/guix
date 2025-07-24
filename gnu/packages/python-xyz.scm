@@ -37091,24 +37091,31 @@ It implements advanced Python dictionaries with dot notation access.")
     (license license:expat)))
 
 (define-public python-fields
-  (package
-    (name "python-fields")
-    (version "5.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ionelmc/python-fields")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0jzf90i3sig9alm96jvp8l0i5mpvwzqwbi0kgjsb69n6dca3nbnc"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://python-fields.readthedocs.io/")
-    (synopsis "Python container class boilerplate killer")
-    (description "Avoid repetetive boilerplate code in Python classes.")
-    (license license:bsd-3)))
+  (let ((commit "cb473d126b926621c4423ecf59387da9f0f26563")
+        (revision "0"))
+    (package
+      (name "python-fields")
+      (version (git-version "5.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ionelmc/python-fields")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hc39l7ypwn4n11wfdhr8z0m46c96k99lnvw65bw8yadm2f93s9r"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:test-flags #~(list "--ignore=tests/test_perf.py")))
+      (native-inputs (list python-pytest
+                           python-pytest-benchmark
+                           python-setuptools
+                           python-wheel))
+      (home-page "https://python-fields.readthedocs.io/")
+      (synopsis "Python container class boilerplate killer")
+      (description "Avoid repetetive boilerplate code in Python classes.")
+      (license license:bsd-3))))
 
 (define-public python-aspectlib
   (package
