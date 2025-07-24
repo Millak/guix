@@ -113,20 +113,23 @@ formatters, and other extensions.")
         (method url-fetch)
         (uri (pypi-uri "debtcollector" version))
         (sha256
-         (base32 "0vzarkvjclci98d8lvkix6qj59f7rxp1qg2x6q6is7qfbg91g29a"))
-        (modules '((guix build utils)))
-        (snippet #~(begin
-                     (substitute* "test-requirements.txt"
-                       (("^(coverage|hacking|pre-commit).*")
-                        ""))))))
+         (base32 "0vzarkvjclci98d8lvkix6qj59f7rxp1qg2x6q6is7qfbg91g29a"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                (("^(coverage|hacking|pre-commit|reno).*")
+                 "")
+                (("^(doc8|sphinx|openstackdocstheme).*")
+                 "")))))))
     (propagated-inputs
      (list python-pbr python-wrapt))
     (native-inputs
-     (list python-doc8
-           python-fixtures
-           python-openstackdocstheme
-           python-reno
+     (list python-fixtures
            python-setuptools
            python-stestr
            python-testtools
