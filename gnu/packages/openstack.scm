@@ -661,26 +661,28 @@ for running external processes.")
        (sha256
         (base32
          "091j2cjh1b60nx6s0a4amb2idh9awijnbmppc3an0738fv8cdh48"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "test-requirements.txt"
-                        (("hacking[<>!=].*") "hacking\n")
-                        ;; unused, code-quality checks only
-                        (("bandit[<>!=]" line) (string-append "# " line))
-                        (("pre-commit[<>!=]" line) (string-append "# " line))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                ;; unused, code-quality checks only
+                (("(bandit|hacking|pre-commit)[<>!=]" line)
+                 (string-append "# " line))))))))
     (propagated-inputs
      (list python-debtcollector))
     (native-inputs
      (list python-coverage
            python-fixtures
-           python-hacking
            python-mypy
-           python-oslotest
+           python-oslotest-bootstrap
            python-pbr
-           python-stestr))
+           python-setuptools
+           python-stestr
+           python-wheel))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo context library")
     (description
