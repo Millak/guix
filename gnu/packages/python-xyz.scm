@@ -36478,11 +36478,13 @@ needed and registers the function with its annotations.")
     (version "0.4.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "logical-unification" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pythological/unification")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0j57953hi7kg2rl0163vzjzsvzdyjimnklhx6idf5vaqqf1d3p1j"))))
+        (base32 "1kvhvf1p9a5733pqb15k4fhwrfnj5ijsv6yn92mxzaa0zh89z7g3"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
