@@ -720,6 +720,19 @@ internationalization (i18n) features, especially translation for text strings
 in an application or library.")
     (license asl2.0)))
 
+(define-public python-oslo-i18n-bootstrap
+  (hidden-package
+   (package/inherit python-oslo-i18n
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-oslo-i18n)
+        ((#:tests? t? #t)
+         #f)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (delete 'sanity-check)))))
+     (native-inputs
+      (list python-pbr python-setuptools python-wheel)))))
+
 (define-public python-oslo-log
   (package
   (name "python-oslo-log")
