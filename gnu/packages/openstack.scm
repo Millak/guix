@@ -1180,31 +1180,30 @@ permanence.")
 (define-public python-git-review
   (package
     (name "python-git-review")
-    (version "2.1.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "git-review" version))
+       (uri (pypi-uri "git_review" version))
        (sha256
-        (base32 "1mhywsbisyv028lsj2ksg4g5l8kyimpwxgwzqi08rymi8mb7fv1s"))))
-    (build-system python-build-system)
+        (base32 "1a7h3i1wsq0gsclb2mififypr9q0sz3ni0kf0qxmm2l40bpzmkqv"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f                     ; tests require a running Gerrit server
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (git (assoc-ref inputs "git"))
-                    (openssh (assoc-ref inputs "openssh")))
-               (wrap-program (string-append out "/bin/git-review")
-                 `("PATH" ":" prefix
-                   ,(map (lambda (dir)
-                           (string-append dir "/bin"))
-                         (list git openssh))))))))))
-    (native-inputs (list python-pbr))
+     (list
+      #:tests? #f                     ; tests require a running Gerrit server
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/git-review")
+                `("PATH" ":" prefix
+                  ,(map (lambda (bin)
+                          (search-input-file inputs
+                                             (string-append "bin/" bin)))
+                        (list "git" "ssh")))))))))
+    (native-inputs (list python-pbr python-setuptools python-wheel))
     (propagated-inputs (list python-requests))
-    (inputs (list bash-minimal git openssh))
+    (inputs (list bash-minimal git-minimal openssh-sans-x))
     (home-page "https://docs.openstack.org/infra/git-review/")
     (synopsis "Command-line tool for Gerrit")
     (description
