@@ -742,17 +742,18 @@ example, explicit calls to callables from templates and better performance.")
 (define-public python-dj-database-url
   (package
     (name "python-dj-database-url")
-    (version "2.3.0")
+    (version "3.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "dj_database_url" version))
               (sha256
                (base32
-                "11w7532lq05c3wysbn7f5jf82yj0vjjmsi2ylkjmfsqq6kkfhlmf"))))
-    (build-system python-build-system)
+                "1y7ghizjni3imbmqh63mra8pcvqzr5q0hma1ijzwd3w8zcg9d549"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
-     (list python-django python-typing-extensions))
-    (home-page "https://github.com/kennethreitz/dj-database-url")
+     (list python-django))
+    (home-page "https://github.com/jazzband/dj-database-url")
     (synopsis "Use Database URLs in your Django Application")
     (description
       "This simple Django utility allows you to utilize the 12factor inspired
