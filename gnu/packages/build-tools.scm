@@ -17,6 +17,7 @@
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -487,7 +488,7 @@ other lower-level build files.")
 (define-public premake5
   (package
     (inherit premake4)
-    (version "5.0.0-alpha15")
+    (version "5.0.0-beta7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/premake/premake-core/"
@@ -495,13 +496,29 @@ other lower-level build files.")
                                   "/premake-" version "-src.zip"))
               (sha256
                (base32
-                "0lyxfyqxyhjqsb3kmx1fyrxinb26i68hb7w7rg8lajczrgkmc3w8"))))
+                "0q287af75d6w3c7dbfq7rmbh9isqzs9v30fjpm37lcafs2p7966k"))))
     (arguments
      (substitute-keyword-arguments (package-arguments premake4)
-       ((#:phases phases)
-        `(modify-phases ,phases
+      ((#:phases phases)
+       `(modify-phases ,phases
            (replace 'enter-source
-             (lambda _ (chdir "build/gmake2.unix") #t))
+             ;; For some reason we end up in the .github subdir of the source,
+             ;; which is why we first go back a dir unlike in premake4.
+             (lambda _ (chdir "..") #t))
+           (add-after 'enter-source 'enter-build-dir
+             (lambda _ (chdir "build/gmake.unix") #t))
+           (add-after 'enter-source 'patch-builtin-uuidgen
+             ;; Use built-in UUID generation
+             (lambda _
+               (substitute* "src/host/os_uuid.c"
+                 (("#elif PLATFORM_LINUX")
+                  "#elif 0"))
+               (substitute* "build/gmake.unix/Premake5.make"
+                 (("-luuid")
+                  ""))
+               (substitute* "premake5.lua"
+                 (("filter \"system:linux or macosx\"")
+                  "filter \"system:macosx\""))))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
                (install-file "../../bin/release/premake5"
