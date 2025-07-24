@@ -742,31 +742,33 @@ in an application or library.")
       (method url-fetch)
       (uri (pypi-uri "oslo_log" version))
       (sha256
-        (base32
-          "1siw60x15ysfbf88hiisdn556y4anixj3clciky4xcwsiz8a6gwn"))))
-  (build-system python-build-system)
+        (base32 "1siw60x15ysfbf88hiisdn556y4anixj3clciky4xcwsiz8a6gwn"))))
+  (build-system pyproject-build-system)
   (arguments
-   '(#:phases (modify-phases %standard-phases
-                (replace 'check
-                  (lambda* (#:key tests? #:allow-other-keys)
-                    (when tests? (invoke "stestr" "run")))))))
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+        (replace 'check
+          (lambda* (#:key tests? test-flags #:allow-other-keys)
+            (when tests?
+              (apply invoke "stestr" "run" test-flags)))))))
   (propagated-inputs
    (list python-dateutil
-         python-debtcollector
          python-oslo-config
          python-oslo-context
-         python-oslo-i18n
+         python-oslo-i18n-bootstrap
          python-oslo-serialization
-         python-oslo-utils
-         python-pbr))
+         python-oslo-utils))
   (native-inputs
    (list python-coverage
          python-eventlet
          python-fixtures
-         python-oslotest
-         python-pbr
+         python-oslotest-bootstrap
+         python-pbr-next
+         python-setuptools
          python-stestr
-         python-testtools))
+         python-testtools
+         python-wheel))
   (home-page "https://launchpad.net/oslo")
   (synopsis "Python logging library of the Oslo project")
   (description
