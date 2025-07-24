@@ -21556,6 +21556,13 @@ useful to automating interactions with virtual machines or hardware devices
 that are otherwise difficult to control.")
     (license license:expat)))
 
+(define-public python-vncdotool-bootstrap
+  (hidden-package
+   (package/inherit python-vncdotool
+     (arguments (list #:tests? #f))
+     (native-inputs (list python-pexpect python-pytest python-setuptools
+                          python-wheel)))))
+
 (define-public python-vobject
   (package
     (name "python-vobject")
