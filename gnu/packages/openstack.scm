@@ -270,6 +270,19 @@ data, along with a built-in version of the data to use in case network access
 is for some reason not possible and local caching of the fetched data.")
     (license asl2.0)))
 
+(define-public python-os-service-types-bootstrap
+  (hidden-package
+   (package/inherit python-os-service-types
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-os-service-types)
+        ((#:tests? t? #t)
+         #f)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (delete 'sanity-check)))))
+     (native-inputs
+      (list python-pbr-next python-setuptools python-wheel)))))
+
 (define-public python-os-testr
   (package
     (name "python-os-testr")
