@@ -1766,8 +1766,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libmp4v2-c++11.patch			\
   %D%/packages/patches/libmpeg2-arm-private-symbols.patch	\
   %D%/packages/patches/libmpeg2-global-symbol-test.patch	\
-  %D%/packages/patches/libmygpo-qt-fix-qt-5.11.patch		\
-  %D%/packages/patches/libmygpo-qt-missing-qt5-modules.patch	\
   %D%/packages/patches/liblinphone-jsoncpp.patch		\
   %D%/packages/patches/libphonenumber-reproducible-build.patch	\
   %D%/packages/patches/libqalculate-3.8.0-libcurl-ssl-fix.patch	\
