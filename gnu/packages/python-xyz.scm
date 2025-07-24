@@ -33157,30 +33157,31 @@ choose to use Base64 without the “=” padding.")
     (license license:asl2.0)))
 
 (define-public python-py-cpuinfo
-  ;; This is the first commit where riscv64-linux support is available.
-  ;; We can move back to pypi releases with the next release.
-  (let ((commit "4d6987e5c30f2ebacb20781892c01329042cce60")
-        (revision "1"))
-    (package
-      (name "python-py-cpuinfo")
-      (version (git-version "8.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/workhorsy/py-cpuinfo")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0h5wi1bfcqqr1x3j1pa7dmkx7siprsyksbsy80fl2sdrrgpji0b0"))))
-      (build-system python-build-system)
-      (home-page "https://github.com/workhorsy/py-cpuinfo")
-      (synopsis "Get CPU info with Python")
-      (description
-       "This Python module returns the CPU info by using the best sources of
+  (package
+    (name "python-py-cpuinfo")
+    (version "9.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/workhorsy/py-cpuinfo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "112gzmwbj3ndxv20ii7i70irp58adwrlzjdvx5gmh39aw21b96s3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test_suite.py")))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/workhorsy/py-cpuinfo")
+    (synopsis "Get CPU info with Python")
+    (description
+     "This Python module returns the CPU info by using the best sources of
 information for your operating system.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public python-canonicaljson
   (package
