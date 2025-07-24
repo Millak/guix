@@ -1136,6 +1136,31 @@ cProfile or profile modules, depending on what is available.  It's a
 successor of @url{https://github.com/rkern/line_profiler}.")
     (license license:bsd-3)))
 
+(define-public python-mamba
+  (package
+    (name "python-mamba")
+    (version "0.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nestorsalceda/mamba")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kyqd6q216srmylklm9ryjkrxrby3b4bs1v9a5wg4aanxmalh6j7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f)) ;No test
+    (propagated-inputs (list python-clint python-coverage))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://nestorsalceda.com/mamba/")
+    (synopsis "Test runner for Python")
+    (description
+     "Mamba is a Behaviour-Driven Development tool for Python developers.
+     Is heavily influenced from RSpec, Mocha, Jasmine or Ginkgo.")
+    (license license:expat)))
+
 (define-public python-memory-profiler
   (package
     (name "python-memory-profiler")
