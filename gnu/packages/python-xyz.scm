@@ -13007,26 +13007,26 @@ a multithreaded image-processing system with low memory needs.")
     (license license:expat)))
 
 ;; WARNING: This package is a dependency of mesa.
+;; There are no users in python-xyz for this package, consider to adopt closer
+;; to Mesa.
 (define-public python-pycparser
   (package
     (name "python-pycparser")
-    (version "2.21")
+    (version "2.22")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycparser" version))
        (sha256
         (base32
-         "01kjlyn5w2nn2saj8w1rhq7v26328pd91xwgqn32z1zp2bngsi76"))))
+         "1xhhxjg460f70ldki4prxmb7zl1bfl3mnjplbc7kkxa0q3lqn729"))))
     (outputs '("out" "doc"))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda _
-              (invoke "python" "-m" "unittest" "discover")))
           (add-after 'install 'install-doc
             (lambda _
               (let* ((data (string-append #$output:doc "/share"))
@@ -13038,6 +13038,8 @@ a multithreaded image-processing system with low memory needs.")
                                        (string-append doc file)))
                           '("/README.rst" "/CHANGES" "/LICENSE"))
                 (copy-recursively "examples" examples)))))))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/eliben/pycparser")
     (synopsis "C parser in Python")
     (description
