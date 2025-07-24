@@ -1214,7 +1214,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/docbook2x-static-datadir-evaluation.patch	\
   %D%/packages/patches/doc++-include-directives.patch		\
   %D%/packages/patches/doc++-segfault-fix.patch			\
-  %D%/packages/patches/dolphin-emu-data.patch			\
+  %D%/packages/patches/dolphin-emu-unbundle-tinygltf.patch      \
+  %D%/packages/patches/dolphin-emu-unbundle-watcher.patch       \
   %D%/packages/patches/dovecot-opensslv3.patch			\
   %D%/packages/patches/dovecot-trees-support-dovecot-2.3.patch	\
   %D%/packages/patches/dstat-fix-crash-when-specifying-delay.patch	\
@@ -1687,6 +1688,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/libguestfs-syms.patch            	\
   %D%/packages/patches/libinfinity-renew-test-certificate.patch \
   %D%/packages/patches/libretro-dolphin-emu-data.patch		\
+  %D%/packages/patches/libretro-dolphin-emu-gc-font-tool.patch  \
+  %D%/packages/patches/libretro-dolphin-emu-libusb-assert.patch \
+  %D%/packages/patches/libretro-dolphin-emu-vulkan-headers.patch        \
   %D%/packages/patches/librewolf-add-store-to-rdd-allowlist.patch       \
   %D%/packages/patches/librewolf-neuter-locale-download.patch	\
   %D%/packages/patches/librewolf-use-system-wide-dir.patch	\

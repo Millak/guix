@@ -1,0 +1,17 @@
+This patch is already merged in dolphin.
+
+It'll appear in libretro-dolphin whenever it is rebased on top of current
+dolphin source.
+
+diff --git a/docs/gc-font-tool.cpp b/docs/gc-font-tool.cpp
+index f09964609a..c43496d2fa 100644
+--- a/docs/gc-font-tool.cpp
++++ b/docs/gc-font-tool.cpp
+@@ -76,6 +76,7 @@
+ // Font data is encoded in 2 bit greyscale and in 8x8 blocks.
+ 
+ #include <cerrno>
++#include <cstdint>
+ #include <cstring>
+ #include <fstream>
+ #include <iostream>

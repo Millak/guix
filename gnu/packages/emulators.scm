@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2021, 2024 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -73,6 +73,7 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fonts)
@@ -111,6 +112,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
@@ -322,97 +324,96 @@ console.")
 It aims to support Nintendo DSi and 3DS as well.")
    (license license:gpl3+)))
 
-;; Building from recent Git because the official 5.0 release no longer builds.
-;; Following commits and revision numbers of beta versions listed at
-;; https://dolphin-emu.org/download/.
+(define dolphin-rcheevos-submodule
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/RetroAchievements/rcheevos")
+           (commit "b443902b1cdfee5a66b09fec20a94d2d2afaf2ec")))
+    (file-name "dolphin-rcheevos-submodule-checkout")
+    (sha256
+     (base32
+      "1118l6ln73rjj7hw45712lm2i24m96nygiiw57hlcyaxijppl1vj"))))
+
 (define-public dolphin-emu
-  (let ((commit "f9deb68aee962564b1495ff04c54c015e58d086f")
-        (revision "13669"))
+  ;; Note: make sure to update the above rcheevos commit to match that of the
+  ;; corresponding git submodule in dolphin (see:
+  ;; <https://github.com/dolphin-emu/dolphin/tree/master/Externals/>).
+  (let ((commit "64d4c4020cf444d5afea708b38d1b363e532c7ba")
+        (revision "0"))
     (package
       (name "dolphin-emu")
-      (version (git-version "5.0" revision commit))
+      (version (git-version "2506" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/dolphin-emu/dolphin")
-               (commit commit)))
+                (url "https://github.com/dolphin-emu/dolphin")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1p8qsxlabgmz3nic0a9ghh9d3lzl5f8i3kmdrrvx6w8kdlp33018"))
+          (base32 "095326n1dznaplll5crlfdg2d39qxxlhgch5fn7vz8majz0qb5pg"))
          (modules '((guix build utils)
-                    (ice-9 regex)))
+                    (ice-9 ftw)
+                    (ice-9 regex)
+                    (srfi srfi-26)))
          (snippet
-          '(begin
-             ;; Remove external stuff we don't need.
-             (for-each (lambda (dir)
-                         (delete-file-recursively
-                          (string-append "Externals/" dir)))
-                       '("LZO" "OpenAL" "Qt" "SFML" "bzip2"
-                         ;; XXX: Attempting to use the vulkan-headers package
-                         ;; results in "error:
-                         ;; ‘VK_PRESENT_MODE_RANGE_SIZE_KHR’ was not declared
-                         ;; in this scope".
-                         ;;"Vulkan"
-                         "cubeb" "curl" "enet"
-                         "ffmpeg" "fmt" "gettext"
-                         ;; XXX: Attempting to use an unbundled glslang at the
-                         ;; exact commit used by Dolphin still results in
-                         ;; "error: ‘DefaultTBuiltInResource’ is not a member
-                         ;; of ‘glslang’".
-                         ;;"glslang"
-                         ;; XXX: Googletest cannot currently easily be
-                         ;; unbundled, as there are missing linking
-                         ;; directives.
-                         ;;"gtest"
-                         "hidapi" "libpng" "libusb" "mbedtls"
-                         "miniupnpc" "minizip" "MoltenVK" "pugixml"
-                         "soundtouch"
-                         "xxhash" "zlib" "zstd"))
-             ;; Clean up the source.
-             (for-each delete-file
-                       (find-files
-                        "."
-                        (lambda (file _)
-                          (and (string-match "\\.(bin|dsy|exe|jar|rar)$" file)
-                               ;; Preserve the important wc24 .bin
-                               ;; configuration *data* files.
-                               (not (member (basename file)
-                                            '("misc.bin"
-                                              "nwc24dl.bin"
-                                              "nwc24fl.bin"
-                                              "nwc24fls.bin")))))))
-             ;; Do not attempt to include now-missing directories.
-             (substitute* "CMakeLists.txt"
-               ((".*add_subdirectory.*Externals/enet.*") "")
-               ((".*add_subdirectory.*Externals/soundtouch.*") "")
-               ((".*add_subdirectory.*Externals/xxhash.*") ""))))
-         (patches (search-patches "dolphin-emu-data.patch"))))
+          #~(begin
+              (define (delete-all-but directory . preserve)
+                (with-directory-excursion directory
+                  (let* ((pred (negate (cut member <>
+                                            (cons* "." ".." preserve))))
+                         (items (scandir "." pred)))
+                    (for-each (cut delete-file-recursively <>) items))))
+
+              ;; Clean up the source from bundled libraries we don't need.
+              (delete-all-but "Externals"
+                              ;; XXX: The build system is currently hard-coded
+                              ;; to rely on these bundled copies.
+                              "Bochs_disasm"
+                              "FatFs"
+                              "FreeSurround"
+                              "cpp-optparse"
+                              "expr"
+                              "glslang"
+                              "imgui"
+                              "implot"  ;submodule
+                              "picojson"
+                              "rangeset"
+                              "rcheevos") ;submodule
+              (with-directory-excursion "Externals"
+                (copy-recursively #$dolphin-rcheevos-submodule
+                                  "rcheevos/rcheevos")
+                (copy-recursively #$(package-source implot)
+                                  "implot/implot"))
+
+              (for-each delete-file
+                        (find-files
+                         "."
+                         (lambda (file _)
+                           (and (string-match "\\.(bin|dsy|exe|jar|rar)$" file)
+                                ;; Preserve the important wc24 .bin
+                                ;; configuration *data* files.
+                                (not (member (basename file)
+                                             '("misc.bin"
+                                               "nwc24dl.bin"
+                                               "nwc24fl.bin"
+                                               "nwc24fls.bin")))))))))
+         (patches (search-patches "dolphin-emu-unbundle-watcher.patch"
+                                  "dolphin-emu-unbundle-tinygltf.patch"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:phases
         #~(modify-phases %standard-phases
-            (add-before 'configure 'remove-unittests-target-post-build-command
-              (lambda _
-                ;; To skip a few problematic tests, CTest will be manually
-                ;; invoked in the post-check phase.
-                (with-directory-excursion "Source/UnitTests"
-                  (substitute* "CMakeLists.txt"
-                    (("add_custom_command\\(TARGET unittests POST_BUILD.*")
-                     "")))))
-            (add-before 'configure 'generate-fonts&hardcore-libvulkan-path
+            (add-before 'configure 'generate-fonts&hardcode-libvulkan-path
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((fontfile
-                       (search-input-file inputs
-                                          "/share/fonts/truetype/wqy-microhei.ttc"))
+                       (search-input-file
+                        inputs "/share/fonts/truetype/wqy-microhei.ttc"))
                       (libvulkan
                        (search-input-file inputs "/lib/libvulkan.so")))
                   (chdir "docs")
-                  ;; Include a missing header, needed for gcc@14.
-                  (substitute* "gc-font-tool.cpp"
-                    (("#include <cstring>" all)
-                      (string-append all "\n#include <cstdint>")))
                   (invoke "bash" "-c" "g++ -O2 $(freetype-config \
 --cflags --libs) gc-font-tool.cpp -o gc-font-tool")
                   (invoke "./gc-font-tool" "a" fontfile "font_western.bin")
@@ -424,21 +425,6 @@ It aims to support Nintendo DSi and 3DS as well.")
                     (("\"vulkan\", 1") (string-append "\"vulkan\""))
                     (("\"vulkan\"") (string-append "\"" libvulkan "\""))
                     (("Common::DynamicLibrary::GetVersionedFilename") "")))))
-            (add-after 'check 'post-check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (with-directory-excursion "Source/UnitTests"
-                    (invoke "ctest" "-V" "--output-on-failure"
-                            ;; These tests fail due to libusb failing to
-                            ;; init inside the build container.
-                            "-E" (string-join
-                                  '("MMIOTest"
-                                    "PageFaultTest"
-                                    "CoreTimingTest"
-                                    "FileSystemTest"
-                                    "PowerPCTest"
-                                    "VertexLoaderTest")
-                                  "|"))))))
             (add-before 'install 'build-codeloader.bin
               (lambda _
                 (with-directory-excursion "../source/docs"
@@ -462,26 +448,14 @@ It aims to support Nintendo DSi and 3DS as well.")
                 (with-directory-excursion "../source"
                   (invoke "python3" "docs/DSP/free_dsp_rom/generate_coefs.py")
                   (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))
-        ;; The FindGTK2 cmake script only checks hardcoded directories for
-        ;; glib/gtk headers.  Also add some include directories via the CXX
-        ;; flags to let GCC find some headers not actively searched by the
-        ;; build system.
         #:configure-flags
-        #~(list (string-append "-DCMAKE_CXX_FLAGS="
-                               "-I" (search-input-directory
-                                     %build-inputs "include/soundtouch"))
-                "-DDSPTOOL=ON"
-                (string-append "-DX11_INCLUDE_DIR="
-                               #$(this-package-input "libx11")
-                               "/include")
-                (string-append "-DX11_LIBRARIES="
-                               (search-input-file %build-inputs
-                                                  "lib/libX11.so"))
-                "-DX11_FOUND=1")
+        #~(list "-DUSE_DISCORD_PRESENCE=OFF" ;avoid bundled discord-rpc lib
+                "-DDSPTOOL=ON")
         #:test-target "unittests"))
       (native-inputs
        (list (cross-gcc "powerpc-linux-gnu")
              gettext-minimal
+             googletest
              pkg-config
              python-minimal
              python-numpy))
@@ -494,14 +468,14 @@ It aims to support Nintendo DSi and 3DS as well.")
              curl
              enet
              eudev
-             ffmpeg-4
-             fmt-7
+             ffmpeg
+             fmt-11
              font-wqy-microhei
              freetype
              glew
              glib
              glu
-             gtk+-2
+             gtk+
              hidapi
              libevdev
              libpng
@@ -509,20 +483,28 @@ It aims to support Nintendo DSi and 3DS as well.")
              libx11
              libxi
              libxrandr
+             lz4
              lzo
              mbedtls-lts
+             mgba-for-dolphin
              mesa
              miniupnpc
-             minizip-ng-compat
+             minizip-ng
              openal
              pugixml
              pulseaudio
-             qtbase-5
-             sdl2
-             sfml-2
+             qtbase
+             qtsvg
+             sdl3
+             sfml
              soil
-             soundtouch-1/integer-samples
+             spirv-cross
+             spng
+             tinygltf
+             vulkan-headers             ;references loader
              vulkan-loader
+             vulkan-memory-allocator
+             watcher
              xxhash
              zlib
              `(,zstd "lib")))
@@ -536,36 +518,102 @@ turbo speed, networked multiplayer, and graphical enhancements.")
       ;; dolphin/Data/Sys/GC/font_*.bin: Licensed under ASL2.0.
       (license (list license:gpl2+ license:asl2.0 license:fdl1.2+)))))
 
+;;; XXX: The libretro port is currently based on an old version of dolphin, so
+;;; its packaging/inputs are lagging behind.
 (define-public libretro-dolphin-emu
   ;; There are no tag or release; use the latest commit.
-  (let ((commit "89a4df725d4eb24537728f7d655cddb1add25c18")
-        (revision "0"))
+  (let ((commit "a09f78f735f0d2184f64ba5b134abe98ee99c65f")
+        (revision "1"))
     (package
       (inherit dolphin-emu)
       (name "libretro-dolphin-emu")
       (version (git-version "5.0" revision commit))
-      (source (origin
-                (inherit (package-source dolphin-emu))
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/libretro/dolphin")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1fvm6hy0ihc0j3sgv88a7ak08c0kyikmmiif827j981fy7zvglvz"))
-                (patches (search-patches "libretro-dolphin-emu-data.patch"))))
+      (source
+       (origin
+         (inherit (package-source dolphin-emu))
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/libretro/dolphin")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "15vv3kz1vcsk53m4b19ckx9xx9cx8l0lgpzalpy625iv7qvdcj9m"))
+         (modules '((guix build utils)
+                    (ice-9 ftw)
+                    (ice-9 regex)
+                    (srfi srfi-26)))
+         (snippet
+          #~(begin
+              ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+              (define (delete-all-but directory . preserve)
+                (define (directory? x)
+                  (and=> (stat x #f)
+                         (compose (cut eq? 'directory <>) stat:type)))
+                (with-directory-excursion directory
+                  (let* ((pred
+                          (negate (cut member <> (append '("." "..") preserve))))
+                         (items (scandir "." pred)))
+                    (for-each (lambda (item)
+                                (if (directory? item)
+                                    (delete-file-recursively item)
+                                    (delete-file item)))
+                              items))))
+
+              ;; Clean up the source from bundled libraries we don't need.
+              (delete-all-but "Externals"
+                              ;; XXX: The build system is currently hard-coded
+                              ;; to rely on these bundled copies.
+                              "Bochs_disasm"
+                              "FreeSurround"
+                              "Libretro"
+                              "cpp-optparse"
+                              "glslang"
+                              "imgui"
+                              "picojson")
+              (for-each delete-file
+                        (find-files
+                         "."
+                         (lambda (file _)
+                           (and (string-match "\\.(bin|dsy|exe|jar|rar)$" file)
+                                ;; Preserve the important wc24 .bin
+                                ;; configuration *data* files.
+                                (not (member (basename file)
+                                             '("misc.bin"
+                                               "nwc24dl.bin"
+                                               "nwc24fl.bin"
+                                               "nwc24fls.bin")))))))))
+         (patches
+          (search-patches "libretro-dolphin-emu-data.patch"
+                          "libretro-dolphin-emu-gc-font-tool.patch"
+                          "libretro-dolphin-emu-libusb-assert.patch"
+                          "libretro-dolphin-emu-vulkan-headers.patch"))))
       (arguments
        (substitute-keyword-arguments (package-arguments dolphin-emu)
          ((#:configure-flags flags ''())
-          #~(cons "-DLIBRETRO=ON" #$flags))
+          #~(cons* (string-append "-DCMAKE_CXX_FLAGS="
+                                  "-I" (search-input-directory
+                                        %build-inputs "include/soundtouch"))
+                   "-DLIBRETRO=ON"
+                   "-DUSE_SHARED_ENET=ON"
+                   #$flags))
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
+              (add-after 'unpack 'link-unittest-to-gtest
+                (lambda _
+                  ;; Otherwise, linking with the tests with gtest_main fails
+                  ;; with a "DSO missing from command line"
+                  (substitute* "Source/UnitTests/CMakeLists.txt"
+                    (("PRIVATE core uicommon gtest_main" all)
+                     (string-append all " gtest")))))
               (add-after 'unpack 'deregister-bundled-sources
                 (lambda _
                   (substitute* "CMakeLists.txt"
                     ((".*add_subdirectory.*Externals/curl.*") "")
-                    ((".*add_subdirectory.*Externals/libpng.*") ""))))
+                    ((".*add_subdirectory.*Externals/gtest.*") "")
+                    ((".*add_subdirectory.*Externals/libpng.*") "")
+                    ((".*add_subdirectory.*Externals/soundtouch.*") "")
+                    ((".*add_subdirectory.*Externals/xxhash.*") ""))))
               (replace 'install
                 (lambda _
                   (install-file "dolphin_libretro.so"
@@ -581,11 +629,45 @@ turbo speed, networked multiplayer, and graphical enhancements.")
                     (copy-recursively "../source/Data/Sys"
                                       (string-append sysdir "/Sys")))))))))
       (inputs
-       ;; Delete large and extraneous inputs.
-       (modify-inputs (package-inputs dolphin-emu)
-         (delete "ffmpeg"
-                 "gtk+"
-                 "qtbase")))
+       (list alsa-lib
+             ao
+             bluez
+             bzip2
+             cubeb
+             curl
+             enet
+             eudev
+             fmt
+             font-wqy-microhei
+             freetype
+             glew
+             glib
+             glu
+             googletest
+             hidapi
+             libevdev
+             libpng
+             libusb
+             libx11
+             libxi
+             libxrandr
+             lzo
+             mbedtls-lts
+             mesa
+             miniupnpc
+             minizip-ng-compat
+             openal
+             pugixml
+             pulseaudio
+             sdl2
+             sfml-2
+             soil
+             soundtouch-1/integer-samples
+             xxhash
+             vulkan-loader
+             vulkan-headers
+             zlib
+             `(,zstd "lib")))
       (synopsis "Libretro port of Dolphin, the Nintendo Wii/GameCube emulator"))))
 
 (define-public dosbox

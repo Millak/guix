@@ -1,0 +1,33 @@
+This patch is already merged in dolphin.
+
+It'll appear in libretro-dolphin whenever it is rebased on top of current
+dolphin source.
+
+diff --git a/Source/Core/Core/LibusbUtils.cpp b/Source/Core/Core/LibusbUtils.cpp
+index a4083e2d06..1ef9777e71 100644
+--- a/Source/Core/Core/LibusbUtils.cpp
++++ b/Source/Core/Core/LibusbUtils.cpp
+@@ -9,8 +9,8 @@
+ #include <libusb.h>
+ #endif
+ 
+-#include "Common/Assert.h"
+ #include "Common/Flag.h"
++#include "Common/Logging/Log.h"
+ #include "Common/Thread.h"
+ #include "Core/LibusbUtils.h"
+ 
+@@ -23,9 +23,12 @@ public:
+   Impl()
+   {
+     const int ret = libusb_init(&m_context);
+-    ASSERT_MSG(IOS_USB, ret == LIBUSB_SUCCESS, "Failed to init libusb: %s", libusb_error_name(ret));
+     if (ret != LIBUSB_SUCCESS)
++    {
++      ERROR_LOG(IOS_USB, "Failed to init libusb: %s", libusb_error_name(ret));
+       return;
++    }
++
+ 
+ #ifdef _WIN32
+     libusb_set_option(m_context, LIBUSB_OPTION_USE_USBDK);
