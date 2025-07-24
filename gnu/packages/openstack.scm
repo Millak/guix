@@ -346,32 +346,39 @@ is for some reason not possible and local caching of the fetched data.")
 (define-public python-stevedore
   (package
     (name "python-stevedore")
-    (version "3.2.2")
+    (version "5.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stevedore" version))
        (sha256
         (base32
-         "1w11lm293afzb73iq0ba9wnmr2rjwymnhr92km4a4xrs7a5qcigq"))))
-    (build-system python-build-system)
+         "0jvgrn2mk7psrgly61k16p6pywnb191gzfliy9p824pya2pbad9i"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; The tests are disabled to avoid a circular dependency with
-     ;; python-stestr.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-pbr-3
-           (lambda _
-             (substitute* '("setup.py"
-                            "requirements.txt")
-               (("pbr!=2.1.0,>=2.0.0") "pbr>=3.0.0")))))))
-    (propagated-inputs
-     (list python-pbr))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                (("sphinx.*")
+                 "sphinx\n"))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
+    (propagated-inputs (list python-pbr))
+    (native-inputs
+     (list python-coverage
+           python-setuptools
+           python-sphinx
+           python-stestr
+           python-wheel))
     (home-page "https://github.com/dreamhost/stevedore")
     (synopsis "Manage dynamic plugins for Python applications")
     (description
-      "Python makes loading code dynamically easy, allowing you to configure
+     "Python makes loading code dynamically easy, allowing you to configure
 and extend your application by discovering and loading extensions (\"plugins\")
 at runtime.  Many applications implement their own library for doing this,
 using __import__ or importlib.  Stevedore avoids creating yet another extension
