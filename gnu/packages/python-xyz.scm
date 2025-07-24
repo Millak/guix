@@ -20139,6 +20139,7 @@ minimal and fast API targeting the following uses:
       (build-system pyproject-build-system)
       (arguments
        (list
+        #:tests? #f ; XXX: python-nose is deprecated.
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-args.py
@@ -20146,7 +20147,7 @@ minimal and fast API targeting the following uses:
                 (substitute* "args.py"
                   (("basestring")
                    "str")))))))
-      (native-inputs (list python-nose python-setuptools python-wheel))
+      (native-inputs (list python-setuptools python-wheel))
       (home-page "https://github.com/kennethreitz-archive/args")
       (synopsis "Command-line argument parser")
       (description
