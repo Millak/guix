@@ -26219,16 +26219,19 @@ package attempts to address the shortcomings of @code{isodate}.")
   (package
     (name "python-mamba")
     (version "0.11.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mamba" version))
-              (sha256
-               (base32
-                "15m4dpnpv9m60pdaygvwgi43fwqaivs3qxfxhspwrp47sbgwdkvm"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nestorsalceda/mamba")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1irlmakf0lf1sb8jp5kmkvxhq6b8ij9q5zn0zimdpnkq627mazbs"))))
     (build-system python-build-system)
-    (arguments `(#:tests? #f))  ; No test
-    (propagated-inputs
-     (list python-clint python-coverage))
+    (arguments
+     `(#:tests? #f)) ;No test
+    (propagated-inputs (list python-clint python-coverage))
     (home-page "https://nestorsalceda.com/mamba/")
     (synopsis "Test runner for Python")
     (description
