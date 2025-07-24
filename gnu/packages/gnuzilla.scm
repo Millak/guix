@@ -269,6 +269,85 @@ fractional-second-digits-append-item.js")
 in C/C++.")
     (license license:mpl2.0))) ; and others for some files
 
+(define-public mozjs-115
+  (package
+    (inherit mozjs)
+    (version "115.26.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.mozilla.org/pub/firefox"
+                                  "/releases/" version "esr/source/firefox-"
+                                  version "esr.source.tar.xz"))
+              (sha256
+               (base32
+                "0xvwk3vkbxnybpi3gwk48nxffg44lbv58mbk2xq6cz50ffq0k5k2"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mozjs)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'adjust-tests
+              (lambda _
+                (with-directory-excursion "../js/src/tests"
+                ;; The test suite expects a lightly patched ICU.  Disable tests
+                ;; that do not work with the system version.  See
+                ;; "intl/icu-patches" for clues.
+
+                ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
+                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
+                ;; related patch for why this is failing.
+                (delete-file "non262/Intl/DateTimeFormat/\
+fractional-second-digits-append-item.js")
+                ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
+                (delete-file "non262/Intl/DateTimeFormat/day-period-hour-cycle.js")
+                ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
+                (delete-file "non262/Intl/available-locales-supported.js")
+                ;; FIXME: got "en-US", expected "en-US-POSIX"
+                (delete-file "non262/Intl/available-locales-resolved.js")
+
+                ;;; Since 115:
+                ;; Mismatching array lengths
+                (delete-file "non262/Intl/supportedValuesOf-timeZones-canonical.js")
+                ;; FIXME: got "America/Santa_Isabel", expected "America/Tijuana":
+                ;; America/Santa_Isabel -> America/Tijuana
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_backward_links.js")
+                ;; TODO: tzdata 2024a expected – find a way to regenerate
+                ;; these generated tests
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
+
+                ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
+                (delete-file "non262/Intl/Collator/implicithan.js")
+                ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
+                (delete-file "non262/Intl/Collator/big5han-gb2312han.js"))))
+
+            (replace 'pre-check
+              (lambda _
+                (with-directory-excursion "../js/src/tests"
+                  (substitute* "shell/os.js"
+                    ;; FIXME: Why does the killed process have an exit status?
+                    ((".*killed process should not have exitStatus.*")
+                     ""))
+
+                  ;; XXX: Delete all tests that test time zone functionality,
+                  ;; because the test suite uses /etc/localtime to figure out
+                  ;; the offset from the hardware clock, which does not work
+                  ;; in the build container.  See <tests/non262/Date/shell.js>.
+                  (delete-file-recursively "non262/Date")
+                  (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
+
+                  (setenv "JSTESTS_EXTRA_ARGS"
+                          (string-join
+                           (list
+                            ;; Do not run tests marked as "random".
+                            "--exclude-random"
+                            ;; Exclude web platform tests.
+                            "--wpt=disabled"
+                            ;; Respect the daemons configured number of jobs.
+                            (string-append "--worker-count="
+                                           (number->string
+                                            (parallel-job-count)))))))))))))
+    (inputs
+     (list icu4c-73 readline zlib))))
+
 (define-public mozjs-78
   (package
     (inherit mozjs)
