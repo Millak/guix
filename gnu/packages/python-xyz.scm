@@ -26218,7 +26218,7 @@ package attempts to address the shortcomings of @code{isodate}.")
 (define-public python-mamba
   (package
     (name "python-mamba")
-    (version "0.11.2")
+    (version "0.11.3")
     (source
      (origin
        (method git-fetch)
@@ -26227,7 +26227,7 @@ package attempts to address the shortcomings of @code{isodate}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1irlmakf0lf1sb8jp5kmkvxhq6b8ij9q5zn0zimdpnkq627mazbs"))))
+        (base32 "0kyqd6q216srmylklm9ryjkrxrby3b4bs1v9a5wg4aanxmalh6j7"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ;No test
