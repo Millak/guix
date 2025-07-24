@@ -4,7 +4,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
@@ -2282,7 +2282,7 @@ types.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.32.0")
+    (version "0.32.1")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -2291,7 +2291,7 @@ types.")
              "https://dist.ipfs.tech/kubo//v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0la7ndrvi17fhbsss0q5qhl47phni5zqbyr4n5svcznyin58d4g8"))
+        (base32 "1v8bnrfir7322qklc2ri4xd32arifza5w6br7kpfknyrq2daiggz"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
