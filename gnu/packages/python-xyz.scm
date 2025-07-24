@@ -37743,18 +37743,18 @@ Python, with static types.")
   (package
     (name "python-psycopg2-binary")
     (version "2.9.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "psycopg2-binary" version))
-              (sha256
-               (base32
-                "0kpaxg3lg5wg5ww5kxmzi2z2d7arsx13ci915d8a2pf17lqza7bn"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "psycopg2-binary" version))
+       (sha256
+        (base32 "0kpaxg3lg5wg5ww5kxmzi2z2d7arsx13ci915d8a2pf17lqza7bn"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
-    (inputs (list postgresql))
     (arguments
      ;; Tests are disable because they need a live instance of PostgreSQL.
      '(#:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list postgresql))
     (home-page "https://psycopg.org/")
     (synopsis "PostgreSQL database adapter for Python")
     (description
