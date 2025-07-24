@@ -13013,30 +13013,31 @@ a multithreaded image-processing system with low memory needs.")
     (version "2.21")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "pycparser" version))
-      (sha256
-       (base32
-        "01kjlyn5w2nn2saj8w1rhq7v26328pd91xwgqn32z1zp2bngsi76"))))
+       (method url-fetch)
+       (uri (pypi-uri "pycparser" version))
+       (sha256
+        (base32
+         "01kjlyn5w2nn2saj8w1rhq7v26328pd91xwgqn32z1zp2bngsi76"))))
     (outputs '("out" "doc"))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "-m" "unittest" "discover")))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (examples (string-append doc "/examples")))
-               (mkdir-p examples)
-               (for-each (lambda (file)
-                           (copy-file (string-append "." file)
-                                      (string-append doc file)))
-                         '("/README.rst" "/CHANGES" "/LICENSE"))
-               (copy-recursively "examples" examples)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "python" "-m" "unittest" "discover")))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let* ((data (string-append #$output:doc "/share"))
+                     (doc (string-append data "/doc/" #$name "-" #$version))
+                     (examples (string-append doc "/examples")))
+                (mkdir-p examples)
+                (for-each (lambda (file)
+                            (copy-file (string-append "." file)
+                                       (string-append doc file)))
+                          '("/README.rst" "/CHANGES" "/LICENSE"))
+                (copy-recursively "examples" examples)))))))
     (home-page "https://github.com/eliben/pycparser")
     (synopsis "C parser in Python")
     (description
