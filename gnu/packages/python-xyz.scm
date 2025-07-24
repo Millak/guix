@@ -37848,6 +37848,10 @@ package.")
        (sha256
         (base32 "08g926s8343zwq140zcfwly3qfgmahm7lp0vgb3ics549b2hifzl"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No tests in PyPi source, but it's also unclear how to get the
+     ;; right files from source, so ignore them for now.
+     (list #:tests? #f))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for @code{freezegun}")
