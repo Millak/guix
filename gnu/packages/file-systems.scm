@@ -16,7 +16,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -2491,3 +2491,50 @@ filtering and ordering functionality.
 +ecryptfs, cryfs, encfs, gocryptfs, fscrypt and securefs
 +based encrypted folders.")
     (license license:gpl3+)))
+
+(define-public watcher
+  (package
+    (name "watcher")
+    (version "0.13.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/e-dant/watcher")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ikcdskb3z3wggxb12vi0y3rng2hcswl0fpk6sjqqlz34nvwijcr"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DBUILD_TESTING=ON"
+                   ;; This is needed to find 'snitch' from the system.
+                   "-DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=ALWAYS")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
+                   (substitute* "../source/tool/test/.ctx"
+                     (("../../out")
+                      "../../../build")
+                     (("which") "command -v"))
+                   (invoke "../source/tool/test/all"))))))
+    (native-inputs (list jq snitch))
+    (home-page "https://github.com/e-dant/watcher")
+    (synopsis "File system watcher program and library")
+    (description "Watcher may be used as a library or a program that can be
+used to efficiently watch a file system for changes.  This package provides
+the following components:
+@table @asis
+@item @file{include/wtr/watcher.hpp}
+C++ header library
+@item @samp{watcher-c}
+C shared and static library
+@item @command{wtr.watcher}
+Command-line interface (CLI)
+@item @command{tw}
+Minimal, more human-readable CLI variant
+@end table")
+    (license license:expat)))
