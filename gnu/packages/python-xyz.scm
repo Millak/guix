@@ -37095,11 +37095,14 @@ It implements advanced Python dictionaries with dot notation access.")
     (name "python-fields")
     (version "5.0.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fields" version))
-        (sha256
-          (base32 "09sppvhhkhkv9zc9g994m53z15v92csxwcf42ggkaknlv01smm1i"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ionelmc/python-fields")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jzf90i3sig9alm96jvp8l0i5mpvwzqwbi0kgjsb69n6dca3nbnc"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://python-fields.readthedocs.io/")
