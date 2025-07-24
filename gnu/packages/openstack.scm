@@ -1215,16 +1215,23 @@ Gerrit for review, or fetching existing ones.")
   (package
     (name "python-requestsexceptions")
     (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "requestsexceptions" version))
-              (sha256
-               (base32
-                "0r9hp9yzgj8r81q5gc6r8sgxldqc09xi6ax0b7a6dw0qfv3wp5dh"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "requestsexceptions" version))
+       (sha256
+        (base32 "0r9hp9yzgj8r81q5gc6r8sgxldqc09xi6ax0b7a6dw0qfv3wp5dh"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))  ; no tests
-    (native-inputs (list python-pbr))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                (("hacking.*")
+                 "")))))))
+    (native-inputs (list python-pbr python-setuptools python-wheel))
     (home-page "https://www.openstack.org/")
     (synopsis "Import exceptions from potentially bundled packages in requests")
     (description "The Python requests library bundles the urllib3 library,
