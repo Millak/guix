@@ -24073,12 +24073,17 @@ etc.")
         (base32 "0nb1s7nilakrkcm0vq08pz9mh8rzyhjm9jkyn1gp5sxnrv1mnx89"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Tests fail with:
-     ;; FileNotFoundError: [Errno 2] No such file or directory: 'Xvnc'.
-     `(#:tests? #f))
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_examples.py"
+              ;; OSError: Pillow was built without XCB support
+              "--ignore=tests/test_smart.py"
+              "--ignore=tests/test_smart2.py"
+              "--ignore=tests/test_smart_thread.py")))
     (native-inputs
      (list python-entrypoint2 python-psutil python-pytest
-           python-pytest-runner python-setuptools python-wheel))
+           python-setuptools python-vncdotool-bootstrap python-wheel
+           xmessage xorg-server-for-tests))
     (propagated-inputs
      (list python-easyprocess python-pillow))
     (home-page "https://github.com/ponty/pyvirtualdisplay")
