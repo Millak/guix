@@ -901,34 +901,23 @@ logs to GNU ChangeLog format.")
       (license license:gpl2+))))
 
 (define-public gitless
-  (package
+  ;; XXX: The latest release uses deprecated packages.
+  (let ((commit "3ac28e39e170acdcd1590e0a25a06790ae0e6922")
+        (revision "0"))
+    (package
     (name "gitless")
-    (version "0.8.8")
+    (version (git-version "0.8.8" revision commit))
     (source
      (origin
-       ;; The PyPI package lacks a test suite.  Build directly from git.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gitless-vcs/gitless")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gitless-vcs/gitless")
+              (commit commit)))
        (sha256
-        (base32 "048kl27zjr68hgs70g3l98ci9765wxva6azzrhcdys7nsdd493n6"))
-       (file-name (git-file-name name version))))
+        (base32 "116hl4hb42qw7lza0w71m2i7dmfh0vfm5fi3x95nx463sjnk4ahv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Unclear why these tests fail.
-      #:test-flags
-      #~(list "-k"
-              (string-append "not test_exclude_one"
-                             " and not test_exclude_some"
-                             " and not test_ip_commit"
-                             " and not test_only_one"
-                             " and not test_only_some"
-                             " and not test_basic_functionality"
-                             " and not test_conflicts"
-                             " and not test_conflicts_switch"
-                             " and not test_nothing_to_fuse"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'loosen-requirements
@@ -963,7 +952,7 @@ logs to GNU ChangeLog format.")
     (inputs
      (list bash-minimal
            git-minimal
-           python-clint
+           python-argcomplete
            python-pygit2
            python-sh))
     (home-page "https://gitless.com")
@@ -979,7 +968,7 @@ figure out what to do next.
 Gitless is implemented on top of Git and its commits and repositories are
 indistinguishable from Git's.  You (or other contributors) can always fall back
 on @command{git}, and use any regular Git hosting service.")
-    (license license:expat)))
+    (license license:expat))))
 
 (define-public git-cal
   (package
