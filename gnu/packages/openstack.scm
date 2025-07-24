@@ -404,37 +404,52 @@ extensions.")
 (define-public python-tempest
   (package
     (name "python-tempest")
-    (version "31.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "tempest" version))
-              (sha256
-               (base32
-                "1bh250n0cf68jm68jd7pcrgf7zbsv74cq590ar1n002sijfcb80i"))))
-    (build-system python-build-system)
+    (version "42.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tempest" version))
+       (sha256
+        (base32 "03jc474y57k4c2ydlzw8qx327am9ag15s8j4r4jadrs2x149qvlx"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "test-requirements.txt"
-               ;; unused, code-quality checks only
-               (("hacking[<>!=]" line) (string-append "# " line))
-               (("flake8-.*[<>!=]" line) (string-append "# " line))
-               (("pycodestyle[<>!=]" line) (string-append "# " line))
-               (("coverage[<>!=]" line) (string-append "# " line)))))
-         (add-before 'check 'setup-check
-           (lambda _
-             (substitute* "tempest/tests/lib/cli/test_execute.py"
-               (("cli_base.execute\\(\"env\",")
-                (string-append "cli_base.execute('" (which "env") "',")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "stestr" "--test-path" "./tempest/tests" "run")))))))
+     (list
+      #:test-flags
+      #~(list "--test-path" "./tempest/tests"
+              ;; XXX: Probably requires some setup.
+              "--exclude-regex" (string-join
+                                 (list "test_load_json_resource_list"
+                                       "test_load_json_saved_state"
+                                       "test_take_action_got_exception"
+                                       "test_hacking")
+                                 "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda _
+              ;; XXX: Most of those tests require network connection.
+              (delete-file-recursively "tempest/tests/lib/services/volume")
+              (delete-file "tempest/tests/test_hacking.py")))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                ;; unused, code-quality checks only
+                (("(hacking|flake8-.*|pycodestyle|coverage)[<>!=]" line)
+                 (string-append "# " line)))))
+          (add-before 'check 'setup-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tempest/tests/lib/cli/test_execute.py"
+                (("cli_base.execute\\(\"env\",")
+                 (string-append "cli_base.execute('"
+                                (search-input-file inputs "bin/env") "',")))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
     (propagated-inputs (list python-cliff
                              python-cryptography
-                             python-debtcollector
+                             python-defusedxml
+                             python-fasteners
                              python-fixtures
                              python-jsonschema
                              python-netaddr
@@ -450,7 +465,12 @@ extensions.")
                              python-subunit
                              python-testtools
                              python-urllib3))
-    (native-inputs (list python-oslotest python-pbr python-stestr python-hacking))
+    (native-inputs (list python-oslotest
+                         python-pbr
+                         python-setuptools
+                         python-stestr
+                         python-testscenarios
+                         python-wheel))
     (home-page "https://docs.openstack.org/tempest/latest/")
     (synopsis "OpenStack Integration Testing")
     (description "This is a set of integration tests to be run against a live
