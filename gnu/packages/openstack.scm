@@ -886,15 +886,13 @@ and building documentation from them.")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "test-requirements.txt"
-                (("hacking.*")
-                 "hacking")))))))
+                (("(hacking|reno).*")
+                 "")))))))
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list python-hacking
-           python-openstackdocstheme
+     (list python-openstackdocstheme
            python-pbr
-           python-reno
            python-setuptools
            python-sphinx
            python-wheel))
