@@ -2967,18 +2967,6 @@ thoroughly
                     "  This package provides an command line interface (CLI)
 tool."))))
 
-(define-public go-keyify
-  (package
-    (inherit go-honnef-co-go-tools)
-    (name "go-keyify")
-    (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/keyify"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
-    (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
-    (description "This package turns unkeyed struct literals (@code{T{1, 2,
-3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
-
 (define-public go-pgmockproxy
   (package
     (inherit go-github-com-jackc-pgmock)
