@@ -21531,6 +21531,31 @@ that, when set on the root @code{Logger}, will tunnel log records to the
 main process so that they are handled correctly.")
     (license license:lgpl3+)))
 
+(define-public python-vncdotool
+  (package
+    (name "python-vncdotool")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "http://github.com/sibson/vncdotool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1adsc263qsa3hcyk8mhv0wwq44h8zhcksx92chd5rr1wz37zmc22"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pillow python-pycryptodomex python-twisted))
+    (native-inputs (list python-pexpect python-pytest python-pyvirtualdisplay
+                         python-setuptools python-wheel))
+    (home-page "http://github.com/sibson/vncdotool")
+    (synopsis "Command line VNC client")
+    (description
+     "This package provides a Python command line VNC client.  It can be
+useful to automating interactions with virtual machines or hardware devices
+that are otherwise difficult to control.")
+    (license license:expat)))
+
 (define-public python-vobject
   (package
     (name "python-vobject")
