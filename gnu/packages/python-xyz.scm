@@ -26228,10 +26228,11 @@ package attempts to address the shortcomings of @code{isodate}.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1irlmakf0lf1sb8jp5kmkvxhq6b8ij9q5zn0zimdpnkq627mazbs"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ;No test
     (propagated-inputs (list python-clint python-coverage))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://nestorsalceda.com/mamba/")
     (synopsis "Test runner for Python")
     (description
