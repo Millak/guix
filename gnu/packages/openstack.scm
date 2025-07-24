@@ -850,7 +850,7 @@ in transmittable and storable formats, such as JSON and MessagePack.")
      (list git-minimal/pinned
            gnupg
            python-docutils
-           python-openstackdocstheme
+           python-pbr
            python-pytest
            python-setuptools
            python-sphinx
@@ -861,8 +861,6 @@ in transmittable and storable formats, such as JSON and MessagePack.")
            python-wheel))
     (propagated-inputs
      (list python-dulwich
-           python-packaging
-           python-pbr
            python-pyyaml))
     (home-page "https://docs.openstack.org/reno/latest/")
     (synopsis "Release notes manager")
