@@ -7073,7 +7073,7 @@ in a large number of randomly generated test cases.")
 (define-public guile-veritas
   (package
     (name "guile-veritas")
-    (version "0.0.28")
+    (version "0.0.41")
     (source
      (origin
        (method git-fetch)
@@ -7082,7 +7082,7 @@ in a large number of randomly generated test cases.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "068yhsaiz2l4wim6iagfjl059fdsfnmkxnhwp64dri556viijjdj"))))
+        (base32 "17x5xjwjbj0smwb7hj6crar790kgc6bbqzkk9kgrjk0j6nbw920c"))))
     (build-system guile-build-system)
     (arguments
      (list
