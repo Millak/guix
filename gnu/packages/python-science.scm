@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -3080,6 +3081,44 @@ its software deployment plugins.")
      "This package provides a stable interface for interactions between
 Snakemake and its storage plugins.")
     (license license:expat)))
+
+(define-public python-sparse
+  (package
+    (name "python-sparse")
+    (version "0.15.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sparse" version))
+       (sha256
+        (base32
+         "0rp29gp82qwwkq210pzh2qmlqhi2007nb7p7nwqmrkgmjq6cwxjc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-numba python-numpy python-scipy))
+    (native-inputs
+     (list python-dask
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (home-page "https://github.com/pydata/sparse/")
+    (synopsis "Library for multi-dimensional sparse arrays")
+    (description
+     "This package implements sparse arrays of arbitrary dimension on top of
+@code{numpy} and @code{scipy.sparse}.  Sparse array is a matrix in which most
+of the elements are zero.  @code{python-sparse} generalizes the
+@code{scipy.sparse.coo_matrix} and @code{scipy.sparse.dok_matrix} layouts, but
+extends beyond just rows and columns to an arbitrary number of dimensions.
+Additionally, this project maintains compatibility with the
+@code{numpy.ndarray} interface rather than the @code{numpy.matrix} interface
+used in @code{scipy.sparse}.  These differences make this project useful in
+certain situations where @code{scipy.sparse} matrices are not well suited, but
+it should not be considered a full replacement.  It lacks layouts that are not
+easily generalized like @dfn{compressed sparse row/column}(CSR/CSC) and
+depends on @code{scipy.sparse} for some computations.")
+    (license license:bsd-3)))
 
 (define-public python-tdda
   (package
