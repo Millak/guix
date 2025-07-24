@@ -35750,30 +35750,17 @@ iGoogle subscription lists.")
 (define-public python-smartypants
   (package
     (name "python-smartypants")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
-       ;; There's no source tarball for 2.0.1 on PyPI.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/leohemsted/smartypants.py")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "smartypants" version))
        (sha256
-        (base32 "00p1gnb9pzb3svdq3c5b9b332gsp50wrqqa39gj00m133zadanjp"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           ;; Its `setup.py test` doesn't report failure with exit status, so
-           ;; we use `nose` instead.
-           (lambda _
-             (invoke "nosetests" "-v" "--exclude=^load_tests$"))))))
+        (base32 "1ih0z32xfz45bpjyc27nnx8k4b613cwxyyr9k2v68sfcszhlrmir"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     ;; For tests.
-     (list python-docutils python-nose python-pygments))
-    (home-page "https://github.com/leohemsted/smartypants.py")
+     (list python-docutils python-pygments python-setuptools))
+    (home-page "https://github.com/justinmayer/smartypants.py")
     (synopsis "Translate punctuation characters into smart quotes")
     (description
      "@command{smartpants} can perform the following transformations:
