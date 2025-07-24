@@ -757,7 +757,7 @@ support.")
 (define-public slade
   (package
     (name "slade")
-    (version "3.2.5a")
+    (version "3.2.7")
     (source
      (origin
        (method git-fetch)
@@ -765,7 +765,7 @@ support.")
              (url "https://github.com/sirjuddington/SLADE")
              (commit version)))
        (sha256
-        (base32 "1pdrw5ysyh9s907gj6bwf16sf9nm89dlnwlpn0y8x49662kx41v3"))
+        (base32 "0yxy9dpgb5bgq6cc7b1k7f1bvs72mhifi9xpjgysznnfxkm78bps"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
