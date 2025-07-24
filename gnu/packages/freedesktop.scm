@@ -642,21 +642,6 @@ other applications that need to directly deal with input devices.")
                "-Ddebug-gui=false"    ;requires gtk+@3
                ,flags))))))
 
-;; TODO: Remove this package when libinput-minimal >= 1.28
-(define-public libinput-minimal-next
-  (package/inherit libinput-minimal
-    (name "libinput-minimal")
-    (version "1.28.903")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.freedesktop.org/libinput/libinput.git")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0i5yljdff4fjchpa8ifscbcssnmiim58ai1zy3v41vim2illprv5"))))))
-
 (define-public libei
   (package
     (name "libei")
