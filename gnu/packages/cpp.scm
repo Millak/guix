@@ -1948,6 +1948,38 @@ hierarchies and multiple types of execution resources.")
 
     (license license:asl2.0))) ; With LLVM exception
 
+(define-public kokkos-kernels
+  (package
+    (name "kokkos-kernels")
+    ;; Synchronize with Kokkos version.
+    (version (package-version kokkos))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kokkos/kokkos-kernels")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        ;; Version 4.6.02.
+        (base32 "05g4dp1359rsx0y2wrg2yv4zx3aq5anxr8jgb2c5f1ay3nq3639s"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (inputs
+     (list kokkos
+           openblas))
+    (properties '((tunable? . #t)))
+    (home-page "https://kokkos.org")
+    (synopsis
+     "Math kernels for Kokkos")
+    (description "KokkosKernels implements local computational kernels for
+linear algebra and graph operations, using the Kokkos shared-memory parallel
+programming model.  \"Local\" means not using MPI, or running within a
+single MPI process without knowing about MPI.")
+    (license license:asl2.0))) ;with LLVM exception
+
 (define-public kokkos-fft
   (package
     (name "kokkos-fft")
