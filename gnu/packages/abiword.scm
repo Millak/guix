@@ -25,11 +25,16 @@
 (define-module (gnu packages abiword)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (guix download)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aspell)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages enchant)
@@ -40,30 +45,31 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages ots)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages xorg)
   #:use-module (gnu packages wv)
   #:use-module (gnu packages xml))
 
 (define-public abiword
   (package
     (name "abiword")
-    (version "3.0.5")
+    (version "3.0.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri
-         ;; XXX: The main site <https://www.abisource.com/> is down.  Only a (partial)
-         ;;      mirror is available at <http://www.nl.abisource.com/>.
-          (string-append "http://www.nl.abisource.com/downloads/abiword/" version
-                         "/source/abiword-" version ".tar.gz"))
-        (sha256
-         (base32 "1d1179pnslijpjhz1q155fsc828rrlqf7lsn2inqsl3hk5z28mqj"))
-        (patches
-         (search-patches "abiword-explictly-cast-bools.patch"))))
-
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.gnome.org/World/AbiWord/")
+              (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0hp11vdfm70n840ib19szxkibfs0v1hhklslz4xipfwrdvpwk1km"))
+       (patches
+        (search-patches "abiword-explictly-cast-bools.patch"))))
     (build-system glib-or-gtk-build-system)
     (arguments                   ;; NOTE: rsvg is disabled, since Abiword
      (list #:configure-flags        ;; supports it directly, and its BS is broken.
@@ -80,6 +86,7 @@
                "pdb " "pdf " "presentation " "s5 " "sdw " "t602 " "urldict "
                "wikipedia " "wml " "xslfo")
               "--enable-introspection"
+              "--enable-scripting"
               (string-append "--with-gir-dir="
                              #$output
                              "/share/gir-1.0")
@@ -93,22 +100,34 @@
            ;; Manually starting the X server before the test phase did not help
            ;; the tests to pass.
            #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; FIXME: Use #:bootstrap-scripts instead.
+               (add-before 'bootstrap 'bootstrap-common
+                 (lambda _
+                   (substitute* "autogen-common.sh"
+                     (("/bin/sh")
+                      (string-append
+                       #$(this-package-native-input "bash-minimal")
+                       "/bin/sh"))))))
            #:make-flags
            #~(list "gtk_update_icon_cache=true")))
     (inputs
-     (list boost
+     (list aspell
+           boost
            enchant
            fontconfig
            fribidi
-           glib
            goffice
            gtk+
+           libgcrypt
            libchamplain
            libglade
            libgsf
            libjpeg-turbo
            libpng
            (librsvg-for-system)
+           libxft
            libxml2
            libxslt
            ots
@@ -118,13 +137,22 @@
            wv
            zlib))
     (native-inputs
-     (list gobject-introspection
+     (list `(,glib "bin")
+           autoconf
+           autoconf-archive
+           autogen
+           automake
+           bash-minimal
+           findutils
+           grep
            intltool
-           `(,glib "bin")
            libtool
+           perl
            pkg-config
-           python-wrapper))
-    (home-page "http://www.nl.abisource.com/")
+           python-wrapper
+           sed
+           gobject-introspection))
+    (home-page "https://gitlab.gnome.org/World/AbiWord/")
     (synopsis "Word processing program")
 
     ;; HACKERS: The comment below is here so that it shows up early in the
