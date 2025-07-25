@@ -36628,17 +36628,26 @@ cons cells in Python.")
 (define-public python-etuples
   (package
     (name "python-etuples")
-    (version "0.3.3")
+    (version "0.3.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "etuples" version))
        (sha256
-        (base32
-         "0jhfyp177v37rl0i7wqfx7q6s5qkz027hl283d1x8d0vm3w0zqc8"))))
-    (build-system python-build-system)
+        (base32 "0rqi0ml2az23ly5wanymgrfsnzm6dd6wxgric8a3fa42gqfyiz96"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; assert False == {~_1: <built-in function add>}
+      #~(list "--deselect=tests/test_dispatch.py::test_unification")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-next
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-cons python-multipledispatch))
+     (list python-cons
+           python-multipledispatch))
     (home-page "https://github.com/pythological/etuples")
     (synopsis "S-expressions in Python")
     (description
