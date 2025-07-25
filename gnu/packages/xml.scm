@@ -1592,17 +1592,9 @@ SAX2 APIs.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "140ap2l3qy27z1fhqpkq3a44aikhr3v5zlnm9m8vag42qiagiznx"))))
-    (native-inputs
-     (list expat gnu-make minizip which))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (delete 'check))))
+    (native-inputs (list expat minizip pkg-config))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;no test suite
     (synopsis "C library for reading and writing .xlsx files")
     (description "XLSX I/O aims to provide a C library for reading and writing
 .xlsx files.  The .xlsx file format is the native format used by Microsoft(R)
