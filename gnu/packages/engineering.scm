@@ -2416,15 +2416,13 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
     (version "44.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (list (string-append
-                   "mirror://sourceforge/ngspice/ng-spice-rework/" version
-                   "/ngspice-" version ".tar.gz")
-                  (string-append
-                   "mirror://sourceforge/ngspice/ng-spice-rework/"
-                   "old-releases/" version "/ngspice-" version ".tar.gz")))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.code.sf.net/p/ngspice/ngspice")
+              (commit (string-append "ngspice-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1zfpj09vqjamgkhnipwpwmvrzhfymikml7lw80igsx2lpnvxznp7"))))
+        (base32 "1vp27149kx8l7397bv5p708jqph1kma8rb9bl7ckgmbr9sw9cn3q"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2437,9 +2435,9 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                                        "/share/ngspice/scripts")))))
       #:configure-flags #~(list "--enable-openmp" "--enable-cider"
                                 "--enable-xspice" "--with-ngshared")))
-    (native-inputs (list bison flex))
+    (native-inputs (list autoconf automake bison flex libtool))
     (inputs (list openmpi))
-    (home-page "https://ngspice.sourceforge.net/")
+    (home-page "https://ngspice.sourceforge.io/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
      "Ngspice is a mixed-level/mixed-signal circuit simulator.  It includes
@@ -2465,7 +2463,9 @@ an embedded event driven algorithm.")
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'delete-scripts)))))
-    (native-inputs (list perl))
+    (native-inputs
+     (modify-inputs (package-native-inputs libngspice)
+       (append perl)))
     (inputs (list libngspice readline libxaw libx11))))
 
 (define trilinos-serial-xyce
