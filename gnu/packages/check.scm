@@ -707,6 +707,8 @@ a multi-paradigm automated test framework for C++ and Objective-C.")
     (license license:boost1.0)))
 
 (define-public cbehave
+  ;; XXX: The last time updated on <2013-07-12>, the only user is tinydir
+  ;; package.
   (let ((commit "5deaea0eaaf52f1c5ccdac0c68c003988f348fb4")
         (revision "1"))
     (package
@@ -733,7 +735,10 @@ a multi-paradigm automated test framework for C++ and Objective-C.")
       (build-system gnu-build-system)
       (arguments
        (list
-        #:configure-flags #~(list "--enable-shared" "--disable-static")
+        #:configure-flags
+        #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+                "--enable-shared"
+                "--disable-static")
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'bootstrap 'rename-configure.in
