@@ -1018,7 +1018,9 @@ floating through space.")
         (string-append "ftp://ftp.sra.co.jp/pub/misc/eb/eb-" version ".tar.bz2"))
        (sha256
         (base32
-         "0psbdzirazfnn02hp3gsx7xxss9f1brv4ywp6a15ihvggjki1rxb"))))
+         "0psbdzirazfnn02hp3gsx7xxss9f1brv4ywp6a15ihvggjki1rxb"))
+       (patches
+        (search-patches "libeb-gcc-14.patch"))))
     (build-system gnu-build-system)
     (native-inputs ; Required for building docs
      (list perl))
