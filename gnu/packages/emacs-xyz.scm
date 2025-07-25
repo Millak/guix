@@ -2080,7 +2080,7 @@ syntax for short lambda.")
 (define-public emacs-llm
   (package
     (name "emacs-llm")
-    (version "0.24.2")
+    (version "0.27.0")
     (source
      (origin
        (method git-fetch)
@@ -2089,12 +2089,13 @@ syntax for short lambda.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kza3jzabp5ilapi3a0ycrc26gvj6s2nf3x1ly4c8d3si6fdlx61"))))
+        (base32 "0ribldwvgr6ij79xap7606rnaiyl34d7qvpg06p8q2nwi5k8z3dc"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      ;; there are no tests
-      #:tests? #f))
+      #:test-command #~(list "emacs" "--batch"
+                             "-l" "llm-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs (list emacs-plz emacs-plz-event-source
                              emacs-plz-media-type))
     (home-page "https://github.com/ahyatt/llm")
