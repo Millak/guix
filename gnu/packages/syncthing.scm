@@ -184,7 +184,9 @@ Protocol.")
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
                  (wrap-program (string-append out "/bin/syncthing-gtk")
-                   `("GI_TYPELIB_PATH" ":" prefix
+                   `("GUIX_GDK_PIXBUF_MODULE_FILES" ":" suffix
+                     (,(getenv "GUIX_GDK_PIXBUF_MODULE_FILES")))
+                   `("GI_TYPELIB_PATH" ":" suffix
                      (,(getenv "GI_TYPELIB_PATH"))))))))))
       (inputs
        (list bash-minimal
