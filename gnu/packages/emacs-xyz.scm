@@ -5676,7 +5676,7 @@ within emacs.")
 (define-public emacs-bm
   (package
     (name "emacs-bm")
-    (version "202309")
+    (version "202506")
     (source
      (origin
        (method git-fetch)
@@ -5685,14 +5685,14 @@ within emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a47dcda196sb6qx45w94d0vfzyfprfs3g7yj0scjmna79rr3fqa"))))
+        (base32 "0298hjdgx03y028pql6z3jcym47ji10hv66zydn1kicsjds0r45l"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:test-command #~(list "emacs" "-Q" "--batch"
                              "-l" "bm-tests.el"
                              "-f" "ert-run-tests-batch-and-exit")))
-    (home-page "https://github.com/joodland/bm")
+    (home-page "https://joodland.github.io/bm/")
     (synopsis "Visual bookmarks for Emacs")
     (description "This package provides visible, buffer local bookmarks and
 the ability to jump forward and backward to the next bookmark.")
