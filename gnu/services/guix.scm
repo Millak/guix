@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020, 2021, 2022 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2024 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2025 Edouard Klein <edk@beaver-labs.com>
+;;; Copyright © 2025 Rutherther <rutherther@digital.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,11 +33,15 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages file-systems)
+  #:use-module (gnu packages linux)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services admin)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services getmail)
+  #:use-module (gnu services linux)
   #:use-module (gnu system shadow)
   #:export (guix-build-coordinator-configuration
             guix-build-coordinator-configuration?
@@ -145,7 +151,11 @@
             bffe-configuration-arguments
             bffe-configuration-extra-environment-variables
 
-            bffe-service-type))
+            bffe-service-type
+
+            shared-cache-service-type
+            shared-cache-configuration
+            user-cache))
 
 ;;;; Commentary:
 ;;;
@@ -1181,3 +1191,78 @@ ca-certificates.crt file in the system profile."
                              bffe-account)))
    (description
     "Run the Build Farm Front-end.")))
+
+;;;
+;;; Share .cache/ content between users
+;;;
+;;; On a system with multiple users, each $HOME/.cache/guix is
+;;; ~700MB of data that is mostly the same between users.  This service allows
+;;; one to either:
+;;
+;;; - share this cache between users, with updates shared between users, which
+;;; is suitable for a high trust environment, typically a single human user
+;;; with multiple accounts on the same computer
+;;;
+;;; - or expose a single user's cache, read-only with a write overlay, to the
+;;; other users, typically used in low-trust environments such as a public
+;;; access guix system.
+
+(define-record-type* <user-cache>
+  user-cache make-user-cache
+  user-cache?
+  (user        user-cache-user)
+  (location    user-cache-location    (default (string-append "/home/" (user-cache-user this-record) "/.cache")) (thunked))
+  (group       user-cache-group       (default "users"))
+  (directories user-cache-directories (default '("guix/checkouts"))))
+
+(define list-of-user-cache? (list-of user-cache?))
+
+(define (mount-type? x)
+  (and (symbol? x)
+       (or (eq? x 'share)
+           (eq? x 'expose))))
+
+(define-configuration/no-serialization shared-cache-configuration
+  (mode             (mount-type         'expose)             "Either 'share (read-write, dangerous) or 'expose (read-only, the default) the cache directory.")
+  (shared-directory (string             "/root/.cache")      "The sharing user's cache directory (i.e. the source).")
+  (users            (list-of-user-cache '())                 "The users that benefit from the shared directory. This is a list of user-cache records (i.e. the destinations)."))
+
+(define shared-cache-vfs-mappings
+  (match-record-lambda <shared-cache-configuration>
+      (mode shared-directory users)
+    (apply
+     append
+     (map
+      (match-record-lambda <user-cache>
+          (location user group directories)
+        (map
+         (lambda (subdir)
+           (vfs-mapping
+            ;; Each subdir has its own service
+            (name (string-append "shared-cache-" subdir "-" user))
+            ;; Make sure the homes are already present
+            (requirement '(file-systems user-homes))
+            ;; Mount each shared dir over the target dir in the users' .cache/
+            (source      (string-append shared-directory "/" subdir))
+            (destination (string-append location         "/" subdir))
+            (policy      (match mode
+                           ('expose 'overlay)
+                           ('share  'translate)))
+            (user        user)
+            (group       group)))
+           directories))
+      users))))
+
+(define shared-cache-service-type
+  (service-type
+   (name 'shared-cache)
+   (extensions (list
+                (service-extension vfs-mapping-service-type
+                                   shared-cache-vfs-mappings)))
+   (compose concatenate)
+   (extend (lambda (original extensions)
+             (shared-cache-configuration
+              (inherit original)
+              (users (append (shared-cache-configuration-users original) extensions)))))
+   (default-value (shared-cache-configuration))
+   (description "Share or expose ~/.cache/ sub directories between multiple users.")))

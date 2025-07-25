@@ -42891,6 +42891,136 @@ File name of the file system key for the target volume.
 @node Guix Services
 @subsection Guix Services
 
+@subsubheading Shared Cache Service
+@cindex shared cache
+@cindex cache, sharing
+
+Running @command{guix pull}, @command{guix time-machine}, @command{guix
+system reconfigure}, and @command{guix home reconfigure} pulls the
+complete Git version control history of your channels in
+@file{$HOME/.cache/guix/checkouts}.  If you have multiple user accounts
+(typically @code{root} and a main user account for your personal
+computer), or if multiple users are using the system (typically on a
+shared server), then this can quickly waste a lot of space.
+
+The @code{shared-cache} service lets you prevent this waste by
+either sharing or exposing a specific user's cache to the other users.
+
+In the context of this service, @emph{sharing} and @emph{exposing} have
+the same meaning as with @command{guix shell}: making the shared cache
+directory read-only if you use mode @option{'expose} (the default), and
+writable if you use mode @option{'share}, (@pxref{Invoking
+guix shell, @option{--expose} and @option{--share}}).
+
+Whatever mode you choose, from the point of view of the user, the cache
+appears writable.  With @option{'expose}, any write will be stored in a
+user-owned overlay directory next to mountpoint, whereas with
+@option{'share}, writes will be propagated back to the sharing user's
+cache.
+
+@quotation Warning
+Use the @option{'share} option @emph{if and only if} users on the
+machine trust each other.  This is a hard requirement since, with this
+option, any user could ``poison'' the shared cache to indirectly gain
+access to other user's data and privileges.
+@end quotation
+
+@quotation Warning
+Using @option{'share} is meant for a single-seat computer where the
+single user has unprivileged user accounts---e.g. one for work and one
+for gaming.  Even then, channels from one will leak into the other's
+cache.  Use with caution.
+@end quotation
+
+@quotation Warning
+@option{'share} will not work for multiple concurrent invokation of
+@command{guix}, e.g. if two user accounts run @command{guix time
+machine} at the same time, the results will be fun but not useful.
+@end quotation
+
+Here is an example configuration that exposes @code{root}'s guix
+checkout cache to @code{alice} and @code{bob}:
+
+@lisp
+(operating-system
+  ;; @dots{}
+     (services
+      (cons*
+       (service shared-cache-service-type
+             (shared-cache-configuration
+               (users (list (user-cache (user "alice"))
+                            (user-cache (user "bob"))))))
+                    %desktop-services)))
+@end lisp
+
+The service can also be extended by providing a list of
+@code{user-cache}, allowing for easier splitting of configuration.
+
+@lisp
+(operating-system
+  ;; @dots{}
+  (services
+   (cons*
+    (simple-service 'bob-shared-guix-cache shared-cache-service-type
+                    (list (user-cache (user "bob"))))
+    %desktop-services)))
+@end lisp
+
+@defvar shared-cache-service-type
+Service type for sharing a subdirectory of @file{~/.cache/} between
+multiple users.
+
+This service allows different system users to share the contents of the
+user cache, avoiding duplication and saving disk space.  It can be
+configured in either ``share'' mode, where all users write to the same
+cache, or ``expose'' mode, where users get a read-only view with a
+writable overlay.  Its value must be a @code{shared-cache-configuration}
+object.
+@end defvar
+
+@deftp {Data Type} shared-cache-configuration
+Data type representing the configuration of the shared cache.
+
+@table @asis
+@item @code{mode} (default: @code{'expose})
+Either @code{'share} (read-write, dangerous) or @code{'expose}
+(read-only with per-user overlay, the default).  In share mode, all
+writes go to the shared directory.  In expose mode, only reads use the
+shared directory; writes go to a user-owned overlay.
+
+@item @code{shared-directory} (default: @code{"/root/.cache"})
+The source cache directory that is shared between users.  Each user will
+see some or all of its subdirectories mounted into their own
+@file{~/.cache}.
+
+@item @code{users} (default: @code{'()})
+The list of users that will benefit from the shared directory.  This
+must be a list of @code{user-info} records.
+
+@end table
+@end deftp
+
+@deftp {Data Type} user-info
+Data type representing the configuration for a single user benefitting
+from a shared cache.
+
+@table @asis
+@item @code{user}
+The username of the user.
+
+@item @code{location} (default: @code{"/home/@var{user}/.cache"})
+The cache directory of the user.
+
+@item @code{group} (default: @code{"users"})
+The primary group of the user.
+
+@item @code{directories} (default: @code{'("guix/checkouts")})
+List of subdirectories of the @code{shared-cache-configuration}'s
+@code{shared-directory} (whose default is @file{/root/.cache}) to mount
+under @var{location} (whose default is @file{~/.cache/}) for the user.
+@end table
+@end deftp
+
 @subsubheading Build Farm Front-End (BFFE)
 The @uref{https://git.cbaines.net/guix/bffe/,Build Farm Front-End}
 assists with building Guix packages in bulk.  It's responsible for
