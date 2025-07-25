@@ -4845,8 +4845,8 @@ the @code{Dracula} theme for Emacs and the @code{Gloom} theme for Atom.")
       (license license:expat))))
 
 (define-public emacs-reverso
-  (let ((commit "d1b39da3c7df1541f98435f3172a7ff4f3123634")
-        (revision "0"))
+  (let ((commit "40ed3d83c4f04c39e05d69d84595761ae2956a64")
+        (revision "1"))
     (package
       (name "emacs-reverso")
       (version (git-version "0.1.2" revision commit))
@@ -4858,9 +4858,10 @@ the @code{Dracula} theme for Emacs and the @code{Gloom} theme for Atom.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1fpk5wyzlssfrm4jbsrflxvlfn80yh6y1nh63ml8barf1nypsx55"))))
+          (base32 "1agsscrkqnmz8shibfy8df5f34xwixiyfad381k04aibadh742yb"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-fedi emacs-request emacs-transient))
+      (arguments (list #:tests? #f))      ; no tests
+      (propagated-inputs (list emacs-request))
       (home-page "https://github.com/SqrtMinusOne/reverso.el")
       (synopsis "Translation, grammar checking, context search")
       (description "Reverso is an emacs client for the reverso.net service.")
