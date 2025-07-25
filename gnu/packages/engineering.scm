@@ -3019,20 +3019,22 @@ interpolation toolkit.")
 (define-public python-motulator
   (package
     (name "python-motulator")
-    (version "0.5.0")
+    (version "0.6.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "motulator" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Aalto-Electric-Drives/motulator/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1kh13zfa4w73q04pny2w2zgym47fp8xy7glwfx82fdx4fihk7dv7"))))
+        (base32 "1di2r1i19jl751v0hj426zkwk48w5yf8zpw2bl6qzk0vq4z2vpbw"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; there are no tests
-    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
-    (native-inputs (list python-hatchling
-                         python-ipykernel
-                         python-toml))
+    (propagated-inputs
+     (list python-numpy python-matplotlib python-scipy python-tqdm))
+    (native-inputs (list python-hatchling))
     (home-page "https://aalto-electric-drives.github.io/motulator/")
     (synopsis "Motor Drive Simulator in Python")
     (description "This package includes simulation models for an induction
