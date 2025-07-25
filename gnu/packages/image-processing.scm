@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1256,104 +1257,146 @@ libraries designed for computer vision research and implementation.")
              "-DCMAKE_CXX_STANDARD=14")))))
 
 (define-public insight-toolkit
-  (package
-    (name "insight-toolkit")
-    (version "5.4.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/InsightSoftwareConsortium/ITK")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1l5rby8jj8726k380aivycmhn56cz56mr9k3r56c8hkkrfwwng50"))
-       ;; This patch is required to build with both ITK_USE_GPU=ON and
-       ;; ITK_WRAP_PYTHON=ON.
-       ;; <https://github.com/InsightSoftwareConsortium/ITK/pull/4842>
-       (patches (search-patches "insight-toolkit-fix-build.patch"))))
-    (build-system cmake-build-system)
-    (outputs '("out" "python"))
-    (arguments
-     (list #:tests? #f        ; tests require network access and external data
-           #:configure-flags
-           #~(list "-DITK_USE_GPU=ON"
-                   "-DITK_USE_SYSTEM_LIBRARIES=ON"
-                   "-DITK_USE_SYSTEM_CASTXML=ON"
-                   "-DITK_USE_SYSTEM_SWIG=ON"
-                   (string-append "-DHDF5_DIR=" #$(this-package-input "hdf5")
-                                  "/lib/cmake")
-                   "-DBUILD_SHARED_LIBS=ON"
-                   ;; Without this flag, there are shared libraries installed
-                   ;; in PY_SITE_PACKAGES_PATH/itk instead of #$output/lib and
-                   ;; RUNPATHs contain the *build directory* of
-                   ;; PY_SITE_PACKAGES_PATH/itk.
-                   "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
-                   "-DITK_WRAPPING=ON"
-                   "-DITK_WRAP_PYTHON=ON"
-                   "-DITK_DYNAMIC_LOADING=ON"
-                   (let* ((python-version
-                           #$(version-major+minor
-                              (package-version (this-package-input "python"))))
-                          (python-lib-path
-                           (string-append #$output:python
-                                          "/lib/python" python-version
-                                          "/site-packages")))
-                     (string-append "-DPY_SITE_PACKAGES_PATH=" python-lib-path))
-                   ;; Python is not built with Py_LIMITED_API.
-                   "-DITK_USE_PYTHON_LIMITED_API=OFF"
-                   "-DCMAKE_CXX_STANDARD=17"
-                   "-DBUILD_TESTING=OFF")
+  ;; For information about ITK remote modules, see:
+  ;; https://insightsoftwareconsortium.github.io/ITKWikiArchive/Wiki/ITK/Policy_and_Procedures_for_Adding_Remote_Modules
+  ;; For a remote MODULE, use the commit in
+  ;; 'Modules/Remote/MODULE.remote.cmake'.
+  ;; MorphologicalContourInterpolation is required by itk-snap.
+  (let* ((module-commit "821bf9b3ef8eaaab10391ed060dc9ca5e4d37b39")
+         (module-file (git-file-name "ITKMorphologicalContourInterpolation"
+                                     module-commit)))
+    (package
+      (name "insight-toolkit")
+      (version "5.4.4")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/InsightSoftwareConsortium/ITK")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1l5rby8jj8726k380aivycmhn56cz56mr9k3r56c8hkkrfwwng50"))
+         ;; This patch is required to build with both ITK_USE_GPU=ON and
+         ;; ITK_WRAP_PYTHON=ON.
+         ;; <https://github.com/InsightSoftwareConsortium/ITK/pull/4842>
+         (patches (search-patches "insight-toolkit-fix-build.patch"))))
+      (build-system cmake-build-system)
+      (outputs '("out" "python"))
+      (arguments
+       (list
+        #:tests? #f ;tests require network access and external data
+        #:configure-flags
+        #~(list "-DITK_USE_GPU=ON"
+                "-DITK_USE_SYSTEM_LIBRARIES=ON"
+                "-DITK_USE_SYSTEM_CASTXML=ON"
+                "-DITK_USE_SYSTEM_SWIG=ON"
+                (string-append "-DHDF5_DIR="
+                               #$(this-package-input "hdf5") "/lib/cmake")
+                "-DBUILD_SHARED_LIBS=ON"
+                ;; Without this flag, there are shared libraries installed
+                ;; in PY_SITE_PACKAGES_PATH/itk instead of #$output/lib and
+                ;; RUNPATHs contain the *build directory* of
+                ;; PY_SITE_PACKAGES_PATH/itk.
+                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
+                "-DITK_WRAPPING=ON"
+                "-DITK_WRAP_PYTHON=ON"
+                "-DITK_DYNAMIC_LOADING=ON"
+                (let* ((python-version
+                         #$(version-major+minor
+                             (package-version
+                               (this-package-input "python"))))
+                       (python-lib-path (string-append #$output:python
+                                                       "/lib/python"
+                                                       python-version
+                                                       "/site-packages")))
+                  (string-append "-DPY_SITE_PACKAGES_PATH="
+                                 python-lib-path))
+                ;; Python is not built with Py_LIMITED_API.
+                "-DITK_USE_PYTHON_LIMITED_API=OFF"
+                "-DModule_MorphologicalContourInterpolation=ON"
+                "-DCMAKE_CXX_STANDARD=17"
+                "-DBUILD_TESTING=OFF")
 
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'do-not-tune
-                          (lambda _
-                            (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
-                              (("-mtune=native")
-                               ""))))
-                        (add-after 'unpack 'ignore-warnings
-                          (lambda _
-                            (substitute* "Wrapping/Generators/Python/CMakeLists.txt"
-                              (("-Werror") ""))))
-                        (add-after 'unpack 'exclude-gtest-target
-                          (lambda _
-                            ;; Prevent ITKGoogleTest from being added to
-                            ;; ITK_MODULES_ENABLED in the installed
-                            ;; ITKConfig.cmake, which in turn prevents
-                            ;; 'GTest::GTest' from being added to the
-                            ;; ITK_LIBRARIES variable.  This is necessary
-                            ;; because projects that use ITK fail to configure
-                            ;; otherwise.  Fixes
-                            ;; <https://codeberg.org/guix/guix/issues/776>.
-                            ;; <https://github.com/microsoft/vcpkg/pull/27187>
-                            (substitute* "Modules/ThirdParty/GoogleTest/itk-module.cmake"
-                              (("DEPENDS") "DEPENDS\n  EXCLUDE_FROM_DEFAULT")))))))
-    (inputs
-     (list eigen
-           expat
-           fftw
-           fftwf
-           hdf5
-           libjpeg-turbo
-           libpng
-           libtiff
-           mesa-opencl
-           perl
-           python
-           tbb
-           vxl-1
-           zlib))
-    (native-inputs
-     (list castxml gcc-13 git-minimal pkg-config swig-next which))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'do-not-tune
+              (lambda _
+                (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
+                  (("-mtune=native")
+                   ""))))
+            (add-after 'unpack 'ignore-warnings
+              (lambda _
+                (substitute* "Wrapping/Generators/Python/CMakeLists.txt"
+                  (("-Werror")
+                   ""))))
+            (add-after 'unpack 'exclude-gtest-target
+              (lambda _
+                ;; Prevent ITKGoogleTest from being added to
+                ;; ITK_MODULES_ENABLED in the installed
+                ;; ITKConfig.cmake, which in turn prevents
+                ;; 'GTest::GTest' from being added to the
+                ;; ITK_LIBRARIES variable.  This is necessary
+                ;; because projects that use ITK fail to configure
+                ;; otherwise.  Fixes
+                ;; <https://codeberg.org/guix/guix/issues/776>.
+                ;; <https://github.com/microsoft/vcpkg/pull/27187>
+                (substitute* "Modules/ThirdParty/GoogleTest/itk-module.cmake"
+                  (("DEPENDS")
+                   "DEPENDS\n  EXCLUDE_FROM_DEFAULT"))))
+            (add-after 'unpack 'prepare-remote-modules
+              (lambda _
+                ;; ITK module MorphologicalContourInterpolation
+                ;; is for ITK-SNAP.
+                (symlink #$(this-package-native-input module-file)
+                         "Modules/Remote/MorphologicalContourInterpolation")
+                (delete-file
+                  (string-append
+                    "Modules/Remote/"
+                    "MorphologicalContourInterpolation.remote.cmake")))))))
+      (inputs (list eigen
+                    expat
+                    fftw
+                    fftwf
+                    hdf5
+                    libjpeg-turbo
+                    libpng
+                    libtiff
+                    mesa-opencl
+                    perl
+                    python
+                    tbb
+                    vxl-1
+                    zlib))
+      (native-inputs
+       (list castxml
+             gcc-13
+             git-minimal
+             pkg-config
+             swig-next
+             which
+             (origin
+               (method git-fetch)
+               (uri
+                 (git-reference
+                   (url (string-append
+                          "https://github.com/KitwareMedical/"
+                          "ITKMorphologicalContourInterpolation"))
+                   (commit module-commit)))
+               (file-name module-file)
+               (sha256
+                 (base32
+                   "00myhgvlk3n062i8bnknz1d10zkv3jlvs7f4jnk24727gd4v2n4i")))))
 
-    ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
-    ;; '-mtune=native -march=corei7', suggesting there's something to be
-    ;; gained from CPU-specific optimizations.
-    (properties '((tunable? . #t)))
+      ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
+      ;; '-mtune=native -march=corei7', suggesting there's something to be
+      ;; gained from CPU-specific optimizations.
+      (properties '((tunable? . #t)))
 
-    (home-page "https://github.com/InsightSoftwareConsortium/ITK/")
-    (synopsis "Scientific image processing, segmentation and registration")
-    (description "The Insight Toolkit (ITK) is a toolkit for N-dimensional
+      (home-page "https://github.com/InsightSoftwareConsortium/ITK/")
+      (synopsis "Scientific image processing, segmentation and registration")
+      (description
+       "The Insight Toolkit (ITK) is a toolkit for N-dimensional
 scientific image processing, segmentation, and registration.  Segmentation is
 the process of identifying and classifying data found in a digitally sampled
 representation.  Typically the sampled representation is an image acquired
@@ -1361,7 +1404,7 @@ from such medical instrumentation as CT or MRI scanners.  Registration is the
 task of aligning or developing correspondences between data.  For example, in
 the medical environment, a CT scan may be aligned with a MRI scan in order to
 combine the information contained in both.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public insight-toolkit-4
   (package (inherit insight-toolkit)
