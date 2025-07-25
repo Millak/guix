@@ -1998,7 +1998,7 @@ less if you are working in front of the screen at night.")
 (define-public xscreensaver
   (package
     (name "xscreensaver")
-    (version "6.08")
+    (version "6.12")
     (source
      (origin
        (method url-fetch)
@@ -2006,7 +2006,7 @@ less if you are working in front of the screen at night.")
         (string-append "https://www.jwz.org/xscreensaver/xscreensaver-"
                        version ".tar.gz"))
        (sha256
-        (base32 "18vnbs2ns42cgnnsvwn0zh98wcfzxf2k9mib5x5zkv6f4njjpxaw"))
+        (base32 "0hvn67qs0rns6qi9phhs601vzbryx2kyvginfcybrfz32y17kxjg"))
        (modules '((guix build utils)))
        (snippet
         ;; 'configure.ac' checks for $ac_unrecognized_opts and exits if it's
