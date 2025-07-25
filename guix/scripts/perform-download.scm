@@ -21,11 +21,16 @@
   #:use-module (guix scripts)
   #:use-module (guix derivations)
   #:use-module ((guix store) #:select (derivation-path? store-path?))
+  #:use-module ((guix build utils) #:select (store-file-name?
+                                             strip-store-file-name))
   #:autoload   (guix build download) (%download-methods url-fetch)
   #:autoload   (guix build git) (git-fetch-with-fallback)
   #:autoload   (guix config) (%git)
   #:use-module (ice-9 match)
-  #:export (guix-perform-download))
+  #:use-module (ice-9 sandbox)
+  #:export (guix-perform-download
+            ;; exported so that eval-in-sandbox can find this
+            syntax-noop))
 
 ;; This program is a helper for the daemon's 'download' built-in builder.
 
@@ -38,16 +43,68 @@
     ((_ drv () body ...)
      (begin body ...))))
 
-(define %user-module
-  ;; Module in which content-address mirror procedures are evaluated.
-  (let ((module (make-fresh-user-module)))
-    (module-use! module (resolve-interface '(guix base32)))
-    module))
+(define-syntax-rule (syntax-noop ...) #t)
+
+;; Bindings to be made available in the sandbox in which mirror procedures are
+;; evaluated.  We opt for a somewhat conservative selection.
+(define %safe-bindings
+  `( ;; Historically used, must be available for backwards compatibility
+    ((guile)
+     lambda begin define string-append symbol->string list quote
+     (noop . module-autoload!)
+     (noop . current-module))
+    ((guix base16) bytevector->base16-string base16-string->bytevector)
+    ((guix base32)
+     bytevector->base32-string bytevector->nix-base32-string
+     base32-string->bytevector nix-base32-string->bytevector)
+    ((guix scripts perform-download)
+     (syntax-noop . use-modules))
+    ;; Potentially useful for custom content-addressed-mirrors and future
+    ;; changes
+    ((guile) symbol?)
+    ((rnrs bytevectors)
+     bytevector? bytevector=? bytevector-length bytevector-u8-ref
+     bytevector->u8-list u8-list->bytevector utf8->string)
+    ,@core-bindings
+    ,@string-bindings
+    ,@list-bindings
+    ,@pair-bindings
+    ,@alist-bindings
+    ,@iteration-bindings
+    ,@number-bindings
+    ,@predicate-bindings))
+
+(define %sandbox-module
+  (make-sandbox-module %safe-bindings))
+
 (define* (read/safe #:optional (port (current-input-port)))
   (with-fluids ((read-eval? #f))
     (parameterize ((read-hash-procedures '()))
       (read port))))
 
+(define (eval-content-addressed-mirrors content-addressed-mirrors file algo hash)
+  "Evaluate the expression CONTENT-ADDRESSED-MIRRORS in a sandbox, and produce
+a list of wrapper procedures for safely calling the list of procedures that
+CONTENT-ADDRESSED-MIRRORS evaluates to."
+  (map const
+       (eval-in-sandbox `(map (lambda (proc)
+                                (proc ,file ',algo ,hash))
+                              (let ()
+                                ,content-addressed-mirrors))
+                        #:bindings %safe-bindings
+                        #:module %sandbox-module)))
+
+(define (assert-store-file file)
+  "Canonicalize FILE and exit if the result is not in the store.  Return the
+result of canonicalization."
+  (let ((canon (canonicalize-path file)))
+    (unless (store-file-name? canon)
+      (leave (G_ "~S is not in the store~%") canon))
+    canon))
+
+(define (call-with-input-file/no-symlinks file proc)
+  (call-with-port (open file (logior O_NOFOLLOW O_RDONLY))
+    proc))
 
 (define* (perform-download drv output
                            #:key print-build-trace?)
@@ -65,7 +122,13 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
     (unless url
       (leave (G_ "~a: missing URL~%") (derivation-file-name drv)))
 
-    (let* ((url        (call-with-input-string url read/safe))
+    (let* ((mirrors
+            (and=> mirrors assert-store-file))
+           (content-addressed-mirrors
+            (and=> content-addressed-mirrors assert-store-file))
+           (disarchive-mirrors
+            (and=> disarchive-mirrors assert-store-file))
+           (url        (call-with-input-string url read/safe))
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
@@ -77,17 +140,26 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
               (url-fetch url output
                          #:print-build-trace? print-build-trace?
                          #:mirrors (if mirrors
-                                       (call-with-input-file mirrors read/safe)
+                                       (call-with-input-file/no-symlinks
+                                           mirrors
+                                         read/safe)
                                        '())
                          #:content-addressed-mirrors
                          (if content-addressed-mirrors
-                             (call-with-input-file content-addressed-mirrors
+                             (call-with-input-file/no-symlinks
+                                 content-addressed-mirrors
                                (lambda (port)
-                                 (eval (read/safe port) %user-module)))
+                                 (eval-content-addressed-mirrors
+                                  (read/safe port)
+                                  (strip-store-file-name output)
+                                  algo
+                                  hash)))
                              '())
                          #:disarchive-mirrors
                          (if disarchive-mirrors
-                             (call-with-input-file disarchive-mirrors read/safe)
+                             (call-with-input-file/no-symlinks
+                                 disarchive-mirrors
+                               read/safe)
                              '())
                          #:hashes `((,algo . ,hash))
 
@@ -165,8 +237,7 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
   (read-hash-procedures '())
 
   ;; This program must be invoked by guix-daemon under an unprivileged UID to
-  ;; prevent things downloading from 'file:///etc/shadow' or arbitrary code
-  ;; execution via the content-addressed mirror procedures.  (That means we
+  ;; prevent things downloading from 'file:///etc/shadow'.  (That means we
   ;; exclude users who did not pass '--build-users-group'.)
   (with-error-handling
     (match args
