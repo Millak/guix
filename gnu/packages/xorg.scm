@@ -5394,21 +5394,20 @@ draggable titlebars and borders.")
                     (lambda* (#:key outputs #:allow-other-keys)
                       (with-directory-excursion "vncviewer"
                         (invoke "make" "install")))))))
-    (native-inputs
-     (list autoconf gettext-minimal automake))
+    (native-inputs (list gettext-minimal))
     (inputs
-     (list zlib
+     (list ;;ffmpeg                     ;TODO: add this for h264 encoding
+           fltk-1.3
            gnutls
            libjpeg-turbo
-           ;;ffmpeg                     ;TODO: add this for h264 encoding
-           fltk-1.3
-           linux-pam
            libx11
-           libxext
-           libxtst
-           libxrandr
            libxdamage
-           pixman))
+           libxext
+           libxrandr
+           libxtst
+           linux-pam
+           pixman
+           zlib))
     (home-page "https://tigervnc.org/")
     (synopsis "High-performance VNC remote desktop client")
     (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
