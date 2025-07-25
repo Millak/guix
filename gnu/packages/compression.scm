@@ -874,10 +874,31 @@ with the sfArk algorithm.")
                 "1y6yvswzl1gzrv1am3yhr6r2zpsh50d1l7g381ccccn9sz19jw13"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
-                                     "-DMZ_BUILD_TESTS=ON"
-                                     "-DMZ_BUILD_UNIT_TESTS=ON"
-                                     "-DMZ_COMPAT=OFF")))
+     (list
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                "-DMZ_BUILD_TESTS=ON"
+                                "-DMZ_BUILD_UNIT_TESTS=ON"
+                                "-DMZ_COMPAT=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'sanitize-config-file
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((minizip-config
+                     (or (false-if-exception
+                          (search-input-file
+                           outputs
+                           "lib/cmake/minizip-ng/minizip-ng-config.cmake"))
+                         (search-input-file ;for the minizip variant
+                          outputs
+                          "lib/cmake/minizip/minizip-config.cmake"))))
+                (substitute* minizip-config
+                  ;; The find_dependency calls appear useful only in a
+                  ;; static library context, to ensure the transitive
+                  ;; dependencies are available for linking. Remove these to
+                  ;; avoid having to propagate all optional inputs (see:
+                  ;; <https://github.com/zlib-ng/minizip-ng/issues/898>).
+                  ((".*CMakeFindDependencyMacro.*") "")
+                  ((".*find_dependency.*") ""))))))))
     (native-inputs (list googletest pkg-config))
     (inputs (list openssl zlib `(,zstd "lib")))
     (home-page "https://github.com/zlib-ng/minizip-ng")
