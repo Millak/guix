@@ -5166,47 +5166,45 @@ generates G-Code for 3D printers.")
     (license license:lgpl3+)))
 
 (define-public xschem
-  (let ((commit "f574539e21b297fa3bcebd52114555e162a5fc56")
-        (revision "1"))
-    (package
-      (name "xschem")
-      (version (git-version "3.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/StefanSchippers/xschem")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "129kj8m3wcf62plp74kml6pqwld4lnfmxy070a82lvj0rfiy77hb"))))
-      (native-inputs (list flex bison pkg-config))
-      (inputs (list gawk
-                    tcl
-                    tk
-                    libxpm
-                    cairo
-                    libxrender
-                    libxcb)) ; Last 3 are optional, but good to have.
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'build 'setenv
-             (lambda* (#:key outputs #:allow-other-keys)
-               (setenv "CC" ,(cc-for-target))
-               (invoke "./configure"
-                       (string-append "--prefix="
-                                      (assoc-ref outputs "out"))))))))
-      (synopsis "Hierarchical schematic editor")
-      (description
-       "Xschem is an X11 schematic editor written in C and focused on
+  (package
+    (name "xschem")
+    (version "3.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/StefanSchippers/xschem")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0g9qrzm2mjd7nfg8iyc5az2bs8n5gjv1mrjjdja5vn1yjia7pvy9"))))
+    (native-inputs (list flex bison pkg-config))
+    (inputs (list gawk
+                  tcl
+                  tk
+                  libxpm
+                  cairo
+                  libxrender
+                  libxcb)) ; Last 3 are optional, but good to have.
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'setenv
+            (lambda* (#:key outputs #:allow-other-keys)
+              (setenv "CC" #$(cc-for-target))
+              (invoke "./configure" (string-append "--prefix=" #$output)))))))
+    (synopsis "Hierarchical schematic editor")
+    (description
+     "Xschem is an X11 schematic editor written in C and focused on
 hierarchical and parametric design.  It can generate VHDL, Verilog or Spice
 netlists from the drawn schematic, allowing the simulation of the circuit.")
-      (home-page "https://xschem.sourceforge.io/stefan/index.html")
-      (license license:gpl2+))))
+    (home-page "https://xschem.sourceforge.io/stefan/index.html")
+    (license license:gpl2+)))
 
 (define-public bcnc
   (package
