@@ -36426,20 +36426,26 @@ graph can be output for rendering by GraphViz or yEd.")
 (define-public python-multipledispatch
   (package
     (name "python-multipledispatch")
-    (version "0.6.0")
+    (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "multipledispatch" version))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/mrocklin/multipledispatch")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1slblghfjg9fdi9zpd7gmrkvfbv20nrdgnrymcnbky8bzm8i9ax7"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-six))
+        (base32 "0dfnav03bgrp5sxn53gyp4kfagcicm3pz98cj056rf9s6k5006s7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-benchmark
+           python-setuptools-next))
     (home-page "https://github.com/mrocklin/multipledispatch/")
     (synopsis "Multiple dispatch for Python based on pattern matching")
-    (description "This library provides an efficient mechanism for overloading
-function implementations based on the types of the arguments.")
+    (description
+     "This library provides an efficient mechanism for overloading function
+implementations based on the types of the arguments.")
     (license license:bsd-3)))
 
 (define-public python-multimethod
