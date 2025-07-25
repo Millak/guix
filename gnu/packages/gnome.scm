@@ -5055,7 +5055,22 @@ indicators etc).")
      (list
        ;; TODO: Figure out why some tests SIGABRT on aarch64-linux.
        #:tests? (and (not (%current-target-system))
-                     (not (target-aarch64?)))))
+                     (not (target-aarch64?)))
+      ;; Exclude flaky tests (see https://codeberg.org/guix/guix/issues/1377).
+      ;; Meson cannot exclude individual tests so the test suite is added in the
+      ;; phase below.
+      #:test-options #~(list "--no-suite" "connection")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'mark-tests-for-exclusion
+            (lambda _
+              ;; The test names are programmatically generated in the meson
+              ;; build file. The two failing tests are "connection-gnutls" and
+              ;; "connection-gnutls-tls1.2" and share program[0] == "common",
+              ;; so use that as the suite name.
+              (substitute* "tls/tests/meson.build"
+                (("test\\(([^)]*)\\)" _ args)
+                 (string-append "test(" args ", suite: program[0])"))))))))
     (native-inputs
      (list `(,glib "bin") ; for gio-querymodules
            pkg-config gettext-minimal))
