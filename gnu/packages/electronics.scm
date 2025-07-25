@@ -8,6 +8,7 @@
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,6 +50,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fpga)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphviz)
@@ -74,6 +76,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml))
 
 (define-public comedilib
@@ -792,6 +795,47 @@ design.")
      "VSG lets you define a VHDL coding style and provides a command-line tool
 to enforce it.")
     (license license:gpl3+)))
+
+(define-public xschem
+  (package
+    (name "xschem")
+    (version "3.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/StefanSchippers/xschem")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0g9qrzm2mjd7nfg8iyc5az2bs8n5gjv1mrjjdja5vn1yjia7pvy9"))))
+    (native-inputs (list flex bison pkg-config))
+    (inputs (list gawk
+                  tcl
+                  tk
+                  libxpm
+                  cairo
+                  libxrender
+                  libxcb)) ; Last 3 are optional, but good to have.
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'setenv
+            (lambda* (#:key outputs #:allow-other-keys)
+              (setenv "CC" #$(cc-for-target))
+              (invoke "./configure" (string-append "--prefix=" #$output)))))))
+    (synopsis "Hierarchical schematic editor")
+    (description
+     "Xschem is an X11 schematic editor written in C and focused on
+hierarchical and parametric design.  It can generate VHDL, Verilog or Spice
+netlists from the drawn schematic, allowing the simulation of the circuit.")
+    (home-page "https://xschem.sourceforge.io/stefan/index.html")
+    (license license:gpl2+)))
 
 (define-public sigrok-cli
   (package

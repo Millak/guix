@@ -31,7 +31,6 @@
 ;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -5164,47 +5163,6 @@ python bindings.  It belongs to the Cura project from Ultimaker.")
     (description "Cura is a slicing software from Ultimaker.  A @emph{slicer}
 generates G-Code for 3D printers.")
     (license license:lgpl3+)))
-
-(define-public xschem
-  (package
-    (name "xschem")
-    (version "3.4.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/StefanSchippers/xschem")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0g9qrzm2mjd7nfg8iyc5az2bs8n5gjv1mrjjdja5vn1yjia7pvy9"))))
-    (native-inputs (list flex bison pkg-config))
-    (inputs (list gawk
-                  tcl
-                  tk
-                  libxpm
-                  cairo
-                  libxrender
-                  libxcb)) ; Last 3 are optional, but good to have.
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-before 'build 'setenv
-            (lambda* (#:key outputs #:allow-other-keys)
-              (setenv "CC" #$(cc-for-target))
-              (invoke "./configure" (string-append "--prefix=" #$output)))))))
-    (synopsis "Hierarchical schematic editor")
-    (description
-     "Xschem is an X11 schematic editor written in C and focused on
-hierarchical and parametric design.  It can generate VHDL, Verilog or Spice
-netlists from the drawn schematic, allowing the simulation of the circuit.")
-    (home-page "https://xschem.sourceforge.io/stefan/index.html")
-    (license license:gpl2+)))
 
 (define-public bcnc
   (package
