@@ -71,6 +71,7 @@
 # Copyright © 2024 Runciter <runciter@whispers-vpn.org>
 # Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 # Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+# Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -2131,6 +2132,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/proot-add-clone3.patch			\
   %D%/packages/patches/proot-add-missing-include.patch		\
   %D%/packages/patches/protobuf-fix-build-on-32bit.patch	\
+  %D%/packages/patches/psm2-compile-ctor-without-avx.patch	\
   %D%/packages/patches/psm-arch.patch				\
   %D%/packages/patches/psm-disable-memory-stats.patch		\
   %D%/packages/patches/psm-ldflags.patch			\

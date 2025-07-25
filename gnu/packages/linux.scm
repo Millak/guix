@@ -82,6 +82,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10276,6 +10277,9 @@ privileges.")
               (sha256
                (base32
                 "04nar65ac11qqx41vkfs7iip8kfiah0zms7l4rmsxncpiz2iqfik"))
+              (patches
+               (search-patches
+                "psm2-compile-ctor-without-avx.patch"))
               (modules '((guix build utils)))
               (snippet
                ;; That file declares its own 'strlcat' as static.  To avoid a
