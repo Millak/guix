@@ -44561,7 +44561,7 @@ The @code{rootless-podman-service-type} sets up the system to allow
 unprivileged users to run @command{podman} commands:
 
 @lisp
-(use-service-modules containers networking @dots{})
+(use-service-modules containers dbus desktop networking @dots{})
 (use-modules (gnu system accounts))  ;for 'subid-range'
 
 (operating-system
@@ -44577,14 +44577,17 @@ unprivileged users to run @command{podman} commands:
                                         "audio" "video")))
                %base-user-accounts))
   (services
-    (append (list (service iptables-service-type)
-                  (service rootless-podman-service-type
-                           (rootless-podman-configuration
-                             (subgids
-                               (list (subid-range (name "alice"))))
-                             (subuids
-                               (list (subid-range (name "alice")))))))
-            %base-services)))
+    (cons* (service dbus-root-service-type)
+           (service dhcpcd-service-type)
+           (service elogind-service-type)
+           (service iptables-service-type)
+           (service rootless-podman-service-type
+                    (rootless-podman-configuration
+                      (subgids
+                       (list (subid-range (name "alice"))))
+                      (subuids
+                       (list (subid-range (name "alice"))))))
+           %base-services)))
 @end lisp
 
 The @code{iptables-service-type} is required for Podman to be able to setup its
