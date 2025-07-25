@@ -20109,6 +20109,39 @@ needed.  The low-level command API is fully mapped however.")
 (define-public ecl-legit
   (sbcl-package->ecl-package sbcl-legit))
 
+(define-public sbcl-lem-extension-manager
+  (let ((commit "cb19321345d6fd13dc3ca59d4d5b9a6b14cc00b1")
+        (revision "0"))
+    (package
+      (name "sbcl-lem-extension-manager")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/lem-project/lem-extension-manager")
+                (commit commit)))
+         (sha256
+          (base32 "1g210cfrbjbdb395wnzb5hax2isq0d5990jhzcxj7kp171dydynf"))
+         (file-name (git-file-name "cl-lem-extension-manager" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-alexandria))
+      (synopsis "Configuration library for the Lem editor")
+      (description
+       "This package provides a configuration library that adds the ability for
+Lem to manage packages within the user configuration directory.")
+      (home-page "https://lem-project.github.io/")
+      (license license:expat))))
+
+(define-public cl-lem-extension-manager
+  (sbcl-package->cl-source-package sbcl-lem-extension-manager))
+
+(define-public ecl-lem-extension-manager
+  (sbcl-package->ecl-package sbcl-lem-extension-manager))
+
+(define-public clasp-lem-extension-manager
+  (sbcl-package->clasp-package sbcl-lem-extension-manager))
+
 (define-public sbcl-lem-mailbox
   (let ((commit "12d629541da440fadf771b0225a051ae65fa342a")
         (revision "0"))
