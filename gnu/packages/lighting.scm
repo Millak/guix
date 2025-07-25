@@ -50,31 +50,29 @@
         (base32 "0mbf5dc309pqg9ckqgk2kh9p3mf9vqsjkxnwjzqw7yzzf17ij3zk"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list bison
-           cppunit
-           flex
-           pkg-config
-           ;; For git repository bootstrapping.
-           autoconf
-           automake
-           libtool))
-    (inputs
-     (list libftdi
-           libmicrohttpd
-           libusb
-           `(,util-linux "lib")
-           zlib))
-    (propagated-inputs
-     (list protobuf))       ; for pkg-config --libs libola
+    (native-inputs (list bison
+                         cppunit
+                         flex
+                         pkg-config
+                         ;; For git repository bootstrapping.
+                         autoconf
+                         automake
+                         libtool))
+    (inputs (list libftdi libmicrohttpd libusb
+                  `(,util-linux "lib") zlib))
+    (propagated-inputs (list protobuf)) ;for pkg-config --libs libola
     (arguments
      (list
       ;; G++ >= 4.8 macro expansion tracking requires lots of memory, causing
       ;; build to fail on low memory systems.  We disable that with the
       ;; following configure flags.
-      #:configure-flags #~(list "CXXFLAGS=-ftrack-macro-expansion=0")))
+      ;; We also have to omit: use of std::auto_ptr is deprecated, and template-id not allowed for constructor in C++20
+      #:configure-flags
+      #~(list
+         "CXXFLAGS=-ftrack-macro-expansion=0 -Wno-error=deprecated-declarations -Wno-template-id-cdtor")))
     (synopsis "Framework for controlling entertainment lighting equipment")
-    (description "The Open Lighting Architecture is a framework for lighting
+    (description
+     "The Open Lighting Architecture is a framework for lighting
 control information.  It supports a range of protocols and over a dozen USB
 devices.  It can run as a standalone service, which is useful for converting
 signals between protocols, or alternatively using the OLA API, it can be used
