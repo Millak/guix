@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -113,6 +113,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
@@ -5374,43 +5375,56 @@ draggable titlebars and borders.")
 ;;; tigervnc-server and xorg-server, it must live here to avoid cyclic module
 ;;; dependencies.
 (define-public tigervnc-client
-  (package
-    (name "tigervnc-client")
-    (version "1.14.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/TigerVNC/tigervnc")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "1n6slj7i93gvf0ji4mb3azycv3c4wqzfd7zlx9260b79jv8jvsln"))
-       (file-name (git-file-name name version))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:tests? #f                   ; tests that do exists are not automated
-       #:phases (modify-phases %standard-phases
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (with-directory-excursion "vncviewer"
-                        (invoke "make" "install")))))))
-    (native-inputs (list gettext-minimal))
-    (inputs
-     (list ;;ffmpeg                     ;TODO: add this for h264 encoding
-           fltk-1.3
-           gnutls
-           libjpeg-turbo
-           libx11
-           libxdamage
-           libxext
-           libxrandr
-           libxtst
-           linux-pam
-           pixman
-           zlib))
-    (home-page "https://tigervnc.org/")
-    (synopsis "High-performance VNC remote desktop client")
-    (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
+  ;; The latest version doesn't build with GCC 14 when enabling ffmpeg
+  ;; support; pick the latest commit from the master branch.
+  (let ((commit "83e9c55d4c6a4a989d056a6ed9613bde74bcc50b")
+        (revision "0"))
+    (package
+      (name "tigervnc-client")
+      (version (git-version "1.15.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/TigerVNC/tigervnc")
+                (commit commit)))
+         (sha256
+          (base32 "1gqa5lbin4qb2k6iapd4hjxk85byaj6zs8vx0az30i7v18jib1c6"))
+         (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "ctest" "-j" (if parallel-tests?
+                                           (number->string (parallel-job-count))
+                                           "1")
+                          "--test-dir" "tests/unit/"))))
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "vncviewer"
+                  (invoke "make" "install")))))))
+      (native-inputs (list appstream gettext-minimal googletest))
+      (inputs
+       (list ffmpeg
+             fltk-1.3
+             gnutls
+             libjpeg-turbo
+             libx11
+             libxdamage
+             libxext
+             libxrandr
+             libxtst
+             linux-pam
+             nettle
+             pixman
+             zlib))
+      (home-page "https://tigervnc.org/")
+      (synopsis "High-performance VNC remote desktop client")
+      (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
 client and server.  @dfn{VNC} is a remote display system that lets you view and
 interact with a virtual desktop environment running on another computer on the
 network.  Client and server may be running on different operating systems and
@@ -5423,7 +5437,7 @@ and @acronym{TLS, Transport-Level Security} encryption.
 
 This package installs only the VNC client (@command{vncviewer}), the application
 used to connect to VNC servers such as the tigervnc-server package.")
-    (license license:gpl2)))
+      (license license:gpl2+))))
 
 (define %tigervnc-client-source (package-source tigervnc-client))
 
