@@ -1020,6 +1020,12 @@ possible, while battling many vicious aliens.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'gcc14
+           ;; See line 84 of
+           ;; https://github.com/NixOS/nixpkgs/pull/369352/files#diff-d4e7b24a8c4ebea52238a5421f96f293576ae2be634cd72c1c1521ee043a01fdR84
+           (lambda _
+             (substitute* "hunt/hunt/otto.c"
+               (("sigpause\\(old_mask\\);") ""))))
          (replace 'configure
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
