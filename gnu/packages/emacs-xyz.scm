@@ -11021,7 +11021,7 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
 (define-public emacs-turtles
   (package
     (name "emacs-turtles")
-    (version "2.0.0")
+    (version "2.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11030,7 +11030,7 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gwnsrfiiizcrcccbs3pyx030wydg6xmh7vy9r7lvbh8hmxghbyg"))))
+                "1cipfgzx8ws79lzx7dfqr9lbirxf5fl332y8m5wz46455421avgi"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/szermatt/turtles")
