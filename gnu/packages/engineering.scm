@@ -1281,7 +1281,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "9.0.2")
+    (version "9.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1289,7 +1289,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1v3nvp5ifa36hx3iw3whlp3j7hiy91fzihc0jc1daw0hnps7qy24"))
+                "19rij2hz79rsmikdbygxzll2l7im5qi3i6phz4sdiagkc5k8b3rb"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
