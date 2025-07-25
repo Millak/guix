@@ -142,6 +142,7 @@ Copyright @copyright{} 2025 Sergio Pastor Pérez@*
 Copyright @copyright{} 2024 Evgeny Pisemsky@*
 Copyright @copyright{} 2025 jgart@*
 Copyright @copyright{} 2025 Artur Wroblewski@*
+Copyright @copyright{} 2025 Edouard Klein@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -43400,6 +43401,148 @@ this value will override the @code{ttl} when used for narinfo requests.
 
 @node Linux Services
 @subsection Linux Services
+
+@subsubheading VFS Mapping Service
+@cindex VFS mapping
+@cindex Virtual File System mapping
+@cindex bind mounts, service
+@cindex overlay mounts, service
+
+The VFS (Virtual File System) Mapping service allows you to bind a file
+name under a different name in the global namespace.  For example, this
+is used by the Shared Cache Service (@pxref{Guix Services}) to bind the
+@samp{root} user's cache over another user's cache.  Another use case
+may be to expose game data from the store over your home directory, and
+apply modifications there.
+
+The service has three @emph{policies} to choose from with respect to
+access rights on the bound over path:
+
+@table @code
+@item 'bind
+Use a bind mount; the ownership and file
+permissions of the destination are the same as the source.
+
+@item 'translate
+Use bindfs to make the destination appear as owned by the target user
+and group.  Writes will be propagated back to the source as if made by
+the original owner.
+
+@item 'overlay
+Use an overlay to make the destination appear as owned by the target
+user and group. Writes will not appear in the source, but will be stored
+in a target-user-owned @samp{-overlay} suffixed directory near the
+destination.
+@end table
+
+Here is an example configuration that exposes the default data directory
+of @command{tuxpaint} under the home directory of @code{alice}.  Any
+modification made by Alice to the brushes or stamps will not propagate
+back to the store (which is read-only anyway).
+
+@lisp
+(operating-system
+  ;; @dots{}
+  (services
+   (cons*
+    (service vfs-mapping-service-type
+             (vfs-mapping-configuration
+              (bindings (list (vfs-mapping
+                               (source      #~(string-append #$tuxpaint
+                                                             "/share/tuxpaint"))
+                               (destination "/home/alice/.tuxpaint")
+                               (user        "alice")
+                               (policy      'overlay)
+                               (name        "alice-tuxpaint-overlay"))))))
+    %desktop-services)))
+@end lisp
+
+The service can also be extended by providing a list of
+@code{vfs-mapping}, allowing for easier splitting of configuration.
+
+@lisp
+(operating-system
+  ;; @dots{}
+  (services
+   (cons*
+    (simple-service 'bob-too-wants-to-hack-on-tuxpaint
+                    vfs-mapping-service-type
+                    (list (vfs-mapping
+                           (source      #~(string-append #$tuxpaint "/share/tuxpaint"))
+                           (destination "/home/bob/.tuxpaint")
+                           (user        "bob")
+                           (policy      'overlay)
+                           (name        "bob-tuxpaint-overlay"))))
+    %desktop-services)))
+@end lisp
+
+The @code{source} file name must exist for the service to start.  The
+@code{destination} directory will be created if it does not exist.
+
+@defvar vfs-mapping-service-type
+Service type for binding a directory in multiple places on the file
+system.
+
+The access rights are either the same in source and destination
+(@code{'bind}), or writes are translated back to the sources as if made
+by the destination's owner (@code{'translate}), or kept in an overlay
+directory near the destination (@code{'overlay}).  The service's value
+must be a @code{vfs-mapping-configuration} object.
+@end defvar
+
+@deftp {Data Type} vfs-mapping-configuration
+Data type representing the configuration of the vfs-mapping service.
+
+@table @asis
+@item @code{bindfs} (default: @code{#~(string-append #$bindfs "/bin/bindfs")})
+The @command{bindfs} command to use for mounting.
+
+@item @code{fusermount} (default: @code{#~(string-append #$fuse-2 "/bin/fusermount")})
+The @command{fusermount} command to use.
+
+@item @code{umount} (default: @code{#~(string-append #$util-linux+udev "/bin/umount")})
+The @command{umount} command to use.
+
+@item @code{bindings} (default: @code{'()})
+A list of @code{vfs-mapping} records.
+
+@end table
+@end deftp
+
+@deftp {Data Type} vfs-mapping
+Data type representing the configuration for a single shared directory.
+
+@table @asis
+@item @code{source}
+The source file name to be shared.
+
+@item @code{destination}
+The destination at which the contents of @code{source} will be exposed.
+
+@item @code{policy} (default: @code{'translate})
+Either @code{'bind} (same ownership and access rights for @code{source}
+and @code{destination}), @code{'translate} (read-write, with writes
+translated as if made by @code{source}'s owner), or @code{'overlay}
+(read-only with @code{user}-owned writable overlay).
+
+@item @code{user} (default: @code{#f})
+The user that will own the @code{destination} directory, and appear to
+own its content.  It must be kept at its default @code{#f} value when
+using the @code{'bind} policy.
+
+@item @code{group} (default: @code{"users"})
+The group that will own the @code{destination} directory, and appear to
+own its content.
+
+@item @code{name} (default: @code{"<src>-[<policy>]-><dst>"})
+The name of the shepherd service to mount and unmount the binding.
+
+@item @code{requirement} (default: @code{'(file-systems user-homes)})
+The list of services that Shepherd ought to provision before trying to
+mount.
+
+@end table
+@end deftp
 
 @cindex oom
 @cindex out of memory killer

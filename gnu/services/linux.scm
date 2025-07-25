@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2025 Edouard Klein <edk@beaver-labs.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages file-systems)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -101,7 +103,11 @@
             zram-device-configuration-compression-algorithm
             zram-device-configuration-memory-limit
             zram-device-configuration-priority
-            zram-device-service-type))
+            zram-device-service-type
+
+            vfs-mapping-service-type
+            vfs-mapping-configuration
+            vfs-mapping))
 
 
 ;;;
@@ -547,7 +553,6 @@ the Linux @code{cachefiles} module.")
 ;;;
 ;;; Zram device
 ;;;
-
 (define-record-type* <zram-device-configuration>
   zram-device-configuration make-zram-device-configuration
   zram-device-configuration?
@@ -628,3 +633,158 @@ placed in a udev rules file."
             (service-extension udev-service-type
                                (compose list zram-device-udev-rule))))
     (description "Creates a zram swap device.")))
+
+
+;;;
+;;; VFS Mapping.
+;;;
+
+(define-record-type* <vfs-mapping>
+  vfs-mapping make-vfs-mapping
+  vfs-mapping?
+  (source        vfs-mapping-source)
+  (destination   vfs-mapping-destination)
+  (policy        vfs-mapping-policy
+                 (default 'translate))
+  (user          vfs-mapping-user
+                 (default #f))
+  (group         vfs-mapping-group
+                 (default "users"))
+  (name          vfs-mapping-name
+                 (default (string-append
+                           (vfs-mapping-source      this-record) "-["
+                           (vfs-mapping-policy      this-record) "]->"
+                           (vfs-mapping-destination this-record)))
+                 (thunked))
+  (requirement   vfs-mapping-requirement
+                 (default '(file-systems user-homes))))
+
+(define (vfs-mapping-policy? x)
+  (and (symbol? x)
+       (or (memq x '(bind translate overlay)))))
+
+(define (path-like? x)
+  (or (string?    x)
+      (file-like? x)
+      (gexp?      x)))
+
+(define (valid-vfs-mapping? x)
+  ;; User must be set iff we are going to use it
+  (and (vfs-mapping? x)
+       (path-like?       (vfs-mapping-source      x))
+       (path-like?       (vfs-mapping-destination x))
+       (string?          (vfs-mapping-name        x))
+       (vfs-mapping-policy? (vfs-mapping-policy   x))
+       (cond
+        ((eq? (vfs-mapping-policy x) 'bind)
+         (not (vfs-mapping-user x)))
+        (#t
+         (and (string? (vfs-mapping-user  x))
+              (string? (vfs-mapping-group x)))))))
+
+(define list-of-vfs-mapping? (list-of valid-vfs-mapping?))
+
+(define-configuration/no-serialization vfs-mapping-configuration
+  (bindfs     (gexp #~(string-append #$bindfs          "/bin/bindfs"))
+              "The bindfs command to use.")
+  (fusermount (gexp #~(string-append #$fuse-2          "/bin/fusermount"))
+              "The fusermount command to use.")
+  (umount     (gexp #~(string-append #$util-linux+udev "/bin/umount"))
+              "The umount command to use.")
+  (bindings   (list-of-vfs-mapping '())
+              "The list of bindings to mount"))
+
+(define vfs-mapping-shepherd-services
+  (match-record-lambda <vfs-mapping-configuration>
+      (fusermount bindfs umount bindings)
+    (map
+     (match-record-lambda <vfs-mapping>
+         (source destination policy user group name requirement)
+       (shepherd-service
+         ;; Each binding has its own service
+         (provision (list (string->symbol name)))
+         ;; Make sure the homes are already present
+         (requirement requirement)
+         (stop
+          #~(lambda args
+              (match (quote #$policy)
+                ('bind      (invoke #$umount          #$destination))
+                ('translate (invoke #$fusermount "-u" #$destination))
+                ('overlay   (begin
+                              ;; First the bindfs
+                              (invoke #$fusermount "-u" #$destination)
+                              ;; then the overlay
+                              (invoke #$umount          #$destination))))
+              #f))
+         (start
+          #~(lambda args
+              (define (mkdir-recursively dir user group)
+                ;; Like mkdir-p, but chown all created directories to the
+                ;; specified user.
+                (unless (eq? dir "/")
+                  (when (not (file-exists? dir))
+                    (mkdir-recursively (dirname dir) user group)
+                    (mkdir dir)
+                    (let* ((pw (getpw user))
+                           (uid (passwd:uid pw))
+                           (gid (passwd:gid pw)))
+                      (chown dir uid gid)))))
+              (mkdir-recursively #$destination #$user #$group)
+              (let* ((stat (stat #$source))
+                     (uid (stat:uid stat))
+                     (gid (stat:gid stat))
+                     (source-user (passwd:name (getpwuid uid)))
+                     (source-group (group:name (getgrgid gid))))
+                (match (quote #$policy)
+                  ('bind
+                   (mount #$source #$destination
+                          #f              ;type
+                          MS_BIND))       ;flags (bind mount)
+                  ('translate
+                   (invoke
+                    #$bindfs
+                    (string-append "--create-for-group=" source-group)
+                    (string-append "--create-for-user="  source-user)
+                    (string-append "--force-user="       #$user)
+                    (string-append "--force-group="      #$group)
+                    "-o" "nonempty"
+                    #$source #$destination))
+                  ('overlay
+                   (let ((overlay (string-append #$destination "-overlay"))
+                         (workdir (string-append #$destination "-workdir")))
+                     (mkdir-recursively overlay #$user #$group)
+                     (mkdir-recursively workdir #$user #$group)
+                     (mount "overlay"   ;source
+                            #$destination
+                            "overlay"      ;type
+                            0              ;flags
+                            (string-append ;options
+                             "lowerdir=" #$source ","
+                             "upperdir=" overlay  ","
+                             "workdir="  workdir))
+                     ;; Remount the target over itself to make it appear as if
+                     ;; owned by user-name and user-group.
+                     (invoke
+                      #$bindfs
+                      (string-append "--create-for-group="  source-group)
+                      (string-append "--create-for-user=" source-user)
+                      (string-append "--force-user="      #$user)
+                      (string-append "--force-group="     #$group)
+                      #$destination #$destination)))))
+              #t))))
+     bindings)))
+
+(define vfs-mapping-service-type
+  (service-type
+   (name 'vfs-mapping)
+   (extensions (list
+                (service-extension shepherd-root-service-type
+                                   vfs-mapping-shepherd-services)))
+   (compose concatenate)
+   (extend (lambda (original extensions)
+             (vfs-mapping-configuration
+              (inherit original)
+              (bindings (append (vfs-mapping-configuration-bindings original)
+                                extensions)))))
+   (default-value (vfs-mapping-configuration))
+   (description "Share or expose a file name under a different name.")))
