@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2016, 2018, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2016, 2018, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -27,6 +27,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages m4)
@@ -56,6 +57,14 @@
                                               "/share/guile/site/2.0")
                                "--disable-static")
        #:phases (modify-phases %standard-phases
+                  (add-before 'build 'set-shell-file-name
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      ;; This code invokes "/bin/sh -c 'm4 -s ...'".
+                      (substitute* "grecs/src/grecs-lex.c"
+                        (("\"/bin/sh\"")
+                         (string-append "\""
+                                        (search-input-file inputs "/bin/sh")
+                                        "\"")))))
                   (add-before 'check 'silence-guile
                     (lambda _
                       ;; Guile is too talkative, which disturbs the test
@@ -65,6 +74,7 @@
     (native-inputs (list groff))
     (inputs
      (list m4                           ;used at run time
+           bash-minimal                 ;likewise
            pcre
            python-wrapper
            guile-2.2
