@@ -1406,6 +1406,37 @@ the medical environment, a CT scan may be aligned with a MRI scan in order to
 combine the information contained in both.")
       (license license:asl2.0))))
 
+;; Provide variant of insight-toolkit (ITK) built with ITK_LEGACY_REMOVE=OFF.
+;; ITK-SNAP version 4.2.2 and 4.4.0-alpha3 require ITK >= 5.4 and for ITK to
+;; be built this way.  Note that enabling Python wrapping forces this option
+;; to ON, so Python wrapping is not enabled for this build.
+(define insight-toolkit-legacy
+  (hidden-package
+   (package/inherit insight-toolkit
+     ;; Unfortunately we cannot remove the 'python output because it is
+     ;; referenced in #:configure-flags below.
+     (name "insight-toolkit-legacy")
+     (arguments
+      (substitute-keyword-arguments (package-arguments insight-toolkit)
+        ((#:configure-flags cf '())
+         #~(filter (lambda (flag)
+                     (not (or
+                           ;; Remove these flags to restore the default
+                           ;; ITK_LEGACY_REMOVE=OFF.
+                           (string=? "-DITK_WRAPPING=ON" flag)
+                           (string=? "-DITK_WRAP_PYTHON=ON" flag)
+                           ;; These flags are now unused.
+                           (string-prefix? "-DPY_SITE_PACKAGES_PATH=" flag)
+                           (string-prefix? "-DITK_USE_PYTHON_LIMITED_API=" flag)
+                           (string-prefix? "-DITK_USE_SYSTEM_CASTXML=" flag)
+                           (string-prefix? "-DITK_USE_SYSTEM_SWIG=" flag))))
+                   #$cf))))
+     (inputs (modify-inputs (package-inputs insight-toolkit)
+               (delete "python")))
+     (native-inputs (modify-inputs (package-native-inputs insight-toolkit)
+                      (delete "castxml")
+                      (delete "swig"))))))
+
 (define-public insight-toolkit-4
   (package (inherit insight-toolkit)
     (version "4.13.2")
