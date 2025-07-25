@@ -269,7 +269,7 @@ many popular formats.")
 (define-public vtk
   (package
     (name "vtk")
-    (version "9.3.0")
+    (version "9.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://vtk.org/files/release/"
@@ -277,7 +277,7 @@ many popular formats.")
                                   "/VTK-" version ".tar.gz"))
               (sha256
                (base32
-                "1s8vd34nhrgnw1bf9zhfn062d53fwq3csjfwvm7lxcr5a8lvkizx"))
+                "1f6ac40db7wkb3bfh31d71qc5gy44cw29r6v4cyxrlm09q4fqm43"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -323,6 +323,7 @@ many popular formats.")
                "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
                "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
                "-DVTK_MODULE_ENABLE_VTK_RenderingExternal=YES" ;for F3D
+               "-DVTK_MODULE_ENABLE_VTK_GUISupportQt=YES"      ;for itk-snap
                "-DVTK_WRAP_PYTHON=ON"
                "-DVTK_PYTHON_VERSION:STRING=3"
 
@@ -381,6 +382,7 @@ many popular formats.")
            ;("pugixml" ,pugixml)
            sqlite
            xorgproto
+           qtbase
            zlib))
     (propagated-inputs
      ;; VTK's 'VTK-vtk-module-find-packages.cmake' calls
