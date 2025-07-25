@@ -36486,11 +36486,25 @@ needed and registers the function with its annotations.")
        (sha256
         (base32 "1kvhvf1p9a5733pqb15k4fhwrfnj5ijsv6yn92mxzaa0zh89z7g3"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest
-                         python-pytest-benchmark
-                         python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-multipledispatch python-toolz))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'versioneer
+            (lambda _
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-benchmark
+           python-setuptools
+           python-versioneer
+           python-wheel))
+    (propagated-inputs
+     (list python-multipledispatch
+           python-toolz))
     (home-page "https://github.com/pythological/unification/")
     (synopsis "Logical unification in Python for solving symbolic expressions")
     (description "This library provides algorithms and data types for solving
