@@ -36593,17 +36593,29 @@ worry whether all dependencies that use LooseVersion have migrated.")
 (define-public python-cons
   (package
     (name "python-cons")
-    (version "0.4.2")
+    (version "0.4.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cons" version))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/pythological/python-cons")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0w9giq196wps7mbm47c4shdzs5yvwvqajqzkim2p92i51sm5qgvm"))))
-    (build-system python-build-system)
+        (base32 "07a1gkvc5p3qi55vczhicz3k5bs1c6jdkw6vrrnxrygg357fabh5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list python-pytest python-toml))
+     (list python-pytest
+           python-setuptools-next
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-logical-unification))
     (home-page "https://github.com/pythological/python-cons")
