@@ -2424,6 +2424,73 @@ or as a TikZ file for use in LaTeX documents;
 factorization routine for quasi-definite linear system.")
     (license license:asl2.0)))
 
+(define-public python-qutip
+  (package
+    (name "python-qutip")
+    (version "5.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "qutip" version))
+       (sha256
+        (base32 "0yjv04q68jqh769shlsm31zzg2v23r64rbzs8gawpj12pip1h9cp"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (use-modules (ice-9 string-fun))
+            ;; Delete cythonized files.  Not all cpp files are generated
+            ;; by Cython, delete only those with accompanying Cython
+            ;; file extensions (.pyx, .pxd).
+            (for-each (lambda (file)
+                        (when (or-map
+                               (lambda (cython-ext)
+                                 (file-exists? (string-replace-substring
+                                                file ".cpp" cython-ext)))
+                               (list ".pyx" ".pxd"))
+                          (delete-file file)))
+                      (find-files "." ".cpp"))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-m" "not flaky and not slow" ;; Ignore flaky and slow tests.
+              ;; All tests below fail with:
+              ;; _flapack.error: (lrwork>=max(24*n,1)||lrwork==-1) failed for
+              ;; 10th keyword lrwork: zheevr:lrwork=1
+              "-k" (string-append
+                    "not " (string-join
+                            (list "test_dicke_function_trace"
+                                  "test_create"
+                                  "test_terminator"
+                                  "test_krylov"
+                                  "test_krylovsolve")
+                            " and not ")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            ;; Run tests in the output to avoid 'partially imported' errors.
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags))))))))
+    (propagated-inputs (list python-numpy python-packaging python-scipy))
+    (native-inputs (list python-cython-3
+                         python-numpy
+                         python-packaging
+                         python-pytest
+                         python-scipy
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://qutip.org")
+    (synopsis "Quantum Toolbox in Python")
+    (description
+     "QuTiP is a library for simulating the dynamics of closed and open quantum
+systems.  It aims to provide numerical simulations of a wide variety of quantum
+mechanical problems, including those with Hamiltonians and/or collapse operators
+with arbitrary time-dependence, commonly found in a wide range of physics
+applications.")
+    (license license:bsd-3)))
+
 (define-public python-ruffus
   (package
     (name "python-ruffus")
