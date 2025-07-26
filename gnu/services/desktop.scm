@@ -2257,7 +2257,6 @@ rules."
            "ktexteditor"
            "kwalletmanager"
            "powerdevil"
-           "bluedevil"
            "kwallet"
            "plasma-firewall"))))
 
