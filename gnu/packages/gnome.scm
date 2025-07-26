@@ -6559,7 +6559,7 @@ for application developers.")
 (define-public grilo-plugins
   (package
     (name "grilo-plugins")
-    (version "0.3.16")
+    (version "0.3.18")
     (source
      (origin
        (method url-fetch)
@@ -6567,7 +6567,7 @@ for application developers.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1jydhk822sigyda3mswn59j9s01dy81f553382i8nsvcb2z4svzy"))))
+        (base32 "0pkclk4rrd7zan0f45nhlll414dhdgr8s3ybs0ic7hqpwx7ffg4f"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal
@@ -6588,10 +6588,10 @@ for application developers.")
            libgdata
            libmediaart
            libsoup
+           localsearch
            python-pygobject
-           totem-pl-parser
-           tracker
-           tracker-miners))
+           tinysparql
+           totem-pl-parser))
     (arguments
      (list
       #:glib-or-gtk? #t
@@ -6606,7 +6606,7 @@ for application developers.")
           (add-before 'configure 'fix-tests
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "tests/tracker3/meson.build"
-                (("'test_tracker3'.*") "")))))))
+                (("'test_tracker3',?") "")))))))
     (home-page "https://wiki.gnome.org/Projects/Grilo")
     (synopsis "Plugins for the Grilo media discovery library")
     (description
