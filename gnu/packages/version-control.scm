@@ -3185,8 +3185,19 @@ patch associated with a particular revision of an RCS file.")
     (build-system gnu-build-system)
     (arguments
      ;; XXX: The test suite looks flawed, and the package is obsolete anyway.
-     '(#:tests? #f
-       #:configure-flags (list "--with-external-zlib")))
+     (list
+       #:tests? #f
+       #:configure-flags
+         #~(list
+             "--with-external-zlib"
+             "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+       #:phases
+         #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-include
+             (lambda _
+               (substitute* "lib/sighandle.c"
+                 (("#ifdef STDC_HEADERS" all)
+                  (string-append "#define STDC_HEADERS 1\n" all))))))))
     (inputs (list zlib nano))                    ; the default editor
     (home-page "https://cvs.nongnu.org")
     (synopsis "Historical centralized version control system")
