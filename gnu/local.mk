@@ -19,7 +19,7 @@
 # Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 # Copyright © 2018, 2019, 2020, 2021, 2022, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Stefan Stefanović <stefanx2ovic@gmail.com>
-# Copyright © 2018, 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2018, 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 # Copyright © 2019, 2020, 2021, 2022, 2024 Guillaume Le Vaillant <glv@posteo.net>
 # Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 # Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -2242,7 +2242,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restartd-update-robust.patch             \
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
-  %D%/packages/patches/retroarch-improved-search-paths.patch	\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
   %D%/packages/patches/rocclr-5.6.0-enable-gfx800.patch		\
   %D%/packages/patches/rocm-bandwidth-test-5.5.0-fix-includes.patch	\

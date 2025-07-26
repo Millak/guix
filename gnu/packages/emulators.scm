@@ -2634,7 +2634,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
 (define-public retroarch-minimal
   (package
     (name "retroarch-minimal")
-    (version "1.20.0")
+    (version "1.21.0")
     (source
      (origin
        (method git-fetch)
@@ -2669,11 +2669,10 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
             ;; This is an old root certificate used in net_socket_ssl_mbed.c,
             ;; not actually from mbedtls.
             (delete-all-but "deps/mbedtls" "cacert.h")))
-       (patches (search-patches "retroarch-improved-search-paths.patch"
-                                "retroarch-unbundle-spirv-cross.patch"))
+       (patches (search-patches "retroarch-unbundle-spirv-cross.patch"))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yc16j3g2g0if64xqd7qr4dza8rw10x0zypwbl92y735825p87qi"))))
+        (base32 "17l3x77vd52g7zq62g3j1jxr51ksmdnxif1qh671qi19fsd19v1r"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2755,7 +2754,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
            openssl
            pulseaudio
            python
-           qtbase-5
+           qtbase
            sdl2
            spirv-cross
            spirv-headers
