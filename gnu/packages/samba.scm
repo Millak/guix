@@ -217,6 +217,38 @@ you use with @code{socket_wrapper}.  It provides the following features:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public resolv-wrapper
+  (package
+    (name "resolv-wrapper")
+    (version "1.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.samba.org/resolv_wrapper.git/")
+              (commit (string-append "resolv_wrapper-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18xarq1hmz7n911hjrfvp5fcgsh9kzxa2v28zgv6afx1a2djqcd9"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DUNIT_TESTING=ON")))
+    (native-inputs (list cmocka socket-wrapper))
+    (home-page "https://cwrap.org/resolv_wrapper.html")
+    (synopsis "Wrapper for DNS name resolving or DNS faking")
+    (description
+     "This package makes it possible on most UNIX platforms to contact your
+own DNS implementation in your test environment.  It requires socket_wrapper to
+be able to contact the server.  Alternatively, the wrapper is able to fake DNS
+queries and return valid responses to your application.  It provides the
+following features:
+@itemize
+@item Redirects name queries to the nameservers specified in your resolv.conf.
+@item Can fake DNS queries using a simple formatted DNS hosts file.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public samba/pinned
   (hidden-package
    (package
