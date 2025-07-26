@@ -342,15 +342,15 @@ collection.  Geeqie was initially based on GQview.")
 (define-public gpicview
   (package
     (name "gpicview")
-    (version "0.2.5")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/lxde/"
-                                  "GPicView%20%28image%20Viewer%29/0.2.x/"
-                                  name "-" version ".tar.xz"))
+              (uri (string-append
+                    "https://github.com/lxde/releases/raw/refs/heads/master/releases/"
+                    name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0hi9v0rdx47nys0wvm9xasdrafa34r5kq6crb074a0ipwmc60iiq"))))
+                "0k7anzzaarzi4dmp4g4hrvy3wmzs2whqkrw6gisq2bnb0gl5dj0b"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--enable-gtk3")))
     (inputs (list gtk+ libjpeg-turbo))
