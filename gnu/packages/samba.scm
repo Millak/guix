@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
@@ -522,6 +524,39 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
                    license:bsd-4
                    license:gpl2+
                    license:public-domain))))
+
+(define-public socket-wrapper
+  (package
+    (name "socket-wrapper")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.samba.org/socket_wrapper.git/")
+              (commit (string-append "socket_wrapper-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0554pmcjrzq0fz35mhmlybc681m4igxyjc7gcwk353a3q49wk4ki"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DUNIT_TESTING=ON")))
+    (native-inputs (list cmocka))
+    (home-page "https://cwrap.org/socket_wrapper.html")
+    (synopsis "Library passing socket communications through unix sockets")
+    (description
+     "This package aims to help client/server software development teams
+willing to gain full functional test coverage.  It makes possible to run
+several instances of the full software stack on the same machine and perform
+locally functional testing of complex network configurations.  It provides the
+following features:
+@itemize
+@item Redirects all network communication to happen over unix sockets.
+@item Support for IPv4 and IPv6 socket and addressing emulation.
+@item Ability to capture network traffic in pcap format.
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public wsdd
   (package
