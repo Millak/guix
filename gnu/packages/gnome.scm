@@ -6511,7 +6511,7 @@ as possible!")
 (define-public grilo
   (package
     (name "grilo")
-    (version "0.3.16")
+    (version "0.3.19")
     (source
      (origin
        (method url-fetch)
@@ -6519,7 +6519,7 @@ as possible!")
                            (version-major+minor version) "/"
                            "grilo-" version ".tar.xz"))
        (sha256
-        (base32 "15mxffs7f7ndzimpvpq4lj48km5p6i9gyqxa4ggq1qpcqpl80ic8"))))
+        (base32 "01k7aclyp1z2mm6d0201zk5vav6bvla7qmkrgmk9q4xb34fwhs88"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
