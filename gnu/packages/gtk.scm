@@ -1987,7 +1987,7 @@ of widgets that are easily extensible via inheritance.  You can create user
 interfaces either in code or with the Glade User Interface designer, using
 libglademm.  There's extensive documentation, including API reference and a
 tutorial.")
-    (home-page "https://gtkmm.org/")
+    (home-page "https://gtkmm.gnome.org/")
     (license
      (list
       ;; Library
