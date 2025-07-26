@@ -217,6 +217,42 @@ you use with @code{socket_wrapper}.  It provides the following features:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public pam-wrapper
+  (package
+    (name "pam-wrapper")
+    (version "1.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.samba.org/pam_wrapper.git/")
+              (commit (string-append "pam_wrapper-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h1n6bgzcvc6zhpi79g76zrl3fypd7q25bc2kdx18x014p9wdr4r"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUNIT_TESTING=ON"
+              (string-append "-DPYTHON_INSTALL_SITEARCH="
+                             #$output "/lib/python"
+                             #$(version-major+minor
+                                (package-version
+                                 (this-package-native-input "python")))
+                             "/site-packages/pypamtest/"))))
+    (native-inputs (list cmocka python))
+    (inputs (list linux-pam))
+    (home-page "https://cwrap.org/pam_wrapper.html")
+    (synopsis "Tool to test PAM applications and PAM modules")
+    (description
+     "This package provides tools to test your PAM application or module.  For
+testing PAM applications, a simple PAM module called @code{pam_matrix} is
+provided.  For testing PAM modules, see the @code{pamtest} library.  One can
+combine it with the CMocka unit testing framework or use the provided Python
+bindings to write tests for modules in Python.")
+    (license license:bsd-3)))
+
 (define-public resolv-wrapper
   (package
     (name "resolv-wrapper")
