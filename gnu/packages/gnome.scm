@@ -3128,7 +3128,7 @@ API.")
   (package
     (inherit libpeas)
     (name "libpeas")
-    (version "2.0.5")
+    (version "2.0.7")
     (source
      (origin
        (method url-fetch)
@@ -3137,7 +3137,7 @@ API.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1pg6km41bp9ayr6z9pi40nc6mkw2ccdxkcdsvl9lxd9isxrjyvrp"))))
+         "1jcyfs912h29xpnj3fd2mk7pr1mljs61vhdpypphj88xfrlrv6hy"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libpeas)
        ((#:configure-flags flags #~(list))
