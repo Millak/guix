@@ -9,6 +9,7 @@
 ;;; Copyright © 2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,7 +48,7 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xml)
   #:use-module (guix gexp)
-  #:use-module (guix build-system python)
+  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix utils)
