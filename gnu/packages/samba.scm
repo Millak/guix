@@ -176,6 +176,47 @@ The library is small, thread safe, and written in portable ANSI C with no
 external dependencies.")
     (license license:x11)))
 
+(define-public nss-wrapper
+  (package
+    (name "nss-wrapper")
+    (version "1.1.16")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.samba.org/nss_wrapper.git/")
+              (commit (string-append "nss_wrapper-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kwlylml18f65drwrph6w90ilp66c20dywjssxscmwhf2jwwfpya"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; XXX: There are two failing tests, most likely because they need
+      ;; some networking abilities (getaddinfo_[service|null]).
+      ;; Disabled tests completely because there's not easy way to disable
+      ;; specific tests using CMocka.
+      #:tests? #f
+      #:configure-flags #~(list "-DUNIT_TESTING=OFF")))
+    (native-inputs (list cmocka libxcrypt uid-wrapper))
+    (home-page "https://cwrap.org/nss_wrapper.html")
+    (synopsis "Wrapper for the user, group and hosts NSS API")
+    (description
+     "There are projects that need to be able to create, modify, and delete
+Unix users.  Others just switch user IDs to interact with the system on behalf
+of another user (e.g. a user space file server).  To be able to test
+applications like these, one needs to grant privileges to modify the passwd
+and group files.  With this package it is possible to define your own passwd
+and group files to be used the software while it is under test.  It also
+allows you to create a hosts file to set up name resolution for the addresses
+you use with @code{socket_wrapper}.  It provides the following features:
+@itemize
+@item Provides information for user and group accounts.
+@item Network name resolution using a hosts file.
+@item Loading and testing of NSS modules.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public samba/pinned
   (hidden-package
    (package
