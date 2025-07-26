@@ -9608,7 +9608,7 @@ open-source FPS of its kind.")
 (define-public frotz
   (package
     (name "frotz")
-    (version "2.54")
+    (version "2.55")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -9619,7 +9619,7 @@ open-source FPS of its kind.")
                           "frotz/frotz-" version ".tar.gz")))
               (sha256
                (base32
-                "1vsfq9ryyb4nvzxpnnn40k423k9pdy8k67i8390qz5h0vmxw0fds"))))
+                "0wfqhxwgjwhgnjh1byjzsfj3mqhy5hialngyb53p5jjbz4pr3mp3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests
