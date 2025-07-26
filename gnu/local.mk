@@ -542,6 +542,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/orange.scm			\
   %D%/packages/orpheus.scm			\
   %D%/packages/ots.scm				\
+  %D%/packages/oyacc.scm			\
   %D%/packages/package-management.scm		\
   %D%/packages/pantheon.scm			\
   %D%/packages/parallel.scm			\
