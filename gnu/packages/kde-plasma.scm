@@ -72,6 +72,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages multiprecision)
@@ -315,6 +316,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kcmutils
                   kidletime
                   libostree ; required by flatpak
+                  markdown
                   packagekit-qt6
                   purpose
                   qt5compat
