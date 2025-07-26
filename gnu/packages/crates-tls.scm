@@ -465,7 +465,7 @@ version of AWS-LC.")
          (add-after 'unpack 'set-home-directory
            (lambda _
              (setenv "HOME" "/tmp"))))))
-    (native-inputs (list cmake-minimal go perl))
+    (native-inputs (list cmake-minimal go-1.23 perl))
     (home-page "https://github.com/aws/aws-lc-rs")
     (synopsis
      "AWS-LC is a general-purpose cryptographic library (FIPS version)")
