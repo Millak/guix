@@ -1264,7 +1264,7 @@ It has miners for Facebook, Flickr, Google, ownCloud and SkyDrive.")
 (define-public gssdp
   (package
     (name "gssdp")
-    (version "1.6.3")
+    (version "1.6.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1272,7 +1272,7 @@ It has miners for Facebook, Flickr, Google, ownCloud and SkyDrive.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0iil7wgix0nzhf3i2w6g1wjqly49r9rsffca97ai9kr2vfpvbv9g"))))
+                "0ck04svd0cfh7wzydh1wykpw5rsra8aa5xml2dl3w7angzxzv5zz"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
