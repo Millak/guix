@@ -1839,7 +1839,7 @@ generate the various User Experience (UX) environments.")
 (define-public libretro-core-info
   (package
     (name "libretro-core-info")
-    (version "1.20.0")
+    (version "1.21.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1848,7 +1848,7 @@ generate the various User Experience (UX) environments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rfvp0lkv99jgpfyb9pp6vrh1i1974p3lckh93y1bibdizyxmwjg"))))
+                "12yramra6hd33g094krygq2a5h7mjkh0nh5d8qny4b6f61fxaxwk"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan #~'(("." "lib/libretro/"
