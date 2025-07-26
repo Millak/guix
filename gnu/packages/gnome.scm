@@ -6618,7 +6618,7 @@ discovery protocols.")
 (define-public totem
   (package
     (name "totem")
-    (version "43.1")
+    (version "43.2")
     (source
      (origin
        (method url-fetch)
@@ -6627,7 +6627,7 @@ discovery protocols.")
                                   "totem-" version ".tar.xz"))
        (sha256
         (base32
-         "0vcyfna0z58s9h8h3pb0pqmlrx8j097ymr7zndf9hi34khg2js2n"))))
+         "197606ffjwlr4j566bjwlwrw6zzmjyj4hj7i0jk9afxrzcq7s00b"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin")             ;for 'glib-mkenums'
