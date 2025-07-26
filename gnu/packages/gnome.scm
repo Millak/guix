@@ -7403,7 +7403,7 @@ jQuery.Syntax JavaScript libraries.")
 (define-public yelp
   (package
     (name "yelp")
-    (version "42.2")
+    (version "42.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7411,8 +7411,8 @@ jQuery.Syntax JavaScript libraries.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0jxckvzmp3lzg62wrdp7f3c8hw6zbkwd0sy65ir9q259hw3zvid2"))))
-    (build-system glib-or-gtk-build-system)
+                "18w95bfhq3d364af1qqb63rgaixkrl7xk0x079x6m7lscwic9k16"))))
+    (build-system meson-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
