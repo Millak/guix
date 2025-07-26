@@ -9707,7 +9707,7 @@ of lore accompanying everything from planets to equipment.")
 (define-public frotz-dumb-terminal
   (package
     (name "frotz-dumb-terminal")
-    (version "2.44")
+    (version "2.55")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -9718,8 +9718,9 @@ of lore accompanying everything from planets to equipment.")
                           "frotz/frotz-" version ".tar.gz")))
               (sha256
                (base32
-                "1v735xr3blznac8fnwa27s1vhllx4jpz7kw7qdw1bsfj6kq21v3k"))))
+                "0wfqhxwgjwhgnjh1byjzsfj3mqhy5hialngyb53p5jjbz4pr3mp3"))))
     (build-system gnu-build-system)
+    (native-inputs (list pkg-config which))
     (arguments
      `(#:tests? #f                      ; there are no tests
        #:phases
@@ -9727,7 +9728,7 @@ of lore accompanying everything from planets to equipment.")
          (delete 'configure)
          (replace 'build
            (lambda _
-             (invoke "make" "dumb")))
+             (invoke "make" (string-append "CC=" ,(cc-for-target)) "dumb")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
