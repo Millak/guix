@@ -319,7 +319,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
      "HarfBuzz is an OpenType text shaping engine.")
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))
-    (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
+    (home-page "https://github.com/harfbuzz/harfbuzz")))
 
 (define-public libdatrie
   (package
