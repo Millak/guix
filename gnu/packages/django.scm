@@ -59,6 +59,46 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml))
 
+(define-public daphne
+  (package
+    (name "daphne")
+    (version "4.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "daphne" version))
+       (sha256
+        (base32 "1crircpk2g26y02q8xmxlyb5wh86hqr7q7aly7fpmnhz19q8x2az"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; AssertionError("Could not find site-packages in sys.path")
+      ;; This test checks for the presence of fd_endpoint.py in the Pytest
+      ;; store path, but it is in Daphne's path.
+      #:test-flags #~(list "-k" "not test_fd_endpoint_plugin_installed")))
+    (propagated-inputs (list python-asgiref
+                             python-autobahn
+                             ;; Twisted plugins should be propagated from
+                             ;; python-twisted.
+                             python-pyopenssl ; twisted plugin
+                             python-service-identity ; twisted plugin
+                             python-twisted))
+    (native-inputs (list python-django
+                         python-pytest
+                         python-pytest-asyncio
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/django/daphne")
+    (synopsis "Django ASGI (HTTP/WebSocket) server")
+    (description "Daphne is a HTTP, HTTP2 and WebSocket protocol server for
+@url{https://github.com/django/asgiref/blob/main/specs/asgi.rst,ASGI} and
+@url{https://github.com/django/asgiref/blob/main/specs/www.rst,ASGI-HTTP},
+developed to power Django Channels.
+
+It supports automatic negotiation of protocols; there's no need for URL
+prefixing to determine WebSocket endpoints versus HTTP endpoints.")
+    (license license:bsd-3)))
+
 (define-public python-django-4.2
   (package
     (name "python-django")
