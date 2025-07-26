@@ -85,6 +85,40 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml))
 
+(define-public camv-rnd
+  (package
+    (name "camv-rnd")
+    (version "1.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://repo.hu/projects/camv-rnd/"
+                           "releases/camv-rnd-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1dp1vj5rpxlddx40paa9i727c92is3bz6z6pa0y6dy2nsjcm86fs"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; The configure script doesn't tolerate most of our configure
+            ;; flags.
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              (setenv "LIBRND_PREFIX" #$(this-package-input "librnd"))
+              (invoke "./configure" (string-append "--prefix=" #$output)))))))
+    (inputs (list librnd))
+    (home-page "http://repo.hu/projects/route-rnd/")
+    (synopsis "Viewer for electronic boards in CAM file formats")
+    (description
+     "@code{Camv-rnd} is a viewer for @acronym{PCB, Printed Circuit Board}
+supporting gerber, excellon and g-code.  It is part of the RiNgDove EDA
+suite.")
+    (license license:gpl2+)))
+
 (define-public comedilib
   (package
     (name "comedilib")
