@@ -95,22 +95,20 @@ implementations.")
        (sha256
         (base32
          "1fanjdmd8727kk74x5404vi8v7s4kpq48l583d12fsi4xvsfb8vi"))))
-    (inputs
-     `(("gtk+-2" ,gtk+-2)
-       ("imlib2" ,imlib2)
-       ("libglade" ,libglade)
-       ("openbox" ,openbox)
-       ("startup-notification" ,startup-notification)
-       ("libsm" ,libsm)
-       ("librsvg" ,(librsvg-for-system))
-       ("libxft" ,libxft)))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+    (inputs (list gtk+-2
+                  imlib2
+                  libglade
+                  libsm
+                  librsvg
+                  libxft
+                  openbox
+                  startup-notification))
+    (native-inputs (list gettext-minimal pkg-config))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-nls")))
-    (home-page "http://openbox.org/wiki/ObConf:About")
+     (list
+       #:configure-flags (list "--enable-nls")))
+    (home-page "https://openbox.org/obconf")
     (synopsis "Openbox configuration tool")
     (description
      "Obconf is a tool for configuring the Openbox window manager.
