@@ -1936,8 +1936,8 @@ physical device and the RetroPad virtual controller.")
   ;; audited for newly added items, with the snippet allow-list updated
   ;; accordingly, due to various items lacking license information or being
   ;; non-free (see: https://github.com/libretro/slang-shaders/issues/150).
-  (let ((commit "a8e35920c5a53448bf6ce78dfe4575485a20a41f")
-        (revision "0"))
+  (let ((commit "82d91f7daf81a41ece49644d2a26b2a40228be61")
+        (revision "1"))
     (package
       (name "libretro-slang-shaders")
       (version (git-version "0" revision commit))
@@ -2604,7 +2604,7 @@ physical device and the RetroPad virtual controller.")
                 "edge-smoothing/scalefx/shaders/old/scalefx.slangp"))))
          (sha256
           (base32
-           "0r45p61nhi44f7ka5dvcabin7q2l25liyhgynm159pwlpwxz83nv"))))
+           "0wmvmpgayizr5444qfxr27zyn4r1yngjfvxfipa0vcrmazw6f6yd"))))
       (build-system gnu-build-system)
       (arguments
        (list #:tests? #f                ;no test suite
