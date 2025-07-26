@@ -558,6 +558,43 @@ following features:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public uid-wrapper
+  (package
+    (name "uid-wrapper")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.samba.org/uid_wrapper.git/")
+              (commit (string-append "uid_wrapper-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1921vw95v7wv8c7zf6q5dqvbnkgbhsx37f8a0jswqd0qpp3zvvsy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DUNIT_TESTING=ON")))
+    (native-inputs (list cmocka))
+    (home-page "https://cwrap.org/uid_wrapper.html")
+    (synopsis "Testing tool to fake privilege separation")
+    (description
+     "Some projects, such as a file server, need privilege separation to be
+able to switch to the user who owns the files and do file operations on their
+behalf.  This package convincingly lies to the application, letting it believe
+it is operating as root and even switching between UIDs and GIDs as
+needed.  You can start any application making it believe it is running as
+root.  This package provides the following features :
+@itemize
+@item Allows uid switching as a normal user.
+@item Start any application making it believe it is running as root.
+@item Support for user/group changing in the local thread using the syscalls
+(like glibc).
+@item Intercepts @code{seteuid} and related calls and simulates them in a way
+transparent to the application.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public wsdd
   (package
     (name "wsdd")
