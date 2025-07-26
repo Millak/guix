@@ -666,7 +666,7 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
 (define-public socket-wrapper
   (package
     (name "socket-wrapper")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -675,22 +675,23 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
               (commit (string-append "socket_wrapper-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0554pmcjrzq0fz35mhmlybc681m4igxyjc7gcwk353a3q49wk4ki"))))
+        (base32
+          "1bwvvfismcvkmld593nb89ryb0pxjav3a5hzvls5lg52xg6yv8v9"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags #~(list "-DUNIT_TESTING=ON")))
     (native-inputs (list cmocka))
     (home-page "https://cwrap.org/socket_wrapper.html")
-    (synopsis "Library passing socket communications through unix sockets")
+    (synopsis "Library passing socket communications through Unix sockets")
     (description
-     "This package aims to help client/server software development teams
-willing to gain full functional test coverage.  It makes possible to run
-several instances of the full software stack on the same machine and perform
-locally functional testing of complex network configurations.  It provides the
-following features:
+     "This package aims to help client-server software development teams
+achieve full functional test coverage.  It makes it possible to run several
+instances of the full software stack on the same machine to functionally
+test complex network configurations locally.  It provides the following
+features:
 @itemize
-@item Redirects all network communication to happen over unix sockets.
+@item Redirects all network communication to happen over Unix sockets.
 @item Support for IPv4 and IPv6 socket and addressing emulation.
 @item Ability to capture network traffic in pcap format.
 @end itemize")
