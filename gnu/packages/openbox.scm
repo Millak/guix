@@ -107,7 +107,9 @@ implementations.")
     (build-system gnu-build-system)
     (arguments
      (list
-       #:configure-flags (list "--enable-nls")))
+       #:configure-flags
+         #~(list "--enable-nls"
+                 "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (home-page "https://openbox.org/obconf")
     (synopsis "Openbox configuration tool")
     (description
