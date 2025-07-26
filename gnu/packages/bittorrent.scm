@@ -81,6 +81,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -90,7 +91,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public transmission
   (package
@@ -630,19 +632,42 @@ the following features:
            python-twisted
            python-zope-interface))
     (native-inputs
-     (list intltool python-setuptools python-wheel))
+     (list intltool
+           python-pytest
+           python-pytest-twisted
+           python-setuptools
+           python-wheel
+           xorg-server-for-tests))
     (native-search-paths
      (list $SSL_CERT_DIR
            $SSL_CERT_FILE))
-    ;; TODO: Enable tests.
-    ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
-    ;; started, some of the tests still fail.  There are likely some tests
-    ;; that require a network connection.
     (arguments
      (list
-      #:tests? #f
+      #:test-flags
+      #~(list "-m" "not internet and not slow" ;; Ignore these markers.
+              "-k" (string-append "not "
+                                  (string-join
+                                   ;; Tests below require a running daemon.
+                                   (list "TestClient"
+                                         "TestJSON"
+                                         "TestJSONCustomUserCase"
+                                         "TestRPCRaiseDelugeErrorJSON"
+                                         "TestConsoleScriptEntryWithDaemon"
+                                         ;; These need a connection.
+                                         "TestWebAPI"
+                                         "TestWebServer"
+                                         ;; These failed with AssertionError.
+                                         "test_is_interface_name"
+                                         "test_is_interface")
+                                   " and not ")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Setup X server for tests and a writable HOME.
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0")
+              (setenv "HOME" "/tmp")))
           (add-before 'wrap 'wrap-deluge
             (lambda _
               (for-each
