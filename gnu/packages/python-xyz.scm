@@ -1933,7 +1933,7 @@ HoloViews, and Datashader.")
 (define-public python-colored
   (package
     (name "python-colored")
-    (version "1.4.4")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1942,10 +1942,17 @@ HoloViews, and Datashader.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "196ins0m7f90xz5dw764dlx060ziqbcydqzzq40b4ir5858baf3r"))))
+                "00332xdjw5fcj5wx848693355nvlgcf8qmpwkvz3rngfg1q5bxa6"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;the tests are not run automatically
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests expect ANSI escape codes for colors.
+              (setenv "FORCE_COLOR" "1"))))))
+    (native-inputs (list python-flit-core python-pytest))
     (home-page "https://gitlab.com/dslackw/colored")
     (synopsis "Simple library for color and formatting to terminal")
     (description "This is a very simple Python library for color and
