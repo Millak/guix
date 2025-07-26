@@ -99,6 +99,44 @@ It supports automatic negotiation of protocols; there's no need for URL
 prefixing to determine WebSocket endpoints versus HTTP endpoints.")
     (license license:bsd-3)))
 
+(define-public python-channels
+  (package
+    (name "python-channels")
+    (version "4.2.2")
+    (source
+     (origin
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/django/channels")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x7w29qpj2acrzf8hcgymsyr5gk3aj2wkbvlwcr01ygd6as8h7hz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-asgiref python-django))
+    ;; Channels develops and maintains Daphne but any other ASGI server can be
+    ;; used, so keep it in native-inputs for tests.
+    (native-inputs (list daphne
+                         python-async-timeout
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-django
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/django/channels")
+    (synopsis "Async, event-driven capabilities on Django")
+    (description
+     "Channels wraps Django's native asynchronous view support, allowing Django
+projects to handle not only HTTP, but protocols that require long-running
+connections too - WebSockets, MQTT, chatbots, amateur radio, and more.  It does
+this while preserving Django's synchronous nature, allowing you to choose how
+you write your code - synchronous, fully asynchronous, or a mixture of both.
+
+Channels also bundles this event-driven architecture with @emph{channel layers},
+a system that allows you to easily communicate between processes, and separate
+your project into different processes.")
+    (license license:bsd-3)))
+
 (define-public python-django-4.2
   (package
     (name "python-django")
