@@ -7199,7 +7199,7 @@ almost all of them.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "48.0")
+    (version "48.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -7207,7 +7207,7 @@ almost all of them.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "102zq0p18nxjf8mnsqqalsf8f0m31mvir41ncj8v00xdzggzdlf9"))))
+                "1d5i8s9sz9wi3agns1vi911qqv352psmpvnxld97jg2rsqm5arhg"))))
     (build-system meson-build-system)
     (arguments
      (list
