@@ -506,9 +506,23 @@ useful when it is desired to reformat numbers.
         (base32 "0z4ibnd2zzya489vl84cfh82bmdwdhf0isf1myqwrs3s9s0vqyyn"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:configure-flags #~(list "--disable-dependency-tracking")
+     (list #:configure-flags
+           #~(list "--disable-dependency-tracking"
+                   "CFLAGS=-g -O2 -Wno-error=implicit-int")
            #:phases
            #~(modify-phases %standard-phases
+               (add-before 'build 'gcc14
+                 (lambda _
+                   (substitute* "uniname.c"
+                     (("#include <unistd.h>" all)
+                       (string-append all "\n#include <ctype.h>")))
+                   (substitute* "unifuzz.c"
+                     (("#include <unistd.h>" all)
+                       (string-append all "\n#include <time.h>"))
+                     (("^Emit") "void Emit"))
+                   (substitute* "putu8.c"
+                     (("void" all)
+                       (string-append "#include <stdio.h>\n" all)))))
                (add-after 'build 'fix-paths
                  (lambda* (#:key outputs inputs #:allow-other-keys)
                    (let ((out (assoc-ref outputs "out"))
