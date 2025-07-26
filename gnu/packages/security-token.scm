@@ -20,7 +20,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2025 Maxim Cournoyer <maximguixotic@coop>
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -353,6 +353,43 @@ one-time-password (OTP) YubiKey against Yubico’s servers.  See the Yubico
 website for more information about Yubico and the YubiKey.")
     (home-page "https://developers.yubico.com/yubico-c-client/")
     (license license:bsd-2)))
+
+(define-public libp11
+  (package
+    (name "libp11")
+    (version "0.4.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/OpenSC/libp11")
+                    (commit (string-append "libp11-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sjd3jxpyp61d85n4drmw9rf3bh7hwhrplr5nw6lmcpr2xr4gqds"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static"
+                   (string-append "--with-enginesdir="
+                                     #$output "/lib/engines-3")
+                   (string-append "--with-modulesdir="
+                                  #$output "/lib/ossl-modules"))))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/OpenSC/libp11")
+    (synopsis "PKCS#11 wrapper library")
+    (description "This package provides two libraries:
+@table @code
+@item libp11
+provides a higher-level (compared to the PKCS#11 library) interface to access
+PKCS#11 objects.  It is designed to integrate with applications that use
+OpenSSL.
+@item pkcs11prov
+OpenSSL provider module that allows accessing PKCS#11 modules in a
+semi-transparent way.
+@end table")
+    (license license:lgpl2.1+)))
 
 (define-public opensc
   (package
