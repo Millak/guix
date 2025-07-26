@@ -180,30 +180,6 @@ easily and conveniently compare two binary files.  It is based on Ncurses
 and is themeable.")
     (license license:gpl2+)))
 
-(define-public ht
-  (package
-    (name "ht")
-    (version "2.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://sourceforge.net/projects/hte/files/ht-source/"
-                    name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0w2xnw3z9ws9qrdpb80q55h6ynhh3aziixcfn45x91bzrbifix9i"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list lzo ncurses))
-    (synopsis "Viewer, editor, and analyzer for executable binaries")
-    (description
-     "ht is a terminal-based program to view, edit, and analyze any file, but
-with a special focus on executable binaries.  Its goal is to combine the
-low-level functionality of a debugger with the usability of an @dfn{Integrated
-Development Environment} (IDE).")
-    (home-page "https://hte.sourceforge.net/")
-    (license license:gpl2)))
-
 ;; NOTE: The install target of imhex-pattern-language falls short in a few areas
 ;; that make this package difficult to use outside of ImHex.  Neither header
 ;; files nor package information (using e.g. pkg-config or CMake files) are
