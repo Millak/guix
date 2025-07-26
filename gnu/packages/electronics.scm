@@ -919,6 +919,40 @@ netlists from the drawn schematic, allowing the simulation of the circuit.")
     (home-page "https://xschem.sourceforge.io/stefan/index.html")
     (license license:gpl2+)))
 
+(define-public sch-rnd
+  (package
+    (name "sch-rnd")
+    (version "1.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://repo.hu/projects/sch-rnd/"
+                           "releases/sch-rnd-" version ".tar.gz"))
+       (sha256
+        (base32
+         "07a1ik0rpsa5cscg9l7i5rnipx76543s7cdnkg802747rral7yj5"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; The configure script doesn't tolerate most of our configure
+            ;; flags.
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              (setenv "LIBRND_PREFIX" #$(this-package-input "librnd"))
+              (invoke "./configure" (string-append "--prefix=" #$output)))))))
+    (inputs (list librnd))
+    (home-page "http://repo.hu/projects/sch-rnd/")
+    (synopsis "Scriptable editor of schematics for electronics boards")
+    (description
+     "@code{Sch-rnd} is a standalone and workflow agnostic schematics capture
+tool for @acronym{PCB, Printed Circuit Board}, part of the RiNgDove EDA
+suite.")
+    (license license:gpl2+)))
+
 (define-public sigrok-cli
   (package
     (name "sigrok-cli")
