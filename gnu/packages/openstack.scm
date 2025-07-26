@@ -26,6 +26,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages openstack)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
@@ -50,8 +51,6 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix utils)
-  #:use-module ((guix licenses)
-                #:select (asl2.0))
   #:use-module (guix packages)
   #:use-module (srfi srfi-1))
 
@@ -87,7 +86,7 @@ commands such as those of @command{subversion} and @command{git}, where the
 main program handles some basic argument parsing and then invokes a
 sub-command to do the work.  It uses plugins to define sub-commands, output
 formatters, and other extensions.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-cliff-bootstrap
   (hidden-package
@@ -142,7 +141,7 @@ formatters, and other extensions.")
       "This package provides a collection of Python deprecation patterns and
 strategies that help you collect your technical debt in a non-destructive
 manner.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-hacking
   (package
@@ -175,7 +174,7 @@ manner.")
      "Python-hacking is a set of flake8 plugins that test and enforce the
 @uref{http://docs.openstack.org/developer/hacking/, OpenStack style
 guidelines}.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-mox3
   (package
@@ -219,7 +218,7 @@ guidelines}.")
       "Mox3 is an unofficial port of the @uref{https://code.google.com/p/pymox/,
 Google mox framework} to Python 3.  It was meant to be as compatible
 with mox as possible, but small enhancements have been made.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-openstackdocstheme
   (package
@@ -247,7 +246,7 @@ with mox as possible, but small enhancements have been made.")
     (description
      "This package provides themes and extensions for Sphinx for publishing
 to docs.openstack.org and developer.openstack.org.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-os-service-types
   (package
@@ -290,7 +289,7 @@ service-type aliases.  The data is in JSON and the latest data should always
 be used.  This simple library exists to allow for easy consumption of the
 data, along with a built-in version of the data to use in case network access
 is for some reason not possible and local caching of the fetched data.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-os-service-types-bootstrap
   (hidden-package
@@ -342,7 +341,7 @@ is for some reason not possible and local caching of the fetched data.")
     (description
       "Os-testr provides developers with a testr wrapper and an output filter
   for subunit.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-stevedore
   (package
@@ -387,7 +386,7 @@ mechanism by building on top of setuptools entry points.  The code for managing
 entry points tends to be repetitive, though, so stevedore provides manager
 classes for implementing common patterns for using dynamically loaded
 extensions.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-stevedore-bootstrap
   (hidden-package
@@ -478,7 +477,7 @@ extensions.")
 OpenStack cluster.  Tempest has batteries of tests for OpenStack API
 validation, scenarios, and other specific tests useful in validating an
 OpenStack deployment.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-tempest-lib
   (package
@@ -525,7 +524,7 @@ OpenStack deployment.")
     (description
      "Tempest-lib is a functional testing library for OpenStack.  It provides
 common features used in Tempest.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 
 ;;;
@@ -595,7 +594,7 @@ common features used in Tempest.")
     (description "The Oslo Concurrency Library provides utilities for safely
 running multi-thread, multi-process applications using locking mechanisms and
 for running external processes.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-oslo-config
   (package
@@ -649,7 +648,7 @@ for running external processes.")
     (description
      "The Oslo configuration API supports parsing command line arguments and
 .ini style configuration files.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-oslo-context
   (package
@@ -690,7 +689,7 @@ for running external processes.")
       "The Oslo context library has helpers to maintain useful information
 about a request context.  The request context is usually populated in the WSGI
 pipeline and used by various modules such as logging.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-oslo-i18n
   (package
@@ -719,7 +718,7 @@ pipeline and used by various modules such as logging.")
      "The oslo.i18n library contain utilities for working with
 internationalization (i18n) features, especially translation for text strings
 in an application or library.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-oslo-i18n-bootstrap
   (hidden-package
@@ -776,7 +775,7 @@ in an application or library.")
     "The oslo.log (logging) configuration library provides standardized
 configuration for all OpenStack projects.  It also provides custom formatters,
 handlers and support for context specific logging (like resource id’s etc).")
-  (license asl2.0)))
+  (license license:asl2.0)))
 
 (define-public python-oslo-log-bootstrap
   (hidden-package
@@ -825,7 +824,7 @@ handlers and support for context specific logging (like resource id’s etc).")
     (description
       "The oslo.serialization library provides support for representing objects
 in transmittable and storable formats, such as JSON and MessagePack.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-reno
   (package
@@ -867,7 +866,7 @@ in transmittable and storable formats, such as JSON and MessagePack.")
     (synopsis "Release notes manager")
     (description "Reno is a tool for storing release notes in a git repository
 and building documentation from them.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-oslosphinx
   (package
@@ -901,7 +900,7 @@ and building documentation from them.")
     (synopsis "OpenStack sphinx extensions and theme")
     (description "This package provides themes and extensions for Sphinx
 documentation from the OpenStack project.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-oslotest
   (package
@@ -927,7 +926,7 @@ documentation from the OpenStack project.")
     (synopsis "Oslo test framework")
     (description "The Oslo Test framework provides common fixtures, support
 for debugging, and better support for mocking results.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-oslotest-bootstrap
   (hidden-package
@@ -993,7 +992,7 @@ for debugging, and better support for mocking results.")
       "The @code{oslo.utils} library provides support for common utility type
 functions, such as encoding, exception handling, string manipulation, and time
 handling.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-keystoneauth1
   (package
@@ -1057,7 +1056,7 @@ handling.")
 and service requests within the OpenStack ecosystem.  It is designed for use
 in conjunction with the existing OpenStack clients and for simplifying the
 process of writing new clients.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-keystoneclient
   (package
@@ -1130,7 +1129,7 @@ supports token-based authN with user/service authZ, and is scalable to support
 OAuth, SAML, and OpenID in future versions.  Out of the box, Keystone uses
 SQLite for its identity store database, with the option to connect to external
 LDAP.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-swiftclient
   (package
@@ -1176,7 +1175,7 @@ data that best fit this type of storage model are virtual machine images, photo
 storage, email storage and backup archiving.  Having no central \"brain\" or
 master point of control provides greater scalability, redundancy and
 permanence.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-git-review
   (package
@@ -1210,7 +1209,7 @@ permanence.")
     (description
      "Git-review is a command-line tool that helps submitting Git branches to
 Gerrit for review, or fetching existing ones.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-requestsexceptions
   (package
@@ -1241,7 +1240,7 @@ library.  This makes some operations difficult, such as suppressing the
 “insecure platform warning” messages that urllib emits.  This package is a
 simple library to find the correct path to exceptions in the requests library
 regardless of whether they are bundled or not.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-openstacksdk
   (package
@@ -1335,4 +1334,4 @@ regardless of whether they are bundled or not.")
 applications to work with OpenStack clouds.  The SDK aims to provide a
 consistent and complete set of interactions with OpenStack’s many services,
 along with complete documentation, examples, and tools.")
-    (license asl2.0)))
+    (license license:asl2.0)))
