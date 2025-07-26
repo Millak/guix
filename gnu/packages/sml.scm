@@ -47,13 +47,19 @@
                 "1s7lpnxg826r2lm2c81j9a61zwljy2ybkqwadjiwrfi0hmbczn89"))))
     (build-system gnu-build-system)
     (inputs
-     (list gmp libffi libx11 libxt))
+     (list gmp libffi libx11 libxt motif))
     (arguments
      '(#:configure-flags
        (list "--with-gmp"
              "--with-x")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-config-h
+           (lambda _
+             ;; courtesy: https://github.com/NixOS/nixpkgs/pull/372200
+             (call-with-port (open-file "config.h.in" "a")
+               (lambda (out)
+                 (display "\n#define _Static_assert static_assert\n" out)))))
          (add-after 'build 'build-compiler
            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
              (define flags
