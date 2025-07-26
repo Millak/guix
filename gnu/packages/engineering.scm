@@ -654,35 +654,35 @@ optimizer; and it can produce photorealistic and design review images.")
     (license license:gpl2+)))
 
 (define-public pcb-rnd
-  (package (inherit pcb)
+  (package
     (name "pcb-rnd")
-    (version "3.1.1")
+    (version "3.1.7b")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://repo.hu/projects/pcb-rnd/releases/"
-                                  "pcb-rnd-" version ".tar.gz"))
+              (uri (string-append "http://repo.hu/projects/pcb-rnd/"
+                                  "releases/pcb-rnd-" version ".tar.gz"))
               (sha256
                (base32
-                "0szcsp2049wh3wslv7743wbjqllrmphi07yz0933sz4vf6f1c8dg"))))
+                "1djsa0w53l6nvhwv28rlhpva55ir9n3xdvjgnjj8fgvcmrqlzrsl"))))
+    (build-system glib-or-gtk-build-system)
     (arguments
      (list
-      #:tests? #false                   ;no check target
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'cc-is-gcc
-            (lambda _ (setenv "CC" #$(cc-for-target))))
           (replace 'configure
-            ;; The configure script doesn't tolerate most of our configure flags.
+            ;; The configure script doesn't tolerate most of our configure
+            ;; flags.
             (lambda _
+              (setenv "CC" #$(cc-for-target))
               (setenv "LIBRND_PREFIX" #$(this-package-input "librnd"))
-              (invoke "sh" "configure"
-                      (string-append "--prefix=" #$output)))))))
-    (inputs
-     (modify-inputs (package-inputs pcb)
-       (append librnd)))
+              (invoke "./configure" (string-append "--prefix=" #$output)))))))
+    (inputs (list librnd))
     (home-page "http://repo.hu/projects/pcb-rnd/")
-    (description "PCB RND is a fork of the GNU PCB circuit board editing tool
-featuring various improvements and bug fixes.")))
+    (synopsis "Modular layout editor")
+    (description "@code{Pcb-rnd} is a @acronym{Printed Circuit Board} layout
+editor, part of the RiNgDove EDA suite.")
+    (license license:gpl2+)))
 
 (define-public fastcap
   (package
