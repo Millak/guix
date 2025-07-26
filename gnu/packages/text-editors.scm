@@ -232,117 +232,112 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
       (license license:expat))))
 
 (define-public lem
-  (let ((commit "0025e1c196b50fbf6b8a97f8b9ef986f8d316cdf")
-        (revision "8"))
-    (package
-      (name "lem")
-      (version (git-version "2.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/lem-project/lem/")
-               (commit commit)))
-         (sha256
-          (base32 "06hd0n66q69nr15ypdmwlwl6m9l2pzj6fym7dm8v2zp165pgr7s1"))
-         (file-name (git-file-name name version))
-         (snippet
-          #~(begin
-              (use-modules (guix build utils))
-              (delete-file-recursively "roswell")
-              ;; Delete precompiled shared object files.
-              (delete-file-recursively "extensions/terminal/lib")))))
-      (build-system asdf-build-system/sbcl)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-shared-object-files
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((libvterm-lib (assoc-ref inputs "libvterm"))
-                       (lib-dir (string-append libvterm-lib "/lib"))
-                       (shared-lib-dir (string-append (assoc-ref outputs "out")
-                                                      "/lib"))
-                       (shared-lib (string-append shared-lib-dir
-                                                  "/terminal.so")))
-
-                  (substitute* "extensions/terminal/ffi.lisp"
-                    (("terminal.so") shared-lib)))))
-            (add-after 'create-asdf-configuration 'build-program
-              (lambda* (#:key outputs #:allow-other-keys)
-                (build-program
-                 (string-append (assoc-ref outputs "out") "/bin/lem")
-                 outputs
-                 #:dependencies '("lem-ncurses" "lem-sdl2")
-                 #:entry-program '((lem:main) 0))))
-            (add-after 'build 'build-terminal-library
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((libvterm-lib (assoc-ref inputs "libvterm"))
-                       (lib-dir (string-append libvterm-lib "/lib"))
-                       (shared-lib-dir (string-append (assoc-ref outputs "out")
-                                                      "/lib"))
-                       (shared-lib (string-append shared-lib-dir
-                                                  "/terminal.so")))
-                  (mkdir-p shared-lib-dir)
-                  (invoke #$(cc-for-target)
-                          "extensions/terminal/terminal.c"
-                          "-L" lib-dir "-lvterm"
-                          "-Wl,-Bdynamic"
-                          "-o" shared-lib
-                          "-shared"
-                          "-fPIC"
-                          "-lutil")))))))
-      (native-inputs
-       (list sbcl-cl-ansi-text
-             sbcl-rove
-             sbcl-trivial-package-local-nicknames))
-      (inputs
-       (list
-        libvterm
-        sbcl-alexandria
-        sbcl-trivia
-        sbcl-trivial-gray-streams
-        sbcl-trivial-types
-        sbcl-cl-ppcre
-        sbcl-closer-mop
-        sbcl-iterate
-        sbcl-lem-mailbox
-        sbcl-inquisitor
-        sbcl-babel
-        sbcl-bordeaux-threads
-        sbcl-yason
-        sbcl-log4cl
-        sbcl-split-sequence
-        sbcl-cl-str
-        sbcl-dexador
-        sbcl-3bmd
-        sbcl-micros
-        sbcl-lisp-preprocessor
-        sbcl-trivial-ws
-        sbcl-trivial-open-browser
-        sbcl-sdl2
-        sbcl-sdl2-ttf
-        sbcl-sdl2-image
-        sbcl-trivial-main-thread
-        sbcl-cffi
-        sbcl-cl-charms
-        sbcl-cl-setlocale
-        sbcl-log4cl
-        sbcl-jsonrpc
-        sbcl-usocket
-        sbcl-quri
-        sbcl-cl-change-case
-        sbcl-async-process
-        sbcl-cl-iconv
-        sbcl-esrap
-        sbcl-parse-number
-        sbcl-cl-package-locks
-        sbcl-slime-swank
-        sbcl-trivial-utf-8))
-      (home-page "http://lem-project.github.io/")
-      (synopsis "Integrated IDE/editor for Common Lisp")
-      (description "Lem is a Common Lisp editor/IDE with high expansibility.")
-      (license license:expat))))
+  (package
+    (name "lem")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lem-project/lem/")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "0qkgs6xnbbnyjh9i1zp9l5iw6zj4hlb2b42b272pbmxw6pd3zp4a"))
+       (file-name (git-file-name name version))
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    (delete-file-recursively "roswell")
+                    ;; Delete precompiled shared object files.
+                    (delete-file-recursively "extensions/terminal/lib")))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-shared-object-files
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((libvterm-lib (assoc-ref inputs "libvterm"))
+                     (lib-dir (string-append libvterm-lib "/lib"))
+                     (shared-lib-dir (string-append (assoc-ref outputs "out")
+                                                    "/lib"))
+                     (shared-lib (string-append shared-lib-dir "/terminal.so")))
+                (substitute* "extensions/terminal/ffi.lisp"
+                  (("terminal.so")
+                   shared-lib)))))
+          (add-after 'create-asdf-configuration 'build-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              (build-program (string-append (assoc-ref outputs "out")
+                                            "/bin/lem")
+                             outputs
+                             #:dependencies '("lem-ncurses" "lem-sdl2")
+                             #:entry-program '((lem:main)
+                                               0))))
+          (add-after 'build 'build-terminal-library
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((libvterm-lib (assoc-ref inputs "libvterm"))
+                     (lib-dir (string-append libvterm-lib "/lib"))
+                     (shared-lib-dir (string-append (assoc-ref outputs "out")
+                                                    "/lib"))
+                     (shared-lib (string-append shared-lib-dir "/terminal.so")))
+                (mkdir-p shared-lib-dir)
+                (invoke #$(cc-for-target)
+                        "extensions/terminal/terminal.c"
+                        "-L"
+                        lib-dir
+                        "-lvterm"
+                        "-Wl,-Bdynamic"
+                        "-o"
+                        shared-lib
+                        "-shared"
+                        "-fPIC"
+                        "-lutil")))))))
+    (native-inputs (list sbcl-cl-ansi-text sbcl-rove
+                         sbcl-trivial-package-local-nicknames))
+    (inputs (list libvterm
+                  sbcl-alexandria
+                  sbcl-trivia
+                  sbcl-trivial-gray-streams
+                  sbcl-trivial-types
+                  sbcl-cl-ppcre
+                  sbcl-closer-mop
+                  sbcl-iterate
+                  sbcl-lem-mailbox
+                  sbcl-inquisitor
+                  sbcl-babel
+                  sbcl-bordeaux-threads
+                  sbcl-yason
+                  sbcl-log4cl
+                  sbcl-split-sequence
+                  sbcl-cl-str
+                  sbcl-dexador
+                  sbcl-3bmd
+                  sbcl-micros
+                  sbcl-lisp-preprocessor
+                  sbcl-trivial-ws
+                  sbcl-trivial-open-browser
+                  sbcl-sdl2
+                  sbcl-sdl2-ttf
+                  sbcl-sdl2-image
+                  sbcl-trivial-main-thread
+                  sbcl-cffi
+                  sbcl-cl-charms
+                  sbcl-cl-setlocale
+                  sbcl-log4cl
+                  sbcl-jsonrpc
+                  sbcl-usocket
+                  sbcl-quri
+                  sbcl-cl-change-case
+                  sbcl-async-process
+                  sbcl-cl-iconv
+                  sbcl-esrap
+                  sbcl-parse-number
+                  sbcl-cl-package-locks
+                  sbcl-slime-swank
+                  sbcl-trivial-utf-8))
+    (home-page "http://lem-project.github.io/")
+    (synopsis "Integrated IDE/editor for Common Lisp")
+    (description "Lem is a Common Lisp editor/IDE with high expansibility.")
+    (license license:expat)))
 
 (define-public vis
   (package
