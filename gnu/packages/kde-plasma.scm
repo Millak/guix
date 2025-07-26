@@ -291,6 +291,8 @@ Breeze is the default theme for the KDE Plasma desktop.")
                              (string-append (getcwd)
                                             ":" (getenv "XDG_DATA_DIRS")))))))))
     (native-inputs (list extra-cmake-modules pkg-config))
+    ;; TODO: Add packagekit-qt6 when a guix backend for packagekit will be
+    ;; available.
     (inputs (list appstream-qt6
                   attica
                   fwupd ; optional
@@ -317,7 +319,6 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kidletime
                   libostree ; required by flatpak
                   markdown
-                  packagekit-qt6
                   purpose
                   qcoro-qt6
                   qt5compat
