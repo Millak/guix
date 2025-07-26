@@ -47,7 +47,7 @@
                 "1s7lpnxg826r2lm2c81j9a61zwljy2ybkqwadjiwrfi0hmbczn89"))))
     (build-system gnu-build-system)
     (inputs
-     (list gmp lesstif libffi libx11 libxt))
+     (list gmp libffi libx11 libxt))
     (arguments
      '(#:configure-flags
        (list "--with-gmp"

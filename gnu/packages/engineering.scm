@@ -67,6 +67,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system guile)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -568,29 +569,28 @@ features.")))
 (define-public librnd
   (package
     (name "librnd")
-    (version "4.0.2")
+    (version "4.3.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.repo.hu/projects/librnd/releases/"
-                                  "librnd-" version ".tar.bz2"))
+              (uri (string-append "http://www.repo.hu/projects/librnd/"
+                                  "releases/librnd-" version ".tar.bz2"))
               (sha256
                (base32
-                "0z578x3sd8yjfbhivy1hz4hlgiy43qq6x7mnby872plpm08vgqxz"))))
-    (build-system gnu-build-system)
+                "1qjv6gg9fb3rpvr1y9l5nbzz2xk2sa4nqz0dgwvds5hc1bmd97mf"))))
+    (build-system glib-or-gtk-build-system)
     (arguments
      (list
       #:tests? #false                   ;no check target
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'cc-is-gcc
-            (lambda _ (setenv "CC" #$(cc-for-target))))
+          ;; The configure script doesn't tolerate most of our configure
+          ;; flags.
           (replace 'configure
-            ;; The configure script doesn't tolerate most of our configure flags.
             (lambda _
-              (invoke "sh" "configure"
-                      (string-append "--prefix=" #$output)))))))
+              (setenv "CC" #$(cc-for-target))
+              (invoke "./configure" (string-append "--prefix=" #$output)))))))
     (inputs
-     (list gd gtk glib glu))
+     (list gd glib glu gtk gtkglext libepoxy))
     (native-inputs
      (list pkg-config))
     (home-page "http://repo.hu/projects/librnd/")
