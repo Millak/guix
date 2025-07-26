@@ -288,7 +288,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
                      (setenv "XDG_DATA_DIRS"
                              (string-append (getcwd)
                                             ":" (getenv "XDG_DATA_DIRS")))
-                     (invoke "ctest" "-E" "knsbackendtest")))))))
+                     (invoke "ctest" "-E" "flatpaktest")))))))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list appstream-qt6
                   attica
@@ -314,6 +314,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kdeclarative
                   kcmutils
                   kidletime
+                  libostree ; required by flatpak
                   packagekit-qt6
                   purpose
                   qt5compat
@@ -321,7 +322,6 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   qtsvg
                   qcoro-qt6))
     ;; -- The following features have been disabled:
-    ;; * Ostree, Library to manage ostree repository. Required to build the rpm-ostree backend
     ;; * RpmOstree, rpm-ostree binary to manage the system. Required to build the rpm-ostree backend
     ;;
     ;; -- The following OPTIONAL packages have not been found:
