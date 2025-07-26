@@ -253,6 +253,35 @@ combine it with the CMocka unit testing framework or use the provided Python
 bindings to write tests for modules in Python.")
     (license license:bsd-3)))
 
+(define-public priv-wrapper
+  (package
+    (name "priv-wrapper")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.samba.org/priv_wrapper.git/")
+              (commit (string-append "priv_wrapper-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04ycb3fckcz3ck1wbg9gh6x63ydkpjyc1v4340l6sdw90w7rlr66"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DUNIT_TESTING=ON")))
+    (native-inputs (list cmocka))
+    (home-page "https://cwrap.org/priv_wrapper.html")
+    (synopsis "Library to drop privileges")
+    (description
+     "This package provides a library to disable resource limits and other
+privilege dropping, i.e. disabling @code{chroot}, @code{prctl},
+@code{pledge} and @code{setrlmit} system calls.  This package aims to help
+running processes which are dropping privileges or are restricting resources
+in test environments.  A disabled call always succeeds (i.e. returns 0) and
+does nothing.")
+    (license license:bsd-3)))
+
 (define-public resolv-wrapper
   (package
     (name "resolv-wrapper")
