@@ -131,6 +131,93 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial))
 
+(define-public ares
+  (package
+    (name "ares")
+    (version "145")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ares-emulator/ares")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "074kkgrbiga7grkwhnhw51ih7krxgf91m9zrrwjkj4q1hdjhlz5a"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ; No tests
+           #:cmake cmake-next           ; Requires cmake >= 3.28
+           #:configure-flags
+           #~(list "-DARES_BUILD_LOCAL=FALSE"
+                   "-DARES_BUILD_OFFICIAL=TRUE"
+                   "-DARES_BUNDLE_SHADERS=FALSE"
+                   "-DARES_SKIP_DEPS=TRUE"
+                   (string-append "-DARES_VERSION_OVERRIDE=" #$version))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'avoid-libglvnd
+                 (lambda _
+                   ;; XXX: Our mesa doesn't have libglvnd support.
+                   (substitute* "ruby/cmake/os-linux.cmake"
+                     (("OpenGL::GLX") "OpenGL::GL")))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list alsa-lib
+           ao
+           gtk+
+           gtksourceview-3
+           libx11
+           libxv
+           mesa                         ; OpenGL
+           sdl3
+           vulkan-loader
+           zlib))
+    (synopsis "Multi-system accuracy-focused emulator")
+    (description
+     "@command{ares} is a multi-system emulator that began development
+on 2004-10-14.  It is a descendant of higan and bsnes, and focuses on accuracy
+and preservation.
+Here are some supported systems:
+@itemize
+@item Arcade
+@item Atari 2600
+@item Bandai Wonderswan
+@item Bandai Wonderswan Color
+@item Benesse Pocket Challenge V2
+@item Colecovision
+@item MSX 1 and 2
+@item Nec Pc Engine Turbografx Cd
+@item Nec Pc Engine Supergrafx
+@item Nec Pc Engine Turbografx
+@item Nichibutsu My Vision
+@item Nintendo Famicom Disk System
+@item Nintendo Game Boy
+@item Nintendo Game Boy Advance
+@item Nintendo Game Boy Color
+@item Nintendo Nes Famicom
+@item Nintendo Nintendo 64
+@item Nintendo Nintendo 64DD
+@item Nintendo Satellaview
+@item Nintendo Snes Super Famicom
+@item Nintendo Sufami Turbo
+@item Sega 32x
+@item Sega Game Gear
+@item Sega Master System Mark Iii
+@item Sega Mega Cd
+@item Sega Mega Drive Genesis
+@item Sega Sg 1000
+@item Sinclair Zx Spectrum
+@item Snk Neo Geo Aesmvs
+@item Snk Neo Geo Pocket
+@item Snk Neo Geo Pocket Color
+@item Sony Playstation
+@end itemize
+")
+    (home-page "https://ares-emu.net/")
+    (license license:isc)))
+
 (define-public vice
   (package
     (name "vice")
