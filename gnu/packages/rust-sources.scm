@@ -172,7 +172,7 @@ transliterating them.  It supports Emoji and Chinese.")
 UTF-32 support.")
      (license (list license:expat license:unlicense)))))
 
-(define-public rust-pipewire-for-niri
+(define-public rust-pipewire-0.8.0.fd3d8f7
   (let ((commit "fd3d8f7861a29c2eeaa4c393402e013578bb36d9")
         (revision "0"))
     (hidden-package
@@ -200,13 +200,13 @@ UTF-32 support.")
                     (lambda _
                       (substitute* "libspa/Cargo.toml"
                         (("^pipewire.*") "")))))))
-       (inputs (cargo-inputs 'rust-pipewire-for-niri))
+       (inputs (cargo-inputs 'rust-pipewire-0.8.0.fd3d8f7))
        (home-page "https://pipewire.org/")
        (synopsis "Rust bindings for PipeWire")
        (description "This package provides Rust bindings for PipeWire.")
        (license license:expat)))))
 
-(define-public rust-pubgrub-for-uv
+(define-public rust-pubgrub-0.3.0.b70cf70
   (let ((commit "b70cf707aa43f21b32f3a61b8a0889b15032d5c4")
         (revision "0"))
     (hidden-package
@@ -231,7 +231,7 @@ UTF-32 support.")
        (arguments
         (list #:skip-build? #t
               #:cargo-package-crates ''("version-ranges" "pubgrub")))
-       (inputs (cargo-inputs 'rust-pubgrub-for-uv))
+       (inputs (cargo-inputs 'rust-pubgrub-0.3.0.b70cf70))
        (home-page "https://github.com/pubgrub-rs/pubgrub")
        (synopsis "PubGrub version solving algorithm")
        (description
@@ -443,7 +443,7 @@ UTF-32 support.")
 @code{rustc-demangle} crate.")
      (license (list license:expat license:asl2.0)))))
 
-(define-public rust-smithay-for-niri
+(define-public rust-smithay-0.6.0.ede2707
   (let ((commit "ede27079f45eeb7c21796e22f3bc25b741b024ea")
         (revision "2"))
     (hidden-package
@@ -463,7 +463,7 @@ UTF-32 support.")
        (arguments
         (list #:skip-build? #t
               #:cargo-package-crates ''("smithay" "smithay-drm-extras")))
-       (inputs (cargo-inputs 'rust-smithay-for-niri))
+       (inputs (cargo-inputs 'rust-smithay-0.6.0.ede2707))
        (home-page "https://github.com/Smithay/smithay")
        (synopsis "Smithy for Rust Wayland compositors")
        (description
@@ -574,7 +574,7 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
 intelligence.")
      (license license:expat))))
 
-(define-public rust-web-view-for-alfis
+(define-public rust-web-view-0.7.3.82d7cbc
   (let ((commit "82d7cbce6228b1a964673cc0f22944ad808eab42")
         (revision "0"))
     (hidden-package
@@ -594,7 +594,7 @@ intelligence.")
        (arguments
         (list #:skip-build? #t
               #:cargo-package-crates ''("webview-sys" "web-view")))
-       (inputs (cargo-inputs 'rust-web-view-for-alfis))
+       (inputs (cargo-inputs 'rust-web-view-0.7.3.82d7cbc))
        (home-page "https://github.com/Boscop/web-view")
        (synopsis "Rust bindings for webview.")
        (description
