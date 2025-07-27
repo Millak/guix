@@ -3,6 +3,7 @@
 ;;; Copyright © 2017-2018, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,7 +43,8 @@
             %test-bitlbee
             %test-ngircd
             %test-pounce
-            %test-quassel))
+            %test-quassel
+            %test-mosquitto))
 
 (define (run-xmpp-test name xmpp-service pid-file create-account)
   "Run a test of an OS running XMPP-SERVICE, which writes its PID to PID-FILE."
@@ -592,3 +594,78 @@ OPENSSL:localhost:7000,verify=0 &")
    (name "quassel")
    (description "Connect to a quassel IRC server.")
    (value (run-quassel-test))))
+
+
+;;;
+;;; Mosquitto.
+;;;
+
+(define (run-mosquitto-test)
+  (define os
+    (marionette-operating-system
+     (simple-operating-system (service dhcpcd-service-type)
+                              (service mosquitto-service-type))
+     #:imported-modules (source-module-closure
+                         '((gnu services herd)))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "mosquitto")
+
+          (test-assert "service runs"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'mosquitto))
+             marionette))
+
+          (test-assert "service listens on TCP port 1883"
+            (wait-for-tcp-port 1883 marionette))
+
+          (test-equal "service receives a message"
+            0
+            (marionette-eval
+             '(system* #$(file-append mosquitto "/bin/mosquitto_pub")
+                       "-t" "test-topic"
+                       "-m" "Hello, mosquitto!"
+                       "-r")
+             marionette))
+
+          (test-equal "service returns a message"
+            "Hello, mosquitto!"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 popen)
+                             (ice-9 rdelim))
+                (let* ((port (open-pipe* OPEN_READ
+                                         #$(file-append
+                                            mosquitto
+                                            "/bin/mosquitto_sub")
+                                         "-t" "test-topic"
+                                         "-C" "1"))
+                       (msg (read-line port)))
+                  (close-pipe port)
+                  msg))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "mosquitto-test" test))
+
+(define %test-mosquitto
+  (system-test
+   (name "mosquitto")
+   (description "Test a running Mosquitto MQTT broker.")
+   (value (run-mosquitto-test))))
