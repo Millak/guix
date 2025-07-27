@@ -523,38 +523,6 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
                    license:gpl2+
                    license:public-domain))))
 
-(define-public ppp-2.4.9
-  (package
-    (inherit ppp)
-    (name "ppp")
-    (version "2.4.9")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ppp-project/ppp")
-                    (commit (string-append "ppp-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1bhhksdclsnkw54a517ndrw55q5zljjbh9pcqz1z4a2z2flxpsgk"))))
-         (arguments
-    (list #:tests? #f                    ;; No "check" target
-          #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
-          #:phases
-          #~(modify-phases %standard-phases
-              (add-before 'configure 'patch-Makefile
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((openssl (assoc-ref inputs "openssl"))
-                        (libpcap (assoc-ref inputs "libpcap")))
-                    (substitute* "pppd/Makefile.linux"
-                      (("/usr/include/openssl")
-                       (string-append openssl "/include"))
-                      (("-DPPP_FILTER")
-                       (string-append "-DPPP_FILTER -I" libpcap "/include")))
-                    (substitute* "pppd/pppcrypt.h"
-                      (("des\\.h") "openssl/des.h")))
-                  #t)))))))
-
 (define-public wsdd
   (package
     (name "wsdd")
