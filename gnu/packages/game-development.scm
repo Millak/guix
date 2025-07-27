@@ -3714,7 +3714,8 @@ progresses the level, or you may regenerate tiles as the world changes.")
            #:configure-flags
            #~(list "-DBUILD_SHARED_LIBS=ON"
                    "-DUSE_EXTERNAL_GLFW=ON"
-                   "-DCMAKE_C_FLAGS=-lpulse")
+                   (string-append "-DCMAKE_C_FLAGS=-lpulse "
+                                  "-Wno-error=incompatible-pointer-types"))
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'configure 'configure-miniaudio
