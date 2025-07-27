@@ -13576,15 +13576,18 @@ application and control it as if a human were typing commands.")
 (define-public python-sexpdata
   (package
     (name "python-sexpdata")
-    (version "0.0.3")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sexpdata" version))
        (sha256
         (base32
-         "1q4lsjyzzqrdv64l0pv4ij9nd8gqhvxqcrpxc2xpxs652sk2gj0s"))))
-    (build-system python-build-system)
+         "02f1v96wzqf3jgwbp1fvankszkzvyff53fa4ks7nyxpnc41ppdlj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/jd-boyd/sexpdata")
     (synopsis "S-expression parser for Python")
     (description
