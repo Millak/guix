@@ -342,7 +342,7 @@ software vendors, application developers and computer science researchers.")
 (define-public openmpi-5
   (package
     (inherit openmpi)
-    (version "5.0.7")
+    (version "5.0.8")
     (source
      (origin
        (method url-fetch)
@@ -375,7 +375,7 @@ software vendors, application developers and computer science researchers.")
            ;; documentation.
            (delete-file-recursively "docs/html")))
        (sha256
-        (base32 "1pf25zp9y0ch3vab3ycpjkck4njrsms0sg6zs0s36h3ajc4j17qi"))))
+        (base32 "0jg423bv0gpdmgx6hgxcnpslhq55bfvb1y07axj0y9z7awd1w4sk"))))
 
     (inputs (modify-inputs (package-inputs openmpi)
               ;; As of Open MPI 5.0.X, PMIx is used to communicate
@@ -389,7 +389,10 @@ software vendors, application developers and computer science researchers.")
     (outputs '("out" "debug"))
     (arguments
      (list #:configure-flags
-           #~(list "--enable-mpi-ext=affinity"         ;cr doesn't work
+           #~(list #$(string-append
+                      "CFLAGS=-g -O2"
+                      " -Wno-error=incompatible-pointer-types")
+                   "--enable-mpi-ext=affinity"         ;cr doesn't work
                    "--with-sge"
                    "--disable-static"
 
