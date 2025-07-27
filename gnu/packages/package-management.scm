@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Wojtek Kosior <koszko@koszko.org>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
@@ -1129,6 +1130,37 @@ Coordinator to submit builds and monitor the activity.
 It functions as a Guile library, with the @code{run-bffe-service} procedure in
 the @code{(bffe)} module as the entry point.")
       (license license:gpl3+))))
+
+(define-public pipx
+  (package
+    (name "pipx")
+    (version "1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pipx" version))
+       (sha256
+        (base32 "0q23b1iqs03hbxzr2d7mmspldx6fbqi6s5j54vljnikaw4sf2bbn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI archive
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling))
+    (inputs
+     (list python-argcomplete
+           python-colorama
+           python-packaging
+           python-platformdirs
+           python-tomli
+           python-userpath))
+    (home-page "https://pypa.github.io/pipx/")
+    (synopsis "Install and run Python applications in isolated environments")
+    (description
+     "@code{pipx} is a tool to help you install and run end-user applications
+written in Python.  It's roughly similar to JavaScript's @code{npx}, and
+Trisquel's @code{apt}.")
+    (license license:expat)))
 
 (define-public python-anaconda-client
   (package
