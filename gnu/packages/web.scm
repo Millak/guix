@@ -76,6 +76,7 @@
 ;;; Copyright © 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9537,6 +9538,41 @@ service for a single domain, i.e.  to make your Gemini site available over
 HTTP.  It can proxy to any domain in order to facilitate linking to the rest
 of Geminispace, but it defaults to a specific domain.")
     (license license:gpl3+)))
+
+(define-public maildir-rank-addr
+  (package
+    (name "maildir-rank-addr")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ferdinandyb/maildir-rank-addr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19dhlfb5d8sqayfyv3pj3rnrw3gbkq9vzj7gwcj2g3whx1ayy86y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/ferdinandyb/maildir-rank-addr"))
+    (native-inputs
+     (list go-github-com-emersion-go-message
+           go-github-com-emersion-go-mbox
+           go-github-com-mitchellh-go-homedir
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-golang-org-x-text))
+    (home-page "https://github.com/ferdinandyb/maildir-rank-addr")
+    (synopsis "Generate an addressbook from locally available email")
+    (description
+     "This package implements a functionality to generate a ranked addressbook
+from your locally available email.  It can be used in MUA's like
+@url{http://aerc-mail.org, aerc} or @url{http://www.mutt.org/,mutt} by
+grepping the list.")
+    (license license:expat)))
 
 (define-public libzim
   (package
