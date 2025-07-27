@@ -845,9 +845,6 @@ includes the following features:
      (list python-pytest))
     (propagated-inputs
      (list python-ruamel.yaml.clib))
-    (arguments
-     `(;; TODO: Tests require packaging "ruamel.std.pathlib".
-       #:tests? #f))
     (home-page "https://sourceforge.net/projects/ruamel-yaml/")
     (synopsis "YAML 1.2 parser/emitter")
     (description
@@ -868,7 +865,10 @@ style and key ordering are kept, so you can diff the source.")
        (uri (pypi-uri "ruamel.yaml" version))
        (sha256
         (base32
-         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))))
+         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))
+    (arguments
+     `(;; TODO: Tests require packaging "ruamel.std.pathlib".
+       #:tests? #f))))
 
 (define-public python-ruamel.yaml.clib
   (package
