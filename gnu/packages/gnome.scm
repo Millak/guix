@@ -5183,7 +5183,6 @@ and the GLib main loop, to integrate well with GNOME applications.")
                     "mirror://gnome/sources/libsecret/"
                     (version-major+minor version) "/"
                     "libsecret-" version ".tar.xz"))
-              (patches (search-patches "libsecret-fix-test-paths.patch"))
               (sha256
                (base32
                 "0pnmivbbyh0w3l72bw8mvq1ljbwdy8k01i5d2xb2n2jra13jwibb"))))
