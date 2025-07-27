@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Blake Shaw <blake@nonconstructivism.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,7 +38,7 @@
 (define-public notcurses
   (package
     (name "notcurses")
-    (version "3.0.11")
+    (version "3.0.16")
     (source
      (origin
        (method url-fetch)
@@ -47,10 +48,10 @@
        ;; to find a way to elide the non-free demos with a source 'snippet'.
        (uri (string-append "https://github.com/dankamongmen/notcurses/releases"
                            "/download/v" version "/notcurses_" version
-                           "+dfsg.1.orig.tar.xz"))
+                           "+dfsg.orig.tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "0v5ccfpgaz7qq3b46a0nn7njmcwz74q9ngrs4yp1i36xph1cn6r9"))))
+        (base32 "074pq81rf4jhlrsq12dv44w840lv3kkibaj612gj5wm79wiw7bgk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:make-flags
