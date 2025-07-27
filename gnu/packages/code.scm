@@ -24,6 +24,7 @@
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system go)
   #:use-module (gnu packages)
@@ -85,6 +87,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -605,15 +608,20 @@ functionality such as HTML output.")
 (define-public lcov-cobertura
   (package
     (name "python-lcov-cobertura")
-    (version "1.6")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lcov_cobertura" version))
        (sha256
-        (base32
-         "02ar6yjazlxq4p64cz9gag08bvakmzjrp147jara9wlnlbc96j8g"))))
-    (build-system python-build-system)
+        (base32 "13xmr249c6qygm14gilb0icrsgb35ghsrr14a1zvppmxy9jf5a7g"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel
+           python-xmldiff))
     (home-page "https://eriwen.github.io/lcov-to-cobertura-xml/")
     (synopsis "LCOV to Cobertura XML converter")
     (description
