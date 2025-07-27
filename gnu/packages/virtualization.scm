@@ -3149,7 +3149,7 @@ to host the RISC-V Linux port.")
                (base32
                 "0g0rib62qg81fda8lxsaa7a1ykqy4rl5sq185pdqm9y9xifa8bx5"))))
     (build-system gnu-build-system)
-    (native-inputs (list automake
+    (native-inputs (list automake-1.16.5
                          autoconf
                          gettext-minimal
                          libtool
