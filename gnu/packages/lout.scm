@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2013, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,21 +20,28 @@
 (define-module (gnu packages lout)
   #:use-module (guix licenses)
   #:use-module (guix packages)
-  #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages ghostscript))
 
 (define-public lout
   (package
     (name "lout")
-    (version "3.40")
+    (version "3.43.2")
+
+    ;; The original version at <https://savannah.nongnu.org/projects/lout/> is
+    ;; effectively abandoned, not receiving build fixes and the likes, and
+    ;; most distros have been providing this one instead.
+    (home-page "https://github.com/william8000/lout")
+
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/lout/lout-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gb8vb1wl7ikn269dd1c7ihqhkyrwk19jwx5kd0rdvbk6g7g25ix"))))
+                "0lvk1ffzgydgj4csaclrh3a9nwla061clgf8lda6n47masg12qzi"))))
     (build-system gnu-build-system)     ; actually, just a makefile
     (outputs '("out" "doc"))
     (native-inputs
@@ -114,5 +121,4 @@ extended with definitions which are very much easier to write than troff of
 TeX macros because Lout is a high-level, purely functional language, the
 outcome of an eight-year research project that went back to the
 beginning.")
-    (license gpl3+)
-    (home-page "https://savannah.nongnu.org/projects/lout/")))
+    (license gpl3+)))
