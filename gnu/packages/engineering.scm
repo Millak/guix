@@ -67,7 +67,6 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system guile)
-  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -566,44 +565,6 @@ EDA includes tools for schematic capture, attribute management, bill of
 materials (BOM) generation, netlisting into over 20 netlist formats, analog
 and digital simulation, and printed circuit board (PCB) layout, and many other
 features.")))
-
-(define-public librnd
-  (package
-    (name "librnd")
-    (version "4.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.repo.hu/projects/librnd/"
-                                  "releases/librnd-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1qjv6gg9fb3rpvr1y9l5nbzz2xk2sa4nqz0dgwvds5hc1bmd97mf"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     (list
-      #:tests? #false                   ;no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The configure script doesn't tolerate most of our configure
-          ;; flags.
-          (replace 'configure
-            (lambda _
-              (setenv "CC" #$(cc-for-target))
-              (invoke "./configure" (string-append "--prefix=" #$output)))))))
-    (inputs
-     (list gd glib glu gtk gtkglext libepoxy))
-    (native-inputs
-     (list pkg-config))
-    (home-page "http://repo.hu/projects/librnd/")
-    (synopsis "Two-dimensional CAD engine")
-    (description "This is a flexible, modular two-dimensional CAD engine
-@itemize
-@item with transparent multiple GUI toolkit support;
-@item a flexible, dynamic menu system;
-@item a flexible, dynamic configuration system; and
-@item support for user scripting in a dozen languages.
-@end itemize")
-    (license license:gpl2+)))
 
 (define-public pcb
   (package
