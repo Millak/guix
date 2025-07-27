@@ -103,6 +103,51 @@
 
 ;;; Tools to deal with source code: metrics, cross-references, etc.
 
+(define-public amalgamate
+  (let* ((commit "c91f07eea1133aa184f652b8f1398eaf03586208")
+         (revision "0")
+         (version (git-version "1.1.1" revision commit)))
+    (package
+      (name "amalgamate")
+      (version version)
+      (home-page "https://github.com/edlund/amalgamate")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (sha256
+          (base32
+           "0cllaraw8mxs8q2nr28nhgzkb417gj2wcklqg59w84f4lc78k3yb"))
+         (file-name (git-file-name name version))
+         (modules '((guix build utils)))
+         (snippet
+          '(substitute* "test.sh"
+             (("test_command \"cc -Wall -Wextra -o source.out source.c\"" all)
+              "test_command \"gcc -Wall -Wextra -o source.out source.c\"")))))
+      (build-system gnu-build-system)
+      (inputs (list python-wrapper))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (delete 'build)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin")))
+                 (install-file "amalgamate.py" bin))))
+           (replace 'check
+             (lambda _
+               (invoke "./test.sh"))))))
+      (synopsis "Tool for amalgamating C source and header files")
+      ;; The package is indeed a script file, and the term "amalgamate.py" is
+      ;; used by upstream.
+      (description "amalgamate.py aims to make it easy to use SQLite-style C
+source and header amalgamation in projects.")
+      (license license:bsd-3))))
+
 (define-public automatic-component-toolkit
   (package
     (name "automatic-component-toolkit")
@@ -201,6 +246,35 @@ convoluted, overly long or otherwise difficult to understand.  This
 may help in learning or reviewing unfamiliar code or perhaps
 highlighting your own code that seemed comprehensible when you wrote it.")
     (license license:gpl3+)))
+
+(define-public cscope
+  (package
+    (name "cscope")
+    (version "15.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/cscope/cscope/"
+                           "v" version "/cscope-" version ".tar.gz"))
+       (sha256
+        (base32 "0ngiv4aj3rr35k3q3wjx0y19gh7i1ydqa0cqip6sjwd8fph5ll65"))))
+    (build-system gnu-build-system)
+    (inputs (list ncurses))
+    (arguments
+     `(#:configure-flags
+       ;; Specify the correct ncurses directory to prevent incorrect fallback
+       ;; on SysV curses.
+       (list (string-append "--with-ncurses="
+                            (assoc-ref %build-inputs "ncurses")))))
+    (home-page "https://cscope.sourceforge.net")
+    (synopsis "Tool for browsing source code")
+    (description
+     "Cscope is a text screen based source browsing tool.  Although it is
+primarily designed to search C code (including lex and yacc files), it can
+also be used for C++ code.
+
+Using cscope, you can easily search for where symbols are used and defined.")
+    (license license:bsd-3)))
 
 (define-public global                             ; a global variable
   (package
@@ -490,68 +564,6 @@ features that are not supported by the standard @code{stdio} implementation.")
     ;; slightly different.
     (license (license:non-copyleft
               "http://sourceforge.net/p/ctrio/git/ci/master/tree/README"))))
-
-(define-public universal-ctags
-  (package
-    (name "universal-ctags")
-    (version "6.1.20250525.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/universal-ctags/ctags")
-             (commit (string-append "p" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0nxhmpzkxixb303bsihd5j7n0d29ak2lgnqff920q3dm33y965sy"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove the bundled PackCC and associated build rules.
-           (substitute* "Makefile.am"
-             (("^PACKCC = .*")
-              "PACKCC = packcc\n")
-             (("\\$\\(PACKCC_FILES\\)")
-              "")
-             (("\\$\\(PEG_SRCS\\) \\$\\(PEG_HEADS\\): \\$\\(PACKCC\\)")
-              "$(PEG_SRCS) $(PEG_HEADS):"))
-           (delete-file-recursively "misc/packcc")))))
-    (build-system gnu-build-system)
-    (arguments
-     '(;; Don't use the build-time TMPDIR (/tmp/guix-build-...) at runtime.
-       #:configure-flags '("--enable-tmpdir=/tmp")
-       #:test-target "units"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'make-files-writable
-                    (lambda _
-                      (for-each make-file-writable (find-files "."))))
-                  (add-before 'bootstrap 'patch-misc
-                    (lambda _
-                      ;; The autogen.sh script calls out to these scripts, so
-                      ;; we cannot wait for the patch-source-shebangs phase.
-                      (for-each patch-shebang (find-files "misc"))))
-                  (add-before 'check 'patch-tests
-                    (lambda _
-                      (substitute* "misc/units"
-                        (("SHELL=/bin/sh")
-                         (string-append "SHELL=" (which "sh"))))
-                      (substitute* "Tmain/utils.sh"
-                        (("/bin/echo") (which "echo"))))))))
-    (native-inputs
-     (list autoconf automake packcc perl pkg-config python-docutils))
-    (inputs
-     (list jansson libseccomp libxml2 libyaml pcre2))
-    (home-page "https://ctags.io/")
-    (synopsis "Generate tag files for source code")
-    (description
-     "Universal Ctags generates an index (or tag) file of language objects
-found in source files for many popular programming languages.  This index
-makes it easy for text editors and other tools to locate the indexed items.
-Universal Ctags improves on traditional ctags because of its multilanguage
-support, its ability for the user to define new languages searched by regular
-expressions, and its ability to generate emacs-style TAGS files.")
-    (license license:gpl2+)))
 
 (define-public lcov
   (package
@@ -939,51 +951,6 @@ extensions over the standard utility.")
       (properties '((lint-hidden-cves . ("CVE-2023-40305"
                                          "CVE-2024-0911")))))))
 
-(define-public amalgamate
-  (let* ((commit "c91f07eea1133aa184f652b8f1398eaf03586208")
-         (revision "0")
-         (version (git-version "1.1.1" revision commit)))
-    (package
-      (name "amalgamate")
-      (version version)
-      (home-page "https://github.com/edlund/amalgamate")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url home-page)
-               (commit commit)))
-         (sha256
-          (base32
-           "0cllaraw8mxs8q2nr28nhgzkb417gj2wcklqg59w84f4lc78k3yb"))
-         (file-name (git-file-name name version))
-         (modules '((guix build utils)))
-         (snippet
-          '(substitute* "test.sh"
-             (("test_command \"cc -Wall -Wextra -o source.out source.c\"" all)
-              "test_command \"gcc -Wall -Wextra -o source.out source.c\"")))))
-      (build-system gnu-build-system)
-      (inputs (list python-wrapper))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (install-file "amalgamate.py" bin))))
-           (replace 'check
-             (lambda _
-               (invoke "./test.sh"))))))
-      (synopsis "Tool for amalgamating C source and header files")
-      ;; The package is indeed a script file, and the term "amalgamate.py" is
-      ;; used by upstream.
-      (description "amalgamate.py aims to make it easy to use SQLite-style C
-source and header amalgamation in projects.")
-      (license license:bsd-3))))
-
 (define-public cdecl
   (package
     (name "cdecl")
@@ -1065,35 +1032,6 @@ declarations.  It can also translate C into pseudo-English.  It also handles
 type casts and C++.  It has command-line editing and history with the GNU
 Readline library.")
     (license license:public-domain)))
-
-(define-public cscope
-  (package
-    (name "cscope")
-    (version "15.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/cscope/cscope/"
-                           "v" version "/cscope-" version ".tar.gz"))
-       (sha256
-        (base32 "0ngiv4aj3rr35k3q3wjx0y19gh7i1ydqa0cqip6sjwd8fph5ll65"))))
-    (build-system gnu-build-system)
-    (inputs (list ncurses))
-    (arguments
-     `(#:configure-flags
-       ;; Specify the correct ncurses directory to prevent incorrect fallback
-       ;; on SysV curses.
-       (list (string-append "--with-ncurses="
-                            (assoc-ref %build-inputs "ncurses")))))
-    (home-page "https://cscope.sourceforge.net")
-    (synopsis "Tool for browsing source code")
-    (description
-     "Cscope is a text screen based source browsing tool.  Although it is
-primarily designed to search C code (including lex and yacc files), it can
-also be used for C++ code.
-
-Using cscope, you can easily search for where symbols are used and defined.")
-    (license license:bsd-3)))
 
 (define-public sourcetrail
   (package
@@ -1184,6 +1122,68 @@ that helps you get productive on unfamiliar source code.  It includes support
 for C/C++, providing a graphical means for discovering symbols and their place
 in a project.")
     (license license:gpl3)))
+
+(define-public universal-ctags
+  (package
+    (name "universal-ctags")
+    (version "6.1.20250525.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/universal-ctags/ctags")
+             (commit (string-append "p" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0nxhmpzkxixb303bsihd5j7n0d29ak2lgnqff920q3dm33y965sy"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove the bundled PackCC and associated build rules.
+           (substitute* "Makefile.am"
+             (("^PACKCC = .*")
+              "PACKCC = packcc\n")
+             (("\\$\\(PACKCC_FILES\\)")
+              "")
+             (("\\$\\(PEG_SRCS\\) \\$\\(PEG_HEADS\\): \\$\\(PACKCC\\)")
+              "$(PEG_SRCS) $(PEG_HEADS):"))
+           (delete-file-recursively "misc/packcc")))))
+    (build-system gnu-build-system)
+    (arguments
+     '(;; Don't use the build-time TMPDIR (/tmp/guix-build-...) at runtime.
+       #:configure-flags '("--enable-tmpdir=/tmp")
+       #:test-target "units"
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'make-files-writable
+                    (lambda _
+                      (for-each make-file-writable (find-files "."))))
+                  (add-before 'bootstrap 'patch-misc
+                    (lambda _
+                      ;; The autogen.sh script calls out to these scripts, so
+                      ;; we cannot wait for the patch-source-shebangs phase.
+                      (for-each patch-shebang (find-files "misc"))))
+                  (add-before 'check 'patch-tests
+                    (lambda _
+                      (substitute* "misc/units"
+                        (("SHELL=/bin/sh")
+                         (string-append "SHELL=" (which "sh"))))
+                      (substitute* "Tmain/utils.sh"
+                        (("/bin/echo") (which "echo"))))))))
+    (native-inputs
+     (list autoconf automake packcc perl pkg-config python-docutils))
+    (inputs
+     (list jansson libseccomp libxml2 libyaml pcre2))
+    (home-page "https://ctags.io/")
+    (synopsis "Generate tag files for source code")
+    (description
+     "Universal Ctags generates an index (or tag) file of language objects
+found in source files for many popular programming languages.  This index
+makes it easy for text editors and other tools to locate the indexed items.
+Universal Ctags improves on traditional ctags because of its multilanguage
+support, its ability for the user to define new languages searched by regular
+expressions, and its ability to generate emacs-style TAGS files.")
+    (license license:gpl2+)))
 
 (define-public xenon
   (package
