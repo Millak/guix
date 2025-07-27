@@ -67,6 +67,7 @@
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -881,6 +882,29 @@ expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
     (synopsis "Simple bitmap programming font")
     (description "Terminus Font is a clean, fixed-width bitmap font, designed
 for long periods of working with computers (8 or more hours per day).")
+    (license license:silofl1.1)))
+
+(define-public font-tiktok-sans
+  (package
+    (name "font-tiktok-sans")
+    (version "4.000")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tiktok/TikTokSans")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+          "0mq3dfx8b79w4bdglzjsdrisgrn2kjcbx38p262sxj5nq4iplgjd"))))
+    (build-system font-build-system)
+    (home-page "https://www.tiktok.com/font")
+    (synopsis "TikTok Sans is the default font for TikTok videos")
+    (description
+     "TikTok Sans is the default font used in millions of TikTok videos.
+It supports over 460 languages, and is optimised for high-DPI mobile UI
+typesetting.")
     (license license:silofl1.1)))
 
 (define-public font-adobe-source-han-serif
