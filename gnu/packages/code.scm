@@ -1196,9 +1196,16 @@ in a project.")
        (sha256
         (base32
          "1yj31bqz2bphvvyb0jkas7bxc2rw76rf1csz0mwmvah8pbc3hxaa"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f)) ;test suite not shipped with the PyPI archive
-    (inputs (list python-pyyaml python-radon python-requests))
+    (build-system pyproject-build-system)
+    ;; Test suite not shipped with the PyPI archive; tests in Git require
+    ;; network access.
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools-next))
+    (inputs
+     (list python-pyyaml
+           python-radon
+           python-requests))
     (home-page "https://xenon.readthedocs.org/")
     (synopsis "Monitor code metrics for Python on your CI server")
     (description
