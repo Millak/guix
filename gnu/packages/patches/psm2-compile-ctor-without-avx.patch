@@ -4,7 +4,7 @@ Date: 2025-07-25
 License: gpl3+
 
 diff --git a/opa/Makefile b/opa/Makefile
-index 2692886..368973b 100644
+index 2692886..11a92cb 100644
 --- a/opa/Makefile
 +++ b/opa/Makefile
 @@ -74,6 +74,7 @@ ${TARGLIB}-objs := opa_debug.o opa_time.o \
@@ -15,12 +15,12 @@ index 2692886..368973b 100644
  
  .PHONY: all clean
  IGNORE_DEP_TARGETS = clean
-@@ -84,13 +85,21 @@ install: all
+@@ -84,12 +85,20 @@ install: all
  	@echo "Nothing to do for install."
  
  $(OUTDIR)/%.d:  $(this_srcdir)/%.c
 -	$(CC) $(CFLAGS) $(BASECFLAGS) $(INCLUDES) $< -MM -MF $@ -MQ $(@:.d=.o)
-+	if [ "$<" = "$(this_srcdir)/opa_debug.c" ] || [ "$<" = "$(this_srcdir)/opa_time.c" ]; then \
++	if [ "$<" = "$(this_srcdir)/opa_time.c" ]; then \
 +            $(CC) $(CFLAGS) $(BASECFLAGS_NO_AVX) $(INCLUDES) $< -MM -MF $@ -MQ $(@:.d=.o); \
 +        else \
 +            $(CC) $(CFLAGS) $(BASECFLAGS) $(INCLUDES) $< -MM -MF $@ -MQ $(@:.d=.o); \
@@ -31,7 +31,7 @@ index 2692886..368973b 100644
  
  $(OUTDIR)/%.o: $(this_srcdir)/%.c | ${DEPS}
 -	$(CC) $(CFLAGS) $(BASECFLAGS) $(INCLUDES) -c $< -o $@
-+	if [ "$<" = "$(this_srcdir)/opa_debug.c" ] || [ "$<" = "$(this_srcdir)/opa_time.c" ]; then \
++	if [ "$<" = "$(this_srcdir)/opa_time.c" ]; then \
 +	    $(CC) $(CFLAGS) $(BASECFLAGS_NO_AVX) $(INCLUDES) -c $< -o $@; \
 +        else \
 +	    $(CC) $(CFLAGS) $(BASECFLAGS) $(INCLUDES) -c $< -o $@; \
