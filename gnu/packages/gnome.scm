@@ -8912,64 +8912,78 @@ Cisco's AnyConnect SSL VPN.")
                   (user-accounts . ("nm-openconnect"))))))
 
 (define-public network-manager-fortisslvpn
-  (package
-    (name "network-manager-fortisslvpn")
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://gnome/sources/NetworkManager-fortisslvpn/"
-                    (version-major+minor version)
-                    "/NetworkManager-fortisslvpn-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1ynsqmv8xz1cffnai4hfh0ab0dmlazpv72krhlsv45mm95iy4mdh"))
-              (modules '((guix build utils)))
-              (snippet '(substitute* "Makefile.in"
-                          ;; do not try to make state directory
-                          (("\\$\\(DESTDIR\\)\\$\\(fortisslvpn_statedir\\)")
-                           "")
-                          ;; use state directory of the NetworkManager service
-                          (("\\$\\(fortisslvpn_statedir\\)")
-                           "/var/lib/NetworkManager")))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags '("--enable-absolute-paths" "--localstatedir=/var"
-                           "--with-gtk4=yes")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'configure 'patch-path
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let* ((ovpn (search-input-file inputs
-                                                      "/bin/openfortivpn"))
-                             (pretty-ovpn (string-append "\"" ovpn "\"")))
-                        (for-each (lambda (file)
-                                    (substitute* file
-                                      (("\"/usr/local/bin/openfortivpn\"")
-                                       pretty-ovpn)
-                                      (("\"/usr/bin/openfortivpn\"")
-                                       pretty-ovpn)))
-                                  '("src/nm-fortisslvpn-service.c"
-                                    "properties/nm-fortisslvpn-editor.c"))))))))
-    (native-inputs (list intltool
-                         `(,glib "bin") pkg-config))
-    (inputs (list gtk+
-                  gtk
-                  kmod
-                  libnma
-                  libsecret
-                  network-manager
-                  openfortivpn
-
-                  ;; ppp < 2.5.0 is currently required:
-                  ;; https://gitlab.gnome.org/GNOME/NetworkManager-fortisslvpn/-/commit/084ef529c5fb816927ca54866f66b340265aa9f6
-                  ppp-2.4.9))
-    (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
-    (synopsis "Fortinet SSLVPN plug-in for NetworkManager")
-    (description
-     "This extension of NetworkManager allows it to take care of connections
+  ;; Use the latest commit from the master branch to gain ppp >= 2.5.0
+  ;; support.
+  (let ((commit "0296450f9bb8b3f34e0032103a9c5ba359553320")
+        (revision "0"))
+    (package
+      (name "network-manager-fortisslvpn")
+      (version (git-version "1.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://gitlab.gnome.org/GNOME/NetworkManager-fortisslvpn")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0qgzm60y7kjvsda12m0sckd2v3x4nxf4g9k829sy2sqrmhhai7ws"))
+         (modules '((guix build utils)))
+         (snippet '(substitute* "Makefile.am"
+                     ;; Use state directory of the NetworkManager service.
+                     (("^(fortisslvpn_statedir = ).*" _ head)
+                      (string-append head "/var/lib/NetworkManager"))
+                     ;; Do not try to make state directory.
+                     (("\\$\\(mkinstalldirs).*fortisslvpn_statedir)")
+                      "true")))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "--enable-absolute-paths"
+                "--localstatedir=/var"
+                "--with-gtk4=yes")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'configure 'patch-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((ovpn (search-input-file inputs "/bin/openfortivpn"))
+                       (pretty-ovpn (string-append "\"" ovpn "\"")))
+                  (for-each (lambda (file)
+                              (substitute* file
+                                (("\"/usr/local/bin/openfortivpn\"")
+                                 pretty-ovpn)
+                                (("\"/usr/bin/openfortivpn\"")
+                                 pretty-ovpn)))
+                            '("src/nm-fortisslvpn-service.c"
+                              "properties/nm-fortisslvpn-editor.c"))))))))
+      (native-inputs
+       (list autoconf
+             automake
+             intltool
+             `(,glib "bin")
+             `(,gtk "bin")
+             libtool
+             libxml2
+             pkg-config))
+      (inputs
+       (list gtk+
+             gtk
+             kmod
+             libnma
+             libsecret
+             network-manager
+             openfortivpn
+             ppp))
+      (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
+      (synopsis "Fortinet SSLVPN plug-in for NetworkManager")
+      (description
+       "This extension of NetworkManager allows it to take care of connections
 to virtual private networks (VPNs) via Fortinet SSLVPN.")
-    (license license:gpl2+)
-    (properties `((upstream-name . "NetworkManager-fortisslvpn")))))
+      (license license:gpl2+)
+      (properties `((upstream-name . "NetworkManager-fortisslvpn"))))))
 
 (define-public mobile-broadband-provider-info
   (package
