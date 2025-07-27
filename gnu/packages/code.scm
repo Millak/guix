@@ -607,7 +607,7 @@ functionality such as HTML output.")
 
 (define-public lcov-cobertura
   (package
-    (name "python-lcov-cobertura")
+    (name "lcov-cobertura")
     (version "2.1.1")
     (source
      (origin
