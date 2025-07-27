@@ -654,37 +654,6 @@ and design rule checking.  It also includes an autorouter and a trace
 optimizer; and it can produce photorealistic and design review images.")
     (license license:gpl2+)))
 
-(define-public pcb-rnd
-  (package
-    (name "pcb-rnd")
-    (version "3.1.7b")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://repo.hu/projects/pcb-rnd/"
-                                  "releases/pcb-rnd-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1djsa0w53l6nvhwv28rlhpva55ir9n3xdvjgnjj8fgvcmrqlzrsl"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     (list
-      #:test-target "test"
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'configure
-            ;; The configure script doesn't tolerate most of our configure
-            ;; flags.
-            (lambda _
-              (setenv "CC" #$(cc-for-target))
-              (setenv "LIBRND_PREFIX" #$(this-package-input "librnd"))
-              (invoke "./configure" (string-append "--prefix=" #$output)))))))
-    (inputs (list librnd))
-    (home-page "http://repo.hu/projects/pcb-rnd/")
-    (synopsis "Modular layout editor")
-    (description "@code{Pcb-rnd} is a @acronym{Printed Circuit Board} layout
-editor, part of the RiNgDove EDA suite.")
-    (license license:gpl2+)))
-
 (define-public fastcap
   (package
     (name "fastcap")
