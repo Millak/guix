@@ -3805,6 +3805,8 @@ progresses the level, or you may regenerate tiles as the world changes.")
              #~'("-DBUILD_STATIC=ON" ;don't build runtimes as shared libraries
                  "-DPREFER_SYSTEM_LIBRARIES=ON"
                  "-DCMAKE_EXE_LINKER_FLAGS=-lpulse" ;for miniaudio
+                 "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
+                                                    ;for miniaudio
                  ;; TODO: moon, python, wren
                  "-DBUILD_WITH_FENNEL=ON"
                  "-DBUILD_WITH_JANET=ON"
