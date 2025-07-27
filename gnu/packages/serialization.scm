@@ -873,7 +873,7 @@ style and key ordering are kept, so you can diff the source.")
 (define-public python-ruamel.yaml.clib
   (package
     (name "python-ruamel.yaml.clib")
-    (version "0.2.9")
+    (version "0.2.12")
     (source
       (origin
         ;; pypi release code has cythonized code without corresponding source.
@@ -884,7 +884,7 @@ style and key ordering are kept, so you can diff the source.")
         (file-name (hg-file-name name version))
         (sha256
          (base32
-          "100nyixfikwivsxiwkq2frgbfkqvvl112wkn0sgc57xq0p1s0dv8"))
+          "12ixp46706pl911f6i4wmik8x0j9vnxy2cqx65ixbdl9cnvqva2l"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -896,7 +896,7 @@ style and key ordering are kept, so you can diff the source.")
        #:phases
        (modify-phases %standard-phases
          (delete 'sanity-check) ; Depends on python-ruamel.yaml
-         (add-after 'unpack 'cythonize-code
+         (add-after 'ensure-no-cythonized-files 'cythonize-code
            (lambda _
              (invoke "cython" "_ruamel_yaml.pyx"))))))
     (native-inputs
