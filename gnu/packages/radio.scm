@@ -1590,7 +1590,14 @@ you must extend 'udev-service-type' with this package.  E.g.:
                                                     "/lib/udev/rules.d")
                                      "-DBLADERF_GROUP=dialout"
                                      "-DBUILD_DOCUMENTATION=ON")
-           #:tests? #f)) ; No test suite
+           #:tests? #f ; No test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'gcc-14
+                 (lambda _
+                   (substitute* "host/utilities/bladeRF-fsk/c/src/fir_filter.c"
+                     (("calloc\\(sizeof\\(struct complex_sample\\), chunk_size\\)")
+                      "calloc(1 * sizeof(struct complex_sample), chunk_size)")))))))
     (home-page "https://www.nuand.com/")
     (synopsis "User-space library and utilities for BladeRF SDR")
     (description
