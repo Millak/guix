@@ -1325,7 +1325,8 @@ not likely to change.")
                                (invoke #$(cc-for-target) "notcurses_s7.c"
                                        "-I." "-O2" "-g"
                                        "-shared" "-o" "libnotcurses_s7.so"
-                                       "-lnotcurses-core" "-fPIC")
+                                       "-lnotcurses-core" "-fPIC"
+                                       "-Wno-error=implicit-function-declaration")
                                ;; Need s7.o and ffitest for tests
                                (display "[BUILD] s7.o\n")
                                (invoke #$(cc-for-target) "-c" "s7.c" "-o"
