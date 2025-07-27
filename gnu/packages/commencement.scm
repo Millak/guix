@@ -2529,6 +2529,7 @@ exec " gcc "/bin/" program
               ;; The libstdc++ that libcc1 links against.
               ("libstdc++" ,(match (%current-system)
                                    ("aarch64-linux" (make-libstdc++-boot0 gcc-5))
+                                   ("powerpc-linux" (make-libstdc++-boot0 gcc-5))
                                    ("powerpc64le-linux" (make-libstdc++-boot0 gcc-5))
                                    ("riscv64-linux" (make-libstdc++-boot0 gcc-7))
                                    ("i586-gnu" (make-libstdc++-boot0 gcc-5))
