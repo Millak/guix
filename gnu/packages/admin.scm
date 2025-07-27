@@ -2105,6 +2105,9 @@ through the network interface controller.")
                (base32
                 "1855np7c4b0bqzhf1l1dyzxb90fpnvrirdisajhci5am6als31z9"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~'("CFLAGS=-O2 -g -Wno-implicit-function-declaration")))
     (native-inputs
      (list pkg-config))
     (inputs
