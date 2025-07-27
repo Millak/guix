@@ -451,7 +451,6 @@ gnu/packages/mercury.scm
 gnu/packages/mes.scm
 gnu/packages/messaging.scm
 gnu/packages/mingw.scm
-gnu/packages/moe.scm
 gnu/packages/mold.scm
 gnu/packages/mp3.scm
 gnu/packages/mtools.scm

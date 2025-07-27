@@ -5,12 +5,12 @@
 ;;; Copyright © 2016 José Miguel Sánchez García <jmi2k@openmailbox.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
-;;; Copyright © 2017, 2018, 2020, 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2015, 2017, 2018, 2020, 2022 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.org>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2021, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020-2022 Marius Bakke <marius@gnu.org>
@@ -26,7 +26,7 @@
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022, 2024-2025 jgart <jgart@dismail.de>
-;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2022, 2024 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -1268,6 +1268,33 @@ Octave.  TeXmacs is completely extensible via Guile.")
            qtsvg-5
            qtwayland-5
            sqlite))))
+
+(define-public moe
+  (package
+    (name "moe")
+    (version "1.15")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/moe/moe-"
+                          version ".tar.lz"))
+      (sha256
+       (base32 "0rhakw6qpnhj98cqq9mv7z3yjhwj1nk9gq54bja4fc6fk6qciy21"))))
+    (build-system gnu-build-system)
+    (native-inputs (list lzip))
+    (inputs (list ncurses))
+    (synopsis "Modeless, multiple-buffer, user-friendly 8-bit text editor")
+    (description
+     "GNU Moe is a powerful-but-simple-to-use text editor.  It works in a
+modeless manner, and features an intuitive set of key-bindings that
+assign a degree of severity to each key; for example, key
+combinations with the Alt key are for harmless commands like cursor
+movements while combinations with the Control key are for commands
+that will modify the text.  Moe features multiple windows, unlimited
+undo/redo, unlimited line length, global search and replace, and
+more.")
+    (home-page "https://www.gnu.org/software/moe/moe.html")
+    (license license:gpl2+)))
 
 (define-public mogan
   (package
