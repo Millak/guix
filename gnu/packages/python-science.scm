@@ -904,21 +904,15 @@ optimization and generally improved organization.")
                  (string-append "version = \"" #$version "\""))))))))
     (propagated-inputs (list python-dask
                              python-numpy
-                             python-pandas-2
+                             python-pandas
                              python-pims
                              python-scipy
                              python-tifffile))
     (native-inputs
-     (list python-coverage
-           python-flake8
-           python-pytest
-           python-pytest-cov
-           python-pytest-flake8
+     (list python-pytest
            python-pytest-timeout
            python-setuptools
-           python-setuptools-scm
-           python-twine
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/dask/dask-image")
     (synopsis "Distributed image processing")
     (description "This is a package for image processing with Dask arrays.
