@@ -25194,33 +25194,33 @@ module capable of computing base-level alignments for very large sequences.")
     (outputs '("out" "doc"))
     (arguments
      (list
+      #:test-exclude (string-join (list "TestFileMetaInformation"
+                                        "TestElement2"
+                                        "TestSCUValidation"
+                                        "TestWriter"
+                                        "TestAnonymizer4"
+                                        "TestPrinter1"
+                                        "TestEcho"
+                                        ;; The scanner tests depend on TestWriter output.
+                                        "TestStrictScanner1"
+                                        "TestStrictScanner2_1"
+                                        "TestStrictScanner2"
+                                        "TestStrictScanner2_2"
+                                        "TestFind")
+                                  "|")
+      #:configure-flags
+      #~(list "-DGDCM_BUILD_TESTING=true"
+              "-DGDCM_DOCUMENTATION:BOOL=ON"
+              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
+              (string-append "-DGDCM_INSTALL_DOC_DIR="
+                             #$output:doc "/share/doc/" #$name))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-HOME
             ;; The build spams ‘Fontconfig error: No writable cache
             ;; directories’ in a seemingly endless loop otherwise.
             (lambda _
-              (setenv "HOME" "/tmp"))))
-      #:configure-flags
-      #~(list "-DGDCM_BUILD_TESTING=true"
-              (string-append "-DCMAKE_CTEST_ARGUMENTS=-E;"
-                             "'TestFileMetaInformation"
-                             "|TestElement2"
-                             "|TestSCUValidation"
-                             "|TestWriter"
-                             "|TestAnonymizer4"
-                             "|TestPrinter1"
-                             "|TestEcho"
-                             ;; The scanner tests depend on TestWriter output
-                             "|TestStrictScanner1"
-                             "|TestStrictScanner2_1"
-                             "|TestStrictScanner2"
-                             "|TestStrictScanner2_2"
-                             "|TestFind'")
-              "-DGDCM_DOCUMENTATION:BOOL=ON"
-              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
-              (string-append "-DGDCM_INSTALL_DOC_DIR="
-                             #$output:doc "/share/doc/" #$name))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs (list docbook-xsl doxygen graphviz libxslt))
     (home-page "https://gdcm.sourceforge.net/wiki/index.php/Main_Page")
     (synopsis "Grassroots DICOM library")
