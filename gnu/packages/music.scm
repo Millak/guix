@@ -460,8 +460,10 @@ score, keyboard, guitar, drum and controller views.")
          "--without-hal"
          "--enable-udev"
          (string-append "--with-udev-dir=" #$output "/lib/udev")
-         (string-append "--prefix=" #$output))
-
+         (string-append "--prefix=" #$output)
+         (string-append "CFLAGS="
+                        "-Wno-error=incompatible-pointer-types "
+                        "-Wno-error=implicit-int"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-autotools-version-requirement
