@@ -2254,6 +2254,7 @@ Features include:
   (package
     (inherit stgit-2)
     (name "emacs-stgit")
+    (version "0.17.1")                  ;from stgit.el
     (build-system emacs-build-system)
     (arguments
      (list
@@ -2261,13 +2262,20 @@ Features include:
       #:lisp-directory "contrib"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-version-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "stgit.el"
+                ("stgit-stg-program" (search-input-file inputs "/bin/stg")))
+              (emacs-substitute-variables "stgit.el"
+                ("stgit-git-program" (search-input-file inputs "/bin/git")))))
           (add-before 'install-license-files 'leave-lisp-directory
             (lambda _
               (chdir ".."))))))
+    (inputs (list stgit-2 git))
     (synopsis "Emacs major mode for StGit interaction")
     (description "This package a interactive tool to interact with git
 branches using StGit.")
-    (license license:gpl3+)))
+    (license license:gpl2+)))
 
 (define-public stgit
   (package
