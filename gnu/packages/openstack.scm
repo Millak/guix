@@ -67,13 +67,10 @@
         (base32 "0vd8b4lypkc65xb4cih2b4l9qkhxyj52xj078q63p8214xl5n7wc"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage
-           python-fixtures
-           python-setuptools
-           python-sphinx-5
+     (list python-setuptools
+           python-sphinx
            python-stestr
-           python-testscenarios
-           python-wheel))
+           python-testscenarios))
     (propagated-inputs
      (list python-autopage
            python-cmd2
