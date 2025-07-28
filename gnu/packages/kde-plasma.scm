@@ -2636,19 +2636,20 @@ sensors, process information and other system resources.")
 (define-public plasma-workspace
   (package
     (name "plasma-workspace")
-    (version "6.3.6")
+    (version "6.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1h3qx2ih2z2d3s79ijzz63hgsn7hm28xczygcixvq63hb1w2qmss"))))
+                "1f7dil2bhrdvhl9gqrpqvz62ldlq5ljdnyiac6q05j0ym62z4m3j"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg
                          qttools
                          xorg-server-for-tests
-                         python-minimal))
+                         python-minimal
+                         python-pygobject))
     (inputs (list appmenu-gtk-module
                   appstream-qt6
                   baloo
@@ -2726,6 +2727,7 @@ sensors, process information and other system resources.")
                   plasma-workspace-wallpapers
                   plasma-wayland-protocols
                   prison
+                  qtlocation
                   qt5compat
                   qtsvg
                   qtshadertools
@@ -2847,7 +2849,11 @@ deviceerrormonitor_p.cpp"
                                "dbusmethodcalltest"
                                "klipper-testHistoryCycler"
                                "klipper-testHistoryModel"
-                               "klipper_v3migrationtest")
+                               "klipper_v3migrationtest"
+                               "testrunnermodel"
+                               "dbussignalwatchertest"
+                               "dbuspropertiestest"
+                               "testdesktop")
                               "|")))))
                ;; share/dbus-1/system-services have same name file
                ;; when dbus-root-service-type merge it, wail report
