@@ -23324,10 +23324,11 @@ one if it fails.")
 
 (define-public emacs-eglot-x
   ;; Not tagged.
-  (let ((commit "a09ab28cf01d7cbb223ad83fbbb694c5158c96b8"))
+  (let ((commit "8e872efd3d0b7779bde5b1e1d75c8e646a1f729f")
+        (revision "1"))
     (package
       (name "emacs-eglot-x")
-      (version "0.6")
+      (version (git-version "0.6" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -23336,18 +23337,14 @@ one if it fails.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0s17nv59gzgqgskid41lfacsqnzdiq2p3ds0vglcfqwypr3k898c"))
-                ;; Backporting an unreleased fix from
-                ;; https://github.com/nemethf/eglot-x/commit/354150c299e241df09c8b904b68177fd9b41fe0e
-                ;; Remove this patch once version 0.7 is released
-                (patches (search-patches "emacs-eglot-x-fix-apply-text-edits.patch"))))
+                  "0s2p22w0b5a3b97x99qybhfgicvkzkcma6lfbi0nda54v25a8skb"))))
       (build-system emacs-build-system)
       (inputs (list emacs-eglot))
       (home-page "https://github.com/nemethf/eglot-x")
       (synopsis "Protocol extensions for Eglot")
       (description
-       "This package adds support for some LSP extensions to @code{emacs-eglot}.
-")
+       "This package adds support for some LSP extensions to
+@code{emacs-eglot}.")
       (license license:gpl3+))))
 
 (define-public emacs-eglot-booster
