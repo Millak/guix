@@ -25155,26 +25155,29 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public python-graphene
   (package
     (name "python-graphene")
-    (version "3.0")
+    (version "3.4.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "graphene" version))
-        (sha256
-         (base32
-          "08m1n2ydk48c18cvl8474v3pwwacjl1vgq61m9qs00122mp0cj5g"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-graphql-core python-graphql-relay python-aniso8601
-           python-promise python-six))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "graphene" version))
+       (sha256
+        (base32 "1aha3bnrafxd823q4swdmlvbprfb17v3fga4g3hffpz7ija8cdra"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ; no tests/ in the PyPI tarball
+     (list #:tests? #f))        ;XXX: tests fail to load
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-dateutil
+           python-graphql-core
+           python-graphql-relay
+           python-typing-extensions))
     (home-page "https://graphene-python.org/")
     (synopsis "GraphQL Framework for Python")
     (description
-     "Graphene is a Python library for building GraphQL schemas/types.
-     A GraphQL schema describes your data model, and provides a GraphQL server
-     with an associated set of resolve methods that know how to fetch data.")
+     "Graphene is a Python library for building GraphQL schemas/types.  A
+GraphQL schema describes your data model, and provides a GraphQL server with
+an associated set of resolve methods that know how to fetch data.")
     (license license:expat)))
 
 (define-public python-random2
