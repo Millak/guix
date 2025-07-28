@@ -319,9 +319,11 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   markdown
                   packagekit-qt6
                   purpose
+                  qcoro-qt6
                   qt5compat
                   qtdeclarative
                   qtsvg
+                  qtwebview
                   qcoro-qt6))
     ;; -- The following features have been disabled:
     ;; * RpmOstree, rpm-ostree binary to manage the system. Required to build the rpm-ostree backend
