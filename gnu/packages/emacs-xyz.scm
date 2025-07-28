@@ -1907,6 +1907,31 @@ while the ones that are not being actively edited will be reduced to a smaller
 size.")
       (license license:expat))))
 
+(define-public emacs-zoom 
+    (package
+      (name "emacs-zoom")
+      (version "0.3.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/cyrus-and/zoom")
+                (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zzm8kchm5wwxras4bfl46flyfj44bf7qazc5yyahx9qr2ksfnhd"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ;no tests
+      (home-page "https://github.com/cyrus-and/zoom")
+      (synopsis "Fixed and automatic balanced window layout for Emacs")
+      (description
+       "This minor mode takes care of managing the window sizes by
+enforcing a fixed and automatic balanced layout where the currently
+selected window is resized according to @code{zoom-size} which can be
+an absolute value in lines/columns, a ratio between the selected window
+and frame size or even a custom callback.")
+      (license license:expat)))
+
 (define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
