@@ -545,9 +545,9 @@ slot (which must later be released with 'release-build-slot'), or #f and #f."
                (when (and space (< space %minimum-disk-space))
                  (format (current-error-port)
                          "skipping machine '~a' because it is low \
-on disk space (~,2f MiB free)~%"
+on disk space (~a free)~%"
                          (build-machine-name best)
-                         (/ space (expt 2 20) 1.)))
+                         (number->size space)))
                (release-build-slot slot)
                (loop others)))))
       (()
@@ -779,14 +779,14 @@ machine."
                               (free (node-free-disk-space inferior)))
                           (close-inferior inferior)
                           (format #t "~a~%  kernel: ~a ~a~%  architecture: ~a~%\
-  host name: ~a~%  normalized load: ~,2f~%  free disk space: ~,2f MiB~%\
+  host name: ~a~%  normalized load: ~,2f~%  free disk space: ~a~%\
   time difference: ~a s~%"
                                   (build-machine-name machine)
                                   (utsname:sysname uts) (utsname:release uts)
                                   (utsname:machine uts)
                                   (utsname:nodename uts)
                                   load
-                                  (/ free (expt 2 20) 1.)
+                                  (number->size free)
                                   (- time now))))))))
 
                 (disconnect! session))
