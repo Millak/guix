@@ -51,7 +51,6 @@
             resolve-uri-reference
             maybe-expand-mirrors
             url-fetch
-            byte-count->string
             uri-abbreviation
             nar-uri-abbreviation
             store-path-abbreviation))
