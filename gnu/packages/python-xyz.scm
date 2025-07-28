@@ -19006,25 +19006,26 @@ Debian-related files, such as:
 (define-public python-json-spec
   (package
     (name "python-json-spec")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "json_spec" version))
-        (sha256
-          (base32
-            "0fwxirzxx5s9l0lwnjl6ki39xw1fsjm0vr6cm67ws27fkmcxcry7"))))
-    (build-system python-build-system)
-    (propagated-inputs
-      (list python-importlib-metadata
-            python-termcolor))
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/johnnoone/json-spec")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14lzvpfi8vpwn2hsizljcyiiywfc1fssj0hh079jxw4xwjkm9328"))))
+    (build-system pyproject-build-system)
     (native-inputs
-      (list python-pytest))
+     (list python-pytest
+           python-poetry-core))
+    (propagated-inputs
+     (list python-termcolor)) ;for the CLI
     (home-page "https://json-spec.readthedocs.io/")
-    (synopsis
-      "JSON Schema, JSON Pointer and JSON Reference for Python")
+    (synopsis "JSON Schema, JSON Pointer and JSON Reference for Python")
     (description
-      "This Python library implements several JSON specs, like JSON Schema,
+     "This Python library implements several JSON specs, like JSON Schema,
 JSON Reference and JSON Pointer.")
     (license license:bsd-3)))
 
