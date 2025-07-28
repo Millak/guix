@@ -1456,7 +1456,7 @@ KDE Frameworks components.")
 (define-public kwin
   (package
     (name "kwin")
-    (version "6.3.6")
+    (version "6.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1465,24 +1465,15 @@ KDE Frameworks components.")
               (patches (search-patches "kwin-unwrap-executable-name-for-dot-desktop-search.patch"))
               (sha256
                (base32
-                "04nf7xql7qgq96jwbzf1p6ajyb024jp98ahd90giv3ym0rgj1wi7"))))
+                "1a02npafxbpkqi8phy9n7gqc7vb0p1w2ffjanhz819zc334nhdd1"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase
-      #:configure-flags
-      #~(list (string-append "-DQtWaylandScanner_EXECUTABLE="
-                             #$(this-package-native-input "qtwayland")
-                             "/lib/qt6/libexec/qtwaylandscanner"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* '("src/plugins/kdecorations/aurorae/src/aurorae.cpp")
-                (("(^\\s*QDirIterator it.path, QDirIterator::Subdirectories)(\\);)"
-                  _ a b)
-                 (string-append a
-                                " | QDirIterator::FollowSymlinks" b)))
               (substitute*
                   '("autotests/integration/dont_crash_glxgears.cpp"
                     "autotests/integration/debug_console_test.cpp"
