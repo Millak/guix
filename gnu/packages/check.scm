@@ -777,7 +777,6 @@ pattern.")
 a multi-paradigm automated test framework for C++ and Objective-C.")
     (license license:boost1.0)))
 
-
 (define-public catch2-3
   (package
     (inherit catch2-3.8)
@@ -792,35 +791,6 @@ a multi-paradigm automated test framework for C++ and Objective-C.")
               (sha256
                (base32
                 "11yla93vm2896fzhm3fz8lk3y3iz5iy7vd6wa7wnwvhsfd2dbfq3"))))))
-
-(define-public cmdtest
-  (package
-    (name "cmdtest")
-    ;; Use the latest commit (from 2019) in order to get Python 3 support.
-    (version "0.32-14-gcdfe14e")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "git://git.liw.fi/cmdtest/")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yhcwsqcpckkq5kw3h07k0xg6infyiyzq9ni3nqphrzxis7hxjf1"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f))          ;requires Python 2!
-    (native-inputs
-     (list python-coverage-test-runner python))
-    (inputs
-     (list python-cliapp python-markdown python-ttystatus))
-    (home-page "https://liw.fi/cmdtest/")
-    (synopsis "Black box Unix program tester")
-    (description
-     "@code{cmdtest} black box tests Unix command line tools.  Roughly, it is
-given a command line and input files, and the expected output, and it verifies
-that the command line produces the expected output.  If not, it reports a
-problem, and shows the differences.")
-    (license license:gpl3+)))
 
 (define-public cmocka
   (package
