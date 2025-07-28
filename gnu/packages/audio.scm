@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2015, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
@@ -4583,6 +4583,11 @@ for loudness normalisation.")
                             (assoc-ref %outputs "out") "/etc/timidity"))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'configure 'fix-config.h
+           (lambda _
+             (substitute* "config.h"
+               (("/\\* #undef STDC_HEADERS \\*/")
+                "#define STDC_HEADERS 1"))))
          (add-after 'install 'install-config
            (lambda _
              (let ((out (string-append (assoc-ref %outputs "out")
