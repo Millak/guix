@@ -76,12 +76,12 @@
     (chdir build-dir)
     (apply invoke "meson" "setup" args)))
 
-(define* (build #:key parallel-build?
-                #:allow-other-keys)
+(define* (build #:key parallel-build? #:allow-other-keys)
   "Build a given meson package."
-  (invoke "ninja" "-j" (if parallel-build?
-                           (number->string (parallel-job-count))
-                           "1")))
+  (invoke "ninja" "--verbose"
+          "-j" (if parallel-build?
+                   (number->string (parallel-job-count))
+                   "1")))
 
 (define* (check #:key tests? test-options parallel-tests?
                 #:allow-other-keys)
