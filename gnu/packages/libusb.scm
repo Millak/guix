@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -809,3 +810,39 @@ HID-Class devices.")
                    (license:non-copyleft
                     "https://github.com/trezor/cython-hidapi/blob/master/LICENSE-orig.txt"
                     "You are free to use cython-hidapi code for any purpose.")))))
+
+(define-public hidapitester
+  (package
+    (name "hidapitester")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/todbot/hidapitester")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pilnq01yd4974xicy6as330f5b74pnj9mn5gvg1s21f78lxx4is"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "hidapitester"
+                            (string-append #$output "/bin")))))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "GIT_TAG=v" #$version))))
+    (native-inputs (list pkg-config))
+    (inputs (list hidapi eudev))
+    (home-page "https://github.com/todbot/hidapitester")
+    (synopsis "Command-line program to exercise hidapi")
+    (description
+     "The hidapitester program is a simple, low-dependency command-line tool to test
+out every API call in hidapi.")
+    (license license:gpl3)))
