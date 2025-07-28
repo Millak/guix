@@ -147,7 +147,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/anthy.scm			\
   %D%/packages/antivirus.scm			\
   %D%/packages/apl.scm				\
-  %D%/packages/apple.scm			\
   %D%/packages/apparmor.scm			\
   %D%/packages/appimage.scm			\
   %D%/packages/apr.scm				\

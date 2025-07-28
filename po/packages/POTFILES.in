@@ -19,7 +19,6 @@ gnu/packages/antivirus.scm
 gnu/packages/apl.scm
 gnu/packages/apparmor.scm
 gnu/packages/appimage.scm
-gnu/packages/apple.scm
 gnu/packages/apr.scm
 gnu/packages/arcan.scm
 gnu/packages/aspell.scm
