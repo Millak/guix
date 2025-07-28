@@ -34730,6 +34730,32 @@ inserting a new line with the same indentation level as the current line.")
     (home-page "https://github.com/jamescherti/outline-indent.el")
     (license license:gpl3+)))
 
+(define-public emacs-repeat-fu
+  ;; Upstream has no tags; release extracted from source code
+  (let ((commit "b91d55001cca71e5df7a9f665c7da73ab9f55efd")
+        (revision "0"))
+    (package
+      (name "emacs-repeat-fu")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/ideasman42/emacs-repeat-fu")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "04kpzwcl3lzqvaw16wy7qjw5kfnbhndby1adwkv8p3bbqjqj5g48"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests
+      (synopsis "Minor mode to repeat typing or commands")
+      (description
+       "Repeat multi-command \"edits\" with configurable behavior, supporting
+multiple modal editing systems.")
+      (home-page "https://codeberg.org/ideasman42/emacs-repeat-fu")
+      (license license:gpl3+))))
+
 (define-public emacs-repo
   (package
     (name "emacs-repo")
