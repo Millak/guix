@@ -2109,7 +2109,7 @@ server.")
     (inputs
      (list libxmu libxext libxau libx11))
     (native-inputs
-     (list cmdtest pkg-config))
+     (list pkg-config))
     (home-page "https://www.x.org/wiki/")
     (synopsis "X authority file utility")
     (description
