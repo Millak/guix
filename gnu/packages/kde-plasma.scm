@@ -3025,14 +3025,14 @@ of a Plasma shell.")
 (define-public spectacle
   (package
     (name "spectacle")
-    (version "6.3.6")
+    (version "6.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/spectacle-" version ".tar.xz"))
        (sha256
-        (base32 "0wkw4bfp2anl1b1w97cfig86ax84i9vmyddsbhpq0p3y6xj9r7q3"))))
+        (base32 "1n19pcqqmgcj66pv5d287zh79hg96cx8pg902l73yfli3w4zr1lr"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
