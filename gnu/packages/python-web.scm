@@ -10134,20 +10134,23 @@ Python.")
 (define-public python-azure-storage-blob
   (package
     (name "python-azure-storage-blob")
-    (version "12.22.0")
+    (version "12.26.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "azure-storage-blob" version))
+       (uri (pypi-uri "azure_storage_blob" version))
        (sha256
-        (base32 "0vkkngiybx5372j9vc9p4wn6hakpv99l0ipsf4kw7ccazss4p05k"))))
+        (base32 "07ypg1ny5rivy51f4q9h2xajd60wc19jf0zbpw0dxxr48a1dgmsx"))))
     (build-system pyproject-build-system)
-    ;; To activate tests python-pytest is required and missing
+    (arguments
+    ;; XXX: devtools_testutils is not provided as a proper package on PyPI,
+    ;; Git does not contains setup.py, setup.cfg or pyproject.toml which makes
+    ;; it hard to package in Guix.
     ;; <https://raw.githubusercontent.com/Azure/azure-sdk-for-python/refs/
-    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>
+    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>.
+     (list #:tests? #f))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-azure-core
            python-cryptography
