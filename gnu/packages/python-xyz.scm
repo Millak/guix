@@ -30805,16 +30805,18 @@ RFC 8265 and RFC 8266.")
 (define-public python-absl-py
   (package
     (name "python-absl-py")
-    (version "1.4.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "absl-py" version))
+       (uri (pypi-uri "absl_py" version))
        (sha256
-        (base32
-         "0ga3b0m8lfsv1m3260p83lhis52yvz3d42q8gip4gfj823849hnj"))))
+        (base32 "1jbzyyrmvmqwnyh053hdmh6q851sbvrg70yf3gnd5gvzdx920y59"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f))        ;tests require bazel
+    (native-inputs
+     (list python-hatchling))
     (home-page "https://github.com/abseil/abseil-py")
     (synopsis "Abseil Python common libraries")
     (description
