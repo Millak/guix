@@ -9180,40 +9180,47 @@ requests.")
     (name "python-flask-restx")
     (version "1.3.0")
     (source
-     ;; We fetch from the Git repo because there are no tests in the PyPI
-     ;; archive.
      (origin
-       (method git-fetch)
+       (method git-fetch)       ;no tests in PyPI archive
        (uri (git-reference
-             (url "https://github.com/python-restx/flask-restx")
-             (commit version)))
+              (url "https://github.com/python-restx/flask-restx")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1qmm3i1cdv0bvzsc1gn4ql2dsf1fbx85fk69vcmzpsdxzczmw508"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-aniso8601 python-flask python-jsonschema python-pytz))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; 1214 passed, 6 skipped, 16 deselected, 3 warnings
+      #:test-flags
+      #~(list "--benchmark-skip"
+              ;; ValueError: http://www.google.com is not a valid URL. Domain
+              ;; does not exists.
+              "--deselect=tests/test_inputs.py::URLTest::test_check"
+              "-k" (string-join
+                    ;; See: <https://github.com/python-restx/flask-restx/issues/620>.
+                    (list "not test_rfc822_value"
+                          "test_iso8601_value"
+                          ;; assert 404 == 2000
+                          "test_specs_endpoint_host_and_subdomain"
+                          ;; ValueError: test@gmail.com is not a valid email
+                          "test_valid_value_check")
+                    " and not "))))
     (native-inputs
      (list python-blinker
            python-faker
            python-pytest
            python-pytest-benchmark
            python-pytest-flask
-           python-pytest-mock))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "--benchmark-skip" "-k"
-                     ;; Those tests need internet access
-                     (string-join
-                      '("not test_check"
-                        "not test_valid_value_check"
-                        "not test_override_app_level"
-                        "not test_redirect"
-                        "not test_swagger")
-                      " and ")))))))
+           python-pytest-mock
+           python-setuptools))
+    (propagated-inputs
+     (list python-aniso8601
+           python-flask
+           python-importlib-resources
+           python-jsonschema
+           python-pytz
+           python-werkzeug))
     (home-page "https://github.com/python-restx/flask-restx")
     (synopsis
      "Framework for fast, easy and documented API development with Flask")
