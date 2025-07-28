@@ -105,14 +105,14 @@
 (define-public bluedevil
   (package
     (name "bluedevil")
-    (version "6.3.6")
+    (version "6.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "12r3dx31sl9rhn3siscq03zzyxvdky6v0qfyi11wzssbqlgg6jqv"))))
+                "079krbcgnsk4ykqk0vka0y2b37a75wkzdy1r7m4wx1g77syxnq17"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
