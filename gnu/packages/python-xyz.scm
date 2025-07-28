@@ -20009,12 +20009,15 @@ connection pool.")
     (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "argparse_dataclass" version))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/mivade/argparse_dataclass")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0zr9r4n00x2wi5kyzw3bxvrdp5k113jw7f9p4f414bsaj4f69aq9"))))
+        (base32 "0fbxs2a4jk5bvy42jlnqw4l02zs1s6mmfn4sr8rknyc4ngl4y9q1"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/mivade/argparse_dataclass")
     (synopsis "Declarative command-line interfaces using argparse and dataclasses")
     (description
