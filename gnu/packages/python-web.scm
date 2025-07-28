@@ -9341,19 +9341,19 @@ conflicts detected by that mechanism.")
 (define-public python-transaction
   (package
     (name "python-transaction")
-    (version "3.0.0")
+    (version "5.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "transaction" version))
-        (sha256
-         (base32
-          "0bdaks31bgfh78wnj3sij24bfysmqk25crsis6amz8kzrc0d82iv"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "transaction" version))
+       (sha256
+        (base32 "0x0i5graxb93aa8bwf5rmm9zq7d7r6q2b4pw358wph5whbbpnvhh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-zope-interface))
-    (native-inputs
-     (list python-coverage python-mock python-nose))
     (home-page "https://github.com/zopefoundation/transaction")
     (synopsis "Transaction management for Python")
     (description "This package contains a generic transaction implementation
