@@ -17378,12 +17378,12 @@ provided that can be used to do various manipulations with LilyPond files.")
         (method url-fetch)
         (uri (pypi-uri "appdirs" version))
         (sha256
-          (base32
-            "0hfzmwknxqhg20aj83fx80vna74xfimg8sk18wb85fmin9kh2pbx"))))
-    (build-system python-build-system)
+         (base32 "0hfzmwknxqhg20aj83fx80vna74xfimg8sk18wb85fmin9kh2pbx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/ActiveState/appdirs")
-    (synopsis
-      "Determine platform-specific dirs, e.g. a \"user data dir\"")
+    (synopsis "Determine platform-specific dirs, e.g. a \"user data dir\"")
     (description
       "This module provides a portable way of finding out where user data
 should be stored on various operating systems.")
