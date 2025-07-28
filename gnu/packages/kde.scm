@@ -1211,14 +1211,14 @@ PO template files.")
 (define-public kdegraphics-mobipocket
   (package
     (name "kdegraphics-mobipocket")
-    (version "24.12.1")
+    (version "25.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0rpam31s5cvky4w3bb2qp1pjv0gm9f63a2jv6bcim7qnz050bvvn"))))
+        (base32 "1lzk8lh51dvmlk9im4cjsl7xwyy814a0yragk4f7r1lhs5w6rxhj"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f
