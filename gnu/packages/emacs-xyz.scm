@@ -589,7 +589,7 @@ input via a small child-frame spawned at the position of the cursor.")
 (define-public emacs-arei
   (package
     (name "emacs-arei")
-    (version "0.9.5")
+    (version "0.9.6")
     (source
      (origin
        (method git-fetch)
@@ -599,7 +599,7 @@ input via a small child-frame spawned at the position of the cursor.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0laj9gbwhr0n8jf0y7fb3a564rsi8kghpk1g95xhckr4fggz997r"))))
+         "1m8ic5pcshz2y2maxvbgg70n4k2kgxvj98zisqal15j7djz0hzji"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
