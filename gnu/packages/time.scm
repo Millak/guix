@@ -689,16 +689,19 @@ datetime type.")
 (define-public python-aniso8601
   (package
     (name "python-aniso8601")
-    (version "9.0.1")
+    (version "10.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aniso8601" version))
        (sha256
-        (base32
-         "0wxry6riyqajl02mkad8g2q98sx5jr13zndj3fandpzfcxv13qvj"))))
-    (build-system python-build-system)
-    (home-page "https://bitbucket.org/nielsenb/aniso8601")
+        (base32 "0ib8s62d3zh7qy5rnlrisns2bbjixb0lmyal3yp2h5fxcf38yj15"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest
+                     #:test-flags #~(list "discover" "aniso8601")))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://codeberg.org/nielsenb-jf/aniso8601")
     (synopsis "Python library for parsing ISO 8601 strings")
     (description
      "This package contains a library for parsing ISO 8601 datetime strings.")
