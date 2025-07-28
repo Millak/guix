@@ -2590,7 +2590,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/x2goclient-fix-makefile.patch            \
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/x265-4-arm-flags.patch			\
-  %D%/packages/patches/xdg-desktop-portal-1.20.3-disable-configuration-search-exit.patch\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
   %D%/packages/patches/xf86-video-siliconmotion-fix-ftbfs.patch \
   %D%/packages/patches/xfig-Enable-error-message-for-missing-libraries.patch		\

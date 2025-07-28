@@ -76,6 +76,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system qt)
+  #:use-module (guix search-paths)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
@@ -3214,9 +3215,7 @@ compatible with the well-known scripts of the same name.")
              version "/xdg-desktop-portal-" version ".tar.xz"))
        (sha256
         (base32
-         "1p4yvbhqr8yf231gm69vdz3h7na8m6x1mhiw3bmhg4gm6x4idysb"))
-       (patches (search-patches
-                 "xdg-desktop-portal-1.20.3-disable-configuration-search-exit.patch"))))
+         "1p4yvbhqr8yf231gm69vdz3h7na8m6x1mhiw3bmhg4gm6x4idysb"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3263,11 +3262,7 @@ compatible with the well-known scripts of the same name.")
            libportal
            pipewire
            umockdev))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "XDG_DESKTOP_PORTAL_DIR")
-            (separator #f)
-            (files '("share/xdg-desktop-portal/portals")))))
+    (native-search-paths (list $XDG_DATA_DIRS))
     (home-page "https://github.com/flatpak/xdg-desktop-portal")
     (synopsis "Desktop integration portal for sandboxed apps")
     (description
