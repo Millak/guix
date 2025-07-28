@@ -1281,14 +1281,14 @@ PostScript, PDF, RAW, Mobipocket, and Blender files.")
 (define-public libkexiv2
   (package
     (name "libkexiv2")
-    (version "24.12.1")
+    (version "25.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "073px490jvp5f2979ipzbjlw6qg55cfzisj1g3a1f9wwqshm3q5q"))))
+        (base32 "1a5mwywza7wxprygl06k89msmykyb6m7si4mdbqsr3yvx68xgf6p"))))
     (build-system cmake-build-system)
     (arguments
      (list
