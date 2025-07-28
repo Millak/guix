@@ -787,14 +787,14 @@ functionality")
 (define-public kinfocenter
   (package
     (name "kinfocenter")
-    (version "6.3.6")
+    (version "6.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0l5r0j01zpd1r1izl5yrajpalvdllnxx5m7rn4a89vc76r8lp155"))))
+                "0ycaljixrn43hj5ladid5gn15zdfnzz7dxi9yas78akpf2a4jpsd"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -858,6 +858,7 @@ functionality")
     ;; Wayland KCM
     (inputs (list bash-minimal
                   dmidecode
+                  eudev
                   fwupd
                   kauth
                   kconfig
