@@ -9194,17 +9194,18 @@ Swagger.")
     (name "python-manuel")
     (version "1.13.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "manuel" version))
-        (sha256
-         (base32
-          "0nl8psji3fizbxw34gdg22dndlg9lf5f56mnh1vr4vgsx06i4qsx"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "manuel" version))
+       (sha256
+        (base32 "0nl8psji3fizbxw34gdg22dndlg9lf5f56mnh1vr4vgsx06i4qsx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Tests are broken, see: <https://github.com/benji-york/manuel/pull/32>.
+      #:tests? #f))
     (propagated-inputs
-     (list python-setuptools))
-    (native-inputs
-     (list python-setuptools python-wheel python-zope-testing))
+     (list python-setuptools)) ;install requires
     (home-page "https://pypi.org/project/manuel/")
     (synopsis "Build tested documentation")
     (description
