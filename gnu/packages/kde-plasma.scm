@@ -921,6 +921,82 @@ computer's hardware.")
     (home-page "https://invent.kde.org/plasma/kmenuedit")
     (license license:gpl2+)))
 
+(define-public koi
+  (package
+    (name "koi")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/baduhai/Koi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z3j3lcfqkwck4i4srpcanjyb2cmizd702f6s5lhfhrmmsbccwkx"))))
+    (build-system qt-build-system)
+    (inputs (list kconfig
+                  kcoreaddons
+                  kconfigwidgets
+                  kdbusaddons
+                  kde-cli-tools
+                  kvantum
+                  plasma-workspace))
+    (arguments
+     (list
+      #:modules '((ice-9 ftw)
+                  (guix build qt-build-system)
+                  (guix build utils))
+      #:tests? #f
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-hardcoded-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Correct theme search paths.  This won't be needed if the
+              ;; following request is implemented:
+              ;; https://github.com/baduhai/Koi/issues/123
+              (ftw "."
+                   (lambda (file _ flag)
+                     (when (and (eq? flag 'regular)
+                                (or (string-suffix? ".c" file)
+                                    (string-suffix? ".cpp" file)))
+                       (substitute* file
+                         (("/var/run/current-system/sw")
+                          "/run/current-system/profile")))))
+              ;; Correct executable paths.
+              (substitute* "src/utils.cpp"
+                (("/usr/bin/kquitapp6")
+                 (search-input-file inputs "bin/kquitapp6"))
+                (("/usr/bin/kstart")
+                 (search-input-file inputs "bin/kstart")))
+              (substitute* "src/plugins/plasmastyle.cpp"
+                (("/usr/bin/plasma-apply-desktoptheme")
+                 (search-input-file inputs "bin/plasma-apply-desktoptheme")))
+              (substitute* "src/plugins/kvantumstyle.cpp"
+                (("/usr/bin/kvantummanager")
+                 (search-input-file inputs "bin/kvantummanager")))
+              (substitute* "src/plugins/colorscheme.cpp"
+                (("programToLocate = \\{\"plasma-apply-colorscheme\"\\}")
+                 (string-append "programToLocate = {\""
+                                (search-input-file inputs
+                                 "bin/plasma-apply-colorscheme") "\"}")))
+              (substitute* "src/plugins/icons.cpp"
+                (("programToLocate = \\{\"plasma-changeicons\"\\}")
+                 (string-append "programToLocate = {\""
+                                (search-input-file inputs
+                                 "libexec/plasma-changeicons") "\"}")))
+              (substitute* "src/plugins/script.cpp"
+                (("programToLocate = \\{\"bash\"\\}")
+                 (string-append "programToLocate = {\""
+                                (search-input-file inputs "bin/bash") "\"}"))))))))
+    (home-page "https://github.com/baduhai/Koi")
+    (synopsis "Theme scheduling for the KDE Plasma Desktop")
+    (description
+     "Koi is a program designed to provide the KDE Plasma Desktop functionality
+to automatically switch between light and dark themes.")
+    (license license:lgpl3)))
+
 (define-public kongress
   (package
     (name "kongress")
