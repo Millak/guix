@@ -610,7 +610,7 @@ manager which re-parents a Client window to a window decoration frame.")
 (define-public kde-cli-tools
   (package
     (name "kde-cli-tools")
-    (version "6.3.6")
+    (version "6.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -618,7 +618,7 @@ manager which re-parents a Client window to a window decoration frame.")
               (patches (search-patches "kde-cli-tools-delay-mime-db.patch"))
               (sha256
                (base32
-                "1vl5jgp1a19c7644czljr10kcqi5iv4lyr7y4djw24xkci8nn0ls"))))
+                "0a3fmwbww9qwphbzba61895s5k03s0g5lrbn54rghplmihpw8k6m"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
