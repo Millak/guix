@@ -691,6 +691,32 @@ just one-off queries and multiple independent sessions.  It requires an OpenAI
 API key.")
     (license license:gpl3+)))
 
+(define-public emacs-gptel-prompts
+  ;; No releases.
+  (let ((commit "deca98e1aff1b0570cd1672addfb6dcc74402332")
+        (revision "0"))
+    (package
+      (name "emacs-gptel-prompts")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+                (url "https://github.com/jwiegley/gptel-prompts/")
+                (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "0wh2ydiy1k6j0hdw7n7qyzx6c2g4mcpd3gp79h1ay1hh0f85596b"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (propagated-inputs (list emacs-gptel))
+      (home-page "https://github.com/jwiegley/gptel-prompts/")
+      (synopsis "Alternative Gptel directives management")
+      (description
+       "This package offers an advanced way to manage Gptel directives, using
+files rather than customizing the variable directly.")
+      (license license:gpl2+))))
+
 (define-public emacs-gptel-quick
   (let ((commit "d7a3aedefdc656a136d5664f2dac165a1f6ebf0e")
         (revision "1"))
