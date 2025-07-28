@@ -14460,53 +14460,51 @@ container data structures in Python).")
     (arguments
      (list
       #:test-flags
-      '(list "-k"
-             (string-append
-              ;; XXX: These tests fail with "ModuleNotFoundError: No
-              ;; module named 'jupyter_core'".
-              "not test_argv0"
-              " and not test_path_priority "
-              " and not test_not_on_path"
-
-              ;; These fail with: An incompatible sibling of 'AsyncTornadoApp'
-              ;; is already instantiated as singleton: SyncTornadoApp
-              " and not test_async_app"
-              " and not test_async_tornado_app"
-
-              ;; Fails with a deprecation warning
-              " and not test_sync_tornado_run"))
+      #~(list "-k" (string-join
+                    ;; XXX: These tests fail with "ModuleNotFoundError: No
+                    ;; module named 'jupyter_core'".
+                    (list "not test_argv0"
+                          "test_path_priority "
+                          "test_not_on_path"
+                          ;; These fail with: An incompatible sibling of
+                          ;; 'AsyncTornadoApp' is already instantiated as
+                          ;; singleton: SyncTornadoApp
+                          "test_async_app"
+                          "test_async_tornado_app"
+                          ;; Fails with a deprecation warning
+                          "test_sync_tornado_run"
+                          ;; Expecting pip in the PATH.
+                          "test_troubleshoot")
+                    " and not "))
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           ;;  Some tests write to $HOME.
-           (lambda _ (setenv "HOME" "/tmp")))
-         ;; Migration is running whenever etc/jupyter exists, but the
-         ;; Guix-managed directory will never contain any migratable IPython
-         ;; config files and cannot be written to anyway, so just pretend we
-         ;; already did that.
-         (add-after 'install 'disable-migration
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/etc/jupyter"))
-             (invoke "touch"
-                     (string-append
-                      (assoc-ref outputs "out")
-                      "/etc/jupyter/migrated")))))))
-    (propagated-inputs (list python-platformdirs python-traitlets))
-    (native-inputs (list python-hatchling
-                         python-pip
-                         python-pre-commit
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-timeout))
+      #~(modify-phases %standard-phases
+          ;;  Some tests write to $HOME.
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "HOME" "/tmp")))
+          ;; Migration is running whenever etc/jupyter exists, but the
+          ;; Guix-managed directory will never contain any migratable IPython
+          ;; config files and cannot be written to anyway, so just pretend we
+          ;; already did that.
+          (add-after 'install 'disable-migration
+            (lambda _
+              (mkdir-p (string-append #$output "/etc/jupyter"))
+              (invoke "touch" (string-append #$output "/etc/jupyter/migrated")))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-timeout))
+    (propagated-inputs
+     (list python-platformdirs
+           python-traitlets))
     ;; This package provides the `jupyter` binary and thus also exports the
     ;; search paths.
     (native-search-paths
      (list (search-path-specification
-            (variable "JUPYTER_CONFIG_PATH")
-            (files '("etc/jupyter")))
+             (variable "JUPYTER_CONFIG_PATH")
+             (files '("etc/jupyter")))
            (search-path-specification
-            (variable "JUPYTER_PATH")
-            (files '("share/jupyter")))))
+             (variable "JUPYTER_PATH")
+             (files '("share/jupyter")))))
     (home-page "https://jupyter.org/")
     (synopsis "Jupyter base package")
     (description
