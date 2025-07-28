@@ -2439,6 +2439,33 @@ games.  Malyon plays version 3 (.z3), version 5 (.z5), and version 8 (.z8) z
 code files.")
     (license license:expat)))
 
+(define-public emacs-mcp
+  ;; No releases available.
+  (let ((commit "4708c5849ce4ddb632016eca662a7405bfa642d4")
+        (revision "0"))
+    (package
+      (name "emacs-mcp")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/lizqwerscott/mcp.el/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "11x3jscm4iggyy926aidiv95lrbcncngbvivsybvzjvbhdxhb65h"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (inputs (list emacs-jsonrpc))
+      (home-page "https://github.com/lizqwerscott/mcp.el/")
+      (synopsis "Emacs interface to MCP protocol")
+      (description "@code{emacs-mcp} is an Emacs client providing structured
+communication to @acronym{Model Context Protocol, MCP} servers, with Support
+for filesystem and generic servers.")
+      (license license:gpl3+))))
+
 (define-public emacs-mct
   (package
     (name "emacs-mct")
