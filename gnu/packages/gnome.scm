@@ -5841,7 +5841,16 @@ faster results and to avoid unnecessary server load.")
                          (("assertEqual(.*)40\\.0" _ middle)
                           (string-append
                            "assertAlmostEqual" middle "40.0"))))
-                     '()))))))
+                     '())))
+          (delete 'check)               ;moved after install
+          (add-after 'install 'set-gi-typelib-path
+            (lambda* (#:key outputs #:allow-other-keys)
+              (setenv "GI_TYPELIB_PATH"
+                      (string-append
+                       (search-input-directory outputs "lib/girepository-1.0")
+                       ":" (getenv "GI_TYPELIB_PATH")))))
+          (add-after 'set-gi-typelib-path 'check
+            (assoc-ref %standard-phases 'check)))))
     (native-inputs
      (list `(,glib "bin")               ; for gdbus-codegen
            gobject-introspection
