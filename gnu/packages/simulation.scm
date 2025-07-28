@@ -755,7 +755,8 @@ FFC is part of the FEniCS Project.")
                                 "fenics-dolfin-demo-init.patch"
                                 "fenics-dolfin-boost.patch"
                                 "fenics-dolfin-config-slepc.patch"
-                                "fenics-dolfin-hdf5-version-check.patch"))
+                                "fenics-dolfin-hdf5-version-check.patch"
+                                "fenics-dolfin-integer-types.patch"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Make sure we don't use the bundled test framework.

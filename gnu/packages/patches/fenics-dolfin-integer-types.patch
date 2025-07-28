@@ -1,0 +1,29 @@
+This patch updates the integer types used in two of the dolfin header files.
+The changes enable building with gcc-13 and above.
+
+See <https://gcc.gnu.org/gcc-13/porting_to.html> for the porting notes.
+
+See <https://bitbucket.org/fenics-project/dolfin/commits/d56b1b082c50d846fb5bbe4971799ab9ecb21a24> for the upstream fix.
+
+--- a/dolfin/common/timing.h
++++ b/dolfin/common/timing.h
+@@ -39,7 +39,7 @@
+   ///
+   /// Precision of wall is around 1 microsecond, user and system are around
+   /// 10 millisecond (on Linux).
+-  enum class TimingType : int32_t { wall = 0, user = 1, system = 2 };
++  enum class TimingType : int { wall = 0, user = 1, system = 2 };
+ 
+   /// Start timing (should not be used internally in DOLFIN!)
+   void tic();
+
+--- a/dolfin/mesh/MeshConnectivity.h
++++ b/dolfin/mesh/MeshConnectivity.h
+@@ -24,5 +24,7 @@
+ #include <vector>
+ #include <dolfin/log/log.h>
+ 
++#include <cstdint>
++
+ namespace dolfin
+ {
