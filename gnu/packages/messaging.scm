@@ -661,15 +661,17 @@ It implements the necessary interfaces using @code{libgcrypt} and
         (git-file-name name version))
        (sha256
         (base32 "1q3vyj8zk3vm0a4v6w8qya5dhk2yw04bga8799a0zl6907nf122k"))))
-    (build-system cmake-build-system)
+    (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (setenv "CC" "gcc")
-                        (setenv "PREFIX" out)))))
-       #:parallel-tests? #f))
+     (list
+      #:parallel-tests? #f
+      #:test-target "test"
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'configure
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out")))
+                         (setenv "CC" "gcc")
+                         (setenv "PREFIX" out)))))))
     (native-inputs (list cmocka pkg-config))
     (inputs (list glib libgcrypt minixml sqlite))
     (synopsis "OMEMO C library")
