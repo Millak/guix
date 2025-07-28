@@ -240,6 +240,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix deprecation)
@@ -5384,20 +5385,22 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
 (define-public gi-docgen
   (package
     (name "gi-docgen")
-    (version "2024.1")
+    (version "2025.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gi_docgen" version))
               (sha256
                (base32
-                "0cf237ml2jhqcv1zlb35qbvjg4i8a4blawdah5s7f28iz5lmajia"))))
-    (build-system python-build-system)
+                "1i9dlwirizc0n5sw9w60yscaj14x9x06fdq64kwxqkia13d6dq3z"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools))
     (propagated-inputs (list python-jinja2
                              python-markdown
                              python-markupsafe
                              python-packaging
                              python-pygments
-                             python-tomli
                              python-typogrify))
     (home-page "https://gitlab.gnome.org/GNOME/gi-docgen")
     (synopsis "Documentation tool for GObject-based libraries")
