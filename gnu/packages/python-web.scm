@@ -3372,6 +3372,8 @@ C, yielding parse times that can be a thirtieth of the html5lib parse times.")
                (base32
                 "1acd1a4f66gi4plqnsml7cf33qp83mxsnmnqpdwkpj7597xkvyl4"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI or Git
     (native-inputs
      (list python-setuptools python-setuptools-scm python-wheel))
     (home-page "https://github.com/sanic-org/html5tagger")
