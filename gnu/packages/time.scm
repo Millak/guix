@@ -658,31 +658,26 @@ timestamps.")
 (define-public python-arrow
   (package
     (name "python-arrow")
-    (version "1.2.3")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "arrow" version))
               (sha256
                (base32
-                "189knrgxb3x21lzvqac6qlpd32308hcmpccxdlvr5wmrl46b6d1r"))))
+                "11bssv25jix57igvfmvg2v8dmwk55b4dh6hgffazidccchbhcm6l"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags '(list "tests"
-                          ;; python-dateutil doesn't recognize America/Nuuk.
-                          ;; Remove when python-dateutil > 2.8.1.
-                          "-k" "not test_parse_tz_name_zzz")))
+    ;; Tests: 1837 passed, 2 xpassed.
     (native-inputs
-     (list python-chai
+     (list python-dateparser
+           python-flit-core
            python-pytest
            python-pytest-cov
            python-pytest-mock
            python-pytz
-           python-setuptools
-           python-simplejson
-           python-wheel))
+           python-simplejson))
     (propagated-inputs
-     (list python-dateutil))
+     (list python-dateutil
+           python-types-python-dateutil))
     (home-page "https://github.com/arrow-py/arrow")
     (synopsis "Dates and times for Python")
     (description
