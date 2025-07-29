@@ -1136,6 +1136,12 @@ It can be used for working with
                  (string-append "AM_PROG_LIBTOOL\n" inst)))
               (substitute* "tests/Makefile.am"
                 (("libfreesasa\\.a") "libfreesasa.la"))))
+          (add-after 'unpack 'fix-new-gemmi
+            (lambda _
+              (substitute* "src/cif.cc"
+                (("models\\[i\\]\\.name")
+                 "std::to_string(models[i].num)")
+                (("convert_pair_to_loop") "ensure_loop"))))
           (add-before 'build 'build-lexer-and-parser
             (lambda _
               (with-directory-excursion "src"
