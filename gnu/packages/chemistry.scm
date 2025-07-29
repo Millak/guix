@@ -987,7 +987,7 @@ integrals for Gaussian type functions.")
 (define-public gemmi
   (package
     (name "gemmi")
-    (version "0.6.4")
+    (version "0.7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -996,10 +996,9 @@ integrals for Gaussian type functions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wciqqswc4p4v4kglfv36gnvyyimqn4lnywdzd0pgrjn443i860y"))
+                "01fdpb695gqsl5xznrlqjydnrckqbfndzr8fj66pryzv8d0fdfsg"))
               (patches
-               (search-patches "gemmi-fix-sajson-types.patch"
-                               "gemmi-fix-pegtl-usage.patch"))
+               (search-patches "gemmi-fix-pegtl-usage.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1023,24 +1022,28 @@ integrals for Gaussian type functions.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-includes
             (lambda _
-              (substitute* (list "src/sprintf.cpp"
+              (substitute* (list "src/json.cpp"
+                                 "src/sprintf.cpp"
                                  "include/gemmi/dirwalk.hpp"
                                  "include/gemmi/cif.hpp"
                                  "include/gemmi/json.hpp"
                                  "python/gemmi.cpp"
+                                 "python/serial.h"
                                  "include/gemmi/atof.hpp"
                                  "include/gemmi/numb.hpp"
                                  "include/gemmi/fourier.hpp")
                 (("<stb/stb_sprintf.h>") "<stb_sprintf.h>")
                 (("\"third_party/tinydir.h\"") "<tinydir.h>")
                 (("\"third_party/tao/pegtl.hpp\"") "<tao/pegtl.hpp>")
-                (("\"third_party/sajson.h\"") "<sajson.h>")
+                (("\"\\.\\./third_party/sajson.h\"") "<sajson.h>")
                 (("\"gemmi/third_party/tao/pegtl/parse_error.hpp\"")
                  "<tao/pegtl/parse_error.hpp>")
                 (("\"third_party/fast_float.h\"")
                  "<fast_float/fast_float.h>")
                 (("\"third_party/pocketfft_hdronly.h\"")
-                 "<pocketfft_hdronly.h>"))))
+                 "<pocketfft_hdronly.h>")
+                (("\"\\.\\./third_party/serializer.h\"")
+                 "<zpp/serializer.h>"))))
           (add-after 'unpack 'change-bin-prefix
             (lambda _
               (substitute* "CMakeLists.txt"
@@ -1052,7 +1055,7 @@ integrals for Gaussian type functions.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (with-directory-excursion "../source"
-                  (setenv "PYTHONPATH" "../build")
+                  (setenv "PYTHONPATH" "../build/py")
                   (invoke "python3" "-m" "unittest" "discover" "-v"
                           "-s" "tests"))))))))
     (inputs (list python zlib))
@@ -1061,10 +1064,11 @@ integrals for Gaussian type functions.")
            optionparser
            pegtl
            pocketfft-cpp
-           pybind11
+           python-nanobind
            sajson-for-gemmi
            stb-sprintf
-           tinydir))
+           tinydir
+           zpp-serializer))
     (home-page "https://gemmi.readthedocs.io/en/latest/")
     (synopsis "Macromolecular crystallography library and utilities")
     (description "GEMMI is a C++ library for macromolecular crystallography.
