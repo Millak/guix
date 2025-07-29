@@ -6008,17 +6008,17 @@ in Golang.")
 (define-public python-simplejson
   (package
     (name "python-simplejson")
-    (version "3.17.6")
+    (version "3.20.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "simplejson" version))
       (sha256
        (base32
-        "19pqqn01y6qmhhv8q6dh4p1acav49kl923kklnns2qxz5a6h766g"))))
-    (build-system python-build-system)
+        "0z838dqnh5c81ib6cvfqfhd82ax2apzclzgz8b0j87sgxjs3jhg6"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-toml))
+     (list python-pytest python-setuptools))
     (home-page "https://simplejson.readthedocs.io/en/latest")
     (synopsis
      "Json library for Python")
