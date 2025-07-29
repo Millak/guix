@@ -71,6 +71,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system waf)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -2119,14 +2120,24 @@ printing and other features typical of a source code editor.")
     (source
      (origin
       (method url-fetch)
+      ;; TODO: Try to build from git checkout instead GitHub release tarball.
       (uri (string-append "https://github.com/pygobject/pycairo/releases/download/v"
                           version "/pycairo-" version ".tar.gz"))
       (sha256
        (base32
         "1sybz43sj4ynjahlkidrcdpdrq8yi1avkndc2hgb5pgvfjld1p9d"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Project provides Meson build as well which may simplify the
+      ;; packaging.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list pkg-config python-pytest))
+     (list pkg-config python-pytest python-setuptools))
     (propagated-inputs                  ;pycairo.pc references cairo
      (list cairo))
     (home-page "https://cairographics.org/pycairo/")
