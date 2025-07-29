@@ -19678,36 +19678,28 @@ automatically detect a wide range of file encodings.")
 (define-public python-charset-normalizer
   (package
     (name "python-charset-normalizer")
-    (version "2.1.0")
+    (version "3.4.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "charset-normalizer" version))
+       (uri (pypi-uri "charset_normalizer" version))
        (sha256
-        (base32 "04zlajr77f6c7ai59l46as1idi0jjgbvj72lh4v5wfpz2s070pjp"))))
-    (build-system python-build-system)
+        (base32 "0qqfk84ka3d9hh0yf7n8y0qa0yn08ncdacjjckzix8ybkv5cxbjv"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               ;; This package provides a 'normalizer' executable that only
-               ;; depends on Python, so customize the wrap phase to avoid
-               ;; adding pytest and friends in order to save size.
-               ;; (See also <https://bugs.gnu.org/25235>.)
-               (replace 'wrap
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let* ((sitedir (site-packages inputs outputs))
-                          (python (dirname (dirname
-                                            (search-input-file
-                                             inputs "bin/python"))))
-                          (python-sitedir
-                           (string-append python "/lib/python"
-                                          (python-version python)
-                                          "/site-packages")))
-                     (wrap-program (string-append #$output "/bin/normalizer")
-                       `("GUIX_PYTHONPATH" ":" suffix
-                         ,(list sitedir python-sitedir)))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; https://github.com/jawah/charset_normalizer/issues/625
+          ;; https://github.com/jawah/charset_normalizer/pull/626
+          (add-after 'unpack 'fix-scripts
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("charset_normalizer:cli.cli_detect")
+                 "charset_normalizer.cli:cli_detect")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/ousret/charset_normalizer")
     (synopsis "Universal Charset Detector, alternative to Chardet")
     (description "This library helps you read text from an unknown charset
