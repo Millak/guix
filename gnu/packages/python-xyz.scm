@@ -27479,27 +27479,28 @@ class ShellOutSSHClientTests"))))
   (package
     (name "python-regex")
     (version "2022.1.18")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "regex" version))
-              (sha256
-               (base32
-                "05ir92d0cmv8wkafn3r05j5q47l6shg7cpdblp2a8m407b02vwwp"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "regex" version))
+       (sha256
+        (base32 "05ir92d0cmv8wkafn3r05j5q47l6shg7cpdblp2a8m407b02vwwp"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-c"
-                     "from regex.test_regex import test_main ; test_main()"))))))
-     (home-page "https://bitbucket.org/mrabarnett/mrab-regex")
-     (synopsis "Alternative regular expression module")
-     (description "This regular expression implementation is backwards-
-compatible with the standard @code{re} module, but offers additional
-functionality like full case-folding for case-insensitive matches in Unicode.")
-     (license license:psfl)))
+     #~(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs)
+              (invoke "python" "-c"
+                      "from regex.test_regex import test_main ; test_main()"))))))
+    (home-page "https://bitbucket.org/mrabarnett/mrab-regex")
+    (synopsis "Alternative regular expression module")
+    (description
+     "This regular expression implementation is backwards-compatible with the
+standard @code{re} module, but offers additional functionality like full
+case-folding for case-insensitive matches in Unicode.")
+    (license license:psfl)))
 
 (define-public python-rencode
   (package
