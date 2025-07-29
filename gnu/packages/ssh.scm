@@ -137,7 +137,7 @@ file names.
 (define-public libssh
   (package
     (name "libssh")
-    (version "0.11.1")
+    (version "0.11.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.libssh.org/files/"
@@ -145,17 +145,7 @@ file names.
                                   "/libssh-" version ".tar.xz"))
               (sha256
                (base32
-                "0y8v5ihrqnjxchvjhz8fcczndchaaxxim64bqm8q3q4i5v3xrdql"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; 'PATH_MAX' is undefined on GNU/Hurd; work around it.
-               #~(substitute* (find-files "examples" "\\.c$")
-                   (("#include \"examples_common\\.h\"" all)
-                    (string-append all "\n"
-                                   "#ifndef PATH_MAX\n"
-                                   "# define PATH_MAX 4096\n"
-                                   "#endif\n"))))
-              (patches (search-patches "libssh-openssh-banner.patch"))))
+                "1rq4dnmaz7zi0y7myvqi5xgdy9mwl80lanhfmw5iyq2viz0rylk9"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -163,13 +153,7 @@ file names.
       #:configure-flags
       #~(list #$@(if (%current-target-system)
                      #~()
-                     #~("-DUNIT_TESTING=ON"))
-              #$@(if (and (%current-target-system)
-                          (not (target-64bit?)))
-                     #~((string-append
-                         "-DCMAKE_C_FLAGS=-g -O2"
-                         " -Wno-error=incompatible-pointer-types"))
-                     #~()))
+                     #~("-DUNIT_TESTING=ON")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-commands
@@ -182,13 +166,7 @@ file names.
               ;; Test sources.
               (substitute* '("tests/server/test_server/default_cb.c")
                 (("\"/bin/sh\"")
-                 (format #f "~s" (which "sh"))))))
-          (add-before 'check 'prepare-for-tests
-            ;; A few test rely on the assumption that HOME == user's pw_dir,
-            ;; which is not satisfied in Guix, where `pw_dir' is '/' while
-            ;; HOME is '/homeless-shelter'.
-            (lambda _
-              (setenv "HOME" "/"))))))
+                 (format #f "~s" (which "sh")))))))))
     (native-inputs (list cmocka))
     (inputs (list bash-minimal mit-krb5 openssl zlib))
     (synopsis "SSH client library")
