@@ -3562,6 +3562,11 @@ different floating point sizes and complex transformations.")
                     (string-append #$(this-package-native-input "unittest-cpp")
                                    "/lib")
                     "', LIBS=['UnitTest++'])")))))
+            (add-after 'unpack 'fix-example
+              (lambda _
+                (substitute* "example/main.cpp"
+                  (("fclose\\(file\\);")
+                   "if (file != nullptr) {fclose(file); file = nullptr;}"))))
             (replace 'build
               (lambda* (#:key tests? #:allow-other-keys #:rest args)
                 (when tests?
