@@ -24052,25 +24052,23 @@ parsing UK postcodes.")
 (define-public python-faker
   (package
     (name "python-faker")
-    (version "33.1.0")
+    (version "37.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "faker" version))
        (sha256
-        (base32 "1r518fmir10jwz29a9fsl66x834dr1w40l4bci3gqlbax305z4hw"))))
+        (base32 "02kbql0mgjh98ilz5crxlkrsl9qdqlfa5gmqjn46br9hxax1na4f"))))
     (build-system pyproject-build-system)
+    ;; tests: 2104 passed, 12 skipped, 2 warnings
     (native-inputs
      (list python-freezegun
            python-pytest
-           python-random2
-           python-ukpostcodeparser
            python-setuptools
-           python-validators
-           python-wheel))
+           python-ukpostcodeparser
+           python-validators))
     (propagated-inputs
-     (list python-dateutil
-           python-typing-extensions))
+     (list python-tzdata))
     (home-page "https://github.com/joke2k/faker")
     (synopsis "Python package that generates fake data")
     (description
