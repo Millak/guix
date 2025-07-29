@@ -8164,7 +8164,7 @@ templates.  A format string can be provided to control the output.")
 (define-public python-pypugjs
   (package
     (name "python-pypugjs")
-    (version "5.9.12")
+    (version "5.12.0")
     (source
      (origin
        (method git-fetch)
@@ -8173,29 +8173,16 @@ templates.  A format string can be provided to control the output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zj7a560h973cl7brfw1nmyhgm8rp8j80wnih0shvhmw4ql23lpa"))))
+        (base32 "008wxvh2p08i8mlgak8hz3z057m06m4ydrca2ickl2m593476xi4"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags '(list "pypugjs/testsuite/")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'disable-pyramid
-                     (lambda _
-                       ;; pyramid is outdated and pyramid-mako is unpackaged.
-                       (substitute* "setup.cfg"
-                         (("'(pyramid|pyramid-mako)[^']*',") "")))))))
-    (native-inputs (list python-coverage
-                         python-django
+    (native-inputs (list python-django
                          python-jinja2
-                         python-flake8
                          python-flask
                          python-mako
-                         python-nose
                          python-poetry-core
                          python-pytest
-                         python-tornado-6
-                         python-wheel))
-    (propagated-inputs (list python-charset-normalizer python-six))
+                         python-tornado-6))
+    (propagated-inputs (list python-charset-normalizer))
     (home-page "https://github.com/kakulukia/pypugjs")
     (synopsis "Convert Pug source files into different template languages")
     (description
