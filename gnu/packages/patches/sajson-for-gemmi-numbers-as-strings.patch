@@ -50,7 +50,19 @@ diff -ur a/include/sajson.h b/include/sajson.h
  /// Represents a JSON value.  First, call get_type() to check its type,
  /// which determines which methods are available.
  ///
-@@ -585,70 +548,10 @@
+@@ -469,9 +432,9 @@ public:
+         // at worst a table lookup.
+         switch (value_tag) {
+         case tag::integer:
+-            return TYPE_INTEGER;
++            return TYPE_STRING;
+         case tag::double_:
+-            return TYPE_DOUBLE;
++            return TYPE_STRING;
+         case tag::null:
+             return TYPE_NULL;
+         case tag::false_:
+@@ -585,70 +548,10 @@ public:
          return length;
      }
  
