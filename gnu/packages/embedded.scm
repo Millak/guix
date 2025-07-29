@@ -1142,7 +1142,7 @@ with a layered architecture of JTAG interface and TAP support.")
                   (patch-flags (list "-p1" "--directory=gcc"))
                   (patches
                    (append
-                    (origin-patches (package-source gcc-4.7))
+                    (origin-patches (package-source gcc-base))
                     (search-patches
                      "gcc-4.6-gnu-inline.patch"
                      "gcc-cross-environment-variables.patch")))))
