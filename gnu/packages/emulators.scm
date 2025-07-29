@@ -3657,7 +3657,7 @@ as a \"white-label\" frontend for statically linked standalone emulators.")
 (define-public jg-bsnes
   (package
     (name "jg-bsnes")
-    (version "2.0.0")
+    (version "2.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3677,7 +3677,7 @@ as a \"white-label\" frontend for statically linked standalone emulators.")
                           (delete-file-recursively "deps/libsamplerate")))
               (sha256
                (base32
-                "0z1ka4si8vcb0j6ih087cni18vpgfd3qnaw24awycxz23xc0jkdv"))))
+                "1750ff70y9kiqa0mxxw6530fscana0wf2fslb0d801y5g4mymp73"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
