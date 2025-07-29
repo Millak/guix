@@ -496,7 +496,7 @@ different data arrays similar to those available in the numdiff software.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "4.11.0")
+    (version "4.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -510,8 +510,7 @@ different data arrays similar to those available in the numdiff software.")
                   ;; available in Guix.
                   (with-directory-excursion "3rdparty"
                     (for-each delete-file-recursively
-                              '("carotene"
-                                "cpufeatures"
+                              '("cpufeatures"
                                 "flatbuffers"
                                 "ffmpeg"
                                 "include"
@@ -525,7 +524,6 @@ different data arrays similar to those available in the numdiff software.")
                                 "libwebp"
                                 "openexr"
                                 "openjpeg"
-                                "openvx"
                                 "protobuf"
                                 ;;"quirc"
                                 "tbb"
@@ -535,7 +533,7 @@ different data arrays similar to those available in the numdiff software.")
                   (for-each delete-file (find-files "." "\\.jar$"))))
               (sha256
                (base32
-                "1ha0230yw9ihybmg2b3mkk9vbnlgzlwx597v2hm14y403047zvgb"))))
+                "1n5qif1ispmdby1cmwf9f8isdx07phyhb19jsmgrw5bk3k23dcyy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -719,7 +717,7 @@ different data arrays similar to those available in the numdiff software.")
            (file-name (git-file-name "opencv_extra" version))
            (sha256
             (base32
-             "1zs8ps01vq1pvs5zmpw0wd7xc2l85yqd85vksdj8kddkx6alda8j"))))
+             "0awang2hl7z194rlnic38ry6fgxy8b7k2qqasinjqznxab4dkhvz"))))
        ("opencv-contrib"
         ,(origin
            (method git-fetch)
@@ -728,7 +726,7 @@ different data arrays similar to those available in the numdiff software.")
            (file-name (git-file-name "opencv_contrib" version))
            (sha256
             (base32
-             "0wsvd7pnj0p6dvdl4x4r46dkrkxkd61v411ih30j3wa9l7m7vmv0"))))))
+             "1ai1kanlq1wr3173q86yfj6r9h3kkvjx18cakjr31jkb25qyrmny"))))))
     (inputs
      (list eigen
            ffmpeg-4
