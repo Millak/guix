@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -60,6 +60,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages texinfo)
@@ -1016,7 +1017,12 @@ portability.")
                    version ".tgz"))
              (sha256
               (base32
-               "0il4w1vwbglayakywyghiqhcjpg1yvv5ww2p8ylz32bi05wpg2gj"))))
+               "0il4w1vwbglayakywyghiqhcjpg1yvv5ww2p8ylz32bi05wpg2gj"))
+             (snippet
+              #~(begin (delete-file "btyaccpar.c")
+                       (delete-file "yaccpar.c")))))
+    (native-inputs
+     (list gawk))
     (build-system gnu-build-system)
     (home-page "https://invisible-island.net/byacc/byacc.html")
     (synopsis "Berkeley Yacc LALR parser generator")
