@@ -27478,22 +27478,18 @@ class ShellOutSSHClientTests"))))
 (define-public python-regex
   (package
     (name "python-regex")
-    (version "2022.1.18")
+    (version "2024.11.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regex" version))
        (sha256
-        (base32 "05ir92d0cmv8wkafn3r05j5q47l6shg7cpdblp2a8m407b02vwwp"))))
-    (build-system python-build-system)
+        (base32 "06amb1sxhbab03cy73q7wcp131bsingngr44r0rh6an5cfq5kcbs"))))
+    (build-system pyproject-build-system)
     (arguments
-     #~(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs)
-              (invoke "python" "-c"
-                      "from regex.test_regex import test_main ; test_main()"))))))
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://bitbucket.org/mrabarnett/mrab-regex")
     (synopsis "Alternative regular expression module")
     (description
