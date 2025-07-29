@@ -613,7 +613,7 @@ Go.  It also includes runtime support libraries for these languages.")
 
 (define-public gcc-6
   (package
-    (inherit gcc-5)
+    (inherit gcc-base)
     (version "6.5.0")
     (source (origin
               (method url-fetch)
@@ -629,9 +629,8 @@ Go.  It also includes runtime support libraries for these languages.")
                                        "gcc-6-source-date-epoch-2.patch"
                                        "gcc-5.0-libvtv-runpath.patch"))))
 
-    ;; GCC 4.9 and 5 has a workaround that is not needed for GCC 6 and later.
-    (arguments (package-arguments gcc-base))
-
+    (native-inputs (list perl ;for manpages
+                         texinfo))
     (inputs
      `(("isl" ,isl)
 
