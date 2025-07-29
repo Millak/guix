@@ -1258,6 +1258,8 @@ emphasis on quality rather than speed.")
       #:configure-flags
       #~(list
          "-DUSE_BLAS_LAPACK=ON"
+         ;; Some functions are written in Fortran.
+         "-DCMAKE_C_FLAGS=-Wno-implicit-function-declaration"
          (string-append "-DPARM_FILE_LOC=" #$output
                         "/share/" #$name "-" #$version "/eht_parms.dat")
          "-DBIND_EXE_NAME=yaehmop-bind")
