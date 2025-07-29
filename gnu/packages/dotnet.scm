@@ -809,11 +809,11 @@ a C-style programming language from Microsoft that is very similar to Java.")
             (replace 'set-cflags
               (lambda _
                 (setenv "CFLAGS"
-                 (string-append "-O2 -g"
-                                "-Wno-error=implicit-function-declaration"
-                                "-Wno-error=incompatible-pointer-types"
-                                "-Wno-error=implicit-int"
-                                "-Wno-error=return-mismatch"
+                 (string-append "-O2 -g "
+                                "-Wno-error=implicit-function-declaration "
+                                "-Wno-error=incompatible-pointer-types "
+                                "-Wno-error=implicit-int "
+                                "-Wno-error=return-mismatch "
                                 "-Wno-error=int-conversion"))))
             (add-after 'unpack 'set-TZ
               (lambda _
