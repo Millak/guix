@@ -11952,27 +11952,16 @@ multivalue dictionary that retains the order of insertions and deletions.")
 (define-public python-autocommand
   (package
     (name "python-autocommand")
-    (version "2.2.1")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "autocommand" version))
        (sha256
-        (base32 "03qp9xx4dq81ljhf56r21gp5j0lpqs1vaw99g0d84i97s3lj1m7y"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; This test fails with an invalid syntax error on 'task1 =
-                ;; asyncio.async(coro_1())' (see:
-                ;; https://github.com/Lucretiel/autocommand/issues/20).
-                (delete-file "test/test_autoasync.py")
-                (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest python-pytest-asyncio))
+        (base32 "0d2zjms5xm236k46la5pnl7i7hs3a12jlp12cw8lk5jm7i1fk3c7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/Lucretiel/autocommand")
     (synopsis "Python library to build a command-line from a function")
     (description "@code{autocommand} is library to automatically generate and
