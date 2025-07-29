@@ -27601,8 +27601,10 @@ pure Python module.")
        (sha256
         (base32
          "184sg65mbmih6ljblfsxcmq5js5l7dj3gpn618w9q5dy3rbh921z"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments `(#:tests? #f))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/Anorov/PySocks")
     (synopsis "SOCKS client module")
     (description "@code{pysocks} is an updated and semi-actively maintained
