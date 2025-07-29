@@ -166,7 +166,16 @@ file names.
               ;; Test sources.
               (substitute* '("tests/server/test_server/default_cb.c")
                 (("\"/bin/sh\"")
-                 (format #f "~s" (which "sh")))))))))
+                 (format #f "~s" (which "sh"))))))
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'skip-tests-hurd
+                      ;; these subtests require an ipv6 address
+                      ;; torture_config_match_localnetwork_string
+                      ;; torture_config_match_localnetwork_file
+                      (lambda _
+                        (substitute* "tests/unittests/CMakeLists.txt"
+                          (("torture_config_match_localnetwork") "")))))
+                 #~()))))
     (native-inputs (list cmocka))
     (inputs (list bash-minimal mit-krb5 openssl zlib))
     (synopsis "SSH client library")
