@@ -3591,7 +3591,7 @@ Programming Interface} for emulators.")
 (define-public jgrf
   (package
     (name "jgrf")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3610,7 +3610,7 @@ Programming Interface} for emulators.")
                           (delete-file-recursively "deps/miniz")))
               (sha256
                (base32
-                "1ivc8jj0majvgi0rj9nn429bmh7wp2nf87hq8xg05fjqwalfy3bl"))))
+                "06q3yiz8rwgyx7iri94lg51lcqwhz8zz8y890haw5x1vc7f7yn1v"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                ;no test suite
