@@ -3747,6 +3747,9 @@ doing practical, real world data analysis in Python.")
                      ;; It requires a fresh python-tzdata, including new
                      ;; timezones.
                      "test_repr"
+                     ;; Fails with Pytest@8.4.1, fixed on main branch.
+                     ;; See: <https://github.com/pandas-dev/pandas/issues/61557>.
+                     "test_groupby_raises_category_on_category"
                      ;; These tests should be skipped on 32bit systems:
                      ;; Cannot cast array data from dtype('int64') to dtype('int32')
                      #$@(if (not (target-64bit?))
