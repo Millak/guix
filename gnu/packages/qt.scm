@@ -5133,6 +5133,7 @@ a binding language:
       (build-system qt-build-system)
       (arguments
        (list #:qtbase qtbase
+             #:cmake cmake-3.25
              #:tests? #f ;no tests
              #:configure-flags
              #~(list "-DBUILD_EXAMPLE=ON"
