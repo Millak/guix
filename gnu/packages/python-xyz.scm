@@ -19742,35 +19742,7 @@ taking a new approach.  All IANA character set names for which the Python core
 library provides codecs are supported.")
     (license license:expat)))
 
-(define-public python-charset-normalizer-3
-  (package
-    (inherit python-charset-normalizer)
-    (name "python-charset-normalizer")
-    (version "3.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "charset_normalizer" version))
-       (sha256
-        (base32 "0qqfk84ka3d9hh0yf7n8y0qa0yn08ncdacjjckzix8ybkv5cxbjv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (substitute-keyword-arguments (package-arguments
-                                    python-charset-normalizer)
-       ((#:phases phases
-         '%standard-phases)
-        #~(modify-phases #$phases
-            ;; https://github.com/jawah/charset_normalizer/issues/625
-            ;; https://github.com/jawah/charset_normalizer/pull/626
-            (add-after 'unpack 'fix-scripts
-              (lambda _
-                (substitute* "pyproject.toml"
-                  (("charset_normalizer:cli.cli_detect")
-                   "charset_normalizer.cli:cli_detect"))))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))))
+(define-public python-charset-normalizer-3 python-charset-normalizer)
 
 (define-public python-docopt
   (package
