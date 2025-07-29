@@ -5152,6 +5152,10 @@ PyTorch.")
               (substitute* "aten/src/ATen/native/vulkan/api/Allocator.h"
                 (("<include/vk_mem_alloc.h>")
                  "<vk_mem_alloc.h>"))
+              ;; Fix missing <algorithm> header for std::for_each in Vulkan API
+              (substitute* "aten/src/ATen/native/vulkan/api/QueryPool.cpp"
+                (("#include <utility>" all)
+                 (string-append all "\n#include <algorithm>")))
               ;; For Vulkan
               (substitute* "CMakeLists.txt"
                 (("append_cxx_flag.*-Werror=(return-type|range-loop-construct).*") ""))
