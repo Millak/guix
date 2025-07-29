@@ -32532,13 +32532,13 @@ files.  These files are used to translate strings in android apps.")
                           ;; Fails with too many open files.
                           "test_select_fd")
                     " and not "))))
-    (propagated-inputs
-     (list python-pathtools python-pyyaml))
     (native-inputs
      (list python-pytest
            python-pytest-cov
            python-pytest-timeout
-           python-setuptools python-wheel))
+           python-setuptools))
+    (propagated-inputs
+     (list python-pyyaml))
     (home-page "https://github.com/gorakhargosh/watchdog")
     (synopsis "File system events monitoring")
     (description "This package provides a way to monitor file system events
