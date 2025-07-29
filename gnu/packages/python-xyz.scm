@@ -26629,19 +26629,20 @@ parts of the lines that were modified.")
 (define-public python-factory-boy
   (package
     (name "python-factory-boy")
-    (version "3.2.1")
+    (version "3.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "factory_boy" version))
        (sha256
-        (base32 "0pm5lbvnwm0kg5i6z611rg907yw1gy551f2advmpaz041ixjg3d9"))))
-    (build-system python-build-system)
+        (base32 "00rx3v5y5l03vlkq6xqj4r7zbnlrx23h45mlyb3zm38j4v964s46"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests are not included in the tarball.
      `(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-faker))
-    (home-page "https://github.com/benhoyt/scandir")
+    (home-page "https://github.com/FactoryBoy/factory_boy")
     (synopsis "Versatile test fixtures replacement")
     (description "Factory_boy is a fixtures replacement based on thoughtbot’s
 factory_girl.  As a fixtures replacement tool, it aims to replace static, hard
