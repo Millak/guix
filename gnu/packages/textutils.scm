@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016, 2018, 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2019, 2020, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
@@ -216,49 +216,56 @@ case-folding, and other operations for data in the UTF-8 encoding.")
     (name "utf8proc")
     (native-inputs
      (let ((UNICODE_VERSION "16.0.0"))  ; defined in data/Makefile
-       ;; Test data that is otherwise downloaded with curl.
-       (list (origin
-               (method url-fetch)
-               (uri (string-append
-                     "https://www.unicode.org/Public/"
-                     UNICODE_VERSION "/ucd/NormalizationTest.txt"))
-               (sha256
-                (base32
-                 "1cffwlxgn6sawxb627xqaw3shnnfxq0v7cbgsld5w1z7aca9f4fq")))
-             (origin
-               (method url-fetch)
-               (uri (string-append
-                     "https://www.unicode.org/Public/"
-                     UNICODE_VERSION "/ucd/auxiliary/GraphemeBreakTest.txt"))
-               (sha256
-                (base32
-                 "1d9w6vdfxakjpp38qjvhgvbl2qx0zv5655ph54dhdb3hs9a96azf")))
-             (origin
-               (method url-fetch)
-               (uri (string-append
-                     "https://www.unicode.org/Public/"
-                     UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
-               (sha256
-                (base32
-                 "1gfsq4vdmzi803i2s8ih7mm4fgs907kvkg88kvv9fi4my9hm3lrr")))
-             ;; For tests.
-             julia
-             perl
-             ;; TODO Move to ruby@3 on the next rebuild cycle.
-             ruby-2.7)))
+       ;; Only if the tests will be run should these be added.
+       (if (and (%current-system)
+                (supported-package? julia))
+           ;; Test data that is otherwise downloaded with curl.
+           (list (origin
+                   (method url-fetch)
+                   (uri (string-append
+                         "https://www.unicode.org/Public/"
+                         UNICODE_VERSION "/ucd/NormalizationTest.txt"))
+                   (sha256
+                    (base32
+                     "1cffwlxgn6sawxb627xqaw3shnnfxq0v7cbgsld5w1z7aca9f4fq")))
+                 (origin
+                   (method url-fetch)
+                   (uri (string-append
+                         "https://www.unicode.org/Public/"
+                         UNICODE_VERSION "/ucd/auxiliary/GraphemeBreakTest.txt"))
+                   (sha256
+                    (base32
+                     "1d9w6vdfxakjpp38qjvhgvbl2qx0zv5655ph54dhdb3hs9a96azf")))
+                 (origin
+                   (method url-fetch)
+                   (uri (string-append
+                         "https://www.unicode.org/Public/"
+                         UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
+                   (sha256
+                    (base32
+                     "1gfsq4vdmzi803i2s8ih7mm4fgs907kvkg88kvv9fi4my9hm3lrr")))
+                 ;; For tests.
+                 julia
+                 perl
+                 ;; TODO Move to ruby@3 on the next rebuild cycle.
+                 ruby-2.7)
+           '())))
     (arguments
-     (strip-keyword-arguments
-      '(#:tests?)
-      (substitute-keyword-arguments (package-arguments utf8proc-bootstrap)
-        ((#:phases phases '%standard-phases)
-         #~(modify-phases #$phases
-             (add-before 'check 'check-data
-               (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                 (for-each (lambda (i)
-                             (copy-file (assoc-ref (or native-inputs inputs) i)
-                                        (string-append "data/" i)))
-                           '("NormalizationTest.txt" "GraphemeBreakTest.txt"
-                             "DerivedCoreProperties.txt")))))))))
+     (if (this-package-native-input "julia")
+         (strip-keyword-arguments
+          '(#:tests?)
+          (substitute-keyword-arguments (package-arguments utf8proc-bootstrap)
+            ((#:phases phases '%standard-phases)
+             #~(modify-phases #$phases
+                 (add-before 'check 'check-data
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     (for-each (lambda (i)
+                                 (copy-file (assoc-ref (or native-inputs inputs) i)
+                                            (string-append "data/" i)))
+                               '("NormalizationTest.txt" "GraphemeBreakTest.txt"
+                                 "DerivedCoreProperties.txt"))))))))
+          (substitute-keyword-arguments (package-arguments utf8proc-bootstrap)
+            ((#:tests? _ #t) #f))))
     (properties
      (alist-delete 'hidden? (package-properties utf8proc-bootstrap)))))
 
