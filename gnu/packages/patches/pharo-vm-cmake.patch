@@ -1,0 +1,659 @@
+Upstream-status: <https://github.com/pharo-project/pharo-vm/pull/1003>
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5ec39df40..57f58f515 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -37,6 +37,7 @@ option(DEPENDENCIES_FORCE_BUILD         "Force build libraries" OFF)
+ option(BUILD_WITH_GRAPHVIZ              "Generate dependency graphs" ON)
+ option(VERSION_UPDATE_FROM_GIT              "Extract version information from git tags. Default to true. Follow vX.Y.Z-suffix" TRUE)
+ 
++option(INSTALL_C_SOURCE "Install the generated C source files to `pharo-vm'" OFF)
+ 
+ set(APPNAME			"Pharo"         CACHE STRING                 "VM Application name")
+ set(FLAVOUR			"CoInterpreter" CACHE STRING                 "The kind of VM to generate. Possible values: StackVM, CoInterpreter")
+@@ -105,6 +106,15 @@ endif()
+ #This needs to be at this point, after setting the toolchain configuration
+ project(PharoVM)
+ 
++set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib" CACHE STRING "Install-time RPATH")
++
++# Provide a default value for the installation prefix, while
++# preserving any user-specified CMAKE_INSTALL_PREFIX.
++if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
++    set_property(CACHE CMAKE_INSTALL_PREFIX PROPERTY VALUE
++        "${CMAKE_CURRENT_BINARY_DIR}/build/dist")
++endif()
++
+ include(cmake/versionExtraction.cmake)
+ 
+ set(BUILT_FROM "${PharoVM_VERSION_STRING_FULL} - Commit: ${PharoVM_VERSION_GIT_SHA} - Date: ${PharoVM_VERSION_GIT_COMMIT_DATE}")
+@@ -407,7 +417,12 @@ message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER}")
+ message(STATUS "Resource Compiler: ${CMAKE_RC_COMPILER}")
+ 
+ set(VM_FRONTEND_APPLICATION_TYPE)
+-include(cmake/${CMAKE_SYSTEM_NAME}.cmake)
++
++if(UNIX AND NOT OSX AND NOT WIN)
++    include(cmake/Linux.cmake)
++else()                          # WIN AND OSX
++    include(cmake/${CMAKE_SYSTEM_NAME}.cmake)
++endif()
+ 
+ set(GENERATED_SOURCES ${VMSOURCEFILES})
+ 
+diff --git a/cmake/Darwin.cmake b/cmake/Darwin.cmake
+index 9095313d2..e1d1ab77c 100644
+--- a/cmake/Darwin.cmake
++++ b/cmake/Darwin.cmake
+@@ -67,8 +67,6 @@ macro(add_third_party_dependencies_per_platform)
+ endmacro()
+ 
+ macro(configure_installables INSTALL_COMPONENT)
+-  set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/build/dist")
+-  
+ 	install(
+ 		DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/build/libffi/install/lib/"
+ 		DESTINATION "${VM_EXECUTABLE_NAME}.app/Contents/MacOS/Plugins"
+diff --git a/cmake/FreeBSD.cmake b/cmake/FreeBSD.cmake
+deleted file mode 100644
+index 0d4386657..000000000
+--- a/cmake/FreeBSD.cmake
++++ /dev/null
+@@ -1,97 +0,0 @@
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-z,wxneeded,-rpath=. -I/usr/local/include -I/usr/X11R6/include -lexecinfo")
+-set(PHARO_BIN_LOCATION "default" CACHE STRING "The default location of the PHARO bin, used by the launch.sh.in")
+-
+-if(${PHARO_BIN_LOCATION} STREQUAL "default")
+-	set(PHARO_BIN_IN_ROOT "`/usr/bin/dirname \"\$0\"`/libexec")
+-	set(PHARO_BIN_IN_BIN "`/usr/bin/dirname \"\$0\"`/../libexec")
+-else()
+-	set(PHARO_BIN_IN_ROOT ${PHARO_BIN_LOCATION})
+-	set(PHARO_BIN_IN_BIN ${PHARO_BIN_LOCATION})
+-endif()
+-
+-function(add_platform_headers)
+-target_include_directories(${VM_LIBRARY_NAME}
+-PUBLIC
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/include/unix
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/include/common
+-)
+-endfunction() #add_platform_headers
+-
+-set(EXTRACTED_SOURCES
+-#Common sources
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqHeapMap.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqVirtualMachine.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqNamedPrims.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqExternalSemaphores.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqTicker.c
+-
+-#Platform sources
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/unix/aio.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugUnix.c
+-
+-#Virtual Memory functions
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/memoryUnix.c
+-
+-# Support sources
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/fileDialogUnix.c
+-)
+-
+-set(VM_FRONTEND_SOURCES
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/unixMain.c)
+-
+-
+-macro(add_third_party_dependencies_per_platform)
+-	if(${FEATURE_LIB_GIT2})
+-        include(cmake/importLibGit2.cmake)
+-    endif()
+-
+-    if(${FEATURE_LIB_FREETYPE2})
+-        include(cmake/importFreetype2.cmake)
+-    endif()
+-
+-    if(${FEATURE_LIB_CAIRO})
+-        include(cmake/importCairo.cmake)
+-    endif()
+-
+-    if(${FEATURE_LIB_SDL2})
+-        include(cmake/importSDL2.cmake)
+-    endif()
+-endmacro()
+-
+-
+-macro(configure_installables INSTALL_COMPONENT)
+-    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/build/dist")
+-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/launch.sh.in
+-        ${CMAKE_CURRENT_BINARY_DIR}/build/packaging/linux/${VM_EXECUTABLE_NAME} @ONLY)
+-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/bin/launch.sh.in
+-        ${CMAKE_CURRENT_BINARY_DIR}/build/packaging/linux/bin/${VM_EXECUTABLE_NAME} @ONLY)
+-
+-
+-    install(
+-      DIRECTORY "${CMAKE_BINARY_DIR}/build/packaging/linux/"
+-      DESTINATION "./"
+-      USE_SOURCE_PERMISSIONS
+-      COMPONENT ${INSTALL_COMPONENT})
+-    install(
+-      DIRECTORY "${CMAKE_BINARY_DIR}/build/vm/"
+-      DESTINATION "lib"
+-      USE_SOURCE_PERMISSIONS
+-      COMPONENT ${INSTALL_COMPONENT})
+-	install(
+-		DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/build/libffi/install/lib/"
+-		DESTINATION "lib"
+-		USE_SOURCE_PERMISSIONS
+-		COMPONENT ${INSTALL_COMPONENT}
+-		FILES_MATCHING PATTERN ${DYLIB_EXT})
+-
+-
+-	install(
+-	    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/include/unix/"
+-	    DESTINATION include/pharovm
+-	    COMPONENT include
+-	    FILES_MATCHING PATTERN *.h)
+-endmacro()
+-
+-macro(add_required_libs_per_platform)
+-  target_link_libraries(${VM_LIBRARY_NAME} m pthread)
+-endmacro()
+diff --git a/cmake/Linux.cmake b/cmake/Linux.cmake
+index 0b6b9d7c4..fb43bae6b 100644
+--- a/cmake/Linux.cmake
++++ b/cmake/Linux.cmake
+@@ -1,14 +1,3 @@
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-rpath=.")
+-set(PHARO_BIN_LOCATION "default" CACHE STRING "The default location of the PHARO bin, used by the launch.sh.in")
+-
+-if(${PHARO_BIN_LOCATION} STREQUAL "default")
+-	set(PHARO_BIN_IN_ROOT "`/usr/bin/dirname \"\$0\"`/lib")
+-	set(PHARO_BIN_IN_BIN "`/usr/bin/dirname \"\$0\"`/../lib")
+-else()
+-	set(PHARO_BIN_IN_ROOT ${PHARO_BIN_LOCATION})
+-	set(PHARO_BIN_IN_BIN ${PHARO_BIN_LOCATION})
+-endif()
+-
+ function(add_platform_headers)
+ target_include_directories(${VM_LIBRARY_NAME}
+ PUBLIC
+@@ -39,7 +28,6 @@ set(EXTRACTED_SOURCES
+ set(VM_FRONTEND_SOURCES
+     ${CMAKE_CURRENT_SOURCE_DIR}/src/unixMain.c)
+ 
+-
+ macro(add_third_party_dependencies_per_platform)
+ 	if(${FEATURE_LIB_GIT2})
+         include(cmake/importLibGit2.cmake)
+@@ -58,42 +46,21 @@ macro(add_third_party_dependencies_per_platform)
+     endif()
+ endmacro()
+ 
+-
+ macro(configure_installables INSTALL_COMPONENT)
+-    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/build/dist")
+-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/launch.sh.in
+-        ${CMAKE_CURRENT_BINARY_DIR}/build/packaging/linux/${VM_EXECUTABLE_NAME} @ONLY)
+-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/bin/launch.sh.in
+-        ${CMAKE_CURRENT_BINARY_DIR}/build/packaging/linux/bin/${VM_EXECUTABLE_NAME} @ONLY)
+-
+-
+     install(
+-      DIRECTORY "${CMAKE_BINARY_DIR}/build/packaging/linux/"
+-      DESTINATION "./"
+-      USE_SOURCE_PERMISSIONS
+-      COMPONENT ${INSTALL_COMPONENT})
++        TARGETS ${VM_EXECUTABLE_NAME}
++        COMPONENT ${INSTALL_COMPONENT})
+     install(
+-      DIRECTORY "${CMAKE_BINARY_DIR}/build/vm/"
+-      DESTINATION "lib"
+-      USE_SOURCE_PERMISSIONS
+-      COMPONENT ${INSTALL_COMPONENT})
+-	install(
+-		DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/build/libffi/install/lib/"
+-		DESTINATION "lib"
+-		USE_SOURCE_PERMISSIONS
+-		COMPONENT ${INSTALL_COMPONENT}
+-		FILES_MATCHING PATTERN ${DYLIB_EXT})
+-
+-
+-	install(
+-	    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/include/unix/"
+-	    DESTINATION include/pharovm
+-	    COMPONENT include
+-	    FILES_MATCHING PATTERN *.h)
++        TARGETS ${VM_LIBRARY_NAME}
++        COMPONENT ${INSTALL_COMPONENT}
++        INCLUDES DESTINATION "include/pharovm")
++    install(
++        TARGETS ${VM_PLUGIN_TARGETS}
++        COMPONENT ${INSTALL_COMPONENT})
+ endmacro()
+ 
+ macro(add_required_libs_per_platform)
+   target_link_libraries(${VM_LIBRARY_NAME} dl)
+   target_link_libraries(${VM_LIBRARY_NAME} m)
+   target_link_libraries(${VM_LIBRARY_NAME} pthread)
+-endmacro()
+\ No newline at end of file
++endmacro()
+diff --git a/cmake/OpenBSD.cmake b/cmake/OpenBSD.cmake
+deleted file mode 100644
+index 19d26483b..000000000
+--- a/cmake/OpenBSD.cmake
++++ /dev/null
+@@ -1,97 +0,0 @@
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-z,wxneeded,-rpath=. -I/usr/local/include -I/usr/X11R6/include")
+-set(PHARO_BIN_LOCATION "default" CACHE STRING "The default location of the PHARO bin, used by the launch.sh.in")
+-
+-if(${PHARO_BIN_LOCATION} STREQUAL "default")
+-	set(PHARO_BIN_IN_ROOT "`/usr/bin/dirname \"\$0\"`/lib")
+-	set(PHARO_BIN_IN_BIN "`/usr/bin/dirname \"\$0\"`/../lib")
+-else()
+-	set(PHARO_BIN_IN_ROOT ${PHARO_BIN_LOCATION})
+-	set(PHARO_BIN_IN_BIN ${PHARO_BIN_LOCATION})
+-endif()
+-
+-function(add_platform_headers)
+-target_include_directories(${VM_LIBRARY_NAME}
+-PUBLIC
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/include/unix
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/include/common
+-)
+-endfunction() #add_platform_headers
+-
+-set(EXTRACTED_SOURCES
+-#Common sources
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqHeapMap.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqVirtualMachine.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqNamedPrims.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqExternalSemaphores.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/common/sqTicker.c
+-
+-#Platform sources
+-    ${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/src/unix/aio.c
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugUnix.c
+-
+-#Virtual Memory functions
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/memoryUnix.c
+-
+-# Support sources
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/fileDialogUnix.c
+-)
+-
+-set(VM_FRONTEND_SOURCES
+-    ${CMAKE_CURRENT_SOURCE_DIR}/src/unixMain.c)
+-
+-
+-macro(add_third_party_dependencies_per_platform)
+-	if(${FEATURE_LIB_GIT2})
+-        include(cmake/importLibGit2.cmake)
+-    endif()
+-
+-    if(${FEATURE_LIB_FREETYPE2})
+-        include(cmake/importFreetype2.cmake)
+-    endif()
+-
+-    if(${FEATURE_LIB_CAIRO})
+-        include(cmake/importCairo.cmake)
+-    endif()
+-
+-    if(${FEATURE_LIB_SDL2})
+-        include(cmake/importSDL2.cmake)
+-    endif()
+-endmacro()
+-
+-
+-macro(configure_installables INSTALL_COMPONENT)
+-    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/build/dist")
+-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/launch.sh.in
+-        ${CMAKE_CURRENT_BINARY_DIR}/build/packaging/linux/${VM_EXECUTABLE_NAME} @ONLY)
+-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/bin/launch.sh.in
+-        ${CMAKE_CURRENT_BINARY_DIR}/build/packaging/linux/bin/${VM_EXECUTABLE_NAME} @ONLY)
+-
+-
+-    install(
+-      DIRECTORY "${CMAKE_BINARY_DIR}/build/packaging/linux/"
+-      DESTINATION "./"
+-      USE_SOURCE_PERMISSIONS
+-      COMPONENT ${INSTALL_COMPONENT})
+-    install(
+-      DIRECTORY "${CMAKE_BINARY_DIR}/build/vm/"
+-      DESTINATION "lib"
+-      USE_SOURCE_PERMISSIONS
+-      COMPONENT ${INSTALL_COMPONENT})
+-	install(
+-		DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/build/libffi/install/lib/"
+-		DESTINATION "lib"
+-		USE_SOURCE_PERMISSIONS
+-		COMPONENT ${INSTALL_COMPONENT}
+-		FILES_MATCHING PATTERN ${DYLIB_EXT})
+-
+-
+-	install(
+-	    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/extracted/vm/include/unix/"
+-	    DESTINATION include/pharovm
+-	    COMPONENT include
+-	    FILES_MATCHING PATTERN *.h)
+-endmacro()
+-
+-macro(add_required_libs_per_platform)
+-  target_link_libraries(${VM_LIBRARY_NAME} m pthread)
+-endmacro()
+diff --git a/cmake/Windows.cmake b/cmake/Windows.cmake
+index 3082b697c..9be884ebc 100644
+--- a/cmake/Windows.cmake
++++ b/cmake/Windows.cmake
+@@ -98,8 +98,6 @@ macro(add_third_party_dependencies_per_platform)
+ endmacro()
+ 
+ macro(configure_installables INSTALL_COMPONENT)
+-    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/build/dist")
+-
+     install(
+           DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/build/vm/"
+           DESTINATION "./"
+diff --git a/cmake/packaging.cmake b/cmake/packaging.cmake
+index 4727d56e0..54add1eb4 100644
+--- a/cmake/packaging.cmake
++++ b/cmake/packaging.cmake
+@@ -30,54 +30,52 @@ install(
+     COMPONENT include
+     FILES_MATCHING PATTERN *.h)
+ 
+-install(DIRECTORY
+-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/extracted"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/packaging"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/plugins"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/resources"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/ffiTestLibrary"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/ffi"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/tty"
+-    DESTINATION pharo-vm
+-    USE_SOURCE_PERMISSIONS
+-    COMPONENT c-src
+-)
+-
+-install(FILES
++if(INSTALL_C_SOURCE)
++    install(DIRECTORY
++        "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
++        "${CMAKE_CURRENT_SOURCE_DIR}/extracted"
++        "${CMAKE_CURRENT_SOURCE_DIR}/include"
++        "${CMAKE_CURRENT_SOURCE_DIR}/plugins"
++        "${CMAKE_CURRENT_SOURCE_DIR}/resources"
++        "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
++        "${CMAKE_CURRENT_SOURCE_DIR}/src"
++        "${CMAKE_CURRENT_SOURCE_DIR}/ffiTestLibrary"
++        "${CMAKE_CURRENT_SOURCE_DIR}/ffi"
++        "${CMAKE_CURRENT_SOURCE_DIR}/tty"
++        DESTINATION pharo-vm
++        USE_SOURCE_PERMISSIONS
++        COMPONENT c-src)
++
++    install(FILES
+ 	"${CMAKE_CURRENT_BINARY_DIR}/version.info"
+ 	DESTINATION pharo-vm
+ 	COMPONENT c-src)
+ 
++    install(FILES
++        "CMakeLists.txt"
++        ${SUPPORT_CMAKE_FILES}
++        DESTINATION pharo-vm
++        COMPONENT c-src)
++
++    #Define generated files as elements in the c-src component for packaging
++    install(
++        DIRECTORY "${GENERATED_SOURCE_DIR}/generated/"
++        DESTINATION pharo-vm/generated/
++        USE_SOURCE_PERMISSIONS
++        COMPONENT c-src)
++
++    install(
++        DIRECTORY "${GENERATED_SOURCE_DIR}/generated/32/vm/include/"
++        DESTINATION include/pharovm
++        USE_SOURCE_PERMISSIONS
++        COMPONENT include
++        FILES_MATCHING PATTERN *.h)
++endif(INSTALL_C_SOURCE)
++
+ #List all cmake files
+ file(GLOB SUPPORT_CMAKE_FILES
+   "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake"
+ )
+-
+-install(FILES
+-    "CMakeLists.txt"
+-    ${SUPPORT_CMAKE_FILES}
+-    DESTINATION pharo-vm
+-    COMPONENT c-src
+-)
+-
+-#Define generated files as elements in the c-src component for packaging
+-install(
+-	DIRECTORY "${GENERATED_SOURCE_DIR}/generated/"
+-	DESTINATION pharo-vm/generated/
+-	USE_SOURCE_PERMISSIONS
+-	COMPONENT c-src)
+-
+-install(
+-	DIRECTORY "${GENERATED_SOURCE_DIR}/generated/32/vm/include/"
+-	DESTINATION include/pharovm
+-	USE_SOURCE_PERMISSIONS
+-	COMPONENT include
+-	FILES_MATCHING PATTERN *.h)
+-
+ set(CPACK_PACKAGE_DESCRIPTION "${APPNAME} Headless VM for ${FULL_PLATFORM_NAME}")
+ set(CPACK_PACKAGE_VENDOR "${APPNAME}")
+ set(CPACK_PACKAGE_HOMEPAGE_URL "https://pharo.org")
+diff --git a/packaging/linux/bin/launch.sh.in b/packaging/linux/bin/launch.sh.in
+deleted file mode 100755
+index 0d7d656bb..000000000
+--- a/packaging/linux/bin/launch.sh.in
++++ /dev/null
+@@ -1,65 +0,0 @@
+-#!/bin/sh
+-# Run the VM, setting SQUEAK_PLUGINS if unset to the VM's containing directory
+-# if unset, and ensuring LD_LIBRARY_PATH includes the VM's containing directory.
+-BIN=@PHARO_BIN_IN_BIN@
+-GDB=
+-if [ "${SQUEAK_PLUGINS-unset}" = unset ]; then
+-    export SQUEAK_PLUGINS="$BIN"
+-fi
+-if [ "$1" = '-gdb' ]; then
+-    GDB=gdb
+-    shift
+-    echo;echo run $@; echo
+-    set --
+-fi
+-# At least on linux LD_LIBRARY_PATH's components must be absolute path names
+-case "$BIN" in
+-/*) PLUGINS="$BIN";;
+-*) PLUGINS="`pwd`/$BIN"
+-esac
+-
+-if [ $(uname -s) = "OpenBSD" ]; then
+-  LD_LIBRARY_PATH="$PLUGINS:${LD_LIBRARY_PATH}" exec $GDB "$BIN/@VM_EXECUTABLE_NAME@" "$@"
+-fi
+-
+-# On some linuxes there multiple versions of the C library.  If the image uses
+-# libc (e.g. through the FFI) then it must use the same version that the VM uses
+-# and so it should take precedence over /lib libc.  This is done by setting
+-# LD_LIBRARY_PATH appropriately, based on ldd's idea of the libc use by the VM.
+-#Try extracting Libc
+-LIBC_SO="`/usr/bin/ldd "$BIN/@VM_EXECUTABLE_NAME@" | /bin/fgrep /libc. | sed 's/^.*=> \([^ ]*\).*/\1/'`"
+-PLATFORMLIBDIR=`expr "$LIBC_SO" : '\(.*\)/libc.*'`
+-
+-#If empty try extracting Musl
+-if [ "$PLATFORMLIBDIR" = "" ]; then
+-{
+-	LIBC_SO="`/usr/bin/ldd "$BIN/@VM_EXECUTABLE_NAME@" | /bin/fgrep libc. | sed 's/^.*=> \([^ ]*\).*/\1/'`"
+-	PLATFORMLIBDIR=`expr "$LIBC_SO" : '\(.*\)/ld-musl.*'`
+-}
+-fi
+-
+-if [ "$PLATFORMLIBDIR" = "" ]; then
+-{
+-    echo "Error. Could not determine platform's libc path for VM. "
+-    echo "Try forcing \$PLATFORMLIBDIR in $0, based on LIBC_SO."
+-    echo "Please report what works to @VM_EXECUTABLE_NAME@ [vm-dev] mail list."
+-    echo "  LIBC_SO="$LIBC_SO
+-    cat /etc/*-release*  |  grep -v // | sed 's/^/  /'
+-    echo -n "  UNAME=" ; uname -a
+-    MACHINE=`uname -m`
+-    case "$MACHINE" in
+-        *64*)
+-            echo "  System seems to be 64 bit. You may need to (re)install the 32-bit libraries."
+-            ;;
+-    esac
+-    exit 1
+-} 1>&2
+-fi
+-# prepending is less flexible but safer because it ensures we find the plugins
+-# in the same directory as the VM.  We must include at least /lib and /usr/lib
+-# if libraries there-in are to be found.  These directories are not implicit.
+-case $PLATFORMLIBDIR in
+-/lib|/usr/lib)  SVMLLP=/lib:/usr/lib;;
+-*)              SVMLLP="$PLATFORMLIBDIR:/lib:/usr$PLATFORMLIBDIR:/usr/lib"
+-esac
+-LD_LIBRARY_PATH="$PLUGINS:$SVMLLP:${LD_LIBRARY_PATH}" exec $GDB "$BIN/@VM_EXECUTABLE_NAME@" "$@"
+diff --git a/packaging/linux/launch.sh.in b/packaging/linux/launch.sh.in
+deleted file mode 100755
+index 456444f27..000000000
+--- a/packaging/linux/launch.sh.in
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-# Run the VM, setting SQUEAK_PLUGINS if unset to the VM's containing directory
+-# if unset, and ensuring LD_LIBRARY_PATH includes the VM's containing directory.
+-BIN=@PHARO_BIN_IN_ROOT@
+-GDB=
+-if [ "${SQUEAK_PLUGINS-unset}" = unset ]; then
+-    export SQUEAK_PLUGINS="$BIN"
+-fi
+-if [ "$1" = '-gdb' ]; then
+-    GDB=gdb
+-    shift
+-    echo;echo run $@; echo
+-    set --
+-fi
+-# At least on linux LD_LIBRARY_PATH's components must be absolute path names
+-case "$BIN" in
+-/*) PLUGINS="$BIN";;
+-*) PLUGINS="`pwd`/$BIN"
+-esac
+-
+-if [ $(uname -s) = "OpenBSD" ]; then
+-  LD_LIBRARY_PATH="$PLUGINS:${LD_LIBRARY_PATH}" exec $GDB "$BIN/@VM_EXECUTABLE_NAME@" "$@"
+-fi
+-
+-# On some linuxes there multiple versions of the C library.  If the image uses
+-# libc (e.g. through the FFI) then it must use the same version that the VM uses
+-# and so it should take precedence over /lib libc.  This is done by setting
+-# LD_LIBRARY_PATH appropriately, based on ldd's idea of the libc use by the VM.
+-
+-#Try extracting Libc
+-LIBC_SO="`/usr/bin/ldd "$BIN/@VM_EXECUTABLE_NAME@" | /bin/fgrep /libc. | sed 's/^.*=> \([^ ]*\).*/\1/'`"
+-PLATFORMLIBDIR=`expr "$LIBC_SO" : '\(.*\)/libc.*'`
+-
+-#If empty try extracting Musl
+-if [ "$PLATFORMLIBDIR" = "" ]; then
+-{
+-	LIBC_SO="`/usr/bin/ldd "$BIN/@VM_EXECUTABLE_NAME@" | /bin/fgrep libc. | sed 's/^.*=> \([^ ]*\).*/\1/'`"
+-	PLATFORMLIBDIR=`expr "$LIBC_SO" : '\(.*\)/ld-musl.*'`
+-}
+-fi
+-
+-if [ "$PLATFORMLIBDIR" = "" ]; then
+-{
+-    echo "Error. Could not determine platform's libc path for VM. "
+-    echo "Try forcing \$PLATFORMLIBDIR in $0, based on LIBC_SO."
+-    echo "Please report what works to @VM_EXECUTABLE_NAME@ [vm-dev] mail list."
+-    echo "  LIBC_SO="$LIBC_SO
+-    cat /etc/*-release*  |  grep -v // | sed 's/^/  /'
+-    echo -n "  UNAME=" ; uname -a
+-    MACHINE=`uname -m`
+-    case "$MACHINE" in
+-        *64*)
+-            echo "  System seems to be 64 bit. You may need to (re)install the 32-bit libraries."
+-            ;;
+-    esac
+-    exit 1
+-} 1>&2
+-fi
+-# prepending is less flexible but safer because it ensures we find the plugins
+-# in the same directory as the VM.  We must include at least /lib and /usr/lib
+-# if libraries there-in are to be found.  These directories are not implicit.
+-case $PLATFORMLIBDIR in
+-/lib|/usr/lib)  SVMLLP=/lib:/usr/lib;;
+-*)              SVMLLP="$PLATFORMLIBDIR:/lib:/usr$PLATFORMLIBDIR:/usr/lib"
+-esac
+-LD_LIBRARY_PATH="$PLUGINS:$SVMLLP:${LD_LIBRARY_PATH}" exec $GDB "$BIN/@VM_EXECUTABLE_NAME@" "$@"
+diff --git a/plugins.cmake b/plugins.cmake
+index 5be40233c..809c55631 100644
+--- a/plugins.cmake
++++ b/plugins.cmake
+@@ -47,6 +47,7 @@ endif()
+ addLibraryWithRPATH(FilePlugin
+     ${FilePlugin_SOURCES}
+     ${PHARO_CURRENT_GENERATED}/plugins/src/FilePlugin/FilePlugin.c)
++list(APPEND VM_PLUGIN_TARGETS FilePlugin)
+ 
+ if(OSX)
+     target_link_libraries(FilePlugin PRIVATE "-framework CoreFoundation")
+@@ -75,6 +76,7 @@ if(NOT OPENBSD)
+     )
+ 
+     addLibraryWithRPATH(UUIDPlugin ${UUIDPlugin_SOURCES})
++    list(APPEND VM_PLUGIN_TARGETS UUIDPlugin)
+     if(WIN)
+         target_link_libraries(UUIDPlugin PRIVATE "-lole32")
+     elseif(UNIX AND NOT OSX)
+@@ -147,6 +149,7 @@ set(BitBltPlugin_SOURCES
+ )
+ 
+ addLibraryWithRPATH(BitBltPlugin ${BitBltPlugin_SOURCES})
++list(APPEND VM_PLUGIN_TARGETS BitBltPlugin)
+ 
+ #
+ # B2DPlugin
+@@ -193,6 +196,7 @@ else()
+ endif()
+ 
+ addLibraryWithRPATH(LocalePlugin ${LocalePlugin_SOURCES})
++list(APPEND VM_PLUGIN_TARGETS LocalePlugin)
+ 
+ if(OSX)
+ 	target_link_libraries(LocalePlugin PRIVATE "-framework CoreFoundation")
+@@ -239,6 +243,7 @@ else()
+ endif()
+ 
+ addLibraryWithRPATH(SqueakSSL ${SqueakSSL_SOURCES})
++list(APPEND VM_PLUGIN_TARGETS SqueakSSL)
+ 
+ if(OSX)
+     target_link_libraries(SqueakSSL PRIVATE "-framework CoreFoundation")
+diff --git a/plugins.macros.cmake b/plugins.macros.cmake
+index 8e7ff93c0..e68780cc3 100644
+--- a/plugins.macros.cmake
++++ b/plugins.macros.cmake
+@@ -1,3 +1,6 @@
++# The list of VM_PLUGINS targets define.
++set(VM_PLUGIN_TARGETS)
++
+ macro(add_vm_plugin NAME)
+ 
+     set(${NAME}_SOURCES_EXTRA ${ARGN})
+@@ -36,4 +39,5 @@ macro(add_vm_plugin NAME)
+     message(STATUS "Adding plugin: ${NAME}")    
+ 
+     addLibraryWithRPATH(${NAME} ${${NAME}_SOURCES} ${${NAME}_SOURCES_EXTRA})
+-endmacro()
+\ No newline at end of file
++    list(APPEND VM_PLUGIN_TARGETS ${NAME})
++endmacro()
