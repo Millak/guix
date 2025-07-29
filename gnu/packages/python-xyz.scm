@@ -27855,15 +27855,17 @@ interpreter when it prints a stack trace.")
 (define-public python-tracerite
   (package
     (name "python-tracerite")
-    (version "1.1.0")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "tracerite" version))
               (sha256
                (base32
-                "0jwy5wwl0rcsgnx7hhq4z7ji3lx271sar4v2a1rmyh5vsj7sn784"))))
+                "07mkg0sl0h335kj6yjvxki2c19gxhb7rkks1zgzh7aj0y83c17qi"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-setuptools-scm python-wheel))
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI or Git
+    (native-inputs (list python-setuptools python-setuptools-scm))
     (propagated-inputs (list python-html5tagger))
     (home-page "https://github.com/sanic-org/tracerite")
     (synopsis "Human-readable HTML tracebacks")
