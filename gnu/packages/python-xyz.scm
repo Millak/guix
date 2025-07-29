@@ -38116,6 +38116,8 @@ async I/O support.")
     (license license:gpl2+)))
 
 (define-public python-ansicolors
+  ;; XXX: Not maintained fork since 2017, consider to remove when there is no
+  ;; any users.
   (package
     (name "python-ansicolors")
     (version "1.1.8")
@@ -38125,11 +38127,9 @@ async I/O support.")
        (uri (pypi-uri "ansicolors" version ".zip"))
        (sha256
         (base32 "1q3jqglkq4z0f6nkkn8bswcwqg012i2grrc27kabr8286dg4zycr"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-tox
-           python-pytest-cov
-           unzip))
+     (list python-pytest python-setuptools unzip))
     (home-page "https://github.com/jonathaneunice/colors/")
     (synopsis "ANSI colors for Python")
     (description
