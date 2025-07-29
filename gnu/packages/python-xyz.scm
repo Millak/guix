@@ -18319,15 +18319,17 @@ for OER and UPER.")
 (define-public python-idna
   (package
     (name "python-idna")
-    (version "3.3")
+    (version "3.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "idna" version))
        (sha256
         (base32
-         "0v8f6qjfi5i7qc5icsbv2pi24qy6k6m8wjqjvdf2sxjvlpq3yr4x"))))
-    (build-system python-build-system)
+         "1a9yn40rph0amwq61j7j3nqm472baz6673ng6pfadg8a8ydmrxhj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/kjd/idna")
     (synopsis "Internationalized domain names in applications")
     (description
