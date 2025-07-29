@@ -71,6 +71,12 @@
              (let ((headers (assoc-ref inputs "kernel-headers")))
                (substitute* "tools/lirc-make-devinput"
                  (("/usr/include") (string-append headers "/include"))))))
+         (add-after 'unpack 'fix-gcc14-build
+           (lambda _
+             ;; Fix missing sys/sysmacros.h for major() and minor() macros
+             (substitute* "plugins/default.c"
+               (("#include <sys/types.h>" all)
+                (string-append all "\n#include <sys/sysmacros.h>")))))
          (add-after 'unpack 'patch-doc/Makefile.in
            (lambda _
              ;; Lirc wants to install several images and a useless html page
