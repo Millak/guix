@@ -39,7 +39,7 @@
    (version "8.2.8")
    (source (origin
             (method url-fetch)
-            (uri (list (string-append "https://github.com/ivmai/bdwgc/releases"
+            (uri (list (string-append "https://github.com/bdwgc/bdwgc/releases"
                                       "/download/v" version
                                       "/gc-" version ".tar.gz")
                        (string-append "https://www.hboehm.info/gc/gc_source"
@@ -73,7 +73,7 @@
        ((target-ppc64le?)
         (list #:make-flags
               ;; This is a known workaround upstream.
-              ;; https://github.com/ivmai/bdwgc/issues/479
+              ;; https://github.com/bdwgc/bdwgc/issues/479
               #~(list "CFLAGS_EXTRA=-DNO_SOFT_VDB")))
        ((target-ppc32?)
         (list #:make-flags
@@ -129,7 +129,7 @@ C or C++ programs, though that is not its primary goal.")
    (version "7.6.12")
    (source (origin
              (method url-fetch)
-             (uri (string-append "https://github.com/ivmai/bdwgc/releases"
+             (uri (string-append "https://github.com/bdwgc/bdwgc/releases"
                                  "/download/v" version "/gc-" version ".tar.gz"))
              (sha256
               (base32
@@ -153,7 +153,7 @@ C or C++ programs, though that is not its primary goal.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://github.com/ivmai/libatomic_ops/releases/download/v"
+                    "https://github.com/bdwgc/libatomic_ops/releases/download/v"
                     version "/libatomic_ops-" version ".tar.gz"))
               (sha256
                (base32
@@ -182,7 +182,7 @@ C or C++ programs, though that is not its primary goal.")
 memory update operations on a number of architectures.  These might allow you to
 write code that does more interesting things in signal handlers, write
 lock-free code, experiment with thread programming paradigms, etc.")
-    (home-page "https://github.com/ivmai/libatomic_ops/")
+    (home-page "https://github.com/bdwgc/libatomic_ops/")
 
     ;; Some source files are X11-style, others are GPLv2+.
     (license gpl2+)))
