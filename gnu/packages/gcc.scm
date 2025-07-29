@@ -208,8 +208,6 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                                (cond
                                  ((version-prefix? "4.8" version)
                                   `(cons "CXX=g++ -std=c++03" ,flags))
-                                 ((version-prefix? "4.9" version)
-                                  `(cons "CXX=g++ -std=c++11" ,flags))
                                  (else flags)))
 
           #:make-flags
@@ -534,7 +532,7 @@ Go.  It also includes runtime support libraries for these languages.")
        (prepend isl-0.11 cloog)))))
 
 (define-public gcc-4.9
-  (package (inherit gcc-4.8)
+  (package (inherit gcc-base)
     (version "4.9.4")
     (source (origin
               (method url-fetch)
@@ -561,9 +559,48 @@ Go.  It also includes runtime support libraries for these languages.")
                      (("struct ucontext") "ucontext_t")))
                  '("aarch64" "alpha" "bfin" "i386" "m68k" "nios2"
                    "pa" "sh" "tilepro" "xtensa")))))
+    (arguments
+     ;; Since 'arguments' is a function of the package's version, define
+     ;; 'parent' such that the 'arguments' thunk gets to see the right
+     ;; version.
+     (let ((parent (package
+                     (inherit gcc-base)
+                     (version (package-version this-package)))))
+       (substitute-keyword-arguments (package-arguments parent)
+         ((#:modules modules %default-gnu-modules)
+          `((srfi srfi-1)
+            ,@modules))
+         ((#:configure-flags flags '())
+          `(cons "CXX=g++ -std=c++11" ,flags))
+         ;; For native builds of some GCC versions the C++ include path needs to
+         ;; be adjusted so it does not interfere with GCC's own build processes.
+         ((#:phases phases)
+          (if (%current-target-system)
+              phases
+              `(modify-phases ,phases
+                 (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((libc (assoc-ref inputs "libc"))
+                           (gcc (assoc-ref inputs  "gcc")))
+                       (setenv "CPLUS_INCLUDE_PATH"
+                               (string-join (fold delete
+                                                  (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                                #\:)
+                                                  (list (string-append libc "/include")
+                                                        (string-append gcc "/include/c++")))
+                                            ":"))
+                       (format #t
+                               "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                               (getenv "CPLUS_INCLUDE_PATH")))))))))))
     ;; Override inherited texinfo-5 with latest version.
     (native-inputs (list perl ;for manpages
-                         texinfo))))
+                         texinfo))
+    (inputs
+     (modify-inputs (package-inputs gcc-base)
+       (prepend isl-0.11 cloog)))
+    (supported-systems (fold delete %supported-systems
+                             '("riscv64-linux" "powerpc64le-linux"
+                               "x86_64-gnu")))))
 
 (define gcc-canadian-cross-objdump-snippet
   ;; Fix 'libcc1/configure' error when cross-compiling GCC.  Without that,
