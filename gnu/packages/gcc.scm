@@ -208,8 +208,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                                (cond
                                  ((version-prefix? "4.8" version)
                                   `(cons "CXX=g++ -std=c++03" ,flags))
-                                 ((or (version-prefix? "4.9" version)
-                                      (version-prefix? "5" version))
+                                 ((version-prefix? "4.9" version)
                                   `(cons "CXX=g++ -std=c++11" ,flags))
                                  (else flags)))
 
@@ -580,7 +579,7 @@ Go.  It also includes runtime support libraries for these languages.")
 (define-public gcc-5
   ;; Note: GCC >= 5 ships with .info files but 'make install' fails to install
   ;; them in a VPATH build.
-  (package (inherit gcc-4.9)
+  (package (inherit gcc-base)
     (version "5.5.0")
     (source (origin
               (method url-fetch)
@@ -606,10 +605,48 @@ Go.  It also includes runtime support libraries for these languages.")
                                        "gcc-5-fix-powerpc64le-build.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
+    (arguments
+     ;; Since 'arguments' is a function of the package's version, define
+     ;; 'parent' such that the 'arguments' thunk gets to see the right
+     ;; version.
+     (let ((parent (package
+                     (inherit gcc-base)
+                     (version (package-version this-package)))))
+       (substitute-keyword-arguments (package-arguments parent)
+         ((#:modules modules %default-gnu-modules)
+          `((srfi srfi-1)
+            ,@modules))
+         ((#:configure-flags flags '())
+          `(cons "CXX=g++ -std=c++11" ,flags))
+         ;; For native builds of some GCC versions the C++ include path needs to
+         ;; be adjusted so it does not interfere with GCC's own build processes.
+         ((#:phases phases)
+          (if (%current-target-system)
+              phases
+              `(modify-phases ,phases
+                 (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((libc (assoc-ref inputs "libc"))
+                           (gcc (assoc-ref inputs  "gcc")))
+                       (setenv "CPLUS_INCLUDE_PATH"
+                               (string-join (fold delete
+                                                  (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                                #\:)
+                                                  (list (string-append libc "/include")
+                                                        (string-append gcc "/include/c++")))
+                                            ":"))
+                       (format #t
+                               "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                               (getenv "CPLUS_INCLUDE_PATH")))))))))))
+    (native-inputs (list perl ;for manpages
+                         texinfo))
     (inputs
      (modify-inputs (package-inputs gcc-base)
        (prepend ;; GCC5 needs <isl/band.h> which is removed in later versions.
-                isl-0.18)))))
+                isl-0.18)))
+    (supported-systems (fold delete %supported-systems
+                             '("riscv64-linux" "powerpc64le-linux"
+                               "x86_64-gnu")))))
 
 (define-public gcc-6
   (package
