@@ -1830,9 +1830,12 @@ astropy related packages.")
       (uri (pypi-uri "pytest-astropy-header" version))
       (sha256
         (base32 "046v4arinv8b5jz05pvhnc0n1aqqndwvhlsl635ahxabr40i32bp"))))
-  (build-system python-build-system)
+  (build-system pyproject-build-system)
   (native-inputs
-   (list python-pytest python-setuptools-scm))
+   (list python-numpy
+         python-pytest
+         python-setuptools
+         python-setuptools-scm))
   (home-page "https://www.astropy.org/")
   (synopsis
    "Pytest plugin adding diagnostic data to the header of the test output")
