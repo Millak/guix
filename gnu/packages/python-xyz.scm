@@ -37626,11 +37626,13 @@ keyboard-friendly package.")
        (sha256
         (base32 "11z318lnvd7nxkpw2556hh6hvid6gi8mxgv4zf8x2m57hx5yi98y"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "-v" "pdoc.test")))
     (native-inputs
      (list python-setuptools-git
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-mako
            python-markdown))
