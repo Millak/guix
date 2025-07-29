@@ -200,15 +200,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
 
        (arguments
         `(#:out-of-source? #t
-          #:configure-flags ,(let ((flags (configure-flags))
-                                   (version (package-version this-package)))
-                               ;; GCC 11.3.0 defaults to C++17 which is partly
-                               ;; incompatible with some earlier versions.
-                               ;; Force an earlier C++ standard while building.
-                               (cond
-                                 ((version-prefix? "4.8" version)
-                                  `(cons "CXX=g++ -std=c++03" ,flags))
-                                 (else flags)))
+          #:configure-flags ,(configure-flags)
 
           #:make-flags
           ;; None of the flags below are needed when doing a Canadian cross.
@@ -502,15 +494,17 @@ Go.  It also includes runtime support libraries for these languages.")
      (let ((parent (package
                      (inherit gcc-base)
                      (version (package-version this-package)))))
-       (if (%current-target-system)
-           (package-arguments parent)
-           ;; For native builds of some GCC versions the C++ include path needs to
-           ;; be adjusted so it does not interfere with GCC's own build processes.
-           (substitute-keyword-arguments (package-arguments parent)
-             ((#:modules modules %default-gnu-modules)
-              `((srfi srfi-1)
-                ,@modules))
-             ((#:phases phases)
+       (substitute-keyword-arguments (package-arguments parent)
+         ((#:modules modules %default-gnu-modules)
+          `((srfi srfi-1)
+            ,@modules))
+         ((#:configure-flags flags '())
+          `(cons "CXX=g++ -std=c++03" ,flags))
+         ;; For native builds of some GCC versions the C++ include path needs to
+         ;; be adjusted so it does not interfere with GCC's own build processes.
+         ((#:phases phases)
+          (if (%current-target-system)
+              phases
               `(modify-phases ,phases
                  (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
                    (lambda* (#:key inputs #:allow-other-keys)
@@ -526,7 +520,9 @@ Go.  It also includes runtime support libraries for these languages.")
                        (format #t
                                "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
                                (getenv "CPLUS_INCLUDE_PATH")))))))))))
-    (supported-systems %supported-systems)
+    (supported-systems (fold delete %supported-systems
+                             '("riscv64-linux" "powerpc64le-linux"
+                               "x86_64-gnu")))
     (inputs
      (modify-inputs (package-inputs gcc-base)
        (prepend isl-0.11 cloog)))))
