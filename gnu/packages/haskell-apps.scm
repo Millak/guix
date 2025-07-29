@@ -888,18 +888,20 @@ is programmed in Haskell.")
 (define-public scroll
   (package
     (name "scroll")
-    (version "1.20180421")
+    (version "1.20250228.2")
     (source
       (origin
         (method url-fetch)
         (uri (hackage-uri "scroll" version))
         (sha256
          (base32
-          "0apzrvf99rskj4dbmn57jjxrsf19j436s8a09m950df5aws3a0wj"))))
+          "1p1741zqsxg017d08ym1clzqcdlai487wb6q12m1q7dr6i8c0gfj"))))
     (build-system haskell-build-system)
-    (properties '((upstream-name . "scroll")))
+    (properties '((upstream-name . "scroll")
+                  (updater-extra-inputs "ghc-base-compat")))
     (inputs
-     (list ghc-case-insensitive
+     (list ghc-base-compat
+           ghc-case-insensitive
            ghc-data-default
            ghc-ifelse
            ghc-monad-loops
