@@ -1990,7 +1990,7 @@ reported in a previous test run.")
 (define-public python-pytest-randomly
   (package
     (name "python-pytest-randomly")
-    (version "3.11.0")
+    (version "3.16.0")
     (source (origin
               (method git-fetch)        ;no tests in pypi archive
               (uri (git-reference
@@ -1999,29 +1999,23 @@ reported in a previous test run.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sjgq49g8f8973vhmzrim79b6wz29a765n99azjk1maimqh7mmik"))))
-    (build-system python-build-system)
+                "1ai6gn811wm1ixjimgpsi5nwlcpxaj4kmil69vf2s2ph0c2zw93s"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; The tests validating ordering fail, as well as as two
-                ;; others, for unknown reasons (see:
-                ;; https://github.com/pytest-dev/pytest-randomly/issues/454).
-                (invoke "pytest" "-vv" "-k"
-                        (string-append
-                         "not reordered "
-                         "and not test_it_runs_before_stepwise "
-                         "and not test_entrypoint_injection"))))))))
-    (native-inputs (list python-coverage
-                         python-factory-boy
-                         python-faker
-                         python-numpy
-                         python-pytest-xdist))
-    (propagated-inputs (list python-importlib-metadata python-pytest))
+      #:test-flags
+      #~(list "-p" "no:randomly"
+              ;; The tests validating ordering fail, as well as as two others,
+              ;; for unknown reasons (see:
+              ;; https://github.com/pytest-dev/pytest-randomly/issues/454).
+              "-k" "not test_it_runs_before_stepwise and not test_model_bakery")))
+    (native-inputs
+     (list python-factory-boy
+           python-faker
+           python-numpy
+           python-pytest-bootstrap
+           python-pytest-xdist
+           python-setuptools))
     (home-page "https://github.com/pytest-dev/pytest-randomly")
     (synopsis "Pytest plugin to randomly order tests")
     (description "This is a Pytest plugin to randomly order tests and control
