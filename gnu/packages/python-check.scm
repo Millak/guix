@@ -125,16 +125,17 @@ HTTP requests.")
 (define-public python-allpairspy
   (package
     (name "python-allpairspy")
-    (version "2.5.0")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "allpairspy" version))
        (sha256
-        (base32 "1c987h13dly9919d15w3h747rgn50ilnv7dginhlprxbj564hn4k"))))
-    (build-system python-build-system)
+        (base32 "1zh983y9k5idna677vsjlfxlzm1dfff3w1n63sfi3vkfnnik37gn"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/thombashi/allpairspy")
     (synopsis "Pairwise test combinations generator")
     (description
