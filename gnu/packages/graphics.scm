@@ -2801,11 +2801,15 @@ Some feature highlights:
              (url "https://github.com/KhronosGroup/OpenXR-SDK")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Delete bundled jsoncpp.
-           (delete-file-recursively "src/external/jsoncpp")))
+       ;; When compiling against jsoncpp 1.9.6 the build fails with
+       ;;   'Unknown CMake command "check_required_components"'
+       ;; (see https://github.com/open-source-parsers/jsoncpp/issues/1568).
+       ;; When fixed uncomment the snippet and re-add jsoncpp as an input.
+       ;(modules '((guix build utils)))
+       ;(snippet
+       ; '(begin
+       ;    ;; Delete bundled jsoncpp.
+       ;    (delete-file-recursively "src/external/jsoncpp")))
        (sha256
         (base32 "0s66xgwkdj5vn05l493hqydrxfpxxidd6mcb8l7l5awhn88cy16f"))))
     (build-system cmake-build-system)
@@ -2814,7 +2818,7 @@ Some feature highlights:
     (native-inputs
      (list pkg-config python shaderc vulkan-headers))
     (inputs
-     (list jsoncpp mesa vulkan-loader wayland))
+     (list mesa vulkan-loader wayland))
     (home-page "https://www.khronos.org/openxr/")
     (synopsis "Generated headers and sources for OpenXR loader")
     (description "This package contains OpenXR headers, as well as source code
