@@ -227,7 +227,7 @@ of parts of the Windows API.")
 (define-public xrdp
   (package
     (name "xrdp")
-    (version "0.10.3")
+    (version "0.10.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -235,7 +235,7 @@ of parts of the Windows API.")
                     version "/xrdp-" version ".tar.gz"))
               (sha256
                (base32
-                "15nhfh8lxwf0jlmq6knh3851sp6njps9nhl8n2867il7mcr9gmsj"))))
+                "0pwg5zadd788nl2fpls60w3nm557a95ihp4x1ggf0yy5hqzdzsjj"))))
     (build-system gnu-build-system)
     (inputs (list check
                   fuse
