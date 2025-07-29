@@ -37837,6 +37837,24 @@ multipurpose analysis in Python.")
 static types.")
     (license license:asl2.0)))
 
+(define-public python-types-python-dateutil
+  (package
+    (name "python-types-python-dateutil")
+    (version "2.9.0.20250708")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_python_dateutil" version))
+       (sha256
+        (base32 "1ay8sp8qshx2na2sa9sz9hg2hb7yrws9ymshqfb9cv1dmdfxgnyc"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-dateutil")
+    (description "This package providis typing stubs for python-dateutil.")
+    (license license:asl2.0)))
+
 (define-public python-types-docutils
   (package
     (name "python-types-docutils")
