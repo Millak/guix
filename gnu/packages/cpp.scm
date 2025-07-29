@@ -4543,3 +4543,26 @@ written in C99.")
     (properties `((tunable? . #t)))
     (home-page "https://github.com/aklomp/base64")
     (license license:bsd-2)))
+
+(define-public zpp-serializer
+  (package
+    (name "zpp-serializer")
+    (version "0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/eyalz800/serializer")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cmk3xx9885zgg3g96ka6cdaibi10fbpf1bi7q8lqsli6z07x4zj"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("serializer.h" "include/zpp/"))))
+    (home-page "https://github.com/eyalz800/serializer")
+    (synopsis "Single header standard C++ serialization framework")
+    (description "This package provides a single-header C++14 library for
+saving and loading C++ objects using a binary format.")
+    (license license:expat)))
