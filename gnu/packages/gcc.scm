@@ -761,7 +761,7 @@ Go.  It also includes runtime support libraries for these languages.")
 
 (define-public gcc-7
   (package
-    (inherit gcc-6)
+    (inherit gcc-base)
     (version "7.5.0")
     (source (origin
               (method url-fetch)
@@ -775,6 +775,17 @@ Go.  It also includes runtime support libraries for these languages.")
                                        "gcc-7-libsanitizer-fsconfig-command.patch"
                                        "gcc-5.0-libvtv-runpath.patch"
                                        "gcc-libstdc++-newer-gcc.patch"))))
+    (native-inputs (list perl ;for manpages
+                         texinfo))
+    (inputs
+     `(("isl" ,isl)
+
+       ;; XXX: This gross hack allows us to have libstdc++'s <bits/c++config.h>
+       ;; in the search path, thereby avoiding misconfiguration of libstdc++:
+       ;; <https://bugs.gnu.org/42392>.
+       ("libstdc++" ,(make-libstdc++-headers this-package))
+
+       ,@(package-inputs gcc-base)))
     (description
      "GCC is the GNU Compiler Collection.  It provides compiler front-ends
 for several languages, including C, C++, Objective-C, Fortran, Ada, and Go.
