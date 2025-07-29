@@ -7097,15 +7097,10 @@ library with bug fixtures.")
         (base32 "0x06mxdmk2rsbp7ymjvvbj8pwkf4y2w6g8p0znw9zmi5rinxr7p1"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "sgp4.tests")))))))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "sgp4.tests")))
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/brandon-rhodes/python-sgp4")
