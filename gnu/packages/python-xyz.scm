@@ -16466,7 +16466,6 @@ you do not want to store entirely on disk or on memory.")
            python-pytest
            python-pytest-cov
            python-pytest-django
-           python-pytest-forked
            python-pytest-localserver
            python-setuptools
            python-werkzeug
