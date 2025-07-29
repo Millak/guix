@@ -3802,7 +3802,7 @@ Advance.")
 (define-public jg-nestopia
   (package
     (name "jg-nestopia")
-    (version "1.52.1")
+    (version "1.53.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3811,7 +3811,7 @@ Advance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19qg9hgh25aaym7b81v5g7165v4fyymas6dmzc4z867mzaphbn6s"))))
+                "16saiwj4dmk6d0aqgczyrs9qpz7h79xxg3in11jnf2k7crzkk5ql"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
