@@ -3835,7 +3835,7 @@ of the Nestopia emulator.")
 (define-public jg-cega
   (package
     (name "jg-cega")
-    (version "0.6.0")
+    (version "0.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3846,7 +3846,7 @@ of the Nestopia emulator.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10qxfch08850zivxf4s1mhh0clx4h1cfn440acm6d7glb6wbv822"))))
+                "1zcxy6zkh3gg3kg050j21bqwf6wdq7q0xifqg3vs07s30yh042zc"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
