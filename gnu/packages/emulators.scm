@@ -1758,8 +1758,8 @@ as RetroArch.")
 (define-public libretro-mupen64plus-nx
   ;; There are no proper release; use the latest commit of the master branch
   ;; (their stable branch).
-  (let ((commit "9d940bacb95c4d86733f42b67b57fc83046a6d39")
-        (revision "0"))
+  (let ((commit "3a676196500545b637b83cb19fb393d2359e1f9d")
+        (revision "1"))
     (package
       (name "libretro-mupen64plus-nx")
       (version (git-version "0" revision commit))
@@ -1771,7 +1771,7 @@ as RetroArch.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0s3l62mfkbzmv8g1y4r40iayfwdz68rq6l6khc0d8kw08qk7ggl9"))))
+                  "0al0z52idssmvpn6400cmjlxg5qkp7wdb97i6yywip230xpjwlb8"))))
       (build-system gnu-build-system)
       (arguments
        (list
