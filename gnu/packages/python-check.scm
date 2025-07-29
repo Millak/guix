@@ -2263,19 +2263,23 @@ sub-package.")
     (license license:bsd-3)))
 
 (define-public python-pytest-fixture-config
+  ;; TODO: Master branch has removed all Python 2 support such Six, consider
+  ;; to update and drop python-six from closure in the next update cyle.
   (package
     (name "python-pytest-fixture-config")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-fixture-config" version))
        (sha256
         (base32
-         "13i1qpz22w3x4dmw8vih5jdnbqfqvl7jiqs0dg764s0zf8bp98a1"))))
-    (build-system python-build-system)
+         "03hvviv0a4y0r8pdnj5s3hdbr2d3k9cx0ipjafxbsl88w9gqjff7"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools-git))
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-six))
     (home-page "https://github.com/manahl/pytest-plugins")
     (synopsis "Fixture configuration utils for py.test")
     (description
