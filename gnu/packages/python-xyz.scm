@@ -25145,33 +25145,6 @@ GraphQL schema describes your data model, and provides a GraphQL server with
 an associated set of resolve methods that know how to fetch data.")
     (license license:expat)))
 
-(define-public python-random2
-  (package
-    (name "python-random2")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "random2" version ".zip"))
-              (sha256
-               (base32
-                "01y0s4747plsx8fdnxy0nz83dp69naddz58m81r9h0s1qfm31b9l"))
-              (patches
-               (search-patches "python-random2-getrandbits-test.patch"))))
-    (build-system python-build-system)
-    (native-inputs (list unzip))
-    (home-page "https://pypi.python.org/pypi/random2")
-    (synopsis "Python 3 version of the Python 2 @code{random} module")
-    (description
-     "This package provides a Python 3 ported version of Python 2.7’s
-     @code{random} module.  It has also been back-ported to work in Python 2.6.
-
-     In Python 3, the implementation of @code{randrange()} was changed, so that
-     even with the same seed you get different sequences in Python 2 and 3.
-
-     This package closes that gap, allowing stable random number generation
-     between the different Python versions.")
-    (license license:psfl)))
-
 ;; XXX: The last time updated in 2015, consider to remove it when nothing is
 ;; depend on it.
 (define-public python-snowballstemmer
