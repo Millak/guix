@@ -13319,23 +13319,27 @@ PNG, PostScript, PDF, and SVG file output.")
 (define-public python-decorator
   (package
     (name "python-decorator")
-    (version "5.0.9")
+    (version "5.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "decorator" version))
        (sha256
-        (base32 "1mcy64hllgm938v8k1x2a4g0q9swsnrfnsvhz59kr28a6ajgpv3j"))))
-    (build-system python-build-system)
+        (base32 "0q03vavcj2hxnv6006wiqnw7bbqq8rpw90yclyq39xsj6wa6dwk5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/test.py")))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://pypi.org/project/decorator/")
     (synopsis "Python module to simplify usage of decorators")
     (description
-      "The aim of the decorator module is to simplify the usage of decorators
+     "The aim of the decorator module is to simplify the usage of decorators
 for the average programmer, and to popularize decorators usage giving examples
 of useful decorators, such as memoize, tracing, redirecting_stdout, locked,
 etc.  The core of this module is a decorator factory.")
     (license license:expat)))
-
 
 (define-public python-drmaa
   (package
