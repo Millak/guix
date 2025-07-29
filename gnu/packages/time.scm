@@ -289,7 +289,12 @@ you will remove support for the pytz-specific interface.")
       (sha256
        (base32
         "13hpf2my8mgqkr38ch7s3rym9zz60m6pq87rcn7b46155az45ny2"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "discover" "pytz/tests")))
+    (native-inputs
+     (list python-setuptools))
     (home-page "http://pythonhosted.org/pytz")
     (synopsis "Python timezone library")
     (description "This library brings the Olson tz database into Python.  It
