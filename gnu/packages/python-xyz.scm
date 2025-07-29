@@ -24026,22 +24026,22 @@ simple, lightweight implementation.")
               (sha256
                (base32
                 "03jkf1ygbwq3akzbcjyjk1akc1hv2sfgx90306pq1nwklbpn80lk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Tests for lowercase postcodes fail.
-               (invoke "pytest" "-vv" "ukpostcodeparser/test/parser.py" "-k"
-                       (string-append "not test_091 "
-                                      "and not test_097 "
-                                      "and not test_098 "
-                                      "and not test_125 "
-                                      "and not test_131"))))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; Tests for lowercase postcodes fail.
+         "-k" (string-join
+               (list "not test_091 "
+                     "test_097 "
+                     "test_098 "
+                     "test_125 "
+                     "test_131")
+               " and not ")
+         "ukpostcodeparser/test/parser.py")))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/hamstah/ukpostcodeparser")
     (synopsis "UK Postcode parser for Python")
     (description
