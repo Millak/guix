@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2019, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Danny Milosavljevic <dannym@scratchpost.org>
@@ -7901,7 +7901,9 @@ between 2 and 3 times faster than the Mersenne Twister.")
                             "lib/UI/NCurses/Enums.chs"
                             "lib/UI/NCurses/Panel.chs")
                (("<ncursesw/") "<"))
-             #t)))
+             ;; KEY_EVENT doesn't appear in our ncurses.h
+             (substitute* "lib/UI/NCurses/Enums.chs"
+               ((".*KEY_EVENT.*") "")))))
        #:cabal-revision
        ("1"
         "1wfdy716s5p1sqp2gsg43x8wch2dxg0vmbbndlb2h3d8c9jzxnca")))
