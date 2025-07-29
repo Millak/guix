@@ -34174,14 +34174,14 @@ It adds a simple and readable way to print stuff during development.")
 (define-public python-dateparser
   (package
     (name "python-dateparser")
-    (version "1.1.3")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dateparser" version))
        (sha256
         (base32
-         "19fbgq1zrwx10kljmdbs3p0y2m2xsgww20pqzw4kv6161zipsymf"))))
+         "1xzcqmvqg82cq4vx3cbgbdrgq4pgqlkk0mnfm0zc5kdqgkqicqwq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -34212,7 +34212,6 @@ It adds a simple and readable way to print stuff during development.")
      (list python-parameterized
            python-pytest
            python-setuptools
-           python-wheel
            tzdata-for-tests))
     (home-page "https://github.com/scrapinghub/dateparser")
     (synopsis
