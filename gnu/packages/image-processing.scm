@@ -1309,7 +1309,11 @@ libraries designed for computer vision research and implementation.")
       (outputs '("out" "python"))
       (arguments
        (list
-        #:tests? #f ;tests require network access and external data
+        #:imported-modules (append %cmake-build-system-modules
+                                   %pyproject-build-system-modules)
+        #:modules '(((guix build pyproject-build-system) #:prefix py:)
+                    (guix build cmake-build-system)
+                    (guix build utils))
         #:configure-flags
         #~(list "-DITK_USE_GPU=ON"
                 "-DITK_USE_SYSTEM_LIBRARIES=ON"
@@ -1377,7 +1381,19 @@ libraries designed for computer vision research and implementation.")
                 (delete-file
                   (string-append
                     "Modules/Remote/"
-                    "MorphologicalContourInterpolation.remote.cmake")))))))
+                    "MorphologicalContourInterpolation.remote.cmake"))))
+            (add-after 'unpack 'fix-numpy-bool
+              (lambda _
+                ;; <https://github.com/InsightSoftwareConsortium/ITK/pull/5402>
+                (substitute* (string-append "Wrapping/Generators/"
+                                            "Python/itk/support/types.py")
+                  (("np\\.bool") "np.bool_"))))
+            (delete 'check)    ;tests require network access and external data
+            (add-after 'install 'python-sanity-check
+              (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                (when tests?
+                  (py:add-installed-pythonpath inputs outputs)
+                  (invoke "python3" "-c" "import itk")))))))
       (inputs (list eigen
                     expat
                     fftw
@@ -1397,6 +1413,7 @@ libraries designed for computer vision research and implementation.")
              gcc-13
              git-minimal
              pkg-config
+             python-numpy               ;for phase 'python-sanity-check
              swig-next
              which
              (origin
@@ -1454,11 +1471,15 @@ combine the information contained in both.")
                            (string-prefix? "-DITK_USE_PYTHON_LIMITED_API=" flag)
                            (string-prefix? "-DITK_USE_SYSTEM_CASTXML=" flag)
                            (string-prefix? "-DITK_USE_SYSTEM_SWIG=" flag))))
-                   #$cf))))
+                   #$cf))
+         ((#:phases phases #~%standard-phases)
+          #~(modify-phases #$phases
+              (delete 'python-sanity-check)))))
      (inputs (modify-inputs (package-inputs insight-toolkit)
                (delete "python")))
      (native-inputs (modify-inputs (package-native-inputs insight-toolkit)
                       (delete "castxml")
+                      (delete "python-numpy")
                       (delete "swig"))))))
 
 (define-public itk-snap
