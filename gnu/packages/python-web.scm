@@ -2488,18 +2488,14 @@ over a different origin than that of the web application.")
                  (("==") ">=")))))))
     (native-inputs
      (list python-cryptography
-           python-flake8
            python-future
            python-mock
+           python-pyparsing
            python-pytest
            python-pytest-cov
-           python-pytest-forked
            python-pytest-randomly
            python-pytest-timeout
-           python-pytest-xdist
-           python-six
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/httplib2/httplib2")
     (synopsis "Comprehensive HTTP client library")
     (description
