@@ -3763,8 +3763,8 @@ Advance.")
 
 (define-public libretro-bsnes-jg
   ;; There aren't any release yet; use the latest commit.
-  (let ((commit "0d42dea0cb20aba8bfec05b928e4aed2b295352a")
-        (revision "0"))
+  (let ((commit "6400024854702110c4019f5b0a7336dca7112fdb")
+        (revision "1"))
     (package
       (inherit jg-bsnes)
       (name "libretro-bsnes-jg")
@@ -3777,7 +3777,7 @@ Advance.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1dq2ypf4g4karayc9sgqn74bfnnsq2f4b3r615xyczchdaf2mi1n"))))
+                  "1sbhq614rvcm01ln7883ivdhni1mg1v4lyyvcwsy92i9wbh8qd9i"))))
       (arguments
        (substitute-keyword-arguments (package-arguments jg-bsnes)
          ((#:make-flags flags)
@@ -3797,7 +3797,7 @@ Advance.")
                     ((".*\\$\\(CORE_DIR)/deps/libsamplerate/.*")
                      ""))))))))
       (home-page "https://git.libretro.com/libretro/bsnes-jg")
-      (synopsis "libretro port of bsnes-jg"))))
+      (synopsis "Libretro port of bsnes-jg"))))
 
 (define-public jg-nestopia
   (package
