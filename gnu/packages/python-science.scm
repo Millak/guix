@@ -4171,6 +4171,10 @@ y, z)}.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; FIXME: find more reliable tests file(s), all tests from
+      ;; test_typing.py fail with error: ModuleNotFoundError: No module named
+      ;; 'distutils.msvccompiler'.
+      #:tests? #f
       #:test-flags
       '(list (string-append "--numprocesses=" (number->string
                                                (parallel-job-count)))
