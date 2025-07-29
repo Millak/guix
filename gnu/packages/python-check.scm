@@ -1845,21 +1845,21 @@ Astropy project, but is optimized for use with astropy-related projects.")
 (define-public python-pytest-benchmark
   (package
     (name "python-pytest-benchmark")
-    (version "4.0.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-benchmark" version))
        (sha256
         (base32
-         "1la802m5r49y1zqilmhqh0qvbnz139lw0qb3jmm9lngy7sw8a1zv"))))
-    (build-system python-build-system)
+         "01d1mk951ldkw589z7f0w8c22sp5341hphflghgj7s4jqb6n39ly"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:test-target "check"))
+     (list #:tests? #f))        ;XXX: cycles with python-nbmake
     (propagated-inputs
      (list python-py-cpuinfo))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest-bootstrap python-setuptools))
     (home-page "https://github.com/ionelmc/pytest-benchmark")
     (synopsis "Pytest fixture for benchmarking code")
     (description
