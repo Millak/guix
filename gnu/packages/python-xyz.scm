@@ -30762,20 +30762,19 @@ on regular expressions.")
 (define-public python-retrying
   (package
     (name "python-retrying")
-    (version "1.3.3")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rholder/retrying")
+             (url "https://github.com/groodt/retrying")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kqipkbdaw5s1xg0gi29awm03vp1x8dz24pjidgxagvkvrjpzhi7"))))
+        (base32 "0m1kf6mxmxzlf3sldzm50c3hq1hkh6fz1g97pdwyvbwdazb7blw9"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-six))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/rholder/retrying")
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/groodt/retrying")
     (synopsis "Library for adding retry behavior")
     (description "Retrying is a general-purpose retrying library to simplify
 the task of adding retry behavior to just about anything.
