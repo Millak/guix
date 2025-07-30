@@ -5079,7 +5079,15 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "0d52mnvvsvwpc3scjva5fbvns8f8ijyswgjwjhbr151ymid7d4b8"))))
+                "0d52mnvvsvwpc3scjva5fbvns8f8ijyswgjwjhbr151ymid7d4b8"))
+              (patches
+               (search-patches
+                "libsoup-auth-digest-fix-crash.patch"
+                "libsoup-deadlock-in-add_listener_in_thread.patch"
+                "libsoup-fix-merge-of-ranges.patch"
+                "libsoup-memory-leak-in-soup_form_decode.patch"
+                "libsoup-multipart-bounds-check.patch"
+                "libsoup-use-libdl-instead-of-gmodule.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -5103,21 +5111,21 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
               (substitute* "tests/hsts-db-test.c"
                 ((".*/hsts-db/subdomains.*") "")))))))
     (native-inputs
-     (list `(,glib "bin") ;for glib-mkenums
+     (list `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
            pkg-config
            python-wrapper
            vala
            curl
-           gnutls ;for 'certtool'
+           gnutls                       ;for 'certtool'
            httpd/pinned))
     (propagated-inputs
      ;; libsoup-3.0.pc refers to all of these (except where otherwise noted)
      (list brotli
            glib
-           glib-networking ; for GIO runtime modules
+           glib-networking              ; for GIO runtime modules
            libpsl
-           nghttp2 ;for pkg-config
+           nghttp2                      ;for pkg-config
            `(,nghttp2 "lib")
            libxml2
            mit-krb5

@@ -1807,6 +1807,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/libsecret-fix-test-paths.patch		\
   %D%/packages/patches/libsepol-versioned-docbook.patch		\
   %D%/packages/patches/libskk-fix-invalid-escape.patch		\
+  %D%/packages/patches/libsoup-auth-digest-fix-crash.patch      \
+  %D%/packages/patches/libsoup-deadlock-in-add_listener_in_thread.patch \
+  %D%/packages/patches/libsoup-fix-merge-of-ranges.patch        \
+  %D%/packages/patches/libsoup-memory-leak-in-soup_form_decode.patch    \
+  %D%/packages/patches/libsoup-multipart-bounds-check.patch     \
+  %D%/packages/patches/libsoup-use-libdl-instead-of-gmodule.patch       \
   %D%/packages/patches/libspatialite-libxml2-2.14.patch		\
   %D%/packages/patches/libtar-CVE-2013-4420.patch 		\
   %D%/packages/patches/libtar-CVE-2021-33643-CVE-2021-33644.patch	\

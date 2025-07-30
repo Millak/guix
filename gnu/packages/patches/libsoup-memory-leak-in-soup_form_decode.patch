@@ -1,0 +1,101 @@
+From: Milan Crha <mcrha@redhat.com>
+Date: Tue, 13 May 2025 10:38:49 +0200
+Subject: soup-form: Fix a possible memory leak in
+ soup_form_decode_multipart()
+
+The output variables can be set multiple times, when there are multiparts
+with the same name, thus first clear any previously value and only then
+assign a new value.
+
+Origin: upstream, 3.7.0, commit:66b5c5be947062df9caf7025b56ee1de32aee3ac
+Bug: https://gitlab.gnome.org/GNOME/libsoup/-/issues/446
+---
+ libsoup/soup-form.c | 12 +++++++++---
+ tests/forms-test.c  | 41 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+), 3 deletions(-)
+
+diff --git a/libsoup/soup-form.c b/libsoup/soup-form.c
+index 2eb5d57..98130c8 100644
+--- a/libsoup/soup-form.c
++++ b/libsoup/soup-form.c
+@@ -168,12 +168,18 @@ soup_form_decode_multipart (SoupMultipart *multipart,
+ 		}
+ 
+ 		if (file_control_name && !strcmp (name, file_control_name)) {
+-			if (filename)
++			if (filename) {
++				g_free (*filename);
+ 				*filename = g_strdup (g_hash_table_lookup (params, "filename"));
+-			if (content_type)
++			}
++			if (content_type) {
++				g_free (*content_type);
+ 				*content_type = g_strdup (soup_message_headers_get_content_type (part_headers, NULL));
+-			if (file)
++			}
++			if (file) {
++				g_clear_pointer (file, g_bytes_unref);
+ 				*file = g_bytes_ref (part_body);
++			}
+ 		} else {
+ 			g_hash_table_insert (form_data_set,
+ 					     g_strdup (name),
+diff --git a/tests/forms-test.c b/tests/forms-test.c
+index 1002374..183900f 100644
+--- a/tests/forms-test.c
++++ b/tests/forms-test.c
+@@ -485,6 +485,46 @@ md5_callback (SoupServer        *server,
+ 		soup_server_message_set_status (msg, SOUP_STATUS_METHOD_NOT_ALLOWED, NULL);
+ }
+ 
++static void
++do_form_decode_multipart_test (void)
++{
++	SoupMultipart *multipart = soup_multipart_new ("multipart/form-data");
++	const char *file_control_name = "uploaded_file";
++	char *content_type = NULL;
++	char *filename = NULL;
++	GBytes *file = NULL;
++	GHashTable *result;
++	int part;
++
++	for (part = 0; part < 2; part++) {
++		SoupMessageHeaders *headers = soup_message_headers_new (SOUP_MESSAGE_HEADERS_MULTIPART);
++		GHashTable *params = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
++		GBytes *body = g_bytes_new (NULL, 0);
++
++		g_hash_table_insert (params, g_strdup ("name"), g_strdup (file_control_name));
++		g_hash_table_insert (params, g_strdup ("filename"), g_strdup (file_control_name));
++		soup_message_headers_set_content_disposition (headers, "form-data", params);
++		soup_message_headers_set_content_type (headers, "text/x-form", NULL);
++		soup_multipart_append_part (multipart, headers, body);
++
++		soup_message_headers_unref (headers);
++		g_hash_table_destroy (params);
++		g_bytes_unref (body);
++	}
++
++	/* this would leak memory of the output variables, due to two parts having the same 'file_control_name' */
++	result = soup_form_decode_multipart (multipart, file_control_name, &filename, &content_type, &file);
++	g_assert_nonnull (result);
++	g_assert_cmpstr (content_type, ==, "text/x-form");
++	g_assert_cmpstr (filename, ==, file_control_name);
++	g_assert_nonnull (file);
++
++	g_hash_table_destroy (result);
++	g_free (content_type);
++	g_free (filename);
++	g_bytes_unref (file);
++}
++
+ static gboolean run_tests = TRUE;
+ 
+ static GOptionEntry no_test_entry[] = {
+@@ -525,6 +565,7 @@ main (int argc, char **argv)
+ 		g_uri_unref (uri);
+ 
+ 		g_test_add_func ("/forms/decode", do_form_decode_test);
++		g_test_add_func ("/forms/decodemultipart", do_form_decode_multipart_test);
+ 
+ 		ret = g_test_run ();
+ 	} else {
