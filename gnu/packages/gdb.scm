@@ -205,7 +205,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   gdb-14)
 
 (define-public gdb-multiarch
-  (package/inherit gdb-14
+  (package/inherit gdb-16
     (name "gdb-multiarch")
     (arguments
      (substitute-keyword-arguments (package-arguments gdb-14)
