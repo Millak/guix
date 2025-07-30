@@ -1533,7 +1533,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w44b7dzx6d3xw2vbw37k34zxy25bq46rsnv21x10227313vr2wm"))))
+                "1ysnj0973y05nn016hxrghccfv65cas772i369xflay0sns8anqf"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
