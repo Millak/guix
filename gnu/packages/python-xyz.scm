@@ -8014,16 +8014,17 @@ Mako, and Tornado.")
 (define-public python-pystache
   (package
     (name "python-pystache")
-    (version "0.6.0")
+    (version "0.6.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pystache" version))
               (sha256
                (base32
-                "03a73ppf5vxnsk6az5ackvc0hp6xqv2f4hi1s5c4nk4s2jr95gwk"))))
-    (build-system python-build-system)
+                "0b67fmq0wmfkgcr7qqc44vvpvh8zkdk0rh87kccds9jdda7521rp"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f)) ; FIXME: Python 3 tests are failing.
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "http://defunkt.io/pystache/")
     (synopsis "Python logic-less template engine")
     (description
