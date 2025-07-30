@@ -26957,25 +26957,17 @@ in pure Python.")
 (define-public python-sacn
   (package
     (name "python-sacn")
-    (version "1.10.0")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sacn" version))
        (sha256
-        (base32 "02pqfwwx83lgb8nj9p0s6vyi1s7wjgbx9k0bzlyz8qapszzdsr37"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
+        (base32 "1sp0jmrjsd9g62kgi177fw4hi56h21s2p9khia3idmixgz53k2ql"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/Hundemeier/sacn")
-    (synopsis
-     "Python library for sending and receiving sACN data")
+    (synopsis "Python library for sending and receiving sACN data")
     (description
      "This package provides a Python library for sending and receiving
      sACN (Streaming Architecture for Control Networks) data, a standard
