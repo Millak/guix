@@ -1470,7 +1470,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jhn4hq78cz07hsbyfyzy93gck88j04im1pmsl3sx87g2s215qzd"))))
+                "186nmy222m2k8snwk5i2f9igamflj9avfnhv5ksrbhx5wyrx7fy2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
