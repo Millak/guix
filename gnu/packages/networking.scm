@@ -1412,7 +1412,13 @@ or server shell scripts with network connections.")
            (lambda _
              (chmod "." #o755)
              ;; Upstream doesn't generate a shared library.  So we have to do it.
-             (setenv "CC" "gcc -fno-builtin -fPIC")
+             (setenv "CC" (string-join '("gcc"
+                                         "-fno-builtin"
+                                         "-fPIC"
+                                         "-Wno-implicit-function-declaration"
+                                         "-Wno-implicit-int"
+                                         "-Wno-return-mismatch")
+                                       " "))
              (substitute* "Makefile"
                (("^(all[^\n]*)" line) (string-append line " libwrap.so\n
 libwrap.so: $(LIB_OBJ)\n
