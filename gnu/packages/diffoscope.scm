@@ -210,6 +210,7 @@
             html2text
             imagemagick
             libarchive
+            libcaca
             llvm
             lz4
             lzip
