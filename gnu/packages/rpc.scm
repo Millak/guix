@@ -263,7 +263,7 @@ with the HTTP/2-based RPC framework gRPC.")
 (define-public python-grpcio-tools
   (package
     (name "python-grpcio-tools")
-    (version "1.47.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
@@ -273,7 +273,7 @@ with the HTTP/2-based RPC framework gRPC.")
         ;; This file is auto-generated.
         '(delete-file "grpc_tools/_protoc_compiler.cpp"))
        (sha256
-        (base32 "0g3xwv55lvf5w64zb44dipwqz7729cbqc7rib77ddqab91w56jzn"))))
+        (base32 "0m5xwhz3l0n3b1bzjncynwflnc5iyv4xrjq046ppcck4rpj9fgn0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -283,7 +283,7 @@ with the HTTP/2-based RPC framework gRPC.")
             (lambda _
               (setenv "GRPC_PYTHON_BUILD_WITH_CYTHON" "1"))))))
     (native-inputs (list python-cython python-setuptools python-wheel))
-    (propagated-inputs (list python-grpcio python-protobuf))
+    (propagated-inputs (list python-grpcio python-protobuf-4))
     (home-page "https://grpc.io")
     (synopsis "Protobuf code generator for gRPC")
     (description
