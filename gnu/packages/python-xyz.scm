@@ -17701,15 +17701,15 @@ printing of sub-tables by specifying a row range.")
 (define-public python-rtf-tokenize
   (package
     (name "python-rtf-tokenize")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rtf_tokenize" version))
               (sha256
                (base32
-                "026njb9iwznycda83bln3gfivcnzdz6vy8y86xvbsy84s28g6gaw"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+                "1ljs0dcg2p1iad4zrxgn1pbrrcjcrswhjxrbprhdxd822n0al84h"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/benoit-pierre/rtf_tokenize")
     (synopsis "Simple RTF tokenizer")
     (description "This package is a simple RTF tokenizer.")
