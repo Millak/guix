@@ -1009,6 +1009,7 @@ application suites.")
     (inherit gtk+-2)
     (name "gtk+")
     (version "3.24.43")
+    (replacement gtk+/fixed)
     (source
      (origin
        (method url-fetch)
@@ -1125,6 +1126,38 @@ application suites.")
      (list (search-path-specification
             (variable "GUIX_GTK3_PATH")
             (files '("lib/gtk-3.0")))))))
+
+(define-public gtk+/fixed
+  (package
+    (inherit gtk+)
+    (name "gtk+")
+    (version "3.24.49")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/GNOME/gtk")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0flsnh3f0l9v3y2hmnxz1h15nw1l12ixmiwcpiy1ywplrlgq4j00"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gtk+)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'disable-failing-tests
+              (lambda _
+                ;; These tests fail only in the containerized environment, for
+                ;; unknown reasons.
+                (substitute* "testsuite/gtk/meson.build"
+                  ((".*\\['defaultvalue'],.*") "")
+                  ((".*\\['objects-finalize',.*") ""))
+                ;; The 'flipping-icons.ui' and 'gtk-icontheme-sizing.ui' tests
+                ;; fail for unknown reasons (see:
+                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7679>).
+                (substitute* "testsuite/reftests/meson.build"
+                  (("  'flipping-icons.ui',.*") "")
+                  (("  'gtk-icontheme-sizing.ui',.*") ""))))))))))
 
 (define-public gtk
   (package
