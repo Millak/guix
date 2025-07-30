@@ -26978,17 +26978,31 @@ in pure Python.")
 (define-public python-bagit
   (package
     (name "python-bagit")
-    (version "1.7.0")
+    (version "1.9.0")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "bagit" version))
+        (method git-fetch) ; no tests in PyPI
+        (uri (git-reference
+               (url "https://github.com/LibraryOfCongress/bagit-python")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
          (base32
-          "1m6y04qmig0b5hzb35lnaw3d2yfydb7alyr1579yblvgs3da6j7j"))))
-    (build-system python-build-system)
+          "12qfqha70vhc8pclq0kzv7xk0i44ramnlkphybv7419vdl4aay40"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pretend-version
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                           #$(package-version this-package))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "test.py")))))))
     (native-inputs
-     (list python-setuptools-scm python-coverage python-mock))
+     (list python-pytest python-setuptools python-setuptools-scm python-wheel))
     (home-page "https://libraryofcongress.github.io/bagit-python/")
     (synopsis "Create and validate BagIt packages")
     (description "Bagit is a Python library and command line utility for working
