@@ -3621,20 +3621,18 @@ asynchronous model using a modern C++ approach.")
        (sha256
         (base32 "02mp5905nz02d7amb4zc77rcrkxmvy8mf5rci7mvy58g24lvbw25"))
        (file-name (git-file-name name version))))
-    (inputs
-     (list openssl))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-crypto-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "shadowsocks/shell.py"
-               (("config\\.get\\('libopenssl', None\\)")
-                (format #f "config.get('libopenssl', ~s)"
-                        (string-append
-                         (assoc-ref inputs "openssl")
-                         "/lib/libssl.so")))))))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-crypto-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "shadowsocks/shell.py"
+                (("config\\.get\\('libopenssl', None\\)")
+                 (format #f "config.get('libopenssl', ~s)"
+                         (search-input-file inputs "lib/libssl.so")))))))))
+    (inputs (list openssl))
     (home-page "https://github.com/shadowsocks/shadowsocks")
     (synopsis "Fast tunnel proxy that helps you bypass firewalls")
     (description
