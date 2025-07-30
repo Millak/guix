@@ -49,10 +49,21 @@
   #:use-module (gnu packages tls)
   #:use-module (srfi srfi-1))
 
+;; XXX: Starting from version 1.47.5, opencensus-proto is required.
+;; The package is already deprecated upstream, so it's probably not
+;; worth it spending time packaging it in Guix, just inject the source
+;; instead, to also avoid us a recursive git fetch.
+(define opencensus-proto-for-grpc-source
+  (origin
+    (method url-fetch)
+    (uri "https://github.com/census-instrumentation/opencensus-proto/archive/v0.3.0.tar.gz")
+    (sha256
+     (base32 "1c3jfl1zgjhhqyqii1wils2k05akkvrw50xmf0q0rs2r885kzqdp"))))
+
 (define-public grpc
   (package
     (name "grpc")
-    (version "1.34.0")
+    (version "1.52.2")
     (outputs '("out" "static"))
     (source (origin
               (method git-fetch)
@@ -62,7 +73,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fs407hnlnm0b8sncjwys9rc7ia5nb7wxrpx39nq3pzzfs1lv3vq"))))
+                "09165p6rh5xvcnnwnmy22lwdfchgjg39y02rwj6zg4rzfps8cb43"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -80,6 +91,11 @@
               "-DCMAKE_VERBOSE_MAKEFILE=ON")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-third-party
+            (lambda _
+              (mkdir-p "third_party/opencensus-proto/src")
+              (invoke "tar" "xvf" #+opencensus-proto-for-grpc-source
+                      "-C" "third_party/opencensus-proto/src")))
           (add-before 'configure 'configure-shared
             (lambda* (#:key configure-flags #:allow-other-keys)
               (mkdir "../build-shared")
