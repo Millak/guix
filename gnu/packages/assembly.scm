@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2013, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2021, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
 ;;; Copyright © 2019, 2022, 2024 Andy Tai <atai@atai.org>
@@ -374,38 +374,33 @@ It has macro abilities and focuses on operating system portability.")
 (define-public dev86
   (package
     (name "dev86")
-    (version "0.16.21")
+    (version "1.0.1")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "http://v3.sk/~lkundrak/dev86/Dev86src-"
-                                 version ".tar.gz"))
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://codeberg.org/jbruchon/dev86.git")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
              (sha256
               (base32
-               "154dyr2ph4n0kwi8yx0n78j128kw29rk9r9f7s2gddzrdl712jr3"))))
+               "1g2zsa1cj6h7n33hjpr9xbvsxihkhya3aa92b1cv8prl4w8svqy5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #f ; They use submakes wrong
        #:make-flags (list ,(string-append "CC=" (cc-for-target))
+                          ,(string-append "VERSION=" version)
                           (string-append "PREFIX="
                                          (assoc-ref %outputs "out")))
-       #:system "i686-linux" ; Standalone ld86 had problems otherwise
        #:tests? #f ; No tests exist
        #:phases
        (modify-phases %standard-phases
-        (delete 'configure)
-        (add-before 'install 'mkdir
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              (mkdir-p (string-append out "/bin"))
-              (mkdir-p (string-append out "/man/man1"))
-              #t))))))
+        (delete 'configure))))
     (synopsis "Intel 8086 (primarily 16-bit) assembler, C compiler and
 linker")
     (description "This package provides a Intel 8086 (primarily 16-bit)
 assembler, a C compiler and a linker.  The assembler uses Intel syntax
 (also Intel order of operands).")
-    (home-page "https://github.com/jbruchon/dev86")
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (home-page "https://codeberg.org/jbruchon/dev86")
     (license license:gpl2+)))
 
 (define-public libjit
