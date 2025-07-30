@@ -465,6 +465,17 @@ from protobuf specification files.")
 mechanism for serializing structured data.")
     (license license:bsd-3)))
 
+(define-public python-protobuf-4
+  (package/inherit python-protobuf-5
+    (name "python-protobuf")
+    (version "4.21.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "protobuf" version))
+       (sha256
+        (base32 "1pabwidv12r73fy0jlslpgi60zd1lbx9rjnb23kgdm8wcsjl043b"))))))
+
 (define-public python-protobuf
   (package
     (name "python-protobuf")
