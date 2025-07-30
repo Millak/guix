@@ -225,6 +225,11 @@ the traditional flat-text whatis databases.")
       #:make-flags #~(list (string-append "bindir=" #$output "/bin")
                            "manhtml")
       #:phases #~(modify-phases %standard-phases
+                   (add-before 'configure 'fix-includes
+                     (lambda _
+                       (substitute* "src/makemsg.c"
+                         (("#include <unistd.h>" all)
+                          (string-append all "\n#include <string.h>")))))
                    (replace 'configure
                      (lambda _
                        (setenv "CC" #$(cc-for-target))
