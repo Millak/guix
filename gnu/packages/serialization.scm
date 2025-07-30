@@ -207,42 +207,6 @@ such as compact binary encodings, XML, or JSON.")
                    (license:non-copyleft
                     "file://include/cereal/external/LICENSE")))))
 
-;; Some packages fail with the latest version.  Remove this variable
-;; when unused.
-(define-public cereal-1.3.0
-  (package
-    (inherit cereal)
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/USCiLab/cereal")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "cereal" version))
-       (sha256
-        (base32
-         "0hc8wh9dwpc1w1zf5lfss4vg5hmgpblqxbrpp1rggicpx9ar831p"))
-       (snippet
-        '(delete-file "unittests/doctest.h"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments cereal)
-       ((#:configure-flags flags #~'())
-        #~'("-DSKIP_PORTABILITY_TEST=ON" "-DWITH_WERROR=OFF"))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'update-doctest
-              (lambda* (#:key inputs #:allow-other-keys)
-                (install-file (search-input-file inputs "unittests/doctest.h")
-                              "unittests/")))
-            (add-before 'configure 'skip-sandbox
-              (lambda _
-                (substitute* "CMakeLists.txt"
-                  (("add_subdirectory\\(sandbox\\)") ""))))))))
-    (native-inputs
-     (list doxygen gcc-10
-           (package-source cereal)))))
-
 (define-public msgpack-c
   (package
     (name "msgpack-c")
