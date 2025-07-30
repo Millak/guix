@@ -615,6 +615,33 @@ similar to @code{log4j}.  It is designed to work in a similar manner to JUnit,
 PyUnit and others.")
     (license license:asl2.0)))
 
+(define-public snitch
+  (package
+    (name "snitch")
+    (version "1.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/snitch-org/snitch")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mf55yi8ahpczl9jz2is3dnghfi3g9qz5vch7mx7akqx4gfhhviz"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags
+                     #~(list "-DBUILD_SHARED_LIBS=ON"
+                             "-DSNITCH_DO_TEST=ON"
+                             "-DSNITCH_USE_SYSTEM_DOCTEST=ON")))
+    (native-inputs (list doctest))
+    (home-page "https://github.com/snitch-org/snitch")
+    (synopsis "Lightweight C++20 testing framework")
+    (description "@code{snitch} aims to be a simple, cheap, non-invasive, and
+user-friendly testing framework.  The design philosophy is to keep the testing
+API lean, including only what is strictly necessary to present clear messages
+when a test fails.")
+    (license license:boost1.0)))
+
 ;; When dependent packages upgraded to use newer version of catch, this one should
 ;; be removed.
 (define-public catch-framework
