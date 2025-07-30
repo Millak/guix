@@ -125,7 +125,10 @@ using a list of (X, Y) pairs.")
         (search-patches "pdl-2.019-glut-bitmap-fonts.patch"))))
     (build-system perl-build-system)
     (arguments
-     `(#:phases
+     `(#:make-maker-flags
+       ;; This is required because of "gsl_set_error_handler_off".
+       `("OPTIMIZE=-O2 -Wno-error=implicit-function-declaration")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-includes
            (lambda* (#:key inputs #:allow-other-keys)
