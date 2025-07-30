@@ -8043,7 +8043,8 @@ logic-free templating system Mustache.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "03yrzqhcsjdj5zprrk3bh5bbyqfy3vfhxra9974vmkir3m121394"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list python-html5lib
                   python-importlib-metadata
                   python-markdown
