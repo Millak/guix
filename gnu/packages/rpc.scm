@@ -274,7 +274,7 @@ with the HTTP/2-based RPC framework gRPC.")
         '(delete-file "grpc_tools/_protoc_compiler.cpp"))
        (sha256
         (base32 "0g3xwv55lvf5w64zb44dipwqz7729cbqc7rib77ddqab91w56jzn"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -282,7 +282,7 @@ with the HTTP/2-based RPC framework gRPC.")
           (add-after 'unpack 'configure
             (lambda _
               (setenv "GRPC_PYTHON_BUILD_WITH_CYTHON" "1"))))))
-    (native-inputs (list python-cython))
+    (native-inputs (list python-cython python-setuptools python-wheel))
     (propagated-inputs (list python-grpcio python-protobuf))
     (home-page "https://grpc.io")
     (synopsis "Protobuf code generator for gRPC")
