@@ -8022,9 +8022,7 @@ Mako, and Tornado.")
                (base32
                 "0b67fmq0wmfkgcr7qqc44vvpvh8zkdk0rh87kccds9jdda7521rp"))))
     (build-system pyproject-build-system)
-    (arguments
-     '(#:tests? #f)) ; FIXME: Python 3 tests are failing.
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "http://defunkt.io/pystache/")
     (synopsis "Python logic-less template engine")
     (description
