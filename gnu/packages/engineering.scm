@@ -1504,7 +1504,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "134x4d5w89aahl4k9zai6vwcazibz17gsgzy04l9xn4zcf6v11qp"))))
+                "0r9aimyrv7p4ykqnwb9ac3fd0dv11zmv2ll6qkmm5s875s35hhfl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
