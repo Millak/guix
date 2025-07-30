@@ -98,6 +98,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -173,6 +174,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -3621,7 +3623,7 @@ asynchronous model using a modern C++ approach.")
        (sha256
         (base32 "02mp5905nz02d7amb4zc77rcrkxmvy8mf5rci7mvy58g24lvbw25"))
        (file-name (git-file-name name version))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; XXX: Package is deprecated, but it might be a good thing to try and
@@ -3641,6 +3643,8 @@ asynchronous model using a modern C++ approach.")
                 (("collections\\.MutableMapping")
                  "collections.abc.MutableMapping")))))))
     (inputs (list openssl))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/shadowsocks/shadowsocks")
     (synopsis "Fast tunnel proxy that helps you bypass firewalls")
     (description
