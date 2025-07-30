@@ -7413,13 +7413,13 @@ when working with Ruby code.")
 (define-public ruby-jaro-winkler
   (package
     (name "ruby-jaro-winkler")
-    (version "1.5.4")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "jaro_winkler" version))
        (sha256
-        (base32 "1y8l6k34svmdyqxya3iahpwbpvmn3fswhwsvrz0nk1wyb8yfihsh"))))
+        (base32 "09645h5an19zc1i7wlmixszj8xxqb2zc8qlf8dmx39bxpas1l24b"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f))                    ; no included tests
