@@ -16251,7 +16251,7 @@ dispersal.  Its output can be processed by treeannotator (from the
 (define-public imp
   (package
     (name "imp")
-    (version "2.15.0")
+    (version "2.23.0")
     (source
      (origin
        (method url-fetch)
@@ -16259,7 +16259,7 @@ dispersal.  Its output can be processed by treeannotator (from the
                            version "/download/imp-" version ".tar.gz"))
        (sha256
         (base32
-         "05hsrnkpkajppa3f45x4qsarnkj616hlby749zxg4is3bv4i6b5y"))))
+         "080z50iq1f3nmkccy2i5hj0i34j26sbwcaqizcbljji9mvp0nc0q"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #false ; The test suite is notoriously fickle
@@ -16284,6 +16284,7 @@ dispersal.  Its output can be processed by treeannotator (from the
      (list python-wrapper swig))
     (inputs
      (list boost-for-mysql
+           cereal
            cgal
            gsl
            hdf5
