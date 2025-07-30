@@ -216,14 +216,13 @@ type information of gRPC.")
 (define-public python-grpcio
   (package
     (name "python-grpcio")
-    (version "1.47.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "grpcio" version))
        (sha256
-        (base32
-         "00gqhz0b1sqnfx6zy7h5z41b6mpsq57r1f3p95xradcvmdgskfsx"))
+        (base32 "1nsgm8q4yahzdab4m3irffdw9zklq4kb7f8hki1ayfgw54ysim55"))
        (modules '((guix build utils) (ice-9 ftw)))
        (snippet
         '(begin
@@ -268,7 +267,7 @@ type information of gRPC.")
               (substitute* '("setup.py" "src/python/grpcio/commands.py")
                 (("'cc'") "'gcc'")))))))
     (inputs
-     (list abseil-cpp-20211102.0 c-ares grpc-for-python-grpcio openssl re2 zlib))
+     (list abseil-cpp-cxxstd11 c-ares grpc openssl re2 zlib))
     (native-inputs
      (list python-cython python-setuptools python-wheel))
     (propagated-inputs
