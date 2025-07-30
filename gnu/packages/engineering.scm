@@ -1550,7 +1550,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18cxlp5grvv5m63c3sb6m9l9cmijqqcjmxrkdzg63d5jp7w73smn"))))
+                "0njv4y31k62qhcx0xxcl94p34jgna8z4bs3hwjwzjfmp7ddl2dyx"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
