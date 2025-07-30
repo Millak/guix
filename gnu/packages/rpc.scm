@@ -141,24 +141,6 @@ mile of distributed computing to connect devices, mobile applications and
 browsers to backend services.")
     (license license:asl2.0)))
 
-(define-public grpc-for-python-grpcio
-  (package
-    (inherit grpc)
-    (name "grpc")
-    (version "1.47.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/grpc/grpc")
-                    (commit (string-append "v" version))
-                    (recursive? #true)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1nl2d92f3576m69991d7gwyk1giavm04fagr612yjh90rni01ikw"))))
-    (inputs
-     (list abseil-cpp-20211102.0 c-ares/cmake openssl re2 zlib))))
-
 ;; Some packages require this older version.
 (define-public grpc-1.16.1
   (package
