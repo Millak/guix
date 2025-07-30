@@ -957,59 +957,40 @@ variables from them.")
    (name "guile-dotenv-cli")
    (arguments
     (list
-     #:modules `((ice-9 match)
-                 (ice-9 ftw)
-                 ,@%default-gnu-imported-modules)
+     #:modules `(((guix build guile-build-system)
+                  #:select
+                  (target-guile-effective-version))
+                 ,@%default-gnu-modules)
      #:phases
-     #~(modify-phases %standard-phases
-         (replace 'install
-           (lambda _
-             (mkdir-p (string-append #$output "/bin"))
-             (install-file "./scripts/dotenv"
-                           (string-append #$output "/bin/"))))
-         (add-after 'install 'wrap-binaries
-           (lambda _
-             (let* ((inputs
-                     (list
-                      #$@(map (lambda (input)
-                                (this-package-input input))
-                              '("guile-config"
-                                "guile-dotenv"))))
-                    (compiled-dir
-                     (lambda (out version)
-                       (string-append out "/lib/guile/"
-                                      version "/site-ccache")))
-                    (uncompiled-dir
-                     (lambda (out version)
-                       (string-append out "/share/guile/site"
-                                      (if (string-null? version) "" "/")
-                                      version)))
-                    (dep-path
-                     (lambda (env modules path)
-                       (list env ":" 'prefix
-                             (cons modules
-                                    (map (lambda (input)
-                                           (string-append input path))
-                                         inputs)))))
-                    (bin (string-append #$output "/bin/"))
-                    (site
-                     (uncompiled-dir #$(this-package-input "guile-dotenv") "")))
-                (match (scandir site)
-                  (("." ".." version)
-                   (for-each
-                    (lambda (file)
-                      (wrap-program (string-append bin file)
-                        (dep-path
-                         "GUILE_LOAD_PATH"
-                         (uncompiled-dir
-                          #$(this-package-input "guile-dotenv") version)
-                         (uncompiled-dir "" version))
-                        (dep-path
-                         "GUILE_LOAD_COMPILED_PATH"
-                         (compiled-dir
-                          #$(this-package-input "guile-dotenv") version)
-                         (compiled-dir "" version))))
-                    '("dotenv"))))))))))
+     (with-imported-modules `((guix build guile-build-system)
+                              ,@%default-gnu-imported-modules)
+       #~(modify-phases %standard-phases
+           (replace 'install
+             (lambda _
+               (mkdir-p (string-append #$output "/bin"))
+               (install-file "./scripts/dotenv"
+                             (string-append #$output "/bin/"))))
+           (add-after 'install 'wrap-binaries
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let* ((version (target-guile-effective-version))
+                      (site-ccache (string-append "/lib/guile/"
+                                                  version "/site-ccache"))
+                      (site (string-append "/share/guile/site/" version))
+                      (dep-path
+                       (lambda (env path)
+                         (list env ":" 'prefix
+                               (cons (string-append #$output path)
+                                     (map (lambda (input)
+                                            (string-append
+                                             (assoc-ref inputs input)
+                                             path))
+                                          (list "guile-config"
+                                                "guile-dotenv"
+                                                "nyacc"))))))
+                      (bin (string-append (ungexp output) "/bin/")))
+                 (wrap-program (string-append bin "dotenv")
+                   (dep-path "GUILE_LOAD_PATH" site)
+                   (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)))))))))
    (inputs
      (modify-inputs (package-inputs guile-dotenv)
        (append bash-minimal)))
