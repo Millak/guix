@@ -3180,18 +3180,20 @@ files, including Rmarkdown files.")
     (license license:gpl3+)))
 
 (define-public readstat
+  (let ((commit "718d49155e327471ed9bf4a8c157f849f285b46c")
+        (revision "0"))
   (package
     (name "readstat")
-    (version "1.1.9")
+    (version (git-version "1.1.9" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/WizardMac/ReadStat")
-             (commit (string-append "v" version))))
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aqalr86d7h9sp9zjkydw3ap4s54qgq2ml6p8gd0gnn1jf0ljm72"))))
+        (base32 "121axcx4shd0fqlcr1mk7y841sd59r9mx473c4av8gs81xfhcg0h"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gettext-minimal libtool))
@@ -3201,7 +3203,7 @@ files, including Rmarkdown files.")
     (synopsis "Convert SAS, Stata, and SPSS files")
     (description "Command-line tool and C library for reading files from
 popular stats packages like SAS, Stata and SPSS.")
-    (license license:expat)))
+    (license license:expat))))
 
 (define-public python-pyreadstat
   (package
