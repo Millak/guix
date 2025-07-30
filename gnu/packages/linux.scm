@@ -7991,7 +7991,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
   (package
     (name "rng-tools")
     (home-page "https://github.com/nhorman/rng-tools")
-    (version "6.16")
+    (version "6.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page)
@@ -7999,7 +7999,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rsk8nxs0j32b9hr88qk8hv029fb1q0hcrw0mfdywvm7dn2d15gn"))
+                "0vvqi9ha4jbk4086x2q98p4ip3z56sfdpyckdyknsd36zhp6z8n2"))
               (patches
                (search-patches "rng-tools-revert-build-randstat.patch"))
               (patch-flags '("-p0"))))
