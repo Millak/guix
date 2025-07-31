@@ -292,16 +292,14 @@ licences similar to the Modified BSD licence."))))
                    (substitute* "tests/cpu/fileformats/FileFormatCTF_tests.cpp"
                      (("OCIO_CHECK_NE.*ErrorOutputs.*")
                       ""))))
-               (add-after 'install 'fix-OpenColorIOConfig
+               (add-after 'unpack 'fix-broken-test
                  (lambda _
-                   ;; Work around a CMake Zlib-detection bug:
-                   ;; https://gitlab.kitware.com/cmake/cmake/-/issues/25200
-                   ;; make OpenColorIOConfig.cmake is a normal cmake file
-                   (substitute*
-                     (string-append #$output
-                                    "/lib/cmake/OpenColorIO/OpenColorIOConfig.cmake")
-                     (("\\.#define ZLIB_VERSION \"1\\.3\"")
-                      "")))))))
+                   ;; Replace the invalid multi-line list. It is unclear why
+                   ;; this is now failing after only build system updates.
+                   ;; (see https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/v2.4.2/tests/cpu/Config_tests.cpp#L6227)
+                   (substitute* "tests/cpu/Config_tests.cpp"
+                     (("cs1\\\\t\\\\n   \\\\n,   \\\\ncs2")
+                      "cs1, cs2")))))))
     (native-inputs
      ;; XXX: OCIO has unit tests for OpenShadingLanguage, but they fail.
      ;; They also require OIIO, but OCIO is an optional dependency to it.
