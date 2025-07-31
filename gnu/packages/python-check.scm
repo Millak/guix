@@ -3867,7 +3867,9 @@ data in a standard way.")
        (uri (pypi-uri "test-utils" version))
        (sha256
         (base32 "0cs0gyihnkj8ya4yg3ld3ly73mpxrkn2gq9acamclhqvhxsv7zd6"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/Kami/python-test-utils/")
     (synopsis "Utilities for functional and integration tests")
     (description
