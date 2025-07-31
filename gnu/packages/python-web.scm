@@ -9903,7 +9903,11 @@ realtime client and server.")
        (uri (pypi-uri "socksio" version))
        (sha256
         (base32 "1b64j45w35jzhjhnq44bnyad9ydh1iyyd7a6j2c8phxmllyyp2zq"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-pytest-cov))
     (home-page "https://github.com/sethmlarson/socksio")
     (synopsis "Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5")
     (description "The @code{socksio} Python module is a client-side sans-I/O
