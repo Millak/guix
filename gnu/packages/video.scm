@@ -72,6 +72,7 @@
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2025 Formbi <formbi@protonmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.ccom>
+;;; Copyright © 2025 VnPower <vnpower@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3015,6 +3016,29 @@ To load this plugin, specify the following option when starting mpv:
 @code{--script $GUIX_PROFILE/lib/mpris.so} or link it into
 @file{$HOME/.config/mpv/scripts}.")
     (license license:expat)))
+
+(define-public mpvpaper
+  (package
+    (name "mpvpaper")
+    (version "1.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/GhostNaN/mpvpaper")
+                    (commit version)))
+              (sha256
+               (base32 "0pzc6f5r85qd0dgp6aa6pp8ba2m7ghzd3pc4xnqnarh2bx55jf95"))
+              (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+     (inputs
+      (list mpv libdisplay-info wlroots))
+     (native-inputs
+      (list pkg-config cmake-minimal))
+     (home-page "https://github.com/GhostNaN/mpvpaper")
+     (synopsis "Video wallpaper program for wlroots-based wayland compositors")
+     (description "mpvpaper is a wallpaper program for wlroots-based wayland
+compositors, allowing you to play videos as your wallpaper using mpv.")
+     (license license:gpl3)))
 
 (define-public libvpx
   (package
