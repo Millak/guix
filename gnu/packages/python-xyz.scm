@@ -36761,30 +36761,20 @@ systems in Python.")
 (define-public python-dotenv
   (package
     (name "python-dotenv")
-    (version "0.20.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-dotenv" version))
+       (uri (pypi-uri "python_dotenv" version))
        (sha256
-        (base32 "13s9imfd0k4d7b1qy5wfqzw5vyj6rhmcrccsdz1l4g39b55b1qxp"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (setenv "PATH" (string-append (getenv "PATH") ":"
-                                             (assoc-ref outputs "out") "/bin"))
-               ;; Skip the ipython tests.
-               (delete-file "tests/test_ipython.py")
-               (invoke "python" "-m" "pytest")))))))
+        (base32 "1aw9c5gw2gfjf7n3s7k6lb6ybz090hh60wq0daz4azr52sbkk9m8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-sh))
     (propagated-inputs
      (list python-click))
-    (native-inputs
-     (list python-mock python-pytest python-sh))
     (home-page "https://saurabh-kumar.com/python-dotenv/")
     (synopsis "Setup environment variables according to .env files")
     (description
