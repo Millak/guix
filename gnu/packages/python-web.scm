@@ -6118,16 +6118,23 @@ presume or force a developer to use a particular tool or library.")
 (define-public python-flask-compress
   (package
     (name "python-flask-compress")
-    (version "1.13")
+    (version "1.18")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "Flask-Compress" version))
+              (uri (pypi-uri "flask_compress" version))
               (sha256
                (base32
-                "178jzz6jxlxllcjqamzh5q7ahfh90m5cl1il9vmjs3xhz65z35pf"))))
+                "0fj1r0ixsjls7z3a2zzamxppjz4qcf8q4jcmn74gsk9kisyy3fpx"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-brotli python-flask))
-    (native-inputs (list python-setuptools-scm python-setuptools python-wheel))
+    (native-inputs
+     (list python-flask-caching
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-brotli
+           python-flask
+           python-pyzstd))
     (home-page "https://github.com/colour-science/flask-compress")
     (synopsis "Compress responses in a Flask app")
     (description
