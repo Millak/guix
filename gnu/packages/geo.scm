@@ -1808,14 +1808,14 @@ Shapely capabilities
 (define-public postgis
   (package
     (name "postgis")
-    (version "3.2.1")
+    (version "3.3.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.osgeo.org/postgis/source/postgis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0gl9d6xy2an82ldb9sixz5blyngjryq8m3509fr38ffawvfniazv"))))
+                "1w1jkb98rf22qz0x4wajp0cjwzcb928247169xk84az3adb0y9vf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
