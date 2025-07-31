@@ -3533,15 +3533,9 @@ libraries.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1rssq4wpqmx1c17hjfx5l3sn3zmnlz9jffddiqrs4f6h7m6cadai"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-covdefaults python-coverage python-pytest))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-regex))
     (home-page "https://github.com/asottile/re-assert")
