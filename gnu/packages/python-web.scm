@@ -1866,28 +1866,38 @@ routes using HTTP Digest Authentication.")
     (license license:bsd-2)))
 
 (define-public python-css-html-js-minify
-  (package
-    (name "python-css-html-js-minify")
-    (version "2.5.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "css-html-js-minify" version ".zip"))
-              (sha256
-               (base32
-                "0v3l2dqdk2y4r6ax259gs4ij1zzm9yxg6491s6254vs9w3vi37sa"))))
-    (build-system python-build-system)
-    ;; XXX: The git repository has no tags, and the PyPI releases do not
-    ;; contain tests.
-    (arguments '(#:tests? #f))
-    (native-inputs (list unzip))
-    (home-page "https://github.com/juancarlospaco/css-html-js-minify")
-    (synopsis "CSS/HTML/JS minifier")
-    (description
-     "This package provides a single-file minifier for CSS, HTML, and JavaScript.")
-    ;; XXX: The README just says "GNU GPL and GNU LGPL and MIT".  From
-    ;; <https://github.com/juancarlospaco/css-html-js-minify/issues/9> it
-    ;; looks like the user can choose a license.
-    (license (list license:gpl3+ license:lgpl3+ license:expat))))
+  (let ((commit "8f72452960e41bc5476e50d96481f633eff72750")
+        (revision "0"))
+    (package
+      (name "python-css-html-js-minify")
+      (version (git-version "2.5.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/juancarlospaco/css-html-js-minify")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lkx03720zk6q16w3d9r3l5kryikd1cmzwrcjzsjxwrq4zfh6vdf"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'relax-requirements
+              (lambda _
+                (substitute* "setup.cfg"
+                  (("^tests_require.*") "")))))))
+      (native-inputs (list python-setuptools python-wheel unzip))
+      (home-page "https://github.com/juancarlospaco/css-html-js-minify")
+      (synopsis "CSS/HTML/JS minifier")
+      (description
+       "This package provides a single-file minifier for CSS, HTML, and JavaScript.")
+      ;; XXX: The README just says "GNU GPL and GNU LGPL and MIT".  From
+      ;; <https://github.com/juancarlospaco/css-html-js-minify/issues/9> it
+      ;; looks like the user can choose a license.
+      (license (list license:gpl3+ license:lgpl3+ license:expat)))))
 
 (define-public python-aws-sam-translator
   (package
