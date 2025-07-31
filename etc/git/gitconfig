@@ -7,7 +7,7 @@
 [format]
         forceinbodyfrom = true  # help preserve commit authorship
         thread = shallow
-        useAutoBase = true
+        useAutoBase = whenAble
 
 [pull]
         rebase = true
