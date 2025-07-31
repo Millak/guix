@@ -2821,10 +2821,11 @@ support for high performance Telegram Bot creation.")
         (git-file-name name version))
        (sha256
         (base32 "1ipd9gwh04wbqv6c10yxi02lc2yjsr02hwjycgxhl4r9x8b33psd"))))
-    (build-system cmake-build-system)
+    (build-system gnu-build-system)
     (arguments
      (list
       #:parallel-tests? #f
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
