@@ -2952,7 +2952,7 @@ into HTTP/2 frames.")
 (define-public python-hpack
   (package
     (name "python-hpack")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        ;; PyPI tarball is missing some files necessary for the tests.
@@ -2962,18 +2962,10 @@ into HTTP/2 frames.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11qdayvz5a8zlzdcdm37f2z1fgnl67pz6j8xj2dz5rfa5lds29yq"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv" "test")))))))
+        (base32 "1kgbx38p3a48iz914dqbx7av750a3s3x5kj3rvpcbh23ah75zg5x"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://hyper.rtfd.org")
     (synopsis "Pure-Python HPACK header compression")
     (description
