@@ -4486,25 +4486,34 @@ Unicode-to-LaTeX conversion.")
 (define-public python-sh
   (package
     (name "python-sh")
-    (version "1.14.2")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sh" version))
        (sha256
         (base32
-         "03gyss1rhj4in7pgysg4q0hxp3230whinlpy1532ljs99lrx0ywx"))))
-    (build-system python-build-system)
+         "0nxnkvmrl6vlan6lsvjymmxpr0gf8k0gnwr1632lwa0sqjkjfck5"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; XXX: A Python 2 test fails when HOME=/homeless-shelter.
-             (setenv "HOME" "/tmp")
-             (invoke "python" "sh.py" "test"))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; These tests are shaky.
+                    (list "not test_bad_sig_raise_exception"
+                          "test_doesnt_execute_directories"
+                          "test_environment"
+                          "test_ok_code_ignores_bad_sig_exception"
+                          "test_unicode_path")
+                    " and not ")
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-coverage))
+     (list python-poetry-core python-pytest))
     (home-page "https://github.com/amoffat/sh")
     (synopsis "Python subprocess replacement")
     (description "This package provides a replacement for Python's
