@@ -1426,7 +1426,7 @@ comfortably in a pager or editor.
 (define-public eternalterminal
   (package
     (name "eternalterminal")
-    (version "6.2.4")
+    (version "6.2.11")
     (source
      (origin
        (method git-fetch)
@@ -1435,7 +1435,7 @@ comfortably in a pager or editor.
              (commit (string-append "et-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13vhr701j85ga37d53339bxgrf9fqa6z1zcp6s3ly5bb8p7lyvzm"))))
+        (base32 "1ik4kdw574l087yxck2clzwjmdacar8my3k2ih8dbn5m0djq4ybp"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_TEST=ON" "-DDISABLE_VCPKG=1")))
