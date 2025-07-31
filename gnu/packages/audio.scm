@@ -3527,18 +3527,18 @@ player-like clients.")
     (version "0.10.0")
     (source (origin
              (method url-fetch)
-             (uri (string-append "http://das.nasophon.de/download/pyliblo-"
+             (uri (string-append "https://das.nasophon.de/download/pyliblo-"
                                  version ".tar.gz"))
              (sha256
               (base32
                "13vry6xhxm7adnbyj28w1kpwrh0kf7nw83cz1yq74wl21faz2rzw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments `(#:tests? #f)) ;no tests
     (native-inputs
-     (list python-cython))
+     (list python-cython python-setuptools python-wheel))
     (inputs
      (list liblo))
-    (home-page "http://das.nasophon.de/pyliblo/")
+    (home-page "https://das.nasophon.de/pyliblo/")
     (synopsis "Python bindings for liblo")
     (description
      "Pyliblo is a Python wrapper for the liblo Open Sound Control (OSC)
