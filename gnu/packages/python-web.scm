@@ -657,6 +657,42 @@ Note: In Guix, this package assumes the environment variable
 to anything else.")
     (license license:expat)))
 
+(define-public python-flask-caching
+  (package
+    (name "python-flask-caching")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flask_caching" version))
+       (sha256
+        (base32 "1jcqgfzvqhgpngf9nhpfjs129cslh8jyczfy8kw11y7b9qdzvmv5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests requiring running Redis or dated python-cache.
+      #~(list "--deselect=tests/test_init.py::test_init_nullcache[MemcachedCache]"
+              "--deselect=tests/test_init.py::test_init_nullcache[RedisCache]"
+              "--deselect=tests/test_init.py::test_init_nullcache[RedisSentinelCache]"
+              "--deselect=tests/test_init.py::test_init_nullcache[SASLMemcachedCache]"
+              "--deselect=tests/test_init.py::test_init_nullcache[SpreadSASLMemcachedCache]"
+              "-k" "not test_client_override_reflected_on_cachelib_methods")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-xprocess
+           python-setuptools))
+    (propagated-inputs
+     (list python-cachelib
+           python-flask))
+    (home-page "https://github.com/pallets-eco/flask-caching")
+    (synopsis "Caching extension for Flask")
+    (description
+     "This package provides a caching support to Flask applications, it's a
+fort ok https://github.com/thadeusb/flask-cache.")
+    (license license:bsd-3)))
+
 (define-public python-gdown
   (package
     (name "python-gdown")
