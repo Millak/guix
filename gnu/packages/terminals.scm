@@ -1127,13 +1127,13 @@ than a terminal.")
 (define-public python-curtsies
   (package
     (name "python-curtsies")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curtsies" version))
        (sha256
-        (base32 "03kn093lr84qg8fmqrn1jb0zak6a1ir9q106lm8jijfpbchk7gkf"))))
+        (base32 "09c8c4vssm2zkq017xj99vhcrisfva4nkz92w8dly4jjz7xhyahh"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pyte
