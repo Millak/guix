@@ -18433,25 +18433,6 @@ suitable for a wide range of protocols based on the ASN.1 specification.")
 implementations of ASN.1-based codecs and protocols.")
     (license license:bsd-3)))
 
-(define-public python-ipaddress
-  (package
-    (name "python-ipaddress")
-    (version "1.0.23")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "ipaddress" version))
-              (sha256
-               (base32
-                "1qp743h30s04m3cg3yk3fycad930jv17q7dsslj4mfw0jlvf1y5p"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/phihag/ipaddress")
-    (synopsis "IP address manipulation library")
-    (description
-      "This package provides a fast, lightweight IPv4/IPv6 manipulation library
- in Python.  This library is used to create, poke at, and manipulate IPv4 and
- IPv6 addresses and networks.")
-    (license license:psfl)))
-
 (define-public python-asn1tools
   (package
     (name "python-asn1tools")
