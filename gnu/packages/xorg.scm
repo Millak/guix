@@ -5201,8 +5201,9 @@ protocol.")
               (add-after 'unpack 'fix-PATH_MAX
                 (lambda _
                   ;; Hurd doesn't define PATH_MAX.
-                  (substitute* "src/xcb_util.c"
-                    (("PATH_MAX") "4096")))))
+                  (let ((patch #$(local-file
+                                  (search-patch "libxcb-path-max.patch"))))
+                    (invoke "patch" "--force" "-p1" "-i" patch)))))
            #~%standard-phases)))
     (home-page "https://xcb.freedesktop.org/")
     (synopsis "The X C Binding (XCB) library")

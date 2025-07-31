@@ -1,0 +1,37 @@
+Taken from:
+https://gitlab.freedesktop.org/xorg/lib/libxcb/-/commit/6a7661f60a70ff42c64b32a725edcbee790d1c0d
+
+From 6a7661f60a70ff42c64b32a725edcbee790d1c0d Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Tue, 8 Jul 2025 13:29:00 +0200
+Subject: [PATCH] Get rid of PATH_MAX
+
+There could be no upper limit on the length of a path according
+to POSIX, therefore these macros may not be defined at all on
+some systems (such as GNU Hurd). There is however a limit on
+sizeof(struct sockaddr_un.sun_path), so use it.
+
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Part-of: <https://gitlab.freedesktop.org/xorg/lib/libxcb/-/merge_requests/65>
+---
+ src/xcb_util.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/xcb_util.c b/src/xcb_util.c
+index 5124d14..017583e 100644
+--- a/src/xcb_util.c
++++ b/src/xcb_util.c
+@@ -104,7 +104,9 @@ static int _xcb_parse_display_path_to_socket(const char *name, char **host, char
+                                              int *displayp, int *screenp)
+ {
+     struct stat sbuf;
+-    char path[PATH_MAX];
++    /* In addition to the AF_UNIX path, there may be a screen number.
++     * The trailing \0 is already accounted in the size of sun_path. */
++    char path[sizeof(((struct sockaddr_un*)0)->sun_path) + 1 + 10];
+     size_t len;
+     int _screen = 0, res;
+ 
+-- 
+GitLab
+
