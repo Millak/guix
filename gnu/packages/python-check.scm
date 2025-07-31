@@ -3164,6 +3164,17 @@ through Python's socket interface")
         (base32
          "1yb5y6dqzf6k5a07yzdpw8w50bm7zbsdvv06ii7c7vyg9wx5iw6y"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; 134 passed, 4 skipped, 4 deselected
+      #:test-flags
+      ;; XXX: Skip tests fixed on master in
+      ;; be30d9a94ba45afb600717e3fcd95b8b2ff2c60e commit, not critical,
+      ;; re-chech in the next refresh cycle.
+      #~(list "--deselect=tests/test_examples.py::test_documentation[README.rst]"
+              "--deselect=tests/test_examples.py::test_documentation[docs/index.rst]"
+              "--deselect=tests/test_subprocess.py::test_text[False]"
+              "--deselect=tests/test_subprocess.py::test_universal_newlines[False]")))
     (native-inputs
      (list python-anyio
            python-docutils
@@ -3171,8 +3182,7 @@ through Python's socket interface")
            python-pytest
            python-pytest-asyncio
            python-pytest-rerunfailures
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/aklajnert/pytest-subprocess")
     (synopsis "Fake subprocess for Pytest")
     (description
