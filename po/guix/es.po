@@ -24,9 +24,9 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-07-09 03:18+0000\n"
-"PO-Revision-Date: 2025-06-28 14:43+0000\n"
-"Last-Translator: \"Fco. Javier F. Serrador\" <fserrador@gmail.com>\n"
-"Language-Team: Spanish <https://translate.fedoraproject.org/projects/guix/guix/es/>\n"
+"PO-Revision-Date: 2025-07-29 07:09+0000\n"
+"Last-Translator: DrManhattanMR <drmanhattanmr@noreply.codeberg.org>\n"
+"Language-Team: Spanish <https://translate.codeberg.org/projects/guix/guix/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1121,8 +1121,8 @@ msgid ""
 "\n"
 "This services is deprecated as ISC's DHCP client reached its end-of-life."
 msgstr ""
-"Ejecute @command{dhcp}, un cliente para la configuración del\n"
-"Protocolo Dinámico de Host (DHCP), en todas las interfaces de red\n"
+"Ejecute @command{dhcp}, un cliente del\n"
+"Protocolo de configuración dinámica de host (DHCP), en todas las interfaces de red\n"
 "que no sean de bucle invertido.  Este servicio está obsoleto como\n"
 "cliente DHCP de ISC alcanzado su final de vida."
 
@@ -5843,10 +5843,9 @@ msgid "installed hooks '~a' and '~a'~%"
 msgstr "instalado puntos de enganche '~a' y '~a'~%"
 
 #: guix/scripts/git/authenticate.scm:234
-#, fuzzy, scheme-format
-#| msgid "updating submodule '~a'...~%"
+#, scheme-format
 msgid "upgrading hook '~a'~%"
-msgstr "actualizando el submódulo '~a'...~%"
+msgstr "actualizando el hook '~a'~%"
 
 #: guix/scripts/git/authenticate.scm:251
 #, scheme-format
@@ -5937,7 +5936,7 @@ msgstr "número de parámetros incorrecto; se esperaba REVISIÓN y FIRMA~%"
 #: guix/scripts/git/authenticate.scm:365
 #, scheme-format
 msgid "current branch '~a' is the keyring branch; doing nothing~%"
-msgstr ""
+msgstr "rama actual '~a' es la rama del llavero; no hace nada~%"
 
 #: guix/scripts/git/authenticate.scm:388
 #, scheme-format
@@ -13220,7 +13219,7 @@ msgstr "produce salida de depuración"
 
 #: nix/nix-daemon/guix-daemon.cc:165
 msgid "do not allow fixed-output chroot builds to access the host loopback"
-msgstr ""
+msgstr "No permita que las compilaciones chroot de salida fija accedan al bucle invertido del host"
 
 #: nix/nix-daemon/guix-daemon.cc:535
 msgid "socket-activated with %1% socket"

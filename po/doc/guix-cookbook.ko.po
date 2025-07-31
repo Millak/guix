@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-06-03 03:18+0000\n"
-"PO-Revision-Date: 2025-05-26 09:34+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2025-07-31 06:26+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Korean <https://translate.codeberg.org/projects/guix/documentation-cookbook/ko/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.11.3\n"
+"X-Generator: Weblate 5.12.2\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -1525,7 +1525,7 @@ msgstr ""
 #: guix-git/doc/guix-cookbook.texi:649
 #, no-wrap
 msgid "home-page"
-msgstr "홈페이지"
+msgstr "home-page"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:651

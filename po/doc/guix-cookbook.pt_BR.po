@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-06-03 03:18+0000\n"
-"PO-Revision-Date: 2025-07-09 20:40+0000\n"
+"PO-Revision-Date: 2025-07-30 18:20+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/documentation-cookbook/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -54,7 +54,7 @@ msgstr "Permissão concedida para copiar, distribuir e/ou modificar este documen
 #: guix-git/doc/guix-cookbook.texi:38
 #, no-wrap
 msgid "System administration"
-msgstr "Administração do Sistema"
+msgstr "Administração do sistema"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:41
@@ -1827,7 +1827,7 @@ msgstr "A expressão @code{use-modules} informa quais módulos precisamos no arq
 #: guix-git/doc/guix-cookbook.texi:807
 #, no-wrap
 msgid "channel"
-msgstr "Canal"
+msgstr "canal"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:813
@@ -10103,7 +10103,7 @@ msgstr "Isso informará se existem perfis que se referem a essa variante glibc e
 #: guix-git/doc/guix-cookbook.texi:5669
 #, no-wrap
 msgid "system management"
-msgstr "Gerenciamento do Sistema"
+msgstr "gerenciamento do sistema"
 
 #. type: cindex
 #: guix-git/doc/guix-cookbook.texi:5670

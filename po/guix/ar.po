@@ -10,15 +10,15 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-07-09 03:18+0000\n"
-"PO-Revision-Date: 2025-06-17 07:29+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
-"Language-Team: Arabic <https://translate.fedoraproject.org/projects/guix/guix/ar/>\n"
+"PO-Revision-Date: 2025-07-21 11:08+0000\n"
+"Last-Translator: adf19 <adf19@noreply.codeberg.org>\n"
+"Language-Team: Arabic <https://translate.codeberg.org/projects/guix/guix/ar/>\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 5.12.1\n"
+"X-Generator: Weblate 5.12.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -138,17 +138,22 @@ msgid ""
 "itself: the channels used when building the system, and its configuration\n"
 "file, when available."
 msgstr ""
+"تخزين معلومات إثبات المصدر (Provenance) عن النظام في داخله:\n"
+"قنوات البناء المستخدمة عند إنشاء النظام، وملف التهيئة الخاص به\n"
+"عند توافره."
 
 #: gnu/services.scm:692
 msgid ""
 "Delete files from @file{/tmp}, @file{/var/run}, and other\n"
 "temporary locations at boot time."
 msgstr ""
+"احذف الملفات من @file{/tmp}، و@file{/var/run}، وغيرها من\n"
+"المواقع المؤقتة الأخرى في وقت الإقلاع."
 
 #: gnu/services.scm:755
 #, scheme-format
 msgid "failed to activate '~a'~%"
-msgstr ""
+msgstr "إخفاق في تنشيط '~a'~%"
 
 #: gnu/services.scm:787
 msgid ""

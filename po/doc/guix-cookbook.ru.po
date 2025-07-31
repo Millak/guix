@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-06-03 03:18+0000\n"
-"PO-Revision-Date: 2025-07-09 20:40+0000\n"
+"PO-Revision-Date: 2025-07-17 08:20+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/guix/documentation-cookbook/ru/>\n"
 "Language: ru\n"
@@ -1683,7 +1683,7 @@ msgstr ""
 #: guix-git/doc/guix-cookbook.texi:807
 #, no-wrap
 msgid "channel"
-msgstr ""
+msgstr "канал"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:813

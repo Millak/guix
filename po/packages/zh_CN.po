@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: guix-packages 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-07-09 03:18+0000\n"
-"PO-Revision-Date: 2025-07-10 06:55+0000\n"
+"PO-Revision-Date: 2025-07-12 00:45+0000\n"
 "Last-Translator: RivuletCedar <rivulet_cedar@yeah.net>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/packages/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -2630,11 +2630,11 @@ msgid ""
 "differ, while \"cmp\" shows the offsets and line numbers where they differ.\n"
 "\"diff3\" allows you to compare three files.  Finally, \"sdiff\" offers an\n"
 "interactive means to merge two files."
-msgstr ""
+msgstr "GNU Diffutils 软件包包含用于查找文件差异的工具。“diff” 命令用于显示两个文件的差异，“cmp” 则标示出差异所在的偏移量和行号。“diff3” 支持三文件比对，而 “sdiff” 提供交互式合并两个文件的方式。"
 
 #: gnu/packages/base.scm:446
 msgid "Operating on files matching given criteria"
-msgstr ""
+msgstr "对符合指定条件的文件执行操作"
 
 #: gnu/packages/base.scm:448
 msgid ""
@@ -2644,7 +2644,7 @@ msgid ""
 "\"locate\" lists files in a database that match a query.  Two auxiliary tools\n"
 "are included: \"updatedb\" updates the file name database and \"xargs\" may be\n"
 "used to apply commands with arbitrarily long arguments."
-msgstr ""
+msgstr "Findutils 提供 GNU 系统基础的文件目录检索工具集。主要包含两大核心检索工具：“find” 根据指定条件递归检索目录中的文件，“locate” 则列出数据库中匹配查询的文件。另含两个辅助工具：“updatedb” 用于更新文件名数据库，“xargs” 可对超长参数执行命令。"
 
 #: gnu/packages/base.scm:571
 msgid "Core GNU utilities (file, text, shell)"
@@ -2657,11 +2657,11 @@ msgid ""
 "the GNU fileutils, sh-utils, and textutils packages.  Most of these tools\n"
 "offer extended functionality beyond that which is outlined in the POSIX\n"
 "standard."
-msgstr ""
+msgstr "GNU Coreutils 软件包囊括了 POSIX 系统所需的所有基础命令行工具（不含 shell）。该软件包整合了 GNU fileutils、sh-utils 和 textutils 的功能。其中多数工具在遵循 POSIX 标准的基础上，还提供了超出该标准范围的扩展功能。"
 
 #: gnu/packages/base.scm:648
 msgid "Remake files automatically"
-msgstr "自动重命令文件"
+msgstr "自动重新构建文件"
 
 #: gnu/packages/base.scm:650
 msgid ""
@@ -2671,7 +2671,7 @@ msgid ""
 "generated from its source.  It has powerful dependency resolution and the\n"
 "ability to determine when files have to be regenerated after their sources\n"
 "change.  GNU make offers many powerful extensions over the standard utility."
-msgstr ""
+msgstr "GNU Make 是一款用于控制从源文件生成可执行文件或其他文件的程序。该过程通过 Makefile 进行控制，开发者可在其中指定每个文件从源文件的生成方式。它具有强大的依赖关系解析能力，可自动判断源文件变更后需要重新生成的文件。相较于标准工具，GNU make 提供了诸多强大的扩展功能。"
 
 #: gnu/packages/base.scm:729
 msgid "Binary utilities: bfd gas gprof ld"
@@ -2711,17 +2711,20 @@ msgid ""
 "The GNU C library is used as the C library in the GNU system and most systems\n"
 "with the Linux kernel."
 msgstr ""
+"任何类 Unix 操作系统都需要一个 C 语言运行库：该库定义了“系统调用”及其他基础功能，如 open、malloc、printf、exit 等。\n"
+"\n"
+"GNU C 语言运行库是 GNU 系统及绝大多数基于 Linux 内核的系统的 C 语言标准库。"
 
 #: gnu/packages/base.scm:1445
 msgid "All the locales supported by the GNU C Library"
-msgstr ""
+msgstr "GNU C 语言运行库支持的所有区域设置（locale）"
 
 #: gnu/packages/base.scm:1447
 msgid ""
 "This package provides all the locales supported by the GNU C Library,\n"
 "more than 400 in total.  To use them set the @code{LOCPATH} environment variable\n"
 "to the @code{share/locale} sub-directory of this package."
-msgstr ""
+msgstr "此软件包提供 GNU C 语言运行库支持的所有区域设置（locale），总数超过 400 个。要使用这些设置，请将 @code{LOCPATH} 环境变量指向此软件包的 @code{share/locale} 子目录。"
 
 #: gnu/packages/base.scm:1626
 msgid "Find full path of shell commands"
@@ -33619,7 +33622,7 @@ msgid ""
 "simultaneous, easy-to-use support to a bunch of other scripts in addition to\n"
 "the above --- Cyrillic, Greek, Latin-based scripts, Russian and Vietnamese are\n"
 "supported."
-msgstr ""
+msgstr "CJK 是 LaTeX 的宏包套件，可同步支持多种亚洲文字的多编码处理（含 Unicode）：中文（繁体与简体）、日文、韩文及泰文。其特殊附加功能提供与 Emacs 编辑器的交互接口（cjk-enc.el），除支持上述语种外，还能便捷地同步处理其他多种文字体系——包括西里尔文、希腊文、拉丁文字、俄文及越南文。"
 
 #: gnu/packages/tex.scm:12211
 msgid "Binaries for @code{texlive-cjkutils}"
