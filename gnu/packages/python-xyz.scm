@@ -18176,16 +18176,21 @@ primary use case is APIs defined before keyword-only parameters existed.")
 (define-public python-pyasn1
   (package
     (name "python-pyasn1")
-    (version "0.4.8")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyasn1" version))
        (sha256
         (base32
-         "1fnhbi3rmk47l9851gbik0flfr64vs5j0hbqx24cafjap6gprxxf"))))
-    (build-system python-build-system)
-    (home-page "https://pyasn1.sourceforge.net/")
+         "0d5h500ig8sp72pabd1wcyglc4951xalbkqahf056dl4vlmhsn3g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "discover" "tests")))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/pyasn1/pyasn1")
     (synopsis "ASN.1 types and codecs")
     (description
      "This is an implementation of ASN.1 types and codecs in Python.  It is
