@@ -71,7 +71,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -2427,19 +2426,6 @@ The specification of the Brotli Compressed Data Format is defined in RFC 7932.")
 
 (define-public google-brotli
   (deprecated-package "google-brotli" brotli))
-
-(define-public python-brotli
-  (package
-    (inherit brotli)
-    (name "python-brotli")
-    (build-system python-build-system)
-    (arguments '())
-    (synopsis "Python interface to Brotli")
-    (description "This package provides a Python interface to the @code{brotli}
-package, an implementation of the Brotli lossless compression algorithm.")))
-
-(define-public python-google-brotli
-  (deprecated-package "python-google-brotli" python-brotli))
 
 (define-public java-brotli
   (package

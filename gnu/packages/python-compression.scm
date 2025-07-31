@@ -34,6 +34,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
@@ -149,6 +150,39 @@ other features introduced in C-Blosc2.
 Python-Blosc2 also reproduces the API of Python-Blosc and is meant to be able
 to access its data, so it can be used as a drop-in replacement.")
     (license license:bsd-3)))
+
+(define-public python-brotli
+  (package
+    (name "python-brotli")
+    (version "1.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/brotli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fikasxf7r2dwlk8mv8w7nmjkn0jw5ic31ky3mvpkdzwgd4xfndl"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+           ;; Cherry-picked from upstream since the latest release
+           ;; https://github.com/google/brotli/commit/09b0992b6acb7faa6fd3b23f9bc036ea117230fc
+           (substitute* (find-files "scripts" "^lib.*pc\\.in")
+             (("-R\\$\\{libdir\\} ") ""))))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/google/brotli")
+    (synopsis "Python interface to Brotli")
+    (description "This package provides a Python interface to the @code{brotli}
+package, an implementation of the Brotli lossless compression algorithm.")
+    (license license:expat)))
+
+(define-public python-google-brotli
+  (deprecated-package "python-google-brotli" python-brotli))
 
 (define-public python-multivolumefile
   (package
