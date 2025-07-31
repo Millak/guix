@@ -2782,9 +2782,11 @@ across test runs.")
        (uri (pypi-uri "pytest-sugar" version))
        (sha256
         (base32 "1i0hv3h49zvl62jbiyjag84carbrp3zprqzxffdr291nxavvac0n"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-packaging python-pytest python-termcolor))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://pivotfinland.com/pytest-sugar/")
     (synopsis "Plugin for pytest that changes the default look and feel")
     (description
