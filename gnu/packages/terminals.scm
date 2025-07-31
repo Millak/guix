@@ -1074,25 +1074,16 @@ usable with any list--including files, command history, processes and more.")
     (version "0.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyte" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/selectel/pyte")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1c4pn2qijk6q8q25klfq365gbvlkrh8c0lz5lrr7b7kmh6vx3gxr"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-test
-           ;; TODO: Reenable when the `captured` files required by this test
-           ;; are included in the archive.
-           (lambda _
-             (delete-file "tests/test_input_output.py")
-             #t)))))
-    (propagated-inputs
-     (list python-wcwidth))
-    (native-inputs
-     (list python-pytest-runner python-pytest))
+        (base32 "0wvg16y79az9ingfdkrvr649bggsaxvyjlrcyjmb3s9fi9dyrfw0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-wcwidth))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://pyte.readthedocs.io/")
     (synopsis "Simple VTXXX-compatible terminal emulator")
     (description "@code{pyte} is an in-memory VTxxx-compatible terminal
