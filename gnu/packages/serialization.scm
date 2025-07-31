@@ -798,6 +798,7 @@ style and key ordering are kept, so you can diff the source.")
 
 (define-public python-ruamel.yaml.clib
   (package
+    ;; TODO: Fix the name
     (name "python-ruamel.yaml.clib")
     (version "0.2.12")
     (source
@@ -815,7 +816,7 @@ style and key ordering are kept, so you can diff the source.")
         (snippet
          '(begin
             (delete-file "_ruamel_yaml.c")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f  ; This package is split from python-ruamel.yaml and
                     ; depends on modules from it for the test suite.
@@ -826,7 +827,7 @@ style and key ordering are kept, so you can diff the source.")
            (lambda _
              (invoke "cython" "_ruamel_yaml.pyx"))))))
     (native-inputs
-     (list python-cython))
+     (list python-cython python-setuptools))
     (home-page "https://sourceforge.net/p/ruamel-yaml-clib/code/ci/default/tree")
     (synopsis "C version of reader, parser and emitter for ruamel.yaml")
     (description
