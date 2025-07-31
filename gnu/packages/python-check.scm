@@ -2495,16 +2495,17 @@ requests to be replied to with user provided responses.")
     (version "3.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_isort" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/stephrdev/pytest-isort")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0v0qa5l22y3v0nfkpvghbinzyj2rh4f54k871lrp992lbvf02y06"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; No tests in PyPi tarball.
-    (propagated-inputs
-     (list python-isort python-pytest))
-    (home-page "https://github.com/moccu/pytest-isort/")
+        (base32 "07hj2z2jsshk0m60j0w10q3yzis69714k7qbw2f0cprc5li9b06n"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-isort python-pytest))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/stephrdev/pytest-isort")
     (synopsis "Pytest plugin to check import ordering using isort")
     (description
      "This package provides a pytest plugin to check import ordering using
