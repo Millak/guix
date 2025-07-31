@@ -35100,27 +35100,6 @@ process.")
     (home-page "https://gamera.informatik.hsnr.de/")
     (license license:gpl2+)))
 
-(define-public python-contextvars
-  (package
-    (name "python-contextvars")
-    (version "2.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "contextvars" version))
-        (sha256
-          (base32
-            "17n3w8c20kgkgc6khaafdhhlcdj4bzman4paxqsl7harma59137k"))))
-    (build-system python-build-system)
-    (propagated-inputs
-      (list python-immutables))
-    (home-page
-      "https://github.com/MagicStack/contextvars")
-    (synopsis "PEP 567 Backport")
-    (description "This package implements a backport of Python 3.7
-@code{contextvars} module (see PEP 567) for Python 3.6.")
-    (license license:asl2.0)))
-
 (define-public python-aiofiles
   (package
     (name "python-aiofiles")
