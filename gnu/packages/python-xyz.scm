@@ -11230,17 +11230,11 @@ To address this and enable easy cycling over arbitrary @code{kwargs}, the
        (file-name (git-file-name name version))
        (sha256
         (base32 "0x7nkphr6g5ql5fvgss8l56rgiyjgh6fm8zzs73i94ci9wzlm63w"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list python-nose))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "nosetests" "--all-modules" "-v" "colorspacious"))))))
+     (list python-nose python-setuptools python-wheel))
     (home-page "https://github.com/njsmith/colorspacious")
     (synopsis "Python library for colorspace conversions")
     (description "@code{colorspacious} is a Python library that lets you
