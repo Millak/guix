@@ -6929,7 +6929,7 @@ with the \"Stamp\" tool within Tux Paint.")
                           "-DUSE_SYSTEM_PHYSFS=ON")
       #:phases
       (modify-phases %standard-phases
-        (add-after 'unpack 'patch-squirrel-path
+        (add-after 'unpack 'adapt-squirrel
           (lambda* (#:key inputs #:allow-other-keys)
             (let ((squirrel (assoc-ref inputs "squirrel")))
               (substitute* "CMakeLists.txt"
@@ -6938,7 +6938,10 @@ with the \"Stamp\" tool within Tux Paint.")
                 (("add_dependencies\\(supertux2_lib squirrel\\)") "")
                 (("\\$\\{SQUIRREL_PREFIX\\}/include")
                  (string-append "${SQUIRREL_PREFIX}/include/squirrel"))))
-            #t)))))
+            ;; Adapt to changed API between squirrel-3.1 and 3.2.
+            (substitute* "src/scripting/wrapper.cpp"
+              (("sq_getinstanceup\\(vm, 1, &data, nullptr" all)
+               (string-append all ", 0"))))))))
    (build-system cmake-build-system)
    (inputs (list boost
                  curl
