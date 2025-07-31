@@ -2966,7 +2966,7 @@ functions.")
 (define-public python-rchitect
   (package
     (name "python-rchitect")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method git-fetch)
@@ -2975,7 +2975,7 @@ functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ijbb0v77ir7j64r4r4kznv03wyc57rcqa9jnsc46476il79dcrk"))))
+        (base32 "0r41ad8mk7bmqsw96sizahzvz1z6cp4rpll166y0yhwdrv86nmj7"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-cffi python-packaging python-six))
     (native-inputs (list python-pytest
