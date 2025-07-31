@@ -2996,7 +2996,7 @@ main use is as the driver for radian, the R console.")
 (define-public python-radian
   (package
     (name "python-radian")
-    (version "0.6.13")
+    (version "0.6.15")
     (source
      (origin
        (method git-fetch)
@@ -3005,7 +3005,7 @@ main use is as the driver for radian, the R console.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nnwgvifhsxdac7rr9d2zspc97xx0vyzxn1v9g4bnm9061rragc3"))))
+        (base32 "089ys59cnw5l5k0656arhn805j8pkw21q4qf7gq9p9hifi1lpnpm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
