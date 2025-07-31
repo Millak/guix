@@ -1960,7 +1960,7 @@ realistic reflections, shading, perspective and other effects.")
     (build-system cmake-build-system)
 
     ;; Headers include OpenEXR and IlmBase headers.
-    (propagated-inputs (list openexr-2))
+    (propagated-inputs (list openexr))
     (inputs (list libtiff))
 
     (home-page "https://ampasctl.sourceforge.net")
