@@ -2122,7 +2122,7 @@ visualizing and performing calculations with weather data.")
                              gdal
                              geos
                              lz4
-                             proj-7
+                             proj
                              protozero
                              zlib))
     (native-inputs (list doxygen graphviz-minimal))
