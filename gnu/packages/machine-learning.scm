@@ -6592,7 +6592,7 @@ linear algebra routines needed for structured matrices (or operators).")
                    (lambda (x) (install-file x src))
                    (find-files "." "\\.h$"))))))))
       (inputs (list kaldi openfst openblas))
-      (home-page "https://alphacephei.com/vosk")
+      (home-page "https://alphacephei.com/vosk/")
       (synopsis "Speech recognition toolkit based on @code{kaldi}")
       (description "This package provides a speech recognition toolkit based
 on @code{kaldi}.  It supports more than 20 languages and dialects - English,
@@ -6613,10 +6613,12 @@ simple speech recognition.")
   (package
     (inherit vosk-api)
     (name "python-vosk")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-cffi python-requests python-tqdm python-srt python-websockets))
     (inputs (list vosk-api))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (arguments
      (list
       #:tests? #f  ;; TODO There are tests but not run through Makefile.
