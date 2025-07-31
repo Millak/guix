@@ -8748,18 +8748,7 @@ HMMs).")
               (sha256
                (base32
                 "1kbr4ydjjhizz6r5m3xd4f0wj7qnn8zs0vnzghhgaa0yhbya5r19"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; Avoid rebuilding the extension.  Everything is built during the
-         ;; 'install phase anyway.
-         (delete 'build)
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-matplotlib
            python-numpy
@@ -8769,6 +8758,8 @@ HMMs).")
            python-pandas
            python-pytest
            python-scipy
+           python-setuptools
+           python-wheel
            swig))
     (home-page "https://github.com/htseq")
     (synopsis "Framework for analyzing high-throughput sequencing data")
