@@ -367,25 +367,20 @@ provided the driver also exposes the buttons.")
     (license license:gpl2+)))
 
 (define-public xsane
+  (let ((commit "87edc38e6886ad8f31c2b7b289ddf162c88099c8")
+        (revision "0"))
   (package
     (name "xsane")
-    (version "0.999")
+    (version (git-version "0.0.0" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/sane-project/frontend/xsane.git")
-             (commit version)))
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08zvxj7i1s88ckrsqldmsrikc3g62a6p3s3i5b5x4krcfpi3vs50"))
-       ;; Apply some important-looking fixes.  There are many more unreleased
-       ;; commits upstream.  A 1.0 release is planned.
-       (patches (search-patches "xsane-fix-memory-leak.patch"
-                                "xsane-fix-pdf-floats.patch"
-                                "xsane-fix-snprintf-buffer-length.patch"
-                                "xsane-support-ipv6.patch"
-                                "xsane-tighten-default-umask.patch"))
+        (base32 "0hgkpb5dfiwrhprsslahrkjfrkg8fgc8f8ssmqng1aywq3sqpd5l"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -394,39 +389,28 @@ provided the driver also exposes the buttons.")
             ;; by replacing it with a newer (free) copy.  We let the build fall
             ;; back to the system version instead, which appears to work fine.
             (delete-file "lib/snprintf.c")
-            (substitute* "lib/Makefile.in"
-              (("snprintf\\.o ") ""))))))
+            (substitute* "lib/Makefile.am"
+              (("snprintf\\.c ") ""))
+            (substitute* "po/POTFILES.in"
+              (("lib/snprintf\\.c") ""))))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags
-      #~(list (string-append "xsanedocdir=" #$output
-                             "/share/doc/" #$name "-" #$version))
       #:tests? #f                       ; no test suite
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-invalid-dereference
-            ;; Fix the following compilation error with libpng:
-            ;;   xsane-save.c: In function ‘xsane_save_png’:
-            ;;   xsane-save.c:4913:21: error: dereferencing pointer to
-            ;;   incomplete type ‘png_struct {aka struct png_struct_def}’
-            ;;       if (setjmp(png_ptr->jmpbuf))
-            ;;                         ^
-            (lambda _
-              (substitute* "src/xsane-save.c"
-                (("png_ptr->jmpbuf") "png_jmpbuf(png_ptr)"))))
           (add-after 'unpack 'use-sane-help-browser
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/xsane.h"
-                (("netscape") (search-input-file inputs "bin/xdg-open")))))
-          (add-after 'install 'delete-empty-/sbin
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (rmdir (string-append out "/sbin"))))))))
+                (("netscape")
+                 (search-input-file inputs "bin/xdg-open"))))))))
     (native-inputs
-     (list pkg-config))
+     (list autoconf-2.71
+           automake
+           gettext-minimal
+           pkg-config))
     (inputs
-     (list gtk+-2
+     (list gtk+
            lcms
            libjpeg-turbo
            libtiff
@@ -443,4 +427,4 @@ as a GIMP plugin to acquire images directly from a scanner.
 
 XSane talks to scanners through the @acronym{SANE, Scanner Access Now Easy}
 back-end library, which supports almost all existing scanners.")
-    (license license:gpl2+)))
+    (license license:gpl2+))))
