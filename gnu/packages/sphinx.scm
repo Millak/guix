@@ -672,18 +672,32 @@ grid layout.  It is no longer maintained and users are encouraged to use
   (package
     (name "python-sphinxcontrib-programoutput")
     (version "0.17")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-programoutput" version))
-              (sha256
-               (base32
-                "0zrb2ny6y7nk84qmw5mds84fc4pxgqf4sjy7bk95b0zfrawfj3ih"))))
-    (build-system python-build-system)
-    (propagated-inputs  (list python-sphinx))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/OpenNTI/sphinxcontrib-programoutput")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02hpx6jnsx0cb1d1kk56gpj69x51m2d0prwwhsyhpwv257s64kz3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'cleanup
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (delete-file-recursively
+               (string-append (site-packages inputs outputs)
+                              "/sphinxcontrib/programoutput/tests"))
+              (delete-file "src/sphinxcontrib/programoutput/__init__.py"))))))
+    (propagated-inputs (list python-sphinx))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/OpenNTI/sphinxcontrib-programoutput")
     (synopsis "Sphinx extension to include program output")
     (description "A Sphinx extension to literally insert the output of arbitrary
 commands into documents, helping you to keep your command examples up to date.")
-    (home-page "https://github.com/NextThought/sphinxcontrib-programoutput")
     (license license:bsd-2)))
 
 (define-public python-sphinxcontrib-qthelp
