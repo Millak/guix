@@ -578,34 +578,47 @@ usual algorithms you expect from a modern molecular dynamics implementation.")
   (package
     (name "openbabel")
     (version "3.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/openbabel/openbabel/"
-                                  "releases/download/openbabel-"
-                                  (string-replace-substring version "." "-")
-                                  "/openbabel-" version "-source.tar.bz2"))
-              (sha256
-               (base32
-                "0s0f4zib8vshfaywsr5bjjz55jwsg6yiz2qw4i5jm8wysn0q7v56"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/openbabel/openbabel")
+              (commit (string-append
+                       "openbabel-"
+                       (string-replace-substring version "." "-")))))
+       (sha256
+        (base32 "1ijl4px8nw9824znrsw9nsv4qf9xy0zgd8wrw8hhl15jy1sn02n1"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(;; FIXME: Disable tests on i686 to work around
-       ;; https://github.com/openbabel/openbabel/issues/2041.
-       #:tests? ,(or (%current-target-system)
-                     (not (string=? "i686-linux" (%current-system))))
-       #:configure-flags
-       (list "-DOPENBABEL_USE_SYSTEM_INCHI=ON"
-             (string-append "-DINCHI_LIBRARY="
-                            (assoc-ref %build-inputs "inchi")
-                            "/lib/inchi/libinchi.so.1")
-             (string-append "-DINCHI_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "inchi") "/include/inchi"))
-       #:test-target "test"))
+     (list
+      ;; FIXME: Disable tests on i686 to work around
+      ;; https://github.com/openbabel/openbabel/issues/2041.
+      #:tests? (or (%current-target-system)
+                   (not (string=? "i686-linux" (%current-system))))
+      #:configure-flags
+      '(list
+        "-DOPENBABEL_USE_SYSTEM_INCHI=ON"
+        (string-append
+         "-DINCHI_LIBRARY="
+         (search-input-file %build-inputs "/lib/inchi/libinchi.so.1"))
+        (string-append "-DINCHI_INCLUDE_DIR="
+                       (search-input-directory %build-inputs "/include/inchi")))
+      #:test-target "test"
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Fixed upstream:
+         ;; https://github.com/openbabel/openbabel/commit/c0570bfeb2d7e0a6a6de1f257cf28e7f3cac8739
+         (add-after 'unpack 'fix-time-check
+           (lambda _
+             (substitute* "src/config.h.cmake"
+               (("(#ifdef HAVE_(SYS_)?TIME)(.*)$" _ old _ suffix)
+                (string-append old "_H" suffix))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list eigen inchi libxml2 zlib))
-    (home-page "http://openbabel.org/wiki/Main_Page")
+     (list eigen inchi libxml2 rapidjson zlib))
+    (home-page "https://openbabel.org/")
     (synopsis "Chemistry data manipulation toolbox")
     (description
      "Open Babel is a chemical toolbox designed to speak the many languages of
