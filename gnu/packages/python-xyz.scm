@@ -37050,7 +37050,7 @@ statements in OFX files.")
        (sha256
         (base32
          "0b12bh9v9gwkm89kxbidxw2z81lg8fx1v5fzgs313v1wgx6qb09p"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -37068,7 +37068,7 @@ statements in OFX files.")
                                ;; too small for these tests.
                                '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
                                '("not LocalOffset")))))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
     (description "The @code{strict_rfc3339} Python module provides strict,
