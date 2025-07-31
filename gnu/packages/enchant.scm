@@ -32,6 +32,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages version-control)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -39,6 +40,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix licenses)
   #:use-module (srfi srfi-1))
@@ -149,7 +151,7 @@ Ispell-compatible.")
               (sha256
                (base32
                 "1872ckgdip8nj9rnh167m0gsj5754qfg2hjxzsl1s06f5akwscgw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f; FIXME: Dictionary for language 'en_US' could not be found
        #:phases
@@ -163,6 +165,8 @@ Ispell-compatible.")
                                "/lib/libenchant-2.so\""))))))))
     (inputs
      (list enchant))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/pyenchant/pyenchant")
     (synopsis "Spellchecking library for Python")
     (description "PyEnchant is a spellchecking library for Python, based on the
