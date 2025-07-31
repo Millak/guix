@@ -77,6 +77,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -364,7 +365,7 @@ all the files it generates a report.")
 written in pure Python.")
     (license license:expat)))
 
-(define-public python-case
+(define-deprecated/public python-case #f
   (package
     (name "python-case")
     (version "1.5.3")
