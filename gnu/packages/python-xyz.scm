@@ -18185,18 +18185,23 @@ suitable for a wide range of protocols based on the ASN.1 specification.")
 (define-public python-pyasn1-modules
   (package
     (name "python-pyasn1-modules")
-    (version "0.2.8")
+    (version "0.4.2")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "pyasn1-modules" version))
+        (uri (pypi-uri "pyasn1_modules" version))
         (sha256
          (base32
-          "0pp6dcagd8c2c9qx3lahc1rdwlnmm0y0siqr5icjq2r32b3q8pwh"))))
-    (build-system python-build-system)
+          "1rj1x4333b20chwslljsihngllj6yls63jmi8klam00ahzg92w37"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "discover" "tests")))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-pyasn1))
-    (home-page "https://sourceforge.net/projects/pyasn1/")
+    (home-page "https://github.com/pyasn1/pyasn1-modules")
     (synopsis "ASN.1 codec implementations")
     (description
      "Pyasn1-modules is a collection of Python modules providing ASN.1 types and
