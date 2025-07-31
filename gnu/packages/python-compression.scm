@@ -524,6 +524,10 @@ several possible methods.")
         (base32
          "0lwniinfr3rb10n0c203a09vz06vxnnj637yqn8ipdlml89gj7kr"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_benchmark.py")))
     (propagated-inputs
      (list python-brotli
            python-brotlicffi
@@ -537,15 +541,12 @@ several possible methods.")
            python-pyzstd
            python-texttable))
     (native-inputs
-     (list python-coverage
-           python-setuptools
-           python-coveralls
+     (list python-setuptools
            python-libarchive-c
            python-py-cpuinfo
            python-pyannotate
            python-pytest
            python-pytest-benchmark
-           python-pytest-cov
            python-pytest-remotedata
            python-pytest-timeout
            python-setuptools-scm
