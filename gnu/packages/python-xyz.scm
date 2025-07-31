@@ -5359,11 +5359,11 @@ for additional processing.")
        (sha256
         (base32
          "1cagg06vfph864s6l5jb0zqliwxh647bki8j6lf4a4qrv40jnhs8"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-mock python-nose python-six))
     (native-inputs
-     (list python-coverage))
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/celery/case")
     (synopsis "Unittest utilities and convenience methods")
     (description
