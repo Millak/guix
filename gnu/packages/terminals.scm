@@ -1071,7 +1071,7 @@ usable with any list--including files, command history, processes and more.")
 (define-public python-pyte
   (package
     (name "python-pyte")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -1080,7 +1080,7 @@ usable with any list--including files, command history, processes and more.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wvg16y79az9ingfdkrvr649bggsaxvyjlrcyjmb3s9fi9dyrfw0"))))
+        (base32 "1cdhnl6rp4kcbs3s766519k80pf5ma18mgv6cyidf4nbgysjavmv"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-wcwidth))
     (native-inputs (list python-pytest python-setuptools python-wheel))
