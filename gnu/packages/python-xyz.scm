@@ -30891,23 +30891,18 @@ make your work easier.")
 (define-public python-outcome
   (package
     (name "python-outcome")
-    (version "1.2.0")
+    (version "1.3.0.post0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "outcome" version))
        (sha256
-        (base32 "0wi6bmsfn73aw1hbpa1nhhshlx9k2vxcl7kp3z7h78sxwhyvv0kg"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
+        (base32 "1f2327wzf57zwqw15kzk19ff2s52fa74cxxk8w0bhw99bzk05kwx"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-asyncio))
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
     (propagated-inputs
      (list python-attrs))
     (home-page "https://github.com/python-trio/outcome")
