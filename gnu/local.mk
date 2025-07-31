@@ -2130,6 +2130,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/procmail-ambiguous-getline-debian.patch  \
   %D%/packages/patches/procmail-CVE-2014-3618.patch		\
   %D%/packages/patches/procmail-CVE-2017-16844.patch		\
+  %D%/packages/patches/procmail-gcc-14.patch		\
   %D%/packages/patches/proj-7-initialize-memory.patch		\
   %D%/packages/patches/proot-add-clone3.patch			\
   %D%/packages/patches/proot-add-missing-include.patch		\

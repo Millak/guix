@@ -2808,7 +2808,8 @@ separation to safely deliver mail in multi-user setups.")
        ;; patch 24.
        (patches (search-patches "procmail-ambiguous-getline-debian.patch"
                                 "procmail-CVE-2014-3618.patch"
-                                "procmail-CVE-2017-16844.patch"))))
+                                "procmail-CVE-2017-16844.patch"
+                                "procmail-gcc-14.patch"))))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (replace 'configure
