@@ -1907,7 +1907,7 @@ in Julia).")
            libjpeg-turbo
            libpng
            libtiff
-           openexr-2
+           openexr
            sdl
            zlib))
     (arguments
