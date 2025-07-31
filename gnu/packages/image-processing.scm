@@ -211,7 +211,7 @@ licences similar to the Modified BSD licence."))))
 (define-public opencolorio
   (package
     (name "opencolorio")
-    (version "2.3.2")
+    (version "2.4.2")
     (source
      (origin
        (method git-fetch)
@@ -219,7 +219,7 @@ licences similar to the Modified BSD licence."))))
              (url "https://github.com/AcademySoftwareFoundation/OpenColorIO")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1h33s2pfy28nj836kx6xx3iks7v38g3kx7c4f6zn1dpskl0zf809"))
+        (base32 "1h5n1adm7hlblq4z9qdbnh5jy3f6aimlk96cn1k4ah3f8vqx7zpq"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
