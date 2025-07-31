@@ -1278,13 +1278,17 @@ Syntax Tree} at different stages: before transforms, after transforms, etc.")
     (name "python-nbsphinx")
     (version "0.8.8")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "nbsphinx" version))
-        (sha256
-          (base32
-            "1v1lzkfx2lslhslqb110zxmm4dmdg6hs2rahf713c2rk9f10q2dm"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spatialaudio/nbsphinx")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s98kab9jddy4jskllqcmwr222i85a25asi78f8nf0cpqbsvy1k6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; No tests upstream.
     (propagated-inputs
       (list python-docutils
             python-jinja2
@@ -1292,6 +1296,8 @@ Syntax Tree} at different stages: before transforms, after transforms, etc.")
             python-nbformat
             python-sphinx
             python-traitlets))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://nbsphinx.readthedocs.io/")
     (synopsis "Jupyter Notebook Tools for Sphinx")
     (description "@code{python-nbsphinx} is a Sphinx extension that
