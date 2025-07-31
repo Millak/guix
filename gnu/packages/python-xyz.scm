@@ -5348,29 +5348,6 @@ for additional processing.")
      "Fastprogress is a progress bar for Jupyter Notebook and console.")
     (license license:asl2.0)))
 
-(define-public python-case
-  (package
-    (name "python-case")
-    (version "1.5.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "case" version))
-       (sha256
-        (base32
-         "1cagg06vfph864s6l5jb0zqliwxh647bki8j6lf4a4qrv40jnhs8"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-mock python-nose python-six))
-    (native-inputs
-     (list python-setuptools python-wheel))
-    (home-page "https://github.com/celery/case")
-    (synopsis "Unittest utilities and convenience methods")
-    (description
-     "The @code{case} package provides utilities on top of unittest, including
-some helpful Python 2 compatibility convenience methods.")
-    (license license:bsd-3)))
-
 (define-public python-verboselogs
   (package
     (name "python-verboselogs")
