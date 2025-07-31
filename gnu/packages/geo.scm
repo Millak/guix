@@ -2136,7 +2136,7 @@ OpenStreetMap data.")
 (define-public osmium-tool
   (package
     (name "osmium-tool")
-    (version "1.15.0")
+    (version "1.18.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2145,13 +2145,9 @@ OpenStreetMap data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d90vz316xdl3c416nicgdw7ybw17l2125wgxglbzl7jaqngapy5"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Remove bundled libraries.
-               '(delete-file-recursively "include/rapidjson"))))
+                "13zqgniyl58m9gywfsi2wagrf0gh93d850krmx1ndd6r3jzgj978"))))
     (build-system cmake-build-system)
-    (inputs (list libosmium rapidjson))
+    (inputs (list libosmium nlohmann-json))
     (native-inputs (list pandoc))
     (home-page "https://osmcode.org/osmium-tool/")
     (synopsis "Osmium command-line tool")
