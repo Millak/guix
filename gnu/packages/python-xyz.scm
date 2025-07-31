@@ -29131,9 +29131,9 @@ Parso is also able to list multiple syntax errors in your Python file.")
        (sha256
         (base32
          "0i11f6z6lix8ixi3vsk6s76zvvpmgrw6zjrcwjm0m4hjdh83vfvf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/python-trio/async_generator")
     (synopsis "Async generators and context managers for Python 3.5+")
     (description "@code{async_generator} back-ports Python 3.6's native async
