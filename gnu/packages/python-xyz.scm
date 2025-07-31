@@ -11486,16 +11486,20 @@ toolkits.")
       #:tests? #f                       ;we're only generating documentation
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-external-deps
+            (lambda _
+              ;; XXX: Avoid theme-switcher to avoid sphinx error
+              ;; TemplateNotFound('theme-switcher.html')
+              ;; XXX: Avoid version-switcher because it depends on an
+              ;; external file, and we pack only one version anyway.
+              (substitute* "doc/conf.py"
+                (("\
+\"navbar_end\": \\[\"theme-switcher\", \"version-switcher\", ")
+                 "\"navbar_end\": ["))))
           (replace 'build
             (lambda _
               (setenv "HOME" "/tmp")
               (chdir "doc")
-              (substitute* "conf.py"
-                ;; The sphinx_panels extension causes a "TypeError: first
-                ;; argument must be callable" to be raised when generating the
-                ;; info target; remove it (see:
-                ;; https://github.com/executablebooks/sphinx-panels/issues/74).
-                ((".*'sphinx_panels',.*") ""))
               (invoke "make" "html" "info"
                       ;; Don't abort on warnings; build in parallel.
                       (format #f "SPHINXOPTS=-j~a" (parallel-job-count)))))
@@ -11518,25 +11522,30 @@ toolkits.")
            inkscape/pinned
            python-colorspacious
            python-ipython
+           python-ipykernel
            python-ipywidgets
            python-mpl-sphinx-theme
            python-numpydoc
            python-scipy
            python-sphinx
            python-sphinx-copybutton
+           python-sphinx-design
            python-sphinx-gallery
            python-sphinxcontrib-svg2pdfconverter
            texinfo
-           texlive-amsfonts
-           texlive-amsmath
-           texlive-babel
-           texlive-etoolbox
-           texlive-expdlist
-           texlive-fontspec
-           texlive-times
-           texlive-type1cm
-           texlive-underscore
-           texlive-unicode-math))
+           texlive-dvipng-bin
+           (texlive-local-tree
+            (list texlive-amsfonts
+                  texlive-amsmath
+                  texlive-babel
+                  texlive-cm-super
+                  texlive-etoolbox
+                  texlive-expdlist
+                  texlive-fontspec
+                  texlive-times
+                  texlive-type1cm
+                  texlive-underscore
+                  texlive-unicode-math))))
     (synopsis "Documentation for the @code{python-matplotlib} package")))
 
 (define-public python-matplotlib-inline
