@@ -26937,15 +26937,21 @@ in pure Python.")
 (define-public python-rfc3987
   (package
     (name "python-rfc3987")
-    (version "1.3.7")
+    (version "1.3.8")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "rfc3987" version))
       (sha256
        (base32
-        "192pclzs2y0yaywqkrlvd0x73740q310kvqvm6jldhi619mq59wi"))))
-    (build-system python-build-system)
+        "0cx7bhyjaylwnf9armxrkb3r0s37vf0vqf3bhbll9mb0lmbx5i6k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "doctest" "rfc3987.py")))
+    (native-inputs
+     (list python-setuptools))
+    ;; Source: <https://codeberg.org/atufi/rfc3987>.
     (home-page "https://pypi.org/project/rfc3987/")
     (synopsis "Parsing and validation of URIs (RFC 3986) and IRIs (RFC 3987)")
     (description "@code{rfc3987} provides routines for parsing and
