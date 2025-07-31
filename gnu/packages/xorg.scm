@@ -5189,19 +5189,21 @@ protocol.")
     (native-inputs
      (list pkg-config python-minimal-wrapper))
     (arguments
-     `(#:configure-flags (list "--enable-xkb"
-                               "--disable-static"
-                               (string-append "--mandir="
-                                              (assoc-ref %outputs "doc")
-                                              "/share/man"))
-       #:phases ,(if (target-hurd?)
-                     '(modify-phases %standard-phases
-                        (add-after 'unpack 'fix-PATH_MAX
-                          (lambda _
-                            ;; Hurd doesn't define PATH_MAX.
-                            (substitute* "src/xcb_util.c"
-                              (("PATH_MAX") "4096")))))
-                     '%standard-phases)))
+     (list
+      #:configure-flags #~(list "--enable-xkb"
+                                "--disable-static"
+                                (string-append "--mandir="
+                                               (assoc-ref %outputs "doc")
+                                               "/share/man"))
+       #:phases
+       (if (target-hurd?)
+           #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-PATH_MAX
+                (lambda _
+                  ;; Hurd doesn't define PATH_MAX.
+                  (substitute* "src/xcb_util.c"
+                    (("PATH_MAX") "4096")))))
+           #~%standard-phases)))
     (home-page "https://xcb.freedesktop.org/")
     (synopsis "The X C Binding (XCB) library")
     (description
