@@ -757,18 +757,20 @@ includes the following features:
 
 (define-public python-ruamel.yaml
   (package
+    ;; TODO: Fix package name.
     (name "python-ruamel.yaml")
-    (version "0.18.6")
+    (version "0.18.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ruamel.yaml" version))
        (sha256
         (base32
-         "06rimidc9nb3i3r90n3a1zwf0qxw24zqykb3wpxwd1p72yifc9wb"))))
-    (build-system python-build-system)
+         "1dsj3zcb5p73p2xpimdig45hrcvjgnzyyc37jcaxyr63mrmbf9vj"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))     ;no tests in PyPI archive
     (native-inputs
-     (list python-pytest))
+     (list python-setuptools))
     (propagated-inputs
      (list python-ruamel.yaml.clib))
     (home-page "https://sourceforge.net/projects/ruamel-yaml/")
