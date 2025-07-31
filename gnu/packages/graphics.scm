@@ -1947,7 +1947,7 @@ realistic reflections, shading, perspective and other effects.")
 (define-public ctl
   (package
     (name "ctl")
-    (version "1.5.3")
+    (version "1.5.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1956,7 +1956,7 @@ realistic reflections, shading, perspective and other effects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qhfp9b90czvxjkf66sbnqyw3wvmdvl1pkh6201fxhqg7grbfvwc"))))
+                "02fxvwm883wgzhf87harbvmfqvm2ry71cxr768jb8kxdnal5gyy4"))))
     (build-system cmake-build-system)
 
     ;; Headers include OpenEXR and IlmBase headers.
