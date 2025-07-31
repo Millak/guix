@@ -19288,14 +19288,14 @@ time.")
 (define-public python-nbconvert
   (package
     (name "python-nbconvert")
-    (version "7.16.4")
+    (version "7.16.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbconvert" version))
        (sha256
         (base32
-         "1x7pz43nhlq3hwjn7cv753gapzwav6wwb9kgr66l82kb4sx93jl6"))))
+         "10pmq31p2srwcdrc7k71dj0l6hl42xnadvsy8swaf3a8qqvpwsjp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -19359,7 +19359,6 @@ time.")
            ;; Adding ipywidgets would create a cycle.
            ;;python-ipywidgets
            python-pytest
-           python-pytest-xdist
            (texlive-local-tree
             (list texlive-adjustbox
                   texlive-booktabs
