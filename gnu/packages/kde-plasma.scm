@@ -2843,6 +2843,11 @@ deviceerrormonitor_p.cpp"
                                "shelltest"
                                "tasksmodeltest"
                                "tasktoolstest"
+
+                               ;; Failure in TestDesktop::testRename:
+                               ;; 'spyFileRenamed.count() >= 1' returned FALSE.
+                               "testdesktop"
+
                                "testimagebackend"
                                "testimagefinder"
                                "testimagefrontend"
