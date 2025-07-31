@@ -6479,11 +6479,10 @@ as is the case with audio plugins.")
                  (lambda _
                    (chmod (string-append #$output "/share/carla/carla") #o555)))
                (add-after 'install 'wrap-executables
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (wrap-script (string-append #$output "/bin/carla")
-                                #:guile (search-input-file inputs "bin/guile")
-                                `("GUIX_PYTHONPATH" ":" prefix
-                                  (,(getenv "GUIX_PYTHONPATH")))))))))
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/carla")
+                     `("GUIX_PYTHONPATH" ":" prefix
+                       (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
      (list alsa-lib
            ffmpeg
@@ -6502,10 +6501,7 @@ as is the case with audio plugins.")
            ;; (ModuleNotFoundError: No module named 'PyQt5')
            python-wrapper
            qtbase-5
-           zlib
-
-           ;; For WRAP-SCRIPT above.
-           guile-2.2))
+           zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://kx.studio/Applications:Carla")
