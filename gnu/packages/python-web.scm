@@ -8486,7 +8486,7 @@ and serve updated contents upon changes to the directory.")
 (define-public python-httpcore
   (package
     (name "python-httpcore")
-    (version "1.0.7")
+    (version "1.0.9")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -8496,7 +8496,7 @@ and serve updated contents upon changes to the directory.")
              (commit  version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wz54snks59m1mz2mv0i4p37zz2rrzd99gpg8sh3qkpck5h8lhc4"))))
+        (base32 "0yhm2n8qflpwjsjggyj757m0gw3n68al0my0ljybndwp933ipl32"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list nss-certs-for-test
