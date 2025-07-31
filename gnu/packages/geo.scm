@@ -2105,7 +2105,7 @@ visualizing and performing calculations with weather data.")
 (define-public libosmium
   (package
     (name "libosmium")
-    (version "2.19.0")
+    (version "2.22.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2114,7 +2114,7 @@ visualizing and performing calculations with weather data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d69xzd29hk846g049y2g668mr8kaf05f6a26s3qn6az062hxfa7"))))
+                "05djv6j3cgl2mqznycgwjbsz39imgbfhxran7l5z09x53qzdv23g"))))
     (build-system cmake-build-system)
     (propagated-inputs (list boost
                              bzip2
