@@ -7071,16 +7071,16 @@ trees (phylogenies) and characters.")
 (define-public python-py2bit
   (package
     (name "python-py2bit")
-    (version "0.3.0")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py2bit" version))
        (sha256
         (base32
-         "1vw2nvw1yrl7ikkqsqs1pg239yr5nspvd969r1x9arms1k25a1a5"))))
+         "0w1p4l1jwg9kkifm0jsg33a212ps0jn61islmnng2afp77y5nkr6"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools python-setuptools-scm python-wheel))
     (home-page "https://github.com/dpryan79/py2bit")
     (synopsis "Access 2bit files using lib2bit")
     (description
