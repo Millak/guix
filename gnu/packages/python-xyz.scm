@@ -32055,10 +32055,8 @@ standard error channel (stderr) in your program.")
                  " and not test_socket_options"
                  " and not test_unretrieved_future_exception_server_crash"))))))))
     (propagated-inputs
-     (list python-contextvars
-           python-idna
-           python-sniffio
-           python-typing-extensions))
+     (list python-idna
+           python-sniffio))
     (native-inputs
      (list python-psutil
            python-pytest
@@ -32067,8 +32065,7 @@ standard error channel (stderr) in your program.")
            python-setuptools-scm
            python-trio
            python-trustme
-           python-uvloop
-           python-wheel))
+           python-uvloop))
     (home-page "https://github.com/agronholm/anyio")
     (synopsis "Compatibility layer for multiple asynchronous event loops")
     (description
