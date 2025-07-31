@@ -976,14 +976,14 @@ adds functionality on top of @code{wadlib}.")
 (define-public python-launchpadlib
   (package
     (name "python-launchpadlib")
-    (version "1.10.16")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "launchpadlib" version))
        (sha256
-        (base32 "106aixwchwyb100wlf4cnj1vgsi2d7x40ps8xv8az27r6qwv3x0d"))))
-    (build-system python-build-system)
+        (base32 "0br4j76l83lvyrhm8psml9cqmdsn65rx48w1q1a0s1bmpf85ihml"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (add-before 'check 'set-home
@@ -991,12 +991,10 @@ adds functionality on top of @code{wadlib}.")
                             ;; Tests require a writable home.
                             (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-httplib2
-           python-keyring
-           python-lazr-restfulclient
-           python-lazr-uri))
-    (native-inputs (list python-mock python-testresources python-wadllib))
-    (home-page "https://help.launchpad.net/API/launchpadlib")
+     (list python-httplib2 python-lazr-restfulclient python-lazr-uri))
+    (native-inputs (list python-pytest python-testresources python-wadllib
+                         python-setuptools python-wheel))
+    (home-page "https://documentation.ubuntu.com/launchpad")
     (synopsis "Python client library for Launchpad's web service")
     (description "@code{launchpadlib} is a Python library that allows
 scripting Launchpad via its the web service API.")
