@@ -37028,12 +37028,13 @@ statements in OFX files.")
        (uri (pypi-uri "rfc3339_validator" version))
        (sha256
         (base32 "0srg0b89aikzinw72s433994k5gv5lfyarq1adhas11kz6yjm2hk"))))
-    (build-system python-build-system)
-    (native-inputs (list python-hypothesis
-                         python-pytest
-                         python-pytest-runner
-                         python-strict-rfc3339))
-    (propagated-inputs (list python-six))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-strict-rfc3339))
+    (propagated-inputs
+     (list python-six))
     (home-page "https://github.com/naimetti/rfc3339-validator")
     (synopsis "Python RFC3339 validator")
     (description "This package provides a pure Python RFC3339 validator.")
