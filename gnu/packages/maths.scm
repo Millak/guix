@@ -3243,7 +3243,7 @@ includes a complete LAPACK implementation.")
 (define-public hpcombi
   (package
     (name "hpcombi")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3252,11 +3252,11 @@ includes a complete LAPACK implementation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00mbxw5x6m61n0x68dsiyq97i7b08h3hkbj9is2w6gcg571jy319"))))
+                "0xxqjz4lba57vn65m2k5jxrz0v7y6jwnhxwg6njd4vrafv5w17yv"))))
     (arguments
      (list #:configure-flags #~(list "-DBUILD_TESTING=ON")))
     (native-inputs
-     (list catch2-3))
+     (list catch2-3.8))
     (build-system cmake-build-system)
     (home-page "https://libsemigroups.github.io/HPCombi/")
     (synopsis "Fast combinatorics in C++ using SSE/AVX instruction sets")
