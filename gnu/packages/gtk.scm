@@ -2899,9 +2899,11 @@ library for drawing.")
          "13jwr1vly4ga3f09dajwky1cdrz5bmggwga3vnnd6j6zzia7dpyr"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-glade"
-                               "--enable-introspection"
-                               "CFLAGS=-fcommon")
+     `(#:configure-flags
+       (list
+         "--enable-glade"
+         "--enable-introspection"
+         "CFLAGS=-fcommon -Wno-error=incompatible-pointer-types")
        #:phases
        (modify-phases %standard-phases
          ;; The "configure" script is present, but otherwise the project is
