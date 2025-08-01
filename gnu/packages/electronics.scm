@@ -106,7 +106,7 @@ individual low-level driver modules.")
     (home-page "https://www.comedi.org/")
     (license license:lgpl2.1)))
 
-(define-public librnd
+(define librnd
   (package
     (name "librnd")
     (version "4.3.2")
