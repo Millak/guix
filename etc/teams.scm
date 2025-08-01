@@ -1276,6 +1276,11 @@ the \"texlive\" importer."
                        "Yelninei")
   hurd)
 
+(define-member (person "Giacomo Leidi"
+                       "goodoldpaul@autistici.org"
+                       "fishinthecalculator")
+  audio)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
