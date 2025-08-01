@@ -1055,6 +1055,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/bdb-4-5-configure.patch                  \
   %D%/packages/patches/bdb-5.3-atomics-on-gcc-9.patch		\
   %D%/packages/patches/biboumi-cmake-ignore-git.patch		\
+  %D%/packages/patches/brasero-fix-gcc-14-build-failure.patch	\
   %D%/packages/patches/brightnessctl-elogind-support.patch	\
   %D%/packages/patches/bsd-games-2.17-64bit.patch		\
   %D%/packages/patches/bsd-games-add-configure-config.patch	\

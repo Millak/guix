@@ -321,7 +321,9 @@
                                  "brasero-" version ".tar.xz"))
              (sha256
               (base32
-               "05gabybkl7xfinwx97i4scp9hic0dlxj7gh03dyj0hd16fp9wx47"))))
+               "05gabybkl7xfinwx97i4scp9hic0dlxj7gh03dyj0hd16fp9wx47"))
+             (patches
+              (search-patches "brasero-fix-gcc-14-build-failure.patch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list
