@@ -165,6 +165,7 @@
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2025, Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright © 2025 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1174,6 +1175,37 @@ making it easier to detect when code has been copied with or without
 attribution.  It uses similarity detection algorithms to compare code files
 and highlight matching sections.")
     (license license:agpl3+)))
+
+(define-public python-wheel-filename
+  (package
+    (name "python-wheel-filename")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wheel_filename" version))
+       (sha256
+        (base32 "1zcqq8mydjjrk8x5xlm53bavs51jm40nz42a7500pd6bbm31r2c7"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://github.com/wheelodex/wheel-filename")
+    (synopsis "Parse wheel filenames")
+    (description
+     "This software allows you to verify
+@url{https://packaging.python.org/en/latest/specifications/binary-distribution-format/, wheel}
+filenames and parse them into their component fields.
+
+This package adheres strictly to the standard, with the following
+exceptions:
+
+@itemize @bullet
+@item
+Version components may be any sequence of the relevant set of
+characters; they are not verified for PEP 440 compliance.
+@item
+The @file{.whl} file extension is matched case-insensitively.
+@end itemize")
+    (license license:expat)))
 
 (define-public python-xmldiff
   (package
