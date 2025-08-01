@@ -416,14 +416,14 @@ mashups, office (web agendas, mail clients, ...), etc.")
 (define-public scheme48
   (package
     (name "scheme48")
-    (version "1.9.2")
+    (version "1.9.3")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://s48.org/" version
                                  "/scheme48-" version ".tgz"))
              (sha256
               (base32
-               "1x4xfm3lyz2piqcw1h01vbs1iq89zq7wrsfjgh3fxnlm1slj2jcw"))
+               "0k4hygd0k22g5shnm5wxg6vdz6qzs40mid1iz2q10hd1zkrskxbf"))
              (patches (search-patches "scheme48-tests.patch"))))
     (build-system gnu-build-system)
     (home-page "https://s48.org/")
