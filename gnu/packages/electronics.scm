@@ -953,6 +953,41 @@ netlists from the drawn schematic, allowing the simulation of the circuit.")
     (home-page "https://xschem.sourceforge.io/stefan/index.html")
     (license license:gpl2+)))
 
+(define-public route-rnd
+  (package
+    (name "route-rnd")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://repo.hu/projects/route-rnd/"
+                           "releases/route-rnd-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0fy3b48s72lpicyap3y6jr9fyvb2ri42jb0gqxk6s927a278bfhc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; The configure script doesn't tolerate most of our configure
+            ;; flags.
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              (setenv "LIBRND_PREFIX" #$(this-package-input "librnd"))
+              (invoke "./configure" (string-append "--prefix=" #$output)))))))
+    (inputs (list librnd))
+    (home-page "http://repo.hu/projects/route-rnd/")
+    (synopsis "Automatic routing for electronics boards")
+    (description
+     "@code{Route-rnd} is a generic external autorouter for @acronym{PCB,
+Printed Circuit Board} using tEDAx file format, part of the RiNgDove EDA
+suite.")
+    (license license:gpl2+)))
+
 (define-public sch-rnd
   (package
     (name "sch-rnd")
