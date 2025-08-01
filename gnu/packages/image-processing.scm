@@ -1429,22 +1429,6 @@ combine the information contained in both.")
     (native-inputs
      (list googletest pkg-config))))
 
-(define-public insight-toolkit-4.12
-  (package (inherit insight-toolkit-4)
-    (version "4.12.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/itk/itk/4.12/"
-                           "InsightToolkit-" version ".tar.xz"))
-       (sha256
-        (base32 "1qw9mxbh083siljygahl4gdfv91xvfd8hfl7ghwii19f60xrvn2w"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments insight-toolkit-4)
-       ((#:configure-flags cf #~'())
-        ;; error: ISO C++17 does not allow dynamic exception specifications
-        #~(cons* "-DCMAKE_CXX_FLAGS=-std=c++14" #$cf))))))
-
 (define-public itk-snap
   ;; The latest release, 4.2.2, segmentation faults on startup.
   ;; The commit is version 4.4.0-alpha3.
