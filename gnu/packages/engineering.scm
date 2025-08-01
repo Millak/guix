@@ -427,39 +427,39 @@ utilities.")
     (license license:gpl2+)))
 
 (define-public lepton-eda
-  ;; This is a fork of gEDA/gaf started in late 2016.  One of its goal is to
-  ;; keep and to extend Guile support.
   (package
-    (inherit geda-gaf)
     (name "lepton-eda")
     (version "1.9.18-20220529")
-    (home-page "https://github.com/lepton-eda/lepton-eda")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url home-page)
-                    (commit version)))
+                     (url "https://github.com/lepton-eda/lepton-eda/")
+                     (commit version)))
               (sha256
                (base32
                 "06plrcab3s2rpyf0qv2gzc1yp33627xi8105niasgixckk6glnc2"))
               (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(let ((pcb #$(this-package-input "pcb")))
-          ;; When running "make", the POT files are built with the build time as
-          ;; their "POT-Creation-Date".  Later on, "make" notices that .pot
-          ;; files were updated and goes on to run "msgmerge"; as a result, the
-          ;; non-deterministic POT-Creation-Date finds its way into .po files,
-          ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
-          ;; never runs.  See <https://bugs.debian.org/792687>.
-          (list "ac_cv_path_MSGMERGE=true" "--with-gtk3"
-                (string-append "--with-pcb-datadir=" pcb
-                               "/share")
-                (string-append "--with-pcb-lib-path=" pcb
-                               "/share/pcb/pcblib-newlib:"
-                               pcb "/share/pcb/newlib")
-                "CFLAGS=-fcommon"))
+      #~(list
+         ;; When running "make", the POT files are built with the build time as
+         ;; their "POT-Creation-Date".  Later on, "make" notices that .pot
+         ;; files were updated and goes on to run "msgmerge"; as a result, the
+         ;; non-deterministic POT-Creation-Date finds its way into .po files,
+         ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
+         ;; never runs.  See <https://bugs.debian.org/792687>.
+         "ac_cv_path_MSGMERGE=true"
+         ;; FIXME: pcb package is broken at this point; it might be replaced
+         ;; by pcb-rnd or use pcb again when fixed.
+         ;; (string-append "--with-pcb-datadir=" pcb "/share")
+         ;; (string-append "--with-pcb-lib-path=" pcb
+         ;;                "/share/pcb/pcblib-newlib:" pcb "/share/pcb/newlib")
+         "--with-gtk3"
+         "CFLAGS=-fcommon"
+         "--enable-guild"
+         "--enable-contrib")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-tests
@@ -540,24 +540,27 @@ utilities.")
               (unsetenv "LD_LIBRARY_PATH")
               (invoke "make" "precompile"))))))
     (native-inputs
-     (modify-inputs (package-native-inputs geda-gaf)
-       (prepend autoconf
-                automake
-                desktop-file-utils
-                libtool
-                gettext-minimal
-                texinfo
-                groff
-                which)))
+     (list autoconf
+           automake
+           desktop-file-utils
+           flex
+           gettext-minimal
+           groff
+           gawk
+           libtool
+           pkg-config
+           m4
+           perl
+           texinfo))
     (inputs
      (list glib
            gtk+
            gtksheet
            guile-3.0
            guile-readline
-           shared-mime-info
-           m4
-           pcb))
+           shared-mime-info))
+    (home-page "https://lepton-eda.github.io/")
+    (synopsis "GPL Electronic Design Automation")
     (description
      "Lepton EDA ia an @dfn{electronic design automation} (EDA) tool set
 forked from gEDA/gaf in late 2016.  EDA tools are used for electrical circuit
@@ -565,7 +568,8 @@ design, schematic capture, simulation, prototyping, and production.  Lepton
 EDA includes tools for schematic capture, attribute management, bill of
 materials (BOM) generation, netlisting into over 20 netlist formats, analog
 and digital simulation, and printed circuit board (PCB) layout, and many other
-features.")))
+features.")
+    (license license:gpl2+)))
 
 (define-public pcb
   (package
