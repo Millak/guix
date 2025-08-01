@@ -259,7 +259,8 @@ licences similar to the Modified BSD licence."))))
            imath
            lcms
            libglvnd
-           minizip-ng
+           ;; opencolorio@2.4.2 fails to build with minizip-ng@4.0.10
+           minizip-ng-4.0.9
            openexr
            pystring
            yaml-cpp
