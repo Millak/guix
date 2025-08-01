@@ -193,7 +193,7 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
 (define-public gerbera
   (package
     (name "gerbera")
-    (version "2.2.0")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -202,7 +202,7 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pqqjwza9fs59n2x685yvfb0sdwigknfxc4ihh3phpqyg99427kk"))))
+        (base32 "0lhzjln7ljfvr696wsghhjqn2hrwwvxga4ifpxnjypraxkqkyzyx"))))
     (build-system cmake-build-system)
     (arguments
      (list
