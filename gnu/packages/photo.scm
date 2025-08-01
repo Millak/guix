@@ -678,7 +678,9 @@ and enhance them.")
       (arguments
        (list
         #:tests? #f ;Tests are only examples
-        #:configure-flags #~(list "-DUSE_BUNDLED_LIBRAW=OFF")
+        #:configure-flags
+          #~(list "-DUSE_BUNDLED_LIBRAW=OFF"
+                  "-DBINARY_PACKAGE_BUILD=ON")
         #:build-type "Release")) ;Rawspeed fails on default 'RelWithDebInfo'
       (native-inputs
        (list cmocka
