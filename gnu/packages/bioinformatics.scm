@@ -8454,7 +8454,7 @@ comment or quality sections.")
 (define-public gemma
   (package
     (name "gemma")
-    (version "0.98.3")
+    (version "v0.98.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8463,7 +8463,7 @@ comment or quality sections.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p8a7kkfn1mmrg017aziy544aha8i9h6wd1x2dk3w2794wl33qb7"))
+                "1dm8pf1fbdmv2yiz5aybcvk3050m5350gq8xlr4j6swzm3wwhydn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
