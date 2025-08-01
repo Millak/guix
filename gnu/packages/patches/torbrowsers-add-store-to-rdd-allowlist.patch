@@ -1,3 +1,20 @@
+By default Firefox sandbox security model allows browser components to
+access files under '/usr', '/etc' and user home directories.  However,
+similar to Nix, on Guix some of those file hierarchies are actually
+symlinks to '/gnu/store' paths, which then get denied, breaking some
+expected functionality on the browser.  Moreover, their final store
+paths are not available on the build environment and also expected to
+change.
+
+Guix users that are willing to further restrict browsers' access to their
+file systems and do not mind losing some funcionality are advised to use
+Guix Containers.
+
+See: <https://bugzilla.mozilla.org/show_bug.cgi?id=1848615#c8>,
+<https://codeberg.org/guix/guix/issues/661>,
+<https://issues.guix.gnu.org/38045> and
+<https://issues.guix.gnu.org/77559>
+
 --- a/security/sandbox/linux/broker/SandboxBrokerPolicyFactory.cpp
 +++ b/security/sandbox/linux/broker/SandboxBrokerPolicyFactory.cpp
 @@ -452,6 +452,7 @@

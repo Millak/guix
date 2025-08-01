@@ -424,30 +424,6 @@ Browser.")
               (substitute* "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                 (("libavcodec\\.so")
                  (search-input-file inputs "lib/libavcodec.so")))))
-          (add-after 'fix-ffmpeg-runtime-linker 'build-sandbox-whitelist
-            (lambda* (#:key inputs #:allow-other-keys)
-              (define (runpath-of lib)
-                (call-with-input-file lib
-                  (compose elf-dynamic-info-runpath
-                           elf-dynamic-info
-                           parse-elf
-                           get-bytevector-all)))
-              (define (runpaths-of-input label)
-                (let* ((dir (string-append (assoc-ref inputs label) "/lib"))
-                       (libs (find-files dir "\\.so$")))
-                  (append-map runpath-of libs)))
-              ;; Populate the sandbox read-path whitelist as needed by ffmpeg.
-              (let* ((whitelist
-                      (map (cut string-append <> "/")
-                           (delete-duplicates
-                            `(,(string-append (assoc-ref inputs "shared-mime-info")
-                                              "/share/mime")
-                              ,@(append-map runpaths-of-input
-                                            '("mesa" "ffmpeg"))))))
-                     (whitelist-string (string-join whitelist ",")))
-                (with-output-to-file "whitelist.txt"
-                  (lambda ()
-                    (display whitelist-string))))))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (use-modules (guix build cargo-utils))
@@ -754,10 +730,6 @@ Browser.")
                     ;; Default is 5.
                     (format #t "pref(~s, ~a);~%"
                             "extensions.enabledScopes" "13")
-                    (format #t "pref(~s, ~s);~%"
-                            "security.sandbox.content.read_path_whitelist"
-                            (call-with-input-file "whitelist.txt"
-                              get-string-all))
                     ;; Add-ons pannel (see settings.js in Icecat source).
                     (format #t "pref(~s, ~s);~%"
                             "extensions.getAddons.search.browseURL"
