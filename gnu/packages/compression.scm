@@ -915,6 +915,23 @@ C, forked from the zip manipulation library found in the zlib distribution.")
        ((#:configure-flags flags)
         #~(delete "-DMZ_COMPAT=OFF" #$flags))))))
 
+;; The following package is needed for opencolorio@2.4.2, see
+;; https://github.com/AcademySoftwareFoundation/OpenColorIO/issues/2157
+;; https://github.com/NixOS/nixpkgs/pull/406607
+(define-public minizip-ng-4.0.9
+  (package/inherit minizip-ng
+    (name "minizip-ng")
+    (version "4.0.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/zlib-ng/minizip-ng")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bychb3ysbxdhgfvjvmy0rkzjd0ngfkha7d5jy6w8zam53xb0248"))))))
+
 (define-public sfarkxtc
   (let ((commit "13cd6f93725a90d91ec5ea75babf1dbd694ac463")
         (revision "1"))
