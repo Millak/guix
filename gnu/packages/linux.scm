@@ -84,6 +84,7 @@
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -243,6 +244,7 @@
                           (linux linux-libre)
                           source
                           defconfig
+                          modconfig
                           (configs "")
                           extra-version)
   "Make a customized Linux package NAME derived from the LINUX package.
@@ -255,6 +257,10 @@ A DEFCONFIG file to be used can be given as an origin, as a file-like object
 (file-append, local-file etc.), or as a string with the name of a defconfig file
 available in the Linux sources.  If DEFCONFIG is not given, then a defconfig
 file will be saved from the LINUX package configuration.
+
+MODCONFIG is an origin or file-like object used for make localmodconfig to
+disable unlisted modules.  For instance, this can come from using modprobed-db
+periodically on a running machine to find all loaded modules.
 
 Additional CONFIGS will be used to modify the given or saved defconfig, which
 will finally be used to build Linux.
@@ -324,7 +330,12 @@ of 'uname -r' behind the Linux version numbers."
                   (chmod guix_defconfig #o644)
                   (modify-defconfig guix_defconfig '#$configs)
                   (invoke "make" "guix_defconfig")
-                  (verify-config ".config" guix_defconfig))))))))))
+                  (verify-config ".config" guix_defconfig)
+                  ;; Minimize module building if provided e.g. a modprobed-db
+                  ;; database.
+                  (if #$modconfig
+                      (invoke "make" (string-append "LSMOD=" #$modconfig)
+                              "localmodconfig")))))))))))
 
 (define (make-defconfig uri sha256-as-base32)
   (origin (method url-fetch)
