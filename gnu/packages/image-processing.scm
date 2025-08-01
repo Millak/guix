@@ -1407,28 +1407,6 @@ combine the information contained in both.")
                       (delete "castxml")
                       (delete "swig"))))))
 
-(define-public insight-toolkit-4
-  (package (inherit insight-toolkit)
-    (version "4.13.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/InsightSoftwareConsortium/ITK/"
-                           "releases/download/v" version "/InsightToolkit-"
-                           version ".tar.xz"))
-       (sha256
-        (base32 "19cgfpd63gqrvc3m27m394gy2d7w79g5y6lvznb5qqr49lihbgns"))))
-    (outputs '("out"))
-    (arguments
-     (list #:tests? #f        ; tests require network access and external data
-           #:configure-flags #~'("-DITKV3_COMPATIBILITY=ON" ; needed for itk-snap
-                                 "-DITK_USE_GPU=ON"
-                                 "-DITK_USE_SYSTEM_LIBRARIES=ON"
-                                 "-DITK_USE_SYSTEM_GOOGLETEST=ON"
-                                 "-DITK_USE_SYSTEM_VXL=ON")))
-    (native-inputs
-     (list googletest pkg-config))))
-
 (define-public itk-snap
   ;; The latest release, 4.2.2, segmentation faults on startup.
   ;; The commit is version 4.4.0-alpha3.
