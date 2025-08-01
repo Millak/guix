@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -271,6 +272,9 @@ thrown."
     ("MS-PL"                      . license:ms-pl)
     ("NCSA"                       . license:ncsa)
     ("OGL-UK-1.0"                 . license:ogl-psi1.0)
+    ("CERN-OHL-S-2.0"             . license:ohl2-s)
+    ("CERN-OHL-P-2.0"             . license:ohl2-p)
+    ("CERN-OHL-W-2.0"             . license:ohl2-w)
     ("OpenSSL"                    . license:openssl)
     ("OLDAP-2.8"                  . license:openldap2.8)
     ("OPL-1.0"                    . license:opl1.0+)

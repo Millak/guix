@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +91,7 @@
             ncsa
             nmap
             ogl-psi1.0
+            ohl2-s ohl2-w ohl2-p
             openldap2.8 openssl
             perl-license
             psfl public-domain
@@ -647,6 +649,21 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "Open Government Licence for Public Sector Information"
            "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/1/"
            #f))
+
+(define ohl2-s
+  (license "Cern OHL version 2 - Strongly reciprocal variant"
+           "https://ohwr.org/cern_ohl_s_v2.txt"
+           "https://cern-ohl.web.cern.ch/home"))
+
+(define ohl2-w
+  (license "Cern OHL version 2 - Weakly reciprocal variant"
+           "https://ohwr.org/cern_ohl_w_v2.txt"
+           "https://cern-ohl.web.cern.ch/home"))
+
+(define ohl2-p
+  (license "Cern OHL version 2 - Permissive variant"
+           "https://ohwr.org/cern_ohl_p_v2.txt"
+           "https://cern-ohl.web.cern.ch/home"))
 
 (define openssl
   (license "OpenSSL"
