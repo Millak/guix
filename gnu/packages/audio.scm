@@ -1773,6 +1773,11 @@ generators of mostly elementary and occasionally exotic nature.")
                               (string-append #$output:doc "/share/doc/")))))
           (add-after 'install-manual 'chdir
             (lambda _ (chdir "Plugin")))
+          (add-after 'chdir 'fix-includes
+            (lambda _
+              (substitute* "modules/JUCE/modules/juce_core/juce_core.h"
+                (("#define JUCE_CORE_H_INCLUDED" all)
+                 (string-append all "\n#include <utility>")))))
           (replace 'check
             (lambda* (#:key tests? build-type #:allow-other-keys)
               (when tests?
