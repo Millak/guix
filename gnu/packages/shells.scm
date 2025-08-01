@@ -684,7 +684,16 @@ use of experts and novices alike.")
                                              #$(package-version scheme48)
                                              "/rx")))
                   (delete-file-recursively "rx")
-                  (symlink rxpath "rx")))))))
+                  (symlink rxpath "rx"))))
+            (add-after 'replace-rx 'fix-includes
+              (lambda _
+                (with-directory-excursion "c"
+                  (substitute* "syscalls.c"
+                    (("#include <stdlib.h>" all)
+                     (string-append all "\n#include <time.h>")))
+                  (substitute* "tty.c"
+                    (("#include <termios.h>" all)
+                     (string-append all "\n#include <pty.h>")))))))))
       (inputs
        (list scheme48 scheme48-rx))
       (native-inputs
