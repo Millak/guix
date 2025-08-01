@@ -3449,7 +3449,7 @@ limits.")
 (define-public corectrl
   (package
     (name "corectrl")
-    (version "1.4.3")
+    (version "1.4.5")
     (source
      (origin
        (method git-fetch)
@@ -3458,7 +3458,7 @@ limits.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qpc04xxzv4jbqqlraqriipix4ph7bm1hfiry807jjp668i9n25d"))
+        (base32 "1gnqybf3s0bsm3qsbc6rd1spw09vxd417gn3hb6hflsj6377qfcb"))
        (patches (search-patches "corectrl-polkit-install-dir.patch"))))
     (build-system qt-build-system)
     (arguments
@@ -3489,7 +3489,7 @@ limits.")
                   "\"" (search-input-file inputs "bin/glxinfo") "\""))))))))
     ;; Text formatting only supported since C++20, which is available in gcc-13.
     ;; https://en.cppreference.com/w/cpp/compiler_support#cpp_lib_format_201907L
-    (native-inputs (list catch2-3
+    (native-inputs (list catch2-3.8
                          pkg-config
                          qttools-5))
     (inputs (list dbus
