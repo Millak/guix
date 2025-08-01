@@ -6033,7 +6033,7 @@ parts of it.")
 (define-public openblas
   (package
     (name "openblas")
-    (version "0.3.29")
+    (version "0.3.30")
     (source
      (origin
        (method git-fetch)
@@ -6043,7 +6043,7 @@ parts of it.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wm00hn0vzb45nqg0q3ka15wjqjzma5lh1x6227di73icqdcbzcz"))))
+         "08crjjs7avnkk7l226pghhz68mw9ak62xcghc9hdpshbflwzd0vy"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6057,10 +6057,11 @@ parts of it.")
               "MAKE_NB_JOBS=0"          ;use jobserver for submakes
               "NO_STATIC=1"             ;avoid a 67 MiB static archive
 
-              ;; This is the maximum number of threads OpenBLAS will ever use (that
-              ;; is, if $OPENBLAS_NUM_THREADS is greater than that, then NUM_THREADS
-              ;; is used.)  If we don't set it, the makefile sets it to the number
-              ;; of cores of the build machine, which is obviously wrong.
+              ;; This is the maximum number of threads OpenBLAS will ever use
+              ;; (that is, if $OPENBLAS_NUM_THREADS is greater than that, then
+              ;; NUM_THREADS is used.)  If we don't set it, the makefile sets
+              ;; it to the number of cores of the build machine, which is
+              ;; obviously wrong.
               "NUM_THREADS=128"
 
               ;; DYNAMIC_ARCH is only supported on some architectures.
@@ -6101,7 +6102,8 @@ parts of it.")
                       (string-append
                        "-L"
                        (dirname
-                        (search-input-file inputs "/lib/libgfortran.so")))))))))
+                        (search-input-file inputs
+                                           "/lib/libgfortran.so")))))))))
     (inputs
      (list `(,gfortran "lib")))
     (native-inputs
@@ -6128,8 +6130,6 @@ from the GotoBLAS2-1.13 BSD version.")
                  #$flags))))
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
-
-(define-public openblas-0.3.29 openblas)
 
 (define-public libblastrampoline
   (package
