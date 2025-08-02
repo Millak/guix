@@ -236,6 +236,8 @@ gnu/packages/fcitx\.scm                            @guix/localization
 gnu/packages/fonts\.scm                            @guix/localization
 gnu/packages/ibus\.scm                             @guix/localization
 
+gnu/packages/machine-learning\.scm                 @guix/ai
+
 gnu/packages/lxqt\.scm                             @guix/lxqt
 
 

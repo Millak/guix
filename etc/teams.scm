@@ -785,6 +785,12 @@ asdf-build-system."
                       "gnu/packages/fonts.scm"
                       "gnu/packages/ibus.scm")))
 
+(define-team ai
+  (team 'ai
+        #:name "Artificial Intelligence"
+        #:description "Packages related to AI, ML and LLM."
+        #:scope (list "gnu/packages/machine-learning.scm")))
+
 (define-team lxqt
   (team 'lxqt
         #:name "LXQt team"
@@ -1238,7 +1244,7 @@ the \"texlive\" importer."
 (define-member (person "Cayetano Santos"
                        "csantosb@inventati.org"
                        "csantosb")
-  emacs electronics)
+  ai emacs electronics)
 
 (define-member (person "Greg Hogan"
                        "code@greghogan.com"
