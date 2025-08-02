@@ -4927,17 +4927,18 @@ Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT).")
 (define-public xmp
   (package
     (name "xmp")
-    (version "4.1.0")
+    (version "4.2.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/xmp/xmp/" version "/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "17i8fc7x7yn3z1x963xp9iv108gxfakxmdgmpv3mlm438w3n3g8x"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libxmp/xmp-cli")
+             (commit (string-append "xmp-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c015v8r91g5nspfn6lldkw76dg3xjyg3x6s2sbiw6b3n7bf8znk"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake pkg-config))
     (inputs
      (list libxmp pulseaudio))
     (home-page "https://xmp.sourceforge.net/")
