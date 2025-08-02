@@ -24695,21 +24695,21 @@ JSON) codec.")
 (define-public python-nltk
   (package
     (name "python-nltk")
-    (version "3.6.2")
+    (version "3.9.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "nltk" version ".zip"))
+       (uri (pypi-uri "nltk" version))
        (sha256
-        (base32 "1sq32lwgij9h8rsksymnxxr7bqfw3vgx5ijw4azbj6k2xnmmdmap"))))
-    (build-system python-build-system)
+        (base32 "0s78gayd45vl1wvpa0a44ydij6ybb7xfar8jz2j8kgg47nyjglc7"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests require some extra resources to be downloaded.
      ;; TODO Try packaging these resources.
      '(#:tests? #f))
     (propagated-inputs (list python-click python-joblib python-regex
                              python-tqdm))
-    (native-inputs (list unzip))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://www.nltk.org/")
     (synopsis "Natural Language Toolkit")
     (description
