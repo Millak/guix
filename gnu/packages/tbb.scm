@@ -79,7 +79,7 @@
                      ((".*test_multifunction_node.*") "")
                      ((".*test_async_node.*") ""))))))
             (else '())))))
-    (home-page "https://www.threadingbuildingblocks.org")
+    (home-page "https://uxlfoundation.github.io/oneTBB/")
     (synopsis "C++ library for parallel programming")
     (description
      "Threading Building Blocks (TBB) is a C++ runtime library that abstracts
