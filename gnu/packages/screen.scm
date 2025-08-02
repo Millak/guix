@@ -27,14 +27,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages screen)
-  #:use-module (guix licenses)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix gexp)
-  #:use-module (guix git-download)
-  #:use-module (guix utils)
-  #:use-module (guix build-system gnu)
-  #:use-module (gnu packages)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages crypto)
@@ -44,7 +37,14 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages slang)
-  #:use-module (gnu packages texinfo))
+  #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 (define-public abduco
   (package
@@ -70,7 +70,7 @@
 be run independently from their controlling terminal.  That is, programs can
 be detached---run in the background---and then later reattached.")
    (home-page "https://www.brain-dump.org/projects/abduco/")
-   (license isc)))
+   (license license:isc)))
 
 (define-public screen
   (package
@@ -123,7 +123,7 @@ features such as a scroll-back buffer and a copy-and-paste mechanism.  Screen
 then manages the different virtual terminals, allowing you to easily switch
 between them, to detach them from the current session, or even splitting the
 view to show two terminals at once.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public dtach
   (package
@@ -155,7 +155,7 @@ view to show two terminals at once.")
      "dtach is a tiny program that emulates the detach feature of screen,
 allowing you to run a program in an environment that is protected from the
 controlling terminal and attach to it later.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public byobu
   (package
@@ -205,7 +205,7 @@ controlling terminal and attach to it later.")
 as folding room dividers.  The Byobu software includes an enhanced profile,
 configuration utilities, and system status notifications for the GNU Screen
 window manager as well as the Tmux terminal multiplexer.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public reptyr
   (package
@@ -240,4 +240,4 @@ to leave and don't want to interrupt it?  Just start a @code{screen}, use
 reptyr to grab it, and then kill the @code{ssh} session and head on home.")
     ;; Reptyr currently does not support mips.
     (supported-systems (delete "mips64el-linux" %supported-systems))
-    (license expat)))
+    (license license:expat)))
