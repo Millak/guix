@@ -885,6 +885,24 @@ comparison operators, as defined in the original
 processes, in parallel, in the console, with an interactive TUI.")
     (license license:expat)))
 
+(define-public python-orderly-set
+  (package
+    (name "python-orderly-set")
+    (version "5.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "orderly_set" version))
+       (sha256
+        (base32 "1kp64m0nabhhb0zxr4f8idrmniraahnfwq41gx7adbyqwk48awg8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://github.com/seperman/orderly-set")
+    (synopsis "Multiple implementations of Ordered Set")
+    (description "Orderly Set is a package containing multiple implementations
+of Ordered Set.")
+    (license license:expat)))
+
 (define-public python-pastel
   (package
     (name "python-pastel")
