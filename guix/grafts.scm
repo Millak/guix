@@ -240,7 +240,6 @@ have no corresponding element in the resulting list."
 
 (define* (cumulative-grafts store drv grafts
                             #:key
-                            (outputs (derivation-output-names drv))
                             (guile (%guile-for-build))
                             (system (%current-system)))
   "Augment GRAFTS with additional grafts resulting from the application of
@@ -248,69 +247,73 @@ GRAFTS to the dependencies of DRV.  Return the resulting list of grafts.
 
 This is a monadic procedure in %STATE-MONAD where the state is a vhash mapping
 derivations to the corresponding set of grafts."
-  (define (graft-origin? drv output graft)
-    ;; Return true if DRV and OUTPUT correspond to the origin of GRAFT.
-    (match graft
-      (($ <graft> (? derivation? origin) origin-output)
-       (and (string=? origin-output output)
-            (match (assoc-ref (derivation->output-paths drv) output)
-              ((? string? result)
-               (string=? result
-                         (derivation->output-path origin output)))
-              (_
-               #f))))
-      (_
-       #f)))
+  ;;; The derivation returned by this procedure pulls in all the outputs of DRV.
+  ;;; This may be wasteful in cases where only one of them is actually used
+  ;;; (as noted in <https://issues.guix.gnu.org/24886>), but it ensures that
+  ;;; only one grafted variant of DRV ever exists.  That way, it is
+  ;;; deterministic and avoids undesirable side effects such as run-time
+  ;;; crashes (see <https://bugs.gnu.org/75157>).
+  (let ((outputs (derivation-output-names drv)))
+    (define (graft-origin? drv output graft)
+      ;; Return true if DRV and OUTPUT correspond to the origin of GRAFT.
+      (match graft
+        (($ <graft> (? derivation? origin) origin-output)
+         (and (string=? origin-output output)
+              (match (assoc-ref (derivation->output-paths drv) output)
+                ((? string? result)
+                 (string=? result
+                           (derivation->output-path origin output)))
+                (_
+                 #f))))
+        (_
+         #f)))
 
-  (define (dependency-grafts items)
-    (mapm %store-monad
-          (lambda (drv+output)
-            (match drv+output
-              ((drv . output)
-               ;; If GRAFTS already contains a graft from DRV, do not
-               ;; override it.
-               (if (find (cut graft-origin? drv output <>) grafts)
-                   (state-return grafts)
-                   (cumulative-grafts store drv grafts
-                                      #:outputs (list output)
-                                      #:guile guile
-                                      #:system system)))))
-          (reference-origins drv items)))
+    (define (dependency-grafts items)
+      (mapm %store-monad
+            (lambda (drv+output)
+              (match drv+output
+                ((drv . output)
+                 ;; If GRAFTS already contains a graft from DRV, do not
+                 ;; override it.
+                 (if (find (cut graft-origin? drv output <>) grafts)
+                     (state-return grafts)
+                     (cumulative-grafts store drv grafts
+                                        #:guile guile
+                                        #:system system)))))
+            (reference-origins drv items)))
 
-  (with-cache (list (derivation-file-name drv) outputs grafts)
-    (match (non-self-references store drv outputs)
-      (()                                         ;no dependencies
-       (return grafts))
-      (deps                                       ;one or more dependencies
-       (mlet %state-monad ((grafts (dependency-grafts deps)))
-         (let ((grafts (delete-duplicates (concatenate grafts) equal?)))
-           (match (filter (lambda (graft)
-                            (member (graft-origin-file-name graft) deps))
-                          grafts)
-             (()
-              (return grafts))
-             ((applicable ..1)
-              ;; Use APPLICABLE, the subset of GRAFTS that is really
-              ;; applicable to DRV, to avoid creating several identical
-              ;; grafted variants of DRV.
-              (let* ((new    (graft-derivation/shallow* store drv applicable
-                                                        #:outputs outputs
-                                                        #:guile guile
-                                                        #:system system))
-                     (grafts (append (map (lambda (output)
-                                            (graft
-                                              (origin drv)
-                                              (origin-output output)
-                                              (replacement new)
-                                              (replacement-output output)))
-                                          outputs)
-                                     grafts)))
-                (return grafts))))))))))
+    (with-cache (list (derivation-file-name drv) outputs grafts)
+      (match (non-self-references store drv outputs)
+        (()                                         ;no dependencies
+         (return grafts))
+        (deps                                       ;one or more dependencies
+         (mlet %state-monad ((grafts (dependency-grafts deps)))
+           (let ((grafts (delete-duplicates (concatenate grafts) equal?)))
+             (match (filter (lambda (graft)
+                              (member (graft-origin-file-name graft) deps))
+                            grafts)
+               (()
+                (return grafts))
+               ((applicable ..1)
+                ;; Use APPLICABLE, the subset of GRAFTS that is really
+                ;; applicable to DRV, to avoid creating several identical
+                ;; grafted variants of DRV.
+                (let* ((new    (graft-derivation/shallow* store drv applicable
+                                                          #:guile guile
+                                                          #:system system))
+                       (grafts (append (map (lambda (output)
+                                              (graft
+                                                (origin drv)
+                                                (origin-output output)
+                                                (replacement new)
+                                                (replacement-output output)))
+                                            outputs)
+                                       grafts)))
+                  (return grafts)))))))))))
 
 (define* (graft-derivation store drv grafts
                            #:key
                            (guile (%guile-for-build))
-                           (outputs (derivation-output-names drv))
                            (system (%current-system)))
   "Apply GRAFTS to the OUTPUTS of DRV and all their dependencies, recursively.
 That is, if GRAFTS apply only indirectly to DRV, graft the dependencies of
@@ -318,7 +321,6 @@ DRV, and graft DRV itself to refer to those grafted dependencies."
   (let ((grafts cache
                 (run-with-state
                     (cumulative-grafts store drv grafts
-                                       #:outputs outputs
                                        #:guile guile #:system system)
                   (store-connection-cache store %graft-cache))))
 

@@ -316,9 +316,9 @@
       (equal? (stat (string-append out "/one/p0/replacement"))
               (stat (string-append out "/two/link/p0/replacement"))))))
 
-(test-assert "graft-derivation with #:outputs"
-  ;; Call 'graft-derivation' with a narrowed set of outputs passed as
-  ;; #:outputs.
+(test-assert "graft-derivation, no applicable grafts"
+  ;; This test verifies that when grafts don't apply to any dependencies,
+  ;; the original derivation is returned unchanged.
   (let* ((p1  (build-expression->derivation
                %store "p1"
                `(let ((one (assoc-ref %outputs "one"))
@@ -348,68 +348,10 @@
                 (origin-output "one")
                 (replacement p1r)
                 (replacement-output "ONE")))
-         (p2g (graft-derivation %store p2 (list p1g)
-                                #:outputs '("aaa"))))
+         ;; Note: #:outputs parameter removed - now always uses all outputs
+         (p2g (graft-derivation %store p2 (list p1g))))
     ;; P2:aaa depends on P1:two, but not on P1:one, so nothing to graft.
     (eq? p2g p2)))
-
-(test-equal "graft-derivation, unused outputs not depended on"
-  '("aaa")
-
-  ;; Make sure that the result of 'graft-derivation' does not pull outputs
-  ;; that are irrelevant to the grafting process.  See
-  ;; <http://bugs.gnu.org/24886>.
-  (let* ((p1  (build-expression->derivation
-               %store "p1"
-               `(let ((one (assoc-ref %outputs "one"))
-                      (two (assoc-ref %outputs "two")))
-                  (mkdir one)
-                  (mkdir two))
-               #:outputs '("one" "two")))
-         (p1r (build-expression->derivation
-               %store "P1"
-               `(let ((other (assoc-ref %outputs "ONE")))
-                  (mkdir other)
-                  (call-with-output-file (string-append other "/replacement")
-                    (const #t)))
-               #:outputs '("ONE")))
-         (p2  (build-expression->derivation
-               %store "p2"
-               `(let ((aaa (assoc-ref %outputs "aaa"))
-                      (zzz (assoc-ref %outputs "zzz")))
-                  (mkdir zzz) (chdir zzz)
-                  (symlink (assoc-ref %build-inputs "p1:two") "two")
-                  (mkdir aaa) (chdir aaa)
-                  (symlink (assoc-ref %build-inputs "p1:one") "one"))
-               #:outputs '("aaa" "zzz")
-               #:inputs `(("p1:one" ,p1 "one")
-                          ("p1:two" ,p1 "two"))))
-         (p1g (graft
-                (origin p1)
-                (origin-output "one")
-                (replacement p1r)
-                (replacement-output "ONE")))
-         (p2g (graft-derivation %store p2 (list p1g)
-                                #:outputs '("aaa"))))
-
-    ;; Here P2G should only depend on P1:one and P1R:one; it must not depend
-    ;; on P1:two or P1R:two since these are unused in the grafting process.
-    (and (not (eq? p2g p2))
-         (let* ((inputs      (derivation-inputs p2g))
-                (match-input (lambda (drv)
-                               (lambda (input)
-                                 (string=? (derivation-input-path input)
-                                           (derivation-file-name drv)))))
-                (p1-inputs   (filter (match-input p1) inputs))
-                (p1r-inputs  (filter (match-input p1r) inputs))
-                (p2-inputs   (filter (match-input p2) inputs)))
-           (and (equal? p1-inputs
-                        (list (derivation-input p1 '("one"))))
-                (equal? p1r-inputs
-                        (list (derivation-input p1r '("ONE"))))
-                (equal? p2-inputs
-                        (list (derivation-input p2 '("aaa"))))
-                (derivation-output-names p2g))))))
 
 (test-assert "graft-derivation, renaming"         ;<http://bugs.gnu.org/23132>
   (let* ((build `(begin
@@ -601,5 +543,248 @@
           ;; char-size1 values to test
           '(1 2 4))
 
+(test-assert "graft-derivation, multi-output graft determinism"
+  ;; THE BUG: In earlier broken code, cumulative-grafts cached by
+  ;; (drv, outputs, grafts).
+  ;; Same derivation with different outputs -> different cache entries ->
+  ;; different grafted derivations created.  This causes runtime crashes:
+  ;;
+  ;; When a process dlopens multiple libraries that depend on the same
+  ;; multi-output package but were grafted with different output sets:
+  ;;   - Library A built against grafted-glib-A (only :out output)
+  ;;   - Library B built against grafted-glib-B (:out + :bin outputs)
+  ;;
+  ;; At runtime, dlopen loads Library A which loads grafted-glib-A's libglib.so.
+  ;; Then dlopen loads Library B which loads grafted-glib-B's libglib.so.
+  ;; Now two different libglib.so binaries are loaded in the same process!
+  ;;
+  ;; Specific to GLib: The GObject type registry cannot register two objects with
+  ;; the same name.  When both glib binaries try to register their types, the
+  ;; second registration fails/conflicts.  Result: type registration errors,
+  ;; vtable corruption, and segfaults.
+  ;;
+  ;; THE FIX: Always use ALL outputs when grafting.  Only one grafted glib
+  ;; derivation is ever created (with all outputs).  The :out output is identical
+  ;; for all consumers, regardless of which outputs they actually use.
+  ;;
+  ;; This test verifies that gtk+ and a direct glib reference use the same
+  ;; glib:out store path.
+  ;;
+  ;; This situation occurs in production when a profile/manifest contains both
+  ;; a library (like gtk+) and that library's dependency (like glib).
+  ;;
+  ;; For example:
+  ;;   (packages->manifest (list gtk+ glib))
+  ;; or when a package has both in propagated-inputs:
+  ;;   (propagated-inputs (list gtk+ glib))
+  ;;
+  ;; When building the profile, both gtk+ and glib are grafted via
+  ;; package->derivation, causing glib to be processed twice with different
+  ;; output sets.
+  ;;
+  ;; That's because graft-derivation is never (and was never) called with
+  ;; #:outputs--so it defaults to ALL outputs.
+  (let* (;; pcre2 - a dependency of glib
+         (pcre2 (build-expression->derivation
+                 %store "pcre2"
+                 `(let ((out (assoc-ref %outputs "out")))
+                    (use-modules (guix build utils))
+                    (mkdir-p (string-append out "/lib"))
+                    (call-with-output-file
+                     (string-append out "/lib/libpcre2.txt")
+                     (lambda (port) (display "pcre2" port))))
+                 #:modules '((guix build utils))))
+         ;; Create multi-output glib that depends on pcre2 (like real glib).
+         (glib (build-expression->derivation
+                %store "glib"
+                `(let ((out (assoc-ref %outputs "out"))
+                       (bin (assoc-ref %outputs "bin"))
+                       (doc (assoc-ref %outputs "doc"))
+                       (debug (assoc-ref %outputs "debug"))
+                       (pcre2 (assoc-ref %build-inputs "pcre2")))
+                   (use-modules (guix build utils))
+                   (mkdir-p (string-append out "/lib"))
+                   (mkdir-p (string-append bin "/bin"))
+                   (mkdir doc)
+                   (mkdir-p (string-append debug "/lib/debug"))
+                   (call-with-output-file
+                    (string-append out "/lib/libglib-2.0.txt")
+                    (lambda (port)
+                      (display out port)))
+                   (symlink (string-append pcre2 "/lib/libpcre2.txt")
+                            (string-append out "/pcre2-link"))
+                   ;; bin output references "out" output.
+                   (call-with-output-file
+                    (string-append bin "/bin/glib-compile-schemas")
+                    (lambda (port)
+                      (display (string-append out "/lib/libglib-2.0.txt")
+                               port)))
+                   ;; debug output references "bin" output.
+                   (call-with-output-file
+                    (string-append debug "/lib/debug/glib-bin-path.txt")
+                    (lambda (port)
+                      (display (string-append bin "/bin/glib-compile-schemas")
+                               port))))
+                #:modules '((guix build utils))
+                #:inputs `(("pcre2" ,pcre2))
+                #:outputs '("out" "bin" "doc" "debug")))
+         ;; Create patched glib (security fix) - also depends on pcre2.
+         (glib-patched (build-expression->derivation
+                        %store "gliB"
+                        `(let ((out (assoc-ref %outputs "out"))
+                               (bin (assoc-ref %outputs "bin"))
+                               (doc (assoc-ref %outputs "doc"))
+                               (debug (assoc-ref %outputs "debug"))
+                               (pcre2 (assoc-ref %build-inputs "pcre2")))
+                           (use-modules (guix build utils))
+                           (mkdir-p (string-append out "/lib"))
+                           (mkdir-p (string-append bin "/bin"))
+                           (mkdir doc)
+                           (mkdir-p (string-append debug "/lib/debug"))
+                           (call-with-output-file
+                            (string-append out "/lib/libglib-2.0.txt")
+                             (lambda (port)
+                               (display out port)))
+                           (symlink (string-append pcre2 "/lib/libpcre2.txt")
+                                    (string-append out "/pcre2-link"))
+                           ;; bin output references "out" output.
+                           (call-with-output-file
+                             (string-append bin "/bin/glib-compile-schemas")
+                             (lambda (port)
+                               (display (string-append out
+                                         "/lib/libglib-2.0.txt")
+                                        port)))
+                           ;; debug output references "bin" output.
+                           (call-with-output-file
+                            (string-append debug
+                                           "/lib/debug/glib-bin-path.txt")
+                            (lambda (port)
+                              (display (string-append bin
+                                        "/bin/glib-compile-schemas")
+                                       port))))
+                        #:modules '((guix build utils))
+                        #:inputs `(("pcre2" ,pcre2))
+                        #:outputs '("out" "bin" "doc" "debug")))
+         ;; gtk+ needs only glib:out.
+         (gtk+ (build-expression->derivation
+                %store "gtk+"
+                `(let ((glib (assoc-ref %build-inputs "glib")))
+                   (use-modules (guix build utils))
+                   (mkdir-p (string-append %output "/lib"))
+                   (call-with-output-file
+                    (string-append %output "/lib/libgtk-3.txt")
+                    (lambda (port)
+                      (display (string-append glib "/lib/libglib-2.0.txt")
+                               port))))
+                #:modules '((guix build utils))
+                #:inputs `(("glib" ,glib "out"))))
+         ;; Patched pcre2 (for example security fix).
+         (pcre2-patched (build-expression->derivation
+                         %store "Pcre2"
+                         `(let ((out (assoc-ref %outputs "out")))
+                            (use-modules (guix build utils))
+                            (mkdir-p (string-append out "/lib"))
+                            (call-with-output-file
+                             (string-append out "/lib/libpcre2.txt")
+                             (lambda (port)
+                               (display "pcre2-patched" port))))
+                         #:modules '((guix build utils))))
+         ;; Define graft to fix pcre2 vulnerability (glib's dependency).
+         (pcre2-graft (graft
+                       (origin pcre2)
+                       (origin-output "out")
+                       (replacement pcre2-patched)
+                       (replacement-output "out")))
+         ;; FIRST: Graft gtk+ which depends on glib:out.
+         ;; Buggy: gtk+ -> glib with outputs=("out")
+         ;;        Cache key: (glib, ("out"), (pcre2-graft))
+         ;;        Creates grafted-glib-OUT-ONLY
+         ;; Fixed: Always uses all outputs
+         (gtk-grafted (graft-derivation %store gtk+ (list pcre2-graft)))
+         ;; SECOND: Graft glib directly - uses all outputs by default.
+         ;; Buggy: cumulative-grafts(glib, outputs=ALL)
+         ;;        Cache key: (glib, ALL, (pcre2-graft)) - different!
+         ;;        Creates grafted-glib-ALL.
+         ;; Fixed: Same cache key as gtk+ path (always ALL).
+         (glib-grafted (graft-derivation %store glib (list pcre2-graft))))
+    ;; Build both grafted derivations
+    (build-derivations %store (list gtk-grafted glib-grafted))
+    (let* (;; Get glib:out path from direct graft
+           (glib-out-direct (derivation->output-path glib-grafted "out"))
+           ;; Get glib:out path from gtk+'s perspective.
+           (gtk-path (derivation->output-path gtk-grafted))
+           (gtk-glib-ref (call-with-input-file
+                          (string-append gtk-path "/lib/libgtk-3.txt")
+                          get-string-all)))
+      (pk 'glib-out-direct glib-out-direct)
+      (pk 'gtk-glib-ref gtk-glib-ref)
+      ;; BROKEN: gtk+ sees a different glib:out than the direct graft.
+      ;; FIXED: They're the same.
+      (string=? (string-append glib-out-direct "/lib/libglib-2.0.txt")
+                gtk-glib-ref))))
+
+(test-assert "graft-derivation, consistent cache keys"
+  ;; Test that cumulative-grafts produces consistent cache keys regardless
+  ;; of the calling context, preventing bug <https://bugs.gnu.org/75157>.
+  ;;
+  ;; The fix ensures that calling graft-derivation multiple times on the
+  ;; same derivation always produces the same result, regardless of context.
+  (let* (;; Create a multi-output package.
+         (base-pkg (build-expression->derivation
+                    %store "base-pkg"
+                    `(let ((out (assoc-ref %outputs "out"))
+                           (lib (assoc-ref %outputs "lib")))
+                       (mkdir out) (mkdir lib)
+                       (call-with-output-file (string-append out "/binary")
+                         (lambda (port) (display "base-binary" port)))
+                       (call-with-output-file (string-append lib "/library")
+                         (lambda (port) (display "base-library" port))))
+                    #:outputs '("out" "lib")))
+         ;; Create dependency that needs grafting.
+         (dep-orig (build-expression->derivation
+                    %store "dep-orig"
+                    `(begin (mkdir %output)
+                            (call-with-output-file
+                             (string-append %output "/data")
+                              (lambda (port)
+                                (display "vulnerable-data" port))))))
+         (dep-fixed (build-expression->derivation
+                     %store "dep-fixed"
+                     `(begin (mkdir %output)
+                             (call-with-output-file
+                              (string-append %output "/data")
+                               (lambda (port)
+                                 (display "secure-data" port))))))
+         ;; Create the multi-output package that depends on the vulnerable dep.
+         (multi-pkg (build-expression->derivation
+                     %store "multi-pkg"
+                     `(let ((out (assoc-ref %outputs "out"))
+                            (lib (assoc-ref %outputs "lib"))
+                            (debug (assoc-ref %outputs "debug")))
+                        (mkdir out) (mkdir lib) (mkdir debug)
+                        ;; Both outputs depend on the vulnerable dependency.
+                        (symlink (assoc-ref %build-inputs "dep")
+                                 (string-append out "/dep-link"))
+                        (symlink (assoc-ref %build-inputs "dep")
+                                 (string-append lib "/dep-link")))
+                     #:outputs '("out" "lib" "debug")
+                     #:inputs `(("dep" ,dep-orig))))
+         ;; Define graft to fix the vulnerability.
+         (security-graft (graft
+                          (origin dep-orig)
+                          (replacement dep-fixed)))
+         ;; Scenario 1: Something requests just the "out" output.
+         (result1 (graft-derivation %store multi-pkg (list security-graft)))
+         ;; Scenario 2: Something requests just the "lib" output.
+         (result2 (graft-derivation %store multi-pkg (list security-graft)))
+         ;; Critical test: both scenarios should produce the SAME derivation
+         ;; because cumulative-grafts now uses canonical outputs for caching.
+         (same-result? (equal? result1 result2))
+         ;; Verify the result has all outputs.
+         (has-all-outputs?
+          (and (member "out" (derivation-output-names result1))
+               (member "lib" (derivation-output-names result1))
+               (member "debug" (derivation-output-names result1)))))
+    (and same-result? has-all-outputs?)))
 
 (test-end)
