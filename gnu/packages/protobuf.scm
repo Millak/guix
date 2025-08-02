@@ -42,6 +42,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages pkg-config)
@@ -51,8 +52,10 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages rails)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages ruby-xyz)
+  #:use-module (gnu packages serialization)
   #:use-module (srfi srfi-1))
 
 (define-public fstrm
@@ -92,6 +95,95 @@ stream socket (TCP sockets, TLS connections, @code{AF_UNIX} sockets, etc.) for
 data in motion, or as a file format for data at rest.")
     (license (list license:expat        ; the combined work
                    license:hpnd))))     ; libmy/argv*
+
+;; Onnx requires version >=4.25.1 specifically.
+(define-public protobuf-6
+  (package
+    (name "protobuf")
+    (version "6.31.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/protocolbuffers/protobuf/")
+              (commit (string-append "v" version))))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            ;; "utf8_range" development now takes place in main protobuf
+            ;; repository.
+            (delete-all-but "third_party" "utf8_range")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rdxm75bqwjj4qd3hz4vlydra6bw5dq391kwln2q0pjfx9gbrjhk"))))
+    (outputs (list "out" "static"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            ;; The following tests used to fail on 32 bit architectures
+            ;; such as i686-linux.
+            (lambda _
+              (let-syntax ((disable-tests
+                            (syntax-rules ()
+                              ((_ file test ...)
+                               (substitute* file
+                                 ((test name)
+                                  (string-append "DISABLED_" name)) ...)))))
+                ;; https://github.com/protocolbuffers/protobuf/issues/8460.
+                (disable-tests
+                 "src/google/protobuf/any_test.cc"
+                 "TestPackFromSerializationExceedsSizeLimit")
+                ;; https://github.com/protocolbuffers/protobuf/issues/8459.
+                (disable-tests
+                 "src/google/protobuf/arena_unittest.cc"
+                 "SpaceAllocated_and_Used"
+                 "BlockSizeSmallerThanAllocation")
+                ;; https://github.com/protocolbuffers/protobuf/issues/8082.
+                (disable-tests
+                 "src/google/protobuf/io/zero_copy_stream_unittest.cc"
+                 "LargeOutput"))))
+          (add-after 'install 'move-static-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Move static libraries to the "static" output.
+              (let* ((out    (assoc-ref outputs "out"))
+                     (lib    (string-append out "/lib"))
+                     (static (assoc-ref outputs "static"))
+                     (slib   (string-append static "/lib")))
+                (mkdir-p slib)
+                (for-each (lambda (file)
+                            (install-file file slib)
+                            (delete-file file))
+                          (find-files lib "\\.a$"))))))))
+    (native-inputs (list googletest python-minimal-wrapper ruby))
+    (inputs (list abseil-cpp jsoncpp zlib))
+    (home-page "https://protobuf.dev")
+    (synopsis "Data encoding for remote procedure calls (RPCs)")
+    (description
+     "Protocol Buffers are a way of encoding structured data in an efficient
+yet extensible format.  Google uses Protocol Buffers for almost all of its
+internal RPC protocols and file formats.")
+    (license license:bsd-3)))
 
 (define-public protobuf
   (package
