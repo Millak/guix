@@ -451,11 +451,14 @@ utilities.")
          ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
          ;; never runs.  See <https://bugs.debian.org/792687>.
          "ac_cv_path_MSGMERGE=true"
-         ;; FIXME: pcb package is broken at this point; it might be replaced
-         ;; by pcb-rnd or use pcb again when fixed.
-         ;; (string-append "--with-pcb-datadir=" pcb "/share")
-         ;; (string-append "--with-pcb-lib-path=" pcb
-         ;;                "/share/pcb/pcblib-newlib:" pcb "/share/pcb/newlib")
+         (string-append "--with-pcb-datadir="
+                        #$(this-package-input "pcb")
+                        "/share")
+         (string-append "--with-pcb-lib-path="
+                        #$(this-package-input "pcb")
+                        "/share/pcb/pcblib-newlib:"
+                        #$(this-package-input "pcb")
+                        "/share/pcb/newlib")
          "--with-gtk3"
          "CFLAGS=-fcommon"
          "--enable-guild"
@@ -558,6 +561,7 @@ utilities.")
            gtksheet
            guile-3.0
            guile-readline
+           pcb
            shared-mime-info))
     (home-page "https://lepton-eda.github.io/")
     (synopsis "GPL Electronic Design Automation")
