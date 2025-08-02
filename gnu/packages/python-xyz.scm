@@ -28640,35 +28640,21 @@ source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
 (define-public python-typer
   (package
     (name "python-typer")
-    (version "0.6.1")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tiangolo/typer")
+             (url "https://github.com/fastapi/typer")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1knv353qhkl2imav3jfp6bgq47m8wkkqhq1dzmqg2sv8rsy7zgl7"))))
+        (base32 "1axd3840b2vipfp9l36cnh5ipbsladizmjadgsnpnk502qily7sq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(let ((disabled-tests (list "test_show_completion"
-                                   "test_install_completion")))
-         (list "-k" (string-append "not "
-                                   (string-join disabled-tests
-                                                " and not "))))
       #:phases
       #~(modify-phases %standard-phases
-          ;; Unfortunately, this doesn't seem to be enough to fix these two
-          ;; tests, but we'll patch this anyway.
-          (add-after 'unpack 'patch-shell-reference
-            (lambda _
-              (substitute* "tests/test_completion/test_completion.py"
-                (("\"bash\"") (string-append "\"" (which "bash") "\""))
-                (("\"/bin/bash\"")
-                 (string-append "\"" (which "bash") "\"")))))
           (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -28676,12 +28662,14 @@ source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
                 ;; This is for completion tests
                 (with-output-to-file "/tmp/.bashrc"
                   (lambda _ (display "# dummy")))))))))
-    (propagated-inputs
-     (list python-click))
-    (native-inputs
-     (list python-coverage python-flit python-pytest python-rich
-           python-shellingham))
-    (home-page "https://github.com/tiangolo/typer")
+    (propagated-inputs (list python-click
+                             python-rich
+                             python-shellingham
+                             python-typing-extensions))
+    (native-inputs (list python-coverage ; this is required in tests
+                         python-pdm-backend
+                         python-pytest))
+    (home-page "https://github.com/fastapi/typer")
     (synopsis "Typer builds CLI based on Python type hints")
     (description
      "Typer is a library for building CLI applications.  It's based on Python
