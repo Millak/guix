@@ -50,21 +50,26 @@
   (package
    (name "abduco")
    (version "0.6")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://www.brain-dump.org/projects/abduco/abduco-"
-                  version ".tar.gz"))
-            (sha256
-             (base32
-              "1x1m58ckwsprljgmdy93mvgjyg9x3cqrzdf3mysp0mx97zhhj2f9"))))
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/martanne/abduco")
+             (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32
+        "14cqllh36mvnhwdnl63mrhxlr6a0rq192cmr19ac6cvycicdk6i2"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                         (string-append "PREFIX=" (assoc-ref %outputs "out")))
-      #:phases (modify-phases %standard-phases
-                 (delete 'configure)
-                 (delete 'check)))) ; no test suite
+    (list
+     #:tests? #f                        ; No test suite
+     #:make-flags
+     #~(list (string-append "CC=" #$(cc-for-target))
+             (string-append "PREFIX=" #$output))
+     #:phases
+     #~(modify-phases %standard-phases
+         (delete 'configure))))
    (synopsis "Session management in a clean and simple way")
    (description "abduco provides session management i.e. it allows programs to
 be run independently from their controlling terminal.  That is, programs can
