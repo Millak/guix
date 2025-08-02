@@ -24696,27 +24696,27 @@ JSON) codec.")
   (package
     (name "python-nltk")
     (version "3.6.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "nltk" version ".zip"))
-              (sha256
-               (base32
-                "1sq32lwgij9h8rsksymnxxr7bqfw3vgx5ijw4azbj6k2xnmmdmap"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nltk" version ".zip"))
+       (sha256
+        (base32 "1sq32lwgij9h8rsksymnxxr7bqfw3vgx5ijw4azbj6k2xnmmdmap"))))
     (build-system python-build-system)
     (arguments
-     '(;; The tests require some extra resources to be downloaded.
-       ;; TODO Try packaging these resources.
-       #:tests? #f))
-    (propagated-inputs
-     (list python-click python-joblib python-regex python-tqdm))
-    (native-inputs
-     (list unzip))
-    (home-page "http://nltk.org/")
+     ;; Tests require some extra resources to be downloaded.
+     ;; TODO Try packaging these resources.
+     '(#:tests? #f))
+    (propagated-inputs (list python-click python-joblib python-regex
+                             python-tqdm))
+    (native-inputs (list unzip))
+    (home-page "https://www.nltk.org/")
     (synopsis "Natural Language Toolkit")
-    (description "It provides interfaces to over 50 corpora and lexical
-     resources such as WordNet, along with a suite of text processing libraries
-     for classification, tokenization, stemming, tagging, parsing, and semantic
-     reasoning, wrappers for natural language processing libraries.")
+    (description
+     "NLTK provides interfaces to over 50 corpora and lexical resources such as
+WordNet, along with a suite of text processing libraries for classification,
+tokenization, stemming, tagging, parsing, and semantic reasoning, wrappers for
+natural language processing libraries.")
     (license license:asl2.0)))
 
 (define-public python-pymongo
