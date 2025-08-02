@@ -4905,15 +4905,15 @@ surround and reverb.")
   (package
     (name "libxmp")
     (version "4.6.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/libxmp/libxmp")
-                     (commit (string-append "libxmp-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0mb54n2cqr8wvq02x9v8vdanvn01bhy0j1pyq2n3iykfnpjx4f2m"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libxmp/libxmp")
+             (commit (string-append "libxmp-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mb54n2cqr8wvq02x9v8vdanvn01bhy0j1pyq2n3iykfnpjx4f2m"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf))
     (home-page "https://xmp.sourceforge.net/")
