@@ -187,6 +187,12 @@ tests/guix-home\.sh                                @guix/home
 tests/home-import\.scm                             @guix/home
 tests/home-services\.scm                           @guix/home
 
+gnu/packages/mpi\.scm                              @guix/hpc
+gnu/packages/rocm\.scm                             @guix/hpc
+gnu/packages/sycl\.scm                             @guix/hpc
+gnu/packages/tbb\.scm                              @guix/hpc
+gnu/packages/vulkan\.scm                           @guix/hpc
+
 gnu/system/hurd\.scm                               @guix/hurd
 gnu/system/images/hurd\.scm                        @guix/hurd
 gnu/build/hurd-boot\.scm                           @guix/hurd
@@ -370,4 +376,3 @@ gnu/packages/zig\.scm                              @guix/zig
 gnu/packages/zig-xyz\.scm                          @guix/zig
 guix/build/zig-build-system\.scm                   @guix/zig
 guix/build-system/zig\.scm                         @guix/zig
-
