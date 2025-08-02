@@ -4928,7 +4928,8 @@ Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT).")
   (package
     (name "xmp")
     (version "4.2.0")
-    (source (origin
+    (source
+     (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/libxmp/xmp-cli")
@@ -4937,10 +4938,8 @@ Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT).")
        (sha256
         (base32 "0c015v8r91g5nspfn6lldkw76dg3xjyg3x6s2sbiw6b3n7bf8znk"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake pkg-config))
-    (inputs
-     (list libxmp pulseaudio))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list libxmp pulseaudio))
     (home-page "https://xmp.sourceforge.net/")
     (synopsis "Extended module player")
     (description
