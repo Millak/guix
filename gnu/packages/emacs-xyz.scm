@@ -25924,16 +25924,16 @@ highlighting and indentation support.")
 (define-public emacs-terraform-mode
   (package
     (name "emacs-terraform-mode")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/syohex/emacs-terraform-mode")
+             (url "https://github.com/hcl-emacs/terraform-mode")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10wndnlsv7f2yn83n1wamnhiwyhxkdlmwld9yk0m2kkxx4pwfgfj"))))
+        (base32 "15xgjyl864crx3vpalds68x0vn1qzibkqdcjlbp87xiq88dx2q1x"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "emacs" "--batch"
@@ -25944,7 +25944,7 @@ highlighting and indentation support.")
                                   "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-dash emacs-hcl-mode))
-    (home-page "https://github.com/syohex/emacs-terraform-mode")
+    (home-page "https://github.com/hcl-emacs/terraform-mode")
     (synopsis "Major mode for Terraform")
     (description
      "@code{emacs-terraform-mode} provides a major mode for working with
