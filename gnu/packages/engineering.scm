@@ -587,6 +587,13 @@ features.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'convert-encoding
+            (lambda _
+              (for-each
+               (lambda (name)
+                 (invoke "iconv" "-f" "LATIN1" "-t" "UTF-8" name "-o" name))
+               '("src/pcb-menu.res.in"
+                 "src/pcb-menu.res.h"))))
           (add-before 'check 'pre-check
             (lambda _
               (system "Xvfb :1 &")
