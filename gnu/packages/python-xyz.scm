@@ -38803,26 +38803,31 @@ object, which can be useful if you want to force your objects into a table.")
 (define-public python-deepdiff
   (package
     (name "python-deepdiff")
-    (version "6.3.0")
+    (version "8.5.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "deepdiff" version))
               (sha256
                (base32
-                "0i5nnb3nppi2vgbhiakpxiagyhx7l1f50hzcl8fcgica4bkz2fva"))))
+                "1l8wvirgif61cqwsqzd3kf8slzlrjnffmqxnrfwxak4dz8lkbpd4"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-ordered-set))
+    (arguments
+     ;; Ignore Polars test (not packaged).
+     (list #:test-flags #~(list "-k" "not test_polars")))
+    (propagated-inputs (list python-click ; for CLI
+                             python-pyyaml ; for CLI
+                             python-orderly-set
+                             python-orjson)) ; for optimization
     (native-inputs
-     (list python-click
-           python-dateutil
+     (list python-flit-core
            python-jsonpickle
-           python-mock
            python-numpy
+           python-pandas
+           python-pydantic-2
            python-pytest
-           python-pyyaml
-           python-setuptools
-           python-wheel
-           python-toml))
+           python-pytest-benchmark
+           python-pytz
+           python-tomli-w))
     (home-page "https://github.com/seperman/deepdiff")
     (synopsis "Deep difference and search of any Python object/data")
     (description
