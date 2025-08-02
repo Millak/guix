@@ -34286,16 +34286,16 @@ dates in almost any string formats commonly found on web pages.")
 (define-public python-dparse
   (package
     (name "python-dparse")
-    (version "0.5.1")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dparse" version))
        (sha256
-        (base32 "0rzkg3nymsbwdjc0ms2bsajkda02jipwyp3xk97qj71f21lz3dd1"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
-    (propagated-inputs (list python-packaging python-pyyaml python-toml))
+        (base32 "06i069hij4i53hikrsv332h2ibwfchr42b68hii6rhzdwcwrrclh"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest))
+    (propagated-inputs (list python-packaging python-toml))
     (home-page "https://github.com/pyupio/dparse")
     (synopsis "Parser for Python dependency files")
     (description "This package provides a parser for Python dependency files.")
