@@ -47,7 +47,8 @@
                (base32
                 "1923f21rnlbv1qjvk2qhgqnki5mkgr6z0p8dvzs9jr3l5vrxy49k"))
               (patches
-               (search-patches "busybox-add-missing-sha-NI-guard.patch"))))
+               (search-patches "busybox-add-missing-sha-NI-guard.patch"
+                               "busybox-no-cbq.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
