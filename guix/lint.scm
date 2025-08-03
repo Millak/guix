@@ -8,7 +8,7 @@
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2017, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2020, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018, 2019, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -640,7 +640,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
     (map (lambda (input)
            (make-warning
             package
-            (G_ "'~a' should probably switched for its minimal variant")
+            (G_ "'~a' should probably be switched for its minimal variant")
             (list input)
             #:field 'inputs))
          (package-input-intersection (package-direct-inputs package)
