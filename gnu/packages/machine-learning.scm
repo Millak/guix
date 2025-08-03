@@ -812,9 +812,15 @@ independently to be able to run a LLaMA model.")
               "-DGGML_AVX2=OFF"
               "-DGGML_AVX512=OFF"
               "-DGGML_AVX512_VBMI=OFF"
-              "-DGGML_AVX512_VNNI=OFF")
+              "-DGGML_AVX512_VNNI=OFF"
+              "-DGGML_VULKAN=ON")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp"
+                (("\"/bin/sh\"")
+                 (string-append "\"" (search-input-file inputs "/bin/sh") "\"")))))
           #$@(if (not (target-64bit?))
                  '((add-after 'unpack 'skip-failing-tests
                      (lambda _
@@ -835,9 +841,10 @@ independently to be able to run a LLaMA model.")
                 (("\\$\\{VAD_TARGET\\} PROPERTIES LABELS \"base;en\"")
                  "${VAD_TEST} PROPERTIES DISABLED true")))))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config shaderc))
     (inputs
-     (list openblas sdl2 git))
+     (list openblas sdl2 git spirv-headers spirv-tools
+           vulkan-headers vulkan-loader))
     (synopsis "OpenAI's Whisper model in C/C++")
     (description
      "This package is a high-performance inference of OpenAI's
