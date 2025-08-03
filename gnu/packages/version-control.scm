@@ -21,7 +21,7 @@
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Timothy Sample <samplet@ngyro.com>
-;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Jovany Leandro G.C <bit4bit@riseup.net>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
@@ -1853,10 +1853,17 @@ a built-in cache to decrease server I/O pressure.")
                 ;; because it is used as the shebang of generated scripts that
                 ;; are invoked during the test phase.
                 (string-append "SHELL_PATH="
-                               (search-input-file %build-inputs "/bin/sh"))))))
+                               (search-input-file %build-inputs "/bin/sh"))))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'unpack-git
+              (lambda _
+                ;; Unpack the source of git into the 'git' directory.
+                (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
+                        #$(this-package-input "git-source.tar.xz"))))))))
     (inputs
      (modify-inputs (package-inputs cgit)
-       (replace "git-source"
+       (replace "git-source.tar.xz"
          ;; cgit-pink is tightly bound to git. Use GIT_VER from the Makefile,
          ;; which may not match the current (package-version git).
          (origin
