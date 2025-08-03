@@ -333,11 +333,11 @@ required structures.")
               ;; url-fetch is used here to avoid a circular dependency with
               ;; git-download, see https://issues.guix.gnu.org/63331
               (method url-fetch)
-              (uri (string-append "mirror://gnu/gnutls/guile-gnutls-"
-                                  version ".tar.gz"))
+              (uri (string-append "mirror://gnu/gnutls/guile-gnutls-v"
+                                  version "-src.tar.gz"))
               (sha256
                (base32
-                "0azgp79a4hgmbg2p2ghd1x2zav8894m9ch3i4hbvq8dlxvrnf06c"))))
+                "0kqngyx4520gjk49l6whjd2ss994kaj9rm78lli6p3q6xry0945i"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -354,6 +354,7 @@ required structures.")
                              "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))))
     (native-inputs
      (list libtool
+           autoconf automake
            pkg-config
            texinfo
            gnutls
