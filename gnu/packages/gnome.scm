@@ -11,7 +11,7 @@
 ;;; Copyright © 2015-2020, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -9851,7 +9851,8 @@ easy, safe, and automatic.")
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:test-options `(list ,@(if (target-riscv64?)
+      #:test-options `(list ,@(if (or (target-riscv64?)
+                                      (target-aarch64?))
                                   `("--timeout-multiplier" "10")
                                   '("--timeout-multiplier" "2")))
       #:configure-flags
