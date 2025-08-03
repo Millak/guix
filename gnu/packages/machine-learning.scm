@@ -763,11 +763,13 @@ Performance is achieved by using the LLVM JIT compiler.")
                                        (string-append (assoc-ref outputs "out")
                                                       "/bin")
                                        "^test-")))))))
-      (inputs (list curl glslang python python-gguf
-                    vulkan-headers vulkan-loader))
-      (native-inputs (list pkg-config shaderc bash-minimal))
+      (inputs
+       (list curl glslang python-gguf python-minimal openblas spirv-headers
+             spirv-tools vulkan-headers vulkan-loader))
+      (native-inputs
+       (list bash-minimal pkg-config shaderc))
       (propagated-inputs
-       (list python-numpy python-pytorch python-sentencepiece openblas))
+       (list python-numpy python-pytorch python-sentencepiece))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
       (home-page "https://github.com/ggml-org/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
