@@ -2349,7 +2349,7 @@ and the notification, WiFi, and Bluetooth LED.")
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
-    (version "4.14.2")
+    (version "4.15.4")
     (source
      (origin
        (method git-fetch)
@@ -2358,21 +2358,23 @@ and the notification, WiFi, and Bluetooth LED.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b7qivyd8r58cq84q11b2z919px5p9k5zbinm6ahj07w0lsq2j7b"))))
+        (base32 "0mimgcbp57gp3smd439g8040sl80qqnfzmh2vhs2qv1kwyxs75sq"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
+    ;; This package fails to build on aarch64, and the manufacturer only sells
+    ;; machines based on Intel-compatible processors. For more information, see
+    ;; <https://codeberg.org/guix/guix/pulls/1795>.
+    (supported-systems '("i686-linux" "x86_64-linux"))
     (home-page "https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers")
     (synopsis "Linux kernel modules to control keyboard on most Tuxedo computers")
     (description
      "This package provides the @code{tuxedo_keyboard}, @code{tuxedo_io},
 @code{clevo_wmi} @acronym{WMI, Windows Management Engine} and the
 @code{clevo_acpi} @acronym{ACPI, Advanced Configuration and Power Interface}
-kernel modules to control the keyboard on most Tuxedo computers.  Only white
-backlight only models are currently not supported.  The @code{tuxedo_io}
-module is also needed for the @code{tuxedo-control-center} (short tcc)
-package.")
-    (license license:gpl3+)))
+kernel modules to control the keyboard on most Tuxedo computers. The @code{tuxedo_io}
+module is also needed for the @code{tuxedo-control-center} (short tcc) package.")
+    (license license:gpl2+)))
 
 (define-public evdi
   (package
