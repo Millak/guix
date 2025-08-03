@@ -8,6 +8,7 @@
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -355,7 +356,7 @@ file system, and many more features.")
 (define-public newsraft
   (package
     (name "newsraft")
-    (version "0.28")
+    (version "0.32")
     (source
      (origin
        (method git-fetch)
@@ -364,7 +365,7 @@ file system, and many more features.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10i5khna9wpaisarmzym9dvfaq91mnf1wvwsymnzl052d4n106l9"))))
+        (base32 "1jdj1820k7dsgpv2ks9amr71lvq1nl1y95jgfqb02fkid1gana4v"))))
     (build-system gnu-build-system)
     (arguments
      (list
