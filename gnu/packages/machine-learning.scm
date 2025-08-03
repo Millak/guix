@@ -862,7 +862,7 @@ without dependencies, with
 @item C-style API
 @end itemize")
     (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
-    (home-page "https://github.com/ggerganov/whisper.cpp")
+    (home-page "https://github.com/ggml-org/whisper.cpp/")
     (license license:expat)))
 
 (define-public mcl
