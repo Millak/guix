@@ -323,14 +323,14 @@ completely independent from the extension API.")
 (define-public mailutils
   (package
     (name "mailutils")
-    (version "3.19")
+    (version "3.20")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/mailutils/mailutils-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0iczhhqfp7nkcasf7iy7lkxk7wgifxhrj3bbr7c8lnvc0ch0s8sh"))
+               "0ag8d9fafzyjk53iyknzvb82risv1jf4wgnann5ii9fx3smzmwx8"))
              (patches
               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
