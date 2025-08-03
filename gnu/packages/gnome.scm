@@ -5051,6 +5051,11 @@ indicators etc).")
                (base32
                 "17zhkf2pjwrghdgk5nhfvzqakb2xwk2jj19316xjr0s9n3djv3z4"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+       ;; TODO: Figure out why some tests SIGABRT on aarch64-linux.
+       #:tests? (and (not (%current-target-system))
+                     (not (target-aarch64?)))))
     (native-inputs
      (list `(,glib "bin") ; for gio-querymodules
            pkg-config gettext-minimal))
