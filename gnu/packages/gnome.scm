@@ -5053,9 +5053,6 @@ indicators etc).")
     (build-system meson-build-system)
     (arguments
      (list
-       ;; TODO: Figure out why some tests SIGABRT on aarch64-linux.
-       #:tests? (and (not (%current-target-system))
-                     (not (target-aarch64?)))
       ;; Exclude flaky tests (see https://codeberg.org/guix/guix/issues/1377).
       ;; Meson cannot exclude individual tests so the test suite is added in the
       ;; phase below.
