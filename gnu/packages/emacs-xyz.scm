@@ -14590,7 +14590,7 @@ expansion and overwriting the marked region with a new snippet completion.")
 (define-public emacs-marginalia
   (package
     (name "emacs-marginalia")
-    (version "2.0")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
@@ -14599,21 +14599,20 @@ expansion and overwriting the marked region with a new snippet completion.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00dzckksfzvwjdy3v1g71nvkxnnpw2bmh8bmhf56qn3nzfj2yr89"))))
+        (base32 "1grn94v5pidb9wk2vgxx5n3fmhcgx9i14lrwm5clvsvncysy7zhg"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'makeinfo
+          (add-before 'install 'makeinfo
             (lambda _
               (invoke "emacs"
                       "--batch"
                       "--eval=(require 'ox-texinfo)"
                       "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
-              (install-file "marginalia.info"
-                            (string-append #$output "/share/info")))))))
+                      "--eval=(org-texinfo-export-to-info)"))))))
     (native-inputs (list texinfo))
     (propagated-inputs
      (list emacs-compat))
