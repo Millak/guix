@@ -112,6 +112,27 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages xorg))
 
+(define-public font-0xproto
+  (package
+    (name "font-0xproto")
+    (version "2.500")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/0xType/0xProto")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kmxgdvh7j91dy5s4l8q3fil0289mxg2f3ixcl06ywrrs2zw8fy8"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/0xType/0xProto")
+    (synopsis "Programming font")
+    (description
+     "This package provides a programming font focused on
+source code legibility.")
+    (license license:silofl1.1)))
+
 (define-public font-adwaita
   (package
     (name "font-adwaita")
