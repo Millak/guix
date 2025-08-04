@@ -43,15 +43,18 @@
                 "07ysqgdm0h566a8lwnpdgycp93vz7zskzihsgah3bla0ycj2pp69"))))
     (build-system gnu-build-system)
     (arguments
-     (if (target-arm32?)
-         (list #:phases
+     (list #:tests? (not (or (%current-target-system)
+                             ;; run_tests.py hangs
+                             (system-hurd?)))
+           #:phases
+           (if (target-arm32?)
                #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-sources
                      (lambda _
                        (invoke "patch" "-p1" "--force" "--input"
                                #$(local-file (search-patch
-                                               "re2c-Use-maximum-alignment.patch")))))))
-         '()))
+                                              "re2c-Use-maximum-alignment.patch"))))))
+               #~%standard-phases)))
     (native-inputs
      (list python))             ; for the test driver
     (home-page "https://re2c.org/")
