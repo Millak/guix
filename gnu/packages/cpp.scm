@@ -2096,29 +2096,6 @@ augment the C++ standard library.  The Abseil library code is collected from
 Google's C++ code base.")
     (license license:asl2.0)))
 
-;; This is for grpc-for-python-grpcio; keep this in sync with its actual
-;; requirements.
-(define-public abseil-cpp-20211102.0
-  (let ((base abseil-cpp-20200923.3))
-    (package
-      (inherit base)
-      (name "abseil-cpp")
-      (version "20211102.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/abseil/abseil-cpp")
-                      (commit "215105818dfde3174fe799600bb0f3cae233d0bf")))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "028vlxpmh65kb7s0cpba38qcwk1abyn5br0ffhvvjjh97vld69di"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:tests? _ #false) #false)
-         ((#:configure-flags flags)
-          #~(cons* "-DCMAKE_CXX_STANDARD=11" #$flags)))))))
-
 (define-public abseil-cpp-20220623
   (let ((base abseil-cpp-20200923.3))
     (package
