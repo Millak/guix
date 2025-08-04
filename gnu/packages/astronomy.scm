@@ -1967,6 +1967,50 @@ support for reading and writing various compression algorithms including:
 @url{http://facebook.github.io/zstd/,Zstandard}.")
       (license license:bsd-3))))
 
+(define-public python-asdf-transform-schemas
+  (hidden-package
+   (package
+     (name "python-asdf-transform-schemas")
+     (version "0.6.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "asdf_transform_schemas" version))
+        (sha256
+         (base32 "0clp3a2ldfhvsh5c7zqd7nr2bvv62a89aaf8p4a2vzgzjvhghl0g"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       ;; XXX: Check why all tests fail in this file.
+       #:test-flags #~(list "--deselect=tests/test_invalid.py")))
+     (native-inputs
+      (list python-asdf-bootstrap
+            python-pytest
+            python-setuptools-next
+            python-setuptools-scm
+            python-wheel))
+     (propagated-inputs
+      (list python-asdf-standard))
+     (home-page "https://github.com/asdf-format/asdf-transform-schemas")
+     (synopsis "ASDF schemas for transforms")
+     (description
+      "This package provides ASDF schemas for validating transform tags.
+Users should not need to install this directly; instead, install an
+implementation package such as asdf-astropy.")
+     (license license:bsd-3))))
+
+(define-public python-asdf-transform-schemas-bootstrap
+  (hidden-package
+   (package/inherit python-asdf-transform-schemas
+     (arguments
+      (list #:tests? #f
+            #:phases #~(modify-phases %standard-phases
+                         (delete 'sanity-check))))
+     (native-inputs
+      (list python-setuptools-next
+            python-wheel))
+     (propagated-inputs '()))))
+
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
@@ -4453,6 +4497,34 @@ semi-analytic models, to cosmological hydrodynamic simulations, and even
 observationally-derived galaxy merger catalogs.")
     (license license:expat)))
 
+(define-public python-hvpy
+  (package
+    (name "python-hvpy")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hvpy" version))
+       (sha256
+        (base32 "0bly1bgp0axxhzzf5imqsgmms41z8cxbjahxsibvb55dk94gwig6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; Requires HTTP(S) access to api.beta.helioviewer.org
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pydantic-2
+           python-pydantic-settings
+           python-requests))
+    (home-page "https://helioviewer.org/")
+    (synopsis "Helioviewer Python API Wrapper")
+    (description "@code{hvpy} is a Python API wrapper around the formal
+@url{Helioviewer API, https://api.helioviewer.org/docs/v2/}.")
+    (license license:bsd-2)))
+
 (define-public python-irispy-lmsal
   (package
     (name "python-irispy-lmsal")
@@ -4660,6 +4732,89 @@ machine.")
 Data System,CRDS}-formatted reference files for @acronym{James Webb Space
 Telescope,JWST} from a set of input dark current files and a set of flat field
 files.")
+    (license license:bsd-3)))
+
+(define-public python-kanon
+  (package
+    (name "python-kanon")
+    (version "0.6.6")
+    (source
+     (origin
+       (method git-fetch)               ; no release in PyPI
+       (uri (git-reference
+             (url "https://github.com/ALFA-project-erc/kanon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sg9yrsas5xmhbw6mhfyxsxh9i060af6v02whr9fqgv687fiyrhc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list ;"--numprocesses" "auto"
+              ;; XXX: This tests failing a lot.
+              "-k" (string-append "not test_attribute_forwardin"
+                                  " and not test_declination"
+                                  " and not test_init_basedquantity"
+                                  " and not test_ptolemy_viz"
+                                  " and not test_ptolemy_viz"
+                                  " and not test_quantity"
+                                  " and not test_read"
+                                  " and not test_shifting"
+                                  " and not test_sun_true_position"
+                                  " and not test_sun_true_position")
+              "--ignore=kanon/tables/__init__.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See <https://github.com/ALFA-project-erc/kanon/issues/149>.
+          (delete 'sanity-check)
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("version = \"0.0.0\"") (string-append "version = \"" #$version "\""))
+                ;; RuntimeError: Unable to detect version control
+                ;; system. Checked: Git. Not installed: Mercurial, Darcs,
+                ;; Subversion, Bazaar, Fossil, Pijul.  See
+                ;; <https://github.com/blacklanternsecurity/bbot/issues/1257>.
+                (("enable = true") "enable = false"))))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list git-minimal/pinned
+           python-poetry-core
+           python-poetry-dynamic-versioning
+           python-pytest-astropy
+           python-pytest-xdist
+           python-requests-mock))
+    (propagated-inputs
+     (list python-astropy-6
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-requests
+           python-scipy
+           ;; Optional
+           python-ipykernel
+           python-papermill))
+    (home-page "https://dishas.obspm.fr")
+    (synopsis "History of astronomy")
+    (description "This package provides a history of astronomy library.
+Current Features:
+@itemize
+@item define standard positional numeral systems with standard arithmetics
+(BasedReal)
+@item set your own precision contexts and algorithms on arithmetical
+operations (PrecisionContext)
+@item keep track of all operations
+@item build or import ancient astronomical tables
+@item perform arithmetical and statistical operations
+@item support for BasedReal values
+@item define new calendar types
+@item date conversions
+@item collection of mathematical models used for all kinds of geocentric
+astronomical tables
+@end itemize")
     (license license:bsd-3)))
 
 (define-public python-lenstronomy
@@ -5272,6 +5427,56 @@ position-frequency slice.")
      (native-inputs
       (list python-setuptools
             python-wheel)))))
+
+(define-public python-pyerfa
+  (package
+    (name "python-pyerfa")
+    (version "2.0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyerfa" version))
+       (sha256
+        (base32 "1h7nw61wqx9qsznnl8qandixr6c1n3f65hyqwzanav44wi7v5mhp"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Remove bundled submodule library.
+            (delete-file-recursively "liberfa")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disable only one failing test:
+      ;; AttributeError: __warningregistry__
+      ;; See https://github.com/liberfa/pyerfa/issues/126
+      #:test-flags #~(list "-k" "not test_errwarn_reporting")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-liberfa
+            (lambda _
+              (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest-doctestplus
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (inputs
+     (list erfa))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/liberfa/pyerfa")
+    (synopsis "Python bindings for ERFA")
+    (description
+     "PyERFA is the Python wrapper for the ERFA library (Essential
+Routines for Fundamental Astronomy), a C library containing key algorithms for
+astronomy, which is based on the SOFA library published by the International
+Astronomical Union (IAU).  All C routines are wrapped as Numpy universal
+functions, so that they can be called with scalar or array inputs.")
+    (license license:bsd-3)))
 
 (define-public python-pyhalo
   (package
@@ -6186,34 +6391,6 @@ instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
 
-(define-public python-hvpy
-  (package
-    (name "python-hvpy")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hvpy" version))
-       (sha256
-        (base32 "0bly1bgp0axxhzzf5imqsgmms41z8cxbjahxsibvb55dk94gwig6"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; Requires HTTP(S) access to api.beta.helioviewer.org
-    (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-pydantic-2
-           python-pydantic-settings
-           python-requests))
-    (home-page "https://helioviewer.org/")
-    (synopsis "Helioviewer Python API Wrapper")
-    (description "@code{hvpy} is a Python API wrapper around the formal
-@url{Helioviewer API, https://api.helioviewer.org/docs/v2/}.")
-    (license license:bsd-2)))
-
 (define-public python-jplephem
   (package
     (name "python-jplephem")
@@ -6247,89 +6424,6 @@ positions generated by the United States Naval Observatory and their
 Astronomical Almanac to within 0.0005 arcseconds (half a @emph{mas} or
 milliarcsecond).")
     (license license:expat)))
-
-(define-public python-kanon
-  (package
-    (name "python-kanon")
-    (version "0.6.6")
-    (source
-     (origin
-       (method git-fetch)               ; no release in PyPI
-       (uri (git-reference
-             (url "https://github.com/ALFA-project-erc/kanon")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0sg9yrsas5xmhbw6mhfyxsxh9i060af6v02whr9fqgv687fiyrhc"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list ;"--numprocesses" "auto"
-              ;; XXX: This tests failing a lot.
-              "-k" (string-append "not test_attribute_forwardin"
-                                  " and not test_declination"
-                                  " and not test_init_basedquantity"
-                                  " and not test_ptolemy_viz"
-                                  " and not test_ptolemy_viz"
-                                  " and not test_quantity"
-                                  " and not test_read"
-                                  " and not test_shifting"
-                                  " and not test_sun_true_position"
-                                  " and not test_sun_true_position")
-              "--ignore=kanon/tables/__init__.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; See <https://github.com/ALFA-project-erc/kanon/issues/149>.
-          (delete 'sanity-check)
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("version = \"0.0.0\"") (string-append "version = \"" #$version "\""))
-                ;; RuntimeError: Unable to detect version control
-                ;; system. Checked: Git. Not installed: Mercurial, Darcs,
-                ;; Subversion, Bazaar, Fossil, Pijul.  See
-                ;; <https://github.com/blacklanternsecurity/bbot/issues/1257>.
-                (("enable = true") "enable = false"))))
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list git-minimal/pinned
-           python-poetry-core
-           python-poetry-dynamic-versioning
-           python-pytest-astropy
-           python-pytest-xdist
-           python-requests-mock))
-    (propagated-inputs
-     (list python-astropy-6
-           python-matplotlib
-           python-numpy
-           python-pandas
-           python-requests
-           python-scipy
-           ;; Optional
-           python-ipykernel
-           python-papermill))
-    (home-page "https://dishas.obspm.fr")
-    (synopsis "History of astronomy")
-    (description "This package provides a history of astronomy library.
-Current Features:
-@itemize
-@item define standard positional numeral systems with standard arithmetics
-(BasedReal)
-@item set your own precision contexts and algorithms on arithmetical
-operations (PrecisionContext)
-@item keep track of all operations
-@item build or import ancient astronomical tables
-@item perform arithmetical and statistical operations
-@item support for BasedReal values
-@item define new calendar types
-@item date conversions
-@item collection of mathematical models used for all kinds of geocentric
-astronomical tables
-@end itemize")
-    (license license:bsd-3)))
 
 (define-public python-photutils
   (package
@@ -7211,56 +7305,6 @@ science instruments plus the fine guidance sensor, including both direct
 imaging, coronagraphic, and spectroscopic modes.")
     (license license:bsd-3)))
 
-(define-public python-pyerfa
-  (package
-    (name "python-pyerfa")
-    (version "2.0.1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyerfa" version))
-       (sha256
-        (base32 "1h7nw61wqx9qsznnl8qandixr6c1n3f65hyqwzanav44wi7v5mhp"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Remove bundled submodule library.
-            (delete-file-recursively "liberfa")))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Disable only one failing test:
-      ;; AttributeError: __warningregistry__
-      ;; See https://github.com/liberfa/pyerfa/issues/126
-      #:test-flags #~(list "-k" "not test_errwarn_reporting")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'use-system-liberfa
-            (lambda _
-              (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1")))
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list python-pytest-doctestplus
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (inputs
-     (list erfa))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/liberfa/pyerfa")
-    (synopsis "Python bindings for ERFA")
-    (description
-     "PyERFA is the Python wrapper for the ERFA library (Essential
-Routines for Fundamental Astronomy), a C library containing key algorithms for
-astronomy, which is based on the SOFA library published by the International
-Astronomical Union (IAU).  All C routines are wrapped as Numpy universal
-functions, so that they can be called with scalar or array inputs.")
-    (license license:bsd-3)))
-
 (define-public python-pynbody
   (package
     (name "python-pynbody")
@@ -7627,50 +7671,6 @@ editable metadata for interchange, and raw binary data that is fast to load
 and use.  Unlike FITS, the metadata is highly structured and is designed
 up-front for extensibility.")
     (license license:bsd-3)))
-
-(define-public python-asdf-transform-schemas
-  (hidden-package
-   (package
-     (name "python-asdf-transform-schemas")
-     (version "0.6.0")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "asdf_transform_schemas" version))
-        (sha256
-         (base32 "0clp3a2ldfhvsh5c7zqd7nr2bvv62a89aaf8p4a2vzgzjvhghl0g"))))
-     (build-system pyproject-build-system)
-     (arguments
-      (list
-       ;; XXX: Check why all tests fail in this file.
-       #:test-flags #~(list "--deselect=tests/test_invalid.py")))
-     (native-inputs
-      (list python-asdf-bootstrap
-            python-pytest
-            python-setuptools-next
-            python-setuptools-scm
-            python-wheel))
-     (propagated-inputs
-      (list python-asdf-standard))
-     (home-page "https://github.com/asdf-format/asdf-transform-schemas")
-     (synopsis "ASDF schemas for transforms")
-     (description
-      "This package provides ASDF schemas for validating transform tags.
-Users should not need to install this directly; instead, install an
-implementation package such as asdf-astropy.")
-     (license license:bsd-3))))
-
-(define-public python-asdf-transform-schemas-bootstrap
-  (hidden-package
-   (package/inherit python-asdf-transform-schemas
-     (arguments
-      (list #:tests? #f
-            #:phases #~(modify-phases %standard-phases
-                         (delete 'sanity-check))))
-     (native-inputs
-      (list python-setuptools-next
-            python-wheel))
-     (propagated-inputs '()))))
 
 (define-public python-asdf-coordinates-schemas
   (hidden-package
