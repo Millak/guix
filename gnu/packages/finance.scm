@@ -600,6 +600,38 @@ do so.")
 @code{libsecp256k1}.")
     (license license:expat)))
 
+(define-public electrum-aionostr
+  (package
+    (name "electrum-aionostr")
+    (version "0.0.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "electrum_aionostr" version))
+       (sha256
+        (base32 "10fgidah8ca59j3gssg9b434j49c1dd9cs3224nanjsxwl0ivsqf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Test below fails to match an exit code, pointing to this in Click:
+      ;; https://github.com/pallets/click/pull/1489
+      ;; This was fixed in Click 8.2.0.
+      #:test-flags #~(list "-k" "not test_command_line_interface")))
+    (inputs (list python-aiohttp
+                  python-aiohttp-socks
+                  python-aiorpcx
+                  python-cryptography
+                  python-electrum-ecc))
+    (native-inputs (list python-click
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/spesmilo/electrum-aionostr")
+    (synopsis "Asyncio nostr client")
+    (description "This package is a fork of @code{aionostr} that does not
+require Coincurve.")
+    (license license:bsd-3)))
+
 (define-public electrum
   (package
     (name "electrum")
