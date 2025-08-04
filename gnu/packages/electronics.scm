@@ -59,6 +59,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libftdi)
@@ -78,6 +79,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages toolkits)
@@ -910,6 +912,66 @@ design.")
      "VSG lets you define a VHDL coding style and provides a command-line tool
 to enforce it.")
     (license license:gpl3+)))
+
+(define-public qucsator-rf
+  (package
+    (name "qucsator-rf")
+    (version "1.0.6")                   ;required by qucs-s, keep in sync
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ra3xdh/qucsator_rf/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fx0kzj6hn0094jnvn6b1zqwjnkmd79xdr0zdyz5lmsyixlmxmvk"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'run-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Qucs-test is a collection of python scripts and data test
+                ;; cases. Its purpose is to test Qucs (GUI) and Qucsator;
+                ;; tests are under `testsuite` directory.
+                (copy-recursively
+                 #$(origin
+                     (method git-fetch)
+                     (uri
+                      ;; Using latest revision; refer to
+                      ;; .github/workflows/cmake.yml to keep up to date.
+                      (git-reference
+                        (url "https://github.com/ra3xdh/qucs-test/")
+                        (commit "ce69e05ceecab910175e6ea36b6e021a6d279947")))
+                     (sha256
+                      (base32
+                       (string-append "1r3hx43wvd0s11mzsvj1chylzv"
+                                      "0lk9qhaw7205j9x316ly03bl08"))))
+                 "qucs-test")
+                (with-directory-excursion "qucs-test"
+                  (invoke "python3" "run.py" "--qucsator"
+                          (format #f "--prefix=~a/bin" #$output)
+                          "--exclude=skip.txt"))))))
+      #:configure-flags
+      #~(list (format #f "-DBISON_DIR=~a/bin"
+                      #$(this-package-native-input "bison"))
+              (format #f "-DADMSXML_DIR=~a/bin"
+                      #$(this-package-native-input "adms")))))
+    (native-inputs
+     (list adms bison dos2unix flex gperf python python-looseversion
+           python-numpy python-matplotlib))
+    (synopsis "RF and microwave circuits simulator")
+    (description
+     "@code{Qucsator-rf} is a command line driven circuit simulator targeted
+for RF and microwave circuits.  It takes a network list in a certain format as
+input and outputs an XML dataset.")
+    (home-page "https://ra3xdh.github.io//")
+    (license license:gpl2+)))
 
 (define-public xschem
   (package
