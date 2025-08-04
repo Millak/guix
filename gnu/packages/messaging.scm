@@ -2905,7 +2905,7 @@ validating international phone numbers.")
 (define-public chatty
   (package
     (name "chatty")
-    (version "0.6.7")
+    (version "0.7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2920,7 +2920,7 @@ validating international phone numbers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11q07vjrrjf3k00kk41vm79brpq0qigz7l328br3g0li979kz32v"))))
+                "0d6z0mgl1xx384ph5lw3p5rpg3w1ninzyxjjjas3z8i7fyk47inf"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -2947,7 +2947,7 @@ validating international phone numbers.")
            xorg-server-for-tests))
     (inputs
      (list feedbackd
-           folks-with-libsoup2
+           folks
            gnome-desktop
            gsettings-desktop-schemas
            gspell
@@ -2962,7 +2962,7 @@ validating international phone numbers.")
            purple-mm-sms
            sqlite))
     (propagated-inputs
-     (list adwaita-icon-theme evolution-data-server-3.44))
+     (list adwaita-icon-theme evolution-data-server))
     (synopsis "Mobile client for XMPP and SMS messaging")
     (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
 as well as on desktop platforms.  It's based on libpurple and ModemManager.")
