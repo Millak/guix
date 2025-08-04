@@ -82,17 +82,19 @@ tasks needed for the ROCM software stack.")
     (source %rocm-llvm-origin)
     (build-system cmake-build-system)
     (arguments
-     `(#:build-type "Release"
-       #:configure-flags
-       (list "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
-             "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "amd/device-libs"))))))
+     (list
+      #:tests? #f ; Not sure how to run them.
+      #:build-type "Release"
+      #:configure-flags
+      #~(list "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
+              "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "amd/device-libs"))))))
     (inputs (list llvm-for-rocm))
-    (home-page "https://github.com/ROCm/ROCm-Device-Libs")
+    (home-page "https://github.com/ROCm/llvm-project/")
     (synopsis "ROCm Device libraries")
     (description "AMD-specific device-side language runtime libraries, namely
 oclc, ocml, ockl, opencl, hip and hc.")
