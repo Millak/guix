@@ -2793,6 +2793,8 @@ RAR, RPM, DEB, tar, and ZIP.  It cannot perform functions for archives, whose
 archiver is not installed.")
     (license license:gpl2+)))
 
+;; XXX: This software is abandoned since 2018. It may be removed as soon as
+;; the build breaks; see also the discussion at #1734.
 (define-public tarsplitter
   (package
     (name "tarsplitter")
