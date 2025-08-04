@@ -105,147 +105,123 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
-(define (mit-scheme-source-directory system version)
-  (string-append "mit-scheme-"
-                 (if (or (string-prefix? "x86_64" system)
-                         (string-prefix? "i686" system))
-                     ""
-                     "c-")
-                 version))
-
 (define-public mit-scheme
   (package
     (name "mit-scheme")
     (version "11.2")
-    (source #f)                                   ; see below
+    (source #f) ; See below.
     (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "tar" "xzvf"
-                     (assoc-ref inputs "source"))
-             (chdir ,(mit-scheme-source-directory (%current-system)
-                                                  version))
-             ;; Delete these dangling symlinks since they break
-             ;; `patch-shebangs'.
-             (for-each delete-file
-                       (find-files "src/compiler" "^make\\."))
-             (chdir "src")
-             #t))
-         (add-after 'unpack 'patch-/bin/sh
-           (lambda _
-             (setenv "CONFIG_SHELL" (which "sh"))
-             (substitute* '("../tests/ffi/autogen.sh"
-                            "../tests/ffi/autobuild.sh"
-                            "../tests/ffi/test-ffi.sh"
-                            "../tests/runtime/test-process.scm"
-                            "runtime/unxprm.scm")
-               (("/bin/sh") (which "sh"))
-               (("\\./autogen\\.sh")
-                (string-append (which "sh") " autogen.sh"))
-               (("\\./configure")
-                (string-append (which "sh") " configure")))
-             #t))
-         ;; disable array-parameter warnings that become errors while
-         ;; compiling microcode target
-         (add-before 'configure 'set-flags
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CFLAGS" "-Wno-array-parameter")
-             (setenv "CPPFLAGS" "-Wno-array-parameter")))
-         (replace 'build
-           (lambda* (#:key system outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (if (or (string-prefix? "x86_64" system)
-                       (string-prefix? "i686" system))
-                   (invoke "make" "compile-microcode")
-                   (invoke "./etc/make-liarc.sh"
-                           (string-append "--prefix=" out)))
-               #t)))
-         (add-after 'configure 'configure-doc
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (with-directory-excursion "../doc"
-               (let* ((out (assoc-ref outputs "out"))
-                      (bash (assoc-ref inputs "bash"))
-                      (bin/sh (string-append bash "/bin/sh")))
-                 (invoke bin/sh "./configure"
-                         (string-append "--prefix=" out)
-                         (string-append "SHELL=" bin/sh))
-                 #t))))
-         (add-after 'build 'build-doc
-           (lambda* _
-             (with-directory-excursion "../doc"
-               (invoke "make"))
-             #t))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc"))
-                    (old-doc-dir (string-append out "/share/doc"))
-                    (new-doc/mit-scheme-dir
-                     (string-append doc "/share/doc/" ,name "-" ,version)))
-               (with-directory-excursion "../doc"
-                 (for-each (lambda (target)
-                             (invoke "make" target))
-                           '("install-info-gz" "install-man"
-                             "install-html" "install-pdf")))
-               (mkdir-p new-doc/mit-scheme-dir)
-               (copy-recursively
-                (string-append old-doc-dir "/" ,name)
-                new-doc/mit-scheme-dir)
-               (delete-file-recursively old-doc-dir)
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; MIT/GNU Scheme is not bootstrappable, so it's recommended to
+          ;; compile from the architecture-specific tarballs, which contain
+          ;; pre-built binaries.  It leads to more efficient code than when
+          ;; building the tarball that contains generated C code instead of
+          ;; those binaries.
+          (replace 'unpack
+            (lambda* (#:key inputs #:allow-other-keys)
+              ((assoc-ref %standard-phases 'unpack)
+               #:inputs inputs
+               #:source
+               #+(origin
+                   (method url-fetch)
+                   (uri
+                    (string-append
+                     "mirror://gnu/mit-scheme/stable.pkg/" version
+                     "/mit-scheme-"
+                     (cond
+                      ((target-x86-64?)
+                       (string-append version "-x86-64"))
+                      ((target-aarch64?)
+                       (string-append version "-aarch64le"))
+                      (else
+                       ;; XXX: According to the manual, it should exist, but
+                       ;; seems dropped/forgotten starting from version 10.1.
+                       (string-append "c-" version)))
+                     ".tar.gz"))
+                   (sha256
+                    (cond
+                     ((target-x86-64?)
+                      (base32
+                       "17822hs9y07vcviv2af17p3va7qh79dird49nj50bwi9rz64ia3w"))
+                     ((target-aarch64?)
+                      (base32
+                       "11maixldk20wqb5js5p4imq221zz9nf27649v9pqkdf8fv7rnrs9"))
+                     (else
+                      (base32 "\
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))))))
+              ;; Delete these dangling symlinks since they break
+              ;; `patch-shebangs'.
+              (for-each delete-file (find-files "src/compiler" "^make\\."))
+              (chdir "src")))
+          (add-after 'unpack 'patch-/bin/sh
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((sh (search-input-file inputs "bin/sh")))
+                (setenv "CONFIG_SHELL" sh)
+                (substitute* '("../tests/ffi/autogen.sh"
+                               "../tests/ffi/autobuild.sh"
+                               "../tests/ffi/test-ffi.sh"
+                               "../tests/runtime/test-process.scm"
+                               "runtime/unxprm.scm")
+                  (("/bin/sh")
+                   sh)
+                  (("\\./autogen\\.sh")
+                   (string-append sh " autogen.sh"))
+                  (("\\./configure")
+                   (string-append sh " configure"))))))
+          ;; disable array-parameter warnings that become errors while
+          ;; compiling microcode target
+          (add-before 'configure 'set-flags
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CFLAGS" "-Wno-array-parameter")
+              (setenv "CPPFLAGS" "-Wno-array-parameter")))
+          (replace 'build
+            (lambda* (#:key system #:allow-other-keys)
+              (if (or (string-prefix? "x86_64" system)
+                      (string-prefix? "i686" system))
+                  (invoke "make" "compile-microcode")
+                  (invoke "./etc/make-liarc.sh"
+                          (string-append "--prefix=" #$output)))))
+          (add-after 'configure 'configure-doc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "../doc"
+                (let* ((sh (search-input-file inputs "bin/sh")))
+                  (invoke sh "./configure"
+                          (string-append "--prefix=" #$output)
+                          (string-append "SHELL=" sh))))))
+          (add-after 'build 'build-doc
+            (lambda* _
+              (with-directory-excursion "../doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((doc (assoc-ref outputs "doc"))
+                     (old-doc-dir (string-append #$output "/share/doc"))
+                     (new-doc/mit-scheme-dir (string-append doc "/share/doc/"
+                                                            #$name "-"
+                                                            #$version)))
+                (with-directory-excursion "../doc"
+                  (for-each (lambda (target)
+                              (invoke "make" target))
+                            '("install-info-gz" "install-man" "install-html"
+                              "install-pdf")))
+                (mkdir-p new-doc/mit-scheme-dir)
+                (copy-recursively (string-append old-doc-dir "/" #$name)
+                                  new-doc/mit-scheme-dir)
+                (delete-file-recursively old-doc-dir)))))))
     (native-inputs
-     `(;; Autoconf, Automake, and Libtool are necessary for the FFI tests.
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("texlive" ,(texlive-local-tree
-                    (list texlive-epsf
-                          texlive-texinfo)))
-       ("texinfo" ,texinfo)
-       ("ghostscript" ,ghostscript)
-       ("m4" ,m4)))
-    (inputs
-     `(("libx11" ,libx11)
-       ("ncurses" ,ncurses)
-
-       ("source"
-
-        ;; MIT/GNU Scheme is not bootstrappable, so it's recommended to
-        ;; compile from the architecture-specific tarballs, which contain
-        ;; pre-built binaries.  It leads to more efficient code than when
-        ;; building the tarball that contains generated C code instead of
-        ;; those binaries.
-        ,(origin
-          (method url-fetch)
-          (uri (string-append "mirror://gnu/mit-scheme/stable.pkg/"
-                              version "/mit-scheme-"
-                              (match (%current-system)
-                                ("x86_64-linux"
-                                 (string-append version "-x86-64"))
-                                ("aarch64-linux"
-                                 (string-append version "-aarch64le"))
-                                (_
-                                 (string-append "c-" version)))
-                              ".tar.gz"))
-          (sha256
-           (match (%current-system)
-             ("x86_64-linux"
-              (base32
-               "17822hs9y07vcviv2af17p3va7qh79dird49nj50bwi9rz64ia3w"))
-             ("aarch64-linux"
-              (base32
-               "11maixldk20wqb5js5p4imq221zz9nf27649v9pqkdf8fv7rnrs9"))
-             (_
-              (base32
-               "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))))))))
-
+     ;; XXX: Autoconf, Automake, and Libtool are necessary for the FFI tests.
+     (list autoconf
+           automake
+           libtool
+           (texlive-local-tree (list texlive-epsf texlive-texinfo))
+           texinfo
+           ghostscript
+           m4))
+    (inputs (list libx11 ncurses))
     ;; Fails to build on MIPS, see <http://bugs.gnu.org/18221>.
     ;; Also, the portable C version of MIT/GNU Scheme did not work in time for
     ;; release in version 10.1.
