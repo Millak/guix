@@ -27333,12 +27333,14 @@ input.")
     (version "1.3")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "validate_email" version))
-      (sha256
-       (base32
-        "1bxffaf5yz2cph8ki55vdvdypbwkvn2xr1firlcy62vqbzf1jivq"))))
-    (build-system python-build-system)
+       (method url-fetch)
+       (uri (pypi-uri "validate_email" version))
+       (sha256
+        (base32 "1bxffaf5yz2cph8ki55vdvdypbwkvn2xr1firlcy62vqbzf1jivq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/syrusakbary/validate_email")
     (synopsis "Verifies if an email address is valid and really exists")
     (description "@code{validate_email} can be used to verify if an email
