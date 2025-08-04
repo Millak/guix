@@ -13829,7 +13829,8 @@ profiler via Sysprof, debugging support, and more.")
        (sha256
         (base32
          "13mz3ijrmfh002pw977mzdnilgkfl0knr3xrxr0zdicx8nf7inr9"))
-       (patches (search-patches "komikku-python-3.11-compat.patch"))))
+       (patches (search-patches "komikku-python-3.11-compat.patch"
+                                "komikku-future-servers-compat.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13843,6 +13844,13 @@ profiler via Sysprof, debugging support, and more.")
                  ;; code following that line should migrate old databases
                  ;; but the line itself results in an import error
                  "return data_dir_path"))))
+          (add-after 'unpack 'unpack-fonts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "data/fonts")
+              (copy-file (search-input-file
+                          inputs
+                          "share/fonts/opentype/0xPropo-Medium.otf")
+                         "data/fonts/0xPropo-Medium.otf")))
           (add-after 'unpack 'skip-gtk-update-icon-cache
             (lambda _
               (substitute* "meson.build"
@@ -13860,6 +13868,7 @@ profiler via Sysprof, debugging support, and more.")
                   (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
     (inputs
      (list bash-minimal
+           font-0xpropo
            gtk
            libadwaita
            libnotify

@@ -1678,6 +1678,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/julia-SOURCE_DATE_EPOCH-mtime.patch	\
   %D%/packages/patches/julia-Use-MPFR-4.2.patch	                \
   %D%/packages/patches/komikku-python-3.11-compat.patch	                \
+  %D%/packages/patches/komikku-future-servers-compat.patch	                \
   %D%/packages/patches/libcall-ui-make-it-installable.patch	\
   %D%/packages/patches/libcamera-ipa_manager-disable-signature-verification.patch	\
   %D%/packages/patches/libconfuse-CVE-2022-40320.patch		\

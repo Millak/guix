@@ -1,0 +1,360 @@
+This patch is a partial combination of the following upstream patches to make
+Komikku compatible with servers >= 1.79.0.
+
+https://codeberg.org/valos/Komikku/commit/311a8915d7fa80278979a6d80d75a5febef9f2c1
+https://codeberg.org/valos/Komikku/commit/6820caac4b1f3538b8ce6ed729c19c1f6f66ea7f
+
+diff --git a/data/info.febvre.Komikku.gresource.xml.in b/data/info.febvre.Komikku.gresource.xml.in
+index 87fe29f..8dca096 100644
+--- a/data/info.febvre.Komikku.gresource.xml.in
++++ b/data/info.febvre.Komikku.gresource.xml.in
+@@ -36,6 +36,9 @@
+         <!-- CSS -->
+         <file compressed="true" alias="style.css">css/style.css</file>
+ 
++        <!-- Fonts -->
++        <file compressed="true" alias="text-image.otf">fonts/0xPropo-Medium.otf</file>
++
+         <!-- Icons -->
+         <file compressed="true" preprocess="xml-stripblanks" alias="icons/scalable/apps/brush-symbolic.svg">icons/brush-symbolic.svg</file>
+         <file compressed="true" preprocess="xml-stripblanks" alias="icons/scalable/apps/computer-fail-symbolic.svg">icons/computer-fail-symbolic.svg</file>
+diff --git a/komikku/servers/__init__.py b/komikku/servers/__init__.py
+index ab73cff..8482ab2 100644
+--- a/komikku/servers/__init__.py
++++ b/komikku/servers/__init__.py
+@@ -44,6 +44,7 @@ LANGUAGES = dict(
+     eo='Espéranto',
+     es='Español',
+     es_419='Español (Latinoamérica)',
++    fa='فارسی',
+     fr='Français',
+     it='Italiano',
+     nl='Nederlands',
+diff --git a/komikku/servers/existentialcomics/__init__.py b/komikku/servers/existentialcomics/__init__.py
+index 1ecb85f..f1747bd 100644
+--- a/komikku/servers/existentialcomics/__init__.py
++++ b/komikku/servers/existentialcomics/__init__.py
+@@ -8,6 +8,7 @@ import textwrap
+ 
+ from komikku.servers import Server
+ from komikku.servers import USER_AGENT
++from komikku.servers.utils import TextImage
+ from komikku.utils import get_buffer_mime_type
+ 
+ 
+@@ -105,24 +106,26 @@ class Existentialcomics(Server):
+         """
+         if page.get('slug'):
+             r = self.session_get(self.image_url.format(page['slug']))
++            if r.status_code != 200:
++                return None
++
++            mime_type = get_buffer_mime_type(r.content)
++            if not mime_type.startswith('image'):
++                return None
++
+             name = page['slug']
++            content = r.content
+         else:
+-            r = self.session_get(
+-                'https://fakeimg.pl/1500x2126/ffffff/000000/',
+-                params=dict(
+-                    text='\n'.join(textwrap.wrap(page['text'], 25)),
+-                    font_size=64,
+-                    font='museo'
+-                )
+-            )
+-            name = '{0}-alt-text.png'.format(page['name'])
++            text = '\n'.join(textwrap.wrap(page['text'], 25))
++            image = TextImage(text)
+ 
+-        mime_type = get_buffer_mime_type(r.content)
+-        if not mime_type.startswith('image'):
+-            return None
++            mime_type = image.mime_type
++            name = f'{page["name"]}-alt-text.{image.format}'
++            print(name)
++            content = image.content
+ 
+         return dict(
+-            buffer=r.content,
++            buffer=content,
+             mime_type=mime_type,
+             name=name,
+         )
+diff --git a/komikku/servers/fosscomics/__init__.py b/komikku/servers/fosscomics/__init__.py
+index f77e13d..a3097e5 100644
+--- a/komikku/servers/fosscomics/__init__.py
++++ b/komikku/servers/fosscomics/__init__.py
+@@ -11,6 +11,7 @@ import requests
+ from komikku.servers import Server
+ from komikku.servers import USER_AGENT
+ from komikku.servers.utils import convert_date_string
++from komikku.servers.utils import TextImage
+ from komikku.utils import get_buffer_mime_type
+ 
+ 
+@@ -122,27 +123,25 @@ class Fosscomics(Server):
+ 
+         if page.get('image'):
+             r = self.session_get(self.image_url.format(chapter_slug, page['image']))
+-            name = f'{chapter_num:02d}_{page["index"]:02d}.png'  # noqa: E231
+-        else:
+-            r = self.session_get(
+-                'https://fakeimg.pl/1500x2126/ffffff/000000/',
+-                params=dict(
+-                    text='\n'.join(textwrap.wrap(page['text'], 40)),
+-                    font_size=64,
+-                    font='museo'
+-                )
+-            )
+-            name = f'{chapter_num:02d}_{page["index"]:02d}_text_{page["subindex"]:02d}.png'  # noqa: E231
++            if r.status_code != 200:
++                return None
+ 
+-        if r.status_code != 200:
+-            return None
++            mime_type = get_buffer_mime_type(r.content)
++            if not mime_type.startswith('image'):
++                return None
+ 
+-        mime_type = get_buffer_mime_type(r.content)
+-        if not mime_type.startswith('image'):
+-            return None
++            name = f'{chapter_num:02d}_{page["index"]:02d}.{mime_type.split("/")[-1]}'  # noqa: E231
++            content = r.content
++        else:
++            text = '\n'.join(textwrap.wrap(page['text'], 25))
++            image = TextImage(text)
++
++            mime_type = image.mime_type
++            name = f'{chapter_num:02d}_{page["index"]:02d}_text_{page["subindex"]:02d}.{image.format}'  # noqa: E231
++            content = image.content
+ 
+         return dict(
+-            buffer=r.content,
++            buffer=content,
+             mime_type=mime_type,
+             name=name,
+         )
+diff --git a/komikku/servers/grisebouille/__init__.py b/komikku/servers/grisebouille/__init__.py
+index 49aa539..211fbb9 100644
+--- a/komikku/servers/grisebouille/__init__.py
++++ b/komikku/servers/grisebouille/__init__.py
+@@ -9,6 +9,7 @@ import textwrap
+ from komikku.servers import Server
+ from komikku.servers import USER_AGENT
+ from komikku.servers.utils import convert_date_string
++from komikku.servers.utils import TextImage
+ from komikku.utils import get_buffer_mime_type
+ 
+ 
+@@ -123,27 +124,22 @@ class Grisebouille(Server):
+             if r.status_code != 200:
+                 return None
+ 
+-            name = page['image'].split('/')[-1]
+-        else:
+-            r = self.session_get(
+-                'https://fakeimg.pl/1500x2126/ffffff/000000/',
+-                params=dict(
+-                    text='\n'.join(textwrap.wrap(page['text'], 25)),
+-                    font_size=64,
+-                    font='museo',
+-                )
+-            )
+-            if r.status_code != 200:
++            mime_type = get_buffer_mime_type(r.content)
++            if not mime_type.startswith('image'):
+                 return None
+ 
+-            name = 'txt_{0:03d}.png'.format(page['index'])
++            name = page['image'].split('/')[-1]
++            content = r.content
++        else:
++            text = '\n'.join(textwrap.wrap(page['text'], 25))
++            image = TextImage(text)
+ 
+-        mime_type = get_buffer_mime_type(r.content)
+-        if not mime_type.startswith('image'):
+-            return None
++            mime_type = image.mime_type
++            name = f'txt_{page["index"]:03d}.{image.format}'  # noqa: E231
++            content = image.content
+ 
+         return dict(
+-            buffer=r.content,
++            buffer=content,
+             mime_type=mime_type,
+             name=name,
+         )
+diff --git a/komikku/servers/multi/hiveworks/__init__.py b/komikku/servers/multi/hiveworks/__init__.py
+index a0bb405..ec9d955 100644
+--- a/komikku/servers/multi/hiveworks/__init__.py
++++ b/komikku/servers/multi/hiveworks/__init__.py
+@@ -17,6 +17,7 @@ import textwrap
+ from komikku.servers import Server
+ from komikku.servers import USER_AGENT
+ from komikku.servers.utils import convert_date_string
++from komikku.servers.utils import TextImage
+ from komikku.utils import get_buffer_mime_type
+ 
+ 
+@@ -112,27 +113,25 @@ class Hiveworks(Server):
+         """Returns chapter page scan (image) content"""
+         if page.get('image'):
+             r = self.session_get(self.image_url.format(page['image']))
++            if r.status_code != 200:
++                return None
++
++            mime_type = get_buffer_mime_type(r.content)
++            if not mime_type.startswith('image'):
++                return None
++
+             name = page['image']
++            content = r.content
+         else:
+-            r = self.session_get(
+-                'https://fakeimg.pl/1500x2126/ffffff/000000/',
+-                params=dict(
+-                    text='\n'.join(textwrap.wrap(page['text'], 25)),
+-                    font_size=64,
+-                    font='museo'
+-                )
+-            )
+-            name = '{0}-alt-text.png'.format(chapter_slug)
+-
+-        if r.status_code != 200:
+-            return None
++            text = '\n'.join(textwrap.wrap(page['text'], 25))
++            image = TextImage(text)
+ 
+-        mime_type = get_buffer_mime_type(r.content)
+-        if not mime_type.startswith('image'):
+-            return None
++            mime_type = image.mime_type
++            name = f'{chapter_slug}-alt-text.{image.format}'
++            content = image.content
+ 
+         return dict(
+-            buffer=r.content,
++            buffer=content,
+             mime_type=mime_type,
+             name=name,
+         )
+diff --git a/komikku/servers/utils.py b/komikku/servers/utils.py
+index cf898fc..9fb2139 100644
+--- a/komikku/servers/utils.py
++++ b/komikku/servers/utils.py
+@@ -23,15 +23,54 @@ from bs4 import BeautifulSoup
+ from bs4 import NavigableString
+ import dateparser
+ import emoji
++from gi.repository import Gio
+ from PIL import Image
++from PIL import ImageDraw
++from PIL import ImageFont
+ import requests
+ 
+ from komikku.servers.loader import ServerFinder
+ from komikku.utils import get_cached_logos_dir
+ 
+ logger = logging.getLogger(__name__)
+ 
+ 
++class TextImage:
++    def __init__(self, text, width=1500, height=2126, bg_color='#fff', fg_color='#000', font_size=64, format='webp'):
++        self.format = format
++        self.image = Image.new('RGB', (width, height), bg_color)
++
++        if text is None:
++            text = ''
++
++        rfont = Gio.resources_lookup_data('/info/febvre/Komikku/text-image.otf', Gio.ResourceLookupFlags.NONE)
++        font = ImageFont.truetype(BytesIO(rfont.get_data()), font_size)
++
++        draw = ImageDraw.Draw(self.image)
++        if '\n' in text:
++            left, top, right, bottom = draw.multiline_textbbox((0, 0), text, font, font_size=font_size)
++        else:
++            left, top, right, bottom = draw.textbbox((0, 0), text, font, font_size=font_size)
++
++        text_width = right - left
++        text_height = bottom - top
++        text_coord = ((width - text_width) // 2, (height - text_height) // 2)
++
++        draw.multiline_text(text_coord, text, fill=fg_color, font=font, align='center')
++        del draw
++
++    @property
++    def content(self):
++        buf = BytesIO()
++        self.image.save(buf, self.format.upper())
++
++        return buf.getvalue()
++
++    @property
++    def mime_type(self):
++        return f'image/{self.format}'
++
++
+ def convert_date_string(date_string, format=None, languages=None):
+     """
+     Convert a date string into a date object
+diff --git a/komikku/servers/xkcd/__init__.py b/komikku/servers/xkcd/__init__.py
+index 3445884..0eaeb5e 100644
+--- a/komikku/servers/xkcd/__init__.py
++++ b/komikku/servers/xkcd/__init__.py
+@@ -9,6 +9,7 @@ import textwrap
+ from komikku.servers import Server
+ from komikku.servers import USER_AGENT
+ from komikku.servers.utils import convert_date_string
++from komikku.servers.utils import TextImage
+ from komikku.utils import get_buffer_mime_type
+ 
+ 
+@@ -108,27 +109,25 @@ class Xkcd(Server):
+         """
+         if page.get('image'):
+             r = self.session_get(self.image_url.format(page['image']))
++            if r.status_code != 200:
++                return None
++
++            mime_type = get_buffer_mime_type(r.content)
++            if not mime_type.startswith('image'):
++                return None
++
+             name = page['image']
++            content = r.content
+         else:
+-            r = self.session_get(
+-                'https://fakeimg.pl/1500x2126/ffffff/000000/',
+-                params=dict(
+-                    text='\n'.join(textwrap.wrap(page['text'], 25)),
+-                    font_size=64,
+-                    font='museo'
+-                )
+-            )
+-            name = '{0}-alt-text.png'.format(chapter_slug)
+-
+-        if r.status_code != 200:
+-            return None
++            text = '\n'.join(textwrap.wrap(page['text'], 25))
++            image = TextImage(text)
+ 
+-        mime_type = get_buffer_mime_type(r.content)
+-        if not mime_type.startswith('image'):
+-            return None
++            mime_type = image.mime_type
++            name = f'{chapter_slug}-alt-text.{image.format}'
++            content = image.content
+ 
+         return dict(
+-            buffer=r.content,
++            buffer=content,
+             mime_type=mime_type,
+             name=name,
+         )
+--
+libgit2 1.5.2
+
