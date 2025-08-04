@@ -26943,7 +26943,7 @@ conversion: Gamut A, B, and C.")
 (define-public python-jsonpatch
   (package
     (name "python-jsonpatch")
-    (version "1.16")
+    (version "1.33")
     (source
      (origin
        (method git-fetch)
@@ -26953,9 +26953,13 @@ conversion: Gamut A, B, and C.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0k9pff06lxama3nhsc7cdxbp83422bdy8ifs52i6xkas8hpyzfzr"))))
-    (build-system python-build-system)
+        (base32 "0qidj3vrklygsid40y6qgxclssd85hbxnic1av833iy4hbml2w14"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests.py")))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-jsonpointer))
     (home-page "https://github.com/stefankoegl/python-json-patch")
