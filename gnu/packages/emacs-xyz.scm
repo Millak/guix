@@ -32489,17 +32489,32 @@ buffer displays recursive dir sizes.")
 (define-public emacs-dired-preview
   (package
     (name "emacs-dired-preview")
-    (version "0.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/protesilaos/dired-preview")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "016g2scl3ifngy67s5dalnywxxj1xdf1mibpqda2zgynx0czvv7l"))))
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/protesilaos/dired-preview")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0p6v1dx33f7ypi026pp4jjzh81n5vl4gy63cwhql0sbwsbxsz8y9"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "ert-runner" "-L" "tests" "tests/dired-preview-test.el")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)"))))))
+    (native-inputs (list emacs-ert-runner texinfo))
     (home-page "https://protesilaos.com/emacs/dired-preview")
     (synopsis "Automatically preview file at point in Dired")
     (description
