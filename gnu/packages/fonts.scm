@@ -112,6 +112,26 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages xorg))
 
+(define-public font-0xpropo
+  (package
+    (name "font-0xpropo")
+    (version "1.100")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/0xType/0xPropo")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q4w04gh5q5imcvars0l8wczf2mh6ldnk705bbms1vnmnv8b291w"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/0xType/0xPropo")
+    (synopsis "Proportional variant of font-0xproto")
+    (description
+     "This package provides a proportional variant of @code{font-0xproto}.")
+    (license license:silofl1.1)))
+
 (define-public font-0xproto
   (package
     (name "font-0xproto")
