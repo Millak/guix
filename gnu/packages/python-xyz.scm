@@ -27350,28 +27350,20 @@ web frameworks.")
     (name "python-flasgger")
     (version "0.9.7.1")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+     (origin
+       (method git-fetch)
+       (uri (git-reference
               (url "https://github.com/rochacbruno/flasgger")
               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32 "08dnn19swfa5lsscj38hil41b3xnqvwgwnx9q2vg9kv26bs1zcah"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08dnn19swfa5lsscj38hil41b3xnqvwgwnx9q2vg9kv26bs1zcah"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; This test fails due to missing fixtures
-      #:test-flags '(list "-k" "not test_swag")
-      #:phases
-      '(modify-phases %standard-phases
-        (add-after 'unpack 'prepare-check
-          (lambda _
-            ;; This requires a dummy package "flasgger_package" to be installed.
-            (delete-file "examples/package_example.py")
-            ;; These fail with an internal server error
-            (for-each delete-file '("examples/marshmallow_apispec.py"
-                                    "examples/validation.py")))))))
+      #:test-flags
+      #~(list "--ignore=tests/test_examples.py"
+              "-k" "not test_swag")))
     (propagated-inputs
      (list python-flask
            python-pyyaml
@@ -27379,16 +27371,8 @@ web frameworks.")
            python-mistune
            python-six))
     (native-inputs
-     (list python-apispec
-           python-apispec-webframeworks
-           python-decorator
-           python-flask-restful
-           python-flex
-           python-marshmallow
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/rochacbruno/flasgger/")
     (synopsis "Extract Swagger specs from your Flask project")
     (description "@code{python-flasgger} allows extracting Swagger specs
