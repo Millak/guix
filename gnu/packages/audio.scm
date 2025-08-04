@@ -6450,7 +6450,7 @@ as is the case with audio plugins.")
 (define-public carla
   (package
     (name "carla")
-    (version "2.4.1")
+    (version "2.5.10")
     (source
      (origin
        (method git-fetch)
@@ -6460,7 +6460,7 @@ as is the case with audio plugins.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01ngkmfcxyg1bb4qmfvlkkjbx4lx62akxqhizl8zmqnhfcy4p9bx"))))
+        (base32 "1p7nvydnmg5l457w3089bwj1a5z509ydlpwvf19k86i348a1lm6v"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no "check" target
