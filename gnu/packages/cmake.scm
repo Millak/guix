@@ -249,15 +249,7 @@ using the CMake build system.")
           ;; CMake uses its own configure script.
           (replace 'configure
             (lambda* (#:key (configure-flags '()) #:allow-other-keys)
-              (apply invoke "./configure" configure-flags)))
-          #$@(if (target-hurd?)
-                 #~((add-after 'unpack 'patch-hurd
-                      (lambda _
-                        ;; Version 3.25.0 has a similar fix.
-                        (substitute* "Utilities/cmlibuv/src/unix/udp.c"
-                          (("!defined\\(__QNX__\\)")
-                           "!defined(__GNU__)")))))
-                 #~()))))
+              (apply invoke "./configure" configure-flags))))))
     (inputs
      (list bzip2
            curl
