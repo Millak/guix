@@ -562,6 +562,44 @@ It's not clear at the moment whether one day it will be possible to
 do so.")
     (license license:agpl3+)))
 
+(define-public python-electrum-ecc
+  (package
+    (name "python-electrum-ecc")
+    (version "0.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "electrum_ecc" version))
+       (sha256
+        (base32 "1lmp5zmhabaxp6jha3xlsmqviivrxxhsy20x6z42ayqgd9cvhczp"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete the vendored dependency.
+           (delete-file-recursively "libsecp256k1")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'prepare-env
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       ;; Do not attempt to compile vendored libsecp256k1.
+                       (setenv "ELECTRUM_ECC_DONT_COMPILE" "1")
+                       ;; Make the package find our libsecp256k1.
+                       (substitute* "src/electrum_ecc/ecc_fast.py"
+                         (("library_paths = \\[\\]")
+                          (string-append
+                           "library_paths = ['"
+                           (search-input-file inputs "/lib/libsecp256k1.so")
+                           "']"))))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (inputs (list libsecp256k1))
+    (home-page "https://github.com/spesmilo/electrum-ecc")
+    (synopsis "Pure python ctypes wrapper for libsecp256k1")
+    (description "This package provides a pure Python ctypes wrapper for
+@code{libsecp256k1}.")
+    (license license:expat)))
+
 (define-public electrum
   (package
     (name "electrum")
