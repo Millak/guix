@@ -8508,30 +8508,6 @@ contacts, tasks, and calendar information.  It was originally developed for
 Evolution (hence the name), but is now used by other packages as well.")
     (license license:lgpl2.0)))
 
-;;; This version can be used for projects with dependencies stuck on libsoup2.
-(define-public evolution-data-server-3.44
-  (package
-    (inherit evolution-data-server)
-    (name "evolution-data-server")
-    (version "3.44.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/" name "/"
-                           (version-major+minor version) "/"
-                           name "-" version ".tar.xz"))
-       (sha256
-        (base32 "1sxjrjr31wqbp9g4pf6dwj8rc4mi7c5fbfd489ha92ym7246bin0"))))
-    (inputs
-     (modify-inputs (package-inputs evolution-data-server)
-       (replace "gnome-online-accounts" gnome-online-accounts-3.44)
-       (replace "libgweather4" libgweather)
-       (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2)))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs evolution-data-server)
-       (delete "gtk")
-       (replace "libsoup" libsoup-minimal-2)))))
-
 (define-public caribou
   (package
     (name "caribou")
