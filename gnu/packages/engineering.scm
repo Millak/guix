@@ -102,13 +102,11 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
-  #:use-module (gnu packages electronics)
   #:use-module (gnu packages emacs-build)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
-  #:use-module (gnu packages fpga)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
@@ -119,7 +117,6 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
-  #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
@@ -165,7 +162,6 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby-check)
-  #:use-module (gnu packages textutils)
   #:use-module (gnu packages sagemath)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -935,59 +931,6 @@ create diagrams and schematics.  The software is primarily intended to create
 electrical documentation but it can also be used to draw any kinds of diagrams,
 such as those made in pneumatics, hydraulics, process industries, electronics,
 and others.")
-    (license license:gpl2+)))
-
-(define-public qucs-s
-  (package
-    (name "qucs-s")
-    (version "25.1.2")                  ;update qucsator-rf accordingly
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ra3xdh/qucs_s")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "07wrpqgbj77rmh1yxy233lk1y4ys1x0721b3jsldp058dcgf24zv"))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:qtbase qtbase                   ;for Qt 6
-      #:tests? #f                       ;no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'adjust-default-settings
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "qucs/settings.cpp"
-                (("\"ngspice\"")
-                 (format #f "~s" (search-input-file inputs "bin/ngspice")))
-                (("\"octave\"")
-                 (format #f "~s" (search-input-file inputs "bin/octave"))))))
-          (add-after 'install 'wrap-program
-            (lambda _
-              (wrap-program (string-append #$output "/bin/qucs-s")
-                `("PATH" ":" prefix
-                  (,(string-append #$(this-package-input "ngspice") "/bin")
-                   ,(string-append
-                     #$(this-package-input "qucsator-rf") "/bin")))))))))
-    (native-inputs (list qttools))
-    (inputs
-     ;; TODO Add xyce-serial to the list.
-     (list bash-minimal octave qtbase qtcharts qtsvg qtwayland qucsator-rf ngspice))
-    (synopsis "GUI for different circuit simulation kernels")
-    (description
-     "@acronym{Qucs-S, Quite universal circuit simulator with SPICE} provides
-a fancy graphical user interface for a number of popular circuit simulation
-engines.  The package contains libraries for schematic capture, visualization
-and components.  The following simulation kernels are supported:
-@itemize
-@item Ngspice (recommended)
-@item Xyce
-@item SpiceOpus
-@item Qucsator (non-SPICE)
-@end itemize\n")
-    (home-page "https://ra3xdh.github.io/")
     (license license:gpl2+)))
 
 (define-public gerbv

@@ -1,16 +1,17 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
+;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2018-2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -42,6 +44,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages c)
@@ -971,6 +974,59 @@ to enforce it.")
 for RF and microwave circuits.  It takes a network list in a certain format as
 input and outputs an XML dataset.")
     (home-page "https://ra3xdh.github.io//")
+    (license license:gpl2+)))
+
+(define-public qucs-s
+  (package
+    (name "qucs-s")
+    (version "25.1.2")                  ;update qucsator-rf accordingly
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ra3xdh/qucs_s")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07wrpqgbj77rmh1yxy233lk1y4ys1x0721b3jsldp058dcgf24zv"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase                   ;for Qt 6
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-default-settings
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "qucs/settings.cpp"
+                (("\"ngspice\"")
+                 (format #f "~s" (search-input-file inputs "bin/ngspice")))
+                (("\"octave\"")
+                 (format #f "~s" (search-input-file inputs "bin/octave"))))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/qucs-s")
+                `("PATH" ":" prefix
+                  (,(string-append #$(this-package-input "ngspice") "/bin")
+                   ,(string-append
+                     #$(this-package-input "qucsator-rf") "/bin")))))))))
+    (native-inputs (list qttools))
+    (inputs
+     ;; TODO Add xyce-serial to the list.
+     (list bash-minimal octave qtbase qtcharts qtsvg qtwayland qucsator-rf ngspice))
+    (synopsis "GUI for different circuit simulation kernels")
+    (description
+     "@acronym{Qucs-S, Quite universal circuit simulator with SPICE} provides
+a fancy graphical user interface for a number of popular circuit simulation
+engines.  The package contains libraries for schematic capture, visualization
+and components.  The following simulation kernels are supported:
+@itemize
+@item Ngspice (recommended)
+@item Xyce
+@item SpiceOpus
+@item Qucsator (non-SPICE)
+@end itemize\n")
+    (home-page "https://ra3xdh.github.io/")
     (license license:gpl2+)))
 
 (define-public xschem
