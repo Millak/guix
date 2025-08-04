@@ -7593,6 +7593,28 @@ termios API is used.  GNU Guile doesn't have an interface for that built in.
 This module implements this interface by use of Guile's dynamic FFI.")
     (license license:bsd-2)))
 
+(define-public guile-bstructs
+  (package
+    (name "guile-bstructs")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://files.dthompson.us/releases"
+                           "/guile-bstructs/guile-bstructs-" version ".tar.gz"))
+       (sha256
+        (base32 "0f847aiyzhrlvd2jmckyqrkrvi7i9mg8rmyhbh7fs1vzykcf67wb"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list guile-3.0))
+    (synopsis "Efficient binary structures for Guile")
+    (description
+     "Guile-bstructs provides an efficient implementation of
+low-level binary structures for Guile Scheme inspired by Chez Scheme's
+ftypes.")
+    (home-page "https://dthompson.us/projects/guile-bstructs.html")
+    (license license:asl2.0)))
+
 (define-public guile-goblins
   (package
     (name "guile-goblins")
