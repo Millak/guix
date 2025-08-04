@@ -78,7 +78,6 @@
     (inputs (list guile-3.0
                   imagemagick
                   ghostscript ; for 'convert'
-                  ploticus
                   lout))
 
     ;; The 'skribilo' command needs them, and for people using Skribilo as a
