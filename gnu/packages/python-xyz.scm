@@ -27337,23 +27337,29 @@ input.")
 (define-public python-marshmallow
   (package
     (name "python-marshmallow")
-    ;; XXX: The latest version requires missing timezones from python-pytz
-    ;; which needs to be updated.
-    (version "3.22.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "marshmallow" version))
        (sha256
-        (base32 "0gl2qmq5sqf1b3f84zd7yzkznaknr6j5lnbxcfw0n8ja20lzawj9"))))
+        (base32 "0mcd5aqs33hijapnj2a3g580pfaghp8h3vcpzdf979wrqam80viv"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-check-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
     (native-inputs
-     (list python-pytest
-           python-pytz
+     (list python-flit-core
+           python-pytest
            python-simplejson
-           python-flit-core))
-    (propagated-inputs
-     (list python-packaging))
+           tzdata-for-tests))
     (home-page "https://github.com/marshmallow-code/marshmallow")
     (synopsis "Convert complex datatypes to and from native Python datatypes")
     (description
