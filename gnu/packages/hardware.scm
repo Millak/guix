@@ -21,6 +21,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -781,6 +782,38 @@ color (good for notifications)
 @end itemize")
     (home-page "https://github.com/enwi/hueplusplus")
     (license license:lgpl3+)))
+
+(define-public utmp-cli
+  (package
+    (name "utmp-cli")
+    (version "1.063")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/usbtemp/utmp-cli")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07j827nin4wm4hh8ljsj1dj3harb3dxan05ck8n68c443qqakz4a"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (install-file "utmp-cli"
+                                 (string-append (assoc-ref outputs "out")
+                                                "/bin")))))))
+    (home-page "https://github.com/usbtemp/utmp-cli")
+    (synopsis "Read temperature from USB thermometer")
+    (description "Read temperature from usbtemp.com USB thermometer and
+DS9097E compatible 1-wire adapter with one DS18B20 digital probe attached
+through command line interface.")
+    (license license:expat)))
 
 (define-public i7z
   (let ((revision "0")
