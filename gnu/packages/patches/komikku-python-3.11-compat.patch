@@ -1,0 +1,57 @@
+This patch fixes quote nesting in format strings in a way that's compatible with
+Python 3.11.  A larger cleanup patch [1] applies some of these hunks upstream.
+
+[1] https://codeberg.org/valos/Komikku/commit/e76766c6012d9d5c18c2c3bbaa7dfc11a6ee2d77
+
+diff --git a/komikku/card/tracking.py b/komikku/card/tracking.py
+index ce333780..76119e20 100644
+--- a/komikku/card/tracking.py
++++ b/komikku/card/tracking.py
+@@ -279,7 +279,7 @@ class TrackerRow(Adw.ExpanderRow):
+             self.set_expanded(True)
+             self.set_arrow_visible(True)
+             self.btn.set_visible(False)
+-            self.action_row.set_title(f'<a href="{self.tracker.get_manga_url(data['id'])}">{html_escape(data["name"])}</a>')
++            self.action_row.set_title(f'<a href="{self.tracker.get_manga_url(data["id"])}">{html_escape(data["name"])}</a>')
+ 
+             with self.chapters_progress_row.handler_block(self.num_chapter_changed_handler_id):
+                 adj = Gtk.Adjustment(
+-- 
+diff --git a/komikku/servers/mangalib/__init__.py b/komikku/servers/mangalib/__init__.py
+index b631f617..c48c1cf2 100644
+--- a/komikku/servers/mangalib/__init__.py
++++ b/komikku/servers/mangalib/__init__.py
+@@ -124,9 +124,9 @@ class Mangalib(Server):
+                 for team in branch['teams']:
+                     scanlators.append(team['name'])
+ 
+             data['chapters'].append(dict(
+-                slug=f'v{chapter['volume']}/c{chapter['number']}',
++                slug=f'v{chapter["volume"]}/c{chapter["number"]}',
+                 title=f'Том {chapter["volume"]} Глава {chapter["number"]} - {chapter["name"]}',
+                 num=chapter['number'] if is_number(chapter['number']) else None,
+                 num_volume=chapter['volume'] if is_number(chapter['volume']) else None,
+                 date=convert_date_string(date, format='%Y-%m-%d') if date else None,
+diff --git a/komikku/servers/perfscan/__init__.py b/komikku/servers/perfscan/__init__.py
+index 8d77c131..ea9df5e4 100644
+--- a/komikku/servers/perfscan/__init__.py
++++ b/komikku/servers/perfscan/__init__.py
+@@ -69,7 +69,7 @@ class Perfscan(Server):
+         ))
+ 
+         data['name'] = resp_data['title']
+-        data['cover'] = f'{self.media_url}/{resp_data['cover']}'
++        data['cover'] = f'{self.media_url}/resp_data["cover"]}'
+ 
+         if resp_data.get('author'):
+             data['authors'].append(resp_data['author'])
+@@ -95,7 +95,7 @@ class Perfscan(Server):
+         for chapter in resp_data.get('Chapter'):
+             title = chapter['title'].strip()
+             if title in (None, '', '-'):
+-                title = f'Chapitre {chapter['index']}'
++                title = f'Chapitre {chapter["index"]}'
+ 
+             data['chapters'].append({
+                 'slug': chapter['id'],
+

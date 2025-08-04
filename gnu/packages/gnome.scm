@@ -13818,7 +13818,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.57.0")
+    (version "1.72.0")
     (source
      (origin
        (method git-fetch)
@@ -13828,7 +13828,8 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0z8sigv1a8a96y0hgm21j4qmpy06ziqw8yhlgbp8kbg70g5yhrbg"))))
+         "13mz3ijrmfh002pw977mzdnilgkfl0knr3xrxr0zdicx8nf7inr9"))
+       (patches (search-patches "komikku-python-3.11-compat.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
