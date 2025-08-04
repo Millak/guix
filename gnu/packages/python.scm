@@ -1078,14 +1078,14 @@ def contents() -> str:
 (define-public python-3.12
   (package
     (name "python-next")
-    (version "3.12.2")
+    (version "3.12.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.python.org/ftp/python/" version
                            "/Python-" version ".tar.xz"))
        (sha256
-        (base32 "0w6qyfhc912xxav9x9pifwca40b4l49vy52wai9j0gc1mhni2a5y"))
+        (base32 "1nvskza80hzzh0x3w6i79jxkkrvl9x1ld9am3fqik6hygx5v42y3"))
        (patches (search-patches "python-3-deterministic-build-info.patch"
                                 "python-3.12-fix-tests.patch"
                                 "python-3-hurd-configure.patch"))
