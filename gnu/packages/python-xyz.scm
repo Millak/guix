@@ -35280,11 +35280,8 @@ handling those variations.")
          (base32
           "1bpi0asa7sd5ch6x6b60n5yias04nsx6kcwji40228g9lrs7y2qc"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(;; Fails unable to detect valid Qt bindings even when
-       ;; added as native-inputs.
-       #:tests? #f))
-    (native-inputs (list python-qtsass
+    (native-inputs (list python-pytest
+                         python-qtsass
                          python-setuptools
                          python-watchdog
                          python-wheel))
