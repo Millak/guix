@@ -27349,6 +27349,9 @@ input.")
      address is valid and really exists.")
     (license license:lgpl3+)))
 
+;; XXX: Project has no updates since 2019, consider to remove when nothing
+;; depends on it in the next refresh cycle.
+;; See: <https://github.com/pipermerriam/flex/issues/237>.
 (define-public python-flex
   (package
     (name "python-flex")
@@ -27360,7 +27363,10 @@ input.")
       (sha256
        (base32
         "1sr91f5sqywj4040jm3cq4333fp8hbmmr7v6v05a3h0sgyixcbi9"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-click
            python-jsonpointer
