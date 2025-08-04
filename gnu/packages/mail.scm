@@ -1229,6 +1229,12 @@ and corrections.  It is based on a Bayesian filter.")
         #:tests? #f
         #:phases
         #~(modify-phases %standard-phases
+            ;; See: https://github.com/OfflineIMAP/offlineimap3/pull/205.
+            (add-after 'unpack 'fix-issue-205
+              (lambda _
+                (substitute* "offlineimap/localeval.py"
+                  (("import importlib.util\n")
+                   "import importlib.util\nimport importlib.machinery\n"))))
             (add-after 'build 'build-documentation
               (lambda _
                 (substitute* "docs/Makefile"
