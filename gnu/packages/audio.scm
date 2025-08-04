@@ -2850,6 +2850,11 @@ partial release of the General MIDI sound set.")
               (string-append "--ldflags=-Wl,-rpath=" #$output "/lib"))
            #:phases
            '(modify-phases %standard-phases
+              (add-after 'unpack 'fix-includes
+                (lambda _
+                  (substitute* "src/LV2/DSP/gx_common.h"
+                    (("#include <cstdlib>" all)
+                     (string-append all "\n#include <cstdint>")))))
               (add-after 'unpack 'python3.11-compatibility
                 (lambda _
                   (substitute* "wscript"
