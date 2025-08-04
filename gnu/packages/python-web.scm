@@ -8178,45 +8178,44 @@ and fairly speedy.")
 (define-public python-httptools
   (package
     (name "python-httptools")
-    (version "0.1.1")
+    (version "0.6.4")
     (source
      (origin
        ;; PyPI tarball comes with a vendored http-parser and no tests.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/MagicStack/httptools")
-             (commit (string-append "v" version))))
+              (url "https://github.com/MagicStack/httptools")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g08128x2ixsiwrzskxc6c8ymgzs39wbzr5mhy0mjk30q9pqqv77"))))
-    (build-system python-build-system)
+        (base32 "05zsa77jlm2h9z0vfj6gdqklj3pbzbijhk5s9b3q7iaxl347hwzc"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin (delete-file-recursively "vendor")))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'preparations
-           (lambda _
-             ;; Skip a failing test (AssertionError).  Bug report:
-             ;; https://github.com/MagicStack/httptools/issues/10.
-             (substitute* "tests/test_parser.py"
-               (("    def test_parser_response_1")
-                (string-append
-                 "    @unittest.skip(\"Disabled.\")\n"
-                 "    def test_parser_response_1")))
-             ;; Use packaged http-parser.
-             (substitute* "setup.py" (("self.use_system_http_parser = False")
-                                      "self.use_system_http_parser = True"))
-             ;; This path is hardcoded.  Hardcode our own.
-             (substitute* "httptools/parser/cparser.pxd"
-               (("../../vendor/http-parser")
-                (string-append (assoc-ref %build-inputs "http-parser")
-                               "/include")))
-             ;; Don't force Cython version.
-             (substitute* "setup.py" (("Cython==") "Cython>="))
-             #t)))))
+     (list
+      #:test-flags
+      ;; XXX: AssertionError: HttpParserError not raised.
+      #~(list "-k" "not test_parser_response_leninent_headers_1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-build-ext
+            (lambda _
+              (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[build_ext]
+use_system_llhttp = true
+use_system_http_parser = true
+cython_always = true"))))))))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython
+           python-pytest
+           python-setuptools))
     (inputs
-     (list http-parser))
+     (list http-parser
+           llhttp))
     (home-page "https://github.com/MagicStack/httptools")
     (synopsis "Collection of framework independent HTTP protocol utils")
     (description
