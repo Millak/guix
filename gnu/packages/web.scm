@@ -6345,7 +6345,7 @@ developed as part of the NetSurf project.")
          "0750q884ax8wygl64wq03zdjj8h838ch3f8jdfkv4gz809zj4my3"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list netsurf-buildsystem pkg-config gperf-3.0))
+     (list netsurf-buildsystem pkg-config gperf))
     (inputs
      (list libwapcaplet))
     (propagated-inputs
