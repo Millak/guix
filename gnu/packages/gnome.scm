@@ -5991,16 +5991,6 @@ coordinates) using the Nominatim service.  geocode-glib caches requests for
 faster results and to avoid unnecessary server load.")
     (license license:lgpl2.0+)))
 
-(define-public geocode-glib-with-libsoup2
-  (package
-    (inherit geocode-glib)
-    (name "geocode-glib-with-libsoup2")
-    (arguments (substitute-keyword-arguments (package-arguments geocode-glib)
-                 ((#:configure-flags flags ''())
-                  #~(delete "-Dsoup2=false" #$flags))))
-    (inputs (modify-inputs (package-inputs geocode-glib)
-              (replace "libsoup" libsoup-minimal-2)))))
-
 (define-public upower
   (package
     (name "upower")
