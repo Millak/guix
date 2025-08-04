@@ -46,7 +46,7 @@
   (origin
     (method git-fetch)
     (uri (git-reference
-           (url "https://github.com/RadeonOpenCompute/llvm-project.git")
+           (url "https://github.com/ROCm/llvm-project/")
            (commit (string-append "rocm-" %rocm-version))))
     (file-name (git-file-name "llvm-for-rocm" %rocm-version))
     (sha256
