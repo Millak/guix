@@ -26907,28 +26907,22 @@ conversion: Gamut A, B, and C.")
 (define-public python-rfc3986
   (package
     (name "python-rfc3986")
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "rfc3986" version))
-              (sha256
-               (base32
-                "17dvx15m3r49bmif5zlli8kzjd6bys6psixzbp14sd5367d9h8qi"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-v"))))))
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rfc3986" version))
+       (sha256
+        (base32 "0716rg74cpmhi9f77ypnwcdsyfjplsgk1rnnmadq5zabpnfwzalp"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://rfc3986.readthedocs.io/")
     (synopsis "Parse and validate URI references")
     (description
      "@code{rfc3986} is a Python implementation of RFC@tie{}3986 including
-     validation and authority parsing.  This module also supports RFC@tie{}6874
-     which adds support for zone identifiers to IPv6 addresses.")
+validation and authority parsing.  This module also supports RFC@tie{}6874
+which adds support for zone identifiers to IPv6 addresses.")
     (license license:asl2.0)))
 
 (define-public python-rfc3986-validator
