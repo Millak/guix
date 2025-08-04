@@ -82,11 +82,11 @@
     (home-page "https://uxlfoundation.github.io/oneTBB/")
     (synopsis "C++ library for parallel programming")
     (description
-     "Threading Building Blocks (TBB) is a C++ runtime library that abstracts
-the low-level threading details necessary for optimal multi-core performance.
-It uses common C++ templates and coding style to eliminate tedious threading
-implementation work.  It provides parallel loop constructs, asynchronous
-tasks, synchronization primitives, atomic operations, and more.")
+     "@acronym{TBB, Threading Building Blocks} is a C++ runtime library that
+abstracts the low-level threading details necessary for optimal multi-core
+performance.  It uses common C++ templates and coding style to eliminate
+tedious threading implementation work.  It provides parallel loop constructs,
+asynchronous tasks, synchronization primitives, atomic operations, and more.")
     (license asl2.0)))
 
 (define-public python-tbb
