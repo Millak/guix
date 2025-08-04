@@ -1624,17 +1624,30 @@ It features a minimal TLS 1.3 implementation, a QUIC stack and an HTTP/3 stack."
 (define-public python-aiorpcx
   (package
     (name "python-aiorpcx")
-    (version "0.22.1")
+    (version "0.25.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiorpcX" version))
+       (method git-fetch)
+       ;; PyPI misses the util.py file used for tests.
+       (uri (git-reference
+              (url "https://github.com/kyuupichan/aiorpcX")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lx54bcinp44fmr8q4bbffsqbkg8kdcwykf9i5jj0bj3sfzgf9k0"))))
-    (build-system python-build-system)
+         "0sn4xxlpy0kb5b25bqrjzh2m6bskdyydc6cq8bigb7g5dacksn4q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This test opens a remote connection.
+      #~(list "-k" "not test_create_connection_resolve_good")))
+    (native-inputs (list python-pytest
+                         python-pytest-asyncio
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs
-     (list python-attrs))
+     (list python-attrs python-websockets))
     (home-page "https://github.com/kyuupichan/aiorpcX")
     (synopsis "Generic asyncio RPC implementation")
     (description
