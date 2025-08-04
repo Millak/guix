@@ -27076,21 +27076,6 @@ conversion: Gamut A, B, and C.")
      applying JSON Patches according to RFC 6902.")
     (license license:bsd-3)))
 
-(define-public python-jsonpatch-0.4
-  (package (inherit python-jsonpatch)
-    (name "python-jsonpatch")
-    (version "0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/stefankoegl/python-json-patch")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1fq02y57kinyknxjcav0slcb0k9mwdffqw2hnlhdkpj7palh2mwk"))))))
-
 (define-public python-rfc3986
   (package
     (name "python-rfc3986")
