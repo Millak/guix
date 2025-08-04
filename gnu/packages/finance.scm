@@ -635,7 +635,7 @@ require Coincurve.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.4.6")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -643,42 +643,45 @@ require Coincurve.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1f0hb8xmqv1j9pf82xpyvxnn2dzmi93rhf0sh0iqakja2pbl4707"))
+        (base32 "1h7z019sp99csrj1djmhlm9y7vyyzl7wvar7z9x4jx59lmmvs1xs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Delete the bundled dependencies.
            (delete-file-recursively "packages")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-deps
+            (lambda _
+              (substitute* "contrib/requirements/requirements.txt"
+                ;; These packages have tight version requirements because
+                ;; the developer does not want to introduce Hatchling in
+                ;; the build environment.  They do work at runtime.
+                (("attrs.*") "attrs")
+                (("dnspython.*") "dnspython")))))))
+    (native-inputs (list python-setuptools python-wheel))
     (inputs
-     (list libsecp256k1
+     (list electrum-aionostr
            python-aiohttp
            python-aiohttp-socks
            python-aiorpcx
            python-attrs
-           python-bitstring
-           python-btchip-python
            python-certifi
            python-cryptography
            python-dnspython
+           python-electrum-ecc
            python-hidapi
-           python-ledgerblue
+           python-jsonpatch
            python-protobuf
-           python-pyqt
+           python-pyaes
+           python-pyqt-6
            python-qdarkstyle
            python-qrcode
            zbar))
-    (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-libsecp256k1-input
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "electrum/ecc_fast.py"
-               (("library_paths = \\[\\]")
-                (string-append "library_paths = ['"
-                               (assoc-ref inputs "libsecp256k1")
-                               "/lib/libsecp256k1.so']"))))))))
     (home-page "https://electrum.org/")
     (synopsis "Bitcoin wallet")
     (description
