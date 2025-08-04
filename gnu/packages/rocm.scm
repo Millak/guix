@@ -60,7 +60,7 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/RadeonOpenCompute/rocm-cmake.git")
+                    (url "https://github.com/ROCm/rocm-cmake/")
                     (commit (string-append "rocm-" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -69,7 +69,7 @@
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Tests try to use git commit
     (native-inputs (list git))
-    (home-page "https://github.com/ROCm/rocm-cmake")
+    (home-page "https://rocm.docs.amd.com/projects/ROCmCMakeBuildTools/")
     (synopsis "ROCm cmake modules")
     (description "ROCm cmake modules provides cmake modules for common build
 tasks needed for the ROCM software stack.")
