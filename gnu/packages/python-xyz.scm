@@ -27416,21 +27416,21 @@ framework.  It includes optional utilities to integrate with Flask.")
 (define-public python-apispec
   (package
     (name "python-apispec")
-    (version "6.7.1")
+    (version "6.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "apispec" version))
        (sha256
-        (base32 "0cxr10m3gj7nmipi3blsj31jz6qfjbfzjrwsnxaxzzhgyipqn6y0"))))
+        (base32 "09lza66036a3i1blwrc6qpvw48pzflmabhd0dfshq9ghzjwnjnyf"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flit-core
-           python-mypy
            python-openapi-spec-validator
            python-pytest))
     (propagated-inputs
      (list python-marshmallow
+           python-packaging
            python-pyyaml))
     (home-page "https://github.com/marshmallow-code/apispec")
     (synopsis "Swagger/OpenAPI specification generator")
