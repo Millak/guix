@@ -164,7 +164,9 @@ using the CMake build system.")
     "RunCMake.CTestTimeout"
     "RunCMake.CTestTimeoutAfterMatch"
     "RunCMake.CommandLine"
-    "RunCMake.CTestCommandLine"))
+    "RunCMake.CTestCommandLine"
+    ;; Fixed in v4.0.0
+    "RunCMake.RuntimePath"))
 
 (define %preserved-third-party-files
   '(;; 'Source/cm_getdate.c' includes archive_getdate.c wholesale, so it must
