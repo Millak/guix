@@ -20660,7 +20660,7 @@ using a convenient notation.")
   (let ((commit "c3f4583b0767e7f8c38c83ed29af40af8ba3bdfa")) ;version bump
     (package
       (name "emacs-beframe")
-      (version "1.3.0")
+      (version "1.4.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -20673,17 +20673,16 @@ using a convenient notation.")
       (build-system emacs-build-system)
       (arguments
        (list
+        #:tests? #f                     ;no tests
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'install 'makeinfo
+            (add-before 'install 'makeinfo
               (lambda _
                 (invoke "emacs"
                         "--batch"
                         "--eval=(require 'ox-texinfo)"
                         "--eval=(find-file \"README.org\")"
-                        "--eval=(org-texinfo-export-to-info)")
-                (install-file "beframe.info"
-                              (string-append #$output "/share/info")))))))
+                        "--eval=(org-texinfo-export-to-info)"))))))
       (native-inputs
        (list texinfo))
       (home-page "https://protesilaos.com/emacs/beframe")
