@@ -121,11 +121,7 @@ data in motion, or as a file format for data at rest.")
                 (let* ((pred
                         (negate (cut member <> (append '("." "..") preserve))))
                        (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
+                  (for-each delete-file-recursively items))))
             ;; "utf8_range" development now takes place in main protobuf
             ;; repository.
             (delete-all-but "third_party" "utf8_range")))
@@ -184,6 +180,24 @@ data in motion, or as a file format for data at rest.")
 yet extensible format.  Google uses Protocol Buffers for almost all of its
 internal RPC protocols and file formats.")
     (license license:bsd-3)))
+
+(define-public python-protobuf-6
+  (package
+    (inherit protobuf-6)
+    (name "python-protobuf")
+    (version "6.31.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "protobuf" version))
+       (sha256
+        (base32
+         "16nakbb14jjzhgmrvpn0g7k0iasgl8p0xa3kvjj5gfghhb4w9jnq"))))
+    (outputs (list "out"))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests provided for Python variant
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list protobuf-6))))
 
 (define-public protobuf
   (package
