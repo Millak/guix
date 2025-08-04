@@ -35271,23 +35271,26 @@ handling those variations.")
 (define-public python-qdarkstyle
   (package
     (name "python-qdarkstyle")
-    (version "2.8.1")
+    (version "3.2.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "QDarkStyle" version))
         (sha256
          (base32
-          "0883vzg35fzpyl1aiijzpfcdfvpq5vi325w0m7xkx7nxplh02fym"))))
-    (build-system python-build-system)
+          "1bpi0asa7sd5ch6x6b60n5yias04nsx6kcwji40228g9lrs7y2qc"))))
+    (build-system pyproject-build-system)
     (arguments
      `(;; Fails unable to detect valid Qt bindings even when
        ;; added as native-inputs.
        #:tests? #f))
+    (native-inputs (list python-qtsass
+                         python-setuptools
+                         python-watchdog
+                         python-wheel))
     (propagated-inputs
-     (list python-helpdev python-qtpy))
-    (home-page
-     "https://github.com/ColinDuquesnoy/QDarkStyleSheet")
+     (list python-qtpy python-pyqt-6))
+    (home-page "https://github.com/ColinDuquesnoy/QDarkStyleSheet")
     (synopsis
      "Complete dark stylesheet for Python and Qt applications")
     (description "QDarkStyle is the most complete dark stylesheet for Python and
