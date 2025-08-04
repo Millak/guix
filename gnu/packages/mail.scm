@@ -113,6 +113,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -4830,7 +4831,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "3.6")
+    (version "3.12.1")
     (source
      (origin
        (method git-fetch)
@@ -4838,16 +4839,26 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "1ra18c3wczbdqrg9p69k04smjskjkdpxcfff9ff4yi7pmqjaxr8s"))
+        (base32 "0li75dqqy0irrvv2jddmll2adf15cywif982ijj034hldg9162bc"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DENABLE_LUAJIT=ON"
-                           "-DLOCAL_CONFDIR=/etc/rspamd")))
+     (list #:configure-flags #~(list "-DENABLE_LUAJIT=ON"
+                                     "-DLOCAL_CONFDIR=/etc/rspamd")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "make" "run-test"
+                             "-j" (number->string (parallel-job-count)))))))))
     (inputs
      (list file
            glib
            icu4c
+           libarchive
+           libbfd
+           libiberty
            libsodium
            luajit
            openssl
