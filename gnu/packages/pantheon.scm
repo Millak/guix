@@ -173,10 +173,10 @@ desktop.")
                 (symlink bin link)))))))
     (inputs
      (list clutter
-           evolution-data-server-3.44
-           folks-with-libsoup2
+           evolution-data-server
+           folks
            geoclue
-           geocode-glib-with-libsoup2
+           geocode-glib
            granite-6
            glib
            gtk
