@@ -703,16 +703,18 @@ commands into documents, helping you to keep your command examples up to date.")
 (define-public python-sphinxcontrib-qthelp
   (package
     (name "python-sphinxcontrib-qthelp")
-    (version "1.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-qthelp" version))
-              (sha256
-               (base32
-                "0wjsp96d262shzkx7pb7pra7mmf0j8c5rz56i6x0vdsqw1z7ccsc"))))
-    (build-system python-build-system)
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib_qthelp" version))
+       (sha256
+        (base32 "1axvp4bcw3p4n8xiby9i4xlgh4znm3ia7ar3wrdh8wf1iynd1rsg"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-qthelp")
     (synopsis "Sphinx extension to output QtHelp documents")
     (description
