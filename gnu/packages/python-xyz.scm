@@ -35470,13 +35470,15 @@ and frame grabber interface.")
 (define-public python-scikit-build
   (package
     (name "python-scikit-build")
-    (version "0.17.6")
+    (version "0.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit_build" version))
        (sha256
-        (base32 "17awdvpzj4bn50gk4gmj20r2xcjr5y8lfl2bk582di1pdfim26mm"))))
+        (base32 "1rxqzigfacpbcfhf3c1gdqrnqdnq503bx5vpib19km44l32jl5d4"))
+       (patches
+        (search-patches "python-scikit-build-setuptools-compat.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -35539,24 +35541,19 @@ and frame grabber interface.")
            gfortran
            git-minimal/pinned           ;for tests
            ninja/pinned
-           python-coverage
            python-cython
-           python-hatchling
            python-hatch-fancy-pypi-readme
            python-hatch-vcs
-           python-mock
-           python-packaging
-           python-path
+           python-hatchling
            python-pytest
-           python-pytest-cov
            python-pytest-mock
-           python-pytest-virtualenv
            python-pytest-xdist
            python-requests
-           python-setuptools-scm
            python-virtualenv))
     (propagated-inputs
-     (list python-distro python-packaging python-tomli python-wheel))
+     (list python-distro
+           python-packaging
+           python-wheel))
     (home-page "https://github.com/scikit-build/scikit-build")
     (synopsis "Build system generator for Python C/C++/Fortran/Cython extensions")
     (description "Scikit-build is an improved build system generator for
