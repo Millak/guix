@@ -3508,38 +3508,32 @@ desired
   (package
     (name "python-webencodings")
     (version "0.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "webencodings" version))
-              (sha256
-               (base32
-                "08qrgrc4hrximb2gqnl69g01s93rhf2842jfxdjljc1dbwj1qsmk"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "webencodings" version))
+       (sha256
+        (base32 "08qrgrc4hrximb2gqnl69g01s93rhf2842jfxdjljc1dbwj1qsmk"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test" "-v" "webencodings/tests.py")
-             #t)))))
+     (list #:test-flags #~(list "webencodings/tests.py")))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/SimonSapin/python-webencodings")
     (synopsis "Character encoding aliases for legacy web content")
     (description
      "In order to be compatible with legacy web content when interpreting
-something like @code{Content-Type: text/html; charset=latin1}, tools need
-to use a particular set of aliases for encoding labels as well as some
-overriding rules.  For example, @code{US-ASCII} and @code{iso-8859-1} on
-the web are actually aliases for @code{windows-1252}, and a @code{UTF-8}
-or @code{UTF-16} BOM takes precedence over any other encoding declaration.
-The WHATWG @url{https://encoding.spec.whatwg.org/,Encoding} standard
-defines all such details so that implementations do not have to
-reverse-engineer each other.
+something like @code{Content-Type: text/html; charset=latin1}, tools need to
+use a particular set of aliases for encoding labels as well as some overriding
+rules.  For example, @code{US-ASCII} and @code{iso-8859-1} on the web are
+actually aliases for @code{windows-1252}, and a @code{UTF-8} or @code{UTF-16}
+BOM takes precedence over any other encoding declaration.  The WHATWG
+@url{https://encoding.spec.whatwg.org/,Encoding} standard defines all such
+details so that implementations do not have to reverse-engineer each other.
 
-This module implements the Encoding standard and has encoding labels and
-BOM detection, but the actual implementation for encoders and decoders
-is Python’s.")
+This module implements the Encoding standard and has encoding labels and BOM
+detection, but the actual implementation for encoders and decoders is
+Python’s.")
     (license license:bsd-3)))
 
 (define-public python-omnipath
