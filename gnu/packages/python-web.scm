@@ -6435,22 +6435,45 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
     (name "python-betamax")
     (version "0.9.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "betamax" version))
-        (sha256
-         (base32
-          "152zil1j4gl1whnldi08zwjr4z2bnlbd061kr3ipjs5wg4b6wcc2"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "betamax" version))
+       (sha256
+        (base32
+         "152zil1j4gl1whnldi08zwjr4z2bnlbd061kr3ipjs5wg4b6wcc2"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(;; Many tests fail because they require networking.
-       #:tests? #f))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests require network access to http://httpbin.org/get.
+                    (list "not test_creates_new_cassettes"
+                          "test_placeholders_work"
+                          "test_post_start_hook"
+                          "test_pre_stop_hook"
+                          "test_preplayback_hook"
+                          "test_prerecord_hook"
+                          "test_prerecord_ignoring_hook"
+                          "test_records_new_events_with_existing_cassette"
+                          "test_records_new_interaction"
+                          "test_records_new_interactions"
+                          "test_replaces_old_interactions"
+                          "test_replays_response_from_cassette"
+                          "test_requests_with_json_body"
+                          "test_saves_content_as_gzip"
+                          "test_unicode_is_saved_properly")
+                    " and not "))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-requests))
     (home-page "https://github.com/sigmavirus24/betamax")
     (synopsis "Record HTTP interactions with python-requests")
-    (description "Betamax will record your test suite's HTTP interactions and
-replay them during future tests.  It is designed to work with python-requests.")
+    (description
+     "Betamax will record your test suite's HTTP interactions and replay them
+during future tests.  It is designed to work with python-requests.")
     (license license:expat)))
 
 (define-public python-betamax-matchers
