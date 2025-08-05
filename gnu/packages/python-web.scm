@@ -3288,25 +3288,25 @@ storage.")
     (name "python-html5lib")
     (version "1.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "html5lib" version))
-        (sha256
-          (base32
-            "0vqlhk0hgbsfkh7ybmby93xhlx8dq6pr5blf356ka3z2c41b9rdj"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "html5lib" version))
+       (sha256
+        (base32 "0vqlhk0hgbsfkh7ybmby93xhlx8dq6pr5blf356ka3z2c41b9rdj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:tests? #f))    ;tests depent on dated pytest-expect
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-six python-webencodings
+     (list python-six
+           python-webencodings
            ;; Required by Calibre 5.
            python-chardet))
-    (arguments
-     `(#:test-target "check"))
-    (home-page
-      "https://github.com/html5lib/html5lib-python")
-    (synopsis
-      "Python HTML parser based on the WHATWG HTML specification")
+    (home-page "https://github.com/html5lib/html5lib-python")
+    (synopsis "Python HTML parser based on the WHATWG HTML specification")
     (description
-      "Html5lib is an HTML parser based on the WHATWG HTML specification
+     "Html5lib is an HTML parser based on the WHATWG HTML specification
 and written in Python.")
     (license license:expat)))
 
