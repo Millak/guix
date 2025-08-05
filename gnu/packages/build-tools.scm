@@ -129,7 +129,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
 (define-public bear
   (package
     (name "bear")
-    (version "3.1.4")
+    (version "3.1.6")
     (source
      (origin
        (method git-fetch)
@@ -138,7 +138,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x99d2cycgxay62cz2ypjjkmjgrbdvz5d3pg4fyv0gnq2srnlcnm"))))
+        (base32 "0pnrsnwvsqby0vgb33zsrjznb7l82ji7i4aigk32hg3rl674qqvx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -157,15 +157,15 @@ makes a few sacrifices to acquire fast full and incremental build times.")
                         (invoke "ctest")))))))
     (inputs
      `(("c-ares" ,c-ares)
-       ("fmt" ,fmt-8)
+       ("fmt" ,fmt-9)
        ("grpc" ,grpc)
        ("nlohmann-json" ,nlohmann-json)
        ("protobuf" ,protobuf)
        ("python" ,python-wrapper)
        ("re2" ,re2)
-       ("spdlog" ,spdlog-1.10)))
+       ("spdlog" ,spdlog-1.13)))
     (native-inputs
-     `(("abseil-cpp" ,abseil-cpp-cxxstd11)
+     `(("abseil-cpp" ,abseil-cpp)
        ("googletest" ,googletest)
        ("openssl" ,openssl)
        ("pkg-config" ,pkg-config)
