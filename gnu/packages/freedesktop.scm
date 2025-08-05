@@ -2896,10 +2896,16 @@ encoding names are iconv-compatible.")
        (sha256
         (base32 "08wq5yfaafbjipabfc6kpyvivkk2394w7isv0mwx5agcf8cbnwnx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; No test data in PyPI archive:
+      ;; '<...>/tests/samples/wikipediaJa_One_Thousand_and_One_Nights_SJIS.txt'
+      #~(list "--deselect=tests/test_1.py::TestCChardet::test_detector")))
     (inputs
      (list uchardet))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/PyYoshi/cChardet")
     (synopsis "High-performance character encoding detection for Python")
     (description
