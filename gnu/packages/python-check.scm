@@ -933,38 +933,34 @@ Python software under test, when they make an HTTP query.")
 (define-public python-hypothesmith
   (package
     (name "python-hypothesmith")
-    (version "0.2.0")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hypothesmith" version))
        (sha256
-        (base32 "08kr9p6hjm3ys87k1k3l79cmf936qbhn21ab8zadsvnp0gyv7dqg"))))
+        (base32 "05hpr3iqqsrfvkzdn7wjxp92hjxmin3pch96fn4mvs68sq14ihcn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k"
-              (string-append
-               ;; XXX: hypothesis.errors.Unsatisfiable
-               "not test_source_code_from_libcst_node_type[MatchSingleton]"
-               ;; XXX: Python/Black versions not as expected.
-               " and not test_black_autoformatter_from_grammar"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-lark-dependency
-            (lambda _
-              (substitute* "setup.py"
-                (("lark-parser>=[0-9.]*") "lark")))))))
-    (propagated-inputs
-     (list python-hypothesis python-lark python-libcst-minimal))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-append
+                    ;; XXX: hypothesis.errors.Unsatisfiable
+                    "not test_source_code_from_libcst_node_type[MatchSingleton]"
+                    ;; XXX: Python/Black versions not as expected.
+                    " and not test_black_autoformatter_from_grammar"))))
     (native-inputs
-     (list python-black
+     (list python-black         ;hard requirements to run tests
            python-parso
            python-pytest
            python-pytest-cov
-           python-setuptools
-           python-wheel))
+           python-pytest-xdist
+           python-setuptools))
+    (propagated-inputs
+     (list python-hypothesis
+           python-lark
+           python-libcst-minimal))
     (home-page "https://github.com/Zac-HD/hypothesmith")
     (synopsis "Strategies for generating Python programs")
     (description
