@@ -8554,52 +8554,53 @@ Some things HTTP Core does do:
        ;; PyPI tarball does not contain tests.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/encode/httpx")
-             (commit version)))
+              (url "https://github.com/encode/httpx")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "00d6rb21xwazwb0sj68zhra0qxxcwkd0vv7bg3k1jg94dmk2w7xl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; 1401 passed, 1 skipped, 5 deselected
       #:test-flags
-      '(list "-vv" "-o" "asyncio_mode=auto"
-             "-k"
-             ;; These tests try to open an outgoing connection.
-             (string-append
-              "not test_connect_timeout"
-              " and not test_that_send_cause_async_client_to_be_not_closed"
-              " and not test_that_async_client_caused_warning_when_being_deleted"
-              " and not test_that_send_cause_client_to_be_not_closed"
-              " and not test_async_proxy_close"
-              " and not test_sync_proxy_close"
-              ;; This test is apparently incompatible with
-              ;; python-click 8, fails with " AttributeError:
-              ;; 'function' object has no attribute 'name'".
-              " and not test_main"))))
+      #~(list "-o" "asyncio_mode=auto"
+              ;; CLI tests are broken.
+              "--ignore=tests/test_main.py"
+              "-k" (string-join
+                    ;; These tests try to open an outgoing connection.
+                    (list "not test_async_proxy_close"
+                          "test_sync_proxy_clos"
+                          "test_write_timeout")
+                    " and not "))))
     (native-inputs
      (list nss-certs-for-test
+           python-chardet
            python-cryptography
-           python-hatchling
            python-hatch-fancy-pypi-readme
+           python-hatchling
            python-pytest
            python-pytest-asyncio
            python-pytest-trio
-           python-trio
-           python-trio-typing
-           python-trustme
-           python-uvicorn
            python-setuptools
-           python-wheel
-           python-zstandard))
+           python-trio
+           python-trustme
+           python-uvicorn))
     (propagated-inputs
-     (list python-charset-normalizer
-           python-brotli
+     (list python-anyio
            python-certifi
-           python-chardet
            python-httpcore
            python-idna
-           python-rfc3986
+           ;; [brotli]
+           python-brotli
+           ;; [http2]
+           python-h2
+           ;; [socks]
+           python-socksio
+           ;; [zstd]
+           python-zstandard
+           ;; For trio, see:
+           ;; <https://github.com/python-trio/trio/issues/2802>.
            python-sniffio))
     (home-page "https://www.python-httpx.org/")
     (synopsis "HTTP client for Python")
