@@ -3126,7 +3126,8 @@ of a Plasma shell.")
                   plasma-workspace
                   qtdeclarative
                   qtwebengine))
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))      ; no tests
     (synopsis "Control center to configure Plasma Desktop")
     (description "This package provides configuration UI for Plasma Desktop.")
     (home-page "https://invent.kde.org/plasma/systemsettings")
