@@ -2887,25 +2887,25 @@ encoding names are iconv-compatible.")
 
 (define-public python-cchardet
   (package
-  (name "python-cchardet")
-  (version "2.2.0a2")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "cchardet" version))
-      (sha256
-        (base32
-          "08wq5yfaafbjipabfc6kpyvivkk2394w7isv0mwx5agcf8cbnwnx"))))
-  (build-system pyproject-build-system)
-  (inputs
-   (list uchardet))
-  (native-inputs
-   (list python-setuptools python-wheel))
-  (home-page "https://github.com/PyYoshi/cChardet")
-  (synopsis "High-performance character encoding detection for Python")
-  (description "cChardet is a character encoding detector, written in
-Python, that binds to the C library @code{uchardet} to increase performance.")
-  (license license:gpl2+)))
+    (name "python-cchardet")
+    (version "2.2.0a2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cchardet" version))
+       (sha256
+        (base32 "08wq5yfaafbjipabfc6kpyvivkk2394w7isv0mwx5agcf8cbnwnx"))))
+    (build-system pyproject-build-system)
+    (inputs
+     (list uchardet))
+    (native-inputs
+     (list python-setuptools python-wheel))
+    (home-page "https://github.com/PyYoshi/cChardet")
+    (synopsis "High-performance character encoding detection for Python")
+    (description
+     "cChardet is a character encoding detector, written in Python, that binds
+to the C library @code{uchardet} to increase performance.")
+    (license license:gpl2+)))
 
 (define-public udiskie
   (package
