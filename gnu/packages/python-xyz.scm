@@ -15331,24 +15331,29 @@ the GObject Introspection bindings to libnotify for non-GTK applications.")
 (define-public python-beautifulsoup4
   (package
     (name "python-beautifulsoup4")
-    (version "4.12.3")
+    (version "4.13.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beautifulsoup4" version))
        (sha256
         (base32
-         "0l8hg3vz9q5fx7gav8sj5zr90d5k7xpc91c1fhhhs1ywis9d3qvl"))))
+         "15bi8fl51aibdz33h3j1191n5l0c4r3k4hpjvbmyysmfrvhw9cyv"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
            python-pytest))
     (propagated-inputs
-     (list python-soupsieve python-html5lib python-lxml))
-    (home-page
-     "https://www.crummy.com/software/BeautifulSoup/bs4/")
-    (synopsis
-     "Python screen-scraping library")
+     (list python-soupsieve
+           python-typing-extensions
+           ;; [optional]
+           python-cchardet
+           python-chardet
+           python-charset-normalizer
+           python-html5lib
+           python-lxml))
+    (home-page "https://www.crummy.com/software/BeautifulSoup/bs4/")
+    (synopsis "Python screen-scraping library")
     (description
      "Beautiful Soup is a Python library designed for rapidly setting up
 screen-scraping projects.  It offers Pythonic idioms for navigating,
