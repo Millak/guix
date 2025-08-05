@@ -3035,9 +3035,11 @@ To load this plugin, specify the following option when starting mpv:
      (native-inputs
       (list pkg-config cmake-minimal))
      (home-page "https://github.com/GhostNaN/mpvpaper")
-     (synopsis "Video wallpaper program for wlroots-based wayland compositors")
-     (description "mpvpaper is a wallpaper program for wlroots-based wayland
-compositors, allowing you to play videos as your wallpaper using mpv.")
+     (synopsis
+      "Video wallpaper program for wlroots-based wayland compositors")
+     (description "The mpvpaper package provides a wallpaper program for
+wlroots-based wayland compositors, allowing you to play videos as your
+wallpaper using mpv.")
      (license license:gpl3)))
 
 (define-public libvpx
