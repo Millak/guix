@@ -652,7 +652,10 @@ require Coincurve.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; no tests
+      ;; Either pycryptodomex or cryptography must be available.
+      ;; This package uses python-cryptography, but this test checks for
+      ;; cryptodomex anyway.  Skip it since it's not useful.
+      #:test-flags #~(list "-k" "not test_pycryptodomex_is_available")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-deps
@@ -662,8 +665,11 @@ require Coincurve.")
                 ;; the developer does not want to introduce Hatchling in
                 ;; the build environment.  They do work at runtime.
                 (("attrs.*") "attrs")
-                (("dnspython.*") "dnspython")))))))
-    (native-inputs (list python-setuptools python-wheel))
+                (("dnspython.*") "dnspython"))))
+          (add-before 'check 'set-home
+            (lambda _ ; 3 tests run mkdir
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs
      (list electrum-aionostr
            python-aiohttp
