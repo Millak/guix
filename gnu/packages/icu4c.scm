@@ -124,7 +124,7 @@
 globalisation support for software applications.  This package contains the
 C/C++ part.")
     (license x11)
-    (home-page "http://site.icu-project.org/")))
+    (home-page "https://icu.unicode.org/")))
 
 (define-public icu4c icu4c-73)
 
