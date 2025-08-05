@@ -1577,39 +1577,21 @@ I/O-free core, and integration modules for different event loops.")
 (define-public python-argon2-cffi
   (package
     (name "python-argon2-cffi")
-    (version "21.1.0")
+    (version "25.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "argon2-cffi" version))
-        (sha256
-         (base32
-          "0w5q5cdwmzpjgw3bl9f6b9a5xai87qvx3jryra9gd8fi0c8vc47p"))
-        (modules '((guix build utils)))
-        (snippet '(delete-file-recursively "extras"))))
-    ;; TODO: with pyproject-build-system the install phase fails.
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (setenv "ARGON2_CFFI_USE_SYSTEM" "1")
-             (invoke "python" "setup.py" "build")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")
-               (invoke "python" "-m" "argon2" "--help")
-               ;; see tox.ini
-               (invoke "python" "-m" "argon2" "-n" "1" "-t" "1" "-m" "8" "-p" "1")))))))
-    (propagated-inputs
-     (list python-cffi python-typing-extensions))
-    (inputs (list argon2))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "argon2_cffi" version))
+       (sha256
+        (base32 "1ha62fg9blw38q3qayjid8608fp2a57fd81cpzic9x22ib6fajk9"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-hypothesis
+     (list python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
            python-pytest))
+    (propagated-inputs
+     (list python-argon2-cffi-bindings))
     (home-page "https://argon2-cffi.readthedocs.io/")
     (synopsis "Secure Password Hashes for Python")
     (description
