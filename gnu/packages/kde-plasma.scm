@@ -1955,7 +1955,8 @@ on QtMultimedia and @command{yt-dlp}.")
                   kstatusnotifieritem
                   qtdeclarative))
     (propagated-inputs (list plasma-workspace))
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:tests? #f        ; no tests
+                     #:qtbase qtbase))
     (home-page "https://invent.kde.org/plasma/plasma-browser-integration")
     (synopsis "Integrate browsers into the Plasma Desktop")
     (description
