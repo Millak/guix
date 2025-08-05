@@ -164,31 +164,6 @@ C/C++ part.")
                (base32
                 "0gjg1zrnqk4vmidqgqx4xbz05898px212gnff8242is7zrmv9b6z"))))))
 
-(define-public icu4c-70
-  (package
-    (inherit icu4c)
-    (version "70.1")
-    (source (origin
-              (method url-fetch)
-              (uri (icu4c-uri version))
-              (sha256
-               (base32
-                "1m9zgkaf5lyh65nyc6n0n5bs2f5k53nnj1ih6nskpwbvq4l5884d"))))
-    (arguments
-     (if (target-riscv64?)
-       (substitute-keyword-arguments (package-arguments icu4c)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (replace 'disable-failing-test
-                ;; It is unknown why these tests are failing.
-                (lambda _
-                  (substitute* "source/test/cintltst/ucptrietest.c"
-                    ((".*addTest.*") ""))
-                  (substitute* "source/test/intltest/numbertest_api.cpp"
-                    (("(TESTCASE_AUTO\\(unitUsage\\));" all)
-                     (string-append "//" all))))))))
-       (package-arguments icu4c)))))
-
 (define-public icu4c-69
   (package
     (inherit icu4c)
