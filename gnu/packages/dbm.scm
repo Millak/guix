@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2016, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015, 2025 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2018, 2020, 2021, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -91,7 +91,9 @@
            #:out-of-source? #true
            #:configure-flags
            #~(list
-              "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+              #$@(if (target-ppc64le?)
+                     #~("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration -fpermissive")
+                     #~("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"))
               ;; Remove 7 MiB of .a files.
               "--disable-static"
 
