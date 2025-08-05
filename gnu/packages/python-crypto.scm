@@ -1618,6 +1618,39 @@ both a configurable runtime as well as memory consumption.  This means that you
 can decide how long it takes to hash a password and how much memory is required.")
     (license license:expat)))
 
+(define-public python-argon2-cffi-bindings
+  (package
+    (name "python-argon2-cffi-bindings")
+    (version "25.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "argon2_cffi_bindings" version))
+       (sha256
+        (base32 "179256zsrh5c51zmv9k1sc9p102j152nzxqgwhhdhmadxbkg6mxr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-argon2
+            (lambda _
+              (setenv "ARGON2_CFFI_USE_SYSTEM" "1"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list argon2))
+    (propagated-inputs
+     (list python-cffi))
+    (home-page "https://github.com/hynek/argon2-cffi-bindings")
+    (synopsis "Low-level CFFI bindings for Argon2")
+    (description
+     "argon2-cffi-bindings provides low-level CFFI bindings to the official
+implementation of the Argon2 password hashing algorithm.")
+    (license license:expat)))
+
 (define-public python-privy
   (package
     (name "python-privy")
