@@ -12359,6 +12359,11 @@ of these reads to align data quickly through a hash-based indexing scheme.")
                              "/include"))
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-includes
+           (lambda _
+             (substitute* "src/sortmerna/kseq_load.cpp"
+               (("#include <iostream>" all)
+                (string-append all "\n#include <cstdint>")))))
          (add-after 'unpack 'find-concurrentqueue-headers
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Ensure that headers can be found
