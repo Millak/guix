@@ -2202,6 +2202,15 @@ Google's C++ code base.")
            #~(cons* "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
                     (delete "-DBUILD_SHARED_LIBS=ON" #$flags)))))))))
 
+(define-public abseil-cpp-cxxstd17
+  (abseil-cpp-for-c++-standard abseil-cpp 17))  ;XXX: the default with GCC 11?
+
+(define-public abseil-cpp-cxxstd11
+  (abseil-cpp-for-c++-standard abseil-cpp-20220623 11)) ;last version on C++11
+
+(define-public static-abseil-cpp
+  (make-static-abseil-cpp abseil-cpp))
+
 (define-public miniaudio
   (package
     (name "miniaudio")
@@ -2261,15 +2270,6 @@ Google's C++ code base.")
      "Miniaudio is an audio playback and capture library for C and C++.  It is
 made up of a single source file and has no external dependencies.")
     (license license:expat)))
-
-(define-public abseil-cpp-cxxstd17
-  (abseil-cpp-for-c++-standard abseil-cpp 17))  ;XXX: the default with GCC 11?
-
-(define-public abseil-cpp-cxxstd11
-  (abseil-cpp-for-c++-standard abseil-cpp-20220623 11)) ;last version on C++11
-
-(define-public static-abseil-cpp
-  (make-static-abseil-cpp abseil-cpp))
 
 (define-public pegtl
   (package
