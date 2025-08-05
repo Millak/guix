@@ -1,0 +1,21 @@
+The .cmake files this project includes don't play well with harfbuzz's internal .cmake file.
+This patch works around the issues present in the project's CMake configuration. 
+
+diff --git a/cmake/FindPango.cmake b/cmake/FindPango.cmake
+index 2a7da99d..c08fbaab 100644
+--- a/cmake/FindPango.cmake
++++ b/cmake/FindPango.cmake
+@@ -74,6 +74,13 @@ foreach(pango_dep ${Pango_DEPS})
+   set_property (TARGET "${Pango}" APPEND PROPERTY INTERFACE_LINK_LIBRARIES "${${pango_dep}}")
+ endforeach(pango_dep)
+ 
++if(NOT HARFBUZZ_INCLUDE_DIR)
++find_package(harfbuzz)
++endif()
++
++list(APPEND Pango_INCLUDE_DIRS ${HARFBUZZ_INCLUDE_DIR})
++set_property (TARGET "${Pango}" APPEND PROPERTY INTERFACE_LINK_LIBRARIES "harfbuzz::harfbuzz")
++
+ include(FindPackageHandleStandardArgs)
+ find_package_handle_standard_args(Pango
+     REQUIRED_VARS
