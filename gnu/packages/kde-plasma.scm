@@ -272,6 +272,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude "flatpaktest"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'remove-qmlmodule-required
@@ -283,13 +284,12 @@ Breeze is the default theme for the KDE Plasma desktop.")
                  (lambda _
                    (setenv "LDFLAGS" (string-append "-Wl,-rpath=" #$output
                                                     "/lib/plasma-discover"))))
-               (replace 'check
+               (add-before 'check 'check-setup
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (setenv "XDG_DATA_DIRS"
                              (string-append (getcwd)
-                                            ":" (getenv "XDG_DATA_DIRS")))
-                     (invoke "ctest" "-E" "flatpaktest")))))))
+                                            ":" (getenv "XDG_DATA_DIRS")))))))))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list appstream-qt6
                   attica
