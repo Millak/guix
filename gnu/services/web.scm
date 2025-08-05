@@ -765,6 +765,14 @@ of index files."
         (cons head out)))
   (fold-right flatten1 '() lst))
 
+(define (nginx-access-log-file config)
+  (string-append (nginx-configuration-log-directory config)
+                 "/access.log"))
+
+(define (nginx-error-log-file config)
+  (string-append (nginx-configuration-log-directory config)
+                 "/error.log"))
+
 (define (default-nginx-config config)
   (match-record config
                 <nginx-configuration>
@@ -782,7 +790,7 @@ of index files."
           (flatten
            "user nginx nginx;\n"
            "pid " run-directory "/pid;\n"
-           "error_log " log-directory "/error.log " (symbol->string log-level) ";\n"
+           "error_log " (nginx-error-log-file config) " " (symbol->string log-level) ";\n"
            (map emit-load-module modules)
            (map emit-global-directive global-directives)
            "http {\n"
@@ -792,7 +800,7 @@ of index files."
            "    uwsgi_temp_path " run-directory "/uwsgi_temp;\n"
            "    scgi_temp_path " run-directory "/scgi_temp;\n"
            (map emit-nginx-log-format-config log-formats)
-           "    access_log " log-directory "/access.log " (symbol->string log-format) ";\n"
+           "    access_log " (nginx-access-log-file config) " " (symbol->string log-format) ";\n"
            "    include " nginx "/share/nginx/conf/mime.types;\n"
            (if lua-package-path
                #~(format #f "    lua_package_path ~s;~%"
@@ -916,11 +924,17 @@ renewed TLS certificates, or @code{include}d files.")
                 (documentation "Re-open log files.")
                 (procedure (nginx-action "-p" run-directory "-s" "reopen"))))))))))
 
+(define (nginx-log-files config)
+  (list (nginx-access-log-file config)
+        (nginx-error-log-file config)))
+
 (define nginx-service-type
   (service-type (name 'nginx)
                 (extensions
                  (list (service-extension shepherd-root-service-type
                                           nginx-shepherd-service)
+                       (service-extension log-rotation-service-type
+                                          nginx-log-files)
                        (service-extension activation-service-type
                                           nginx-activation)
                        (service-extension account-service-type
