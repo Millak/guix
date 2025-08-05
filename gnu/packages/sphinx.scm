@@ -870,25 +870,26 @@ builder does not support SVG images natively (e.g. LaTeX).")
 (define-public python-sphinxcontrib-websupport
   (package
     (name "python-sphinxcontrib-websupport")
-    (version "1.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-websupport" version))
-              (sha256
-               (base32
-                "0ck2jphvs82vjcbphhd1h7j1xfi9ynv5d8g5b947qnk8l0ih5psf"))))
-    (build-system python-build-system)
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib_websupport" version))
+       (sha256
+        (base32 "1kbr7q1iwmz5pdp75z15smbbg8flsk2ahap4jwglnif6pb9nfwqb"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Tests depend on Sphinx, which depends on this.
-     `(#:tests? #f))
+     `(#:tests? #f))    ;XXX: circular dependency on Sphinx@6
+    (native-inputs
+     (list python-flit-core))
     (propagated-inputs
      (list python-sphinxcontrib-serializinghtml))
     (home-page "https://sphinx-doc.org/")
     (synopsis "Sphinx API for web applications")
     (description
-     "This package provides a Python API to easily integrate
-Sphinx documentation into your web application.  It provides tools to
-integrate Sphinx documents in web templates and to handle searches.")
+     "This package provides a Python API to easily integrate Sphinx
+documentation into your web application.  It provides tools to integrate
+Sphinx documents in web templates and to handle searches.")
     (license license:bsd-3)))
 
 (define-public python-sphinx-gallery
