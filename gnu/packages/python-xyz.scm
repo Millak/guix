@@ -26301,68 +26301,56 @@ package attempts to address the shortcomings of @code{isodate}.")
 (define-public python-isort
   (package
     (name "python-isort")
-    (version "5.13.2")
+    (version "6.0.1")
     (source
      (origin
-       (method git-fetch)
+       (method git-fetch)       ;no tests in PyPI archive
        (uri (git-reference
-             ;; Tests pass only from the Github sources
-             (url "https://github.com/timothycrosley/isort")
-             (commit version)))
+              (url "https://github.com/timothycrosley/isort")
+              (commit version)))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file (find-files "." "\\.whl$")))
        (sha256
-        (base32
-         "1d9cg5ms1qilhvpk2925zh87xgzd2ly29wywwxp0yisdddi8ln7z"))))
+        (base32 "1fcwv1dlq0d3is9s6scp6vy7yw4l845kk51ihxac8419n8hrpvpq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "tests/unit/"
+      ;; Ignore benchmark and integration to reduce closure size.
+      #~(list "--ignore=tests/benchmark/"
+              "--ignore=tests/integration/"
+              "--ignore=tests/unit/profiles/test_black.py"
               "-k" (string-join
-                    (list
-                     "not test_gitignore"
-                     ;; See <https://github.com/PyCQA/isort/issues/2234>.
-                     "test_isort_should_warn_on_empty_custom_config_issue_1433"
-                     ;; Fails because of an unexpected linebreak.
-                     "test_black_pyi_file")
-                    " and not ")
-              "--ignore=tests/unit/test_deprecated_finders.py")
+                    (list "not test_gitignore"
+                          "test_isort_supports_shared_profiles_issue_970"
+                          "test_requirements_dir"
+                          "test_requirements_finder"
+                          "test_sort_configurable_sort_issue_1732"
+                          "test_sort_imports_error_handling")
+                    " and not "))
+      ;; TODO: Package example plugins separately, available in PyPI:
+      ;; - example_isort_formatting_plugin
+      ;; - example_isort_sorting_plugin
+      ;; - example_shared_isort_profile
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'install-example-plugins
+          (add-before 'build 'pretend-version
             (lambda _
-              (for-each (lambda (source-directory)
-                          (invoke "python" "-m" "build" "--wheel"
-                                  "--no-isolation" "--outdir=dist"
-                                  source-directory))
-                        '("example_isort_formatting_plugin"
-                          "example_isort_sorting_plugin"
-                          "example_shared_isort_profile"))
-              ;; Install them to temporary storage, for the test.
-              (setenv "HOME" (getcwd))
-              (let ((example-whls (find-files "dist" "^example.*\\.whl$")))
-                (apply invoke "pip" "--no-cache-dir" "--no-input"
-                       "install"  "--user" "--no-deps" example-whls)))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-colorama
-           python-black
-           python-hypothesmith
-           python-libcst-minimal
-           python-natsort
-           python-pip
-           python-poetry-core
+           python-hatch-vcs
+           python-hatchling
+           python-hypothesis
            python-pylama
-           python-pypa-build
-           python-pytest
-           python-pytest-mock))
+           python-pytest))
     (home-page "https://github.com/PyCQA/isort")
     (synopsis "Python utility/library to sort python imports")
-    (description "@code{python-isort} is a python utility/library to sort
-     imports alphabetically, and automatically separated into sections.  It
-     provides a command line utility, a python library and plugins for various
-     editors.")
+    (description
+     "@code{python-isort} is a python utility/library to sort imports
+alphabetically, and automatically separated into sections.  It provides a
+command line utility, a python library and plugins for various editors.")
     (license license:expat)))
 
 (define-public python-configparser
