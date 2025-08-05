@@ -309,7 +309,7 @@ ElasticSearch server")
 (define-public firebird
   (package
     (name "firebird")
-    (version "3.0.12")
+    (version "3.0.13")
     (source
      (origin
        (method git-fetch)
@@ -318,7 +318,7 @@ ElasticSearch server")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09i51s3zgd0qkd17kk32cq99kpxgkm3frnjmr4dgr1csncr2v3x6"))
+        (base32 "0h697y53vk7yvlifr35vjl3vkv8m5ny7j05r70qnqcvjy0axqbdn"))
        (patches (search-patches "firebird-riscv64-support-pt1.patch"
                                 "firebird-riscv64-support-pt2.patch"))
        (modules '((guix build utils)))
@@ -445,7 +445,7 @@ ElasticSearch server")
     (inputs
      (list boost
            editline
-           icu4c-71
+           icu4c-77
            libtommath
            ncurses
            zlib))
