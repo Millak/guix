@@ -478,15 +478,17 @@ HTML help files.")
   (package
     (name "python-sphinxcontrib-jsmath")
     (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-jsmath" version))
-              (sha256
-               (base32
-                "1f64w19j33sp151jimibraw6qrbhd5gxy8hs3797w9478m55x4m9"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib-jsmath" version))
+       (sha256
+        (base32 "1f64w19j33sp151jimibraw6qrbhd5gxy8hs3797w9478m55x4m9"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-jsmath")
     (synopsis "Sphinx extension to render math equations")
     (description
