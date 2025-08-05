@@ -311,39 +311,35 @@ ElasticSearch server")
     (name "firebird")
     (version "3.0.12")
     (source
-     (let ((revision "33787-0"))
-       (origin
-         (method url-fetch)
-         (uri (string-append "https://github.com/FirebirdSQL/"
-                             "firebird/releases/download/v"
-                             version "/"
-                             "Firebird-" version "." revision ".tar.bz2"))
-         (sha256
-          (base32 "07w109k237slwyhgyxma9r5my0dkvksc7ykpw0a4h7gpv06vzcl5"))
-         (patches (search-patches "firebird-riscv64-support-pt1.patch"
-                                  "firebird-riscv64-support-pt2.patch"))
-         (modules '((guix build utils)))
-         (snippet
-          `(begin
-             (for-each
-              delete-file-recursively
-              (list "extern/btyacc/test" ; TODO: package and remove entirely
-                    "extern/editline"
-                    "extern/icu"
-                    "extern/libtommath"
-                    "extern/zlib"
-                    "src/include/firebird/impl/boost"
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FirebirdSQL/firebird")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09i51s3zgd0qkd17kk32cq99kpxgkm3frnjmr4dgr1csncr2v3x6"))
+       (patches (search-patches "firebird-riscv64-support-pt1.patch"
+                                "firebird-riscv64-support-pt2.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           (for-each
+            delete-file-recursively
+            (list "extern/btyacc/test" ; TODO: package and remove entirely
+                  "extern/editline"
+                  "extern/icu"
+                  "extern/libtommath"
+                  "extern/zlib"
+                  "src/include/firebird/impl/boost"
 
-                    ;; Missing licence.
-                    "builds/install/arch-specific/solaris"
-                    "extern/SfIO"
-                    "src/msgs/templates.sql"
+                  ;; Missing licence.
+                  "builds/install/arch-specific/solaris"
+                  "extern/SfIO"
+                  "src/msgs/templates.sql"
 
-                    ;; Generated files missing sources.
-                    "doc/Firebird-3-QuickStart.pdf"
-                    (string-append "doc/Firebird-" ,version
-                                   "-ReleaseNotes.pdf")
-                    "doc/README.SecureRemotePassword.html")))))))
+                  ;; Generated files missing sources.
+                  "doc/README.SecureRemotePassword.html"))))))
     (build-system gnu-build-system)
     (outputs (list "debug" "out"))
     (arguments
@@ -445,9 +441,7 @@ ElasticSearch server")
                            (list "include/firebird/impl"
                                  "lib/firebird/plugins/udr")))))))))
     (native-inputs
-     (if (target-riscv64?)
-       (list autoconf automake libtool)
-       '()))
+     (list autoconf automake libtool))
     (inputs
      (list boost
            editline
