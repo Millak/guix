@@ -1315,9 +1315,8 @@ as a drop-in replacement of MySQL.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://downloads.mariadb.org/f/connector-c-" version
-             "/mariadb-connector-c-" version "-src.tar.gz"
-             "/from/https%3A//mirrors.ukfast.co.uk/sites/mariadb/?serve"))
+             "https://downloads.mariadb.org/rest-api/connector-c/"
+             version "/mariadb-connector-c-" version "-src.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0xb8fiissblxb319y5ifqqp86zblwis789ipb753pcb4zpnsaw82"))))
