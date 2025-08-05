@@ -12324,7 +12324,7 @@ of these reads to align data quickly through a hash-based indexing scheme.")
 (define-public sortmerna
   (package
     (name "sortmerna")
-    (version "4.3.4")
+    (version "4.3.7")
     (source
      (origin
        (method git-fetch)
@@ -12334,7 +12334,7 @@ of these reads to align data quickly through a hash-based indexing scheme.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0f8jfc8vsq6llhbb92p9yv7nbp566yqwfcmq3g2hw0n7d8hyl3a8"))))
+         "14p3zi6ysnrs2l33r5mc0fr0la2jnnxmqdcif02fppln8w31j753"))))
     (build-system cmake-build-system)
     (outputs '("out"      ;for binaries
                "db"))     ;for sequence databases
