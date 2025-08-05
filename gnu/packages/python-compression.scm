@@ -46,6 +46,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages check)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -60,33 +61,39 @@
 (define-public python-blosc
   (package
     (name "python-blosc")
-    (version "1.11.1")
+    (version "1.11.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "blosc" version))
        (sha256
         (base32
-         "0xmjs28sgpnb940zrhw010dq2m9d8a5h4fgnjyk6645fgfr1j8f2"))
+         "13h8ks58iy4h3ayk7havb4hmkma88598qkf4i4paj53qpa76bvc9"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "blosc/c-blosc")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'find-blosc
-                 (lambda _
-                   (setenv "USE_SYSTEM_BLOSC" "1")
-                   (setenv "Blosc_ROOT" #$(this-package-input "c-blosc"))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python" "-m" "blosc.test")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "blosc.test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-blosc
+            (lambda _
+              (setenv "USE_SYSTEM_BLOSC" "1")
+              (setenv "Blosc_ROOT" #$(this-package-input "c-blosc")))))))
     (propagated-inputs
-     (list python-scikit-build python-numpy))
-    (inputs (list c-blosc))
-    (native-inputs (list cmake-minimal))
+     (list python-scikit-build))
+    (inputs
+     (list c-blosc))
+    (native-inputs
+     (list cmake-minimal
+           ninja/pinned
+           python-numpy
+           python-psutil
+           python-py-cpuinfo
+           python-setuptools))
     (home-page "https://github.com/blosc/python-blosc")
     (synopsis "Python wrapper for the Blosc data compressor library")
     (description "Blosc is a high performance compressor optimized for binary
