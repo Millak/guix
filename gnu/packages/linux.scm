@@ -4258,7 +4258,10 @@ that the Ethernet protocol is much simpler than the IP protocol.")
                 (string-append "HDRDIR=" out "/include")
                 (string-append "SBINDIR=" out "/sbin")
                 (string-append "CONFDIR=" out "/etc")
-                (string-append "MANDIR=" out "/share/man")))
+                (string-append "MANDIR=" out "/share/man")
+                #$@(if (target-ppc64le?)
+                       '("CCOPTS=-O2 -pipe -Wno-incompatible-pointer-types")
+                       '())))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
