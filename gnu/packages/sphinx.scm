@@ -560,9 +560,14 @@ size responsive web components.")
        (sha256
         (base32
          "1x9af78vamjjcdrrhiah3wg613jv7gm8yh9vvqfrmf4vam6mimyg"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f))    ;no tests
+    (native-inputs
+     (list python-flit-core))
     (propagated-inputs
-     (list python-docutils python-sphinx))
+     (list python-docutils
+           python-sphinx))
     (home-page "https://github.com/jupyter/sphinxcontrib_github_alt")
     (synopsis "Link to GitHub pages from Sphinx docs")
     (description
