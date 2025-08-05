@@ -6413,20 +6413,6 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
 @code{httplib2} for use with @code{requests} session objects.")
     (license license:asl2.0)))
 
-(define-public python-cachecontrol-0.11
-  (package
-    (inherit python-cachecontrol)
-    (name "python-cachecontrol")
-    (version "0.11.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "CacheControl" version))
-        (sha256
-         (base32
-          "07jsfhlbcwgqg6ayz8nznzaqg5rmxqblbzxz1qvg5wc44pcjjy4g"))))
-    (native-inputs (list python-setuptools python-wheel))))
-
 (define-public python-betamax
   (package
     (name "python-betamax")
