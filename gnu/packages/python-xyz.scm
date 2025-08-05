@@ -5805,6 +5805,11 @@ any other callable) periodically at pre-determined intervals using a simple,
 human-friendly syntax.")
     (license license:expat)))
 
+;; XXX: This project is unmaintained since 2020, see:
+;; <https://github.com/scour-project/scour/issues/321>.
+;;
+;; The only user is Inkscape, see:
+;; <https://gitlab.com/inkscape/inkscape-docs/documentation/-/issues/43>.
 (define-public python-scour
   (package
     (name "python-scour")
@@ -5814,21 +5819,27 @@ human-friendly syntax.")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/scour-project/scour")
-         (commit
-          (string-append "v" version))))
+          (url "https://gitlab.com/inkscape/extras/scour")
+          (commit
+           (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0mmfvx4wqp8gkpv0kbih89zfs9njvmd3v4dxfqii62xddpxq0f1k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test_scour.py")))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-six))
-    (build-system python-build-system)
-    (home-page "https://github.com/scour-project/scour")
+    (home-page "https://gitlab.com/inkscape/extras/scour")
     (synopsis "Scour is an SVG optimizer/cleaner written in Python")
-    (description "The goal of Scour is to output a file that renders
-identically at a fraction of the size by removing a lot of redundant
-information created by most SVG editors.  Optimization options are typically
-lossless but can be tweaked for more aggressive cleaning.")
+    (description
+     "The goal of Scour is to output a file that renders identically at a
+fraction of the size by removing a lot of redundant information created by
+most SVG editors.  Optimization options are typically lossless but can be
+tweaked for more aggressive cleaning.")
     (license license:asl2.0)))
 
 (define-public python-mechanize
