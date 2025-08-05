@@ -28,7 +28,7 @@
 ;;; Copyright © 2022 Stephen Paul Weber <singpolyma@singpolyma.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
@@ -113,37 +113,19 @@ converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
 (define-public ruby-builder
   (package
     (name "ruby-builder")
-    (version "3.2.4")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "builder" version))
               (sha256
                (base32
-                "045wzckxpwcqzrjr353cxnyaxgf0qg22jh00dcx7z38cys5g1jlr"))))
+                "0pw3r2lyagsxkm71bf44v5b74f7l9r7di22brbyji9fwz791hya9"))))
     (build-system ruby-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch
-            (lambda _
-              (substitute* "rakelib/tags.rake"
-                (("File\\.exists\\?") "File.exist?"))
-
-              ;; TODO This test is broken
-              ;; https://github.com/tenderlove/builder/issues/13
-              (substitute* "test/test_blankslate.rb"
-                (("test_late_included_module_in_kernel_is_ok")
-                 "test_late_included_module_in_kernel_is_ok
-    skip(\"test expected to fail\")
-"))
-              (substitute* "rakelib/tags.rake"
-                (("RVM_GEMDIR = .*") "RVM_GEMDIR = 'no-rvm-please'\n")))))))
     (synopsis "Ruby library to create structured data")
     (description "Builder provides a number of builder objects that make it
 easy to create structured data.  Currently the following builder objects are
 supported: XML Markup and XML Events.")
-    (home-page "https://github.com/tenderlove/builder")
+    (home-page "https://github.com/rails/builder")
     (license license:expat)))
 
 (define-public ruby-cucumber-ci-environment
