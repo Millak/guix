@@ -949,18 +949,30 @@ generator")
 (define-public python-zstandard
   (package
     (name "python-zstandard")
-    (version "0.19.0")
+    (version "0.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zstandard" version))
        (sha256
-        (base32 "0qvqhs121spk7yc1l20samflxx47waxv3xm55ksxpn1djk6jzl9i"))))
-    (build-system python-build-system)
+        (base32 "02dwqq5dw73zypvwpadscra8x6rwbglblh57yxl5y9g710nwdn5j"))))
+    (build-system pyproject-build-system)
+    ;; TODO: Unbunle zstd.
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((":__legacy__") ""))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-cffi))
-    (native-inputs
-     (list python-hypothesis))
     (home-page "https://github.com/indygreg/python-zstandard")
     (synopsis "Zstandard bindings for Python")
     (description "This project provides Python bindings for interfacing with
