@@ -2992,16 +2992,16 @@ for use in Python programs that implement HTTP/2.")
 (define-public python-h11
   (package
     (name "python-h11")
-    (version "0.14.0")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "h11" version))
        (sha256
-        (base32 "17b97c56y31hi0n0x0cb5a87x4xr9jijf2y06pzj0977k6zgn6cg"))))
+        (base32 "1wazxq4b4jg5001h5ypvz9pvrg80pagyd1aqm962wya5rxbbjdaf"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/python-hyper/h11")
     (synopsis "Pure-Python, bring-your-own-I/O implementation of HTTP/1.1")
     (description
