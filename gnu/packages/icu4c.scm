@@ -164,17 +164,6 @@ C/C++ part.")
                (base32
                 "0gjg1zrnqk4vmidqgqx4xbz05898px212gnff8242is7zrmv9b6z"))))))
 
-(define-public icu4c-69
-  (package
-    (inherit icu4c)
-    (version "69.1")
-    (source (origin
-              (method url-fetch)
-              (uri (icu4c-uri version))
-              (sha256
-               (base32
-                "0icps0avkwy5df3wwc5kybxcg63hcgk4phdh9g244g0xrmx7pfjc"))))))
-
 (define-public icu4c-build-root
   (package
     (inherit icu4c)
