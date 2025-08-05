@@ -3231,7 +3231,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2025.06.30")
+    (version "2025.07.21")
     (source
      (origin
        (method git-fetch)
@@ -3243,7 +3243,7 @@ YouTube.com and many more sites.")
        (snippet '(substitute* "pyproject.toml"
                    (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
-        (base32 "14pk2rk5vm9469ghkvciaz74fihbl8dfi27qj6xnxv71hpm5w03p"))))
+        (base32 "051y9pb2imdrpi065d9l2xfmd68l22ahbz90z81yqv7kv84j9mal"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? ,(not (%current-target-system))
@@ -3277,7 +3277,17 @@ YouTube.com and many more sites.")
          (replace 'check
            (lambda* (#:key tests? test-flags #:allow-other-keys)
              (when tests?
-               (apply invoke "pytest" "-k" "not download" test-flags)))))))
+               (apply invoke "pytest"
+                      "-k"
+                      (string-append
+                       "not download"
+                       ;; TestHTTPRequestHandler tests are disabled due to
+                       ;; https://github.com/yt-dlp/yt-dlp/issues/13927
+                       " and not "
+                       "test_incompleteread"
+                       " and not "
+                       "test_partial_read_then_full_read")
+                      test-flags)))))))
     (inputs (list ffmpeg python-brotli
                   python-certifi
                   python-mutagen
