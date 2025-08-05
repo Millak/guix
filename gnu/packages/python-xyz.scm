@@ -30592,22 +30592,31 @@ they use the same path.")
 (define-public python-partd
   (package
     (name "python-partd")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "partd" version))
        (sha256
-        (base32
-         "0rvz2si6lbyhk7hj804gilq2y2bfdi33q81iwwkmgskgkva5vhjn"))))
+        (base32 "0b7h42dfvbrwpg75wzszv1rq3237h1g026v24v10b16wzcxc68nh"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-versioneer))
     (propagated-inputs
-     (list python-locket python-numpy python-pandas python-pyzmq python-toolz))
-    (native-inputs (list python-setuptools python-wheel))
+     (list python-locket
+           python-toolz
+           ;; [complete]
+           python-blosc
+           python-numpy
+           python-pandas
+           python-pyzmq))
     (home-page "https://github.com/dask/partd/")
     (synopsis "Appendable key-value storage")
-    (description "Partd stores key-value pairs.  Values are raw bytes.  We
-append on old values.  Partd excels at shuffling operations.")
+    (description
+     "Partd stores key-value pairs.  Values are raw bytes.  We append on old
+values.  Partd excels at shuffling operations.")
     (license license:bsd-3)))
 
 (define-public python-fsspec
