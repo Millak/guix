@@ -8515,25 +8515,19 @@ browser.")
 (define-public python-dm-tree
   (package
     (name "python-dm-tree")
-    (version "0.1.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dm-tree" version))
-              (sha256
-               (base32 "0c4l9gpaqd7j34qwnpjibv53j9sm0nyl0wcy8dvh76772jxspjhg"))))
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dm_tree" version))
+       (sha256
+        (base32 "0arlspn0122igcz5sq6lqrw6zkdhqqkgr0xkwkas599m74yxpix4"))))
     (build-system pyproject-build-system)
-    ;; We link the static abseil libraries here to avoid problems in
-    ;; downstream libraries using potentially different variants of
-    ;; abseil-cpp.  This is also what's done in the upstream CMake build.
-    (inputs (list pybind11 static-abseil-cpp python))
-    (propagated-inputs (list python-wheel
-                             python-absl-py
-                             python-attrs
-                             python-numpy
-                             python-wrapt))
     (arguments
      (list #:tests? #f
            #:phases
+           ;; TODO: Build against shared libraries with USE_SYSTEM_ABSEIL=true
+           ;; and USE_SYSTEM_PYBIND11=true.
            #~(modify-phases %standard-phases
                (add-before 'build 'build-shared-lib
                  (lambda _
@@ -8574,6 +8568,20 @@ browser.")
                       (string-append abseil-cpp "/lib/libabsl_strings_internal.a")
                       (string-append abseil-cpp "/lib/libabsl_throw_delegate.a")
                       "-o" "build/lib/tree/_tree.so")))))))
+    ;; We link the static abseil libraries here to avoid problems in
+    ;; downstream libraries using potentially different variants of
+    ;; abseil-cpp.  This is also what's done in the upstream CMake build.
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list pybind11
+           static-abseil-cpp
+           python))
+    (propagated-inputs
+     (list python-absl-py
+           python-attrs
+           python-numpy
+           python-wrapt))
     (home-page "https://github.com/deepmind/tree")
     (synopsis "Work with nested data structures in Python")
     (description "Tree is a python library for working with nested data
