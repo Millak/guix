@@ -2155,60 +2155,53 @@ decode and default on encode.
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
-    (version "1.28.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/aws-cloudformation/cfn-lint")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0n1v05516s0zy64v1a7f7pj5h9lscvbkkwnlgmys7g8lydlgf0v4"))))
+    (version "1.38.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws-cloudformation/cfn-lint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1crwx0cp50h83xz8lc4ny504mx4dadpk80ln539syd4jd78qplgy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2136 passed, 11 deselected, 1 warning
+      #:test-flags
+      #~(list "--ignore=test/integration/"
+              "-k" (string-join
+                    ;; Tests failing on doctest or comparing diff.
+                    (list "not test_build_graph"
+                          "test_good_template"
+                          "test_success_run"
+                          "test_update_docs")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-deprecated
             (lambda _
               (substitute* "src/cfnlint/data/AdditionalSpecs/LmbdRuntimeLifecycle.json"
                 (("deprecated\": \"2025")
-                 "deprecated\": \"2125")))))
-      ;; tests: 1807 passed, 26 deselected, 1 warning
-      #:test-flags
-      #~(list "-k" (string-join
-                    (list
-                     ;; Skip documentation tests.
-                     "not test_update_docs"
-                     ;; Tests fail with error: AssertinError ...
-                     "test_module_integration"
-                     "test_parameter_for_autopublish_code_sha256"
-                     "test_sam_with_language_extension"
-                     "test_success_run"
-                     "test_templates"
-                     ;; Test fails with error: diff error while comparing
-                     ;; graphs.
-                     "test_build_graph")
-                    " and not "))))
+                 "deprecated\": \"2125")))))))
     (native-inputs
      (list python-defusedxml
            python-pydot
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-aws-sam-translator
-           python-importlib-resources
-           python-jschema-to-python
            python-jsonpatch
-           python-junit-xml
            python-networkx
            python-pyyaml
            python-regex
-           python-sarif-om
            python-sympy
-           python-typing-extensions))
+           python-typing-extensions
+           ;; [optional]
+           python-jschema-to-python
+           python-junit-xml
+           python-sarif-om))
     (home-page "https://github.com/aws-cloudformation/cfn-lint")
     (synopsis "Validate CloudFormation templates")
     (description
