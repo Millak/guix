@@ -12162,17 +12162,20 @@ Python's distutils.")
 (define-public python-olefile
   (package
     (name "python-olefile")
-    (version "0.46")
+    (version "0.47")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/decalage2/olefile/releases/"
-                           "download/v" version "/olefile-" version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/decalage2/olefile")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kjxh4gr651hpqkjfv89cfzr40hyvf3vjlda7mifiail83j7j07m"))))
-    (build-system python-build-system)
+        (base32 "1ardfp32jgijha6vk7znvnpwgi710c6gj02lk4drv45xj4mw71hv"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://www.decalage.info/python/olefileio")
     (synopsis "Read and write Microsoft OLE2 files")
     (description
