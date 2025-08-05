@@ -298,16 +298,18 @@ sources.")
 (define-public python-sphinxcontrib-applehelp
   (package
     (name "python-sphinxcontrib-applehelp")
-    (version "1.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-applehelp" version))
-              (sha256
-               (base32
-                "0n5wrn4l7x6gxvi1g7c6y72hkxgc223axz1jykipaxhfr1g76wm0"))))
-    (build-system python-build-system)
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib_applehelp" version))
+       (sha256
+        (base32 "1l863hp1pikrn04082f6jh49fha910zqfd27za79bkim2wryya9g"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-applehelp")
     (synopsis "Sphinx extension for creating Apple help books")
     (description
