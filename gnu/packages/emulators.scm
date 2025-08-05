@@ -3581,8 +3581,8 @@ assembler, and debugger for the Intel 8085 microprocessor.
        (origin
          (method git-fetch)
          (uri (git-reference
-                (url "https://github.com/MaddTheSane/PCSX-Reloaded")
-                (commit commit)))
+               (url "https://github.com/MaddTheSane/PCSX-Reloaded")
+               (commit commit)))
          (patches (search-patches "pcsxr-find-harfbuzz.patch"
                                   "pcsxr-fix-definitions.patch"))
          (sha256
@@ -3590,40 +3590,38 @@ assembler, and debugger for the Intel 8085 microprocessor.
          (file-name (git-file-name name commit))))
       (build-system cmake-build-system)
       (arguments
-       `(#:tests? #f                    ;no "test" target
-         #:configure-flags
-         (list "-DSND_BACKEND=pulse"
-               "-DENABLE_CCDDA='ON'"
-               "-DUSE_LIBARCHIVE='ON'"
-               "-DUSE_LIBCDIO='ON'"
-               "-DCMAKE_C_FLAGS=-Wno-incompatible-pointer-types")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'fix-cdio-lookup
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "cmake/FindCdio.cmake"
-                 (("/usr/include/cdio")
-                  (search-input-directory inputs "/include/cdio")))))
-           (add-after 'install 'wrap-program
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (wrap-program (string-append (assoc-ref outputs "out")
-                                            "/bin/pcsxr")
-                 ;; For GtkFileChooserDialog.
-                 `("GSETTINGS_SCHEMA_DIR" =
-                   (,(string-append (assoc-ref inputs "gtk+")
-                                    "/share/glib-2.0/schemas")))))))))
-      (native-inputs
-       (list pkg-config intltool
-             `(,glib "bin")))
-      (inputs
-       (list bash-minimal
-             libcdio
-             sdl2
-             gtk+
-             ffmpeg-4
-             libxv
-             libarchive
-             pulseaudio))
+       (list
+        #:tests? #f ;no "test" target
+        #:configure-flags
+        #~(list "-DSND_BACKEND=pulse"
+                "-DENABLE_CCDDA='ON'"
+                "-DUSE_LIBARCHIVE='ON'"
+                "-DUSE_LIBCDIO='ON'"
+                "-DCMAKE_C_FLAGS=-Wno-incompatible-pointer-types")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'fix-cdio-lookup
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "cmake/FindCdio.cmake"
+                  (("/usr/include/cdio")
+                   (search-input-directory inputs "/include/cdio")))))
+            (add-after 'install 'wrap-program
+              (lambda* (#:key inputs #:allow-other-keys)
+                (wrap-program (string-append #$output "/bin/pcsxr")
+                  ;; For GtkFileChooserDialog.
+                  `("GSETTINGS_SCHEMA_DIR" =
+                    (,(string-append (assoc-ref inputs "gtk+")
+                                     "/share/glib-2.0/schemas")))))))))
+      (native-inputs (list pkg-config intltool
+                           `(,glib "bin")))
+      (inputs (list bash-minimal
+                    libcdio
+                    sdl2
+                    gtk+
+                    ffmpeg-4
+                    libxv
+                    libarchive
+                    pulseaudio))
       (home-page "https://github.com/MaddTheSane/PCSX-Reloaded")
       (synopsis "PlayStation emulator")
       (description
