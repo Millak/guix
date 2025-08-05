@@ -14049,37 +14049,30 @@ common interface over different adapters.")
 (define-public ruby-nio4r
   (package
    (name "ruby-nio4r")
-   (version "2.5.2")
+   (version "2.7.4")
    (source
     (origin
-     (method url-fetch)
-     (uri (rubygems-uri "nio4r" version))
+     (method git-fetch)
+     (uri (git-reference
+            (url "https://github.com/socketry/nio4r")
+            (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
      (sha256
       (base32
-       "0gnmvbryr521r135yz5bv8354m7xn6miiapfgpg1bnwsvxz8xj6c"))))
+       "1planm0yrzgkjqvxbfrcp477k030f1cyplpf8g1p7dppgzk2iqqm"))))
    (build-system ruby-build-system)
    (arguments
-    '(#:phases
+    '(#:test-target "spec"
+      #:phases
       (modify-phases %standard-phases
-        (add-after 'unpack 'remove-unnecessary-dependencies
+        (add-after 'extract-gemspec 'delete-certificate
           (lambda _
-            (substitute* "spec/spec_helper.rb"
-              ;; Coveralls is for uploading test coverage information to an
-              ;; online service, and thus unnecessary for building the Guix
-              ;; package
-              (("require \"coveralls\"") "")
-              (("Coveralls\\.wear!") "")
-              ;; Remove rspec/retry as we are not retrying the tests
-              (("require \"rspec/retry\"") "")
-              (("config\\.display_try_failure_messages = true") "")
-              (("config\\.verbose_retry = true") ""))))
+            (substitute* "nio4r.gemspec"
+              (("spec.cert_chain  = .*") "")
+              (("spec.signing_key = .*") ""))))
         (add-before 'check 'compile
           (lambda _
-            (invoke "rake" "compile")))
-        (replace 'check
-          (lambda* (#:key tests? #:allow-other-keys)
-            (when tests?
-              (invoke "rspec")))))))
+            (invoke "rake" "compile"))))))
    (native-inputs
     (list bundler ruby-rake-compiler ruby-rspec ruby-rubocop))
    (synopsis "New I/O for Ruby")
