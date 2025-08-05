@@ -416,16 +416,18 @@ size responsive web components.")
 (define-public python-sphinxcontrib-devhelp
   (package
     (name "python-sphinxcontrib-devhelp")
-    (version "1.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-devhelp" version))
-              (sha256
-               (base32
-                "1r1qngsbjqbg4rj93kpj44qqy7n4x5khldkr0c3ffhlnggx1lzzz"))))
-    (build-system python-build-system)
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib_devhelp" version))
+       (sha256
+        (base32 "1bfi9m5hg7p5vgkkqyawvdwyqj22gcvk68fmnlxxgla5sjb5s7s1"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-devhelp")
     (synopsis "Sphinx extension for creating Devhelp documents")
     (description
