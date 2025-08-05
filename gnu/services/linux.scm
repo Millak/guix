@@ -705,6 +705,8 @@ placed in a udev rules file."
          (provision (list (string->symbol name)))
          ;; Make sure the homes are already present
          (requirement requirement)
+         (modules `((ice-9 match)
+                    ,@%default-modules))
          (stop
           #~(lambda args
               (match (quote #$policy)
