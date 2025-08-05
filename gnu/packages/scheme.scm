@@ -108,12 +108,16 @@
 (define-public mit-scheme
   (package
     (name "mit-scheme")
-    (version "11.2")
+    (version "12.1")
     (source #f) ; See below.
     (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (arguments
      (list
+      ;; XXX: Some makefile dependencies are probably wrong, leading to
+      ;; missing files when building in parallel.
+      #:parallel-build? #f
+      #:make-flags #~(list "compile-microcode")
       #:phases
       #~(modify-phases %standard-phases
           ;; MIT/GNU Scheme is not bootstrappable, so it's recommended to
@@ -146,20 +150,18 @@
                     (cond
                      ((target-x86-64?)
                       (base32
-                       "17822hs9y07vcviv2af17p3va7qh79dird49nj50bwi9rz64ia3w"))
+                       "035f92vni0vqmgj9hq2i7vwasz7crx52wll4823vhfkm1qdv5ywc"))
                      ((target-aarch64?)
                       (base32
-                       "11maixldk20wqb5js5p4imq221zz9nf27649v9pqkdf8fv7rnrs9"))
+                       "12ra9bc93x8g07impbd8jr6djjzwpb9qvh9zhxvvrba3332zx3vh"))
                      (else
                       (base32 "\
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))))))
-              ;; Delete these dangling symlinks since they break
-              ;; `patch-shebangs'.
-              (for-each delete-file (find-files "src/compiler" "^make\\."))
               (chdir "src")))
           (add-after 'unpack 'patch-/bin/sh
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((sh (search-input-file inputs "bin/sh")))
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((sh (search-input-file (or native-inputs inputs)
+                                           "bin/sh")))
                 (setenv "CONFIG_SHELL" sh)
                 (substitute* '("../tests/ffi/autogen.sh"
                                "../tests/ffi/autobuild.sh"
@@ -172,49 +174,38 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))))))
                    (string-append sh " autogen.sh"))
                   (("\\./configure")
                    (string-append sh " configure"))))))
-          ;; disable array-parameter warnings that become errors while
-          ;; compiling microcode target
-          (add-before 'configure 'set-flags
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "CFLAGS" "-Wno-array-parameter")
-              (setenv "CPPFLAGS" "-Wno-array-parameter")))
-          (replace 'build
-            (lambda* (#:key system #:allow-other-keys)
-              (if (or (string-prefix? "x86_64" system)
-                      (string-prefix? "i686" system))
-                  (invoke "make" "compile-microcode")
-                  (invoke "./etc/make-liarc.sh"
-                          (string-append "--prefix=" #$output)))))
           (add-after 'configure 'configure-doc
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (with-directory-excursion "../doc"
-                (let* ((sh (search-input-file inputs "bin/sh")))
+                (let* ((sh (search-input-file (or native-inputs inputs)
+                                              "bin/sh")))
+                  (mkdir-p #$output:doc)
                   (invoke sh "./configure"
-                          (string-append "--prefix=" #$output)
-                          (string-append "SHELL=" sh))))))
+                          (string-append "SHELL=" sh)
+                          (string-append "--prefix=" #$output:doc)
+                          (string-append "--docdir=" #$output:doc
+                                         "/share/doc/" #$name "-" #$version))))))
           (add-after 'build 'build-doc
-            (lambda* _
+            (lambda _
               (with-directory-excursion "../doc"
-                (invoke "make"))))
-          (add-after 'install 'install-doc
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((doc (assoc-ref outputs "doc"))
-                     (old-doc-dir (string-append #$output "/share/doc"))
-                     (new-doc/mit-scheme-dir (string-append doc "/share/doc/"
-                                                            #$name "-"
-                                                            #$version)))
-                (with-directory-excursion "../doc"
-                  (for-each (lambda (target)
-                              (invoke "make" target))
-                            '("install-info-gz" "install-man" "install-html"
-                              "install-pdf")))
-                (mkdir-p new-doc/mit-scheme-dir)
-                (copy-recursively (string-append old-doc-dir "/" #$name)
-                                  new-doc/mit-scheme-dir)
-                (delete-file-recursively old-doc-dir)))))))
+                (invoke "make" "install"))))
+          (add-after 'install 'fixup-install
+            (lambda _
+              (let ((share (string-append #$output "/share"))
+                    (dest (string-append #$output:doc "/share/info/")))
+                (for-each
+                 (lambda (file) (install-file file dest))
+                 (find-files share "\\.info\\.gz$"))
+                (delete-file-recursively share))))
+          (add-before 'check 'disable-slow-tests
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (setenv "FAST" "y")
+              (setenv "SHELL" (search-input-file (or native-inputs inputs)
+                                                 "bin/sh")))))))
     (native-inputs
      ;; XXX: Autoconf, Automake, and Libtool are necessary for the FFI tests.
-     (list autoconf
+     (list bash-minimal
+           autoconf
            automake
            libtool
            (texlive-local-tree (list texlive-epsf texlive-texinfo))
@@ -222,11 +213,8 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))))))
            ghostscript
            m4))
     (inputs (list libx11 ncurses))
-    ;; Fails to build on MIPS, see <http://bugs.gnu.org/18221>.
-    ;; Also, the portable C version of MIT/GNU Scheme did not work in time for
-    ;; release in version 10.1.
-    (supported-systems '("x86_64-linux" "i686-linux"))
-
+    ;; XXX: Fails to build on MIPS, see <http://bugs.gnu.org/18221>.
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
     (home-page "https://www.gnu.org/software/mit-scheme/")
     (synopsis "Scheme implementation with integrated editor and debugger")
     (description
