@@ -893,7 +893,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "25.2.3.2")               ;keep in sync with hunspell dictionaries
+    (version "25.2.5.2")               ;keep in sync with hunspell dictionaries
     (source
      (origin
        (method url-fetch)
@@ -906,7 +906,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
           "https://downloadarchive.documentfoundation.org/libreoffice/old/"
           version "/src/libreoffice-" version ".tar.xz")))
        (sha256
-        (base32 "1pysqa31by4rhghnfyz8xbygqn6d6fjqm2py1apxkw3xa8g4cm7a"))))
+        (base32 "0fdkn9lf2q5d7kminsbcn1g2ih2ilaw2jnyarsns4jczch4v57wc"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
