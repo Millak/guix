@@ -457,16 +457,18 @@ users from Sphinx docs.")
 (define-public python-sphinxcontrib-htmlhelp
   (package
     (name "python-sphinxcontrib-htmlhelp")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-htmlhelp" version))
-              (sha256
-               (base32
-                "1ckd5xx4ngd6f4prxbc1bbvnafy1gg06j3bxyj5kk7v21lnvpy7m"))))
-    (build-system python-build-system)
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib-htmlhelp" version))
+       (sha256
+        (base32 "1sc2f368bacz4jak5kxr4n82nzri4bp37lm02g669bcarrm93qn9"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;XXX: circular dependency on Sphinx
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/sphinx-doc/sphinxcontrib-htmlhelp")
     (synopsis "Sphinx extension for rendering HTML help files")
     (description
