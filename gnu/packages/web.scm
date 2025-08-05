@@ -9694,6 +9694,7 @@ It contains the code shared by all Kiwix ports.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f ; no tests
       #:modules '((guix build qt-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
@@ -9715,17 +9716,17 @@ It contains the code shared by all Kiwix ports.")
            libmicrohttpd
            libzim
            pugixml
-           qtbase-5
-           qtdeclarative-5
-           qtwebchannel-5
-           qtwebengine-5
-           qtwayland-5
+           qtbase
+           qtdeclarative
+           qtwebchannel
+           qtwebengine
+           qtwayland
            xapian
            zlib
            `(,zstd "lib")))
     (native-inputs
      (list pkg-config
-           qtbase-5))
+           qtbase))
     (home-page "https://wiki.kiwix.org/wiki/Software")
     (synopsis "Viewer and manager of ZIM files")
     (description "Kiwix Desktop allows you to enjoy a lot of different content
