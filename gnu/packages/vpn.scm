@@ -22,7 +22,7 @@
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
-;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -811,7 +811,7 @@ others.")
            python-attrs
            python-colorama
            python-keyring
-           python-lxml
+           python-lxml-4.9
            python-prompt-toolkit
            python-requests
            python-pyqt
