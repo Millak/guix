@@ -110,21 +110,21 @@ the Bitcoin network.")
 (define-public python-bcrypt
   (package
     (name "python-bcrypt")
-    (version "3.2.0")
+    (version "3.2.2")    ;the latest not Rust version
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bcrypt" version))
        (sha256
-        (base32 "0agvzdn7r7jx5y4scl5gjmrmr6njvizwmr9n7h1kmaahdrrc34sv"))))
-    (build-system python-build-system)
+        (base32 "1yvbdfmkssx1jf2lrhbs58xljmyi3p82r7rav82pf1bp44642g23"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pycparser python-pytest))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-cffi python-six))
+     (list python-cffi))
     (home-page "https://github.com/pyca/bcrypt/")
-    (synopsis
-     "Modern password hashing library")
+    (synopsis "Modern password hashing library")
     (description
      "Bcrypt is a Python module which provides a password hashing method based
 on the Blowfish password hashing algorithm, as described in
