@@ -5613,64 +5613,6 @@ implementation, along with tools for interoperability with pandas, NumPy, and
 other traditional Python scientific computing packages.")
     (license license:asl2.0)))
 
-(define-public python-pyarrow-0.16
-  (package
-    (inherit apache-arrow-0.16)
-    (name "python-pyarrow")
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f          ; XXX There are no tests in the "python" directory
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build) ; XXX the build is performed again during the install phase
-         (add-after 'unpack 'enter-source-directory
-           (lambda _ (chdir "python")))
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
-         (add-before 'install 'patch-cmake-variables
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Replace cmake locations with hardcoded guix links for the
-             ;; underlying C++ library and headers.  This is a pretty awful
-             ;; hack.
-             (substitute* "cmake_modules/FindParquet.cmake"
-               (("# Licensed to the Apache Software Foundation" m)
-                (string-append "set(PARQUET_INCLUDE_DIR \""
-                               (assoc-ref inputs "apache-arrow:include")
-                               "/share/include\")\n" m))
-               (("find_package_handle_standard_args" m)
-                (string-append "set(PARQUET_LIB_DIR \""
-                               (assoc-ref inputs "apache-arrow:lib")
-                               "/lib\")\n" m)))))
-         (add-before 'install 'patch-parquet-library
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("parquet_shared") "parquet"))))
-         (add-before 'install 'set-PYARROW_WITH_PARQUET
-           (lambda _
-             (setenv "PYARROW_WITH_PARQUET" "1"))))))
-    (propagated-inputs
-     `(("apache-arrow:lib" ,apache-arrow-0.16)
-       ("apache-arrow:include" ,apache-arrow-0.16 "include")
-       ("python-numpy" ,python-numpy)
-       ("python-pandas" ,python-pandas)
-       ("python-six" ,python-six)))
-    (native-inputs
-     (list cmake-minimal
-           pkg-config
-           python-cython
-           python-pytest
-           python-pytest-runner
-           python-setuptools-scm))
-    (outputs '("out"))
-    (home-page "https://arrow.apache.org/docs/python/")
-    (synopsis "Python bindings for Apache Arrow")
-    (description
-     "This library provides a Pythonic API wrapper for the reference Arrow C++
-implementation, along with tools for interoperability with pandas, NumPy, and
-other traditional Python scientific computing packages.")
-    (license license:asl2.0)))
-
 (define-public python-fastparquet
   (package
     (name "python-fastparquet")
