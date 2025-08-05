@@ -32186,18 +32186,13 @@ and not test_validate_classifiers_private")
                 (setenv "HOME" "/tmp")
                 (setenv "FLIT_NO_NETWORK" "1")))))))
     (propagated-inputs
-     (list python-pypa-build
-           python-tomli-w
+     (list python-tomli-w
            python-flit-core
            python-docutils
            python-requests))
     (native-inputs
      (list python-responses
-           python-pygments-github-lexers
            python-pytest
-           python-pytest-cov
-           python-sphinx
-           python-sphinxcontrib-github-alt
            python-testpath))
     (home-page "https://flit.readthedocs.io/")
     (synopsis "Simple packaging tool for simple packages")
