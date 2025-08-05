@@ -40,7 +40,7 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/oneapi-src/oneTBB")
+                    (url "https://github.com/uxlfoundation/oneTBB/")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
