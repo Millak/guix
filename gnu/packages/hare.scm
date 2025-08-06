@@ -172,3 +172,37 @@ package.")
     (description "Hare is a simple systems programming language, featuring
 static typing, manual memory management, and a minimal runtime.")
     (license (list license:gpl3 license:mpl2.0))))
+
+(define-public hare-update
+  (package
+    (name "hare-update")
+    (version "0.25.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~sircmpwn/hare-update")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "0hpcgiyg458v353g3wm2iaz2kszhc2n2rc40lnvxbg9q6i232m76"))))
+    (build-system gnu-build-system)
+    (arguments
+      (list #:make-flags #~(list (string-append "PREFIX=" #$output))
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'configure)
+                (replace 'build
+                  (lambda _
+                    ;; genrules is invoked during build, so we can't just set
+                    ;; make-flags to cross-compile all.
+                    (invoke "make" "hare-update-genrules")
+                    (invoke "make" "hare-update"
+                      (format #f "HAREFLAGS=-a ~a" #$(target->hare-arch))))))))
+    (native-inputs (list hare))
+    (supported-systems hare-supported-systems)
+    (home-page "https://harelang.org")
+    (synopsis "Harelang interversion updater tool")
+    (description "@code{hare-update} updates Harelang source files to newer
+versions of the language and stdlib automagically.")
+    (license license:eupl1.2)))
