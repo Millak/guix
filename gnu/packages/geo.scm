@@ -554,7 +554,7 @@ topology functions.")
            gtk
            libadwaita
            libgee
-           libgweather4
+           libgweather
            librsvg
            libsecret
            libshumate

@@ -1632,7 +1632,7 @@ extraction, and lookup for applications on the desktop.")
            json-glib
            mit-krb5
            libadwaita
-           libgweather4
+           libgweather
            libnma
            libpwquality
            libsecret
@@ -6135,69 +6135,6 @@ service via the system message bus.")
 services for numerous locations.")
     (license license:gpl2+)))
 
-;; libgweather no longer follows the GNOME version, and recommends changing
-;; the package name in distributions to avoid accidental downgrades.  See
-;; <https://discourse.gnome.org/t/changes-in-libgweather-for-gnome-42/7770/2>.
-;; TODO: how to prevent the updater from picking version 40?
-(define-public libgweather4
-  (package
-    (inherit libgweather)
-    (name "libgweather4")
-    (version "4.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/libgweather/"
-                                  (version-major+minor version) "/"
-                                  "libgweather-" version ".tar.xz"))
-              (sha256
-               (base32
-                "00v2rb9dizfvcsq3bgrz68bsi1k04ln5fqhx1q06m5yql0nq32mg"))))
-    (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "-Dzoneinfo_dir="
-                             (search-input-directory %build-inputs
-                                                     "share/zoneinfo")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-HOME
-            (lambda _
-              (setenv "HOME" "/tmp")))
-          (add-after 'unpack 'disable-problematic-tests
-            (lambda _
-              (substitute* "libgweather/tests/meson.build"
-                ;; The timezones test fails for unknown reasons (see:
-                ;; https://gitlab.gnome.org/GNOME/libgweather/-/issues/188).
-                ((".*'name': 'timezones'.*") "")
-                ;; The 'metar' test is known to fail, fixed but not yet released
-                ;; upstream (see:
-                ;; https://gitlab.gnome.org/GNOME/libgweather/-/issues/168).
-                ((".*'name': 'metar'.*") ""))))
-          (delete 'check)               ;move after the install phase
-          (add-after 'install 'check
-            (assoc-ref %standard-phases 'check)))))
-    (native-inputs
-     (list gettext-minimal
-           gi-docgen
-           `(,glib "bin")               ;for glib-mkenums
-           gobject-introspection
-           (libc-utf8-locales-for-target)
-           gsettings-desktop-schemas
-           pkg-config
-           python
-           python-pygobject
-           vala))
-    ;; TODO: It would be good to make the package respect TZDIR instead
-    ;; of using a "hard coded" version of tzdata.
-    (inputs (list tzdata))
-    (propagated-inputs
-     ;; gweather4.pc refers to all of these.
-     (list geocode-glib
-           glib
-           json-glib
-           libsoup
-           libxml2))))
-
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
@@ -6262,7 +6199,7 @@ services for numerous locations.")
            lcms
            libcanberra
            libgudev
-           libgweather4
+           libgweather
            libnotify
            (librsvg-for-system)
            libwacom
@@ -8495,7 +8432,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
            gnome-online-accounts
            json-glib
            libcanberra
-           libgweather4
+           libgweather
            libphonenumber
            mit-krb5
            openldap
@@ -9717,7 +9654,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            ibus
            libcanberra
            libcroco
-           libgweather4
+           libgweather
            libnma
            libsoup
            mesa-headers
@@ -10457,7 +10394,7 @@ associations for GNOME.")
            gsettings-desktop-schemas
            gtk
            libadwaita
-           libgweather4))
+           libgweather))
     (synopsis "Weather monitoring for GNOME desktop")
     (description "GNOME Weather is a small application that allows you to
 monitor the current weather conditions for your city, or anywhere in the
@@ -10890,7 +10827,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
            gsound
            gtk
            libadwaita
-           libgweather4))
+           libgweather))
     (home-page "https://wiki.gnome.org/Apps/Clocks")
     (synopsis "GNOME's clock application")
     (description
@@ -10940,7 +10877,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
            gsettings-desktop-schemas
            libadwaita
            libdazzle
-           libgweather4))
+           libgweather))
     (home-page "https://wiki.gnome.org/Apps/Calendar")
     (synopsis "GNOME's calendar application")
     (description
@@ -12376,7 +12313,7 @@ generic enough to work for everyone.")
            gspell
            highlight
            libcanberra
-           libgweather4
+           libgweather
            libnotify
            libsoup
            nss
