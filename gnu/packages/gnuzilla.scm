@@ -3,7 +3,7 @@
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014-2025 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016-2019, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
@@ -931,8 +931,8 @@ variable defined below.  It requires guile-json to be installed."
       rust
       `(,rust "cargo")
       rust-cbindgen
-      llvm-17
-      clang-17
+      llvm-20
+      clang-20
       perl
       node-lts
       python-wrapper
