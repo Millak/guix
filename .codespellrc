@@ -1,0 +1,8 @@
+[codespell]
+skip = guix/d3.v3.js, *.po, doc/*info, doc/*.de.*, doc/*.es.*, doc/*.fr.*, doc/*.it.*, doc/*.ko.*, doc/*.pt_BR.*, doc/*.ru.*, doc/*.sk.*, doc/*.sv.*, doc/*.zh_CN.*
+ignore-words-list = crate, debbugs, deriver
+write-changes = true
+# ask for confirmation, ask to choose from a list
+interactive = 3
+# Number of lines to show before and after for context
+context = 1
