@@ -22835,8 +22835,8 @@ pairs.")
     (license license:expat)))
 
 (define-public r-hdf5dataframe
-  (let ((commit "1cdb905b1f6af3339938de3e1ca407908bc93e47")
-        (revision "1"))
+  (let ((commit "1e30e6b82b5599d5d98fbcb8bf7312dd1711ca3c")
+        (revision "2"))
     (package
       (name "r-hdf5dataframe")
       (version (git-version "0.0.0" revision commit))
@@ -22848,12 +22848,12 @@ pairs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1pk22h56x873gahj2nwnwxzyq5a27h363mxk1491irypvk78dpn9"))))
+          (base32 "0y6hp31gy17v87ll4rij6pwy6b7k7gnw8iwnvzsaa13ga73g69ak"))))
       (properties `((upstream-name . "HDF5DataFrame")))
       (build-system r-build-system)
       (propagated-inputs (list r-biocgenerics r-delayedarray r-hdf5array
                                r-rhdf5 r-s4vectors))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/BIMSBbioinfo/HDF5DataFrame")
       (synopsis "Bioconductor-friendly bindings for Parquet")
       (description
