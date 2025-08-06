@@ -515,16 +515,17 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
          (check-not-empty description)
          (check-quotes description)
          (check-trademarks description)
-         (check-description-typo description '(("Infrastucture" . "Infrastructure")
-                                               ("This packages" . "This package")
-                                               ("This modules" . "This module")
-                                               ("allows to " . #f)
-                                               ("dependant" . "dependent")
-                                               ("dissapears" . "disappears")
-                                               ("invokation" . "invocation")
-                                               ("permits to " . #f)
-                                               ("provices" . "provides")
-                                               ("useable" . "usable")))
+         (check-description-typo description
+          '(("Infrastucture" . "Infrastructure")    ; codespell:ignore
+            ("This packages" . "This package")      ; codespell:ignore
+            ("This modules" . "This module")        ; codespell:ignore
+            ("allows to " . #f)                     ; codespell:ignore
+            ("dependant" . "dependent")             ; codespell:ignore
+            ("dissapears" . "disappears")           ; codespell:ignore
+            ("invokation" . "invocation")           ; codespell:ignore
+            ("permits to " . #f)                    ; codespell:ignore
+            ("provices" . "provides")               ; codespell:ignore
+            ("useable" . "usable")))                ; codespell:ignore
          ;; Use raw description for this because Texinfo rendering
          ;; automatically fixes end of sentence space.
          (check-end-of-sentence-space description)
