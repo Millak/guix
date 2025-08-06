@@ -1711,25 +1711,26 @@ current version of any major web browser.")
                     (delete-file-recursively "bin/jsonchecker")))))
       (build-system cmake-build-system)
       (arguments
-       '(#:configure-flags (list "-DCMAKE_CXX_FLAGS=-Wno-free-nonheap-object")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-march=native
-             (lambda _
-               (substitute* "CMakeLists.txt"
-                 (("-m[^-]*=native") ""))))
-           (add-after 'fix-march=native 'skip-deleted-tests
-             (lambda _
-               (substitute* "test/unittest/CMakeLists.txt"
-                 (("jsoncheckertest.cpp") ""))))
-           (add-after 'fix-march=native 'fix-dependencies
-             (lambda _
-               (substitute* "test/CMakeLists.txt"
-                 (("^find_package\\(GTestSrc\\)")
-                  "find_package(GTest REQUIRED)")
-                 ((".*GTEST_SOURCE_DIR.*") "")
-                 (("GTESTSRC_FOUND)")
-                  "GTest_FOUND)")))))))
+       (list
+        #:configure-flags #~(list "-DCMAKE_CXX_FLAGS=-Wno-free-nonheap-object")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-march=native
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("-m[^-]*=native") ""))))
+            (add-after 'fix-march=native 'skip-deleted-tests
+              (lambda _
+                (substitute* "test/unittest/CMakeLists.txt"
+                  (("jsoncheckertest.cpp") ""))))
+            (add-after 'fix-march=native 'fix-dependencies
+              (lambda _
+                (substitute* "test/CMakeLists.txt"
+                  (("^find_package\\(GTestSrc\\)")
+                   "find_package(GTest REQUIRED)")
+                  ((".*GTEST_SOURCE_DIR.*") "")
+                  (("GTESTSRC_FOUND)")
+                   "GTest_FOUND)")))))))
       (native-inputs (list valgrind/pinned))
       (inputs (list googletest))
       (home-page "https://github.com/Tencent/rapidjson")
