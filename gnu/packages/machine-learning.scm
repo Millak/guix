@@ -2289,50 +2289,6 @@ number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
 
-(define-public python-imbalanced-learn
-  (package
-    (name "python-imbalanced-learn")
-    (version "0.12.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "imbalanced-learn" version))
-       (sha256
-        (base32 "1hgncab4g4xry7yl6wwsj1wmfnxbsajx6qmycvr28wdhvk75c358"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags '(list "-k"
-                     ;; Although we cannot satify the Tensorflow and Keras requirements
-                     ;; (python-keras >= 2.4.3 and tensorflow >= 2.4.3), all tests
-                     ;; besides these pass.
-                     "not balanced_batch_generator and not BalancedBatchGenerator")
-      #:phases '(modify-phases %standard-phases
-                  (add-after 'unpack 'unbreak-tests
-                    (lambda _
-                      ;; Some tests require a home directory
-                      (setenv "HOME"
-                              (getcwd)))))))
-    (propagated-inputs (list python-joblib python-numpy python-scikit-learn
-                             python-scipy python-threadpoolctl))
-    (native-inputs (list python-black
-                         python-flake8
-                         python-keras
-                         python-mypy
-                         python-pandas
-                         python-pytest
-                         python-pytest-cov
-                         python-setuptools
-                         python-wheel
-                         tensorflow))
-    (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
-    (synopsis "Toolbox for imbalanced dataset in machine learning")
-    (description
-     "This is a Python package offering a number of re-sampling
-techniques commonly used in datasets showing strong between-class imbalance.
-It is compatible with @code{scikit-learn}.")
-    (license license:expat)))
-
 (define-public python-hdbscan
   (package
     (name "python-hdbscan")
