@@ -72,6 +72,7 @@
 # Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 # Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 # Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+# Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 #
 # This file is part of GNU Guix.
 #
@@ -682,6 +683,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/upnp.scm				\
   %D%/packages/usb-modeswitch.scm		\
   %D%/packages/uucp.scm				\
+  %D%/packages/oneapi.scm			\
   %D%/packages/valgrind.scm			\
   %D%/packages/version-control.scm		\
   %D%/packages/video.scm			\
@@ -1947,6 +1949,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ocaml-4.09-multiple-definitions.patch	\
   %D%/packages/patches/omake-fix-non-determinism.patch	\
   %D%/packages/patches/oneko-remove-nonfree-characters.patch	\
+  %D%/packages/patches/onetbb-other-arches.patch	\
   %D%/packages/patches/online-judge-tools.patch		\
   %D%/packages/patches/onnx-optimizer-system-library.patch	\
   %D%/packages/patches/onnx-1.13.1-use-system-googletest.patch	\

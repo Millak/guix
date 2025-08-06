@@ -1,0 +1,27 @@
+Declare a fallback architecture not yet considered by upstream project.
+
+diff --git a/src/tbb/tools_api/ittnotify_config.h b/src/tbb/tools_api/ittnotify_config.h
+index 001d42e0..2e68f738 100644
+--- a/src/tbb/tools_api/ittnotify_config.h
++++ b/src/tbb/tools_api/ittnotify_config.h
+@@ -180,6 +180,11 @@
+ #  define ITT_ARCH_ARM64  6
+ #endif /* ITT_ARCH_ARM64 */
+ 
++/* Fallback for other architectures */
++#ifndef ITT_ARCH_GENERIC
++#  define ITT_ARCH_GENERIC 99
++#endif /* ITT_ARCH_GENERIC */
++
+ #ifndef ITT_ARCH_LOONGARCH64
+ #  define ITT_ARCH_LOONGARCH64  7
+ #endif /* ITT_ARCH_LOONGARCH64 */
+@@ -209,6 +214,8 @@
+ #    define ITT_ARCH ITT_ARCH_ARM64
+ #  elif defined __powerpc64__
+ #    define ITT_ARCH ITT_ARCH_PPC64
++#  elif
++#    define ITT_ARCH ITT_ARCH_GENERIC
+ #  elif defined __loongarch__
+ #    define ITT_ARCH ITT_ARCH_LOONGARCH64
+ #  elif defined __s390__ || defined __s390x__
