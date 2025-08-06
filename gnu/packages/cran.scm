@@ -53413,21 +53413,40 @@ the @code{raster} package that is suitable for extracting raster values using
 (define-public r-stringfish
   (package
     (name "r-stringfish")
-    (version "0.16.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringfish" version))
        (sha256
         (base32
-         "14vrg6mkwwgw1klgpvjn7936yfxav55rainz71xjjih2j21vq21n"))))
+         "0x6nad21q7shsl7wjzldb6si7j09dyxksrpq29cxphh79d0ga2ly"))))
     (properties
      '((upstream-name . "stringfish")
        (updater-extra-inputs . ("pcre2"))))
     (build-system r-build-system)
-    ;; Tests require r-qs, which depends on this package.
-    (arguments (list #:tests? #false))
-    (inputs (list pcre2))
+    (arguments
+     (list
+      ;; Tests require r-qs, which depends on this package.
+      #:tests? #false
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-tbb
+            (lambda _
+              (setenv "TBB_ROOT" #$(this-package-input "tbb"))))
+          (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
+              ;; set custom CFLAGS for R?
+              (setenv "HOME" (getcwd))
+              (mkdir-p ".R")
+              (with-directory-excursion ".R"
+                (with-output-to-file "Makevars"
+                  (lambda _
+                    (display (string-append
+                              "CXXFLAGS=-g -O2"
+                              " -Wno-error=changes-meaning\n"))))))))))
+    (inputs (list pcre2 tbb-2020))
     (propagated-inputs
      (list r-rcpp r-rcppparallel))
     (native-inputs
