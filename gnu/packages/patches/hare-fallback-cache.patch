@@ -1,0 +1,33 @@
+From 04fb25e334492432c0c1a09e1abb4c506fb1e710 Mon Sep 17 00:00:00 2001
+Message-ID: <04fb25e334492432c0c1a09e1abb4c506fb1e710.1754429792.git.lilah@lunabee.space>
+From: Lilah Tascheter <lilah@lunabee.space>
+Date: Tue, 5 Aug 2025 16:35:24 -0500
+Subject: [PATCH] dirs::xdg: Fallback to cwd.
+
+Guix builds take place without a valid HOME, which will immediately prevent hare
+from functioning. Provide a usable, if unfortunate, default.
+---
+ dirs/xdg.ha | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/dirs/xdg.ha b/dirs/xdg.ha
+index 9dc6c3b9..65eb92db 100644
+--- a/dirs/xdg.ha
++++ b/dirs/xdg.ha
+@@ -29,7 +29,12 @@ fn lookup(prog: str, var: str, default: str) str = {
+ 	case void => void;
+ 	};
+ 
+-	const home = os::getenv("HOME") as str;
++	let home = os::getenv("HOME") as str;
++	if(match(os::stat(home)) {
++	case let err: fs::error => yield true;
++	case let st: fs::filestat => yield !fs::isdir(st.mode);
++	}){ home = "."; };
++
+ 	const path = path::set(&buf, home, default, prog)!;
+ 	match (os::mkdirs(path, 0o755)) {
+ 	case let err: fs::error =>
+-- 
+2.50.0
+

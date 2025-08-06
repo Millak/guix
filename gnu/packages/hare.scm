@@ -105,3 +105,70 @@
 programming language. For general Hare programming, see the @code{hare}
 package.")
     (license license:gpl3)))
+
+(define-public hare
+  (package
+    (name "hare")
+    (version "0.25.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~sircmpwn/hare")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (patches (search-patches "hare-fallback-cache.patch"
+                                       "hare-toolpath.patch"))
+              (sha256
+                (base32
+                  "1kfvf1xk36w49dnqrkcahh35xdgilhgdn3q84r2101rz2iy4pbba"))))
+    (build-system gnu-build-system)
+    (arguments
+      (list #:modules `((ice-9 format) ,@%default-gnu-modules)
+            #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                 (string-append "VERSION=" #$version))
+            #:phases
+            #~(modify-phases %standard-phases
+                ;; technically hare does programmatically generate some
+                ;; makefiles as part of a bootstrap phase. however, regenning
+                ;; these files requires an installation of hare in the first
+                ;; place. seeing as the files are pretty short and
+                ;; human-readable, I think it's fine to leave them as-is.
+                (replace 'configure
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (copy-file #$hare-config "config.mk")
+                    ;; need to unhardcode some shit manually
+                    (let ((file (lambda (s) (search-input-file inputs s)))
+                          (dir (lambda (s) (search-input-directory inputs s))))
+                      (substitute* "cmd/hare/build.ha"
+                        (("\"harec\"") (format #f "\"~a\"" (file "bin/harec")))
+                        (("\"qbe\"") (format #f "\"~a\"" (file "bin/qbe"))))
+                      (substitute* "cmd/haredoc/main.ha"
+                        (("\"less\"") (format #f "\"~a\"" (file "bin/less"))))
+                      (substitute* "wordexp/wordexp.ha"
+                        (("/bin/sh") (file "bin/sh")))
+                      (substitute* "time/chrono/+linux.ha"
+                        (("/usr/share/zoneinfo/leap-seconds.list")
+                         (file "share/zoneinfo/leap-seconds.list")))
+                      (substitute* "time/date/+linux.ha"
+                        (("/usr/share/zoneinfo") (dir "share/zoneinfo")))))))))
+    (inputs
+      (let ((tc (lambda (t) (and (cross-target? t) (cross-gcc-toolchain t)))))
+        (filter ->bool (list gcc-toolchain less tzdata/leap-seconds harec qbe
+                             ;; provide cross toolchains for all
+                             ;; non-native possible targets
+                             (tc "aarch64-linux-gnu")
+                             (tc "riscv64-linux-gnu")
+                             (tc "x86_64-linux-gnu")))))
+    (native-inputs (list harec qbe scdoc))
+    (supported-systems hare-supported-systems)
+    (search-paths (list (search-path-specification
+                          (variable "HAREPATH")
+                          (files '("share/hare")))))
+    (native-search-paths (list (search-path-specification
+                                 (variable "HARE_TOOLPATH")
+                                 (files '("libexec/hare")))))
+    (home-page "https://harelang.org")
+    (synopsis "Harelang compiler tooling and stdlib")
+    (description "Hare is a simple systems programming language, featuring
+static typing, manual memory management, and a minimal runtime.")
+    (license (list license:gpl3 license:mpl2.0))))

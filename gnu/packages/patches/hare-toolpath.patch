@@ -1,0 +1,72 @@
+From 98677305eba7acd487803b6670a1bd67e1fc2796 Mon Sep 17 00:00:00 2001
+Message-ID: <98677305eba7acd487803b6670a1bd67e1fc2796.1754431105.git.lilah@lunabee.space>
+From: Lilah Tascheter <lilah@lunabee.space>
+Date: Tue, 5 Aug 2025 16:42:50 -0500
+Subject: [PATCH] cmd::hare::tool: Use HARE_TOOLPATH when available.
+
+Some distros, like Guix, do not have set search paths, and instead rely on
+environment variables. Allow tools to be specified through a new variable,
+HARE_TOOLPATH.
+---
+ cmd/hare/tool.ha | 35 +++++++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 14 deletions(-)
+
+diff --git a/cmd/hare/tool.ha b/cmd/hare/tool.ha
+index b14250fc..b7e4e2ff 100644
+--- a/cmd/hare/tool.ha
++++ b/cmd/hare/tool.ha
+@@ -7,6 +7,7 @@ use getopt;
+ use os;
+ use os::exec;
+ use path;
++use strings;
+ 
+ fn tool(name: str, cmd: *getopt::command) (void | error) = {
+ 	if (len(cmd.args) < 1) {
+@@ -19,23 +20,29 @@ fn tool(name: str, cmd: *getopt::command) (void | error) = {
+ 		args = cmd.args[1..];
+ 	};
+ 
+-	const path = path::init(TOOLDIR)?;
++	const paths = strings::tokenize(os::tryenv("HARE_TOOLPATH", TOOLDIR), ":");
+ 	const tool = cmd.args[0];
+ 	const name = fmt::asprintf("hare-{}", tool)!;
+ 	defer free(name);
+-	path::push(&path, name)?;
+-
+-	const cmd = match (exec::cmd(path::string(&path), args...)) {
+-	case let cmd: exec::command =>
+-		yield cmd;
+-	case errors::noentry =>
+-		fmt::fatalf("hare tool {}: tool not found", tool);
+-	case let err: exec::error =>
+-		return err;
++
++	for(const segment => strings::next_token(&paths)) {
++		const path = path::init(segment)?;
++		path::push(&path, name)?;
++
++		const cmd = match (exec::cmd(path::string(&path), args...)) {
++		case let cmd: exec::command =>
++			yield cmd;
++		case errors::noentry =>
++			continue;
++		case let err: exec::error =>
++			return err;
++		};
++
++		const argv0 = fmt::asprintf("hare tool {}", tool)!;
++		exec::setname(&cmd, argv0)!;
++		const err = exec::exec(&cmd);
++		fmt::fatalf("exec {}: {}", path::string(&path), exec::strerror(err));
+ 	};
+ 
+-	const argv0 = fmt::asprintf("hare tool {}", tool)!;
+-	exec::setname(&cmd, argv0)!;
+-	const err = exec::exec(&cmd);
+-	fmt::fatalf("exec {}: {}", path::string(&path), exec::strerror(err));
++	fmt::fatalf("hare tool {}: tool not found", tool);
+ };
+-- 
+2.50.0
+
