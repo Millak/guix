@@ -3477,13 +3477,23 @@ models in the STL and OFF file formats.")
          (file-name (git-file-name name version))))
       (arguments
        (substitute-keyword-arguments (package-arguments openscad)
-         ((#:configure-flags flags
-           '())
-          #~(append #$flags
-                    (list "-DENABLE_LIBFIVE=ON" "-DUSE_BUILTIN_LIBFIVE=OFF"
-                          (string-append "-DPYTHON_VERSION="
-                                         #$(version-major+minor
-                                            (package-version python))))))
+         ((#:configure-flags flags)
+          #~(begin
+              (use-modules (srfi srfi-1))
+              (append 
+               (remove (lambda (flag)
+                         (or (string-prefix? "-DOPENSCAD_VERSION=" flag)
+                             (string-prefix? "-DOPENSCAD_COMMIT=" flag)))
+                       #$flags)
+               (list "-DENABLE_LIBFIVE=ON"
+                     "-DUSE_BUILTIN_LIBFIVE=OFF"
+                     (string-append "-DOPENSCAD_VERSION="
+                                    #$version)
+                     (string-append "-DOPENSCAD_COMMIT="
+                                    #$commit)
+                     (string-append "-DPYTHON_VERSION="
+                                    #$(version-major+minor
+                                       (package-version python)))))))
          ((#:phases phases)
           #~(modify-phases #$phases
               (replace 'patch-source
