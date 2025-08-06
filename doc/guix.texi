@@ -23331,7 +23331,7 @@ This must be either @code{'client} or @code{'server}.  Otherwise,
 an error is raised.  Set the @code{'server} value if you want to
 run a bridge to help censored users connect to the Tor network, see
 @url{https://community.torproject.org/relay/setup/bridge/,
-the Tor project's brige guide}.  Set the @code{'client} value
+the Tor project's bridge guide}.  Set the @code{'client} value
 if you want to connect to somebody else's bridge, see
 @url{https://bridges.torproject.org/, the Tor project's
 ``Get Bridges'' page}.  In both cases the required
@@ -38954,7 +38954,7 @@ system shutdown.
 
 @quotation Note
 @code{battery-level}, @code{remaining-minutes}, and @code{timeout} work
-in a conjunction, so the first that occurs will cause the initation of a
+in a conjunction, so the first that occurs will cause the initiation of a
 shutdown.
 @end quotation
 
@@ -38965,7 +38965,7 @@ apcupsd will initiate a system shutdown.
 
 @quotation Note
 @code{battery-level}, @code{remaining-minutes}, and @code{timeout} work
-in a conjunction, so the first that occurs will cause the initation of a
+in a conjunction, so the first that occurs will cause the initiation of a
 shutdown.
 @end quotation
 
@@ -38976,7 +38976,7 @@ of 0 disables this timer.
 
 @quotation Note
 @code{battery-level}, @code{remaining-minutes}, and @code{timeout} work
-in a conjunction, so the first that occurs will cause the initation of a
+in a conjunction, so the first that occurs will cause the initiation of a
 shutdown.
 @end quotation
 
@@ -42982,7 +42982,7 @@ cache.  Use with caution.
 @end quotation
 
 @quotation Warning
-@option{'share} will not work for multiple concurrent invokation of
+@option{'share} will not work for multiple concurrent invocation of
 @command{guix}, e.g. if two user accounts run @command{guix time
 machine} at the same time, the results will be fun but not useful.
 @end quotation
@@ -51299,7 +51299,7 @@ following configuration:
                                        "/home/alice/Pictures"))))))))
 @end lisp
 
-In general it is preferrable to extend the @code{home-restic-backup-service-type},
+In general it is preferable to extend the @code{home-restic-backup-service-type},
 as shown in the example above.  This is because it takes care of wrapping everything
 with @code{for-home}, which enables the @code{home-restic-backup-service-type} and
 @code{restic-backup-service-type} to share the same codebase.

@@ -1449,7 +1449,7 @@ already ran @code{bootstrap} and @code{configure}:
 
 The first command updates all packages in @code{(gnu packages
 astronomy)} to the latest versions and writes changes back to the file.
-The second invokes @code{etc/commiter.scm} script, a helper script for
+The second invokes @code{etc/committer.scm} script, a helper script for
 larger scale updates; it identifies each package diff and creates
 corresponding commits with the correct style.
 
