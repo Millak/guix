@@ -253,28 +253,36 @@ possibility to differentiate functions that contain matrix functions as
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.11.1")
+    (version "0.12.1")
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/theislab/anndata")
-             (commit version)))
+              (url "https://github.com/theislab/anndata")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0skmjjvxk5gdsx6fkplszff92jsb4l45j23c6mhq1vdi3wqhqhcw"))))
+        (base32 "1pwqy1pxsiqf13kfshcbqah1a92x4044s6jyr94488ngpqkr275z"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k" #$(string-append
-                      ;; This one test seemingly freezes
-                      "not test_read_lazy_h5_cluster"
-                      ;; Fails with a numpy deprecation warning
-                      ;; but not an actual failure
-                      " and not test_read_write_X"))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; XXX: AttributeError: module 'pyarrow.lib' has no attribute
+              ;; 'PyExtensionType
+              "--ignore=tests/test_awkward.py"
+              "-k" (string-join
+                    ;; TypeError: read_text() takes from 1 to 2 positional
+                    ;; arguments but 4 were given
+                    (list "not test_read_csv"
+                          ;; TypeError: _fix_co_filename() argument 2 must be
+                          ;; str, not PosixPath
+                          "test_hints"
+                          ;; Failed: DID NOT WARN. No warnings of type (<class
+                          ;; 'FutureWarning'>,) were emitted.
+                          "test_readloom_deprecations")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           ;; Doctests require scanpy from (gnu packages bioinformatics)
@@ -293,15 +301,14 @@ possibility to differentiate functions that contain matrix functions as
               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
      (list python-array-api-compat
-           python-exceptiongroup ;only for Python <3.11
            python-h5py
            python-importlib-metadata
+           python-legacy-api-wrap
            python-natsort
-           python-numcodecs
            python-packaging
            python-pandas
-           python-scipy
            python-scikit-learn
+           python-scipy
            python-setuptools ; For pkg_resources.
            python-zarr))
     (native-inputs
@@ -309,17 +316,14 @@ possibility to differentiate functions that contain matrix functions as
            python-boltons
            python-dask
            python-distributed
-           python-hatchling
            python-hatch-vcs
+           python-hatchling
            python-joblib
            python-loompy
            python-matplotlib
            python-pytest
            python-pytest-mock
-           python-pytest-doctestplus
            python-pytest-xdist
-           python-toml
-           python-flit
            python-setuptools-scm))
     (home-page "https://github.com/theislab/anndata")
     (synopsis "Annotated data for data analysis pipelines")
