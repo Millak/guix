@@ -30161,14 +30161,14 @@ codecs for use in data storage and communication applications.")
 (define-public python-zarr
   (package
     (name "python-zarr")
-    (version "2.18.4")
+    (version "2.18.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zarr" version))
        (sha256
         (base32
-         "1fr41j8mxhbj7psn00416qs3nm12djhhmybgpqdax0q6vpg0wy9p"))))
+         "1xbjjpjskykbdskck5p1f0grh6wq36437ll0n5kazi6s2ipzdf5j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -30205,11 +30205,6 @@ codecs for use in data storage and communication applications.")
     (native-inputs
      (list python-pytest
            python-pytest-xdist
-           python-pytest-doctestplus
-           python-sphinx
-           python-sphinx-copybutton
-           python-sphinx-design
-           python-sphinx-issues
            python-setuptools
            python-wheel))
     (home-page "https://github.com/zarr-developers/zarr-python")
