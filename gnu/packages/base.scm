@@ -1883,6 +1883,20 @@ and daylight-saving rules.")
 ;;; package.
 (define-public tzdata-for-tests tzdata)
 
+;;; TODO: Move the 'install-leap-seconds' phase into the main package's
+;;; 'post-install' phase on the next rebuild cycle.
+(define-public tzdata/leap-seconds
+  (hidden-package
+    (package/inherit tzdata
+      (arguments
+        (substitute-keyword-arguments (package-arguments tzdata)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (add-after 'post-install 'install-leap-seconds
+                 (lambda _
+                   (install-file "leap-seconds.list"
+                     (string-append #$output "/share/zoneinfo")))))))))))
+
 (define-public libiconv
   (package
     (name "libiconv")
