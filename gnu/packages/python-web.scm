@@ -835,7 +835,7 @@ of a fake DNS resolver.")
 (define-public python-huggingface-hub
   (package
     (name "python-huggingface-hub")
-    (version "0.23.2")
+    (version "0.31.4")
     (source
      (origin
        (method git-fetch)
@@ -844,7 +844,7 @@ of a fake DNS resolver.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hygxqcixkc1d9sr47j2km6z0p17aj4k1dzm4cvpddrvhrgqayq5"))))
+        (base32 "1rjkrmvvyzxlbnbndrg4v9qq39grn46c26zrdjgpf114gci5pwap"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -881,7 +881,13 @@ of a fake DNS resolver.")
              "-k" (string-append
                    "not test_push_to_hub"
                    " and not test_from_pretrained_model_id_only"
-                   " and not test_from_pretrained_model_id_and_revision"))
+                   " and not test_from_pretrained_model_id_and_revision"
+                   ;; These all require internet access
+                   " and not test_auth"
+                   " and not test_oauth"
+                   " and not test_utils_sha"
+                   " and not test_inference_providers"
+                   " and not test_xet"))
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'pre-check
@@ -908,6 +914,7 @@ of a fake DNS resolver.")
            python-pytest-asyncio
            python-pytest-cov
            python-pytest-env
+           python-pytest-mock
            python-pytest-rerunfailures
            python-pytest-vcr
            python-pytest-xdist
@@ -918,7 +925,7 @@ of a fake DNS resolver.")
            python-typing-extensions
            python-urllib3
            python-wheel))
-    (home-page "https://github.com/huggingface/huggingface_hub")
+    (home-page "https://huggingface.co/docs/huggingface_hub/")
     (synopsis "Client library for accessing the huggingface.co hub")
     (description
      "This package provides a client library to download and publish models,
