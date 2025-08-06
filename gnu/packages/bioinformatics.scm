@@ -5636,7 +5636,7 @@ with MOFA+ in Python.")
 (define-public python-mudata
   (package
     (name "python-mudata")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5645,7 +5645,7 @@ with MOFA+ in Python.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m1qsqgk8snllavfj99qgm2j7cccviwg7k0k1kfbvqn0bkzc87sa"))))
+                "17s1w3746d35pcwr97ynhr7s5hfk76vsfcinwyqynx9k3xxi9br4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
