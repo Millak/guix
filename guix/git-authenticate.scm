@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019-2022, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,9 +50,9 @@
                 #:select (mkdir-p))
   #:use-module (guix progress)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs bytevectors)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 match)
@@ -115,12 +116,10 @@
 if the commit is unsigned, has an invalid signature, has a signature using one
 of the hash algorithms in DISALLOWED-HASH-ALGORITHMS, or if its signing key is
 not in KEYRING."
-  (let-values (((signature signed-data)
-                (catch 'git-error
-                  (lambda ()
-                    (commit-extract-signature repo commit-id))
-                  (lambda _
-                    (values #f #f)))))
+  (let ((signature signed-data
+         (catch 'git-error
+                (lambda () (commit-extract-signature repo commit-id))
+                (lambda _ (values #f #f)))))
     (unless signature
       (raise (make-compound-condition
               (condition (&unsigned-commit-error (commit commit-id)))
@@ -139,9 +138,9 @@ which is not permitted")
                                     signature)))))
 
       (with-fluids ((%default-port-encoding "UTF-8"))
-        (let-values (((status data)
-                      (verify-openpgp-signature signature keyring
-                                                (open-input-string signed-data))))
+        (let ((status data
+               (verify-openpgp-signature
+                signature keyring (open-input-string signed-data))))
           (match status
             ('bad-signature
              ;; There's a signature but it's invalid.
