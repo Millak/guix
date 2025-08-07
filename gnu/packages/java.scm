@@ -3090,6 +3090,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
                    (apply invoke `("gcc" "-shared" "-O3"
                                    "-fPIC"
                                    "-Wl,--exclude-libs,ALL"
+                                   "-Wno-error=implicit-function-declaration"
                                    ,@(find-files "jhdf5" "\\.c$")
                                    ,@(find-files "hdf-java" "\\.c$")
                                    ,(string-append "-I" hdf5 "/include")
