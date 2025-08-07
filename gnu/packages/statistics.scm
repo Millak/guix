@@ -1272,13 +1272,13 @@ sampler for Markov chain Monte Carlo (MCMC).")
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
-    (version "0.14.2")
+    (version "0.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statsmodels" version))
        (sha256
-        (base32 "1bfnxkzdcz5fj7hh1gc021hc3b9181f1mfph4kd1ra6kg8a501c9"))
+        (base32 "0rwbi57ckg7hgrmdf0g1paqcvp5n6f06xfzrcz075p30j3ry0sax"))
        (modules '((guix build utils)))
        (snippet
         '(for-each delete-file (find-files "." "\\.c$")))))
@@ -1302,21 +1302,16 @@ sampler for Markov chain Monte Carlo (MCMC).")
                  (string-append "import matplotlib;matplotlib.use('Agg');"
                                 line))))))))
     (propagated-inputs
-     (list python-numpy python-packaging python-pandas python-patsy
+     (list python-numpy
+           python-packaging
+           python-pandas
+           python-patsy
            python-scipy))
     (native-inputs
-     (list python-colorama
-           python-cython
-           python-flake8
-           python-isort
-           python-joblib
+     (list python-cython-3
            python-matplotlib
-           python-pytest
-           python-pytest-randomly
-           python-pytest-xdist
-           python-setuptools-scm
-           python-setuptools
-           python-wheel))
+           python-setuptools-next
+           python-setuptools-scm))
     (home-page
      (string-append "https://www.statsmodels.org/v" version "/"))
     (synopsis "Statistical modeling and econometrics in Python")
