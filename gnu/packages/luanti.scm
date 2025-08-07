@@ -432,6 +432,32 @@ with different rules and mechanics.")
       (license (list license:lgpl3 license:cc-by-sa3.0))
       (properties `((upstream-name . "Jeija/mesecons"))))))
 
+(define-public luanti-mineclonia
+  (package
+    (name "luanti-mineclonia")
+    (version "0.115.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/mineclonia/mineclonia")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y10rxh7fb6qwny0jpqyz6akw8cwsrdfcyadrqjv774hrr98371a"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." "share/luanti/games/mineclonia"))))
+    (home-page "https://content.luanti.org/packages/ryvnf/mineclonia/")
+    (synopsis "An unofficial Minecraft-like game for Luanti")
+    (description
+     "Mineclonia is a stable and performant clone of Minecraft,
+released as free software. It aims to clone Minecraft as well as
+Luanti currently permits without resorting to hacks which are too
+heavyweight or complicated to maintain.")
+    (license license:gpl3+)))
+
 (define-public luanti-voxelibre
   (package
     (name "luanti-voxelibre")
