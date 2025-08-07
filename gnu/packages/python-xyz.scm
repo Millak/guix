@@ -1010,6 +1010,36 @@ new type and helper functions to integrate it nicely with the Python
 stdlib.")
     (license license:expat)))
 
+(define-public python-session-info2
+  (package
+    (name "python-session-info2")
+    (version "0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "session_info2" version))
+       (sha256
+        (base32 "0xs1mcdz0hf626m3421ryv4f7b5rixz2hm8x88czx2i9196x69g9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--deselect=tests/test_synthetic.py::test_gpu"
+              ;; Tests require Jupyter Client.
+              "--ignore=tests/test_subprocess.py")))
+    (native-inputs
+     (list python-hatch-docstring-description
+           python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-asyncio))
+    (home-page "https://session-info2.readthedocs.io/")
+    (synopsis "Print versions of imported packages")
+    (description
+     "This package implements a functionality to print versions of imported
+Python packages.")
+    (license license:mpl2.0)))
+
 (define-public python-shxparser
   (package
     (name "python-shxparser")
