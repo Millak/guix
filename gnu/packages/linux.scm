@@ -1317,6 +1317,8 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      (append
                       `(;; Provide support for ath9k wireless
                         ("CONFIG_ATH9K_HTC" . m)
+                        ;; Support Orange Pi R1 Plus LTS ethernet PHY.
+                        ("CONFIG_MOTORCOMM_PHY" . m)
                         ;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t)
                         ;; Pinebook display, battery, charger and usb
@@ -1351,6 +1353,8 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                          (append
                           `( ;; Provide support for ath9k wireless
                             ("CONFIG_ATH9K_HTC" . m)
+                            ;; Support Orange Pi R1 Plus LTS ethernet PHY.
+                            ("CONFIG_MOTORCOMM_PHY" . m)
                             ;; needed to fix the RTC on rockchip platforms
                             ("CONFIG_RTC_DRV_RK808" . #t)
                             ;; Pinebook display, battery, charger and usb
