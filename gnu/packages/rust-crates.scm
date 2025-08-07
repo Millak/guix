@@ -20063,6 +20063,7 @@
   `(("paste" ,rust-paste-1.0.15)
     ("proc-macro2" ,rust-proc-macro2-1.0.94)
     ("quote" ,rust-quote-1.0.40)
+    ("rustc-hash" ,rust-rustc-hash-2.1.1)
     ("syn" ,rust-syn-2.0.100)
     ("unicode-ident" ,rust-unicode-ident-1.0.18)))
 
