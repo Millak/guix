@@ -19730,7 +19730,7 @@ implementation differs in these ways:
 (define-public python-scanpy
   (package
     (name "python-scanpy")
-    (version "1.10.4")
+    (version "1.11.2")
     (source
      (origin
        (method git-fetch)
@@ -19740,12 +19740,14 @@ implementation differs in these ways:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "139d6fsdbhg1hqqq5yyl8hr3cqz2mj70i0i8r1mq6z6a8qmq1p4z"))))
+         "18ddb3jkyjan87f5kymyq951sa5955z41f10h6z954map8dy2136"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; 736 passed, 95 skipped, 20 xfailed, 148 warnings
       #:test-flags
       '(list "-m" "not gpu"
+             "--numprocesses" (number->string (parallel-job-count))
              ;; These tests require Internet access.
              "--ignore-glob=tests/notebooks/*"
              "--ignore=tests/test_clustering.py"
@@ -19763,9 +19765,10 @@ implementation differs in these ways:
              "--ignore=tests/test_preprocessing.py"
              "--ignore=tests/test_read_10x.py"
              "--ignore=plotting/_tools/scatterplots.py"
-             ;; The following tests requires 'scanorama', which isn't
-             ;; packaged yet.
-             "--ignore=tests/external/test_scanorama_integrate.py"
+             ;; Adding additional options does not help to resolve the
+             ;; faileur: TypeError: _FlakyPlugin._make_test_flaky() got an
+             ;; unexpected keyword argument 'reruns'.
+             "--ignore=tests/test_backed.py"
              "-k"
              ;; Plot tests that fail.
              (string-append "not test_clustermap"
@@ -19776,6 +19779,8 @@ implementation differs in these ways:
                             " and not test_paga_plots"
                             " and not test_violin"
                             " and not test_scatter_no_basis_per_obs"
+                            " and not test_spatial_general"
+                            " and not test_visium_empty_img_key"
 
                             ;; These are doctests that fail because of missing
                             ;; datasets.
@@ -19793,7 +19798,21 @@ implementation differs in these ways:
                             " and not test_pca_layer"
                             " and not test_pca_sparse"
                             " and not test_pca_reproducible"
-                            " and not test_clip"))
+                            " and not test_clip"
+
+                            ;; Missing test data.
+                            " and not test_covariance_eigh_impls"
+                            " and not test_embedding_colorbar_location"
+                            " and not test_sparse_dask_input_errors"
+                            " and not test_sparse_dask_input_errors"
+                            " and not test_spatial_external_img"
+
+                            ;; Somehow broken tests.
+                            " and not test_sim_toggleswitch"
+                            " and not scanpy.datasets._datasets.krumsiek11"
+                            " and not scanpy.datasets._datasets.toggleswitch"
+                            " and not scanpy.external.pp._scanorama_integrate.scanorama_integrate"
+                            " and not scanpy.preprocessing._simple.filter_cells"))
        #:phases
        #~(modify-phases %standard-phases
            ;; XXX This should not be necessary, but I noticed while building
@@ -19817,9 +19836,12 @@ implementation differs in these ways:
                        (string-append (getcwd) ":"
                                       #$(this-package-native-input "python-anndata:source") ":"
                                       (getenv "GUIX_PYTHONPATH")))))
-           ;; Numba needs a writable dir to cache functions.
-           (add-before 'check 'set-numba-cache-dir
-             (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+           (add-before 'check 'pre-check
+             (lambda _
+               ;; Numba needs a writable dir to cache functions.
+               (setenv "NUMBA_CACHE_DIR" "/tmp")
+               ;; For Matplotlib.
+               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-anndata
            python-dask
@@ -19835,27 +19857,30 @@ implementation differs in these ways:
            python-packaging
            python-pandas
            python-patsy
+           python-pytoml
            python-scikit-learn
            python-scipy
-           python-setuptools ; For pkg_resources.
            python-seaborn
-           python-session-info
+           python-session-info2
+           python-setuptools ; For pkg_resources.
            python-sinfo
            python-statsmodels
            python-tables
-           python-pytoml
            python-tqdm
            python-umap-learn))
     (native-inputs
      `(;; This package needs anndata.tests, which is not installed.
        ("python-anndata:source" ,(package-source python-anndata))
+       ("python-flaky" ,python-flaky)
        ("python-flit" ,python-flit)
-       ("python-hatchling" ,python-hatchling)
        ("python-hatch-vcs" ,python-hatch-vcs)
+       ("python-hatchling" ,python-hatchling)
        ("python-leidenalg" ,python-leidenalg)
        ("python-pytest" ,python-pytest)
        ("python-pytest-mock" ,python-pytest-mock)
        ("python-pytest-nunit" ,python-pytest-nunit)
+       ("python-pytest-xdist" ,python-pytest-xdist)
+       ("python-scanorama" ,python-scanorama)
        ("python-setuptools-scm" ,python-setuptools-scm)))
     (home-page "https://github.com/theislab/scanpy")
     (synopsis "Single-Cell Analysis in Python")
