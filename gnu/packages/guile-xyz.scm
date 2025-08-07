@@ -4884,36 +4884,6 @@ return accumulators.  It is implemented by wrapping the sample
 implementation in a thin Guile compatibility layer.")
       (license license:gpl3+))))
 
-(define-public guile-srfi-159
-  (let ((commit "1bd98abda2ae4ef8f36761a167903e55c6bda7bb")
-        (revision "0"))
-    (package
-      (name "guile-srfi-159")
-      (version (git-version "0" revision commit))
-      (home-page "https://bitbucket.org/bjoli/guile-srfi-159")
-      (source (origin
-                (method hg-fetch)
-                (uri (hg-reference (changeset commit)
-                                   (url home-page)))
-                (sha256
-                 (base32
-                  "1zw6cmcy7xdbfiz3nz9arqnn7l2daidaps6ixkcrc9b6k51fdv3p"))
-                (file-name (git-file-name name version))))
-      (build-system guile-build-system)
-      (arguments
-       ;; The *-impl.scm files are actually included from module files; they
-       ;; should not be compiled separately, but they must be installed.
-       '(#:not-compiled-file-regexp "-impl\\.scm$"))
-      (inputs
-       (list guile-2.2))
-      (synopsis "Formatting combinators for Guile")
-      (description
-       "The @code{(srfi-159)} module and its sub-modules implement the
-formatting combinators specified by
-@uref{https://srfi.schemers.org/srfi-159/srfi-159.html, SRFI-159}.  These are
-more expressive and flexible than the traditional @code{format} procedure.")
-      (license license:bsd-3))))
-
 (define-public guile-srfi-180
   (let ((commit "9188bf9724c6d320ef804579d222e855b007b193")
         (revision "0"))
