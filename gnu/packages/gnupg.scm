@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
-;;; Copyright © 2015-2021, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -207,6 +207,18 @@ Daemon and possibly more in the future.")
                   (add-before 'configure 'setenv
                     (lambda _
                       (setenv "GCRYPT_NO_BENCHMARKS" "t")))))
+             '())
+       ,@(if (target-arm32?)
+             (list
+               #:phases
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'apply-upstream-patch
+                     (lambda _
+                       (let ((patch-file
+                               #$(local-file
+                                   (search-patch
+                                     "libgcrypt-arm32-register-pressure.patch"))))
+                         (invoke "patch" "--force" "-p1" "-i" patch-file))))))
              '())))
     (outputs '("out" "debug"))
     (home-page "https://gnupg.org/")
