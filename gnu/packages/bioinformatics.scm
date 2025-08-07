@@ -23563,7 +23563,7 @@ compute communities on graphs weighted or unweighted.")
 (define-public ivar
   (package
     (name "ivar")
-    (version "1.4.2")
+    (version "1.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -23572,7 +23572,7 @@ compute communities on graphs weighted or unweighted.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v3rsak84ilg4iaynwpmmkj507vham5rjk2pfsmylpaqylgc69yx"))))
+                "1bwygjv81m4yv5ycxb5gx22k6njgwrzzs7jrsadq6363klcv4irh"))))
     (build-system gnu-build-system)
     (arguments
      (list
