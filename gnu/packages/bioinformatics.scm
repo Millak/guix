@@ -22988,6 +22988,7 @@ guix_python <- \"~a\";"
              python-scipy
              python-tifffile
              python-zarr
+             which       ;tests/testthat/test_conversion.R
              zlib))
       (propagated-inputs (list r-data-table
                                r-dplyr
