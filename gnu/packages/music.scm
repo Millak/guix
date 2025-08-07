@@ -5247,6 +5247,12 @@ and more.  Full API documentation and examples are included.")
       #:configure-flags '(list "-DWANT_QT5=ON" "-DWANT_VST=OFF")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-carla-export
+            ;; Taken from NixOS package definition.
+            (lambda _
+              (substitute* "plugins/carlabase/carla.h"
+                (("CARLA_EXPORT")
+                 "CARLA_API_EXPORT"))))
           (add-after 'unpack 'unpack-rpmalloc
             (lambda* (#:key inputs #:allow-other-keys)
               (copy-recursively (assoc-ref inputs "rpmalloc")
