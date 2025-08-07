@@ -906,26 +906,19 @@ typing tool (@code{wtype}, @code{xdotool}, etc.), or via standard output.")
     (source
      (origin
        (method url-fetch)
-       (uri
-        (string-append
-         "https://www.cairographics.org/releases/pixman-"
-         version ".tar.gz"))
+       (uri (string-append "https://www.cairographics.org/releases/pixman-"
+                           version ".tar.gz"))
        (sha256
         (base32 "0pk298iqxqr64vk3z6nhjwr6vjg1971zfrjkqy5r9zd2mppq057a"))
-       (patches
-        (search-patches
-         "pixman-CVE-2016-5296.patch"))))
+       (patches (search-patches "pixman-CVE-2016-5296.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list
-        "--disable-static"
-        "--enable-timers"
-        "--enable-gnuplot")))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libpng zlib))
+       (list "--disable-static"
+             "--enable-timers"
+             "--enable-gnuplot")))
+    (native-inputs (list pkg-config))
+    (inputs (list libpng zlib))
     (synopsis "Low-level pixel manipulation library")
     (description "Pixman is a low-level software library for pixel
 manipulation, providing features such as image compositing and trapezoid
