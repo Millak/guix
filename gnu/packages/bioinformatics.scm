@@ -29,6 +29,7 @@
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17034,7 +17035,7 @@ The following file formats are supported:
 (define-public salmon
   (package
     (name "salmon")
-    (version "1.10.1")
+    (version "1.10.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17043,7 +17044,7 @@ The following file formats are supported:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0grpcajxf2bch4b74zb66pdssda8yc7jvxj5ckaw0xvw1605rpcj"))
+                "0vii7nlx0ddn62qniwx4abfj6ajwl3w6mizavpa0mkhpxnm06rqw"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled headers for eigen3.
@@ -17158,7 +17159,7 @@ The following file formats are supported:
                         (file-name (git-file-name "pufferfish" version))
                         (sha256
                          (base32
-                          "0fcv5rd2k4fabsg489sjfxgjisivhwk1w26gfc88rgpszdkcla36"))))))
+                          "0h12h4wv7k3if1m6as7wvrbd7djm0zsg1vs0xn84bnrswwv5z2l3"))))))
     (home-page "https://github.com/COMBINE-lab/salmon")
     (synopsis "Quantification from RNA-seq reads using lightweight alignments")
     (description "Salmon is a program to produce highly-accurate,
