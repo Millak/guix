@@ -57,7 +57,7 @@
   (deprecated-package "minetest-mesecons" luanti-mesecons))
 
 (define-public minetest-mineclone
-  (deprecated-package "minetest-mineclone" luanti-mineclone))
+  (deprecated-package "minetest-mineclone" luanti-voxelibre))
 
 (define-public minetest-mobs
   (deprecated-package "minetest-mobs" luanti-mobs))
