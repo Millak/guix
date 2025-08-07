@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -109,6 +109,16 @@
                         ;; The test reports 18 errors but it's woefully
                         ;; unclear which tests actually fail or how to disable
                         ;; individual tests.
+                        (substitute* "source/test/Makefile.in"
+                          ((" intltest ") " ")))))
+                 #~())
+          #$@(if (target-arm32?)
+                 #~((add-after 'unpack 'disable-failing-test
+                      (lambda _
+                        ;; The caltest test started to fail to compile after
+                        ;; the upgrade to gcc-14 but it's unclear which test is
+                        ;; failing or how to disable just that one test.
+                        ;; Error: co-processor offset out of range
                         (substitute* "source/test/Makefile.in"
                           ((" intltest ") " ")))))
                  #~())
