@@ -7585,25 +7585,22 @@ ftypes.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.15.1")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://files.spritely.institute/releases"
-                           "/guile-goblins/guile-goblins-"
-                           version ".tar.gz"))
+                           "/guile-goblins/guile-goblins-" version ".tar.gz"))
        (sha256
-        (base32
-         "05qqryhhs9rci01j08nbchmif1h9889bwqqv830ywygl1bld50ys"))))
+        (base32 "0w3lxhj95vcp6w38z5ygpjf5lw8j523j2znkmg22p1jyqx7kl7c8"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags
-           #~(list "GUILE_AUTO_COMPILE=0")))
-    (native-inputs
-     (list pkg-config texinfo))
+     (list
+      #:make-flags
+      #~(list "GUILE_AUTO_COMPILE=0")))
+    (native-inputs (list pkg-config texinfo))
     (inputs (list guile-3.0))
-    (propagated-inputs
-     (list guile-fibers guile-gnutls guile-websocket))
+    (propagated-inputs (list guile-fibers guile-gnutls guile-websocket))
     (home-page "https://spritely.institute/goblins")
     (synopsis "Distributed programming environment for Guile")
     (description
