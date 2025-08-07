@@ -1602,6 +1602,39 @@ legends for @code{matplotlib}.")
 neuronal models")
     (license license:bsd-3)))
 
+(define-public python-marsilea
+  (package
+    (name "python-marsilea")
+    (version "0.5.4")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/Marsilea-viz/marsilea")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09pyfx0gn46ypsp991d3n4a4xx6zlbpss078lw6yywnhl834v2i0"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-legendkit
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-platformdirs
+           python-scipy
+           python-seaborn))
+    (home-page "https://github.com/Marsilea-viz/marsilea")
+    (synopsis "Declarative creation of composable visualizations")
+    (description
+     "Marsilea is a Python library for creating composable visualizations in a
+declarative way.  It is built on top of Matplotlib and provides a high-level
+API for you to puzzle different visualizations together like logo.")
+    (license license:expat)))
+
 (define-public python-meshzoo
   (package
     (name "python-meshzoo")
