@@ -9859,43 +9859,6 @@ provided by a TLS reverse proxy (e.g. tlstunnel, hitch or stunnel).")
 the Fediring.")
       (license (list license:cc0 license:bsd-2)))))
 
-(define-public archivebox
-  (package
-    (name "archivebox")
-    (version "0.6.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri name version))
-              (sha256
-               (base32
-                "1mnq82ynq01l7vx957bbx4bvgwdh59qsnx6pdydaqszbakp74yyc"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list curl
-           node-lts))
-    (inputs
-     (list python
-           youtube-dl
-           wget
-           git
-           python-w3lib
-           python-ipython
-           python-croniter
-           python-crontab
-           python-dateparser
-           python-django-extensions
-           python-django-3.1.14
-           python-mypy-extensions))
-    (native-inputs
-     (list python-wheel))
-    (synopsis "Self-hosted Web archiving")
-    (description "ArchiveBox is a powerful, self-hosted Web archiving
-solution to collect, save, and view sites you want to preserve offline.
-You can feed it URLs one at a time, or schedule regular imports.  It saves
-snapshots of the URLs you feed it in several formats.")
-    (home-page "https://archivebox.io/")
-    (license license:expat)))
-
 (define-public awslogs
   (package
     (name "awslogs")
