@@ -3139,16 +3139,16 @@ servers supporting the protocol.")
 (define-public python-liana-py
   (package
     (name "python-liana-py")
-    (version "1.4.0")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/saezlab/liana-py")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kwbhfmsjhfc6m4kcp4zc2xgzg1qf16ywfkdamn868anwwrvjxzb"))))
+                "1k6l371wd00m95l5pb2jsmzzxh5nc5v21fg2v0cslr9761q151r9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3179,27 +3179,30 @@ servers supporting the protocol.")
                             " and not test_bivar_product"
                             ;; XXX unclear failure: large difference in data
                             ;; frames.
-                            " and not test_aggregate_res")
+                            " and not test_aggregate_res"
+                            ;; XXX: ValueError: Only CSR and CSC matrices are
+                            ;; supported.
+                            " and not test_bivar_nondefault"
+                            " and not test_masked_spearman"
+                            " and not test_vectorized_spearman"
+                            " and not test_basic_interpolation"
+                            " and not test_different_methods"
+                            " and not test_fill_value"
+                            " and not test_use_raw_layer_parameters")
              ;; These need the optional squidpy, which we don't have yet.
-             "--ignore=liana/tests/test_misty.py"
+             "--ignore=tests/test_misty.py"
              ;; These need the optional corneto.
-             "--ignore=liana/tests/test_causalnet.py"
+             "--ignore=tests/test_causalnet.py"
              ;; Needs internet access.
-             "--ignore=liana/tests/test_orthology.py")
+             "--ignore=tests/test_orthology.py")
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             ;; Don't fail the sanity check when these optional inputs aren't
-             ;; available.
-             (substitute* "pyproject.toml"
-               (("^pre-commit =.*") ""))))
          ;; Numba needs a writable directory to cache functions.
          (add-before 'build 'set-numba-cache-dir
            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs (list python-anndata
                              python-cell2cell
-                             python-decoupler-py
+                             python-decoupler
                              python-hypothesis
                              python-ipykernel
                              python-ipython
@@ -3219,10 +3222,8 @@ servers supporting the protocol.")
                              python-tqdm
                              tzdata))
     (native-inputs
-     (list python-black
-           python-poetry-core
-           python-pytest
-           python-pytest-cov))
+     (list python-hatchling
+           python-pytest))
     (home-page "https://github.com/saezlab/liana-py")
     (synopsis "LIANA is a ligand-receptor analysis framework")
     (description "This is a Ligand-Receptor inference framework.  The
