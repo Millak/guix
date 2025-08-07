@@ -15734,31 +15734,29 @@ SVG, EPS, PNG and terminal output.")
 (define-public python-seaborn
   (package
     (name "python-seaborn")
-    (version "0.13.1")
+    (version "0.13.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "seaborn" version))
               (sha256
                (base32
-                "0ycibcs6kvd3xi4zsxna81claqifyb9dn6z6jwc5x7lqqplnbbdz"))))
+                "1xzzxrbxsmmk39647vcx7avzdbzxw9vz8pc8yklnakcgk100mrlk"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; 2358 passed, 16 skipped, 6 xfailed, 17 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)) )))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-pytest-xdist))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
            python-pandas
            python-scipy
            python-statsmodels))
-    (native-inputs
-     (list python-flake8
-           python-flit-core
-           python-ipykernel
-           python-nbconvert
-           python-numpydoc
-           python-mypy
-           python-pytest
-           python-pytest-cov
-           python-pytest-xdist
-           python-pyyaml))
     (home-page "https://seaborn.pydata.org/")
     (synopsis "Statistical data visualization")
     (description
