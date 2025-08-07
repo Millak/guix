@@ -79,6 +79,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages bioconductor)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages code)
   #:use-module (gnu packages cmake)
@@ -2836,41 +2837,51 @@ specifying the usage of each program for each cell in the data.")
 parsing of Variant Call Format (VCF) files.")
     (license license:expat)))
 
-(define-public python-decoupler-py
+(define-public python-decoupler
   (package
-    (name "python-decoupler-py")
-    ;; Upstream places release on a new branch, see
-    ;; <https://github.com/saezlab/decoupler-py/issues/175>.
-    (version "1.8.0")
+    (name "python-decoupler")
+    (version "2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/saezlab/decoupler-py")
-                    (commit version)))
+                    (url "https://github.com/scverse/decoupler")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c3yg7jjb1nxb6hsh9wn7wr8w0ba55gixdbf5fp443nhv1cwlajj"))))
+                "0b15n5sq940sn29jsgmdkkm4fcpzfq1n221scfwhjxb4ybdpsz4v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-k"
-             ;; These tests require internet access
-             (string-append "not test_get_resource"
-                            " and not test_show_resources"
-                            " and not test_get_dorothea"
-                            " and not test_get_progeny"
-                            " and not test_get_ksn_omnipath"
-                            ;; This attempts to download things for Omnipath
-                            " and not test_get_collectri"))
+      '(list "-k" (string-join
+                   ;; Tests requiring internet access to reach out
+                   ;; <datasets.cellxgene.cziscience.com>, <ftp.ebi.ac.uk>,
+                   ;; <omnipathdb.org>, <raw.githubusercontent.com>,
+                   ;; <static.omnipathdb.org>, <www.ensembl.org>,
+                   ;; <www.ncbi.nlm.nih.gov>, and <zenodo.org>.
+                   (list "not test_collectri"
+                         "test_covid5k"
+                         "test_dorothea"
+                         "test_download"
+                         "test_download_anndata"
+                         "test_ensmbl_to_symbol"
+                         "test_erygast1k"
+                         "test_hallmark"
+                         "test_hsctgfb"
+                         "test_knocktf"
+                         "test_msvisium"
+                         "test_pbmc3k"
+                         "test_progeny"
+                         "test_resource"
+                         "test_show_resources"
+                         "test_translate"
+                         ;; XXX: Some precision mismatched.
+                         "test_func_gsea"
+                         "test_net_corr")
+                   " and not "))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; numba = "^0.60.0"; all tests passed.
-               (("0.60.0") "0.61.0"))))
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
            (lambda _ (setenv "HOME" "/tmp")))
@@ -2879,27 +2890,35 @@ parsing of Variant Call Format (VCF) files.")
            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs (list python-adjusttext
                              python-anndata
-                             python-ipython
-                             python-matplotlib
-                             python-nbsphinx
+                             python-dcor
+                             python-docrep
+                             python-igraph
+                             python-ipywidgets
+                             python-marsilea
                              python-numba
-                             python-numpy
-                             python-numpydoc
-                             python-omnipath
-                             python-scanpy
-                             python-scikit-learn
+                             python-requests
                              python-scipy
-                             python-skranger
+                             python-session-info2
                              python-tqdm
-                             python-typing-extensions))
-    (native-inputs (list python-poetry-core python-pytest))
-    (home-page "https://github.com/saezlab/decoupler-py")
+                             python-xgboost))
+    (native-inputs
+     (list nss-certs-for-test
+           python-hatchling
+           python-gseapy
+           python-memory-profiler
+           python-pytest
+           python-scanpy))
+    (home-page "https://github.com/scverse/decoupler")
     (synopsis
      "Framework for modeling, analyzing and interpreting single-cell RNA-seq data")
     (description
      "This package provides different statistical methods to extract
 biological activities from omics data within a unified framework.")
-    (license license:gpl3+)))
+    (license license:bsd-3)))
+
+;; See: <https://github.com/scverse/decoupler/blob/main/CHANGELOG.md#200>
+(define-public python-decoupler-py
+  (deprecated-package "python-decoupler-py" python-decoupler))
 
 (define-public python-demuxem
   (package
