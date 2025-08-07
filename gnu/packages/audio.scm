@@ -4848,21 +4848,18 @@ encode and decode wavpack files.")
       (license license:gpl3+))))
 
 (define-public libmixed
-  ;; Release is much outdated.
-  (let ((commit "9b2668e0d85175b0e92864cfbf1b9e58f77c92e0")
-        (revision "1"))
     (package
       (name "libmixed")
-      (version (git-version "2.0" revision commit))
+      (version "2.4.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Shirakumo/libmixed")
-               (commit commit)))
+               (commit version)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ql2h0hh4jl96sc9i6mk1d6qq261bvsfapinvzr9gx3lpzycpfb7"))))
+          (base32 "0g9z8mzrdp1j4w4dv6z2xkgknip6m6384n953y20wdvhs71gia1v"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -4890,7 +4887,7 @@ in audio/video/games.  It can serve as a base architecture for complex DSP
 systems.")
       (license (list license:bsd-2 ; libsamplerate
                      license:gpl2 ; spiralfft
-                     license:zlib)))))
+                     license:zlib))))
 
 (define-public libmodplug
   (package
