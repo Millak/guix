@@ -468,6 +468,63 @@ publication-quality data plots.  A large amount of 3rd-party packages are
 available, greatly increasing its breadth and scope.")
     (license license:gpl3+)))
 
+(define-public python-dcor
+  (package
+    (name "python-dcor")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dcor" version))
+       (sha256
+        (base32 "0cc4an2p3ifm62d50w5h83myyhck6vcnrgp691rpid0x21v9glzm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; TODO: Report upstream, failing with NumPy deprecation
+                    ;; warning and errors:
+                    ;; AttributeError: 'numpy.ndarray' object has no attribute '_array'.
+                    ;; AttributeError: module 'numpy' has no attribute 'bool'.
+                    (list "not test_u_v_statistics"
+                          "test_same_distribution_different_means"
+                          "test_same_distribution_same_parameters"
+                          "test_independent_variables"
+                          "test_same_variable")
+                    " and not ")
+              "dcor/tests")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-next))
+    (propagated-inputs
+     (list python-joblib
+           python-numba
+           python-numpy
+           python-scipy))
+    (home-page "https://dcor.readthedocs.io/")
+    (synopsis "Distance correlation and related E-statistics in Python")
+    (description
+     "@code{dcor} is distance correlation and energy statistics in Python.
+
+E-statistics are functions of distances between statistical observations in
+metric spaces.  Distance covariance and distance correlation are dependency
+measures between random vectors introduced in
+@url{https://github.com/vnmabus/dcor#srb07,[SRB07]} with a simple E-statistic
+estimator.
+
+This package offers functions for calculating several E-statistics such as:
+
+@itemize
+@item estimator of the energy distance
+@url{https://github.com/vnmabus/dcor#sr13,[SR13]}
+@item biased and unbiased estimators of distance covariance and distance
+correlation @url{https://github.com/vnmabus/dcor#srb07,[SRB07]}
+@item estimators of the partial distance covariance and partial distance
+covariance @url{https://github.com/vnmabus/dcor#sr14,[SR14]}
+@end itemize")
+    (license license:expat)))
+
 (define-public python-dynesty
   (package
     (name "python-dynesty")
