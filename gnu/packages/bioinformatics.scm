@@ -5013,7 +5013,7 @@ package provides command line tools using the Bio++ library.")
 (define-public blast+
   (package
     (name "blast+")
-    (version "2.14.0")
+    (version "2.17.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5021,7 +5021,7 @@ package provides command line tools using the Bio++ library.")
                     version "/ncbi-blast-" version "+-src.tar.gz"))
               (sha256
                (base32
-                "003mn7m4y306k7visv3in3ikfgm8m41z0jq9lyvz10iv1hdpyixz"))
+                "0ix1bqgaywi3ggis4qvaipb0mk3llhgf52vmc97f744risl5f82h"))
               (modules '((guix build utils)))
               (snippet
                '(begin
