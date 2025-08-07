@@ -828,6 +828,30 @@ has features such as:
 @end itemize")
     (license license:expat)))
 
+(define-public python-hatch-docstring-description
+  (package
+    (name "python-hatch-docstring-description")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch_docstring_description" version))
+       (sha256
+        (base32 "1qwa8m4yswn0bkc5xzq30xsaca578axl5ig2r6mkcdxsfg196pdi"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;avoid extra test dependencies
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling))
+    (propagated-inputs
+     (list python-hatchling))
+    (home-page "https://github.com/flying-sheep/hatch-docstring-description")
+    (synopsis "Derive PyPI package description from Python package docstring ")
+    (description
+     "This package provides a Hatchling plugin to read the description from the
+package docstring.")
+    (license license:gpl3+)))
+
 (define-public python-hatch-fancy-pypi-readme
   (package
     (name "python-hatch-fancy-pypi-readme")
