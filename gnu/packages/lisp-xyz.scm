@@ -8110,8 +8110,10 @@ of http://code.google.com/p/mimeparse/, with a Common Lisp flavor.")
   (sbcl-package->clasp-package sbcl-cl-mimeparse))
 
 (define-public sbcl-cl-mixed
-  (let ((commit "4aaff134d3902d93a2a8605c10de4bcfc62d7afa")
-        (revision "0"))
+  ;; There are no releases, but this commit is entitled
+  ;; "Bump to libmixed-2.4.0".
+  (let ((commit "3da661ae199be94f822e3f9ef6bf03bc6456652b")
+        (revision "1"))
     (package
       (name "sbcl-cl-mixed")
       (version (git-version "2.1.0" revision commit))
@@ -8123,7 +8125,7 @@ of http://code.google.com/p/mimeparse/, with a Common Lisp flavor.")
                (commit commit)))
          (file-name (git-file-name "cl-mixed" version))
          (sha256
-          (base32 "1mrj95lxb1gbxxm89x8gy1ifw2ic1p5wwpapkxcd2jr8abw7zny0"))
+          (base32 "0i7bb2b3a9i4kgp7dzzs5211xj56zzcpwkjlfxpslfp7iz0685y0"))
          (modules '((guix build utils)))
          (snippet
           ;; Delete bundled libraries.
