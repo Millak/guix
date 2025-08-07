@@ -8592,13 +8592,13 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
 (define-public python-docx
   (package
     (name "python-docx")
-    (version "1.1.2")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "python_docx" version))
               (sha256
                (base32
-                "1z9ffsvksaaxr90ijzq4k3adzb6p5ipy2j3rrbfjl05rjlpg5w8c"))))
+                "1ki0cbw3hbiz51ww3fi3vi770lk5r0c62889r819r756v2vxgjbv"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list behave
