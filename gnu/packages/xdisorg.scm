@@ -11,7 +11,7 @@
 ;;; Copyright © 2015 Florian Paul Schmidt <mista.tapas@gmx.net>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
@@ -916,7 +916,10 @@ typing tool (@code{wtype}, @code{xdotool}, etc.), or via standard output.")
      `(#:configure-flags
        (list "--disable-static"
              "--enable-timers"
-             "--enable-gnuplot")))
+             "--enable-gnuplot"
+             ,@(if (target-arm32?)
+                   `("--disable-arm-simd")
+                   '()))))
     (native-inputs (list pkg-config))
     (inputs (list libpng zlib))
     (synopsis "Low-level pixel manipulation library")
