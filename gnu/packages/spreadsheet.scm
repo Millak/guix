@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021, 2023-2024 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023-2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +26,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix licenses)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -36,6 +37,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages time)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages statistics)
@@ -99,15 +101,20 @@
 (define-public visidata
   (package
     (name "visidata")
-    (version "3.1.1")
+    (version "3.2")
     (source
+     ;; PyPI tarball is missing the requirements.txt file.
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "visidata" version))
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/saulpw/visidata")
+          (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cdhx0n79n9z5d22nr90kkg93ndxcnyl4margs4f8l88iwaq8i4c"))))
-    (build-system python-build-system)
+         "1rpds8x7hdwh48v2dja1qq5bamnd63rb8p416nnn8d2n58xkvs4h"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -124,7 +131,9 @@
            python-openpyxl
            python-xlrd))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (synopsis "Terminal spreadsheet multitool for discovering and arranging data")
     (description
      "VisiData is an interactive multitool for tabular data.  It combines the
