@@ -1544,6 +1544,32 @@ Features:
 @end itemize")
     (license license:bsd-2)))
 
+(define-public python-legendkit
+  (package
+    (name "python-legendkit")
+    (version "0.3.6")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/Marsilea-viz/legendkit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03xdhh95w4zydwa4ahp3gyfa6i60c9s5arfcj366knckb1bnpnn9"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-matplotlib))
+    (home-page "https://github.com/Marsilea-viz/legendki")
+    (synopsis "Legend creation and manipulation for matplotlib")
+    (description
+     "This package implements a functionality to create and manipulate plot
+legends for @code{matplotlib}.")
+    (license license:expat)))
+
 (define-public python-libneuroml
   (package
     (name "python-libneuroml")
