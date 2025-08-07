@@ -882,8 +882,11 @@ without dependencies, with
                 "15xlax3z31lsn62vlg94hkm75nm40q4679amnfg13jm8m2bnhy5m"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-blast"
-                               "CFLAGS=-fcommon")))
+     (list
+      #:configure-flags
+      #~(list "--enable-blast"
+              (string-append "CFLAGS=-fcommon -g -O2"
+                             " -Wno-error=implicit-function-declaration"))))
     (inputs
      (list perl))
     (home-page "https://micans.org/mcl/")
