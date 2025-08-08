@@ -11644,7 +11644,7 @@ part of the Prawn PDF generator.")
 (define-public ruby-puma
   (package
     (name "ruby-puma")
-    (version "6.6.0")
+    (version "6.6.1")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -11654,7 +11654,7 @@ part of the Prawn PDF generator.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pdd7s403pi4y75s1sb4jkghhmm2w9zcqifj7z7yx4z0qfs7lvzv"))))
+         "0wppz08pfwz1ypidjiz199i5jl2qvb9ppg0sdvf0kc7azpx5mphl"))))
     (build-system ruby-build-system)
     (arguments
      (list
