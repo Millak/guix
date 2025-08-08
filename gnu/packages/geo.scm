@@ -2079,7 +2079,7 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.11.0")
+    (version "2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2088,7 +2088,7 @@ based on the Osmium library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "135vqahlcrhwa3b9hfgbiqkzbbsjd4i79fp41cd0rp4zarcpi47p"))
+                "1plaayi3mfwpsz48abjqnw4ymvqrwzlwhb44dwfpaz02qqqhvcg6"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled libraries.
@@ -2105,7 +2105,7 @@ based on the Osmium library.")
                   bzip2
                   cli11
                   expat
-                  fmt-8
+                  fmt-11
                   libosmium
                   luajit
                   nlohmann-json
