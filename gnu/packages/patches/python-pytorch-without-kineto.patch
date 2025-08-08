@@ -2,11 +2,11 @@ Even when building without Kineto, the <ActivityType.h> header is still
 imported and the ActivityType type is used. This patch was copied from
 https://github.com/pytorch/pytorch/pull/111048 and adapted.
 
-diff --git a/torch/csrc/profiler/kineto_shim.h b/torch/csrc/profiler/kineto_shim.h
-index 7a3b788..7f49d18 100644
---- a/torch/csrc/profiler/kineto_shim.h
-+++ b/torch/csrc/profiler/kineto_shim.h
-@@ -12,7 +12,55 @@
+diff --git i/torch/csrc/profiler/kineto_shim.h w/torch/csrc/profiler/kineto_shim.h
+index c4efd7785b7..20cc657961c 100644
+--- i/torch/csrc/profiler/kineto_shim.h
++++ w/torch/csrc/profiler/kineto_shim.h
+@@ -12,7 +12,56 @@
  #undef USE_KINETO
  #endif
  
@@ -49,6 +49,7 @@ index 7a3b788..7f49d18 100644
 +    HPU_OP, // HPU host side runtime event
 +    XPU_RUNTIME, // host side xpu runtime events
 +    MTIA_WORKLOADD,
++    MTIA_INSIGHT, // MTIA insight events (new in 2.8.0)
 +
 +    PRIVATEUSE1_RUNTIME,
 +    PRIVATEUSE1_DRIVER,

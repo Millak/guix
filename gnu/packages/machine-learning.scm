@@ -4935,7 +4935,7 @@ PyTorch.")
         (base32
          "0hdpkhcjry22fjx2zg2r48v7f4ljrclzj0li2pgk76kvyblfbyvm"))))))
 
-(define %python-pytorch-version "2.7.0")
+(define %python-pytorch-version "2.8.0")
 
 (define %python-pytorch-src
   (origin
@@ -4946,7 +4946,7 @@ PyTorch.")
     (file-name (git-file-name "python-pytorch" %python-pytorch-version))
     (sha256
      (base32
-      "19prdpzx34n8y2q6wx9dn9vyms6zidjvfgh58d28rfcf5z7z5ra5"))
+      "0am8mx0mq3hqsk1g99a04a4fdf865g93568qr1f247pl11r2jldl"))
     (patches (search-patches "python-pytorch-system-libraries.patch"
                              "python-pytorch-runpath.patch"
                              "python-pytorch-without-kineto.patch"
@@ -4990,8 +4990,9 @@ PyTorch.")
            (for-each
             delete-file
             (find-files dir "\\.cu$")))
-         '("aten/src/ATen/native/transformers/cuda/flash_attn/kernels"
-           "aten/src/ATen/native/transformers/cuda/mem_eff_attention/kernels"))))))
+         '("aten/src/ATen/native/transformers/cuda/flash_attn"
+           "aten/src/ATen/native/transformers/cuda/mem_eff_attention"
+           "aten/src/ATen/native/transformers/hip/flash_attn"))))))
 
 (define-public qnnpack-pytorch
   (package
@@ -5073,7 +5074,7 @@ PyTorch.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'cmake-patches
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "cmake/Dependencies.cmake"
                 (("#POCKETFFT_INCLUDE_DIR")
                  (string-append
@@ -5081,6 +5082,9 @@ PyTorch.")
                 (("#FP16_INCLUDE_DIR")
                  (string-append
                   #$(this-package-input "fp16") "/include"))
+                (("#CONCURRENTQUEUE_INCLUDE_DIR")
+                 (dirname (search-input-file inputs
+                                           "include/concurrentqueue/concurrentqueue.h")))
                 ;; Disable opentelemetry
                 ((".*(add_library|target_include_directories).*opentelemetry.*")
                  ""))
@@ -5113,6 +5117,12 @@ PyTorch.")
                '("caffe2/serialize/crc.cc"
                  "caffe2/serialize/inline_container.cc"
                  "torch/csrc/inductor/aoti_package/model_package_loader.cpp"))
+
+              ;; Fix moodycamel/concurrentqueue includes for system package
+              (substitute* '("c10/util/Semaphore.h"
+                             "c10/test/util/Semaphore_test.cpp")
+                (("<moodycamel/concurrentqueue\\.h>") "<concurrentqueue.h>")
+                (("<moodycamel/lightweightsemaphore\\.h>") "<lightweightsemaphore.h>"))
 
               (substitute* "aten/src/ATen/native/vulkan/api/Allocator.h"
                 (("<include/vk_mem_alloc.h>")
@@ -5152,14 +5162,14 @@ PyTorch.")
                           (package-transitive-supported-systems qnnpack)))
                   (setenv "USE_QNNPACK" "0"))
               (substitute* '("requirements.txt" "setup.py")
-                (("sympy==1\\.13\\.1")
+                (("sympy>=1\\.13\\.3")
                  "sympy>=1.13.1"))))
           (add-after 'use-system-libraries 'skip-nccl-call
             (lambda _
               ;; Comment-out `checkout_nccl()` invokation in build_pytorch().
               (substitute* "tools/build_pytorch_libs.py"
                 (("^[[:blank:]]*checkout_nccl\\(\\)" all)
-                 (string-append "# " all "  # Guix: use system NCCL\n")))))
+                 (string-append "# " all "\n        pass")))))
           ;; PyTorch is still built with AVX2 and AVX-512 support selected at
           ;; runtime, but these dependencies require it (nnpack only for
           ;; x86_64).
@@ -5280,6 +5290,7 @@ PyTorch.")
       (list asmjit
             brotli ; for cpp-httplib
             clog
+            concurrentqueue
             cpp-httplib
             eigen
             flatbuffers
@@ -5301,6 +5312,7 @@ PyTorch.")
             pybind11
             ;; qnnpack
             qnnpack-pytorch
+            rdma-core
             sleef
             tensorpipe
             vulkan-headers

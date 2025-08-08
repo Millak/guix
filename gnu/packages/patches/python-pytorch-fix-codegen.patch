@@ -107,7 +107,7 @@ index 845034cb7..a1c5767c2 100644
  from torchgen.code_template import CodeTemplate
  from torchgen.operator_versions.gen_mobile_upgraders_constant import (
      MOBILE_UPGRADERS_HEADER_DESCRIPTION,
-@@ -263,7 +266,10 @@ def construct_register_size(register_size_from_yaml: int) -> str:
+@@ -260,7 +263,10 @@ def construct_register_size(register_size_from_yaml: int) -> str:
  def construct_version_maps(
      upgrader_bytecode_function_to_index_map: dict[str, Any],
  ) -> str:
@@ -119,7 +119,7 @@ index 845034cb7..a1c5767c2 100644
      sorted_version_map_ = sorted(version_map.items(), key=itemgetter(0))  # type: ignore[no-any-return]
      sorted_version_map = dict(sorted_version_map_)
  
-@@ -375,7 +381,10 @@ def sort_upgrader(upgrader_list: list[dict[str, Any]]) -> list[dict[str, Any]]:
+@@ -372,7 +378,10 @@ def sort_upgrader(upgrader_list: list[dict[str, Any]]) -> list[dict[str, Any]]:
  
  
  def main() -> None:
