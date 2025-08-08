@@ -98,15 +98,17 @@ and for the GLSL.std.450 extended instruction set.
       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
-                               ;; Some packages like mpv fail to link
-                               ;; when the static libraries are built.
-                               "-DSPIRV_TOOLS_BUILD_STATIC=OFF"
-                               (string-append
-                                "-DSPIRV-Headers_SOURCE_DIR="
-                                (assoc-ref %build-inputs "spirv-headers")))))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              ;; Some packages like mpv fail to link
+              ;; when the static libraries are built.
+              "-DSPIRV_TOOLS_BUILD_STATIC=OFF"
+              (string-append
+               "-DSPIRV-Headers_SOURCE_DIR="
+               (assoc-ref %build-inputs "spirv-headers")))))
     (inputs (list spirv-headers))
-    (native-inputs (list pkg-config python))
+    (native-inputs (list pkg-config python-minimal))
     (home-page "https://github.com/KhronosGroup/SPIRV-Tools")
     (synopsis "API and commands for processing SPIR-V modules")
     (description
