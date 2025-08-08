@@ -127,8 +127,12 @@
                        `("--exclude-regex" ,test-exclude))
                  ,@(if parallel-tests?
                        `("-j" ,(number->string (parallel-job-count))
+                         ;; ctest waits to start tests when the CPU load is
+                         ;; above this threshold. Set a lower bound for low-core
+                         ;; machines to prevent stalling as may occur due to
+                         ;; system tasks even when no builds are running.
                          "--test-load"
-                         ,(number->string (total-processor-count)))
+                         ,(number->string (max 4 (total-processor-count))))
                        ;; When unset CMake defers to the build system.
                        '("-j" "1"))
                  ,@(if test-repeat-until-pass?
