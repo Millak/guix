@@ -137,7 +137,7 @@ a system that allows you to easily communicate between processes, and separate
 your project into different processes.")
     (license license:bsd-3)))
 
-(define-public python-django-4.2
+(define-public python-django
   (package
     (name "python-django")
     (version "4.2.16")
@@ -228,8 +228,6 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
     (properties `((cpe-name . "django")
                   ;; This CVE seems fixed since 4.2.1.
                   (lint-hidden-cve . ("CVE-2023-31047"))))))
-
-(define-public python-django python-django-4.2)
 
 (define-public python-django-cache-url
   (package

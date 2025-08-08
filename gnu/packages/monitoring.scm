@@ -519,7 +519,7 @@ and persisting them to disk using the Whisper time-series library.")
              python-whisper))
       (propagated-inputs
        (list python-cairocffi
-             python-django-4.2
+             python-django
              python-django-tagging
              python-pyparsing
              python-pytz

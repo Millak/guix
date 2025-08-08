@@ -11399,7 +11399,7 @@ Mathics3.")
              (setenv "PYTHONPATH" (getcwd))
              (setenv "DJANGO_SETTINGS_MODULE" "mathics_django.settings")
              (invoke "django-admin" "test"))))))
-    (propagated-inputs (list python-django-4.2
+    (propagated-inputs (list python-django
                              python-mathics-scanner
                              python-mathics-core
                              python-networkx
