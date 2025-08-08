@@ -32972,7 +32972,7 @@ has a small codebase that's easy to understand and use.")
 (define-public sbcl-wayflan
   (package
     (name "sbcl-wayflan")
-    (version "0.0.4")
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
@@ -32981,7 +32981,7 @@ has a small codebase that's easy to understand and use.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-wayflan" version))
        (sha256
-        (base32 "0y6hzskp1vgaigzj5b3i695sc6dn5mk7nlxs21nh5ybzmf4chhyy"))))
+        (base32 "11n8w4fh996gspgcsfhbrcmz7az4yrx9a15jh6n72kswgjzq0s5j"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-parachute))
