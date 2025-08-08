@@ -132,30 +132,31 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(;; Disable tests for now due to upstream issue hit when running
-       ;; update-reference-shaders phase:
-       ;; <https://github.com/KhronosGroup/SPIRV-Tools/issues/5980>.
-       #:tests? #f
-       #:configure-flags
-       (list "-DSPIRV_CROSS_SHARED=YES")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests-to-find-deps
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("\\$\\{CMAKE_(.*)_DIR\\}/external/glslang(.*)/bin")
-                (string-append (assoc-ref inputs "glslang") "/bin")))
-             (substitute* "CMakeLists.txt"
-               (("\\$\\{CMAKE_(.*)_DIR\\}/external/spirv-tools(.*)/bin")
-                (string-append (assoc-ref inputs "spirv-tools") "/bin")))))
-         (add-before 'check 'update-reference-shaders
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "../source"
-                 (invoke "./update_test_shaders.sh"))))))))
+     (list
+      ;; Disable tests for now due to upstream issue hit when running
+      ;; update-reference-shaders phase:
+      ;; <https://github.com/KhronosGroup/SPIRV-Tools/issues/5980>.
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DSPIRV_CROSS_SHARED=YES")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests-to-find-deps
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("\\$\\{CMAKE_(.*)_DIR\\}/external/glslang(.*)/bin")
+                 (string-append (assoc-ref inputs "glslang") "/bin")))
+              (substitute* "CMakeLists.txt"
+                (("\\$\\{CMAKE_(.*)_DIR\\}/external/spirv-tools(.*)/bin")
+                 (string-append (assoc-ref inputs "spirv-tools") "/bin")))))
+          (add-before 'check 'update-reference-shaders
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (invoke "./update_test_shaders.sh"))))))))
     (inputs
      (list glslang spirv-headers spirv-tools))
-    (native-inputs (list python))
+    (native-inputs (list python-minimal))
     (home-page "https://github.com/KhronosGroup/SPIRV-Cross")
     (synopsis "Parser for and converter of SPIR-V to other shader languages")
     (description
