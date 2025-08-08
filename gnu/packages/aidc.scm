@@ -219,27 +219,6 @@ integration of this capability into your own programs.")
     (home-page "https://github.com/zxing-cpp/zxing-cpp")
     (license license:asl2.0)))
 
-;;; This older variant is kept for gst-plugins-bad (see:
-;;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1684).
-(define-public zxing-cpp-1.2
-  (package/inherit zxing-cpp
-    (name "zxing-cpp")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/zxing-cpp/zxing-cpp")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (patches (search-patches "zxing-cpp-1.2.0-gcc-14.patch"))
-              (sha256
-               (base32
-                "1gjj9c7h634rrmmgzbc7cxjqsxdq0paj6113k02ncjm1s9abk7ik"))))
-    ;; Disable tests to avoid bundled dependencies.
-    (arguments '(#:tests? #f
-                 #:configure-flags '("-DBUILD_BLACKBOX_TESTS=OFF")))
-    (native-inputs '())))
-
 (define-public barcode
   (package
     (name "barcode")
