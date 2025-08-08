@@ -60,7 +60,7 @@
 ;; If you update either of opencl-headers, opencl-clhpp or opencl-icd-loader
 ;; note that they are released together (lockstep) and must be updated
 ;; together. Bump this version number and update hashes below
-(define %opencl-version "2024.10.24")
+(define %opencl-version "2025.07.22")
 
 (define-public opencl-headers
   (package
@@ -74,7 +74,7 @@
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0c3s6g8b3ggfr36cl27axdf3kn79kj6cb880jizcf6q89nw6nf98"))))
+         (base32 "1rir72cdigwkj3a0k8l066fgzvh41yf6vrczzflwh0h4vq3g7h2x"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Not enabled during build.
     (synopsis "The Khronos OpenCL headers")
@@ -110,7 +110,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s9z30p80qc1dgp04wvc6szgcs4r167m3nk9622d2bbaaalgd5vg"))))
+        (base32 "1d7zyf2s2xpa002c36a081gyldai0mph3pjnyvswhx34c2b8yi44"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f  ;The regression tests require a lot more dependencies.
@@ -136,7 +136,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rnyx83iwisxfj818dzf016fmi62kk1hrlfav0b8a1pjfbzmvr03"))))
+                "12y5v3ri9dqm3zbhg6axy02hbcb0g23f44m2jvyvc2zv0lvy42wg"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Tests need stub loader setup.
     (native-search-paths
