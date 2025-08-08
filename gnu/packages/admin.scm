@@ -269,7 +269,8 @@ usual file attributes can be checked for inconsistencies.")
                     "daemontools-" version ".tar.gz"))
               (sha256
                (base32
-                "07scvw88faxkscxi91031pjkpccql6wspk4yrlnsbrrb5c0kamd5"))))
+                "07scvw88faxkscxi91031pjkpccql6wspk4yrlnsbrrb5c0kamd5"))
+              (patches (search-patches "daemontools-gcc14.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;; No tests as far as I can tell.
