@@ -4266,8 +4266,8 @@ project, and it will potentially also do the same for the Lime project.")
 
 (define-public gloo
   (let ((version "0.0.0")                         ; no proper version tag
-        (commit "81925d1c674c34f0dc34dd9a0f2151c1b6f701eb")
-        (revision "2"))
+        (commit "c7b7b022c124d9643957d9bd55f57ac59fce8fa2")
+        (revision "3"))
     (package
       (name "gloo")
       (version (git-version version revision commit))
@@ -4280,7 +4280,7 @@ project, and it will potentially also do the same for the Lime project.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "16zs8ndbiv9nppn8bv6lfanzyyssz7g5pawxiqcnafwq3nvxpj9m"))))
+           "0xsp2m2if3g85l0c3cx9l0j3kz36j3kbmz9mai6kchdhrs13r7d5"))))
       (build-system cmake-build-system)
       (native-inputs
        (list googletest))
