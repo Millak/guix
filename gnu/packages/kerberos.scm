@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2012, 2013, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -50,7 +50,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module ((guix licenses) #:prefix license:)
@@ -63,7 +62,7 @@
 (define-public mit-krb5
   (package
     (name "mit-krb5")
-    (version "1.20")
+    (version "1.21")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -76,10 +75,10 @@
               (patches (search-patches "mit-krb5-hurd.patch"))
               (sha256
                (base32
-                "0bz16sh0vgzlpy2kx5acmpyy181hl83a1alz7wbk06457kfjn0ky"))))
+                "0fx91rickkb5pvxm3imqmaavsncjkgcsrfx4czgk4j28hpzsmy39"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list bison perl tcl))                   ;required for some tests
+     (list bison perl)) ;required for some tests
     (inputs
      (list openssl))
     (arguments
