@@ -395,32 +395,24 @@ can be used either as a standalone application, or as a Python library.")
 (define-public python-pydot
   (package
     (name "python-pydot")
-    (version "1.4.2")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydot" version))
        (sha256
         (base32
-         "0z80zwldf7ffkwrpm28hixsiqp3053j7g281xd6phmnbkfiq3014"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           ;; Taken from .travis.yaml
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "test"
-                 (invoke "python" "pydot_unittest.py"))))))))
+         "1maa6rvnbs1cyfc801ia1qpai6a0irgrwsp2y25y0csa3il8y562"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     ;; For tests.
-     (list graphviz python-chardet))
+     (list graphviz
+           python-chardet
+           python-parameterized
+           python-pytest
+           python-pytest-xdist
+           python-setuptools))
     (propagated-inputs
-     ;; XXX: Two test failures with 3.0+:
-     ;; https://github.com/pydot/pydot/issues/277
-     (list python-pyparsing-2.4.7))
+     (list python-pyparsing))
     (home-page "https://github.com/pydot/pydot")
     (synopsis "Python interface to Graphviz's DOT language")
     (description
