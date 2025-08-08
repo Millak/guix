@@ -28155,9 +28155,12 @@ Rust Python extensions implemented with @code{PyO3} or @code{rust-cpython}.")
             (add-after 'unpack 'set-version
               (lambda _
                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.2.2"))))))
-      (native-inputs (list python-pytest python-setuptools
-                           python-setuptools-scm python-wheel))
-      (propagated-inputs (list python-pyparsing-2.4.7))
+      (native-inputs
+       (list python-pytest
+             python-setuptools
+             python-setuptools-scm))
+      (propagated-inputs
+       (list python-pyparsing))
       (home-page "https://github.com/MatthieuDartiailh/pyclibrary")
       (synopsis "Wrap dynamic libraries in Python")
       (description
