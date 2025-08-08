@@ -631,39 +631,43 @@ shader compilation.")
                   vulkan-loader
                   vulkan-utility-libraries
                   wayland))
-    (native-inputs (list googletest pkg-config python spirv-headers vulkan-headers))
+    (native-inputs
+     (list googletest pkg-config python spirv-headers vulkan-headers))
     (arguments
      (list #:tests? #f ; tests crash on some hardware (various upstream issues)
            #:configure-flags
            #~(list "-DBUILD_TESTS=ON")
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'install 'set-layer-path-in-manifest
-                          (lambda _
-                            (let ((manifest (string-append #$output
-                                             "/share/vulkan/explicit_layer.d"
-                                             "/VkLayer_khronos_validation.json")))
-                              (substitute* manifest
-                                (("\"libVkLayer_khronos_validation.so\"")
-                                 (string-append "\"" #$output
-                                                "/lib/libVkLayer_khronos_validation.so\""))))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "VK_LAYER_PATH"
-                                      (string-append (getcwd) "/layers"))
-                              (setenv "LD_LIBRARY_PATH"
-                                      (string-append #$(this-package-input
-                                                        "vulkan-loader") "/lib"))
-                              (setenv "MESA_SHADER_CACHE_DIR"
-                                      (string-append (getcwd) "/shader-cache"))
-                              (setenv "XDG_RUNTIME_DIR" (getcwd))
-                              (invoke "./tests/vk_layer_validation_tests")))))))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'set-layer-path-in-manifest
+                 (lambda _
+                   (let ((manifest
+                          (string-append #$output
+                                         "/share/vulkan/explicit_layer.d"
+                                         "/VkLayer_khronos_validation.json")))
+                     (substitute* manifest
+                       (("\"libVkLayer_khronos_validation.so\"")
+                        (string-append
+                         "\"" #$output
+                         "/lib/libVkLayer_khronos_validation.so\""))))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "VK_LAYER_PATH"
+                             (string-append (getcwd) "/layers"))
+                     (setenv "LD_LIBRARY_PATH"
+                             (string-append #$(this-package-input
+                                               "vulkan-loader") "/lib"))
+                     (setenv "MESA_SHADER_CACHE_DIR"
+                             (string-append (getcwd) "/shader-cache"))
+                     (setenv "XDG_RUNTIME_DIR" (getcwd))
+                     (invoke "./tests/vk_layer_validation_tests")))))))
     (home-page "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
     (synopsis "Khronos official validation layers for Vulkan")
     (description
-     "Vulkan-ValidationLayers provides the Khronos official validation layers that
-can assist development by enabling developers to verify their applications correctly
-use the Vulkan API.")
+     "Vulkan-ValidationLayers provides the Khronos official validation layers
+that can assist development by enabling developers to verify their
+applications correctly use the Vulkan API.")
     (license license:asl2.0)))
 
 (define-public vulkan-volk
