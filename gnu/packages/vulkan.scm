@@ -460,11 +460,11 @@ and the ICD.")
               (commit (string-append "vulkan-sdk-" version))))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
-       (snippet #~(substitute* "tests/icd/mock_icd_tests.cpp"
-                    ;; Disable driver info test since it relies on git branch info
-                    (("ASSERT_EQ\\(std::string\\(driver_properties\\.driverInfo\\)")
-                     "// ASSERT_EQ(std::string(driver_properties.driverInfo)")))
-       (patches (search-patches "vulkan-tools-wayland-1.24.patch"))
+       (snippet
+        #~(substitute* "tests/icd/mock_icd_tests.cpp"
+            ;; Disable driver info test since it relies on git branch info
+            (("ASSERT_EQ\\(std::string\\(driver_properties\\.driverInfo\\)")
+             "// ASSERT_EQ(std::string(driver_properties.driverInfo)")))
        (sha256
         (base32
          "152sl309k2lw38x6r15ddyf55dn1wc26pf1idd73nd5x2ax5bd73"))))
