@@ -59,11 +59,13 @@
 
 ;; If you update either of opencl-headers, opencl-clhpp or opencl-icd-loader
 ;; note that they are released together (lockstep) and must be updated
-;; together.
+;; together. Bump this version number and update hashes below
+(define %opencl-version "2024.10.24")
+
 (define-public opencl-headers
   (package
     (name "opencl-headers")
-    (version "2024.10.24")
+    (version %opencl-version)
     (source
       (origin
         (method git-fetch)
@@ -84,7 +86,7 @@
 (define-public opencl-clhpp
   (package
     (name "opencl-clhpp")
-    (version "2024.10.24")
+    (version %opencl-version)
     (source
      (origin
        (method git-fetch)
@@ -110,7 +112,7 @@
 (define-public opencl-icd-loader
   (package
     (name "opencl-icd-loader")
-    (version "2024.10.24")
+    (version %opencl-version)
     (source (origin
               (method git-fetch)
               (uri (git-reference
