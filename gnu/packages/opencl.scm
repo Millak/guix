@@ -78,26 +78,6 @@
     (home-page "https://registry.khronos.org/OpenCL/")
     (license license:asl2.0)))
 
-(define (make-opencl-headers major-version subversion)
-  ;; The upstream OpenCL-Headers repository is no longer separating headers by
-  ;; version; instead, you are supposed to #define CL_TARGET_OPENCL_VERSION.
-  (deprecated-package (string-append "opencl-headers-"
-                                     major-version "."
-                                     subversion) opencl-headers))
-
-(define-public opencl-headers-2.2
-  (make-opencl-headers "2" "2"))
-(define-public opencl-headers-2.1
-  (make-opencl-headers "2" "1"))
-(define-public opencl-headers-2.0
-  (make-opencl-headers "2" "0"))
-(define-public opencl-headers-1.2
-  (make-opencl-headers "1" "2"))
-(define-public opencl-headers-1.1
-  (make-opencl-headers "1" "1"))
-(define-public opencl-headers-1.0
-  (make-opencl-headers "1" "0"))
-
 (define-public opencl-clhpp
   (package
     (name "opencl-clhpp")
