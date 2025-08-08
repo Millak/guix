@@ -394,31 +394,33 @@ Enhanced Subpixel Morphological Anti-Aliasing
                                         %build-inputs "include/vulkan"))))
               #$@(if (%current-target-system)
                      #~("-DBUILD_TESTS=OFF" "-DUSE_GAS=OFF"
-                        (string-append "-DPKG_CONFIG_EXECUTABLE="
-                                       (search-input-file
-                                        %build-inputs
-                                        (string-append "bin/" #$(pkg-config-for-target)))))
+                        (string-append
+                         "-DPKG_CONFIG_EXECUTABLE="
+                         (search-input-file
+                          %build-inputs
+                          (string-append "bin/" #$(pkg-config-for-target)))))
                      #~("-DBUILD_TESTS=ON")))
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'fix-pkg-config-file
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((vulkan-headers (dirname (search-input-directory
-                                               inputs "include/vulkan"))))
-                 ;; Ensure the pkg-config file refers to vulkan-headers.
-                 (substitute* "loader/vulkan.pc.in"
-                   (("^includedir=.*")
-                    (string-append "includedir=" vulkan-headers "\n"))))))
-           (add-after 'unpack 'use-system-googletest
-             (lambda _
-               (substitute* "tests/CMakeLists.txt"
-                 (((string-append "message\\(FATAL_ERROR \"Could not "
-                                  "find googletest directory. See BUILD.md\"\\)"))
-                  "find_package(GTest REQUIRED)"))
-               ;; Use the namespaced variable.
-               (substitute* "tests/framework/CMakeLists.txt"
-                 (("PUBLIC gtest ")
-                  "PUBLIC GTest::gtest ")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pkg-config-file
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((vulkan-headers (dirname (search-input-directory
+                                              inputs "include/vulkan"))))
+                ;; Ensure the pkg-config file refers to vulkan-headers.
+                (substitute* "loader/vulkan.pc.in"
+                  (("^includedir=.*")
+                   (string-append "includedir=" vulkan-headers "\n"))))))
+          (add-after 'unpack 'use-system-googletest
+            (lambda _
+              (substitute* "tests/CMakeLists.txt"
+                (((string-append
+                   "message\\(FATAL_ERROR \"Could not "
+                   "find googletest directory. See BUILD.md\"\\)"))
+                 "find_package(GTest REQUIRED)"))
+              ;; Use the namespaced variable.
+              (substitute* "tests/framework/CMakeLists.txt"
+                (("PUBLIC gtest ")
+                 "PUBLIC GTest::gtest ")))))))
     (native-inputs
      (list googletest
            libxrandr
