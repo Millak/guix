@@ -1480,7 +1480,7 @@ default.")
 (define-public kaidan
   (package
     (name "kaidan")
-    (version "0.9.0")
+    (version "0.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/unstable/kaidan/" version
@@ -1490,28 +1490,37 @@ default.")
                #~(begin
                    (delete-file-recursively "3rdparty")))
               (sha256
-               (base32 "1waqv0fdkhvp3cqy2a2g6i2wc9s0zbvgzknymrwxy99mnx9ymw9g"))))
+               (base32 "0q8py100nmvyhm8pfnvpxmghbg445x2vgpw3c519bcrr4w7y6yl0"))))
     (build-system qt-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTS=true")))
+     (list
+       #:qtbase qtbase
+       #:configure-flags #~(list "-DBUILD_TESTS=true")
+       #:test-exclude "PublicGroupChatTest"
+       #:phases
+         #~(modify-phases %standard-phases
+           (add-before 'check 'set-home
+             (lambda _
+               ;; Tests need write permission in $HOME.
+               (setenv "HOME" "/tmp"))))))
     (native-inputs (list extra-cmake-modules
-                         perl
-                         pkg-config
-                         python-wrapper))
-    (inputs (list kirigami-5
-                  knotifications-5
-                  qtbase-5
-                  qtdeclarative-5
-                  qtgraphicaleffects
-                  qtlocation-5
-                  qtquickcontrols2-5
-                  qtsvg-5
-                  qtmultimedia-5
-                  qtxmlpatterns-5
+                         pkg-config))
+    (inputs (list icu4c
+                  kcrash
+                  kdsingleapplication
+                  kio
+                  kirigami
+                  kirigami-addons
+                  knotifications
+                  kquickimageeditor
+                  prison
                   qqc2-desktop-style
-                  qxmpp
-                  sonnet
-                  zxing-cpp-1.2a))
+                  qtlocation
+                  qtmultimedia
+                  qtpositioning
+                  qtsvg
+                  qttools
+                  qxmpp))
     (home-page "https://www.kaidan.im/")
     (synopsis "Qt-based XMPP/Jabber Client")
     (description "Kaidan is a chat client.  It uses the open communication
