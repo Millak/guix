@@ -4067,30 +4067,19 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.11")
+    (version "7.2.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "0mk25gr1pafmps4nsydjprwswbzwch8b583nlwh7x2031sz7ald1"))
-       (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
+        (base32 "1nz6kddwxz5k79g3skj7y45f0l20m8fh8haw42j313xm177xpdp0"))
        (modules '((guix build utils)))
        ;; This snippet removes pre-built Java archives.
        (snippet
         #~(for-each delete-file-recursively
-                    (list "binsrc/hibernate"
-                          "binsrc/jena"
-                          "binsrc/jena2"
-                          "binsrc/jena3"
-                          "binsrc/jena4"
-                          "binsrc/rdf4j"
-                          "binsrc/sesame"
-                          "binsrc/sesame2"
-                          "binsrc/sesame3"
-                          "binsrc/sesame4"
-                          "libsrc/JDBCDriverType4")))))
+                    (find-files "." "\\.jar$")))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4103,9 +4092,6 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
               "--enable-static=no")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'bootstrap
-            (lambda _
-              (invoke "sh" "autogen.sh")))
           (add-after 'unpack 'avoid-embedding-kernel-and-timestamps
             ;; For a reproducible build, avoid embedding the kernel version and
             ;; timestamps.
@@ -4124,15 +4110,9 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
                         "appsrc/ODS-FeedManager/make_vad.sh"
                         "appsrc/ODS-Bookmark/make_vad.sh"
                         "appsrc/ODS-Addressbook/make_vad.sh"
-                        "binsrc/dbpedia/make_vad.sh"
                         "binsrc/samples/demo/make_vad.sh"
                         "binsrc/samples/demo/mkdoc.sh"
-                        "binsrc/samples/sparql_demo/make_vad.sh"
-                        "binsrc/bpel/make_vad.sh"
-                        "binsrc/fct/make_vad.sh"
-                        "binsrc/rdf_mappers/make_vad.sh"
-                        "binsrc/isparql/make_vad.sh"
-                        "binsrc/conductor/mkvad.sh")
+                        "binsrc/rdf_mappers/make_vad.sh")
                 (("^UNAME_SYSTEM=.*") "UNAME_SYSTEM=unknown\n")
                 (("^UNAME_RELEASE=.*") "UNAME_RELEASE=unknown\n")
                 (("^PACKDATE=.*") "PACKDATE=2012-04-18\n")
@@ -4147,7 +4127,7 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
                '("libvirtuoso-t.a"
                  "libvirtuoso-t.la")))))))
     (native-inputs
-     (list autoconf automake bison flex gperf libtool))
+     (list autoconf automake bison flex gperf libtool python))
     (inputs
      (list openssl net-tools readline which zlib))
     (home-page "https://vos.openlinksw.com/owiki/wiki/VOS/")
