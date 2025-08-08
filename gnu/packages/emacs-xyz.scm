@@ -9545,6 +9545,32 @@ blocks with @code{org-babel} in @code{org-mode}.")
 code.  It was created based on the usage of @code{ob-C}.")
       (license license:gpl3+))))
 
+(define-public emacs-ob-gptel
+  (let ((commit "e8eaa098b71f0f29ddbb5ea078514dc584e331e0")
+        (revision "1"))
+    (package
+      (name "emacs-ob-gptel")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/jwiegley/ob-gptel/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0rfg2kklj18smhyc15a8j15r9x5q6dq46isyh9ss49wx791bw652"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (propagated-inputs
+       (list emacs-gptel))
+      (home-page "https://github.com/jwiegley/ob-gptel/")
+      (synopsis "Org Babel support for evaluating @code{gptel} prompts.")
+      (description "@code{ob-gptel} is a backend for Org Babel.  It provides
+an alternative interface to evaluate @{gptel} prompts as Org mode blocks.")
+      (license license:gpl3+))))
+
 (define-public emacs-ob-restclient
   (let ((commit "1b021ce1c67c97fa1aa4d2c0816edb7add129e48"))
     (package
