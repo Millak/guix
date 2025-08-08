@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2015, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -400,20 +400,23 @@ conferencing.")
 (define-public qxmpp
   (package
     (name "qxmpp")
-    (version "1.4.0")
+    ;; kaidan requires a precise version
+    (version "1.10.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/qxmpp-project/qxmpp")
+             (url "https://invent.kde.org/libraries/qxmpp")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1knpq1jkwk0lxdwczbmzf7qrjvlxba9yr40nbq9s5nqkcx6q1c3i"))))
-    (build-system cmake-build-system)
+        (base32 "0qinrbr63b1baqv1a7cph8bma6kj1ib8s8ywq6d9497lc1yl2kgi"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:configure-flags (list "-DBUILD_EXAMPLES=false"
-                               "-DWITH_GSTREAMER=true")
+     `(#:qtbase ,qtbase
+       #:configure-flags (list "-DBUILD_EXAMPLES=false"
+                               "-DWITH_GSTREAMER=true"
+                               "-DBUILD_OMEMO=ON") ;needed by kaidan
        #:test-exclude
         (string-join ;; These tests use the network.
          (list "tst_qxmppiceconnection"
@@ -423,8 +426,12 @@ conferencing.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list gstreamer qtbase-5))
-    (home-page "https://github.com/qxmpp-project/qxmpp")
+     (list
+       gstreamer
+       libomemo-c
+       qca-qt6
+       qt5compat))
+    (home-page "https://invent.kde.org/libraries/qxmpp")
     (synopsis "XMPP client and server library")
     (description
      "QXmpp is a XMPP client and server library written in C++ and uses the Qt
