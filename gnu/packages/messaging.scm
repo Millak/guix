@@ -1520,7 +1520,8 @@ default.")
                   qtpositioning
                   qtsvg
                   qttools
-                  qxmpp))
+                  qxmpp
+                  sonnet))
     (home-page "https://www.kaidan.im/")
     (synopsis "Qt-based XMPP/Jabber Client")
     (description "Kaidan is a chat client.  It uses the open communication
