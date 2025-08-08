@@ -5857,7 +5857,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
 (define-public python-torchvision
   (package
     (name "python-torchvision")
-    (version "0.22.0")
+    (version "0.23.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5867,7 +5867,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hz6v8796vq8kinafzyq2v2wir5s3hykfn0rnlwx7qcsz62i3ggv"))
+                "1d09xwblldgzmzfdlrsyx6mgv939z4yi1hqanm9yx63cs2mr7w85"))
               (modules '((guix build utils)))
               (snippet
                '(begin
