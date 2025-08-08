@@ -18,6 +18,8 @@
 
 (define-module (gnu packages oneapi)
   #:use-module (gnu packages)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages swig)
   #:use-module (guix build-system cmake)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -89,3 +91,46 @@ eliminate tedious threading implementation work.  It provides parallel loop
 constructs, asynchronous tasks, synchronization primitives, atomic operations,
 and more.")
     (license license:asl2.0)))
+
+(define-public python-onetbb
+  (package
+    (inherit onetbb)
+    (name "python-onetbb")
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DTBB4PY_BUILD=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-python-install-directory
+            (lambda _
+              (substitute* "python/setup.py"
+                (("extra_link_args=tbb_flag,")
+                 (string-append
+                  "extra_link_args=['-Wl,-rpath="
+                  #$(this-package-input "onetbb") "/lib"
+                  "', '-Wl,-rpath=" #$output "/lib'] + tbb_flag,")))))
+          (replace 'build
+            (lambda _
+              (setenv "PYTHONHASHSEED" "0")
+              (invoke "make" "python_build")))
+          ;; The 'build phase already installs the modules
+          (replace 'install
+            (lambda _
+              (with-directory-excursion "python/rml"
+                (invoke "make" "install"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-R" "python_test" "--output-on-failure")))))))
+    (native-inputs (list swig python-minimal))
+    (inputs (list onetbb))
+    (synopsis "Python bindings for the oneTBB parallel library")
+    (description
+     "@acronym{OneTBB, OneAPI Threading Building Blocks} is a C++ runtime
+library that abstracts the low-level threading details necessary for optimal
+multi-core performance.  It uses common C++ templates and coding style to
+eliminate tedious threading implementation work.  It provides parallel loop
+constructs, asynchronous tasks, synchronization primitives, atomic operations,
+and more.  @code{python-onetbb} enables threading composability between two or
+more thread-enabled Python libraries.")))
