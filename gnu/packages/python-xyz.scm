@@ -17648,20 +17648,20 @@ native modules.")
 (define-public python-xlrd
   (package
     (name "python-xlrd")
-    (version "2.0.1")
-    (source (origin
-              ;; The tests are not included in the PyPI archive.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/python-excel/xlrd")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "170asszffvf6rh5w169ic4h5kxgjkmdl3060vw737d4g1qfifvzz"))))
-    (build-system python-build-system)
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/python-excel/xlrd")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zgb03a4l2an2hy17w0nlyfisl53jzf8csdj90f5xkibbnjsg3y3"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://www.python-excel.org/")
     (synopsis "Library for extracting data from Excel files")
     (description "This package provides a library to extract data from
