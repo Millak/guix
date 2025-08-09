@@ -18914,7 +18914,7 @@ and other @acronym{IDEs, Integrated Development Environments}.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; Fail on systems with YAMA LSM’s ptrace scope > 0.
+      #:tests? #f ;FIXME: Fail on systems with YAMA LSM’s ptrace scope > 0.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-sh-in-tests
@@ -18932,35 +18932,11 @@ and other @acronym{IDEs, Integrated Development Environments}.")
             (lambda _
               ;; This adjusts the behavior of debugpy to load pydevd from
               ;; Python site packages.
-              (setenv "DEBUGPY_BUNDLING_DISABLED" "1")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        "-n" (number->string (parallel-job-count))
-                        "-k"
-                        (string-append
-                         ;; These tests cannot be run in parallel because their
-                         ;; test data would not be copied by xdist and lead to
-                         ;; import errors. (see:
-                         ;; https://github.com/microsoft/debugpy/issues/342 and
-                         ;; https://github.com/microsoft/debugpy/issues/880).
-                         "not test_custom_python_args "
-                         "and not test_autokill "))))))))
+              (setenv "DEBUGPY_BUNDLING_DISABLED" "1"))))))
     (native-inputs
-     ;; See: https://raw.githubusercontent.com/microsoft/debugpy/
-     ;;      main/tests/requirements.txt.
-     (list python-django
-           python-gevent
-           python-flask
-           python-psutil
-           python-pytest
-           python-pytest-cov
-           python-pytest-timeout
-           python-pytest-xdist
-           python-requests
-           python-setuptools))
-    (propagated-inputs (list python-pydevd))
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-pydevd))
     (home-page "https://aka.ms/debugpy")
     (synopsis "Debug Adapter Protocol Python implementation")
     (description "An implementation of the Debug Adapter Protocol for
