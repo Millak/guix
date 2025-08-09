@@ -1555,21 +1555,18 @@ features:
 (define-public python-stdnum
   (package
     (name "python-stdnum")
-    (version "1.18")
+    (version "2.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-stdnum" version))
+       (uri (pypi-uri "python_stdnum" version))
        (sha256
-        (base32 "1h5y4qx75b6i2051ch8k0pcwkvhxzpaqd9mpsajkvqlsqkcn7ixw"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "nosetests"))))))
+        (base32 "0yir8hka3vmpk0qhiaffagkdjg3mjgai808s0razsggbd5cn80bb"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nose))
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools))
     (home-page "https://arthurdejong.org/python-stdnum/")
     (synopsis "Python module to handle standardized number and code formats")
     (description
