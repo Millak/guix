@@ -26808,23 +26808,27 @@ functionality removed from @code{packaging}.")
 (define-public python-relatorio
   (package
     (name "python-relatorio")
-    (version "0.10.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "relatorio" version))
        (sha256
-        (base32
-         "09nhrz80dfm60nssbvjgz4czzy4yzfa8gxczcdlzbgcnnvm914vb"))))
+        (base32 "0qa8f9xvvc60i41vpf386jqx65379dnn9xpjwp8zaibba5raz83v"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-lxml python-magic python-genshi))
-    (native-inputs (list python-setuptools python-wheel))
+     (list python-genshi
+           python-lxml
+           python-magic))
     (home-page "https://relatorio.tryton.org/")
     (synopsis "Templating library able to output ODT and PDF files")
-    (description "Relatorio is a templating library which provides a way to
-easily output ODT, ODS, PNG, SVG and several other kinds of files.  Support
-for more filetypes can be easily added by creating plugins for them.")
+    (description
+     "Relatorio is a templating library which provides a way to easily output
+ODT, ODS, PNG, SVG and several other kinds of files.  Support for more
+filetypes can be easily added by creating plugins for them.")
     (license license:gpl3+)))
 
 (define-public python-radon
