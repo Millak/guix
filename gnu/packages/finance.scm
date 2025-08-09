@@ -2595,7 +2595,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "4.6")
+    (version "4.9")
     (source
      (origin
        (method git-fetch)
@@ -2604,7 +2604,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1qal9ilpyxds6nk2fgzfypk3y1qxh06f6lly3alawz385gf68fkv"))
+       (sha256 (base32 "0898a823mi38z6dwdm6crb2l98rv79sznmqwa0ss96xggvk12nlw"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
@@ -2615,6 +2615,8 @@ mining.")
                       "external/src/rapidjson"
                       "external/src/robin-hood-hashing")))))
     (build-system cmake-build-system)
+    (native-inputs
+     (list xz))
     (inputs
      (list cppzmq curl libuv rapidjson robin-hood-hashing zeromq))
     (arguments
@@ -2629,8 +2631,9 @@ mining.")
                      (chdir "tests")
                      (invoke "cmake" "-DWITH_LTO=OFF" "../../source/tests")
                      (invoke "make" "-j" (number->string (parallel-job-count)))
-                     (invoke "gzip" "-d" "sidechain_dump.dat.gz")
-                     (invoke "gzip" "-d" "sidechain_dump_mini.dat.gz")
+                     (invoke "xz" "-d" "sidechain_dump.dat.xz")
+                     (invoke "xz" "-d" "sidechain_dump_mini.dat.xz")
+                     (invoke "xz" "-d" "sidechain_dump_nano.dat.xz")
                      (invoke "./p2pool_tests")
                      (chdir ".."))))
                (replace 'install
