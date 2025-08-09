@@ -2026,13 +2026,12 @@ content, it is not appropriate for security sensitive environments.")
     (license license:bsd-3)))
 
 (define-public python-untangle
-  ;; The latest tagged release is from 2014; use the latest commit.
-  (let ((revision "1")
-        (commit "fb916a9621175d000a3b0ca9322d3b3ebf8570c0"))
+  ;; The latest tagged release is from 2022; use the latest commit.
+  (let ((revision "2")
+        (commit "7eec044b6c78f58cc6d8f183b2f9a511bfc334f8"))
     (package
       (name "python-untangle")
-      ;; PyPI currently offers some untagged 1.1.1 version.
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.2.1" revision commit))
       (source
        (origin
          (method git-fetch)             ;no tests in pypi archive
@@ -2041,13 +2040,13 @@ content, it is not appropriate for security sensitive environments.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0dn2jz9ajncbqx3pdlgqaxmngl6pdiaz03nj8mkddasckdq9lbrh"))))
-      (build-system python-build-system)
-      (arguments (list #:phases #~(modify-phases %standard-phases
-                                    (replace 'check
-                                      (lambda* (#:key tests? #:allow-other-keys)
-                                        (when tests?
-                                          (invoke "python" "tests/tests.py")))))))
+          (base32 "0pcwcrga8cgrqyyzfj01vkqv3xrzl0a8xa5yfi06byk6d85rv6zf"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-poetry-core
+             python-pytest))
+      (propagated-inputs
+       (list python-defusedxml))
       (home-page "http://0chris.com/untangle")
       (synopsis "XML to Python objects conversion library")
       (description "@code{untangle} is a tiny Python library which converts an
