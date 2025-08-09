@@ -1007,22 +1007,25 @@ use in your Sphinx docs.")
 (define-public python-sphinx-repoze-autointerface
   (package
     (name "python-sphinx-repoze-autointerface")
-    (version "0.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "repoze.sphinx.autointerface" version))
-              (sha256
-               (base32
-                "08ycivzf7bh4a1zcyp31hbyqs1b2c9r26raa3vxjwwmbfqr3iw4f"))))
-    (build-system python-build-system)
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "repoze.sphinx.autointerface" version))
+       (sha256
+        (base32 "18981v34cyw8r6q19syx2vy6yjbc6afyz3287qavk5j6791g2ss8"))))
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f)) ; No tests.
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-sphinx python-zope-interface))
+     (list python-sphinx
+           python-zope-interface))
+    (home-page "https://github.com/repoze/repoze.sphinx.autointerface")
     (synopsis "Auto-generate Sphinx API docs from Zope interfaces")
     (description "This package defines an extension for the Sphinx documentation
 system.  The extension allows generation of API documentation by
 introspection of @code{zope.interface} instances in code.")
-    (home-page "https://github.com/repoze/repoze.sphinx.autointerface")
     (license license:repoze)))
 
 (define-public python-sphinx-prompt
