@@ -57,6 +57,7 @@
 ;;; Copyright © 2025 Libre en Communs <contact@a-lec.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,6 +93,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-build)
   #:use-module (gnu packages emacs-xyz)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -7581,6 +7583,44 @@ low-level binary structures for Guile Scheme inspired by Chez Scheme's
 ftypes.")
     (home-page "https://dthompson.us/projects/guile-bstructs.html")
     (license license:asl2.0)))
+
+(define-public jaro
+  (let ((commit "a5744a686e43a148536b04db5be779aabfed1603")
+        (revision "0"))
+    (package
+      (name "jaro")
+      (version (git-version "0.5.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/isamert/jaro.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jf6ciwvk0ix9gv1gymmyhicx07hsxivryf6fcqvi7gg38czqwzl"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (install-file "jaro"
+                              (string-append #$output "/bin"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "guile" "--no-auto-compile" "tests.scm")))))))
+      (inputs (list guile-3.0 perl perl-file-mimeinfo))
+      (home-page "https://github.com/isamert/jaro")
+      (synopsis "Customizable xdg-open alternative")
+      (description
+       "Jaro is a just another resource opener.  It runs the appropriate
+application to open a given file or URL based on given configurations.")
+      (license license:gpl3))))
 
 (define-public guile-goblins
   (package
