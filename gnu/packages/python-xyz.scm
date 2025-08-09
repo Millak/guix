@@ -15772,32 +15772,21 @@ session, Python, and the OS.")
 (define-public python-mpmath
   (package
     (name "python-mpmath")
-    (version "1.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fredrik-johansson/mpmath")
-                    (commit "c6a35f9ee7c294bcf4e0517bc76b268843db9499")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ifw59fjjls3mas104rh0frilvab2fhk1dkjraxlqni5n9l676im"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-version
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
-             ;; ZIP does not support timestamps before 1980.
-             (setenv "SOURCE_DATE_EPOCH" "315532800")))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv")))))))
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fredrik-johansson/mpmath")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "058ahp0z0gn0z1hwvggrmiir1xag6rzgrfgfg138kjnk5ml9q4gl"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://mpmath.org")
     (synopsis "Arbitrary-precision floating-point arithmetic in python")
     (description
