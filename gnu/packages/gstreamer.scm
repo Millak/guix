@@ -859,7 +859,6 @@ model to base your own plug-in on, here it is.")
       (list bluez
             bzip2
             cairo
-            ;; ccextractor
             chromaprint
             curl
             directfb
@@ -919,13 +918,12 @@ model to base your own plug-in on, here it is.")
             neon
             nettle
             openal
-            ;; opencv
+            ;; opencv ;would increase the closure size by ca. 430MB
             openexr
             openh264
             openjpeg
-            ;; openni2
             opensles
-            openssl-1.1
+            openssl
             opus
             orc
             pango
@@ -948,8 +946,7 @@ model to base your own plug-in on, here it is.")
             webrtc-audio-processing
             wildmidi
             wpebackend-fdo
-            zbar-minimal
-            zxing-cpp-1.2)))
+            zbar-minimal)))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "Plugins for the GStreamer multimedia library")
     (description
