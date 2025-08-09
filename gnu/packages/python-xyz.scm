@@ -11561,19 +11561,27 @@ toolkits.")
 (define-public python-matplotlib-inline
   (package
     (name "python-matplotlib-inline")
-    (version "0.1.3")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "matplotlib-inline" version))
+       (uri (pypi-uri "matplotlib_inline" version))
        (sha256
-        (base32 "1vilzwj3xp00mxprmmn1hlafm3p23vn56s46kx3ra4qd5signjx0"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-matplotlib python-traitlets))
+        (base32 "145bl0ppy4cz1fii3pfixd0fi1jfmkcbsq3bw4b3vgk6qqzb48w4"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; Tests disabled because of a circular dependency with ipython.
-     `(#:tests? #f))
+     (list
+      ;; Tests disabled because of a circular dependency with IPython.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Disabled because of a circular dependency with IPython.
+          (delete 'sanity-check))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-matplotlib
+           python-traitlets))
     (home-page "https://github.com/ipython/matplotlib-inline")
     (synopsis "Inline Matplotlib backend for Jupyter")
     (description
