@@ -180,7 +180,7 @@ client.")
     (inputs
      (list python-cached-property
            python-distro
-           python-docker
+           python-docker-5
            python-dockerpty
            python-docopt
            python-dotenv
