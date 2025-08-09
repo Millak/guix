@@ -17622,6 +17622,8 @@ list format (also known as ASCII plist), written in Cython.")
 dependency resolution logic.")
     (license license:isc)))
 
+;; XXX: Deprecated package: this project was archived by the owner on Mar 26,
+;; 2022. It is now read-only.
 (define-public python-commonmark
   (package
     (name "python-commonmark")
@@ -17632,14 +17634,9 @@ dependency resolution logic.")
        (uri (pypi-uri "commonmark" version))
        (sha256
         (base32 "0q7d39lm8kcingpmykk5r959hrwwj6v2icyw3mihczxyb749sbs5"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "setup.py" "test"))))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/readthedocs/commonmark.py")
     (synopsis "Python parser for the CommonMark Markdown spec")
     (description
