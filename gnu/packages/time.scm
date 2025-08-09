@@ -636,19 +636,30 @@ value (in fractional seconds) of a clock which never goes backwards.")
 (define-public python-pyrfc3339
   (package
     (name "python-pyrfc3339")
-    (version "1.1")
+    (version "2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyRFC3339" version))
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/kurtraschke/pyRFC3339")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "06jv7ar7lpvvk0dixzwdr3wgm0g1lipxs429s2z7knwwa7hwpf41"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pytz))
+        (base32 "1q7kz8i8kp1hk40zswgm7dcyyd2xmjpgn1jdm6rlpv3ddjdxdg48"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR"
+                      (search-input-directory inputs "share/zoneinfo")))))))
     (native-inputs
-     (list python-nose))
+     (list python-pytest
+           python-setuptools
+           tzdata-for-tests))
     (home-page "https://github.com/kurtraschke/pyRFC3339")
     (synopsis "Python timestamp library")
     (description "Python library for generating and parsing RFC 3339-compliant
