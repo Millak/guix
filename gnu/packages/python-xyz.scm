@@ -5574,7 +5574,7 @@ downloaded, or download a strip for a particular date or index, if possible.")
 (define-public python-et-xmlfile
   (package
     (name "python-et-xmlfile")
-    (version "1.1")
+    (version "2.0.0")
     (source
      (origin
        ;; Use a checkout because the PyPI archive does not contain tests.
@@ -5584,17 +5584,12 @@ downloaded, or download a strip for a particular date or index, if possible.")
              (changeset version)))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "09r8rjc5bhkqrm5c4n9jrlvad8vrvbyswl9g0wrc1qc7nzh9mpw7"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
+        (base32 "03pmmg6k2ajd83zhki8f0c1ndi7pq23bj9hm6f8hhd07maqksf5w"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-lxml))   ;used for the tests
+     (list python-pytest
+           python-lxml
+           python-setuptools))
     (home-page "https://bitbucket.org/openpyxl/et_xmlfile")
     (synopsis "Low memory implementation of @code{lxml.xmlfile}")
     (description "This Python library is based upon the @code{xmlfile} module
