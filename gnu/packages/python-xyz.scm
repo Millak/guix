@@ -24085,28 +24085,28 @@ environment variables in YAML files.")
 (define-public python-prompt-toolkit
   (package
     (name "python-prompt-toolkit")
-    (version "3.0.43")
+    (version "3.0.51")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "prompt_toolkit" version))
        (sha256
-        (base32 "0zgzn02ffc9njpz0pfsin30nwmm3754cig20l1jvqv0h4spvf9rm"))))
-    (build-system python-build-system)
+        (base32 "1valgcf324yy0sf7rrbm2ivc4a65n8gvnj0vdz491z177cp1c6lk"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; HOME is needed for the test
-               ;; "test_pathcompleter_can_expanduser".
-               (setenv "HOME" "/tmp")
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; HOME is needed for the test
+              ;; "test_pathcompleter_can_expanduser".
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-wcwidth))
-    (native-inputs
-     (list python-pytest))
     (home-page "https://github.com/prompt-toolkit/python-prompt-toolkit")
     (synopsis "Library for building command line interfaces in Python")
     (description
