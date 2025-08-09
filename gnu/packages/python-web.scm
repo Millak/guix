@@ -4309,17 +4309,19 @@ your Web app.")
 (define-public python-webob
   (package
     (name "python-webob")
-    (version "1.8.6")
+    (version "1.8.9")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "WebOb" version))
+       (uri (pypi-uri "webob" version))
        (sha256
         (base32
-          "026i3z99nr3px75isa9mbnky5i7rffiv4d124h5kxfjjsxz92fma"))))
-    (build-system python-build-system)
+          "12b5sl10yzzzz3g11kij3rdzk9y6583ywggc6h9nsxmnxpi7hq5d"))))
+    (build-system pyproject-build-system)
+    ;; tests: 2380 passed, 9 skipped, 1 xfailed, 12 warnings
     (native-inputs
-      (list python-nose))
+      (list python-pytest
+            python-setuptools))
     (home-page "https://webob.org/")
     (synopsis "WSGI request and response object")
     (description
