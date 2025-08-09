@@ -15357,6 +15357,15 @@ dissecting a document and extracting what you need.  It automatically
 converts incoming documents to Unicode and outgoing documents to UTF-8.")
     (license license:expat)))
 
+(define-public python-beautifulsoup4-bootstrap
+  (hidden-package
+   (package/inherit python-beautifulsoup4
+     (arguments
+      (list #:tests? #f))
+     (native-inputs
+      (list python-hatchling))
+     (propagated-inputs '()))))
+
 (define-public python-soupsieve
   (package
     (name "python-soupsieve")
