@@ -70,6 +70,28 @@
     ((? target-avr?)         "avr")
     (_                       (car (string-split target #\-)))))
 
+(define* (make-toolchain-alist target)
+  `((CMAKE_SYSTEM_NAME . ,(cmake-system-name-for-target target))
+    (CMAKE_SYSTEM_PROCESSOR . ,(cmake-system-processor-for-target target))
+    (CMAKE_C_COMPILER . ,(cc-for-target target))
+    (CMAKE_CXX_COMPILER . ,(cxx-for-target target))
+    (PKG_CONFIG_EXECUTABLE . ,(pkg-config-for-target target))))
+
+(define (make-cmake-toolchain target)
+  (computed-file (string-append target "-toolchain.cmake")
+                 #~(begin
+                     (use-modules (ice-9 match))
+                     (call-with-output-file #$output
+                       (lambda (port)
+                         (define (cmake-set-value key value)
+                           (format port "set(~a ~s)~%" key value))
+                         (for-each
+                          (match-lambda
+                            ((key . value)
+                             (cmake-set-value key value)))
+                          '#$(make-toolchain-alist target)))))))
+
+
 (define %cmake-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build cmake-build-system)
@@ -252,6 +274,9 @@ provides a 'CMakeLists.txt' file as its build system."
   "Cross-build NAME using CMAKE for TARGET, where TARGET is a GNU triplet and
 with INPUTS.  This assumes that SOURCE provides a 'CMakeLists.txt' file as its
 build system."
+  (define toolchain
+    (make-cmake-toolchain target))
+
   (define builder
     (with-imported-modules imported-modules
       #~(begin
@@ -283,12 +308,8 @@ build system."
                                                  search-path-specification->sexp
                                                  native-search-paths)
                        #:phases #$phases
-                       #:configure-flags `(#$(string-append "-DCMAKE_C_COMPILER="
-                                                            (cc-for-target target))
-                                           #$(string-append "-DCMAKE_CXX_COMPILER="
-                                                            (cxx-for-target target))
-                                           #$(string-append "-DCMAKE_SYSTEM_NAME="
-                                                            (cmake-system-name-for-target target))
+                       #:configure-flags `(,(string-append "-DCMAKE_TOOLCHAIN_FILE="
+                                                           #+toolchain)
                                            ,@#$(if (pair? configure-flags)
                                                    (sexp->gexp configure-flags)
                                                    configure-flags))
