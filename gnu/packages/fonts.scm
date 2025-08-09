@@ -2571,7 +2571,7 @@ programming.  Iosevka is completely generated from its source code.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bb7js8lxa4f5kcjjvn587m4hd92qkydr5dbcjmimq2r8mimn75j"))))
+        (base32 "05rafzzj6am41wn0mlgkw9s6s4wj5vxsds9hqz4wa4cnz45yw5nl"))))
     (build-system font-build-system)
     (home-page "https://github.com/protesilaos/aporetic")
     (synopsis "Customised build of the Iosevka typeface")
