@@ -402,20 +402,20 @@ implementation.
 (define-public python-cmarkgfm
   (package
     (name "python-cmarkgfm")
-    (version "2022.10.27")
+    (version "2024.11.20")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cmarkgfm" version))
               (sha256
                (base32
-                "16875bazqd7p7qiky343w0fzasqziyvf72nipyh1r47a2rvsrnck"))
+                "0siwyyfgp7v5vw6xd4zy2cph6dp9f3c5xvyd2draba3m37v1rl2x"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   ;; Delete bundled cmark and generated headers.
                   (for-each delete-file-recursively
                             '("third_party/cmark" "generated"))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -435,11 +435,8 @@ implementation.
                                  (install-file file "generated/unix/"))
                                (cons version.h
                                      (find-files (dirname version.h)
-                                                 "_export\\.h$"))))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests? (invoke "pytest" "-vv" "tests")))))))
-    (native-inputs (list python-pytest))
+                                                 "_export\\.h$")))))))))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list cmark-gfm))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/theacodes/cmarkgfm")
