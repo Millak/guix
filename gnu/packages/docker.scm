@@ -11,6 +11,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +103,33 @@
     (description "Docker-Py is a Python client for the Docker container
 management tool.")
     (license license:asl2.0)))
+
+;; Needed for old v1 of docker-compose; remove once Docker is updated to a
+;; more recent version which has the command "docker compose" built-in.
+(define-public python-docker-5
+  (package
+    (inherit python-docker)
+    (name "python-docker")
+    (version "5.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/docker-py")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m5ifgxdhcf7yci0ncgnxjas879sksrf3im0fahs573g268farz9"))))
+    (build-system python-build-system)
+    ;; Integration tests need a running Docker daemon.
+    (arguments (list #:tests? #f))
+    (native-inputs '())
+    (inputs (modify-inputs (package-inputs python-docker)
+              (prepend python-six)
+              (delete "python-urllib3")))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-docker)
+       (prepend python-docker-pycreds python-urllib3-1.26)))))
 
 (define-public python-dockerpty
   (package
