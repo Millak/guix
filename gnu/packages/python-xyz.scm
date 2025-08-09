@@ -19197,29 +19197,17 @@ systems, as a command line tool, and as a Python library.")
 (define-public python-entrypoints
   (package
     (name "python-entrypoints")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "entrypoints" version))
        (sha256
-        (base32
-         "0lc4si3xb7hza424414rdqdc3vng3kcrph8jbvjqb32spqddf3f7"))))
-    (build-system python-build-system)
-    ;; The package does not come with a setup.py file, so we have to generate
-    ;; one ourselves.
-    (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-setup.py
-           (lambda _
-             (call-with-output-file "setup.py"
-               (lambda (port)
-                 (format port "\
-from setuptools import setup
-setup(name='entrypoints', version='~a', py_modules=['entrypoints'])
-" ,version))))))))
+        (base32 "1m5crkagmbvlgdwqv7nan64pbcjvy0c6idb7rpmik2i1m7dfs1mp"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
     (home-page "https://github.com/takluyver/entrypoints")
     (synopsis "Discover and load entry points from installed Python packages")
     (description "Entry points are a way for Python packages to advertise
