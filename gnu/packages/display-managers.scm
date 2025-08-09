@@ -196,7 +196,8 @@ background with abstract shapes.  Inspired by solarized-sddm-theme.")
       (license license:gpl3+))))
 
 (define-public dexy-color-sddm-theme
-  (let ((commit "7929384dbb9305e6da53a8942bca3d75593fd99f")
+  ;; No upstream releases or tags
+  (let ((commit "4785d3b80d725cf55cecd7b27181f77151c4e3e2")
         (revision "0"))
     (package
       (name "dexy-color-sddm-theme")
@@ -209,7 +210,7 @@ background with abstract shapes.  Inspired by solarized-sddm-theme.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1dcp3pvs6x63740sz852yr19fjrdnh81dbrq7rssgm6ssi1rqjig"))))
+                  "14fzc4kq50ii1qmmvnp9gxig504zfx1rsfsp0wq9bay7d72j282c"))))
       (build-system copy-build-system)
       (arguments
        `(#:install-plan '(("Dexy-Color-SDDM"
@@ -217,8 +218,8 @@ background with abstract shapes.  Inspired by solarized-sddm-theme.")
       (home-page "https://github.com/L4ki/Dexy-Plasma-Themes")
       (synopsis "Dexy Color theme for SDDM")
       (description
-       "This package provides a minimalistic and modern SDDM theme with blured
-background.")
+       "This package provides a minimalistic and modern SDDM theme with a
+blurred background.")
       (license license:gpl3+))))
 
 (define-public guix-simplyblack-sddm-theme
