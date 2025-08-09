@@ -683,7 +683,7 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((tag "b6056"))
+  (let ((tag "b6101"))
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -695,7 +695,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "1y9blrd7c8snazjmjkzj0148v328pigncvf1l9g1ih735b67zpd0"))))
+          (base32 "0yz97dk19pxqck9l83wvlwzf1i78wrc55hrk9ynraqybdz7yqjdc"))))
       (build-system cmake-build-system)
       (arguments
        (list
