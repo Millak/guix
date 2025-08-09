@@ -8716,8 +8716,12 @@ Microsoft Word (.docx) documents.")
        (sha256
         (base32 "0xzz1aw2smy8hdszrq8yhnklx6w1r1mf55061kalw3iq35gafa84"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "repoze")))
     (native-inputs
-     (list python-coverage python-nose python-setuptools python-wheel))
+     (list python-setuptools))
     (home-page "https://www.repoze.org")
     (synopsis "Tiny LRU cache implementation and decorator")
     (description
