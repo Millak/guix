@@ -1493,7 +1493,7 @@ It offers the following features:
     (arguments
       `(#:configure-flags
         ;; Disable added pointer type checks (quesoglc no longer maintained)
-        '("CFLAGS=-Wnoerror=incompatible-pointer-types")))
+        '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")))
     (native-inputs (list pkg-config))
     (inputs (list fontconfig freeglut fribidi glew))
     (home-page "https://quesoglc.sourceforge.net")
