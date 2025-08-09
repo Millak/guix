@@ -2637,26 +2637,6 @@ and commands.  It contains functions to check things on the file system, and
 tools for mocking system commands and recording calls to those.")
     (license license:expat)))
 
-;;; The software provided by this package was integrated into pytest 2.8.
-(define-public python-pytest-cache
-  (package
-    (name "python-pytest-cache")
-    (version "1.0")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "pytest-cache" version))
-             (sha256
-              (base32
-               "1a873fihw4rhshc722j4h6j7g3nj7xpgsna9hhg3zn6ksknnhx5y"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-apipkg python-execnet python-py python-pytest))
-    (synopsis "Py.test plugin with mechanisms for caching across test runs")
-    (description "The pytest-cache plugin provides tools to rerun failures from
-the last py.test invocation.")
-    (home-page "https://bitbucket.org/hpk42/pytest-cache/")
-    (license license:expat)))
-
 (define-public python-pytest-localserver
   (package
     (name "python-pytest-localserver")
