@@ -5071,36 +5071,17 @@ is designed to have a low barrier to entry.")
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
-    (version "0.4.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sqlparse" version))
-              (sha256
-               (base32
-                "0s3jyllg0ka0n7pgqfng1hzvh39li853dr40qcp4s4dv8r481jk9"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test")))
-         ;; XXX: The regular wrap phase ends up storing pytest as a runtime
-         ;; dependency.  See <https://bugs.gnu.org/25235>.
-         (replace 'wrap
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (python (assoc-ref (or native-inputs inputs) "python"))
-                    (sitedir (string-append "/lib/python"
-                                            (python-version python)
-                                            "/site-packages")))
-               (wrap-program (string-append out "/bin/sqlformat")
-                 `("PYTHONPATH" ":" prefix
-                   ,(map (lambda (output)
-                           (string-append output sitedir))
-                         (list python out))))))))))
-    (native-inputs (list python-pytest))
-    (inputs (list bash-minimal))
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sqlparse" version))
+       (sha256
+        (base32 "0wljxh3lh2zndy7amziwd3572cwwbmzzq6yyvgn1c2vayn3pgxh9"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
     (home-page "https://github.com/andialbrecht/sqlparse")
     (synopsis "Non-validating SQL parser")
     (description "Sqlparse is a non-validating SQL parser for Python.  It
