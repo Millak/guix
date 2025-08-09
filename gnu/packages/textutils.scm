@@ -1922,22 +1922,21 @@ Expressions, and being faster to type than grep.")
 (define-public python-panflute
   (package
     (name "python-panflute")
-    (version "2.3.0")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "panflute" version))
               (sha256
                (base32
-                "1jk5b2sp1h4drkjrg2ks77d0ca6j043n2myvacm77nfc93y9vzff"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-click python-pyyaml))
-    (native-inputs (list python-configparser
-                         python-coverage
-                         python-flake8
-                         python-pandocfilters
-                         python-pytest
-                         python-pytest-cov
-                         python-requests))
+                "07wg5md93jcdkpiqljwr3p1xzvm6nf7vbiay0bp84fgg6hmd06sz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;require pandoc to run tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-click
+           python-pyyaml))
     (home-page "http://scorreia.com/software/panflute/")
     (synopsis "Pythonic Pandoc filters")
     (description
