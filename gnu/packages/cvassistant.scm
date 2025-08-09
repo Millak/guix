@@ -49,7 +49,7 @@
          (add-after 'unpack 'fix-quazip
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((quazip
-                    (search-input-directory inputs "/include/QuaZip-Qt5-1.4")))
+                    (search-input-directory inputs "/include/QuaZip-Qt5-1.5")))
 
                (substitute* "CVAssistant.pro"
                  (("-lquazip-qt5")
