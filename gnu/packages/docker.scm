@@ -139,7 +139,16 @@ client.")
          "1dq9kfak61xx7chjrzmkvbw9mvj9008k7g8q7mwi4x133p9dk32c"))))
     (build-system python-build-system)
     ;; TODO: Tests require running Docker daemon.
-    (arguments '(#:tests? #f))
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pyyaml
+            (lambda _
+              (substitute* "setup.py"
+                ((", < 6")
+                 "")))))))
     (inputs
      (list python-cached-property
            python-distro
@@ -148,7 +157,7 @@ client.")
            python-docopt
            python-dotenv
            python-jsonschema-3
-           python-pyyaml-5
+           python-pyyaml
            python-requests
            python-six
            python-texttable
