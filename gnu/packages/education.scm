@@ -536,7 +536,7 @@ specialized device.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "OpenBoard.pro"
                 (("/usr/include/quazip5")
-                 (search-input-directory inputs "/include/QuaZip-Qt5-1.4/quazip"))
+                 (search-input-directory inputs "/include/QuaZip-Qt5-1.5/quazip"))
                 (("-lquazip5")
                  "-lquazip1-qt5")
                 (("/usr/include/poppler")
