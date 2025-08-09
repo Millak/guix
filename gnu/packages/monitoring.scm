@@ -470,19 +470,31 @@ and persisting them to disk using the Whisper time-series library.")
 (define-public python-prometheus-client
   (package
     (name "python-prometheus-client")
-    (version "0.20.0")
+    (version "0.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "prometheus_client" version))
        (sha256
-        (base32 "12dvlh4k6in87q47f0zqh8nrnnfs0pwrs2xynbf34yhl1g82jxi8"))))
-    (build-system python-build-system)
+        (base32 "0a0ds9svcfcc8bspikyfz9w46k8a9qsmk9dwc3mj3kw3wwqi63qr"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(;; No included tests.
-       #:tests? #f))
-    (home-page
-     "https://github.com/prometheus/client_python")
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; FileNotFoundError: [Errno 2] No such file or directory
+                    (list "not test_push_with_tls_auth_handler"
+                          ;;  AssertionError: 17.21 != None
+                          "test_namespace"
+                          ;; AssertionError: 17.21 != None
+                          "test_working"
+                          ;; AssertionError: 0.0 != None
+                          "test_working_584")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/prometheus/client_python")
     (synopsis "Python client for the Prometheus monitoring system")
     (description
      "The @code{prometheus_client} package supports exposing metrics from
