@@ -2860,14 +2860,14 @@ The API also works with MaxMind’s free GeoLite2 databases.")
 (define-public routino
   (package
     (name "routino")
-    (version "3.4.1")
+    (version "3.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.routino.org/download/routino-"
                                   version ".tgz"))
               (sha256
                (base32
-                "0aw5idqz7nv458llgwp5wcgikf34xcblpq46mq7msxfib0m8vahb"))))
+                "0m0yq665sdsiikbl0win564d841wb87prsfni8wajz6969yhdfjf"))))
     (build-system gnu-build-system)
     (native-inputs (list perl))
     (inputs (list bzip2 xz zlib))
