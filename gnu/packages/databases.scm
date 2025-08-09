@@ -5092,15 +5092,15 @@ provides support for parsing, splitting and formatting SQL statements.")
 (define-public python-sql
   (package
     (name "python-sql")
-    (version "1.5.2")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python_sql" version))
        (sha256
-        (base32 "0dnd0vai9z1fjkppv2xv2f4vlwwz0dqa137f39mrbjw744vm4pvk"))))
+        (base32 "0v637qc2g8w155k7crlg70w4bfxznn28c94prlxcax5dx0ja2d2v"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://python-sql.tryton.org/")
     (synopsis "Library to write SQL queries in a pythonic way")
     (description "@code{python-sql} is a library to write SQL queries, that
