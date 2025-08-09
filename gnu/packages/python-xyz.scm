@@ -11217,20 +11217,20 @@ transcendental functions).")
 (define-public python-cycler
   (package
     (name "python-cycler")
-    (version "0.10.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cycler" version))
-              (sha256
-               (base32
-                "1n69n23fak1gjxlrbhqisi2b9pv3ckrfj98llx3p53953082syyd"))))
-    (build-system python-build-system)
-    (arguments
-     ;; XXX: The current version requires 'coveralls' which we don't have.
-     ;; Enable this for the next release which uses 'python-pytest'.
-     '(#:tests? #f))
-    (propagated-inputs
-     (list python-six))
+    (version "0.12.1")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/matplotlib/cycler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "061b8vxd2kp016pnwik9jg6zqng8khzmg0p298wrz65z50yh1gg4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://matplotlib.org/cycler/")
     (synopsis "Composable keyword argument iterator")
     (description
