@@ -1987,29 +1987,27 @@ pytest.")
 (define-public python-pytest-console-scripts
   (package
     (name "python-pytest-console-scripts")
-    (version "1.2.1")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-console-scripts" version))
        (sha256
-        (base32
-         "1qsw3i2h3psyi5avwf14panx8wxqfik2z7294dy37w8ha415iwn7"))))
-    (build-system python-build-system)
+        (base32 "15d8yi6g9wd7g6gkzhp0m3fpnbvnglfkhi4yxc1a5by09kc6x0js"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--verbose"
-                       ;; This one test fails because of PATH assumptions
-                       "-k" "not test_elsewhere_in_the_path")))))))
-    (propagated-inputs
-     (list python-mock python-pytest))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; FileNotFoundError: [Errno 2] No such file or directory:
+                    ;; 'script.py'
+                    (list "not test_elsewhere_in_the_path"
+                          "test_shell"
+                          "test_run_path")
+                    " and not "))))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-pytest-bootstrap
+           python-setuptools))
     (home-page "https://github.com/kvas-it/pytest-console-scripts")
     (synopsis "Pytest plugin for testing console scripts")
     (description
