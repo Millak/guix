@@ -4542,9 +4542,11 @@ contain over 620 classes.")
        (sha256
         (base32
          "0kqbz61fcbv9indv927cic90x0kbfzi2h1hcvjgsyf92pp6ssbb8"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ;; No test code.
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://www.riverbankcomputing.com/software/sip/")
     (synopsis "Sip module support for PyQt5")
     (description "Sip module support for PyQt5")
