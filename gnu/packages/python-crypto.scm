@@ -1478,9 +1478,11 @@ and Backlog for a list of what is and is not currently supported.")
         (uri (pypi-uri "SecretStorage" version))
         (sha256
          (base32 "0xxxxr77sgmjm1rqzdd1rkan9xg0qmv8awc1pb9adv39ycz560r4"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f)) ; Tests require a running dbus service.
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-cryptography python-jeepney))
     (home-page "https://github.com/mitya57/secretstorage")
