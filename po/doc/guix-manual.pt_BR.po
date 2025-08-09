@@ -393,8 +393,8 @@ msgstr "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 
 #. type: itemize
 #: guix-git/doc/contributing.texi:88
-msgid "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.5.0 or later;"
-msgstr "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, versão 0.5.0 ou posterior;"
+msgid "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0 or later;"
+msgstr "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, versão 0.10.0 ou posterior;"
 
 #. type: item
 #: guix-git/doc/contributing.texi:88

@@ -83,7 +83,7 @@ version 0.1.0 or later;
 @item @uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib};
 @item @uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};
 @item
-@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.5.0
+@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0
 or later;
 @item @uref{https://git-scm.com, Git} (yes, both!);
 @item @uref{https://github.com/aconchillo/guile-json, Guile-JSON}
