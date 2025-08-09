@@ -790,10 +790,9 @@ parentdir_prefix = dask-
      (list python-importlib-metadata
            python-pytest
            python-pytest-rerunfailures
-           python-pytest-runner
            python-pytest-xdist
            python-versioneer
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/dask/dask/")
     (synopsis "Parallel computing with task scheduling")
     (description
