@@ -19064,7 +19064,7 @@ significantly better performance.")
 (define-public python-fastjsonschema
   (package
     (name "python-fastjsonschema")
-    (version "2.20.0")
+    (version "2.21.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -19073,17 +19073,14 @@ significantly better performance.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aqj7hf1fgana9hh9la475wiyivcr46fra1bvigp00805g14k599"))))
+        (base32 "1j7dc8hlvrlhzkiv0vqzd6shhjaf14g9v3zlfn7x17j04c1g3iz7"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-colorama
-           python-json-spec
+     (list python-json-spec
            python-jsonschema
            python-pytest
            python-pytest-benchmark
-           python-pytest-cache
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/horejsek/python-fastjsonschema")
     (synopsis "Fast Python implementation of JSON schema")
     (description
