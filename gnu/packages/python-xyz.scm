@@ -5701,18 +5701,19 @@ server.")
        ;; PyPI releases.
        (method hg-fetch)
        (uri (hg-reference
-             (url "https://foss.heptapod.net/openpyxl/openpyxl")
-             (changeset version)))
+              (url "https://foss.heptapod.net/openpyxl/openpyxl")
+              (changeset version)))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32 "17z6rrvv3q1axy9r13c2hln2pazfn9n5bhkzrbjcjakgbfjl6mss"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-lxml
-                         python-pillow
-                         python-pytest
-                         python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-et-xmlfile python-jdcal))
+    (native-inputs
+     (list python-lxml
+           python-pillow
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-et-xmlfile))
     (home-page "https://openpyxl.readthedocs.io")
     (synopsis "Python library to read/write Excel 2010 XLSX/XLSM files")
     (description
