@@ -52511,6 +52511,21 @@ providing a @file{~/.config/sway/config} file,
 @item
 adding Sway-related packages to your profile.
 @end itemize
+
+It is possible to extend this service (@pxref{Service Composition}).
+The resulting configuration file contains the concatenation of
+keybindings, modes, @i{etc.}@: found in all extensions.
+
+@quotation Note
+At the moment, only one bar configuration is allowed.  If more are
+found, an error will be raised.
+@end quotation
+@end defvar
+
+@defvar %empty-sway-configuration
+The variable @code{%empty-sway-configuration} contains an empty
+@code{sway-configuration} record.  This value can help users write
+simple service extensions.
 @end defvar
 
 @deftp {Data Type} sway-configuration
