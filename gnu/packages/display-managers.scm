@@ -364,6 +364,32 @@ probably cause you diabetes just from looking at it.  Sweeten the login
 experience for your users, your family and yourself")
     (license license:gpl3+)))
 
+(define-public where-is-my-sddm-theme
+    (package
+      (name "where-is-my-sddm-theme")
+      (version "1.12.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/stepanzubkov/where-is-my-sddm-theme")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                   "0a30rlknxz855qsrc3ksyic4cj5axm6pwk5nya3nlbqjrrghy7gr"))))
+      (build-system copy-build-system)
+      (arguments
+       `(#:install-plan '(("where_is_my_sddm_theme" "/share/sddm/themes/")
+                          ("where_is_my_sddm_theme_qt5" "/share/sddm/themes/"))))
+      (home-page "https://github.com/stepanzubkov/where-is-my-sddm-theme")
+      (synopsis "Minimal SDDM theme, simply a black screen and a password")
+      (description
+       "This package is a @emph{minimalist and highly customizable} SDDM theme.
+It's only a black screen and a password input field.  Nothing extra, right?
+Even when you enter the wrong password it will only show a red border around
+the screen.")
+      (license license:gpl3+)))
+
 (define-public lightdm
   (package
     (name "lightdm")
