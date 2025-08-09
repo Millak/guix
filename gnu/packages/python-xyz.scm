@@ -19732,32 +19732,23 @@ library provides codecs are supported.")
     (version "0.6.2")
     (source
      (origin
-       (method git-fetch)
-       ;; The release on PyPI does not include tests.
+       (method git-fetch)       ;no tests in PyPI archive
        (uri (git-reference
               (url "https://github.com/docopt/docopt")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0aad9gbswnnhssin2q0m5lmpm0ahyf80ahs2zjigbn5y7fvljnd0"))
+        (base32 "0aad9gbswnnhssin2q0m5lmpm0ahyf80ahs2zjigbn5y7fvljnd0"))
        (patches (search-patches "python-docopt-pytest6-compat.patch"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "py.test")))))))
+     (list python-pytest python-setuptools))
     (home-page "http://docopt.org")
     (synopsis "Command-line interface description language for Python")
-    (description "This library allows the user to define a command-line
-interface from a program's help message rather than specifying it
-programmatically with command-line parsers like @code{getopt} and
-@code{argparse}.")
+    (description
+     "This library allows the user to define a command-line interface from a
+program's help message rather than specifying it programmatically with
+command-line parsers like @code{getopt} and @code{argparse}.")
     (license license:expat)))
 
 (define-public python-pythonanywhere
