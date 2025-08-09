@@ -33881,6 +33881,9 @@ This library aims to provide developers with more options.")
 (define-public ecl-zsort
   (sbcl-package->ecl-package sbcl-zsort))
 
+(define-public clasp-zsort
+  (sbcl-package->clasp-package sbcl-zsort))
+
 (define-public sbcl-zstd
   (let ((commit "134f058eee11512cf772a8d5b64364acf56a10b8")
         (revision "1"))
