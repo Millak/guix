@@ -2553,7 +2553,7 @@ download times, and other distribution and storage costs.")
 (define-public quazip
   (package
     (name "quazip")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -2562,7 +2562,7 @@ download times, and other distribution and storage costs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jsw4xm5wyaqcj1pma5zzd8f5xbgd5lcjh18ah3kg36xz5i69yi4"))))
+        (base32 "0ni1656g2xf0cspwjp645hhd2p4iaqki4z26xhkxz04l5nzsdrh0"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ;no test
