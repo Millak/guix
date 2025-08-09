@@ -11754,22 +11754,19 @@ the results.")
 (define-public python-wurlitzer
   (package
     (name "python-wurlitzer")
-    (version "2.0.1")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wurlitzer" version))
        (sha256
-        (base32 "0hvmbc41kdwrjns8z1s4a59a4azdvzb8q3vs7nn1li4qm4l0g3yh"))))
-    (build-system python-build-system)
+        (base32 "1ncvsc6b0bscvj5dn4iyyw42sf7ssgdqkzxr0bc8f97hp5519fdz"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv" "test.py"))))))
+     (list #:test-flags #~(list "test.py")))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/minrk/wurlitzer")
     (synopsis "Capture C-level output in context managers")
     (description
