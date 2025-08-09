@@ -646,12 +646,6 @@ debian/copyright for more information.")))))
     (native-inputs (list pkg-config))
     (arguments
      (list
-      #:configure-flags
-      #~(list
-         (string-append "-DPKG_CONFIG_EXECUTABLE="
-                        (search-input-file
-                         %build-inputs (string-append
-                                        "/bin/" #$(pkg-config-for-target)))))
       #:tests? #f ;Tests are "for development only".
       #:phases #~(modify-phases %standard-phases
                    ;; We want to provide good defaults. Here apt-cacher-ng is built

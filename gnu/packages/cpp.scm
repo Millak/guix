@@ -1050,17 +1050,6 @@ utilities used across the hypr* ecosystem.")
                (base32
                 "06wiizy73f0x6zj1ar878gm1w9zam1gmgjw0ybixj3qag0gxqv34"))))
     (build-system cmake-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-cross-compilation
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("find_package.PkgConfig" all)
-                 (string-append
-                  "set(PKG_CONFIG_EXECUTABLE " #$(pkg-config-for-target) ")\n"
-                  all))))))))
     (native-inputs (list gcc-15 pkg-config))
     (inputs (list hyprutils))
     (home-page "https://wiki.hypr.land/Hypr-Ecosystem/hyprlang/")
@@ -1084,18 +1073,7 @@ language used in Hyprland.")
                (base32
                 "1ymiqzncppdik8lw3ad7xaqig6c7bjcy7crcwbq3rjfk2hrc8rmc"))))
     (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f ; No tests in Release build type
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-cross-compilation
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("find_package.PkgConfig" all)
-                 (string-append
-                  "set(PKG_CONFIG_EXECUTABLE " #$(pkg-config-for-target) ")\n"
-                  all))))))))
+    (arguments (list #:tests? #f)) ; No tests in Release build type
     (native-inputs (list gcc-15 pkg-config))
     (inputs (list pixman))
     (home-page "https://github.com/hyprwm/hyprutils")

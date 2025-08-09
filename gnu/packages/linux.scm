@@ -8512,17 +8512,10 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
        ;; Upstream uses the "ninja" build system and encourage distros
        ;; to do the same for consistency.
        #:generator "Ninja"
-       #:configure-flags (list ,@(if (%current-target-system)
-                                     `((string-append
-                                        "-DPKG_CONFIG_EXECUTABLE="
-                                        (search-input-file
-                                         %build-inputs
-                                         (string-append "/bin/"
-                                                        ,(pkg-config-for-target)))))
-                                     '())
-                               (string-append "-DRST2MAN_EXECUTABLE="
-                                              (search-input-file
-                                               %build-inputs "/bin/rst2man.py")))))
+       #:configure-flags
+       (list (string-append "-DRST2MAN_EXECUTABLE="
+                            (search-input-file
+                             %build-inputs "/bin/rst2man.py")))))
     (native-inputs
      (list pkg-config python-wrapper python-docutils-0.19)) ;for 'rst2man'
     (inputs

@@ -224,10 +224,6 @@ used as a drop-in substitute for @code{libfec}.")
       #:tests? #f
       #:configure-flags
       #~(list
-         (string-append "-DPKG_CONFIG_EXECUTABLE="
-                        (search-input-file
-                         %build-inputs
-                         (string-append "/bin/" #$(pkg-config-for-target))))
          (string-append "-DUDEV_RULES_INSTALL_DIR="
                         #$output "/lib/udev/rules.d")
          "-DOSX_PACKAGE=off"

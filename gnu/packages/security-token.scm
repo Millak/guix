@@ -1131,12 +1131,7 @@ phone and a running pcscd service are required.")
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append
-               "-DPKG_CONFIG_EXECUTABLE="
-               (search-input-file %build-inputs
-                                  (string-append
-                                   "/bin/" #$(pkg-config-for-target))))
-              (string-append "-DUDEV_RULES_DIR=" #$output "/lib/udev/rules.d"))
+      #~(list (string-append "-DUDEV_RULES_DIR=" #$output "/lib/udev/rules.d"))
       ;; regress tests enabled only for debug builds
       #:tests? #f))
     (synopsis "Library functionality and command-line tools for FIDO devices")

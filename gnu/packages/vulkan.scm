@@ -403,12 +403,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
                                        (search-input-directory
                                         %build-inputs "include/vulkan"))))
               #$@(if (%current-target-system)
-                     #~("-DBUILD_TESTS=OFF" "-DUSE_GAS=OFF"
-                        (string-append
-                         "-DPKG_CONFIG_EXECUTABLE="
-                         (search-input-file
-                          %build-inputs
-                          (string-append "bin/" #$(pkg-config-for-target)))))
+                     #~("-DBUILD_TESTS=OFF" "-DUSE_GAS=OFF")
                      #~("-DBUILD_TESTS=ON")))
       #:phases
       #~(modify-phases %standard-phases

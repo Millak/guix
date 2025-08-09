@@ -22603,11 +22603,7 @@ sequences to accelerate the alignment process.")
       #~(list "-DZIG=OFF"
               "-DTABIXPP_LOCAL=OFF"
               "-DTABIX_FOUND=ON"
-              "-DWFA_GITMODULE=OFF"
-              (string-append "-DPKG_CONFIG_EXECUTABLE="
-                             (search-input-file
-                              %build-inputs (string-append
-                                             "/bin/" #$(pkg-config-for-target)))))
+              "-DWFA_GITMODULE=OFF")
       #:tests? #f                       ; no tests
       #:phases
       #~(modify-phases %standard-phases
