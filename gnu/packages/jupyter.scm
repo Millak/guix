@@ -549,7 +549,7 @@ alternative Python kernel for Jupyter.")
 (define-public python-jupyterlab-pygments
   (package
     (name "python-jupyterlab-pygments")
-    (version "0.1.2")
+    (version "0.1.2") ;newer versions requires Node.js packages
     (source
      (origin
        (method url-fetch)
@@ -557,8 +557,10 @@ alternative Python kernel for Jupyter.")
        (sha256
         (base32
          "0ij14mmnc39nmf84i0av6j9glazjic7wzv1qyhr0j5966s3s1kfg"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #false)) ; there are no tests
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-pygments))
     (home-page "https://jupyter.org")
