@@ -2553,6 +2553,8 @@ download times, and other distribution and storage costs.")
 (define-public quazip
   (package
     (name "quazip")
+    ;; When updating, change also the version in quazip-qt5,
+    ;; which shares the same source.
     (version "1.5")
     (source
      (origin
@@ -2590,7 +2592,7 @@ reading from and writing to ZIP archives.")
   (package
     (inherit quazip)
     (name "quazip-qt5")
-    (version "1.4")
+    (version "1.5")
     (inputs (list qtbase-5 zlib))))
 
 (define-public zchunk
