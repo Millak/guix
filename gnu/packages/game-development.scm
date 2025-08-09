@@ -1490,6 +1490,10 @@ It offers the following features:
                (base32
                 "08ddhywdy2qg17m592ng3yr0p1ih96irg8wg729g75hsxxq9ipks"))))
     (build-system gnu-build-system)
+    (arguments
+      `(#:configure-flags
+        ;; Disable added pointer type checks (quesoglc no longer maintained)
+        '("CFLAGS=-Wnoerror=incompatible-pointer-types")))
     (native-inputs (list pkg-config))
     (inputs (list fontconfig freeglut fribidi glew))
     (home-page "https://quesoglc.sourceforge.net")
