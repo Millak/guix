@@ -1,16 +1,17 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2022 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -499,6 +500,34 @@ Messaging Protocol}.")
      "This package provides a pytest plugin for testing Jupyter libraries and
 extensions.")
     (license license:bsd-4)))
+
+(define-public python-terminado
+  (package
+    (name "python-terminado")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "terminado" version))
+       (sha256
+        (base32
+         "0bpxag3n0148vsgmi6wh3ynmprykazzqys0lfxgpdr2xp32g42fy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-W" "default")))    ;taken from pyproject.toml
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-timeout))
+    (propagated-inputs
+     (list python-ptyprocess
+           python-tornado-6))
+    (home-page "https://github.com/jupyter/terminado")
+    (synopsis "Terminals served to term.js using Tornado websockets")
+    (description "This package provides a Tornado websocket backend for the
+term.js Javascript terminal emulator library.")
+    (license license:bsd-2)))
 
 (define-public xeus
   (package

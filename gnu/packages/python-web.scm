@@ -4287,34 +4287,6 @@ connection to each user.")
 web framework, either via the basic or digest authentication schemes.")
     (license license:asl2.0)))
 
-(define-public python-terminado
-  (package
-    (name "python-terminado")
-    (version "0.18.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "terminado" version))
-       (sha256
-        (base32
-         "0bpxag3n0148vsgmi6wh3ynmprykazzqys0lfxgpdr2xp32g42fy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "-W" "default")))    ;taken from pyproject.toml
-    (native-inputs
-     (list python-hatchling
-           python-pytest
-           python-pytest-timeout))
-    (propagated-inputs
-     (list python-ptyprocess
-           python-tornado-6))
-    (home-page "https://github.com/jupyter/terminado")
-    (synopsis "Terminals served to term.js using Tornado websockets")
-    (description "This package provides a Tornado websocket backend for the
-term.js Javascript terminal emulator library.")
-    (license license:bsd-2)))
-
 (define-public python-wsgi-intercept
   (package
     (name "python-wsgi-intercept")
