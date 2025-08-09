@@ -414,34 +414,34 @@ a task.")
 (define-public blanket
   (package
     (name "blanket")
-    (version "0.5.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rafaelmardojai/blanket/")
-             (commit version)))
+              (url "https://github.com/rafaelmardojai/blanket/")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00i821zqfbigxmc709322r16z75qsw4rg23yhv35gza9sl65bzkg"))))
+        (base32 "1inqb8z2vbmfybcrqbla76sny7cg2qz932agynqj4pn9a3zwnw9f"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:tests? #f                   ;the "Validate appstream file" test fails
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'wrap 'wrap-libs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out               (assoc-ref outputs "out"))
-                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'wrap-libs
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
                     (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH"))
                     (python-path       (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/blanket")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
+                (wrap-program (search-input-file outputs "/bin/blanket")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (native-inputs
-     (list desktop-file-utils
+     (list blueprint-compiler
+           desktop-file-utils
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
@@ -453,8 +453,9 @@ a task.")
            gsettings-desktop-schemas
            gst-plugins-bad
            gst-plugins-good             ;for ScaleTempo plugin
-           gtk+
+           gtk
            libhandy
+           libadwaita
            python
            python-gst
            python-pygobject))
