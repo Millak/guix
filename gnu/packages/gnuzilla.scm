@@ -1678,10 +1678,18 @@ ca495991b7852b855"))
                      (eudev-lib (string-append eudev "/lib"))
                      ;; For the integration of native notifications (same reason as icecat)
                      (libnotify #$(this-package-input "libnotify"))
-                     (libnotify-lib (string-append libnotify "/lib")))
+                     (libnotify-lib (string-append libnotify "/lib"))
+                     (mesa #$(this-package-input "mesa"))
+                     (mesa-lib (string-append mesa "/lib"))
+                     (pciutils #$(this-package-input "pciutils"))
+                     (pciutils-lib (string-append pciutils "/lib"))
+                     (libva #$(this-package-input "libva"))
+                     (libva-lib (string-append libva "/lib")))
                 (wrap-program (car (find-files lib "^icedove$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
-                  `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib ,libnotify-lib ,gpgme-lib)))))))))
+                  `("LD_LIBRARY_PATH" prefix
+                    (,pulseaudio-lib ,eudev-lib ,libnotify-lib ,gpgme-lib
+                     ,mesa-lib ,libva-lib ,pciutils-lib)))))))))
     (inputs
      (list alsa-lib
            bash-minimal
@@ -1712,11 +1720,13 @@ ca495991b7852b855"))
            libxinerama
            libxscrnsaver
            libxt
+           libva
            mesa
            mit-krb5
            nspr
            nss
            pango
+           pciutils
            pixman
            pulseaudio
            sqlite
