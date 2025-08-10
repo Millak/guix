@@ -1144,14 +1144,14 @@ control of your private keys, no previous conversation is compromised.")
 (define-public znc
   (package
     (name "znc")
-    (version "1.10.0")
+    (version "1.10.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://znc.in/releases/archive/znc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "06bb6c2nciwbknfschxd2fjkpigd6i0zgwl6jiz5lm7gcadssrdy"))))
+                "0038qjkc1cxqz16nx9b37gjqzmnavv2kxdbjb4c0c9mz3n2pcvjf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
