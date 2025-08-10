@@ -2033,7 +2033,7 @@ multiple services and devices with hundreds of supported integrations.")
 (define-public python-esptool
   (package
     (name "python-esptool")
-    (version "5.0.1")
+    (version "5.0.2")
     (source
      (origin
        (method git-fetch)
@@ -2042,7 +2042,7 @@ multiple services and devices with hundreds of supported integrations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04asqw6g4lhkz6fqn22wwk2wjq5q8c00m2k8wylksrc0v2f582i9"))))
+        (base32 "1wl75j6ncm5lahy9pzc38qivhaf9p42a2bijishdkwkw388fs6x1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2064,11 +2064,10 @@ multiple services and devices with hundreds of supported integrations.")
            python-pyserial
            python-pyyaml
            python-reedsolo
-           python-rich-click-next))
+           python-rich-click))
     (native-inputs (list python-pyelftools
                          python-pytest
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://github.com/espressif/esptool")
     (synopsis "Bootloader utility for Espressif ESP8266 & ESP32 chips")
     (description
