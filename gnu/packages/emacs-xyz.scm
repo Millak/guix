@@ -21479,12 +21479,11 @@ exposes a small API to assist in writing your own snippets.")
       (license license:expat))))
 
 (define-public emacs-helm-c-yasnippet
-  (let ((commit "65ca732b510bfc31636708aebcfe4d2d845b59b0")
-        (revision "1"))
+  (let ((commit "c5880e740da101fde7a995e94a7b16c330e57583")
+        (revision "2"))
     (package
       (name "emacs-helm-c-yasnippet")
-      (version (string-append "0.6.7" "-" revision "."
-                              (string-take commit 7)))
+      (version (git-version "0.6.7" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -21493,14 +21492,19 @@ exposes a small API to assist in writing your own snippets.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1cbafjqlzxbg19xfdqsinsh7afq58gkf44rsg1qxfgm8g6zhr7f8"))))
+                  "026i2cywf3gvhbvnc996i76vv1pqzi21j6v8zwm198dj1f1wg4kw"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "test/helm-yasnippet-test.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs
        (list emacs-helm emacs-yasnippet))
       (home-page "https://github.com/emacs-jp/helm-c-yasnippet")
       (synopsis "Helm integration for Yasnippet")
-      (description "This Emacs library provides Helm interface for
-Yasnippet.")
+      (description
+       "This Emacs library provides Helm interface for Yasnippet.")
       (license license:gpl2+))))
 
 (define-public emacs-helm-system-packages
