@@ -69,6 +69,7 @@
 ;;; Copyright © 2025 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4760,7 +4761,7 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.13.0")
+    (version "1.15.1")
     (source
      (origin
        (method url-fetch)
@@ -4768,7 +4769,7 @@ network.")
                            "releases/download/v" version "/"
                            "ngtcp2-" version ".tar.gz"))
        (sha256
-        (base32 "1sik0rlpar1dk46ahssv59ik1w360v97hydzari77m8khfjscxd1"))))
+        (base32 "1r3128v6fwn1p7py57frp4ij251z4rv4mfxknhjwylw9i3gr947r"))))
     (build-system gnu-build-system)
     (arguments
      (list
