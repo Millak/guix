@@ -1151,23 +1151,23 @@ fullscreen terminal rendering, and keyboard input event reporting.")
   (package
     (name "python-halo")
     (version "0.0.31")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "halo" version))
-              (sha256
-               (base32
-                "1mn97h370ggbc9vi6x8r6akd5q8i512y6kid2nvm67g93r9a6rvv"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "halo" version))
+       (sha256
+        (base32 "1mn97h370ggbc9vi6x8r6akd5q8i512y6kid2nvm67g93r9a6rvv"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-colorama python-log-symbols python-six
-                             python-spinners python-termcolor))
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive, no tags in Git
     (native-inputs
-     (list python-coverage
-           python-nose
-           python-pylint
-           python-setuptools
-           python-tox
-           python-twine
-           python-wheel))
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-colorama
+           python-log-symbols
+           python-six
+           python-spinners
+           python-termcolor))
     (home-page "https://github.com/manrajgrover/halo")
     (synopsis "Python library to display graphical spinners in the terminal")
     (description "Halo is a Python library to display graphical spinners in
