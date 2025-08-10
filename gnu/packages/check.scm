@@ -1059,44 +1059,6 @@ definition language, a safe runtime engine for test suites and a powerful
 report generation engine.")
     (license license:bsd-3)))
 
-(define-public python-gixy-ng
-  (package
-    (name "python-gixy-ng")
-    (version "0.2.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dvershinin/gixy")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0dipvy8y1nlhpka0cdk6hyv1j2388y7isbajpwskjrgqc5vayqx8"))))
-    (build-system pyproject-build-system)
-    ;; This package currently doesn't test properly, but we can't add
-    ;; pytest because it propagates another version of python-pyparsing
-    ;; that takes precedence over the right one.
-    (propagated-inputs (list python-configargparse
-                             python-jinja2
-                             python-pyparsing-2.4.7
-                             python-six))
-    (native-inputs (list python-cached-property
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/dvershinin/gixy")
-    (synopsis "Static NGINX configuration analyzer")
-    (description "Gixy is a static analyzer whose main goal is to help
-prevent common NGINX misconfigurations.  It provides the @command{gixy}
-command.
-
-Note: This is an actively maintained fork of the original @code{python-gixy}
-package.")
-    (license license:mpl2.0)))
-
-(define-deprecated/public python-gixy python-gixy-ng
-  (package/inherit python-gixy-ng
-    (name "python-gixy")))
-
 (define-public googletest
   (package
     (name "googletest")
