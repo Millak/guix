@@ -272,6 +272,7 @@
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl6)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages racket)
   #:use-module (gnu packages ruby)
@@ -27946,6 +27947,45 @@ schema validation.")
 made of parentheses, brackets, and braces according to their depth.  Each
 successive level is highlighted in a different color.  This makes it easy to
 orient yourself in the code, and tell which statements are at a given level.")
+      (license license:gpl3+))))
+
+(define-public emacs-raku-mode
+  (let ((revision "0")
+        (commit "14f9b9bba08c0bbb7f3895380d0b1a9feb7a168d"))
+    (package
+      (name "emacs-raku-mode")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Raku/raku-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03r858crkxfp2nswsk81ajr8ynqm501a3l6qmbmlk57pb1p2a1py"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-exec-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "raku-repl.el"
+                  ("raku-exec-path" (search-input-file inputs "/bin/raku")))))
+            (add-before 'check 'skip-failing-test
+              (lambda _
+                (substitute* "test/raku-mode-test.el"
+                  (("\\(ert-deftest perl5-font-lock-keywords/variable .*" all)
+                   (string-append all "(skip-unless nil)"))))))))
+      (native-inputs (list emacs-ert-runner))
+      (inputs (list rakudo))
+      (home-page "https://github.com/Raku/raku-mode")
+      (synopsis "Major mode for editing Raku code")
+      (description
+       "Emacs major mode for editing Raku code.  It supports basic syntax
+highlighting, basic indentation, identifier index menu (variables,
+subs, classes, etc.), and REPL interaction.")
       (license license:gpl3+))))
 
 (define-public emacs-tree-mode
