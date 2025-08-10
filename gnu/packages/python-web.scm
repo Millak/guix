@@ -1689,18 +1689,6 @@ The package includes a module with full coverage of JSON RPC versions 1.0 and
 comes with a SOCKS proxy client.")
     (license (list license:expat license:bsd-2))))
 
-(define-public python-aiorpcx-0.18
-  (package
-    (inherit python-aiorpcx)
-    (version "0.18.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiorpcX" version))
-       (sha256
-        (base32
-         "1rswrspv27x33xa5bnhrkjqzhv0sknv5kd7pl1vidw9d2z4rx2l0"))))))
-
 (define-public python-aiostream
   (package
     (name "python-aiostream")
