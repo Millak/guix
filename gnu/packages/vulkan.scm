@@ -499,7 +499,8 @@ API.")
          "0w1mj5b3n6kp0brqindb7fppvllzlywkdk1zglkbj3bw8k0795mb"))))
     (build-system cmake-build-system)
     (arguments
-     `(;; FIXME: Skip most of the tests, because enabling system gtest breaks
+     `(#:tests? #f ; We don't build the tests, see below.
+       ;; FIXME: Skip most of the tests, because enabling system gtest breaks
        ;; the build: <https://github.com/google/shaderc/issues/470>.
        #:configure-flags
        (list "-DSHADERC_SKIP_TESTS=ON"
