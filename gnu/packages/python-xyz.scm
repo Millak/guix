@@ -6731,23 +6731,18 @@ automatic tab-completion, color support, logging to @code{std}, etc.")
 (define-public python-mimeparse
   (package
     (name "python-mimeparse")
-    (version "1.6.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-mimeparse" version))
+       (uri (pypi-uri "python_mimeparse" version))
        (sha256
-        (base32
-         "0y2g6cl660bpz11srgqyvvm8gmywpgyx8g0xfvbiyr0af0yv1r3n"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "./mimeparse_test.py"))))))
-    (home-page
-     "https://github.com/dbtsai/python-mimeparse")
+        (base32 "00xk5jir6dm4r3qm8dg8vh8lhq00f35zaryn3gina958gb7rv6jv"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/falconry/python-mimeparse")
     (synopsis "Python library for parsing MIME types")
     (description
      "Mimeparse provides basic functions for parsing MIME type names and
