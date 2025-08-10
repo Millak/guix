@@ -31622,20 +31622,29 @@ for manual interpretation.")
 (define-public python-distro
   (package
     (name "python-distro")
-    (version "1.6.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "distro" version))
        (sha256
-        (base32
-         "09441261dd3c8b2gv15vhw1cryzg60lmgpkk07v6hpwwkyhfbxc3"))))
-    (build-system python-build-system)
+        (base32 "1vfvkgfvrjpxpb48pf8rs2l5wfxij0plmffnw5p123wlv1ppr9rg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; We are not on Ubunto distro:
+                    ;; AssertionError: assert '' == 'ubuntu'.
+                    (list "not test_ubuntu14normal_lsb_release"
+                          "test_trailingblanks_lsb_release"
+                          "test_ubuntu14nomodules_lsb_release")
+                    " and not "))))
     (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/nir0s/distro")
-    (synopsis
-     "OS platform information API")
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/python-distro/distro")
+    (synopsis "OS platform information API")
     (description
      "@code{distro} provides information about the OS distribution it runs on,
 such as a reliable machine-readable ID, or version information.
