@@ -22070,16 +22070,24 @@ customization required.")
 (define-public python-rich-click
   (package
     (name "python-rich-click")
-    (version "1.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "rich-click" version))
-              (sha256
-               (base32
-                "0zkp2sn0vz1hhjbv9bf8fifyzi8ib2d7v7sfak8n3qn67rlrdzzq"))))
-    (build-system python-build-system)
+    (version "1.8.9")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/ewels/rich-click")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0kc2wcb5dpgxhdcz8fy6gfhl7vra03xwgwfg7h0qxxibr8yzhmmq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-click python-importlib-metadata python-rich))
+     (list python-click
+           python-rich
+           python-typing-extensions))
     (home-page "https://github.com/ewels/rich-click")
     (synopsis "Format click help output nicely with rich")
     (description "Click is a \"Python package for creating beautiful command
