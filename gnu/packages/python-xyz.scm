@@ -14226,8 +14226,10 @@ standard library.")
       (uri (pypi-uri "ipython_genutils" version))
       (sha256
        (base32 "19l2pp1c64ansr89l3cqh19jdi2ixhssdzx0vz4n6r52a6i281is"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments `(#:tests? #f)) ; no tests
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://ipython.org")
     (synopsis "Vestigial utilities from IPython")
     (description
