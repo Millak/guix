@@ -1052,6 +1052,30 @@ comparison operators, as defined in the original
 @url{http://goessner.net/articles/JsonPath/, JSONPath} proposal.")
     (license license:asl2.0)))
 
+(define-public python-log-symbols
+  (package
+    (name "python-log-symbols")
+    (version "0.0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "log_symbols" version))
+       (sha256
+        (base32 "0mh5d0igw33libfmbsr1ri1p1y644p36nwaa2w6kzrd8w5pvq2yg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive, tests depend on Nose
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-colorama))
+    (home-page "https://github.com/manrajgrover/py-log-symbols")
+    (synopsis "Python library with graphical symbols for logging on the terminal")
+    (description
+     "This package provides a Python library with graphical symbols that can
+be displayed on the terminal, with color if possible, for logging purposes.")
+    (license license:expat)))
+
 (define-public python-multiplex
   (package
     (name "python-multiplex")
