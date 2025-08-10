@@ -1147,27 +1147,6 @@ features string-like objects which carry formatting information, per-line
 fullscreen terminal rendering, and keyboard input event reporting.")
     (license license:expat)))
 
-(define-public python-spinners
-  (package
-    (name "python-spinners")
-    (version "0.0.24")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "spinners" version))
-              (sha256
-               (base32
-                "0zz2z6dpdjdq5z8m8w8dfi8by0ih1zrdq0caxm1anwhxg2saxdhy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))         ;no tests in PyPI archive, tests depend on Nose
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/manrajgrover/py-spinners")
-    (synopsis "Python library with graphical spinners for the terminal")
-    (description "Spinners is a Python library that contains graphical spinners
-that can be displayed terminal.")
-    (license license:expat)))
-
 (define-public tmate
   (package
     (name "tmate")
