@@ -24029,16 +24029,17 @@ addresses, and phone numbers.")
 (define-public python-pyaml
   (package
     (name "python-pyaml")
-    (version "21.10.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyaml" version))
-              (sha256
-               (base32
-                "10w3frzqir5sbpglc9bwb8w414dsivmcvji07yxy61mz2gp9ylf6"))))
-    (build-system python-build-system)
+    (version "25.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyaml" version))
+       (sha256
+        (base32 "16yrflm7iyz82igpzlba16cbvwfwny2fnarf14mvz0b8q57ac4z1"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-unidecode))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/mk-fg/pretty-yaml")
