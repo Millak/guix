@@ -1186,21 +1186,11 @@ the terminal.  It also supports IPython/Jupyter.")
                 "0mh5d0igw33libfmbsr1ri1p1y644p36nwaa2w6kzrd8w5pvq2yg"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                 (lambda _
-                   (substitute* "requirements-dev.txt"
-                     (("(.*)==(.*)$" _ dep ver)
-                      (string-append dep ">=" ver))))))))
+     (list #:tests? #f))         ;no tests in PyPI archive, tests depend on Nose
     (native-inputs
-     (list python-coverage
-           python-nose
-           python-pylint
-           python-setuptools
-           python-tox
-           python-wheel))
-    (propagated-inputs (list python-colorama))
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-colorama))
     (home-page "https://github.com/manrajgrover/py-log-symbols")
     (synopsis "Python library with graphical symbols for logging on the terminal")
     (description "This package provides a Python library with graphical symbols
