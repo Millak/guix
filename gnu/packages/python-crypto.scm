@@ -168,24 +168,22 @@ to providing full-strength password hashing for multi-user application.")
 (define-public python-paramiko
   (package
     (name "python-paramiko")
-    (version "3.5.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "paramiko" version))
        (sha256
-        (base32 "0941n85xi32kvrh2mxppga527a0jz2iz2c99lpfwwmagv90fa4dd"))))
+        (base32 "17ynnmagd44gpp76r26rz1kldb37f79hm4ibinlckj8c71xz09ba"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-icecream
+     (list python-icecream
+           python-pytest
            python-pytest-relaxed
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-cryptography
-           python-bcrypt
+     (list python-bcrypt
+           python-cryptography
            python-invoke
            python-pyasn1
            python-pynacl))
