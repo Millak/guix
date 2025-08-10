@@ -178,20 +178,25 @@ efficient syncing
             (lambda _
               (substitute* "docs/conf.py"
                 (("^release.*")
-                 (string-append "release = '" #$version "'\n"))))))))
+                 (string-append "release = '" #$version "'\n")))))
+         (add-after 'unpack 'relax-requirements
+           ;; See: <https://github.com/pimutils/vdirsyncer/issues/1111>.
+           (lambda _
+             (substitute* "setup.py"
+               (("aiostream>=0.4.3,<0.5.0")
+                "aiostream"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "DETERMINISTIC_TESTS" "true"))))))
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-sphinx
-           python-wheel
-           ;; Required for testing
-           python-aioresponses
-           python-hypothesis
-           python-trustme
+     (list python-aioresponses
            python-pytest
-           python-pytest-asyncio
            python-pytest-cov
+           python-pytest-asyncio-0.26
            python-pytest-httpserver
+           python-setuptools
+           python-setuptools-scm
+           python-trustme
            radicale))
     (inputs
      (list python-aiohttp
