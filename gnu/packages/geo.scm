@@ -96,6 +96,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -3962,17 +3963,19 @@ time.  Interactively visualize vector, raster and volume data.")
     (license license:gpl2+)))
 
 (define-public navit
+  (let ((commit "2418e3f42af0641c734f93f3d6d20d3025ad2182")
+        (revision "0"))
   (package
     (name "navit")
-    (version "0.5.6")
+    (version (git-version "0.5.6" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/navit-gps/navit")
-                    (commit (string-append "v" version))))
+                    (commit commit)))
               (sha256
                (base32
-                "1jhlif0sc5m8wqb5j985g1xba2ki7b7mm14pkvzdghjd0q0gf15s"))
+                "0s7rhg1xyj56g19fh84znj6fzdiglgf010appjydivn5gkyzb9kq"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -4027,6 +4030,7 @@ time.  Interactively visualize vector, raster and volume data.")
                   freeglut
                   freeimage
                   freetype
+                  fribidi
                   glib
                   gettext-minimal
                   gpsd
@@ -4037,7 +4041,9 @@ time.  Interactively visualize vector, raster and volume data.")
                   sdl-image))
     (native-inputs (list fontconfig
                          (librsvg-for-system)
-                         pkg-config))
+                         libxslt
+                         pkg-config
+                         protobuf-c))
     (home-page "https://www.navit-project.org")
     (synopsis "Car navigation system with routing engine that uses vector maps data")
     (description "Navit is a car navigation system with a routing engine.
@@ -4062,7 +4068,7 @@ formats, or to replay NMEA data.
 For maps, it can uses its own \"binfile\" map format, or Garmin map
 file format, and data from OpenStreetMap, Garmin maps, Marco Polo
 Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
-    (license license:gpl2)))
+    (license license:gpl2))))
 
 (define-public laszip
   (package
