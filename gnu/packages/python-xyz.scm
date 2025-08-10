@@ -22102,37 +22102,6 @@ representation.")
 syntax highlighting, markdown and more to the terminal.")
     (license license:expat)))
 
-;; TODO: Merge with python-rich-click on next python-team iteration.
-(define-public python-rich-click-next
-  ;; Hidden from the CLI, so that we don't have warnings or surprises on
-  ;; installation, but other packages can still refer to it.
-  (hidden-package
-   (package
-     (name "python-rich-click")
-     (version "1.8.9")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/ewels/rich-click")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0kc2wcb5dpgxhdcz8fy6gfhl7vra03xwgwfg7h0qxxibr8yzhmmq"))))
-     (build-system pyproject-build-system)
-     (propagated-inputs
-      (list python-click python-importlib-metadata python-rich
-            python-typing-extensions))
-     (native-inputs (list python-pytest python-setuptools python-wheel))
-     (home-page "https://github.com/ewels/rich-click")
-     (synopsis "Format click help output nicely with rich")
-     (description "Click is a \"Python package for creating beautiful command
-line interfaces\".  Rich is a \"Python library for rich text and beautiful
-formatting in the terminal\".  The intention of rich-click is to provide
-attractive help output from click, formatted with rich, with minimal
-customization required.")
-     (license license:expat))))
-
 (define-public python-rich-click
   (package
     (name "python-rich-click")
