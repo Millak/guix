@@ -1063,34 +1063,6 @@ minimalistic.")
 usable with any list--including files, command history, processes and more.")
     (license license:expat)))
 
-(define-public python-blessings
-  (package
-    (name "python-blessings")
-    (version "1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "blessings" version))
-       (sha256
-        (base32
-         "0z8mgkbmisxs10rz88qg46l1c9a8n08k8cy2iassal2zh16qbrcq"))))
-    (build-system python-build-system)
-    (arguments
-     ;; FIXME: Test suite is unable to detect TTY conditions.
-     `(#:tests? #f))
-    (native-inputs
-     (list python-nose python-six))
-    (home-page "https://github.com/erikrose/blessings")
-    (synopsis "Python module to manage terminal color, styling, and
-positioning")
-    (description "Blessings is a pythonic API to manipulate terminal color,
-styling, and positioning.  It provides similar features to curses but avoids
-some of curses’s limitations: it does not require clearing the whole screen
-for little changes, provides a scroll-back buffer after the program exits, and
-avoids styling altogether when the output is redirected to something other
-than a terminal.")
-    (license license:expat)))
-
 (define-public tmate
   (package
     (name "tmate")
