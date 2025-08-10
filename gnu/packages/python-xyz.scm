@@ -285,7 +285,6 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tcl)
-  #:use-module (gnu packages terminals)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
