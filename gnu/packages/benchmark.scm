@@ -661,30 +661,28 @@ and options.  With careful benchmarking, different hardware can be compared.")
     (license license:gpl2+)))
 
 (define-public clpeak
-  ;; Release 1.1.0 is too old for our opencl-clhpp. This commit supports
-  ;; cl2.hpp.
-  (let ((commit "6d59cb64997a53c35207b77a63d2e9f0e84de5fd"))
-    (package
-      (name "clpeak")
-      (version (git-version "1.1.0" "0" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/krrishnarraj/clpeak")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0qmhdjyhwl7gfgyqxsddqn6zpp3b57503m16h7jv6illy3lfvji1"))))
-      (build-system cmake-build-system)
-      (home-page "https://github.com/krrishnarraj/clpeak")
-      (inputs (list opencl-clhpp opencl-icd-loader))
-      (synopsis "OpenCL benchmark tool")
-      (description
-       "@code{clpeak} is a synthetic benchmarking tool to measure peak
-apabilities of OpenCL devices.  It only measures the peak metrics that can be
+  (package
+    (name "clpeak")
+    (version "2.0.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/krrishnarraj/clpeak")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cicjf7giycp7xi78086pki767n3czfbv56x3phjx21w9b8blw66"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/krrishnarraj/clpeak")
+    (native-inputs (list clang)) ; it only compiles with clang
+    (inputs (list opencl-clhpp opencl-icd-loader))
+    (synopsis "OpenCL benchmark tool")
+    (description
+     "@code{clpeak} is a synthetic benchmarking tool to measure peak
+capabilities of OpenCL devices.  It only measures the peak metrics that can be
 achieved using vector operations and does not represent a real-world use case.")
-      (license license:unlicense))))
+    (license license:asl2.0)))
 
 (define-public kdiskmark
   (package
