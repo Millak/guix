@@ -1759,10 +1759,12 @@ supports coverage of subprocesses.")
        (sha256
         (base32 "0j37gkgcag4rpv9g5q2n80425cs1alwx8fwncx3mv7sdgqgdgqnz"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; Shaky tests with Pytest@8
+     (list #:test-flags #~(list "-k" "not test_skips_pytest_fixture")))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest-bootstrap
+           python-setuptools))
     (propagated-inputs
      (list python-decorator))
     (home-page "https://github.com/bitprophet/pytest-relaxed")
