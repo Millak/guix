@@ -667,25 +667,24 @@ and options.  With careful benchmarking, different hardware can be compared.")
     (package
       (name "clpeak")
       (version (git-version "1.1.0" "0" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/krrishnarraj/clpeak.git")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                  (base32
-                    "0qmhdjyhwl7gfgyqxsddqn6zpp3b57503m16h7jv6illy3lfvji1"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/krrishnarraj/clpeak")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qmhdjyhwl7gfgyqxsddqn6zpp3b57503m16h7jv6illy3lfvji1"))))
       (build-system cmake-build-system)
       (home-page "https://github.com/krrishnarraj/clpeak")
-      (inputs
-        (list opencl-clhpp opencl-icd-loader))
+      (inputs (list opencl-clhpp opencl-icd-loader))
       (synopsis "OpenCL benchmark tool")
       (description
-        "A synthetic benchmarking tool to measure peak capabilities of OpenCL
-        devices.  It only measures the peak metrics that can be achieved using
-        vector operations and does not represent a real-world use case.")
-        (license license:unlicense))))
+       "@code{clpeak} is a synthetic benchmarking tool to measure peak
+apabilities of OpenCL devices.  It only measures the peak metrics that can be
+achieved using vector operations and does not represent a real-world use case.")
+      (license license:unlicense))))
 
 (define-public kdiskmark
   (package
