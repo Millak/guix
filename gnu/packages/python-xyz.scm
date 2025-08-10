@@ -108,6 +108,7 @@
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021, 2022, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2021–2024 Felix Gruber <felgru@posteo.net>
@@ -1204,6 +1205,34 @@ support of Rust-based Python builds.  Cargo and rustc are installed into a
 cache directory, to avoid modifying the host's environment, and further
 activated using a set of environment variables.")
     (license (list license:expat license:asl2.0))))
+
+(define-public python-pyte
+  (package
+    (name "python-pyte")
+    (version "0.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/selectel/pyte")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cdhnl6rp4kcbs3s766519k80pf5ma18mgv6cyidf4nbgysjavmv"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-wcwidth))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://pyte.readthedocs.io/")
+    (synopsis "Simple VTXXX-compatible terminal emulator")
+    (description "@code{pyte} is an in-memory VTxxx-compatible terminal
+emulator.  @var{VTxxx} stands for a series of video terminals, developed by
+DEC between 1970 and 1995.  The first and probably most famous one was the
+VT100 terminal, which is now a de-facto standard for all virtual terminal
+emulators.
+
+pyte is a fork of vt102, which was an incomplete pure Python implementation
+of VT100 terminal.")
+    (license license:lgpl3+)))
 
 (define-public python-pyxdameraulevenshtein
   (package
