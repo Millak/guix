@@ -17485,27 +17485,16 @@ third-party code.")
 (define-public python-msgpack
   (package
     (name "python-msgpack")
-    (version "1.0.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "msgpack" version))
-              (sha256
-               (base32
-                "0pqzy1zclyhd42gfibhkcqymbspy5a6v421g87mh40h3iz0nkn7m"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:modules ((guix build utils)
-                  (guix build python-build-system)
-                  (ice-9 ftw)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-v" "test"))))))
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "msgpack" version))
+       (sha256
+        (base32 "1k84s6w17i1ylrcm39wi1djjv832vn08w3299xcv5nib9birrdvp"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (synopsis "MessagePack (de)serializer")
     (description "MessagePack is a fast, compact binary serialization format,
 suitable for similar data to JSON.  This package provides CPython bindings for
