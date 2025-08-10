@@ -1147,33 +1147,6 @@ features string-like objects which carry formatting information, per-line
 fullscreen terminal rendering, and keyboard input event reporting.")
     (license license:expat)))
 
-(define-public python-halo
-  (package
-    (name "python-halo")
-    (version "0.0.31")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "halo" version))
-       (sha256
-        (base32 "1mn97h370ggbc9vi6x8r6akd5q8i512y6kid2nvm67g93r9a6rvv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))         ;no tests in PyPI archive, no tags in Git
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-colorama
-           python-log-symbols
-           python-six
-           python-spinners
-           python-termcolor))
-    (home-page "https://github.com/manrajgrover/halo")
-    (synopsis "Python library to display graphical spinners in the terminal")
-    (description "Halo is a Python library to display graphical spinners in
-the terminal.  It also supports IPython/Jupyter.")
-    (license license:expat)))
-
 (define-public python-log-symbols
   (package
     (name "python-log-symbols")

@@ -137,6 +137,7 @@
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
+;;; Copyright © 2023 Jean-Pierre De Jesus DIAZ <jean@foundationdevices.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
@@ -926,6 +927,34 @@ expensive calculations.  It was started as part of
 part of @url{https://github.com/hgrecco/pint, Pint}, the Python units
 package. ")
     (license license:bsd-3)))
+
+(define-public python-halo
+  (package
+    (name "python-halo")
+    (version "0.0.31")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "halo" version))
+       (sha256
+        (base32 "1mn97h370ggbc9vi6x8r6akd5q8i512y6kid2nvm67g93r9a6rvv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive, no tags in Git
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-colorama
+           python-log-symbols
+           python-six
+           python-spinners
+           python-termcolor))
+    (home-page "https://github.com/manrajgrover/halo")
+    (synopsis "Python library to display graphical spinners in the terminal")
+    (description
+     "Halo is a Python library to display graphical spinners in the terminal.
+It also supports IPython/Jupyter.")
+    (license license:expat)))
 
 (define-public python-huey
   (package
