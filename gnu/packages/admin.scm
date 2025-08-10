@@ -80,6 +80,7 @@
 ;;; Copyright © 2025 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
 ;;; Copyright © 2025 ROCKTAKEY <rocktakey@gmail.com>
+;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Andy Tai <atai@atai.org>
@@ -1763,7 +1764,7 @@ connection alive.")
 (define-public dhcpcd
   (package
     (name "dhcpcd")
-    (version "10.5.0")
+    (version "10.5.2")
     (source
      (origin
        (method git-fetch)
@@ -1772,7 +1773,7 @@ connection alive.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mdi4pm44pha47ivfn2gsf9w9rdpyw4q19x4myvkbifjg6lf7r4i"))))
+        (base32 "0qxqs9qc36c9xa9ir0r27lzr9iyvvx96g84qnpln87kzl14pmdcn"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1793,6 +1794,13 @@ connection alive.")
                 (("\\$\\{INSTALL\\} -m \\$\\{DBMODE\\} -d\
  \\$\\{DESTDIR\\}\\$\\{DBDIR\\}")
                  ""))))
+          (add-after 'unpack 'configure-user-hook-sysconfdir
+            (lambda _
+              ;; Set an out-of-store sysconfdir for user hooks.
+              (substitute* '("hooks/dhcpcd-run-hooks.8.in"
+                             "hooks/dhcpcd-run-hooks.in")
+                    (("@SYSCONFDIR@(/dhcpcd.e(nter|xit)-hook)" _ hook)
+                     (string-append "/etc" hook)))))
           (add-before 'build 'setenv
             (lambda _
               (setenv "HOST_SH" (which "sh"))))
