@@ -460,19 +460,6 @@ of regular expressions.  The pyparsing module provides a library of classes
 that client code uses to construct the grammar directly in Python code.")
     (license license:expat)))
 
-;;; This is the last release compatible with Python 2.
-(define-public python-pyparsing-2.4.7
-  (package
-    (inherit python-pyparsing)
-    (version "2.4.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyparsing" version))
-       (sha256
-        (base32 "1hgc8qrbq1ymxbwfbjghv01fm3fbpjwpjwi0bcailxxzhf3yq0y2"))))
-    (native-inputs (list python-setuptools python-wheel))))
-
 (define-public python-packaging-bootstrap
   (package
     (name "python-packaging-bootstrap")
