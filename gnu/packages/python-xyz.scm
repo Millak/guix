@@ -98,6 +98,7 @@
 ;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
+;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021, 2023-2025 jgart <jgart@dismail.de>
@@ -123,7 +124,7 @@
 ;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022, 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
@@ -739,6 +740,33 @@ Configurations:
   CRC64
 @end table")
     (license license:bsd-2)))
+
+(define-public python-curtsies
+  (package
+    (name "python-curtsies")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "curtsies" version))
+       (sha256
+        (base32 "09c8c4vssm2zkq017xj99vhcrisfva4nkz92w8dly4jjz7xhyahh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pyte
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-blessed
+           python-cwcwidth))
+    (home-page "https://github.com/bpython/curtsies")
+    (synopsis "Library for curses-like terminal interaction with colored strings")
+    (description
+     "Curtsies is a Python library for interacting with the terminal.  It
+features string-like objects which carry formatting information, per-line
+fullscreen terminal rendering, and keyboard input event reporting.")
+    (license license:expat)))
 
 (define-public python-distance
   (package

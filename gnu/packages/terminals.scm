@@ -1120,33 +1120,6 @@ avoids styling altogether when the output is redirected to something other
 than a terminal.")
     (license license:expat)))
 
-(define-public python-curtsies
-  (package
-    (name "python-curtsies")
-    (version "0.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "curtsies" version))
-       (sha256
-        (base32 "09c8c4vssm2zkq017xj99vhcrisfva4nkz92w8dly4jjz7xhyahh"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pyte
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-blessed
-           python-cwcwidth))
-    (home-page "https://github.com/bpython/curtsies")
-    (synopsis "Library for curses-like terminal interaction with colored strings")
-    (description
-     "Curtsies is a Python library for interacting with the terminal.  It
-features string-like objects which carry formatting information, per-line
-fullscreen terminal rendering, and keyboard input event reporting.")
-    (license license:expat)))
-
 (define-public tmate
   (package
     (name "tmate")
