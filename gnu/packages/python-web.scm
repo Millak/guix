@@ -1708,25 +1708,24 @@ comes with a SOCKS proxy client.")
 (define-public python-aiostream
   (package
     (name "python-aiostream")
-    (version "0.4.5")
-    (source (origin
-              ;; Tests not included in pypi release.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/vxgmichel/aiostream")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0l2ijb7yk0820wiyf6zrzx8fhzf8925an7r06mcaw3in1mr6rssq"))))
-    (build-system python-build-system)
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)        ;no tests in PyPI archvie
+       (uri (git-reference
+              (url "https://github.com/vxgmichel/aiostream")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wf89l9f0ivlv796pklpgykx6j6ksfqrmvzikd8w5j6ldln7bv50"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-asyncio
            python-pytest-cov
-           python-pytest-runner
-           python-setuptools
-           python-wheel))
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs
+     (list python-typing-extensions))
     (home-page "https://github.com/vxgmichel/aiostream")
     (synopsis "Generator-based operators for asynchronous iteration")
     (description "@code{aiostream} provides a collection of stream operators that can
