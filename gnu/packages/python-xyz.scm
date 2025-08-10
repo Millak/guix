@@ -23153,16 +23153,18 @@ docstring and colored output.")
 (define-public python-tomlkit
   (package
     (name "python-tomlkit")
-    (version "0.11.6")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tomlkit" version))
        (sha256
-        (base32 "0wsxnv9bs7jk8ig8blj9c438a1ygvdad7y9cn1zr720nfbjm5fbi"))))
-    (build-system python-build-system)
+        (base32 "18fjmmhiv5jkkg1dwidmxd0sjqnkf675igizxsa2ppspxr3z4323"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pyyaml))
+     (list python-poetry-core
+           python-pytest
+           python-pyyaml))
     (home-page "https://github.com/sdispater/tomlkit")
     (synopsis "Style-preserving TOML library")
     (description
