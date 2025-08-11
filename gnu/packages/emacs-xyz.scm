@@ -2224,6 +2224,33 @@ language model}s out in the world.  To respect user freedom, it will warn you
 before interacting with non-free LLMs.")
     (license license:gpl3+)))
 
+(define-public emacs-llm-tool-collection
+  (let ((commit "6d2765a16dc10af2e1d1911bcabf6d7f287e0434")
+        (revision "0"))
+    (package
+      (name "emacs-llm-tool-collection")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/skissue/llm-tool-collection/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1rddjhm5jrl5a32bzmhrjfyh54y6ibrsj5pb5hrp3h93iwp16vwk"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:emacs emacs                   ;for cl-lib
+             #:tests? #f))                   ;no tests
+      (home-page "https://github.com/skissue/llm-tool-collection/")
+      (synopsis "Collection of Emacs Lisp LLM tools")
+      (description
+       "This package provides a collection of tools to be used by
+@acronym{Large Language Models, LLM} clients in Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-magit
   (package
     (name "emacs-magit")
