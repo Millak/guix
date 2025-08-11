@@ -2935,17 +2935,6 @@ times.")
 eliminate flaky failures.")
     (license license:mpl2.0)))
 
-(define-public python-pytest-rerunfailures-13
-  (package
-    (inherit python-pytest-rerunfailures)
-    (version "13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-rerunfailures" version))
-       (sha256
-        (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
-
 ;; This is only used by python-sanic
 (define-public python-pytest-sanic
   (package
