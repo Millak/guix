@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2016, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2012, 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -1240,14 +1240,6 @@ Language.")
        #:parallel-tests? ,(target-x86-64?)
        #:phases
        (modify-phases %standard-phases
-         ;; TODO: Move this patch to the source field.
-         ,@(if (target-riscv64?)
-             `((add-after 'unpack 'patch-source
-                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                   (invoke "patch" "-p1" "--force" "--input"
-                           (assoc-ref (or native-inputs inputs)
-                                      "patch-file")))))
-             '())
          (add-after 'unpack 'adjust-output-references
            (lambda _
              ;; The build system invariably prepends $CMAKE_INSTALL_PREFIX
@@ -1388,12 +1380,8 @@ Language.")
                 (("-lssl -lcrypto" all)
                  (string-append "-L" openssl " " all)))))))))
     (native-inputs
-     `(,@(if (target-riscv64?)
-           `(("patch" ,patch)
-             ("patch-file" ,(search-patch "mariadb-rocksdb-atomic-linking.patch")))
-           `())
-        ("bison" ,bison)
-        ("perl" ,perl)))
+     `(("bison" ,bison)
+       ("perl" ,perl)))
     (inputs
      (list fmt
            jemalloc

@@ -1863,7 +1863,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/mandoc-support-zstd-compression.patch	\
   %D%/packages/patches/make-impure-dirs.patch			\
   %D%/packages/patches/makem-replace-git.patch			\
-  %D%/packages/patches/mariadb-rocksdb-atomic-linking.patch	\
   %D%/packages/patches/marisa-fix-MARISA_WORD_SIZE.patch	\
   %D%/packages/patches/mathjax-disable-webpack.patch			\
   %D%/packages/patches/mathjax-no-a11y.patch			\
