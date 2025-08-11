@@ -749,24 +749,7 @@ files.")
      (list
       #:tests? #f ;; XXX: insists on using bundled googletest
       #:configure-flags
-      #~(list "-DBUILD_SHARED_LIBS=ON"
-              #$@(let ((target (%current-target-system)))
-                   (if target
-                       (cond ((string-prefix? "arm" target)
-                              '("-DCMAKE_SYSTEM_PROCESSOR=arm"))
-                             ((string-prefix? "aarch64" target)
-                              '("-DCMAKE_SYSTEM_PROCESSOR=aarch64"))
-                             ((string-prefix? "i686" target)
-                              '("-DCMAKE_SYSTEM_PROCESSOR=x86"))
-                             ((string-prefix? "x86_64" target)
-                              '("-DCMAKE_SYSTEM_PROCESSOR=x86_64"))
-                             ;; 32-bit and 64-bit
-                             ((string-prefix? "powerpc" target)
-                              '("-DCMAKE_SYSTEM_PROCESSOR=powerpc"))
-                             ((string-prefix? "riscv64" target)
-                              '("-DCMAKE_SYSTEM_PROCESSOR=riscv64"))
-                             (else '()))
-                       '())))))
+      #~(list "-DBUILD_SHARED_LIBS=ON")))
     (home-page "https://github.com/google/cpu_features")
     (synopsis "Cross platform C99 library to get cpu features at runtime")
     (description
