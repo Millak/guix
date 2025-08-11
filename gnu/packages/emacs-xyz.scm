@@ -38795,8 +38795,8 @@ federated microblogging social network.")
 
 (define-public emacs-fedi
   ;; One year since last tagged release.
-  (let ((commit "0967dd0f05a46c19a44863c7c7bce560b5c9eee8")
-        (revision "2"))
+  (let ((commit "62aea20f11161d2665180498e79aade7e5f5a114")
+        (revision "3"))
     (package
       (name "emacs-fedi")
       (version (git-version "0.2" revision commit))
@@ -38808,7 +38808,7 @@ federated microblogging social network.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1a19052p3sgf7k74sd0fww8i4g6lmvjar5mvzbkxrxk9han2m9z5"))))
+          (base32 "1s2i6fgw3682h173mx287zjh8w1nsw9jykjkkmx1qjqwgg0hxpzz"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f)) ; no tests
       (propagated-inputs (list emacs-markdown-mode))
