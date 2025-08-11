@@ -37626,6 +37626,38 @@ again to cycle over options.  Completion candidates are displayed in the echo
 area.")
       (license license:gpl3+))))
 
+(define-public emacs-cycle-at-point
+  (package
+    (name "emacs-cycle-at-point")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/ideasman42/emacs-cycle-at-point")
+             (commit "83d94733fd8ed64f2ba40f4e1df7ecbfe8260e51")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17h93idzdg5y30q46y5njsvixwlq3isnynym6b6gp3sy50xqgjgs"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      ;; `make test' assumes recomplete repository is in a sibling directory.
+      #:test-command
+      #~(list "emacs" "-Q" "--batch"
+              "-l" "tests/cycle-at-point-tests"
+              "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-recomplete))
+    (home-page "https://codeberg.org/ideasman42/emacs-cycle-at-point")
+    (synopsis "Immediately cycle text at the cursor, without prompting")
+    (description
+     "@code{cycle-at-point} provides commands to cycle text at the cursor.
+Repeatedly invoke the command to cycle over available options.  Completion
+candidates are displayed in the echo area.  Users can define their own
+completion lists.  Common use cases include true and false literals,
+arithmetic operators, and months of the year.")
+    (license license:gpl3+)))
+
 (define-public emacs-ediprolog
   (package
     (name "emacs-ediprolog")
