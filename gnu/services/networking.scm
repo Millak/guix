@@ -398,7 +398,7 @@ Unique Identifier as a DHCPv4 client identifier as well.  For more information, 
 to @uref{https://www.rfc-editor.org/rfc/rfc4361, RFC 4361} and @code{dhcpcd.conf(5)}.")
   (persistent?
     (boolean #t)
-    "When true, automatically de-configure the interface when @command{dhcpcd} exits.")
+    "When false, de-configure the interface when @command{dhcpcd} exits.")
   (option
     (list-of-strings
       '("rapid_commit"
