@@ -4570,6 +4570,26 @@ enough to remain readable even at high resolutions.")
 Bonnie Scranton, and Edward Tufte.")
       (license license:expat))))
 
+(define-public font-commit-mono
+  (package
+    (name "font-commit-mono")
+    (version "1.143")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/eigilnikolajsen/commit-mono/"
+                           "releases/download/"
+                           "v" version
+                           "/CommitMono-" version ".zip"))
+       (sha256
+        (base32 "1l4yqjif6ijdpjsncana6swlh1mz0vbzaxkgk4580m3mgimg5lgp"))))
+    (build-system font-build-system)
+    (home-page "https://commitmono.com/")
+    (synopsis "Commit Mono programming font")
+    (description
+     "Commit Mono is an anonymous and neutral programming typeface.")
+    (license license:silofl1.1)))
+
 (define-public font-cica
   (package
     (name "font-cica")
