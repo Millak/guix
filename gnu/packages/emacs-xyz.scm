@@ -37599,6 +37599,33 @@ between \"frame-width\" and \"frame-height\", between \"public\",
 \"variableN\".")
     (license license:gpl2+)))
 
+(define-public emacs-recomplete
+  (let ((commit "0e4a2bad35886e31742117eee3d610e13586ac5e")
+        (revision "0"))
+    (package
+      (name "emacs-recomplete")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/ideasman42/emacs-recomplete")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dasj12k9664s77cxnkbrszy2vkfwd6iz6mrj9xzsq7mjgg5gk58"))))
+      (build-system emacs-build-system)
+      (arguments (list #:test-command #~(list "make" "test")))
+      (home-page "https://codeberg.org/ideasman42/emacs-recomplete")
+      (synopsis "Immediate completion, without prompting")
+      (description
+       "@code{recomplete} is a completion library for quickly completing or
+correcting words in cases where the first candidate is the likely choice.
+Unlike most completion, it immediately performs the completion action, calling
+again to cycle over options.  Completion candidates are displayed in the echo
+area.")
+      (license license:gpl3+))))
+
 (define-public emacs-ediprolog
   (package
     (name "emacs-ediprolog")
