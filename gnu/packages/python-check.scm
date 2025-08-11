@@ -695,39 +695,30 @@ syntax that are likely to be commented out code.")
     (license license:expat)))
 
 (define-public python-expecttest
-  (let ((commit "683b09a352cc426851adc2e3a9f46e0ab25e4dee")
-        (revision "0"))
     (package
       (name "python-expecttest")
-      (version (git-version "0.2.1" revision commit))
+      (version "0.3.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/ezyang/expecttest")
-               (commit commit)))
+               (url "https://github.com/pytorch/expecttest")
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1djwxp9x1hczzxbimv1b1bmd083am88v27l82nmlkhvzyg2cmpvv"))))
+           "1diz07lbbdlypbmcikj646vr5fav4prgs68nmnlqi0fr7m01l4zw"))))
       (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  ;; The test runs tests expected to fail, so the output is
-                  ;; confusing
-                  (invoke "python3" "test_expecttest.py")))))))
-      (native-inputs (list python-hypothesis poetry))
-      (home-page "https://github.com/ezyang/expecttest")
+      (native-inputs
+       (list python-hypothesis
+             python-poetry-core
+             ))
+      (home-page "https://github.com/pytorch/expecttest")
       (synopsis "Python module for expect tests")
       (description "@code{expecttest} is a Python module for expect tests, where
 the initial expected value of a test can be automatically set by running the
 test itself.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public python-flake8-builtins
   (package
