@@ -4,6 +4,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build-system cmake)
+  #:use-module (ice-9 match)
   #:use-module (guix store)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -45,11 +47,12 @@
 (define* (cmake-system-name-for-target
           #:optional (target (or (%current-target-system)
                                  (%current-system))))
-  (cond ((target-hurd? target)  "GNU")
-        ((target-linux? target) "Linux")
-        ((target-mingw? target) "Windows")
-        ;; For avr, or1k-elf, xtensa-ath9k-elf
-        (else "Generic")))
+  (match target
+    ((? target-hurd?)  "GNU")
+    ((? target-linux?) "Linux")
+    ((? target-mingw?) "Windows")
+    ;; For avr, or1k-elf, xtensa-ath9k-elf
+    (_ "Generic")))
 
 (define %cmake-build-system-modules
   ;; Build-side modules imported by default.
