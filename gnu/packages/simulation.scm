@@ -779,7 +779,6 @@ FFC is part of the FEniCS Project.")
                   python-3
                   pt-scotch32
                   suitesparse
-                  sundials-openmpi
                   zlib))
     (native-inputs (list catch-framework pkg-config))
     (propagated-inputs (list python-fenics-ffc petsc-openmpi slepc-openmpi))
@@ -790,7 +789,7 @@ FFC is part of the FEniCS Project.")
           "-DDOLFIN_ENABLE_MPI:BOOL=ON"
           "-DDOLFIN_ENABLE_PARMETIS:BOOL=OFF"
           "-DDOLFIN_ENABLE_SCOTCH:BOOL=ON"
-          "-DDOLFIN_ENABLE_SUNDIALS:BOOL=ON"
+          "-DDOLFIN_ENABLE_SUNDIALS:BOOL=OFF"
           "-DDOLFIN_ENABLE_TRILINOS:BOOL=OFF")
       #:phases
       #~(modify-phases %standard-phases
@@ -811,8 +810,6 @@ FFC is part of the FEniCS Project.")
                       #$(this-package-input "slepc"))
               (setenv "SCOTCH_DIR"
                       #$(this-package-input "scotch"))
-              (setenv "SUNDIALS_DIR"
-                      #$(this-package-input "sundials"))
               (setenv "UMFPACK_DIR"
                       #$(this-package-input "suitesparse"))))
           (add-before 'check 'pre-check
