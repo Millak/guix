@@ -10932,7 +10932,9 @@ metadata from HTML markup.  Currently, extruct supports:
        (uri (pypi-uri "wadllib" version))
        (sha256
         (base32 "1z65crvdsjxh9nahz1g6q021ijmv85ixmq88l96d61qh5imavndc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (propagated-inputs (list python-lazr-uri))
     (home-page "https://launchpad.net/wadllib")
     (synopsis "Web Application Description Language (WADL) navigation library")
