@@ -941,6 +941,8 @@ and manipulation.")
     (build-system gnu-build-system)
     (arguments
      (list #:parallel-tests? #f        ;Concurrency issues in tests.
+           ;; relax gcc 14 strictness
+           #:configure-flags #~(list "CFLAGS=-g2 -O2 -Wno-error=int-conversion")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'symlink-skk-jisyo
