@@ -506,7 +506,7 @@ including input methods previous bundled inside Fcitx 4:
 (define-public fcitx5-configtool
   (package
     (name "fcitx5-configtool")
-    (version "5.1.8")
+    (version "5.1.10")
     (source
      (origin
        (method url-fetch)
@@ -514,7 +514,7 @@ including input methods previous bundled inside Fcitx 4:
              "https://download.fcitx-im.org/fcitx5"
              "/fcitx5-configtool/fcitx5-configtool-" version ".tar.zst"))
        (sha256
-        (base32 "1kg0hddds7raqf5y4qw2x02hb4i5impv4hjfm2qvcn3g775rzrq6"))))
+        (base32 "1fb21mbc0k33cadslq0rjwi5y7fxm5jzgdk9yna3h2r62sdmdb60"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f
