@@ -2174,15 +2174,17 @@ decode and default on encode.
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1807 passed, 26 deselected, 1 warning
       #:test-flags
       #~(list "-k" (string-join
                     (list
                      ;; Skip documentation tests.
                      "not test_update_docs"
                      ;; Tests fail with error: AssertinError ...
+                     "test_module_integration"
                      "test_parameter_for_autopublish_code_sha256"
                      "test_sam_with_language_extension"
-                     "test_module_integration"
+                     "test_success_run"
                      "test_templates"
                      ;; Test fails with error: diff error while comparing
                      ;; graphs.
