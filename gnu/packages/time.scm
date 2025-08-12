@@ -411,20 +411,23 @@ business day calculation.")
     (version "2.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "parsedatetime" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bear/parsedatetime")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0mfl0ixshqkwx7z5siaib7ix5j2iahb1jqfpyhqp42wan7xnicsc"))))
-    (build-system python-build-system)
+        (base32 "001rxkawjjjffbqzjg96znkhj4z6q7ky349rldd8yx6vk8cgdc2m"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nose python-pyicu python-pytest python-pytest-runner))
+     (list python-pyicu python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-future))
     (home-page "https://github.com/bear/parsedatetime/")
     (synopsis "Parse human-readable date/time text")
     (description
-     "Parse human-readable date/time text.")
+     "This package provides some tools to parse human-readable date/time text
+in Python.")
     (license asl2.0)))
 
 (define-public python-ciso8601
