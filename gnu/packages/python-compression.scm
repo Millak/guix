@@ -393,8 +393,7 @@ library.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-importlib-metadata))
     (native-inputs
-     (list python-pyannotate
-           python-pytest
+     (list python-pytest
            python-setuptools-scm
            python-setuptools
            python-wheel))
