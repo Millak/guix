@@ -1234,7 +1234,8 @@ contactless (RFID) and contact USB chipcard readers.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "05ncaw8m6d5lsswji950yx4p96y3ri0254vwrrdn4vkkflkc8any"))
-       (patches (search-patches "qdigidoc-bundle-tsl-files.patch"))))
+       (patches (search-patches "qdigidoc-bundle-config-files.patch"
+                                "qdigidoc-bundle-tsl-files.patch"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1267,5 +1268,5 @@ contactless (RFID) and contact USB chipcard readers.")
     (description
      "This application provides support for using private and governmental
 e-services, signing and encrypting DigiDoc documents, and configuring Estonian
-ID cards. It requires a running pcscd service and a compatible card reader.")
+ID cards.  It requires a running pcscd service and a compatible card reader.")
     (license license:lgpl2.1+)))
