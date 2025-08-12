@@ -3473,16 +3473,28 @@ provided by Pipewire.")
 (define-public python-pyaudio
   (package
     (name "python-pyaudio")
-    (version "0.2.12")
+    (version "0.2.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyAudio" version))
        (sha256
-        (base32 "17pvc27pn2xbisbq7nibhidyw8h2kyms7g2xbyx7nlxwfbdzbpam"))))
-    (build-system python-build-system)
-    (inputs
-     (list portaudio))
+        (base32 "11rgpnahh2kr3x4plr0r7kpccmbplm35cj669wglv6dlg4wgzpvq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Most tests require access to devices.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (setenv "PYTHONPATH" (string-append (getcwd) "/tests"))
+                (apply invoke "python" test-flags)))))))
+    (native-inputs
+     (list python-numpy python-setuptools python-wheel))
+    (inputs (list portaudio))
     (home-page "https://people.csail.mit.edu/hubert/pyaudio/")
     (synopsis "Bindings for PortAudio v19")
     (description "This package provides bindings for PortAudio v19, the
