@@ -1740,6 +1740,7 @@ Powerline support.")
        (sha256
         (base32 "0mir6yi5i0h1kk6fr8dsqmv4m8cwrbldadpy7rnlyvkd26wdqpiy"))))
     (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/adobe-fonts/source-code-pro")
     (synopsis
      "Monospaced font family for user interface and coding environments")
