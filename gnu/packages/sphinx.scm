@@ -1331,22 +1331,12 @@ executed during the Sphinx build process.")
        (method url-fetch)
        (uri (pypi-uri "sphobjinv" version))
        (sha256
-        (base32
-         "10x4g92agj6aai0lj0xpcx58zlm1zamzws1w9dczsl1izpz07ij7"))
-       (patches (search-patches
-                 "python-sphobjinv-defer-ssl-import.patch"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "pytest")))))))
+        (base32 "10x4g92agj6aai0lj0xpcx58zlm1zamzws1w9dczsl1izpz07ij7"))
+       (patches (search-patches "python-sphobjinv-defer-ssl-import.patch"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-dictdiffer python-pytest python-pytest-check
-           python-sphinx python-stdio-mgr))
+           python-setuptools python-wheel python-sphinx python-stdio-mgr))
     (propagated-inputs
      (list python-attrs python-certifi python-jsonschema))
     (home-page "https://github.com/bskinn/sphobjinv")
