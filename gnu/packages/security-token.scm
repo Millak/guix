@@ -20,7 +20,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
@@ -1233,49 +1233,13 @@ contactless (RFID) and contact USB chipcard readers.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05ncaw8m6d5lsswji950yx4p96y3ri0254vwrrdn4vkkflkc8any"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config
-           gettext-minimal
-           qtbase
-           qttools
-           ;; These XML files are normally downloaded at build time.  The
-           ;; latest pivot version of eu-lotl.xml is used here for its stable
-           ;; URL (the main eu-lotl.xml file should still be checked
-           ;; occasionally for new pivot versions), and estonian-tsl.xml must
-           ;; be updated when the document changes.  The signatures in these
-           ;; files haven't been verified (they're not if downloaded while
-           ;; building, either), but it should be possible to verify them
-           ;; using tools like xmlsec or DSS (https://github.com/esig/dss).
-           (origin
-             (method url-fetch)
-             (uri
-              "https://ec.europa.eu/tools/lotl/eu-lotl-pivot-341.xml")
-             (sha256
-              (base32
-               "1l8nyhiifzm54lvb955vk1x46byf22dhckv1ijmqpkjpijlkqcpx")))
-           (origin
-             (method url-fetch)
-             (uri
-              "https://sr.riik.ee/tsl/estonian-tsl.xml")
-             (sha256
-              (base32
-               "1pf0mbh4g5x5j56ckpllhbng047645wlv2j5bs8647n9aq5jnpg3")))))
-    (inputs (list flatbuffers
-                  libdigidocpp
-                  openldap
-                  opensc
-                  openssl
-                  pcsc-lite
-                  qtsvg
-                  zlib))
+        (base32 "05ncaw8m6d5lsswji950yx4p96y3ri0254vwrrdn4vkkflkc8any"))
+       (patches (search-patches "qdigidoc-bundle-tsl-files.patch"))))
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase                   ;qt6
       #:tests? #f                       ;no test suite
-      #:modules '((guix build cmake-build-system)
-                  (guix build utils)
-                  (sxml simple))
       #:phases
       #~(modify-phases %standard-phases
           ;; QDigiDoc4 dlopens OpenSC libraries.
@@ -1285,25 +1249,19 @@ contactless (RFID) and contact USB chipcard readers.")
                 (("\"opensc-pkcs11.so\"")
                  (format #f "~S"
                          (search-input-file inputs
-                                            "lib/opensc-pkcs11.so"))))))
-          ;; Prevent use of TSLDownload at build time; see
-          ;; client/CMakeLists.txt. The files are copied to the build
-          ;; directory so that each has its expected path and filename.
-          (add-after 'unpack 'generate-tsl-qrc
-            (lambda* (#:key inputs #:allow-other-keys)
-              (copy-file #$(this-package-native-input "eu-lotl-pivot-341.xml")
-                         "client/eu-lotl.xml")
-              (copy-file #$(this-package-native-input "estonian-tsl.xml")
-                         "client/EE.xml")
-              (call-with-output-file "client/TSL.qrc"
-                (lambda (port)
-                  (sxml->xml
-                   `(RCC
-                     (qresource
-                      (@ (prefix "TSL"))
-                      (file "eu-lotl.xml")
-                      (file "EE.xml")))
-                   port))))))))
+                                            "lib/opensc-pkcs11.so")))))))))
+    (native-inputs
+     (list pkg-config
+           gettext-minimal
+           qttools))
+    (inputs (list flatbuffers
+                  libdigidocpp
+                  openldap
+                  opensc
+                  openssl
+                  pcsc-lite
+                  qtsvg
+                  zlib))
     (home-page "https://github.com/open-eid/DigiDoc4-Client")
     (synopsis "Estonian ID card application")
     (description
