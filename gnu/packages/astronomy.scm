@@ -2011,6 +2011,40 @@ implementation package such as asdf-astropy.")
             python-wheel))
      (propagated-inputs '()))))
 
+(define-public python-asdf-wcs-schemas
+  (hidden-package
+   (package
+     (name "python-asdf-wcs-schemas")
+     (version "0.5.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "asdf_wcs_schemas" version))
+        (sha256
+         (base32 "1dar2pzf2plwyl1rbmnv8fqvx1ljgpf3z39d4ybmn690djjdsyxg"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:test-flags #~(list "tests")))
+     (native-inputs
+      (list python-asdf
+            python-pytest
+            python-pytest-openfiles
+            python-setuptools-next
+            python-setuptools-scm
+            python-wheel))
+     (propagated-inputs
+      (list python-asdf-coordinates-schemas
+            python-asdf-standard
+            python-asdf-transform-schemas))
+     (home-page "https://github.com/asdf-format/asdf-wcs-schemas")
+     (synopsis "ASDF WCS Schemas")
+     (description
+      "This package provides ASDF schemas for validating World Coordinate
+System (WCS) tags.  Users should not need to install this directly; instead,
+install an implementation package such as gwcs.")
+     (license license:bsd-3))))
+
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
@@ -5359,6 +5393,54 @@ profiles.  In particular, PetroFit includes tools for performing accurate
 photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
     (license license:bsd-3)))
 
+(define-public python-photutils
+  (package
+    (name "python-photutils")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "photutils" version))
+       (sha256
+        (base32 "1h1bf8694pf9qdv9gf0934v6dk08d3ybrj858salqnfz6prnfnzb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "photutils"
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-vv" test-flags))))))))
+    (propagated-inputs
+     (list python-astropy
+           python-bottleneck
+           python-gwcs
+           python-matplotlib
+           python-numpy
+           python-rasterio
+           python-regions
+           python-scikit-image
+           python-scipy
+           python-shapely
+           python-tqdm))
+    (native-inputs
+     (list python-cython-3
+           python-extension-helpers
+           python-pytest-astropy
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://github.com/astropy/photutils")
+    (synopsis "Source detection and photometry")
+    (description "Photutils is an Astropy package for detection and photometry
+of astronomical sources.")
+    (license license:bsd-3)))
+
 (define-public python-pint-pulsar
   (package
     (name "python-pint-pulsar")
@@ -6142,6 +6224,69 @@ PSF} describing how the optical system spreads light from sources.")
 observations from the Nancy Grace Roman Space Telescope.")
       (license license:bsd-3))))
 
+(define-public python-sbpy
+  (package
+    (name "python-sbpy")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sbpy" version))
+       (sha256
+        (base32 "1xqi29rrh7v05zmvyl8gffrkrw5rlcxig1w6xw1v8f7ikydb5plv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  No such file or directory: '/homeless-shelter/.astropy'
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-ads
+           python-astropy
+           python-astroquery
+           python-ginga
+           python-numpy
+           python-photutils
+           ;python-pyoorb ;not packed yet in Guix
+           python-pyyaml
+           python-scipy
+           python-synphot))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-doctestplus
+           python-pytest-remotedata
+           python-pytest-xdist
+           python-setuptools-scm))
+    (home-page "https://sbpy.org")
+    (synopsis "Python module for small-body planetary astronomy")
+    (description
+     "@code{sbpy} is a package for small-body planetary astronomy.  It is
+meant to supplement functionality provided by @code{astropy} with functions
+and methods that are frequently used in the context of planetary astronomy
+with a clear focus on asteroids and comets.
+Features:
+@itemize
+@item observation planning tools tailored to moving objects
+@item photometry models for resolved and unresolved observations
+@item wrappers and tools for astrometry and orbit fitting
+@item spectroscopy analysis tools and models for reflected solar light and
+emission from gas
+@item cometary gas and dust coma simulation and analysis tools
+@item asteroid thermal models for flux estimation and size/albedo estimation
+@item image enhancement tools for comet comae and PSF subtraction tools
+@item lightcurve and shape analysis tools
+@item access tools for various databases for orbital and physical data, as
+well as ephemerides services
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-sep
   (package/inherit libsep
     (name "python-sep")
@@ -6199,6 +6344,38 @@ observations from the Nancy Grace Roman Space Telescope.")
      "This package provides an alternative maintained fork of SEP python
 library with bug fixtures.")
     (license (list license:expat license:lgpl3+ license:bsd-3))))
+
+(define-public python-sgp4
+  (package
+    (name "python-sgp4")
+    (version "2.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sgp4" version))
+       (sha256
+        (base32 "0ll3gxjf697llh6nvisxnj2h4hl23nq1m24ymsykz8kf4ygj8man"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/brandon-rhodes/python-sgp4")
+    (synopsis "Track earth satellite TLE orbits using SGP4")
+    (description
+     "This package provides a Python implementation for computations of the
+position and velocity of an earth-orbiting satellite, given the satellite’s
+@acronym{TLE, Two-line element set} orbital elements from a source like
+@url{CelesTrak, https://celestrak.org/}.
+
+It implements the most recent version of @acronym{SGP4, Simplified General
+Perturbation models}, and is regularly run against the SGP4 test suite to make
+sure that its satellite position predictions agree to within 0.1 mm with the
+predictions of the standard distribution of the algorithm.  This error is far
+less than the 1–3 km/day by which satellites themselves deviate from the ideal
+orbits described in TLE files.")
+    (license license:expat)))
 
 (define-public python-sirilic
   (package
@@ -6637,54 +6814,6 @@ instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
 
-(define-public python-photutils
-  (package
-    (name "python-photutils")
-    (version "2.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "photutils" version))
-       (sha256
-        (base32 "1h1bf8694pf9qdv9gf0934v6dk08d3ybrj858salqnfz6prnfnzb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--pyargs" "photutils"
-              "--numprocesses" (number->string (min 8 (parallel-job-count))))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-vv" test-flags))))))))
-    (propagated-inputs
-     (list python-astropy
-           python-bottleneck
-           python-gwcs
-           python-matplotlib
-           python-numpy
-           python-rasterio
-           python-regions
-           python-scikit-image
-           python-scipy
-           python-shapely
-           python-tqdm))
-    (native-inputs
-     (list python-cython-3
-           python-extension-helpers
-           python-pytest-astropy
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm))
-    (home-page "https://github.com/astropy/photutils")
-    (synopsis "Source detection and photometry")
-    (description "Photutils is an Astropy package for detection and photometry
-of astronomical sources.")
-    (license license:bsd-3)))
-
 ;; XXX: The project is archived, maintained fork is available see
 ;; <https://github.com/poliastro/poliastro/issues/1640>.
 ;; Maintained fork <https://github.com/pleiszenburg/hapsira>.
@@ -6967,38 +7096,6 @@ various techniques via a uniform interface, where reprojection is the
 re-gridding of images from one world coordinate system to another e.g.
 changing the pixel resolution, orientation, coordinate system.")
     (license license:bsd-3)))
-
-(define-public python-sgp4
-  (package
-    (name "python-sgp4")
-    (version "2.24")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sgp4" version))
-       (sha256
-        (base32 "0ll3gxjf697llh6nvisxnj2h4hl23nq1m24ymsykz8kf4ygj8man"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/brandon-rhodes/python-sgp4")
-    (synopsis "Track earth satellite TLE orbits using SGP4")
-    (description
-     "This package provides a Python implementation for computations of the
-position and velocity of an earth-orbiting satellite, given the satellite’s
-@acronym{TLE, Two-line element set} orbital elements from a source like
-@url{CelesTrak, https://celestrak.org/}.
-
-It implements the most recent version of @acronym{SGP4, Simplified General
-Perturbation models}, and is regularly run against the SGP4 test suite to make
-sure that its satellite position predictions agree to within 0.1 mm with the
-predictions of the standard distribution of the algorithm.  This error is far
-less than the 1–3 km/day by which satellites themselves deviate from the ideal
-orbits described in TLE files.")
-    (license license:expat)))
 
 (define-public python-spectral-cube
   (package
@@ -7699,69 +7796,6 @@ photometric systems are available, and users can incorporate their own filters,
 spectra, and data.")
       (license license:bsd-3))))
 
-(define-public python-sbpy
-  (package
-    (name "python-sbpy")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sbpy" version))
-       (sha256
-        (base32 "1xqi29rrh7v05zmvyl8gffrkrw5rlcxig1w6xw1v8f7ikydb5plv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home-env
-            (lambda _
-              ;; Tests require HOME to be set.
-              ;;  No such file or directory: '/homeless-shelter/.astropy'
-              (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-ads
-           python-astropy
-           python-astroquery
-           python-ginga
-           python-numpy
-           python-photutils
-           ;python-pyoorb ;not packed yet in Guix
-           python-pyyaml
-           python-scipy
-           python-synphot))
-    (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-pytest-doctestplus
-           python-pytest-remotedata
-           python-pytest-xdist
-           python-setuptools-scm))
-    (home-page "https://sbpy.org")
-    (synopsis "Python module for small-body planetary astronomy")
-    (description
-     "@code{sbpy} is a package for small-body planetary astronomy.  It is
-meant to supplement functionality provided by @code{astropy} with functions
-and methods that are frequently used in the context of planetary astronomy
-with a clear focus on asteroids and comets.
-Features:
-@itemize
-@item observation planning tools tailored to moving objects
-@item photometry models for resolved and unresolved observations
-@item wrappers and tools for astrometry and orbit fitting
-@item spectroscopy analysis tools and models for reflected solar light and
-emission from gas
-@item cometary gas and dust coma simulation and analysis tools
-@item asteroid thermal models for flux estimation and size/albedo estimation
-@item image enhancement tools for comet comae and PSF subtraction tools
-@item lightcurve and shape analysis tools
-@item access tools for various databases for orbital and physical data, as
-well as ephemerides services
-@end itemize")
-    (license license:bsd-3)))
-
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
@@ -7869,40 +7903,6 @@ implementation package such as asdf-astropy.")
        (description
         "This package provides ASDF schemas for validating FITS tags.")
        (license license:bsd-3)))))
-
-(define-public python-asdf-wcs-schemas
-  (hidden-package
-   (package
-     (name "python-asdf-wcs-schemas")
-     (version "0.5.0")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "asdf_wcs_schemas" version))
-        (sha256
-         (base32 "1dar2pzf2plwyl1rbmnv8fqvx1ljgpf3z39d4ybmn690djjdsyxg"))))
-     (build-system pyproject-build-system)
-     (arguments
-      (list
-       #:test-flags #~(list "tests")))
-     (native-inputs
-      (list python-asdf
-            python-pytest
-            python-pytest-openfiles
-            python-setuptools-next
-            python-setuptools-scm
-            python-wheel))
-     (propagated-inputs
-      (list python-asdf-coordinates-schemas
-            python-asdf-standard
-            python-asdf-transform-schemas))
-     (home-page "https://github.com/asdf-format/asdf-wcs-schemas")
-     (synopsis "ASDF WCS Schemas")
-     (description
-      "This package provides ASDF schemas for validating World Coordinate
-System (WCS) tags.  Users should not need to install this directly; instead,
-install an implementation package such as gwcs.")
-     (license license:bsd-3))))
 
 (define-public python-rad
   (package
