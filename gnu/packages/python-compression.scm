@@ -168,7 +168,6 @@ to access its data, so it can be used as a drop-in replacement.")
            python-coverage
            python-coveralls
            python-hypothesis
-           python-pyannotate
            python-pytest
            python-pytest-cov
            python-setuptools
