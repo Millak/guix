@@ -27985,21 +27985,20 @@ belong to tagged versions.")
        (method url-fetch)
        (uri (pypi-uri "setuptools-git" version))
        (sha256
-        (base32
-         "0i84qjwp5m0l9qagdjww2frdh63r37km1c48mrvbmaqsl1ni6r7z"))))
-    (build-system python-build-system)
+        (base32 "0i84qjwp5m0l9qagdjww2frdh63r37km1c48mrvbmaqsl1ni6r7z"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This is needed for tests.
-         (add-after 'unpack 'configure-git
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (invoke "git" "config" "--global" "user.email" "guix")
-             (invoke "git" "config" "--global" "user.name" "guix")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This is needed for tests.
+          (add-after 'unpack 'configure-git
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "git" "config" "--global" "user.email" "guix")
+              (invoke "git" "config" "--global" "user.name" "guix"))))))
     (native-inputs
-     `(("git" ,git-minimal)))
+     (list git-minimal python-setuptools python-wheel))
     (home-page "https://github.com/msabramo/setuptools-git")
     (synopsis "Setuptools revision control system plugin for Git")
     (description
