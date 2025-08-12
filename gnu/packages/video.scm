@@ -3334,8 +3334,7 @@ audio, images) from the Web.  It can use either mpv or vlc for playback.")
            perl-term-readline-gnu
            perl-unicode-linebreak
            xdg-utils
-           ;; Some videos play without youtube-dl, but others silently fail to.
-           youtube-dl))
+           yt-dlp))
     (arguments
      `(#:modules ((guix build perl-build-system)
                   (guix build utils)
@@ -3348,9 +3347,9 @@ audio, images) from the Web.  It can use either mpv or vlc for playback.")
          (add-after 'unpack 'refer-to-inputs
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "lib/WWW/YoutubeViewer.pm"
-               (("'youtube-dl'")
-                (format #f "'~a/bin/youtube-dl'"
-                        (assoc-ref inputs "youtube-dl"))))
+               (("'yt-dlp'")
+                (format #f "'~a'"
+                        (search-input-file inputs "bin/yt-dlp"))))
              (substitute* '("bin/gtk2-youtube-viewer"
                             "bin/gtk3-youtube-viewer")
                (("'xdg-open'")
