@@ -10799,24 +10799,18 @@ objects.")
 (define-public python-spectra
   (package
     (name "python-spectra")
-    (version "0.0.11")
+    (version "0.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "spectra" version))
        (sha256
-        (base32
-         "1f322x914bhkg6r5gv1vmnir3iy0k5kih0fd2gp3rdkw32jn5cwf"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "nosetests" "-v"))))))
+        (base32 "0gva48a1rn5yxj6dgy76dnndqaf09k5q2l9r41h2a66b84rf6c3a"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-colormath))
+     (list python-colormath2))
     (native-inputs
-     (list python-nose))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/jsvine/spectra")
     (synopsis "Color scales and color conversion")
     (description
