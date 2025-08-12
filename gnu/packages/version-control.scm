@@ -4847,7 +4847,7 @@ developer workflow, and project and release management.")
 (define-public hut
   (package
     (name "hut")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -4856,16 +4856,7 @@ developer workflow, and project and release management.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14cia976i2jdzyzw4wk9fhkh6zqgmb09ryf31ys24smmfcdfxyf1"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; XXX: Module name has been changed upstream, it's already
-            ;; adjusted on master, consider to remove in the next refresh
-            ;; cycle.
-            (substitute* (find-files "." "\\.go$")
-              (("git.sr.ht/~emersion/go-scfg")
-               "codeberg.org/emersion/go-scfg"))))))
+        (base32 "0scw4nvm3qpg7l6anhljkixn3g36k03ikg6pl0hs76a3wkf89km5"))))
     (build-system go-build-system)
     (arguments
      (list
