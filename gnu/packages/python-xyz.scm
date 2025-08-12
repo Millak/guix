@@ -32835,60 +32835,6 @@ prevent debuggers and other applications from inspecting the memory within
 your process.")
     (license license:expat)))
 
-(define-public python-owslib
-  (package
-    (name "python-owslib")
-    (version "0.19.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/geopython/OWSLib")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nl1j6wk2rly72zydzi86mdb7svl5mwfkdknmm2kw7clg5f8p9ix"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; XXX: Those tests require network access.
-         "-k" (string-join
-               (list "not test_ows_interfaces_wcs"
-                     "test_wfs_110_remotemd_parse_all"
-                     "test_wfs_110_remotemd_parse_single"
-                     "test_wfs_200_remotemd_parse_all"
-                     "test_wfs_200_remotemd_parse_single"
-                     "test_wms_130_remotemd_parse_all"
-                     "test_wms_130_remotemd_parse_single"
-                     "test_wmts_example_informatievlaanderen")
-               " and not ")
-         ;; XXX: Not collected properly.
-         "--ignore-glob=tests/doctests/*")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'cleanup-build-directory
-            (lambda _
-              (delete-file-recursively "build"))))))
-    (native-inputs
-     (list python-dateutil
-           python-pyproj
-           python-pyyaml
-           python-pytest
-           python-pytest-cov
-           python-pytz
-           python-requests
-           python-setuptools
-           python-wheel))
-    (synopsis "Interface for Open Geospatial Consortium web service")
-    (description
-     "OWSLib is a Python package for client programming with Open Geospatial
-Consortium (OGC) web service (hence OWS) interface standards, and their related
-content models.")
-    (home-page "https://geopython.github.io/OWSLib/")
-    (license license:bsd-3)))
-
 (define-public python-xattr
   (package
     (name "python-xattr")
