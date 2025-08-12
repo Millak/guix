@@ -2944,23 +2944,30 @@ Jellyfin.  It has support for various media files without transcoding.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.28.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mikf/gallery-dl"
-                                  "/releases/download/v" version "/gallery_dl-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0j4hxp1lbcxgg34ilzhcpxvswgnvvrlk66pn3w9ksv5g8jdz7rpi"))))
-    (build-system python-build-system)
+    (version "1.30.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mikf/gallery-dl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15sgvk81s61v4yzzv1s5ksr4z77qhmv7ynyn34zrx5x41g72hgpz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: A lot of those require network.
+      #:test-flags #~(list "--ignore=test/test_results.py")))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")
     (synopsis "Command-line program to download images from several sites")
-    (description "Gallery-dl is a command-line program that downloads image
-galleries and collections from several image hosting sites.  While this package
-can use youtube-dl or yt-dlp packages to download videos, the focus is more on
-images and image hosting sites.")
+    (description
+     "Gallery-dl is a command-line program that downloads image galleries and
+collections from several image hosting sites.  While this package can use
+yt-dlp packages to download videos, the focus is more on images and image
+hosting sites.")
     (license license:gpl2)))
 
 (define-public mpv-mpris
