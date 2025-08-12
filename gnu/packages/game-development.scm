@@ -1577,38 +1577,40 @@ and multimedia programs in the Python language.")
 (define-public python-pygame-menu
   (package
     (name "python-pygame-menu")
-    (version "4.5.1")
+    (version "4.5.4")
     (source
      ;; Tests not included in release.
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/ppizarror/pygame-menu")
-         (commit version)))
+          (url "https://github.com/ppizarror/pygame-menu")
+          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0xd5d6nfkd5bp2zfq77yglp6mz043w28zprfz7savgmph5kvdnfh"))))
+        (base32 "1a474rvjkm9d45h0bhgaf9h21r3lcgqd27686fav8601395jgwrg"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'prepare-test-environment
-                 (lambda _
-                   (setenv "HOME" (getcwd))))
-               (add-before 'check 'skip-certain-tests
-                 (lambda _
-                   (substitute* "test/test_font.py"
-                     (("test_font_argument") "skip_test_font_argument")
-                     (("test_system_load") "skip_test_system_load"))
-                   (substitute* "test/test_baseimage.py"
-                     ;; Tuples differ: (111, 110) != (110, 109)
-                     (("test_invalid_image") "skip_test_invalid_image")
-                     (("test_scale") "skip_test_scale")))))))
-    (propagated-inputs (list python-pygame python-pyperclip
-                             python-typing-extensions))
-    (native-inputs (list python-nose2 python-setuptools python-wheel))
+     (list
+      #:test-flags
+      ;; AssertionError: Tuples differ: (111, 110) != (110, 109)
+      #~(list "--deselect=test/test_baseimage.py::BaseImageTest::test_invalid_image"
+              ;; IndexError: list index out of range
+              "--deselect=test/test_font.py::FontTest::test_font_argument"
+              ;;IndexError: pop from empty list
+              "--deselect=test/test_font.py::FontTest::test_system_load")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-next))
+    (propagated-inputs
+     (list python-pygame
+           python-pyperclip
+           python-typing-extensions))
     (home-page "https://pygame-menu.readthedocs.io")
     (synopsis "Menu for pygame")
     (description
