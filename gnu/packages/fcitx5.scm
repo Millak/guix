@@ -445,7 +445,7 @@ backend.")
 (define-public fcitx5-chinese-addons
   (package
     (name "fcitx5-chinese-addons")
-    (version "5.1.8")
+    (version "5.1.9")
     (source
      (origin
        (method url-fetch)
@@ -453,7 +453,7 @@ backend.")
                            "/fcitx5-chinese-addons/fcitx5-chinese-addons-"
                            version "_dict.tar.zst"))
        (sha256
-        (base32 "06ls6ww60y7l39bjk1h1xvjq9c3va5cib6hs4y0xk9p69f2s41l3"))))
+        (base32 "0j0xx4kil93ixa81j08y4mm5qfpl32qf3fdlcw2sbjn92v238hbv"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
