@@ -91,8 +91,8 @@
   #:use-module (gnu packages web))
 
 (define-public abc
-  (let ((commit "d2714035145bd237097c509c23fc9e24b0fa933b")
-        (revision "5"))
+  (let ((commit "e29dcd9f3275874c8d31a2f781487efac1dabb7b")
+        (revision "6"))
     (package
       (name "abc")
       (version (git-version "0.0" revision commit))
@@ -104,7 +104,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "10qjw6mbzwg2lgsscw759xrghqq2mvv0xcalpymngnjhpg9qznqk"))))
+                  "18g4i1kdsxvp25p5z3wja4jkxppgrp6ybxal9y2p2d2qvlafiw5z"))))
       (build-system gnu-build-system)
       (inputs
        (list readline))
