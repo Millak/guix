@@ -96,6 +96,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -3172,88 +3173,7 @@ to download videos from Austria's national television broadcaster.")
 video streaming services of the Finnish national broadcasting company Yle.")
     (license license:gpl3+)))
 
-(define-public youtube-dl
-  (package
-    (name "youtube-dl")
-    (version "2021.12.17")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://youtube-dl.org/downloads/latest/"
-                                  "youtube-dl-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1prm84ci1n1kjzhikhrsbxbgziw6br822psjnijm2ibqnz49jfwz"))
-              (snippet
-               '(begin
-                  ;; Delete the pre-generated files, except for the man page
-                  ;; which requires 'pandoc' to build.
-                  (for-each delete-file '("youtube-dl"
-                                          ;;pandoc is needed to generate
-                                          ;;"youtube-dl.1"
-                                          "youtube-dl.bash-completion"
-                                          "youtube-dl.fish"
-                                          "youtube-dl.zsh"))))))
-    (build-system python-build-system)
-    (arguments
-     ;; The problem here is that the directory for the man page and completion
-     ;; files is relative, and for some reason, setup.py uses the
-     ;; auto-detected sys.prefix instead of the user-defined "--prefix=FOO".
-     ;; So, we need pass the prefix directly.  In addition, make sure the Bash
-     ;; completion file is called 'youtube-dl' rather than
-     ;; 'youtube-dl.bash-completion'.
-     `(#:tests? #f ; Many tests fail. The test suite can be run with pytest.
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'default-to-the-ffmpeg-input
-                    (lambda _
-                      ;; See <https://issues.guix.gnu.org/43418#5>.
-                      ;; ffmpeg is big but required to request free formats
-                      ;; from, e.g., YouTube so pull it in unconditionally.
-                      ;; Continue respecting the --ffmpeg-location argument.
-                      (substitute* "youtube_dl/postprocessor/ffmpeg.py"
-                        (("\\.get\\('ffmpeg_location'\\)" match)
-                         (format #f "~a or '~a'" match (which "ffmpeg"))))))
-                  (add-before 'build 'build-generated-files
-                    (lambda _
-                      ;; Avoid the make targets that require pandoc.
-                      (invoke "make"
-                              "PYTHON=python"
-                              "youtube-dl"
-                              ;;"youtube-dl.1"   ; needs pandoc
-                              "youtube-dl.bash-completion"
-                              "youtube-dl.zsh"
-                              "youtube-dl.fish")))
-                  (add-before 'install 'fix-the-data-directories
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((prefix (assoc-ref outputs "out")))
-                        (mkdir "bash-completion")
-                        (rename-file "youtube-dl.bash-completion"
-                                     "bash-completion/youtube-dl")
-                        (substitute* "setup.py"
-                          (("youtube-dl\\.bash-completion")
-                           "bash-completion/youtube-dl")
-                          (("'etc/")
-                           (string-append "'" prefix "/etc/"))
-                          (("'share/")
-                           (string-append "'" prefix "/share/"))))))
-                  (add-after 'install 'install-completion
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (zsh (string-append out
-                                                 "/share/zsh/site-functions")))
-                        (mkdir-p zsh)
-                        (copy-file "youtube-dl.zsh"
-                                   (string-append zsh "/_youtube-dl"))))))))
-    (native-inputs
-     (list zip))
-    (inputs
-     (list ffmpeg))
-    (synopsis "Download videos from YouTube.com and other sites")
-    (description
-     "Youtube-dl is a small command-line program to download videos from
-YouTube.com and many more sites.")
-    (home-page "https://yt-dl.org")
-    (properties '((release-monitoring-url . "https://yt-dl.org/downloads/")))
-    (license license:public-domain)))
+(define-deprecated/public-alias youtube-dl yt-dlp)
 
 (define-public yt-dlp
   (package
