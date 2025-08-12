@@ -32826,27 +32826,28 @@ can be queued at any time.")
           (base32 "0y62lkgsg19j05dpd6sp6zify8vq8xvpc8caqiy4rwi7p4ahacsf"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; .el is read-only in git.
-               (make-file-writable "ytdl.el")
-               ;; Specify the absolute file names of the various programs so
-               ;; that everything works out-of-the-box.
-               (emacs-substitute-variables "ytdl.el"
-                 ("ytdl-command"
-                  (search-input-file inputs "/bin/youtube-dl"))))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; .el is read-only in git.
+                (make-file-writable "ytdl.el")
+                ;; Specify the absolute file names of the various programs so
+                ;; that everything works out-of-the-box.
+                (emacs-substitute-variables "ytdl.el"
+                  ("ytdl-command"
+                   (search-input-file inputs "/bin/yt-dlp"))))))))
       (inputs
-       (list youtube-dl))
+       (list yt-dlp))
       (propagated-inputs
        (list emacs-async emacs-dash))
       (home-page "https://gitlab.com/tuedachu/ytdl")
       (synopsis "Emacs interface for youtube-dl")
       (description
-       "This package manages a video download queue for @command{youtube-dl},
+       "This package manages a video download queue for @command{yt-dlp},
 which serves as the back end.  New videos can be queued at any time.  All
-youtube-dl backends are supported.  It is possible to create download profiles
+yt-dlp backends are supported.  It is possible to create download profiles
 depending on the downloaded URL.")
       (license license:gpl3+))))
 
