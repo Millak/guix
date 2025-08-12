@@ -4334,6 +4334,7 @@ Spleen also has support for Powerline symbols out of the box.")
        (sha256
         (base32 "02wy9n49nzyvhc55jjmpxrv7hh6ncxv31liniqjgjn7vp68fj40n"))))
     (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://www.stixfonts.org/")
     (synopsis
      "OpenType Unicode fonts for scientific, technical, and mathematical texts")
