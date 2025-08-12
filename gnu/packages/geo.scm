@@ -1296,7 +1296,7 @@ street bearings/orientations, and speed/travel time.")
 (define-public python-owslib
   (package
     (name "python-owslib")
-    (version "0.19.2")
+    (version "0.34.1")
     (source
      (origin
        (method git-fetch)
@@ -1305,7 +1305,7 @@ street bearings/orientations, and speed/travel time.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nl1j6wk2rly72zydzi86mdb7svl5mwfkdknmm2kw7clg5f8p9ix"))))
+        (base32 "14pb96h0nl4c6hs58i2z7mx0fpd4g886ajflbrs69hwiqj2x8a3f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1314,13 +1314,11 @@ street bearings/orientations, and speed/travel time.")
          ;; XXX: Those tests require network access.
          "-k" (string-join
                (list "not test_ows_interfaces_wcs"
-                     "test_wfs_110_remotemd_parse_all"
-                     "test_wfs_110_remotemd_parse_single"
-                     "test_wfs_200_remotemd_parse_all"
-                     "test_wfs_200_remotemd_parse_single"
-                     "test_wms_130_remotemd_parse_all"
-                     "test_wms_130_remotemd_parse_single"
-                     "test_wmts_example_informatievlaanderen")
+                     "test_system_readonly"
+                     "test_sampling_features_readonly"
+                     "test_datastreams_readonly"
+                     "test_observations_readonly"
+                     "test_system_history")
                " and not ")
          ;; XXX: Not collected properly.
          "--ignore-glob=tests/doctests/*")
@@ -1335,10 +1333,13 @@ street bearings/orientations, and speed/travel time.")
            python-pyyaml
            python-pytest
            python-pytest-cov
+           python-pytest-httpserver
            python-pytz
            python-requests
            python-setuptools
            python-wheel))
+    (propagated-inputs
+     (list python-lxml))
     (synopsis "Interface for Open Geospatial Consortium web service")
     (description
      "OWSLib is a Python package for client programming with Open Geospatial
