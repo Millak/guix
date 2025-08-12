@@ -624,7 +624,7 @@ input via a small child-frame spawned at the position of the cursor.")
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.31.1")
+    (version "0.32")
     (source
      (origin
        (method git-fetch)
@@ -633,16 +633,18 @@ input via a small child-frame spawned at the position of the cursor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "194k1bj4ncl9w68s0dkm9ya853hxbm9lxwsckqsmaj57jz7hw46f"))))
+        (base32 "09dqwxa2h471xcyk5zncxzaz19gf8d5r83yhi425blf2r1ir7b34"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:lisp-directory "elisp"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-info
-           (lambda _
-             (invoke "makeinfo" "--no-split"
-                     "-o" "geiser.info" "../doc/geiser.texi"))))))
+     (list
+      #:tests? #f                      ;no tests
+      #:lisp-directory "elisp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-info
+            (lambda _
+              (invoke "makeinfo" "--no-split"
+                      "-o" "geiser.info" "../doc/geiser.texi"))))))
     (native-inputs
      (list texinfo))
     (home-page "https://www.nongnu.org/geiser/")
