@@ -4726,23 +4726,23 @@ and Conformance}
         (uri (pypi-uri "dkimpy" version))
         (sha256
          (base32 "088iz5cqjqh4c7141d94pvn13bh25aizqlrifwv6fs5g16zj094s"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'patch-more-source
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((openssl (assoc-ref inputs "openssl")))
-               (substitute* "dkim/dknewkey.py"
-                 (("/usr/bin/openssl") (string-append openssl "/bin/openssl"))))
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "python" "test.py"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-more-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "dkim/dknewkey.py"
+                (("/usr/bin/openssl")
+                 (search-input-file inputs "bin/openssl")))))
+          (replace 'check
+            (lambda _
+              (invoke "python" "test.py"))))))
     (propagated-inputs
      (list python-dnspython))
     (native-inputs
-     (list python-authres python-pynacl))
+     (list python-authres python-pynacl python-setuptools python-wheel))
     (inputs
      (list openssl))
     (home-page "https://launchpad.net/dkimpy")
