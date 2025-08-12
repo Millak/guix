@@ -456,29 +456,29 @@ backend.")
         (base32 "0j0xx4kil93ixa81j08y4mm5qfpl32qf3fdlcw2sbjn92v238hbv"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       '("-DUSE_WEBKIT=off")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'split-outputs
-           ;; Build with GUI supports requires Qt and increase package closure
-           ;; by 800M on x86_64, so place it under another output.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "gui/pinyindictmanager/CMakeLists.txt"
-               (("\\$\\{CMAKE_INSTALL_LIBDIR\\}" _)
-                (string-append (assoc-ref outputs "gui") "/lib"))))))))
+     (list #:configure-flags
+           #~(list "-DUSE_WEBKIT=off")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'split-outputs
+                 ;; Build with GUI supports requires Qt and increase package
+                 ;; closure by 800M on x86_64, so place it under another output.
+                 (lambda _
+                   (substitute* "gui/pinyindictmanager/CMakeLists.txt"
+                     (("\\$\\{CMAKE_INSTALL_LIBDIR\\}" _)
+                      (string-append #$output:gui "/lib"))))))))
     (inputs
-     `(("fcitx5" ,fcitx5)
-       ("fcitx5-lua" ,fcitx5-lua)
-       ("boost" ,boost)
-       ("libime",libime)
-       ("curl" ,curl)
-       ("gettext" ,gettext-minimal)
-       ("fmt" ,fmt)
-       ("opencc" ,opencc)
-       ("qtbase" ,qtbase)
-       ("fcitx5-qt" ,fcitx5-qt)
-       ("qtwebengine" ,qtwebengine)))
+     (list boost
+           curl
+           fcitx5
+           fcitx5-lua
+           fcitx5-qt
+           fmt
+           gettext-minimal
+           libime
+           opencc
+           qtbase
+           qtwebengine))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (outputs '("out" "gui"))
