@@ -939,7 +939,7 @@ and others.")
 (define-public qucsator-rf
   (package
     (name "qucsator-rf")
-    (version "1.0.6")                   ;required by qucs-s, keep in sync
+    (version "1.0.7")                   ;required by qucs-s, keep in sync
     (source
      (origin
        (method git-fetch)
@@ -949,7 +949,7 @@ and others.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fx0kzj6hn0094jnvn6b1zqwjnkmd79xdr0zdyz5lmsyixlmxmvk"))))
+         "1qyih418r0jcrpk1ja4p7v9v5iqvri8iszg7s3vaf1d2agwblzb4"))))
     (build-system cmake-build-system)
     (arguments
      (list
