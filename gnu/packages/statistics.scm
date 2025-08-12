@@ -265,6 +265,108 @@ can be imported from spreadsheets, text files and database sources and it can
 be output in text, PostScript, PDF or HTML.")
     (license license:gpl3+)))
 
+(define-public python-altair
+  (package
+    (name "python-altair")
+    (version "5.3.0")
+    (source (origin
+              (method git-fetch)        ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/altair-viz/altair")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lx3pkphi36pljns6jjxhyn9fbrana8f1y6gcg4yca48nvwlfssl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; XXX: This test file requires hard to package python-anywidgets.
+           #~(list "--ignore=tests/test_jupyter_chart.py"
+                   "-k" (string-join
+                         (list
+                          ;; these tests open an external connection.
+                          "not test_from_and_to_json_roundtrip"
+                          "test_render_examples_to_chart"
+                          ;; introduces a circular dependency on altair-viewer.
+                          "not test_save_html"
+                          ;; these tests require the vl-convert vega compiler
+                          "test_vegalite_compiler"
+                          "test_to_dict_with_format_vega"
+                          "test_to_json_with_format_vega"
+                          "test_to_url"
+                          "test_renderer_with_none_embed_options"
+                          "test_jupyter_renderer_mimetype")
+                         " and not "))))
+    (propagated-inputs (list python-jinja2
+                             python-jsonschema
+                             python-numpy
+                             python-pandas
+                             python-setuptools
+                             python-toolz
+                             python-typing-extensions))
+    (native-inputs (list python-black
+                         python-hatchling
+                         python-ipython
+                         python-pytest
+                         python-vega-datasets))
+    (home-page "https://altair-viz.github.io/")
+    (synopsis "Declarative statistical visualization library for Python")
+    (description
+     "Vega-Altair is a declarative statistical visualization library for Python.")
+    (license license:expat)))
+
+(define-public python-arviz
+  (package
+    (name "python-arviz")
+    (version "0.21.0")
+    (source (origin
+              (method git-fetch)        ; PyPI misses some test files
+              (uri (git-reference
+                    (url "https://github.com/arviz-devs/arviz")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02bqpl61gzn65vhwspi6gx9ln2wlwh8xm418i8vhmls44rvszcxf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; FIXME: matplotlib tests fail because of the "--save" test flag.
+     (list #:test-flags #~'("--ignore"
+                            "arviz/tests/base_tests/test_plots_matplotlib.py")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-radon
+                 (lambda _
+                   (delete-file
+                    ;; This dataset is loaded remotely, it's not supposed to
+                    ;; be copied locally.
+                    "arviz/data/example_data/code/radon/radon.json")))
+               (add-before 'check 'write-permission
+                 (lambda _
+                   ;; 3 tests require write permission.
+                   (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-cloudpickle python-pytest))
+    (propagated-inputs (list python-dm-tree
+                             python-h5netcdf
+                             python-matplotlib
+                             python-numpy
+                             python-packaging
+                             python-pandas
+                             python-scipy
+                             python-typing-extensions
+                             python-xarray
+                             python-xarray-einstats
+                             python-setuptools
+                             python-wheel))
+    (home-page "https://github.com/arviz-devs/arviz")
+    (synopsis "Exploratory analysis of Bayesian models")
+    (description
+     "ArviZ is a Python package for exploratory analysis of Bayesian models.
+It includes functions for posterior analysis, data storage, model checking,
+comparison and diagnostics.")
+    (license license:asl2.0)))
+
 ;; Update this package together with the set of recommended packages: r-boot,
 ;; r-class, r-cluster, r-codetools, r-foreign, r-kernsmooth, r-lattice,
 ;; r-mass, r-matrix, r-mgcv, r-nlme, r-nnet, r-rpart, r-spatial, r-survival.
@@ -908,57 +1010,6 @@ Keizer et al. (2013) <doi:10.1038/psp.2013.24>, and Jonsson et al.
 and Vega-Lite examples.")
     (license license:expat)))
 
-(define-public python-altair
-  (package
-    (name "python-altair")
-    (version "5.3.0")
-    (source (origin
-              (method git-fetch)        ; no tests in PyPI
-              (uri (git-reference
-                    (url "https://github.com/altair-viz/altair")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lx3pkphi36pljns6jjxhyn9fbrana8f1y6gcg4yca48nvwlfssl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           ;; XXX: This test file requires hard to package python-anywidgets.
-           #~(list "--ignore=tests/test_jupyter_chart.py"
-                   "-k" (string-join
-                         (list
-                          ;; these tests open an external connection.
-                          "not test_from_and_to_json_roundtrip"
-                          "test_render_examples_to_chart"
-                          ;; introduces a circular dependency on altair-viewer.
-                          "not test_save_html"
-                          ;; these tests require the vl-convert vega compiler
-                          "test_vegalite_compiler"
-                          "test_to_dict_with_format_vega"
-                          "test_to_json_with_format_vega"
-                          "test_to_url"
-                          "test_renderer_with_none_embed_options"
-                          "test_jupyter_renderer_mimetype")
-                         " and not "))))
-    (propagated-inputs (list python-jinja2
-                             python-jsonschema
-                             python-numpy
-                             python-pandas
-                             python-setuptools
-                             python-toolz
-                             python-typing-extensions))
-    (native-inputs (list python-black
-                         python-hatchling
-                         python-ipython
-                         python-pytest
-                         python-vega-datasets))
-    (home-page "https://altair-viz.github.io/")
-    (synopsis "Declarative statistical visualization library for Python")
-    (description
-     "Vega-Altair is a declarative statistical visualization library for Python.")
-    (license license:expat)))
-
 (define-public python-emcee
   (package
     (name "python-emcee")
@@ -1141,57 +1192,6 @@ is widely used in many areas of astrophysical research.")
 @url{https://en.wikipedia.org/wiki/Nested_sampling_algorithm, Nested Sampling}
 algorithms for evaluating Bayesian evidence.")
     (license license:expat)))
-
-(define-public python-arviz
-  (package
-    (name "python-arviz")
-    (version "0.21.0")
-    (source (origin
-              (method git-fetch)        ; PyPI misses some test files
-              (uri (git-reference
-                    (url "https://github.com/arviz-devs/arviz")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "02bqpl61gzn65vhwspi6gx9ln2wlwh8xm418i8vhmls44rvszcxf"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; FIXME: matplotlib tests fail because of the "--save" test flag.
-     (list #:test-flags #~'("--ignore"
-                            "arviz/tests/base_tests/test_plots_matplotlib.py")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-radon
-                 (lambda _
-                   (delete-file
-                    ;; This dataset is loaded remotely, it's not supposed to
-                    ;; be copied locally.
-                    "arviz/data/example_data/code/radon/radon.json")))
-               (add-before 'check 'write-permission
-                 (lambda _
-                   ;; 3 tests require write permission.
-                   (setenv "HOME" "/tmp"))))))
-    (native-inputs (list python-cloudpickle python-pytest))
-    (propagated-inputs (list python-dm-tree
-                             python-h5netcdf
-                             python-matplotlib
-                             python-numpy
-                             python-packaging
-                             python-pandas
-                             python-scipy
-                             python-typing-extensions
-                             python-xarray
-                             python-xarray-einstats
-                             python-setuptools
-                             python-wheel))
-    (home-page "https://github.com/arviz-devs/arviz")
-    (synopsis "Exploratory analysis of Bayesian models")
-    (description
-     "ArviZ is a Python package for exploratory analysis of Bayesian models.
-It includes functions for posterior analysis, data storage, model checking,
-comparison and diagnostics.")
-    (license license:asl2.0)))
 
 (define-public python-pymc
   (package
