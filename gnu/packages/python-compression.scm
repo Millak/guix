@@ -639,9 +639,10 @@ the LZ4 frame format.")
        (method url-fetch)
        (uri (pypi-uri "lzstring" version))
        (sha256
-        (base32
-         "18ly9pppy2yspxzw7k1b23wk77k7m44rz2g0271bqgqrk3jn3yhs"))))
-    (build-system python-build-system)
+        (base32 "18ly9pppy2yspxzw7k1b23wk77k7m44rz2g0271bqgqrk3jn3yhs"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-future))
     (home-page "https://github.com/gkovacs/lz-string-python")
