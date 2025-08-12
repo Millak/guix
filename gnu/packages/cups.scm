@@ -1080,7 +1080,7 @@ obtained and installed separately.")
 (define-public python-pycups
   (package
     (name "python-pycups")
-    (version "2.0.1")
+    (version "2.0.4")
     (source
      (origin
        (method git-fetch)
@@ -1089,11 +1089,13 @@ obtained and installed separately.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x2f48gz9wpmcdjh6dj0kmciil57cm89hp4kcsnvhmkvpwpm3b55"))))
+        (base32 "1fx2b04wr9mv87lxk8jpglkyaqwj7bhlj6hnai0dji3jm503dqlb"))))
     (build-system pyproject-build-system)
     (arguments
-     '(;; Tests require CUPS to be running
-       #:tests? #f))
+     (list
+      ;; XXX: Tests require CUPS to be running, a cups configuration, and
+      ;; access to associated printers.
+      #:tests? #f))
     (inputs (list cups))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/zdohnal/pycups")
