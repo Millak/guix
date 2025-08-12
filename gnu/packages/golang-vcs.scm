@@ -34,6 +34,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages haskell-apps)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages version-control))
 
@@ -454,6 +455,52 @@ interact with GitLab in a simple and uniform way.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public git-sync
+  (package
+    (name "git-sync")
+    (version "4.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/git-sync")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wp142i5yv9bwrq743wgd6kvmnl270wwmc8ysll3mglqwh3jyjlb"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "k8s.io/git-sync"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-main-path
+            ;; Build fails if that commit is kept.
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "main.go"
+                  (("// import .k8s.io/git-sync/cmd/git-sync.") ""))))))))
+    (native-inputs
+     (list go-github-com-go-logr-logr
+           go-github-com-golang-jwt-jwt-v4
+           go-github-com-prometheus-client-golang
+           go-github-com-spf13-pflag
+           go-go-uber-org-goleak
+           go-golang-org-x-sys))
+    (home-page "https://github.com/kubernetes/git-sync")
+    (synopsis "Keep repository in sync with the upstream")
+    (description
+     "git-sync is a simple command that pulls a git repository into a local
+directory.  It is a perfect \"sidecar\" container in Kubernetes - it can
+periodically pull files down from a repository so that an application can
+consume them.")
+    (license license:asl2.0)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
