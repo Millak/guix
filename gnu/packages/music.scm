@@ -4279,24 +4279,32 @@ websites such as Libre.fm.")
                 (sha256
                  (base32
                   "0j7qivaa04bpdz3anmgci5833dgiyfqqwq9fdrpl9m68b34gl773"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests eyed3 python-beautifulsoup4 youtube-dl))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:modules ((guix build python-build-system)
-                  (guix build utils)
-                  (srfi srfi-26))
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'change-directory
-                    (lambda _
-                      (chdir "instantmusic-0.1") #t))
-                  (add-before 'install 'fix-file-permissions
-                    (lambda _
-                      ;; Fix some read-only files that would cause a build failure
-                      (for-each (cut chmod <> #o644)
-                                (find-files "instantmusic.egg-info"
-                                            "PKG-INFO|.*\\.txt"))
-                      #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'change-directory
+            (lambda _
+              (chdir "instantmusic-0.1")))
+          (add-before 'build 'patch-yt-dlp
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "bin/instantmusic"
+                (("youtube-dl")
+                 (search-input-file inputs "bin/yt-dlp")))
+              (substitute* "setup.py"
+                (("youtube-dl")
+                 "yt-dlp"))))
+          (add-before 'install 'fix-file-permissions
+            (lambda _
+              ;; Fix some read-only files that would cause a build failure
+              (for-each (lambda (file)
+                          (chmod file #o644))
+                        (find-files "instantmusic.egg-info"
+                                    "PKG-INFO|.*\\.txt")))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list yt-dlp))
+    (propagated-inputs (list python-requests eyed3 python-beautifulsoup4))
     (home-page "https://github.com/yask123/Instant-Music-Downloader")
     (synopsis "Command-line program to download a song from YouTube")
     (description "InstantMusic downloads a song from YouTube in MP3 format.
