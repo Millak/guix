@@ -10780,6 +10780,22 @@ objects.")
      "This is a Python library for color math and conversions.")
     (license license:bsd-3)))
 
+(define-public python-colormath2
+  (package
+    (inherit python-colormath)
+    (name "python-colormath2")
+    (version "3.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "colormath2" version))
+       (sha256
+        (base32 "1yigkhvjgbl9nrlijn4iwcs6k7i5y58drix1331cd1hb9wzn35z7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-networkx python-numpy))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/bkmgit/python-colormath2")))
+
 (define-public python-spectra
   (package
     (name "python-spectra")
