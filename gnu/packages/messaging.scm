@@ -3231,42 +3231,31 @@ designed for experienced users.")
 (define-public python-zulip
   (package
     (name "python-zulip")
-    (version "0.7.1")
+    (version "0.9.0")
     (source
      (origin
-       ;; There is no source on Pypi.
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/zulip/python-zulip-api")
-              (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "zulip" version))
        (sha256
-        (base32
-         "0da1ki1v252avy27j6d7snnc0gyq0xa9fypm3qdmxhw2w79d6q36"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; TODO: This is fixed upstream in later versions
-           (substitute* "zulip/tests/test_default_arguments.py"
-             (("optional arguments:") "options:"))))))
-    (build-system python-build-system)
+        (base32 "0hq8kl5cvbqsmb5zqq5wi61cnv0zzlcqg69yn59wqgwybng1853s"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'cd-to-zulip-dir
-           (lambda _ (chdir "zulip")))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (let ((test-zulip "../tools/test-zulip"))
-               (when tests?
-                 (add-installed-pythonpath inputs outputs)
-                 (patch-shebang test-zulip)
-                 (invoke test-zulip))))))))
-    (propagated-inputs
-     (list python-matrix-client python-pyopenssl python-requests
-           python-six))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: It tries to load from ~/zuliprc and fails:
+          ;; zulip.ConfigNotFoundError: api_key or email not specified and
+          ;; file /homeless-shelter/zuliprc does not exist.
+          (delete 'sanity-check))))
     (native-inputs
-     (list python-cython python-distro python-pytest))
+     (list python-matrix-nio
+           python-pytest
+           python-setuptools-next))
+    (propagated-inputs
+     (list python-click
+           python-distro
+           python-requests
+           python-typing-extensions))
     (home-page "https://github.com/zulip/python-zulip-api")
     (synopsis "Zulip's API Python bindings")
     (description
