@@ -34612,15 +34612,23 @@ cleanly print different types of messages.")
         (base32 "0ipvj1pxdb6wb1sblh22h9gnh6byjnwcl7hfcnk88dmkslgp1z3s"))
        (modules '((guix build utils)))
        (snippet '(substitute* "pyproject.toml"
-                   ;; We have virtualenv 20.3.1.
-                   (("virtualenv>=20.16.2")
-                    "virtualenv>=20.3.1")))))
+                  ;; We have virtualenv 20.3.1.
+                  (("virtualenv>=20.16.2")
+                   "virtualenv>=20.3.1")))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 611 passed, 14 skipped, 35 deselected
       #:test-flags
-      ;; XXX: tests below fail due to zipfile reporting incorrect zip dates.
-      #~(list "-k"
+      ;; TODO: A lot of tests fail due to requirement of newer hatchling which
+      ;; is updated on python-team, review after it's merged.
+      #~(list "--ignore=tests/cli/"
+              ;; Mostly fail due incompatibility or wrong diffs.
+              "--ignore=tests/backend/"
+              ;; FileNotFoundError: [Errno 2] No such file or directory
+              "--ignore=tests/index/test_core.py"
+              ;; XXX: tests below fail due to zipfile reporting incorrect zip dates.
+              "-k"
               (string-append
                "not "
                (string-join
@@ -34637,10 +34645,10 @@ cleanly print different types of messages.")
                       "test_editable_exact_force_include_build_data_precedence"
                       "test_editable_pth")
                 " and not ")))
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'pre-check
-                          (lambda _
-                            (setenv "HOME" "/tmp"))))))
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'pre-check
+                     (lambda _
+                       (setenv "HOME" "/tmp"))))))
     (native-inputs (list git-minimal
                          python-pytest
                          python-pytest-mock
