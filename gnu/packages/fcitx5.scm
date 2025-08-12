@@ -105,31 +105,31 @@ client.")
      (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF")))
     (build-system cmake-build-system)
     (inputs
-     `(("cairo" ,cairo)
-       ("cairo-xcb" ,cairo-xcb)
-       ("dbus" ,dbus)
-       ("enchant" ,enchant)
-       ("expat" ,expat)
-       ("fmt" ,fmt)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib)
-       ("iso-codes" ,iso-codes/pinned)
-       ("json-c" ,json-c)
-       ("libevent" ,libevent)
-       ("libuuid" ,util-linux "lib")
-       ("libuv" ,libuv)
-       ("libxcb" ,libxcb)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxkbfile" ,libxkbfile)
-       ("pango" ,pango)
-       ("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)
-       ("xcb-imdkit" ,xcb-imdkit)
-       ("xcb-util" ,xcb-util)
-       ("xcb-util-keysyms" ,xcb-util-keysyms)
-       ("xcb-util-wm" ,xcb-util-wm)
-       ("xkeyboard-config" ,xkeyboard-config)))
+     (list cairo
+           cairo-xcb
+           dbus
+           enchant
+           expat
+           fmt
+           gdk-pixbuf
+           gettext-minimal
+           glib
+           iso-codes/pinned
+           json-c
+           libevent
+           libuv
+           libxcb
+           libxkbcommon
+           libxkbfile
+           pango
+           `(,util-linux "lib")         ;For libuuid.
+           wayland
+           wayland-protocols
+           xcb-imdkit
+           xcb-util
+           xcb-util-keysyms
+           xcb-util-wm
+           xkeyboard-config))
     (native-inputs
      (list extra-cmake-modules
            zstd
