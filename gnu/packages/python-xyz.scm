@@ -32841,16 +32841,46 @@ your process.")
     (version "0.19.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "OWSLib" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/geopython/OWSLib")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0v8vg0naa9rywvd31cpq65ljbdclpsrx09788v4xj7lg10np8nk0"))))
-    (build-system python-build-system)
+        (base32 "0nl1j6wk2rly72zydzi86mdb7svl5mwfkdknmm2kw7clg5f8p9ix"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; TODO: package dependencies required for tests.
-     '(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (delete 'sanity-check))))
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Those tests require network access.
+         "-k" (string-join
+               (list "not test_ows_interfaces_wcs"
+                     "test_wfs_110_remotemd_parse_all"
+                     "test_wfs_110_remotemd_parse_single"
+                     "test_wfs_200_remotemd_parse_all"
+                     "test_wfs_200_remotemd_parse_single"
+                     "test_wms_130_remotemd_parse_all"
+                     "test_wms_130_remotemd_parse_single"
+                     "test_wmts_example_informatievlaanderen")
+               " and not ")
+         ;; XXX: Not collected properly.
+         "--ignore-glob=tests/doctests/*")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'cleanup-build-directory
+            (lambda _
+              (delete-file-recursively "build"))))))
+    (native-inputs
+     (list python-dateutil
+           python-pyproj
+           python-pyyaml
+           python-pytest
+           python-pytest-cov
+           python-pytz
+           python-requests
+           python-setuptools
+           python-wheel))
     (synopsis "Interface for Open Geospatial Consortium web service")
     (description
      "OWSLib is a Python package for client programming with Open Geospatial
