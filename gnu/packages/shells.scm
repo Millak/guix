@@ -600,6 +600,7 @@ ksh, and tcsh.")
                            "test_bash_and_is_alias_is_only_functional_alias"
                            "test_bash_completer"
                            "test_bash_completer_empty_prefix"
+                           "test_callable_alias_no_bad_file_descriptor"
                            "test_complete_command"
                            "test_complete_dots"
                            "test_dirty_working_directory"
@@ -623,12 +624,6 @@ ksh, and tcsh.")
                      " and not ")))
            #:phases
            #~(modify-phases %standard-phases
-               (replace 'install
-                 (lambda _
-                   (invoke "python" "-m" "compileall"
-                           "--invalidation-mode=unchecked-hash" #$output)
-                   (invoke "python" "setup.py" "install" "--root=/"
-                           (string-append "--prefix=" #$output))))
                ;; Some tests run os.mkdir().
                (add-before 'check 'writable-home
                  (lambda _
@@ -643,8 +638,7 @@ ksh, and tcsh.")
            python-pytest-subprocess
            python-pytest-timeout
            python-requests
-           python-setuptools                      ;needed at build time
-           python-wheel))
+           python-setuptools-next))
     (inputs
      (list python-distro
            python-ply
