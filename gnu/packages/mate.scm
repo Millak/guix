@@ -928,6 +928,44 @@ applications associated with them.  Caja is also responsible for handling the
 icons on the MATE desktop.  It works on local and remote file systems.")
     (license license:gpl2+)))
 
+(define-public python-caja
+  (package
+    (name "python-caja")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           name
+                           "-"
+                           version
+                           ".tar.xz"))
+       (sha256
+        (base32 "1ml0yrkbly1mz5gmz1wynn3zff5900szncc4rk83xqyzvcww4mmh"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-cajadir="
+                             #$output
+                             "/lib/caja/extensions-2.0/"))))
+    (native-inputs
+     (list pkg-config
+           gettext-minimal
+           python-wrapper))
+    (inputs
+     (list caja
+           gtk+
+           python-pygobject))
+    (home-page "https://mate-desktop.org/")
+    (synopsis "Python bindings for Caja components")
+    (description
+     "This package provides Python bindings to Caja, a file manager for the
+MATE desktop.")
+    (license license:gpl2+)))
+
 (define-public mate-control-center
   (package
     (name "mate-control-center")
