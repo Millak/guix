@@ -1895,7 +1895,8 @@ audio/video codec library.")
                     (setenv
                      "CFLAGS"
                      (string-append "-g -O2"
-                                    " -Wno-error=incompatible-pointer-types")))))))
+                                    " -Wno-error=incompatible-pointer-types"
+                                    " -Wno-error=int-conversion")))))))
          (package-arguments ffmpeg-7)))))
 
 (define-public ffmpeg-5
