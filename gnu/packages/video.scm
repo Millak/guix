@@ -6685,6 +6685,69 @@ and press \"Record\".  Peek is optimized for generating animated GIFs, but you
 can also directly record to WebM or MP4 if you prefer.")
     (license license:gpl3+)))
 
+(define-public python-yewtube
+  (package
+    (name "python-yewtube")
+    (version "2.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mps-youtube/yewtube")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bvn1zcycsq2gnvs10hn82ic8zp9q4s9gmmi6flahg3wavpnspzr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "mps_youtube/__init__.py"
+                (("from pip\\._vendor import pkg_resources.*")
+                 "")
+                (("__version__ =.*")
+                 (format #f "__version__ = ~s~%"
+                         #$(package-version this-package))))
+              (substitute* "requirements.txt"
+                (("httpx.*")
+                 "httpx\n"))))
+          (add-before 'check 'configure-tests
+            (lambda _
+              (setenv "HOME" (getcwd))))
+          ;; XXX: This can happen when some side-effects happens at
+          ;; initialization. See https://codeberg.org/guix/guix/issues/1089
+          (add-before 'sanity-check 'patch-script
+            (lambda _
+              (substitute* (string-append #$output "/bin/.yt-real")
+                (("import mps_youtube as mod")
+                 "from mps_youtube.main import main")
+                (("sys\\.exit \\(mod\\.main\\.main \\(\\)\\)")
+                 "sys.exit(main())"))))
+          (replace 'sanity-check
+            (lambda _
+              (invoke (string-append #$output "/bin/yt") "-h"))))))
+    (native-inputs
+     (list python-dbus
+           python-pygobject
+           python-pytest
+           python-setuptools-next
+           python-wheel))
+    (propagated-inputs
+     (list python-pylast
+           python-pyperclip
+           python-requests
+           python-youtube-search
+           yt-dlp))
+    (home-page "https://github.com/mps-youtube/yewtube")
+    (synopsis "Terminal based YouTube player and downloader")
+    (description
+     "This package provides a terminal based @code{YouTube} player and
+downloader.  It does not require a Youtube API key.")
+    (license license:gpl3+)))
+
 (define-public python-youtube-search
   (package
     (name "python-youtube-search")
