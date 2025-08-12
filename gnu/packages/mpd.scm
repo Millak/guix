@@ -39,6 +39,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
@@ -74,6 +75,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages qt)
@@ -358,20 +360,28 @@ information about tracks being played to a scrobbler, such as Libre.FM.")
   (package
     (name "python-mpd2")
     (version "3.0.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "python-mpd2" version))
-              (sha256
-               (base32
-                "1r8saq1460yfa0sxfrvxqs2r453wz2xchlc9gzbpqznr49786rvs"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Mic92/python-mpd2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06j1n43sg3blp89xwgm64yssz6478y5r09xwdg9mnsgihpjpm89a"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "python" "-m" "pytest" "mpd/tests.py"))))))
+     (list
+      #:test-flags #~(list "-m" "unittest" "mpd.tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (if tests?
+                  (apply invoke "python" test-flags)
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock python-setuptools python-wheel))
     (home-page "https://github.com/Mic92/python-mpd2")
     (synopsis "Python MPD client library")
     (description "Python-mpd2 is a Python library which provides a client
