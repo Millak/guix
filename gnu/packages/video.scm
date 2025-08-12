@@ -5026,44 +5026,6 @@ specifications.")
 Content System specification.")
     (license license:lgpl2.1+)))
 
-(define-public mps-youtube
-  (package
-    (name "mps-youtube")
-    (version "0.2.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mps-youtube/mps-youtube")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1w1jhw9rg3dx7vp97cwrk5fymipkcy2wrbl1jaa38ivcjhqg596y"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Tests need to be disabled until #556 upstream is fixed. It reads as if the
-     ;; test suite results differ depending on the country and also introduce
-     ;; non-determinism in the tests.
-     ;; https://github.com/mps-youtube/mps-youtube/issues/556
-     '(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  ;; Loading this as a library will create cache directories,
-                  ;; etc; which fails in the build container.
-                  (delete 'sanity-check))))
-    (propagated-inputs
-     (list python-pafy python-pygobject)) ; For mpris2 support
-    (home-page "https://github.com/mps-youtube/mps-youtube")
-    (synopsis "Terminal based YouTube player and downloader")
-    (description
-     "@code{mps-youtube} is based on mps, a terminal based program to
-search, stream and download music.  This implementation uses YouTube as
-a source of content and can play and download video as well as audio.
-It can use either mpv or mplayer for playback, and for conversion of
-formats ffmpeg or libav is used.  Users should install one of the
-supported players in addition to this package.")
-    (license license:gpl3+)))
-
 (define-public handbrake
   (package
     (name "handbrake")
@@ -6747,6 +6709,8 @@ can also directly record to WebM or MP4 if you prefer.")
      "This package provides a terminal based @code{YouTube} player and
 downloader.  It does not require a Youtube API key.")
     (license license:gpl3+)))
+
+(define-deprecated/public-alias mps-youtube python-yewtube)
 
 (define-public python-youtube-search
   (package
