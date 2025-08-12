@@ -2285,22 +2285,20 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; tests require git and network access
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'mklibdir
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/lib"))
-             #t)))
-       #:configure-flags
-       (list "--with-openssl"
-             "--with-rpath"
-             "--with-syscapstone"
-             "--with-sysmagic"
-             "--with-syszip"
-             "--with-sysxxhash")
-       #:make-flags
-       (list "CC=gcc")))
+     (list
+      #:tests? #f                      ; tests require git and network access
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'mklibdir
+            (lambda _ (mkdir-p (string-append #$output "/lib")))))
+      #:configure-flags
+      #~(list "--with-openssl"
+              "--with-rpath"
+              "--with-syscapstone"
+              "--with-sysmagic"
+              "--with-syszip"
+              "--with-sysxxhash")
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))))
     ;; TODO: Add gmp and libzip and make the build system actually find them.
     (inputs
      (list capstone libuv openssl zip))
