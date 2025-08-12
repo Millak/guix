@@ -6685,6 +6685,27 @@ and press \"Record\".  Peek is optimized for generating animated GIFs, but you
 can also directly record to WebM or MP4 if you prefer.")
     (license license:gpl3+)))
 
+(define-public python-youtube-search
+  (package
+    (name "python-youtube-search")
+    (version "1.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "youtube-search-python" version))
+       (sha256
+        (base32 "1xgw6nqypnj3ymjkfyzc1vvwar73qvp08prnp15ypmzcd7bx2s25"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-httpx))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/alexmercerind/youtube-search-python")
+    (synopsis "Search for YouTube videos, channels & playlists")
+    (description
+     "This package provides tools to search for @code{YouTube} videos,
+channels and playlists; as well as getting video metadata from links.  This
+package does not rely on the @code{YouTube} Data API v3.")
+    (license license:expat)))
+
 (define-public wf-recorder
   (package
     (name "wf-recorder")
