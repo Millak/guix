@@ -2851,17 +2851,18 @@ both binary and text data.")
 (define-public python-pyperclip
   (package
     (name "python-pyperclip")
-    (version "1.8.2")
+    (version "1.9.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyperclip" version))
         (sha256
-         (base32
-          "0mxzm43z2anr55gyz7awagvam4d5c2rlxhp9hjyg0d29n2l58lhh"))))
-    (build-system python-build-system)
+         (base32 "046k4wjmwjprra363fa8nm925f90m6fs3vh7fmfgq6y8vm103pmp"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f)) ; Not clear how to make tests pass.
+    (native-inputs
+     (list python-setuptools-next))
     (inputs
      (list xclip xsel))
     (home-page "https://github.com/asweigart/pyperclip")
