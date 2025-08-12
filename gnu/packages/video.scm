@@ -1935,8 +1935,12 @@ audio/video codec library.")
                "05q6bpid5hfr9djp6cf3sq8majkjiqnl3v9i2y0an23w8qgld412"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
+       ((#:modules modules %default-gnu-modules)
+        `((srfi srfi-1) ,@modules))
        ((#:configure-flags flags ''())
-        #~(cons "--enable-avresample" #$flags))))))
+        #~(cons "--enable-avresample"
+                (fold delete #$flags '("--enable-libplacebo"
+                                       "--enable-libshaderc"))))))))
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
