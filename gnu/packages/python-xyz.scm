@@ -31308,26 +31308,22 @@ by Igor Pavlov.")
 (define-public python-ifaddr
   (package
     (name "python-ifaddr")
-    (version "0.1.7")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ifaddr" version))
        (sha256
-        (base32
-         "150sxdlicwrphmhnv03ykxplyd2jdrxz0mikgnivavgilrn8m7hz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "nosetests"))))))
+        (base32 "1m5fqjqf53m31qrl8fxp2sbwf4mvk5mbjpw2jm2x8rgpmg5by36c"))
+       (snippet #~(delete-file "ifaddr/_win32.py"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nose))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/pydron/ifaddr")
     (synopsis "Network interface and IP address enumeration library")
-    (description "This package provides a network interface and IP address
-enumeration library in Python.")
+    (description
+     "This package provides a network interface and IP address enumeration
+library in Python.")
     (license license:expat)))
 
 (define-public python-zeroconf
