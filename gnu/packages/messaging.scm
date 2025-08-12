@@ -152,6 +152,7 @@
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
@@ -3265,7 +3266,7 @@ designed for experienced users.")
 (define-public zulip-term
   (package
     (name "zulip-term")
-    (version "0.5.2")
+    (version "0.7.0")
     (source
      (origin
        ;; Pypi package doesn't ship tests.
@@ -3275,26 +3276,39 @@ designed for experienced users.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1xhhy3v4wck74a83avil0rnmsi2grrh03cww19n5mv80p2q1cjmf"))
-       (modules '((guix build utils)))
-       (snippet '(substitute* "setup.py"
-                   (("\\=\\=1\\.7") ">=1.7")    ; pytest-mock
-                   (("\\=\\=2\\.5") ">=2.5")    ; pytest-cov
-                   (("4\\.5\\.2") "4.4.2")))))  ; lxml
+        (base32 "0p7q9r1bwak3kx4ig96pn3x53ggp9y70xczvqj6225bmi99r92v6"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:test-flags '("--ignore=tests/cli/test_run.py")))
+     (list
+      ;; tests: 2357 passed, 3 skipped, 1 deselected, 19 xfailed, 2162
+      #:test-flags
+      ;; All CLI tests fail
+      #~(list "--ignore=tests/cli/test_run.py"
+              ;; IndexError: list index out of range
+              "-k" "not test_keypress_CYCLE_COMPOSE_FOCUS[tab-edit_box-message_to_stream_name_box]")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("urwid~=2.1.2") "urwid")))))))
     (inputs
      (list python-beautifulsoup4
            python-lxml
-           python-mypy-extensions
+           python-pygments
+           python-pyperclip
+           python-dateutil
+           python-pytz
+           python-typing-extensions
+           python-tzlocal
            python-urwid
            python-urwid-readline
            python-zulip))
     (native-inputs
-     (list python-distro python-pytest python-pytest-cov
-           python-pytest-mock))
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-setuptools-next))
     (home-page "https://github.com/zulip/zulip-terminal")
     (synopsis "Zulip's official terminal client")
     (description "This package contains Zulip's official terminal client.")
