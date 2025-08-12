@@ -32782,32 +32782,30 @@ statistics with the help of @code{tokei}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0zkl9jkjbx0lmp9ylv4rqg1zwqibk053s4rp7s1h0i18nzk7vn8j"))))
+          (base32 "0zkl9jkjbx0lmp9ylv4rqg1zwqibk053s4rp7s1h0i18nzk7vn8j"))))
       (build-system emacs-build-system)
-      (inputs
-       (list youtube-dl))
       (arguments
-       `(#:tests? #f  ; Error : standard input is not a tty
-         #:test-command (list "make" "simulate")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((youtube-dl (assoc-ref inputs "youtube-dl")))
-                 ;; .el is read-only in git.
-                 (chmod "youtube-dl.el" #o644)
-                 ;; Specify the absolute file names of the various
-                 ;; programs so that everything works out-of-the-box.
-                 (emacs-substitute-variables
-                     "youtube-dl.el"
-                   ("youtube-dl-program"
-                    (string-append youtube-dl "/bin/youtube-dl")))))))))
+       (list
+        #:tests? #f  ; Error : standard input is not a tty
+        #:test-command #~(list "make" "simulate")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; .el is read-only in git.
+                (chmod "youtube-dl.el" #o644)
+                ;; Specify the absolute file names of the various
+                ;; programs so that everything works out-of-the-box.
+                (emacs-substitute-variables
+                    "youtube-dl.el"
+                  ("youtube-dl-program"
+                   (search-input-file inputs "bin/yt-dlp"))))))))
+      (inputs (list yt-dlp))
       (home-page "https://github.com/skeeto/youtube-dl-emacs/")
       (synopsis "Emacs youtube-dl download manager")
       (description "This package manages a video download queue for
-@command{youtube-dl}, which serves as the back end.  It manages a single
-@command{youtube-dl} subprocess, downloading one video at a time.  New videos
+@command{yt-dlp}, which serves as the back end.  It manages a single
+@command{yt-dlp} subprocess, downloading one video at a time.  New videos
 can be queued at any time.")
       (license license:unlicense))))
 
