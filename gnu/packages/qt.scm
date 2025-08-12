@@ -4615,6 +4615,7 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
      (list python-pyqt
            python-pyqt-6
            python-pyside-2
+           python-pyside-6
            python-pytest
            python-pytest-cov
            python-pytest-qt
