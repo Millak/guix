@@ -66,6 +66,7 @@
 ;;; Copyright © 2023 Santiago Payà Miralta <santiagopim@gmail.com>
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
+;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1341,6 +1342,31 @@ utilities to ease adding new glyphs to the font.")
     (home-page "http://unifoundry.com/unifont/index.html")
     (properties '((upstream-name . "unifont")))
     (license license:gpl2+)))
+
+(define-public font-last-resort
+  (package
+    (name "font-last-resort")
+    (version "16.000")
+    (source
+     (origin
+       (method url-fetch)
+       ;; PGTK Emacs does not seem to render the high-efficiency TTF.  Prefer
+       ;; the larger but more compatible standard TTF.
+       (uri (string-append "https://github.com/unicode-org/last-resort-font"
+                           "/releases/download/" version
+                           "/LastResort-Regular.ttf"))
+       (sha256
+        (base32 "0rlisa9hzm7kfy3b8w2460mkiwrh2hlyp223bafkqzpkxkfsbcpp"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/unicode-org/last-resort-font")
+    (synopsis "Fallback font for Unicode code points")
+    (description
+     "Last Resort is a special-purpose font intended as a user-friendly
+alternative to tofu symbols.  It includes glyphs designed to allow users to
+recognize which Unicode block a character belongs to so they can identify what
+type of font to install to properly display text.  Undefined code points and
+noncharacters are also represented.")
+    (license license:silofl1.1)))
 
 (define-public font-google-noto
   (package
