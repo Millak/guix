@@ -8375,17 +8375,19 @@ association.")
 (define-public python-livereload
   (package
     (name "python-livereload")
-    (version "2.6.3")
+    (version "2.7.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "livereload" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lepture/python-livereload")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0scqjnhg3ap81v36ghp0pik774dnfdkwqsx5j1jfbzarbs32yvvp"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six python-tornado))
+        (base32 "19wkdd1grw6mcd4qi8iaw4jdr207h3m24951vgy69j7g904lynjq"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-django python-setuptools python-wheel))
+    (propagated-inputs (list python-tornado))
     (home-page "https://github.com/lepture/python-livereload")
     (synopsis "Python LiveReload")
     (description
