@@ -1970,18 +1970,21 @@ of the project to ensure it renders properly.")
     (version "1.0.2")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (pypi-uri "pytest_click" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Stranger6667/pytest-click")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rcv4m850rl7djzdgzz2zhjd8g5ih8w6l0sj2f9hsynymlsq82xl"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-click python-pytest))
+        (base32 "197nvlqlyfrqpy5lrkmfh1ywpr6j9zipxl9d7syg2a2n7jz3a8rj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-click python-pytest))
     (home-page "https://github.com/Stranger6667/pytest-click")
-    (synopsis "Py.test plugin for Click")
-    (description "This package provides a plugin to test Python click
-interfaces with pytest.")
+    (synopsis "Pytest plugin for Click")
+    (description
+     "This package provides a plugin to test Python click interfaces with
+pytest.")
     (license license:expat)))
 
 (define-public python-pytest-console-scripts
