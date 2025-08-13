@@ -26664,10 +26664,20 @@ hidden.")
       (build-system emacs-build-system)
       (arguments
        (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'build-and-install-manual
+              (lambda _
+                (invoke "make" "-C" "./docs" "org-transclusion.texi")
+                (invoke "makeinfo" "--no-split"
+                        "-o" "org-transclusion.info" "./docs/org-transclusion.texi")
+                (install-file "org-transclusion.info" (string-append #$output "/share/info")))))
         #:test-command #~(list "emacs" "--batch"
                                "-l" "org-transclusion.el"
                                "-l" "test/unit-tests.el"
                                "-f" "ert-run-tests-batch-and-exit")))
+      (native-inputs
+       (list texinfo))
       (home-page "https://nobiot.github.io/org-transclusion/")
       (synopsis "Enable transclusion with Org Mode")
       (description "Org-transclusion lets you insert a copy of text content via
