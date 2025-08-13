@@ -1022,7 +1022,7 @@ Bech32 and segwit addresses.")
   ;; the toplevel app called trezor-agent.
   (package
     (name "python-trezor-agent")
-    (version "0.14.7")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -1031,22 +1031,21 @@ Bech32 and segwit addresses.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04dds5bbw73nk36zm8d02qw6qr92nrlcf8r1cq8ba96mzi34jbk0"))))
-    (build-system python-build-system)
+        (base32 "09y55ys3x5krszh58yhl5gpdri0zrlhfld6psrmiyxfbp344asin"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-requires-backports-shutil-which
-           ;; Remove requires on backport of shutil_which, as python 3.4+ has
-           ;; a built-in implementation supported in python-trezor-agent.
-           (lambda _
-             (substitute* "setup.py"
-               (("'backports.shutil_which>=3.5.1',") ""))))
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v")))))))
+     (list
+      #:test-flags
+      ;; XXX: Requires $HOME to be /run/user.
+      #~(list "-k" "not test_get_agent_sock_path")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-requires-backports-shutil-which
+            ;; Remove requires on backport of shutil_which, as python 3.4+ has
+            ;; a built-in implementation supported in python-trezor-agent.
+            (lambda _
+              (substitute* "setup.py"
+                (("'backports.shutil_which>=3.5.1',") "")))))))
     (propagated-inputs
      (list python-bech32
            python-configargparse
@@ -1064,7 +1063,9 @@ Bech32 and segwit addresses.")
     (native-inputs ; Only needed for running the tests
      (list gnupg
            python-mock
-           python-pytest))
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Use hardware wallets as SSH and GPG agent")
     (description
