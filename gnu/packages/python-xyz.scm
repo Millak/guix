@@ -32199,46 +32199,6 @@ discovery of what has been installed on an operating system, and where the
 essential tools are located.")
     (license license:bsd-3)))
 
-(define-public python-pathos
-  (package
-    (name "python-pathos")
-    (version "0.3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pathos" version))
-       (sha256
-        (base32 "0m077iw5fml4r7csgi4j7ngvdmg1y9jxly64gi56argq1qnr3m5s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            ;; XXX: Tests freeze when invoked with Pytest directly, this step
-            ;; is taken from project's tox.ini.
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (invoke "python" "./pathos/tests/__main__.py")))))))
-    (native-inputs
-     (list python-setuptools-next))
-    (propagated-inputs
-     (list python-dill
-           python-multiprocess
-           python-pox
-           python-ppft))
-    (home-page "https://pypi.org/project/pathos/")
-    (synopsis
-     "Parallel graph management and execution in heterogeneous computing")
-    (description
-     "Python-pathos is a framework for heterogeneous computing.  It provides a
-consistent high-level interface for configuring and launching parallel
-computations across heterogeneous resources.  Python-pathos provides
-configurable launchers for parallel and distributed computing, where each
-launcher contains the syntactic logic to configure and launch jobs in an
-execution environment.")
-    (license license:bsd-3)))
-
 (define-public python-flit
   (package
     (name "python-flit")

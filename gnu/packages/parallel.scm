@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2018, 2020-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -10,13 +10,15 @@
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -496,6 +498,46 @@ to SLURM.  Using DRMAA, grid applications builders, portal developers and ISVs
 can use the same high-level API to link their software with different
 cluster/resource management systems.")
     (license license:gpl3+)))
+
+(define-public python-pathos
+  (package
+    (name "python-pathos")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pathos" version))
+       (sha256
+        (base32 "0m077iw5fml4r7csgi4j7ngvdmg1y9jxly64gi56argq1qnr3m5s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            ;; XXX: Tests freeze when invoked with Pytest directly, this step
+            ;; is taken from project's tox.ini.
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (invoke "python" "./pathos/tests/__main__.py")))))))
+    (native-inputs
+     (list python-setuptools-next))
+    (propagated-inputs
+     (list python-dill
+           python-multiprocess
+           python-pox
+           python-ppft))
+    (home-page "https://pypi.org/project/pathos/")
+    (synopsis
+     "Parallel graph management and execution in heterogeneous computing")
+    (description
+     "Python-pathos is a framework for heterogeneous computing.  It provides a
+consistent high-level interface for configuring and launching parallel
+computations across heterogeneous resources.  Python-pathos provides
+configurable launchers for parallel and distributed computing, where each
+launcher contains the syntactic logic to configure and launch jobs in an
+execution environment.")
+    (license license:bsd-3)))
 
 (define-public python-schwimmbad
   (package
