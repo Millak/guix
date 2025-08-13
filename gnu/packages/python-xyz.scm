@@ -30254,13 +30254,13 @@ N-dimensional arrays for Python.")
 (define-public python-dill
   (package
     (name "python-dill")
-    (version "0.3.9")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dill" version))
        (sha256
-        (base32 "0b2inivjahjlph54a70x6wi3pax4qsgclhlw0blbz37nvmyjdal1"))))
+        (base32 "1w5w5hlijw7ahqji45ssyvdip5pv074h4nw97bsj8ws7vz9g2cq6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
