@@ -50,6 +50,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
@@ -77,6 +78,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -710,48 +712,48 @@ netcat implementation that supports TLS.")
   (package
     (name "python-acme")
     ;; Remember to update the hash of certbot when updating python-acme.
-    (version "2.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "acme" version))
-              (sha256
-               (base32
-                "1z6293g4pyxvx5w7v07j8wnaxyr7srsqfqvgly888b8k52fq9ipa"))))
-    (build-system python-build-system)
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "acme" version))
+       (sha256
+        (base32 "0h8ckyal5j8lkm24fd52dajy38mxa76zh4q022i28f6b3878rxhd"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-documentation
-           (lambda _
-             (invoke "make" "-C" "docs" "man" "info")))
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man/man1"))
-                    (info (string-append out "/info")))
-               (install-file "docs/_build/texinfo/acme-python.info" info)
-               (install-file "docs/_build/man/acme-python.1" man))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("'PyOpenSSL.*',")
+                 "'PyOpenSSL',"))))
+          (add-after 'build 'build-documentation
+            (lambda _
+              (invoke "make" "-C" "docs" "man" "info")))
+          (add-after 'install 'install-documentation
+            (lambda _
+              (let ((man (string-append #$output "/share/man/man1"))
+                    (info (string-append #$output "/info")))
+                (install-file "docs/_build/texinfo/acme-python.info" info)
+                (install-file "docs/_build/man/acme-python.1" man)))))))
     (native-inputs
      (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel
            ;; For documentation
            python-sphinx
            python-sphinxcontrib-programoutput
            python-sphinx-rtd-theme
            texinfo))
     (propagated-inputs
-     (list python-chardet
+     (list python-cryptography
            python-josepy
-           python-requests
-           python-requests-toolbelt
-           python-pytz
+           python-pyopenssl
            python-pyrfc3339
-           python-pyasn1
-           python-cryptography
-           python-pyopenssl))
+           python-requests))
     (home-page "https://github.com/certbot/certbot")
     (synopsis "ACME protocol implementation in Python")
     (description "ACME protocol implementation in Python")
