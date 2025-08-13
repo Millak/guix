@@ -5,8 +5,10 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2022 Reily Siegel <mail@reilysiegel.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +36,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu))
 
 (define-public cyrus-sasl
@@ -90,3 +93,36 @@ server writers.")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))
     (home-page "https://cyrusimap.org/sasl/")))
+
+(define-public cyrus-sasl-xoauth2
+  (package
+    (name "cyrus-sasl-xoauth2")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/moriyoshi/cyrus-sasl-xoauth2")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1py9f1mn5k5xihrk0lfrwr6723c22gjb7lmgya83ibvislm2x3wl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list (string-append "--with-cyrus-sasl="
+                                                    #$output)
+                                     "--disable-static")
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'bootstrap 'fix-autogen
+                          (lambda _
+                            ;; autogen.sh is executable but does not have a
+                            ;; shebang.
+                            (chmod "autogen.sh" #o400))))))
+    (inputs (list cyrus-sasl))
+    (native-inputs (list autoconf automake libtool))
+    (home-page "https://github.com/moriyoshi/cyrus-sasl-xoauth2")
+    (synopsis "XOAUTH2 plugin for Cyrus SASL")
+    (description "The cyrus-sasl-xoauth2 plugin adds support for XOAUTH2
+authentication to Cyrus SASL.  Install this package with the isync package to
+enable fetching mail from IMAP servers advertising XOAUTH2 support.")
+    (license license:expat)))
