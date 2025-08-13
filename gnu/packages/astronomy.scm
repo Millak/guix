@@ -2440,13 +2440,13 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "7.0.1")
+    (version "7.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "0q74735xzrvxxpjv3sa8w68sfnziw1jilr70qba7qhxj8fsfwbrr"))
+        (base32 "1iakikzhw173djb2p24229ndpvzpbcanyg9h4k7viccm48r59wn8"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2462,6 +2462,7 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 29347 passed, 373 skipped, 233 xfailed, 32 warnings
       #:test-flags
       #~(list "--pyargs" "astropy"
               ;; XXX: Tests are not thread save when they are more than 8.
@@ -2501,37 +2502,56 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
            pkg-config
            python-cython-3
            python-extension-helpers
-           python-ipython
            python-objgraph
-           python-pandas
            python-pytest
            python-pytest-astropy
            python-pytest-astropy-header
-           python-pytest-mpl
+           python-pytest-doctestplus
            python-pytest-xdist
-           python-scikit-image
-           python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-sgp4
            python-skyfield
-           python-threadpoolctl
-           python-timezonefinder
-           python-wheel))
+           python-threadpoolctl))
     (inputs
-     (list expat wcslib))
+     (list expat
+           wcslib))
     (propagated-inputs
      (list python-astropy-iers-data
-           python-configobj
-           python-h5py
-           python-jplephem
-           python-matplotlib
+           python-configobj      ;to replace custom module
            python-numpy
            python-packaging
-           python-ply
-           python-pyarrow
+           python-ply            ;to replace custom module
            python-pyerfa
            python-pyyaml
-           python-scipy))
+           ;; [recommended]
+           python-matplotlib
+           python-scipy
+           ;; [jupyter]
+           ;; python-ipydatagrid         ;no packaged
+           python-ipykernel
+           python-ipython
+           python-ipywidgets
+           python-jupyter-core
+           python-pandas
+           ;; [optional]
+           python-asdf
+           python-asdf-astropy
+           python-beautifulsoup4
+           python-bleach
+           python-bottleneck
+           python-certifi
+           python-dask
+           python-fsspec
+           python-h5py
+           python-html5lib
+           python-jplephem
+           python-mpmath
+           python-pandas
+           python-pyarrow
+           python-pytz
+           python-s3fs
+           python-sortedcontainers
+           python-uncompresspy))
     (home-page "https://www.astropy.org/")
     (synopsis "Core package for Astronomy in Python")
     (description
