@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;;
@@ -76,6 +77,10 @@
       ;; ends up doing "ln -s plugin_common.lo plugin_common.o", which can
       ;; fail with EEXIST when building things in parallel.
       #:parallel-build? #f))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "SASL_PATH")
+             (files (list "lib/sasl2")))))
     (synopsis "Simple Authentication Security Layer implementation")
     (description
      "SASL (Simple Authentication Security Layer) is an Internet
