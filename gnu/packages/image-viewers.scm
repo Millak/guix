@@ -1185,8 +1185,7 @@ synchronization of multiple instances.")
                 (setenv "DISPLAY" ":0")
                 (setenv "XDG_CACHE_HOME" (getcwd))
                 (setenv "HOME" (getcwd))
-;                (invoke "xvfb-run" "python" "hydrus_test.py")
-                ))
+                (invoke "xvfb-run" "python" "hydrus_test.py")))
             ;; XXX: program help files are not built.  Updating
             ;; python-pymdown-extensions to its latest version might be the
             ;; solution, but this would require also packaging its new build
