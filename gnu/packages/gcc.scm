@@ -918,14 +918,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-15
   (package
     (inherit gcc-14)
-    (version "15.1.0")
+    (version "15.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gcc/gcc-"
                                   version "/gcc-" version ".tar.xz"))
               (sha256
                (base32
-                "1skcy1a3wwb8k25f9l1qy11nj8b5089f05dpzzn1zw302v19xc72"))
+                "0knj4ph6y7r7yhnp1v4339af7mki5nkh7ni9b948433bhabdk3s3"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"))
               (modules '((guix build utils)))
