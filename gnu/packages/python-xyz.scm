@@ -32316,17 +32316,20 @@ memoization.")
     (version "0.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cson" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/avakar/pycson")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "00cyvigg4npbph39ghkg77xbxisa6plf75vii24igxfizik0337f"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-speg))
+        (base32 "0d2zbmak0hzsl1w71dgc8x4q4vdfbpk46vwyi9vvvqv7gdqj59fn"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-speg))
     (home-page "https://github.com/avakar/pycson")
     (synopsis "Parser for Coffeescript Object Notation (CSON)")
-    (description "This package is a parser for Coffeescript Object
-Notation (CSON).")
+    (description
+     "This package is a parser for Coffeescript Object Notation (CSON).")
     (license license:expat)))
 
 (define-public python-aionotify
