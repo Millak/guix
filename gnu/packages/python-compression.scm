@@ -753,6 +753,28 @@ install: libbitshuffle.so
     (inputs '())
     (native-inputs '())))
 
+(define-public python-uncompresspy
+  (package
+    (name "python-uncompresspy")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uncompresspy" version))
+       (sha256
+        (base32 "1110dipshnijhq6dk5dxzxx3zpynm6dx5kcc430fw24b8xwlc9in"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools-next))
+    (home-page "https://github.com/kYwzor/uncompresspy")
+    (synopsis "Uncompressing LZW files in Python")
+    (description
+     "This package implement a pure Python module for uncompressing LZW
+files (.Z), such as the ones created by Unix's shell tool compress.")
+    (license license:bsd-3)))
+
 (define-public python-unix-ar
   (package
     (name "python-unix-ar")
