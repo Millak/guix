@@ -4205,17 +4205,22 @@ of tags.")
   (package
     (name "python-musicbrainzngs")
     (version "0.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "musicbrainzngs" version))
-              (sha256
-               (base32
-                "09z6k07pxncfgfc8clfmmxl2xqbd7h8x8bjzwr95hc0bzl00275b"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alastair/python-musicbrainzngs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05rv5wmasamwxkbs8v9lbp2js6y5hhqz6c58c2afz2b202yp932m"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://python-musicbrainzngs.readthedocs.org/")
     (synopsis "Python bindings for MusicBrainz NGS webservice")
-    (description "Musicbrainzngs implements Python bindings of the MusicBrainz
-web service.  This library can be used to retrieve music metadata from the
+    (description
+     "Musicbrainzngs implements Python bindings of the MusicBrainz web
+service.  This library can be used to retrieve music metadata from the
 MusicBrainz database.")
     ;; 'musicbrainzngs/compat.py' is ISC licensed.
     (license (list license:bsd-2 license:isc))))
