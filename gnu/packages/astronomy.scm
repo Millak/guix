@@ -2629,13 +2629,15 @@ celestial-to-terrestrial coordinate transformations.")
            pkg-config
            python-cython-3
            python-extension-helpers
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm-next))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-astropy)
-       (delete python-matplotlib
-               python-scipy)))))
+     (list python-astropy-iers-data
+           python-configobj      ;to replace custom module
+           python-numpy
+           python-packaging
+           python-ply            ;to replace custom module
+           python-pyerfa
+           python-pyyaml))))
 
 (define-public python-astroquery
   (package
