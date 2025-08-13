@@ -32202,34 +32202,41 @@ essential tools are located.")
 (define-public python-pathos
   (package
     (name "python-pathos")
-    (version "0.2.5")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pathos" version))
        (sha256
-        (base32
-         "0in8hxdz7k081ijn6q94gr39ycy7363sx4zysmbwyvd7snqjrbi1"))))
-    (build-system python-build-system)
+        (base32 "0m077iw5fml4r7csgi4j7ngvdmg1y9jxly64gi56argq1qnr3m5s"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "./tests/__main__.py"))))))
-    (propagated-inputs
-     (list python-dill python-multiprocess python-pox python-ppft))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            ;; XXX: Tests freeze when invoked with Pytest directly, this step
+            ;; is taken from project's tox.ini.
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (invoke "python" "./pathos/tests/__main__.py")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-setuptools-next))
+    (propagated-inputs
+     (list python-dill
+           python-multiprocess
+           python-pox
+           python-ppft))
     (home-page "https://pypi.org/project/pathos/")
     (synopsis
      "Parallel graph management and execution in heterogeneous computing")
     (description
      "Python-pathos is a framework for heterogeneous computing.  It provides a
 consistent high-level interface for configuring and launching parallel
-computations across heterogeneous resources.  Python-pathos provides configurable
-launchers for parallel and distributed computing, where each launcher contains
-the syntactic logic to configure and launch jobs in an execution environment.")
+computations across heterogeneous resources.  Python-pathos provides
+configurable launchers for parallel and distributed computing, where each
+launcher contains the syntactic logic to configure and launch jobs in an
+execution environment.")
     (license license:bsd-3)))
 
 (define-public python-flit
