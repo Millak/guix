@@ -559,29 +559,26 @@ Python.")
 (define-public python-lzo
   (package
     (name "python-lzo")
-    (version "1.14")
+    (version "1.15")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-lzo" version))
        (sha256
-        (base32 "0315nq6r39n51n8qqamb7xv0ib0qrh76q7g3a1977172mbndijw3"))))
-    (build-system python-build-system)
+        (base32 "0jbv6853p8flk65ks0nw37f6f5v0ryi6nhppv5fm3863ql0alym5"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-target "check"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-setuppy
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "setup.py"
                 (("include_dirs.append\\(.*\\)")
-                 (string-append "include_dirs.append('"
-                                #$(this-package-input "lzo")
-                                "/include/lzo"
-                                "')"))))))))
-    (inputs
-     (list lzo))
+                 (format #f "include_dirs.append(~s)"
+                         (search-input-directory inputs "include/lzo")))))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (inputs (list lzo))
     (home-page "https://github.com/jd-boyd/python-lzo")
     (synopsis "Python bindings for the LZO data compression library")
     (description
