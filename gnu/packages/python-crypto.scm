@@ -917,23 +917,24 @@ Python.")
 (define-public python-josepy
   (package
     (name "python-josepy")
-    (version "1.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "josepy" version))
-              (sha256
-               (base32
-                "1jaxqyp53paks2z8zyzr50gqvzfxbar7r2qf98kqak4aizrxlcc9"))))
-    (build-system python-build-system)
-    (arguments
-     ;; TODO: some test dependencies are missing (see pyproject.toml).
-     '(#:tests? #f))
-    (propagated-inputs
-     (list python-cryptography python-pyopenssl))
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/certbot/josepy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zplnfrmc4nps9lgl3fz434ja7lmi9v8waydflzvpi75kf5fqxc1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest))
+    (propagated-inputs (list python-cryptography))
     (home-page "https://github.com/certbot/josepy")
     (synopsis "JOSE protocol implementation in Python")
-    (description "This package provides a Python implementation of the JOSE
-protocol (Javascript Object Signing and Encryption).")
+    (description
+     "This package provides a Python implementation of the JOSE protocol
+(Javascript Object Signing and Encryption).")
     (license license:asl2.0)))
 
 (define pycryptodome-unbundle-tomcrypt-snippet
