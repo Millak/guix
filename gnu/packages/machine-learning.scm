@@ -6657,22 +6657,25 @@ simple speech recognition.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/ideasman42/nerd-dictation")
-               (commit commit)))
+                (url "https://github.com/ideasman42/nerd-dictation")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0frdpswv6w3cwj3c7wd5w8gj3s1hvpdwd48qhfhfxf7imahz9bqf"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'chdir
-             (lambda _ (chdir "package/python"))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "package/python"))))))
+      (native-inputs (list python-setuptools python-wheel))
       (propagated-inputs (list python-vosk))
       (home-page "https://github.com/ideasman42/nerd-dictation")
       (synopsis "Offline speech-to-text for desktop Linux")
-      (description "\
-This package provides simple access speech to text for using in
+      (description
+       "This package provides simple access speech to text for using in
 Linux without being tied to a desktop environment, using the @code{vosk-api}.
 The user configuration lets you manipulate text using Python string
 operations.  It has zero overhead, as this relies on manual activation and
