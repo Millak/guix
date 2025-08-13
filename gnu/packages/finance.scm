@@ -1348,7 +1348,7 @@ the KeepKey Hardware Wallet.")
        (uri (origin-uri (package-source python-trezor-agent)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04dds5bbw73nk36zm8d02qw6qr92nrlcf8r1cq8ba96mzi34jbk0"))
+        (base32 "09y55ys3x5krszh58yhl5gpdri0zrlhfld6psrmiyxfbp344asin"))
        (modules
         '((guix build utils)
           (ice-9 ftw)
@@ -1368,45 +1368,40 @@ the KeepKey Hardware Wallet.")
                      (scandir "./agents/trezor/"
                               (negate (cut member <> '("." "..") string=))))
            (delete-file-recursively "./agents")
-           ;; Without deleting ./contrib the sanity-check phase fails. Reported
-           ;; upstream as https://github.com/romanz/trezor-agent/issues/429.
-           (delete-file-recursively "./contrib")
            ;; Without deleting ./libagent setuptools complains as follows:
            ;; "error: Multiple top-level packages discovered in a flat-layout: ['contrib', 'libagent']."
            (delete-file-recursively "./libagent")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("'trezor\\[hidapi]>=0.12.0,<0.13'")
-                "'trezor[hidapi]>=0.13'"))))
-         (add-after 'wrap 'fixup-agent-py
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               ;; The wrap phase also wraps trezor_agent.py (besides the
-               ;; public facing executable called trezor-agent). We need to
-               ;; undo that wrapping. The reason this is needed is that the
-               ;; python easy install generates a toplevel script (?) that
-               ;; messes with argv[0] and then re-opens the python
-               ;; module. This fails when the wrapped file is actually a shell
-               ;; script, not a python file.
-               (delete-file (string-append out "/bin/.trezor_agent.py-real"))
-               ;; Overwrite the wrapped one with the real thing.
-               (install-file "./trezor_agent.py"
-                             (string-append out "/bin"))))))))
-    (build-system python-build-system)
+     (list
+      #:tests? #f ; No tests there.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'fixup-agent-py
+            (lambda _
+              ;; The wrap phase also wraps trezor_agent.py (besides the public
+              ;; facing executable called trezor-agent). We need to undo that
+              ;; wrapping. The reason this is needed is that the python easy
+              ;; install generates a toplevel script (?) that messes with
+              ;; argv[0] and then re-opens the python module. This fails when
+              ;; the wrapped file is actually a shell script, not a python file.
+              (delete-file
+               (string-append #$output "/bin/.trezor_agent.py-real"))
+              ;; Overwrite the wrapped one with the real thing.
+              (install-file "./trezor_agent.py"
+                            (string-append #$output "/bin")))))))
     (inputs
      (list python-trezor python-trezor-agent))
     (native-inputs ; Only needed for running the tests
      (list python-attrs
            python-bech32
-           python-simple-rlp))
+           python-simple-rlp
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Using Trezor as hardware SSH/GPG agent")
-    (description "This package allows using Trezor as a hardware SSH/GPG
-agent.")
+    (description
+     "This package allows using Trezor as a hardware SSH/GPG agent.")
     (license license:lgpl3)))
 
 (define-public keepkey-agent
