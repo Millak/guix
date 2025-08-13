@@ -829,20 +829,6 @@ translator for the language.  In addition to the C library, a stand-alone
 LP/MIP solver is included in the package.")
     (license license:gpl3+)))
 
-(define-public glpk-4
-  (package
-    (inherit glpk)
-    (name "glpk")
-    (version "4.65")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/glpk/glpk-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "040sfaa9jclg2nqdh83w71sv9rc1sznpnfiripjdyr48cady50a2"))))))
-
 (define-public linasm
   (package
     (name "linasm")
