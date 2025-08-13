@@ -37335,18 +37335,30 @@ It implements advanced Python dictionaries with dot notation access.")
     (name "python-aspectlib")
     (version "1.5.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "aspectlib" version))
-        (sha256
-          (base32 "1am4ycf292zbmgz791z393v63w7qrynf8q5p9db2wwf2qj1fqxfj"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ionelmc/python-aspectlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mfhflg33684gkp6ckkywshn4xa3vqaia521kcagaxgr3xm6c9pv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list ;; XXX: Require more dependencies.
+         "--ignore=tests/test_integrations.py"
+         "--ignore=tests/test_integrations_py3.py"
+         ;; XXX: Unimportant warning errors.
+         "-k" (string-append "not test_story_empty_play_proxy_class"
+                             " and not test_story_half_play_proxy_class"))))
+    (native-inputs (list python-pytest python-setuptools python-tornado python-wheel))
     (propagated-inputs (list python-fields))
     (home-page "https://github.com/ionelmc/python-aspectlib")
-    (synopsis
-      "Python monkey-patching and decorators")
+    (synopsis "Python monkey-patching and decorators")
     (description
-      "This package provides an aspect-oriented programming, monkey-patch
+     "This package provides an aspect-oriented programming, monkey-patch
 and decorators library.  It is useful when changing behavior in existing
 code is desired.  It includes tools for debugging and testing:
 simple mock/record and a complete capture/replay framework.")
