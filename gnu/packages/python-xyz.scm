@@ -6522,44 +6522,41 @@ defined.")
 (define-public python-extension-helpers
   (package
     (name "python-extension-helpers")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch) ; no tests in the PyPI tarball
        (uri (git-reference
-             (url "https://github.com/astropy/extension-helpers")
-             (commit (string-append "v" version))))
+              (url "https://github.com/astropy/extension-helpers")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cfzh3ijjp18as2qnmm1nnw6a3daqd7a2q17i0c6h1wq2jbawxxa"))))
+        (base32 "0ljvfv9p7jay4j31awx1h714xhyn5hbfgyhn4nm71xrkz9la113j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; It tries to install it via pip: E ModuleNotFoundError: No module named
-      ;; 'helpers_test_package_fd9cc3a9_11fa_4a1a_b80e_c5b043949604'
-      #:test-flags #~(list "-k" "not test_only_pyproject and not test_no_setup_py")
+      #:test-flags
+      #~(list "--pyargs" "extension_helpers"
+              "-k" (string-join
+                    ;; XXX: Tests try to check various compilation options and
+                    ;; fail with some incomparability or trying to download
+                    ;; missing modules.
+                    (list "not test_only_pyproject"
+                          "test_no_setup_py"
+                          "test_limited_api")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           ;; LookupError: setuptools-scm was unable to detect version for
           ;; /tmp/guix-build-python-extension-helpers-1.2.0.drv-0/source.
           (add-before 'build 'set-version
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-v" test-flags))))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-pytest
-           python-pytest-astropy
-           python-pytest-cov
-           python-setuptools-scm
-           python-tomli
-           python-setuptools
-           python-wheel
-           python-pip))
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-setuptools-next))
     (home-page "https://extension-helpers.readthedocs.io")
     (synopsis "Astropy ecosystem utilities for building and installing packages")
     (description
