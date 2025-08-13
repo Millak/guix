@@ -401,7 +401,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.9.0-998")
+    (version "2.0.0-10")
     (source
      (origin
        (method url-fetch)
@@ -413,7 +413,7 @@ precision.")
               "https://www-fourier.ujf-grenoble.fr/~parisse/debian/dists/"
               "stable/main/source/giac_" version ".tar.gz"))
        (sha256
-        (base32 "1r71kl21xxf3872r0q25r2b9wpg03zrp08rsnpyqrhajmxb0ljbz"))))
+        (base32 "1lzb0jjmkg5ml1qfl0m00qqng4sxgfqwrbq10gpkp4b301k2ckv1"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -428,12 +428,12 @@ precision.")
               (substitute* (cons "micropython-1.12/xcas/Makefile"
                                  (find-files "doc" "^Makefile"))
                 (("/bin/cp") (which "cp")))))
-          (add-after 'unpack 'disable-failing-test
-            ;; FIXME: Tests failing.  Not sure why.
-            (lambda _
-              (substitute* "check/Makefile.in"
-                (("chk_fhan(4|11)") "")
-                (("chk_fhan(14|21)") "")))) ;fail specifically on i686
+          (replace 'bootstrap
+             (lambda _
+               ;; XXX: Regenerate "src/mkjs" to avoid a build error because
+               ;; the default file is bogus in a Guix environment.
+               (delete-file "src/mkjs")
+               (invoke "autoreconf" "-vfi")))
           (add-after 'install 'fix-doc
             (lambda _
               ;; Most French documentation has a non-commercial license, so we
@@ -454,7 +454,7 @@ precision.")
      ;; TODO: Unbundle "libmicropython.a".
      (list ao
            fltk-1.3
-           glpk-4
+           glpk
            gmp
            gsl
            libjpeg-turbo
@@ -474,9 +474,12 @@ precision.")
            perl
            tcsh))
     (native-inputs
-     (list bison
+     (list autoconf
+           automake
+           bison
            flex
            hevea
+           libtool
            python-wrapper
            readline
            (texlive-local-tree)))
