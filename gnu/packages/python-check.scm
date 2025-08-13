@@ -1249,25 +1249,16 @@ Python program.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0fg8jflcf4c929gd4zbcrk73d08waaqjfjmdjrgnv54mzl35pjxl"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+        (base32 "0fg8jflcf4c929gd4zbcrk73d08waaqjfjmdjrgnv54mzl35pjxl"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-numpy python-pytest))
+     (list python-numpy python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/kaste/mockito-python")
     (synopsis "Mocking library for Python")
     (description "This package provides a Python implementation of the Java
 library of the same name.  It eases monkey patching, for example to stub out
 side effects when unit testing.")
     (license license:expat)))
-
 
 (define-public python-mypy
   (package
