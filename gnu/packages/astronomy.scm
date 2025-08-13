@@ -825,30 +825,34 @@ corrections.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-attrs
-           python-docutils
+           python-pytest-doctestplus
            python-pytest-astropy
            python-pytest-astropy-header
-           python-setuptools-next
-           python-tornado))
+           python-setuptools-next))
     (inputs
-     (list opencv
-           python-astropy
+     (list python-astropy
+           python-numpy
+           python-packaging
+           python-pillow
+           python-puremagic
+           python-pyyaml
+           python-qtpy
+           ;; [recomended]
+           opencv
            python-astroquery
            python-dateutil
            python-exif-read
-           python-fitsio
-           python-magic
            python-matplotlib
-           python-numpy
-           python-packaging
            python-photutils
-           python-pillow
-           python-puremagic
-           python-pyqt-6
-           python-pyyaml
-           python-qtpy
+           python-pillow-heif
            python-scipy
-           python-tomli))
+           ;; [qt6]
+           python-pyqt-6
+           ;; [pyside6]
+           python-pyside-6
+           ;; [tk,web]
+           python-pycairo
+           python-tornado))
     (home-page "https://ejeschke.github.io/ginga/")
     (synopsis "Scientific image viewer and toolkit for FITS files")
     (description
