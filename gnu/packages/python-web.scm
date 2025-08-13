@@ -2663,20 +2663,13 @@ API, but uses asyncio to parallelise downloading the files.")
        (method url-fetch)
        (uri (pypi-uri "html2text" version))
        (sha256
-        (base32
-         "1fvv4z6dblii2wk1x82981ag8yhxbim1v2ksgywxsndh2s7335p2"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "test/"))))))
-    (native-inputs
-     (list python-pytest))
+        (base32 "1fvv4z6dblii2wk1x82981ag8yhxbim1v2ksgywxsndh2s7335p2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/Alir3z4/html2text")
     (synopsis "Convert HTML into plain text")
-    (description "html2text takes HTML and converts it into plain ASCII text
+    (description
+     "html2text takes HTML and converts it into plain ASCII text
 which is also valid markdown.  html2text was originally written by Aaron
 Swartz.")
     (license license:gpl3+)))
