@@ -32163,28 +32163,30 @@ load balancing.")
 (define-public python-pox
   (package
     (name "python-pox")
-    (version "0.2.7")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pox" version))
        (sha256
         (base32
-         "0y17ckc2p6i6709s279sjdj4q459mpcc38ymg9zv9y6vl6jf3bq6"))))
-    (build-system python-build-system)
+         "01gnsgz6wfmpmb57qr4cgpkampiy6l7c1kxa0hlacn81c0wyvvl4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (mkdir-p "/tmp/guix")
-             (setenv "SHELL" "bash")
-             (setenv "USERNAME" "guix")
-             (setenv "HOME" "/tmp/guix") ; must end on USERNAME...
-             (invoke "py.test" "-vv")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (mkdir-p "/tmp/guix")
+                (setenv "SHELL" "bash")
+                (setenv "USERNAME" "guix")
+                (setenv "HOME" "/tmp/guix") ; must end on USERNAME...
+                (invoke "python" "./pox/tests/__main__.py")))))))
     (native-inputs
-     (list python-pytest which))
+     (list python-setuptools-next
+           which)) ;pox/tests/test_shutils.py
     (home-page "https://pypi.org/project/pox/")
     (synopsis "Python utilities for file system exploration and automated builds")
     (description
