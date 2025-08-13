@@ -800,6 +800,78 @@ applications of EyE include adaptive filtering, feature detection and cosmetic
 corrections.")
     (license license:cecill)))
 
+(define-public ginga
+  (package
+    (name "ginga")
+    (version "5.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ginga" version))
+       (sha256
+        (base32 "0wv8fb8p8icsvkh2rn8jcxxx33kgac36gm9xqbgpm2z7z6m4haa7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; AssertionError: Not equal to tolerance rtol=1e-07, atol=0.0001
+      #:test-flags #~(list "-k" "not test_fwhm")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Relax matplotlib warning: ... because the default path
+              ;; (/homeless-shelter/.config/matplotlib) is not a writable
+              ;; directory ...
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-attrs
+           python-docutils
+           python-pytest-astropy
+           python-pytest-astropy-header
+           python-setuptools-next
+           python-tornado))
+    (inputs
+     (list opencv
+           python-astropy
+           python-astroquery
+           python-dateutil
+           python-exif-read
+           python-fitsio
+           python-magic
+           python-matplotlib
+           python-numpy
+           python-packaging
+           python-photutils
+           python-pillow
+           python-puremagic
+           python-pyqt-6
+           python-pyyaml
+           python-qtpy
+           python-scipy
+           python-tomli))
+    (home-page "https://ejeschke.github.io/ginga/")
+    (synopsis "Scientific image viewer and toolkit for FITS files")
+    (description
+     "Ginga is a toolkit designed for building viewers for scientific image
+data in Python, visualizing 2D pixel data in numpy arrays.  It can view
+astronomical data such as contained in files based on the FITS (Flexible Image
+Transport System) file format.  It is written and is maintained by software
+engineers at the National Astronomical Observatory of Japan (NAOJ), the Space
+Telescope Science Institute (STScI), and other contributing entities.
+
+The Ginga toolkit centers around an image display object which supports
+zooming and panning, color and intensity mapping, a choice of several
+automatic cut levels algorithms and canvases for plotting scalable geometric
+forms.  In addition to this widget, a general purpose \"reference\" FITS
+viewer is provided, based on a plugin framework.  A fairly complete set of
+standard plugins are provided for features that we expect from a modern FITS
+viewer: panning and zooming windows, star catalog access, cuts, star
+pick/FWHM, thumbnails, etc.")
+(license license:bsd-3)))
+
+(define-public ginga-qt5
+  (deprecated-package "ginga-qt5" ginga))
+
 (define-public glnemo2
   (package
     (name "glnemo2")
@@ -3976,79 +4048,17 @@ Python.")
     (license license:bsd-2)))
 
 (define-public python-ginga
-  (package
+  (package/inherit ginga
     (name "python-ginga")
-    (version "5.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ginga" version))
-       (sha256
-        (base32 "0wv8fb8p8icsvkh2rn8jcxxx33kgac36gm9xqbgpm2z7z6m4haa7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; AssertionError: Not equal to tolerance rtol=1e-07, atol=0.0001
-      #:test-flags #~(list "-k" "not test_fwhm")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              ;; Relax matplotlib warning: ... because the default path
-              ;; (/homeless-shelter/.config/matplotlib) is not a writable
-              ;; directory ...
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-attrs
-           python-docutils
-           python-pytest-astropy
-           python-pytest-astropy-header
-           python-tornado))
+    (inputs '())
     (propagated-inputs
-     (list opencv
-           python-astropy
-           python-astroquery
-           python-dateutil
-           python-exif-read
-           python-fitsio
-           python-magic
-           python-matplotlib
+     (list python-astropy
            python-numpy
            python-packaging
-           python-photutils
            python-pillow
            python-puremagic
            python-pyyaml
-           python-qtpy
-           python-scipy
-           python-tomli))
-    (home-page "https://ejeschke.github.io/ginga/")
-    (synopsis "Scientific image viewer and toolkit for FITS files")
-    (description
-     "Ginga is a toolkit designed for building viewers for scientific image
-data in Python, visualizing 2D pixel data in numpy arrays.  It can view
-astronomical data such as contained in files based on the FITS (Flexible Image
-Transport System) file format.  It is written and is maintained by software
-engineers at the National Astronomical Observatory of Japan (NAOJ), the Space
-Telescope Science Institute (STScI), and other contributing entities.
-
-The Ginga toolkit centers around an image display object which supports
-zooming and panning, color and intensity mapping, a choice of several
-automatic cut levels algorithms and canvases for plotting scalable geometric
-forms.  In addition to this widget, a general purpose \"reference\" FITS
-viewer is provided, based on a plugin framework.  A fairly complete set of
-standard plugins are provided for features that we expect from a modern FITS
-viewer: panning and zooming windows, star catalog access, cuts, star
-pick/FWHM, thumbnails, etc.")
-(license license:bsd-3)))
-
-(define-public ginga-qt5
-  (package/inherit python-ginga
-    (name "ginga-qt5")
-    (inputs
-     (modify-inputs (package-inputs python-ginga)
-       (prepend python-pyqt)))
-    (synopsis "Qt5 image viewer build based on python-ginga library")))
+           python-qtpy))))
 
 (define-public python-glue-astronomy
   (package
