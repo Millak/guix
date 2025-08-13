@@ -765,30 +765,33 @@ netcat implementation that supports TLS.")
     ;; Certbot and python-acme are developed in the same repository, and their
     ;; versions should remain synchronized.
     (version (package-version python-acme))
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "certbot" version))
-              (sha256
-               (base32
-                "12nd9nmdj3bf1xlvhj1ln473xbyv4qzxf6qhz0djbca7jl59zlwk"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "certbot" version))
+       (sha256
+        (base32 "0yy287h1sjdkm5cj4wazq316igwwla856yqcmi4yqaq7ib55c7pv"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(,@(substitute-keyword-arguments (package-arguments python-acme)
-           ((#:phases phases)
-            `(modify-phases ,phases
-              (replace 'install-documentation
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (let* ((out (assoc-ref outputs "out"))
-                         (man1 (string-append out "/share/man/man1"))
-                         (man7 (string-append out "/share/man/man7"))
-                         (info (string-append out "/info")))
-                    (install-file "docs/_build/texinfo/Certbot.info" info)
-                    (install-file "docs/_build/man/certbot.1" man1)
-                    (install-file "docs/_build/man/certbot.7" man7)
-                    #t))))))))
+     (substitute-keyword-arguments (package-arguments python-acme)
+       ((#:test-flags flags '())
+        ;; XXX: No time zone found with key Asia/Sanghai, pytz version?
+        #~(list "-k" "not test_add_time_interval"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install-documentation
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((man1 (string-append #$output "/share/man/man1"))
+                      (man7 (string-append #$output "/share/man/man7"))
+                      (info (string-append #$output "/info")))
+                  (install-file "docs/_build/texinfo/Certbot.info" info)
+                  (install-file "docs/_build/man/certbot.1" man1)
+                  (install-file "docs/_build/man/certbot.7" man7))))))))
     (native-inputs
      (list python-mock
            python-pytest
+           python-setuptools
+           python-wheel
            ;; For documentation
            python-sphinx
            python-sphinx-rtd-theme
@@ -808,8 +811,9 @@ netcat implementation that supports TLS.")
            python-requests
            python-pytz))
     (synopsis "Let's Encrypt client by the Electronic Frontier Foundation")
-    (description "Certbot automatically receives and installs X.509 certificates
-to enable Transport Layer Security (TLS) on servers.  It interoperates with the
+    (description
+     "Certbot automatically receives and installs X.509 certificates to enable
+Transport Layer Security (TLS) on servers.  It interoperates with the
 Let’s Encrypt certificate authority (CA), which issues browser-trusted
 certificates for free.")
     (home-page "https://certbot.eff.org/")
