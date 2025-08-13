@@ -32131,18 +32131,25 @@ native API of @code{python-argparse}.")
 (define-public python-ppft
   (package
     (name "python-ppft")
-    (version "1.6.6.1")
+    (version "1.7.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ppft" version))
        (sha256
         (base32
-         "1z1invkhszc5d2mvgr221v7cszzifcc77mz0pv3wjp6x5q2768cy"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ; there are none
-    (propagated-inputs
-     (list python-six))
+         "15hvw39m2r3chm8zbqgkld0m1cl049rxidln4a6jnk72rx479xzk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (invoke "python" "./ppft/tests/__main__.py")))))))
+    (native-inputs
+     (list python-setuptools-next))
     (home-page "https://pypi.org/project/ppft/")
     (synopsis "Fork of Parallel Python")
     (description
