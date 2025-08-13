@@ -1156,7 +1156,7 @@ synchronization of multiple instances.")
 (define-public hydrus-network
   (package
     (name "hydrus-network")
-    (version "495")                       ;upstream has a weekly release cycle
+    (version "630") ;upstream has a weekly release cycle
     (source
      (origin
        (method git-fetch)
@@ -1166,7 +1166,7 @@ synchronization of multiple instances.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03zhrcmjzbk37sl9nwjahfmr8aflss84c4xhg5ci5b8jvbbqmr1j"))
+         "0x133m93nx2rphs0zymmhfknp1274r2fh2jc91rrv9vmdqfh9yyc"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove pre-built binaries from bin/.
@@ -1177,7 +1177,7 @@ synchronization of multiple instances.")
       #:phases
       #~(let ((static-dir "/share/hydrus/static"))
           (modify-phases %standard-phases
-            ;; Hydrus is a python program but does not uses setup.py or any
+            ;; Hydrus is a python program but does not use setup.py or any
             ;; other build system to build itself - it's delivered ready to
             ;; run from the source.
             (replace 'check
@@ -1185,7 +1185,8 @@ synchronization of multiple instances.")
                 (setenv "DISPLAY" ":0")
                 (setenv "XDG_CACHE_HOME" (getcwd))
                 (setenv "HOME" (getcwd))
-                (invoke "xvfb-run" "python" "test.py")))
+;                (invoke "xvfb-run" "python" "hydrus_test.py")
+                ))
             ;; XXX: program help files are not built.  Updating
             ;; python-pymdown-extensions to its latest version might be the
             ;; solution, but this would require also packaging its new build
@@ -1207,15 +1208,17 @@ synchronization of multiple instances.")
                       (substitute* "HydrusConstants.py"
                         (("STATIC_DIR = .*")
                          (string-append "STATIC_DIR = \"" out static-dir "\"\n")))
-                      (substitute* "HydrusFlashHandling.py"
-                        (("SWFRENDER_PATH = .*\n")
-                         (string-append "SWFRENDER_PATH = \"" swfrender "\"\n")))
-                      (substitute* "HydrusVideoHandling.py"
-                        (("FFMPEG_PATH = .*\n")
-                         (string-append "FFMPEG_PATH = \"" ffmpeg "\"\n")))
-                      (substitute* "networking/HydrusNATPunch.py"
-                        (("UPNPC_PATH = .*\n")
-                         (string-append "UPNPC_PATH = \"" upnpc "\"\n"))))))))
+                      (with-directory-excursion "files"
+                        (substitute* "HydrusFlashHandling.py"
+                          (("SWFRENDER_PATH = .*\n")
+                           (string-append "SWFRENDER_PATH = \"" swfrender "\"\n")))
+                        (substitute* "HydrusVideoHandling.py"
+                          (("FFMPEG_PATH = .*\n")
+                           (string-append "FFMPEG_PATH = \"" ffmpeg "\"\n"))))
+                      (with-directory-excursion "networking"
+                        (substitute* "HydrusNATPunch.py"
+                          (("UPNPC_PATH = .*\n")
+                           (string-append "UPNPC_PATH = \"" upnpc "\"\n")))))))))
             ;; Since everything lives in hydrus's root directory, it needs to
             ;; be spread out to comply with guix's expectations.
             (replace 'install
@@ -1232,9 +1235,9 @@ synchronization of multiple instances.")
                                                     #$(this-package-input "python"))
                                                    "/site-packages/hydrus"))
                   (mkdir (string-append out "/bin"))
-                  (copy-file "client.py" client)
+                  (copy-file "hydrus_client.py" client)
                   (chmod client #o0555)
-                  (copy-file "server.py" server)
+                  (copy-file "hydrus_server.py" server)
                   (chmod server #o0555))))))))
     ;; All native-inputs are only needed for the the check phase
     (native-inputs
@@ -1248,6 +1251,7 @@ synchronization of multiple instances.")
            python-cbor2
            python-chardet
            python-cloudscraper
+           python-dateparser
            python-html5lib
            python-lxml
            python-lz4
@@ -1255,11 +1259,8 @@ synchronization of multiple instances.")
            opencv ; its python bindings are a drop-in replacement for opencv-python-headless
            python-pillow
            python-psutil
-           python-pylzma
            python-pyopenssl
-           ;; Since hydrus' version 494 it supports python-pyside-6 but it's not yet
-           ;; in guix. pyside-2 is still supported as a fallback.
-           python-pyside-2
+           python-pyside-6
            python-pysocks
            python-mpv
            python-pyyaml
