@@ -1179,6 +1179,29 @@ additional characters (mostly accented ones).  This package provides the
 OpenType variant of these fonts.")
     (license license:gfl1.0)))
 
+(define-public font-new-computer-modern
+  (package
+    (name "font-new-computer-modern")
+    (version "7.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.gnu.org.ua/release/newcm/"
+                           "newcm-" version ".txz"))
+       (file-name (string-append name "-" version ".tar.xz"))
+       (sha256
+        (base32 "0j7d5brjpaakhs826wpjpmbn5kijf0k4pklafi6ijp922092jivx"))))
+    (build-system font-build-system)
+    (home-page "https://ctan.org/pkg/newcomputermodern")
+    (synopsis "OpenType fonts based on Computer Modern including non-Latin")
+    (description
+     "NewComputerModern is a new assembly of Computer Modern fonts including
+extensions in many directions for both Latin based languages, non-Latin based
+languages and Mathematics, all compatible in style to CM fonts.  In addition
+to the Regular weight of Computer Modern, it provides a Book weight for
+heavier printing.")
+    (license license:gfl1.0)))
+
 (define-public font-amiri
   (package
     (name "font-amiri")
