@@ -4702,3 +4702,25 @@ Hack + DejaVu Sans Mono is used for ASCII, and Rounded Mgen+ for the other.
 In addition, Nerd Fonts, Noto Emoji, Icons for Devs, and some adjustment forked
 from the Ricty generator are converted and adjusted.")
     (license license:silofl1.1)))
+
+(define-public font-undefined-medium
+  (package
+    (name "font-undefined-medium")
+    (version "1.3")
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://github.com/andirueckel/undefined-medium"
+                           "/archive/v" version ".zip"))
+       (sha256
+        (base32 "1y11y78807nhfwvvx4ac36q6m5y20jarlrazrp029wks2wwdgrx8"))))
+    (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
+    (home-page "https://undefined-medium.com")
+    (synopsis "Pixel grid-based monospace typeface")
+    (description
+     "This package provides undefined medium, a pixel grid-based monospace
+typeface.  It is inspired by many 5×7 pixel grid typefaces, especially Gilles
+Boccon-Gibod’s MonteCarlo.  Unlike traditional bitmap fonts, it is distributed
+in typical scalable font formats.")
+    (license license:silofl1.1)))
