@@ -327,7 +327,7 @@ $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/predicates_init.c \
        (file-name (git-file-name name version))
        (sha256
         (base32 "1l34ahvcz90j3j7aspp9wqvxpq10mzgq7l0sanrj142ihdnbahvy"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases #~(modify-phases %standard-phases
@@ -350,13 +350,12 @@ $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/predicates_init.c \
                          (setenv "LD_LIBRARY_PATH"
                                  (dirname lib)))))
                    ;; We wrap xdot, so that we don't propagate gtk+ and graphviz
-                   (add-after 'install 'wrap
+                   (replace 'wrap
                      (lambda* (#:key inputs outputs #:allow-other-keys)
-                       (let ((out (assoc-ref outputs "out"))
-                             (graphviz (assoc-ref inputs "graphviz"))
+                       (let ((graphviz (assoc-ref inputs "graphviz"))
                              (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
                              (python-path (getenv "GUIX_PYTHONPATH")))
-                         (wrap-program (string-append out "/bin/xdot")
+                         (wrap-program (string-append #$output "/bin/xdot")
                            `("PATH" ":" prefix
                              (,(string-append graphviz "/bin")))
                            `("GI_TYPELIB_PATH" ":" prefix
@@ -381,6 +380,8 @@ $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/predicates_init.c \
                   python-numpy
                   python-pycairo
                   python-pygobject
+                  python-setuptools
+                  python-wheel
                   vulkan-loader))
     (home-page "https://pypi.org/project/xdot/")
     (synopsis "Interactive viewer for graphviz dot files")
