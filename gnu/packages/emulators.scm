@@ -4380,17 +4380,21 @@ on a Commodore C64, C128 etc.")
                       ;;   (("add_subdirectory\\(core/deps/Vulkan-Headers\\)")
                       ;;    "find_package(VulkanHeaders)"))
                       (with-directory-excursion "core/deps"
-                        (for-each delete-file-recursively
-                                  '("SDL"
-                                    "Spout"
-                                    "Syphon"
-                                    ;; TODO: Uncomment after our vulkan-headers
-                                    ;; are update to 1.3.261.0 or newer.
-                                    ;;"Vulkan-Headers"
-                                    "breakpad"
-                                    "discord-rpc"
-                                    "libzip"
-                                    "oboe")))))))
+                        (for-each
+                         delete-file-recursively
+                         '("SDL"
+                           "Spout"
+                           "Syphon"
+                           ;; TODO: Uncomment after our vulkan-headers
+                           ;; are update to 1.3.261.0 or newer.
+                           ;;"Vulkan-Headers"
+                           "breakpad"
+                           "discord-rpc"
+                           ;; XXX: The libretro build requires the bundled
+                           ;; libzip, which it uses to produce a
+                           ;; static library.
+                           ;;"libzip"
+                           "oboe")))))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -4431,6 +4435,13 @@ on a Commodore C64, C128 etc.")
       (description "Flycast is a multi-platform Sega Dreamcast, Naomi, Naomi 2,
 and Atomiswave emulator derived from reicast.")
       (license license:gpl2+))))
+
+(define-public libretro-flycast
+  (package/inherit flycast
+    (name "libretro-flycast")
+    (arguments (substitute-keyword-arguments (package-arguments flycast)
+                 ((#:configure-flags flags)
+                  #~(cons "-DLIBRETRO=ON" #$flags))))))
 
 (define-public freedisksysrom
   ;; There is no release; use the latest commit.
