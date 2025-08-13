@@ -2752,40 +2752,6 @@ but may be a runtime requirement for Qt-based software to support certain image
 formats.")
     (license license:lgpl2.1+)))
 
-(define-public kimageformats-5
-  (package
-    (inherit kimageformats)
-    (name "kimageformats")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "174g32s3m7irzv2h3lk7bmp3yfc7zrmp7lmp02n3m5ppbv6rn4bw"))))
-    (native-inputs
-     (list extra-cmake-modules pkg-config))
-    (inputs
-     (list karchive-5 ; for Krita and OpenRaster images
-           openexr-2 ; for OpenEXR high dynamic-range images
-           qtbase-5
-           qtimageformats-5))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'check-setup
-            (lambda _
-              ;; make Qt render "offscreen", required for tests
-              (setenv "QT_QPA_PLATFORM" "offscreen"))))
-      #:configure-flags #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
-                                               (assoc-ref %build-inputs
-                                                          "ilmbase")
-                                               "/include/OpenEXR"))))))
-
 (define-public kjobwidgets
   (package
     (name "kjobwidgets")
