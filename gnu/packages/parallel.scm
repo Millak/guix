@@ -539,6 +539,38 @@ launcher contains the syntactic logic to configure and launch jobs in an
 execution environment.")
     (license license:bsd-3)))
 
+(define-public python-ppft
+  (package
+    (name "python-ppft")
+    (version "1.7.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ppft" version))
+       (sha256
+        (base32
+         "15hvw39m2r3chm8zbqgkld0m1cl049rxidln4a6jnk72rx479xzk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (invoke "python" "./ppft/tests/__main__.py")))))))
+    (native-inputs
+     (list python-setuptools-next))
+    (home-page "https://pypi.org/project/ppft/")
+    (synopsis "Fork of Parallel Python")
+    (description
+     "This package is a fork of Parallel Python.  The Parallel Python
+module (@code{pp}) provides an easy and efficient way to create
+parallel-enabled applications for @dfn{symmetric multiprocessing} (SMP)
+computers and clusters.  It features cross-platform portability and dynamic
+load balancing.")
+    (license license:bsd-3)))
+
 (define-public python-schwimmbad
   (package
     (name "python-schwimmbad")
