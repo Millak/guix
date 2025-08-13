@@ -1904,7 +1904,7 @@ implementation of the ASDF Standard.")
            python-asdf-coordinates-schemas
            python-asdf-standard
            python-asdf-transform-schemas
-           python-astropy
+           python-astropy-minimal
            python-numpy
            python-packaging))
     (home-page "https://github.com/astropy/asdf-astropy")
