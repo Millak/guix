@@ -9320,11 +9320,12 @@ using a pure Python implementation.")
        (uri (pypi-uri "pyjsparser" version))
        (sha256
         (base32 "0ycmf9fsvwliqmm1n6sfz7x71y7i2kbfgn39d8lsbiccfxmxlq5y"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/PiotrDabkowski/pyjsparser")
     (synopsis "Fast JavaScript parser")
-    (description "This package provides a fast JavaScript parser (based on
-esprima.js)")
+    (description
+     "This package provides a fast JavaScript parser (based on esprima.js)")
     (license license:expat)))
 
 (define-public python-js2py
