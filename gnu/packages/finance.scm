@@ -1001,21 +1001,28 @@ the Monero GUI client.")
     (license license:bsd-3)))
 
 (define-public python-bech32
-  (package
-    (name "python-bech32")
-    (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "bech32" version))
-              (sha256
-               (base32
-                "16fq5cfy5id9hp123ylhpl55pf38xwk0hv7sziqpig838qhvhvbx"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/fiatjaf/bech32")
-    (synopsis "Reference implementation for Bech32 and Segwit addresses")
-    (description "This package provides a python reference implementation for
+  ;; XXX: No tags upstream.
+  (let ((commit "231e4d88b15f3dc8faf7d339f365b84f6ab5cbcc")
+        (revision "0"))
+    (package
+      (name "python-bech32")
+      (version (git-version "1.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/fiatjaf/bech32")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0wq6q0yrw3x42d81v445xy4nh2qlrn7swsydgpv81dkay11kajrz"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-setuptools python-wheel))
+      (home-page "https://github.com/fiatjaf/bech32")
+      (synopsis "Reference implementation for Bech32 and Segwit addresses")
+      (description "This package provides a python reference implementation for
 Bech32 and segwit addresses.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-trezor-agent
   ;; It is called 'libagent' in pypi; i.e. this is the library as opposed to
