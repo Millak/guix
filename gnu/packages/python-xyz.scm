@@ -30289,14 +30289,14 @@ the saved state of the original interpreter session.")
 (define-public python-multiprocess
   (package
     (name "python-multiprocess")
-    (version "0.70.17")
+    (version "0.70.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multiprocess" version))
        (sha256
         (base32
-         "0ypm9yj1ng1s96hk2iwll190dkpc2j5zras8kay9x00n6hdg3qja"))))
+         "03bdxiincqq3g66vl3sf5ygagjz5sbrpr83djlipprmkwql72ngr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -30328,7 +30328,7 @@ preload_resources\
                   (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-dill))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools-next))
     (home-page "https://pypi.org/project/multiprocess/")
     (synopsis "Multiprocessing and multithreading in Python")
     (description
