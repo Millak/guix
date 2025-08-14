@@ -4119,6 +4119,60 @@ related domain specific languages into plain C++ on top of the TFEL library.")
     ;; exception or the CECILL-A licence:
     (license (list license:gpl3+ license:cecill))))
 
+(define-public mgis
+  (package
+    (name "mgis")
+    (version "2.2") ;Keep in sync with compatible version of tfel
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thelfer/MFrontGenericInterfaceSupport")
+             (commit (string-append "MFrontGenericInterfaceSupport-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00ij7gaqrzakvc3n6irq5z5b5nd08kik5i87prvnp9604ssa6h8k"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-Denable-doxygen-doc=OFF" "-Denable-portable-build=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Test targets are not build by default. By building these
+          ;; additional targets some tests can be run.
+          (add-after 'build 'build-test-targets
+            (lambda* (#:key tests? parallel-build? #:allow-other-keys)
+              (if tests?
+                  (invoke "make"
+                          "BehaviourTest"
+                          "MFrontGenericBehaviourInterfaceTest"
+                          "MFrontGenericBehaviourInterfaceTest2"
+                          "MFrontGenericBehaviourInterfaceTest3"
+                          "-j"
+                          (if parallel-build?
+                              (number->string (parallel-job-count)) "1"))
+                  (format #t "test suite not run~%"))))
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "ctest" "-R" "MFrontGenericBehaviourInterfaceTest"
+                          "-j"
+                          (if parallel-tests?
+                              (number->string (parallel-job-count)) "1"))
+                  (format #t "test suite not run~%")))))))
+    (inputs (list tfel))
+    (home-page "https://thelfer.github.io/mgis/web/index.html")
+    (synopsis
+     "MFrontGenericInterfaceSupport provides tools to handle MFront behaviours")
+    (description
+     "Those tools are meant to be used by solver developers to e.g. load
+MFront behaviours from external shared libraries and retrieve all relevant
+meta data function.")
+    ;; MFrontGenericInterfaceSupport is released under either the GNU LGPL license
+    ;; or the CECILL-C license:
+    (license (list license:lgpl3 license:cecill-c))))
+
 (define-public tsl-hopscotch-map
   (package
     (name "tsl-hopscotch-map")
