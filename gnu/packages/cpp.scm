@@ -4064,6 +4064,61 @@ for C++17 string-view.")
       (description "This package provides simple string utilities for C++.")
       (license license:gpl3+))))
 
+(define-public tfel
+  (package
+    (name "tfel")
+    (version "4.2.2") ;Keep in sync with compatible version of mgis
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thelfer/tfel")
+             (commit (string-append "TFEL-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14br7n76qfh651hvmn1i0ma5lr5ayhvj4ay2182isx26m1j15cfz"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-Denable-portable-build=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Test targets are not build by default. By building these
+          ;; additional targets the majority of tests (over 6000) can
+          ;; be run.
+          (add-after 'build 'build-test-targets
+            (lambda* (#:key tests? parallel-build? #:allow-other-keys)
+              (if tests?
+                  (invoke "make"
+                          "MFrontGenericBehaviours"
+                          "MFrontGenericBehaviours2"
+                          "MFrontGenericBehaviours3"
+                          "-j"
+                          (if parallel-build?
+                              (number->string (parallel-job-count)) "1"))
+                  (format #t "test suite not run~%"))))
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "ctest"
+                          "-R"
+                          "generic"
+                          "-E"
+                          "brick"
+                          "-j"
+                          (if parallel-tests?
+                              (number->string (parallel-job-count)) "1"))
+                  (format #t "test suite not run~%")))))))
+    (home-page "https://thelfer.github.io/tfel/web/index.html")
+    (synopsis "TFEL library and MFront code generator")
+    (description
+     "MFront is a code generator which translates a set of closely
+related domain specific languages into plain C++ on top of the TFEL library.")
+    ;; TFEL/MFront is released under either the GNU GPL licence with linking
+    ;; exception or the CECILL-A licence:
+    (license (list license:gpl3+ license:cecill))))
+
 (define-public tsl-hopscotch-map
   (package
     (name "tsl-hopscotch-map")
