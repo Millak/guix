@@ -1,50 +1,30 @@
 Upstream-status: https://github.com/dolphin-emu/dolphin/pull/13823
 
-diff --git a/CMake/DolphinLibraryTools.cmake b/CMake/DolphinLibraryTools.cmake
-index 4c395a8ef9..fb806b1b90 100644
---- a/CMake/DolphinLibraryTools.cmake
-+++ b/CMake/DolphinLibraryTools.cmake
-@@ -92,3 +92,30 @@ function(dolphin_find_optional_system_library_pkgconfig library search alias bun
-     set(${library}_TYPE "Bundled" PARENT_SCOPE)
-   endif()
- endfunction()
-+
-+# This can be used for header-only libraries that doesn't offer a
-+# pkg-config or CMake file. It uses CMake's find_file. LIBRARY is the
-+# name of the library providing it, INCLUDE is the header file name
-+# without its installation prefix (e.g. "wtr/watcher.hpp") while
-+# BUNDLED_PATH is the root directory of the bundled library.
-+function(dolphin_find_optional_system_include library include bundled_path)
-+  dolphin_optional_system_library(use_system ${library})
-+  string(TOUPPER ${library} upperlib)
-+  if(use_system)
-+    find_file(${library}_INCLUDE ${include})
-+    if((NOT ${library}_INCLUDE) AND (NOT ${use_system} STREQUAL "AUTO"))
-+      message(FATAL_ERROR "No system ${library} headers found. \
-+Please install it or set USE_SYSTEM_${upperlib} to AUTO or OFF.")
-+    endif()
-+  endif()
-+  if(${library}_INCLUDE)
-+    message(STATUS "Using system ${library} headers")
-+    set(${library}_TYPE "System" PARENT_SCOPE)
-+    add_library(${library} INTERFACE IMPORTED GLOBAL)
-+    set_target_properties(${library} PROPERTIES
-+      INTERFACE_INCLUDE_DIRECTORIES ${${library}_INCLUDE})
-+  else()
-+    dolphin_add_bundled_library(${library} ${use_system} ${bundled_path})
-+    set(${library}_TYPE "Bundled" PARENT_SCOPE)
-+  endif()
-+endfunction()
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c277e2a10a..12b1c36ef0 100644
+index c277e2a10a..9b9ec00f91 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -786,7 +786,7 @@ if (USE_RETRO_ACHIEVEMENTS)
+@@ -786,7 +786,9 @@ if (USE_RETRO_ACHIEVEMENTS)
  	add_subdirectory(Externals/rcheevos)
  endif()
  
 -add_subdirectory(Externals/watcher)
-+dolphin_find_optional_system_include(watcher wtr/watcher.hpp Externals/watcher)
++dolphin_find_optional_system_library_pkgconfig(
++  WATCHER watcher watcher::watcher Externals/watcher
++)
  
  ########################################
  # Pre-build events: Define configuration variables and write SCM info header
+diff --git a/Source/Core/Common/CMakeLists.txt b/Source/Core/Common/CMakeLists.txt
+index ee738ba4e3..629c739c8d 100644
+--- a/Source/Core/Common/CMakeLists.txt
++++ b/Source/Core/Common/CMakeLists.txt
+@@ -186,7 +186,7 @@ PRIVATE
+   FatFs
+   Iconv::Iconv
+   spng::spng
+-  watcher
++  watcher::watcher
+   ${VTUNE_LIBRARIES}
+ )
+ 
