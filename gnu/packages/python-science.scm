@@ -35,6 +35,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Mark Walker <mark.damon.walker@gmail.com>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -81,6 +82,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-web)
@@ -4377,6 +4379,61 @@ docs dependency in support of other libraries.")
 units.  It defines the @code{unyt.array.unyt_array} and
 @code{unyt.array.unyt_quantity} classes (subclasses of NumPy’s ndarray class)
 for handling arrays and scalars with units,respectively")
+    (license license:bsd-3)))
+
+(define-public python-uproot
+  (package
+    (name "python-uproot")
+    (version "5.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uproot" version))
+       (sha256
+        (base32 "024k5kjwcd2nw5hfxhpl0x9p5aq0qrg0nlh9v24vr39rcqadh52a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; conftest.py is not required and it imports modules we do not use.
+         "--noconftest"
+         ;; There is no easy way to skip tests that require the network, so
+         ;; just run a handful of tests that pass.
+         "tests/test_0351_write_TList.py"
+         "tests/test_0352_write_THashList.py"
+         "tests/test_0439_check_awkward_before_numpy.py"
+         "tests/test_0976_path_object_split.py"
+         "tests/test_1198_coalesce.py"
+         "tests/test_1264_write_NumPy_array_of_strings.py"
+         "tests/test_1318_dont_compare_big_endian_in_awkward.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; Version is determined dynamically from .git.
+              (substitute* "pyproject.toml"
+                (("\\[project\\]")
+                 (string-append "[project]" "\n" "version = \""
+                                #$version "\""))
+                (("\"version\"") "")))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-pytest
+           python-pytest-timeout
+           python-setuptools))
+    (propagated-inputs
+     (list python-awkward
+           python-cramjam
+           python-fsspec
+           python-numpy
+           python-packaging
+           python-xxhash))
+    (home-page "https://uproot.readthedocs.io")
+    (synopsis "ROOT I/O in Python using NumPy")
+    (description
+     "Uproot is a Python library for reading and writing ROOT files.  It uses
+NumPy and does not depend on C++ ROOT.")
     (license license:bsd-3)))
 
 (define-public python-upsetplot
