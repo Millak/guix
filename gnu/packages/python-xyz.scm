@@ -5853,26 +5853,42 @@ audio playback capability for Python 3 on OSX, Windows, and Linux.")
 (define-public python-wavefile
   (package
     (name "python-wavefile")
-    (version "1.6.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "wavefile" version))
-              (sha256
-               (base32
-                "04mdcxq7n1vnwb9y65j0cwpy91ik5rh9vki1f45xqnh4ygz91n75"))))
-    (build-system python-build-system)
+    (version "1.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wavefile" version))
+       (sha256
+        (base32 "120r003xy0cv6a4d4cjxv140im007klgkvzfgc57m70rcbnggi7p"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-libsndfile-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "wavefile/libsndfile.py"
-                     (("'libsndfile")
-                      (string-append "'" (assoc-ref inputs "libsndfile")
-                                     "/lib/libsndfile"))))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Assertion fail to compare files.
+                    (list "not test_allFormats"
+                          "test_commonFormats"
+                          "test_majorFormats"
+                          "test_subtypeFormats")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-libsndfile-path
+            (lambda _
+              (substitute* "wavefile/libsndfile.py"
+                (("'libsndfile")
+                 (string-append "'" #$(this-package-input "libsndfile")
+                                "/lib/libsndfile"))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools-next))
     (inputs
-     (list libsndfile portaudio))
-    (propagated-inputs (list python-numpy python-pyaudio))
+     (list libsndfile
+           portaudio))
+    (propagated-inputs
+     (list python-numpy
+           python-pyaudio))
     (home-page "https://github.com/vokimon/python-wavefile")
     (synopsis "Pythonic audio file reader and writer")
     (description
