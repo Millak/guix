@@ -7654,6 +7654,24 @@ ftypes.")
               (lambda* (#:key outputs #:allow-other-keys)
                 (install-file "jaro"
                               (string-append #$output "/bin"))))
+            (add-before 'install 'set-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "jaro"
+                  (("^exec guile")
+                   (string-append "exec "
+                                  (search-input-file inputs "/bin/guile")))
+                  (("\"mimetype\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/mimetype")
+                                  "\""))
+                  (("\"file\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/file")
+                                  "\""))
+                  (("\"printf\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/printf")
+                                  "\"")))))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
