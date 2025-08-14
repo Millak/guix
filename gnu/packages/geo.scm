@@ -126,6 +126,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ninja)
@@ -970,6 +971,25 @@ currently CO2 sequestration, geothermal energy, water resources management,
 hydrology and waste deposition.")
     (properties '((tunable? . #t)))
     (license license:bsd-3)))
+
+(define-public ogs-petsc
+  (package
+    (inherit ogs-serial)
+    (name "ogs-petsc")
+    (inputs (modify-inputs (package-inputs ogs-serial)
+              (prepend openmpi petsc-openmpi)
+              (replace "hdf5" hdf5-parallel-openmpi)
+              (replace "netcdf-cxx4" netcdf-cxx4-parallel-openmpi)))
+    (native-inputs (modify-inputs (package-native-inputs ogs-serial)
+                     (prepend pkg-config)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments ogs-serial)
+       ((#:configure-flags flags)
+        `(cons* "-DOGS_USE_PETSC=ON" "-DCMAKE_C_COMPILER=mpicc"
+                "-DCMAKE_CXX_COMPILER=mpic++"
+                ,flags))))
+    (synopsis "OpenGeoSys with PETSc (parallel processing) support")))
+
 (define-public proj
   (package
     (name "proj")
