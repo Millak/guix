@@ -167,37 +167,42 @@ actions.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://mate/" (version-major+minor version) "/"
-                           name "-" version ".tar.xz"))
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           name
+                           "-"
+                           version
+                           ".tar.xz"))
        (sha256
-        (base32
-         "000vr9cnbl2qlysf2gyg1lsjirqdzmwrnh6d3hyrsfc0r2vh4wna"))))
+        (base32 "000vr9cnbl2qlysf2gyg1lsjirqdzmwrnh6d3hyrsfc0r2vh4wna"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'autoconf
-           (lambda _
-             (setenv "SHELL" (which "sh"))
-             (setenv "CONFIG_SHELL" (which "sh"))
-             (invoke "sh" "autogen.sh"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'autoconf
+            (lambda _
+              (setenv "SHELL" (which "sh"))
+              (setenv "CONFIG_SHELL" (which "sh"))
+              (invoke "sh" "autogen.sh"))))))
     (native-inputs
      ;; autoconf-wrapper is required due to the non-standard
      ;; 'autoconf phase.
-     `(("autoconf" ,autoconf-wrapper)
-       ("automake" ,automake)
-       ("intltool" ,intltool)
-       ("icon-naming-utils" ,icon-naming-utils)
-       ("libtool" ,libtool)
-       ("mate-common" ,mate-common)
-       ("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list autoconf-wrapper
+           automake
+           intltool
+           icon-naming-utils
+           libtool
+           mate-common
+           pkg-config
+           which))
     (home-page "https://mate-desktop.org/")
     (synopsis "MATE desktop environment icon theme faenza")
     (description
-     "Icon theme using Faenza and Faience icon themes and some
-customized icons for MATE.  Furthermore it includes some icons
-from Mint-X-F and Faenza-Fresh icon packs.")
+     "Icon theme using Faenza and Faience icon themes and some customized
+icons for MATE.  Furthermore it includes some icons from Mint-X-F and
+Faenza-Fresh icon packs.")
     (license license:gpl2+)))
 
 (define-public mate-themes
