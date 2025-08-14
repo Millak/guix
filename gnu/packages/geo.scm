@@ -859,6 +859,31 @@ fully fledged Spatial SQL capabilities.")
                    license:mpl1.1
                    license:public-domain))))
 
+(define-public iphreeqc
+  (package
+    (name "iphreeqc")
+    (version "3.5.0-3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ufz/iphreeqc")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12wiqyzpzx89k9c7q07w4ypnppvi6s88k6jjsnlnvaxfafyvrbw3"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f
+       #:configure-flags (list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))
+    (home-page "https://www.usgs.gov/software/phreeqc-version-3")
+    (synopsis "C++ library for performing aqueous geochemical calculations")
+    (description
+     "PHREEQC implements several types of aqueous models including two
+ion-association aqueous models.  This package contains modifications for
+OpenGeoSys")
+    (license license:public-domain)))
+
 (define-public proj
   (package
     (name "proj")
