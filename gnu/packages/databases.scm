@@ -4853,13 +4853,13 @@ files or Python scripts that define a list of migration steps.")
 (define-public python-mysqlclient
   (package
     (name "python-mysqlclient")
-    (version "2.2.4")
+    (version "2.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mysqlclient" version))
        (sha256
-        (base32 "0hdznfz9095d2qhl7awbp39s7wpqbxn37xzan487qzaf8srrzg1k"))))
+        (base32 "0i9q2vj6rb4w2iggk0mcp9jla2rm91sx7jcrgv7grm8njjsj5bi4"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
