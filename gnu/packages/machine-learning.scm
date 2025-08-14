@@ -1455,22 +1455,21 @@ storing tensors safely.")
 
 (define-public python-sentencepiece
   (package
+    (inherit sentencepiece)
     (name "python-sentencepiece")
-    (version "0.1.97")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sentencepiece" version))
-       (sha256
-        (base32 "0v0z9ryl66432zajp099bcbnwkkldzlpjvgnjv9bq2vi19g300f9"))))
     (build-system python-build-system)
-    (native-inputs (list pkg-config))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs (list pkg-config protobuf))
     (propagated-inputs (list sentencepiece))
-    (home-page "https://github.com/google/sentencepiece")
     (synopsis "SentencePiece python wrapper")
     (description "This package provides a Python wrapper for the SentencePiece
-unsupervised text tokenizer.")
-    (license license:asl2.0)))
+unsupervised text tokenizer.")))
 
 (define-public python-sentence-transformers
   (package
