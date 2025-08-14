@@ -717,69 +717,44 @@ from an audio CD.")
     (name "abcde")
     (version "2.9.3")
     (home-page "https://abcde.einval.com/")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append home-page "/download/abcde-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "091ip2iwb6b67bhjsj05l0sxyq2whqjycbzqpkfbpm4dlyxx0v04"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "Makefile"
-                    (("/usr/bin/install")
-                     "install"))))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append home-page "/download/abcde-" version ".tar.gz"))
+       (sha256
+        (base32 "091ip2iwb6b67bhjsj05l0sxyq2whqjycbzqpkfbpm4dlyxx0v04"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("^prefix = .*$")
-                (string-append "prefix = "
-                               (assoc-ref outputs "out")
-                               "\n"))
-               (("^sysconfdir = .*$")
-                (string-append "sysconfdir = "
-                               (assoc-ref outputs "out")
-                               "/etc/\n")))))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((wget   (assoc-ref inputs "wget"))
-                   (vorbis (assoc-ref inputs "vorbis-tools"))
-                   (parano (assoc-ref inputs "cdparanoia"))
-                   (which  (assoc-ref inputs "which"))
-                   (discid (assoc-ref inputs "cd-discid"))
-                   (perl-discid (assoc-ref inputs "perl-musicbrainz-discid"))
-                   (perl-ws (assoc-ref inputs "perl-webservice-musicbrainz"))
-                   (perl-mojo (assoc-ref inputs "perl-mojolicious"))
-                   (flac   (assoc-ref inputs "flac"))
-                   (out    (assoc-ref outputs "out")))
-               (define (wrap file)
-                 (wrap-program file
-                               `("PATH" ":" prefix
-                                 (,(string-append out "/bin:"
-                                                  wget "/bin:"
-                                                  flac "/bin:"
-                                                  which "/bin:"
-                                                  vorbis "/bin:"
-                                                  discid "/bin:"
-                                                  parano "/bin")))
-                               `("PERL5LIB" ":" prefix
-                                 (,(string-append perl-discid
-                                                  "/lib/perl5/site_perl:"
-                                                  perl-ws
-                                                  "/lib/perl5/site_perl:"
-                                                  perl-mojo
-                                                  "/lib/perl5/site_perl")))))
-
-               (for-each wrap
-                         (find-files (string-append out "/bin")
-                                     ".*"))))))
-       #:tests? #f)) ; no test target
-
+     (list
+      #:tests? #f ; No test target.
+      #:modules `((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:make-flags
+      #~(list (string-append "INSTALL="
+                             #$(this-package-native-input "coreutils-minimal")
+                             "/bin/install -c")
+              (string-append "prefix = " #$output)
+              (string-append "sysconfdir = " #$output "/etc/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (cut wrap-program <>
+                    `("PATH" ":" prefix
+                      ,(map (compose dirname (cut search-input-file inputs <>))
+                            (list "/bin/wget"
+                                  "/bin/flac"
+                                  "/bin/which"
+                                  "/bin/ogginfo"
+                                  "/bin/cd-discid"
+                                  "/bin/cdparanoia")))
+                    `("PERL5LIB" ":" prefix
+                      (,(getenv "PERL5LIB"))))
+               (find-files (string-append #$output "/bin"))))))))
+    (native-inputs (list coreutils-minimal))
     (inputs (list bash-minimal
                   wget
                   which
@@ -793,7 +768,6 @@ from an audio CD.")
                   ;; A couple of Python and Perl scripts are included.
                   python
                   perl))
-
     (synopsis "Command-line audio CD ripper")
     (description
      "abcde is a front-end command-line utility (actually, a shell script)
