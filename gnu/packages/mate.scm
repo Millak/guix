@@ -267,39 +267,48 @@ desktop and the mate-about program.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://mate/" (version-major+minor version) "/"
-                           "libmateweather-" version ".tar.xz"))
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           name
+                           "-"
+                           version
+                           ".tar.xz"))
        (sha256
         (base32 "1dfj68q3x9camd7h94pcwv8a5969cv5d4p979gcbk4xknpg76hsm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list (string-append "--with-zoneinfo-dir=/var/empty"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-tzdata-location
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "TZDIR" (search-input-directory inputs "/share/zoneinfo"))
-            (substitute* "data/check-timezones.sh"
-              (("/usr/share/zoneinfo/zone.tab")
-               (search-input-file inputs "/share/zoneinfo/zone.tab"))
-              ;; XXX: Ignore this test for now, which requires tzdata-2023c.
-              (("exit 1") "exit 0")))))))
+     (list
+      #:configure-flags #~(list "--with-zoneinfo-dir=/var/empty")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-tzdata-location
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZDIR"
+                      (search-input-directory inputs "/share/zoneinfo"))
+              (substitute* "data/check-timezones.sh"
+                (("/usr/share/zoneinfo/zone.tab")
+                 (search-input-file inputs "/share/zoneinfo/zone.tab"))
+                ;; XXX: Ignore this test for now, which requires tzdata-2023c.
+                (("exit 1")
+                 "exit 0")))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("dconf" ,dconf)
-       ("glib:bin" ,glib "bin")))
+     (list dconf
+           (list glib "bin")
+           intltool
+           pkg-config))
     (inputs
-     (list gtk+ tzdata-for-tests))
+     (list gtk+
+           tzdata-for-tests))
     (propagated-inputs
-      ;; both of these are requires.private in mateweather.pc
-     (list libsoup-minimal-2 libxml2))
+     ;; both of these are requires.private in mateweather.pc
+     (list libsoup-minimal-2
+           libxml2))
     (home-page "https://mate-desktop.org/")
     (synopsis "MATE library for weather information from the Internet")
     (description
-     "This library provides access to weather information from the internet for
-the MATE desktop environment.")
+     "This library provides access to weather information from the internet
+for the MATE desktop environment.")
     (license license:lgpl2.1+)))
 
 (define-public mate-terminal
