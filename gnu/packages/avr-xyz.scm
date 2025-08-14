@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -34,6 +34,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages avr)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -64,6 +65,13 @@
       #:tests? #f
       #:phases #~(modify-phases %standard-phases
                    (delete 'configure)
+                   (add-after 'unpack 'disable-shared-library
+                     (lambda _
+                       ;; XXX: "libsimavr.so"" fails to build due to a linker
+                       ;; error.  Disable the shared library for now.
+                       (substitute* "simavr/Makefile"
+                         (("ifeq \\(\\$\\{shell uname\\}, Linux\\)")
+                          "ifeq (1, 0)"))))
                    (replace 'check
                      (lambda* (#:key tests? outputs #:allow-other-keys)
                        (when tests?
