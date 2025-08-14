@@ -4642,7 +4642,7 @@ information tool.")
 (define-public fastfetch
   (package
     (name "fastfetch")
-    (version "2.49.0")
+    (version "2.50.1")
     (source
      (origin
        (method git-fetch)
@@ -4651,7 +4651,7 @@ information tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mka26ga6jmrimkl93xf97pg8y1k3b41vsb3ds61wi6n257daprk"))
+        (base32 "13640kljz19lm73ndqzzf2qljpw1d096l54djp9yqzspqjq2x0h5"))
        (modules '((guix build utils)))
        (snippet '(begin
                    (delete-file-recursively "src/3rdparty")))))
@@ -4669,7 +4669,15 @@ information tool.")
                                                "/share/hwdata/pci.ids")
                                 (string-append "-DCUSTOM_AMDGPU_IDS_PATH="
                                                #$(this-package-input "libdrm")
-                                               "/share/libdrm/amdgpu.ids"))))
+                                               "/share/libdrm/amdgpu.ids"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-yyjson
+            (lambda _
+              ;; workaround for https://github.com/fastfetch-cli/fastfetch/pull/1904
+              (substitute* "src/util/FFstrbuf.h"
+                (("\"3rdparty/yyjson/yyjson.h\"")
+                 "<yyjson.h>")))))))
     (inputs (list dbus
                   glib
                   hwdata
