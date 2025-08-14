@@ -9647,23 +9647,18 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
     (license license:gpl3+)))
 
 (define-public stellarium
-  ;; XXX: 25.1 does not provide option to build with system MD4C, see
-  ;; <https://github.com/Stellarium/stellarium/issues/4267>, using the latest
-  ;; commit.
-  (let ((commit "045915b9dca754f6eec1bdc311428eb3e98d1002")
-        (revision "2"))
-    (package
+  (package
     (name "stellarium")
-    (version (git-version "25.1" revision commit))
+    (version "25.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Stellarium/stellarium")
-             (commit commit)))
+              (url "https://github.com/Stellarium/stellarium")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nrjfa1aq0inrbr66w8n8lqjkn0nsssjfl0dfrc4maynjp63gqkq"))))
+        (base32 "0fxdvybdcnlkjkyx1kqc7gg7p55qd4h1ri0mmn1xj2g5fxsbs0nr"))))
     (build-system qt-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
@@ -9672,11 +9667,11 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
       #:tests? #f
       #:configure-flags
       #~(list "-DENABLE_GPS=1"
-              ;; TODO: Enable when all of the dependencies are available for Qt6.
-              "-DENABLE_QT6=0"
               "-DENABLE_TESTING=0"
               (string-append "-DCMAKE_CXX_FLAGS=-isystem "
-                             #$(this-package-input "qtserialport") "/include/qt5"))
+                             #$(this-package-input "qtpositioning") "/include/qt6"
+                             " -isystem "
+                             #$(this-package-input "qtserialport") "/include/qt6"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-offscreen-display
@@ -9684,24 +9679,25 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
               (setenv "QT_QPA_PLATFORM" "offscreen")
               (setenv "HOME" "/tmp"))))))
     (inputs
-     (list calcmysky-qt5
+     (list calcmysky
+           eigen
+           glm
            gpsd
            indi
            libnova
            md4c
            nlopt
            openssl
-           qtbase-5
-           qtcharts-5
-           qtlocation-5
-           qtmultimedia-5
+           qtbase
+           qtcharts
+           qtlocation
+           qtmultimedia
            qtpositioning
-           qtscript-5
-           qtserialport-5
+           qtserialport
            qttranslations
-           qtwayland-5
-           qtwebengine-5
-           qxlsx-qt5
+           qtwayland
+           qtwebengine
+           qxlsx
            zlib))
     (native-inputs
      (list doxygen
@@ -9710,7 +9706,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            mesa
            perl
            python-wrapper
-           qttools-5))
+           qttools))
     (home-page "https://stellarium.org/")
     (synopsis "3D sky viewer")
     (description
@@ -9718,7 +9714,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 3D, just like what you see with the naked eye, binoculars, or a telescope.  It
 can be used to control telescopes over a serial port for tracking celestial
 objects.")
-    (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public stuff
   ;; XXX: No version tag available in GitHub.
