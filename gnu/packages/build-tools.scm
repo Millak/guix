@@ -774,28 +774,36 @@ right compilation options.")
     (name "compiledb")
     (version "0.10.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "compiledb" version))
-        (sha256
-          (base32 "0vlngsdxfakyl8b7rnvn8h3l216lhbrrydr04yhy6kd03zflgfq6"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nickdiego/compiledb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qricdgqzry7j3rmgwyd43av3c2kxpzkh6f9zcqbzrjkn78qbpd4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'no-compat-shim-dependency
-           ;; shutilwhich is only needed for python 3.3 and earlier
-           (lambda _
-             (substitute* "setup.py" (("^ *'shutilwhich'\n") ""))
-             (substitute* "compiledb/compiler.py" (("shutilwhich") "shutil")))))))
-    (propagated-inputs
-      (list python-bashlex python-click))
-    (native-inputs
-      (list python-pytest))
-    (home-page
-      "https://github.com/nickdiego/compiledb")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'no-compat-shim-dependency
+            ;; shutilwhich is only needed for python 3.3 and earlier
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "setup.py"
+                (("^ *'shutilwhich'\n")
+                 ""))
+              (substitute* "compiledb/compiler.py"
+                (("shutilwhich")
+                 "shutil"))
+              (substitute* "tests/data/multiple_commands_oneline.txt"
+                (("/bin/echo")
+                 (search-input-file inputs "bin/echo"))))))))
+    (propagated-inputs (list python-bashlex python-click))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/nickdiego/compiledb")
     (synopsis
-      "Generate Clang JSON Compilation Database files for make-based build systems")
+     "Generate Clang JSON Compilation Database files for make-based build systems")
     (description
      "@code{compiledb} provides a @code{make} python wrapper script which,
 besides executing the make build command, updates the JSON compilation
