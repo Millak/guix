@@ -36,6 +36,7 @@
             emacs-batch-error?
             emacs-batch-error-message
 
+            emacs-makeinfo
             emacs-generate-autoloads
             emacs-byte-compile-directory
             emacs-compile-directory
@@ -106,6 +107,13 @@ If NATIVE?, only disable native compilation."
       (raise (condition (&emacs-batch-error
                          (message (read-string (car error-pipe)))))))
     output))
+
+(define* (emacs-makeinfo #:optional
+                         (file "README.org")
+                         (expr '(progn
+                                 (require 'ox-texinfo)
+                                 (org-texinfo-export-to-info))))
+  (emacs-batch-edit-file file expr))
 
 (define (emacs-generate-autoloads name directory)
   "Generate autoloads for Emacs package NAME placed in DIRECTORY."
