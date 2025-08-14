@@ -927,22 +927,22 @@ icons on the MATE desktop.  It works on local and remote file systems.")
         (base32 "1g0lg4x3idilaxhwq1s90pajkvv9i012kzrnk0pxqj2jzl2cgwpb"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'configure 'use-elogind-as-systemd
-                    (lambda _
-                      (substitute* "configure"
-                        (("systemd") "libelogind"))))
-                  (add-before 'build 'fix-polkit-action
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Make sure the polkit file refers to the right
-                      ;; executable.
-                      (let ((out (assoc-ref outputs "out")))
-                        (substitute*
-                            '("capplets/display/org.mate.randr.policy.in"
-                              "capplets/display/org.mate.randr.policy")
-                          (("/usr/sbin")
-                           (string-append out "/sbin")))
-                        #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'use-elogind-as-systemd
+            (lambda _
+              (substitute* "configure"
+                (("systemd") "libelogind"))))
+          (add-before 'build 'fix-polkit-action
+            (lambda _
+              ;; Make sure the polkit file refers to the right
+              ;; executable.
+              (substitute*
+                  '("capplets/display/org.mate.randr.policy.in"
+                    "capplets/display/org.mate.randr.policy")
+                (("/usr/sbin")
+                 (string-append #$output "/sbin"))))))))
     (native-inputs
      (list pkg-config
            intltool
