@@ -5850,52 +5850,6 @@ videos in a notebook.")
 audio playback capability for Python 3 on OSX, Windows, and Linux.")
     (license license:expat))) ; MIT license
 
-(define-public python-wavefile
-  (package
-    (name "python-wavefile")
-    (version "1.6.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wavefile" version))
-       (sha256
-        (base32 "120r003xy0cv6a4d4cjxv140im007klgkvzfgc57m70rcbnggi7p"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; Assertion fail to compare files.
-                    (list "not test_allFormats"
-                          "test_commonFormats"
-                          "test_majorFormats"
-                          "test_subtypeFormats")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-libsndfile-path
-            (lambda _
-              (substitute* "wavefile/libsndfile.py"
-                (("'libsndfile")
-                 (string-append "'" #$(this-package-input "libsndfile")
-                                "/lib/libsndfile"))))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools-next))
-    (inputs
-     (list libsndfile
-           portaudio))
-    (propagated-inputs
-     (list python-numpy
-           python-pyaudio))
-    (home-page "https://github.com/vokimon/python-wavefile")
-    (synopsis "Pythonic audio file reader and writer")
-    (description
-     "This package provides pythonic libsndfile wrapper to read and write audio
-files.")
-    (license license:gpl3+)))
-
 (define-public python-jsonalias
   (package
     (name "python-jsonalias")
