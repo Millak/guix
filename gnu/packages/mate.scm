@@ -807,24 +807,24 @@ hypertext navigation, and table-of-contents bookmarks.")
          "0ylm46wgg7linppid6pdfaixhdb8zgyrxl3lxz17x0am2k718c0y"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags '("--disable-update-mimedb")
-       #:tests? #f ; tests fail even with display set
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             ;; For the missing /etc/machine-id.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t)))))
+     (list
+      #:tests? #f ; tests fail even with display set
+      #:configure-flags #~(list "--disable-update-mimedb")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
+              ;; For the missing /etc/machine-id.
+              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib:bin" ,glib "bin")
-       ("xorg-server" ,xorg-server)
-       ("gobject-introspection" ,gobject-introspection)))
+     (list pkg-config
+           intltool
+           (list glib "bin")
+           xorg-server
+           gobject-introspection))
     (inputs
      (list exempi
            gtk+
@@ -837,8 +837,8 @@ hypertext navigation, and table-of-contents bookmarks.")
            startup-notification))
     (native-search-paths
      (list (search-path-specification
-            (variable "CAJA_EXTENSIONDIR")
-            (files (list "lib/caja/extensions-2.0/**")))))
+             (variable "CAJA_EXTENSIONDIR")
+             (files (list "lib/caja/extensions-2.0/**")))))
     (home-page "https://mate-desktop.org/")
     (synopsis "File manager for the MATE desktop")
     (description
