@@ -3049,7 +3049,7 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "1.3.4")
+    (version "1.3.6")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -3058,7 +3058,7 @@ bad pixel tracking throughout the reduction process.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j0q0mgs6y5zyf3sjz49msp471kwl1la4rabga5pbyzfwfmxlihj"))))
+        (base32 "1rlzmwnlz77n8c62h050jc2njy10bfby671p3w7y6r6y6642xrdi"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -3074,16 +3074,17 @@ bad pixel tracking throughout the reduction process.")
            python-pytest
            python-pytest-cov
            python-pytest-remotedata
-           python-setuptools
+           python-setuptools-next
            python-setuptools-scm
-           python-wheel
            python-xarray))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/MAVENSDC/cdflib")
     (synopsis "Python library to deal with NASA's CDF astronmical data format")
-    (description "This package provides a Python @acronym{CDF, Computable
-Document Format} reader toolkit.
+    (description
+     "This package provides a Python @acronym{CDF, Computable Document Format}
+reader toolkit.
+
 It provides the following functionality:
 @itemize
 @item Ability to read variables and attributes from CDF files
