@@ -1,46 +1,9 @@
 Upstream-status: https://github.com/dolphin-emu/dolphin/pull/13824
 
-diff --git a/CMake/DolphinLibraryTools.cmake b/CMake/DolphinLibraryTools.cmake
-index 4c395a8ef9..efa0d6a9e2 100644
---- a/CMake/DolphinLibraryTools.cmake
-+++ b/CMake/DolphinLibraryTools.cmake
-@@ -1,14 +1,3 @@
--# like add_library(new ALIAS old) but avoids add_library cannot create ALIAS target "new" because target "old" is imported but not globally visible. on older cmake
--# This can be replaced with a direct alias call once our minimum is cmake 3.18
--function(dolphin_alias_library new old)
--  string(REPLACE "::" "" library_no_namespace ${old})
--  if (NOT TARGET _alias_${library_no_namespace})
--    add_library(_alias_${library_no_namespace} INTERFACE)
--    target_link_libraries(_alias_${library_no_namespace} INTERFACE ${old})
--  endif()
--  add_library(${new} ALIAS _alias_${library_no_namespace})
--endfunction()
--
- # Makes an imported target if it doesn't exist.  Useful for when find scripts from older versions of cmake don't make the targets you need
- function(dolphin_make_imported_target_if_missing target lib)
-   if(${lib}_FOUND AND NOT TARGET ${target})
-@@ -85,7 +74,7 @@ function(dolphin_find_optional_system_library_pkgconfig library search alias bun
-   endif()
-   if(${library}_FOUND)
-     message(STATUS "Using system ${library}")
--    dolphin_alias_library(${alias} PkgConfig::${library})
-+    add_library(${alias} ALIAS PkgConfig::${library})
-     set(${library}_TYPE "System" PARENT_SCOPE)
-   else()
-     dolphin_add_bundled_library(${library} ${use_system} ${bundled_path})
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c277e2a10a..67b72179f3 100644
+index 964a33ac13..7779cf2eac 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -1,7 +1,7 @@
- ########################################
- # General setup
- #
--cmake_minimum_required(VERSION 3.13)
-+cmake_minimum_required(VERSION 3.18)
- 
- cmake_policy(SET CMP0079 NEW) # let target_link_libraries() link to a target defined in a different directory
- cmake_policy(SET CMP0080 OLD) # allow using BundleUtilities at configure time
 @@ -657,7 +657,11 @@ add_subdirectory(Externals/glslang)
  if(WIN32 OR APPLE)
    add_subdirectory(Externals/spirv_cross)
@@ -48,7 +11,7 @@ index c277e2a10a..67b72179f3 100644
 -add_subdirectory(Externals/tinygltf)
 +
 +dolphin_find_optional_system_library(TinyGLTF Externals/tinygltf)
-+if(NOT DEFINED tinygltf)
++if(NOT TARGET tinygltf)
 +  add_library(tinygltf ALIAS tinygltf::tinygltf) # using system library
 +endif()
  
@@ -65,6 +28,32 @@ index 0d86268bbe..9e6a99c6f8 100644
 -target_include_directories(tinygltf INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 +target_include_directories(tinygltf INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinygltf)
  dolphin_disable_warnings(tinygltf)
+diff --git a/Externals/tinygltf/exports.props b/Externals/tinygltf/exports.props
+index 7e2fde81cf..09f43c1bae 100644
+--- a/Externals/tinygltf/exports.props
++++ b/Externals/tinygltf/exports.props
+@@ -2,7 +2,7 @@
+ <Project>
+   <ItemDefinitionGroup>
+     <ClCompile>
+-      <AdditionalIncludeDirectories>$(ExternalsDir)tinygltf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
++      <AdditionalIncludeDirectories>$(ExternalsDir)tinygltf\tinygltf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>TINYGLTF_NOEXCEPTION;TINYGLTF_NO_EXTERNAL_IMAGE;TINYGLTF_USE_CPP14;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+     </ClCompile>
+   </ItemDefinitionGroup>
+diff --git a/Externals/tinygltf/tinygltf.vcxproj b/Externals/tinygltf/tinygltf.vcxproj
+index e33d949e56..4995626f22 100644
+--- a/Externals/tinygltf/tinygltf.vcxproj
++++ b/Externals/tinygltf/tinygltf.vcxproj
+@@ -17,7 +17,7 @@
+   <PropertyGroup Label="UserMacros" />
+   <ItemDefinitionGroup>
+     <ClCompile>
+-      <AdditionalIncludeDirectories>tinygltf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
++      <AdditionalIncludeDirectories>tinygltf\tinygltf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+     </ClCompile>
+   </ItemDefinitionGroup>
+   <ItemGroup>
 diff --git a/Source/Core/VideoCommon/Assets/MeshAsset.cpp b/Source/Core/VideoCommon/Assets/MeshAsset.cpp
 index bde8c8aab6..13eb2b4448 100644
 --- a/Source/Core/VideoCommon/Assets/MeshAsset.cpp
