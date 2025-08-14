@@ -144,6 +144,29 @@ formal verification.")
 formal verification.  This is the Yosyshq fork of ABC.")
     (license (license:non-copyleft "file:///copyright.txt"))))
 
+(define-public apycula
+  (package
+    (name "apycula")
+    (version "0.22")
+    ;; The pypi tar.gz file includes the necessary .pickle files, not available
+    ;; in the home-page repository.
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Apycula" version))
+       (sha256
+        (base32 "15xwmi6z2p7jz17l5bqs511yh8jis1dacqc8fypx49jysl7h0apd"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;requires Gowin EDA tools
+    (inputs (list python-crc))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/YosysHQ/apicula/")
+    (synopsis "Gowin FPGA bitstream format")
+    (description
+     "The project Apycula provides tools to support development and
+generating bitstreams with Gowin FPGAs.")
+    (license license:expat)))
+
 (define-public iverilog
   (package
     (name "iverilog")
