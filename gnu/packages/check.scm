@@ -3215,26 +3215,6 @@ pragmas to control it from within your code.  Additionally, it is
 possible to write plugins to add your own checks.")
     (license license:gpl2+)))
 
-(define-public python-pytest-capturelog
-  (package
-    (name "python-pytest-capturelog")
-    (version "0.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-capturelog" version ".tar.gz"))
-       (sha256
-        (base32
-         "038049nyjl7di59ycnxvc9nydivc5m8np3hqq84j2iirkccdbs5n"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pytest))
-    (home-page "https://bitbucket.org/memedough/pytest-capturelog/overview")
-    (synopsis "Pytest plugin to catch log messages")
-    (description
-     "Python-pytest-catchlog is a pytest plugin to catch log messages.")
-    (license license:expat)))
-
 (define-public python-nosexcover
   (package
     (name "python-nosexcover")
