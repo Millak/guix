@@ -1299,22 +1299,27 @@ L2TP allows you to tunnel PPP over UDP.")
     (version "0.16.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "vpn-slice" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dlenski/vpn-slice")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1anfx4hn2ggm6sbwqmqx68s3l2rjcy4z4l038xqb440jnk8jvl18"))))
-    (build-system python-build-system)
+        (base32 "16shhgypw78d9982r7v293h8fbmpl4wvjb6076w66baincn599ag"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ; No tests.
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-FHS-file-names
-           (lambda _
-             (substitute* "vpn_slice/linux.py"
-               (("/sbin/iptables")
-                (which "iptables"))
-               (("/sbin/ip")
-                (which "ip"))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-FHS-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "vpn_slice/linux.py"
+                (("/sbin/iptables")
+                 (search-input-file inputs "/sbin/iptables"))
+                (("/sbin/ip")
+                 (search-input-file inputs "/sbin/ip"))))))))
+    (native-inputs (list python-setuptools python-wheel))
     (inputs (list python-dnspython python-setproctitle iproute iptables))
     (home-page "https://github.com/dlenski/vpn-slice")
     (synopsis "Split tunneling replacement for vpnc-script")
