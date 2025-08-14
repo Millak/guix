@@ -17,6 +17,7 @@
 ;;; Copyright © 2024-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Vasilii Smirnov <vasilii.smirnov@mailbox.org>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
+;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -631,7 +632,8 @@ accurately in real time at any rate desired.")
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "--with-bzip2=" #$(this-package-input "bzip2")))
+      #~(list "--enable-reentrant"
+              (string-append "--with-bzip2=" #$(this-package-input "bzip2")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
