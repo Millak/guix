@@ -1504,30 +1504,34 @@ unsupervised text tokenizer.")
     (version "3.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sentence_transformers" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/UKPLab/sentence-transformers/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1xmzbyrlp6wa7adf42n67c544db17nz95b10ri603lf4gi9jqgca"))))
+        (base32
+         "10kh4l713mikcm82p54qxpz5sp1mchbsqksa5j24jfm1k9ssxjif"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list
-        ;; Missing fixture / train or test data.
-        ;; Requires internet access.
-        "--ignore=tests/test_sentence_transformer.py"
-        "--ignore=tests/test_train_stsb.py"
-        "--ignore=tests/test_compute_embeddings.py"
-        "--ignore=tests/test_cross_encoder.py"
-        "--ignore=tests/test_model_card_data.py"
-        "--ignore=tests/test_multi_process.py"
-        "--ignore=tests/test_pretrained_stsb.py"
-        "-k" (string-append
-              "not test_LabelAccuracyEvaluator"
-              " and not test_ParaphraseMiningEvaluator"
-              " and not test_cmnrl_same_grad"
-              " and not test_paraphrase_mining"
-              " and not test_simple_encode"))))
+      #~(list
+         ;; Missing fixture / train or test data.
+         ;; Requires internet access.
+         "--ignore=tests/test_sentence_transformer.py"
+         "--ignore=tests/test_train_stsb.py"
+         "--ignore=tests/test_compute_embeddings.py"
+         "--ignore=tests/test_cross_encoder.py"
+         "--ignore=tests/test_model_card_data.py"
+         "--ignore=tests/test_multi_process.py"
+         "--ignore=tests/test_pretrained_stsb.py"
+         "-k" (string-append
+               "not test_LabelAccuracyEvaluator"
+               " and not test_ParaphraseMiningEvaluator"
+               " and not test_cmnrl_same_grad"
+               " and not test_paraphrase_mining"
+               " and not test_simple_encode"))))
     (propagated-inputs (list python-huggingface-hub
                              python-numpy
                              python-pillow
