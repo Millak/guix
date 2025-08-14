@@ -4113,47 +4113,41 @@ etc., and an SQL engine for performing simple SQL queries.")
   (package
     (name "python-lmdb")
     (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "lmdb" version))
-              (sha256
-               (base32
-                "1di1gj2agbxwqqwrpk4w58dpfah0kl10ha20s63dlqdd1bgzydj1"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Delete bundled lmdb source files.
-               '(begin
-                  (for-each delete-file (list "lib/lmdb.h"
-                                              "lib/mdb.c"
-                                              "lib/midl.c"
-                                              "lib/midl.h"))
-                  #t))))
-    (build-system python-build-system)
-    (inputs
-     (list lmdb))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lmdb" version))
+       (sha256
+        (base32 "1di1gj2agbxwqqwrpk4w58dpfah0kl10ha20s63dlqdd1bgzydj1"))
+       (snippet
+        ;; Delete bundled lmdb source files.
+        #~(for-each delete-file
+                    '("lib/lmdb.h" "lib/mdb.c" "lib/midl.c" "lib/midl.h")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'use-system-lmdb
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lmdb (assoc-ref inputs "lmdb")))
-               (setenv "LMDB_PURE" "set") ; don't apply env-copy-txn.patch
-               (setenv "LMDB_FORCE_SYSTEM" "set")
-               (setenv "LMDB_INCLUDEDIR" (string-append lmdb "/include"))
-               (setenv "LMDB_LIBDIR" (string-append lmdb "/lib"))
-               #t))))
-       ;; Tests fail with: ‘lmdb.tool: Please specify environment (--env)’.
-       #:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-lmdb
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((lmdb (assoc-ref inputs "lmdb")))
+                (setenv "LMDB_PURE" "set") ;don't apply env-copy-txn.patch
+                (setenv "LMDB_FORCE_SYSTEM" "set")
+                (setenv "LMDB_INCLUDEDIR"
+                        (string-append lmdb "/include"))
+                (setenv "LMDB_LIBDIR"
+                        (string-append lmdb "/lib"))))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (inputs (list lmdb))
     (home-page "https://github.com/dw/py-lmdb")
     (synopsis "Python binding for the ‘Lightning’ database (LMDB)")
     (description
      "python-lmdb or py-lmdb is a Python binding for the @dfn{Lightning
 Memory-Mapped Database} (LMDB), a high-performance key-value store.")
-    (license
-     (list license:openldap2.8
-           ;; ‘lib/win32/inttypes.h’ and ‘lib/win32-stdint/stdint.h’ are BSD-3,
-           ;; but not actually needed on platforms currently supported by Guix.
-           license:bsd-3))))
+    (license (list license:openldap2.8
+                   ;; ‘lib/win32/inttypes.h’ and ‘lib/win32-stdint/stdint.h’ are BSD-3,
+                   ;; but not actually needed on platforms currently supported by Guix.
+                   license:bsd-3))))
 
 (define-public virtuoso-ose
   (package
