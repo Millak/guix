@@ -574,6 +574,13 @@ already exists.  Lookup team IDs among CURRENT-TEAMS."
                       "guix/build/utils.scm"
                       "guix/build-system/gnu.scm")))
 
+(define-team debian
+  (team 'debian
+        #:name "Debian team"
+        #:description
+        "Packages related to Debian and Debian derivatives."
+        #:scope (list "gnu/packages/debian.scm")))
+
 (define-team documentation
   (team 'documentation
         #:name "Documentation"
@@ -1131,7 +1138,7 @@ the \"texlive\" importer."
 (define-member (person "Vagrant Cascadian"
                        "vagrant@debian.org"
                        "vagrantc")
-  embedded)
+  debian embedded)
 
 (define-member (person "Vagrant Cascadian"        ;XXX: duplicate
                        "vagrant@reproducible-builds.org"
