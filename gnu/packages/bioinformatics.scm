@@ -24054,24 +24054,35 @@ parser for Python.")
 
 (define-public nanosv
   (package
-   (name "nanosv")
-   (version "1.2.4")
-   (source (origin
-            (method url-fetch)
-            (uri (pypi-uri "NanoSV" version))
-            (sha256
-             (base32
-              "1wl2daj0bwrl8fx5xi8j8hfs3mp3vg3qycy66538n032v1qkc6xg"))))
-   (build-system python-build-system)
-   (inputs
-    (list python-configparser python-pysam python-pyvcf3))
-   (home-page "https://github.com/mroosmalen/nanosv")
-   (synopsis "Structural variation detection tool for Oxford Nanopore data")
-   (description "NanoSV is a software package that can be used to identify
+    (name "nanosv")
+    (version "1.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "NanoSV" version))
+       (sha256
+        (base32 "1wl2daj0bwrl8fx5xi8j8hfs3mp3vg3qycy66538n032v1qkc6xg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f   ; No tests upstream, even in git.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("'pyvcf'")
+                 "'pyvcf3'")))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list python-configparser python-pysam python-pyvcf3))
+    (home-page "https://github.com/mroosmalen/nanosv")
+    (synopsis "Structural variation detection tool for Oxford Nanopore data")
+    (description
+     "NanoSV is a software package that can be used to identify
 structural genomic variations in long-read sequencing data, such as data
 produced by Oxford Nanopore Technologies’ MinION, GridION or PromethION
 instruments, or Pacific Biosciences RSII or Sequel sequencers.")
-   (license license:expat)))
+    (license license:expat)))
 
 (define-public python-strawc
   (package
