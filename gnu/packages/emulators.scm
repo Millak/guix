@@ -468,10 +468,10 @@ It aims to support Nintendo DSi and 3DS as well.")
                               "rangeset"
                               "rcheevos") ;submodule
               (with-directory-excursion "Externals"
+                ;; Note: Not copying implot sources here, which would
+                ;; introduce a top-level circular dependency.
                 (copy-recursively #$dolphin-rcheevos-submodule
-                                  "rcheevos/rcheevos")
-                (copy-recursively #$(package-source implot)
-                                  "implot/implot"))
+                                  "rcheevos/rcheevos"))
 
               (for-each delete-file
                         (find-files
@@ -495,6 +495,10 @@ It aims to support Nintendo DSi and 3DS as well.")
                     (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'copy-implot-source
+              (lambda _
+                (copy-recursively #$(package-source implot)
+                                  "Externals/implot/implot")))
             (add-before 'configure 'generate-fonts&hardcode-libvulkan-path
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((fontfile
