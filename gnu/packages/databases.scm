@@ -4394,34 +4394,28 @@ You might also want to install the following optional dependencies:
     (name "python-alchemy-mock")
     (version "0.4.3")
     (home-page "https://github.com/miki725/alchemy-mock")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "alchemy-mock" version))
-              (sha256
-               (base32
-                "0ylxygl3bcdapzz529n8wgk7vx9gjwb3ism564ypkpd7dbsw653r"))
-             (snippet
-              #~(begin (use-modules (guix build utils))
-                       (substitute* "alchemy_mock/comparison.py"
-                         (("collections\\.Mapping") "collections.abc.Mapping"))))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miki725/alchemy-mock")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "053gj8d8ca5kpp7v61wd7lcm9mqp9xqz3d8pp9spdbcjsaqz9nk9"))
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    (substitute* "alchemy_mock/comparison.py"
+                      (("collections\\.Mapping")
+                       "collections.abc.Mapping"))))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      ;; Create pytest.ini that adds doctest options to
-                      ;; prevent test failure.  Taken from tox.ini.
-                      (call-with-output-file "pytest.ini"
-                        (lambda (port)
-                          (format port "[pytest]
-doctest_optionflags=IGNORE_EXCEPTION_DETAIL
-")))
-                      (invoke "pytest" "-vv" "--doctest-modules"
-                              "alchemy_mock/"))))))
-    (native-inputs
-     (list python-mock python-pytest))
-    (propagated-inputs
-     (list python-six python-sqlalchemy))
+     (list
+      #:test-flags
+      #~(list "--doctest-modules" "alchemy_mock")))
+    (native-inputs (list python-mock python-pytest python-setuptools
+                         python-wheel))
+    (propagated-inputs (list python-sqlalchemy))
     (synopsis "Mock helpers for SQLAlchemy")
     (description
      "This package provides mock helpers for SQLAlchemy that makes it easy
