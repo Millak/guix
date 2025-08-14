@@ -158,6 +158,41 @@ contains the archive keys used for that.")
     ;; "The keys in the keyrings don't fall under any copyright."
     (license license:public-domain)))
 
+(define-public kali-archive-keyring
+  (package
+    (name "kali-archive-keyring")
+    (version "2025.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://gitlab.com/kalilinux/packages/kali-archive-keyring")
+          (commit (string-append "kali/" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07iwh24myf3s2ziqd2wwzclm48vyv0qvddz0rb6771laaal4wd7w"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "debian"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "kali-archive-keyring.gpg"
+                            (string-append #$output "/share/keyrings/")))))))
+    (native-inputs (list gnupg))
+    (home-page "https://pkg.kali.org/pkg/kali-archive-keyring")
+    (synopsis "GnuPG archive keys of the Kali archive")
+    (description "The Kali distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license (list license:public-domain ;; the keys
+                   license:gpl2+))))
+
 (define-public pureos-archive-keyring
   (package
     (name "pureos-archive-keyring")
