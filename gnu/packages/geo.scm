@@ -122,11 +122,13 @@
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -884,6 +886,90 @@ ion-association aqueous models.  This package contains modifications for
 OpenGeoSys")
     (license license:public-domain)))
 
+(define-public ogs-serial
+  (package
+    (name "ogs-serial")
+    (version "6.5.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.opengeosys.org/ogs/ogs.git")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zph6vlkcq6ph23hlwk4gx3xpdf98a2iz25viah429hm1agziqi4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:configure-flags
+      #~(list "-GNinja" "-DOGS_USE_MFRONT=ON"
+              "-DOGS_USE_NETCDF=ON"
+              (string-append "-DMFrontGenericInterface_DIR="
+                             #$(this-package-input "mgis")
+                             "/share/mgis/cmake"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-env
+            (lambda _
+              (setenv "NINJAFLAGS"
+                      (string-append "-k1" " -j"
+                                     (number->string (parallel-job-count))))))
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (apply invoke "cmake" "--build" "."
+                     (if parallel-build?
+                         `("--parallel" ,(number->string (parallel-job-count)))
+                         '()))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "cmake" "--build" "." "-t" "test"))))
+          (replace 'install
+            (lambda _
+              (invoke "cmake" "--install" ".")
+              ;; Fix missing executable permissions
+              (chmod (string-append #$output "/lib/libOgsMFrontBehaviour.so")
+                     #o755))))))
+    (native-inputs
+     (list git
+           ninja
+           pybind11))
+    (inputs
+     (list boost
+           eigen
+           exprtk
+           hdf5
+           iphreeqc
+           json-modern-cxx
+           libxml2
+           mgis
+           netcdf
+           netcdf-cxx4
+           python
+           range-v3
+           spdlog
+           tclap
+           tfel
+           vtk
+           xmlpatch
+           zlib))
+    (propagated-inputs
+     (list metis)) ;to get mpmetis into PATH
+    (home-page "https://www.opengeosys.org")
+    (synopsis "Simulation of coupled processes in porous and fractured media")
+    (description
+     "OpenGeoSys (OGS) is a scientific open source project for the development
+of numerical methods for the simulation of thermo-hydro-mechanical-chemical
+(THMC) processes in porous and fractured media.  OGS is implemented in C++, it
+is object-oriented with an focus on the numerical solution of coupled
+multi-field problems (multi-physics).  Parallel versions of OGS are available
+relying on both MPI and OpenMP concepts.  Application areas of OGS are
+currently CO2 sequestration, geothermal energy, water resources management,
+hydrology and waste deposition.")
+    (properties '((tunable? . #t)))
+    (license license:bsd-3)))
 (define-public proj
   (package
     (name "proj")
