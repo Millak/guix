@@ -720,29 +720,27 @@ a build worked by accident.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sqdnkka3c6b6hwnrmlwrgy7w62cp8raq8mph9pgd2lydzzbvwlp"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'fix-filename
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-               ;; Main osc tool is renamed in spec file, not setup.py, let's
-               ;; do that too.
-               (rename-file
-                (string-append bin "osc-wrapper.py")
-                (string-append bin "osc"))
-               #t))))))
-    (native-inputs
-     (list python-chardet))
-    (inputs
-     (list python-m2crypto python-pycurl rpm))                   ; for python-rpm
+     (list
+      ;; XXX: Tests require a config file.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-filename
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                ;; osc tool is renamed in spec file, not setup.py.
+                (rename-file "osc-wrapper.py" "osc")))))))
+    (native-inputs (list python-chardet python-setuptools python-wheel))
+    (inputs (list python-m2crypto python-pycurl rpm)) ;for python-rpm
     (home-page "https://github.com/openSUSE/osc")
     (synopsis "Open Build Service command line tool")
-    (description "@command{osc} is a command line interface to the Open Build
-Service.  It allows you to checkout, commit, perform reviews etc.  The vast
-majority of the OBS functionality is available via commands and the rest can
-be reached via direct API calls.")
+    (description
+     "@command{osc} is a command line interface to the Open Build Service.  It
+allows you to checkout, commit, perform reviews etc.  The vast majority of the
+OBS functionality is available via commands and the rest can be reached via
+direct API calls.")
     (license license:gpl2+)))
 
 (define-public compdb
