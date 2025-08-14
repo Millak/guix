@@ -9997,7 +9997,7 @@ n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
 (define-public uraniborg
   (package
     (name "uraniborg")
-    (version "0.0.8")
+    (version "0.0.10")
     (source
      (origin
        (method git-fetch)
@@ -10006,23 +10006,23 @@ n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jr4sj42cg1b1n74yag1a4rbysk53s9a3qbd3sg5qaabvjs534v1"))))
+        (base32 "0bz2k2x06nyvhr9v4z6f21cf29pqsj9m4qyn8sdbl421wsqj31wg"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ; XXX: tests require some config files which are not in Git
       #:install-source? #f
       #:import-path "bitbucket.org/dpnash/uraniborg"
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'patch-config
-            ;; TODO: This might be patched in the upstream, see
-            ;; <https://codeberg.org/astronexus/uraniborg/issues/1>.
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (substitute* "consts.go"
-                  (("config/") (string-append #$output "/etc/uraniborg/"))
-                  (("data/") (string-append #$output "/share/uraniborg/data/")))
+                  (("DEFAULT_BASE_DIR = \".\"")  (format #f "DEFAULT_BASE_DIR = ~s" #$output))
+                  (("\"config\"") (format #f "~s" "etc/uraniborg"))
+                  (("\"data\"") (format #f "~s" "share/uraniborg/data"))
+                  (("\"charts\"") (format #f "~s" "share/uraniborg/charts"))
+                  (("\"fonts\"") (format #f "~s" "share/uraniborg/fonts")))
                 (substitute* (find-files "config" ".*\\.yaml$")
                   (("fonts/") (string-append #$output "/share/uraniborg/fonts/"))))))
           (add-after 'install 'install-runtime-files
@@ -10030,11 +10030,19 @@ n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
               (with-directory-excursion (string-append "src/" import-path)
                 (let ((etc (string-append #$output "/etc/uraniborg"))
                       (data (string-append #$output "/share/uraniborg/data"))
+                      (charts (string-append #$output "/share/uraniborg/charts"))
                       (fonts (string-append #$output "/share/uraniborg/fonts")))
                   (copy-recursively "config" etc)
+                  (copy-recursively "charts" charts)
                   (copy-recursively "fonts" fonts)
-                  (system* "gunzip" "data/athyg_32_subset.csv.gz")
-                  (install-file "data/athyg_32_subset.csv" data))))))))
+                  (system* "gunzip" "data/athyg_33_subset.csv.gz")
+                  (install-file "data/athyg_33_subset.csv" data)))))
+          (delete 'check)
+          (add-after 'install-runtime-files 'post-install-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (native-inputs
      (list go-codeberg-org-astronexus-brahe
            go-dario-cat-mergo
@@ -10053,7 +10061,10 @@ from the HYG catalog.
 
 @code{uraniborg} lets you view the sky from both the solar system and from any
 star in the AT-HYG catalog with a known distance (over 2.5 million stars
-currently).")
+currently).
+
+Base directory containing custom config, data, charts and fonts may be
+adjusted with command line option @code{-b}, by default set to store path.")
     (license (list license:asl2.0    ;; Roboto fonts
                    license:silofl1.1 ;; Noto Sans fonts
                    license:gpl3+))))
