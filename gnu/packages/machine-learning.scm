@@ -1139,16 +1139,17 @@ optimizing, and searching weighted finite-state transducers (FSTs).")
 (define-public sentencepiece
   (package
     (name "sentencepiece")
-    (version "0.1.97")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/google/sentencepiece")
-             (commit (string-append "v" version))))
+       (uri
+        (git-reference
+         (url "https://github.com/google/sentencepiece/")
+         (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kzfkp2pk0vabyw3wmkh16h11chzq63mzc20ddhsag5fp6s91ajg"))))
+        (base32 "1yzsaam3kk9fqzxfc3nm2pskwq1bdgkrijmcmzmg5x0338rn0hmb"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (native-inputs (list gperftools))
