@@ -2907,32 +2907,23 @@ failures.")
   (package
     (name "python-pytest-freezegun")
     (version "0.4.2")
-    (source (origin
-              ;; The test suite is not included in the PyPI archive.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ktosiek/pytest-freezegun")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "10c4pbh03b4s1q8cjd75lr0fvyf9id0zmdk29566qqsmaz28npas"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ktosiek/pytest-freezegun")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10c4pbh03b4s1q8cjd75lr0fvyf9id0zmdk29566qqsmaz28npas"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-freezegun python-pytest))
-    (native-inputs (list unzip))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/ktosiek/pytest-freezegun")
     (synopsis "Pytest plugin to freeze time in test fixtures")
-    (description "The @code{pytest-freezegun} plugin wraps tests and fixtures
-with @code{freeze_time}, which controls (i.e., freeze) the time seen
-by the test.")
+    (description
+     "The @code{pytest-freezegun} plugin wraps tests and fixtures with
+@code{freeze_time}, which controls (i.e., freeze) the time seen by the test.")
     (license license:expat)))
 
 (define-public python-pytest-mypy
