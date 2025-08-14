@@ -158,6 +158,39 @@ contains the archive keys used for that.")
     ;; "The keys in the keyrings don't fall under any copyright."
     (license license:public-domain)))
 
+(define-public elxr-archive-keyring
+  (package
+    (name "elxr-archive-keyring")
+    (version "2024.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://gitlab.com/elxr/packages/elxr-archive-keyring")
+          (commit (string-append "upstream/" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cw7sn22g82g01g7xb4fp8pb6nvb4lck269w1i91rfcmhqxb4iz7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "elxr-archive-keyring.gpg"
+                            (string-append #$output "/share/keyrings/")))))))
+    (native-inputs (list gnupg))
+    (home-page "https://pkg.elxr.org/pkg/elxr-archive-keyring")
+    (synopsis "GnuPG archive keys of the Elxr archive")
+    (description "The Elxr distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license (list license:public-domain ;; the keys
+                   license:gpl2+))))
+
 (define-public kali-archive-keyring
   (package
     (name "kali-archive-keyring")
