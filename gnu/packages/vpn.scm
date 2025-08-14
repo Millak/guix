@@ -1056,35 +1056,31 @@ DNS domain name queries.")
     (version "1.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri name version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/albertodonato/sshoot")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "05i54nga4vy660yy9yf6dl376yj0jc51303yr295qk3k9w0k96yd"))))
-    (build-system python-build-system)
+        (base32 "0725p0l2gx881hsjw3nj44n4gm1kv9hirv5cd4d9yr1ba87whp3q"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda _
-             (substitute* "sshoot/tests/test_manager.py"
-               (("/bin/sh") (which "sh")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "--pyargs" "sshoot")))))))
-    (inputs
-     (list python-argcomplete
-           python-prettytable
-           python-pyyaml
-           python-pyxdg
-           python-toolrack))
-    ;; For tests only.
-    (native-inputs
-     (list python-pytest python-pytest-mock))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "sshoot/tests/test_manager.py"
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh"))))))))
+    (inputs (list python-argcomplete python-prettytable python-pyyaml
+                  python-pyxdg python-toolrack))
+    (native-inputs (list python-pytest python-pytest-mock python-setuptools
+                         python-wheel))
     (home-page "https://github.com/albertodonato/sshoot")
     (synopsis "VPN session manager (sshuttle)")
-    (description "sshoot provides a command-line interface to manage multiple
+    (description
+     "sshoot provides a command-line interface to manage multiple
 @command{sshuttle} virtual private networks.  It supports flexible profiles
 with configuration options for most of @command{sshuttle}’s features.")
     (license license:gpl3+)))
