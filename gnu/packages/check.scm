@@ -2237,26 +2237,24 @@ side-effects (such as setting environment variables).")
 (define-public python-scripttest
   (package
     (name "python-scripttest")
-    (version "1.3")
+    (version "2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scripttest" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pypa/scripttest")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0f4w84k8ck82syys7yg9maz93mqzc8p5ymis941x034v44jzq74m"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (arguments
-     ;; Tests not shipped with PyPI archive, and require TLS CA cert.
-     (list #:tests? #f))
-    (home-page (string-append "https://web.archive.org/web/20161029233413/"
-                              "http://pythonpaste.org/scripttest/"))
+        (base32 "07cyrh4yp8497radz8cx7la2p8yr78r77xm62hh77hcs1migznaf"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/pypa/scripttest")
     (synopsis "Python library to test command-line scripts")
-    (description "Scripttest is a Python helper library for testing
-interactive command-line applications.  With it you can run a script in a
-subprocess and see the output as well as any file modifications.")
+    (description
+     "Scripttest is a Python helper library for testing interactive
+command-line applications.  With it you can run a script in a subprocess and
+see the output as well as any file modifications.")
     (license license:expat)))
 
 (define-public python-testtools-bootstrap
