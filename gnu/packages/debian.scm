@@ -471,82 +471,71 @@ debbugs server.")
     (name "debootstrap")
     (version "1.0.134")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+     (origin
+       (method git-fetch)
+       (uri (git-reference
               (url "https://salsa.debian.org/installer-team/debootstrap.git")
               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0k9gi6gn8qlqs81r2q1hx5wfyax3nvpkk450girdra7dh54iidr4"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k9gi6gn8qlqs81r2q1hx5wfyax3nvpkk450girdra7dh54iidr4"))))
     (build-system gnu-build-system)
     (arguments
      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (delete 'configure)
-           (add-after 'unpack 'patch-source
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((debian #$(this-package-input "debian-archive-keyring"))
-                     (pureos #$(this-package-input "pureos-archive-keyring"))
-                     (trisquel #$(this-package-input "trisquel-keyring"))
-                     (ubuntu #$(this-package-input "ubuntu-keyring")))
-                 (substitute* "Makefile"
-                   (("/usr") ""))
-                 (substitute* '("scripts/etch"
-                                "scripts/potato"
-                                "scripts/sarge"
-                                "scripts/sid"
-                                "scripts/woody"
-                                "scripts/woody.buildd")
-                   (("/usr") debian))
-                 (substitute* "scripts/gutsy"
-                   (("/usr") ubuntu))
-                 (substitute* "scripts/amber"
-                   (("/usr/share/keyrings/pureos-archive-keyring.gpg")
-                    (string-append
-                     pureos
-                     "/share/keyrings/pureos-archive-keyring.gpg")))
-                 (substitute* "scripts/robur"
-                   (("/usr/share/keyrings/trisquel-archive-keyring.gpg")
-                    (string-append
-                     trisquel
-                     "/share/keyrings/trisquel-archive-keyring.gpg")))
-                 (substitute* "debootstrap"
-                   (("=/usr") (string-append "=" #$output))
-                   (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
-                 ;; Include the keyring locations by default.
-                 (substitute* (find-files "scripts")
-                   (("keyring.*(debian-archive-keyring.gpg)"_ keyring)
-                    (string-append "keyring " debian "/share/keyrings/" keyring))
-                   (("keyring.*(pureos-archive-keyring.gpg)" _ keyring)
-                    (string-append "keyring " pureos "/share/keyrings/" keyring))
-                   (("keyring.*(trisquel-archive-keyring.gpg)" _ keyring)
-                    (string-append "keyring " trisquel "/share/keyrings/" keyring))
-                   (("keyring.*(ubuntu-archive-keyring.gpg)" _ keyring)
-                    (string-append "keyring " ubuntu "/share/keyrings/" keyring)))
-                 ;; Ensure PATH works both in guix and within the debian chroot
-                 ;; workaround for: https://bugs.debian.org/929889
-                 (substitute* "functions"
-                   (("PATH=/sbin:/usr/sbin:/bin:/usr/bin")
-                    "PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin"))
-                 (substitute* (find-files "scripts")
-                   (("/usr/share/zoneinfo")
-                    (search-input-directory inputs "/share/zoneinfo"))))))
-           (add-after 'install 'install-man-file
-             (lambda* (#:key outputs #:allow-other-keys)
-               (install-file "debootstrap.8"
-                             (string-append #$output "/share/man/man8"))))
-           (add-after 'install 'wrap-executable
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((debootstrap (string-append #$output "/sbin/debootstrap"))
-                     (path        (getenv "PATH")))
-                 (wrap-program debootstrap
-                               `("PATH" ":" prefix (,path)))))))
-         #:make-flags #~(list (string-append "DESTDIR=" #$output))
-         #:tests? #f))  ; no tests
+      #:tests? #f  ; no tests
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 textual-ports)
+                  (srfi srfi-1)
+                  (srfi srfi-26))
+      #:make-flags #~(list (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("/usr") ""))
+              (substitute* "debootstrap"
+                (("=/usr") (string-append "=" #$output))
+                (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
+              ;; XXX: For unsupported distros (here, tangly is abandonned), we
+              ;; simply remove the scripts, otherwise the following substitute*
+              ;; will error.
+              (for-each
+               delete-file
+               (find-files
+                "scripts"
+                (lambda (file stat)
+                  (let ((content (call-with-input-file file get-string-all)))
+                    (any (compose (cut string-contains content <>)
+                                  (cut string-append "/usr/share/keyrings/" <>
+                                       "-archive-keyring.gpg"))
+                         (list "tanglu"))))))
+              (substitute* (find-files "scripts")
+                ;; Include the keyring locations by default.
+                (("/usr(/share/keyrings/.*.gpg)"_ keyring)
+                 (search-input-file inputs keyring))
+                ;; Patch zoneinfo.
+                (("/usr/share/zoneinfo")
+                 (search-input-directory inputs "/share/zoneinfo")))
+              ;; Ensure PATH works both in guix and within the debian chroot
+              ;; workaround for: https://bugs.debian.org/929889
+              (substitute* "functions"
+                (("PATH=/sbin:/usr/sbin:/bin:/usr/bin")
+                 "PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin"))))
+          (add-after 'install 'install-man-file
+            (lambda _
+              (install-file "debootstrap.8"
+                            (string-append #$output "/share/man/man8"))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (wrap-program (string-append #$output "/sbin/debootstrap")
+                `("PATH" ":" prefix (,(getenv "PATH")))))))))
     (inputs
      (list debian-archive-keyring
+           kali-archive-keyring
+           pardus-archive-keyring
            pureos-archive-keyring
            trisquel-keyring
            ubuntu-keyring
