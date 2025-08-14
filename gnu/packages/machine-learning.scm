@@ -1501,7 +1501,7 @@ unsupervised text tokenizer.")
 (define-public python-sentence-transformers
   (package
     (name "python-sentence-transformers")
-    (version "3.0.1")
+    (version "5.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1511,31 +1511,15 @@ unsupervised text tokenizer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10kh4l713mikcm82p54qxpz5sp1mchbsqksa5j24jfm1k9ssxjif"))))
+         "1jkj77q25b21nxrdszvlw127jnx1m7x8czldiq2mfyj76yjk0ymj"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; Missing fixture / train or test data.
-         ;; Requires internet access.
-         "--ignore=tests/test_sentence_transformer.py"
-         "--ignore=tests/test_train_stsb.py"
-         "--ignore=tests/test_compute_embeddings.py"
-         "--ignore=tests/test_cross_encoder.py"
-         "--ignore=tests/test_model_card_data.py"
-         "--ignore=tests/test_multi_process.py"
-         "--ignore=tests/test_pretrained_stsb.py"
-         "-k" (string-append
-               "not test_LabelAccuracyEvaluator"
-               " and not test_ParaphraseMiningEvaluator"
-               " and not test_cmnrl_same_grad"
-               " and not test_paraphrase_mining"
-               " and not test_simple_encode"))))
+     (list #:tests? #f))        ;network access is required
     (propagated-inputs (list python-huggingface-hub
                              python-numpy
                              python-pillow
                              python-pytorch
+                             python-typing-extensions
                              python-scikit-learn
                              python-scipy
                              python-tqdm
