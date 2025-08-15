@@ -157,17 +157,29 @@ elegant API.")
 (define-public ruby-highline
   (package
     (name "ruby-highline")
-    (version "2.0.1")
+    (version "3.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "highline" version))
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/JEG2/highline")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0gr6pckj2jayxw1gdgh9193j5jag5zrrqqlrnl4jvcwpyd3sn2zc"))))
+         "09ysksjmlzhpr5d21qhhl7bq7b3f03qk7jc1k08iwrvx3fjid8gv"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f)) ;; TODO: NameError: uninitialized constant SPEC
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-coverage-and-failing-test
+            (lambda _
+              (substitute* "test/test_helper.rb"
+                (("require \"simplecov\" if RUBY_ENGINE == \"ruby\"")
+                 ""))
+              ;; TODO: Package dry-types gem.
+              (delete-file "test/test_highline.rb"))))))
     (native-inputs
      (list bundler ruby-code-statistics))
     (synopsis
