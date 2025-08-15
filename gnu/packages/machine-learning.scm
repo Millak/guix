@@ -31,6 +31,7 @@
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;; Copyright © 2025 Lapearldot <lapearldot@disroot.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2652,7 +2653,7 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
 (define-public python-autograd
   (package
     (name "python-autograd")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -2660,12 +2661,14 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
              (url "https://github.com/HIPS/autograd")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1fpnmm3mzw355iq7w751j4mjfcr0yh324cxidba1l22652gg8r8m"))
+        (base32 "054pkhzz0h9p1jzva8774wb9dj7rvax4rcpr8ava971kbimdr2lk"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
-           python-pytest))
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist))
     (propagated-inputs
      (list python-future
            python-numpy))
