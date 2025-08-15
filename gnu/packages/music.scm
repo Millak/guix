@@ -5225,7 +5225,16 @@ and more.  Full API documentation and examples are included.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11xgf461cnmq0jkgdgx5bddi87ammpik4whg1m4fcvd3i0d5i601"))))
+         "11xgf461cnmq0jkgdgx5bddi87ammpik4whg1m4fcvd3i0d5i601"))
+       (modules '((guix build utils)))
+       ;; Include carla headers from the system.
+       (snippet
+        '(substitute* "plugins/carlabase/carla.h"
+           (("\"CarlaNativePlugin\\.h\"")
+            "<carla/includes/CarlaNativePlugin.h>")
+           (("\"CarlaBackend\\.h\"") "<carla/CarlaBackend.h>")
+           (("\"CarlaNative\\.h\"") "<carla/includes/CarlaNative.h>")
+           (("\"CarlaUtils\\.h\"") "<carla/CarlaUtils.h>")))))
     (build-system cmake-build-system)
     (arguments
      (list
