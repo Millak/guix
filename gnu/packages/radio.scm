@@ -2812,7 +2812,7 @@ based devices in packet mode over a serial link.")
 (define-public cm256cc
   (package
     (name "cm256cc")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -2821,7 +2821,7 @@ based devices in packet mode over a serial link.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n9v7g6d370263bgqrjv38s9aq5953rzy7jvd8i30xq6aram9djg"))))
+        (base32 "07gx6yb17m9kd885qpf98cryn1acp546qg80c0rncy3hic0hd6pf"))))
     (build-system cmake-build-system)
     (arguments
      ;; Disable some SIMD features for reproducibility.
