@@ -470,8 +470,9 @@ files.")
                 "-DBUILD_GUI=ON"
                 "-DUSE_OPENMP=ON"
                 "-DBUILD_TESTS=ON"
-                "-DHIMBAECHEL_UARCH=ng-ultra"
+                "-DHIMBAECHEL_UARCH=ng-ultra;gowin"
                 "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
+                "-DHIMBAECHEL_SPLIT=ON"
                 "-DHIMBAECHEL_PRJBEYOND_DB=/tmp/prjbeyond-db"
                 (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
                 (string-append "-DICESTORM_INSTALL_PREFIX="
@@ -510,7 +511,8 @@ files.")
        (list googletest
              sanitizers-cmake))
       (inputs
-       (list boost
+       (list apycula
+             boost
              corrosion
              eigen
              icestorm
