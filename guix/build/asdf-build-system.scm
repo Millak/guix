@@ -175,7 +175,7 @@ installed."
 
 (define* (configure #:key inputs #:allow-other-keys)
   ;; Create a directory having the configuration files for
-  ;; all the dependencies in 'etc/common-lisp/'.
+  ;; all the dependencies in 'etc/xdg/common-lisp/'.
   (let ((out (string-append (getcwd) "/.cl-union")))
     (match inputs
       (((name . directories) ...)
@@ -183,7 +183,7 @@ installed."
                     #:create-all-directories? #t
                     #:log-port (%make-void-port "w"))))
     (setenv "CL_UNION" out)
-    (setenv "XDG_CONFIG_DIRS" (string-append out "/etc")))
+    (setenv "XDG_CONFIG_DIRS" (string-append out "/etc/xdg")))
   #t)
 
 (define* (build #:key outputs inputs asd-systems asd-operation
@@ -217,8 +217,8 @@ installed."
   "Create the ASDF configuration files for the built systems."
   (let* ((system-name (main-system-name (assoc-ref outputs "out")))
          (out (library-output outputs))
-         (conf-dir (string-append out "/etc/common-lisp"))
-         (deps-conf-dir (string-append (getenv "CL_UNION") "/etc/common-lisp"))
+         (conf-dir (string-append out "/etc/xdg/common-lisp"))
+         (deps-conf-dir (string-append (getenv "CL_UNION") "/etc/xdg/common-lisp"))
          (source-dir (lisp-source-directory out system-name))
          (lib-dir (string-append (library-directory out) "/" system-name)))
     (make-asdf-configuration system-name conf-dir deps-conf-dir

@@ -10938,9 +10938,9 @@ compressor.  It works on data produced by @code{parse-js} to generate a
 
  (require :asdf)
  (asdf:initialize-source-registry
-  #p\"~a/etc/common-lisp/source-registry.conf.d/\")
+  #p\"~a/etc/xdg/common-lisp/source-registry.conf.d/\")
  (asdf:initialize-output-translations
-  #p\"~a/etc/common-lisp/asdf-output-translations.conf.d/\")"
+  #p\"~a/etc/xdg/common-lisp/asdf-output-translations.conf.d/\")"
                      (assoc-ref %build-inputs "sbcl")
                      (assoc-ref %build-inputs "sbcl-cl-uglify-js")
                      (assoc-ref %build-inputs "sbcl-cl-uglify-js"))

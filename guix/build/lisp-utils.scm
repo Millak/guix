@@ -236,7 +236,7 @@ will run ENTRY-PROGRAM, a list of Common Lisp expressions in which `arguments'
 has been bound to the command-line arguments which were passed.  Link in any
 asd files from DEPENDENCY-PREFIXES to ensure references to those libraries are
 retained."
-  (setenv "XDG_CONFIG_DIRS" (string-append (library-output outputs) "/etc"))
+  (setenv "XDG_CONFIG_DIRS" (string-append (library-output outputs) "/etc/xdg"))
   (generate-executable program
                        #:dependencies dependencies
                        #:dependency-prefixes dependency-prefixes
@@ -257,7 +257,7 @@ retained."
   "Generate an image, possibly standalone, which contains all DEPENDENCIES,
 placing the result in IMAGE.image.  Link in any asd files from
 DEPENDENCY-PREFIXES to ensure references to those libraries are retained."
-  (setenv "XDG_CONFIG_DIRS" (string-append (library-output outputs) "/etc"))
+  (setenv "XDG_CONFIG_DIRS" (string-append (library-output outputs) "/etc/xdg"))
   (generate-executable image
                        #:dependencies dependencies
                        #:dependency-prefixes dependency-prefixes
