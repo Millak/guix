@@ -193,6 +193,37 @@ contains the archive keys used for that.")
     (license (list license:public-domain ;; the keys
                    license:gpl2+))))
 
+(define-public pardus-archive-keyring
+  (package
+    (name "pardus-archive-keyring")
+    (version "2021.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://depo.pardus.org.tr/pardus/pool/main/p/"
+                           "pardus-archive-keyring/pardus-archive-keyring_"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "0h4y9clpcfprx7fq2yy2bb22ykax5a0wlw8zlcq9kbiya83q02yr"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "keyrings/pardus-archive-keyring.gpg"
+                            (string-append #$output "/share/keyrings/")))))))
+    (native-inputs (list jetring))
+    (home-page "https://tracker.pardus.org.tr/yirmiuc/pardus-archive-keyring")
+    (synopsis "GnuPG archive keys of the Pardus archive")
+    (description "The Pardus distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license (list license:public-domain ;; the keys
+                   license:gpl2+))))
+
 (define-public pureos-archive-keyring
   (package
     (name "pureos-archive-keyring")
