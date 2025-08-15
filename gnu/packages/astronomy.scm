@@ -3738,19 +3738,21 @@ used with local NetDRMS sites.")
 (define-public python-dust-extinction
   (package
     (name "python-dust-extinction")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dust_extinction" version))
        (sha256
-        (base32 "0f0g6gh4kj83xfv0cdp30dahs80pnhsj7c6ryz3f59qf6d5zqard"))))
+        (base32 "01iap2k49izn53v23kwkkpr5j5xhgk79xlwx6cb6h5ng29274nq5"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-astropy
-           python-wheel))
+     (list python-pytest
+           python-pytest-doctestplus
+           python-setuptools-next))
     (propagated-inputs
-     (list python-astropy python-scipy))
+     (list python-astropy
+           python-scipy))
     (home-page "http://dust-extinction.readthedocs.io/")
     (synopsis "Interstellar Dust Extinction Models")
     (description
