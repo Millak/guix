@@ -3525,13 +3525,13 @@ Cesium.")
 (define-public python-dkist
   (package
     (name "python-dkist")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dkist" version))
        (sha256
-        (base32 "061hgrg69cpnn2j6gaivjbkxwiz6rpmyf6igxq58h82g4r7yl6ya"))))
+        (base32 "0j5jxf624s746syam472k2xz3m77p66z9d7c8rz19f0xv3792xql"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3541,6 +3541,8 @@ Cesium.")
               "--deselect=dkist/net/tests/test_client.py::test_fetch_with_headers")
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: It fails to check SunPy's optional inputs versions.
+          (delete 'sanity-check)
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp"))))))
@@ -3558,12 +3560,16 @@ Cesium.")
            python-pytest-mpl
            python-pytest-remotedata
            python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
+           python-setuptools-next
+           python-setuptools-scm-next))
     (propagated-inputs
      (list python-aiohttp
            python-asdf
+           python-asdf-astropy
+           python-asdf-coordinates-schemas
+           python-asdf-standard
+           python-asdf-transform-schemas
+           python-asdf-wcs-schemas
            python-astropy
            python-dask
            python-globus-sdk
@@ -3571,6 +3577,7 @@ Cesium.")
            python-matplotlib
            python-ndcube
            python-numpy
+           python-packaging
            python-parfive
            python-platformdirs
            python-sunpy
