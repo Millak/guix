@@ -3964,35 +3964,30 @@ with relational data.")
 (define-public aerich
   (package
     (name "aerich")
-    (version "0.7.2")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tortoise/aerich")
-             (commit (string-append "v" version))))
+              (url "https://github.com/tortoise/aerich")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pcy945bg890p12s7cyw0mg7hxwsxyy570j600sbf7kwj2d3lilg"))))
+        (base32 "1cln1ik7519n6k4lnh06w956lp8xjb0khkkpsmaj8wqlm0jbvdbi"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list poetry
-           python-bandit
-           python-cryptography
-           python-isort
-           python-pydantic
+     (list python-cryptography
            python-pytest
+           python-poetry-core
            python-pytest-asyncio
-           python-pytest-mock
-           python-pytest-xdist))
+           python-pytest-mock))
     (propagated-inputs
-     (list python-asyncmy
+     (list python-asyncclick
+           python-asyncmy
            python-asyncpg
-           python-click
-           python-ddlparse
            python-dictdiffer
-           python-tomlkit
+           python-pydantic
+           python-tomli-w
            python-tortoise-orm))
     (home-page "https://github.com/tortoise/aerich")
     (synopsis "Database migrations tool for Tortoise @acronym{ORM, Object Relational
