@@ -2081,7 +2081,7 @@ gain and standing wave ratio.")
 (define-public dump1090
   (package
     (name "dump1090")
-    (version "8.2")
+    (version "10.2")
     (source
      (origin
        (method git-fetch)
@@ -2090,12 +2090,17 @@ gain and standing wave ratio.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16ylywy2fdwf5kqr8kgl9lbzy1zwx4ckj9y122k3h86pfkswljs9"))))
+        (base32 "0dc1f18n1xlamdhxg96db6cm6kp04cqzxb36qmd141d0rca7qcli"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove FPGA firmware binary.
+           (delete-file-recursively "bladerf")))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list bladerf hackrf libusb ncurses rtl-sdr))
+     (list bladerf hackrf libusb ncurses rtl-sdr soapysdr))
     (arguments
      (list
       #:test-target "test"
