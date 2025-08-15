@@ -21337,32 +21337,35 @@ repeated areas between contigs.")
 (define-public vembrane
   (package
     (name "vembrane")
-    (version "0.13.2")
+    (version "1.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/vembrane/vembrane")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/vembrane/vembrane")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gdih56gpqd8ks3sd4ah844kac09hi3g073k9gvazb32ah50900w"))))
+                "127wmwj0162nfaql68jwxlkz7rbnjya70xrj4j8zwvcnxcj7x5v3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("pysam = \"\\^0.19\"") "pysam = \"^0.20\"")
-               (("numpy = \\{ version = \"\\^1.23\"")
-                "numpy = { version = \"^1\"")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
     (inputs
-     (list python-asttokens python-intervaltree python-numpy
-           python-pysam python-pyyaml))
+     (list python-asttokens
+           python-intervaltree
+           python-numpy
+           python-pysam
+           python-pyyaml))
     (native-inputs
-     (list poetry python-pytest))
+     (list python-poetry-core
+           python-pytest))
     (home-page "https://github.com/vembrane/vembrane")
     (synopsis "Filter VCF/BCF files with Python expressions")
     (description "Vembrane simultaneously filters variants based on
