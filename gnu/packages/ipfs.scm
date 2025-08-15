@@ -374,6 +374,63 @@ provides a single @code{GetBlock/AddBlock} interface that seamlessly retrieves
 data either locally or from a remote peer through the exchange.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-cid
+  (package
+    (name "go-github-com-ipfs-go-cid")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-cid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gfd5dg0shj2daraai2kkf8sg24jp5cr6dsv857wp4q1ni612a23"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-cid"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-varint))
+    (home-page "https://github.com/ipfs/go-cid")
+    (synopsis "Content ID v1 implemented in Go")
+    (description
+     "Implementation in Go of the @url{https://github.com/ipld/cid, CID spec}.  It is
+used in @code{go-ipfs} and related packages to refer to a typed hunk of data.")
+    (license license:expat)))
+
+(define-public go-github-com-ipfs-go-cidutil
+  (package
+    (name "go-github-com-ipfs-go-cidutil")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-cidutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j18wf42rfxrrh2fjdbjsjvjqxwgvg46b9wl6y5ig22fx5hvpm1n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-cidutil"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-cidutil")
+    (synopsis "Utility functions and types for working with CIDs")
+    (description
+     "@code{go-cidutil} implements various utilities and helper functions for working
+with @url{https://github.com/ipld/cid, CIDs}.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ds-badger4
   (package
     (name "go-github-com-ipfs-go-ds-badger4")
@@ -616,63 +673,6 @@ datastore, giving a clean interface for getting and putting block objects.")
     (description
      "This package provides an utility functions for working with
 @url{https://github.com/ipfs/go-block-format, IPFS blocks}.")
-    (license license:expat)))
-
-(define-public go-github-com-ipfs-go-cid
-  (package
-    (name "go-github-com-ipfs-go-cid")
-    (version "0.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ipfs/go-cid")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gfd5dg0shj2daraai2kkf8sg24jp5cr6dsv857wp4q1ni612a23"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/ipfs/go-cid"))
-    (propagated-inputs
-     (list go-github-com-multiformats-go-multihash
-           go-github-com-multiformats-go-multibase
-           go-github-com-multiformats-go-varint))
-    (home-page "https://github.com/ipfs/go-cid")
-    (synopsis "Content ID v1 implemented in Go")
-    (description
-     "Implementation in Go of the @url{https://github.com/ipld/cid, CID spec}.  It is
-used in @code{go-ipfs} and related packages to refer to a typed hunk of data.")
-    (license license:expat)))
-
-(define-public go-github-com-ipfs-go-cidutil
-  (package
-    (name "go-github-com-ipfs-go-cidutil")
-    (version "0.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ipfs/go-cidutil")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j18wf42rfxrrh2fjdbjsjvjqxwgvg46b9wl6y5ig22fx5hvpm1n"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/ipfs/go-cidutil"))
-    (propagated-inputs
-     (list go-github-com-ipfs-go-cid
-           go-github-com-multiformats-go-multibase
-           go-github-com-multiformats-go-multicodec
-           go-github-com-multiformats-go-multihash))
-    (home-page "https://github.com/ipfs/go-cidutil")
-    (synopsis "Utility functions and types for working with CIDs")
-    (description
-     "@code{go-cidutil} implements various utilities and helper functions for working
-with @url{https://github.com/ipld/cid, CIDs}.")
     (license license:expat)))
 
 (define-public go-github-com-ipfs-go-ipfs-cmds
@@ -1136,6 +1136,34 @@ implementation of @code{go-ipld-format}")
      "An implementation of a @url{https://cbor.io/, CBOR} encoded merkledag object.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipld-format
+  (package
+    (name "go-github-com-ipfs-go-ipld-format")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipld-format")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zl172ncmx9h5z2p3d0j1377xm9glw4zfyamks31p0pvvx2kyn7c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipld-format"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash
+           go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid))
+    (home-page "https://github.com/ipfs/go-ipld-format")
+    (synopsis "IPLD Node and Resolver interfaces in Go")
+    (description
+     "@code{go-ipld-format} is a set of interfaces that a type needs to implement in
+order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-forest.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipld-git
   (package
     (name "go-github-com-ipfs-go-ipld-git")
@@ -1176,34 +1204,6 @@ implementation of @code{go-ipld-format}")
      "This is an IPLD codec which handles git objects.  Objects are transformed into
 IPLD graph as detailed below.  Objects are demonstrated here using both
 @url{https://ipld.io/docs/schemas/,IPLD Schemas} and example JSON forms.")
-    (license license:expat)))
-
-(define-public go-github-com-ipfs-go-ipld-format
-  (package
-    (name "go-github-com-ipfs-go-ipld-format")
-    (version "0.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ipfs/go-ipld-format")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zl172ncmx9h5z2p3d0j1377xm9glw4zfyamks31p0pvvx2kyn7c"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/ipfs/go-ipld-format"))
-    (propagated-inputs
-     (list go-github-com-multiformats-go-multihash
-           go-github-com-ipfs-go-block-format
-           go-github-com-ipfs-go-cid))
-    (home-page "https://github.com/ipfs/go-ipld-format")
-    (synopsis "IPLD Node and Resolver interfaces in Go")
-    (description
-     "@code{go-ipld-format} is a set of interfaces that a type needs to implement in
-order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-forest.")
     (license license:expat)))
 
 (define-public go-github-com-ipfs-go-ipld-legacy
@@ -1282,6 +1282,36 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
      "Package merkledag implements the IPFS Merkle @acronym{Directed Acyclic
 Graphs, DAG} data structures as specified in
 @url{https://docs.ipfs.tech/concepts/merkle-dag}.")
+    (license license:expat)))
+
+(define-public go-github-com-ipfs-go-metrics-interface
+  (package
+    (name "go-github-com-ipfs-go-metrics-interface")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-metrics-interface")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d7jh9aclmxq4z5hynn4lc0ab8c8rip92xkc224vjw2y7kg6jyvg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-metrics-interface"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-multiformats-go-base32
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-metrics-interface")
+    ;; XXX: The project neither has no a proper description, nor a README, see
+    ;; <https://github.com/ipfs/go-metrics-interface/issues/1>.
+    (synopsis "Metrics interface for IPFS")
+    (description
+     "Metrics interface for IPFS (Kubo).")
     (license license:expat)))
 
 (define-public go-github-com-ipfs-go-metrics-prometheus
@@ -1769,36 +1799,6 @@ their levels to be controlled individually.")
     (arguments
      (list
       #:import-path "github.com/ipfs/go-log"))))
-
-(define-public go-github-com-ipfs-go-metrics-interface
-  (package
-    (name "go-github-com-ipfs-go-metrics-interface")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ipfs/go-metrics-interface")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0d7jh9aclmxq4z5hynn4lc0ab8c8rip92xkc224vjw2y7kg6jyvg"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/ipfs/go-metrics-interface"))
-    (propagated-inputs
-     (list go-github-com-ipfs-go-cid
-           go-github-com-ipfs-go-datastore
-           go-github-com-multiformats-go-base32
-           go-github-com-multiformats-go-multihash))
-    (home-page "https://github.com/ipfs/go-metrics-interface")
-    ;; XXX: The project neither has no a proper description, nor a README, see
-    ;; <https://github.com/ipfs/go-metrics-interface/issues/1>.
-    (synopsis "Metrics interface for IPFS")
-    (description
-     "Metrics interface for IPFS (Kubo).")
-    (license license:expat)))
 
 (define-public go-github-com-ipshipyard-p2p-forge
   (package
