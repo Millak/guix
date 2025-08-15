@@ -381,6 +381,55 @@ These aspects include CPU, network fabrics, etc.  In addition, it offers
 APIs to detect, query, and compare them.")
     (license license:expat)))
 
+(define-public python-asyncclick
+  (package
+    (name "python-asyncclick")
+    (version "8.2.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asyncclick" version))
+       (sha256
+        (base32 "0q26q8r1x5j9nz72xcb80vjx5maha6yswdmw2li4mwqyzdxnnkq1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1397 passed, 29 skipped, 72 deselected, 4 xfailed
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; See: <https://github.com/python-trio/asyncclick/issues/42>.
+                    (list "not test_confirm_repeat[asyncio]"
+                          "test_confirm_repeat[trio]"
+                          "test_file_prompt_default_format[asyncio-file_kwargs0]"
+                          "test_file_prompt_default_format[asyncio-file_kwargs1]"
+                          "test_file_prompt_default_format[asyncio-file_kwargs2]"
+                          "test_file_prompt_default_format[trio-file_kwargs0]"
+                          "test_file_prompt_default_format[trio-file_kwargs1]"
+                          "test_file_prompt_default_format[trio-file_kwargs2]"
+                          "test_prompts[asyncio]"
+                          "test_prompts[trio]"
+                          ;; Requires less
+                          "test_echo_via_pager")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-conftest
+            ;; See: <https://github.com/python-trio/asyncclick/pull/39>.
+            (lambda _
+              (substitute* "tests/conftest.py"
+                (("from click") "from asyncclick")))))))
+    (native-inputs
+     (list python-anyio
+           python-flit-core-next
+           python-pytest
+           python-trio))
+    (home-page "https://github.com/python-trio/asyncclick")
+    (synopsis "Python composable command line utility, trio-compatible version ")
+    (description
+     "AsyncClick is a fork of Click that works well with anyio, Trio, or
+asyncio.")
+    (license license:bsd-3)))
+
 (define-public python-asyncstdlib
   (package
     (name "python-asyncstdlib")
