@@ -798,6 +798,12 @@ others.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api")
+                 "poetry.core.masonry.api"))))
          (add-after 'unpack 'patch-openconnect
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "openconnect_sso/app.py"
@@ -807,7 +813,6 @@ others.")
                                "\""))))))))
     (inputs
      (list openconnect
-           poetry
            python-attrs
            python-colorama
            python-keyring
@@ -822,7 +827,8 @@ others.")
            python-toml
            qtwebengine-5))
     (native-inputs
-     (list python-pytest
+     (list python-poetry-core
+           python-pytest
            python-pytest-asyncio
            python-pytest-httpserver))
     (home-page "https://github.com/vlaci/openconnect-sso")
