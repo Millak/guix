@@ -1668,34 +1668,6 @@ users.")
     (home-page "https://hamlib.github.io/")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
-(define wsjtx-hamlib
-  ;; Fork of hamlib with custom patches used by wsjtx.
-  (package
-    (inherit hamlib)
-    (name "wsjtx-hamlib")
-    (version "2.5.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.code.sf.net/u/bsomervi/hamlib.git")
-             (commit (string-append "wsjtx-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bgf7bz2280739a7ip7lvpns0i7x6svryxfmsp32cff2dr146lz3"))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("texinfo" ,texinfo)
-       ,@(package-native-inputs hamlib)))
-    (arguments
-     `(#:configure-flags '("--disable-static"
-                           "--with-lua-binding"
-                           "--with-python-binding"
-                           "--with-tcl-binding"
-                           "--with-xml-support")))))
-
 (define-public jtdx-hamlib
   ;; Fork of hamlib with custom patches used by jtdx.
   (package
@@ -1909,10 +1881,7 @@ focused on DXing and being shaped by community of DXers.JTDX")
                 (("set \\(ENV\\{PKG_CONFIG_PATH\\}.*\\)")
                  "set (__pc_path $ENV{PKG_CONFIG_PATH})
   list (APPEND __pc_path \"${__hamlib_pc_path}\")
-  set (ENV{PKG_CONFIG_PATH} \"${__pc_path}\")"))
-              (substitute* "HamlibTransceiver.hpp"
-                (("#ifdef JS8_USE_LEGACY_HAMLIB")
-                 "#if 1"))))
+  set (ENV{PKG_CONFIG_PATH} \"${__pc_path}\")"))))
           (delete 'check)
           (add-after 'install 'check
             (lambda* (#:key tests? #:allow-other-keys)
@@ -1928,11 +1897,11 @@ focused on DXing and being shaped by community of DXers.JTDX")
      (list boost
            fftw
            fftwf
+           hamlib
            libusb
            qtbase-5
            qtmultimedia-5
-           qtserialport-5
-           wsjtx-hamlib))
+           qtserialport-5))
     (home-page "http://js8call.com/")
     (synopsis "Weak-signal ham radio communication program")
     (description
