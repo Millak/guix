@@ -974,11 +974,13 @@ packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
                       "gnu/packages/openldap.scm"
                       "gnu/packages/openstack.scm"
                       "gnu/packages/prometheus.scm"
+                      "gnu/packages/rdesktop.scm"
                       "gnu/packages/selinux.scm"
                       "gnu/packages/storage.scm"
                       "gnu/packages/task-runners.scm"
                       "gnu/packages/terraform.scm"
-                      "gnu/packages/virtualization.scm")))
+                      "gnu/packages/virtualization.scm"
+                      "gnu/packages/vnc.scm")))
 
 (define-team telephony
   (team 'telephony

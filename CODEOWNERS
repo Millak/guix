@@ -344,11 +344,13 @@ gnu/packages/nfs\.scm                              @guix/sysadmin
 gnu/packages/openldap\.scm                         @guix/sysadmin
 gnu/packages/openstack\.scm                        @guix/sysadmin
 gnu/packages/prometheus\.scm                       @guix/sysadmin
+gnu/packages/rdesktop\.scm                         @guix/sysadmin
 gnu/packages/selinux\.scm                          @guix/sysadmin
 gnu/packages/storage\.scm                          @guix/sysadmin
 gnu/packages/task-runners\.scm                     @guix/sysadmin
 gnu/packages/terraform\.scm                        @guix/sysadmin
 gnu/packages/virtualization\.scm                   @guix/sysadmin
+gnu/packages/vnc\.scm                              @guix/sysadmin
 
 gnu/build/jami-service\.scm                        @guix/telephony
 gnu/packages/jami\.scm                             @guix/telephony
