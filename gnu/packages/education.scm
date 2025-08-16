@@ -336,7 +336,7 @@ frequently used words in American English.")
 (define-public tipp10
   (package
     (name "tipp10")
-    (version "3.3.0")
+    (version "3.3.4")
     (source (origin
               (method git-fetch)
               ;; Use the community maintained Qt 6 fork of the project, as the
@@ -348,7 +348,7 @@ frequently used words in American English.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "138xf55csnq53mlkhj50g9bacay8kxz6p9vnzd7jyv6rq1xch5nq"))))
+                "1a6swdzf15jrqafwzv7grkdcl4a4nhpm8b8lh6br0djxkzqzx45b"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase    ;qtbase 6
                      #:tests? #f))      ;packages has no tests
