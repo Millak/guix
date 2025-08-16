@@ -24765,16 +24765,41 @@ natural language processing libraries.")
 (define-public python-pymongo
   (package
     (name "python-pymongo")
-    (version "4.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pymongo" version))
-              (sha256
-               (base32
-                "1m9hc2a4kgg10xy3g5x00z4a7rrk9s0rbf5qfypwnhq0kdfg5f6p"))))
-    (build-system python-build-system)
+    (version "4.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pymongo" version))
+       (sha256
+        (base32 "1ld18zyh4f6zxwswsc018d48lq7imf85zrf49w9wyy6fvlzlwrqm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1274 passed, 6231 skipped, 1441 deselected, 2 warnings
+      #:test-flags
+      ;; Tests need access to /etc/resolve.conf.
+      #~(list "--ignore=test/asynchronous/test_srv_polling.py"
+              "--ignore=test/test_srv_polling.py"
+              "-k" (string-join
+                    ;; Tests need access to /etc/resolve.conf
+                    (list "not test_connection_timeout_ms_propagates_to_DNS_resolver"
+                          "test_detected_environment_warning"
+                          ;; XXX: Tests fail with assertion is not equal.
+                          "test_test_uri_options_srv-options_SRV_URI_with_custom_srvServiceName"
+                          "test_test_uri_options_srv-options_SRV_URI_with_invalid_type_for_srvMaxHosts"
+                          "test_test_uri_options_srv-options_SRV_URI_with_negative_integer_for_srvMaxHosts"
+                          "test_test_uri_options_srv-options_SRV_URI_with_positive_srvMaxHosts_and_loadBalanced"
+                          "test_test_uri_options_srv-options_SRV_URI_with_srvMaxHosts")
+                    " and not "))))
+    (native-inputs
+     (list python-hatch-requirements-txt
+           python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools))
     (propagated-inputs
-     (list python-certifi))
+     (list python-certifi
+           python-dnspython))
     (home-page "https://github.com/mongodb/mongo-python-driver")
     (synopsis "Python driver for MongoDB")
     (description "Python driver for MongoDB.")
