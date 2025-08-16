@@ -139,7 +139,7 @@
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
-    (version "30.1")
+    (version "30.2")
     ;; Note: When using (replacement …), ensure that comp-native-version-dir
     ;; stays the same across grafts.
     ;; Run `make check-system TESTS=emacs-native-comp' to ensure that grafts
@@ -150,15 +150,14 @@
                                   version ".tar.xz"))
               (sha256
                (base32
-                "13qkdx515qv7m8b2mpd37p16frs0xgl7bw8xvv397bz6fspc3jkc"))
+                "1nggbgnns7lvxn68gzlcsgwh3bigvrbn45kh6dqia9yxlqc6zwxk"))
               (patches (search-patches "emacs-disable-jit-compilation.patch"
                                        "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
                                        "emacs-native-comp-pin-packages.patch"
-                                       "emacs-pgtk-super-key-fix.patch"
-                                       "emacs-30-fix-compilation-errors.patch"))
+                                       "emacs-pgtk-super-key-fix.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "lisp"
@@ -205,7 +204,7 @@
                            "--disable-build-details")
       #:make-flags
       #~(list (string-append "SELECTOR=" #$%selector)
-              (let ((release-date "2025-02-23 17:41:38"))
+              (let ((release-date "2025-08-14 05:04:03"))
                 (string-append "RUN_TEMACS= "
                                #$(this-package-native-input "libfaketime")
                                "/bin/faketime -m -f '" release-date "'"
