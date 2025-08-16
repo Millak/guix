@@ -1899,22 +1899,22 @@ The central program included in this package is @code{onsgmls}, which replaces
 (define-public python-elementpath
   (package
     (name "python-elementpath")
-    (version "2.0.3")
+    (version "5.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "elementpath" version))
        (sha256
         (base32
-         "1kxx573ywqfh6j6aih2i6hhsya6kz79qq4bgz6yskwk6b18jyr8z"))))
-    (build-system python-build-system)
+         "1yr5ka198p1c1yw0dpmvz5mvxr6b29mz64hb2vxax53fbmb97vc5"))))
+    (build-system pyproject-build-system)
     ;; The test suite is not run, to avoid a dependency cycle with
     ;; python-xmlschema.
     (arguments `(#:tests? #f))
-    (home-page
-     "https://github.com/sissaschool/elementpath")
-    (synopsis
-     "XPath 1.0/2.0 parsers and selectors for ElementTree and lxml")
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/sissaschool/elementpath")
+    (synopsis "XPath 1.0/2.0 parsers and selectors for ElementTree and lxml")
     (description
      "The proposal of this package is to provide XPath 1.0 and 2.0 selectors
 for Python's ElementTree XML data structures, both for the standard
