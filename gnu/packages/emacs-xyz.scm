@@ -162,6 +162,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright @ 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright @ 2025 Nik Gaffney <nik@fo.am>
+;;; Copyright © 2025 Untrusem <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38860,6 +38861,31 @@ time.")
     (description "@code{mastodon.el} is an Emacs client for Mastodon, the
 federated microblogging social network.")
     (license license:gpl3+)))
+
+(define-public emacs-org-social
+  (let ((commit "e52c727c08444a3c6ccceb75492504e59ad5e804")
+        (revision "0"))
+    (package
+      (name "emacs-org-social")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tanrax/org-social.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06izvlmqx2yhig84i4xfcc6wdv5jyj1jr3irc6xdwbvwpck2qbcg"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))
+      (propagated-inputs (list emacs-request))
+      (home-page "https://github.com/tanrax/org-social.el")
+      (synopsis "Emacs client for Org-social")
+      (description
+       "This package provides an Emacs client for Org-social which is
+a decentralized social network that runs on an Org Mode file over HTTP.")
+      (license license:gpl3+))))
 
 (define-public emacs-fedi
   ;; One year since last tagged release.
