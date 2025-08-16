@@ -33124,33 +33124,42 @@ Foundation maintained libraries.")
 (define-public python-freetype-py
   (package
     (name "python-freetype-py")
-    (version "2.3.0")
+    (version "2.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "freetype-py" version ".zip"))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/rougier/freetype-py")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1l55wzy21jmdayjna29ahzxrf2fp68580978rs6kap1a4zilrdpr"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-setuptools-scm
-           unzip))
-    (inputs (list freetype))
+        (base32 "0cls0469zfqzwpq6k4pxa9vrczsqabqk4qh7444xybcyq9qgs1lp"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       ;; Note: the pypi archive does not contain tests, but running the check
-       ;; phase will at least test whether the module loads correctly.
-       (modify-phases %standard-phases
-         (add-before 'build 'embed-library-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "freetype/raw.py"
-               (("^(filename = ).*" _ >)
-                (string-append > "\"" (search-input-file inputs "/lib/libfreetype.so")
-                               "\"\n"))))))))
+     (list
+      #:test-flags #~(list "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-lib-paths
+            (lambda _
+              (substitute* "freetype/raw.py"
+                (("ctypes.util.find_library\\('freetype'\\)")
+                 (format #f "'~a/~a'" #$(this-package-input "freetype")
+                         "lib/libfreetype.so")))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list freetype))
     (home-page "https://github.com/rougier/freetype-py")
     (synopsis "Freetype python bindings")
-    (description "Freetype Python provides bindings for the FreeType
-library.  Only the high-level API is bound.")
+    (description
+     "Freetype Python provides bindings for the FreeType library.  Only the
+high-level API is bound.")
     (license license:bsd-3)))
 
 (define-public python-frozendict
