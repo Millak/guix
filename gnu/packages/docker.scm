@@ -12,6 +12,7 @@
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
@@ -64,6 +66,32 @@
 ;; Note - when changing Docker versions it is important to update the versions
 ;; of several associated packages (docker-libnetwork and go-sctp).
 (define %docker-version "20.10.27")
+
+(define-public go-github-com-docker-go-metrics
+  (package
+    (name "go-github-com-docker-go-metrics")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/go-metrics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b6f1889chmwlsgrqxylnks2jic16j2dqhsdd1dvaklk48ky95ga"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/go-metrics"))
+    (propagated-inputs (list go-github-com-prometheus-client-golang))
+    (home-page "https://github.com/docker/go-metrics")
+    (synopsis "Go library for metrics collection from Docker projects")
+    (description
+     "This package is a small wrapper around the Prometheus Go client to help
+enforce convention and best practices for metrics collection in Docker
+projects.")
+    (license (list license:asl2.0 license:cc-by-sa4.0))))
 
 (define-public python-docker
   (package
