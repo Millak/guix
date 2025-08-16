@@ -5750,8 +5750,10 @@ alpha blending etc).")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://files.dyne.org/frei0r/"
-                           "frei0r-plugins-" version ".tar.gz"))
+       (uri (string-append "https://files.dyne.org/frei0r"
+                            "?file=frei0r/old-releases/frei0r-plugins-"
+                            version
+                            ".tar.gz"))
        (sha256
         (base32
          "0fjji3060r4fwr7vn91lwfzl80lg3my9lkp94kbyw8xwz7qgh7qv"))))
