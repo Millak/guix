@@ -502,6 +502,31 @@ states–that is, any major mode that supports the bookmark system is
 compatible.")
     (license license:gpl3+)))
 
+(define-public emacs-sops
+  (package
+    (name "emacs-sops")
+    (version "0.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/djgoku/sops")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n49p86sfvhaig7mp17zm9mrsp14mmvgvprp1n16r6kgfx52wxzq"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/djgoku/sops")
+    (synopsis "SOPS encrypt and decrypt without leaving the editor")
+    (description
+     "This package provides a minor mode for editing @acronym{SOPS, Secret
+OPerationS}-encrypted files.  To enable it automatically, set
+@code{global-sops-mode}.  Users can decrypt with @code{sops-edit-file}, save
+changes with @code{sops-save-file}, or discard them with @code{sops-cancel}.
+The files are displayed in read-only mode to prevent accidental corruption,
+which is useful for partly encrypted files with only one encrypted line.")
+    (license license:gpl3+)))
+
 (define-public emacs-age
   (package
     (name "emacs-age")
