@@ -13660,7 +13660,7 @@ displayed.")
         (base32 "0bmpd7qxcvin8szblilxmw50v7mygf6a6i180h82123s893gk092"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://www.hsluv.org")
     (synopsis "Human-friendly HSL colour space implemented in Python")
     (description
