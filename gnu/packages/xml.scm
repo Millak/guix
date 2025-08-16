@@ -1908,11 +1908,21 @@ The central program included in this package is @code{onsgmls}, which replaces
         (base32
          "1yr5ka198p1c1yw0dpmvz5mvxr6b29mz64hb2vxax53fbmb97vc5"))))
     (build-system pyproject-build-system)
-    ;; The test suite is not run, to avoid a dependency cycle with
-    ;; python-xmlschema.
-    (arguments `(#:tests? #f))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+         ;; 10 tests fail with: locale.Error: unsupported locale setting.
+          (add-before 'check 'set-locales
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "GUIX_LOCPATH"
+                      (search-input-directory inputs "lib/locale")))))))
     (native-inputs
-     (list python-setuptools))
+     (list glibc-locales
+           python-setuptools
+           python-lxml
+           python-xmlschema-bootstrap))
     (home-page "https://github.com/sissaschool/elementpath")
     (synopsis "XPath 1.0/2.0 parsers and selectors for ElementTree and lxml")
     (description
