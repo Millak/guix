@@ -141,6 +141,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages vim)  
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -353,6 +354,38 @@ currently does not do much, but it might in the future.")
      "This package provides Guile modules to interface with the OAuth and
 OAuth2 protocols.")
     (license license:gpl3+)))
+
+(define-public guile-bewaking
+  (package
+    (name "guile-bewaking")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/bewaking.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cx2pn6bfgy1xzms92v28q3mf24p195sjl2yyz7wbq8r9nz6rc2i"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "src"))
+    (native-inputs (list guile-uuid guile-gcrypt guile-3.0))
+    (propagated-inputs (list openssl xxd))
+    (home-page "https://codeberg.org/jjba23/bewaking")
+    (synopsis "Authentication / Authorization library for Guile Scheme")
+    (description
+     "bewaking provides functionalities to (double) encrypt and
+decrypt data, aided by a custom obfuscation algorithm.
+
+It also provides a DSL to be used for Authorization and Authentication
+for your Guile Scheme projects with a simple user permission system.
+
+Data is protected through multiple layers of cryptography techniques
+and obfuscation tricks, producing secure files and tokens one can use.")
+    (license license:lgpl3+)))
 
 (define-public guile-openai
   (let ((commit "751cd5db5f8bb7c00e60042a7ec86100930b0f02")
