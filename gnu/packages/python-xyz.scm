@@ -3302,25 +3302,17 @@ package descriptions or to unify multiple existing APIs into a single API.")
 (define-public python-colorlog
   (package
     (name "python-colorlog")
-    (version "6.6.0")
+    (version "6.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "colorlog" version))
        (sha256
-        (base32 "1s7x0v872h8aks8xp01wmv6hzisxqjrh1svbbcycir0980h76krl"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-              (when tests?
-                (add-installed-pythonpath inputs outputs)
-                (invoke "python" "-m" "pytest")))))))
+        (base32 "1hka1kf6p53hppv05xsa5byr4gasfaaq7r2g3x7gb51vp6hm9fmz"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/borntyping/python-colorlog")
     (synopsis "Log formatting with colors for python")
     (description "The @code{colorlog.ColoredFormatter} is a formatter for use
