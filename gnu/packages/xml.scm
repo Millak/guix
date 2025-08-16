@@ -2075,6 +2075,16 @@ finding schema's elements and attributes; and can encode and decode
 XML data to JSON and other formats.")
     (license license:expat)))
 
+(define-public python-xmlschema-bootstrap
+  (hidden-package
+   (package/inherit python-xmlschema
+     (arguments
+      (list #:tests? #f
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'sanity-check))))
+     (propagated-inputs '()))))
+
 (define-public python-xmltodict
   (package
     (name "python-xmltodict")
