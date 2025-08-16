@@ -193,10 +193,20 @@
         "librewolf-compare-paths.patch"
         "librewolf-use-system-wide-dir.patch"
         "librewolf-add-store-to-rdd-allowlist.patch"))
-      ;; XXX: 75 Mo (800+ Mo uncompressed) of unused tests.
-      ;; Removing it makes it possible to compile on some systems.
+      ;; Slim down the tarball by removing unbundled libraries and 75 Mo (800+
+      ;; Mo uncompressed) of unused tests.
+      ;; TODO: Unbundle security/nss and media/libpng.
       (modules '((guix build utils)))
-      (snippet #~(delete-file-recursively "testing/web-platform")))))
+      (snippet
+       #~(for-each delete-file-recursively
+                   '("testing/web-platform"
+                     "gfx/cairo/libpixman"
+                     "js/src/ctypes/libffi"
+                     "ipc/chromium/src/third_party/libevent"
+                     "media/libvpx"
+                     "docs/nspr"
+                     "media/libwebp"
+                     "modules/zlib"))))))
 
 ;;; Define the versions of rust needed to build firefox, trying to match
 ;;; upstream.  See table at [0], `Uses' column for the specific version.
