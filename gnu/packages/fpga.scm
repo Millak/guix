@@ -247,6 +247,12 @@ For synthesis, the compiler generates netlists in the desired format.")
               ;; work.
               (symlink (search-input-file inputs "/bin/abc")
                        (string-append #$output "/bin/yosys-abc"))))
+          (add-after 'install 'keep-pmgen-py
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; pmgen.py is required by some yosys plugins.
+              (install-file (search-input-file inputs
+                                               "/passes/pmgen/pmgen.py")
+                            (string-append #$output "/bin"))))
           (add-after 'install 'wrap
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/yosys-witness")
