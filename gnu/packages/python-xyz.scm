@@ -33257,47 +33257,6 @@ dumping of JSON5 data structures.")
 Foundation maintained libraries.")
     (license license:expat)))
 
-(define-public python-freetype-py
-  (package
-    (name "python-freetype-py")
-    (version "2.5.1")
-    (source
-     (origin
-       (method git-fetch)       ;no tests in PyPI archive
-       (uri (git-reference
-              (url "https://github.com/rougier/freetype-py")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0cls0469zfqzwpq6k4pxa9vrczsqabqk4qh7444xybcyq9qgs1lp"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "tests")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-lib-paths
-            (lambda _
-              (substitute* "freetype/raw.py"
-                (("ctypes.util.find_library\\('freetype'\\)")
-                 (format #f "'~a/~a'" #$(this-package-input "freetype")
-                         "lib/libfreetype.so")))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (inputs
-     (list freetype))
-    (home-page "https://github.com/rougier/freetype-py")
-    (synopsis "Freetype python bindings")
-    (description
-     "Freetype Python provides bindings for the FreeType library.  Only the
-high-level API is bound.")
-    (license license:bsd-3)))
-
 (define-public python-frozendict
   (package
     (name "python-frozendict")
