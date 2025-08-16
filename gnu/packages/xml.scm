@@ -2047,7 +2047,7 @@ XML document to a Python object.")
 (define-public python-xmlschema
   (package
     (name "python-xmlschema")
-    (version "1.2.5")
+    (version "4.1.0")
     (source (origin
               ;; Unit tests are not distributed with the PyPI archive.
               (method git-fetch)
@@ -2057,22 +2057,12 @@ XML document to a Python object.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rsa75x86gdjalvy4riq7613szb616hff80crx006chyppzdkxmq"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 ;; Disable test_export_remote__issue_187, which is known to
-                 ;; fail (see:
-                 ;; https://github.com/sissaschool/xmlschema/issues/206).
-                 (invoke "python" "-m" "unittest" "-v"
-                         "-k" "not test_export_remote__issue_187")
-                 (format #t "test suite not run~%")))))))
+                "1bgih9vad1iij8lffddas74gx8kx7qn0b5hr056hmhg5vbiyayyy"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
     (native-inputs
-     (list python-lxml))   ;for tests
+     (list python-lxml
+           python-setuptools))
     (propagated-inputs
      (list python-elementpath))
     (home-page "https://github.com/sissaschool/xmlschema")
