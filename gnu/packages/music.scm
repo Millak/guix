@@ -5383,7 +5383,9 @@ can receive input from a MIDI keyboard.")
                      `("GUIX_PYTHONPATH" ":" prefix
                        (,(getenv "GUIX_PYTHONPATH")))
                      `("PATH" ":" prefix
-                       (,(getenv "PATH")))))))))
+                       (,(getenv "PATH")))
+                     `("QT_PLUGIN_PATH" ":" prefix
+                       (,(getenv "QT_PLUGIN_PATH")))))))))
     (native-inputs
      (list pkg-config
            python-gcovr
@@ -5412,6 +5414,7 @@ can receive input from a MIDI keyboard.")
            python-pyyaml
            python-wavefile
            python-yq
+           qtwayland
            rubberband
            valgrind/pinned
 
