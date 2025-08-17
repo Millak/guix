@@ -20786,6 +20786,30 @@ properties are set on a heading, and when it is changing from a TODO state to
 a DONE state.")
     (license license:gpl3+)))
 
+(define-public emacs-doct
+  ;; No Git tags. Version from library header; commit matches version bump.
+  (let ((commit "5cab660dab653ad88c07b0493360252f6ed1d898"))
+    (package
+      (name "emacs-doct")
+      (version "3.2.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/progfolio/doct")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0r3j7rah6sb5pscnr7p1jnbc6kmlvnpc3paswwxb4byd18dq7jvj"))))
+      (build-system emacs-build-system)
+      (native-inputs (list emacs-buttercup))
+      (home-page "https://github.com/progfolio/doct")
+      (synopsis "Declarative Org capture templates")
+      (description
+       "@code{doct} provides an alternative, declarative syntax for defining Org
+capture templates.")
+      (license license:gpl3+))))
+
 (define-public emacs-toodoo
   ;; Package has no release.  Version is extracted from "Version:" keyword in
   ;; main file, and commit below matches version bump.
