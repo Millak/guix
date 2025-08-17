@@ -31037,6 +31037,28 @@ wheel mice.")
 on drag distance.")
       (license license:gpl3+))))
 
+(define-public emacs-mlscroll
+  (package
+    (name "emacs-mlscroll")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jdtsmith/mlscroll")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00q0s1y8y4j9qyldbp9bwd7cqd5023wizlmsm7rkns5icf42hwbm"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (home-page "https://github.com/jdtsmith/mlscroll")
+    (synopsis "Scroll bar for the Emacs mode line")
+    (description
+     "MLScroll is a text-based scrollbar for the Emacs mode line.
+Enable it with @code{mlscroll-mode}.")
+    (license license:gpl3+)))
+
 (define-public emacs-company-restclient
   (package
     (name "emacs-company-restclient")
