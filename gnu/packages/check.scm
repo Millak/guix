@@ -57,6 +57,7 @@
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
+;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -393,6 +394,32 @@ source code editors and IDEs.")
      "@samp{checkmake} is an experimental tool for linting and checking
 Makefiles.  It allows for a set of configurable rules being run
 against a @file{Makefile} or a set of @file{*.mk} files.")
+    (license license:expat)))
+
+(define-public mbake
+  (package
+    (name "mbake")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mbake" version))
+       (sha256
+        (base32 "1badaaw5cxbca7fqahjm6j5yk6mmcakc4772q9gdrr84jx9wjd67"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-rich
+           python-typer))
+    (home-page "https://github.com/EbodShojaei/bake")
+    (synopsis "Makefile formatter and linter")
+    (description
+     "@command{mbake} is a Makefile formatter and linter,which is configurable
+via a TOML file.  It intelligently deals with @code{.PHONY} declarations and
+line continuations, and ensures consistent formatting and style for your
+Makefile.")
     (license license:expat)))
 
 (define-public clitest
