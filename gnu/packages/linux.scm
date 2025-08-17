@@ -2580,38 +2580,35 @@ graphics card on Optimus laptops.")
       (license license:gpl2))))
 
 (define-public bin-graph
-  ;; XXX: The upstream does not have tags yet.
-  (let ((commit "1dd42e3e8e123e993d6c287967502c8d4b36f9ba")
-        (revision "0"))
-    (package
-      (name "bin-graph")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/8dcc/bin-graph")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1wjkl789r7iys3nnyk813gsdxwwy2ryxgxirx5xw02lzk790dywl"))))
-      (arguments
-       (list #:tests? #f                ; no tests
-             #:make-flags
-             #~(list (string-append "CC=" #$(cc-for-target))
-                     (string-append "PREFIX=" #$output)
-                     (string-append "INSTALL_DIR=" #$output "/bin"))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (delete 'configure))))    ; no configure script
-      (build-system gnu-build-system)
-      (inputs (list libpng))
-      (home-page "https://github.com/8dcc/bin-graph")
-      (synopsis "Visualize binary files")
-      (description
-       "@code{bin-graph} provides a simple way of visualizing the different regions
+  (package
+    (name "bin-graph")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/8dcc/bin-graph")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18m71kn7f4mn7k8hxx8mr1zl35a9ri06a3p1y2mncbgr8nn3pgb0"))))
+    (arguments
+     (list #:tests? #f                ; no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   (string-append "INSTALL_DIR=" #$output "/bin"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))    ; no configure script
+    (build-system gnu-build-system)
+    (inputs (list libpng))
+    (home-page "https://github.com/8dcc/bin-graph")
+    (synopsis "Visualize binary files")
+    (description
+     "@code{bin-graph} provides a simple way of visualizing the different regions
 of a binary file.")
-      (license license:gpl3))))
+    (license license:gpl3)))
 
 (define-public ddcci-driver-linux
   (let ((revision "0")
