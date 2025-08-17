@@ -28639,6 +28639,30 @@ library adds a selection of popular loop structures as well as break and
 continue.")
     (license license:gpl3+)))
 
+(define-public emacs-elisp-def
+  (package
+    (name "emacs-elisp-def")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Wilfred/elisp-def")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j685c6rdjjldix2kg9gs535296496gz72d4bzs6qn35hxk55lwf"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash emacs-f emacs-s))
+    (native-inputs
+     (list emacs-ert-runner emacs-undercover))
+    (home-page "https://github.com/Wilfred/elisp-def")
+    (synopsis "Macro-aware goto definition for Emacs Lisp")
+    (description
+     "@code{elisp-def} finds Emacs Lisp symbol definitions intelligently.
+It understands namespaces, macros, libraries and local bindings.")
+    (license license:gpl3+)))
+
 (define-public emacs-elisp-refs
   (package
     (name "emacs-elisp-refs")
