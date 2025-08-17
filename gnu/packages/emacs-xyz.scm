@@ -28475,10 +28475,10 @@ within Emacs.")
 (define-public emacs-svg-lib
   ;; XXX: Upstream does not tag releases.  The commit hash below corresponds
   ;; to the version bump.
-  (let ((commit "5ba4e4ea2b5c66e8811beb53251dee13685b2cb2"))
+  (let ((commit "f62279a4edbe2f67faf573d09b211653acea9668"))
     (package
       (name "emacs-svg-lib")
-      (version "0.2.6")
+      (version "0.3")
       (source
        (origin
          (method git-fetch)
@@ -28487,8 +28487,9 @@ within Emacs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1zpcw8arizwjiz7diky7f0nh65zkp0pmnpyqzb0h1qgqnlf734k4"))))
+          (base32 "09l1hkif5pc4yskr1by5s4kmgx0k0ximk5p5fvcdvryrh687gwm4"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ;no tests
       (home-page "https://github.com/rougier/svg-lib")
       (synopsis "Emacs SVG library for creating tags, icons and bars")
       (description
