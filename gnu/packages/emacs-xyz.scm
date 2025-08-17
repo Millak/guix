@@ -6750,6 +6750,35 @@ lines spanning the entire window.  The minor mode is suitable for inclusion
 into mode hooks and is intended to be used that way.")
     (license license:gpl3+)))
 
+(define-public emacs-form-feed-st
+  (let ((commit "f91c8daf35b7588e0aa24c8716c8cfd8ff0067c8")
+        (revision "0"))
+    (package
+      (name "emacs-form-feed-st")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/leodag/form-feed-st")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0wj7icy2nj2kc1ayzgmrnn3slcw1ws6l9m89yr8h8j7wyrcnhkxz"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; No tests.
+      (home-page "https://github.com/leodag/form-feed-st")
+      (synopsis "Display ^L glyphs as full-width horizontal lines")
+      (description
+       "This package provides a minor mode to displays page delimiters which
+usually appear as ^L glyphs on a single line as horizontal lines spanning the
+entire window.  In comparison to @code{emacs-form-feed}, this fork does not
+have configurable line width; however, it always displays correctly, even if
+you have multiple windows showing the same buffer, and will never cause side
+scrolling since the form feed only occupies two spaces.  It also only affects
+form feeds at the beginning of the line.")
+      (license license:gpl3+))))
+
 (define-public emacs-xcscope
   (let ((commit "d228d7593d762e457340f678d14b663ef66d7cee")
         (revision "0"))
