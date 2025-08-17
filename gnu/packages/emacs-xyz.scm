@@ -8980,6 +8980,31 @@ keep pressing the key until it selects what you want.  There's also
 @code{er/contract-region} if you expand too far.")
     (license license:gpl3+)))
 
+(define-public emacs-expreg
+  ;; No Git tags. Version from library header; commit matches version bump.
+  (let ((commit "b1dc64aef8ed8498a6d21e5e78ce7e0bda8407e0"))
+    (package
+      (name "emacs-expreg")
+      (version "1.4.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/casouri/expreg")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a8wn553g3vj6zp5rqz9axy3dfsyqpc7gh0m85d32hycy0m8yha0"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ; No tests.
+      (home-page "https://github.com/casouri/expreg")
+      (synopsis "Increase selected region by semantic units with tree-sitter")
+      (description
+       "@code{expreg}, like @code{expand-region}, provides commands to expand
+and contract the region by semantic units.  Unlike @code{expand-region},
+@code{expreg} can leverage Emacs 29's tree-sitter support.")
+      (license license:gpl3+))))
+
 (define-public emacs-explain-pause-mode
   (let ((commit "2356c8c3639cbeeb9751744dbe737267849b4b51")
         (revision "0"))
