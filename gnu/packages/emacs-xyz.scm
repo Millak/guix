@@ -28502,10 +28502,10 @@ width is an integer multiple of character width.")
 (define-public emacs-svg-tag-mode
   ;; XXX: Upstream does not tag releases.  The commit hash below corresponds
   ;; to the version bump.
-  (let ((commit "3b07983614bee0195534e7a8a6dcfab757da4f0b"))
+  (let ((commit "13e888b8bd9a0664d060149a44a751b2113331b6"))
     (package
       (name "emacs-svg-tag-mode")
-      (version "0.3.2")
+      (version "0.3.3")
       (source
        (origin
          (method git-fetch)
@@ -28514,8 +28514,9 @@ width is an integer multiple of character width.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0nc0y2dn67gy9cly3yamskfd9dd028xbask8gjxql934bq0ads2i"))))
+          (base32 "0fbq5gcr4rfddjdfy5qcnlk64lb15pibg1bbgdnyqvyvvv0biw48"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ;no tests
       (propagated-inputs
        (list emacs-svg-lib))
       (home-page "https://github.com/rougier/svg-tag-mode")
