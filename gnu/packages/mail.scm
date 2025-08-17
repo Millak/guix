@@ -1895,7 +1895,17 @@ MailCore 2.")
                 "09b89wg63hg502hsz592cd2h87wdprb1dq1k1y07n89hym2q56d6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f))
+     (list
+       #:tests? #f
+       #:configure-flags
+         #~(list "CFLAGS=-g -O2 -DSTDC_HEADERS")
+       #:phases
+         #~(modify-phases %standard-phases
+           (add-before 'configure 'fix-includes
+             (lambda _
+               (substitute* "config.h"
+                 (("#include <stdlib.h>" all)
+                  (string-append all "\n#include <unistd.h>"))))))))
     (synopsis "Portrait image compressor")
     (description "This package takes your 48x48x1 portrait image and
 compresses it.")
