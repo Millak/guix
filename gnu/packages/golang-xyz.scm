@@ -12400,6 +12400,32 @@ the first isn't available.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-lestrrat-go-blackmagic
+  (package
+    (name "go-github-com-lestrrat-go-blackmagic")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lestrrat-go/blackmagic")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vyij1wnsh85vqi70sq0kgwrnx4zrn4yx8nk5lqd630g1akqwr8y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/blackmagic"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/lestrrat-go/blackmagic")
+    (synopsis "Reflect-based black magic for Golang")
+    (description
+     ;; XXX: REAMDE lacks of any description at all, code not documented
+     ;; either.
+     "This package implements a reflect-based black magic for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-lestrrat-go-envload
   (package
     (name "go-github-com-lestrrat-go-envload")
