@@ -2684,22 +2684,24 @@ format and headers.")
     (license license:perl-license)))
 
 (define-public libesmtp
+  (let ((commit "335ee8d2fa5cb7d30db7b818ec05563ad139ee2f")
+        (revision "0"))
   (package
     (name "libesmtp")
-    (version "1.1.0")
+    (version (git-version "1.1.0" revision commit))
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/libesmtp/libESMTP")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bhh8hlsl9597x0bnfl563k2c09b61qnkb9mfyqcmzlq63m1zw5y"))))
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/libesmtp/libESMTP")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1b6s6xyap9g4irw6wl9rhkvjjn7cc5q7xkxx5z0r1x1ab6fxn6p0"))))
     (build-system meson-build-system)
     (propagated-inputs
      (list openssl))
-    (home-page "http://www.stafford.uklinux.net/libesmtp/")
+    (home-page "https://libesmtp.github.io/")
     (synopsis "Library for sending mail via remote hosts using SMTP")
     (description
      "libESMTP is an @acronym{SMTP, Simple Mail Transfer Protocol} client that
@@ -2715,7 +2717,7 @@ transparently handles many SMTP extensions including authentication,
 @acronym{TLS, Transport-Level Security}, and PIPELINING for performance.  Even
 without a pipelining server, libESMTP offers much better performance than would
 be expected from a simple client.")
-    (license (list license:lgpl2.1+ license:gpl2+))))
+    (license (list license:lgpl2.1+ license:gpl2+)))))
 
 (define-public esmtp
   (package
