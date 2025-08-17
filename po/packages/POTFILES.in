@@ -1,7 +1,6 @@
 # List of source files which contain translatable strings.  These should be
 # only package modules (currently it's only a subset of them, but eventually
 # all of them should be listed here.)  Strings of the tools are in 'po/guix'.
-gnu/packages/abduco.scm
 gnu/packages/abiword.scm
 gnu/packages/accessibility.scm
 gnu/packages/acct.scm

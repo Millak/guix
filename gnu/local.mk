@@ -132,7 +132,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/xdg.scm			\
   %D%/image.scm					\
   %D%/packages.scm				\
-  %D%/packages/abduco.scm			\
   %D%/packages/abiword.scm			\
   %D%/packages/accessibility.scm		\
   %D%/packages/acct.scm				\

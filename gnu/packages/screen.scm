@@ -1,11 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2015, 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017, 2019-2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -43,6 +45,32 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages slang)
   #:use-module (gnu packages texinfo))
+
+(define-public abduco
+  (package
+   (name "abduco")
+   (version "0.6")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://www.brain-dump.org/projects/abduco/abduco-"
+                  version ".tar.gz"))
+            (sha256
+             (base32
+              "1x1m58ckwsprljgmdy93mvgjyg9x3cqrzdf3mysp0mx97zhhj2f9"))))
+   (build-system gnu-build-system)
+   (arguments
+    `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
+                         (string-append "PREFIX=" (assoc-ref %outputs "out")))
+      #:phases (modify-phases %standard-phases
+                 (delete 'configure)
+                 (delete 'check)))) ; no test suite
+   (synopsis "Session management in a clean and simple way")
+   (description "abduco provides session management i.e. it allows programs to
+be run independently from their controlling terminal.  That is, programs can
+be detached---run in the background---and then later reattached.")
+   (home-page "https://www.brain-dump.org/projects/abduco/")
+   (license isc)))
 
 (define-public screen
   (package
