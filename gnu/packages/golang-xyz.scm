@@ -12491,6 +12491,33 @@ or during the tests temporarily change the value of an environment variable in
 Golang.")
     (license license:expat)))
 
+(define-public go-github-com-lestrrat-go-iter
+  (package
+    (name "go-github-com-lestrrat-go-iter")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lestrrat-go/iter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p5fhw5g3kh7c6hvw2mc1r4ckxb3ax262x8b736yyhpv2ynl8jyz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/lestrrat-go/iter"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/lestrrat-go/iter")
+    (synopsis "Iterator for arbitrary array and map types for Golang")
+    (description
+     "This package provides a set of utilities to safely iterate over
+arbitrary array and maps types.")
+    (license license:expat)))
+
 (define-public go-github-com-lestrrat-go-option
   (package
     (name "go-github-com-lestrrat-go-option")
