@@ -7012,6 +7012,35 @@ quoting, commenting, and escaping.")
      "@code{gg} is a library for rendering 2D graphics in pure Go.")
     (license license:expat)))
 
+(define-public go-github-com-freddierice-go-losetup
+  (package
+    (name "go-github-com-freddierice-go-losetup")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/freddierice/go-losetup")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qhc81r3cxhx16c7pkgwpkhkz1xn47xjcgfwydvlgh9f04cyydpq"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/freddierice/go-losetup"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/freddierice/go-losetup")
+    (synopsis "Loop devices for Golang")
+    (description
+     ;; XXX: Project's REAME lacks details.
+     "This package implements @code{/dev/loop} device in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-fsnotify-fsnotify
   (package
     (name "go-github-com-fsnotify-fsnotify")
