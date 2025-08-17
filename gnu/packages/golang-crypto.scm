@@ -28,6 +28,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2512,6 +2513,38 @@ support the streaming mode required by Go's standard Hash interface.")
     (arguments
      (list
       #:import-path "github.com/twpayne/go-pinentry/v4"))))
+
+(define-public go-github-com-veraison-go-cose
+  ;; XXX: The latest commits provides test fixtures, see:
+  ;; <https://github.com/veraison/go-cose/pull/214/>. Revert back to git tag
+  ;; when a fresh release is available.
+  (let ((commit "a633822d54e270749baecce653c5ba4f07ccbb46")
+        (revision "0"))
+    (package
+      (name "go-github-com-veraison-go-cose")
+      (version (git-version "1.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/veraison/go-cose")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0nni0pv8s6mn1jpk6pxpi464qdji0s0pq587y2mnsa4zkp9pp09z"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/veraison/go-cose"))
+      (propagated-inputs
+       (list go-github-com-fxamacker-cbor-v2))
+      (home-page "https://github.com/veraison/go-cose")
+      (synopsis "COSE specification for Go")
+      (description
+       "This package provides a Go library for the Concise Binary Object
+Representation (CBOR) Object Signing and Encryption
+@url{https://datatracker.ietf.org/doc/rfc9052/, (COSE) specification}.")
+      (license license:mpl2.0))))
 
 (define-public go-github-com-xanzy-ssh-agent
   (package
