@@ -42,6 +42,7 @@
 ;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5747,6 +5748,33 @@ Features:
 @item automatic TLS via Let’s Encrypt
 @item HTTP/2 support
 @end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-lestrrat-go-httpcc
+  (package
+    (name "go-github-com-lestrrat-go-httpcc")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lestrrat-go/httpcc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12wsr6ipl3h7iaq7s7a2mgkbli9z5zpxj9dxqhzqn33akb055i28"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/httpcc"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/lestrrat-go/httpcc")
+    (synopsis "HTTP/1.1 Cache-Control header parser for Golang")
+    (description
+     "This package provides a Go library that parses HTTP/1.1 Cache-Control
+header and returns a struct that is convenient for the end-user to do what
+they will with.")
     (license license:expat)))
 
 (define-public go-github-com-letsencrypt-challtestsrv
