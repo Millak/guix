@@ -250,14 +250,14 @@ Guile.")
 (define-public mescc-tools
   (package
     (name "mescc-tools")
-    (version "1.5.2")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/" name "/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1jak61gxab8bj8ddpgwfn9lqs917szq1phadmg8y5cjsndn1hv4k"))))
+                "0p2pnvci9vglmf7zas12ay2v5gnrwafqsqqw1dfyb2bgayzzg0mn"))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
                          "armhf-linux" "aarch64-linux"
