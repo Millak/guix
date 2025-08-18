@@ -93,6 +93,7 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages figlet)
   #:use-module (gnu packages file)
   #:use-module (gnu packages firmware)
@@ -461,6 +462,16 @@
             (lambda args
               (with-directory-excursion "../user-static"
                 (apply (assoc-ref %standard-phases 'build) args))))
+          (add-after 'install 'install-plugins
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((plugin-dir (string-append
+                                 (assoc-ref outputs "out")
+                                 "/lib/qemu/plugins")))
+                (mkdir-p plugin-dir)
+                (with-directory-excursion "contrib/plugins"
+                  (for-each
+                   (cut install-file <> plugin-dir)
+                   (find-files "." "\\.so$"))))))
           (add-after 'install 'install-user-static
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((static-bin (string-append
@@ -523,6 +534,7 @@ exec smbd $@")))
           '())
       (list alsa-lib
             bash-minimal
+            capstone
             dtc
             glib
             gnutls                      ;for qcow2 disk encryption
