@@ -1098,28 +1098,42 @@ great on your desktop.")
     (license license:gpl2+)))
 
 (define-public kxstitch
-  (package
-    (name "kxstitch")
-    (version "2.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/kxstitch/" version
-                           "/kxstitch-" version ".tar.xz"))
-       (sha256
-        (base32 "1q6blvcqz6hxdfrkdi0fplmz7rmk3im56kpp68r0yrivhx3hn8sc"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5 pkg-config))
-    (inputs
-     (list ktexteditor-5 imagemagick qtbase-5 qtx11extras))
-    (arguments (list #:tests? #f))
-    (home-page "https://apps.kde.org/kxstitch/")
-    (synopsis "Create and print cross stitch patterns")
-    (description
-     "KXStitch allows creating and printing cross stitch patterns, which can
+  (let ((commit "bfe934ffc2c2dfa1cc554bc4483a3285b027b00c")
+        (revision "0"))
+    (package
+      (name "kxstitch")
+      (version (git-version "2.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://invent.kde.org/graphics/kxstitch.git/")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1vhan3pmbm80bh0kdrsmzda2pir3921m8flm1haw8nf5i706gk87"))))
+      (build-system qt-build-system)
+      (native-inputs
+       (list extra-cmake-modules kdoctools pkg-config))
+      (inputs
+       (list kcompletion
+             kconfigwidgets
+             kguiaddons
+             ki18n
+             kio
+             ktextwidgets
+             kwidgetsaddons
+             kxmlgui
+             kconfig
+             imagemagick))
+      (arguments (list #:qtbase qtbase
+                       #:tests? #f))
+      (home-page "https://apps.kde.org/kxstitch/")
+      (synopsis "Create and print cross stitch patterns")
+      (description
+       "KXStitch allows creating and printing cross stitch patterns, which can
 either be created or generated from a image.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public okteta
   (package
