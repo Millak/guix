@@ -3436,6 +3436,51 @@ compensation, (de)interleaving, and byte-swapping
     ;; original developer.
     (license license:expat)))
 
+(define-public rtosc
+  (package
+    (name "rtosc")
+    (version "0.3.1")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/fundamental/rtosc")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1djvyq53cjwd0szkvhpk45zcmdgrlirjwr02nqq9hzdmh0n26pk2"))
+             (patches
+              (search-patches
+                "rtosc-0.3.1-fix-invalid-comparison-operator.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DPERF_TEST=ON"
+                   "-DRTOSC_BUILD_SHARED_LIBS=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-documentation
+                 (lambda _
+                   (invoke "make" "rtosc-doc")))
+               (add-after 'install 'install-documentation
+                 (lambda _
+                     (copy-recursively "html"
+                      (string-append #$output:doc
+                       "/share/doc/rtosc/html")))))))
+    (native-inputs
+     (list doxygen pkg-config ruby))
+    (inputs
+     (list jack-1
+           liblo
+           libx11
+           mesa))
+    (outputs (list "out" "doc"))
+    (home-page "https://fundamental-code.com/wiki/rtosc/")
+    (synopsis "Realtime Safe OSC packet serialization and dispatch")
+    (description
+     "RtOSC is a realtime safe library for handling OSC messages.")
+    (license license:expat)))
+
 (define-public python-jack-client
   (package
     (name "python-jack-client")
