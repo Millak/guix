@@ -98,10 +98,8 @@ AC_PREFIX_DEFAULT()
 guix_prefix="`eval echo $prefix | sed -e"s|NONE|$ac_default_prefix|g"`"
 guix_localstatedir="`eval echo $localstatedir | sed -e "s|NONE|$guix_prefix|g"`"
 guix_sysconfdir="`eval echo $sysconfdir | sed -e "s|NONE|$guix_prefix|g"`"
-guix_sbindir="`eval echo $sbindir | sed -e "s|NONE|$guix_prefix|g"`"
 AC_SUBST([guix_localstatedir])
 AC_SUBST([guix_sysconfdir])
-AC_SUBST([guix_sbindir])
 
 GUIX_CHECK_FILE_NAME_LIMITS([can_run_tests])
 AM_CONDITIONAL([CAN_RUN_TESTS], [test "x$can_run_tests" = "xyes"])
