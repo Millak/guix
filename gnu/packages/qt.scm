@@ -1309,7 +1309,12 @@ HostData=lib/qt5"
                 "0i4cgcvhngq716009r4yjn1ma67vpr4cj2ks13yxba4iy1966yjp"))))
     (propagated-inputs (list))
     (native-inputs (list perl))
-    (inputs (list mesa qtbase vulkan-headers zlib libxkbcommon))
+    (inputs (list libxkbcommon
+                  mesa
+                  qtbase
+                  qtdeclarative
+                  vulkan-headers
+                  zlib))
     (build-system cmake-build-system)
     (arguments
      (list
