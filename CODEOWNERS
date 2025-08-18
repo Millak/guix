@@ -6,6 +6,8 @@
 # a good understanding of that area of the codebase and therefore are
 # usually suited as a reviewer.
 
+gnu/packages/machine-learning\.scm                 @guix/ai
+
 gnu/packages/audio\.scm                            @guix/audio
 gnu/packages/fluidplug\.scm                        @guix/audio
 gnu/packages/xiph\.scm                             @guix/audio
@@ -242,8 +244,6 @@ gnu/packages/fcitx\.scm                            @guix/localization
 gnu/packages/fonts\.scm                            @guix/localization
 gnu/packages/ibus\.scm                             @guix/localization
 
-gnu/packages/machine-learning\.scm                 @guix/ai
-
 gnu/packages/lxqt\.scm                             @guix/lxqt
 
 
@@ -376,3 +376,4 @@ gnu/packages/zig\.scm                              @guix/zig
 gnu/packages/zig-xyz\.scm                          @guix/zig
 guix/build/zig-build-system\.scm                   @guix/zig
 guix/build-system/zig\.scm                         @guix/zig
+

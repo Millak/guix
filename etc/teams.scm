@@ -443,6 +443,12 @@ already exists.  Lookup team IDs among CURRENT-TEAMS."
 
 
 
+(define-team ai
+  (team 'ai
+        #:name "Artificial Intelligence"
+        #:description "Packages related to AI, ML and LLM."
+        #:scope (list "gnu/packages/machine-learning.scm")))
+
 (define-team audio
   (team 'audio
         #:name "Audio team"
@@ -794,12 +800,6 @@ asdf-build-system."
                       "gnu/packages/fcitx.scm"
                       "gnu/packages/fonts.scm"
                       "gnu/packages/ibus.scm")))
-
-(define-team ai
-  (team 'ai
-        #:name "Artificial Intelligence"
-        #:description "Packages related to AI, ML and LLM."
-        #:scope (list "gnu/packages/machine-learning.scm")))
 
 (define-team lxqt
   (team 'lxqt
