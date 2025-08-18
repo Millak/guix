@@ -281,7 +281,7 @@ get_machine.")
 (define-public m2-planet
   (package
     (name "m2-planet")
-    (version "1.11.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -289,7 +289,7 @@ get_machine.")
                     "Release_" version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1c510p55amxjyvjlx9jpa30gixlgmf6mmfnaqcs46412krymwg38"))))
+                "16vgad5wa5lmh6mjnkid4qn2xs7hfcfn43z9gd8iljzvsxl2i8z7"))))
     (native-inputs (list mescc-tools))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
