@@ -306,7 +306,7 @@ This package tracks the Extended Support Release (ESR) channel.")
               (base32
                "03qwl3ps3xgc9pkc07qrsa4vd2r57mjwicv3gb483gfk2ashdvxc"))
              (patches
-              (remove (cut string-suffix? <> "nss-disable-broken-tests.patch")
+              (remove (cut string-suffix? "nss-disable-broken-tests.patch" <>)
                       (origin-patches (package-source nss))))))
    (arguments
     (substitute-keyword-arguments (package-arguments nss)
