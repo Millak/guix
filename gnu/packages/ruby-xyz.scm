@@ -4706,14 +4706,14 @@ another.")
 (define-public ruby-markaby
   (package
     (name "ruby-markaby")
-    (version "0.9.0")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "markaby" version))
        (sha256
         (base32
-         "1j4jc31ycydbkh5h3q6zwidzpavg3g5mbb5lqyaczd3jrq78rd7i"))))
+         "1vizqpa9pks5nlqj0jjx2d1q6f9vfmjjbb774v1kp591pq5nhmcm"))))
     (build-system ruby-build-system)
     (arguments
      (list
