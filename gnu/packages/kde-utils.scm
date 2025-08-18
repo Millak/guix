@@ -135,34 +135,33 @@ well as CD-ROM images.")
     (license license:gpl2+)))
 
 (define-public atelier
-  (let ((commit "93d7d440c42f1e49a4933cbbce9f68d5e4ca725a") ; no releases
-        (revision "1"))
+  (let ((commit "8c7f18d3a88b3213546439775a60030b93e1f5b1") ; no releases
+        (revision "2"))
     (package
       (name "atelier")
       (version (git-version "0.1-pre" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://invent.kde.org/utilities/atelier")
-                      (commit commit)))
+                       (url "https://invent.kde.org/utilities/atelier")
+                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "00jccpwvksyp2vr3fjxajs8d9d30rspg4zj6rnj8dai96alp303k"))))
+                  "0vf2j4yjyz21s6bfkzz0jci0h32rnmsm32k1gf6p3i7rlcqx3vyg"))))
       (build-system qt-build-system)
-      (arguments (list #:tests? #f))
-      (native-inputs (list extra-cmake-modules pkg-config))
-      (inputs (list ki18n-5
-                    kxmlgui-5
-                    kconfigwidgets-5
-                    ktexteditor-5
+      (arguments (list #:qtbase qtbase #:tests? #f))
+      (native-inputs (list extra-cmake-modules qttools pkg-config))
+      (inputs (list ki18n
+                    kxmlgui
+                    kconfigwidgets
+                    ktexteditor
                     libatcore
-                    qt3d-5
-                    qtbase-5
-                    qtcharts-5
-                    qtdeclarative-5
-                    qtmultimedia-5
-                    qtserialport-5))
+                    qt3d
+                    qtcharts
+                    qtdeclarative
+                    qtmultimedia
+                    qtserialport))
       (home-page "https://atelier.kde.org")
       (synopsis "Desktop interface to control 3D printers powered by AtCore")
       (description "Atelier provides interface to control and manage your printer.
