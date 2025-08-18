@@ -41,7 +41,7 @@ index 8d77c131..ea9df5e4 100644
  
          data['name'] = resp_data['title']
 -        data['cover'] = f'{self.media_url}/{resp_data['cover']}'
-+        data['cover'] = f'{self.media_url}/resp_data["cover"]}'
++        data['cover'] = f'{self.media_url}/{resp_data["cover"]}'
  
          if resp_data.get('author'):
              data['authors'].append(resp_data['author'])
