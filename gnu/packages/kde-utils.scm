@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021, 2024, 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
@@ -1177,44 +1177,48 @@ redone.")
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
 (define-public rsibreak
-  (package
-    (name "rsibreak")
-    (version "0.12.15")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde//stable/rsibreak/0.12/"
-                           "rsibreak-" version ".tar.xz"))
-       (sha256
-        (base32 "0kfbbhyzilvar3vns68pd8vkd17f07g8q9g83xxwl06zl3k6672j"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5))
-    (inputs
-     (list kauth-5
-           kconfig-5
-           kconfigwidgets-5
-           kcoreaddons-5
-           kcrash-5
-           kdbusaddons-5
-           ki18n-5
-           kiconthemes-5
-           kidletime-5
-           knotifications-5
-           knotifyconfig-5
-           ktextwidgets-5
-           kwindowsystem-5
-           kxmlgui-5
-           breeze-icons ;; default icon set
-           qtbase-5))
-    (home-page "https://apps.kde.org/rsibreak/")
-    (synopsis "Assists in the Recovery and Prevention of Repetitive Strain
+  (let ((commit "6795af6339e5e7c0fdf469290eafdb0f9365a96b")
+        (revision "0"))
+    (package
+      (name "rsibreak")
+      (version (git-version "0.12.15" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://invent.kde.org/utilities/rsibreak.git/")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0p3xxbiwdmbp1cxagl1bnqicr8wv2mlzb5d5f4x6l7m7qzkicga4"))))
+      (build-system qt-build-system)
+      (native-inputs
+       (list extra-cmake-modules kdoctools))
+      (inputs
+       (list breeze-icons ;; default icon set
+             kcolorscheme
+             kconfig
+             kconfigwidgets
+             kcoreaddons
+             kcrash
+             kdbusaddons
+             ki18n
+             kidletime
+             knotifications
+             knotifyconfig
+             kstatusnotifieritem
+             ktextwidgets
+             kwindowsystem
+             kxmlgui))
+      (arguments (list #:qtbase qtbase))
+      (home-page "https://apps.kde.org/rsibreak/")
+      (synopsis "Assists in the Recovery and Prevention of Repetitive Strain
 Injury")
-    (description "Repetitive Strain Injury is an illness which can occur as a
+      (description "Repetitive Strain Injury is an illness which can occur as a
 result of working with a mouse and keyboard.  This utility can be used to
 remind you to take a break now and then.")
-    (license ;; GPL for programs, FDL for documentation
-     (list license:gpl2+ license:fdl1.2+))))
+      (license ;; GPL for programs, FDL for documentation
+       (list license:gpl2+ license:fdl1.2+)))))
 
 (define-public smb4k
   (package
