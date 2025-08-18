@@ -167,6 +167,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages mpd)
+  #:use-module (gnu packages mruby-xyz)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages networking)
@@ -3604,10 +3605,17 @@ instrument or MIDI file player.")
                (base32
                 "1bkirvcg0lz1i7ypnz3dyh218yhrqpnijxs8n3wlgwbcixvn1lfb"))
               (patches
-               (search-patches "zynaddsubfx-3.0.6-include-cstdint.patch"))))
+               (search-patches "zynaddsubfx-3.0.6-system-rtosc.patch"
+                               "zynaddsubfx-3.0.6-include-cstdint.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       `("-DGuiModule=zest"
+         ,(string-append "-DZYN_DATADIR="
+                         (assoc-ref %outputs "out")
+                         "/share/zynaddsubfx")
+         "-DZYN_SYSTEM_RTOSC=ON")
+       #:phases
        (modify-phases %standard-phases
          ;; Move SSE compiler optimization flags from generic target to
          ;; athlon64 and core2 targets, because otherwise the build would fail
@@ -3617,10 +3625,19 @@ instrument or MIDI file player.")
             (substitute* "src/CMakeLists.txt"
               (("-msse -msse2 -mfpmath=sse") "")
               (("-march=(athlon64|core2)" flag)
-               (string-append flag " -msse -msse2 -mfpmath=sse"))))))))
+               (string-append flag " -msse -msse2 -mfpmath=sse")))))
+         (add-after 'unpack 'patch-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/main.cpp"
+               (("\\./zyn-fusion")
+                (search-input-file inputs "/bin/zyn-fusion")))
+             (substitute* "src/Plugin/ZynAddSubFX/ZynAddSubFX-UI-Zest.cpp"
+               (("\\./libzest\\.so")
+                (search-input-file inputs "/lib/libzest.so"))))))))
     (inputs
      (list liblo
-           ntk
+           mruby-zest
+           rtosc
            mesa
            alsa-lib
            jack-1

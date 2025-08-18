@@ -1,0 +1,106 @@
+Adding the option ZYN_SYSTEM_RTOSC to let the use of the system provided RtOSC
+instead of using the bundled one.
+
+--- a/CMakeLists.txt	2022-01-22 02:46:21.000000000 +0100
++++ b/CMakeLists.txt	2023-05-03 23:17:58.411667901 +0200
+@@ -10,24 +10,34 @@
+ add_definitions(-DZYN_DATADIR="${ZYN_DATADIR}")
+ endif()
+ 
++option(ZYN_SYSTEM_RTOSC "Use system provided librtosc and librtosc-cpp" OFF)
++
+ #Include RTOSC
+-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rtosc/CMakeLists.txt")
+-    message(STATUS "RTOSC NOT FOUND")
+-    message(STATUS "Attempting to checkout submodule")
+-    find_package(Git REQUIRED)
+-    execute_process(COMMAND git submodule update --init --recursive)
++if(ZYN_SYSTEM_RTOSC)
++    include(FindPkgConfig)
++    pkg_check_modules(RTOSC REQUIRED librtosc)
++    pkg_check_modules(RTOSC_CPP REQUIRED librtosc-cpp)
++    include_directories(${RTOSC_INCLUDE_DIR})
++    message(STATUS "Found system provided librtosc and librtosc-cpp...")
++else()
+     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rtosc/CMakeLists.txt")
+-        message(FATAL_ERROR "FAILED TO CHECKOUT RTOSC\n"
+-        "please check file permissions and your network")
++        message(STATUS "RTOSC NOT FOUND")
++        message(STATUS "Attempting to checkout submodule")
++        find_package(Git REQUIRED)
++        execute_process(COMMAND git submodule update --init --recursive)
++        if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rtosc/CMakeLists.txt")
++            message(FATAL_ERROR "FAILED TO CHECKOUT RTOSC\n"
++            "please check file permissions and your network")
++        endif()
++    else()
++        message(STATUS "Found Rtosc Submodule...")
+     endif()
+-else()
+-    message(STATUS "Found Rtosc Submodule...")
+-endif()
+ 
+-set(RTOSC_NO_INSTALL TRUE)
+-include("rtosc/cmake/ColorMessage.cmake")
+-add_subdirectory(rtosc)
+-include_directories(rtosc/include)
++    set(RTOSC_NO_INSTALL TRUE)
++    include("rtosc/cmake/ColorMessage.cmake")
++    add_subdirectory(rtosc)
++    include_directories(rtosc/include)
++endif()
+ 
+ enable_testing()
+ include(CTestConfig.cmake)
+--- a/src/CMakeLists.txt	2022-01-22 02:46:21.000000000 +0100
++++ b/src/CMakeLists.txt	2023-05-03 23:17:58.411667901 +0200
+@@ -575,13 +575,27 @@
+     set(PTHREAD_LIBRARY pthread)
+ endif()
+ 
+-target_link_libraries(zynaddsubfx_core
+-	${ZLIB_LIBRARIES}
+-	${FFTW3F_LIBRARIES}
+-	${MXML_LIBRARIES}
+-	${OS_LIBRARIES}
+-    ${PTHREAD_LIBRARY}
+-    rtosc rtosc-cpp)
++if(ZYN_SYSTEM_RTOSC)
++    target_link_libraries(zynaddsubfx_core
++        ${ZLIB_LIBRARIES}
++        ${FFTW3F_LIBRARIES}
++        ${MXML_LIBRARIES}
++        ${OS_LIBRARIES}
++        ${PTHREAD_LIBRARY}
++        ${RTOSC_LIBRARIES}
++        ${RTOSC_CPP_LIBRARIES}
++    )
++else()
++    target_link_libraries(zynaddsubfx_core
++        ${ZLIB_LIBRARIES}
++        ${FFTW3F_LIBRARIES}
++        ${MXML_LIBRARIES}
++        ${OS_LIBRARIES}
++        ${PTHREAD_LIBRARY}
++        rtosc
++        rtosc-cpp
++    )
++endif()
+ 
+ if(IwyuErr)
+     message (STATUS "Include what you use: ${IwyuErr}")
+
+
+When ZYN_SYSTEM_RTOSC is ON, port-checker file is not available and the test
+fails.
+
+--- a/src/Tests/CMakeLists.txt	2022-01-22 02:46:21.000000000 +0100
++++ b/src/Tests/CMakeLists.txt	2023-05-04 00:19:01.635383149 +0200
+@@ -65,7 +65,6 @@
+ 
+     if(LIBLO_FOUND)
+         cp_script(check-ports.rb)
+-        add_test(PortChecker check-ports.rb)
+     endif()
+     add_executable(save-osc SaveOSC.cpp)
+     target_link_libraries(save-osc

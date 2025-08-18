@@ -2515,7 +2515,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/zsh-egrep-failing-test.patch		\
   %D%/packages/patches/zuo-bin-sh.patch			\
   %D%/packages/patches/zxing-cpp-1.2.0-gcc-14.patch	\
-  %D%/packages/patches/zynaddsubfx-3.0.6-include-cstdint.patch
+  %D%/packages/patches/zynaddsubfx-3.0.6-include-cstdint.patch	\
+  %D%/packages/patches/zynaddsubfx-3.0.6-system-rtosc.patch
 
 MISC_DISTRO_FILES =				\
   %D%/packages/ld-wrapper.in
