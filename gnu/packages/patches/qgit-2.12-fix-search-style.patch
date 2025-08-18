@@ -1,0 +1,23 @@
+From 757c0fc17b879f5a5719e6959c926c997ef5c4f2 Mon Sep 17 00:00:00 2001
+From: Cristian Tibirna <tibirna@kde.org>
+Date: Mon, 28 Jul 2025 20:21:11 -0400
+Subject: [PATCH] Fix issue #162: match partial strings as well as wildcards in
+ listview search
+
+---
+ src/listview.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/listview.cpp b/src/listview.cpp
+index 3223d61..8cd8f71 100644
+--- a/src/listview.cpp
++++ b/src/listview.cpp
+@@ -1321,7 +1321,7 @@ bool ListViewProxy::filterAcceptsRow(int source_row, const QModelIndex&) const {
+ int ListViewProxy::setFilter(bool isOn, bool h, SCRef fl, int cn, ShaSet* s) {
+ 
+ #if QT_VERSION >= 0x060000
+-	filter = QRegularExpression::fromWildcard(fl, Qt::CaseInsensitive);
++	filter = QRegularExpression::fromWildcard(fl, Qt::CaseInsensitive, QRegularExpression::UnanchoredWildcardConversion);
+ #else
+ 	filter = QRegExp(fl, Qt::CaseInsensitive, QRegExp::Wildcard);
+ #endif

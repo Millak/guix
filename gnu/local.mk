@@ -2081,6 +2081,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-sphinx-prompt-docutils-0.19.patch	\
   %D%/packages/patches/python-zeroc-ice-3.6.5-python-3.11-support.patch	\
   %D%/packages/patches/qcodeeditor-qt6.patch			\
+  %D%/packages/patches/qgit-2.12-fix-search-style.patch		\
   %D%/packages/patches/qtdeclarative-5-disable-qmlcache.patch	\
   %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\
   %D%/packages/patches/qtlocation-5.15.8-mapboxgl-gcc13.patch	\
