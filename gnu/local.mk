@@ -483,6 +483,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/mpd.scm				\
   %D%/packages/mp3.scm				\
   %D%/packages/mpi.scm				\
+  %D%/packages/mruby-xyz.scm			\
   %D%/packages/multiprecision.scm		\
   %D%/packages/music.scm			\
   %D%/packages/musl.scm				\
