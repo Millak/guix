@@ -1001,37 +1001,41 @@ Its features include:
       (license license:gpl3+))))
 
 (define-public kronometer
-  (package
-    (name "kronometer")
-    (version "2.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/kronometer/" version
-                           "/src/kronometer-" version ".tar.xz"))
-       (sha256
-        (base32 "0xn4z9y2yl57a5skwp4cjsn1456kiwnwvhrddc0qsihgdyif3fbm"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5))
-    (inputs
-     (list kauth-5
-           kconfig-5
-           kconfigwidgets-5
-           kcoreaddons-5
-           kcrash-5
-           ki18n-5
-           kwidgetsaddons-5
-           kxmlgui-5
-           breeze-icons ;; default icon set
-           qtbase-5))
-    (home-page "https://apps.kde.org/kronometer/")
-    (synopsis "Simple stopwatch application")
-    (description "Kronometer is a stopwatch application.  It features the
+  (let ((commit "8cfa062655e89b4b0cad911af3acab6609b13ecd")
+        (revision "0"))
+    (package
+      (name "kronometer")
+      (version (git-version "2.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://invent.kde.org/utilities/kronometer.git/")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1vzdi9zyrx6s3l74yaxvd1y6729n51m23k0bxydwi36my3zml2kk"))))
+      (build-system qt-build-system)
+      (native-inputs
+       (list extra-cmake-modules kdoctools))
+      (inputs
+       (list breeze-icons ;; default icon set
+             kauth
+             kconfig
+             kconfigwidgets
+             kcoreaddons
+             kcrash
+             ki18n
+             kwidgetsaddons
+             kxmlgui))
+      (arguments (list #:qtbase qtbase))
+      (home-page "https://apps.kde.org/kronometer/")
+      (synopsis "Simple stopwatch application")
+      (description "Kronometer is a stopwatch application.  It features the
 basic stopwatch actions (pause, resume, reset, laps), as well as the ability
 to save the times and resume them later.")
-    (license ;; GPL for programs, LGPL for libraries, FDL for documentation
-     license:gpl2+)))
+      (license ;; GPL for programs, LGPL for libraries, FDL for documentation
+       license:gpl2+))))
 
 (define-public krusader
   (package
