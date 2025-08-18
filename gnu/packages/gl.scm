@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1087,6 +1088,68 @@ and surfaces, receiving input and events.")
     ;;  No such file or directory
     (arguments (substitute-keyword-arguments (package-arguments glfw)
                  ((#:out-of-source? _ #f) #f)))))
+
+(define-public nanovg
+  ;; No tags are available.
+  (let ((revision "0")
+        (commit "b83cf926525e7cea8d2483da2a75852b8c7b6d28"))
+    (package
+      (name "nanovg")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/memononen/nanovg")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1zp355pw6xnb5mjarz67cxkglv7j1s0qzv705fz1wf0gl0sjhy8f"))
+                (modules '((guix build utils)))
+                (snippet
+                 ;; Fix including freetype.
+                 '(substitute* (find-files "." "\\.(c|h)$")
+                    (("ft2build\\.h") "freetype2/ft2build.h")))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no test suite
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure) ;no configure script
+                 ;; No Makefile exists.
+                 (replace 'build
+                   (lambda _
+                     (invoke #$(cc-for-target)
+                             "../source/src/nanovg.c" "-c" "-fPIC"
+                             "-DFONS_USE_FREETYPE=1"
+                             (string-append "-I"
+                                            #$(this-package-input "freetype")
+                                            "/include/freetype2"))
+                     (invoke #$(cc-for-target)
+                             "-shared" "-olibnanovg.so" "nanovg.o"
+                             "-lfreetype")))
+                 ;; No Makefile exists.
+                 (replace 'install
+                   (lambda _
+                     (let ((lib (string-append #$output "/lib"))
+                           (include (string-append #$output
+                                                   "/include/nanovg")))
+                       (install-file "libnanovg.so" lib)
+                       (with-directory-excursion "../source"
+                         (for-each
+                           (lambda (file)
+                             (install-file file include))
+                           (append (find-files "src" "nanovg.*\\.h$")
+                                   '("example/perf.h"
+                                     "example/stb_image_write.h"))))))))))
+      (inputs
+       (list freetype))
+      (home-page "https://github.com/memononen/nanovg")
+      (synopsis "2D vector drawing library on top of OpenGL")
+      (description
+       "NanoVG is an antialiased vector graphics rendering library for OpenGL.
+It is aimed for building scalable user interfaces and visualizations.")
+      (license license:zlib))))
 
 (define-public nanovg-for-extempore
   (let ((version "0.7.1")
