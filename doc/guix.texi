@@ -15198,21 +15198,6 @@ are many packages, though, for which it lacks a method to determine
 whether a new upstream release is available.  However, the mechanism is
 extensible, so feel free to get in touch with us to add a new method!
 
-@table @code
-
-@item --recursive
-Consider the packages specified, and all the packages upon which they depend.
-
-@example
-$ guix refresh --recursive coreutils
-gnu/packages/acl.scm:40:13: acl would be upgraded from 2.2.53 to 2.3.1
-gnu/packages/m4.scm:30:12: 1.4.18 is already the latest version of m4
-gnu/packages/xml.scm:68:2: warning: no updater for expat
-gnu/packages/multiprecision.scm:40:12: 6.1.2 is already the latest version of gmp
-@dots{}
-@end example
-
-@end table
 
 If for some reason you don't want to update to the latest version, you
 can update to a specific version by appending an equal sign and the
@@ -15298,6 +15283,19 @@ signature, authenticating the downloaded tarball against its signature
 using @command{gpgv}, and finally computing its hash---note that GnuPG must be
 installed and in @code{$PATH}; run @code{guix install gnupg} if needed.
 
+You might also want to update definitions that
+correspond to the packages installed in your profile:
+
+@example
+$ ./pre-inst-env guix refresh -u \
+       $(guix package --list-installed | cut -f1)
+@end example
+
+When considering whether to upgrade a package, it is sometimes
+convenient to know which packages would be affected by the upgrade and
+should be checked for compatibility.  For this the @option{--list-dependent} option may
+be used when passing @command{guix refresh} one or more package names.
+
 When the public
 key used to sign the tarball is missing from the user's keyring, an
 attempt is made to automatically retrieve it from a public key server;
@@ -15307,6 +15305,18 @@ when this is successful, the key is added to the user's keyring; otherwise,
 The following options are supported:
 
 @table @code
+
+@item --recursive
+Consider the packages specified, and all the packages upon which they depend.
+
+@example
+$ guix refresh --recursive coreutils
+gnu/packages/acl.scm:40:13: acl would be upgraded from 2.2.53 to 2.3.1
+gnu/packages/m4.scm:30:12: 1.4.18 is already the latest version of m4
+gnu/packages/xml.scm:68:2: warning: no updater for expat
+gnu/packages/multiprecision.scm:40:12: 6.1.2 is already the latest version of gmp
+@dots{}
+@end example
 
 @item --expression=@var{expr}
 @itemx -e @var{expr}
@@ -15432,6 +15442,17 @@ the updater for @uref{https://pypi.python.org, PyPI} packages.
 the updater for @uref{https://rubygems.org, RubyGems} packages.
 @item github
 the updater for @uref{https://github.com, GitHub} packages.
+
+The @code{github} updater uses the
+@uref{https://developer.github.com/v3/, GitHub API} to query for new
+releases.  When used repeatedly e.g.@: when refreshing all packages,
+GitHub will eventually refuse to answer any further API requests.  By
+default 60 API requests per hour are allowed, and a full refresh on all
+GitHub packages in Guix requires more than this.  Authentication with
+GitHub through the use of an API token alleviates these limits.  To use
+an API token, set the environment variable @env{GUIX_GITHUB_TOKEN} to a
+token procured from @uref{https://github.com/settings/tokens} or
+otherwise.
 @item hackage
 the updater for @uref{https://hackage.haskell.org, Hackage} packages.
 @item stackage
@@ -15494,32 +15515,6 @@ List available updaters and exit (see @option{--type} above).
 
 For each updater, display the fraction of packages it covers; at the
 end, display the fraction of packages covered by all these updaters.
-@end table
-
-In addition, @command{guix refresh} can be passed one or more package
-names, as in this example:
-
-@example
-$ ./pre-inst-env guix refresh -u emacs idutils gcc@@4.8
-@end example
-
-@noindent
-The command above specifically updates the @code{emacs} and
-@code{idutils} packages.  The @option{--select} option would have no
-effect in this case.  You might also want to update definitions that
-correspond to the packages installed in your profile:
-
-@example
-$ ./pre-inst-env guix refresh -u \
-       $(guix package --list-installed | cut -f1)
-@end example
-
-When considering whether to upgrade a package, it is sometimes
-convenient to know which packages would be affected by the upgrade and
-should be checked for compatibility.  For this the following option may
-be used when passing @command{guix refresh} one or more package names:
-
-@table @code
 
 @item --list-dependent
 @itemx -l
@@ -15532,7 +15527,6 @@ dependents of a package.
 
 @xref{build-dependents, @command{guix build --dependents}}, for a
 convenient way to build all the dependents of a package.
-@end table
 
 Be aware that the @option{--list-dependent} option only
 @emph{approximates} the rebuilds that would be required as a result of
@@ -15547,8 +15541,6 @@ hop@@2.4.0 emacs-geiser@@0.13 notmuch@@0.18 mu@@0.9.9.5 cflow@@1.4 idutils@@4.6 
 The command above lists a set of packages that could be built to check
 for compatibility with an upgraded @code{flex} package.
 
-@table @code
-
 @item --list-transitive
 @itemx -T
 List all the packages which one or more packages depend upon.
@@ -15559,10 +15551,18 @@ flex@@2.6.4 depends on the following 25 packages: perl@@5.28.0 help2man@@1.47.6
 bison@@3.0.5 indent@@2.2.10 tar@@1.30 gzip@@1.9 bzip2@@1.0.6 xz@@5.2.4 file@@5.33 @dots{}
 @end example
 
-@end table
-
 The command above lists a set of packages which, when changed, would cause
 @code{flex} to be rebuilt.
+
+@item --load-path=@var{directory}
+@itemx -L @var{directory}
+Add @var{directory} to the front of the package module search path
+(@pxref{Package Modules}).
+
+This allows users to define their own packages and make them visible to
+the command-line tools.
+
+@end table
 
 The following options can be used to customize GnuPG operation:
 
@@ -15620,27 +15620,7 @@ is the default behavior.
 @item --key-server=@var{host}
 Use @var{host} as the OpenPGP key server when importing a public key.
 
-@item --load-path=@var{directory}
-@itemx -L @var{directory}
-Add @var{directory} to the front of the package module search path
-(@pxref{Package Modules}).
-
-This allows users to define their own packages and make them visible to
-the command-line tools.
-
 @end table
-
-The @code{github} updater uses the
-@uref{https://developer.github.com/v3/, GitHub API} to query for new
-releases.  When used repeatedly e.g.@: when refreshing all packages,
-GitHub will eventually refuse to answer any further API requests.  By
-default 60 API requests per hour are allowed, and a full refresh on all
-GitHub packages in Guix requires more than this.  Authentication with
-GitHub through the use of an API token alleviates these limits.  To use
-an API token, set the environment variable @env{GUIX_GITHUB_TOKEN} to a
-token procured from @uref{https://github.com/settings/tokens} or
-otherwise.
-
 
 @node Invoking guix style
 @section Invoking @command{guix style}
