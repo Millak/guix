@@ -1,0 +1,24 @@
+This patch fixes the compilation error: "uint8_t’ has not been declared".
+
+diff '--color=auto' -ruN zynaddsubfx-3.0.6-a/src/Misc/Bank.h zynaddsubfx-3.0.6-b/src/Misc/Bank.h
+--- zynaddsubfx-3.0.6-a/src/Misc/Bank.h	1970-01-01 05:30:01.000000000 +0530
++++ zynaddsubfx-3.0.6-b/src/Misc/Bank.h	2025-08-18 14:16:56.928347291 +0530
+@@ -18,6 +18,7 @@
+ #include <vector>
+ #include "../globals.h"
+ #include "Config.h"
++#include <cstdint>
+ 
+ //entries in a bank
+ #define BANK_SIZE 160
+diff '--color=auto' -ruN zynaddsubfx-3.0.6-a/src/Nio/MidiIn.h zynaddsubfx-3.0.6-b/src/Nio/MidiIn.h
+--- zynaddsubfx-3.0.6-a/src/Nio/MidiIn.h	1970-01-01 05:30:01.000000000 +0530
++++ zynaddsubfx-3.0.6-b/src/Nio/MidiIn.h	2025-08-18 14:04:01.993278682 +0530
+@@ -17,6 +17,7 @@
+ #define MIDI_IN_H
+ 
+ #include "Engine.h"
++#include <cstdint>
+ 
+ namespace zyn {
+ 
