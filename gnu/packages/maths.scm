@@ -2008,7 +2008,43 @@ extremely large and complex data collections.")
             (lambda _
               (invoke "perl" "bin/make_err" "src/H5err.txt")
               (invoke "perl" "bin/make_vers" "src/H5vers.txt")
-              (invoke "perl" "bin/make_overflow" "src/H5overflow.txt"))))))
+              (invoke "perl" "bin/make_overflow" "src/H5overflow.txt")))
+          ;; Remove references to GCC/GFortran/binutils in order to decrease
+          ;; package size.
+          (add-before 'generate-headers 'remove-referencess
+            (lambda _
+              (substitute* '("src/libhdf5.settings.cmake.in"
+                             "src/H5build_settings.cmake.c.in")
+                (("@CMAKE_AR@") "ar")
+                (("@CMAKE_RANLIB@") "ranlib")
+                (("@CMAKE_C_COMPILER@") "gcc")
+                (("@CMAKE_CXX_COMPILER") "g++")
+                (("@CMAKE_Fortran_COMPILER@") "gfortran"))
+              (substitute* '("src/libhdf5.settings.autotools.in"
+                             "src/H5build_settings.autotools.c.in")
+                (("@AR@") "ar")
+                (("@RANLIB@") "ranlib")
+                (("@CXX_VERSION@") "g++")
+                (("@@CC_VERSION@") "gcc")
+                (("@FC_VERSION@") "gfortran"))))
+          (add-after 'install 'remove-gcc-references
+            (lambda _
+              (substitute* (map (lambda (f)
+                                  (string-append #$output "/" f))
+                                '("bin/h5hlcc"
+                                  "bin/h5hlc++"
+                                  "bin/h5cc"
+                                  "bin/h5c++"))
+                (("/gnu/store/[a-z0-9]*-gcc-[0-9.]*/bin/")
+                 ""))))
+          (add-after 'install 'remove-gfortran-references
+            (lambda _
+              (substitute* (map (lambda (f)
+                                  (string-append #$output "/" f))
+                                '("bin/h5hlfc"
+                                  "bin/h5fc"))
+                (("/gnu/store/[a-z0-9]*-gfortran-[0-9.]*/bin/")
+                 "")))))))
     (inputs (list libaec zlib))
     (native-inputs
      (list bison
