@@ -8285,19 +8285,18 @@ for HTTP/2 is planned.")
         (sha256
          (base32
           "1pcy9z8gmb8x41gjhw9x0lkr0d2mv5mdxcs2hwg6q8mxs857j589"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'remove-failing-test
-           (lambda _
-             (delete-file "translation_finder/test_api.py")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'remove-failing-test
+            (lambda _
+              (delete-file "translation_finder/test_api.py"))))))
     (propagated-inputs
-     (list python-chardet python-pathlib2 python-ruamel.yaml python-six))
+     (list python-chardet python-ruamel.yaml))
     (native-inputs
-     (list python-codecov python-codacy-coverage python-pytest-cov
-           python-pytest-runner python-twine))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://weblate.org/")
     (synopsis "Translation file finder for Weblate")
     (description "This package provides a function to find translation file in
