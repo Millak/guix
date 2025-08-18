@@ -1411,7 +1411,7 @@ similar XML files, in the same way the @command{diff} utility does it.")
           (add-before 'check 'pre-check
             (lambda* (#:key inputs #:allow-other-keys)
               (setenv "LD_LIBRARY_PATH"
-                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.2.37"))))))))
+                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.3.7"))))))))
     (inputs (list openssl libltdl libxslt libxml2))
     (propagated-inputs (list python-lxml xmlsec-openssl))
     (native-inputs (list pkg-config
