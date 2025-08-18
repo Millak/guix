@@ -92,7 +92,7 @@ extensive examples, including parsers for the Javascript and C99 languages.")
     (native-inputs (list pkg-config))
     (inputs (list guile-2.2))))
 
-(define-public nyacc
+(define-public nyacc-1.08.1
   (package
     (inherit nyacc-0.99)
     (version "1.08.1")
@@ -121,7 +121,7 @@ parsers to allow execution with Guile as extension languages.")))
 
 (define-public nyacc-1.00.2
   (package
-    (inherit nyacc)
+    (inherit nyacc-1.08.1)
     (version "1.00.2")
     (source (origin
               (method url-fetch)
@@ -163,6 +163,24 @@ parsers to allow execution with Guile as extension languages.")))
               (sha256
                (base32
                 "0dp1439j7db3zhpyqiah3vf3s193y4ip8mh7mc5lz0abgml3x3vg"))
+              (modules '((guix build utils)))
+              (snippet
+               '(substitute* "configure"
+                  (("GUILE_GLOBAL_SITE=\\$prefix.*")
+                   "GUILE_GLOBAL_SITE=\
+$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))))
+
+(define-public nyacc
+  (package
+    (inherit nyacc-1.00.2)
+    (version "2.02.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://savannah/nyacc/nyacc-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "01829c24v531036rj8grcwx4hmiy3f0jznc9zbfa4wrslmq566k9"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "configure"
