@@ -201,7 +201,7 @@ $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))))
                 "0pgjzlynfzdfq5xrxirvsrj4sdvnwq99s6xxwfhzhjga8zm40fhq"))))
     (supported-systems '("armhf-linux" "i686-linux"
                          "x86_64-linux" "riscv64-linux"))
-    (propagated-inputs (list mescc-tools nyacc-1.00.2))
+    (propagated-inputs (list mescc-tools nyacc))
     (native-inputs
      (append (list guile-3.0)
          (let ((target-system (or (%current-target-system)
