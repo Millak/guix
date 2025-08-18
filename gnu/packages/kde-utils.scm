@@ -794,7 +794,7 @@ combinations are distinct enough to be readable and accessible.")
     (license license:gpl3+)))
 
 (define-public libatcore
-  (let ((commit "0de6393ed3e721537dec50b0ad174d83f1207eb6")
+  (let ((commit "c32a13a90d39e44dc5a8dcb601e2b4aa9c996428")
         (revision "1"))
     (package
       (name "libatcore")
@@ -802,16 +802,17 @@ combinations are distinct enough to be readable and accessible.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://invent.kde.org/libraries/atcore")
-                      (commit commit)))
+                       (url "https://invent.kde.org/libraries/atcore")
+                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1830r6ylpn3l7y2frl8cih5cpjgbkfrib9jq7jklf8aszhlsihf2"))))
+                  "1avcrnxml0iczy0n4xa3ryklbvawbk015wm7l82088qjz2zparcw"))))
       (build-system qt-build-system)
-      (native-inputs (list extra-cmake-modules))
-      (inputs (list qtcharts-5 qtdeclarative-5 qtserialport-5))
-      (arguments (list #:tests? #f))
+      (native-inputs (list extra-cmake-modules qttools))
+      (inputs (list qtcharts qtdeclarative qtserialport))
+      (arguments (list #:qtbase qtbase
+                       #:tests? #f))
       (home-page "https://invent.kde.org/libraries/atcore")
       (synopsis "Library for connection and management of 3D printers")
       (description
