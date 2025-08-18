@@ -9,6 +9,7 @@
 ;;; Copyright © 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Abhishek Cherath <abhi@quic.us>
+;;; Copyright © 2025 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (guix build-system cmake)
@@ -352,3 +354,60 @@ systems based on Web platform technologies.  It is designed with hardware
 acceleration in mind, leveraging common 3D graphics APIs for best performance.")
     (home-page "https://wpewebkit.org/")
     (properties '((cpe-name . "wpe_webkit")))))
+
+(define-public cog
+  (package
+    (name "cog")
+    (version "0.18.5")
+    (source
+     (origin (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/Igalia/cog")
+                    (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "12r99jai7laxjir5zy46q87hl6mg391mf578lqrb6k2x6fli76zy"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-Ddocumentation=true"
+              "-Dmanpages=true"
+              "-Dplatforms=drm,headless,wayland,gtk4,x11")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'embed-absolute-wpebackend-reference
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (file)
+                 (substitute* file
+                   (("libWPEBackend-fdo-[\\.0-9]+\\.so" all)
+                    (search-input-file inputs (string-append "lib/" all)))))
+               (list "platform/drm/cog-platform-drm.c"
+                     "platform/gtk4/cog-platform-gtk4.c"
+                     "platform/headless/cog-platform-headless.c"
+                     "platform/wayland/cog-platform-wl.c"
+                     "platform/x11/cog-platform-x11.c")))))
+      #:tests? #f))                     ;no tests
+    (native-inputs
+     (list gi-docgen
+           gobject-introspection
+           pkg-config))
+    (inputs
+     (list libinput
+           libwpe
+           libxcb
+           libxkbcommon
+           wayland
+           wayland-protocols
+           wpebackend-fdo
+           wpewebkit))
+    (synopsis "Single-window launcher for WPE Webkit")
+    (description
+     "Cog is a small single \"window\" launcher for the WebKit WPE port.  It is
+small, provides no user interface of its own, and is suitable to be used as a
+web application container.  The \"window\" may be fullscreen or have UI elements
+depending on the WPE backend being used.")
+    (home-page "https://github.com/Igalia/cog")
+    (license license:expat)))
