@@ -478,7 +478,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 
 (define-public go-1.17
   (package
-    (inherit go-1.16)
     (name "go")
     (version "1.17.13")
     (source
@@ -492,6 +491,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
         (base32
          "05m8gr050kagvn22lfnjrgms03l5iphd1m4v6z7yqlhn9gdp912d"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
+    (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match)
                   (guix build gnu-build-system)
@@ -709,13 +709,31 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   (install-file file (string-append out "/share/doc/go")))
                 '("AUTHORS" "CONTRIBUTORS" "CONTRIBUTING.md" "PATENTS"
                   "README.md" "SECURITY.md"))))))))
-    (inputs (if (not (or (target-arm?) (target-ppc64le?)))
-              (alist-delete "gcc:lib" (package-inputs go-1.16))
-              (package-inputs go-1.16)))
+    (inputs
+     (if (member (%current-system) (package-supported-systems go-1.4))
+         (package-inputs go-1.4)
+         (alist-delete "gcc:lib" (package-inputs go-1.4))))
+    (native-inputs
+     `(,@(if (member (%current-system) (package-supported-systems go-1.4))
+           `(("go" ,go-1.4))
+           `(("go" ,gccgo-12)))
+       ("go-skip-gc-test.patch" ,(search-patch "go-skip-gc-test.patch"))
+       ("go-fix-script-tests.patch" ,(search-patch "go-fix-script-tests.patch"))
+       ,@(package-native-inputs go-1.4)))
+    (home-page "https://go.dev/")
+    (synopsis "Compiler and libraries for Go, a statically-typed language")
+    (description "Go, also commonly referred to as golang, is an imperative
+programming language designed primarily for systems programming.  Go is a
+compiled, statically typed language in the tradition of C and C++, but adds
+garbage collection, various safety features, and concurrent programming features
+in the style of communicating sequential processes (@dfn{CSP}).")
+    (supported-systems (fold delete %supported-systems
+                             (list "powerpc-linux" "i586-gnu" "x86_64-gnu")))
     (properties
      `((compiler-cpu-architectures
          ("armhf" ,@%go-1.17-arm-micro-architectures)
-         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures))))))
+         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures))))
+    (license license:bsd-3)))
 
 (define %go-1.18-x86_64-micro-architectures
   ;; GOAMD defaults to 'v1' so we match the default elsewhere.
