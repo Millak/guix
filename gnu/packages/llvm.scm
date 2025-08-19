@@ -1104,20 +1104,6 @@ Library.")
    "1yjqjri753w0fzmxcyz687nvd97sbc9rsqrxzpq720na47hwh3fr"
    '("clang-runtime-13-glibc-2.36-compat.patch")))
 
-(define-public clang-10
-  (clang-from-llvm llvm-10 clang-runtime-10
-                   "091bvcny2lh32zy8f3m9viayyhb2zannrndni7325rl85cwgr6pr"
-                   #:legacy-build-shared-libs? #t
-                   #:patches '("clang-10.0-libc-search-path.patch")
-                   #:tools-extra
-                   (origin
-                     (method url-fetch)
-                     (uri (llvm-uri "clang-tools-extra"
-                                    (package-version llvm-10)))
-                     (sha256
-                      (base32
-                       "06n1yp638rh24xdxv9v2df0qajxbjz4w59b7dd4ky36drwmpi4yh")))))
-
 (define-public llvm-6
   (package
     (inherit llvm-12)
