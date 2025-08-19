@@ -3395,31 +3395,21 @@ friendly library for concurrency and async I/O in Python.")
       (name "python-pytest-vcr")
       (version (git-version "1.0.2" revision commit))
       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/ktosiek/pytest-vcr")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "1yk988zi0la6zpcm3fff0mxf942di2jiymrfqas19nyngj5ygaqs"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests/"))))))
-      (native-inputs
-       (list python-urllib3))
-      (propagated-inputs
-       (list python-pytest python-vcrpy))
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ktosiek/pytest-vcr")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1yk988zi0la6zpcm3fff0mxf942di2jiymrfqas19nyngj5ygaqs"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-urllib3 python-setuptools python-wheel))
+      (propagated-inputs (list python-pytest python-vcrpy))
       (home-page "https://github.com/ktosiek/pytest-vcr")
       (synopsis "Plugin for managing VCR.py cassettes")
       (description
-       "Plugin for managing VCR.py cassettes.")
+       "This package is a pytest plugin for managing VCR.py cassettes.")
       (license license:expat))))
 
 (define-public python-pytest-virtualenv
