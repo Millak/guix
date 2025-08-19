@@ -251,7 +251,7 @@ Browser.")
            hunspell
            libnotify
            nspr
-           nss-rapid  ; requires v. 3.101, so nss won't cut it for now.
+           nss
            shared-mime-info
            eudev
            unzip
