@@ -1230,12 +1230,6 @@ Library.")
        `(("libtirpc" ,libtirpc)
          ("llvm" ,llvm-3.5))))))
 
-(define-public clang-3.5
-  (clang-from-llvm llvm-3.5 clang-runtime-3.5
-                   "0846h8vn3zlc00jkmvrmy88gc6ql6014c02l4jv78fpvfigmgssg"
-                   #:legacy-build-shared-libs? #t
-                   #:patches '("clang-3.5-libc-search-path.patch")))
-
 (define-public llvm-16
   (make-llvm "16.0.6"))
 
