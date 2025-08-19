@@ -117,10 +117,6 @@
                   (guix build utils)
                   (srfi srfi-1))
        #:tests? #f ; Tests are run by the all.bash script.
-       ,@(if (string-prefix? "aarch64-linux" (or (%current-system)
-                                                 (%current-target-system)))
-             '(#:system "armhf-linux")
-             '())
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
@@ -246,7 +242,7 @@ programming language designed primarily for systems programming.  Go is a
 compiled, statically typed language in the tradition of C and C++, but adds
 garbage collection, various safety features, and concurrent programming features
 in the style of communicating sequential processes (@dfn{CSP}).")
-    (supported-systems '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux"))
+    (supported-systems '("x86_64-linux" "i686-linux" "armhf-linux"))
     (license license:bsd-3)))
 
 (define-public go-1.16
