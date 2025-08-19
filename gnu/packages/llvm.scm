@@ -1139,7 +1139,7 @@ Library.")
 
 (define-public llvm-6
   (package
-    (inherit llvm-10)
+    (inherit llvm-12)
     (version "6.0.1")
     (source (origin
               (method url-fetch)
@@ -1148,10 +1148,17 @@ Library.")
                (base32
                 "1qpls3vk85lydi5b4axl0809fv932qgsqgdgrk098567z4jc7mmn"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-10)
+     (substitute-keyword-arguments (package-arguments llvm-12)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (delete 'delete-failing-tests)))))))
+            (delete 'delete-failing-tests)))))
+    (native-inputs
+     `(("python" ,python-wrapper)
+       ("perl"   ,perl)
+       ;; In llvm-11 riscv64 support was added manually to config.guess.
+       ,@(if (target-riscv64?)
+           `(("config" ,config))
+           '())))))
 
 (define-public clang-runtime-6
   (clang-runtime-from-llvm
