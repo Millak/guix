@@ -1143,12 +1143,6 @@ Library.")
      "clang-runtime-3.8-libsanitizer-mode-field.patch"
      "clang-3.5-libsanitizer-ustat-fix.patch")))
 
-(define-public clang-3.8
-  (clang-from-llvm llvm-3.8 clang-runtime-3.8
-                   "1prc72xmkgx8wrzmrr337776676nhsp1qd3mw2bvb22bzdnq7lsc"
-                   #:legacy-build-shared-libs? #t
-                   #:patches '("clang-3.8-libc-search-path.patch")))
-
 (define-public llvm-3.7
   (package (inherit llvm-6)
     (version "3.7.1")
