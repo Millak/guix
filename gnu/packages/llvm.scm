@@ -1118,22 +1118,6 @@ Library.")
                       (base32
                        "06n1yp638rh24xdxv9v2df0qajxbjz4w59b7dd4ky36drwmpi4yh")))))
 
-(define-public libomp-10
-  (package
-    (inherit libomp-11)
-    (version (package-version llvm-10))
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "openmp" version))
-              (sha256
-               (base32
-                "0i4bn84lkpm5w3qkpvwm5z6jdj8fynp7d3bcasa1xyq4is6757yi"))
-              (file-name (string-append "libomp-" version ".tar.xz"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs libomp-11)
-       (replace "clang" clang-10)
-       (replace "llvm" llvm-10)))))
-
 (define-public llvm-6
   (package
     (inherit llvm-12)
