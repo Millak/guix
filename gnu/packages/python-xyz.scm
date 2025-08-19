@@ -25331,23 +25331,20 @@ JPEG2000 and GIF files in pure Python.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/test.py" "-v")
       #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; pip: command not found
-               (substitute* "test/test.py"
-                 (("def test_console_script")
-                  "def __disable_test_console_script"))
-               (invoke "python3" "./test/test.py" "-v")))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-pip-tests
+            (lambda _
+              ;; pip: command not found
+              (substitute* "test/test.py"
+                (("def test_console_script")
+                 "def __disable_test_console_script")))))))
     (native-inputs
-     (list python-coverage
-           python-hatch-vcs
+     (list python-hatch-vcs
            python-hatchling
-           python-mypy
            python-pexpect
-           python-wheel
            tcsh
            fish
            bash  ;full Bash for 'test_file_completion'
