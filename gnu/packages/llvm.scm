@@ -2048,9 +2048,6 @@ setup(name=\"clang\", version=\"~a\", packages=[\"clang\"])\n"
     (inputs (list clang))
     (synopsis "Python bindings to libclang")))
 
-(define-public python-clang-11
-  (clang-python-bindings clang-11))
-
 (define-public python-clang-12
   (clang-python-bindings clang-12))
 
