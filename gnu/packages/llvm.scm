@@ -1176,12 +1176,6 @@ Library.")
    '("clang-runtime-9-libsanitizer-mode-field.patch"
      "clang-runtime-9-glibc-2.36-compat.patch")))
 
-(define-public clang-9
-  (clang-from-llvm llvm-9 clang-runtime-9
-                   "0ls2h3iv4finqyflyhry21qhc9cm9ga7g1zq21020p065qmm2y2p"
-                   #:legacy-build-shared-libs? #t
-                   #:patches '("clang-9.0-libc-search-path.patch")))
-
 (define-public llvm-8
   (package
     (inherit llvm-9)
