@@ -1077,27 +1077,6 @@ Library.")
 (define-public clang-toolchain-11
   (make-clang-toolchain clang-11 libomp-11))
 
-(define-public llvm-10
-  (package
-    (inherit llvm-11)
-    (version "10.0.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (llvm-uri "llvm" version))
-      (patches (search-patches "llvm-8-missing-include.patch"
-                               "llvm-10-missing-include.patch"))
-      (sha256
-       (base32
-        "1wydhbp9kyjp5y0rc627imxgkgqiv3dfirbqil9dgpnbaw5y7n65"))))
-    (native-inputs
-     `(("python" ,python-wrapper)
-       ("perl"   ,perl)
-       ;; In llvm-11 riscv64 support was added manually to config.guess.
-       ,@(if (target-riscv64?)
-           `(("config" ,config))
-           '())))))
-
 (define-public llvm-6
   (package
     (inherit llvm-12)
