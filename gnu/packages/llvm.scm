@@ -1181,9 +1181,6 @@ Library.")
        (replace "llvm" llvm-8)))
     (license license:ncsa)))
 
-(define-public clang-toolchain-8
-  (make-clang-toolchain clang-8 libomp-8))
-
 (define-public llvm-6
   (package
     (inherit llvm-10)
