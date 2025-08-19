@@ -1137,20 +1137,6 @@ Library.")
 (define-public clang-toolchain-10
   (make-clang-toolchain clang-10 libomp-10))
 
-(define-public llvm-8
-  (package
-    (inherit llvm-10)
-    (version "8.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "llvm" version))
-              (sha256
-               (base32
-                "1rvm5gqp5v8hfn17kqws3zhk94w4kxndal12bqa0y57p09nply24"))
-              (patches (search-patches "llvm-8-fix-build-with-gcc-10.patch"
-                                       "llvm-8-missing-include.patch"))))
-    (license license:ncsa)))
-
 (define-public llvm-6
   (package
     (inherit llvm-10)
