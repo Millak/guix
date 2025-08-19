@@ -1098,12 +1098,6 @@ Library.")
            `(("config" ,config))
            '())))))
 
-(define-public clang-runtime-10
-  (clang-runtime-from-llvm
-   llvm-10
-   "1yjqjri753w0fzmxcyz687nvd97sbc9rsqrxzpq720na47hwh3fr"
-   '("clang-runtime-13-glibc-2.36-compat.patch")))
-
 (define-public llvm-6
   (package
     (inherit llvm-12)
