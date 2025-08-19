@@ -1169,13 +1169,6 @@ Library.")
                       "endif()"))))))))
        (package-arguments llvm-10)))))
 
-(define-public clang-runtime-9
-  (clang-runtime-from-llvm
-   llvm-9
-   "0xwh79g3zggdabxgnd0bphry75asm1qz7mv3hcqihqwqr6aspgy2"
-   '("clang-runtime-9-libsanitizer-mode-field.patch"
-     "clang-runtime-9-glibc-2.36-compat.patch")))
-
 (define-public llvm-8
   (package
     (inherit llvm-9)
