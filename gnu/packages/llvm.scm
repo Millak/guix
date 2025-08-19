@@ -1195,13 +1195,6 @@ Library.")
                (base32
                 "0r1p5didv4rkgxyvbkyz671xddg6i3dxvbpsi1xxipkla0l9pk0v"))))))
 
-(define-public clang-runtime-7
-  (clang-runtime-from-llvm
-   llvm-7
-   "1n48p8gjarihkws0i2bay5w9bdwyxyxxbpwyng7ba58jb30dlyq5"
-   '("clang-runtime-9-libsanitizer-mode-field.patch"
-     "clang-runtime-9-glibc-2.36-compat.patch")))
-
 (define-public llvm-6
   (package
     (inherit llvm-10)
