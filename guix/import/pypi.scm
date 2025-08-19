@@ -43,8 +43,9 @@
   #:autoload   (gcrypt hash) (port-sha256)
   #:autoload   (guix base16) (base16-string->bytevector)
   #:autoload   (guix base32) (bytevector->nix-base32-string)
-  #:use-module (guix derivations)
-  #:use-module (guix gexp)
+  #:autoload   (guix derivations) (built-derivations
+                                   derivation->output-path)
+  #:autoload   (guix gexp) (lower-object)
   #:autoload   (guix http-client) (http-fetch)
   #:use-module (guix utils)
   #:use-module (guix memoization)
