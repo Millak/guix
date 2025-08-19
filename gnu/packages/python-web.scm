@@ -47,7 +47,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2021, 2022, 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2021-2022, 2024-2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 Mekeor Melire <mekeor.melire@gmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
@@ -11152,6 +11152,26 @@ Interface) framework/toolkit for building async web services in Python.")
 @code{InMemoryBackend} and @code{CookieBackend} implementations for Starlette
 and FastAPI.")
     (license license:expat)))
+
+(define-public python-whereismyip
+  (package
+    (name "python-whereismyip")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "whereismyip" version))
+       (sha256
+        (base32 "0psrlvax8249ccs2rvgdygpckzz22vxjcyzr2pql06d48k61gk54"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ; There are no tests.
+    (native-inputs (list python-setuptools-next))
+    (home-page "https://pypi.org/project/whereismyip/")
+    (synopsis "Queries multiple geolocation services until one succeeds")
+    (description
+     "This package provides a simple Python library that queries multiple geolocation
+services until one succeeds.")
+    (license license:gpl3)))
 
 (define-public python-whitenoise
   (package
