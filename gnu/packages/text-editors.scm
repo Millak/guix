@@ -838,7 +838,7 @@ jmacs, joe, jpico, jstar, and rjoe.")
      (list aspell
            bash-minimal
            boost
-           clang-11               ;XXX: must be the same version as Mesas LLVM
+           clang-18               ;XXX: must be the same version as Mesas LLVM
            gtkmm-3
            gtksourceviewmm
            nlohmann-json
