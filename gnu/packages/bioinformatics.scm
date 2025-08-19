@@ -10962,7 +10962,7 @@ distribution, coverage uniformity, strand specificity, etc.")
        `(#:configure-flags
          ,#~(list (string-append "-DSVM_LIBRARY="
                                  #$(this-package-input "libsvm")
-                                 "/lib/libsvm.so.2")
+                                 "/lib/libsvm.so")
                   (string-append "-DSVM_INCLUDE="
                                  #$(this-package-input "libsvm")
                                  "/include"))

@@ -347,39 +347,40 @@ sparsely connected networks.")
 (define-public libsvm
   (package
     (name "libsvm")
-    (version "3.23")
+    (version "336")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.csie.ntu.edu.tw/~cjlin/libsvm/"
-                           name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cjlin1/libsvm/")
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "0jpaq0rr92x38p4nk3gjan79ip67m6p80anb28z1d8601miysyi5"))))
+        (base32 "03ns6frhfdcyl661ws1yqbzsa6m8wrmba544vlacghry2kg88hn2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'build 'build-lib
-           (lambda _
-             (invoke "make" "lib")))
-         (replace 'install              ; no ‘install’ target
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/"))
-                    (lib (string-append out "/lib/"))
-                    (inc (string-append out "/include/libsvm")))
-               (mkdir-p bin)
-               (for-each (lambda (file)
-                           (copy-file file (string-append bin file)))
-                         '("svm-train"
-                           "svm-predict"
-                           "svm-scale"))
-               (mkdir-p lib)
-               (install-file "libsvm.so.2" lib)
-               (mkdir-p inc)
-               (install-file "svm.h" inc)))))))
+     (list
+      #:tests? #f ;no "check" target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'build 'build-lib
+            (lambda _
+              (invoke "make" "lib")))
+          (replace 'install
+             ;no "install" target
+            (lambda _
+              (for-each (lambda (file)
+                          (install-file file
+                                        (string-append #$output "/bin")))
+                        '("svm-train" "svm-predict" "svm-scale"))
+              (install-file "libsvm.so.4"
+                            (string-append #$output "/lib"))
+              (symlink (string-append #$output "/lib/libsvm.so.4")
+                       (string-append #$output "/lib/libsvm.so"))
+              (install-file "svm.h"
+                            (string-append #$output "/include/"
+                                           #$name)))))))
+    (native-inputs (list python-minimal-wrapper))
     (home-page "https://www.csie.ntu.edu.tw/~cjlin/libsvm/")
     (synopsis "Library for Support Vector Machines")
     (description
@@ -438,35 +439,20 @@ machine learning algorithms based on GPs.")
     (license license:bsd-3)))
 
 (define-public python-libsvm
-  (package (inherit libsvm)
+  (package
+    (inherit libsvm)
     (name "python-libsvm")
-    (build-system gnu-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags '("-C" "python")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace
-          'install                      ; no ‘install’ target
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((site (string-append (assoc-ref outputs "out")
-                                       "/lib/python"
-                                       (string-take
-                                        (string-take-right
-                                         (assoc-ref inputs "python") 5) 3)
-                                       "/site-packages/")))
-              (substitute* "python/svm.py"
-                (("../libsvm.so.2") "libsvm.so.2"))
-              (mkdir-p site)
-              (for-each (lambda (file)
-                          (copy-file file (string-append site (basename file))))
-                        (find-files "python" "\\.py"))
-              (copy-file "libsvm.so.2"
-                         (string-append site "libsvm.so.2")))
-            #t)))))
-    (inputs
-     (list python))
+     (list
+      #:tests? #f ;no "check" target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list libsvm python-scipy))
     (synopsis "Python bindings of libSVM")))
 
 (define-public python-mcfit
