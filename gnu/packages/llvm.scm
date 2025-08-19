@@ -1116,12 +1116,6 @@ Library.")
      "clang-runtime-esan-build-fixes.patch"
      "clang-3.5-libsanitizer-ustat-fix.patch")))
 
-(define-public clang-3.9.1
-  (clang-from-llvm llvm-3.9.1 clang-runtime-3.9.1
-                   "0qsyyb40iwifhhlx9a3drf8z6ni6zwyk3bvh0kx2gs6yjsxwxi76"
-                   #:legacy-build-shared-libs? #t
-                   #:patches '("clang-3.8-libc-search-path.patch")))
-
 (define-public llvm-3.8
   (package (inherit llvm-3.9.1)
     (name "llvm")
