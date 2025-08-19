@@ -1571,19 +1571,6 @@ components which highly leverage existing libraries in the larger LLVM Project."
     (inputs (modify-inputs (package-inputs lld)
               (replace "llvm" llvm-12)))))
 
-(define-public lld-11
-  (package
-    (inherit lld-12)
-    (version "11.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "lld" version))
-              (sha256
-               (base32
-                "077xyh7sij6mhp4dc4kdcmp9whrpz332fa12rwxnzp3wgd5bxrzg"))))
-    (inputs (modify-inputs (package-inputs lld)
-              (replace "llvm" llvm-11)))))
-
 (define-public lld-16
   (package
     (inherit lld-15)
