@@ -6211,29 +6211,6 @@ setup"))))
 gene predictor designed to work with assembled, aligned RNA-seq transcripts.")
     (license license:gpl3+)))
 
-(define-public clustal-omega
-  (package
-    (name "clustal-omega")
-    (version "1.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.clustal.org/omega/clustal-omega-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1vm30mzncwdv881vrcwg11vzvrsmwy4wg80j5i0lcfk6dlld50w6"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list argtable))
-    (home-page "http://www.clustal.org/omega/")
-    (synopsis "Multiple sequence aligner for protein and DNA/RNA")
-    (description
-     "Clustal-Omega is a general purpose multiple sequence alignment (MSA)
-program for protein and DNA/RNA.  It produces high quality MSAs and is capable
-of handling data-sets of hundreds of thousands of sequences in reasonable
-time.")
-    (license license:gpl2+)))
-
 (define-public crossmap
   (package
     (name "crossmap")
