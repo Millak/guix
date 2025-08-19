@@ -1171,7 +1171,7 @@ Library.")
 
 (define-public llvm-8
   (package
-    (inherit llvm-9)
+    (inherit llvm-10)
     (version "8.0.1")
     (source (origin
               (method url-fetch)
