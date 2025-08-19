@@ -2375,7 +2375,6 @@ using @code{clang-rename}.")))
 LLVM."))))
 
 (define-public ocaml-llvm (make-ocaml-llvm llvm))
-(define-public ocaml-llvm-9 (make-ocaml-llvm llvm-9))
 (define-public ocaml-llvm-10 (make-ocaml-llvm llvm-10))
 (define-public ocaml-llvm-11 (make-ocaml-llvm llvm-11))
 
