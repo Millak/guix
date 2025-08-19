@@ -1107,15 +1107,6 @@ Library.")
                         (string-append (getcwd) "/lib"))))
             (delete 'install-opt-viewer)))))))
 
-(define-public clang-runtime-3.9.1
-  (clang-runtime-from-llvm
-   llvm-3.9.1
-   "16gc2gdmp5c800qvydrdhsp0bzb97s8wrakl6i8a4lgslnqnf2fk"
-   '("clang-runtime-3.9-libsanitizer-mode-field.patch"
-     "clang-runtime-asan-build-fixes.patch"
-     "clang-runtime-esan-build-fixes.patch"
-     "clang-3.5-libsanitizer-ustat-fix.patch")))
-
 (define-public llvm-3.8
   (package (inherit llvm-3.9.1)
     (name "llvm")
