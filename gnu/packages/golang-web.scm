@@ -5777,6 +5777,75 @@ header and returns a struct that is convenient for the end-user to do what
 they will with.")
     (license license:expat)))
 
+(define-public go-github-com-lestrrat-go-jwx
+  (package
+    (name "go-github-com-lestrrat-go-jwx")
+    (version "1.2.31")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lestrrat-go/jwx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ljbnw7fd9d5xggixrkx7fg9gs4jk23m6xkfy7s1rc7ljkh1n1qk"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/lestrrat-go/jwx/cmd/jwx
+            ;; - github.com/lestrrat-go/jwx/internal/cmd/genreadfile
+            ;; - github.com/lestrrat-go/jwx/jwa/internal/cmd/gentypes
+            ;; - github.com/lestrrat-go/jwx/jwe/internal/cmd/genheader
+            ;; - github.com/lestrrat-go/jwx/jwk/internal/cmd/genheader
+            ;; - github.com/lestrrat-go/jwx/jws/internal/cmd/genheader
+            ;; - github.com/lestrrat-go/jwx/jwt/internal/cmd/gentoken
+            (for-each delete-file-recursively
+                      (list "cmd/jwx"
+                            "internal/cmd/genreadfile"
+                            "jwa/internal/cmd/gentypes"
+                            "jwe/internal/cmd/genheader"
+                            "jwk/internal/cmd/genheader"
+                            "jws/internal/cmd/genheader"
+                            "jwt/internal/cmd/gentoken"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/jwx"
+      #:test-flags
+      #~(list "-skip" (string-append
+                       ;; XXX: Not sure why these two tests fail.
+                       "TestGH664/Check_what_happens_when_primes_are_reduced_to_0"
+                       "|TestGH664/Check_what_happens_when_primes_are_reduced_to_1"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "bench")
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-decred-dcrd-dcrec-secp256k1-v4
+           go-github-com-goccy-go-json
+           go-github-com-lestrrat-go-backoff-v2
+           go-github-com-lestrrat-go-blackmagic
+           go-github-com-lestrrat-go-httpcc
+           go-github-com-lestrrat-go-iter
+           go-github-com-lestrrat-go-option
+           go-github-com-pkg-errors
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/lestrrat-go/jwx")
+    (synopsis "Complete implementation of JWx in Golang")
+    (description
+     "This package provides implementations of various @acronym{JWx,
+Javascript Object Signing and Encryption/JOSE} (JWA/JWE/JWK/JWS/JWT, otherwise
+known as JOSE) technologies.")
+    (license license:expat)))
+
 (define-public go-github-com-letsencrypt-challtestsrv
   (package
     (name "go-github-com-letsencrypt-challtestsrv")
