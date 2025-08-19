@@ -1842,8 +1842,9 @@ operators and standard data types.")
                              " and not test_fuse_transpose")))))))))
     (native-inputs
      (append
-      (list cmake-minimal python-pytest python-pytest-runner
-            python-coverage python-setuptools python-wheel)
+      (list cmake-minimal
+            python-pytest
+            python-setuptools-next)
       (filter
        (lambda (pkg)
          (member (or (%current-target-system)
