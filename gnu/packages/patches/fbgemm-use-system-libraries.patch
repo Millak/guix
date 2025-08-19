@@ -1,19 +1,19 @@
 Use the asmjit and cpuinfo packages.
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 0243f686..f40dc408 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -247,7 +247,7 @@ message(WARNING "CMAKE_CXX_FLAGS_DEBUG is ${CMAKE_CXX_FLAGS_DEBUG}")
- message(WARNING "CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")
- message(WARNING "==========")
+diff --git i/CMakeLists.txt w/CMakeLists.txt
+index 73b043ac..703204dd 100644
+--- i/CMakeLists.txt
++++ w/CMakeLists.txt
+@@ -258,7 +258,7 @@ message(STATUS "CMAKE_CXX_FLAGS_DEBUG is ${CMAKE_CXX_FLAGS_DEBUG}")
+ message(STATUS "CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")
+ message(STATUS "==========")
  
 -if(NOT TARGET asmjit)
 +if(FALSE)
    # Download asmjit from github if ASMJIT_SRC_DIR is not specified.
    if(NOT DEFINED ASMJIT_SRC_DIR)
      set(ASMJIT_SRC_DIR "${FBGEMM_SOURCE_DIR}/external/asmjit"
-@@ -280,7 +280,7 @@ if(NOT TARGET asmjit)
+@@ -291,7 +291,7 @@ if(NOT TARGET asmjit)
    endif()
  endif()
  
@@ -22,7 +22,7 @@ index 0243f686..f40dc408 100644
    #Download cpuinfo from github if CPUINFO_SOURCE_DIR is not specified.
    if(NOT DEFINED CPUINFO_SOURCE_DIR)
      set(CPUINFO_SOURCE_DIR "${FBGEMM_SOURCE_DIR}/external/cpuinfo"
-@@ -367,9 +367,12 @@ target_include_directories(fbgemm BEFORE
+@@ -378,9 +378,12 @@ target_include_directories(fbgemm BEFORE
  target_link_libraries(fbgemm
    $<BUILD_INTERFACE:asmjit>
    $<BUILD_INTERFACE:cpuinfo>)
@@ -38,10 +38,10 @@ index 0243f686..f40dc408 100644
  
  if(OpenMP_FOUND)
    target_link_libraries(fbgemm OpenMP::OpenMP_CXX)
-diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
-index da0be7fe..615f34ae 100644
---- a/test/CMakeLists.txt
-+++ b/test/CMakeLists.txt
+diff --git i/test/CMakeLists.txt w/test/CMakeLists.txt
+index 1ddb2882..6e81c902 100644
+--- i/test/CMakeLists.txt
++++ w/test/CMakeLists.txt
 @@ -14,7 +14,7 @@ set(CMAKE_C_STANDARD 17)
  set(CMAKE_C_EXTENSIONS OFF)
  set(CMAKE_C_STANDARD_REQUIRED ON)
