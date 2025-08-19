@@ -1137,38 +1137,6 @@ Library.")
 (define-public clang-toolchain-10
   (make-clang-toolchain clang-10 libomp-10))
 
-(define-public llvm-9
-  (package
-    (inherit llvm-10)
-    (version "9.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (llvm-uri "llvm" version))
-       (sha256
-        (base32
-         "16hwp3qa54c3a3v7h8nlw0fh5criqh0hlr1skybyk0cz70gyx880"))
-       (patches (search-patches
-                 "llvm-8-missing-include.patch"
-                 "llvm-9-fix-bitcast-miscompilation.patch"
-                 "llvm-9-fix-scev-miscompilation.patch"
-                 "llvm-9-fix-lpad-miscompilation.patch"))))
-    (arguments
-     (if (target-riscv64?)
-       (substitute-keyword-arguments (package-arguments llvm-10)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-             (add-after 'unpack 'patch-dsymutil-link
-               (lambda _
-                 (substitute* "tools/dsymutil/CMakeLists.txt"
-                   (("endif\\(APPLE\\)")
-                    (string-append
-                      "endif(APPLE)\n\n"
-                      "if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES \"riscv64\")\n"
-                      "  target_link_libraries(dsymutil PRIVATE atomic)\n"
-                      "endif()"))))))))
-       (package-arguments llvm-10)))))
-
 (define-public llvm-8
   (package
     (inherit llvm-10)

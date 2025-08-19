@@ -1837,9 +1837,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-3.x.1-fix-build-with-gcc.patch	\
   %D%/packages/patches/llvm-8-fix-build-with-gcc-10.patch	\
   %D%/packages/patches/llvm-8-missing-include.patch		\
-  %D%/packages/patches/llvm-9-fix-bitcast-miscompilation.patch	\
-  %D%/packages/patches/llvm-9-fix-lpad-miscompilation.patch	\
-  %D%/packages/patches/llvm-9-fix-scev-miscompilation.patch	\
   %D%/packages/patches/llvm-10-missing-include.patch            \
   %D%/packages/patches/llvm-13-gcc-14.patch			\
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
