@@ -1229,7 +1229,7 @@ Library.")
 
 (define-public llvm-6
   (package
-    (inherit llvm-7)
+    (inherit llvm-10)
     (version "6.0.1")
     (source (origin
               (method url-fetch)
@@ -1238,7 +1238,7 @@ Library.")
                (base32
                 "1qpls3vk85lydi5b4axl0809fv932qgsqgdgrk098567z4jc7mmn"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-7)
+     (substitute-keyword-arguments (package-arguments llvm-10)
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'delete-failing-tests)))))))
