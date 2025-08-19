@@ -19388,6 +19388,29 @@ distributable command line applications in an expressive way.")
 anti-fragmentation protection.")
     (license license:expat)))
 
+(define-public go-github-com-valyala-fastjson
+  (package
+    (name "go-github-com-valyala-fastjson")
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/valyala/fastjson")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ly15rbdy9qmml39d8mazjvid3f13nhvj4v2zdlp13pn4gczdp3k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/valyala/fastjson"))
+    (home-page "https://github.com/valyala/fastjson")
+    (synopsis "JSON parser and validator for Golang")
+    (description
+     "Package fastjson provides fast JSON parsing comparing to std @code{encoding/json}.")
+    (license license:expat)))
+
 (define-public go-github-com-valyala-fasttemplate
   (package
     (name "go-github-com-valyala-fasttemplate")
