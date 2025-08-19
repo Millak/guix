@@ -68,14 +68,14 @@
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "3.01")
+    (version "3.05")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "115hjza0ic2mh3y2qjkvzpsx8cpy0yghklpbv8qhdgznqc5001bs"))
+        (base32 "11wsqvsdn58h8ybd2r5nysr8hfhwz0w4dzzgwib9m1nx7c56vh9m"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.
@@ -99,7 +99,8 @@
            rapidjson
            texinfo                      ;for generating documentation
            (texlive-local-tree
-            (list texlive-epsf
+            (list texlive-dvisvgm
+                  texlive-epsf
                   texlive-etoolbox
                   texlive-hypdoc
                   texlive-infwarerr
