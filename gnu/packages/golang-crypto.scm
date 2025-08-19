@@ -739,7 +739,7 @@ and AVX acceleration and zero allocations.")
 (define-public go-github-com-decred-dcrd-dcrec-secp256k1-v4
   (package
     (name "go-github-com-decred-dcrd-dcrec-secp256k1-v4")
-    (version "4.3.0")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -748,7 +748,7 @@ and AVX acceleration and zero allocations.")
              (commit (go-version->git-ref version #:subdir "dcrec/secp256k1"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19yqrrspm6n1x7wa1chqj0j95bc5w02ygddr06ajzf6x7i7q09q5"))
+        (base32 "069v37xz9wxyjj79ag462kafhzdjq7jahp20kilx4435h8vhxxyg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
