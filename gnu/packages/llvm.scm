@@ -1038,12 +1038,6 @@ Library.")
        (base32
         "199yq3a214avcbi4kk2q0ajriifkvsr0l2dkx3a666m033ihi1ff"))))))
 
-(define-public clang-runtime-11
-  (clang-runtime-from-llvm
-   llvm-11
-   "0x1j8ngf1zj63wlnns9vlibafq48qcm72p4jpaxkmkb4qw0grwfy"
-   '("clang-runtime-13-glibc-2.36-compat.patch")))
-
 (define-public llvm-6
   (package
     (inherit llvm-12)
