@@ -5805,6 +5805,58 @@ header and returns a struct that is convenient for the end-user to do what
 they will with.")
     (license license:expat)))
 
+(define-public go-github-com-lestrrat-go-httprc
+  (package
+    (name "go-github-com-lestrrat-go-httprc")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lestrrat-go/httprc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19pvxzw3l1riz0lryyh4n8s4jk7ba6js7fvbcdpxl60gb69fpz3g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/httprc"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-lestrrat-go-httpcc
+           go-github-com-lestrrat-go-option))
+    (home-page "https://github.com/lestrrat-go/httprc")
+    (synopsis "Quasi Up-to-date HTTP In-memory Cache ")
+    (description
+     "Package httprc implements a cache for resources available over http(s).
+Its aim is not only to cache these resources so that it saves on HTTP
+roundtrips, but it also periodically attempts to auto-refresh these resources
+once they are cached based on the user-specified intervals and HTTP
+@code{Expires} and @code{Cache-Control} headers, thus keeping the entries
+relativelyfresh.")
+    (license license:expat)))
+
+(define-public go-github-com-lestrrat-go-httprc-v3
+  (package
+    (inherit go-github-com-lestrrat-go-httprc)
+    (name "go-github-com-lestrrat-go-httprc-v3")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lestrrat-go/httprc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15kcs3qi55f5774k1sh0sx9vhg60cxkh9x2wb1frd6c7f7q4nkq7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/httprc/v3"))))
+
 (define-public go-github-com-lestrrat-go-jwx
   (package
     (name "go-github-com-lestrrat-go-jwx")
