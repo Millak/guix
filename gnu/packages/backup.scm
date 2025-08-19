@@ -1329,13 +1329,13 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "1.8.14")
+    (version "2.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgmatic" version))
        (sha256
-        (base32 "0im7kx9mq1gymid88wa6yxcif4bdqpz5lag5fp9kpm8r5k13p2sr"))))
+        (base32 "01l44ny2zyn7x1hhbvhhhwr12jipcjxl3j1cz13kf6c3bdfwms8y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1371,7 +1371,6 @@ compression parameters used by Gzip.")
     (inputs
      (list borg
            python-apprise
-           python-colorama
            python-jsonschema
            python-requests
            python-ruamel.yaml))
