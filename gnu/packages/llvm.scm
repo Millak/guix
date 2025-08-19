@@ -1134,9 +1134,6 @@ Library.")
        (replace "clang" clang-10)
        (replace "llvm" llvm-10)))))
 
-(define-public clang-toolchain-10
-  (make-clang-toolchain clang-10 libomp-10))
-
 (define-public llvm-6
   (package
     (inherit llvm-12)
