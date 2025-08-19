@@ -1198,9 +1198,6 @@ Library.")
        (replace "clang" clang-9)
        (replace "llvm" llvm-9)))))
 
-(define-public clang-toolchain-9
-  (make-clang-toolchain clang-9 libomp-9))
-
 (define-public llvm-8
   (package
     (inherit llvm-9)
