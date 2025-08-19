@@ -72,7 +72,6 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
-  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tor)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xdisorg)
@@ -226,11 +225,9 @@ Browser.")
            gdk-pixbuf
            glib
            gtk+
-           ;; UNBUNDLE-ME! graphite2
            cairo
            pango
            freetype
-           ;; UNBUNDLE-ME! harfbuzz
            libcanberra
            libgnome
            libjpeg-turbo
@@ -256,7 +253,6 @@ Browser.")
            nspr
            nss-rapid  ; requires v. 3.101, so nss won't cut it for now.
            shared-mime-info
-           sqlite
            eudev
            unzip
            zip
@@ -353,11 +349,8 @@ Browser.")
          "--with-system-nspr"
          "--with-system-nss"
 
-         ;; UNBUNDLE-ME! "--with-system-harfbuzz"
-         ;; UNBUNDLE-ME! "--with-system-graphite2"
          "--enable-system-pixman"
          "--enable-system-ffi"
-         ;; UNBUNDLE-ME! "--enable-system-sqlite"
          )
 
       #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
@@ -411,10 +404,7 @@ Browser.")
                           "media/libvpx"
                           ;; UNBUNDLE-ME! "media/libtremor"
                           "media/libwebp"
-                          ;; UNBUNDLE-ME! "gfx/harfbuzz"
-                          ;; UNBUNDLE-ME! "gfx/graphite2"
                           "js/src/ctypes/libffi"
-                          ;; UNBUNDLE-ME! "db/sqlite3"
                           ;; 800Mo of unused tests.
                           "testing/web-platform"
                           ))))
