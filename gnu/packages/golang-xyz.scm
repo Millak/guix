@@ -8899,6 +8899,32 @@ provides a buffered io.Writer that is flushed at a timed interval.")
 @code{wrapErrorsUsing}.")
     (license license:expat)))
 
+(define-public go-github-com-gowebpki-jcs
+  (package
+    (name "go-github-com-gowebpki-jcs")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gowebpki/jcs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cgclrxdkxrbch0791m4ijs9a4g4zn355k8griavaadjy87l3qq8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gowebpki/jcs"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/gowebpki/jcs")
+    (synopsis "JSON Canonicalization")
+    (description
+     "Package jcs transforms UTF-8 JSON data into a canonicalized version
+according @@url{https://rfc-editor.org/rfc/rfc8785.html, RFC 8785}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-guptarohit-asciigraph
   (package
     (name "go-github-com-guptarohit-asciigraph")
