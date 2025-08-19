@@ -1024,20 +1024,6 @@ Library.")
 (define-public clang-toolchain-12
   (make-clang-toolchain clang-12 libomp-12))
 
-(define-public llvm-11
-  (package
-    (inherit llvm-12)
-    (version "11.1.0")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (llvm-uri "llvm" version))
-      (patches (search-patches "llvm-8-missing-include.patch"
-                               "llvm-10-missing-include.patch"))
-      (sha256
-       (base32
-        "199yq3a214avcbi4kk2q0ajriifkvsr0l2dkx3a666m033ihi1ff"))))))
-
 (define-public llvm-6
   (package
     (inherit llvm-12)
