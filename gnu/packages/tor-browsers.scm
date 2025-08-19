@@ -348,9 +348,9 @@ Browser.")
          "--with-system-icu"
          "--with-system-nspr"
          "--with-system-nss"
+         "--with-system-ffi"
 
          "--enable-system-pixman"
-         "--enable-system-ffi"
          )
 
       #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
