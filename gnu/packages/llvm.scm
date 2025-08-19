@@ -1081,32 +1081,6 @@ Library.")
 (define-public clang-toolchain-6
   (make-clang-toolchain clang-6 libomp-6))
 
-(define-public llvm-3.9.1
-  (package (inherit llvm-6)
-    (name "llvm")
-    (version "3.9.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (llvm-uri "llvm" version))
-      (sha256
-       (base32
-        "1vi9sf7rx1q04wj479rsvxayb6z740iaz3qniwp266fgp5a07n8z"))))
-    (outputs '("out"))
-    (arguments
-     (substitute-keyword-arguments (package-arguments llvm-6)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-before 'build 'shared-lib-workaround
-              ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
-              ;; doesn't seem to get the correct rpath to be able to run
-              ;; from the build directory.  Set LD_LIBRARY_PATH as a
-              ;; workaround.
-              (lambda _
-                (setenv "LD_LIBRARY_PATH"
-                        (string-append (getcwd) "/lib"))))
-            (delete 'install-opt-viewer)))))))
-
 (define-public llvm-3.8
   (package (inherit llvm-6)
     (name "llvm")
