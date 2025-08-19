@@ -5926,6 +5926,51 @@ Javascript Object Signing and Encryption/JOSE} (JWA/JWE/JWK/JWS/JWT, otherwise
 known as JOSE) technologies.")
     (license license:expat)))
 
+(define-public go-github-com-lestrrat-go-jwx-v3
+  (package
+    (inherit go-github-com-lestrrat-go-jwx)
+    (name "go-github-com-lestrrat-go-jwx-v3")
+    (version "3.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lestrrat-go/jwx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sw5ymrvky9z7rijs0rbc7p234f9i4blas2wrlsj4kr8k35c7qxw"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/lestrrat-go/jwx/cmd/jwx
+            ;; - github.com/lestrrat-go/jwx/tools/cmd/genjwa
+            ;; - github.com/lestrrat-go/jwx/tools/cmd/genjwe
+            ;; - github.com/lestrrat-go/jwx/tools/cmd/genjwk
+            ;; - github.com/lestrrat-go/jwx/tools/cmd/genjws
+            ;; - github.com/lestrrat-go/jwx/tools/cmd/genjwt
+            ;; - github.com/lestrrat-go/jwx/tools/cmd/genoptions
+            ;; - github.com/lestrrat-go/jwx/tools/cmd/genreadfile
+            (for-each delete-file-recursively
+                      (list "cmd/jwx"
+                            "tools/cmd"))))))
+    (build-system go-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-lestrrat-go-jwx)
+       ((#:import-path _) "github.com/lestrrat-go/jwx/v3")))
+    (propagated-inputs
+     (list go-github-com-decred-dcrd-dcrec-secp256k1-v4
+           go-github-com-goccy-go-json
+           go-github-com-lestrrat-go-blackmagic
+           go-github-com-lestrrat-go-httprc-v3
+           go-github-com-lestrrat-go-option-v2
+           go-github-com-segmentio-asm
+           go-github-com-valyala-fastjson
+           go-golang-org-x-crypto))))
+
 (define-public go-github-com-letsencrypt-challtestsrv
   (package
     (name "go-github-com-letsencrypt-challtestsrv")
