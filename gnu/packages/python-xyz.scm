@@ -39072,26 +39072,28 @@ to void* values.")
   (package
     (name "python-catalogue")
     (version "2.0.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "catalogue" version))
-              (sha256
-               (base32
-                "0srdxiil2xys8q1gpc1nvzhvis3a33d8a7amk2i1rlpbg6p36pak"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
-    (inputs (list python python-zipp python-typing-extensions python-mypy))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/explosion/catalogue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f7dqd8swycnspwfka79whr0v630v52hdmkmd1x7l920h33pg467"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/explosion/catalogue")
     (synopsis "Lightweight function registries for your library")
     (description
-     "\"catalogue\" is a tiny, zero-dependencies library that
-makes it easy to add function (or object) registries to your code.  Function
-registries are helpful when you have objects that need to be both easily
-serializable and fully customizable.  Instead of passing a function into your
-object, you pass in an identifier name, which the object can use to lookup the
-function from the registry.  This makes the object easy to serialize, because the
-name is a simple string.  If you instead saved the function, you'd have to use
-Pickle for serialization, which has many drawbacks.")
+     "This package is a tiny, zero-dependencies library that makes it easy to
+add function (or object) registries to your code.  Function registries are
+helpful when you have objects that need to be both easily serializable and
+fully customizable.  Instead of passing a function into your object, you pass
+in an identifier name, which the object can use to lookup the function from
+the registry.  This makes the object easy to serialize, because the name is a
+simple string.  If you instead saved the function, you'd have to use Pickle
+for serialization, which has many drawbacks.")
     (license license:expat)))
 
 (define-public python-wasabi
