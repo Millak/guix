@@ -663,7 +663,7 @@ executing in M-mode.")
 (define-public seabios
   (package
     (name "seabios")
-    (version "1.16.2")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -672,7 +672,7 @@ executing in M-mode.")
              (commit (string-append "rel-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mal2zqn4ppxdjxddrxcphm6z9n8n4rw97xl2hldd7spw57nwq97"))
+        (base32 "0v4rsv2mh6rmb9n2fc1df439z16qgmnkbv0vb5ylmpqzqfbjjd3q"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -703,12 +703,6 @@ executing in M-mode.")
               ;; If we use (cc-for-target) then we have the system prefix
               ;; twice or we might have the wrong prefix.
               (setenv "CC" "gcc")))
-          (add-before 'build 'build-description-tables
-            (lambda _
-              ;; Regenerate the ACPI description tables.
-              (invoke "make" "iasl")
-              ;; Clear temporary files added by the iasl target.
-              (invoke "make" "clean")))
           (replace 'install
             (lambda _
               (install-file "out/bios.bin"
