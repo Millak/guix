@@ -334,18 +334,6 @@ without requiring the source code to be rewritten.")
             (variable "GUILE_LOAD_COMPILED_PATH")
             (files '("lib/guile/2.2/site-ccache")))))))
 
-(define-public guile-2.2.4
-  (package
-    (inherit guile-2.2)
-   (version "2.2.4")
-   (source (origin
-             (inherit (package-source guile-2.2))
-             (uri (string-append "mirror://gnu/guile/guile-" version
-                                 ".tar.xz"))
-             (sha256
-              (base32
-               "07p3g0v2ba2vlfbfidqzlgbhnzdx46wh2rgc5gszq1mjyx5bks6r"))))))
-
 (define-public guile-3.0
   ;; This is the latest Guile stable version.
   (package
