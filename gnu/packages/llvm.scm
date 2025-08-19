@@ -1204,7 +1204,7 @@ Library.")
          "153vcvj8gvgwakzr4j0kndc0b7wn91c2g1vy2vg24s6spxcc23gn"))))))
 
 (define-public llvm-3.5
-  (package (inherit llvm-3.6)
+  (package (inherit llvm-3.7)
     (version "3.5.2")
     (source
      (origin
