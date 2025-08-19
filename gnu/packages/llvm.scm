@@ -1190,19 +1190,6 @@ Library.")
                    #:legacy-build-shared-libs? #t
                    #:patches '("clang-3.5-libc-search-path.patch")))
 
-(define-public llvm-3.6
-  (package (inherit llvm-3.7)
-    (version "3.6.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (llvm-uri "llvm" version))
-       (patches
-        (search-patches "llvm-3.6-fix-build-with-gcc-10.patch"))
-       (sha256
-        (base32
-         "153vcvj8gvgwakzr4j0kndc0b7wn91c2g1vy2vg24s6spxcc23gn"))))))
-
 (define-public llvm-3.5
   (package (inherit llvm-3.7)
     (version "3.5.2")
