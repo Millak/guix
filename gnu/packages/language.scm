@@ -396,9 +396,8 @@ Marburg.")
                    license:gpl3+))))    ; tools
 
 (define-public liblouisutdml
-  ;; Use the latest commit, which includes test suite fixes not yet released.
-  (let ((commit "00ca7838e30ebd5ed6f635236aa235e2c8f089c1")
-        (revision "0"))
+  (let ((commit "68f702d43cda279f960d8ffa2415ac639d301295")
+        (revision "1"))
     (package
       (name "liblouisutdml")
       (version (git-version "2.12.0" revision commit))
@@ -411,12 +410,13 @@ Marburg.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1pr3wys48bzblr6kav24gr8slsp409f81iqxw19922k24y5y31l7"))))
+          (base32 "0r0k91fcsp4kwlgrmb497r2dh0c3yz45wbd1ds1kh0m28v78q5i3"))))
       (build-system gnu-build-system)
       (outputs '("out" "bin" "doc"))
       (arguments
        (list #:configure-flags
-             #~(list "--disable-static")))
+             #~(list "--disable-static"
+                     "CFLAGS=-Wno-error=incompatible-pointer-types")))
       (native-inputs
        (list autoconf
              automake
@@ -435,7 +435,7 @@ Marburg.")
 transcription services for xml, html and text documents.  It translates into
 appropriate braille codes and formats according to its style sheet and the
 specifications in the document.")
-      (home-page "http://liblouis.org/")
+      (home-page "https://liblouis.io/")
       (license (list license:lgpl3+       ; library
                      license:gpl3+)))))    ; tools
 
