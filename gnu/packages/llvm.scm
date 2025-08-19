@@ -1135,14 +1135,6 @@ Library.")
         "1ybmnid4pw2hxn12ax5qa5kl1ldfns0njg8533y3mzslvd5cx0kf"))
       (patches (search-patches "llvm-3.x.1-fix-build-with-gcc.patch"))))))
 
-(define-public clang-runtime-3.8
-  (clang-runtime-from-llvm
-   llvm-3.8
-   "0p0y85c7izndbpg2l816z7z7558axq11d5pwkm4h11sdw7d13w0d"
-   '("clang-runtime-asan-build-fixes.patch"
-     "clang-runtime-3.8-libsanitizer-mode-field.patch"
-     "clang-3.5-libsanitizer-ustat-fix.patch")))
-
 (define-public llvm-3.7
   (package (inherit llvm-6)
     (version "3.7.1")
