@@ -1202,34 +1202,6 @@ Library.")
         (base32
          "0xf5q17kkxsrm2gsi93h4pwlv663kji73r2g4asb97klsmb626a4"))))))
 
-(define-public clang-runtime-3.5
-  (let ((runtime (clang-runtime-from-llvm
-                  llvm-3.5
-                  "1hsdnzzdr5kglz6fnv3lcsjs222zjsy14y8ax9dy6zqysanplbal"
-                  '("clang-runtime-asan-build-fixes.patch"
-                    "clang-runtime-3.5-libsanitizer-mode-field.patch"
-                    "clang-3.5-libsanitizer-ustat-fix.patch"))))
-    (package/inherit runtime
-      (arguments
-       (substitute-keyword-arguments (package-arguments runtime)
-         ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             ;; glibc no longer includes rpc/xdr.h, so we use the headers from
-             ;; libtirpc.
-             (add-after 'unpack 'find-rpc-includes
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "CPATH"
-                         (string-append
-                          (search-input-directory inputs "/include/tirpc")
-                          ":" (or (getenv "CPATH") "")))
-                 (setenv "CPLUS_INCLUDE_PATH"
-                         (string-append
-                          (search-input-directory inputs "/include/tirpc")
-                          ":" (or (getenv "CPLUS_INCLUDE_PATH") "")))))))))
-      (inputs
-       `(("libtirpc" ,libtirpc)
-         ("llvm" ,llvm-3.5))))))
-
 (define-public llvm-16
   (make-llvm "16.0.6"))
 
