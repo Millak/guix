@@ -1164,23 +1164,6 @@ Library.")
                    #:legacy-build-shared-libs? #t
                    #:patches '("clang-8.0-libc-search-path.patch")))
 
-(define-public libomp-8
-  (package
-    (inherit libomp-12)
-    (version (package-version llvm-8))
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "openmp" version))
-              (sha256
-               (base32
-                "0b3jlxhqbpyd1nqkpxjfggm5d9va5qpyf7d4i5y7n4a1mlydv19y"))
-              (file-name (string-append "libomp-" version ".tar.xz"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs libomp-12)
-       (replace "clang" clang-8)
-       (replace "llvm" llvm-8)))
-    (license license:ncsa)))
-
 (define-public llvm-6
   (package
     (inherit llvm-10)
