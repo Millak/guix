@@ -4545,6 +4545,34 @@ web applications.")
 incoming requests with their respective handler.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gorilla-pat
+  (package
+    (name "go-github-com-gorilla-pat")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gorilla/pat")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ip2mfhs04j1wbh69iq6d3xz760cb6qmxgv3csns6qrkxfr53av2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gorilla/pat"))
+    (propagated-inputs
+     (list go-github-com-gorilla-context
+           go-github-com-gorilla-mux))
+    (home-page "https://github.com/gorilla/pat")
+    (synopsis "HTTP router for Golang")
+    (description
+     "This package is a request router and dispatcher with a pat-like
+interface.  It is an alternative to @code{gorilla/mux} that showcases how it
+can be used as a base for different API flavors.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gorilla-schema
   (package
     (name "go-github-com-gorilla-schema")
