@@ -26,6 +26,7 @@
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages engineering)
@@ -126,17 +127,27 @@ chains of gadgets to execute system calls.")
 (define-public pwntools
   (package
     (name "pwntools")
-    (version "4.15.0b1")
+    (version "4.15.0beta1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pwntools" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Gallopsled/pwntools")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "091fsk9rvbjkcsp8mmww0ka26dvznmj4pbqwaiygcw90g3v94zgd"))))
-    (build-system python-build-system)
+        (base32 "048b8szybf3f69xdp258a783nl5dcgj316a5156i8ajhyfw6aaw0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))                 ;XXX: needs a specific version of unicorn
+     (list
+      #:tests? #f  ;XXX: needs a specific version of unicorn
+      #:phases
+      '(modify-phases %standard-phases
+          (add-after 'unpack 'relax-dependencies
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^ *\"pip.*\",.*")
+                 "")))))))
     (propagated-inputs
      (list capstone
            python-colored-traceback
@@ -145,7 +156,6 @@ chains of gadgets to execute system calls.")
            python-mako
            python-packaging
            python-paramiko
-           python-pathlib2
            python-psutil
            python-pyelftools
            python-pygments
