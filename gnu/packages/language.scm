@@ -343,7 +343,7 @@ method, one of the most popular choices for Traditional Chinese users.")
 (define-public liblouis
   (package
     (name "liblouis")
-    (version "3.31.0")
+    (version "3.34.0")
     (source
      (origin
        (method git-fetch)
@@ -353,7 +353,7 @@ method, one of the most popular choices for Traditional Chinese users.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02bga2l4jiyrgfqdl27wszz5yd6h80n2dmq3p6nb2br83jywisfh"))))
+        (base32 "1p6ihaxnbwqi8vk471h7v71lkrknk6ahxggm3p7v7l6hal7n6smq"))))
     (build-system gnu-build-system)
     (outputs '("out" "bin" "doc" "python"))
     (arguments
@@ -391,7 +391,7 @@ support for hyphenation.  New languages can easily be added through tables that
 support a rule- or dictionary based approach.  Tools for testing and debugging
 tables are also included.  Liblouis also supports math braille, Nemeth and
 Marburg.")
-    (home-page "http://liblouis.org/")
+    (home-page "https://liblouis.io/")
     (license (list license:lgpl2.1+     ; library
                    license:gpl3+))))    ; tools
 
