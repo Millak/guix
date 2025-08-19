@@ -1184,17 +1184,6 @@ Library.")
 (define-public clang-toolchain-8
   (make-clang-toolchain clang-8 libomp-8))
 
-(define-public llvm-7
-  (package
-    (inherit llvm-8)
-    (version "7.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "llvm" version))
-              (sha256
-               (base32
-                "0r1p5didv4rkgxyvbkyz671xddg6i3dxvbpsi1xxipkla0l9pk0v"))))))
-
 (define-public llvm-6
   (package
     (inherit llvm-10)
