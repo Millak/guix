@@ -12553,6 +12553,31 @@ arbitrary array and maps types.")
 \"Optional Parameters Pattern\".")
     (license license:expat)))
 
+(define-public go-github-com-lestrrat-go-option-v2
+  (package
+    (inherit go-github-com-lestrrat-go-option)
+    (name "go-github-com-lestrrat-go-option-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lestrrat-go/option")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07w19iwqna9zml1x3zsrnm8dzq07kbwd3isf31293rm5i73rkmwq"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/lestrrat-go/option/cmd/genoptions
+            (delete-file-recursively "cmd/genoptions")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/option/v2"))))
 
 (define-public go-github-com-lestrrat-go-strftime
   (package
