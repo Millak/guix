@@ -846,11 +846,39 @@ style and key ordering are kept, so you can diff the source.")
        (method url-fetch)
        (uri (pypi-uri "strictyaml" version))
        (sha256
-        (base32 "01y4hrakk1psdj6ir5k70apqkjjipvja0c40pbfvahmbzjjm9y12"))))
+        (base32 "01y4hrakk1psdj6ir5k70apqkjjipvja0c40pbfvahmbzjjm9y12"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Unbundle ruamel.
+            (delete-file-recursively "strictyaml/ruamel")))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-dateutil python-ruamel.yaml))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://pypi.org/project/strictyaml/")
+    (arguments
+     (list
+      ;; XXX: Tests require running Docker and an external test framework,
+      ;; see: <https://github.com/crdoconnor/strictyaml/blob/1.7.3/key.sh>
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-bundled-ruamel
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((", \"strictyaml.ruamel\"")
+                 "")
+                (("\"python-dateutil>=2.6.0\"" dateutils)
+                 (string-append dateutils ", \"ruamel.yaml\"")))
+              (substitute* "strictyaml/parser.py"
+                (("from strictyaml import ruamel")
+                 "import ruamel.yaml"))
+              (substitute* (find-files "." "\\.py$")
+                (("from strictyaml.ruamel")
+                 "from ruamel.yaml")))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-dateutil
+           python-ruamel.yaml-0.16))
+    (home-page "https://hitchdev.com/strictyaml/")
     (synopsis "Strict, typed YAML parser")
     (description "StrictYAML is a type-safe YAML parser that parses and
 validates a restricted subset of the YAML specification.")
