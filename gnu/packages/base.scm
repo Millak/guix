@@ -374,7 +374,7 @@ differences.")
                 #~'("XFAIL_TESTS=test-year2038"))
                ;; TODO: Figure out why these gnulib tests are failing.
                ((and (not (%current-target-system))
-                     (target-ppc64le?))
+                     (target-powerpc?))
                 #~'("XFAIL_TESTS=test-float-h large-subopt"))
                (else
                 #~'()))
