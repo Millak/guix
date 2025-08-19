@@ -1150,7 +1150,7 @@ Library.")
                    #:patches '("clang-3.8-libc-search-path.patch")))
 
 (define-public llvm-3.7
-  (package (inherit llvm-3.8)
+  (package (inherit llvm-6)
     (version "3.7.1")
     (source
      (origin
@@ -1159,7 +1159,21 @@ Library.")
        (sha256
         (base32
          "1masakdp9g2dan1yrazg7md5am2vacbkb3nahb3dchpc1knr8xxy"))
-      (patches (search-patches "llvm-3.x.1-fix-build-with-gcc.patch"))))))
+      (patches (search-patches "llvm-3.x.1-fix-build-with-gcc.patch"))))
+    (outputs '("out"))
+    (arguments
+     (substitute-keyword-arguments (package-arguments llvm-6)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'shared-lib-workaround
+              ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
+              ;; doesn't seem to get the correct rpath to be able to run
+              ;; from the build directory.  Set LD_LIBRARY_PATH as a
+              ;; workaround.
+              (lambda _
+                (setenv "LD_LIBRARY_PATH"
+                        (string-append (getcwd) "/lib"))))
+            (delete 'install-opt-viewer)))))))
 
 (define-public clang-runtime-3.7
   (clang-runtime-from-llvm
