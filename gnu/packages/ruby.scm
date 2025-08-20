@@ -89,7 +89,7 @@
 (define-public ruby-3.4
   (package
     (name "ruby")
-    (version "3.4.4")
+    (version "3.4.6")
     (source
      (origin
        (method url-fetch)
@@ -98,7 +98,7 @@
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1x18dr3qhr1mypbvxc7yr46z06l11if3cx3babcfv7a9x7pn6vgp"))))
+         "1f2r91mfcas1wz0dyplmsfd40cxi7h8d603h29ss92lk4ay9ajc0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -121,7 +121,7 @@
                             "lib/mkmf.rb"
                             "process.c"
                             "test/rubygems/test_gem_ext_configure_builder.rb"
-                            "test/rdoc/test_rdoc_parser.rb"
+                            "test/rdoc/rdoc_parser_test.rb"
                             "test/ruby/test_rubyoptions.rb"
                             "test/ruby/test_process.rb"
                             "test/ruby/test_system.rb"
