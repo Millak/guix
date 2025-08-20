@@ -82,7 +82,6 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
-  #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -102,8 +101,6 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages gl)
-  #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -3738,111 +3735,6 @@ int128_t, uint256_t, but also somewhat esoteric types such as int24_t,
 uint80_t, or uint1536_t.  The provided types can be used in much the same
 way as basic integer types.")
     (license license:boost1.0))))
-
-(define-public wdl
-  ;; No tag is available.
-  (let ((commit "da86a62d11e46e4ecd8b16f9775cb5188340a0e2")
-        (revision "0"))
-    (package
-      (name "wdl")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/justinfrankel/WDL")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                ;; This patch fixes error of undefined functions, due to not
-                ;; linking libraries, and invalid object.
-                (patches
-                 (search-patches "wdl-link-libs-and-fix-jnetlib.patch"))
-                (sha256
-                 (base32
-                  "0hdb604szkbrlyffiw94rz8wx4nvmk3zdkycfirqgjs7mh0l6vbq"))
-                (modules '((guix build utils)))
-                ;; Unbundle third party libraries which are not needed.
-                (snippet
-                 '(with-directory-excursion "WDL"
-                    (for-each delete-file-recursively
-                              (list "cmath"
-                                    "libpng"
-                                    "lice/glew"
-                                    "giflib"
-                                    "jpeglib"
-                                    "zlib"))))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:test-target "test"
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _ (chdir "WDL/swell")))
-            (delete 'configure)
-            (replace 'build
-              (lambda _
-                (with-directory-excursion ".."
-                  (invoke "make" "-Ceel2")     ;build eel2
-                  (invoke "make" "-Cjnetlib")) ;build jnetlib
-                (invoke "make" "SWELL_SUPPORT_GTK=true")
-                (invoke "make" "libSwell.colortheme")))
-            (replace 'install
-              (lambda _
-                (chdir "..")
-
-                ;; Do not install these directories
-                (delete-file-recursively "lice/test")
-                (delete-file-recursively "swell/sample_project")
-
-                ;; Install headers.
-                (let ((include (string-append #$output "/include/WDL")))
-                  (for-each
-                   (lambda (file)
-                     (install-file file
-                                   (string-append include "/"
-                                                  (dirname file))))
-                   (find-files "." "\\.h$")))
-                (install-file "swell/libSwell.so"
-                              (string-append #$output "/lib"))
-                (install-file "swell/libSwell.colortheme"
-                              (string-append #$output "/share/WDL"))
-                (install-file "eel2/loose_eel"
-                              (string-append #$output "/libexec"))
-                (install-file "jnetlib/jnl.a"
-                              (string-append #$output "/lib")))))))
-      (native-inputs (list pkg-config nasm))
-      (inputs
-       (list cairo
-             fontconfig
-             freetype
-             gdk-pixbuf
-             glib
-             gtk+
-             libxi
-             libx11
-             mesa
-             zlib))
-      (home-page "https://www.cockos.com/wdl/")
-      (synopsis "Modestly reusable C++ libraries")
-      (description
-       "WDL is a modestly reusable C++ library that offers the following:
-@itemize
-@item Inline classes for cleanly managing memory allocations, lists,
-queues, resource pools, strings, etc.
-@item File reading/writing wrappers
-@item Directory scanning API
-@item SHA-1 implementation
-@item Mergesort implementation
-@item Blowfish implementation
-@item Fast FFT implementation (based on DJBFFT)
-@item Audio tools
-@item LICE - Lightweight Image Compositing Engine
-@item WDL Virtual Window system
-@item Plush2 - Portable, lightweight software 3d rendering engine
-@item SWELL - Simple Windows Emulation Layer
-@item And more.
-@end itemize")
-      (license license:zlib))))
 
 (define-public juce
   (package
