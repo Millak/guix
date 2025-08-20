@@ -289,8 +289,8 @@ Internet and from a wide variety of machine architectures.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                "http://www.spice-space.org/download/releases/"
-                "spice-vdagent-" version ".tar.bz2"))
+                    "http://www.spice-space.org/download/releases/"
+                    "spice-vdagent-" version ".tar.bz2"))
               (sha256
                (base32
                 "18472sqr0gibzgzi48dpcbnvm78l05qrl5wv6xywqqj7r9dd3c4k"))))
@@ -308,13 +308,13 @@ Internet and from a wide variety of machine architectures.")
              (substitute* "Makefile.in"
                (((string-append "\\$\\(mkdir_p\\) \\$\\(DESTDIR\\)"
                                 "\\$\\(localstatedir\\)/run/spice-vdagentd"))
-                 "-$(mkdir_p) $(DESTDIR)$(localstatedir)/run/spice-vdagentd"))))
+                "-$(mkdir_p) $(DESTDIR)$(localstatedir)/run/spice-vdagentd"))))
          (add-after 'unpack 'patch-spice-vdagent.desktop
            (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* "data/spice-vdagent.desktop"
-              (("Exec=/usr/bin/spice-vdagent")
-               (string-append "Exec=" (assoc-ref outputs "out")
-                              "/bin/spice-vdagent")))))
+             (substitute* "data/spice-vdagent.desktop"
+               (("Exec=/usr/bin/spice-vdagent")
+                (string-append "Exec=" (assoc-ref outputs "out")
+                               "/bin/spice-vdagent")))))
          (add-after 'unpack 'fix-test-termination
            (lambda _
              ;; The termination tests depend on finding the socket file name
@@ -325,20 +325,20 @@ Internet and from a wide variety of machine architectures.")
                (("ps -ef")
                 "ps -efww")))))))
     (inputs
-      (list alsa-lib
-            dbus
-            glib
-            gtk+
-            libdrm
-            libpciaccess
-            libx11
-            libxext
-            libxfixes
-            libxinerama
-            libxrandr
-            spice-protocol))
+     (list alsa-lib
+           dbus
+           glib
+           gtk+
+           libdrm
+           libpciaccess
+           libx11
+           libxext
+           libxfixes
+           libxinerama
+           libxrandr
+           spice-protocol))
     (native-inputs
-     (list pkg-config procps))             ;tests use 'ps'
+     (list pkg-config procps))          ;tests use 'ps'
     (synopsis "Spice agent for Linux")
     (description "Spice-vdagent enables sharing the clipboard and guest display
 resolution scaling on graphical console window resize.")
