@@ -38075,6 +38075,33 @@ corresponding Evil keys.")
 implementation of Windows NT and LanManager compatible password encryption.")
     (license license:gpl3+)))
 
+(define-public emacs-numpydoc
+  (package
+    (name "emacs-numpydoc")
+    (version "0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/douglasdavis/numpydoc.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ld5m75mmfb7kp18sww5blvlazk0j1j0yhdkhsx1m624dq5rag1c"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "eldev" "--use-emacsloadpath" "-dtT" "-p" "test")))
+    (native-inputs (list emacs-buttercup emacs-eldev))
+    (propagated-inputs (list emacs-dash emacs-s))
+    (home-page "https://github.com/douglasdavis/numpydoc.el")
+    (synopsis "Insert NumPy-style docstrings in Python functions")
+    (description
+     "This package can be used to insert NumPy-style docstrings in Python
+function definitions.  The generated docstring includes argument names, type
+hints, exceptions, and the return type hint.")
+    (license license:gpl3+)))
+
 (define-public emacs-nushell-mode
   (let ((commit "c179c3cf573b2cc9421dc08bf47e2d619c7791ee")
         (revision "0"))
