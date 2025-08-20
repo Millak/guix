@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
+;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)  
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages logging)
@@ -1101,6 +1103,52 @@ maintenance-related files, for convenience.")
    #:version "2025-06-30"       ;date from last commit on stable-202507 branch
    #:commit "9297749090b01720888dceeb5f6dab3d52dcef40"
    #:hash (base32 "10qyhji7q71fhq2956aszj6bipbf11hn0xcrrpkwj9azwindw7ch")))
+
+(define-public maak
+  (package
+    (name "maak")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/maak.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15s6khifk7k002hr9mqgl45r3ipmvsc56z9z8skwclxsj6w1cddl"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "src"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'install-program-files
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (share (string-append #$output "/share")))
+                (install-file "resources/help.txt"
+                              (string-append share "/resources"))
+                (install-file "scripts/maak" bin)
+                (install-file "scripts/log.bash"
+                              (string-append share "/scripts/"))
+                (install-file "scripts/maak-completion.bash"
+                                      (string-append share "/scripts/"))
+                (chmod (string-append bin "/maak") #o755)))))))
+    (native-inputs (list guile-3.0))
+    (inputs (list guile-3.0 bash-minimal))
+    (home-page "https://codeberg.org/jjba23/maak")
+    (synopsis "Command runner à la Make using Guile Scheme")
+    (description
+     "Maak is a command runner and control plane for your
+projects.  It allows you to use the power of Lisp (Guile Scheme) to define
+your tasks, build steps, repetitive tasks or other automation.
+
+With Maak you can easily call external shell commands and integrate with
+your existing scripts and tools.  It is inspired by the GNU Make utility
+but it does away with a lot of the complexity that comes with its history.")
+    (license license:gpl3+)))
+
 
 (define-public pdpmake
   (package
