@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2020, 2021, 2025 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 divoplade <d@divoplade.fr>
 ;;; Copyright © 2020, 2021, 2022 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 aecepoglu <aecepoglu@fastmail.fm>
@@ -5698,7 +5698,7 @@ long and size_t whose sizes depend on the host platform.")
 (define-public ocaml-ctypes
   (package
    (name "ocaml-ctypes")
-   (version "0.20.1")
+   (version "0.23.0")
    (home-page "https://github.com/ocamllabs/ocaml-ctypes")
    (source (origin
              (method git-fetch)
@@ -5708,8 +5708,9 @@ long and size_t whose sizes depend on the host platform.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0ilzq9qzvwv9rc08cc9wchsx636zp870i7qvqmbigaa2qb812m0z"))))
-   (build-system ocaml-build-system)
+               "16dxz2r070vlrkbqhza0c5y6izxpjn080vqmxj47i919wfqd75vx"))
+             (patches (search-patches "ocaml-ctypes-test-oo.patch"))))
+   (build-system dune-build-system)
    (arguments
     `(#:phases
       (modify-phases %standard-phases
