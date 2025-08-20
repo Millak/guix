@@ -87,9 +87,7 @@
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags #~(list (string-append "--with-guile-site-dir=" #$output
-                                               "/share/guile/site/2.0")
-                                "--disable-static")
+      #:configure-flags #~(list "--disable-static")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-shell-file-name
@@ -112,7 +110,7 @@
            bash-minimal                 ;likewise
            pcre
            python-wrapper
-           guile-2.2
+           guile-3.0
            gsasl
            readline
            zlib
