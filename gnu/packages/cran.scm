@@ -28860,7 +28860,7 @@ terminals that do not support Unicode.")
              ;; This is necessary because git looks for $HOME/.gitconfig
              (setenv "HOME" "/tmp"))))))
     (inputs
-     (list git-minimal))
+     (list git-minimal/pinned))
     (propagated-inputs
      (list r-askpass r-curl r-jsonlite r-openssl r-sys))
     (native-inputs
