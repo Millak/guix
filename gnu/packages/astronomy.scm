@@ -1074,7 +1074,7 @@ dynamic library for the C language implementation of HEALPix.")
            freeimage
            glew
            lua
-           wxwidgets-3.0))
+           wxwidgets))
     (home-page "https://github.com/GreatAttractor/imppg")
     (synopsis "Astronomical Image Post-Proccessor (ImPPG)")
     (description
