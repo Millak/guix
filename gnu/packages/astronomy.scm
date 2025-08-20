@@ -4606,17 +4606,18 @@ observationally-derived galaxy merger catalogs.")
 (define-public python-irispy-lmsal
   (package
     (name "python-irispy-lmsal")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "irispy_lmsal" version))
        (sha256
-        (base32 "0pqwgg89qq75nz7201535ixkcjqbqbdv3qmhcig2h2ah9fpcfpyy"))))
+        (base32 "037ip97kb5sq98shgw4d1c5x7lpbzksampfw7d97x59zbvbmvwhn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
+      ;; See: <https://github.com/LM-SAL/irispy-lmsal/issues/83>.
       ;; Expected:
       ;;     np.float64(0.33)
       ;; Got:
@@ -4624,6 +4625,8 @@ observationally-derived galaxy merger catalogs.")
       #~(list "--deselect=irispy/obsid.py::irispy.obsid.ObsID")
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: It fails to check SunPy's optional inputs versions.
+          (delete 'sanity-check)
           (add-before 'check 'set-home
             (lambda _
               ;; E PermissionError: [Errno 13] Permission denied:
@@ -4631,10 +4634,10 @@ observationally-derived galaxy merger catalogs.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list ffmpeg
+           python-pooch
            python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-next
+           python-setuptools-scm))
     (propagated-inputs
      (list python-dkist
            python-mpl-animators
