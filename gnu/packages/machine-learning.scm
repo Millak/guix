@@ -277,6 +277,7 @@ CTranslate2, which is a inference engine for transformer models.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 7636 passed, 3859 skipped, 2 deselected, 69 xfailed, 2 xpassed
       #:test-flags
       '(list "-k"
              (string-append
@@ -288,23 +289,14 @@ CTranslate2, which is a inference engine for transformer models.")
     (propagated-inputs (list python-makefun python-multipledispatch
                              python-numpy python-opt-einsum
                              python-typing-extensions))
-    (native-inputs (list python-black
-                         python-flake8
-                         python-isort
-                         python-nbsphinx
-                         python-pandas
+    (native-inputs (list python-pandas
                          python-pillow
                          python-pyro-api
                          python-pytest
-                         python-pytest-xdist
                          python-requests
                          python-scipy
-                         python-setuptools
-                         python-sphinx
-                         python-sphinx-gallery
-                         python-sphinx-rtd-theme
-                         python-torchvision
-                         python-wheel))
+                         python-setuptools-next
+                         python-torchvision))
     (home-page "https://github.com/pyro-ppl/funsor")
     (synopsis "Tensor-like library for functions and distributions")
     (description
