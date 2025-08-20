@@ -101,6 +101,8 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -3735,6 +3737,102 @@ int128_t, uint256_t, but also somewhat esoteric types such as int24_t,
 uint80_t, or uint1536_t.  The provided types can be used in much the same
 way as basic integer types.")
     (license license:boost1.0))))
+
+(define-public swell
+  (let ((commit "3024ec8e000f769454b5ee4ac927dc5cecfc6a6b")
+        (revision "0"))
+    (package
+      (name "swell")
+      (version (git-version "0" revision commit)) ;no tags
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/justinfrankel/WDL")
+               (commit commit)))
+         (file-name (git-file-name "wdl" version))
+         (sha256
+          (base32
+           "1ssp5rwn224g01jj9k273q80w2q1qfj1vzgqvk3lfjrjga0jaj4w"))
+         (modules '((guix build utils)))
+         (snippet
+          '(with-directory-excursion "WDL"
+             ;; Delete 3rd party libraries and sample projects.
+             (for-each delete-file-recursively
+                       (list "cmath"
+                             "giflib"
+                             "jpeglib"
+                             "libpng"
+                             "zlib"))
+             ;; Fix including headers from the system.
+             (substitute* (find-files "." "\\.(h|cpp)")
+               (("\\\".*giflib\\/gif_lib\\.h\\\"") "<gif_lib.h>")
+               (("\\\".*jpeglib\\/jpeglib\\.h\\\"") "<jpeglib.h>")
+               (("\\\".*jnetlib\\/asyncdns\\.h\\\"") "<jnetlib/asyncdns.h>")
+               (("\\\".*jnetlib\\/connection\\.h\\\"")
+                "<jnetlib/connection.h>")
+               (("\\\".*jnetlib\\/httpget\\.h\\\"") "<jnetlib/httpget.h>")
+               (("\\\".*jnetlib\\/jnetlib\\.h\\\"") "<jnetlib/jnetlib.h>")
+               (("\\\".*jnetlib\\/netinc\\.h\\\"") "<jnetlib/netinc.h>")
+               (("\\\".*libpng\\/png\\.h\\\"") "<png.h>")
+               (("\\\"\\.\\.\\/plush2\\/plush\\.h\\\"") "<plush2/plush.h>")
+               (("\\\".*zlib\\.h\\\"") "<zlib.h>"))
+             ;; Fix building jnetlib.
+             (substitute* "jnetlib/Makefile"
+               ;; Link the missing library.
+               (("-pthread") "-pthread -lstdc++")
+               ;; Remove the unavailable object.
+               ((" sercon\\.o") "")
+               ;; Add webserver.
+               (("util\\.o") "util.o webserver.o "))
+             ;; Fix building eel2.
+             (substitute* "eel2/Makefile"
+               ;; Do not build swell objects.
+               ((" \\$\\(SWELL_OBJS\\)") "")
+               ;; Do not depend again on the dependencies of swell.
+               (("(-lX11 -lXi|\\$\\(shell pkg-config.*\\))") "")
+               ;; Link swell.
+               (("-lGL") "-lGL -lSwell"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;test object does not exist
+             #:test-target "test"
+             #:make-flags #~'("SWELL_SUPPORT_GTK=1")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure) ;no configure script
+                 (add-after 'unpack 'change-directory
+                   (lambda _ (chdir "WDL/swell")))
+                 ;; No install rule.
+                 (replace 'install
+                   (lambda _
+                     (install-file "libSwell.so"
+                                   (string-append #$output "/lib"))
+                     (for-each
+                      (lambda (file)
+                        (when (not (string-contains file "/sample_project"))
+                              (install-file file
+                                            (string-append #$output
+                                                           "/include/SWELL"))))
+                      (find-files "." "\\.h$")))))))
+      (native-inputs (list perl pkg-config))
+      (inputs
+       (list cairo
+             fontconfig
+             freetype
+             gdk-pixbuf
+             glib
+             gtk+
+             libxi
+             libx11
+             mesa
+             zlib))
+      (home-page "https://www.cockos.com/wdl/")
+      (synopsis "Windows emulation layer")
+      (description
+       "SWELL is a Windows emulation Layer.  It provides a set of common APIs,
+common controls and win32-style extensions.")
+    (license license:zlib))))
 
 (define-public juce
   (package
