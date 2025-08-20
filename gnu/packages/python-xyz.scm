@@ -27966,7 +27966,7 @@ belong to tagged versions.")
               (invoke "git" "config" "--global" "user.email" "guix")
               (invoke "git" "config" "--global" "user.name" "guix"))))))
     (native-inputs
-     (list git-minimal python-setuptools python-wheel))
+     (list git-minimal/pinned python-setuptools python-wheel))
     (home-page "https://github.com/msabramo/setuptools-git")
     (synopsis "Setuptools revision control system plugin for Git")
     (description
