@@ -1549,7 +1549,7 @@ corresponding layout." layout))
            dfu-programmer
            dfu-util
            diffutils
-           git-minimal                  ;for the clone action
+           git-minimal/pinned           ;for the clone action
            gawk
            gnu-make
            grep
