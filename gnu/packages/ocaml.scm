@@ -3485,14 +3485,14 @@ encoded in a resizable array.")
 (define-public ocaml-luv
   (package
     (name "ocaml-luv")
-    (version "0.5.12")
+    (version "0.5.14")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/aantron/luv/releases/download/"
                                   version "/luv-" version ".tar.gz"))
               (sha256
                (base32
-                "1h2n9iij4mh60sy3g437p1xwqyqpyw72fgh4417d8j9ahq46m7vn"))
+                "16dfv8gzpqdcqpcil5pd7a44vp64hw35q94fipcwsxl81jjv80cf"))
               (modules '((guix build utils)))
               (snippet
                '(begin
