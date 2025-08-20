@@ -1,15 +1,19 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2016, 2021, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2018, 2021, 2024, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2018, 2020-2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
+;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2022 ROCKTAKEY <rocktakey@gmail.com>
 ;;; Copyright © 2022 Runciter <runciter@whispers-vpn.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,27 +45,87 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages dictd)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages groff)
+  #:use-module (gnu packages gsasl)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages tcl)
-  #:use-module (gnu packages web)
-  #:use-module (gnu packages xml)
-  #:use-module (gnu packages dictd)
   #:use-module (gnu packages speech)
-  #:use-module (gnu packages perl))
+  #:use-module (gnu packages tcl)
+  #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages wordnet)
+  #:use-module (gnu packages xml))
 
+(define-public dico
+  (package
+    (name "dico")
+    (version "2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/dico/dico-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1xvahrav8aml90qcj4cj3a33y0n7nm1k0ywgks1zy2q91v2qk2vj"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags (list (string-append "--with-guile-site-dir=" %output
+                                              "/share/guile/site/2.0")
+                               "--disable-static")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'set-shell-file-name
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      ;; This code invokes "/bin/sh -c 'm4 -s ...'".
+                      (substitute* "grecs/src/grecs-lex.c"
+                        (("\"/bin/sh\"")
+                         (string-append "\""
+                                        (search-input-file inputs "/bin/sh")
+                                        "\"")))))
+                  (add-before 'check 'silence-guile
+                    (lambda _
+                      ;; Guile is too talkative, which disturbs the test
+                      ;; infrastructure.  Gag it.
+                      (setenv "GUILE_AUTO_COMPILE" "0")
+                      (setenv "GUILE_WARN_DEPRECATED" "no"))))))
+    (native-inputs (list groff))
+    (inputs
+     (list m4                           ;used at run time
+           bash-minimal                 ;likewise
+           pcre
+           python-wrapper
+           guile-2.2
+           gsasl
+           readline
+           zlib
+           wordnet
+           libxcrypt                    ;for 'crypt'
+           libltdl))
+    (home-page "https://www.gnu.org.ua/software/dico/")
+    (synopsis "Implementation of DICT server (RFC 2229)")
+    (description
+     "GNU Dico implements a flexible dictionary server and client according to
+RFC 2229 (DICT Server).  It is able to access any database available,
+regardless of format, thanks to its modular structure.  New modules may be
+written in C, Guile or Python.  Dico also includes a command-line client,
+which may be used to query remote dictionary databases.")
+    (license license:gpl3+)))
 
 (define-public vera
   (package
