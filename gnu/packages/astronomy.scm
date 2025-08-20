@@ -6776,13 +6776,13 @@ but has evolved to support other missions as well.")
 (define-public python-space-dolphin
   (package
     (name "python-space-dolphin")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "space_dolphin" version))
        (sha256
-        (base32 "0qxpb6ss0w4f6mnisri3i3a5g5dfa12a7iimdchzqql7r53x7xiq"))))
+        (base32 "0qsdaqbdf51ai54w4d483bf9kxjjcsr5fiqs861z7k7s7zrjms0r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
