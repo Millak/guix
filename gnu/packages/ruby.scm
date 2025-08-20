@@ -159,20 +159,6 @@ a focus on simplicity and productivity.")
         (base32
          "0hl6bi27w711hva96f95hg02vqzb30kabdw9hbj3rnj3w3z71bj4"))))))
 
-(define-public ruby-3.2
-  (package
-    (inherit ruby-3.3)
-    (version "3.2.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0g3s68kcxb24y4h24wvikvk5v3q6l6hs0kjxms9m49sm048d7k0w"))))))
-
 (define-public ruby-2.7
   (package
     (name "ruby")
