@@ -5537,7 +5537,8 @@ Note: currently this package does not provide GPU support.")
              python-tqdm
              python-xxhash))
       (native-inputs
-       (list python-flit-core-next
+       (list openssl
+             python-flit-core-next
              python-pytest
              python-pytest-cov))
       (home-page "https://pyg.org")
