@@ -7,7 +7,7 @@
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023, 2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -152,6 +152,7 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
@@ -3134,7 +3135,7 @@ exchanged form one Spatial DBMS and the other.")
 (define-public opencpn
   (package
     (name "opencpn")
-    (version "5.6.2")
+    (version "5.12.2")
     (source
      (origin
        (method git-fetch)
@@ -3143,16 +3144,17 @@ exchanged form one Spatial DBMS and the other.")
              (commit (string-append "Release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16hb0ycp0kbx2h8fx08rqkgrlz48kaym0d6wqvpjrcfa2r4myss8"))))
+        (base32 "0w57zcq1rpx3cfhcqjqw25wiz1pi6lx7xnif511vr4plvzqdx8yd"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list gettext-minimal pkg-config))
+     (list gettext-minimal git-minimal googletest pkg-config))
     (inputs
      (list alsa-utils
            bzip2
            cairo
            curl
            eudev
+           glew
            glu
            gtk+
            jasper
@@ -3164,12 +3166,15 @@ exchanged form one Spatial DBMS and the other.")
            libusb
            lz4
            mesa
+           openssl
            pango
            portaudio
+           rapidjson
+           shapelib
            sqlite
            tinyxml
            wxsvg
-           wxwidgets-3.0
+           wxwidgets
            xz
            zlib))
     (arguments
