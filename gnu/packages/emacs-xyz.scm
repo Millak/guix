@@ -5426,6 +5426,32 @@ always indented.  It reindents after every change, making it more reliable
 than @code{electric-indent-mode}.")
     (license license:gpl2+)))
 
+(define-public emacs-smarttabs
+  (package
+    (name "emacs-smarttabs")
+    (version "1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/jcsalomon/smarttabs")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0hkgw9i4yynazx5vbkb8a1lfp0yndyi8c1w3cf7ajxpnig3hs9j6"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (home-page "http://www.emacswiki.org/emacs/SmartTabs")
+    (synopsis "Indent with tabs, align with spaces!")
+    (description
+     "There is a semantic way of using tab characters in source code:
+@strong{tabs for indentation, spaces for alignment}.  This package provides a
+minor mode which improves Emacs' auto-indenting so that pressing @key{TAB}
+inserts the correct mix of tabs and spaces to maintain visual alignment
+regardless of a viewer's tab width.  You can still use all spaces if you
+prefer; the code merely ensures that @emph{if} you enable tabs, the tab size
+does not matter.")
+    (license license:gpl2+)))
+
 (define-public emacs-gc-stats
   (package
     (name "emacs-gc-stats")
