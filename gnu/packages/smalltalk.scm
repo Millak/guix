@@ -173,7 +173,8 @@ mission critical applications.")
     (inputs
      (list gmp libffi libltdl libsigsegv lightning))
     (arguments
-     `(;; FIXME: Tests fail on x86-64 in the build container, but they pass
+     `(#:make-flags '("CFLAGS=-Wno-incompatible-pointer-types")
+       ;; FIXME: Tests fail on x86-64 in the build container, but they pass
        ;; in a regular shell.
        #:tests? ,(not (target-x86-64?))
        #:phases
