@@ -86,24 +86,26 @@
                 "1xvahrav8aml90qcj4cj3a33y0n7nm1k0ywgks1zy2q91v2qk2vj"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags (list (string-append "--with-guile-site-dir=" %output
-                                              "/share/guile/site/2.0")
-                               "--disable-static")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'set-shell-file-name
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; This code invokes "/bin/sh -c 'm4 -s ...'".
-                      (substitute* "grecs/src/grecs-lex.c"
-                        (("\"/bin/sh\"")
-                         (string-append "\""
-                                        (search-input-file inputs "/bin/sh")
-                                        "\"")))))
-                  (add-before 'check 'silence-guile
-                    (lambda _
-                      ;; Guile is too talkative, which disturbs the test
-                      ;; infrastructure.  Gag it.
-                      (setenv "GUILE_AUTO_COMPILE" "0")
-                      (setenv "GUILE_WARN_DEPRECATED" "no"))))))
+     (list
+      #:configure-flags #~(list (string-append "--with-guile-site-dir=" #$output
+                                               "/share/guile/site/2.0")
+                                "--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-shell-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; This code invokes "/bin/sh -c 'm4 -s ...'".
+              (substitute* "grecs/src/grecs-lex.c"
+                (("\"/bin/sh\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/sh")
+                                "\"")))))
+          (add-before 'check 'silence-guile
+            (lambda _
+              ;; Guile is too talkative, which disturbs the test
+              ;; infrastructure.  Gag it.
+              (setenv "GUILE_AUTO_COMPILE" "0")
+              (setenv "GUILE_WARN_DEPRECATED" "no"))))))
     (native-inputs (list groff))
     (inputs
      (list m4                           ;used at run time
