@@ -3494,6 +3494,7 @@ growing set of geoscientific methods.")
                                "ProcessingGrassAlgorithmsRasterTestPt2"
                                "ProcessingGrassAlgorithmsVectorTest"
                                "ProcessingGrassAlgsPostgreRasterProvider"
+                               "test_core_authcertutils"
                                "test_core_authconfig"
                                "test_core_authmanager"
                                "test_core_compositionconverter"
