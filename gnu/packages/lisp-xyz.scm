@@ -21239,6 +21239,39 @@ LispWorks library that are used in software such as ContextL.")
 (define-public clasp-lw-compat
   (sbcl-package->clasp-package sbcl-lw-compat))
 
+(define-public sbcl-lwcells
+  (let ((commit "e7446ac146a31b630e74c9bce7dab34b50cc333d")
+        (revision "0"))
+    (package
+     (name "sbcl-lwcells")
+     (version (git-version "0.0.1" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kchanqvq/lwcells")
+             (commit commit)))
+       (file-name (git-file-name "lwcells" version))
+       (sha256
+        (base32 "1p8a5j52isp14w6pxy6c6fsrwwvnyb9r6yvd8bxh7sjh6mnvp3nc"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs
+      (list sbcl-alexandria
+            sbcl-named-closure
+            sbcl-damn-fast-priority-queue))
+     (synopsis "Light-weight cells for dataflow programming")
+     (description
+      "A dataflow extension to Common Lisp that maintains a consistent state of
+cells according to functions specifying their relation.")
+     (home-page "https://github.com/kchanqvq/lwcells")
+     (license license:gpl3+))))
+
+(define-public cl-lwcells
+  (sbcl-package->cl-source-package sbcl-lwcells))
+
+(define-public ecl-lwcells
+  (sbcl-package->ecl-package sbcl-lwcells))
+
 (define-public sbcl-lzlib
   (let ((commit "22767ca12d1c1bd59a7ae1f9c5ef7d2e937206bb")
         (revision "2"))
