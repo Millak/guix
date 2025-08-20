@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 L  p R n  d n <guix@lprndn.info>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023, 2024 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -176,14 +177,13 @@ engine with a Lua scripting interface.")
        (delete "libdrm")
        (prepend glu libglvnd mesa sdl2)))
     (arguments
-     `(,@(ensure-keyword-arguments
-          (package-arguments arcan)
-          '(#:configure-flags
-            '("-DCMAKE_C_FLAGS=-fcommon"
-              "-DHYBRID_SDL=on" "-DBUILTIN_LUA=off"
-              "-DSTATIC_OPENAL=off" "-DDISABLE_JIT=off"
-              "-DENABLE_LWA=on" "-DSTATIC_SQLITE3=off"
-              "-DSTATIC_FREETYPE=off" "-DSHMIF_TUI_ACCEL=on")))))
+     (ensure-keyword-arguments
+      (package-arguments arcan)
+      '(#:configure-flags
+        '("-DHYBRID_SDL=on" "-DBUILTIN_LUA=off"
+          "-DSTATIC_OPENAL=off" "-DDISABLE_JIT=off"
+          "-DENABLE_LWA=on" "-DSTATIC_SQLITE3=off"
+          "-DSTATIC_FREETYPE=off" "-DSHMIF_TUI_ACCEL=on"))))
     (synopsis "Combined display server, multimedia framework and game engine (SDL)")))
 
 (define-public durden
