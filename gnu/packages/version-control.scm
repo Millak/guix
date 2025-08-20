@@ -4224,7 +4224,11 @@ will reconstruct the object along its delta-base chain and return it.")
                              (install-file manpage
                                            (string-append #$output "/share/man/man1")))
                            (find-files "." "^git-lfs.*\\.1$"))))))
-                 #~()))))
+                 #~())
+          (add-after 'install 'rename-binary
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (rename-file "v3" "git-lfs")))))))
     (native-inputs
      (append (list git-minimal
                    go-github-com-avast-retry-go
@@ -4251,7 +4255,7 @@ will reconstruct the object along its delta-base chain and return it.")
              (if (supported-package? ruby-asciidoctor/minimal)
                  (list ronn-ng ruby-asciidoctor/minimal)
                  '())))
-    (home-page "https://git-lfs.github.com/")
+    (home-page "https://git-lfs.com/")
     (synopsis "Git extension for versioning large files")
     (description
      "Git Large File Storage (LFS) replaces large files such as audio samples,
