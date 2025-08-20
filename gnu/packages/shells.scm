@@ -687,8 +687,11 @@ use of experts and novices alike.")
                                              "/rx")))
                   (delete-file-recursively "rx")
                   (symlink rxpath "rx"))))
-            (add-after 'replace-rx 'fix-includes
+            (add-after 'replace-rx 'patch-source
               (lambda _
+                (substitute* "Makefile.in"
+                  (("SCHEME48VERSION =  1.9.2")
+                   (string-append "SCHEME48VERSION =  " #$(package-version scheme48))))
                 (with-directory-excursion "c"
                   (substitute* "syscalls.c"
                     (("#include <stdlib.h>" all)
