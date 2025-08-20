@@ -9083,6 +9083,29 @@ for the Zig programming language in Emacs.")
 IRC bouncer with ERC.")
     (license license:expat)))
 
+(define-public emacs-erc-irc-format
+  (package
+    (name "emacs-erc-irc-format")
+    (version "0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fmqa/erc-irc-format")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l6jgj7rh8wzbvszlfn5h4dydkc7p5cfin9fm0jf9krlbiig67aj"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (home-page "https://github.com/fmqa/erc-irc-format")
+    (synopsis "IRC formatting code extension package for ERC")
+    (description
+     "A @acronym{UI, User Interface} for
+@uref{https://modern.ircdocs.horse/formatting, @acronym{IRC, Internet
+Relay Chat} formatting control codes}, for usage within ERC.")
+    (license license:gpl3+)))
+
 (define-public emacs-erc-status-sidebar
   (let ((commit "ea4189a1dbfe60117359c36e681ad7c389e2968c")
         (revision "1"))
