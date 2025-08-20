@@ -23084,6 +23084,40 @@ JSON handling.  Load the parser backend you prefer!
 (define-public ecl-nactivitypub
   (sbcl-package->ecl-package sbcl-nactivitypub))
 
+(define-public sbcl-named-closure
+  (let ((commit "d57305582137a24d6c8f8375fba496c653bb5699")
+        (revision "0"))
+    (package
+     (name "sbcl-named-closure")
+     (version (git-version "0.0.1" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kchanqvq/named-closure")
+             (commit commit)))
+       (file-name (git-file-name "named-closure" version))
+       (sha256
+        (base32 "17lpslk7amh9pghjpjdnd1aj50r1kdc4iyai2h2xas7wampg5xf5"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs
+      (list sbcl-alexandria
+            sbcl-serapeum
+            sbcl-iterate
+            sbcl-trivial-cltl2))
+     (synopsis "Introspectable, readably-printable and redefinable closures")
+     (description
+      "A CLOS class that defines callable objects whose behavior is similar to
+closures but adds conveniences such as introspectability.")
+     (home-page "https://github.com/kchanqvq/named-closure")
+     (license license:expat))))
+
+(define-public cl-named-closure
+  (sbcl-package->cl-source-package sbcl-named-closure))
+
+(define-public ecl-named-closure
+  (sbcl-package->ecl-package sbcl-named-closure))
+
 (define-public sbcl-named-readtables
   (let ((commit "d5ff162ce02035ec7de1acc9721385f325e928c0")
         (revision "4"))
