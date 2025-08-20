@@ -2923,16 +2923,20 @@ swarm algorithm.")
   (package
     (name "python-scikit-optimize")
     (version "0.10.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/holgern/scikit-optimize")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0pc6avzxz8l32km5jvv3maih0a5x2akxybvxl2hdg04qz2l0kz8b"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/holgern/scikit-optimize")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pc6avzxz8l32km5jvv3maih0a5x2akxybvxl2hdg04qz2l0kz8b"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-joblib
            python-matplotlib
@@ -2940,14 +2944,13 @@ swarm algorithm.")
            python-pyaml
            python-scikit-learn
            python-scipy))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
     (home-page "https://scikit-optimize.github.io/")
     (synopsis "Sequential model-based optimization toolbox")
-    (description "Scikit-Optimize, or @code{skopt}, is a simple and efficient
-library to minimize (very) expensive and noisy black-box functions.  It
-implements several methods for sequential model-based optimization.
-@code{skopt} aims to be accessible and easy to use in many contexts.")
+    (description
+     "Scikit-Optimize, or @code{skopt}, is a simple and efficient library to
+minimize (very) expensive and noisy black-box functions.  It implements
+several methods for sequential model-based optimization.  @code{skopt} aims to
+be accessible and easy to use in many contexts.")
     (license license:bsd-3)))
 
 (define-public python-scikit-surprise
