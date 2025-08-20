@@ -13613,6 +13613,42 @@ on UNIX like platforms.")
 (define-public ecl-daemon
   (sbcl-package->ecl-package sbcl-daemon))
 
+(define-public sbcl-damn-fast-priority-queue
+  (let ((commit "f4c03741d05c757aed245b41a5c3f8c7096cc1d2")
+        (revision "0"))
+    (package
+     (name "sbcl-damn-fast-priority-queue")
+     (version (git-version "0.0.2" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/phoe/damn-fast-priority-queue")
+             (commit commit)))
+       (file-name (git-file-name "damn-fast-priority-queue" version))
+       (sha256
+        (base32 "0ch4yma51r2lnsjpr45mxga7sf03l3c76l6ijffm1rq2g9ywaksa"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs
+      (list sbcl-alexandria))
+     (arguments
+      `(#:asd-systems '("damn-fast-priority-queue"
+                        "damn-fast-stable-priority-queue")))
+     (synopsis "Fast priority queue")
+     (description
+      "A heap-based priority queue whose first and foremost priority is speed.")
+     (home-page "https://github.com/phoe/damn-fast-priority-queue")
+     (license license:expat))))
+
+(define-public cl-damn-fast-priority-queue
+  (sbcl-package->cl-source-package sbcl-damn-fast-priority-queue))
+
+(define-public ecl-damn-fast-priority-queue
+  (sbcl-package->ecl-package sbcl-damn-fast-priority-queue))
+
+(define-public clasp-damn-fast-priority-queue
+  (sbcl-package->clasp-package sbcl-damn-fast-priority-queue))
+
 (define-public sbcl-data-format-validation
   (let ((commit "95d44766e829582598f9dcdc5c23719c462d5bfb")
         (revision "1"))
