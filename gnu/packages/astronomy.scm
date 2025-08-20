@@ -5778,18 +5778,19 @@ functions, so that they can be called with scalar or array inputs.")
 (define-public python-pyhalo
   (package
     (name "python-pyhalo")
-    (version "1.4.1")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyhalo" version))
        (sha256
-        (base32 "06zdcr82fzzn6zkjralmv9qv7qjyjkni1p1rg60bvl8h013v3xp6"))))
+        (base32 "1yh5acjiwkfm4sjiydksg9187k3lwsads1p9zy0ck7wb6jwxrj81"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; ValueError: The truth value of an array with more than one element is
-      ;; ambiguous. Use a.any() or a.all()
+      ;; tests: 194 passed, 3 deselected, 119 warnings
+      ;; ValueError: The truth value of an array with more than one element
+      ;; is ambiguous. Use a.any() or a.all()
       #:test-flags #~(list "-k" "not test_vmax")
       #:phases
       #~(modify-phases %standard-phases
