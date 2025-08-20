@@ -2035,6 +2035,7 @@ using @code{clang-rename}.")))
           "-DLLVM_OCAML_OUT_OF_TREE=TRUE"
           (string-append "-DLLVM_OCAML_INSTALL_PATH="
                          (assoc-ref %outputs "out") "/lib/ocaml/site-lib"))
+         #:tests? #f                    ;no tests
          #:phases
          (modify-phases %standard-phases
            (replace 'build
