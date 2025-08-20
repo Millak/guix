@@ -293,7 +293,10 @@ Internet and from a wide variety of machine architectures.")
                     "spice-vdagent-" version ".tar.bz2"))
               (sha256
                (base32
-                "18472sqr0gibzgzi48dpcbnvm78l05qrl5wv6xywqqj7r9dd3c4k"))))
+                "18472sqr0gibzgzi48dpcbnvm78l05qrl5wv6xywqqj7r9dd3c4k"))
+              (patches
+               (search-patches
+                "spice-vdagent-monitor-size-calculation.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

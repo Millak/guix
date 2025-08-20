@@ -1,0 +1,29 @@
+From 3660acfcbaaca9c66dca5ef09205bd7c1d70b98c Mon Sep 17 00:00:00 2001
+From: Lukas Joeressen <lukas@joeressen.net>
+Date: Sat, 12 Apr 2025 10:42:02 +0200
+Subject: [PATCH] Fix VDAGentMonitorConfig size calculation
+
+The VDAgentMonitorsConfig struct has the VD_AGENT_CONFIG_MONITORS_FLAG_PHYSICAL_SIZE flag that
+indicates if physical monitor sizes are included in the data. If this flag is set there is one
+instance of VDAgentMonitorMM for each monitor following the other data.
+---
+ src/vdagentd/vdagentd.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/vdagentd/vdagentd.c b/src/vdagentd/vdagentd.c
+index 3e59331..27a6f15 100644
+--- a/src/vdagentd/vdagentd.c
++++ b/src/vdagentd/vdagentd.c
+@@ -208,6 +208,9 @@ static void do_client_monitors(VirtioPort *vport, int port_nr,
+     /* Store monitor config to send to agents when they connect */
+     size = sizeof(VDAgentMonitorsConfig) +
+            new_monitors->num_of_monitors * sizeof(VDAgentMonConfig);
++    if (new_monitors->flags & VD_AGENT_CONFIG_MONITORS_FLAG_PHYSICAL_SIZE) {
++        size += new_monitors->num_of_monitors * sizeof(VDAgentMonitorMM);
++    }
+     if (message_header->size != size) {
+         syslog(LOG_ERR, "invalid message size for VDAgentMonitorsConfig");
+         return;
+-- 
+GitLab
+
