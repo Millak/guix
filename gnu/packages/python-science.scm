@@ -2920,6 +2920,8 @@ swarm algorithm.")
     (license license:expat)))
 
 (define-public python-scikit-optimize
+  ;; XXX: The project might be not maintained, see
+  ;; <https://github.com/holgern/scikit-optimize/issues/6>.
   (package
     (name "python-scikit-optimize")
     (version "0.10.2")
@@ -2933,10 +2935,42 @@ swarm algorithm.")
        (sha256
         (base32 "0pc6avzxz8l32km5jvv3maih0a5x2akxybvxl2hdg04qz2l0kz8b"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 398 passed, 1 skipped, 179 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; XXX: As the project is not actively maintained, review
+                    ;; failing test when a fresh release is available.
+                    (list "not test_acq_optimizer"
+                          "test_acq_optimizer_with_time_api"
+                          "test_categorical_init_vals"
+                          "test_consistent_x_iter_dimensions"
+                          "test_early_stopping_delta_x"
+                          "test_early_stopping_delta_x_empty_result_object"
+                          "test_early_stopping_delta_y"
+                          "test_early_stopping_delta_y_with_x0"
+                          "test_exhaust_initial_calls"
+                          "test_fixed_random_states"
+                          "test_init_points_and_models"
+                          "test_init_vals"
+                          "test_init_vals_and_models"
+                          "test_minimizer_api"
+                          "test_minimizer_api_random_only"
+                          "test_minimizer_space_constraint"
+                          "test_minimizer_with_space"
+                          "test_mixed_spaces"
+                          "test_optimizer_base_estimator_string_smoke"
+                          "test_optimizer_base_estimator_string_smoke_njobs"
+                          "test_per_second_api"
+                          "test_repeated_x"
+                          "test_tree_based_minimize")
+                    " and not "))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-pytest-xdist
+           python-setuptools-next))
     (propagated-inputs
      (list python-joblib
            python-matplotlib
