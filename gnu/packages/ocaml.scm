@@ -5805,7 +5805,7 @@ OCaml projects that contain C stubs.")
 (define-public ocaml-tsdl
   (package
     (name "ocaml-tsdl")
-    (version "0.9.9")
+    (version "1.1.0")
     (home-page "https://erratique.ch/software/tsdl")
     (source (origin
               (method url-fetch)
@@ -5814,7 +5814,7 @@ OCaml projects that contain C stubs.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1m565jgfanijjzp64c1rylahkpmrrb03ywj202j49n06nvwp788s"))))
+                "0fw78qby010ai8apgwc66ary6zm3a5nw57228i44vccypav3xpk4"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:build-flags '("build")
