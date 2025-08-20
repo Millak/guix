@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -148,7 +149,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.3
   (package
     (inherit ruby-3.4)
-    (version "3.3.8")
+    (version "3.3.9")
     (source
      (origin
        (method url-fetch)
@@ -157,7 +158,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "0hl6bi27w711hva96f95hg02vqzb30kabdw9hbj3rnj3w3z71bj4"))))))
+         "1fvng8x44x90pn8nl4sxa5nzb34jwq0is6l5k7066zrg18ca491b"))))))
 
 (define-public ruby-2.7
   (package
