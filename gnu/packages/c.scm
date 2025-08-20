@@ -1881,7 +1881,7 @@ output randomness while retaining speed, simplicity, and conciseness.")
 (define-public yyjson
   (package
     (name "yyjson")
-    (version "0.10.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -1890,7 +1890,7 @@ output randomness while retaining speed, simplicity, and conciseness.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kmzgs24v0rxlibg4qwlm6yplzs96pgxb1gyviijhkra9z7lx7ws"))))
+        (base32 "1v7vgb0wkhh23vyqnch1aiswrgy8rb7yhbyrm7gcwl8c0l92f9nl"))))
     (build-system cmake-build-system)
     (arguments
      (list
