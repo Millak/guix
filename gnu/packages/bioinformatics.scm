@@ -4548,6 +4548,52 @@ into separate processes; and more.")
                 (("self.tests.append\\(\"doctest\"\\)") "")
                 (("opt == \"--offline\"") "True")))))))))
 
+(define-public python-scanrbp
+  (package
+    (name "python-scanrbp")
+    (version "0.3")
+    (home-page "https://github.com/grexor/scanrbp")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit "cdc3587cfdb3bc1c68154ce8538b8c985099eb9f")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1bv25qhr1dwym2j7llsd3ggnjb9l3h4bchng7bp7cq57s9g0bnjz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-biopython
+           python-matplotlib
+           python-pybio
+           python-scipy
+           python-seaborn))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'check 'copy-data
+            (lambda _
+              (let ((data-dir (string-append (getenv "HOME") "/scanRBP_data"))
+                    (data-file "data/data.tar.gz"))
+                (mkdir-p data-dir)
+                (copy-file
+                 data-file
+                 (string-append data-dir "/" (basename data-file)))))))))
+    (synopsis "Tool for creating a RNA RBP heatmap in Python")
+    (description "python-scanrbp is a Python package that provides the scanRBP
+tool that loads RNA-protein binding motif PWM and computes the log-odds scores
+for all the loaded RBPs across a given genomic sequence and draws a heatmap of
+the scores.")
+    (license license:gpl3)))
+
 (define-public python-fastalite
   (package
     (name "python-fastalite")
