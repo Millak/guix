@@ -201,6 +201,7 @@ of parts of the Windows API.")
               (string-append "-DCMAKE_C_FLAGS="
                              " -Wno-error=incompatible-pointer-types"
                              " -Wno-error=int-conversion")
+              "-DWITH_VERBOSE_WINPR_ASSERT=OFF"
               "-DWITH_JPEG=ON"
               #$@(if (target-x86-64?)
                      #~("-DWITH_SSE2=ON")
