@@ -2173,6 +2173,13 @@ decode and default on encode.
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-deprecated
+            (lambda _
+              (substitute* "src/cfnlint/data/AdditionalSpecs/LmbdRuntimeLifecycle.json"
+                (("deprecated\": \"2025")
+                 "deprecated\": \"2125")))))
       ;; tests: 1807 passed, 26 deselected, 1 warning
       #:test-flags
       #~(list "-k" (string-join
