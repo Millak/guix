@@ -7763,14 +7763,14 @@ decoding of JSON is implemented as a C extension to Ruby.")
 (define-public ruby-ox
   (package
     (name "ruby-ox")
-    (version "2.6.0")
+    (version "2.14.21")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ox" version))
        (sha256
         (base32
-         "0fmk62b1h2i79dfzjj8wmf8qid1rv5nhwfc17l489ywnga91xl83"))))
+         "1fd0pjv8svyq8g49zaqfksq9zhxv1rwvsqslvxhimaywggwpmirc"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; no tests
