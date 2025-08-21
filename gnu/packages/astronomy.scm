@@ -5304,7 +5304,7 @@ Carlo.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 393 passed, 7 skipped, 31 deselected, 10 xfailed
+      ;; tests: 393 passed, 7 skipped, 10 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               "-k" (string-join
@@ -5333,7 +5333,8 @@ Carlo.")
               ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-dask
+     (list nss-certs-for-test
+           python-dask
            python-pytest
            python-pytest-astropy
            python-pytest-mpl
