@@ -6186,21 +6186,18 @@ PSF} describing how the optical system spreads light from sources.")
     (license license:expat)))
 
 (define-public python-romancal
-  ;; The compatible version is not released yet, use the latest commit.
-  (let ((commit "ae864a407fc16001d3a0370779caa381f994f718")
-        (revision "0"))
     (package
       (name "python-romancal")
-      (version (git-version "0.19.0" revision commit))
+      (version "0.20.2")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url "https://github.com/spacetelescope/romancal")
-                (commit commit)))
+                (commit version)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0dxgwy6qva8ss7xb6hlkck6kysikgmn0byprvj4kx1l82gm1sk0g"))))
+          (base32 "16aa8ylq6281k1z3yz0lzbw0ca9l7fgci1s14jqd9ymcmssnf4q4"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -6237,7 +6234,10 @@ PSF} describing how the optical system spreads light from sources.")
               (lambda _
                 (substitute* "pyproject.toml"
                   ;; XXX: scipy >=1.14.1
-                  ((" >=1.14.1") ""))))
+                  ((" >=1.14.1") "")
+                  (("stsci.imagestats >= 1.8.3")
+                   ;; Cant' find the version even if it's added.
+                   "stsci.imagestats"))))
             (add-before 'build 'set-version
               (lambda _
                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
@@ -6252,8 +6252,7 @@ PSF} describing how the optical system spreads light from sources.")
              python-pytest-xdist
              python-setuptools-next
              python-setuptools-scm
-             python-stpreview
-             python-wheel))
+             python-stpreview))
       (propagated-inputs
        (list python-asdf
              python-asdf-astropy
@@ -6266,22 +6265,24 @@ PSF} describing how the optical system spreads light from sources.")
              python-pandas
              python-photutils
              python-pyarrow
-             python-pyparsing
              python-requests
              python-roman-datamodels
              python-scipy
              python-spherical-geometry
              python-stcal
              python-stpipe
-             python-stpsf
              python-stsci-imagestats
-             python-tweakwcs))
+             python-tweakwcs
+             ;; [sdp]
+             python-pysiaf
+             ;; python-roman-photoz     ;not packaged
+             python-stpreview))
       (home-page "https://github.com/spacetelescope/romancal")
       (synopsis "Nancy Grace Roman Space Telescope observations processing library")
       (description
        "This package implements a functionality for calibration of science
 observations from the Nancy Grace Roman Space Telescope.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public python-sbpy
   (package
