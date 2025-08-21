@@ -5547,14 +5547,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.11.1")
+    (version "2.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0m2ij25byrw7sn61pqjdpclmlmwlk2217hbdcvsvd273z5whyrbp"))))
+                "11ih6kan3j9kg83pjhy9yffgpr638b0mfg1fq90yzrhl1k4yq28d"))))
     (build-system gnu-build-system)
     (arguments
      (list
