@@ -1246,37 +1246,40 @@ of partial differential equations using iterative methods.")
         "0nnap9q1mv14g57dl3vkvxrdr10k5w7zzyxs6rgxhia8q8mphgqb"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DCMAKE_C_FLAGS=-fcommon -O2")
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_C_FLAGS=-fcommon -O2"
+                             " -Wno-error=implicit-function-declaration"))
        #:phases
-       (modify-phases %standard-phases
-         ;; These tests use a lot of stack variables and segfault without
-         ;; lifting resource limits.
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "TESTING/CMakeLists.txt"
-               (("add_lapack_test.* xeigtstz\\)") ""))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (libdir (string-append out "/lib"))
-                    (f2cinc (string-append out "/include/libf2c")))
-               (mkdir-p f2cinc)
-               (display (getcwd))
-               (for-each (lambda (file)
-                           (install-file file libdir))
-                         '("SRC/liblapack.a"
-                           "F2CLIBS/libf2c/libf2c.a"
-                           "TESTING/MATGEN/libtmglib.a"
-                           "BLAS/SRC/libblas.a"))
-               (for-each (lambda (file)
-                           (install-file file f2cinc))
-                         (cons "F2CLIBS/libf2c/arith.h"
-                               (find-files (string-append "../clapack-"
-                                                          ,version "-CMAKE/F2CLIBS/libf2c")
-                                           "\\.h$")))
-               (copy-recursively (string-append "../clapack-"
-                                                ,version "-CMAKE/INCLUDE")
-                                 (string-append out "/include"))))))))
+       #~(modify-phases %standard-phases
+           ;; These tests use a lot of stack variables and segfault without
+           ;; lifting resource limits.
+           (add-after 'unpack 'disable-broken-tests
+             (lambda _
+               (substitute* "TESTING/CMakeLists.txt"
+                 (("add_lapack_test.* xeigtstz\\)") ""))))
+           (replace 'install
+             (lambda _
+               (let ((libdir (string-append #$output "/lib"))
+                     (f2cinc (string-append #$output "/include/libf2c")))
+                 (mkdir-p f2cinc)
+                 (display (getcwd))
+                 (for-each (lambda (file)
+                             (install-file file libdir))
+                           '("SRC/liblapack.a"
+                             "F2CLIBS/libf2c/libf2c.a"
+                             "TESTING/MATGEN/libtmglib.a"
+                             "BLAS/SRC/libblas.a"))
+                 (for-each (lambda (file)
+                             (install-file file f2cinc))
+                           (cons "F2CLIBS/libf2c/arith.h"
+                                 (find-files (string-append
+                                              "../clapack-"
+                                              #$version "-CMAKE/F2CLIBS/libf2c")
+                                             "\\.h$")))
+                 (copy-recursively (string-append "../clapack-"
+                                                  #$version "-CMAKE/INCLUDE")
+                                   (string-append #$output "/include"))))))))
     (home-page "https://www.netlib.org/clapack/")
     (synopsis "Numerical linear algebra library for C")
     (description
