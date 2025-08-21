@@ -8071,16 +8071,17 @@ channels
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.26.0")
+    (version "0.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "roman_datamodels" version))
        (sha256
-        (base32 "0kiv139q6q3pjlalb16nqcyib8hmd9svr4y24s7g0as08x09d7zl"))))
+        (base32 "1631jpv7mcrcka6bfxp04ih43wlm9pmqsqxckqyv6y9jgsipjxy3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 4185 passed, 1 skipped, 1 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
