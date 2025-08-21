@@ -1092,9 +1092,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                 (substitute* "src/cmd/cgo/internal/testsanitizers/tsan_test.go"
                   ((".*tsan1[34].*") ""))))))))
     (native-inputs
-     ;; Go 1.22 and later requires Go 1.20 (min. 1.20.6, which we don't have)
-     ;; as the bootstrap toolchain.
-     (alist-replace "go" (list go-1.21) (package-native-inputs go-1.21)))))
+     ;; Go 1.22 and later requires Go 1.20 as the bootstrap toolchain.
+     (alist-replace "go" (list go-1.20) (package-native-inputs go-1.20)))))
 
 (define %go-1.23-arm64-micro-architectures
   ;; https://go.dev/wiki/MinimumRequirements#arm64
