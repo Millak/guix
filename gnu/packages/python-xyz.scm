@@ -3370,7 +3370,7 @@ point types:
 (define-public python-glymur
   (package
     (name "python-glymur")
-    (version "0.13.6")
+    (version "0.14.3")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -3379,7 +3379,7 @@ point types:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06v6g0fwzmy2imhrvy0q4zrhrlrp24yhs098vi13r92ga63c72xl"))))
+        (base32 "0266gj8a2p8jkbgb34lgk8dwin7ib2g38vdh04b2p6yhqx8w3xg8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3410,15 +3410,14 @@ point types:
      (list python-pytest
            python-pytest-xdist
            python-scikit-image
-           python-setuptools
-           python-wheel))
+           python-setuptools-next))
     (inputs
      (list openjpeg  ; glymur/lib/openjp2.py
            libtiff)) ; glymur/lib/tiff.py
     (propagated-inputs
      (list python-lxml
            python-numpy
-           python-packaging))
+           python-pillow ))
     (home-page "https://github.com/quintusdias/glymur")
     (synopsis "Python interface to OpenJPEG and LibTIFF")
     (description
