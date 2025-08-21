@@ -16357,16 +16357,17 @@ Resource Description Framework} vocabularies.")
 (define-public ruby-rdiscount
   (package
     (name "ruby-rdiscount")
-    (version "2.2.7")
-    (source (origin
-              (method git-fetch)        ;for the full test suite
-              (uri (git-reference
-                    (url "https://github.com/davidfstr/rdiscount")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lpfxq3gv0dgmnki9jgfnc8n9k4x9vyq9miqdxv6g4kp90qyfifc"))))
+    (version "2.2.7.3")
+    (source
+     (origin
+       (method git-fetch)               ;for the full test suite
+       (uri (git-reference
+              (url "https://github.com/davidfstr/rdiscount")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1lnf598sngcy6b701h33h5l9rn2abl80x0jpynz7jxb4imhd5r80"))))
     (build-system ruby-build-system)
     (native-inputs (list perl))
     (synopsis "Discount Markdown Processor for Ruby")
