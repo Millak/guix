@@ -5,6 +5,7 @@
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Charles <charles@charje.net>
+;;; Copyright © 2025 VnPower <vnpower@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system qt)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages anthy)
   #:use-module (gnu packages boost)
@@ -412,6 +414,33 @@ the Anthy input method.")
      "fcitx5-skk is an input method engine for Fcitx5, which uses libskk as its
 backend.")
     (license license:gpl3+)))
+
+(define-public fcitx5-unikey
+  (package
+    (name "fcitx5-unikey")
+    (version "5.1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fcitx/fcitx5-unikey")
+                    (commit version)))
+              (sha256
+               (base32 "0j82r63vn1rmjz2m92x6xksn548mmkiwcjkziqh6dp6aysxszvxx"))
+              (file-name (git-file-name name version))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (inputs
+     (list gettext-minimal
+           fcitx5
+           fcitx5-qt))
+    (native-inputs
+     (list extra-cmake-modules
+           pkg-config))
+    (home-page "https://github.com/fcitx/fcitx5-unikey")
+    (synopsis "Unikey (Vietnamese Input Method) engine support for Fcitx5")
+    (description "This provides Unikey input method support for Fcitx5.")
+    (license license:gpl2+)))
 
 (define-public fcitx5-chewing
   (package
