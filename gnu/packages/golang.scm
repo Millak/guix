@@ -819,7 +819,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.19)
     (name "go")
-    (version "1.20.2")
+    (version "1.20.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -828,7 +828,64 @@ in the style of communicating sequential processes (@dfn{CSP}).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ir0x17i9067i48ffskwlmbx1j4kfhch46zl8cwl88y23aw59qa2"))))
+                "1aqhc23705q76dca3g0fzq98kxkhyq628s0811qgzgz4wmngsjfm"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.19)
+       ((#:parallel-tests? _ #t)
+        (not (target-riscv64?)))
+       ;; TODO: Disable the test(s) in misc/cgo/test/cgo_test.go
+       ;; that cause segfaults in the test suite.
+       ((#:tests? _ (not (%current-target-system)))
+        (and (not (%current-target-system))
+             (not (target-riscv64?))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'disable-failing-tests 'disable-more-tests
+              (lambda _
+                ;; Unclear why this test fails on x86_64.
+                (substitute* "misc/cgo/testsanitizers/asan_test.go"
+                  ((".*arena_fail.*") "")
+                  ((".*asan_global1_fail.*") ""))
+                ;; error while loading shared libraries: libgcc_s.so.1:
+                ;; cannot open shared object file: No such file or directory
+                (for-each delete-file
+                          '("test/fixedbugs/bug514.go"
+                            "test/fixedbugs/issue40954.go"
+                            "test/fixedbugs/issue42032.go"
+                            "test/fixedbugs/issue42076.go"
+                            "test/fixedbugs/issue51733.go"))
+                #$@(cond
+                     ((target-aarch64?)
+                      ;; https://go-review.googlesource.com/c/go/+/151303
+                      ;; This test is known buggy on aarch64 and is enabled and
+                      ;; disabled upstream with some regularity.
+                      #~((substitute* "src/plugin/plugin_test.go"
+                           (("package plugin_test")
+                            (string-append "// +build !linux linux,!arm64\n\n"
+                                           "package plugin_test")))
+                         ;; collect2: fatal error: cannot find ‘ld’
+                         (substitute* "src/cmd/dist/test.go"
+                           ((".*testcshared.*") "")
+                           ((".*testshared.*") ""))))
+                     ((target-arm32?)
+                      ;; https://go-review.googlesource.com/c/go/+/151303
+                      ;; This test is known buggy on aarch64 so we disable
+                      ;; it on armhf also since we emulate armhf on aarch64.
+                      #~((substitute* "src/plugin/plugin_test.go"
+                           (("package plugin_test")
+                            (string-append "// +build !linux linux,!arm\n\n"
+                                           "package plugin_test")))
+                         ;; collect2: fatal error: cannot find ‘ld’
+                         (substitute* "src/cmd/dist/test.go"
+                           ((".*testcshared.*") "")
+                           ((".*testshared.*") ""))))
+                     ((target-riscv64?)
+                      #~((substitute* "src/runtime/lockrank_test.go"
+                           (("TestLockRankGenerated.*" all)
+                            (string-append
+                              all "\n        "
+                              "t.Skip(\"golang.org/issue/22224\")\n")))))
+                     (else #~()))))))))
     (native-inputs
      ;; Go 1.20 and later requires Go 1.17 as the bootstrap toolchain.
      ;; See 'src/cmd/dist/notgo117.go' in the source code distribution,
@@ -854,7 +911,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                (base32
                 "0x4qdib1d3gzgz620aysi1rrg682g93710dar4ga32b0j0w5kbhj"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments go-1.20)
+     (substitute-keyword-arguments
+       (strip-keyword-arguments '(#:tests?)
+       (package-arguments go-1.20))
        ;; Source patching phases are broken up into discrete steps to allow
        ;; future versions to discard individual phases without having to
        ;; discard all source patching.
@@ -862,6 +921,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
         #~(modify-phases #$phases
             (delete 'skip-TestGoPathShlibGccgo-tests)
             (delete 'patch-source)
+            (delete 'disable-more-tests)
             (add-after 'unpack 'patch-os-tests
               (lambda _
                 (substitute* "src/os/os_test.go"
