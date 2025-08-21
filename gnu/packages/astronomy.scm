@@ -5895,6 +5895,38 @@ Astronomical Union (IAU).  All C routines are wrapped as Numpy universal
 functions, so that they can be called with scalar or array inputs.")
     (license license:bsd-3)))
 
+(define-public python-pyesorex
+  (package
+    (name "python-pyesorex")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://ftp.eso.org/pub/dfs/pipelines/libraries/pyesorex/pyesorex-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1ynb9q9aj51mdva1b76fkz7mlw5q8nlfs8f5f70bhila8iincjca"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools-next))
+    (propagated-inputs
+     (list python-pycpl))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "PYESOREX_PLUGIN_DIR")
+            (files '("lib/esopipes-plugins")))))
+    (home-page "https://www.eso.org/sci/software/pycpl/pycpl-site/")
+    (synopsis "Alternative Python CLI for ESO's Rex")
+    (description
+     "PyEsoRex is a command line tool which can serve as a drop-in replacement
+of EsoRex, which can execute both, existing pipeline recipes implemented using
+the @acronym{Common Pipeline Library, CPL} C API, and recipes implemented
+using the PyCPL Python API.")
+    (properties '((upstream-name . "pyesorex")))
+    (license license:bsd-3)))
+
 (define-public python-pyhalo
   (package
     (name "python-pyhalo")
