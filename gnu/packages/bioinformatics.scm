@@ -4594,6 +4594,72 @@ for all the loaded RBPs across a given genomic sequence and draws a heatmap of
 the scores.")
     (license license:gpl3)))
 
+(define-public python-splicekit
+  (package
+    (name "python-splicekit")
+    (version "0.7")
+    (home-page "https://github.com/bedapub/splicekit")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit "ded5dbec16b45e0df44750d9ae021ae2416ff921")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "04l244qagbplksqp81w2s60pkymyhjq389xmqwsyc0n4q6b054h2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-dateutil
+           python-levenshtein
+           python-logomaker
+           python-numpy
+           python-pandas
+           python-plotly
+           python-psutil
+           python-pybio
+           python-pysam
+           python-rangehttpserver
+           python-requests
+           python-scanrbp))
+    (native-inputs
+     (list python-setuptools
+           python-wheel
+           snakemake))
+    (arguments
+     (list
+      #:tests? #false                   ;There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; bs4 is an alternative name for beautifulsoup4, only used to
+                ;; avoid name squatting on pypi.
+                (("bs4") "beautifulsoup4")
+                ;; levenshtein can only be found as python-levenshtein
+                (("levenshtein") "python-levenshtein"))))
+          ;; fireducks seems to be a binary-only python-panda replacement
+          (add-after 'unpack 'remove-fireducks
+            (lambda _
+              (substitute* '("Snakefile"
+                             "splicekit/core/delta_dar.py"
+                             "splicekit/core/juan.py"
+                             "splicekit/core/motifs.py"
+                             "splicekit/judge/__init__.py")
+                (("import fireducks.pandas as pd") "import pandas as pd"))
+              (substitute* "splicekit.yaml"
+                ((".*fireducks.*") "")))))))
+    (synopsis "Python toolkit for splicing analysis from short-read RNA-seq")
+    (description "Splicekit is a modular platform for splicing analysis from
+short-read RNA-seq datasets.  The platform also integrates pybio for genomic
+operations and scanRBP for RNA-protein binding studies.  The whole analysis is
+self-contained (one single directory) and the platform is written in Python,
+in a modular way.")
+    (license license:gpl3)))
+
 (define-public python-fastalite
   (package
     (name "python-fastalite")
