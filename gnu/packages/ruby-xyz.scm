@@ -10351,6 +10351,10 @@ engine.")
     (arguments
      (substitute-keyword-arguments (package-arguments ruby-sqlite3)
        ((#:tests? #t #t) #f)
+       ((#:gem-flags _ #f)
+        ''("--"
+           "--enable-system-libraries"
+           "--with-cflags=-Wno-error=incompatible-pointer-types -Wno-error=int-conversion"))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (delete 'relax-requirements)
