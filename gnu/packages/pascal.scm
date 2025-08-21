@@ -292,6 +292,7 @@ many useful extensions to the Pascal programming language.")
      (list
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
+              "CFLAGS=-Wno-implicit-function-declaration"
               (string-append "HOMEDIR=" #$output "/lib/p2c")
               (string-append "INCDIR=" #$output "/include/p2c")
               (string-append "BINDIR=" #$output "/bin")
