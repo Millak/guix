@@ -1056,8 +1056,28 @@ in the style of communicating sequential processes (@dfn{CSP}).")
         (base32 "0f0fr92z3l3szmxf3wvh20w1sqayvd927gawdp5d44cc44pd6c0n"))))
     (arguments
      (substitute-keyword-arguments (package-arguments go-1.21)
+       ((#:parallel-tests? _ #t)
+        (or (not (target-riscv64?))
+            (not (target-arm32?))))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'disable-failing-tests 'disable-more-tests
+              (lambda _
+                #$@(cond
+                     ((target-aarch64?)
+                      ;; https://go-review.googlesource.com/c/go/+/151303
+                      ;; This test is known buggy on aarch64 and is enabled and
+                      ;; disabled upstream with some regularity.
+                      #~((substitute* "src/plugin/plugin_test.go"
+                           (("package plugin_test")
+                            (string-append "// +build !linux linux,!arm64\n\n"
+                                           "package plugin_test")))
+                         ;; These tests "run too slowly".
+                         (substitute* "src/go/printer/printer_test.go"
+                           ((".*go2numbers\\.input.*") "")
+                           ((".*generics\\.input.*") "")
+                           ((".*gobuild1\\.input.*") ""))))
+                     (else (list #t)))))
             (replace 'unpatch-perl-shebangs
               (lambda _
                 ;; Avoid inclusion of perl in closure by rewriting references
@@ -1101,6 +1121,11 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32 "06c5cjjqk95p16cb6p8fgqqsddc1a1kj3w2m0na5v91gvwxbd0pq"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.22)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'disable-more-tests)))))
     (properties
      `((compiler-cpu-architectures
          ("aarch64" ,@%go-1.23-arm64-micro-architectures)
