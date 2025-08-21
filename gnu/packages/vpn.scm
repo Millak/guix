@@ -1176,7 +1176,7 @@ private network between hosts on the internet.")
 (define-public sshuttle
   (package
     (name "sshuttle")
-    (version "1.1.2")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1185,7 +1185,7 @@ private network between hosts on the internet.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01hd7z7gxkc2bjxndnv5dw1x98qcakxli9k8w285iq2b7d786f7f"))))
+        (base32 "0v4z2w5kcrqkxsz1pgs1sqm1kx4yismjana2lxsq5zyfs3vn3y26"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:modules
@@ -1224,8 +1224,8 @@ private network between hosts on the internet.")
     (native-inputs
      (list python-setuptools-scm
            ;; For tests only.
+           python-hatchling
            python-mock
-           python-poetry-core
            python-pytest-cov
            python-pytest-runner
            ;; For documentation only.
