@@ -8201,20 +8201,19 @@ task}.")
 (define-public python-stsci-skypac
   (package
     (name "python-stsci-skypac")
-    (version "1.0.10")
+    (version "1.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stsci_skypac" version))
        (sha256
-        (base32 "0amfknfxzrmia0d8x83i9h2v5760ynvfgfs0kzpb1ib0vyaci671"))))
+        (base32 "1pfgcgcgwvlil4m0v7d6raya70s74knimfh8yn634kapf24xxy1k"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; no tests in PyPI or git
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
+     (list python-setuptools-next
+           python-setuptools-scm-next))
     (propagated-inputs
      (list python-astropy
            python-numpy
