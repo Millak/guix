@@ -5500,7 +5500,7 @@ of astronomical sources.")
 (define-public python-pint-pulsar
   (package
     (name "python-pint-pulsar")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method git-fetch) ; no tests data in the PyPI tarball
@@ -5509,7 +5509,7 @@ of astronomical sources.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n66z7v30q1981hx4q5vy3mibrh453gak8dd938038r5mwddya3f"))))
+        (base32 "0522p1gns52vzgj1l89s1s3idi40910hv4dpbhy4r1ijmwfb3kdg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
