@@ -4597,49 +4597,6 @@ multiple simultaneous multi-channel loops limited only by your computer's
 available memory.")
     (license license:gpl2+)))
 
-(define-public moc
-  (package
-    (name "moc")
-    (version "2.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://ftp.daper.net/pub/soft/"
-                                  name "/stable/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "026v977kwb0wbmlmf6mnik328plxg8wykfx9ryvqhirac0aq39pk"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list alsa-lib
-           curl
-           faad2
-           ffmpeg-3.4
-           file
-           jack-1
-           libid3tag
-           libltdl
-           libmodplug
-           libmpcdec
-           libmad
-           libogg
-           libvorbis
-           ncurses
-           openssl
-           cyrus-sasl
-           speex
-           taglib
-           wavpack
-           zlib))
-    (native-inputs
-     (list pkg-config))
-    (synopsis "Console audio player designed to be powerful and easy to use")
-    (description
-     "Music on Console is a console audio player that supports many file
-formats, including most audio formats recognized by FFMpeg.")
-    (home-page "http://moc.daper.net")
-    (license license:gpl2+)))
-
 (define-public midicsv
   (package
     (name "midicsv")
