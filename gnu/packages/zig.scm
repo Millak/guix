@@ -1970,4 +1970,21 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "out")))))))
 
+(define zig-0.14.0-1091
+  (let ((commit "87ce83d5a5854b63b7cef5c6209742ee1a524107")
+        (revision "1091")
+        (base zig-0.14.0-934))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.14.0" revision commit))
+      (source (zig-source
+               version commit
+               "18irwcr63l1hf2g7vv9qajgllsp7qwzsv5ijm9x8l51agm6harf4"))
+      ;; zig2
+      (arguments (package-arguments zig-0.10.0-851))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.13)
