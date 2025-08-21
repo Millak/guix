@@ -2044,26 +2044,6 @@ your template is working as expected and takes care of cleaning up after
 running the tests.")
     (license license:expat)))
 
-(define-public python-pytest-cram
-  (package
-    (name "python-pytest-cram")
-    (version "0.2.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-cram" version))
-              (sha256
-               (base32
-                "0405ymmrsv6ii2qhq35nxfjkb402sdb6d13xnk53jql3ybgmiqq0"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-cram python-pytest))
-    (home-page "https://github.com/tbekolay/pytest-cram")
-    (synopsis "Run cram tests with pytest")
-    (description "Cram tests command line applications; Pytest tests Python
-applications.  @code{pytest-cram} tests Python command line applications by
-letting you write your Python API tests with pytest, and your command line
-tests in cram.")
-    (license license:expat)))
-
 (define-public python-pytest-csv
   (package
     (name "python-pytest-csv")
