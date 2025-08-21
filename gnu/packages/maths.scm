@@ -2302,7 +2302,15 @@ Swath).")
                 ;; test per line in this file).
                 (substitute* "testpar/CMakeLists.txt"
                   (("(t_pmulti_dset|t_shapesame|t_filters_parallel)" _ test)
-                   (string-append "# " test "\n")))))))))
+                   (string-append "# " test "\n")))))
+            (replace 'remove-gcc-references
+              (lambda _
+                (substitute* (map (lambda (f)
+                                    (string-append #$output "/" f))
+                                  '("bin/h5hlcc"
+                                    "bin/h5cc"))
+                  (("/gnu/store/[a-z0-9]*-gcc-[0-9.]*/bin/")
+                   ""))))))))
     (synopsis "Management suite for data with parallel IO support")))
 
 (define-public hdf5-blosc
