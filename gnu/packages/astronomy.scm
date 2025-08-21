@@ -7949,13 +7949,13 @@ implementation package such as asdf-astropy.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.26.0")
+    (version "0.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "0vxkjsj9bdl84076lbric4jn531jv46i2wwfxak50i5mik8r7zjg"))))
+        (base32 "04vzqkcw6la5n2jw92khmqnizs2nf5vb27nknn3c6wj1jwfwl6bv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7974,8 +7974,7 @@ implementation package such as asdf-astropy.")
            python-pytest-doctestplus
            python-semantic-version
            python-setuptools-next
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy))
