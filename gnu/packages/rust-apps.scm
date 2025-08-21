@@ -109,6 +109,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
@@ -3729,6 +3730,72 @@ policies, and so on.
 @item Closing connections.
 @item Rebalancing of queue leaders across cluster nodes.
 @end itemize")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public radicle
+  (package
+    (name "radicle")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch/tarbomb)
+       (uri (string-append
+             "https://files.radicle.xyz/releases/"
+             version "/heartwood-" version ".tar.gz"))
+       (sha256
+        (base32 "1rf18h8kjw4v1crnxppmrcyxkm28q3mzqk8xyngagg6mdfs0cijq"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (for-each delete-file
+                     (find-files "build" "^macos-sdk"))
+           (substitute* (find-files "." "^Cargo\\.toml$")
+             (("\"vendored-libgit2\"")
+              ""))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      ;; Parallel testing will open too many files
+      #:parallel-tests? #f
+      #:cargo-install-paths ''("crates/radicle-cli"
+                               "crates/radicle-node"
+                               "crates/radicle-remote-helper")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'setenv
+            (lambda _
+              (setenv "RADICLE_VERSION" #$(package-version this-package))
+              (setenv "LIBGIT2_NO_VENDOR" "1")
+              (setenv "HOME" (getcwd))
+              (setenv "TMPDIR" "/tmp")))
+          #$@(if (this-package-native-input "ruby-asciidoctor")
+                 #~((add-before 'build 'build-doc
+                      (lambda _
+                        (apply invoke "scripts/build-man-pages.sh" "."
+                               (find-files "." "\\.adoc$"))
+                        (let ((man1 (string-append #$output "/share/man/man1")))
+                          (mkdir-p man1)
+                          (for-each (lambda (file)
+                                      (install-file file man1))
+                                    (find-files "." "\\.1$"))))))
+                 #~()))))
+    (native-inputs
+     (append
+      (if (supported-package? ruby-asciidoctor)
+          (list ruby-asciidoctor)
+          '())
+      (list pkg-config
+            ;; for test
+            git)))
+    (inputs (cons* libgit2-1.8 sqlite (cargo-inputs 'radicle)))
+    (home-page "https://radicle.xyz/")
+    (synopsis "Peer-to-peer code collaboration stack")
+    (description
+     "Radicle is a peer-to-peer code collaboration stack built on Git.  Unlike
+centralized code hosting platforms, there is no single entity controlling the
+network.  Repositories are replicated across peers in a decentralized manner,
+and users are in full control of their data and workflow.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-xremap
