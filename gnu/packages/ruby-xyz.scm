@@ -14611,8 +14611,8 @@ long-running operation if it hasn't finished in a fixed amount of time.")
          "0nagbf9pwy1vg09k6j4xqhbjjzrg5dwzvkn4ffvlj76fsn6vv61f"))))
     (build-system ruby-build-system)
     (arguments
-     ;; No tests.
-     '(#:tests? #f))
+     '(#:tests? #f
+       #:gem-flags '("--" "--with-cflags=-Wno-error=implicit-function-declaration")))
     (propagated-inputs
      (list ruby-daemons ruby-eventmachine ruby-rack))
     (synopsis "Thin and fast web server for Ruby")
