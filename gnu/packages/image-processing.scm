@@ -1354,6 +1354,7 @@ libraries designed for computer vision research and implementation.")
                 "-DModule_MorphologicalContourInterpolation=ON"
                 "-DModule_SimpleITKFilters=ON"
                 "-DModule_GenericLabelInterpolator=ON"
+                "-DModule_ITKReview:BOOL=ON"
                 "-DCMAKE_CXX_STANDARD=17"
                 "-DBUILD_TESTING=OFF")
 
