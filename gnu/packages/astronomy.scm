@@ -7426,13 +7426,13 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.14.1")
+    (version "1.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "1y3w1nlb4f56f9w7ql1al35mj2xv53cagrnpqknl1kh6r6qg7pqj"))))
+        (base32 "0q27dw3gsv03kik63rclpg0si8qb2k7l8lhszi2b1948kb0spwnn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
