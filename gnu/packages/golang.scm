@@ -231,7 +231,7 @@
     (inputs
      `(("tzdata" ,tzdata)
        ("pcre" ,pcre)
-       ("gcc:lib" ,(canonical-package gcc) "lib")))
+       ("gcc:lib" ,gcc "lib")))
     (native-inputs
      (list pkg-config which net-base perl))
 
