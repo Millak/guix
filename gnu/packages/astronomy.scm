@@ -2817,44 +2817,32 @@ aim of simplifying and streamlining data conversion and standardization.")
 (define-public python-bayesicfitting
   (package
     (name "python-bayesicfitting")
-    (version "3.2.3")
+    (version "3.2.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dokester/BayesicFitting")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dokester/BayesicFitting")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q7s7glf4b46vln67x7ggbpkbi4anyh3f3ldwafc2hggsrmx683q"))))
+        (base32 "1fdxrmcbjfpvz1czmvq4kz2scdiw77kyzsgv6c0isijk1hckgcik"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: To run full tests suite is quite expansive, select the one which
+      ;; is mentioned in <BayesicFitting/test/testall.csh>.
       #:test-flags #~(list "-m" "unittest"
                            "discover"
-                           "-p" "Test*.py"
+                           "-p" "TestUserModel.py"
                            "--top-level-directory" ".")
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Some tests fail for some reason.  Disable those tests for now.
-          (add-before 'check 'disable-failing-tests
-            (lambda _
-              (substitute* "BayesicFitting/test/TestNestedSampler.py"
-                ;; Fails with "AssertionError: False is not true".
-                (("def test3")
-                 "def _test3")
-                ;; Fails with "Thread Error" exception.
-                (("def test1")
-                 "def _test1"))
-              (substitute* "BayesicFitting/test/TestPhantomSampler.py"
-                ;; Fails with "Thread Error" exception.
-                (("def test1")
-                 "def _test1"))))
           (replace 'check
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
-                (chdir "BayesicFitting/test")
-                (apply invoke "python" test-flags)))))))
+                (with-directory-excursion "BayesicFitting/test"
+                  (apply invoke "python" test-flags))))))))
     (native-inputs
      (list python-setuptools
            python-wheel))
@@ -2864,7 +2852,7 @@ aim of simplifying and streamlining data conversion and standardization.")
            python-matplotlib
            python-numpy
            python-scipy))
-    (home-page "https://www.bayesicfitting.nl")
+    (home-page "https://dokester.github.io/BayesicFitting/")
     (synopsis "Python Toolbox for Astronimical Bayesian fitting")
     (description
      "The BayesicFitting package is a python version of the the fitter classes
