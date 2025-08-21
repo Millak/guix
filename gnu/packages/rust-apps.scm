@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
-;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2022, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
@@ -1505,6 +1505,42 @@ bar.  It is also compatible with sway.")
     (synopsis "Command-line JSON viewer")
     (description "This package provides a command-line JSON viewer.")
     (license license:expat)))
+
+(define-public jujutsu
+  (package
+    (name "jujutsu")
+    (version "0.32.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jj-vcs/jj")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cib02kyzkfznzww2iz7wixphxradwhg8agr8hyi62alr37r8ljc"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:cargo-install-paths ''("cli")))
+    (native-inputs
+     (list pkg-config
+           ;; For tests.
+           git
+           openssh))
+    (inputs (cons* zlib openssl libssh2 libgit2-1.9 (cargo-inputs 'jujutsu)))
+    (home-page "https://github.com/jj-vcs/jj")
+    (synopsis "Git-compatible distributed version control system")
+    (description
+     "Jujutsu is a version control system designed to be easy to use.  It uses a
+real commit to represent the working copy, records all operations performed on
+the repository and supports automatic conflict resolution.
+
+Although Jujutsu uses a Git repository as its storage backend, it internally
+abstracts the user interface and version control algorithms from the storage
+systems.  This opens possibility for it to serve as a version control system
+with other physical backends.")
+    (license license:asl2.0)))
 
 (define-public just
   (package
