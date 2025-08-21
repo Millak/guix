@@ -5633,7 +5633,9 @@ Cloud.")
              guile-squee
              guile-lzlib))
       (native-inputs
-       (list (lookup-package-native-input guix "guile")
+       ;; Use the highest Guile version found among dependencies to ensure .go
+       ;; files can be loaded.
+       (list (lookup-package-native-input guile-fibers-next "guile")
              autoconf
              automake
              emacs-minimal
