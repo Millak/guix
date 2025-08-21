@@ -494,7 +494,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   (guix build utils))
        ;; TODO: Disable the test(s) in misc/cgo/test/cgo_test.go
        ;; that cause segfaults in the test suite.
-       #:tests? ,(not (or (target-aarch64?) (target-riscv64?)))
+       #:tests? ,(not (target-riscv64?))
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
