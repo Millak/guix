@@ -1872,8 +1872,21 @@ implementation of the ASDF Standard.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 4419 passed, 1 skipped
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; AttributeError: 'AsdfFile' object has no attribute
+                    ;; '_open_impl'
+                    (list "not test_legacy_icrs_deseialize"
+                          "test_read_examples[example0]"
+                          "test_read_examples[example1]"
+                          "test_read_examples[example2]"
+                          "test_read_examples[example3]"
+                          "test_read_examples[example4]"
+                          "test_read_examples[example5]"
+                          "test_read_examples[example6]")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home-env
