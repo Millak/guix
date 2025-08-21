@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
@@ -5584,11 +5584,9 @@ Cloud.")
               (lambda* (#:key inputs outputs #:allow-other-keys)
                 (let* ((out (assoc-ref outputs "out"))
                        (bin (string-append out "/bin"))
-                       (guile (assoc-ref inputs "guile"))
                        (guile-effective-version
                         (read-line
-                         (open-pipe* OPEN_READ
-                                     (string-append guile "/bin/guile")
+                         (open-pipe* OPEN_READ (which "guile")
                                      "-c" "(display (effective-version))")))
                        (scm (string-append out "/share/guile/site/"
                                            guile-effective-version))
@@ -5604,13 +5602,11 @@ Cloud.")
                        `("PATH" ":" prefix
                          ,(cons*
                            bin
-                           (map (lambda (input)
-                                  (string-append
-                                   (assoc-ref inputs input)
-                                   "/bin"))
-                                '("ephemeralpg"
-                                  "util-linux"
-                                  "postgresql"))))
+                           (map (lambda (file)
+                                  (search-input-file inputs file))
+                                '("/bin/pg_tmp"   ;ephemeralpg
+                                  "/bin/ionice"   ;util-linux
+                                  "/bin/psql")))) ;postgresql
                        `("GUILE_LOAD_PATH" ":" prefix
                          (,scm ,(getenv "GUILE_LOAD_PATH")))
                        `("GUILE_LOAD_COMPILED_PATH" ":" prefix
