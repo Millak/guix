@@ -16979,13 +16979,13 @@ generation functionality.")
 (define-public ruby-grpc
   (package
     (name "ruby-grpc")
-    (version "1.62.0")
+    (version "1.74.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "grpc" version))
               (sha256
                (base32
-                "03z8yq0z228g6xxxq6s2mmslpv6psrdmi30dpmhysr4px16d897n"))))
+                "12qy6yga90hs2pdzkxwm80d38dbmjdxmf2szqwb40ky1jr4klfp7"))))
     (build-system ruby-build-system)
     (arguments
      `(#:tests? #f))  ;; has no tests
