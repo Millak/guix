@@ -301,7 +301,7 @@ services.")
 (define-public detox
   (package
     (name "detox")
-    (version "2.0.0")
+    (version "3.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -310,7 +310,7 @@ services.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qix3ipvj5sn66id57k6gzilnz4f19jgwn4d72hj1jzi3m9f9k1h"))))
+                "0328w1hh279kgb4fn2vwbvwhmr32i7ayp665vs78pgjy84vhgxzy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake bison flex pkg-config))
