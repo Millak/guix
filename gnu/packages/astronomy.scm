@@ -8560,23 +8560,30 @@ SunPy.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "6.1.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1nqk5q4gd7w59zsps8gyzh6r1mmpzia0z5494za6na5vn2qsc2f6"))))
+        (base32 "1q7z74jf9r65clrq7g6mqqap6455krfp4mxbjs3039jk5gs8d47m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2439 passed, 3 xfailed, 35 warnings
       #:test-flags
       #~(list "--pyargs" "sunpy"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; Test introduces a time bomb and fails with error: ValueError:
+              "-m" "not remote_data"
+              ;; [1] Test introduces a time bomb and fails with error: ValueError:
               ;; interpolating from IERS_Auto using predictive values that are
               ;; more than 30.0 days old.
-              "-k" "not test_print_params")
+              ;; [2,3] Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
+              "-k" (string-join
+                    (list "not test_print_params"        ;1
+                          "test_main_nonexisting_module" ;2
+                          "test_main_stdlib_module")     ;3
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-test-files
@@ -8596,20 +8603,19 @@ SunPy.")
                 (with-directory-excursion "/tmp"
                   (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
-     (list opencv ; For tests, includes OpenCV-Python
+     (list nss-certs-for-test
+           opencv ; For tests, includes OpenCV-Python
            python-aiohttp
            python-extension-helpers
            python-hvpy
            python-jplephem
            ;; python-mplcairo ; Not packed yet in Guix
-           python-packaging
            python-pytest-astropy
            python-pytest-mock
            python-pytest-mpl
            python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
+           python-setuptools-next
+           python-setuptools-scm-next))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
@@ -8626,10 +8632,12 @@ SunPy.")
            python-matplotlib
            python-mpl-animators
            python-numpy
+           python-packaging
            python-pandas
            python-parfive
            python-pyerfa
            python-reproject
+           python-requests-next
            python-scikit-image
            python-scipy
            ;; python-spiceypy ; Not packed yet in Guix, long journey.
@@ -8660,7 +8668,8 @@ to the SolarSoft data analysis environment.")
             python-fsspec
             python-mpl-animators
             python-parfive
-            python-pyerfa)))))
+            python-pyerfa
+            python-requests-next)))))
 
 (define-public python-sunpy-soar
   (package
