@@ -818,6 +818,45 @@ Standards of Fundamental Astronomy} library published by the @acronym{IAU,
 International Astronomical Union}.")
     (license license:bsd-3)))
 
+(define-public esorex
+  (package
+    (name "esorex")
+    (version "3.13.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://ftp.eso.org/pub/dfs/pipelines/libraries/esorex/esorex-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1mkxjm2rnmviqfblnr4wwb3simvs7f5dly66qylvdfynvg3gk2d9"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake
+           autoconf
+           libtool
+           pkg-config
+           perl))
+    (inputs
+     (list cfitsio
+           wcslib
+           cpl))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "ESOREX_PLUGIN_DIR")
+             (files '("lib/esopipes-plugins")))))
+    (home-page "https://www.eso.org/sci/software/cpl/esorex.html")
+    (synopsis "The European Southern Observatory Recipe Execution Tool")
+    (description
+     "EsoRex is the @acronym{European Southern Observatory,ESO} Recipe
+Execution Tool.  It can list, configure and execute @acronym{Common Pipeline
+Library,CPL}-based recipes from the command line.")
+    ;; Set a rerlease-monitoring-url because the ftp directory includes
+    ;; prereleases that should not be refreshed to.
+    (properties `((release-monitoring-url
+                   . "https://www.eso.org/sci/software/cpl/download.html")))
+    (license license:gpl2+)))
+
 (define-public eye
   (package
     (name "eye")
