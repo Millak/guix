@@ -561,7 +561,7 @@ plugin, though a standalone binary is built also.")
 (define-public helix
   (package
     (name "helix")
-    (version "25.01.1")
+    (version "25.07.1")
     (source
      (origin
        (method git-fetch)
@@ -570,7 +570,7 @@ plugin, though a standalone binary is built also.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i9g1xk4vs11ccsrvdjz33yprcsim9ag045vifm7rx03hzcxfry0"))))
+        (base32 "06m4zagivfa40rw25n3fn66d0z2rsf3r3cjdzwh67lh10wcb6m24"))))
     (build-system cargo-build-system)
     (arguments
      (list
