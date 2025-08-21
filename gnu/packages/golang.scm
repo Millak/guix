@@ -1134,7 +1134,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 
 (define-public go-1.24
   (package
-    (inherit go-1.23)
+    (inherit go-1.22)
     (name "go")
     (version "1.24.3")
     (source
@@ -1146,9 +1146,31 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1b24pdsxrarw22gffv85sghpgvgamafvwwrvvhmyv3hqf89m97zk"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.22)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'disable-more-tests
+              (lambda _
+                #$@(cond
+                     ((target-aarch64?)
+                      ;; https://go-review.googlesource.com/c/go/+/151303
+                      ;; This test is known buggy on aarch64 and is enabled and
+                      ;; disabled upstream with some regularity.
+                      #~((substitute* "src/plugin/plugin_test.go"
+                           (("package plugin_test")
+                            (string-append "// +build !linux linux,!arm64\n\n"
+                                           "package plugin_test")))))
+                     (else (list #t)))))))))
     (native-inputs
      ;; Go 1.24 and later requires Go 1.22+ as the bootstrap toolchain.
-     (alist-replace "go" (list go-1.22) (package-native-inputs go-1.23)))))
+     (alist-replace "go" (list go-1.22) (package-native-inputs go-1.22)))
+    (properties
+     `((compiler-cpu-architectures
+         ("aarch64" ,@%go-1.23-arm64-micro-architectures)
+         ("armhf" ,@%go-1.17-arm-micro-architectures)
+         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
+         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
 
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
