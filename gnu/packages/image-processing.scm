@@ -2058,7 +2058,7 @@ rectangles, circles, lines, points and VOC/COCO export.")
 (define-public charls
   (package
     (name "charls")
-    (version "2.3.4")
+    (version "2.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2067,7 +2067,7 @@ rectangles, circles, lines, points and VOC/COCO export.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g3f1rfimk30rqmi7ic4i5vfphyqbbpsyyhwqq1iss9wjwaz2vs5"))))
+                "0vp6mjjm6hi2r1swwvbg86asvn604w58nam7yvqk1qr13aizjl71"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCMAKE_BUILD_TYPE:STRING=Release"
