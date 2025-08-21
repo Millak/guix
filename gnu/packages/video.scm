@@ -1929,45 +1929,6 @@ audio/video codec library.")
        ((#:configure-flags flags ''())
         #~(cons "--enable-avresample" #$flags))))))
 
-(define-public ffmpeg-3.4
-  (package
-    (inherit ffmpeg-4)
-    (version "3.4.13")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "0np0yalqdrm7rn7iykgfzz3ly4vbgigrajg48c1l6n7qrzqvfszv"))
-             (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg-4)
-       ((#:modules modules %default-gnu-modules)
-        `((srfi srfi-1)
-          ,@modules))
-       ((#:configure-flags flags)
-        #~(fold delete #$flags
-                '("--enable-libdav1d"
-                  "--enable-libaom"
-                  "--enable-librav1e"
-                  "--enable-libsrt"
-                  "--enable-libsvtav1")))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            #$@(if (target-x86-32?)
-                   #~((delete 'relax-gcc-14-strictness))
-                   #~())
-            (add-after 'configure 'relax-gcc-14-strictness
-              (lambda _
-                (substitute* "ffbuild/config.mak"
-                  (("CFLAGS *=" all)
-                   (string-append all
-                                  " -Wno-error=incompatible-pointer-types"
-                                  " -Wno-error=int-conversion")))))))))
-    (inputs (modify-inputs (package-inputs ffmpeg-4)
-              (delete "dav1d" "libaom" "rav1e" "srt")))))
-
 (define-public ffmpeg-for-stepmania
   (hidden-package
    (package
