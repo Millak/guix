@@ -745,6 +745,54 @@ learning framework primarily developed and used for astronomical data
 analysis.")
     (license license:asl2.0)))
 
+(define-public cpl
+  (package
+    (name "cpl")
+    (version "7.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://ftp.eso.org/pub/dfs/pipelines/libraries/cpl/cpl-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "083ppsa6ifc52m0s4ww4l9cajnh2f0y3s5bxaq31drihhrd2c355"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; pycpl expects to find a lib/esopipes-plugins directory.  This is
+     ;; overruled by the PYESOREX_PLUGIN_DIR search path, but the default
+     ;; directory is still consulted and therefor needs to exist.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'create-plugins-directory
+            (lambda _
+              (mkdir-p (string-append #$output "/lib/esopipes-plugins")))))))
+    (native-inputs
+     (list automake
+           autoconf
+           libtool
+           pkg-config
+           perl))
+    (inputs
+     (list cfitsio
+           wcslib
+           fftw
+           fftwf))
+    (home-page "https://www.eso.org/sci/software/cpl/")
+    (synopsis "Common Pipeline Library for astronomical data reduction")
+    (description
+     "The @acronym{CPL, Common Pipeline Library} comprises a set of ISO-C
+libraries that provide a comprehensive, efficient and robust software toolkit
+to develop astronomical data-reduction tasks (known as recipes).  These
+data-reduction tasks can then be executed manually by a user, or can be
+triggered in an automated data-reduction framework (known as pipelines) which
+are used at @acronym{ESO, European Southern Observatory} to monitor the health
+status of @acronym{VLT, Very Large Telescope} instruments, for quick-look data
+processing at the observatory, and the creation of data products available
+from the ESO archive facility.")
+    (license license:gpl2+)))
+
 (define-public erfa
   (package
     (name "erfa")
