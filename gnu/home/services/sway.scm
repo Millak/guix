@@ -34,15 +34,62 @@
 
             ;; Configuration records.
             sway-configuration
+            sway-configuration-keybindings
+            sway-configuration-gestures
+            sway-configuration-packages
+            sway-configuration-variables
+            sway-configuration-inputs
+            sway-configuration-outputs
+            sway-configuration-bar
+            sway-configuration-modes
+            sway-configuration-startup+reload-programs
+            sway-configuration-startup-programs
+            sway-configuration-extra-content
             sway-bar
+            sway-bar-identifier
+            sway-bar-position
+            sway-bar-hidden-state
+            sway-bar-binding-mode-indicator
+            sway-bar-colors
+            sway-bar-status-command
+            sway-bar-mouse-bindings
+            sway-bar-extra-content
             sway-output
+            sway-output-identifier
+            sway-output-resolution
+            sway-output-position
+            sway-output-background
+            sway-output-extra-content
             sway-input
-            point
+            sway-input-identifier
+            sway-input-layout
+            sway-input-disable-while-typing
+            sway-input-disable-while-trackpointing
+            sway-input-tap
+            sway-input-extra-content
             sway-color
+            sway-color-background
+            sway-color-statusline
+            sway-color-focused-background
+            sway-color-focused-statusline
+            sway-color-focused-workspace
+            sway-color-active-workspace
+            sway-color-inactive-workspace
+            sway-color-urgent-workspace
+            sway-color-binding-mode
             sway-border-color
+            sway-border-color-border
+            sway-border-color-background
+            sway-border-color-text
+            sway-mode
+            sway-mode-mode-name
+            sway-mode-keybindings
+            sway-mode-mouse-bindings
+            point
+
+            ;; Service type and helper function.
             home-sway-service-type
             sway-configuration->file
-            sway-mode
 
             ;; Default values.
             %sway-default-variables
