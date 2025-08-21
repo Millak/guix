@@ -8751,31 +8751,20 @@ to the SolarSoft data analysis environment.")
 (define-public python-sunraster
   (package
     (name "python-sunraster")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunraster" version))
        (sha256
-        (base32 "1nyrhn7if7xpl97k6nzsxymdi6b77n61xlh1il3m58rdrjyp5q81"))))
+        (base32 "0a1w7958n4m1qm59x6y00a0p45b5drnj1ippwl7gvszbwamhr2gr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               "--ignore=docs/data_types/raster.rst"
-              "--ignore=docs/data_types/spectrogram.rst"
-              "-k" (string-join
-                    ;; XXX: Reported upstream:
-                    ;; <https://github.com/sunpy/sunraster/issues/281>
-                    (list "not test_apply_exposure_time_correction"
-                          "test_ndcube_components_after_slicing"
-                          "test_read_spice_l2_fits_multiple_files_dumbbells"
-                          "test_read_spice_l2_fits_multiple_rasters_multiple_windows"
-                          "test_read_spice_l2_fits_multiple_rasters_single_window"
-                          "test_read_spice_l2_fits_multiple_sns_multiple_windows"
-                          "test_read_spice_l2_fits_single_file_dumbbells")
-                    " and not "))
+              "--ignore=docs/data_types/spectrogram.rst")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -8784,14 +8773,14 @@ to the SolarSoft data analysis environment.")
               ;; '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest
+     (list nss-certs-for-test
+           python-pytest
            python-pytest-astropy
            python-pytest-doctestplus
            python-pytest-xdist
            python-setuptools-next
            python-setuptools-scm-next
-           python-sunpy-minimal
-           python-wheel))
+           python-sunpy-minimal))
     (propagated-inputs
      (list python-astropy
            python-ndcube
