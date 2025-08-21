@@ -563,30 +563,26 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   (string-append net-base "/etc/services")))
                (substitute* "src/time/zoneinfo_unix.go"
                  (("/usr/share/zoneinfo/") tzdata-path)))))
-         ;; Keep this synchronized with the package inputs.
-         ;; Also keep syncthonized with later versions of go.
-         ,@(if (or (target-arm?) (target-ppc64le?))
-             '((add-after 'unpack 'patch-gcc:lib
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
-                     ;; Add libgcc to runpath
-                     (substitute* "src/cmd/link/internal/ld/lib.go"
-                       (("!rpath.set") "true"))
-                     (substitute* "src/cmd/go/internal/work/gccgo.go"
-                       (("cgoldflags := \\[\\]string\\{\\}")
-                        (string-append "cgoldflags := []string{"
-                                       "\"-Wl,-rpath=" gcclib "\""
-                                       "}"))
-                       (("\"-lgcc_s\", ")
-                        (string-append
-                         "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
-                     (substitute* "src/cmd/go/internal/work/gc.go"
-                       (("ldflags = setextld\\(ldflags, compiler\\)")
-                        (string-append
-                         "ldflags = setextld(ldflags, compiler)\n"
-                         "ldflags = append(ldflags, \"-r\")\n"
-                         "ldflags = append(ldflags, \"" gcclib "\")\n")))))))
-             '())
+         (add-after 'unpack 'patch-gcc:lib
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
+               ;; Add libgcc to runpath
+               (substitute* "src/cmd/link/internal/ld/lib.go"
+                 (("!rpath.set") "true"))
+               (substitute* "src/cmd/go/internal/work/gccgo.go"
+                 (("cgoldflags := \\[\\]string\\{\\}")
+                  (string-append "cgoldflags := []string{"
+                                 "\"-Wl,-rpath=" gcclib "\""
+                                 "}"))
+                 (("\"-lgcc_s\", ")
+                  (string-append
+                   "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
+               (substitute* "src/cmd/go/internal/work/gc.go"
+                 (("ldflags = setextld\\(ldflags, compiler\\)")
+                  (string-append
+                   "ldflags = setextld(ldflags, compiler)\n"
+                   "ldflags = append(ldflags, \"-r\")\n"
+                   "ldflags = append(ldflags, \"" gcclib "\")\n"))))))
          ;; Backported from later versions of go to workaround 64k page sizes.
          ,@(if (target-ppc64le?)
              '((add-after 'unpack 'adjust-test-suite
@@ -706,9 +702,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                 '("AUTHORS" "CONTRIBUTORS" "CONTRIBUTING.md" "PATENTS"
                   "README.md" "SECURITY.md"))))))))
     (inputs
-     (if (member (%current-system) (package-supported-systems go-1.4))
-         (package-inputs go-1.4)
-         (alist-delete "gcc:lib" (package-inputs go-1.4))))
+     `(("tzdata" ,tzdata)
+       ("pcre" ,pcre)
+       ("gcc:lib" ,gcc "lib")))
     (native-inputs
      `(,@(if (member (%current-system) (package-supported-systems go-1.4))
            `(("go" ,go-1.4))
@@ -755,28 +751,26 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'adjust-test-suite)
-           ,@(if (or (target-arm?) (target-ppc64le?))
-               '((replace 'patch-gcc:lib
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
-                       ;; Add libgcc to runpath
-                       (substitute* "src/cmd/link/internal/ld/lib.go"
-                         (("!rpath.set") "true"))
-                       (substitute* "src/cmd/go/internal/work/gccgo.go"
-                         (("cgoldflags := \\[\\]string\\{\\}")
-                          (string-append "cgoldflags := []string{"
-                                         "\"-Wl,-rpath=" gcclib "\""
-                                         "}"))
-                         (("\"-lgcc_s\", ")
-                          (string-append
-                           "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
-                       (substitute* "src/cmd/go/internal/work/gc.go"
-                         (("ldflags, err := setextld\\(ldflags, compiler\\)")
-                          (string-append
-                           "ldflags, err := setextld(ldflags, compiler)\n"
-                           "ldflags = append(ldflags, \"-r\")\n"
-                           "ldflags = append(ldflags, \"" gcclib "\")\n")))))))
-               '())))))
+           (replace 'patch-gcc:lib
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
+                 ;; Add libgcc to runpath
+                 (substitute* "src/cmd/link/internal/ld/lib.go"
+                   (("!rpath.set") "true"))
+                 (substitute* "src/cmd/go/internal/work/gccgo.go"
+                   (("cgoldflags := \\[\\]string\\{\\}")
+                    (string-append "cgoldflags := []string{"
+                                   "\"-Wl,-rpath=" gcclib "\""
+                                   "}"))
+                   (("\"-lgcc_s\", ")
+                    (string-append
+                     "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
+                 (substitute* "src/cmd/go/internal/work/gc.go"
+                   (("ldflags, err := setextld\\(ldflags, compiler\\)")
+                    (string-append
+                     "ldflags, err := setextld(ldflags, compiler)\n"
+                     "ldflags = append(ldflags, \"-r\")\n"
+                     "ldflags = append(ldflags, \"" gcclib "\")\n"))))))))))
     (properties
      `((compiler-cpu-architectures
          ("armhf" ,@%go-1.17-arm-micro-architectures)
