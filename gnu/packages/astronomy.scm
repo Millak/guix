@@ -1792,20 +1792,22 @@ model-fitting photometry or morphological analyses.")
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
+          ;; It fails to check SunPy's optional inputs versions.
+          (delete 'sanity-check)
           (add-before 'check 'set-home
             (lambda _
               ;; E PermissionError: [Errno 13] Permission denied:
               ;; '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest
+     (list nss-certs-for-test
+           python-pytest
            python-pytest-astropy
            python-pytest-cov
            python-pytest-doctestplus
            python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
+           python-setuptools-next
+           python-setuptools-scm-next))
     (propagated-inputs
      (list python-sunpy))
     (home-page "https://aia.lmsal.com/")
