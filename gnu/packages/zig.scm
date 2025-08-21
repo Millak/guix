@@ -2004,4 +2004,72 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "out")))))))
 
+(define zig-0.15-libc-abi-tools
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ziglang/libc-abi-tools")
+          (commit "21993a6036cc165485b20229589340dff9d4fc3c")))
+    (file-name "libc-abi-tools")
+    (sha256
+     (base32 "0miwb0zfgfmm4bh2bs7982wpk0wp5vj2mz10x9c3m8fw7zzcyvbh"))
+    (modules '((guix build utils)))
+    (snippet
+     #~(substitute* "netbsd/consolidate.zig"
+         ((".write_buffer = buffer") ".write_buffer = &buffer")))))
+
+(define-public zig-0.15
+  (package
+    (inherit zig-0.14)
+    (name "zig")
+    (version "0.15.1")
+    (source
+     (origin
+       (inherit (zig-source
+                 version version
+                 "1cp18plf0x5wip4rnxiqavaqnqxnqzhipb34in6zd3y7wihwjmj4"))
+       (patches
+        (search-patches
+         "zig-0.14-use-baseline-cpu-by-default.patch"
+         "zig-0.14-use-system-paths.patch"
+         "zig-0.15-fix-runpath.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments zig-0.14)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'install-glibc-abilists)
+            ;; TODO: Remove newly-added abilists files in zig-source.
+            (add-before 'check 'install-abilists
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                (mkdir-p "/tmp/libc-abi-tools")
+                (with-directory-excursion "/tmp/libc-abi-tools"
+                  (copy-recursively
+                   (dirname (search-input-file
+                             (or native-inputs inputs) "list.zig"))
+                   ".")
+                  (for-each make-file-writable (find-files "."))
+                  (for-each
+                   (lambda (libc)
+                     (with-directory-excursion libc
+                       (invoke (string-append #$output "/bin/zig")
+                               "run" "consolidate.zig")
+                       (install-file
+                        "abilists"
+                        (string-append #$output "/lib/zig/libc/" libc))))
+                   '("freebsd"
+                     "glibc"
+                     "netbsd")))))))))
+    (inputs
+     (modify-inputs (package-inputs zig-0.14)
+       (replace "clang" clang-20)
+       (replace "lld" lld-20)))
+    (native-inputs
+     (modify-inputs (package-native-inputs zig-0.14)
+       (delete "glibc-abi-tool")
+       (prepend zig-0.15-libc-abi-tools)
+       (replace "llvm" llvm-20)
+       (replace "zig" `(,zig-0.14.0-1197 "zig1"))))
+    (properties `((max-silent-time . 9600)
+                  ,@(clang-compiler-cpu-architectures "20")))))
+
 (define-public zig zig-0.13)

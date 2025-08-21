@@ -1,0 +1,122 @@
+From d35c341322f6e84607350058007bd5be3d1d294a Mon Sep 17 00:00:00 2001
+From: Hilton Chain <hako@ultrarare.space>
+Date: Fri, 29 Nov 2024 14:13:46 +0800
+Subject: [PATCH] Fix RUNPATH issue.
+
+Add needed libraries and libc to RUNPATH when CROSS_LIBRARY_PATH or LIBRARY_PATH
+is set.
+---
+ lib/std/Build/Step/Compile.zig |  2 ++
+ src/link/Elf.zig               |  7 +++++++
+ src/link/Lld.zig               |  7 +++++++
+ src/main.zig                   | 34 +++++++++++++++++++++++++++++++++-
+ 4 files changed, 49 insertions(+), 1 deletion(-)
+
+diff --git a/lib/std/Build/Step/Compile.zig b/lib/std/Build/Step/Compile.zig
+index 79d3694c02..7f6bddbea6 100644
+--- a/lib/std/Build/Step/Compile.zig
++++ b/lib/std/Build/Step/Compile.zig
+@@ -794,6 +794,8 @@ fn runPkgConfig(compile: *Compile, lib_name: []const u8) !PkgConfigResult {
+             try zig_cflags.append(arg);
+         } else if (mem.startsWith(u8, arg, wl_rpath_prefix)) {
+             try zig_cflags.appendSlice(&[_][]const u8{ "-rpath", arg[wl_rpath_prefix.len..] });
++        } else if (mem.startsWith(u8, arg, "-Wl,-rpath=")) {
++            try zig_libs.appendSlice(&[_][]const u8{ "-L", arg["-Wl,-rpath=".len..] });
+         } else if (b.debug_pkg_config) {
+             return compile.step.fail("unknown pkg-config flag '{s}'", .{arg});
+         }
+diff --git a/src/link/Elf.zig b/src/link/Elf.zig
+index 99d0ad71b0..8017f4c088 100644
+--- a/src/link/Elf.zig
++++ b/src/link/Elf.zig
+@@ -988,6 +988,13 @@ fn dumpArgvInit(self: *Elf, arena: Allocator) !void {
+             try argv.appendSlice(gpa, &.{ "-rpath", rpath });
+         }
+ 
++        if (std.zig.system.NativePaths.isGuix(arena) and comp.config.link_libc and comp.config.link_mode == .dynamic) {
++            if (self.base.comp.libc_installation) |libc_installation| {
++                try argv.append(gpa, "-rpath");
++                try argv.append(gpa, libc_installation.crt_dir.?);
++            }
++        }
++
+         try argv.appendSlice(gpa, &.{
+             "-z",
+             try std.fmt.allocPrint(arena, "stack-size={d}", .{self.base.stack_size}),
+diff --git a/src/link/Lld.zig b/src/link/Lld.zig
+index 48872f7077..814f661692 100644
+--- a/src/link/Lld.zig
++++ b/src/link/Lld.zig
+@@ -1071,6 +1071,13 @@ fn elfLink(lld: *Lld, arena: Allocator) !void {
+             }
+         }
+ 
++        if (std.zig.system.NativePaths.isGuix(arena) and comp.config.link_libc and link_mode == .dynamic) {
++            if (comp.libc_installation) |libc_installation| {
++                try argv.append("-rpath");
++                try argv.append(libc_installation.crt_dir.?);
++            }
++        }
++
+         if (have_dynamic_linker and
+             (comp.config.link_libc or comp.root_mod.resolved_target.is_explicit_dynamic_linker))
+         {
+diff --git a/src/main.zig b/src/main.zig
+index 02b1b8f84b..ddc4ae8014 100644
+--- a/src/main.zig
++++ b/src/main.zig
+@@ -3910,7 +3910,7 @@ fn createModule(
+                 create_module.want_native_include_dirs = true;
+         }
+ 
+-        if (create_module.each_lib_rpath orelse resolved_target.is_native_os) {
++        if (create_module.each_lib_rpath orelse false) {
+             try create_module.rpath_list.ensureUnusedCapacity(arena, create_module.lib_directories.items.len);
+             for (create_module.lib_directories.items) |lib_directory| {
+                 create_module.rpath_list.appendAssumeCapacity(lib_directory.path.?);
+@@ -3982,6 +3982,28 @@ fn createModule(
+             else => {},
+         };
+ 
++        if (std.zig.system.NativePaths.isGuix(arena)) {
++            for (create_module.link_inputs.items) |link_input| {
++                if (link_input.path()) |lib| {
++                    const lib_name = lib.sub_path;
++                    if (Compilation.classifyFileExt(lib_name) == .shared_library) {
++                        if (fs.path.isAbsolute(lib_name)) {
++                            const lib_dir_path = fs.path.dirname(lib_name).?;
++                            try create_module.rpath_list.append(arena, lib_dir_path);
++                            continue;
++                        }
++                        for (create_module.lib_directories.items) |lib_dir| {
++                            const lib_dir_path = lib_dir.path.?;
++                            if (try libPathExists(arena, lib_dir_path, lib_name)) {
++                                try create_module.rpath_list.append(arena, lib_dir_path);
++                                break;
++                            }
++                        }
++                    }
++                }
++            }
++        }
++
+         create_module.resolved_options = Compilation.Config.resolve(create_module.opts) catch |err| switch (err) {
+             error.WasiExecModelRequiresWasi => fatal("only WASI OS targets support execution model", .{}),
+             error.SharedMemoryIsWasmOnly => fatal("only WebAssembly CPU targets support shared memory", .{}),
+@@ -7633,3 +7655,13 @@ fn addLibDirectoryWarn2(
+         .path = path,
+     });
+ }
++
++fn libPathExists(arena: Allocator, lib_dir_path: []const u8, lib_name: []const u8) !bool {
++    const lib_path = try std.fmt.allocPrint(arena, "{s}{s}{s}", .{
++        lib_dir_path,
++        fs.path.sep_str,
++        lib_name,
++    });
++    fs.cwd().access(lib_path, .{}) catch return false;
++    return true;
++}
+-- 
+2.50.1
+
