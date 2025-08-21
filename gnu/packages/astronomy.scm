@@ -4140,16 +4140,16 @@ across many files.")
 (define-public python-glue-qt
   (package
     (name "python-glue-qt")
-    (version "0.3.3")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch) ; no fresh release PyPI
        (uri (git-reference
-             (url "https://github.com/glue-viz/glue-qt")
-             (commit (string-append "v" version))))
+              (url "https://github.com/glue-viz/glue-qt")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14qzxszpzjz57bl75ybj8jlx73cd8lsgbb8id9gx4anq9sydzgqj"))))
+        (base32 "1ay0y0g2vgy2mn1dk9yxim0449lnny9fd7lplqqwy9vxhkh4gnxp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4158,17 +4158,16 @@ across many files.")
           (add-before 'build 'set-env-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-           (add-before 'check 'prepare-x
-             (lambda _
-               (system "Xvfb &")
-               (setenv "DISPLAY" ":0")
-               (setenv "HOME" "/tmp"))))))
+          (add-before 'check 'prepare-x
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0")
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-objgraph
            python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel
+           python-setuptools-next
+           python-setuptools-scm-next
            xorg-server-for-tests))
     (propagated-inputs
      (list python-astropy
