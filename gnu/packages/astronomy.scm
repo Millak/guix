@@ -7197,13 +7197,13 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 (define-public python-specutils
   (package
     (name "python-specutils")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "specutils" version))
        (sha256
-        (base32 "0ngq4r7awkbwdbi7a8isj6iw66xk3s26yjp0c0qvl6wvf9hby59r"))))
+        (base32 "02yf0s0qcwhj7qn0l3glvdlap4pr15s4hm2ki14py2k5sfv8j0ab"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7235,10 +7235,9 @@ of axis order, spatial projections, and spectral units that exist in the wild.
     (native-inputs
      (list python-matplotlib
            python-pytest-astropy
-           python-setuptools
+           python-setuptools-next
            python-setuptools-scm
-           python-spectral-cube
-           python-wheel))
+           python-spectral-cube))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
