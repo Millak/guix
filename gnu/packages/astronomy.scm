@@ -138,7 +138,7 @@
 (define-public alfa
   (package
     (name "alfa")
-    (version "2.2")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -146,7 +146,7 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0aqxqar36822mh373awsl79j7zn8vik4yddyydsxv0c76gn4i2k3"))
+                "1wi7pjra49qyyz8qz2qcgjcjck16ld0zczavxqn2xksdx1p99ajs"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
