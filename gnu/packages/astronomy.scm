@@ -1807,13 +1807,13 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "4.3.0")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "0z88vzk3z9cdfafv8rbw4l6kz6panxamd21zafs6hj0w3zxpa7cn"))))
+        (base32 "0gincjs1vn6wxryazbkgmxy45cn1azb2yphj7nwg05yjwccn257p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
