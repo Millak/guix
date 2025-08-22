@@ -8451,7 +8451,8 @@ Telescope, HST}).")
               ;; For tests: Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-dask
+     (list nss-certs-for-test
+           python-dask
            python-pytest-astropy
            python-pytest-mpl
            python-pytest-xdist
