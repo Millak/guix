@@ -1398,7 +1398,7 @@ drags, snap-to-border support, and virtual desktops.")
 /share/vim/vimfiles/pack/guix/start/fluxbox/syntax"))))
           (add-after 'install 'install-xsession
             (lambda _
-              (let ((apps (string-append #$output "/share/applications")))
+              (let ((apps (string-append #$output "/share/xsessions")))
                 (mkdir-p apps)
                 (make-desktop-entry-file
                  (string-append apps "/fluxbox.desktop")
