@@ -30623,6 +30623,30 @@ When @code{gac-automatically-push-p} is non-nil, it also tries to push to the
 current upstream.")
     (license license:gpl3+)))
 
+(define-public emacs-ultra-scroll
+  (package
+    (name "emacs-ultra-scroll")
+    (version "0.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jdtsmith/ultra-scroll")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0k1xqkxq89mz8dvzbfpks3jnrcmbd0hcz8a0hib1m3ka55hpczqz"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (home-page "https://github.com/jdtsmith/ultra-scroll")
+    (synopsis "Scroll Emacs like lightning")
+    (description
+     "@code{ultra-scroll} is a smooth-scrolling package for Emacs.  It
+provides highly optimized, pixel-precise smooth-scrolling which can readily
+keep up with the very high event rates of modern track-pads and high-precision
+wheel mice.")
+    (license license:gpl3+)))
+
 (define-public emacs-smooth-scroll
   (package
     (name "emacs-smooth-scroll")
