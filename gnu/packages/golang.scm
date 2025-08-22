@@ -511,52 +511,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   ;; GOAMD defaults to 'v1' so we match the default elsewhere.
   (list "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
 
-(define-public go-1.18
-  (package
-    (inherit go-1.17)
-    (name "go")
-    (version "1.18.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/golang/go")
-             (commit (string-append "go" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0ph3ajfq5q8j3nd91pfb25pm21aiphc58zf7fwis0h3a6nqbdyq9"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments go-1.17)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'adjust-test-suite)
-           (replace 'patch-gcc:lib
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
-                 ;; Add libgcc to runpath
-                 (substitute* "src/cmd/link/internal/ld/lib.go"
-                   (("!rpath.set") "true"))
-                 (substitute* "src/cmd/go/internal/work/gccgo.go"
-                   (("cgoldflags := \\[\\]string\\{\\}")
-                    (string-append "cgoldflags := []string{"
-                                   "\"-Wl,-rpath=" gcclib "\""
-                                   "}"))
-                   (("\"-lgcc_s\", ")
-                    (string-append
-                     "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
-                 (substitute* "src/cmd/go/internal/work/gc.go"
-                   (("ldflags, err := setextld\\(ldflags, compiler\\)")
-                    (string-append
-                     "ldflags, err := setextld(ldflags, compiler)\n"
-                     "ldflags = append(ldflags, \"-r\")\n"
-                     "ldflags = append(ldflags, \"" gcclib "\")\n"))))))))))
-    (properties
-     `((compiler-cpu-architectures
-         ("armhf" ,@%go-1.17-arm-micro-architectures)
-         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
-         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
-
 (define-public go-1.20
   (package
     (inherit go-1.17)
@@ -1121,7 +1075,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 
 ;; Make those public so they have a corresponding Cuirass job.
 (define-public go-std-1.17 (make-go-std go-1.17))
-(define-public go-std-1.18 (make-go-std go-1.18))
 (define-public go-std-1.20 (make-go-std go-1.20))
 (define-public go-std-1.21 (make-go-std go-1.21))
 (define-public go-std-1.22 (make-go-std go-1.22))
