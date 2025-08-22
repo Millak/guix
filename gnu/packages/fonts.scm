@@ -1581,6 +1581,31 @@ and Chrome OS, and the recommended font for the
 visual language \"Material Design\".")
     (license license:asl2.0)))
 
+(define-public font-google-roboto-mono
+  (package
+    (name "font-google-roboto-mono")
+    (version "3.001")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googlefonts/RobotoMono")
+             (commit "8f651634e746da6df6c2c0be73255721d24f2372")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00ddmr7yvb9isakfvgv6g74m80fmg81dmh1hrrdyswapaa7858a5"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/googlefonts/RobotoMono")
+    (synopsis "Monospaced Roboto font")
+    (description
+     "Roboto Mono is a monospaced addition to the Roboto type family.
+Like the other members of the Roboto family, the fonts are optimized for
+readability on screens across a wide variety of devices and reading
+environments.  While the monospaced version is related to its variable width
+cousin, it doesn't hesitate to change forms to better fit the constraints of a
+monospaced environment.")
+    (license license:silofl1.1)))
+
 (define-public font-borg-sans-mono
   (package
     (name "font-borg-sans-mono")
