@@ -4715,6 +4715,8 @@ milliarcsecond).")
               (substitute* "pyproject.toml"
                 ;; drizzle>=2.0.1,<2.1.0
                 ((">=2.0.1,<2.1.0") ">=2.0.1")
+                ;; stcal>=1.14.1,<1.15.0
+                ((">=1.14.1,<1.15.0") "")
                 ;; scipy>=1.14.1
                 (("1.14.1") "1.12.0")
                 ;; XXX: Can't detect opencv-python version. The input opencv
