@@ -33,7 +33,7 @@
 ;;; Copyright © 2022-2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
-;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
+;;; Copyright © 2023, 2025 Sughosha <Sughosha@disroot.org>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -3297,6 +3297,32 @@ multi-threaded applications and network applications.")
 std::filesystem compatible helper library, based on the C++17 and C++20 specs,
 but implemented for C++11, C++14, C++17 or C++20.")
     (home-page "https://github.com/gulrak/filesystem")
+    (license license:expat)))
+
+(define-public bitsery
+  (package
+    (name "bitsery")
+    (version "5.2.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fraillt/bitsery")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s628p6qayajan4v8arsmbvzsml8zhc56k01zhmnlakbl7v0vwip"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DBITSERY_BUILD_TESTS=ON"
+                   "-DCMAKE_CXX_FLAGS=-Wno-error=maybe-uninitialized")))
+    (native-inputs (list googletest))
+    (synopsis "Header only C++ binary serialization library")
+    (description "This package provides header only C++ binary serialization
+library.  It is designed around the networking requirements for real-time data
+delivery, especially for games.")
+    (home-page "https://github.com/fraillt/bitsery")
     (license license:expat)))
 
 (define-public cpp-mustache
