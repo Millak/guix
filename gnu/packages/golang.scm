@@ -557,44 +557,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
          ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
 
-(define-public go-1.19
-  (package
-    (inherit go-1.18)
-    (name "go")
-    (version "1.19.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/golang/go")
-             (commit (string-append "go" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0rrpfhv6vdwqs0jnld0iqsky5wlirir05czf34kvsf2db21nzdi9"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments go-1.18)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            ;; These are recurring test failures, depending on having a new
-            ;; enough version of gccgo.  gccgo-12.2 fails with go-1.19.7.
-            ;; https://github.com/golang/go/issues/22224
-            ;; https://github.com/golang/go/issues/25324
-            (add-after 'unpack 'skip-TestGoPathShlibGccgo-tests
-              (lambda _
-                (substitute* "misc/cgo/testshared/shared_test.go"
-                  (("TestGoPathShlibGccgo.*" all)
-                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n"))
-                  (("TestTwoGopathShlibsGccgo.*" all)
-                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n")))))
-            (replace 'install-doc-files
-              (lambda _
-                (for-each (lambda (file)
-                            (install-file file (string-append
-                                                #$output "/share/doc/go")))
-                          '("CONTRIBUTING.md" "PATENTS" "README.md"
-                            "SECURITY.md"))))))))))
-
 (define-public go-1.20
   (package
     (inherit go-1.17)
@@ -1160,7 +1122,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 ;; Make those public so they have a corresponding Cuirass job.
 (define-public go-std-1.17 (make-go-std go-1.17))
 (define-public go-std-1.18 (make-go-std go-1.18))
-(define-public go-std-1.19 (make-go-std go-1.19))
 (define-public go-std-1.20 (make-go-std go-1.20))
 (define-public go-std-1.21 (make-go-std go-1.21))
 (define-public go-std-1.22 (make-go-std go-1.22))
