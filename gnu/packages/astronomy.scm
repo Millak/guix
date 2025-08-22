@@ -4504,7 +4504,7 @@ scheme and builds with the HEALPix C++ library.")
            python-setuptools
            python-wheel))
     (propagated-inputs
-     (list python-astropy
+     (list python-astropy-6
            python-emcee
            python-h5py
            python-lenstronomy
