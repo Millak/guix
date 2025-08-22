@@ -161,6 +161,7 @@
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright @ 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright @ 2025 Nik Gaffney <nik@fo.am>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41417,6 +41418,31 @@ supports generation of phonetic and numeric passwords.")
     (description
      "This package provides two user facing interactive functions, that will encode
 text into a QR Code and show it in a separate buffer.")
+    (license license:gpl3+)))
+
+(define-public emacs-quiet
+  (package
+    (name "emacs-quiet")
+    (version "20230530.859")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/zzkt/quiet.git")
+              (commit
+               "985b56606517971330c08686c49a8d06db763f3c")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0141z6acdffy96ghrwghzgqnv3mypvfkgci413dfaym4z80iwqdz"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))
+    (home-page "https://codeberg.org/zzkt/quiet")
+    (synopsis "Disconnect from the online world for a while")
+    (description
+     "Simple package to disconnect from the online world for a while,
+possibly reconnecting later.  Any interruptions or distractions which occur
+once the command is run are guaranteed to be local.")
     (license license:gpl3+)))
 
 (define-public emacs-csv
