@@ -3731,6 +3731,45 @@ annotation, provides Python genomic feature search and sequence retrieval from
 the managed genomes, STAR indexing and mapping and more.")
       (license license:gpl3+))))
 
+(define-public python-pybiomart
+  (package
+    (name "python-pybiomart")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pybiomart" version))
+       (sha256
+        (base32 "1znq4msa0ibjxk1yirbrfd09w9zfn0jrgna6qrq0d0i1p46w5sp9"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-future
+           python-pandas
+           python-requests
+           python-requests-cache))
+    (native-inputs
+     (list python-bumpversion
+           python-pytest
+           python-pytest-cov
+           python-pytest-helpers-namespace
+           python-pytest-mock
+           python-coveralls
+           python-setuptools
+           python-sphinx
+           python-sphinx-autobuild
+           python-sphinx-rtd-theme
+           python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      ;; Attempts to access the web.
+      #~(list "--ignore=tests/test_dataset.py")))
+    (home-page "https://github.com/jrderuiter/pybiomart")
+    (synopsis "A simple pythonic interface to biomart")
+    (description
+     "Pybiomart provides a simple pythonic interface to biomart.")
+    (license license:expat)))
+
 (define-public python-pygam
   (package
     (name "python-pygam")
@@ -3739,8 +3778,8 @@ the managed genomes, STAR indexing and mapping and more.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dswah/pyGAM")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dswah/pyGAM")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1bv404idswsm2ay3yziq1i2cbydq4f3vjav5s4i15bgd13k7zvim"))))
@@ -4659,26 +4698,6 @@ operations and scanRBP for RNA-protein binding studies.  The whole analysis is
 self-contained (one single directory) and the platform is written in Python,
 in a modular way.")
     (license license:gpl3)))
-
-(define-public python-fastalite
-  (package
-    (name "python-fastalite")
-    (version "0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastalite" version))
-       (sha256
-        (base32
-         "1qli6pxp77i9xn2wfciq2zaxhl82bdxb33cpzqzj1z25yd036wqj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; Test data is not distributed.
-    (home-page "https://github.com/nhoffman/fastalite")
-    (synopsis "Simplest possible FASTA parser")
-    (description "This library implements a FASTA and a FASTQ parser without
-relying on a complex dependency tree.")
-    (license license:expat)))
 
 (define-public biosoup
   (package
