@@ -156,14 +156,9 @@ using the CMake build system.")
 (define %common-disabled-tests/hurd
   '("CTestTestTimeout"
     "CTestTestRerunFailed"
-    "RunCMake.CompilerChange"
     "RunCMake.ctest_test"
-    "RunCMake.file"
-    "RunCMake.BundleUtilities"
-    "RunCMake.configure_file"
     "RunCMake.CTestTimeout"
     "RunCMake.CTestTimeoutAfterMatch"
-    "RunCMake.CommandLine"
     "RunCMake.CTestCommandLine"
     ;; Fixed in v4.0.0
     "RunCMake.RuntimePath"))
