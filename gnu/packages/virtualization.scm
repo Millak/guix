@@ -2705,7 +2705,11 @@ by default and can be made read-only.")
                                   "/bochs-" version ".tar.gz"))
               (sha256
                (base32
-                "1al1fx8dbb0ny7a4wbngnz8pqav0nl6rhakb434jqnpka4mm8vyb"))))
+                "1al1fx8dbb0ny7a4wbngnz8pqav0nl6rhakb434jqnpka4mm8vyb"))
+              (snippet
+               #~(begin
+                   ;; This file is non-free.
+                   (delete-file "bios/i440fx.bin")))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
