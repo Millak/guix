@@ -3676,7 +3676,7 @@ semantics.")
                (base32
                 "1qwpfba8g55jjv0xnsk4hhf2cmhk7mdirxx115cvnjjw97ppy0z0"))))
     (build-system gnu-build-system)
-    (native-inputs (list gcc-11 python-wrapper))
+    (native-inputs (list python-wrapper))
     (inputs (list postgresql))
     (arguments '(#:tests? #f))      ;tests require a running PostgreSQL server
     (synopsis "C++ connector for PostgreSQL")
