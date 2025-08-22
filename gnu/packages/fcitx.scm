@@ -51,57 +51,6 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg))
 
-(define-public fcitx-qt5
-  (package
-    (name "fcitx-qt5")
-    (version "1.2.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/fcitx/fcitx-qt5.git")
-         (commit version)))
-       (file-name
-        (git-file-name name version))
-       (sha256
-        (base32 "1gw51m7hfnplkym33dzwfa8g0q20ji61pr80s2i6xhy2glrm1ssj"))))
-    (build-system qt-build-system)
-    (arguments
-     `(#:tests? #f                      ; No target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-install-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "qt5/quickphrase-editor/CMakeLists.txt"
-               (("\\$\\{FCITX4_ADDON_INSTALL_DIR\\}")
-                (string-append
-                 (assoc-ref outputs "out")
-                 "/lib/fcitx")))
-             (substitute* "qt5/platforminputcontext/CMakeLists.txt"
-               (("\\$\\{CMAKE_INSTALL_QTPLUGINDIR\\}")
-                (string-append
-                 (assoc-ref outputs "out")
-                 "/lib/qt5/plugins")))
-             #t)))))
-    (native-inputs
-     (list extra-cmake-modules pkg-config))
-    (inputs
-     `(("fcitx" ,fcitx)
-       ("libintl" ,intltool)
-       ("libxkbcommon" ,libxkbcommon)))
-    (propagated-inputs
-     (list qtbase-5))
-    (synopsis "Fcitx Qt5 Input Context")
-    (description "This package provides a Qt5 frontend for fcitx.")
-    (home-page "https://github.com/fcitx/fcitx-qt5/")
-    (license
-     (list
-      ;; Plugin
-      bsd-3
-      ;; Others
-      gpl2+))))
-
 (define-public presage
   (package
     (name "presage")
