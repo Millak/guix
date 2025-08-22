@@ -2708,8 +2708,12 @@ by default and can be made read-only.")
                 "1al1fx8dbb0ny7a4wbngnz8pqav0nl6rhakb434jqnpka4mm8vyb"))
               (snippet
                #~(begin
+                   (use-modules (guix build utils))
                    ;; This file is non-free.
-                   (delete-file "bios/i440fx.bin")))))
+                   (delete-file "bios/i440fx.bin")
+                   ;; make -C bios bios-clean
+                   (for-each delete-file
+                             (find-files "bios" "^BIOS-bochs-"))))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
