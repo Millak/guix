@@ -73,6 +73,7 @@
 ;;; Copyright © 2025 Formbi <formbi@protonmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2025 VnPower <vnpower@loang.net>
+;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3152,54 +3153,55 @@ video streaming services of the Finnish national broadcasting company Yle.")
              (commit version)))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
-       (snippet '(substitute* "pyproject.toml"
-                   (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
+       (snippet #~(substitute* "pyproject.toml"
+                    (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
         (base32 "051y9pb2imdrpi065d9l2xfmd68l22ahbz90z81yqv7kv84j9mal"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:test-flags '("--ignore=test/test_websockets.py")
-       #:phases
-       (modify-phases %standard-phases
-         ;; See <https://issues.guix.gnu.org/43418#5>.
-         ;; ffmpeg is big but required to request free formats from, e.g.,
-         ;; YouTube so pull it in unconditionally.  Continue respecting the
-         ;; --ffmpeg-location argument.
-         (add-after 'unpack 'default-to-the-ffmpeg-input
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "yt_dlp/postprocessor/ffmpeg.py"
-               (("location = self.get_param(.*)$")
-                (string-append
+     (list
+      #:tests? (not (%current-target-system))
+      #:test-flags #~'("--ignore=test/test_websockets.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See <https://issues.guix.gnu.org/43418#5>.
+          ;; ffmpeg is big but required to request free formats from, e.g.,
+          ;; YouTube so pull it in unconditionally.  Continue respecting the
+          ;; --ffmpeg-location argument.
+          (add-after 'unpack 'default-to-the-ffmpeg-input
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "yt_dlp/postprocessor/ffmpeg.py"
+                (("location = self.get_param(.*)$")
+                 (string-append
                   "location = '"
                   (dirname (search-input-file inputs "bin/ffmpeg"))
                   "'\n")))))
-         (add-before 'build 'build-generated-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             (if (assoc-ref inputs "pandoc")
-               (invoke "make"
-                       "PYTHON=python"
-                       "yt-dlp"
-                       "yt-dlp.1"
-                       "completions")
-               (invoke "make"
-                       "PYTHON=python"
-                       "yt-dlp"
-                       "completions"))))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               (apply invoke "pytest"
-                      "-k"
-                      (string-append
-                       "not download"
-                       ;; TestHTTPRequestHandler tests are disabled due to
-                       ;; https://github.com/yt-dlp/yt-dlp/issues/13927
-                       " and not "
-                       "test_incompleteread"
-                       " and not "
-                       "test_partial_read_then_full_read")
-                      test-flags)))))))
+          (add-before 'build 'build-generated-files
+            (lambda* (#:key inputs #:allow-other-keys)
+              (if (search-input-file inputs "bin/pandoc")
+                  (invoke "make"
+                          "PYTHON=python"
+                          "yt-dlp"
+                          "yt-dlp.1"
+                          "completions")
+                  (invoke "make"
+                          "PYTHON=python"
+                          "yt-dlp"
+                          "completions"))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "pytest"
+                       "-k"
+                       (string-append
+                        "not download"
+                        ;; TestHTTPRequestHandler tests are disabled due to
+                        ;; https://github.com/yt-dlp/yt-dlp/issues/13927
+                        " and not "
+                        "test_incompleteread"
+                        " and not "
+                        "test_partial_read_then_full_read")
+                       test-flags)))))))
     (inputs (list ffmpeg python-brotli
                   python-certifi
                   python-mutagen
