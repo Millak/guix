@@ -2268,16 +2268,16 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "https://profanity-im.github.io/tarballs/profanity-"
-                       version ".tar.gz"))
+        (string-append "https://github.com/profanity-im/profanity/releases/download/" version
+                       "/profanity-" version ".tar.gz"))
        (sha256
         (base32
-         "1yy7x9ycqg6c65k66z47p8mvj48qc0pa4as1lk1agj8ffn7mg7sa"))))
+         "0163zs1070yhfsxzfknwagjbqi6jppwb117kqlggsy51ka28mqn1"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
