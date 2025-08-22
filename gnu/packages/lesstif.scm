@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -56,9 +56,9 @@
     (license license:gpl2+))) ; some files are lgpl2.1+ or x11
 
 (define-public motif
-  ;; This commit is from September 2021 and v2.3.8 from 2017.
-  (let ((commit "59858b0811e8d9dfaeb142f2b5a96f55482be1ed")
-        (revision "0"))
+  ;; This commit is from February 2023 and v2.3.8 from 2017.
+  (let ((commit "0f556b0873c72ba1152a12fd54c3198ee039e413")
+        (revision "1"))
     (package
       (name "motif")
       (version (git-version "2.3.8" revision commit))
@@ -71,7 +71,7 @@
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0yycq0vzga9qmgbfzn2d02ilpwxixwdv2j1d8sddl4dripcrg21m"))))
+           "1g28i4978p9dpcdxv2yx4m17bchdypm3yy6m6gzchdlrv2iklhl9"))))
       (build-system gnu-build-system)
       (inputs
        (list libx11 xorgproto))
