@@ -4868,6 +4868,52 @@ consensus sequences.")
 long-read sequencing data.")
     (license license:expat)))
 
+(define-public python-circe
+  (package
+    (name "python-circe")
+    (version "0.3.8")
+    (home-page "https://github.com/cantinilab/circe")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "050zwg6qvd6sa4xd41sn4gigwmyfn0v6r93j5kvpbxklq4144q15"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-anndata
+           python-dask
+           python-distributed
+           python-joblib
+           python-numpy
+           python-pandas
+           python-rich
+           python-scanpy
+           python-scikit-learn))
+    (inputs
+     (list lapack openblas))
+    (native-inputs
+     (list python-cython
+           python-setuptools
+           python-pybiomart
+           python-wheel))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (synopsis "Cis-regulatory interactions between chromatin regions")
+    (description "Circe is a Python package for inferring co-accessibility
+networks from single-cell ATAC-seq data, using skggm for the graphical lasso
+and python-scanpy for data processing.")
+    (license license:gpl3)))
+
 (define-public qtltools
   (package
     (name "qtltools")
