@@ -1574,10 +1574,6 @@ provides the GNU compiler for the Go programming language.")
                     (("(defaultGOROOTValue.*?return `)[^`]+" _ start)
                      (string-append start "/nonexistent"))))))))))))
 
-;; Provides go-1.16.5
-(define-public gccgo-11
-  (make-gccgo gcc-11))
-
 ;; Provides go-1.18
 (define-public gccgo-12
   (make-gccgo gcc-12))
