@@ -4175,7 +4175,7 @@ asynchronously and at a user-defined speed.")
 (define-public chess
   (package
     (name "chess")
-    (version "6.2.11")
+    (version "6.3.0")
     (source
      (origin
        (method url-fetch)
@@ -4183,7 +4183,7 @@ asynchronously and at a user-defined speed.")
                            ".tar.gz"))
        (sha256
         (base32
-         "1gg9764ld7skn7jps9pma6x8zqf9nka1cf5nryq197f6lpp404fq"))))
+         "0fm27h1xv56v1g1zq0cd9wlchvfw8iwmsgj4nyaxcalc171bwdqb"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
