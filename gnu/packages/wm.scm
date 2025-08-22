@@ -2758,16 +2758,16 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~emersion/kanshi")
+             (url "https://gitlab.freedesktop.org/emersion/kanshi")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g5glpkcn54ypfym4lpfdjai479yfazcai1rg86bn72nkcbpwfql"))))
+        (base32 "1aw43fdrrgywghy59ahfxwq0613ydkpl2j6p042c0iwqv1b6fhgp"))))
     (build-system meson-build-system)
     (inputs (list libscfg libvarlink wayland))
     (native-inputs (append (if (%current-target-system)
