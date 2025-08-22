@@ -2610,14 +2610,20 @@ input and output.")
          "1s650nwnabx66w584m1cyw82icyym6hv5kzfsbp38cinkr5klh9j"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f ;; TODO: NameError: uninitialized constant Config
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-LIB
-           (lambda _
-             ;; This is used in the Rakefile, and setting it avoids an issue
-             ;; with running the tests.
-             (setenv "LIB" "options"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "spec/options_spec.rb"
+                  (("require .* \"/spec_helper\"")
+                   "require \"spec_helper\"\n"))
+                (substitute* "spec/spec_helper.rb"
+                  (("require 'spec'")
+                   "require 'rspec'\n"))
+                (invoke "rspec" "spec")))))))
+    (native-inputs (list ruby-rspec))
     (synopsis "Ruby library to parse options from *args cleanly")
     (description
      "The @code{options} library helps with parsing keyword options in Ruby
