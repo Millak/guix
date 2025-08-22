@@ -3325,6 +3325,44 @@ delivery, especially for games.")
     (home-page "https://github.com/fraillt/bitsery")
     (license license:expat)))
 
+(define-public function2
+  (package
+    (name "function2")
+    (version "4.2.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Naios/function2")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sn760zk79hfbf21v9qvf67mrrlnmw6a2rhrp5l440b6f4f3xbzr"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Unbundle googletest.
+               '(begin
+                  (delete-file-recursively "test")
+                  (substitute* "CMakeLists.txt"
+                    (("add_subdirectory\\(test\\)") ""))))))
+    (build-system cmake-build-system)
+    ;; The test size_match_layout fails on i586/i686. For more info:
+    ;; https://github.com/Naios/function2/issues/57
+    (arguments
+     (list #:tests? #f))
+    (synopsis "Improved implementations of std::function")
+    (description "This package provides the following implementations of
+std::function:
+@itemize
+@item copyable @code{fu2::function}
+@item move-only @code{fu2::unique_function} (capable of holding move only
+ types)
+@item non-owning @code{fu2::function_view} (capable of referencing callables in
+ a non owning way)
+@end itemize")
+    (home-page "https://naios.github.io/function2/")
+    (license license:boost1.0)))
+
 (define-public cpp-mustache
   (package
     (name "cpp-mustache")
