@@ -3279,6 +3279,31 @@ plugins and exposes their ports as JACK ports, essentially making any LV2
 plugin function as a JACK application.")
     (license license:isc)))
 
+(define-public clap
+  (package
+    (name "clap")
+    (version "1.2.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/free-audio/clap")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ryg21qm4262n9hv259lfhlg25c8k3i2qgqav37r10q55jx2w8j3"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; FIXME: With "-DCLAP_BUILD_TESTS=ON" the test executables do not build.
+     (list #:tests? #f))
+    (synopsis "Audio Plugin API")
+    (description
+     "CLAP stands for CLever Audio Plugin.  It is an audio plugin ABI which
+defines a standard for Digital Audio Workstations and audio plugins to work
+together.")
+    (home-page "https://cleveraudio.org/")
+    (license license:expat)))
+
 (define-public ladspa
   (package
     (name "ladspa")
