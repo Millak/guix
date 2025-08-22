@@ -2742,7 +2742,14 @@ by default and can be made read-only.")
                    "--enable-pnic"
                    "--enable-e1000"
                    "--enable-using-libslirp"
-                   "--with-vncsrv")))
+                   "--with-vncsrv")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'make-reproducible
+                 (lambda _
+                   (substitute* "bios/Makefile.in"
+                     (("BUILDDATE.*")
+                      "BUILDDATE = `date --utc --date='@0'")))))))
     (native-inputs (list pkg-config))
     (inputs (list libslirp libx11 libvnc readline wxwidgets))
     (home-page "https://bochs.sourceforge.io/")
