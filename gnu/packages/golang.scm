@@ -597,7 +597,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 
 (define-public go-1.20
   (package
-    (inherit go-1.19)
+    (inherit go-1.17)
     (name "go")
     (version "1.20.14")
     (source (origin
@@ -610,7 +610,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                (base32
                 "1aqhc23705q76dca3g0fzq98kxkhyq628s0811qgzgz4wmngsjfm"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments go-1.19)
+     (substitute-keyword-arguments (package-arguments go-1.17)
        ((#:parallel-tests? _ #t)
         (not (target-riscv64?)))
        ;; TODO: Disable the test(s) in misc/cgo/test/cgo_test.go
@@ -620,6 +620,45 @@ in the style of communicating sequential processes (@dfn{CSP}).")
              (not (target-riscv64?))))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (delete 'adjust-test-suite)
+            (replace 'patch-gcc:lib
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
+                  ;; Add libgcc to runpath
+                  (substitute* "src/cmd/link/internal/ld/lib.go"
+                    (("!rpath.set") "true"))
+                  (substitute* "src/cmd/go/internal/work/gccgo.go"
+                    (("cgoldflags := \\[\\]string\\{\\}")
+                     (string-append "cgoldflags := []string{"
+                                    "\"-Wl,-rpath=" gcclib "\""
+                                    "}"))
+                    (("\"-lgcc_s\", ")
+                     (string-append
+                      "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
+                  (substitute* "src/cmd/go/internal/work/gc.go"
+                    (("ldflags, err := setextld\\(ldflags, compiler\\)")
+                     (string-append
+                      "ldflags, err := setextld(ldflags, compiler)\n"
+                      "ldflags = append(ldflags, \"-r\")\n"
+                      "ldflags = append(ldflags, \"" gcclib "\")\n"))))))
+            ;; These are recurring test failures, depending on having a new
+            ;; enough version of gccgo.  gccgo-12.2 fails with go-1.19.7.
+            ;; https://github.com/golang/go/issues/22224
+            ;; https://github.com/golang/go/issues/25324
+            (add-after 'unpack 'skip-TestGoPathShlibGccgo-tests
+              (lambda _
+                (substitute* "misc/cgo/testshared/shared_test.go"
+                  (("TestGoPathShlibGccgo.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n"))
+                  (("TestTwoGopathShlibsGccgo.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n")))))
+            (replace 'install-doc-files
+              (lambda _
+                (for-each (lambda (file)
+                            (install-file file (string-append
+                                                #$output "/share/doc/go")))
+                          '("CONTRIBUTING.md" "PATENTS" "README.md"
+                            "SECURITY.md"))))
             (add-after 'disable-failing-tests 'disable-more-tests
               (lambda _
                 ;; Unclear why this test fails on x86_64.
@@ -674,7 +713,12 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      ;; We continue to use gccgo-12 since it provides go-1.18.
      (if (member (%current-system) (package-supported-systems go-1.4))
          (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17))
-         (package-native-inputs go-1.17)))))
+         (package-native-inputs go-1.17)))
+    (properties
+     `((compiler-cpu-architectures
+         ("armhf" ,@%go-1.17-arm-micro-architectures)
+         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
+         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
 
 (define-public go-1.21
   (package
