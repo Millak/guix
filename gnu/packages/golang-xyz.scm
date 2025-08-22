@@ -5391,6 +5391,28 @@ formatting information, rather than the current locale name.")
 encoding/decoding.  It has no dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-derekparker-trie
+  (package
+    (name "go-github-com-derekparker-trie")
+    (version "0.0.0-20230829180723-39f4de51ef7d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/derekparker/trie")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ik8xsxm7bd12lycga6d0zw561axmdwdqxi5qbf39n7mw41l9vj2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/derekparker/trie"))
+    (home-page "https://github.com/derekparker/trie")
+    (synopsis "Prefix/fuzzy string searching in Golang")
+    (description "Implementation of an R-Way Trie data structure.")
+    (license license:expat)))
+
 (define-public go-github-com-detailyang-go-fallocate
   (package
     (name "go-github-com-detailyang-go-fallocate")
