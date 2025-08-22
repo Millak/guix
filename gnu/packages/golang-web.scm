@@ -4168,6 +4168,30 @@ replacement for memcached in many cases.  It provides a data loading mechanism
 with caching and de-duplication that works across a set of peer processes.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-go-dap
+  (package
+    (name "go-github-com-google-go-dap")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-dap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c0941wxnpx3pscf08gr6vrn90rja8k8pjhl1px0r54kcjidd5js"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/go-dap"))
+    (home-page "https://github.com/google/go-dap")
+    (synopsis "Implementation of the Debug Adapter Protocol in Golang")
+    (description
+     "Package dap contains data types and code for Debug Adapter
+Protocol (DAP) specification.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-go-github-v31
   (package
     (name "go-github-com-google-go-github-v31")
