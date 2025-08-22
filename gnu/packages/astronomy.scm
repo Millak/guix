@@ -6124,6 +6124,8 @@ end products of specific X-ray observatories.")
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: It fails to check SunPy's optional inputs versions.
+          (delete 'sanity-check)
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
