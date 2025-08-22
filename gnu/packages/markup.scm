@@ -474,7 +474,7 @@ convert HTML to Markdown.")
 (define-public cmark
   (package
     (name "cmark")
-    (version "0.31.0")
+    (version "0.31.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -483,7 +483,7 @@ convert HTML to Markdown.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0llj68l9rxdhral0zyv0bz6yzqsxgq8d3730082sl3kx78lsq5qq"))))
+                "029x6rjlyxs50dxppaqk6lqzyy58hl0laqalmgiqr3m363pz14pq"))))
     (build-system cmake-build-system)
     (native-inputs (list python))
     (synopsis "CommonMark Markdown reference implementation")
