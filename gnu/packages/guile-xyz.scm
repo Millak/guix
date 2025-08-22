@@ -1961,17 +1961,21 @@ the Guile compiler tower to generate the DSL from AWS JSON specifications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lvxic93cyzhdq7gb22pfz5j5pf7b1pcv0ahblkan8jbhzpqxvm0"))))
+        (base32 "1lvxic93cyzhdq7gb22pfz5j5pf7b1pcv0ahblkan8jbhzpqxvm0"))
+       ;; FIXME: report upstream and remove when fixed.
+       (modules '((guix build utils)))
+       (snippet '(substitute* "module/Makefile.am"
+                   (("compile-ffi -o mosquitto-nyacc.scm")
+                    "compile-ffi -X -o $(srcdir)/ffi/mosquitto-nyacc.scm")))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags
-      #~(list "GUILE_AUTO_COMPILE=0")
+      #:parallel-build? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'patch-extension-path
             (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "HOME" "/tmp")
+              (setenv "GUILE_AUTO_COMPILE" "0")
               (with-directory-excursion "module"
                 (invoke "make" "ffi/mosquitto.scm")
                 (substitute* "ffi/mosquitto.scm"
@@ -1983,7 +1987,7 @@ the Guile compiler tower to generate the DSL from AWS JSON specifications.")
     (native-inputs (list autoconf
                          automake
                          guile-3.0
-                         nyacc-2.01
+                         nyacc
                          pkg-config
                          texinfo))
     (inputs (list mosquitto))
