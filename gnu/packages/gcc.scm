@@ -1574,20 +1574,6 @@ provides the GNU compiler for the Go programming language.")
                     (("(defaultGOROOTValue.*?return `)[^`]+" _ start)
                      (string-append start "/nonexistent"))))))))))))
 
-(define-public gccgo-4.9
-  (custom-gcc (package
-                (inherit gcc-4.9)
-                (synopsis "Go frontend to GCC")
-                (description
-                 "This package is part of the GNU Compiler Collection and
-provides the GNU compiler for the Go programming language."))
-              "gccgo" '("go")
-              %generic-search-paths
-              ;; Suppress the separate "lib" output, because otherwise the
-              ;; "lib" and "out" outputs would refer to each other, creating
-              ;; a cyclic dependency.  <http://debbugs.gnu.org/18101>
-              #:separate-lib-output? #f))
-
 ;; Provides go-1.14.6
 (define-public gccgo-10
   (make-gccgo gcc-10))
