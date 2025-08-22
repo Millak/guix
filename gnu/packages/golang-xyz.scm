@@ -5413,6 +5413,24 @@ encoding/decoding.  It has no dependencies.")
     (description "Implementation of an R-Way Trie data structure.")
     (license license:expat)))
 
+(define-public go-github-com-derekparker-trie-v3
+  (package
+    (inherit go-github-com-derekparker-trie)
+    (name "go-github-com-derekparker-trie-v3")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/derekparker/trie")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02br0cw2wh27xffs1hsbwh145d3vpaihcd7mygf36ihdhrp00pka"))))
+    (arguments
+     (list
+      #:import-path "github.com/derekparker/trie/v3"))))
+
 (define-public go-github-com-detailyang-go-fallocate
   (package
     (name "go-github-com-detailyang-go-fallocate")
