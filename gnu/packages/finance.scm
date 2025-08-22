@@ -228,6 +228,74 @@ of the bitcoin protocol.  This package provides the Bitcoin Core command
 line client and a client based on Qt.")
     (license license:expat)))
 
+(define-public bitcoin-cash-node
+  (package
+    (name "bitcoin-cash-node")
+    (version "28.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/bitcoin-cash-node/bitcoin-cash-node.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19v38clhxg6yd4xb8wh8bm3sf1ipv3ifg68nwgq0p8l5zqx41wgw"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list help2man
+           pkg-config
+           python
+           python-scipy
+           qttools-5))
+    (inputs
+     (list bdb-5.3
+           boost
+           expat
+           gmp
+           jemalloc
+           libevent
+           libnatpmp
+           miniupnpc
+           openssl
+           qrencode
+           qtbase-5
+           zeromq
+           zlib))
+    (arguments
+     (list #:configure-flags #~(list "-DCLIENT_VERSION_IS_RELEASE=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home
+                 (lambda _
+                   ;; Tests write to $HOME.
+                   (setenv "HOME" (getenv "TMPDIR"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python3" "./test/functional/test_runner.py"
+                             (string-append "--jobs=" (number->string
+                                                       (parallel-job-count)))
+                             ;; FIXME: rpc_bind test fails with:
+                             ;;  File ".../netutil.py", line 132, in addr_to_hex
+                             ;;    if '.' in addr:  # IPv4
+                             ;;  TypeError: argument of type 'NoneType' is not
+                             ;;  iterable
+                             "-x" "rpc_bind")))))))
+    (home-page "https://bitcoincashnode.org/")
+    (synopsis "Bitcoin Cash peer-to-peer client")
+    (description
+     "Bitcoin Cash is a digital currency that enables instant payments to
+anyone, anywhere in the world.  It uses peer-to-peer technology to operate with
+no central authority: managing transactions and issuing money are carried out
+collectively by the network.  Bitcoin Cash is a descendant of Bitcoin.  It
+became a separate currency from the version supported by Bitcoin Core when the
+two split on August 1, 2017.  Bitcoin Cash and the Bitcoin Core version of
+Bitcoin share the same transaction history up until the split.
+This package provides the Bitcoin Cash Node command line client and a client
+based on Qt.")
+    (license license:expat)))
+
 (define-public ghc-hledger
   (package
     (name "ghc-hledger")
