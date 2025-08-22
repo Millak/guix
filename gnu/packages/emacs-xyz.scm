@@ -10762,7 +10762,7 @@ files which are intended to be packages.")
 (define-public emacs-el-job
   (package
     (name "emacs-el-job")
-    (version "2.4.7")
+    (version "2.4.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10771,7 +10771,7 @@ files which are intended to be packages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gspy2yvi7pyzvw73p49s42a3w104xlrwwvwykw93rf277kq4i6d"))))
+                "0acyk63052vsii7xnfp6l4n1s4063lprapp662p4p660wk559fnr"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "emacs" "-Q" "--batch"
