@@ -1049,6 +1049,35 @@ optional baked-in Evil support, antialiased separators, and an easy
 configuration language which makes it trivial to write your own themes.")
     (license license:gpl3+)))
 
+(define-public emacs-i-ching
+  (package
+    (name "emacs-i-ching")
+    (version "20241113.1642")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/zzkt/i-ching.git")
+              (commit
+               "e4339cb64a97e0d04a4cb8e7183aeec4e4ae6a29")))
+       (sha256
+        (base32
+         "08827zq4jni4bxlmjq24nbj6k2q07ks6mb47xfs2bp8hjqb0m07f"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-request))
+    (home-page "https://codeberg.org/zzkt/i-ching")
+    (synopsis "The Book of Changes")
+    (description
+     "Cast hexagrams and consult the I Ching, or 'Book of Changes' from the
+comfort of Emacs.  The I Ching can be used as a divination method, pattern
+generator or fixed point for millennia of commentary & exegesis.  This package
+provides methods for casting and describing hexagrams, querying the oracle,
+and finding patterns in randomness.  The descriptions of hexagrams and their
+classification have been drawn from public domain sources, tradition and
+antiquity.")
+    (license license:gpl3+)))
+
 (define-public emacs-inspector
   (let ((commit "0c02fd712ff89006227838e18a4685678abd9ba8")
         (revision "1"))
