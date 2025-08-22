@@ -8721,13 +8721,16 @@ to the SolarSoft data analysis environment.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: It fails to check SunPy's optional inputs versions.
+          (delete 'sanity-check)
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest
+     (list nss-certs-for-test
+           python-pytest
            python-pytest-doctestplus
            python-responses
            python-setuptools
