@@ -4625,6 +4625,30 @@ submodules:
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-cosiner-argv
+  (package
+    (name "go-github-com-cosiner-argv")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cosiner/argv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ard8655lr4rqd929pvn9phv4mbgzrl3rswcl6i7p97cls7gn2yc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cosiner/argv"))
+    (home-page "https://github.com/cosiner/argv")
+    (synopsis "Split command line string into arguments array")
+    (description
+     "Package argv parses command line string into arguments array using the
+bash syntax.")
+    (license license:expat)))
+
 (define-public go-github-com-couchbase-gomemcached
   (package
     (name "go-github-com-couchbase-gomemcached")
