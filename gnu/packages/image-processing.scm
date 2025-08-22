@@ -1289,6 +1289,7 @@ libraries designed for computer vision research and implementation.")
   ;; 'Modules/Remote/MODULE.remote.cmake'.
   ;; MorphologicalContourInterpolation is required by itk-snap.
   ;; SimpleITKFilters and GenericLabelInterpolator are required by simpleitk.
+  ;; GenericLabelInterpolator and AdaptiveDenoising are required by ants.
   (let* ((module-mci-commit "821bf9b3ef8eaaab10391ed060dc9ca5e4d37b39")
          (module-mci-file (git-file-name "ITKMorphologicalContourInterpolation"
                                          module-mci-commit))
@@ -1297,7 +1298,10 @@ libraries designed for computer vision research and implementation.")
                                            module-sitkf-commit))
          (module-gli-commit "ebf2436469ccf82c08fab54b7446f699ad0eae01")
          (module-gli-file (git-file-name "ITKGenericLabelInterpolator"
-                                         module-gli-commit)))
+                                         module-gli-commit))
+         (module-ad-commit "853934c352f83cb1e8f87e3051e1b8e75dbb41fe")
+         (module-ad-file (git-file-name "ITKAdaptiveDenoising"
+                                        module-ad-commit)))
     (package
       (name "insight-toolkit")
       (version "5.4.4")
@@ -1354,6 +1358,7 @@ libraries designed for computer vision research and implementation.")
                 "-DModule_MorphologicalContourInterpolation=ON"
                 "-DModule_SimpleITKFilters=ON"
                 "-DModule_GenericLabelInterpolator=ON"
+                "-DModule_AdaptiveDenoising:BOOL=ON"
                 "-DModule_ITKReview:BOOL=ON"
                 "-DCMAKE_CXX_STANDARD=17"
                 "-DBUILD_TESTING=OFF")
@@ -1402,7 +1407,11 @@ libraries designed for computer vision research and implementation.")
                 (symlink #$(this-package-native-input module-gli-file)
                          "Modules/Remote/GenericLabelInterpolator")
                 (delete-file
-                 "Modules/Remote/GenericLabelInterpolator.remote.cmake")))
+                 "Modules/Remote/GenericLabelInterpolator.remote.cmake")
+                (symlink #$(this-package-native-input module-ad-file)
+                         "Modules/Remote/AdaptiveDenoising")
+                (delete-file
+                 "Modules/Remote/AdaptiveDenoising.remote.cmake")))
             (add-after 'unpack 'fix-numpy-bool
               (lambda _
                 ;; <https://github.com/InsightSoftwareConsortium/ITK/pull/5402>
@@ -1470,7 +1479,16 @@ libraries designed for computer vision research and implementation.")
                (file-name module-gli-file)
                (sha256
                 (base32
-                 "1khakqh6pzdg6csli8jypzrhcdr9xmhnzgwz265krv8r5mbnndrg")))))
+                 "1khakqh6pzdg6csli8jypzrhcdr9xmhnzgwz265krv8r5mbnndrg")))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                      (url "https://github.com/ntustison/ITKAdaptiveDenoising")
+                      (commit module-ad-commit)))
+               (file-name module-ad-file)
+               (sha256
+                (base32
+                 "0aqvhb4byg0shgbrwmb41nq2h8sbg45xn0gsdy94iiq0v72bw307")))))
 
       ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
       ;; '-mtune=native -march=corei7', suggesting there's something to be
