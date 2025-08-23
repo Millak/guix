@@ -3450,7 +3450,7 @@ interfaces.")
 (define-public xdg-desktop-portal-hyprland
   (package
     (name "xdg-desktop-portal-hyprland")
-    (version "1.3.9")
+    (version "1.3.10")
     (source
      (origin
        (method git-fetch)
@@ -3459,7 +3459,7 @@ interfaces.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k1bgdpg5ixxqg9r4vraszbnl4rl9gh87dhyc7rr332rf0j9n0xh"))))
+        (base32 "079k4zni2ammd2407av55b9vqcsfv8h3hx1xd4zl0fbc3cnsrkcf"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
@@ -3476,7 +3476,7 @@ interfaces.")
                      (("\\<(hyprland-share-picker)\\>" _ cmd)
                       (string-append #$output "/bin/" cmd))))))))
     (native-inputs
-     (list gcc-14 hyprwayland-scanner pkg-config))
+     (list gcc-15 hyprwayland-scanner pkg-config))
     (inputs
      (list bash-minimal
            grim
