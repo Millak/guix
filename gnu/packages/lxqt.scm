@@ -997,14 +997,14 @@ processes currently in existence, much like code{top} or code{ps}.")
 (define-public qterminal
   (package
     (name "qterminal")
-    (version "2.1.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0g11n43msp0dwl68nf5wdh6kwi48xqc43pl9bpg4wsdw8n37hpm6"))))
+        (base32 "1lpm1065wj61x6w1w7zgy0b7g62c9gbg6v17l0vlgbxv10s8rlqc"))))
     (build-system cmake-build-system)
     (inputs
      (list layer-shell-qt qtbase qtermwidget))
