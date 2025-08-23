@@ -4699,6 +4699,65 @@ self-contained (one single directory) and the platform is written in Python,
 in a modular way.")
     (license license:gpl3)))
 
+(define-public python-presto
+  (package
+    (name "python-presto")
+    (version "0.7.6")
+    (home-page "https://github.com/immcantation/presto")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1mcngwrxiw8r1j26r5crf7j0dscvhg3b8g1is3j3vq5jpnyn8jmz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list muscle
+           python-biopython
+           python-numpy
+           python-pandas
+           python-pyyaml
+           python-scipy
+           vsearch))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"
+      #:test-flags
+      ;; FileNotFoundError: [Errno 2] No such file or directory: 'cd-hit-est'
+      '(list "--ignore=tests/test_ClusterSets.py")))
+    (synopsis "The REpertoire Sequencing TOolkit")
+    (description "Presto is a python toolkit for processing raw reads from
+high-throughput sequencing of B cell and T cell repertoires.")
+    (license license:agpl3)))
+
+(define-public python-fastalite
+  (package
+    (name "python-fastalite")
+    (version "0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastalite" version))
+       (sha256
+        (base32
+         "1qli6pxp77i9xn2wfciq2zaxhl82bdxb33cpzqzj1z25yd036wqj"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ; Test data is not distributed.
+    (home-page "https://github.com/nhoffman/fastalite")
+    (synopsis "Simplest possible FASTA parser")
+    (description "This library implements a FASTA and a FASTQ parser without
+relying on a complex dependency tree.")
+    (license license:expat)))
+
 (define-public biosoup
   (package
     (name "biosoup")
