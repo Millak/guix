@@ -1021,19 +1021,24 @@ QTermWidget.")
 (define-public screengrab
   (package
     (name "screengrab")
-    (version "2.9.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/screengrab/releases/download/"
                            version "/screengrab-" version ".tar.xz"))
        (sha256
-        (base32 "1c7nyz1sjk30qpm00jzz9vq54jm6dyqfajjiwsqlp5hvx9gfgg17"))))
+        (base32 "1ryfdh7rkdrf9lf7j0p3zapw80hvpg0k6hb8r84yp5c5d0l09b9h"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem libqtxdg qtbase))
+     (list kwindowsystem
+           layer-shell-qt
+           libpng
+           libqtxdg
+           qtwayland
+           wayland))
     (native-inputs
-     (list pkg-config perl qttools))
+     (list lxqt-build-tools))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
