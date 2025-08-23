@@ -25,6 +25,7 @@
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.comg>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
+;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4713,3 +4714,45 @@ information.  Useful for cross-architecture tools (such as @code{python-pyvex}).
       (synopsis "8051/8052 emulator with curses-based UI")
       (description "emu8051 is a simulator of the 8051/8052 microcontrollers.")
       (license license:expat))))
+
+(define-public fceux
+  (package
+    (name "fceux")
+    (version "2.6.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TASEmulators/fceux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02s5qmxdxpsa71977z9bs5vfhnszn5nr5hk05wns8cm9nshbg7as"))
+       (modules '((guix build utils)))
+       (snippet #~(map delete-file-recursively
+                       (list "output/lua5.1.dll" "output/lua51.dll"
+                             "src/drivers/win" "fceux-server" "vc")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; No test suite.
+      #:tests? #f))
+    (inputs (list qtbase-5
+                  zlib
+                  minizip
+                  sdl2
+                  lua-5.1
+                  libx264
+                  x265
+                  ffmpeg
+                  libxkbcommon
+                  libarchive))
+    (native-inputs (list pkg-config))
+    (synopsis "NES/Famicom emulator")
+    (description
+     "FCEUX is a Nintendo Entertainment System (NES), Famicom, Famicom Disk
+System (FDS), and Dendy emulator.  It supports NTSC (USA/JPN), PAL (European),
+and NTSC-PAL Hybrid modes.  It also offers tools for debugging, rom-hacking,
+map making, Tool-assisted movies, and Lua scripting.")
+    (home-page "https://fceux.com/web/home.html")
+    (license license:gpl2+)))
