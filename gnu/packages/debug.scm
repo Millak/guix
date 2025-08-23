@@ -59,6 +59,9 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libusb)
@@ -1043,7 +1046,7 @@ to aid in debugging.")
 (define-public delve
   (package
     (name "delve")
-    (version "1.23.1")
+    (version "1.25.1")
     (source
      (origin
        (method git-fetch)
@@ -1053,13 +1056,34 @@ to aid in debugging.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1k0ink3jjplbq1si7cnrm7ch6jasnc3y83yksmrwhhbfa1ybk87s"))))
+         "0rfpgh9ijb0lcyrfscxb3k1552wwhqj0jxv5zfyrsfm1n6j8dc93"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/go-delve/delve/cmd/dlv"
+     (list #:tests? #f ;XXX: Some tests fail, check why.
+           #:import-path "github.com/go-delve/delve/cmd/dlv"
            #:unpack-path "github.com/go-delve/delve"
-           #:install-source? #f
-           #:phases #~(modify-phases %standard-phases (delete 'check))))
+           #:install-source? #f))
+    (native-inputs
+     (list go-github-com-cilium-ebpf
+           go-github-com-cosiner-argv
+           go-github-com-creack-pty
+           go-github-com-derekparker-trie
+           go-github-com-go-delve-liner
+           go-github-com-google-go-dap
+           go-github-com-hashicorp-golang-lru
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-go-starlark-net
+           go-golang-org-x-arch
+           go-golang-org-x-sys
+           go-golang-org-x-telemetry
+           go-golang-org-x-tools
+           go-gopkg-in-yaml-v3))
     (home-page "https://github.com/go-delve/delve")
     (synopsis "Debugger for the Go programming language")
     (description "Delve is a debugger for the Go programming language.")
