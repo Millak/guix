@@ -1114,7 +1114,7 @@ machine, and more.")
 (define-public exercism
   (package
     (name "exercism")
-    (version "3.5.5")
+    (version "3.5.7")
     (source
      (origin
        (method git-fetch)
@@ -1123,7 +1123,7 @@ machine, and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a53caqrxv0rhg79md97vnzcbr9gnz3mzjkk7xyafc3h456b4gsz"))
+        (base32 "1w1md548janc16svdqij6bya5r6rayl13760jmsx28ws8yv2wjqf"))
        (patches (search-patches "exercism-disable-self-update.patch"))))
     (build-system go-build-system)
     (arguments
