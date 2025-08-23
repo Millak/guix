@@ -1360,7 +1360,7 @@ for and start applications.")
            font-dejavu                  ;default font
            greybird-gtk-theme
            hicolor-icon-theme
-           mate-polkit-for-xfce
+           mate-polkit
            mousepad
            ristretto
            shared-mime-info

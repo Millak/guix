@@ -1555,6 +1555,18 @@ MATE Desktop to monitor your system resources and usage.")
         (base32
          "1s2ac2p5smiwr7lf4snciyb9waclychjmzrw32f2qspdm381s2im"))))
     (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'enable-autostart-for-xfce
+            (lambda _
+              ;; We also use mate-polkit in Xfce.
+              (substitute* (string-append
+                            #$output
+                            "/etc/xdg/autostart/"
+                            "polkit-mate-authentication-agent-1.desktop")
+                (("OnlyShowIn=MATE;") "OnlyShowIn=MATE;XFCE;")))))))
     (native-inputs
      (list gettext-minimal gtk-doc/stable intltool libtool pkg-config))
     (inputs
@@ -1570,24 +1582,6 @@ MATE Desktop to monitor your system resources and usage.")
      "MATE Polkit is a MATE specific D-Bus service that is
 used to bring up authentication dialogs.")
     (license license:lgpl2.1)))
-
-(define-public mate-polkit-for-xfce
-  (package/inherit mate-polkit
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'patch-desktop
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((common (string-append
-                             (assoc-ref outputs "out") "/etc/xdg/autostart/"
-                             "polkit-mate-authentication-agent-"))
-                    (old (string-append common "1.desktop"))
-                    (new (string-append common "for-xfce-1.desktop")))
-               (substitute* old (("MATE;") "XFCE;"))
-               ;; To avoid a conflict if both MATE and XFCE are installed.
-               (rename-file old new)))))))
-    (properties `((hidden? . #t)))))
-
 
 (define-public mozo
   (package
