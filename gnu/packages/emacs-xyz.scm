@@ -6327,6 +6327,33 @@ eshell.")
     (home-page "https://repo.or.cz/emacs-capf-autosuggest")
     (license license:gpl3+)))
 
+(define-public emacs-org-block-capf
+  ;; There are no tagged releases upstream
+  (let ((commit "080cfd2ed630a6739633b07a8ab6b896a1b5ef4a")
+        (revision "0"))
+    (package
+      (name "emacs-org-block-capf")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xenodium/org-block-capf")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ryjnqbphpysms8ynjp2d83siq1q09ci7gd1gx2zl09b88mfw0w9"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ; no tests
+      (home-page "https://github.com/xenodium/org-block-capf")
+      (synopsis "Completion suggestions for Org-mode source blocks")
+      (description
+       "This package provides completions for Org-mode source blocks using
+completion at point function.")
+      (license license:gpl3+))))
+
 (define-public emacs-direnv
   (package
     (name "emacs-direnv")
