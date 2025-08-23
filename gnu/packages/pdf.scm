@@ -1466,7 +1466,7 @@ converter using the Poppler and Cairo libraries.")
 (define-public python-pypdf
   (package
     (name "python-pypdf")
-    (version "5.1.0")
+    (version "6.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1475,7 +1475,7 @@ converter using the Poppler and Cairo libraries.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dl3nmvsk43s2v6a5cwwvfwpyvhsl9wcrdnqbzjsp50zqibi23pz"))))
+        (base32 "0p0650ya5f84d7khf34an9qpyww6yxnsdhgbppxfy3bg3qkx3s7g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1491,6 +1491,7 @@ converter using the Poppler and Cairo libraries.")
                     " and not "))))
     (native-inputs
      (list python-flit
+           python-flit-core-next
            python-pytest
            python-pytest-socket
            python-pytest-timeout
