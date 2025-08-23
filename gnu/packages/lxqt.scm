@@ -562,14 +562,14 @@ possible for applications to export and import their menus over DBus.")
 (define-public lxqt-policykit
   (package
     (name "lxqt-policykit")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0h0hi7aimjhc6rn4w8wz3kmvpkx7g6bf9i1fclan7j7ic80cf160"))))
+        (base32 "07lsfnpix9lr4nqlwipld2d02030921ssk6w77iqa81zy1c2v1yr"))))
     (build-system cmake-build-system)
     (inputs
      (list liblxqt polkit polkit-qt6))
