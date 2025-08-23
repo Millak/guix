@@ -69,6 +69,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages game-development)
@@ -947,7 +948,7 @@ recalculates.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.kitware.com/paraview/paraview.git")
+             (url "https://gitlab.kitware.com/paraview/paraview")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
@@ -976,7 +977,7 @@ recalculates.")
             (for-each (lambda (dir)
                         (delete-file-recursively
                          (string-append "VTK/ThirdParty/" dir "/vtk" dir)))
-                      '(;;"cgns"
+                      '("cgns"
                         "cli11"
                         ;;"diy2"
                         "doubleconversion"
@@ -1095,6 +1096,7 @@ recalculates.")
 
            ;; External libraries for ParaView and VTK
            "-DVTK_MODULE_USE_EXTERNAL_ParaView_protobuf=ON"
+           "-DVTK_MODULE_USE_EXTERNAL_VTK_cgns=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_cli11=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
@@ -1148,6 +1150,7 @@ recalculates.")
            python-sphinx))
     (inputs
      (list boost
+           cgns
            cli11
            curl
            double-conversion
