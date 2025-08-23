@@ -846,14 +846,14 @@ LXDE.")
 (define-public lximage-qt
   (package
     (name "lximage-qt")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1z7nyx5w9hvrz9zfil6sbpm61h47iap85p1bvwjvg863bqq01xpv"))))
+        (base32 "1slriyvf0zz6mn5ldcd2v3i2yf0skmdf3hki9q8h2aby7bpvybnc"))))
     (build-system cmake-build-system)
     (inputs
      (list libexif libfm-qt qtsvg))
