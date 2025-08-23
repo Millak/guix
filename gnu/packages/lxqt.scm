@@ -505,14 +505,14 @@ possible for applications to export and import their menus over DBus.")
 (define-public lxqt-panel
   (package
     (name "lxqt-panel")
-    (version "2.1.4")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1rhm57nnwr0mhii2r40gmawllj4cza9qb25qykkn236jfgpbilgz"))))
+        (base32 "0s8rva0prz1mkccp5yanrm0gg63cn95pzv2fixdp26489rx0w5ax"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
