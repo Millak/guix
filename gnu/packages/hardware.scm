@@ -74,6 +74,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages package-management)
@@ -211,6 +212,94 @@ Notable features include:
 
 @end itemize")
     (license (list license:bsd-0 license:gpl3+))))
+
+(define-public deskflow
+  (package
+    (name "deskflow")
+    (version "1.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/deskflow/deskflow")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wgj0sjnxkfplpq05q2lqgag29l7bf4cqdw0xmr89ayrh1nyjxa1"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DCMAKE_SKIP_RPATH=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-files
+            (lambda _
+              (substitute* "deploy/linux/deploy.cmake"
+                (("message.FATAL_ERROR.*os-release.*")
+                 "set(RELEASE_FILE_CONTENTS \"\")\n"))
+              (substitute* "src/lib/deskflow/unix/AppUtilUnix.cpp"
+                (("/usr/share/X11/xkb/rules/evdev.xml")
+                 (string-append #$(this-package-input "xkeyboard-config")
+                                "/share/X11/xkb/rules/evdev.xml")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                ;; From the project GitHub actions: "Integration tests are
+                ;; flakey by nature, make them optional". See:
+                ;; <.github/workflows/continuous-integration.yml>.
+                (invoke "./bin/legacytests"))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (let ((qtbase #$(this-package-input "qtbase")))
+                (wrap-program (string-append #$output "/bin/deskflow")
+                  `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
+                    (,(string-append qtbase "/lib/qt6/plugins/platforms"))))))))))
+    (native-inputs
+     (list doxygen
+           googletest
+           sysprof
+           vulkan-headers
+           coreutils
+           help2man
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           cli11
+           gdk-pixbuf
+           libei
+           libportal
+           libx11
+           libxi
+           libxinerama
+           libxkbcommon
+           libxkbfile
+           libxrandr
+           libxtst
+           libsm
+           libice
+           openssl
+           pugixml
+           python
+           qtbase
+           qtsvg
+           qttranslations
+           qttools
+           qtwayland
+           tomlplusplus
+           wayland
+           wayland-protocols
+           xkeyboard-config))
+    (home-page "https://deskflow.org/")
+    (synopsis "Share a single keyboard and mouse between multiple computers")
+    (description
+     "Deskflow is a keyboard and mouse sharing app.  Use the keyboard,
+mouse,or trackpad of one computer to control nearby computers, and work
+seamlessly between them.  It's like a software KVM (but without the video).
+TLS encryption is enabled by default.  It supports Wayland clipboard
+sharing.")
+    (license license:gpl2)))
 
 (define-public hw-probe
   (package
