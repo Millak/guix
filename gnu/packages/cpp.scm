@@ -943,7 +943,7 @@ utilities used across the hypr* ecosystem.")
 (define-public hyprlang
   (package
     (name "hyprlang")
-    (version "0.6.3")
+    (version "0.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -952,7 +952,7 @@ utilities used across the hypr* ecosystem.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05p4nghkr0qpqjvcjrgxjqjwswmvg245hmhlcgdacpvdfmn38m4i"))))
+                "080kibsllxfrlck4gix0ygr12gnvf9p9ybi589fsvpab9p9xw857"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -965,9 +965,9 @@ utilities used across the hypr* ecosystem.")
                  (string-append
                   "set(PKG_CONFIG_EXECUTABLE " #$(pkg-config-for-target) ")\n"
                   all))))))))
-    (native-inputs (list gcc-14 pkg-config))
+    (native-inputs (list gcc-15 pkg-config))
     (inputs (list hyprutils))
-    (home-page "https://wiki.hyprland.org/Hypr-Ecosystem/hyprlang/")
+    (home-page "https://wiki.hypr.land/Hypr-Ecosystem/hyprlang/")
     (synopsis "Official implementation library for hypr config language")
     (description
      "This package provides the official implementation for hypr configuration
