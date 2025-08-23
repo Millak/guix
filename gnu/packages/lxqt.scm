@@ -974,14 +974,14 @@ processes currently in existence, much like code{top} or code{ps}.")
 (define-public qtermwidget
   (package
     (name "qtermwidget")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0jwfpv9dwifkjgzy2fiffkvj0dd3aw4rf95fnnrhvqcdlg1v5v16"))))
+        (base32 "1s8w4s7wi7sv6vx8njlcvzmywyrkz4v4jmj3cbvsymfgg6xgnkxs"))))
     (build-system cmake-build-system)
     (inputs
      (list qtbase utf8proc))
