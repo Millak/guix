@@ -364,14 +364,14 @@ LXQt Panel, Configuration Center and PCManFM-Qt/libfm-qt.")
 (define-public lxqt-config
   (package
     (name "lxqt-config")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "03bq440npq3l4ssx7l1a15962q1jylfzdldfr66dm5nkjgvvv0gs"))))
+        (base32 "07ik1ycldpin21v4b29a95zb14q1s4bfbmlvyvw50r0mx0whnysj"))))
     (build-system cmake-build-system)
     (inputs
      (list eudev
