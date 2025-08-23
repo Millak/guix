@@ -1632,19 +1632,8 @@ menu specification.")
     (version (package-version mate-desktop))
     (source #f)
     (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build union))
-       #:builder
-       (begin
-         (use-modules (ice-9 match)
-                      (guix build union))
-         (match %build-inputs
-           (((names . directories) ...)
-            (union-build (assoc-ref %outputs "out")
-                         directories)
-            #t)))))
-    (native-inputs (list desktop-file-utils))
-    (inputs
+    (arguments '(#:builder (mkdir %output)))
+    (propagated-inputs
      ;; TODO: Add more packages
      (append (if (or (%current-target-system)
                      (supported-package? gnome-keyring))
@@ -1656,9 +1645,11 @@ menu specification.")
                    dbus
                    dconf
                    dconf-editor
+                   desktop-file-utils
                    engrampa
                    eom
                    font-abattis-cantarell
+                   font-dejavu          ;default font
                    glib-networking
                    gvfs
                    hicolor-icon-theme
@@ -1692,9 +1683,6 @@ menu specification.")
                    shared-mime-info
                    yelp
                    zenity)))
-    (propagated-inputs
-     ;; Default font that applications such as IceCat require.
-     (list font-dejavu))
     (synopsis "The MATE desktop environment")
     (home-page "https://mate-desktop.org/")
     (description
