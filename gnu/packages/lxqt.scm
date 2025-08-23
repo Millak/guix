@@ -480,14 +480,14 @@ of other programs.")
 (define-public libdbusmenu-lxqt
   (package
     (name "libdbusmenu-lxqt")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0knq04si5dzcml35hj29fkp806rrr7gnviqci1diw1k9gxyaf8lc"))))
+        (base32 "1y9z4iwpl5kqdn36y2d1dligsv84a79piw2b6jxb17sd796x385d"))))
     (build-system cmake-build-system)
     (arguments
      (list
