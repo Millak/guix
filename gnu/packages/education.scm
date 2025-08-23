@@ -1136,6 +1136,13 @@ machine, and more.")
       #:test-subdirs #~(list "../../...")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-xdg-open
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* "browser/open.go"
+                  (("xdg-open")
+                   (string-append #$(this-package-input "xdg-utils")
+                                  "/bin/xdg-open"))))))
           (add-after 'install 'install-completions
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((exercism (string-append #$output "/bin/exercism"))
@@ -1168,6 +1175,8 @@ machine, and more.")
            go-github-com-stretchr-testify
            go-golang-org-x-net
            go-golang-org-x-text))
+    (inputs
+     (list xdg-utils))
     (home-page "https://exercism.org/")
     (synopsis "Mentored learning for programming languages")
     (description
