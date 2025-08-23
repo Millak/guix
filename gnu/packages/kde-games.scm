@@ -1181,7 +1181,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/kigo/")
     (synopsis "Go board game")
     (description "Kigo is an implementation of the popular Go game.
