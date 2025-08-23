@@ -324,19 +324,19 @@ information.")
 (define-public flyer-composer
   (package
     (name "flyer-composer")
-    (version "1.0rc2")
+    (version "1.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "flyer-composer" version))
+       (uri (pypi-uri "flyer_composer" version))
        (sha256
-        (base32 "17igqb5dlcgcq4nimjw6cf9qgz6a728zdx1d0rr90r2z0llcchsv"))))
-    (build-system python-build-system)
+        (base32 "1874vmz606155w9xm3r4q9xziva1mai1kyqhjg5hnndpwl09xgv5"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f ;; TODO
        #:phases
        (modify-phases %standard-phases
-         (add-after 'install 'wrap-executable
+         (add-after 'wrap 'wrap-gui
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (qtbase (assoc-ref inputs "qtbase"))
@@ -346,12 +346,9 @@ information.")
                    (,(string-append qtbase "/lib/qt5/plugins")))
                  `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
                    (,(string-append qtbase "/lib/qt5/plugins/platforms"))))))))))
-    (inputs
-     (list bash-minimal
-           python-poppler-qt5
-           python-pypdf2
-           python-pyqt
-           qtbase-5))
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-pypdf))
+    (inputs (list bash-minimal python-poppler-qt5 python-pyqt qtbase-5))
     (home-page "http://crazy-compilers.com/flyer-composer")
     (synopsis "Rearrange PDF pages to print as flyers on one sheet")
     (description "@command{flyer-composer} can be used to prepare one- or
@@ -379,8 +376,7 @@ This package contains both the command line tool and the gui too.")
              (substitute* "setup.cfg"
                (("^\\s+flyer-composer-gui\\s*=.*") ""))
              #t)))))
-    (inputs
-     `(("python-pypdf2" ,python-pypdf2)))
+    (inputs (list)) ; clear the gui inputs
     (description "@command{flyer-composer} can be used to prepare one- or
 two-sided flyers for printing on one sheet of paper.
 
