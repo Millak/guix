@@ -7575,6 +7575,35 @@ killing a command.  All operations are safe to call from multiple
 goroutines.")
     (license license:expat)))
 
+;; For delve@1.25.1
+(define-public go-github-com-go-delve-liner
+  (hidden-package
+   (package
+     (name "go-github-com-go-delve-liner")
+     (version "1.2.3-0.20231231155935-4726ab1d7f62")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/go-delve/liner")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0f94qx7jzign64gv865whirq9xw7rakxf3wy4y9fsn52bxx408x0"))))
+     (build-system go-build-system)
+     (arguments
+      (list
+       #:import-path "github.com/go-delve/liner"))
+     (propagated-inputs
+      (list go-github-com-mattn-go-runewidth
+            go-golang-org-x-sys))
+     (home-page "https://github.com/go-delve/liner")
+     (synopsis "Command line editor Go library")
+     (description
+      "This package is an alternative fork of https://github.com/peterh/liner
+to build @code{delve} - debugger for the Go programming language.")
+     (license license:expat))))
+
 (define-public go-github-com-go-errors-errors
   (package
     (name "go-github-com-go-errors-errors")
