@@ -3369,7 +3369,13 @@ it), it may be removed after a @b{one-month review period} of the patch
 removing it (this applies even when the removal has additional
 motivations such as security problems affecting the package).
 
-If it has many dependent packages---as is the case for example with
+@quotation Note
+Learn about pending package removals by checking
+@uref{https://codeberg.org/guix/guix/issues?labels=445131, issues and
+pull requests with the @samp{deprecation} label}.
+@end quotation
+
+If the package has many dependent packages---as is the case for example with
 Python version@tie{}2---the relevant team must propose a deprecation
 removal agenda and seek consensus with other packagers for @b{at least
 one month}.  It may also invite feedback from the broader user
