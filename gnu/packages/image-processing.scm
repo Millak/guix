@@ -943,7 +943,7 @@ recalculates.")
 (define-public paraview
   (package
     (name "paraview")
-    (version "5.11.1")
+    (version "6.0.0")
     (source
      (origin
        (method git-fetch)
@@ -953,7 +953,7 @@ recalculates.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m1lgkl95f0pyhxp97gq2rf8hibv39v4c49imfj1va40z0flvard"))
+        (base32 "1m1c7vngrpaqdqvnjx4wj0va20hih5rb7rf0a44mp3wqgp4wgy0f"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Also remove unused bundled libraries and plugins?
@@ -985,11 +985,12 @@ recalculates.")
                         ;;"exodusII"
                         "expat"
                         ;;"exprtk"
+                        ;;"fast-float"
                         ;;"fides"
                         "fmt"
                         "freetype"
                         "gl2ps"
-                        "glew"
+                        ;;"glad"
                         ;;"h5part"
                         "hdf5"
                         ;;"ioss"
@@ -1012,13 +1013,14 @@ recalculates.")
                         "sqlite"
                         "theora"
                         "tiff"
+                        ;;"token"
                         "utf8"
                         ;;"verdict"
+                        ;;"viskores"
                         ;;"vpic"
                         ;;"vtkm"
                         ;;"xdmf2"
                         ;;"xdmf3"
-                        ;;"zfp"
                         "zlib"))))))
     (build-system qt-build-system)
     (arguments
@@ -1026,7 +1028,7 @@ recalculates.")
       #:build-type "Release"            ; 542 MiB in release mode
       #:tests? #f                       ; Downloads test data
       #:configure-flags
-      #~(let ((doc (string-append #$output "/share/doc/" #$name "-" #$version)))
+      #~(let ((doc (string-append "share/doc/" #$name "-" #$version)))
           (list
            (string-append "-DCMAKE_INSTALL_DOCDIR=" doc) ; For paraview.qch
 
@@ -1104,7 +1106,6 @@ recalculates.")
            "-DVTK_MODULE_USE_EXTERNAL_VTK_fmt=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps=ON"
-           "-DVTK_MODULE_USE_EXTERNAL_VTK_glew=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_jsoncpp=ON"
@@ -1157,11 +1158,10 @@ recalculates.")
            eigen
            expat
            ffmpeg
-           fmt
+           fmt-11
            freetype
            gdal
            gl2ps
-           glew
            gmsh
            hdf5
            nlohmann-json                ;For ParFlow; build fails

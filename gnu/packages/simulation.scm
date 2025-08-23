@@ -160,11 +160,10 @@
                          eigen
                          expat
                          ffmpeg
-                         fmt
+                         fmt-11
                          freetype
                          gdal
                          gl2ps
-                         glew
                          gmsh
                          hdf5
                          jsoncpp
