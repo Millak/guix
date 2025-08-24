@@ -7635,8 +7635,8 @@ memory usage and transliteration quality.")
     (license license:expat)))
 
 (define-public python-pymsgbox
-  (let ((commit "55926b55f46caa969c5ddb87990ebea2737bd66f")
-        (revision "0"))
+  (let ((commit "944b7cdc67058d005ce5fd011c66f2d87d25aba0")
+        (revision "1"))
     (package
       (name "python-pymsgbox")
       (version (git-version "1.0.6" revision commit))
@@ -7648,7 +7648,7 @@ memory usage and transliteration quality.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0zy7rjfpwlrd8b64j7jk2lb8m2npc21rnpwakpfvwgl4nxdy80rg"))))
+          (base32 "1bhipfvnc06l8hiadk302v74yin38nwz1r47njliwk8kz103yl3g"))))
       (build-system pyproject-build-system)
       (arguments
        ;; Circular dependency to run tests:
