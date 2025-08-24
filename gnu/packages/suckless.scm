@@ -294,15 +294,17 @@ optimising the environment for the application in use and the task performed.")
                 "0pvr6da1v7hmbnacpgxcxv1sakg1nckmw347xhwrhx1dzpk573qs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output)
-             (string-append "FREETYPEINC="
-                            (assoc-ref %build-inputs "freetype")
-                            "/include/freetype2"))
-       #:phases
-       (modify-phases %standard-phases (delete 'configure))))
+     (list
+      #:tests? #f                      ; no tests
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "PREFIX=" #$output)
+         (string-append "FREETYPEINC="
+                        #$(this-package-input "freetype")
+                        "/include/freetype2"))
+      #:phases
+      #~(modify-phases %standard-phases (delete 'configure))))
     (inputs
      (list freetype libxft libx11 libxinerama))
     (home-page "https://tools.suckless.org/dmenu/")
