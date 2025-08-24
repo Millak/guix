@@ -10503,6 +10503,52 @@ runtime.  It has zero dependencies, and doesn't rely on CGO.  This means you
 can run applications in other languages and still keep cross compilation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-things-go-go-socks5
+  (package
+    (name "go-github-com-things-go-go-socks5")
+    (version "0.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/things-go/go-socks5")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r7v1bpja4j8q9bjh124w8l5m29vwnpaq0flm97izvzw4pcyxybf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/things-go/go-socks5"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/things-go/go-socks5")
+    (synopsis "SOCKS5 with full TCP/UDP and IPv4/IPv6 support in Golang")
+    (description
+     "This package implements a @url{http://en.wikipedia.org/wiki/SOCKS,
+SOCKS5}.  SOCKS (Secure Sockets) is used to route traffic between a client and
+server through an intermediate proxy layer.  This can be used to bypass
+firewalls or NATs.
+
+Features:
+@itemize
+@item support socks5 server
+@item support TCP/UDP and IPv4/IPv6
+@item unit tests
+@item \"No Auth\" mode
+@item user/password authentication optional user addr limit
+@item support for the CONNECT command
+@item support for the ASSOCIATE command
+@item rules to do granular filtering of commands
+@item custom DNS resolution
+@item custom goroutine pool
+@item buffer pool design and optional custom buffer pool
+@item custom logger
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-tj-go-elastic
   (package
     (name "go-github-com-tj-go-elastic")
