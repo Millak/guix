@@ -3858,6 +3858,39 @@ common controls and win32-style extensions.")
      "This package provides the default @code{libSwell.colortheme} file for
 programs that use @code{swell}.")))
 
+(define-public jnetlib
+  (package
+    (inherit swell)
+    (name "jnetlib")
+    (arguments
+     (substitute-keyword-arguments (package-arguments swell)
+       ((#:tests? _ #t) #t)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+               (replace 'change-directory
+                 (lambda _ (chdir "WDL/jnetlib")))
+               (replace 'install
+                 (lambda _
+                   (install-file "jnl.a" (string-append #$output "/lib"))
+                   (for-each (lambda (file)
+                               (install-file file (string-append #$output
+                                                                 "/include"
+                                                                 "/jnetlib")))
+                             (find-files "." "\\.h"))))))))
+    (native-inputs '())
+    (inputs '())
+    (synopsis "C++ asynchronous network abstraction layer")
+    (description
+     "JNetLib is a portable C++ asynchronous network abstraction layer.  It
+features:
+@itemize
+@item TCP connections support,
+@item listening sockets support,
+@item asynchronous DNS support,
+@item HTTP serving and getting support,
+@item Completely asynchronous love for single threaded apps.
+@end itemize")))
+
 (define-public juce
   (package
     (name "juce")
