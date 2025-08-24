@@ -22698,6 +22698,33 @@ kubernetes-independent packages supplementing the
 @url{https://pkg.go.dev/std#stdlib,Go standard libs}.")
     (license license:asl2.0)))
 
+(define-public go-kernel-org-pub-linux-libs-security-libcap-psx
+  (package
+    (name "go-kernel-org-pub-linux-libs-security-libcap-psx")
+    (version "1.2.76")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/libs/libcap/libcap.git")
+             (commit (go-version->git-ref version
+                                          #:subdir "psx"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0va0bkq5kxf0ccsdpw598vsmk4kdzhaafjvym0g5b2n49c5sn59b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "kernel.org/pub/linux/libs/security/libcap/psx"
+      #:unpack-path "kernel.org/pub/linux/libs/security/libcap"))
+    ;; Redirects from <https://kernel.org/pub/linux/libs/security/libcap>
+    (home-page "https://sites.google.com/site/fullycapable")
+    (synopsis "API for invoking Linux system calls in Golang")
+    (description
+     "This package provides a support for system calls that are run
+simultaneously on all threads under Linux.")
+    (license license:gpl2)))
+
 (define-public go-maunium-net-go-mauflag
   (package
     (name "go-maunium-net-go-mauflag")
