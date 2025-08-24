@@ -1678,6 +1678,15 @@ and XMP metadata of images in various formats.")
     ;;   <https://launchpad.net/ubuntu/precise/+source/exiv2/+copyright>.
     (license license:gpl2+)))
 
+(define-public exiv2-static
+  (package
+    (inherit exiv2)
+    (arguments
+     (substitute-keyword-arguments (package-arguments exiv2)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'delete-static-libraries)))))))
+
 (define-public devil
   (package
     (name "devil")
