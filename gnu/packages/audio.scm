@@ -159,6 +159,7 @@
   #:use-module (gnu packages vim) ;xxd
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages wine)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
@@ -6740,6 +6741,96 @@ default and preferred audio driver but also supports native drivers like ALSA.")
      (base32 "09axvpshwbf5061kcbl26v74dcmwxmgmlxb15b75bnqbh0zcghrf"))
     (patches
      (search-patches "vst3sdk-3.7.7-allow-winelib-compilation.patch")))))
+
+(define-public yabridge
+  (package
+    (name "yabridge")
+    (version "5.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/robbert-vdh/yabridge")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0r7q72jmd44wynxphwhgm17wkfgm6zfdrpfnhsj8b53406ykgq71"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(append (list "-Dsystem-asio=true"
+                           (string-append "--cross-file=" #$source
+                                          "/cross-wine.conf"))
+                     ;; On 32bit system, without this flag it does not build
+                     ;; yabridge-host-32.exe and yabridge-host-32.exe.so.  On
+                     ;; 64bit system do not enable it since gcc does not
+                     ;; support multilib.
+                     (if (not #$(target-64bit?)) "-Dbitbridge=true" '()))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-vst3sdk
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (copy-recursively #$vst3sdk
+                                     "subprojects/vst3")))
+               (add-after 'copy-vst3sdk 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/chainloader/utils.cpp"
+                     (("(.*)\"\\/usr\\/lib\"," all indent)
+                      (string-append indent "\"" #$output "/lib\","))
+                     ((".*\\/usr.*$") ""))))
+               (add-after 'patch-paths 'fix-dependencies
+                 (lambda _
+                   (substitute* "meson.build"
+                     ;; FIXME: gurlrak-filesystem does not provide
+                     ;; ghc_filesystem-config-version.cmake.
+                     (("(ghc_filesystem_dep .*)version :.*(\\))" all start end)
+                      (string-append start end)))))
+               (replace 'install
+                 (lambda _
+                   (for-each
+                     (lambda (file)
+                       (install-file file (string-append #$output "/bin")))
+                       (find-files "." "-host(-32|)\\.exe(|\\.so)$"))
+                   (for-each
+                     (lambda (file)
+                       (install-file file (string-append #$output "/lib")))
+                       (find-files "." "libyabridge.*\\.so$"))))
+               (add-after 'install 'patch-appdir
+                 (lambda _
+                   (substitute* (find-files #$output "-host(-32|)\\.exe$")
+                     (("`dirname \"\\$0\"`")
+                      (string-append #$output "/bin")))))
+               (add-after 'patch-appdir 'wrap-program
+                 (lambda _
+                   (with-directory-excursion (string-append #$output "/bin")
+                     (wrap-program (if #$(target-64bit?)
+                                       "yabridge-host.exe"
+                                       "yabridge-host-32.exe")
+                       `("PATH" ":" prefix
+                         (,(string-append (or #$(this-package-input "wine64")
+                                              #$(this-package-input "wine"))
+                                          "/bin"))))))))))
+    (native-inputs
+     (list cmake-minimal pkg-config))
+    (inputs
+     (list bash-minimal
+           asio
+           bitsery
+           clap-1.1
+           dbus
+           function2
+           gulrak-filesystem
+           libxcb
+           tomlplusplus
+           (wine-for-system)))
+    (home-page "https://github.com/robbert-vdh/yabridge")
+    (synopsis "Implementation of Windows VST2, VST3 and CLAP plugin APIs")
+    (description
+     "@code{yabridge} is Yet Another way to use Windows audio plugins.  It
+supports using Windows VST2, VST3, and CLAP plugins in plugin hosts as if they
+were native plugins, with optional support for plugin groups to enable
+inter-plugin communication for VST2 plugins and quick startup times.")
+    (license license:gpl3+)))
 
 (define-public ecasound
   (package
