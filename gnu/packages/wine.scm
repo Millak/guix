@@ -435,3 +435,10 @@ integrated into the main branch.")
     (synopsis "Implementation of the Windows API (staging branch, WoW64
 version)")
     (supported-systems '("x86_64-linux" "aarch64-linux"))))
+
+(define* (wine-for-system #:optional
+                          (system (or (%current-target-system)
+                                      (%current-system))))
+  (if (supported-package? wine64) wine64 wine))
+
+(export wine-for-system)
