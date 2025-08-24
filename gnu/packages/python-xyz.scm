@@ -39301,9 +39301,10 @@ files.")
               (sha256
                (base32
                 "1ckn8n37i7b65h0i385ycn0w8sg9na0iabz0kmhxxc1wj0hddkw9"))))
-    (build-system python-build-system)
-    (native-inputs (list python-wheel))
-    (home-page "https://github.com/hmillerbakewell/musical-scale")
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools-next))
+    (home-page "https://github.com/hmillerbakewell/musical-scales")
     (synopsis "Retrieve a scale based on a given mode and starting note")
     (description
      "Retrieve a scale based on a given mode and starting note.
