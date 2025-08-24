@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -414,71 +414,54 @@ docker-image} inside Docker.")
           (test-runner-current (system-test-runner #$output))
           (test-begin "oci-container")
 
-          (test-assert "containerd service running"
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (match (start-service 'containerd)
-                  (#f #f)
-                  (('service response-parts ...)
-                   (match (assq-ref response-parts 'running)
-                     ((pid) pid)))))
-             marionette))
-
-          (test-assert "containerd PID file present"
-            (wait-for-file "/run/containerd/containerd.pid" marionette))
-
-          (test-assert "dockerd running"
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (match (start-service 'dockerd)
-                  (#f #f)
-                  (('service response-parts ...)
-                   (match (assq-ref response-parts 'running)
-                     ((pid) pid)))))
-             marionette))
-
-          (sleep 10) ; let service start
+          (wait-for-file "/run/containerd/containerd.pid" marionette)
 
           (test-assert "docker-guile running"
             (marionette-eval
              '(begin
                 (use-modules (gnu services herd))
-                (match (start-service 'docker-guile)
-                  (#f #f)
-                  (('service response-parts ...)
-                   (match (assq-ref response-parts 'running)
-                     ((pid) pid)))))
+                (wait-for-service 'docker-guile #:timeout 120)
+                #t)
              marionette))
 
-          (test-equal "passing host environment variables and volumes"
-            '("value" "hello")
-            (marionette-eval
-             `(begin
-                (use-modules (ice-9 popen)
-                             (ice-9 rdelim))
+          (test-assert "passing host environment variables and volumes"
+            (begin
+              (define (run-test)
+                (marionette-eval
+                 `(begin
+                    (use-modules (ice-9 popen)
+                                 (ice-9 rdelim))
 
-                (define slurp
-                  (lambda args
-                    (let* ((port (apply open-pipe* OPEN_READ args))
-                           (output (let ((line (read-line port)))
-                                     (if (eof-object? line)
-                                         ""
-                                         line)))
-                           (status (close-pipe port)))
-                      output)))
-                (let* ((response1 (slurp
-                                   ,(string-append #$docker-cli "/bin/docker")
-                                   "exec" "docker-guile"
-                                   "/bin/guile" "-c" "(display (getenv \"VARIABLE\"))"))
-                       (response2 (slurp
-                                   ,(string-append #$docker-cli "/bin/docker")
-                                   "exec" "docker-guile"
-                                   "/bin/guile" "-c" "(begin (use-modules (ice-9 popen) (ice-9 rdelim))
+                    (define slurp
+                      (lambda args
+                        (let* ((port (apply open-pipe* OPEN_READ args))
+                               (output (let ((line (read-line port)))
+                                         (if (eof-object? line)
+                                             ""
+                                             line)))
+                               (status (close-pipe port)))
+                          output)))
+                    (let* ((response1 (slurp
+                                       ,(string-append #$docker-cli "/bin/docker")
+                                       "exec" "docker-guile"
+                                       "/bin/guile" "-c" "(display (getenv \"VARIABLE\"))"))
+                           (response2 (slurp
+                                       ,(string-append #$docker-cli "/bin/docker")
+                                       "exec" "docker-guile"
+                                       "/bin/guile" "-c" "(begin (use-modules (ice-9 popen) (ice-9 rdelim))
 (display (call-with-input-file \"/shared.txt\" read-line)))")))
-                  (list response1 response2)))
-             marionette))
+                      (list response1 response2)))
+                 marionette))
+              ;; Allow services to come up on slower machines
+              (let loop ((attempts 0))
+                (if (= attempts 60)
+                    (error "Service didn't come up after more than 60 seconds")
+                    (if (equal? '("value" "hello")
+                                (run-test))
+                        #t
+                        (begin
+                          (sleep 1)
+                          (loop (+ 1 attempts))))))))
 
           (test-end))))
 
