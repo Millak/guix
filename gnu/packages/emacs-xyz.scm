@@ -30449,33 +30449,36 @@ sections for bookmarks, Projectile projects, Org Agenda and more.")
     (license license:gpl3+)))
 
 (define-public emacs-grid
-  ;; No tags; use latest commit
-  (let ((commit "b9f6022539e1082c9117c3de137796a905ccc66d")
-        (revision "0"))
-    (package
-      (name "emacs-grid")
-      ;; Taken from source code
-      (version (git-version "0.1-pre" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/ichernyshovvv/grid.el")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "075rb6nvazh8jkz5clykn3hrv874mffmdzqlz6iqp127vpx3cpgx"))))
-      (build-system emacs-build-system)
-      (arguments
-       ;; No tests
-       (list #:tests? #f))
-      (synopsis "Library for putting text into boxes and align these boxes")
-      (description
-       "This library allows you to put text data into boxes and align them
+  (package
+    (name "emacs-grid")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ichernyshovvv/grid.el")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1d7y54vn75n2kwfz3maf6rvr756dqp8gqms5xs2rkh7dz10hzyiv"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs"
+              "--batch" "--no-init-file" "--no-site-file" "--no-splash"
+              "-L" "test"
+              "-l" "grid.el"
+              "-l" "test/test-box.el"
+              "-l" "test/test-row.el"
+              "-f" "ert-run-tests-batch-and-exit")))
+    (synopsis "Library for putting text into boxes and align these boxes")
+    (description
+     "This library allows you to put text data into boxes and align them
 horizontally, applying margin, padding, borders.")
-      (home-page "https://github.com/ichernyshovvv/grid.el")
-      (license license:gpl3+))))
+    (home-page "https://github.com/ichernyshovvv/grid.el")
+    (license license:gpl3+)))
 
 (define-public emacs-slime-company
   (package
