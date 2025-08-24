@@ -560,51 +560,52 @@ shader compilation.")
 (define-public vkd3d
   (let ((commit "56cd4a94d541707959ce7677af6d1a34739e5579")) ; Release 1.2.
     (package
-     (name "vkd3d")
-     (version "1.2")
-     (source
-      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://source.winehq.org/git/vkd3d.git")
-             (commit commit)))
-       (sha256
-        (base32
-         "1n4a622drgnprvz5hjxzyzcsg2lp5rlf1sajki2vzf5gsx6fdpk8"))
-       (file-name (string-append name "-" version "-checkout"))))
-     (build-system gnu-build-system)
-     (arguments
-      `(#:configure-flags '("--with-spirv-tools")
-        #:phases (modify-phases %standard-phases
-                   (add-after 'unpack 'patch-for-new-vulkan
-                     (lambda _
-                       ;; Mimic upstream commit 8e7bf8a5c3e0047 for
-                       ;; compatibility with newer vulkan-headers.
-                       (substitute* "libs/vkd3d/vkd3d_private.h"
-                         (("VK_PIPELINE_BIND_POINT_RANGE_SIZE")
-                          "2u"))
-                       #t)))))
-     (native-inputs
-      `(("autoconf" ,autoconf)
-        ("automake" ,automake)
-        ("gettext" ,gettext-minimal)
-        ("libtool" ,libtool)
-        ("pkg-config" ,pkg-config)))
-     (inputs
-      (list libx11
-            libxcb
-            spirv-headers
-            spirv-tools
-            vulkan-headers
-            vulkan-loader
-            wine-minimal ; Needed for 'widl'.
-            xcb-util
-            xcb-util-keysyms
-            xcb-util-wm))
-     (home-page "https://source.winehq.org/git/vkd3d.git/")
-     (synopsis "Direct3D 12 to Vulkan translation library")
-     (description "vkd3d is a library for translating Direct3D 12 to Vulkan.")
-     (license license:lgpl2.1))))
+      (name "vkd3d")
+      (version "1.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://source.winehq.org/git/vkd3d.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "1n4a622drgnprvz5hjxzyzcsg2lp5rlf1sajki2vzf5gsx6fdpk8"))
+         (file-name (string-append name "-" version "-checkout"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "--with-spirv-tools")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-for-new-vulkan
+              (lambda _
+                ;; Mimic upstream commit 8e7bf8a5c3e0047 for
+                ;; compatibility with newer vulkan-headers.
+                (substitute* "libs/vkd3d/vkd3d_private.h"
+                  (("VK_PIPELINE_BIND_POINT_RANGE_SIZE")
+                   "2u")))))))
+      (native-inputs
+       (list autoconf
+             automake
+             gettext-minimal
+             libtool
+             pkg-config))
+      (inputs
+       (list libx11
+             libxcb
+             spirv-headers
+             spirv-tools
+             vulkan-headers
+             vulkan-loader
+             wine-minimal ; Needed for 'widl'.
+             xcb-util
+             xcb-util-keysyms
+             xcb-util-wm))
+      (home-page "https://source.winehq.org/git/vkd3d.git/")
+      (synopsis "Direct3D 12 to Vulkan translation library")
+      (description "vkd3d is a library for translating Direct3D 12 to Vulkan.")
+      (license license:lgpl2.1))))
 
 (define-public vulkan-validationlayers
   (package
