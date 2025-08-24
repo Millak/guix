@@ -44746,58 +44746,161 @@ available for each configured user.
 @cindex OCI-backed, Shepherd services
 @subsubheading OCI backed services
 
-Should you wish to manage your Docker containers with the same consistent
-interface you use for your other Shepherd services,
-@var{oci-container-service-type} is the tool to use: given an
-@acronym{Open Container Initiative, OCI} container image, it will run it in a
+Should you wish to manage your @acronym{Open Container Initiative, OCI} containers
+with the same consistent interface you use for your other Shepherd services,
+@var{oci-service-type} is the tool to use: given an
+OCI container image, it will run it in a
 Shepherd service.  One example where this is useful: it lets you run services
-that are available as Docker/OCI images but not yet packaged for Guix.
+that are available as OCI images but not yet packaged for Guix.
 
-@defvar oci-container-service-type
+@defvar oci-service-type
 
-This is a thin wrapper around Docker's CLI that executes OCI images backed
+This is a thin wrapper around Docker's or Podman's CLI that executes OCI images backed
 processes as Shepherd Services.
 
 @lisp
-(service oci-container-service-type
-         (list
-          (oci-container-configuration
-           (network "host")
-           (image
-            (oci-image
-             (repository "guile")
-             (tag "3")
-             (value (specifications->manifest '("guile")))
-             (pack-options '(#:symlinks (("/bin/guile" -> "bin/guile"))
-                             #:max-layers 2))))
-           (entrypoint "/bin/guile")
-           (command
-            '("-c" "(display \"hello!\n\")")))
-          (oci-container-configuration
-           (image "prom/prometheus")
-           (ports
-             '(("9000" . "9000")
-               ("9090" . "9090"))))
-          (oci-container-configuration
-           (image "grafana/grafana:10.0.1")
-           (network "host")
-           (volumes
-             '("/var/lib/grafana:/var/lib/grafana")))))
+(simple-service 'oci-provisioning
+                oci-service-type
+                (oci-extension
+                  (networks
+                    (list
+                      (oci-network-configuration (name "monitoring"))))
+                  (containers
+                   (list
+                    (oci-container-configuration
+                     (network "monitoring")
+                     (image
+                      (oci-image
+                        (repository "guile")
+                        (tag "3")
+                        (value (specifications->manifest '("guile")))
+                        (pack-options '(#:symlinks (("/bin/guile" -> "bin/guile"))
+                                        #:max-layers 2))))
+                     (entrypoint "/bin/guile")
+                     (command
+                      '("-c" "(display \"hello!\n\")")))
+                    (oci-container-configuration
+                      (image "prom/prometheus")
+                      (network "host")
+                      (ports
+                       '(("9000" . "9000")
+                         ("9090" . "9090"))))
+                    (oci-container-configuration
+                      (image "grafana/grafana:10.0.1")
+                      (network "host")
+                      (volumes
+                       '("/var/lib/grafana:/var/lib/grafana")))))))
 @end lisp
 
 In this example three different Shepherd services are going to be added to the
 system.  Each @code{oci-container-configuration} record translates to a
-@code{docker run} invocation and its fields directly map to options.  You can
-refer to the
-@url{https://docs.docker.com/engine/reference/commandline/run,upstream}
-documentation for the semantics of each value.  If the images are not found,
-they will be
-@url{https://docs.docker.com/engine/reference/commandline/pull/,pulled}.  The
+@samp{docker run} or @samp{podman run} invocation and its fields directly
+map to options.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run,Docker}
+or @url{https://docs.podman.io/en/stable/markdown/podman-run.1.html,Podman}
+upstream documentation for semantics of each value.  If the images are not found,
+they will be pulled.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/pull/,Docker}
+or @url{https://docs.podman.io/en/stable/markdown/podman-pull.1.html,Podman}
+upstream documentation for semantics.  The
 services with @code{(network "host")} are going to be attached to the
 host network and are supposed to behave like native processes with regard to
 networking.
 
 @end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} oci-configuration
+Available @code{oci-configuration} fields are:
+
+@table @asis
+@item @code{runtime} (default: @code{'docker}) (type: symbol)
+The OCI runtime to use to run commands.  It can be either @code{'docker} or
+@code{'podman}.
+
+@item @code{runtime-cli} (type: maybe-package-or-string)
+The OCI runtime command line to be installed in the system profile and used
+to provision OCI resources, it can be either a package or a string representing
+an absolute file name to the runtime binary entrypoint.  When unset it will default
+to @code{docker-cli} package for the @code{'docker} runtime or to @code{podman}
+package for the @code{'podman} runtime.
+
+@item @code{runtime-extra-arguments} (default: @code{'()}) (type: list)
+A list of strings, gexps or file-like objects that will be placed
+after each @command{docker} or @command{podman} invokation.
+
+@item @code{user} (type: maybe-string)
+The user name under whose authority OCI commands will be run.  This field will
+override the @code{user} field of @code{oci-configuration}.
+
+@item @code{group} (type: maybe-string)
+The group name under whose authority OCI commands will be run.  When
+using the @code{'podman} OCI runtime, this field will be ignored and the
+default group of the user configured in the @code{user} field will be used.
+This field will override the @code{group} field of @code{oci-configuration}.
+
+@item @code{subuids-range} (type: maybe-subid-range)
+An optional @code{subid-range} record allocating subuids for the user from
+the @code{user} field.  When unset, with the rootless Podman OCI runtime, it
+defaults to @code{(subid-range (name "oci-container"))}.
+
+@item @code{subgids-range} (type: maybe-subid-range)
+An optional @code{subid-range} record allocating subgids for the user from
+the @code{user} field.  When unset, with the rootless Podman OCI runtime, it
+defaults to @code{(subid-range (name "oci-container"))}.
+
+@item @code{containers} (default: @code{'()}) (type: list-of-oci-containers)
+The list of @code{oci-container-configuration} records representing the
+containers to provision.  The use of the @code{oci-extension} record should
+be preferred for most cases.
+
+@item @code{networks} (default: @code{'()}) (type: list-of-oci-networks)
+The list of @code{oci-network-configuration} records representing the
+containers to provision.  The use of the @code{oci-extension} record should
+be preferred for most cases.
+
+@item @code{volumes} (default: @code{'()}) (type: list-of-oci-volumes)
+The list of @code{oci-volumes-configuration} records representing the
+containers to provision.  The use of the @code{oci-extension} record should
+be preferred for most cases.
+
+@item @code{verbose?} (default: @code{#f}) (type: boolean)
+When true, additional output will be printed, allowing to better follow the
+flow of execution.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} oci-extension
+Available @code{oci-extension} fields are:
+
+@table @asis
+@item @code{containers} (default: @code{'()}) (type: list-of-oci-containers)
+The list of @code{oci-container-configuration} records representing the
+containers to provision.
+
+@item @code{networks} (default: @code{'()}) (type: list-of-oci-networks)
+The list of @code{oci-network-configuration} records representing the
+containers to provision.
+
+@item @code{volumes} (default: @code{'()}) (type: list-of-oci-volumes)
+The list of @code{oci-volumes-configuration} records representing the
+containers to provision.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 
 @c %start of fragment
 
@@ -44818,16 +44921,16 @@ Overwrite the default command (@code{CMD}) of the image.
 Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.
 
 @item @code{host-environment} (default: @code{'()}) (type: list)
-Set environment variables in the host environment where @command{docker
-run} is invoked.  This is especially useful to pass secrets from the
-host to the container without having them on the @command{docker run}'s
-command line: by setting the @code{MYSQL_PASSWORD} on the host and by passing
+Set environment variables in the host environment where @samp{docker run}
+or @samp{podman run} are invoked.  This is especially useful to pass secrets
+from the host to the container without having them on the OCI runtime command line,
+for example: by setting the @code{MYSQL_PASSWORD} on the host and by passing
 @code{--env MYSQL_PASSWORD} through the @code{extra-arguments} field, it is
 possible to securely set values in the container environment.  This field's
 value can be a list of pairs or strings, even mixed:
 
 @lisp
-(list '("LANGUAGE\" . "eo:ca:eu")
+(list '("LANGUAGE" . "eo:ca:eu")
       "JAVA_HOME=/opt/java")
 @end lisp
 
@@ -44835,22 +44938,24 @@ Pair members can be strings, gexps or file-like objects. Strings are passed
 directly to @code{make-forkexec-constructor}.
 
 @item @code{environment} (default: @code{'()}) (type: list)
-Set environment variables. This can be a list of pairs or strings, even mixed:
+Set environment variables inside the container.  This can be a list of pairs
+or strings, even mixed:
 
 @lisp
 (list '("LANGUAGE" . "eo:ca:eu")
       "JAVA_HOME=/opt/java")
 @end lisp
 
-Pair members can be strings, gexps or file-like objects.
-Strings are passed directly to the Docker CLI.  You can refer to the
-@uref{https://docs.docker.com/engine/reference/commandline/run/#env,upstream}
-documentation for semantics.
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to the OCI runtime CLI.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run/#env,Docker}
+or @url{https://docs.podman.io/en/stable/markdown/podman-run.1.html#env-e-env,Podman}
+upstream documentation for semantics.
 
 @item @code{image} (type: string-or-oci-image)
 The image used to build the container.  It can be a string or an
-@code{oci-image} record.  Strings are resolved by the Docker Engine, and
-follow the usual format
+@code{oci-image} record.  Strings are resolved by the OCI runtime,
+and follow the usual format
 @code{myregistry.local:5000/testing/test-image:tag}.
 
 @item @code{provision} (default: @code{""}) (type: string)
@@ -44878,7 +44983,7 @@ This is a list of @code{shepherd-action} records defining actions supported
 by the service.
 
 @item @code{network} (default: @code{""}) (type: string)
-Set a Docker network for the spawned container.
+Set an OCI network for the spawned container.
 
 @item @code{ports} (default: @code{'()}) (type: list)
 Set the port or port ranges to expose from the spawned container.  This can be a
@@ -44889,10 +44994,11 @@ list of pairs or strings, even mixed:
       "10443:443")
 @end lisp
 
-Pair members can be strings, gexps or file-like objects.
-Strings are passed directly to the Docker CLI.  You can refer to the
-@uref{https://docs.docker.com/engine/reference/commandline/run/#publish,upstream}
-documentation for semantics.
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to the OCI runtime CLI.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run/#publish,Docker}
+or @url{https://docs.podman.io/en/stable/markdown/podman-run.1.html#publish-p-ip-hostport-containerport-protocol,Podman}
+upstream documentation for semantics.
 
 @item @code{volumes} (default: @code{'()}) (type: list)
 Set volume mappings for the spawned container.  This can be a
@@ -44903,25 +45009,97 @@ list of pairs or strings, even mixed:
       "/gnu/store:/gnu/store")
 @end lisp
 
-Pair members can be strings, gexps or file-like objects.
-Strings are passed directly to the Docker CLI.  You can refer to the
-@uref{https://docs.docker.com/engine/reference/commandline/run/#volume,upstream}
-documentation for semantics.
+Pair members can be strings, gexps or file-like objects. Strings are passed
+directly to the OCI runtime CLI.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run/#volume,Docker}
+or @url{https://docs.podman.io/en/stable/markdown/podman-run.1.html#volume-v-source-volume-host-dir-container-dir-options,Podman}
+upstream documentation for semantics.
 
 @item @code{container-user} (default: @code{""}) (type: string)
 Set the current user inside the spawned container.  You can refer to the
-@url{https://docs.docker.com/engine/reference/run/#user,upstream}
-documentation for semantics.
+@url{https://docs.docker.com/engine/reference/run/#user,Docker}
+or @url{https://docs.podman.io/en/stable/markdown/podman-run.1.html#user-u-user-group,Podman}
+upstream documentation for semantics.
 
 @item @code{workdir} (default: @code{""}) (type: string)
 Set the current working directory for the spawned Shepherd service.
 You can refer to the
-@url{https://docs.docker.com/engine/reference/run/#workdir,upstream}
-documentation for semantics.
+@url{https://docs.docker.com/engine/reference/run/#workdir,Docker}
+or @url{https://docs.podman.io/en/stable/markdown/podman-run.1.html#workdir-w-dir,Podman}
+upstream documentation for semantics.
 
 @item @code{extra-arguments} (default: @code{'()}) (type: list)
-A list of strings, gexps or file-like objects that will be directly
-passed to the @command{docker run} invocation.
+A list of strings, gexps or file-like objects that will be directly passed
+to the @samp{docker run} or @samp{podman run} invokation.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} oci-network-configuration
+Available @code{oci-network-configuration} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+The name of the OCI network to provision.
+
+@item @code{driver} (type: maybe-string)
+The driver to manage the network.
+
+@item @code{gateway} (type: maybe-string)
+IPv4 or IPv6 gateway for the subnet.
+
+@item @code{internal?} (default: @code{#f}) (type: boolean)
+Restrict external access to the network
+
+@item @code{ip-range} (type: maybe-string)
+Allocate container ip from a sub-range in CIDR format.
+
+@item @code{ipam-driver} (type: maybe-string)
+IP Address Management Driver.
+
+@item @code{ipv6?} (default: @code{#f}) (type: boolean)
+Enable IPv6 networking.
+
+@item @code{subnet} (type: maybe-string)
+Subnet in CIDR format that represents a network segment.
+
+@item @code{labels} (default: @code{'()}) (type: list)
+The list of labels that will be used to tag the current volume.
+
+@item @code{extra-arguments} (default: @code{'()}) (type: list)
+A list of strings, gexps or file-like objects that will be directly passed
+to the @samp{docker network create} or @samp{podman network create}
+invokation.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} oci-volume-configuration
+Available @code{oci-volume-configuration} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+The name of the OCI volume to provision.
+
+@item @code{labels} (default: @code{'()}) (type: list)
+The list of labels that will be used to tag the current volume.
+
+@item @code{extra-arguments} (default: @code{'()}) (type: list)
+A list of strings, gexps or file-like objects that will be directly passed
+to the @samp{docker volume create} or @samp{podman volume create}
+invokation.
 
 @end table
 

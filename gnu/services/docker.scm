@@ -31,7 +31,10 @@
   #:use-module (gnu system shadow)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages linux)               ;singularity
+  #:use-module (guix deprecation)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
+  #:use-module (guix i18n)
   #:use-module (guix records)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 format)
@@ -67,16 +70,18 @@
                oci-container-configuration-volumes
                oci-container-configuration-container-user
                oci-container-configuration-workdir
-               oci-container-configuration-extra-arguments
-               oci-container-shepherd-service
-               %oci-container-accounts)
+               oci-container-configuration-extra-arguments)
 
   #:export (containerd-configuration
             containerd-service-type
             docker-configuration
             docker-service-type
             singularity-service-type
-            oci-container-service-type))
+            ;; For backwards compatibility, until the
+            ;; oci-container-service-type is fully deprecated.
+            oci-container-shepherd-service
+            oci-container-service-type
+            %oci-container-accounts))
 
 (define-maybe file-like)
 
@@ -297,17 +302,26 @@ bundles in Docker containers.")
 ;;; OCI container.
 ;;;
 
-(define (configs->shepherd-services configs)
-  (map oci-container-shepherd-service configs))
+;; For backwards compatibility, until the
+;; oci-container-service-type is fully deprecated.
+(define-deprecated (oci-container-shepherd-service config)
+  oci-service-type
+  ((@ (gnu services containers) oci-container-shepherd-service)
+   'docker config))
+(define %oci-container-accounts
+  (filter user-account? (oci-service-accounts (oci-configuration))))
 
 (define oci-container-service-type
   (service-type (name 'oci-container)
-                (extensions (list (service-extension profile-service-type
-                                                     (lambda _ (list docker-cli)))
-                                  (service-extension account-service-type
-                                                     (const %oci-container-accounts))
-                                  (service-extension shepherd-root-service-type
-                                                     configs->shepherd-services)))
+                (extensions
+                 (list (service-extension oci-service-type
+                                          (lambda (containers)
+                                            (warning
+                                             (G_
+                                              "'oci-container-service-type' is\
+ deprecated, use 'oci-service-type' instead~%"))
+                                            (oci-extension
+                                             (containers containers))))))
                 (default-value '())
                 (extend append)
                 (compose concatenate)

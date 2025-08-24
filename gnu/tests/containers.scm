@@ -27,6 +27,9 @@
   #:use-module (gnu services)
   #:use-module (gnu services containers)
   #:use-module (gnu services desktop)
+  #:use-module ((gnu services docker)
+                #:select (containerd-service-type
+                          docker-service-type))
   #:use-module (gnu services dbus)
   #:use-module (gnu services networking)
   #:use-module (gnu system)
@@ -39,7 +42,9 @@
   #:use-module (guix profiles)
   #:use-module ((guix scripts pack) #:prefix pack:)
   #:use-module (guix store)
-  #:export (%test-rootless-podman))
+  #:export (%test-rootless-podman
+            %test-oci-service-rootless-podman
+            %test-oci-service-docker))
 
 
 (define %rootless-podman-os
@@ -133,7 +138,7 @@
                                (status (close-pipe port)))
                           output)))
                     (let* ((bash
-                            ,(string-append #$bash "/bin/bash"))
+                            (string-append #$bash "/bin/bash"))
                            (response1
                             (slurp bash "-c"
                                    (string-append "ls -la /sys/fs/cgroup | "
@@ -345,3 +350,555 @@ standard output device and then enters a new line.")
    (name "rootless-podman")
    (description "Test rootless Podman service.")
    (value (build-tarball&run-rootless-podman-test))))
+
+
+(define %oci-network
+  (oci-network-configuration (name "my-network")))
+
+(define %oci-volume
+  (oci-volume-configuration (name "my-volume")))
+
+(define %oci-wait-for-file
+  #~(define (wait-for-file file)
+      ;; Wait until FILE shows up.
+      (let loop ((i 6))
+        (cond ((file-exists? file)
+               #t)
+              ((zero? i)
+               (error "file didn't show up" file))
+              (else
+               (pk 'wait-for-file file)
+               (sleep 1)
+               (loop (- i 1)))))))
+
+(define %oci-read-lines
+  #~(define (read-lines file-or-port)
+      (define (loop-lines port)
+        (let loop ((lines '()))
+          (match (read-line port)
+            ((? eof-object?)
+             (reverse lines))
+            (line
+             (loop (cons line lines))))))
+
+      (if (port? file-or-port)
+          (loop-lines file-or-port)
+          (call-with-input-file file-or-port
+            loop-lines))))
+
+(define %oci-slurp
+  #~(define slurp
+      (lambda args
+        (let* ((port
+                (apply open-pipe* OPEN_READ
+                       (list "sh" "-l" "-c"
+                             (string-join args " "))))
+               (output (read-lines port))
+               (status (close-pipe port)))
+          output))))
+
+(define (%oci-rootless-podman-run commands)
+  #~((use-modules (srfi srfi-1)
+                  (ice-9 format)
+                  (ice-9 popen)
+                  (ice-9 match)
+                  (ice-9 rdelim)
+                  (gnu build oci-containers))
+
+     #$%oci-wait-for-file
+     #$%oci-read-lines
+     #$%oci-slurp
+
+     (define responses
+       (map
+        (lambda (index)
+          (format #f "/tmp/response_~a" index))
+        (iota (length '#$commands))))
+
+     (match (primitive-fork)
+       (0
+        (begin
+          (setgid (passwd:gid (getpwnam "oci-container")))
+          (setuid (passwd:uid (getpw "oci-container")))
+
+          (let* ((outputs
+                  (list #$@commands))
+                 (outputs-responses
+                  (zip outputs responses)))
+            (for-each
+             (match-lambda
+               ((output response)
+                (call-with-output-file response
+                  (lambda (port)
+                    (display (string-join output "\n") port)))))
+             outputs-responses))))
+       (pid
+        (cdr (waitpid pid))))
+
+     (for-each wait-for-file responses)
+     (map
+      (lambda (response)
+        (sort (slurp "cat" response) string<=?))
+      responses)))
+
+(define %oci-rootless-podman-os
+  (simple-operating-system
+   (service dhcpcd-service-type)
+   (service dbus-root-service-type)
+   (service polkit-service-type)
+   (service elogind-service-type)
+   (service iptables-service-type)
+   (service rootless-podman-service-type)
+   (extra-special-file "/shared.txt"
+                       (plain-file "shared.txt" "hello"))
+   (service oci-service-type
+            (oci-configuration
+             (runtime 'podman)
+             (verbose? #t)))
+   (simple-service 'oci-provisioning
+                   oci-service-type
+                   (oci-extension
+                    (networks
+                     (list %oci-network))
+                    (volumes
+                     (list %oci-volume))
+                    (containers
+                     (list
+                      (oci-container-configuration
+                       (provision "first")
+                       (image
+                        (oci-image
+                         (repository "guile")
+                         (value
+                          (specifications->manifest '("guile")))
+                         (pack-options
+                          '(#:symlinks (("/bin" -> "bin"))))))
+                       (entrypoint "/bin/guile")
+                       (network "my-network")
+                       (command
+                        '("-c" "(use-modules (web server))
+(define (handler request request-body)
+  (values '((content-type . (text/plain))) \"out of office\"))
+(run-server handler 'http `(#:addr ,(inet-pton AF_INET \"0.0.0.0\")))"))
+                       (host-environment
+                        '(("VARIABLE" . "value")))
+                       (volumes
+                        '(("my-volume" . "/my-volume")))
+                       (extra-arguments
+                        '("--env" "VARIABLE")))
+                      (oci-container-configuration
+                       (provision "second")
+                       (image
+                        (oci-image
+                         (repository "guile")
+                         (value
+                          (specifications->manifest '("guile")))
+                         (pack-options
+                          '(#:symlinks (("/bin" -> "bin"))))))
+                       (entrypoint "/bin/guile")
+                       (network "my-network")
+                       (command
+                        '("-c" "(let l ((c 300))
+(display c)
+(newline)
+(sleep 1)
+(when (positive? c)
+  (l (- c 1))))"))
+                       (volumes
+                        '(("my-volume" . "/my-volume")
+                          ("/shared.txt" . "/shared.txt:ro"))))))))))
+
+(define (run-rootless-podman-oci-service-test)
+  (define os
+    (marionette-operating-system
+     (operating-system-with-gc-roots
+      %oci-rootless-podman-os
+      (list))
+     #:imported-modules '((gnu build oci-containers)
+                          (gnu build dbus-service)
+                          (gnu services herd)
+                          (guix combinators))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (volatile? #f)
+     (memory-size 1024)
+     (disk-image-size (* 5000 (expt 2 20)))
+     (port-forwardings '())))
+
+  (define test
+    (with-imported-modules '((gnu build oci-containers)
+                             (gnu build dbus-service)
+                             (gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-1) (srfi srfi-11) (srfi srfi-64)
+                       (gnu build dbus-service)
+                       (gnu build marionette))
+
+          (define marionette
+            ;; Relax timeout to accommodate older systems and
+            ;; allow for pulling the image.
+            (make-marionette (list #$vm) #:timeout 60))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "rootless-podman-oci-service")
+
+          (marionette-eval
+           '(begin
+              (use-modules (gnu services herd))
+              (wait-for-service 'user-processes))
+           marionette)
+
+          (test-assert "podman-volumes running"
+            (begin
+              (define (run-test)
+                (first
+                 (marionette-eval
+                  `(begin
+                     #$@(%oci-rootless-podman-run
+                         #~((oci-object-service-available?
+                             "/run/current-system/profile/bin/podman"
+                             "volume"
+                             '("my-volume")
+                             #:verbose? #t))))
+                  marionette)))
+              ;; Allow services to come up on slower machines.
+              (with-retries 80 1 (equal? '("my-volume") (run-test)))))
+
+          (test-assert "podman-networks running"
+            (begin
+              (define (run-test)
+                (first
+                 (marionette-eval
+                  `(begin
+                     #$@(%oci-rootless-podman-run
+                         #~((oci-object-service-available?
+                             "/run/current-system/profile/bin/podman"
+                             "network"
+                             '("my-network")
+                             #:verbose? #t))))
+                  marionette)))
+              ;; Allow services to come up on slower machines.
+              (with-retries 80 1 (equal? '("my-network" "podman") (run-test)))))
+
+          (test-assert "image loaded"
+            (begin
+              (define (run-test)
+                (first
+                 (marionette-eval
+                  `(begin
+                     #$@(%oci-rootless-podman-run
+                         #~((oci-object-service-available?
+                             "/run/current-system/profile/bin/podman"
+                             "image"
+                             '("localhost/guile:latest")
+                             #:format-string "{{.Repository}}:{{.Tag}}"
+                             #:verbose? #t))))
+                  marionette)))
+              ;; Allow services to come up on slower machines.
+              (with-retries 80 1
+                            (equal?
+                             '("localhost/guile:latest")
+                             (run-test)))))
+
+          (test-assert "passing host environment variables"
+            (begin
+              (define (run-test)
+                (first
+                 (marionette-eval
+                  `(begin
+                     #$@(%oci-rootless-podman-run
+                         #~((slurp
+                             "/run/current-system/profile/bin/podman"
+                             "exec" "first"
+                             "/bin/guile" "-c"
+                             "'(display (getenv \"VARIABLE\"))'"))))
+                  marionette)))
+              ;; Allow services to come up on slower machines.
+              (with-retries 80 1 (equal? '("value") (run-test)))))
+
+          (test-equal "mounting host files"
+            '("hello")
+            (first
+             (marionette-eval
+              `(begin
+                 #$@(%oci-rootless-podman-run
+                     #~((slurp
+                         "/run/current-system/profile/bin/podman"
+                         "exec" "second"
+                         "/bin/guile" "-c" "'(begin
+(use-modules (ice-9 popen) (ice-9 rdelim))
+(display (call-with-input-file \"/shared.txt\" read-line)))'"))))
+              marionette)))
+
+          (test-equal "read and write to provisioned volumes"
+            '("world")
+            (second
+             (marionette-eval
+              `(begin
+                 #$@(%oci-rootless-podman-run
+                     #~((slurp
+                         "/run/current-system/profile/bin/podman"
+                         "exec" "first"
+                         "/bin/guile" "-c" "'(begin
+(use-modules (ice-9 popen) (ice-9 rdelim))
+(call-with-output-file \"/my-volume/out.txt\"
+  (lambda (p) (display \"world\" p))))'")
+                        (slurp
+                         "/run/current-system/profile/bin/podman"
+                         "exec" "second"
+                         "/bin/guile" "-c" "'(begin
+(use-modules (ice-9 popen) (ice-9 rdelim))
+(display
+ (call-with-input-file \"/my-volume/out.txt\" read-line)))'"))))
+              marionette)))
+
+          (test-equal
+              "can read and write to ports over provisioned network"
+            '("out of office")
+            (first
+             (marionette-eval
+              `(begin
+                 #$@(%oci-rootless-podman-run
+                     #~((slurp
+                         "/run/current-system/profile/bin/podman"
+                         "exec" "second"
+                         "/bin/guile" "-c" "'(begin
+(use-modules (web client))
+(define-values (response out) (http-get \"http://first:8080\"))
+(display out))'"))))
+              marionette)))
+
+          (test-end))))
+
+  (gexp->derivation "rootless-podman-oci-service-test" test))
+
+(define %test-oci-service-rootless-podman
+  (system-test
+   (name "oci-service-rootless-podman")
+   (description "Test Rootless-Podman backed OCI provisioning service.")
+   (value (run-rootless-podman-oci-service-test))))
+
+(define (%oci-docker-run commands)
+  #~((use-modules (srfi srfi-1)
+                  (ice-9 format)
+                  (ice-9 popen)
+                  (ice-9 match)
+                  (ice-9 rdelim)
+                  (gnu build oci-containers))
+
+     #$%oci-read-lines
+     #$%oci-slurp
+
+     (let ((outputs (list #$@commands)))
+       (map
+        (lambda (output)
+          (sort output string<=?))
+        outputs))))
+
+(define %oci-docker-os
+  (simple-operating-system
+   (service dhcpcd-service-type)
+   (service dbus-root-service-type)
+   (service polkit-service-type)
+   (service elogind-service-type)
+   (service containerd-service-type)
+   (service docker-service-type)
+   (extra-special-file "/shared.txt"
+                       (plain-file "shared.txt" "hello"))
+   (service oci-service-type
+            (oci-configuration
+             (verbose? #t)))
+   (simple-service 'oci-provisioning
+                   oci-service-type
+                   (oci-extension
+                    (networks
+                     (list %oci-network))
+                    (volumes
+                     (list %oci-volume))
+                    (containers
+                     (list
+                      (oci-container-configuration
+                       (provision "first")
+                       (image
+                        (oci-image
+                         (repository "guile")
+                         (value
+                          (specifications->manifest '("guile")))
+                         (pack-options
+                          '(#:symlinks (("/bin" -> "bin"))))))
+                       (entrypoint "/bin/guile")
+                       (network "my-network")
+                       (command
+                        '("-c" "(use-modules (web server))
+(define (handler request request-body)
+  (values '((content-type . (text/plain))) \"out of office\"))
+(run-server handler 'http `(#:addr ,(inet-pton AF_INET \"0.0.0.0\")))"))
+                       (host-environment
+                        '(("VARIABLE" . "value")))
+                       (volumes
+                        '(("my-volume" . "/my-volume")))
+                       (extra-arguments
+                        '("--env" "VARIABLE")))
+                      (oci-container-configuration
+                       (provision "second")
+                       (image
+                        (oci-image
+                         (repository "guile")
+                         (value
+                          (specifications->manifest '("guile")))
+                         (pack-options
+                          '(#:symlinks (("/bin" -> "bin"))))))
+                       (entrypoint "/bin/guile")
+                       (network "my-network")
+                       (command
+                        '("-c" "(let l ((c 300))
+(display c)
+(newline)
+(sleep 1)
+(when (positive? c)
+  (l (- c 1))))"))
+                       (volumes
+                        '(("my-volume" . "/my-volume")
+                          ("/shared.txt" . "/shared.txt:ro"))))))))))
+
+(define (run-docker-oci-service-test)
+  (define os
+    (marionette-operating-system
+     (operating-system-with-gc-roots
+      %oci-docker-os
+      (list))
+     #:imported-modules '((gnu build oci-containers)
+                          (gnu build dbus-service)
+                          (gnu services herd)
+                          (guix combinators))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (volatile? #f)
+     (memory-size 1024)
+     (disk-image-size (* 5000 (expt 2 20)))
+     (port-forwardings '())))
+
+  (define test
+    (with-imported-modules '((gnu build oci-containers)
+                             (gnu build dbus-service)
+                             (gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-1) (srfi srfi-11) (srfi srfi-64)
+                       (gnu build dbus-service)
+                       (gnu build marionette))
+
+          (define marionette
+            ;; Relax timeout to accommodate older systems and
+            ;; allow for pulling the image.
+            (make-marionette (list #$vm) #:timeout 60))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "docker-oci-service")
+
+          (marionette-eval
+           '(begin
+              (use-modules (gnu services herd))
+              (wait-for-service 'dockerd))
+           marionette)
+
+          (test-assert "docker-volumes running"
+            (begin
+              (define (run-test)
+                (first
+                 (marionette-eval
+                  `(begin
+                     #$@(%oci-docker-run
+                         #~((oci-object-service-available?
+                             "/run/current-system/profile/bin/docker"
+                             "volume"
+                             '("my-volume")
+                             #:verbose? #t))))
+                  marionette)))
+              ;; Allow services to come up on slower machines.
+              (with-retries 80 1 (equal? '("my-volume") (run-test)))))
+
+          (test-assert "docker-networks running"
+            (begin
+              (define (run-test)
+                (first
+                 (marionette-eval
+                  `(begin
+                     #$@(%oci-docker-run
+                         #~((oci-object-service-available?
+                             "/run/current-system/profile/bin/docker"
+                             "network"
+                             '("my-network")
+                             #:verbose? #t))))
+                  marionette)))
+              ;; Allow services to come up on slower machines.
+              (with-retries 80 1 (equal?
+                                  '("my-network" "none")
+                                  (run-test)))))
+
+          (test-assert "passing host environment variables"
+            (begin
+              (define (run-test)
+                (first
+                 (marionette-eval
+                  `(begin
+                     #$@(%oci-docker-run
+                         #~((slurp
+                             "/run/current-system/profile/bin/docker"
+                             "exec" "first"
+                             "/bin/guile" "-c"
+                             "'(display (getenv \"VARIABLE\"))'"))))
+                  marionette)))
+              ;; Allow services to come up on slower machines.
+              (with-retries 80 1 (equal? '("value") (run-test)))))
+
+          (test-equal "read and write to provisioned volumes"
+            '("world")
+            (second
+             (marionette-eval
+              `(begin
+                 #$@(%oci-docker-run
+                     #~((slurp
+                         "/run/current-system/profile/bin/docker"
+                         "exec" "first"
+                         "/bin/guile" "-c" "'(begin
+(use-modules (ice-9 popen) (ice-9 rdelim))
+(call-with-output-file \"/my-volume/out.txt\"
+  (lambda (p) (display \"world\" p))))'")
+                        (slurp
+                         "/run/current-system/profile/bin/docker"
+                         "exec" "second"
+                         "/bin/guile" "-c" "'(begin
+(use-modules (ice-9 popen) (ice-9 rdelim))
+(display
+ (call-with-input-file \"/my-volume/out.txt\" read-line)))'"))))
+              marionette)))
+
+          (test-equal
+              "can read and write to ports over provisioned network"
+            '("out of office")
+            (first
+             (marionette-eval
+              `(begin
+                 #$@(%oci-docker-run
+                     #~((slurp
+                         "/run/current-system/profile/bin/docker"
+                         "exec" "second"
+                         "/bin/guile" "-c" "'(begin (use-modules (web client))
+          (define-values (response out)
+            (http-get \"http://first:8080\"))
+          (display out))'"))))
+              marionette)))
+
+          (test-end))))
+
+  (gexp->derivation "docker-oci-service-test" test))
+
+(define %test-oci-service-docker
+  (system-test
+   (name "oci-service-docker")
+   (description "Test Docker backed OCI provisioning service.")
+   (value (run-docker-oci-service-test))))
