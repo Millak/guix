@@ -17721,25 +17721,15 @@ Unicode-aware.  It is not intended as an end-user tool.")
        (uri (pypi-uri "xlwt" version))
        (sha256
         (base32 "123c2pdamshkq75wwvck8fq0cjq1843xd3x9qaiz2a4vg9qi56f5"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "GUIX_PYTHONPATH"
-                       (string-append (getcwd) "/build/lib:"
-                                      (getenv "GUIX_PYTHONPATH")))
-               (invoke "nosetests" "-v")))))))
-    (native-inputs
-     `(("nose" ,python-nose)))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://www.python-excel.org/")
     (synopsis "Library for creating spreadsheet Excel files")
-    (description "@code{xlwt} is a library for writing data and formatting
-information to older Excel files (i.e. .xls).  The package itself is pure
-Python with no dependencies on modules or packages outside the standard Python
-distribution.  It is not intended as an end-user tool.")
+    (description
+     "@code{xlwt} is a library for writing data and formatting information to
+older Excel files (i.e. .xls).  The package itself is pure Python with no
+dependencies on modules or packages outside the standard Python distribution.
+It is not intended as an end-user tool.")
     (license license:bsd-3)))
 
 (define-public python-immutables
