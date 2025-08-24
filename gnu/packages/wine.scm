@@ -442,3 +442,10 @@ version)")
   (if (supported-package? wine64) wine64 wine))
 
 (export wine-for-system)
+
+(define* (wine-staging-for-system #:optional
+                          (system (or (%current-target-system)
+                                      (%current-system))))
+  (if (supported-package? wine64-staging) wine64 wine-staging))
+
+(export wine-staging-for-system)
