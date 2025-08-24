@@ -5247,3 +5247,39 @@ recording packets that are dropped by the kernel.  It provides the commands
 Protocol.  RDAP is modern a replacement for WHOIS, which provides domain name
 and IP address registration information in JSON format over HTTP.")
     (license license:expat)))
+
+(define-public wireproxy
+  (package
+    (name "wireproxy")
+    (version "1.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/whyvl/wireproxy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ypk9migx1l7xwcxr542pcdy8q2bm33wp03bqzgav0hp1fsrmi8p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/pufferffish/wireproxy/cmd/wireproxy"
+      #:unpack-path "github.com/pufferffish/wireproxy"
+      #:test-subdirs #~(list "../../..."))) ;to test the whole module
+    (native-inputs
+     (list go-github-com-akamensky-argparse
+           go-github-com-go-ini-ini
+           go-github-com-landlock-lsm-go-landlock
+           go-github-com-makenowjust-heredoc-v2
+           go-github-com-things-go-go-socks5
+           go-golang-org-x-net
+           go-golang-zx2c4-com-wireguard
+           go-suah-dev-protect))
+    (home-page "https://github.com/whyvl/wireproxy")
+    (synopsis "Wireguard client that exposes itself as a socks5 proxy")
+    (description
+     "wireproxy is a completely userspace application that connects to a
+wireguard peer, and exposes a socks5/http proxy or tunnels on the machine.")
+    (license license:isc)))
