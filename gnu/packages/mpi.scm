@@ -356,18 +356,11 @@ software vendors, application developers and computer science researchers.")
         '(begin
            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
            (define (delete-all-but directory . preserve)
-             (define (directory? x)
-               (and=> (stat x #f)
-                      (compose (cut eq? 'directory <>) stat:type)))
              (with-directory-excursion directory
-               (let* ((pred
-                       (negate (cut member <> (append '("." "..") preserve))))
+               (let* ((pred (negate (cut member <>
+                                         (cons* "." ".." preserve))))
                       (items (scandir "." pred)))
-                 (for-each (lambda (item)
-                             (if (directory? item)
-                                 (delete-file-recursively item)
-                                 (delete-file item)))
-                           items))))
+                 (for-each (cut delete-file-recursively <>) items))))
            ;; Delete as many bundled libraries as permitted by the build
            ;; system.
            (delete-all-but "3rd-party" "treematch" "Makefile.in" "Makefile.am")
@@ -381,8 +374,8 @@ software vendors, application developers and computer science researchers.")
               ;; As of Open MPI 5.0.X, PMIx is used to communicate
               ;; with SLURM, so SLURM'S PMI is no longer needed.
               (delete "slurm")
-              (append openpmix)         ;for PMI support (launching via "srun")
-              (append prrte)))          ;for PMI support (launching via "srun")
+              (append openpmix)        ;for PMI support (launching via "srun")
+              (append prrte)))         ;for PMI support (launching via "srun")
     (native-inputs (modify-inputs (package-native-inputs openmpi)
                      (append python)))
 
@@ -392,7 +385,7 @@ software vendors, application developers and computer science researchers.")
            #~(list #$(string-append
                       "CFLAGS=-g -O2"
                       " -Wno-error=incompatible-pointer-types")
-                   "--enable-mpi-ext=affinity"         ;cr doesn't work
+                   "--enable-mpi-ext=affinity" ;cr doesn't work
                    "--with-sge"
                    "--disable-static"
 

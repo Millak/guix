@@ -192,19 +192,12 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
             ;; bundled under java/org.  These are used by the 'vncviewer'
             ;; program.  The jsch copy is modified and integrates changes from
             ;; https://github.com/mwiede/jsch, so cannot easily be un-bundled.
-            (define (directory? x)
-              (and=> (stat x #f) (compose (cut eq? 'directory <>) stat:type)))
-
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
-                (let* ((pred (negate (cut member <> (append '("." "..")
-                                                            preserve))))
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
                        (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
+                  (for-each (cut delete-file-recursively <>) items))))
 
             ;; d3des, rfb (headers) and turbojpeg-jni are small and not
             ;; packaged in Guix, so preserve them.

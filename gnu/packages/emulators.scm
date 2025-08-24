@@ -643,18 +643,11 @@ turbo speed, networked multiplayer, and graphical enhancements.")
           #~(begin
               ;; XXX: 'delete-all-but' is copied from the turbovnc package.
               (define (delete-all-but directory . preserve)
-                (define (directory? x)
-                  (and=> (stat x #f)
-                         (compose (cut eq? 'directory <>) stat:type)))
                 (with-directory-excursion directory
-                  (let* ((pred
-                          (negate (cut member <> (append '("." "..") preserve))))
+                  (let* ((pred (negate (cut member <>
+                                            (cons* "." ".." preserve))))
                          (items (scandir "." pred)))
-                    (for-each (lambda (item)
-                                (if (directory? item)
-                                    (delete-file-recursively item)
-                                    (delete-file item)))
-                              items))))
+                    (for-each (cut delete-file-recursively <>) items))))
 
               ;; Clean up the source from bundled libraries we don't need.
               (delete-all-but "Externals"
@@ -2866,18 +2859,11 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
                          (srfi srfi-26))
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
             (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
               (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
                        (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
+                  (for-each (cut delete-file-recursively <>) items))))
             ;; Remove as much bundled sources as possible, shaving off about
             ;; 65 MiB.
             (delete-all-but "deps"

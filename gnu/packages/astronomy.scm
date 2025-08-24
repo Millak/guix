@@ -1553,18 +1553,11 @@ R. Seaman's protocol}
           #~(begin
               ;; XXX: 'delete-all-but' is copied from the turbovnc package.
               (define (delete-all-but directory . preserve)
-                (define (directory? x)
-                  (and=> (stat x #f)
-                         (compose (cut eq? 'directory <>) stat:type)))
                 (with-directory-excursion directory
-                  (let* ((pred
-                          (negate (cut member <> (append '("." "..") preserve))))
+                  (let* ((pred (negate (cut member <>
+                                            (cons* "." ".." preserve))))
                          (items (scandir "." pred)))
-                    (for-each (lambda (item)
-                                (if (directory? item)
-                                    (delete-file-recursively item)
-                                    (delete-file item)))
-                              items))))
+                    (for-each (cut delete-file-recursively <>) items))))
               (delete-all-but "thirdparty" "thirdparty.cmake")))))
       (build-system cmake-build-system)
       (arguments

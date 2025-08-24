@@ -1531,9 +1531,9 @@ code prior to it getting merged into @code{go-cid}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs-shipyard/nopfs")
-             (commit (go-version->git-ref version
-                                          #:subdir "ipfs"))))
+              (url "https://github.com/ipfs-shipyard/nopfs")
+              (commit (go-version->git-ref version
+                                           #:subdir "ipfs"))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "00lwizzdfdx6kynxddal3all6q9dhwqanpkw0d0vxlwik4nkvxa5"))
@@ -1546,18 +1546,11 @@ code prior to it getting merged into @code{go-cid}.")
             ;; Consider to implement it as re-usable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
               (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
                        (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
+                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "." "ipfs")))))
     (build-system go-build-system)
     (arguments

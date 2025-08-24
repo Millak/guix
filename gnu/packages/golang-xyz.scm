@@ -21790,9 +21790,9 @@ when they'd prefer a more familiar, loosely typed API.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/uber-go/zap")
-             (commit (go-version->git-ref version
-                                          #:subdir "exp"))))
+              (url "https://github.com/uber-go/zap")
+              (commit (go-version->git-ref version
+                                           #:subdir "exp"))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "05i15278swdmpif3p6g18sy0sn7rnfdl3m2rj5p30cnyb0j29vig"))
@@ -21805,18 +21805,11 @@ when they'd prefer a more familiar, loosely typed API.")
             ;; Consider to implement it as re-usable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
               (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
                        (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
+                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "." "exp")))))
     (build-system go-build-system)
     (arguments
