@@ -6722,6 +6722,25 @@ default and preferred audio driver but also supports native drivers like ALSA.")
          (sha256
           (base32 "0cnj2sgr60f5h6wdfmihc214wf3n74686sipl3iyzmylqrcyhbjn")))))))
 
+;; This source is a fork of vst3sdk with the documentation and VSTGUI
+;; submodules removed and a dummy `meson.build` file that just lists all
+;; source files.
+(define vst3sdk
+  (let ((version "3.7.7_build_19-patched"))
+    (origin
+      (method git-fetch)
+      (uri
+       (git-reference
+         (url "https://github.com/robbert-vdh/vst3sdk")
+         (commit (string-append "v" version))
+         ;; Required for vst3_base, vst3_pluginterfaces, and vst3_public_sdk.
+         (recursive? #t)))
+    (file-name (git-file-name "vst3sdk" version))
+    (sha256
+     (base32 "09axvpshwbf5061kcbl26v74dcmwxmgmlxb15b75bnqbh0zcghrf"))
+    (patches
+     (search-patches "vst3sdk-3.7.7-allow-winelib-compilation.patch")))))
+
 (define-public ecasound
   (package
     (name "ecasound")
