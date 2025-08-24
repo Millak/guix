@@ -13026,7 +13026,6 @@ data, and scientific formats.")
     (build-system pyproject-build-system)
     (native-inputs
      (list pkg-config
-           python-pyperf
            python-pytest
            python-setuptools
            python-wheel))
