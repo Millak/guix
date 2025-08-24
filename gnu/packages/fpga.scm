@@ -731,7 +731,7 @@ automated testing of HDL code.")
 (define-public systemc
   (package
     (name "systemc")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -740,7 +740,7 @@ automated testing of HDL code.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v5fg3h9ffdzq9f6zplvr9all00ssc1gpdvbg129xahkrbl53kvw"))))
+        (base32 "1c8brlv3702p2ivifai9929bg20y30jb301ap0gdmz305q8mcb33"))))
     (native-inputs (list perl))
     (build-system cmake-build-system)
     (arguments
