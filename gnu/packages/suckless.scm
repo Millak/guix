@@ -107,27 +107,26 @@ terminal like @code{st}.")
         (base32 "0hhwckyzvsj9aim2l6m69wmvl2n7gzd6b1ly8qjnlpgcrcxfllbn"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "config.mk"
-               (("/usr/local")
-                (assoc-ref outputs "out"))
-               (("/usr/X11R6")
-                (assoc-ref inputs "libx11"))
-               (("/usr/include/freetype2")
-                (string-append (assoc-ref inputs "freetype")
-                               "/include/freetype2"))
-               (("CC = cc")
-                (string-append "CC = " ,(cc-for-target))))))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                      ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "config.mk"
+                (("/usr/local") #$output)
+                (("/usr/X11R6") #$(this-package-input "libx11"))
+                (("/usr/include/freetype2")
+                 (string-append #$(this-package-input "freetype")
+                                "/include/freetype2"))
+                (("CC = cc")
+                 (string-append "CC = " #$(cc-for-target))))))
+          (delete 'configure))))         ; no configure script
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libx11" ,libx11)
-       ("libxft" ,libxft)))
+     (list fontconfig
+           freetype
+           libx11
+           libxft))
     (home-page "https://tools.suckless.org/tabbed/")
     (synopsis "Tab interface for application supporting Xembed")
     (description "Tabbed is a generic tabbed frontend to xembed-aware
