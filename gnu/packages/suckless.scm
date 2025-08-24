@@ -62,6 +62,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix scripts)
   #:use-module (guix utils)
   #:use-module (guix packages))
 
@@ -228,14 +229,15 @@ a custom raw video format with a simple container.")
 (define-public dwm
   (package
     (name "dwm")
-    (version "6.5")
+    (version "6.6")
+    (synopsis "Dynamic Window Manager")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dl.suckless.org/dwm/dwm-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0acpl05rg6rg6nrg3rv4kp388iqzp1n6dhin30a97yzjm6zrxmr1"))))
+                "18q0zjvzsvpm76p2x1xlw163d8wbq44z41n9w94prh46jdnjrz3w"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -257,24 +259,19 @@ a custom raw video format with a simple container.")
           (add-after 'build 'install-xsession
             (lambda _
               ;; Add a .desktop file to xsessions.
-              (let* ((xsessions (string-append #$output "/share/xsessions")))
-                (mkdir-p xsessions)
-                (with-output-to-file
-                    (string-append xsessions "/dwm.desktop")
-                  (lambda _
-                    (format #t
-                            "[Desktop Entry]~@
-                     Name=dwm~@
-                     Comment=Dynamic Window Manager~@
-                     Exec=~a/bin/dwm~@
-                     TryExec=~@*~a/bin/dwm~@
-                     Icon=~@
-                     Type=Application~%"
-                            #$output)))))))))
+              (let ((apps (string-append #$output "/share/xsessions")))
+                (mkdir-p apps)
+                (make-desktop-entry-file
+                 (string-append apps "/dwm.desktop")
+                 #:name "dwm"
+                 #:generic-name #$synopsis
+                 #:exec (string-append #$output "/bin/dwm %U")
+                 #:comment
+                 `(("en" ,#$synopsis)
+                   (#f ,#$synopsis)))))))))
     (inputs
      (list freetype libx11 libxft libxinerama))
     (home-page "https://dwm.suckless.org/")
-    (synopsis "Dynamic window manager")
     (description
      "dwm is a dynamic window manager for X.  It manages windows in tiled,
 monocle and floating layouts.  All of the layouts can be applied dynamically,
