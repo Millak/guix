@@ -213,12 +213,14 @@ It provides the following features:
                 "0nncvzyipvkkd7zlgzwbjygp82frzs2hvbnk71gxf671np607y94"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                      ; no check target
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no configure script
     (synopsis "Command line video editing utilities")
     (home-page "https://tools.suckless.org/blind/")
     (description
