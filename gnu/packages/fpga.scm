@@ -606,14 +606,14 @@ Python program.")
 (define-public python-myhdl
   (package
     (name "python-myhdl")
-    (version "0.11")
+    (version "0.11.51")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "myhdl" version))
         (sha256
           (base32
-            "04fi59cyn5dsci0ai7djg74ybkqfcjzhj1jfmac2xanbcrw9j3yk"))))
+            "0b360smk2m60vhxdi837hz75m0pnms477wkn9gh6m4v3nih1v4cx"))))
     (build-system python-build-system)
     (home-page "https://www.myhdl.org/")
     (synopsis "Python as a Hardware Description Language")
