@@ -2312,14 +2312,14 @@ connections.")
 (define-public plasma-mobile
   (package
     (name "plasma-mobile")
-    (version "6.3.6")
+    (version "6.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
                                   version "/plasma-mobile-" version ".tar.xz"))
               (sha256
                (base32
-                "1ajhcj99rcil8fs5gyh2qsvj1lvsbr835w5nh7azdq83m7cw41qp"))))
+                "1wqxjspp4hbwlwgh3q2xs4f82h67dk8yn400b47f91z4kmskskz3"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;only small add-hoc test scripts
     (native-inputs (list extra-cmake-modules pkg-config qttools))
@@ -2334,6 +2334,7 @@ connections.")
                   kirigami-addons
                   kitemmodels
                   knotifications
+                  kpipewire
                   kwayland
                   kwin
                   layer-shell-qt
