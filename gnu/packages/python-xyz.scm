@@ -38361,32 +38361,18 @@ easy to write code that's correct across platforms and Pythons.")
        (uri (pypi-uri "pyperf" version))
        (sha256
         (base32 "189qf9wdbig0fk4n3bavx8acgdbay5lllfvw48jvbfaafb7y5hja"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; Some of these tests fail with:
-             ;;
-             ;;   ModuleNotFoundError: No module named 'pyperf'
-             ;;
-             ;; even when calling ‘add-installed-pythonpath’ in the ‘check’
-             ;; phase.
-             (delete-file "pyperf/tests/test_examples.py")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; From tox.ini's ‘testenv.commands’.
-               (invoke "python" "-bb" "-Wd"
-                       "-m" "unittest" "discover"
-                       "-s" "pyperf/tests/" "-v")))))))
-    (native-inputs
-     (list python-psutil))
+     (list
+      #:test-flags
+      #~(list "--ignore=pyperf/tests/test_examples.py")))
+    (native-inputs (list python-psutil python-pytest python-setuptools
+                         python-wheel))
     (home-page "https://github.com/psf/pyperf")
     (synopsis "Toolkit for running Python benchmarks")
-    (description "The Python @code{pyperf} module is a toolkit for writing,
-running and analyzing benchmarks.  It features a simple API that can:
+    (description
+     "The Python @code{pyperf} module is a toolkit for writing, running and
+analyzing benchmarks.  It features a simple API that can:
 
 @itemize
 @item automatically calibrate a benchmark for a time budget;
