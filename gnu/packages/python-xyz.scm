@@ -9622,22 +9622,9 @@ errors when data is invalid.")
      (list
       #:test-flags
       #~(list "--ignore=tests/test_docs.py"   ; no pytest_examples
-              ;; These tests include hashes that keep changing depending on
-              ;; package versions.
-              "--ignore=tests/benchmarks/test_north_star.py"
+              "--ignore-glob=tests/benchmarks/*"
               ;; Unimportant difference in one test's error message.
-              "--ignore=tests/test_networks.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; Remove the addopts from pyproject.toml, it breaks the 'check
-              ;; phase.
-              (substitute* "pyproject.toml"
-                (("'--benchmark") "#'--benchmark")
-                ;; Do not fail on deprecation warnings.
-                (("ignore:path is deprecated.*:DeprecationWarning:")
-                 "ignore::DeprecationWarning")))))))
+              "--ignore=tests/test_networks.py")))
     (native-inputs
      (list tzdata-for-tests
            python-dirty-equals
