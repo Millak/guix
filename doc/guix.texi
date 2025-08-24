@@ -53002,6 +53002,120 @@ For details about @code{readymedia-configuration}, check out the
 documentation of the system service (@pxref{Miscellaneous Services,
 @code{readymedia-service-type}}).
 
+@subsubheading OCI backed services
+
+@cindex OCI-backed, for Home
+The @code{(gnu home services containers)} module provides the following service:
+
+@defvar home-oci-service-type
+This is the type of the service that allows to manage your OCI containers with
+the same consistent interface you use for your other Home Shepherd services.
+@end defvar
+
+This service is a direct mapping of the @code{oci-service-type} system
+service (@pxref{Miscellaneous Services, OCI backed services}).  You can
+use it like this:
+
+@lisp
+(use-modules (gnu services containers)
+             (gnu home services containers))
+
+(simple-service 'home-oci-provisioning
+                home-oci-service-type
+                (oci-extension
+                  (volumes
+                    (list
+                      (oci-volume-configuration (name "prometheus"))
+                      (oci-volume-configuration (name "grafana"))))
+                  (networks
+                    (list
+                      (oci-network-configuration (name "monitoring"))))
+                  (containers
+                   (list
+                    (oci-container-configuration
+                     (network "monitoring")
+                     (image
+                      (oci-image
+                        (repository "guile")
+                        (tag "3")
+                        (value (specifications->manifest '("guile")))
+                        (pack-options '(#:symlinks (("/bin/guile" -> "bin/guile"))
+                                        #:max-layers 2))))
+                     (entrypoint "/bin/guile")
+                     (command
+                      '("-c" "(display \"hello!\n\")")))
+                    (oci-container-configuration
+                      (image "prom/prometheus")
+                      (network "monitoring")
+                      (ports
+                       '(("9000" . "9000")
+                         ("9090" . "9090")))
+                      (volumes
+                       (list
+                        '(("prometheus" . "/var/lib/prometheus")))))
+                    (oci-container-configuration
+                      (image "grafana/grafana:10.0.1")
+                      (network "monitoring")
+                      (volumes
+                       '(("grafana:/var/lib/grafana"))))))))
+
+@end lisp
+
+You may specify a custom configuration by providing a
+@code{oci-configuration} record, exactly like for
+@code{oci-service-type}, but wrapping it in @code{for-home}:
+
+@lisp
+(use-modules (gnu services)
+             (gnu services containers)
+             (gnu home services containers))
+
+(service home-oci-service-type
+         (for-home
+          (oci-configuration
+           (runtime 'podman)
+           (verbose? #t))))
+
+(simple-service 'home-oci-provisioning
+                home-oci-service-type
+                (oci-extension
+                  (volumes
+                    (list
+                      (oci-volume-configuration (name "prometheus"))
+                      (oci-volume-configuration (name "grafana"))))
+                  (networks
+                    (list
+                      (oci-network-configuration (name "monitoring"))))
+                  (containers
+                   (list
+                    (oci-container-configuration
+                     (network "monitoring")
+                     (image
+                      (oci-image
+                        (repository "guile")
+                        (tag "3")
+                        (value (specifications->manifest '("guile")))
+                        (pack-options '(#:symlinks (("/bin/guile" -> "bin/guile"))
+                                        #:max-layers 2))))
+                     (entrypoint "/bin/guile")
+                     (command
+                      '("-c" "(display \"hello!\n\")")))
+                    (oci-container-configuration
+                      (image "prom/prometheus")
+                      (network "monitoring")
+                      (ports
+                       '(("9000" . "9000")
+                         ("9090" . "9090")))
+                      (volumes
+                       (list
+                        '(("prometheus" . "/var/lib/prometheus")))))
+                    (oci-container-configuration
+                      (image "grafana/grafana:10.0.1")
+                      (network "monitoring")
+                      (volumes
+                       '(("grafana:/var/lib/grafana"))))))))
+@end lisp
+
 @node Invoking guix home
 @section Invoking @command{guix home}
 

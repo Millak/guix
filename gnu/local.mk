@@ -105,6 +105,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services.scm			\
   %D%/home/services/admin.scm			\
   %D%/home/services/backup.scm			\
+  %D%/home/services/containers.scm		\
   %D%/home/services/desktop.scm			\
   %D%/home/services/dict.scm			\
   %D%/home/services/dotfiles.scm		\
