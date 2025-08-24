@@ -924,6 +924,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                      ("api"          "share/go/api"        ,tests)
                      ("test"         "share/go/test"       ,tests))))))
 
+            ;; Some architectures need more time for the test suite.
+            #$@(if (or (target-riscv64?)
+                       (target-arm?))
+                   #~((add-after 'unpack 'extend-test-timeout
+                        (lambda _
+                          (setenv "GO_TEST_TIMEOUT_SCALE" "10"))))
+                   #~())
             (replace 'disable-more-tests
               (lambda _
                 #$@(cond
