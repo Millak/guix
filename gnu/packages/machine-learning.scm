@@ -1194,23 +1194,24 @@ cardinality matching from a bipartite graph.")
 (define-public python-persim
   (package
     (name "python-persim")
-    (version "0.3.2")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "persim" version))
        (sha256
-        (base32 "0q8wfakx8q4h3ryvw8cba0v6z7xn9139qkrzs3mi1ggyzacnx9d7"))))
+        (base32 "03d4kgakpgj54c3pl9dkqrkbmj6w13gmczkds5jagf3n85c1hgg1"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-deprecated
-                             python-hopcroftkarp
-                             python-joblib
-                             python-matplotlib
-                             python-numpy
-                             python-scikit-learn
-                             python-scipy))
-    (native-inputs (list python-pytest python-pytest-cov python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-pytest python-setuptools-next))
+    (propagated-inputs
+     (list python-deprecated
+           python-hopcroftkarp
+           python-joblib
+           python-matplotlib
+           python-numpy
+           python-scikit-learn
+           python-scipy))
     (home-page "https://persim.scikit-tda.org")
     (synopsis "Tools for analyzing persistence diagrams in Python")
     (description
