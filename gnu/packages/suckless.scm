@@ -79,14 +79,15 @@
         (base32 "1mpfrvn122lnaqid1pi99ckpxd6x679b0w91pl003xmdwsfdbcly"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags
-       (list
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                      ; no check target
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no configure script
     (home-page "https://tools.suckless.org/scroll/")
     (synopsis "Scroll-back buffer program for st")
     (description "Scroll is a program that provides a scroll back buffer for
