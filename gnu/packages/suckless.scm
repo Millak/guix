@@ -551,30 +551,31 @@ point surf to another URI by setting its XProperties.")
                 "0cxysz5lp25mgww73jl0mgip68x7iyvialyzdbriyaff269xxwvv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure) ;no configuration
-                  (add-before 'build 'patch-farbfeld
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "config.def.h"
-                        (("2ff") (search-input-file inputs "/bin/2ff")))))
-                  (add-after 'install 'install-doc
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (doc (string-append out "/share/doc/" ,name "-"
-                                                 ,(package-version this-package))))
-                        (install-file "README.md" doc)))))
-       #:tests? #f                                ;no test suite
-       #:make-flags
-       (let ((pkg-config (lambda (flag)
-                           (string-append "$(shell pkg-config " flag " "
-                                          "xft fontconfig x11 libpng)"))))
-         (list (string-append "CC="
-                              ,(cc-for-target))
-               (string-append "PREFIX=" %output)
-               (string-append "INCS=-I. "
-                              (pkg-config "--cflags"))
-               (string-append "LIBS="
-                              (pkg-config "--libs") " -lm")))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ;no configuration
+          (add-before 'build 'patch-farbfeld
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "config.def.h"
+                (("2ff") (search-input-file inputs "/bin/2ff")))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "README.md"
+                            (string-append
+                             #$output "/share/doc/"
+                             #$name
+                             "-"
+                             #$(package-version this-package))))))
+      #:tests? #f                                ;no test suite
+      #:make-flags
+      #~(let ((pkg-config (lambda (flag)
+                            (string-append "$(shell pkg-config " flag " "
+                                           "xft fontconfig x11 libpng)"))))
+          (list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output)
+                (string-append "INCS=-I. " (pkg-config "--cflags"))
+                (string-append "LIBS=" (pkg-config "--libs") " -lm")))))
     (native-inputs (list pkg-config))
     (inputs (list farbfeld libpng libx11 libxft fontconfig))
     (synopsis "Plain-text presentation tool")
