@@ -6832,6 +6832,43 @@ were native plugins, with optional support for plugin groups to enable
 inter-plugin communication for VST2 plugins and quick startup times.")
     (license license:gpl3+)))
 
+(define-public yabridgectl
+  (package
+    (inherit yabridge)
+    (name "yabridgectl")
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'change-directory
+                (lambda _
+                  (chdir "tools/yabridgectl")))
+               (add-after 'change-directory 'patch-paths
+                 (lambda _
+                   (with-directory-excursion "src"
+                     (substitute* '("config.rs" "main.rs")
+                       (("\"\\/usr\\/lib\"")
+                        (string-append "\""
+                                       #$(this-package-input "yabridge")
+                                       "/lib\""))
+                       ((".*\\/usr\\/(lib(\\/|64)|local).*") ""))
+                     (substitute* "util.rs"
+                       (("libdbus-1\\.so" all)
+                        (string-append #$(this-package-input "dbus")
+                                       "/lib/" all))))))
+               (add-after 'patch-paths 'use-guix-vendored-dependencies
+                 (lambda _
+                   (substitute* "Cargo.toml"
+                     ;; Use reflink from the inputs.
+                     (("git.*, rev.*}") "version = \"*\"}")))))))
+    (native-inputs '())
+    (inputs
+     (cons* dbus yabridge (cargo-inputs 'yabridgectl)))
+    (synopsis "Utility to set up and update yabridge")
+    (description
+     "@command{yabridgectl} is a tool to setup and update @code{yabridge}.")))
+
 (define-public ecasound
   (package
     (name "ecasound")
