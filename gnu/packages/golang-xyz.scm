@@ -12398,6 +12398,35 @@ representation suitable for computing diffs.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-landlock-lsm-go-landlock
+  (package
+    (name "go-github-com-landlock-lsm-go-landlock")
+    (version "0.0.0-20250303204525-1544bccde3a3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/landlock-lsm/go-landlock")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00qis8gg2ajyph9jyrjghm6cn0h22pwjwdp6qa22ji6jslgnm02n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/landlock-lsm/go-landlock"))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-kernel-org-pub-linux-libs-security-libcap-psx))
+    (home-page "https://landlock.io/")
+    (synopsis "Golang library for the Linux Landlock sandboxing feature")
+    (description
+     "This package implements a restriction for the current processes' ability
+to use files, using Linux 5.13's
+@url{https://docs.kernel.org/security/landlock.html, Landlock} feature.")
+    (license license:expat)))
+
 (define-public go-github-com-lann-builder
   (package
     (name "go-github-com-lann-builder")
