@@ -32,6 +32,7 @@
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2025 Joaquín Aguirrezabalaga <kinote@kinote.org>
+;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,6 +70,7 @@
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -77,6 +79,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages djvu)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -90,9 +93,13 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
@@ -110,6 +117,8 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages scanner)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages terminals)
@@ -1149,6 +1158,128 @@ synchronization of multiple instances.")
     (description
      "xzgv is a fast image viewer that provides extensive keyboard support.")
     (license license:gpl2+)))
+
+(define-public digikam
+  (package
+    (name "digikam")
+    (version "8.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/digikam/"
+                                  version "/digiKam-" version ".tar.xz"))
+              (sha256
+               (base32 "0bx0kpzgq47pj3msrnd7gxr8n2qbak0cjird6bw4r4s31b15xqvr"))))
+    (build-system qt-build-system)
+    (home-page "https://www.digikam.org/download/git/")
+    (arguments (list
+                #:tests? #f
+                #:build-type "Release"
+                #:configure-flags #~(list "-DENABLE_MEDIAPLAYER=ON" ; for video playback
+                                          "-DENABLE_QWEBENGINE=ON" ; for web content
+                                          "-DENABLE_KFILEMETADATASUPPORT=ON"
+                                          "-DENABLE_AKONADICONTACTSUPPORT=ON"
+                                          "-DBUILD_WITH_QT6=ON"
+                                          "-DENABLE_APPSTYLES=ON")
+                #:phases
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'copy-test-data
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (copy-recursively (assoc-ref inputs "digikam-test-data")
+                                          "test-data")))
+                    (add-after 'install 'wrap-binary
+                      (lambda* (#:key inputs outputs #:allow-other-keys)
+                        (wrap-program (string-append (assoc-ref outputs "out")
+                                                     "/bin/digikam")
+                          `("PATH" ":" prefix
+                            (,(dirname
+                               (search-input-file inputs "/bin/exiftool"))))))))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "DK_PLUGIN_PATH")
+             (separator ";")
+             (files '("lib/qt6/plugins/digikam")))))
+    (inputs (list
+             akonadi-contacts
+             bash-minimal
+             boost
+             ecm
+             eigen
+             exiv2-static ; digikam only wants to statically link against exiv2
+             ffmpeg
+             glib
+             ijg-libjpeg
+             imagemagick
+             jasper
+             kcalendarcore
+             kconfig
+             kcoreaddons
+             kfilemetadata
+             ki18n
+             kiconthemes
+             kio
+             knotifications
+             knotifyconfig
+             kservice
+             kwindowsystem
+             kxmlgui
+             lcms
+             lensfun
+             libgphoto2
+             libheif
+             libjpeg-turbo
+             libjxl
+             libksane
+             libpng
+             libtiff
+             libxml2
+             libxslt
+             marble-qt
+             mesa
+             opencv
+             perl-image-exiftool
+             python-wrapper
+             qtimageformats
+             qtmultimedia
+             qtnetworkauth
+             qtscxml
+             qtsvg
+             qtwebengine
+             ruby
+             sane-backends
+             solid
+             sonnet
+             threadweaver
+             x265))
+    (native-inputs (list
+                    (origin
+                      (method git-fetch)
+                      (uri (git-reference
+                             (url "https://invent.kde.org/graphics/digikam-test-data/")
+                             (commit "83efefdfc7fffa35e5e260d3b5a4aec01ebbdb40")))
+                      (file-name "digikam-test-data")
+                      (sha256
+                       (base32
+                        "0mf7rzwhy5yyj47xh4vs0i841m8885yy9qganli04d8skikl0s6z")))
+                    appstream
+                    bison
+                    doxygen
+                    extra-cmake-modules
+                    flex
+                    graphviz         ; for inheritance graphs in documentation
+                    perl
+                    pkg-config))
+    (synopsis "Photo management, organizing and editing suite")
+    (description "digiKam is an advanced open-source digital photo management
+application.  It provides a comprehensive set of tools for importing,
+managing, editing, and sharing photos and RAW files.
+
+You can use digiKam's import capabilities to easily transfer photos, RAW
+files, and videos directly from your camera and external storage devices (SD
+cards, USB disks, etc.).  The application allows you to configure import
+settings and rules that process and organize imported items on-the-fly.")
+    (license (list license:bsd-3        ; cmake scripts
+                   license:cc0          ; test data
+                   license:gpl2+))))    ; code
 
 (define-public hydrus-network
   (package
