@@ -435,6 +435,32 @@ of device actions, such as installing and debugging apps, and it provides access
 to a Unix shell that can run commands on the connected device or emulator.")
     (license license:asl2.0)))
 
+(define-public betteradbsync
+  (package
+    (name "betteradbsync")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jb2170/better-adb-sync/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06ri9a8r0a4i9ih0cqdj5j19dbkbqwd5m5g8ch220rh4firaj4w2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; there are none
+    (home-page "https://github.com/jb2170/better-adb-sync/")
+    (native-inputs (list python-setuptools python-wheel))
+    (synopsis "Rsync-like file transfer over @acronym{ADB,Android Debug Bridge}")
+    (description "An rsync-like command-line utility that facilitates file
+transfer over @acronym{ADB,Android Debug Bridge}.  There are several additional
+features over Google's original @code{adbsync} version with support for the
+@code{--exclude}, @code{--exclude-from}, @code{--del}, and
+@code{--delete-excluded} command line flags, which have the same purpose to
+the corresponding @command{rsync} flags.")
+    (license license:asl2.0)))
+
 (define-public mkbootimg
   (package
     (name "mkbootimg")
