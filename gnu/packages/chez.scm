@@ -25,9 +25,7 @@
 
 (define-module (gnu packages chez)
   #:use-module (gnu packages)
-  #:use-module ((guix licenses)
-                #:select (gpl2+ gpl3+ lgpl2.0+ lgpl2.1+ asl2.0 bsd-3 expat
-                          public-domain))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
   #:use-module (guix download)
@@ -496,7 +494,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
      "This is the precise pre-release version of Chez Scheme from a specific
 Racket release.  It is used to build Racket and to bootstrap the released
 version of Chez Scheme.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public chez-scheme
   (package
@@ -548,7 +546,7 @@ modules, and much more.  Chez Scheme compiles source expressions incrementally
 to machine code, providing the speed of compiled code in an interactive
 system.  The system is intended to be as reliable and efficient as possible,
 with reliability taking precedence over efficiency if necessary.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 ;;
 ;; Bootfiles:
@@ -637,7 +635,7 @@ Scheme compiler purely from source into Racket and apply the compiler to
 itself, thus bootstrapping Chez Scheme.  Bootstrapping takes about 10 times as
 long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
 7.1 and later, including the Racket BC variant.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public chez-scheme-bootstrap-bootfiles
   (package
@@ -691,7 +689,7 @@ This package provides boot files for the released version of Chez Scheme
 bootstrapped by @code{chez-scheme-for-racket}.  Chez Scheme 9.5.4 or any later
 version can be used for bootstrapping.  Guix ultimately uses the Racket
 package @code{cs-bootstrap} to bootstrap its initial version of Chez Scheme.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 ;;
 ;; Chez's bootstrap dependencies:
@@ -825,7 +823,7 @@ convert @code{stex} documents to LaTeX and HTML, respectively, plus makefile
 templates, style files, and other resources.  The @code{stex} system is used
 to typeset @cite{The Scheme Programming Language} and the @cite{Chez Scheme
 User's Guix}, among other documents.")
-       (license expat)))))
+       (license license:expat)))))
 
 (define-public stex
   (package/inherit stex-bootstrap
@@ -870,7 +868,7 @@ organization is both to simplify the understanding of each pass, because it
 is responsible for a single task, and to simplify the addition of new passes
 anywhere in the compiler.  Nanopass reduces the boilerplate required to
 create compilers, making them easier to understand and maintain.")
-     (license expat))))
+     (license license:expat))))
 
 (define-public chez-nanopass
   (package/inherit chez-nanopass-bootstrap
@@ -968,7 +966,7 @@ create compilers, making them easier to understand and maintain.")
     (synopsis "SRFI libraries for Chez Scheme")
     (description
      "This package provides a collection of SRFI libraries for Chez Scheme.")
-    (license expat)))
+    (license license:expat)))
 
 (define-public chez-web
   (let ((commit "5fd177fe53f31f466bf88720d03c95a3711a8bea")
@@ -1036,7 +1034,7 @@ create compilers, making them easier to understand and maintain.")
       (synopsis "Hygienic Literate Programming for Chez Scheme")
       (description "ChezWEB is a system for doing Knuthian style WEB
 programming in Scheme.")
-      (license expat))))
+      (license license:expat))))
 
 (define-public chez-sockets
   (let ((commit "bce96881c06bd69a6757a6bff139744153924140")
@@ -1121,7 +1119,7 @@ programming in Scheme.")
       (synopsis "Extensible sockets library for Chez Scheme")
       (description "Chez-sockets is an extensible sockets library for
 Chez Scheme.")
-      (license expat))))
+      (license license:expat))))
 
 (define-public chez-matchable
   (package
@@ -1152,7 +1150,7 @@ Chez Scheme.")
     (description "This package provides a superset of the popular Scheme
 @code{match} package by Andrew Wright, written in fully portable
 @code{syntax-rules} and thus preserving hygiene.")
-    (license public-domain)))
+    (license license:public-domain)))
 
 (define-public chez-irregex
   (package
@@ -1186,7 +1184,7 @@ Chez Scheme.")
 R[4567]RS implementation of regular expressions, supporting both POSIX
 syntax with various (irregular) PCRE extensions, as well as SCSH's SRE
 syntax, with various aliases for commonly used patterns.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public chez-fmt
   (package
@@ -1225,7 +1223,7 @@ formatting Scheme objects to text in various ways, and for easily
 concatenating, composing and extending these formatters efficiently
 without resorting to capturing and manipulating intermediate
 strings.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public chez-mit
   (package
@@ -1278,7 +1276,7 @@ strings.")
     (description "This package provides a set of MIT/GNU Scheme compatibility
 libraries for Chez Scheme.  The main goal was to provide the functionality
 required to port the program @code{Scmutils} to Chez Scheme.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public chez-scmutils
   (package
@@ -1344,4 +1342,4 @@ required to port the program @code{Scmutils} to Chez Scheme.")
     (description "This package provides a port of the MIT/GNU Scheme
 Scmutils program to Chez Scheme.  The port consists of a set of
 libraries providing most of the functionality of the original.")
-    (license gpl3+)))
+    (license license:gpl3+)))
