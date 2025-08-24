@@ -1013,6 +1013,32 @@ Distance}.")
 http://tartarus.org/~martin/PorterStemmer/index.html.")
     (license license:expat)))
 
+(define-public go-github-com-akamensky-argparse
+  (package
+    (name "go-github-com-akamensky-argparse")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/akamensky/argparse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m7rzrfwyrwxbbry5ppds2b3c5gdslpakvjhsh6i8mhdfhywd8wc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Panic: unexpected call to os.Exit(0) during test.
+      #:test-flags #~(list "-skip" "TestUsageString")
+      #:import-path "github.com/akamensky/argparse"))
+    (home-page "https://github.com/akamensky/argparse")
+    (synopsis "Argparse for golang")
+    (description
+     "This package implements a flexible and configurable option for command
+line arguments parsing.")
+    (license license:expat)))
+
 (define-public go-github-com-alecaivazis-survey-v2
   (package
     (name "go-github-com-alecaivazis-survey-v2")
