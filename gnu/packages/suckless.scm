@@ -230,47 +230,47 @@ a custom raw video format with a simple container.")
     (name "dwm")
     (version "6.5")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://dl.suckless.org/dwm/dwm-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32 "0acpl05rg6rg6nrg3rv4kp388iqzp1n6dhin30a97yzjm6zrxmr1"))))
+              (method url-fetch)
+              (uri (string-append "https://dl.suckless.org/dwm/dwm-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0acpl05rg6rg6nrg3rv4kp388iqzp1n6dhin30a97yzjm6zrxmr1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "FREETYPEINC="
-                                         (assoc-ref %build-inputs "freetype")
-                                         "/include/freetype2"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (substitute* "Makefile" (("\\$\\{CC\\}") "gcc"))
-             #t))
-        (replace 'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list
+         (string-append "FREETYPEINC="
+                        #$(this-package-input "freetype")
+                        "/include/freetype2"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (substitute* "Makefile" (("\\$\\{CC\\}") #$(cc-for-target)))))
+          (replace 'install
+            (lambda _
               (invoke "make" "install"
-                      (string-append "DESTDIR=" out) "PREFIX="))))
-        (add-after 'build 'install-xsession
-          (lambda* (#:key outputs #:allow-other-keys)
-            ;; Add a .desktop file to xsessions.
-            (let* ((output (assoc-ref outputs "out"))
-                   (xsessions (string-append output "/share/xsessions")))
-              (mkdir-p xsessions)
-              (with-output-to-file
-                  (string-append xsessions "/dwm.desktop")
-                (lambda _
-                  (format #t
-                    "[Desktop Entry]~@
+                      (string-append "DESTDIR=" #$output) "PREFIX=")))
+          (add-after 'build 'install-xsession
+            (lambda _
+              ;; Add a .desktop file to xsessions.
+              (let* ((xsessions (string-append #$output "/share/xsessions")))
+                (mkdir-p xsessions)
+                (with-output-to-file
+                    (string-append xsessions "/dwm.desktop")
+                  (lambda _
+                    (format #t
+                            "[Desktop Entry]~@
                      Name=dwm~@
                      Comment=Dynamic Window Manager~@
                      Exec=~a/bin/dwm~@
                      TryExec=~@*~a/bin/dwm~@
                      Icon=~@
                      Type=Application~%"
-                    output)))
-              #t))))))
+                            #$output)))))))))
     (inputs
      (list freetype libx11 libxft libxinerama))
     (home-page "https://dwm.suckless.org/")
