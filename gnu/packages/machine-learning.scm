@@ -3976,6 +3976,21 @@ advanced research.")
               (with-directory-excursion "/tmp/fft2d"
                 (invoke "tar" "--strip-components=1"
                         "-xf" (assoc-ref inputs "fft2d-src")))))
+          (add-after 'copy-sources 'opencl-fix
+            (lambda _ (substitute* "delegates/gpu/cl/opencl_wrapper.h"
+              (("cl_ndrange_kernel_command_properties_khr")
+               "cl_command_properties_khr"))))
+          (add-after 'opencl-fix 'absl-fix
+            (lambda _ (substitute* '(
+                        "delegates/gpu/cl/cl_operation.h"
+                        "delegates/gpu/common/task/qcom_thin_filter_desc.cc"
+                        "delegates/gpu/common/tasks/special/thin_pointwise_fuser.cc")
+              (("#include <vector>")
+               "#include <vector>\n\n#include \"absl/strings/str_cat.h\"\n"))))
+          (add-after 'opencl-fix 'stdint-fix
+            (lambda _ (substitute* "kernels/internal/spectrogram.cc"
+              (("#include <math.h>")
+               "#include <math.h>\n#include <cstdint>\n"))))
           (add-after 'build 'build-shared-library
             (lambda* (#:key configure-flags #:allow-other-keys)
               (mkdir-p "c")
@@ -4000,7 +4015,7 @@ advanced research.")
               (when tests?
                 (invoke "ctest" "-L" "plain")))))))
     (inputs
-     `(("abseil-cpp" ,abseil-cpp-20200923.3)
+     `(("abseil-cpp" ,abseil-cpp)
        ("cpuinfo" ,cpuinfo)
        ("eigen" ,eigen)
        ("fp16" ,fp16)
