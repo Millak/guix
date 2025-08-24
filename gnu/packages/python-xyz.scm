@@ -17568,38 +17568,35 @@ reading and writing MessagePack data.")
                #t))))))))
 
 (define-public python-openstep-plist
- (package
-  (name "python-openstep-plist")
-  (version "0.3.0")
-  (home-page "https://github.com/fonttools/openstep-plist")
-  (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url home-page)
-                  (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "1rxjgzh0p069ncsr2986rn32vhdqyq35irbqg2559jh18456mkca"))))
-  (build-system python-build-system)
-  (arguments
-   (list #:phases
-         #~(modify-phases %standard-phases
-             (add-after 'unpack 'pretend-version
-               (lambda _
-                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                         #$(package-version this-package))))
-             (replace 'check
-               (lambda* (#:key tests? #:allow-other-keys)
-                 (when tests?
-                   (invoke "pytest" "-vv")))))))
-  (native-inputs
-   (list python-cython python-pytest python-setuptools-scm))
-  (synopsis "OpenStep plist parser and writer")
-  (description
-   "This package provides a parser for the \"old style\" OpenStep property
+  (package
+    (name "python-openstep-plist")
+    (version "0.3.0")
+    (home-page "https://github.com/fonttools/openstep-plist")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rxjgzh0p069ncsr2986rn32vhdqyq35irbqg2559jh18456mkca"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'pretend-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(package-version this-package)))))))
+    (native-inputs (list python-cython python-pytest python-setuptools-scm
+                         python-setuptools python-wheel))
+    (synopsis "OpenStep plist parser and writer")
+    (description
+     "This package provides a parser for the \"old style\" OpenStep property
 list format (also known as ASCII plist), written in Cython.")
-  (license license:expat)))
+    (license license:expat)))
 
 (define-public python-wrapt
   (package
