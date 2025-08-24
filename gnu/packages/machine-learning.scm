@@ -5597,24 +5597,23 @@ as torchvision, torchtext, and others.")
 (define-public python-readchar
   (package
     (name "python-readchar")
-    (version "4.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "readchar" version))
-              (sha256
-               (base32
-                "09n8vl2jjbnbnrzfvkynijrnwrqvc91bb2267zg8r261sz15d908"))))
+    (version "4.2.1")
+    (source
+     (origin
+       ;; There is no tests data in PyPI archive.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/magmax/python-readchar/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "16ypci664l54ka6ickwkpaa2id14h9h00y7z24z0bv0szld4mrxg"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; This one file requires the msvcrt module, which we don't have.
-         (add-after 'unpack 'delete-windows-file
-           (lambda _
-             (delete-file "readchar/_win_read.py"))))))
-    (propagated-inputs (list python-setuptools))
-    (native-inputs (list python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools-next))
     (home-page "https://github.com/magmax/python-readchar")
     (synopsis "Library to easily read single chars and key strokes")
     (description "This package provides a Python library to easily read single
