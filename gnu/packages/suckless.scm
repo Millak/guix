@@ -377,21 +377,21 @@ numbers of user-defined menu items efficiently.")
         (base32 "0js9z5kn8hmpxzfmb2g6zsy28zkpg88j3wih5wixc89b8x7ms8bb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "TERMINFO="
-                            (assoc-ref %outputs "out")
-                            "/share/terminfo")
-             (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:tests? #f                      ;no tests
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "TERMINFO=" #$output "/share/terminfo")
+         (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (inputs
-     `(("libx11" ,libx11)
-       ("libxft" ,libxft)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)))
+     (list libx11
+           libxft
+           fontconfig
+           freetype))
     (native-inputs
      (list ncurses ;provides tic program
            pkg-config))
