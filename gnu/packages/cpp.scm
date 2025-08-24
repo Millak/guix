@@ -82,6 +82,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -3890,6 +3891,45 @@ features:
 @item HTTP serving and getting support,
 @item Completely asynchronous love for single threaded apps.
 @end itemize")))
+
+(define-public eel2
+  (package
+    (inherit swell)
+    (name "eel2")
+    (arguments
+     (substitute-keyword-arguments (package-arguments swell)
+       ((#:tests? _ #t) #f) ;no tests
+       ;; FIXME: Remove this flag when this issue will be fixed:
+       ;; https://github.com/justinfrankel/WDL/issues/32.
+       ((#:make-flags _ '()) #~'("NO_GFX=1"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'change-directory
+              (lambda _ (chdir "WDL/eel2")))
+            (replace 'install
+              (lambda _
+                ;; Install executable files.
+                (for-each (lambda (file)
+                            (install-file file
+                                          (string-append #$output "/bin")))
+                          '("eel_pp" "loose_eel"))
+                ;; Install headers.
+                (for-each (lambda (file)
+                            (install-file file
+                                          (string-append #$output
+                                                         "/include/EEL2")))
+                            (find-files "." "\\.h$"))
+                ;; Install scripts.
+                (copy-recursively "scripts"
+                                  (string-append #$output
+                                                 "/share/EEL2/scripts"))))))))
+    (native-inputs (list nasm))
+    (inputs (list jnetlib))
+    (home-page "https://www.cockos.com/EEL2/")
+    (synopsis "Expression evaluation library")
+    (description
+     "EEL2 is an expression evaluation library and realtime compiler based on
+@uref{http://1014.org/code/nullsoft/avs/, AVS's EEL}.")))
 
 (define-public juce
   (package
