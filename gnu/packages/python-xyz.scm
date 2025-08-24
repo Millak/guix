@@ -10742,29 +10742,8 @@ methods is arguably lacking.  This package provides drop-in wrappers
 objects.")
     (license license:expat)))
 
-(define-public python-colormath
-  (package
-    (name "python-colormath")
-    (version "3.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "colormath" version))
-       (sha256
-        (base32
-         "05qjycgxp3p2f9n6lmic68sxmsyvgnnlyl4z9w7dl9s56jphaiix"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-networkx python-numpy))
-    (home-page "https://github.com/gtaylor/python-colormath")
-    (synopsis "Color math and conversion library")
-    (description
-     "This is a Python library for color math and conversions.")
-    (license license:bsd-3)))
-
 (define-public python-colormath2
   (package
-    (inherit python-colormath)
     (name "python-colormath2")
     (version "3.0.3")
     (source
@@ -10775,8 +10754,12 @@ objects.")
         (base32 "1yigkhvjgbl9nrlijn4iwcs6k7i5y58drix1331cd1hb9wzn35z7"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-networkx python-numpy))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/bkmgit/python-colormath2")))
+    (native-inputs (list python-pytest python-setuptools-next))
+    (home-page "https://github.com/bkmgit/python-colormath2")
+    (synopsis "Color math and conversion library")
+    (description
+     "This is a Python library for color math and conversions.")
+    (license license:bsd-3)))
 
 (define-public python-spectra
   (package
