@@ -503,27 +503,27 @@ Vim bindings and Xresource compatibility.")
         (base32 "0mrj0kp01bwrgrn4v298g81h6zyq64ijsg790di68nm21f985rbj"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; Use the right file name for dmenu and xprop.
-         (add-before 'build 'set-dmenu-and-xprop-file-name
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "config.def.h"
-               (("dmenu") (search-input-file inputs "/bin/dmenu"))
-               (("xprop") (search-input-file inputs "/bin/xprop")))
-             #t)))))
+     (list
+      #:tests? #f                      ; no tests
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          ;; Use the right file name for dmenu and xprop.
+          (add-before 'build 'set-dmenu-and-xprop-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "config.def.h"
+                (("dmenu") (search-input-file inputs "/bin/dmenu"))
+                (("xprop") (search-input-file inputs "/bin/xprop"))))))))
     (inputs
-     `(("dmenu" ,dmenu)
-       ("gcr" ,gcr-3)
-       ("glib-networking" ,glib-networking)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)
-       ("xprop" ,xprop)))
+     (list dmenu
+           gcr-3
+           glib-networking
+           gsettings-desktop-schemas
+           webkitgtk-with-libsoup2
+           xprop))
     (native-inputs
      (list pkg-config))
     (home-page "https://surf.suckless.org/")
