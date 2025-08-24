@@ -507,42 +507,41 @@ API.")
          "0w1mj5b3n6kp0brqindb7fppvllzlywkdk1zglkbj3bw8k0795mb"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; We don't build the tests, see below.
-       ;; FIXME: Skip most of the tests, because enabling system gtest breaks
-       ;; the build: <https://github.com/google/shaderc/issues/470>.
-       #:configure-flags
-       (list "-DSHADERC_SKIP_TESTS=ON"
-             ;; The two flags are copied from:
-             ;; https://sdk.lunarg.com/sdk/download/1.3.280.0/linux/config.json
-             "-DSHADERC_ENABLE_SHARED_CRT=ON"
-             "-DSHADERC_SKIP_COPYRIGHT_CHECK=ON"
-             "-DPYTHON_EXECUTABLE=python3"
-             ;; Note: despite the name, this just specifies the headers.
-             (string-append "-Dglslang_SOURCE_DIR="
-                            (assoc-ref %build-inputs "glslang") "/include/glslang"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-look-for-bundled-sources
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("add_subdirectory\\(third_party\\)")
-                ""))
-
-             (substitute* "glslc/test/CMakeLists.txt"
-               (("\\$<TARGET_FILE:spirv-dis>")
-                (which "spirv-dis")))
-
-             ;; Do not attempt to use git to encode version information.
-             (substitute* "glslc/CMakeLists.txt"
-               (("add_dependencies\\(glslc_exe build-version\\)")
-                ""))
-             (call-with-output-file "glslc/src/build-version.inc"
-               (lambda (port)
-                 (format port "\"~a\"\n\"~a\"\n\"~a\"~%"
-                         ,version
-                         ,(package-version spirv-tools)
-                         ,(package-version glslang))))
-             #t)))))
+     (list
+      #:tests? #f ; We don't build the tests, see below.
+      ;; FIXME: Skip most of the tests, because enabling system gtest breaks
+      ;; the build: <https://github.com/google/shaderc/issues/470>.
+      #:configure-flags
+      #~(list "-DSHADERC_SKIP_TESTS=ON"
+              ;; The two flags are copied from:
+              ;; https://sdk.lunarg.com/sdk/download/1.3.280.0/linux/config.json
+              "-DSHADERC_ENABLE_SHARED_CRT=ON"
+              "-DSHADERC_SKIP_COPYRIGHT_CHECK=ON"
+              "-DPYTHON_EXECUTABLE=python3"
+              ;; Note: despite the name, this just specifies the headers.
+              (string-append "-Dglslang_SOURCE_DIR="
+                             #$(this-package-input "glslang")
+                             "/include/glslang"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-look-for-bundled-sources
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(third_party\\)")
+                 ""))
+              (substitute* "glslc/test/CMakeLists.txt"
+                (("\\$<TARGET_FILE:spirv-dis>")
+                 (which "spirv-dis")))
+              ;; Do not attempt to use git to encode version information.
+              (substitute* "glslc/CMakeLists.txt"
+                (("add_dependencies\\(glslc_exe build-version\\)")
+                 ""))
+              (call-with-output-file "glslc/src/build-version.inc"
+                (lambda (port)
+                  (format port "\"~a\"\n\"~a\"\n\"~a\"~%"
+                          #$version
+                          #$(package-version spirv-tools)
+                          #$(package-version glslang)))))))))
     (inputs
      (list glslang spirv-headers spirv-tools))
     (native-inputs
