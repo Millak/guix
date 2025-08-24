@@ -12754,7 +12754,7 @@ the standard @code{context} package to store request-scoped values.")
 (define-public go-golang-zx2c4-com-wireguard
   (package
     (name "go-golang-zx2c4-com-wireguard")
-    (version "0.0.0-20231211153847-12269c276173")
+    (version "0.0.0-20250521234502-f333402bd9cb")
     (source
      (origin
        (method git-fetch)
@@ -12766,7 +12766,7 @@ the standard @code{context} package to store request-scoped values.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fbc6m0ahifhrd6jdrpdxi8l3b2slpp8fmv20kpq2yzz19vzzgkf"))))
+        (base32 "1h4rmdvssk939gk31f0sfwa1yaks72zk8rkcs7fj3qcvl8sgq6hr"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -12792,7 +12792,8 @@ the standard @code{context} package to store request-scoped values.")
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-net
-           go-golang-org-x-sys))
+           go-golang-org-x-sys
+           go-gvisor-dev-gvisor))
     (home-page "https://git.zx2c4.com/wireguard")
     (synopsis "Implementation of WireGuard in Go")
     (description "This package is a Go Implementation of WireGuard.")
