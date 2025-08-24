@@ -97,14 +97,14 @@ terminal like @code{st}.")
 (define-public tabbed
   (package
     (name "tabbed")
-    (version "0.6")
+    (version "0.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.suckless.org/tools/tabbed-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0hhwckyzvsj9aim2l6m69wmvl2n7gzd6b1ly8qjnlpgcrcxfllbn"))))
+        (base32 "1a0842lw666cnx5mx2xqqrad4ipvbz4wxad3pxpyc6blgd2qgkqa"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -113,14 +113,14 @@ terminal like @code{st}.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "config.mk"
+              (substitute* "Makefile"
                 (("/usr/local") #$output)
                 (("/usr/X11R6") #$(this-package-input "libx11"))
                 (("/usr/include/freetype2")
                  (string-append #$(this-package-input "freetype")
                                 "/include/freetype2"))
-                (("CC = cc")
-                 (string-append "CC = " #$(cc-for-target))))))
+                (("\\$\\{CC\\}")
+                 (string-append #$(cc-for-target))))))
           (delete 'configure))))         ; no configure script
     (inputs
      (list fontconfig
