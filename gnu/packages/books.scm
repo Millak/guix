@@ -31,18 +31,29 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gettext)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages music)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texlive)
-  #:use-module (gnu packages version-control))
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages webkit)
+  #:use-module (gnu packages xml))
 
 (define-public book-sparc
   (package
@@ -169,4 +180,50 @@ is available in Russian and English.")
     (description
      "The SWORD Project is a free Bible software project used to create Bible
 software, with support for multiple texts and languages.")
+    (license license:gpl2+)))
+
+(define-public xiphos
+  (package
+    (name "xiphos")
+    (version "4.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/crosswire/xiphos")
+             (commit version)))
+       (sha256
+        (base32 "15p8ahbcd8vjm1ch0wahjfj20agd06va8rvgw1awnyzkcw2xsf8x"))
+       (patches (search-patches "xiphos-glib.patch"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (native-inputs (list appstream
+                         appstream-glib
+                         atk
+                         biblesync
+                         desktop-file-utils ;for 'desktop-file-validate'
+                         (list glib "bin")
+                         gettext-minimal
+                         gsettings-desktop-schemas
+                         gtk+
+                         libgsf
+                         minizip
+                         pkg-config
+                         sword
+                         util-linux ;for 'uuidgen'
+                         (list util-linux "lib") ;for 'libuuid'
+                         webkitgtk-with-libsoup2
+                         yelp-tools
+                         zip))
+    (inputs (list dbus dbus-glib libxml2 python python-lxml))
+    (arguments
+     (list
+      #:tests? #f)) ;No tests
+    (home-page "https://xiphos.org/")
+    (synopsis "Open Source Bible Study Software")
+    (description
+     "Xiphos is a Bible study tool using GTK.  It uses Sword to
+display bibles, commentaries, dictionaries, and other texts and images.
+Xiphos includes features such as searching, biblesync, bookmarks,
+parallel study, and original language study.")
     (license license:gpl2+)))
