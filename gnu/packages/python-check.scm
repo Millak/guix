@@ -2693,28 +2693,25 @@ of tests run in a specific order.")
   (package
     (name "python-pytest-parawtf")
     (version "1.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-parawtf" version))
-              (sha256
-               (base32
-                "08s86hy58lvrd90cnayzydvac4slaflj0ph9yknakcc42anrm023"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-parawtf" version))
+       (sha256
+        (base32 "08s86hy58lvrd90cnayzydvac4slaflj0ph9yknakcc42anrm023"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 ;; https://github.com/flub/pytest-parawtf/issues/1
-                 (invoke "pytest" "-k" "not test_mark")))))))
+      #:test-flags
+      ;; https://github.com/flub/pytest-parawtf/issues/1
+      #~(list "-k" "not test_mark")))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-pytest))
     (home-page "https://github.com/flub/pytest-parawtf/")
     (synopsis "Finally spell paramete?ri[sz]e correctly")
     (description
-"@code{python-pytest} uses one of four different spellings of
-parametrize.  This plugin allows you to use all four.")
+     "Pytest uses one of four different spellings of parametrize.  This plugin
+allows you to use all four.")
     (license license:expat)))
 
 (define-public python-pytest-pycodestyle
