@@ -20690,17 +20690,39 @@ library as well as on the command line.")
     (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "plumbum" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tomerfiliba/plumbum")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1kidj821k79dw064rlxh84xamb9h79ychg3pgj81jlvm5hs48xri"))))
-    (build-system python-build-system)
+        (base32 "1vlaiz4bwgrcay51knj6a20lh3lwihjqxhxhdk6nqkn9ijg0hc81"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ;no tests
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_remote.py"
+              "--ignore=tests/test_putty.py"
+              "--ignore=tests/test_sudo.py"
+              "-k"
+              (string-join (list "not test_home"
+                                 "test_iter_lines_error"
+                                 "test_quoting"
+                                 "test_copy_move_delete")
+                           " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     ;; XXX: Not actually used since there are no tests but required for
-     ;; build.
-     (list python-pytest))
+     (list procps
+           python-psutil
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://plumbum.readthedocs.io")
     (synopsis "Python shell combinators library")
     (description
