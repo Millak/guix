@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,46 +41,9 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define-public nyacc-0.99
-  (package
-    (name "nyacc")
-    (version "0.99.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/nyacc/nyacc-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0hl5qxx19i4x1r0839sxm19ziqq65g4hy97yik81cc2yb9yvgyv3"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* (find-files "." "^Makefile\\.in$")
-                    (("^SITE_SCM_DIR =.*")
-                     "SITE_SCM_DIR = \
-@prefix@/share/guile/site/@GUILE_EFFECTIVE_VERSION@\n")
-                    (("^SITE_SCM_GO_DIR =.*")
-                     "SITE_SCM_GO_DIR = \
-@prefix@/lib/guile/@GUILE_EFFECTIVE_VERSION@/site-ccache\n")
-                    (("^INFODIR =.*")
-                     "INFODIR = @prefix@/share/info\n")
-                    (("^DOCDIR =.*")
-                     "DOCDIR = @prefix@/share/doc/$(PACKAGE_TARNAME)\n"))
-                  #t))))
-    (build-system gnu-build-system)
-    (native-inputs (list pkg-config))
-    (inputs (list guile-2.2))
-    (synopsis "LALR(1) Parser Generator in Guile")
-    (description
-     "NYACC is an LALR(1) parser generator implemented in Guile.
-The syntax and nomenclature should be considered not stable.  It comes with
-extensive examples, including parsers for the Javascript and C99 languages.")
-    (home-page "https://savannah.nongnu.org/projects/nyacc")
-    (license (list gpl3+ lgpl3+))))
-
 (define-public nyacc-1.08.1
   (package
-    (inherit nyacc-0.99)
+    (name "nyacc")
     (version "1.08.1")
     (source (origin
               (method url-fetch)
@@ -94,15 +58,20 @@ extensive examples, including parsers for the Javascript and C99 languages.")
                   (("GUILE_GLOBAL_SITE=\\$prefix.*")
                    "GUILE_GLOBAL_SITE=\
 $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
     (inputs (list guile-3.0))
     (propagated-inputs (list guile-bytestructures))
+    (home-page "https://savannah.nongnu.org/projects/nyacc")
+    (synopsis "LALR(1) Parser Generator in Guile")
     (description
      "@acronym{NYACC, Not Yet Another Compiler Compiler} is set of Guile modules
 for generating parsers and lexical analyzers.  It provides sample parsers,
 pretty-printers using SXML trees as an intermediate representation, a decent C
 parser and an `FFI Helper' tool to help create Guile Scheme bindings for C-based
 libraries.  It also provides (partially implemented) compilers based on these
-parsers to allow execution with Guile as extension languages.")))
+parsers to allow execution with Guile as extension languages.")
+    (license (list gpl3+ lgpl3+))))
 
 (define-public nyacc-1.00.2
   ;; The source of this package is used for bootstrapping in
