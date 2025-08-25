@@ -1220,18 +1220,21 @@ require users to log in.")
     (version "0.8.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scrypt" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/holgern/py-scrypt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0hjk71k3mgnl8siikm9lii9im8kv0rb7inkjzx78rnancra48xxr"))))
-    (build-system python-build-system)
-    (inputs
-     (list openssl))
-    (home-page "https://bitbucket.org/mhallin/py-scrypt")
+        (base32 "0g3d5fgwq8g9sqa389c0j3smpzx2zsj0vv1wsl391ywny7ry0l5c"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (inputs (list openssl))
+    (home-page "https://github.com/holgern/py-scrypt")
     (synopsis "Bindings for the scrypt key derivation function library")
-    (description "This is a set of Python bindings for the scrypt key
-derivation function.")
+    (description
+     "This package is a set of Python bindings for the scrypt key derivation
+function.")
     (license license:bsd-2)))
 
 (define-public python-service-identity
