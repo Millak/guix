@@ -174,7 +174,7 @@ in Chez Scheme machine types, or '#f' if none is defined."
       ((_ any id0 id ...)
        #`(define #,(datum->syntax #'id0 '%machine-types)
            '(id0 id ...))))))
-;; The following is copied from s/cmacros.ss, line 36, in the Chez source
+;; The following is copied from s/cmacros.ss, line 376, in the Chez source
 (define-machine-types
   any
   pb        tpb
@@ -193,6 +193,7 @@ in Chez Scheme machine types, or '#f' if none is defined."
   i3gnu     ti3gnu
   a6nt      ta6nt
   a6osx     ta6osx
+  a6ios     ta6ios
   a6le      ta6le
   a6fb      ta6fb
   a6ob      ta6ob
@@ -209,6 +210,7 @@ in Chez Scheme machine types, or '#f' if none is defined."
   arm32nb   tarm32nb
   arm64nt   tarm64nt
   arm64osx  tarm64osx
+  arm64ios  tarm64ios
   arm64le   tarm64le
   arm64fb   tarm64fb
   arm64ob   tarm64ob
