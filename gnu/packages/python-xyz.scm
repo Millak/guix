@@ -28402,6 +28402,34 @@ syntax validity, but for weirdnesses like key repetition and cosmetic problems
 such as lines length, trailing spaces, indentation, etc.")
     (license license:gpl3+)))
 
+(define-public python-yamlordereddictloader
+  (package
+    (name "python-yamlordereddictloader")
+    (version "0.4.2")
+    (home-page "https://github.com/fmenabe/python-yamlordereddictloader")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1rwvasdmfq7lbd2bm7vmx759fv535cp5ndyhf845fqd86mr7a94c"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-pyyaml))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (synopsis "Loader and a dumper for PyYAML")
+    (description "yamlordereddictloader is a python package that provides a
+loader and a dumper for PyYAML allowing to keep items order when loading a
+file (by putting them in OrderedDict objects) and to manage OrderedDict
+objects when dumping to a file.")
+    (license license:expat)))
+
 (define-public python-yapf
   (package
     (name "python-yapf")
