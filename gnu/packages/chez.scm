@@ -29,6 +29,8 @@
   #:use-module (guix packages)
   #:use-module (guix deprecation)
   #:use-module (guix download)
+  #:use-module (guix diagnostics)
+  #:use-module (guix i18n)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix gexp)
@@ -49,6 +51,7 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:export (chez-scheme-for-system
             nix-system->native-chez-machine-type
             nix-system->pbarch-machine-type
@@ -299,7 +302,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
     (name "chez-scheme-for-racket")
     ;; The version should match `(scheme-version #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.3.0-pre-release.2")
+    (version "10.3.0-pre-release.2") ; expect a chez-nanopass-bootstrap update
     (source #f)
     (build-system gnu-build-system)
     (inputs `(,@(if (nix-system->native-chez-machine-type)
@@ -504,7 +507,7 @@ version of Chez Scheme.")
     (name "chez-scheme")
     ;; The version should match `(scheme-version-number #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.2.0")
+    (version "10.2.0") ; expect a chez-nanopass-bootstrap update
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -839,6 +842,7 @@ User's Guix}, among other documents.")
    (package
      (name "chez-nanopass")
      (version "1.9.2")
+     (properties `((chez-nanopass-release-date . "October 18, 2020")))
      (source
       (origin
         (method git-fetch)
@@ -857,10 +861,60 @@ User's Guix}, among other documents.")
                (("include ~/stex/Mf-stex")
                 "include $(STEXLIB)/Mf-stex"))))))
      (build-system copy-build-system)
+     ;; TODO: cross-compilation
      (arguments
-      (list #:install-plan
-            #~`(("nanopass.ss" "lib/chez-scheme/")
-                ("nanopass" "lib/chez-scheme/"))))
+      (let ((base-install-plan
+             #~`(("nanopass.ss" "lib/chez-scheme/")
+                 ("nanopass" "lib/chez-scheme/"))))
+        (cond
+         ((this-package-native-input "chez-scheme")
+          (list #:install-plan
+                #~`(("nanopass.so" "lib/chez-scheme/")
+                    ("doc/user-guide.pdf" #$(string-append
+                                             "share/doc/"
+                                             (package-name this-package)
+                                             "-"
+                                             (package-version this-package)
+                                             "/"))
+                    ,@#$base-install-plan)
+                #:phases
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'fix-user-guide-date
+                      (lambda args
+                        (define release-date
+                          #$(match (assq 'chez-nanopass-release-date (package-properties this-package))
+                              ((_ . (? string? date))
+                               date)
+                              (bad
+                               (raise (formatted-message
+                                       (G_ "missing or malformed '~a' property: ~a")
+                                       'chez-nanopass-release-date
+                                       bad)))))
+                        (substitute* "doc/user-guide.stex"
+                          (("^\\\\author.*$" all)
+                           (string-append all "\n" "\\date{" release-date "}")))))
+                    (add-before 'install 'compile-and-test
+                      (lambda args
+                        (invoke "scheme"
+                                "--compile-imported-libraries"
+                                "--program" "test-all.ss")))
+                    (add-after 'compile-and-test 'build-doc
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (with-directory-excursion "doc"
+                          ;; Texlive-libkpathsea attempts to create directory at
+                          ;; '$XDG_CACHE_HOME/.texliveYYYY'.
+                          (setenv "XDG_CACHE_HOME" "/tmp")
+                          (invoke "make"
+                                  (string-append "Scheme="
+                                                 (search-input-file
+                                                  (or native-inputs inputs)
+                                                  "/bin/scheme"))
+                                  (string-append "STEXLIB="
+                                                 (search-input-directory
+                                                  (or native-inputs inputs)
+                                                  "/lib/stex")))))))))
+         (else ; bootstrapping
+          (list #:install-plan base-install-plan)))))
      (home-page "https://nanopass.org")
      (synopsis "DSL for compiler development")
      (description "The Nanopass framework is an embedded domain-specific
@@ -873,49 +927,23 @@ create compilers, making them easier to understand and maintain.")
      (license license:expat))))
 
 (define-public chez-nanopass
-  (package/inherit chez-nanopass-bootstrap
-    (properties '())
-    ;; TODO: cross-compilation
-    (native-inputs (list chez-scheme stex))
-    (arguments
-     (substitute-keyword-arguments (package-arguments chez-nanopass-bootstrap)
-       ((#:install-plan base-plan)
-        #~`(("nanopass.so" "lib/chez-scheme/")
-            ("doc/user-guide.pdf" #$(string-append
-                                     "share/doc/"
-                                     (package-name this-package)
-                                     "-"
-                                     (package-version this-package)
-                                     "/"))
-            ,@#$base-plan))
-       ((#:phases base-phases #~%standard-phases)
-        #~(modify-phases #$base-phases
-            (add-after 'unpack 'fix-user-guide-date
-              (lambda _
-                ;; Release date: Oct 18, 2020
-                (substitute* "doc/user-guide.stex"
-                  (("^\\\\author.*$" all)
-                   (string-append all "\n" "\\date{October 18, 2020}")))))
-            (add-before 'install 'compile-and-test
-              (lambda args
-                (invoke "scheme"
-                        "--compile-imported-libraries"
-                        "--program" "test-all.ss")))
-            (add-after 'compile-and-test 'build-doc
-              (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                (with-directory-excursion "doc"
-                  ;; Texlive-libkpathsea attempts to create directory at
-                  ;; '$XDG_CACHE_HOME/.texliveYYYY'.
-                  (setenv "XDG_CACHE_HOME" "/tmp")
-                  (invoke "make"
-                          (string-append "Scheme="
-                                         (search-input-file
-                                          (or native-inputs inputs)
-                                          "/bin/scheme"))
-                          (string-append "STEXLIB="
-                                         (search-input-directory
-                                          (or native-inputs inputs)
-                                          "/lib/stex"))))))))))))
+  (package
+    (inherit chez-nanopass-bootstrap)
+    ;; This release has a significant bug fix.  Expect the next releases of
+    ;; chez-scheme{,-for-racket} to want this for chez-nanopass-bootstrap.
+    (version "1.9.3")
+    (properties '((chez-nanopass-release-date . "August 24, 2025")))
+    (source
+     (let ((bootstrap-origin (package-source chez-nanopass-bootstrap)))
+       (origin
+         (inherit bootstrap-origin)
+         (uri (git-reference
+                (url (git-reference-url (origin-uri bootstrap-origin)))
+                (commit (string-append "v" version))))
+         (sha256
+          (base32 "0757x3a3b4kcd3jk52h4ikqzv7cc1mvphlw592f0r5pz99bkxiin"))
+         (file-name (git-file-name "nanopass-framework-scheme" version)))))
+    (native-inputs (list chez-scheme stex))))
 
 ;;
 ;; Other Chez packages:
