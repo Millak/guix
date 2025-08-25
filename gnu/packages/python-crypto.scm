@@ -1525,17 +1525,14 @@ use in your tests.")
     (name "python-certipy")
     (version "0.1.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "certipy" version))
-        (sha256
-         (base32
-          "0n980gqpzh0fm58h3i4mi2i10wgj606lscm1r5sk60vbf6vh8mv9"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pyopenssl))
-    (native-inputs
-     (list python-pytest))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "certipy" version))
+       (sha256
+        (base32 "0n980gqpzh0fm58h3i4mi2i10wgj606lscm1r5sk60vbf6vh8mv9"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pyopenssl))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/LLNL/certipy")
     (synopsis "Utility to create and sign CAs and certificates")
     (description
