@@ -2743,7 +2743,7 @@ for the @code{pytest} framework.")
 (define-public python-pytest-pydocstyle
   (package
     (name "python-pytest-pydocstyle")
-    (version "2.2.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -2752,17 +2752,23 @@ for the @code{pytest} framework.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w6fivz4nb4b70wzmi5sk17qs9pd05rnh03fmch6v00r3dmfpk39"))))
-    (build-system python-build-system)
+        (base32 "08jaz92pzq6lqg64jbl9f6j0gdb622wl0qb2llfcy82grx2vv09q"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; test requires the package itself
-    (propagated-inputs
-     (list python-pydocstyle
-           python-pytest))              ;apparently required
+     (list
+      ;; XXX: pytest failed to import 'py.io', while python can.
+      #:tests? #f))
+    (native-inputs
+     (list python-pytest
+           python-pytest-isort
+           python-pytest-pycodestyle
+           python-setuptools
+           python-wheel))
+    (propagated-inputs (list python-pydocstyle python-pytest)) ;apparently required
     (home-page "https://github.com/henry0312/pytest-pydocstyle")
     (synopsis "Pytest plugin to run @command{pydocstyle}")
-    (description "This package provides a Pytest plugin to run
-@command{pydocstyle}.")
+    (description
+     "This package provides a Pytest plugin to run @command{pydocstyle}.")
     (license license:expat)))
 
 (define-public python-pytest-pylint
