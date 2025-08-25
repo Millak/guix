@@ -595,16 +595,17 @@ in LXDE.")
 (define-public lxpanel
   (package
     (name "lxpanel")
-    (version "0.10.1")
+    (version "0.11.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lxde/"
-                           "LXPanel%20%28desktop%20panel%29/"
-                           "LXPanel%200.10.x/lxpanel-"
-                           version ".tar.xz"))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxpanel")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1s0y8jjkw6qz0r8l90618b8xly0c8g906kah7b162sz3sxbqyc8y"))))
+        (base32 "1xqhxcwhx2qlgsri10gwldb0xz9ajsc3iqnn8d53bjb4yh0vk5wf"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -633,6 +634,9 @@ in LXDE.")
            wireless-tools))
     (native-inputs
      (list docbook-xml
+           libtool
+           automake
+           autoconf
            gettext-minimal
            intltool
            pkg-config))
