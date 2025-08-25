@@ -445,19 +445,19 @@ customizable menu system, and Bash integration.")
 (define-public lxmenu-data
   (package
     (name "lxmenu-data")
-    (version "0.1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge//lxde/"
-                           "lxmenu-data%20%28desktop%20menu%29/"
-                           name "-" version ".tar.xz"))
+    (version "0.1.6")
+    (source (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxmenu-data")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1f5sh2dvb3pdnjlcsyzq9543ck2jsqizkx3204cr22zm5s6j3qwz"))))
+        (base32 "1abicrm66pn4vphlwx0rg2q3wvjmzijf0vgpml1vr3zkp7xm01z5"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config intltool))
+     (list glib automake autoconf pkg-config intltool))
     (synopsis "Freedesktop.org desktop menus for LXDE")
     (description
      "Lxmenu-data provides files required to build freedesktop.org
