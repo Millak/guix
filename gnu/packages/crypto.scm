@@ -106,6 +106,40 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
+(define-public crc32c
+  (package
+    (name "crc32c")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/crc32c")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0966lyy3w5cnrs0c0fkma4hga51k54hns72l4n76944awqssap7j"))
+              (patches (search-patches "crc32c-unbundle-googletest.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              "-DCRC32C_BUILD_BENCHMARKS=OFF"
+              "-DCRC32C_USE_GLOG=OFF"
+              (string-append
+               "-DCRC32C_BUILD_TESTS="
+               ;; TODO: perhaps infer #:tests?
+               (if #$(%current-target-system)
+                   "OFF" "ON")))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/google/crc32c")
+    (synopsis "Cyclic redundancy check")
+    (description
+     "This package provides architecture-specific implementations of the
+CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
+    (license license:bsd-3)))
+
 (define-public libblake3
   (package
     (name "libblake3")

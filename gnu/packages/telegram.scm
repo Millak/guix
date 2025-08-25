@@ -37,6 +37,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages c)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages fcitx)
   #:use-module (gnu packages fcitx5)
