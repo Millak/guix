@@ -2967,18 +2967,20 @@ you to test your code asynchronously.")
     (name "python-pytest-services")
     (version "1.3.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pytest-services" version))
-        (sha256
-         (base32
-          "0b2zfv04w6m3gp2v44ifdhx22vcji069qnn95ry3zcyxib7cjnq3"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; Tests not included in release tarball.
-    (propagated-inputs
-     (list python-psutil python-requests))
-    (native-inputs
-     (list python-pytest))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pytest-dev/pytest-services")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "123s2vd3h5knfs6lz7b83z0wl2miqsbya3w71cm8xk6hgyb10nmv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Tests require running memcached, mysql and X servers.
+     (list #:tests? #f))
+    (propagated-inputs (list python-psutil python-requests))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/pytest-dev/pytest-services")
     (synopsis "Services plugin for pytest testing framework")
     (description
