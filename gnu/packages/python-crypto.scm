@@ -1760,22 +1760,24 @@ speed but without C extensions.")
   (package
     (name "python-zxcvbn")
     (version "4.4.28")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/dwolfhub/zxcvbn-python")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0xzlsqc9h0llfy19w4m39jgfcnvzqviv8jhgwn3r75kip97i5mvs"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/dwolfhub/zxcvbn-python")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xzlsqc9h0llfy19w4m39jgfcnvzqviv8jhgwn3r75kip97i5mvs"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/dwolfhub/zxcvbn-python")
     (synopsis "Realistic password strength estimator Python library")
-    (description "This is a Python implementation of the @code{zxcvbn} library
-created at Dropbox.  The original library, written for JavaScript, can be
-found @url{https://github.com/dropbox/zxcvbn, here}.  This port includes
-features such as:
+    (description
+     "This is a Python implementation of the @code{zxcvbn} library created at
+Dropbox.  The original library, written for JavaScript, can be found
+@url{https://github.com/dropbox/zxcvbn, here}.  This port includes features
+such as:
 @enumerate
 @item Accepts user data to be added to the dictionaries that are tested
 against (name, birthdate, etc.)
