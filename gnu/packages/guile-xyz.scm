@@ -7009,9 +7009,12 @@ schedulers.")
                 (("dynamic-link \"libyaml\"")
                  (format #f "dynamic-link \"~a/lib/libyaml\""
                          (assoc-ref inputs "libyaml")))))))))
-    (native-inputs (list gcc guile-3.0 nyacc))
+    ;; guile-libyaml does not work with nyacc-2.02.2. See
+    ;; https://github.com/mwette/guile-libyaml/issues/7 for upstream bug
+    ;; report. Hence, we use the older nyacc-1.08.1.
+    (native-inputs (list gcc guile-3.0 nyacc-1.08.1))
     (inputs (list libyaml))
-    (propagated-inputs (list guile-bytestructures nyacc))
+    (propagated-inputs (list guile-bytestructures nyacc-1.08.1))
     (home-page "https://github.com/mwette/guile-libyaml")
     (synopsis "Guile wrapper for libyaml")
     (description
