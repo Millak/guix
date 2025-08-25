@@ -1759,7 +1759,7 @@ speed but without C extensions.")
 (define-public python-zxcvbn
   (package
     (name "python-zxcvbn")
-    (version "4.4.28")
+    (version "4.5.0")
     (source
      (origin
        (method git-fetch) ;for tests
@@ -1768,7 +1768,7 @@ speed but without C extensions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xzlsqc9h0llfy19w4m39jgfcnvzqviv8jhgwn3r75kip97i5mvs"))))
+        (base32 "0x39yi4zc1n6mjjk3rx32ick0hysyi9hv9ln69apcch4jf84j9fi"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/dwolfhub/zxcvbn-python")
