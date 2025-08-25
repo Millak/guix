@@ -122,29 +122,6 @@ integration of this capability into your own programs.")
     (home-page "https://github.com/zxing-cpp/zxing-cpp")
     (license license:asl2.0)))
 
-;;; This older variant is kept for kaidan, liblinphone and yosys-clang.
-(define-public zxing-cpp-1.2a
-  ;; Use the master branch as it includes unreleased build system improvements
-  ;; allowing to use system libraries (instead of attempting to fetch them
-  ;; from the Internet).
-  (let ((revision "0")
-        (commit "00783db7aa3bcf8620a301854ac71c0ceaaca0c1"))
-    (package/inherit zxing-cpp
-      (name "zxing-cpp")
-      (version (git-version "1.2.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/zxing-cpp/zxing-cpp")
-                      (commit commit)))
-                (patches (search-patches "zxing-cpp-1.2.0-gcc-14.patch"))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1yl2cpaqiv1g4nq9v0xfj1vd5faz55k4541vz6hsffvcxgn9nmc5"))))
-      (arguments '(#:configure-flags '()))
-      (native-inputs (list fmt-8 googletest)))))
-
 ;;; This older variant is kept for gst-plugins-bad (see:
 ;;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1684).
 (define-public zxing-cpp-1.2
