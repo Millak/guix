@@ -29,7 +29,6 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module ((gnu packages admin) #:select (shadow))
-  #:use-module (gnu packages dico)
   #:use-module (gnu packages dictionaries)
   #:autoload   (gnu build linux-container) (%namespaces)
   #:autoload   (gnu system file-systems) (file-system-mapping)
