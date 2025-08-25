@@ -642,16 +642,28 @@ OpenSSL library.")
     (name "python-ed25519")
     (version "1.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "ed25519" version))
-        (sha256
-          (base32
-            "0ahx1nkxa0xis3cw0h5c4fpgv8mq4znkq7kajly33lc3317bk499"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/warner/python-ed25519")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ksl73nc47ic31dknvlmm72cpxfxvia0j5f6asw4gzppwp2v1yrs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Use custom test back-end on python-team branch.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests? (invoke "python" "test_ed25519_kat.py")))))))
+    (native-inputs (list python-setuptools-next))
     (home-page "https://github.com/warner/python-ed25519")
     (synopsis "Ed25519 public-key signatures")
-    (description "Ed25519 public-key signatures")
+    (description
+     "This package provides Ed25519 public-key signatures in Python.")
     (license license:expat)))
 
 (define-public python-axolotl-curve25519
