@@ -152,16 +152,16 @@ able to change themes, icons, and fonts used by GTK+ applications.")
 (define-public lxrandr
   (package
     (name "lxrandr")
-    (version "0.3.2")
+    (version "0.3.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/lxde/LXRandR"
-                                  "%20%28monitor%20config%20tool%29/LXRandR%20"
-                                  (version-major+minor version) ".x/"
-                                  "lxrandr-" version ".tar.xz"))
-              (sha256
-               (base32
-                "04n3vgh3ix12p8jfs4w0dyfq3anbjy33h7g53wbbqqc0f74xyplb"))))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxrandr")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vh5r6bwafh9mq7syhdw1f2ahwvibq2wdc1ij84hbaa5bnyjfr8h"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--enable-gtk3")
@@ -175,7 +175,7 @@ able to change themes, icons, and fonts used by GTK+ applications.")
                (("(\"|')xrandr\"" _ match)
                 (string-append match (which "xrandr") "\""))))))))
     (inputs (list gtk+ xrandr))
-    (native-inputs (list intltool pkg-config))
+    (native-inputs (list automake autoconf intltool pkg-config))
     (synopsis "LXDE monitor configuration tool")
     (description "LXRandR is a very basic monitor configuration tool.  It
 relies on the X11 resize-and-rotate (RandR) extension but doesn't aim to be a
