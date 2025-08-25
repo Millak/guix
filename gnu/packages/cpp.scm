@@ -48,7 +48,6 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2042,12 +2041,13 @@ other values of screen objects, by setting their values as the tween starting
 point and then, after each tween step, plugging back the result.")
     (license license:expat)))
 
-;; This one is not used by itself anymore, but as inheritance base for
-;; abseil-cpp-cxxstd11, which is an input to grpc and python-grpcio.
-(define-public abseil-cpp-20220623
+(define-public abseil-cpp-20200923.3
+  ;; "guix refresh -l" shows no dependents of this package, but by input
+  ;; rewriting, grpc-1.16.1 depends on it;
+  ;; in turn this is an input to hyperledger-iroha and tensorflow.
   (package
     (name "abseil-cpp")
-    (version "20220623.2")
+    (version "20200923.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2056,44 +2056,39 @@ point and then, after each tween step, plugging back the result.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cmchfcqp85yp5hc3i47xv3i14v0f2wd5h2jblvcjjmjyhji1bwr"))
+                "1p4djhm1f011ficbjjxx3n8428p8481p20j4glpaawnpsi362hkl"))
               (patches
-               (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
+               (search-patches "abseil-cpp-fix-strerror_test.patch"
+                               "abseil-cpp-20200923.3-adjust-sysinfo.patch"
+                               "abseil-cpp-20200923.3-duration-test.patch"))))
     (build-system cmake-build-system)
     (arguments
-      `(#:configure-flags
-         ;; This convoluted approach of deleting a flag of a list to which
-         ;; it was added in the first place is a remainder of inheritance;
-         ;; when undoing the inheritance it ensured that the derivation
-         ;; did not change.
-         (cons* "-DABSL_BUILD_TESTING=ON"
-           (delete "-DABSL_RUN_TESTS=ON"
-             (list
-               "-DBUILD_SHARED_LIBS=ON"
-               "-DABSL_RUN_TESTS=ON"
-               "-DABSL_USE_EXTERNAL_GOOGLETEST=ON"
-               ;; Needed, else we get errors like:
-               ;; ld: CMakeFiles/absl_periodic_sampler_test.dir/internal/periodic_sampler_test.cc.o:
-               ;;   undefined reference to symbol '_ZN7testing4Mock16UnregisterLockedEPNS_8internal25UntypedFunctionMockerBaseE'
-               ;; ld: /gnu/store/...-googletest-1.10.0/lib/libgmock.so:
-               ;;   error adding symbols: DSO missing from command line
-               ;; collect2: error: ld returned 1 exit status
-               "-DCMAKE_EXE_LINKER_FLAGS=-lgtest -lpthread -lgmock")))
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'fix-max
-            (lambda _
-              (substitute* "absl/debugging/failure_signal_handler.cc"
-                (("std::max\\(SIGSTKSZ, 65536\\)")
-                 "std::max<size_t>(SIGSTKSZ, 65536)"))))
-          (add-before 'configure 'remove-gtest-check
-            ;; The CMakeLists fails to find our googletest for some reason, but
-            ;; it works nonetheless.
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("check_target\\(gtest\\)") "")
-                (("check_target\\(gtest_main\\)") "")
-                (("check_target\\(gmock\\)") "")))))))
+     `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
+                               "-DABSL_RUN_TESTS=ON"
+                               "-DABSL_USE_EXTERNAL_GOOGLETEST=ON"
+                               ;; Needed, else we get errors like:
+                               ;;
+                               ;; ld: CMakeFiles/absl_periodic_sampler_test.dir/internal/periodic_sampler_test.cc.o:
+                               ;;   undefined reference to symbol '_ZN7testing4Mock16UnregisterLockedEPNS_8internal25UntypedFunctionMockerBaseE'
+                               ;; ld: /gnu/store/...-googletest-1.10.0/lib/libgmock.so:
+                               ;;   error adding symbols: DSO missing from command line
+                               ;; collect2: error: ld returned 1 exit status
+                               "-DCMAKE_EXE_LINKER_FLAGS=-lgtest -lpthread -lgmock")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-max
+           (lambda _
+             (substitute* "absl/debugging/failure_signal_handler.cc"
+               (("std::max\\(SIGSTKSZ, 65536\\)")
+                "std::max<size_t>(SIGSTKSZ, 65536)"))))
+         (add-before 'configure 'remove-gtest-check
+           ;; The CMakeLists fails to find our googletest for some reason, but
+           ;; it works nonetheless.
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("check_target\\(gtest\\)") "")
+               (("check_target\\(gtest_main\\)") "")
+               (("check_target\\(gmock\\)") "")))))))
     (native-inputs
      (list googletest))
     (home-page "https://abseil.io")
@@ -2101,7 +2096,30 @@ point and then, after each tween step, plugging back the result.")
     (description "Abseil is a collection of C++ library code designed to
 augment the C++ standard library.  The Abseil library code is collected from
 Google's C++ code base.")
-  (license license:asl2.0)))
+    (license license:asl2.0)))
+
+(define-public abseil-cpp-20220623
+  (let ((base abseil-cpp-20200923.3))
+    (package
+      (inherit base)
+      (name "abseil-cpp")
+      (version "20220623.2")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/abseil/abseil-cpp")
+                      (commit version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1cmchfcqp85yp5hc3i47xv3i14v0f2wd5h2jblvcjjmjyhji1bwr"))
+                (patches
+                 (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags flags)
+          `(cons* "-DABSL_BUILD_TESTING=ON"
+                  (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
 (define-public abseil-cpp
   (let ((base abseil-cpp-20220623))
