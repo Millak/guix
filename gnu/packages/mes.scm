@@ -40,32 +40,9 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define-public nyacc-0.86
-  ;; Nyacc used for bootstrap.
-  (package
-    (name "nyacc")
-    (version "0.86.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/nyacc/"
-                                  name "-" version ".tar.gz"))
-              (patches (search-patches "nyacc-binary-literals.patch"))
-              (sha256
-               (base32
-                "0lkd9lyspvhxlfs0496gsllwinh62jk9wij6gpadvx9gwz6yavd9"))))
-    (build-system gnu-build-system)
-    (native-inputs (list guile-2.2))
-    (synopsis "LALR(1) Parser Generator in Guile")
-    (description
-     "NYACC is an LALR(1) parser generator implemented in Guile.
-The syntax and nomenclature should be considered not stable.  It comes with
-extensive examples, including parsers for the Javascript and C99 languages.")
-    (home-page "https://savannah.nongnu.org/projects/nyacc")
-    (license (list gpl3+ lgpl3+))))
-
 (define-public nyacc-0.99
   (package
-    (inherit nyacc-0.86)
+    (name "nyacc")
     (version "0.99.0")
     (source (origin
               (method url-fetch)
@@ -89,8 +66,16 @@ extensive examples, including parsers for the Javascript and C99 languages.")
                     (("^DOCDIR =.*")
                      "DOCDIR = @prefix@/share/doc/$(PACKAGE_TARNAME)\n"))
                   #t))))
+    (build-system gnu-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list guile-2.2))))
+    (inputs (list guile-2.2))
+    (synopsis "LALR(1) Parser Generator in Guile")
+    (description
+     "NYACC is an LALR(1) parser generator implemented in Guile.
+The syntax and nomenclature should be considered not stable.  It comes with
+extensive examples, including parsers for the Javascript and C99 languages.")
+    (home-page "https://savannah.nongnu.org/projects/nyacc")
+    (license (list gpl3+ lgpl3+))))
 
 (define-public nyacc-1.08.1
   (package
@@ -120,6 +105,8 @@ libraries.  It also provides (partially implemented) compilers based on these
 parsers to allow execution with Guile as extension languages.")))
 
 (define-public nyacc-1.00.2
+  ;; The source of this package is used for bootstrapping in
+  ;; commencement.scm. Otherwise it could be removed.
   (package
     (inherit nyacc-1.08.1)
     (version "1.00.2")

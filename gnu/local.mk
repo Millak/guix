@@ -1943,7 +1943,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/nvi-assume-preserve-path.patch		\
   %D%/packages/patches/nvi-dbpagesize-binpower.patch		\
   %D%/packages/patches/nvi-db4.patch				\
-  %D%/packages/patches/nyacc-binary-literals.patch		\
   %D%/packages/patches/obs-modules-location.patch		\
   %D%/packages/patches/ocaml-ctypes-test-oo.patch		\
   %D%/packages/patches/ocaml-multiple-definitions.patch		\
