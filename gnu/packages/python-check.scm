@@ -2390,29 +2390,30 @@ times and detect flakyness.")
     (version "2021.3.24")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-helpers-namespace" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saltstack/pytest-helpers-namespace")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pyj2d45zagmzlajzqdnkw5yz8k49pkihbydsqkzm413qnkzb38q"))))
-    (build-system python-build-system)
+        (base32 "0ikwiwp9ycgg7px78nxdkqvg7j97krb6vzqlb8fq8fvbwrj4q4v2"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              ;; Make the installed plugin discoverable by Pytest.
-              (add-installed-pythonpath inputs outputs)
-              (invoke "pytest" "-vv"))))))
-    (native-inputs
-     (list python-pytest python-setuptools ; needs setuptools >= 50.3.2
-           python-setuptools-scm python-setuptools-declarative-requirements))
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs (list python-pytest python-setuptools python-setuptools-scm
+                         python-setuptools-declarative-requirements
+                         python-wheel))
     (home-page "https://github.com/saltstack/pytest-helpers-namespace")
     (synopsis "Pytest Helpers Namespace Plugin")
-    (description "Pytest Helpers Namespace Plugin provides a helpers pytest
-namespace which can be used to register helper functions without requiring
-someone to import them in their actual tests to use them.")
+    (description
+     "Pytest Helpers Namespace Plugin provides a helpers pytest namespace
+which can be used to register helper functions without requiring someone to
+import them in their actual tests to use them.")
     (license license:asl2.0)))
 
 (define-public python-pytest-html
