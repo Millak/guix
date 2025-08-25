@@ -258,20 +258,22 @@ speed up the access to freedesktop.org defined application menus.")
 (define-public pcmanfm
   (package
     (name "pcmanfm")
-    (version "1.3.2")
+    (version "1.4.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/pcmanfm/"
-                                  "PCManFM%20%2B%20Libfm%20%28tarball%20release"
-                                  "%29/PCManFM/pcmanfm-" version ".tar.xz"))
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/lxde/pcmanfm")
+                (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xqc2k2jh165mm81xg0ghxx0ml1s3rhh4ndvbzkcri4kfhj7pjql"))))
+                "0dkl12a6x9w3ka4g2qx0ssxdv7v432xar6v2gddzbzsxg4546hp2"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--with-gtk=3")))
     (inputs (list gtk+ gvfs             ;for trash and mount support
                   libfm libx11))
-    (native-inputs (list intltool libtool pkg-config))
+    (native-inputs (list intltool automake autoconf libtool pkg-config))
     (propagated-inputs
      (list lxmenu-data))                ;for "Open With..." application list
     (synopsis "LXDE file manager")
