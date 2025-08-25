@@ -553,30 +553,24 @@ in LXDE.")
 (define-public lxsession
   (package
     (name "lxsession")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lxde/"
-                           "LXSession%20%28session%20manager%29/"
-                           "LXSession%200.5.x/"
-                           "lxsession-" version ".tar.xz"))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxsession")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0imv9nysip1j9lrb2z96kl05isjgp312323wnnd5b59h0ff0sgp4"))
+        (base32 "0mgykzhd5n11mfcbpaqb841f4jwy1yhmd1xn49dxc2hci8bx26fx"))
+       ;; Fix https://github.com/lxde/lxsession/issues/42
+       (patches (search-patches "lxsession-potfiles-ignore.patch"))
        (modules '((guix build utils)))
        (snippet delete-generated-c-files)))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-gtk3"
-                               ;; Fix build with GCC 14.
-                               "CFLAGS=-Wno-error=incompatible-pointer-types")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'rm-stamp
-           (lambda _
-             (for-each delete-file (find-files "." "\\.stamp$"))
-             ;; Force regeneration of configure script.
-             (delete-file "configure"))))))
+     `(#:configure-flags (list "--enable-gtk3")))
     (inputs
      (list gtk+
            polkit))
