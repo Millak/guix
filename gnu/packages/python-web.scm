@@ -10084,12 +10084,15 @@ Client Library for Python.")
     (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-crc32c" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/python-crc32c")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ps4qaccij6cixs91772y9f9r1n702yfzy4qqmds6x5h7qkycv97"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+        (base32 "005ra4pfv71rq53198k7q6k63f529q3g6hkbxbwfcf82jr77hxga"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/googleapis/python-crc32c")
     (synopsis "Python wrapper of Google CRC32C")
     (description
