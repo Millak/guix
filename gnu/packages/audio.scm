@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020, 2022-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
@@ -1922,7 +1922,7 @@ synthesis.")
 (define-public snapcast
   (package
     (name "snapcast")
-    (version "0.29.0")
+    (version "0.32.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1931,21 +1931,21 @@ synthesis.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1960xp54vsndj9vvc03kx9kg9phdchdgrfghhvcp2b0nfq2qcqqm"))))
+                "06hllji1621f29g6ymbysi1vkndjsrwj63f5ph30f6kvv3c8sqx4"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:tests? #f))                    ; no included tests
+    (arguments '(#:tests? #f))                    ;no included tests
     (inputs
-     (list boost
-           libvorbis
-           soxr
-           alsa-lib
+     (list alsa-lib
            avahi
-           pulseaudio
+           boost
+           expat
            flac
-           opus))
-    (native-inputs
-     (list pkg-config))
+           libvorbis
+           openssl
+           opus
+           pulseaudio
+           soxr))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/badaix/snapcast")
     (synopsis "Synchronous multiroom audio player")
     (description
