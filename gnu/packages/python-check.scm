@@ -668,17 +668,21 @@ text styles of documentation.")
     (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "eradicate" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/myint/eradicate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1j30g9jfmbfki383qxwrfds8b23yiwywj40lng4lqcf5yab4ahr7"))))
-    (build-system python-build-system)
+        (base32 "18vbahs105gznwdymnb9j0vwdk6f7hby7harf7nr2lsjia61pgah"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/myint/eradicate")
     (synopsis "Remove commented-out code from Python sources")
-    (description "The @command{eradicate} command removes commented-out code
-from Python files.  It does this by detecting block comments that contain
-valid Python syntax that are likely to be commented out code.")
+    (description
+     "The @command{eradicate} command removes commented-out code from Python
+files.  It does this by detecting block comments that contain valid Python
+syntax that are likely to be commented out code.")
     (license license:expat)))
 
 (define-public python-expecttest
