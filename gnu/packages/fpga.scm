@@ -751,7 +751,7 @@ automated testing of HDL code.")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
-    (home-page "https://accellera.org/community/systemc")
+    (home-page "https://systemc.org/")
     (synopsis "Library for event-driven simulation")
     (description
      "SystemC is a C++ library for modeling concurrent systems, and the
