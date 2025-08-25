@@ -7005,16 +7005,16 @@ ZaMultiComp, ZaMultiCompX2 and ZamSynth.")
 (define-public geonkick
   (package
     (name "geonkick")
-    (version "2.7.0")
+    (version "3.6.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/iurie-sw/geonkick")
+             (url "https://codeberg.org/Geonkick-Synthesizer/geonkick")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w1mvqm46qdwldcl81svaykwii4wvx7mcr57kwvnj0iv2qrc891i"))))
+        (base32 "0817hsfvgri315aw0y06rzjcw96lhgxjc37rbxqagk3ciw0naj6n"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests included
@@ -7036,7 +7036,7 @@ ZaMultiComp, ZaMultiCompX2 and ZamSynth.")
     (description "Geonkick is a synthesizer that can synthesize elements
 of percussion such as kicks, snares, hit-hats, shakers, claps and sticks.
 It can also play and mix samples.")
-    (home-page "https://gitlab.com/iurie-sw/geonkick")
+    (home-page "https://geonkick.org")
     (license license:gpl3+)))
 
 (define-public mamba
