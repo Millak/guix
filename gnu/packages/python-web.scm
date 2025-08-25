@@ -10078,28 +10078,6 @@ Python.")
 Client Library for Python.")
     (license license:expat)))
 
-(define-public python-google-crc32c
-  (package
-    (name "python-google-crc32c")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/googleapis/python-crc32c")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "005ra4pfv71rq53198k7q6k63f529q3g6hkbxbwfcf82jr77hxga"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/googleapis/python-crc32c")
-    (synopsis "Python wrapper of Google CRC32C")
-    (description
-     "This package provides a Python wrapper of the C library implementation
-of the CRC32C hashing algorithm.")
-    (license license:asl2.0)))
-
 (define-public python-google-auth
   (package
     (name "python-google-auth")
