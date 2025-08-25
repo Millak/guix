@@ -110,7 +110,6 @@ gnu/packages/decker.scm
 gnu/packages/dejagnu.scm
 gnu/packages/dezyne.scm
 gnu/packages/dhall.scm
-gnu/packages/dico.scm
 gnu/packages/dictd.scm
 gnu/packages/dictionaries.scm
 gnu/packages/diffoscope.scm
