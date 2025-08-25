@@ -468,19 +468,19 @@ menu spec-compliant desktop menus for LXDE.")
 (define-public lxde-icon-theme
   (package
     (name "lxde-icon-theme")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lxde/LXDE%20Icon%20Theme/"
-                           "lxde-icon-theme-" version "/"
-                           name "-" version ".tar.xz"))
+    (version "0.5.2")
+    (source (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxde-icon-theme")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0v4i6x86fr2hbx4fb2si7y2qzmj7h6hcjwaifnin18r8kwwvgl73"))))
+        (base32 "0sv3pzvxs1gxa7dpqs7zls3wc7kj9x8w99i4h56mdsc6vz61y3mp"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list automake autoconf pkg-config))
     (synopsis "LXDE default icon theme based on nuoveXT2")
     (description
      "Lxde-icon-theme provides an default icon theme for LXDE.")
