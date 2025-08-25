@@ -188,20 +188,20 @@ or external monitor.")
 (define-public lxtask
   (package
     (name "lxtask")
-    (version "0.1.10")
+    (version "0.1.12")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/lxde/LXTask"
-                                  "%20%28task%20manager%29/LXTask%20"
-                                  (version-major+minor version) ".x/"
-                                  "lxtask-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0b2fxg8jjjpk219gh7qa18g45365598nd2bq7rrq0bdvqjdxy5i2"))))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxtask")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11vcl0k2yhx59599fdk8gv5jh2gsgh7rmp2syybk3vpmby6p93h4"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--enable-gtk3")))
     (inputs (list gtk+))
-    (native-inputs (list intltool pkg-config))
+    (native-inputs (list automake autoconf intltool pkg-config))
     (synopsis "LXDE task manager")
     (description "LXTask is a lightweight task manager derived from Xfce task
 manager with all dependencies on Xfce removed.  LXTask is based on the GTK+
