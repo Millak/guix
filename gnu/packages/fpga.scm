@@ -615,7 +615,7 @@ Python program.")
           (base32
             "0b360smk2m60vhxdi837hz75m0pnms477wkn9gh6m4v3nih1v4cx"))))
     (build-system python-build-system)
-    (home-page "https://www.myhdl.org/")
+    (home-page "http://www.myhdl.org/")
     (synopsis "Python as a Hardware Description Language")
     (description "This package provides a library to turn Python into
 a hardware description and verification language.")
