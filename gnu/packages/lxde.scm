@@ -212,19 +212,20 @@ toolkit.  It allows users to monitor and control of running processes.")
 (define-public lxterminal
   (package
     (name "lxterminal")
-    (version "0.3.2")
+    (version "0.4.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/lxde/LXTerminal"
-                                  "%20%28terminal%20emulator%29/LXTerminal%20"
-                                  version "/" name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1124pghrhnx6q4391ri8nvi6bsmvbj1dx81an08mird8jf2b2rii"))))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxterminal")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "159p34caid7ca679ly1lhvw4qclqh23ddsiphlw9yn0h9v8s2dd0"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--enable-gtk3")))
     (inputs (list gtk+ vte/gtk+-3))
-    (native-inputs (list intltool pkg-config))
+    (native-inputs (list automake autoconf intltool pkg-config))
     (synopsis "LXDE terminal emulator")
     (description "LXTerminal is a VTE-based terminal emulator.  It supports
 multiple tabs and has only minimal dependencies thus being completely
@@ -236,19 +237,19 @@ performance, all instances of the terminal are sharing a single process.")
 (define-public menu-cache
   (package
     (name "menu-cache")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/lxde/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1iry4zlpppww8qai2cw4zid4081hh7fz8nzsp5lqyffbkm2yn0pd"))))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/menu-cache")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qhc72xinxmd68nfrph9jfwymkw9x71drgksz2r2k5nzv9p7cnp5"))))
     (build-system gnu-build-system)
-    (inputs `(("glib"  ,glib)
-              ("libfm" ,libfm-extra)))
-    (native-inputs (list pkg-config))
+    (inputs (list glib libfm-extra))
+    (native-inputs (list automake autoconf libtool gtk-doc pkg-config))
     (arguments
      `(#:configure-flags '("CFLAGS=-fcommon")))
     (synopsis "LXDE implementation of the freedesktop menu's cache")
