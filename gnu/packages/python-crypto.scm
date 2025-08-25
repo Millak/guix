@@ -1703,17 +1703,18 @@ interacting with a U2F device over USB.")
     (name "python-sop")
     (version "0.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "sop" version))
-        (sha256
-         (base32
-          "0gljyjsdn6hdmwlwwb5g5s0c031p6izamvfxp0d39x60af8k5jyf"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/dkg/python-sop")
+              (commit (string-append "sop-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "071n7ifi634ai2xaddxdjiscp4v215r48d9i3v24mpz23sh8ymjn"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ; There are no tests, and unittest throws an error trying
-                     ; to find some:
-                     ;     TypeError: don't know how to make test from: 0.2.0
+     (list #:tests? #f)) ; XXX: No tests upstream.
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://gitlab.com/dkg/python-sop")
     (synopsis "Stateless OpenPGP Command-Line Interface")
     (description
