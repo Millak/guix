@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -278,7 +279,7 @@ command-line interface} and a @acronym{TUI, textual user interface} named
 (define-public remind
   (package
     (name "remind")
-    (version "5.0.5")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
@@ -289,7 +290,7 @@ command-line interface} and a @acronym{TUI, textual user interface} named
                                         ".")
                            ".tar.gz"))
        (sha256
-        (base32 "0yc0lfrl0zzc1bn5fkigararg44bdryis7vjnm8vzs21as9r0dbz"))))
+        (base32 "01zhs8lgncpm1229s7b49fhnwwnxyyan845gb47ppkfn03vvc187"))))
     (properties
      `((output-synopsis "tcl" "graphical front-end to Remind calendar program")))
     (build-system gnu-build-system)
