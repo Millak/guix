@@ -1140,36 +1140,19 @@ supports KDBX3 and KDBX4.")
     (version "1.7.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pylibscrypt" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jvarho/pylibscrypt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1b3rgzl6dbzs08vhv41b6y4n5189wv7lr27acxn104hs45745abs"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'hard-code-path-to-libscrypt
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libscrypt (assoc-ref inputs "libscrypt")))
-               (substitute* "pylibscrypt/pylibscrypt.py"
-                 (("find_library\\('scrypt'\\)")
-                  (string-append "'" libscrypt "/lib/libscrypt.so'")))
-               #t))))
-       ;; The library can use various scrypt implementations and tests all of
-       ;; them.  Since we only provide a single implementation, most tests
-       ;; fail.  Simply skip them.
-       #:tests? #f))
-    ;; FIXME: Using "libscrypt" is the second best choice.  The best one
-    ;; requires "hashlib.scrypt", provided by Python 3.6+ built with OpenSSL
-    ;; 1.1+.  Use that as soon as Guix provides it.
-    (inputs
-     (list libscrypt))
+        (base32 "0plp5fvk3pzv5wgzqfggdqvvsfsxjid53a0hxbpn2h1dp33vkrh0"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/jvarho/pylibscrypt")
     (synopsis "Scrypt for Python")
-    (description "There are a lot of different scrypt modules for Python, but
-none of them have everything that I'd like, so here's one more.  It uses
-@code{libscrypt}.")
+    (description
+     "This package provides another Scrypt module for Python.")
     (license license:isc)))
 
 (define-public python-libnacl
