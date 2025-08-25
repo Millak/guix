@@ -129,18 +129,20 @@ libFM file management library.")))
 (define-public lxappearance
   (package
     (name "lxappearance")
-    (version "0.6.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lxde/"
-                           "LXAppearance/lxappearance-" version ".tar.xz"))
+    (version "0.6.4")
+    (source (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxappearance")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0f4bjaamfxxdr9civvy55pa6vv9dx1hjs522gjbbgx7yp1cdh8kj"))))
+        (base32 "1cia6mkb3fqy3rgfprlmq0ajh15cnazdwdkv4zd19klrh4jzg4xp"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--enable-gtk3")))
     (inputs (list gtk+))
-    (native-inputs (list intltool pkg-config))
+    (native-inputs (list automake autoconf intltool pkg-config))
     (synopsis "LXDE GTK+ theme switcher")
     (description "LXAppearance is a desktop-independent GTK+ theme switcher
 able to change themes, icons, and fonts used by GTK+ applications.")
