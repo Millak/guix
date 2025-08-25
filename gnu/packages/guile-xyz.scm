@@ -163,14 +163,14 @@
 (define-public artanis
   (package
     (name "artanis")
-    (version "1.2.2")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/artanis/artanis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "013rs623075bbf824hf6jxng0kwbmg587l45fis9mmpq5168kspq"))
+                "16cwjyl0ykz6r7vvczrwaik6y4pc0fwc0hvwskfbgv9z71j2alzi"))
               (modules '((guix build utils)))
               (snippet
                '(begin
