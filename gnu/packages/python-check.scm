@@ -665,16 +665,16 @@ text styles of documentation.")
 (define-public python-eradicate
   (package
     (name "python-eradicate")
-    (version "2.0.0")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/myint/eradicate")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18vbahs105gznwdymnb9j0vwdk6f7hby7harf7nr2lsjia61pgah"))))
+        (base32 "135xywygriid1wvqkra13iccaayh5r6a233jyfrj6kizhflksy2p"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/myint/eradicate")
