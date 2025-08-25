@@ -38875,31 +38875,48 @@ written in C.")
   (package
     (name "python-murmurhash")
     (version "1.0.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "murmurhash" version))
-              (sha256
-               (base32
-                "0vwkn98c703nvsigl2nz99rax2pafkx3djjfkgc49jiipmp3j2k3"))))
-    (build-system python-build-system)
-    (native-inputs (list python-cython python-pytest))
-    (inputs (list python python-murmurhash3))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/explosion/murmurhash")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p8afy51nfvswl2fcimy5vc584zv89349rq12ymbcpp06yidzdfh"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:modules
-           '((ice-9 ftw) (ice-9 match)
-             (guix build utils)
-             (guix build python-build-system))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-source-file-times-to-1980
-                 (lambda _
-                   (let ((circa-1980 (* 10 366 24 60 60)))
-                     (ftw "."
-                          (lambda (file stat flag)
-                            (utime file circa-1980 circa-1980) #t))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-installation
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append (site-packages inputs outputs) "/murmurhash")
+                (delete-file-recursively "tests")
+                (delete-file "mrmr.pyx")
+                (for-each
+                 (lambda (file)
+                   (chmod file #o555))
+                 (find-files "." "\\.so$")))))
+          ;; XXX: Otherwise ModuleNotFoundError, and --pyargs doesn't seem
+          ;; to fix the issue.
+          (replace 'check
+            (lambda args
+              (copy-recursively "murmurhash/tests" "tests")
+              (delete-file-recursively "murmurhash")
+              (with-directory-excursion "tests"
+                (apply (assoc-ref %standard-phases 'check) args)))))))
+    (native-inputs
+     (list python-cython
+           python-murmurhash3
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/explosion/murmurhash")
     (synopsis "Cython bindings for MurmurHash2")
-    (description "This package provides Cython bindings for MurmurHash2.")
+    (description
+     "This package provides Cython bindings for MurmurHash2.")
     (license license:expat)))
 
 ;; Scooby requires for its test suite a ‘pyvips’ package that is missing its
