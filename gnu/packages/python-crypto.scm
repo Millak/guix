@@ -1217,7 +1217,7 @@ require users to log in.")
 (define-public python-scrypt
   (package
     (name "python-scrypt")
-    (version "0.8.7")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -1226,7 +1226,7 @@ require users to log in.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g3d5fgwq8g9sqa389c0j3smpzx2zsj0vv1wsl391ywny7ry0l5c"))))
+        (base32 "07mr8slhplk0pfji3pfb86281wf035c3vxg7w4g17vgry1l5fdg2"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list openssl))
