@@ -4126,8 +4126,19 @@ time.  Interactively visualize vector, raster and volume data.")
         #:configure-flags #~(list "-DSAMPLE_MAP=FALSE")
         #:phases
         #~(modify-phases %standard-phases
+            ;; Workaround for the following issue:
+            ;; https://github.com/navit-gps/navit/issues/1294 which results in
+            ;; 'error:navit:navit_init:FATAL: No GUI available.' For now there
+            ;; is only a workaround and no real fix yet.
             (add-after
-                'unpack 'patch-navit-config
+                'unpack 'patch-cmake_minimum_required
+              (lambda _
+                (substitute*
+                 "CMakeLists.txt"
+                 (("cmake_minimum_required\\(VERSION 3\\.10\\)")
+                  "cmake_minimum_required(VERSION 3.2)"))))
+            (add-after
+                'patch-cmake_minimum_required 'patch-navit-config
               (lambda _
                 ;; For now this package only supports SDL, so if we keep
                 ;; the configuration as-is, Navit doesn't start.
