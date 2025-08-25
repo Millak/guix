@@ -1416,32 +1416,31 @@ storing and retrieving sensitive information in your programs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/JuulLabs-OSS/mcuboot")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mcu-tools/mcuboot")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1m1csyvzq4jx81zg635ssy1n7sc0z539z0myh872ll3nwqx7wa0q"))))
-    (build-system python-build-system)
+        (base32 "1m1csyvzq4jx81zg635ssy1n7sc0z539z0myh872ll3nwqx7wa0q"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-broken-test
-           (lambda _
-             (substitute* "scripts/imgtool/keys/ed25519_test.py"
-               (("raw_sign") "sign_digest"))
-             #t))
-         (add-before 'build 'change-directory
-           (lambda _
-             (chdir "scripts")
-             #t)))))
-    (propagated-inputs
-     (list python-click python-intelhex python-cryptography))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-broken-test
+            (lambda _
+              (substitute* "scripts/imgtool/keys/ed25519_test.py"
+                (("raw_sign")
+                 "sign_digest"))))
+          (add-before 'build 'change-directory
+            (lambda _
+              (chdir "scripts"))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-click python-intelhex python-cryptography))
     (home-page "https://mcuboot.com")
     (synopsis "Tool to securely sign firmware images for booting by MCUboot")
-    (description "MCUboot is a secure bootloader for 32-bit MCUs.  This
-package provides a tool to securely sign firmware images for booting by
-MCUboot.")
+    (description
+     "MCUboot is a secure bootloader for 32-bit MCUs.  This package provides a
+tool to securely sign firmware images for booting by MCUboot.")
     (license license:expat)))
 
 (define-public python-ntlm-auth
