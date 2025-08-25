@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 
 (define-module (gnu packages books)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -29,9 +31,12 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages inkscape)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages music)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-xyz)
@@ -139,3 +144,29 @@ book can be used to teach programming classes in colleges and to organize
 workshops in hackerspaces or other community-driven spaces.  Currently the book
 is available in Russian and English.")
     (license license:cc-by-sa4.0)))
+
+(define-public sword
+  (package
+    (name "sword")
+    (version "1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.crosswire.org/ftpmirror/pub/sword/source/v"
+             (version-major+minor version) "/sword-" version ".tar.gz"))
+       (sha256
+        (base32 "12kb881w7p79is3ysy2w5bnzj8axfk05lb1ya8413brgvvrrqh22"))))
+    (build-system cmake-build-system)
+    (native-inputs (list curl icu4c-73 zlib))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DSWORD_BUILD_TESTS=Yes"
+              "-DSWORD_USE_INTERNAL_ZLIB=No")))
+    (home-page "https://www.crosswire.org/sword/")
+    (synopsis "Cross-platform open source tools for writing Bible software")
+    (description
+     "The SWORD Project is a free Bible software project used to create Bible
+software, with support for multiple texts and languages.")
+    (license license:gpl2+)))
