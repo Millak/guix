@@ -703,9 +703,19 @@ and enhance them.")
        (list
         #:tests? #f ;Tests are only examples
         #:configure-flags
-          #~(list "-DUSE_BUNDLED_LIBRAW=OFF"
-                  "-DBINARY_PACKAGE_BUILD=ON")
-        #:build-type "Release")) ;Rawspeed fails on default 'RelWithDebInfo'
+        #~(list "-DUSE_BUNDLED_LIBRAW=OFF"
+                "-DBINARY_PACKAGE_BUILD=ON")
+        #:build-type "Release" ;Rawspeed fails on default 'RelWithDebInfo'
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'libOpenCL-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Statically link to libOpenCL.
+                (substitute* "./src/common/dlopencl.c"
+                  (("\"libOpenCL\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/lib/libOpenCL.so")
+                                  "\""))))))))
       (native-inputs
        (list cmocka
              desktop-file-utils
