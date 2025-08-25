@@ -690,28 +690,33 @@ python-axolotl.")
     (version "0.2.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-axolotl" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tgalal/python-axolotl")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1bwdp24fmriffwx91aigs9k162albb51iskp23nc939z893q23py"))))
-    (build-system python-build-system)
+        (base32 "0bwzsyb3z54259kh667m714n28r6jp8almb5mrx48ar0pgashsrl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Don't install tests
-         (add-before 'install 'remove-tests
-           (lambda _
-             (for-each delete-file-recursively
-                       '("axolotl/tests" "build/lib/axolotl/tests"))
-             #t)))))
-    (propagated-inputs
-     (list python-axolotl-curve25519 python-cryptography python-protobuf))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't install tests
+          (add-after 'install 'cleanup-install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (delete-file-recursively
+               (string-append (site-packages inputs outputs)
+                              "/axolotl/tests")))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-axolotl-curve25519 python-cryptography
+                             python-protobuf))
     (home-page "https://github.com/tgalal/python-axolotl")
     (synopsis "Python port of libaxolotl-android")
-    (description "This is a python port of libaxolotl-android.  This
-is a ratcheting forward secrecy protocol that works in synchronous and
-asynchronous messaging environments.")
+    (description
+     "This is a python port of libaxolotl-android.  This is a ratcheting
+forward secrecy protocol that works in synchronous and asynchronous messaging
+environments.")
     (license license:gpl3)))
 
 (define-public python-omemo-dr
