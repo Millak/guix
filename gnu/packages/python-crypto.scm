@@ -1701,7 +1701,7 @@ interacting with a U2F device over USB.")
 (define-public python-sop
   (package
     (name "python-sop")
-    (version "0.2.0")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1710,7 +1710,7 @@ interacting with a U2F device over USB.")
               (commit (string-append "sop-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "071n7ifi634ai2xaddxdjiscp4v215r48d9i3v24mpz23sh8ymjn"))))
+        (base32 "0sin5miiiqgww0s52jz098x44nbnx003vfd4jn55bs5mgca60lll"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; XXX: No tests upstream.
