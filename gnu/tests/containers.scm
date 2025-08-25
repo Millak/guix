@@ -46,9 +46,6 @@
             %test-oci-service-rootless-podman
             %test-oci-service-docker))
 
-(define lower-oci-image-state
-  (@@ (gnu services containers) lower-oci-image-state))
-
 
 (define %rootless-podman-os
   (simple-operating-system
@@ -72,48 +69,13 @@
                           (supplementary-groups '("wheel" "netdev" "cgroup"
                                                   "audio" "video")))))))
 
-(define %oci-tarball
-  (lower-oci-image-state
-   "guile-guest"
-   (packages->manifest
-    (list
-     guile-3.0 guile-json-3
-     (package
-       (name "guest-script")
-       (version "0")
-       (source #f)
-       (build-system trivial-build-system)
-       (arguments
-        (list
-         #:guile guile-3.0
-         #:builder
-         #~(let ((out #$output))
-             (mkdir out)
-             (call-with-output-file (string-append out "/a.scm")
-               (lambda (port)
-                 (display "(display \"hello world\n\")" port))))))
-       (synopsis "Display hello world using Guile")
-       (description "This package displays the text \"hello world\" on the
-standard output device and then enters a new line.")
-       (home-page #f)
-       (license license:public-domain))))
-   '(#:entry-point "bin/guile"
-     #:localstatedir? #t
-     #:extra-options (#:image-tag "guile-guest")
-     #:symlinks (("/bin/Guile" -> "bin/guile")
-                 ("aa.scm" -> "a.scm")))
-   "guile-guest"
-   (%current-target-system)
-   (%current-system)
-   #f))
-
-(define (run-rootless-podman-test)
+(define (run-rootless-podman-test oci-tarball)
 
   (define os
     (marionette-operating-system
      (operating-system-with-gc-roots
       %rootless-podman-os
-      (list %oci-tarball))
+      (list oci-tarball))
      #:imported-modules '((gnu services herd)
                           (guix combinators))))
 
@@ -292,7 +254,7 @@ standard output device and then enters a new line.")
                        (let* ((loaded (slurp ,(string-append #$podman
                                                              "/bin/podman")
                                              "load" "-i"
-                                             ,#$%oci-tarball))
+                                             ,#$oci-tarball))
                               (repository&tag "localhost/guile-guest:latest")
                               (response1 (slurp
                                           ,(string-append #$podman "/bin/podman")
@@ -345,11 +307,49 @@ standard output device and then enters a new line.")
 
   (gexp->derivation "rootless-podman-test" test))
 
+(define (build-tarball&run-rootless-podman-test)
+  (mlet* %store-monad
+      ((_ (set-grafting #f))
+       (guile (set-guile-for-build (default-guile)))
+       (guest-script-package ->
+        (package
+          (name "guest-script")
+          (version "0")
+          (source #f)
+          (build-system trivial-build-system)
+          (arguments `(#:guile ,guile-3.0
+                       #:builder
+                       (let ((out (assoc-ref %outputs "out")))
+                         (mkdir out)
+                         (call-with-output-file (string-append out "/a.scm")
+                           (lambda (port)
+                             (display "(display \"hello world\n\")" port)))
+                         #t)))
+          (synopsis "Display hello world using Guile")
+          (description "This package displays the text \"hello world\" on the
+standard output device and then enters a new line.")
+          (home-page #f)
+          (license license:public-domain)))
+       (profile (profile-derivation (packages->manifest
+                                     (list guile-3.0 guile-json-3
+                                           guest-script-package))
+                                    #:hooks '()
+                                    #:locales? #f))
+       (tarball (pack:docker-image
+                 "docker-pack" profile
+                 #:symlinks '(("/bin/Guile" -> "bin/guile")
+                              ("aa.scm" -> "a.scm"))
+                 #:extra-options
+                 '(#:image-tag "guile-guest")
+                 #:entry-point "bin/guile"
+                 #:localstatedir? #t)))
+    (run-rootless-podman-test tarball)))
+
 (define %test-rootless-podman
   (system-test
    (name "rootless-podman")
    (description "Test rootless Podman service.")
-   (value (run-rootless-podman-test))))
+   (value (build-tarball&run-rootless-podman-test))))
 
 
 (define %oci-network

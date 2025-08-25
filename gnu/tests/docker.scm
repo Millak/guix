@@ -26,7 +26,6 @@
   #:use-module (gnu system image)
   #:use-module (gnu system vm)
   #:use-module (gnu services)
-  #:use-module (gnu services containers)
   #:use-module (gnu services dbus)
   #:use-module (gnu services networking)
   #:use-module (gnu services docker)
@@ -49,9 +48,6 @@
             %test-docker-system
             %test-oci-container))
 
-(define lower-oci-image-state
-  (@@ (gnu services containers) lower-oci-image-state))
-
 (define %docker-os
   (simple-operating-system
    (service dhcpcd-service-type)
@@ -60,41 +56,6 @@
    (service elogind-service-type)
    (service containerd-service-type)
    (service docker-service-type)))
-
-(define %docker-tarball
-  (lower-oci-image-state
-   "guile-guest"
-   (packages->manifest
-    (list
-     guile-3.0 guile-json-3
-     (package
-       (name "guest-script")
-       (version "0")
-       (source #f)
-       (build-system trivial-build-system)
-       (arguments
-        (list
-         #:guile guile-3.0
-         #:builder
-         #~(let ((out #$output))
-             (mkdir out)
-             (call-with-output-file (string-append out "/a.scm")
-               (lambda (port)
-                 (display "(display \"hello world\n\")" port))))))
-       (synopsis "Display hello world using Guile")
-       (description "This package displays the text \"hello world\" on the
-standard output device and then enters a new line.")
-       (home-page #f)
-       (license license:public-domain))))
-   '(#:entry-point "bin/guile"
-     #:localstatedir? #t
-     #:extra-options (#:image-tag "guile-guest")
-     #:symlinks (("/bin/Guile" -> "bin/guile")
-                 ("aa.scm" -> "a.scm")))
-   "guile-guest"
-   (%current-target-system)
-   (%current-system)
-   #f))
 
 (define (run-docker-test docker-tarball)
   "Load DOCKER-TARBALL as Docker image and run it in a Docker container,
@@ -212,7 +173,40 @@ inside %DOCKER-OS."
   (gexp->derivation "docker-test" test))
 
 (define (build-tarball&run-docker-test)
-  (run-docker-test %docker-tarball))
+  (mlet* %store-monad
+      ((_ (set-grafting #f))
+       (guile (set-guile-for-build (default-guile)))
+       (guest-script-package ->
+        (package
+          (name "guest-script")
+          (version "0")
+          (source #f)
+          (build-system trivial-build-system)
+          (arguments `(#:guile ,guile-3.0
+                       #:builder
+                       (let ((out (assoc-ref %outputs "out")))
+                         (mkdir out)
+                         (call-with-output-file (string-append out "/a.scm")
+                           (lambda (port)
+                             (display "(display \"hello world\n\")" port)))
+                         #t)))
+          (synopsis "Display hello world using Guile")
+          (description "This package displays the text \"hello world\" on the
+standard output device and then enters a new line.")
+          (home-page #f)
+          (license license:public-domain)))
+       (profile (profile-derivation (packages->manifest
+                                     (list guile-3.0 guile-json-3
+                                           guest-script-package))
+                                    #:hooks '()
+                                    #:locales? #f))
+       (tarball (pack:docker-image
+                 "docker-pack" profile
+                 #:symlinks '(("/bin/Guile" -> "bin/guile")
+                              ("aa.scm" -> "a.scm"))
+                 #:entry-point "bin/guile"
+                 #:localstatedir? #t)))
+    (run-docker-test tarball)))
 
 (define %test-docker
   (system-test
@@ -221,22 +215,8 @@ inside %DOCKER-OS."
    (value (build-tarball&run-docker-test))))
 
 
-(define %docker-system-tarball
-  (lower-oci-image-state
-   "guix-system-guest"
-   (operating-system
-     (inherit (simple-operating-system))
-     ;; Use locales for a single libc to
-     ;; reduce space requirements.
-     (locale-libcs (list glibc)))
-   '()
-   "guix-system-guest"
-   (%current-target-system)
-   (%current-system)
-   #f))
-
 (define (run-docker-system-test tarball)
-  "Load TARBALL as Docker image and run it in a Docker container,
+  "Load DOCKER-TARBALL as Docker image and run it in a Docker container,
 inside %DOCKER-OS."
   (define os
     (marionette-operating-system
@@ -353,15 +333,21 @@ inside %DOCKER-OS."
 
   (gexp->derivation "docker-system-test" test))
 
-(define (build-tarball&run-docker-system-test)
-  (run-docker-system-test %docker-system-tarball))
-
 (define %test-docker-system
   (system-test
    (name "docker-system")
    (description "Run a system image as produced by @command{guix system
 docker-image} inside Docker.")
-   (value (build-tarball&run-docker-system-test))))
+   (value (with-monad %store-monad
+            (>>= (lower-object
+                  (system-image (os->image
+                                 (operating-system
+                                   (inherit (simple-operating-system))
+                                   ;; Use locales for a single libc to
+                                   ;; reduce space requirements.
+                                   (locale-libcs (list glibc)))
+                                 #:type docker-image-type)))
+                 run-docker-system-test)))))
 
 
 (define %oci-os
