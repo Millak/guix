@@ -2127,25 +2127,29 @@ files and/or directories.")
     (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-doctest-custom" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danilobellini/pytest-doctest-custom")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0kxkdd6q9c3h31kc88lbyfll4c45b0zjd24cbr4c083fcvcy7lip"))))
-    (build-system python-build-system)
+        (base32 "0hpdfazzvpgyhfr5la9n8k7a1j3z2nvqp76wiyzr73ha5wij33zl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "test_pytest_doctest_custom.py")))))))
-    (native-inputs
-     (list python-pytest))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (when tests?
+                (add-installed-pythonpath inputs outputs)
+                (invoke "python" "test_pytest_doctest_custom.py")))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/danilobellini/pytest-doctest-custom")
     (synopsis
      "Pytest plugin to customize string representations of doctest results")
-    (description "This package provides a Pytest plugin for customizing string
+    (description
+     "This package provides a Pytest plugin for customizing string
 representations of doctest results.  It can change the display hook used by
 doctest to render the object representations.")
     (license license:expat)))
