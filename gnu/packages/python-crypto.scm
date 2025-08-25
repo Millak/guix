@@ -1280,6 +1280,7 @@ implements RFC 6125 fully and plans to add other relevant RFCs too.")
        (sha256
         (base32 "005ra4pfv71rq53198k7q6k63f529q3g6hkbxbwfcf82jr77hxga"))))
     (build-system pyproject-build-system)
+    (inputs (list crc32c))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/googleapis/python-crc32c")
     (synopsis "Python wrapper of Google CRC32C")
