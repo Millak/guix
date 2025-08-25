@@ -1446,20 +1446,22 @@ tool to securely sign firmware images for booting by MCUboot.")
 (define-public python-ntlm-auth
   (package
     (name "python-ntlm-auth")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ntlm-auth" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jborean93/ntlm-auth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "16mavidki4ma5ip8srqalr19gz4f5yn3cnmmgps1fmgfr24j63rm"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-cryptography))
+        (base32 "00dpf5bfsy07frsjihv1k10zmwcyq4bvkilbxha7h6nlwpcm2409"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-requests python-setuptools python-wheel))
+    (propagated-inputs (list python-cryptography))
     (home-page "https://github.com/jborean93/ntlm-auth")
-    (synopsis
-     "Calculates NTLM Authentication codes")
+    (synopsis "Calculates NTLM Authentication codes")
     (description
      "This library handles the low-level details of NTLM authentication for
 use in authenticating with a service that uses NTLM.  It will create and parse
