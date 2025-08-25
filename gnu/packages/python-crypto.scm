@@ -1137,7 +1137,7 @@ supports KDBX3 and KDBX4.")
 (define-public python-pylibscrypt
   (package
     (name "python-pylibscrypt")
-    (version "1.7.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1146,7 +1146,7 @@ supports KDBX3 and KDBX4.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0plp5fvk3pzv5wgzqfggdqvvsfsxjid53a0hxbpn2h1dp33vkrh0"))))
+        (base32 "0hshivwl3xznlqhrvwbylp40k1bfx4gnyzmxwldkwjhf1260zan1"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/jvarho/pylibscrypt")
