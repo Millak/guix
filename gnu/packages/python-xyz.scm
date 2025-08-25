@@ -38837,38 +38837,39 @@ nested data structures in Python like lists and dictionaries.")
     (license license:expat)))
 
 (define-public python-murmurhash3
-  (package
-    (name "python-murmurhash3")
-    (version "2.3.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "murmurhash3" version))
-              (sha256
-               (base32
-                "1gdzys1212dx70byz07ipknbw1awbqskh6aznlkm85js8b8qfczm"))))
-    (build-system python-build-system)
-    (native-inputs (list python-cython python-pytest))
-    (inputs (list python))
-    (arguments
-     (list #:modules
-           '((ice-9 ftw) (ice-9 match)
-             (guix build utils)
-             (guix build python-build-system))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-source-file-times-to-1980
-                 (lambda _
-                   (let ((circa-1980 (* 10 366 24 60 60)))
-                     (ftw "."
-                          (lambda (file stat flag)
-                            (utime file circa-1980 circa-1980) #t))))))))
-    (home-page "https://github.com/veegee/mmh3")
-    (synopsis "Python wrapper for MurmurHash (MurmurHash3)")
-    (description
-     "@code{murmurhash3} is a Python library for MurmurHash (MurmurHash3), a set
+  (let ((commit "01f1128a2c5ea08e6dc33515e140bedd68393a2d")
+        (revision "0"))
+    (package
+      (name "python-murmurhash3")
+      (version (git-version "2.3.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/veegee/mmh3")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zpk51ms1bvzg52zc9s9az71bgw2kgxidjcc1xib7y9r7dl7vczz"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-package
+              (lambda _
+                (substitute* "mmh3module.cpp"
+                  (("#include <stdio\\.h>")
+                   "#define PY_SSIZE_T_CLEAN\n#include <stdio.h>")))))))
+      (native-inputs
+       (list python-cython python-pytest python-setuptools python-wheel))
+      (home-page "https://github.com/veegee/mmh3")
+      (synopsis "Python wrapper for MurmurHash (MurmurHash3)")
+      (description
+       "@code{murmurhash3} is a Python library for MurmurHash (MurmurHash3), a set
 of fast and robust hash functions.  This library is a Python extension module
 written in C.")
-    (license license:public-domain)))
+      (license license:public-domain))))
 
 (define-public python-murmurhash
   (package
