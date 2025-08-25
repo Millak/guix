@@ -490,17 +490,16 @@ menu spec-compliant desktop menus for LXDE.")
 (define-public lxde-common
   (package
     (name "lxde-common")
-    (version "0.99.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lxde/"
-                           "lxde-common%20%28default%20config%29/"
-                           "lxde-common%20" (version-major+minor version) "/"
-                           name "-" version ".tar.xz"))
+    (version "0.99.3")
+    (source (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxde-common")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0mj84fa3f4ak1jjslrwc2q3ci9zxrxpciggviza9bjb0168brn8w"))))
+        (base32 "0py5dazjmz7yh5p0zv7psgsx4291cg21h5kw6ww5bzvr34kpbnwc"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -514,7 +513,7 @@ menu spec-compliant desktop menus for LXDE.")
                                           "/bin/lxsession")))
                         #t))))))
     (native-inputs
-     (list pkg-config intltool lxmenu-data lxde-icon-theme))
+     (list automake autoconf pkg-config intltool lxmenu-data lxde-icon-theme))
     (inputs
      (list lxsession
            ;; ("lxlock" ,lxlock) ;for 'lxde-screenlock.desktop'
