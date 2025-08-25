@@ -46,6 +46,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -169,7 +170,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
 (define-public spirv-llvm-translator
   (package
     (name "spirv-llvm-translator")
-    (version "18.1.0")
+    (version "18.1.10")
     (source
      (origin
        (method git-fetch)
@@ -178,7 +179,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yfz02mlnf4ffn67g2ms0w8f7jgdsn438w2dbxd5mvcf5dk2x27b"))))
+        (base32 "11gmb1kw6j90hwcf6wxjz4pki653lyd8v8kphk7jq67gvw8dkiwy"))))
     (build-system cmake-build-system)
     (arguments
      ;; The test suite is known to fail on several architectures:
@@ -206,7 +207,14 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
                (apply (assoc-ref gnu:%standard-phases 'check)
                       #:test-target "test" args))))))
     (inputs (list llvm-18))
-    (native-inputs (list clang-18 llvm-18 python-lit spirv-headers))
+    (native-inputs
+     (list
+      clang-18
+      libffi
+      llvm-18
+      pkg-config
+      python-lit
+      spirv-headers))
     (home-page "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")
     (synopsis "Bi-directional translation between SPIR-V and LLVM IR")
     (description
