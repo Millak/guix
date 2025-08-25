@@ -527,22 +527,22 @@ menu spec-compliant desktop menus for LXDE.")
 (define-public lxinput
   (package
     (name "lxinput")
-    (version "0.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lxde/"
-                           "LXInput%20%28Kbd%20and%20amp_%20mouse%20config%29/"
-                           "LXInput%200.3.x/" name "-" version ".tar.xz"))
+    (version "0.3.6")
+    (source (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/lxde/lxinput")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "123f3yn4rp1w5b3n5aj3ad9snkxab29qkrs7bcvf5bx4cn57g3sf"))))
+        (base32 "13xqxwsb00h20yg514pjmdlvmfqv029nwdy70aaqn0r0jz670sm7"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--enable-gtk3")))
     (inputs
      (list gtk+))
     (native-inputs
-     (list pkg-config intltool))
+     (list automake autoconf pkg-config intltool))
     (synopsis "Tool for mouse and keyboard configuration in LXDE")
     (description
      "Lxinput provides a small program to configure keyboard and mouse
