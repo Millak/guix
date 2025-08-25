@@ -370,22 +370,28 @@ written in pure Python.")
     (name "python-codacy-coverage")
     (version "1.3.11")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "codacy-coverage" version))
-        (sha256
-         (base32
-          "1g0c0w56xdkmqb8slacyw5qhzrkp814ng3ddh2lkiij58y9m2imr"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/codacy/python-codacy-coverage")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cxq2c6wyzynqjvc5szyhwvzdz4g3a4dv6bx80w4k4d9p40699hv"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)); no tests
-    (propagated-inputs
-     (list python-check-manifest python-requests))
+     (list
+      ;; XXX: Pytest is unable to find tests, even with common tricks.
+      ;; TODO: Run tox.ini unittests after next python-team merge.
+      #:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-check-manifest python-requests))
     (home-page "https://github.com/codacy/python-codacy-coverage")
     (synopsis "Codacy coverage reporter for Python")
-    (description "This package analyses Python test suites and reports how much
-of the code is covered by them.  This tool is part of the Codacy suite for
-analysing code quality.")
+    (description
+     "This package analyses Python test suites and reports how much of the
+code is covered by them.  This tool is part of the Codacy suite for analysing
+code quality.")
     (license license:expat)))
 
 (define-public python-covdefaults
