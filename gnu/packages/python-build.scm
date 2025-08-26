@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -251,6 +251,20 @@ Included are implementations of:
 @item AsyncGenerator
 @end enumerate\n")
     (license license:psfl)))
+
+(define-public python-typing-extensions-next
+  (package
+    (inherit python-typing-extensions)
+    (version "4.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typing_extensions" version))
+       (sha256
+        (base32 "0rhlhs28jndgp9fghdhidn6g7xiwx8vvihxbxhlgl4ncfg8lishc"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-typing-extensions)
+       (replace "python-flit-core" python-flit-core-next)))))
 
 
 ;;;
