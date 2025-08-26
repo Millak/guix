@@ -959,13 +959,14 @@ utilities to handle strings according to the Unicode standard.")
            "1ih5vjavilzggyr1j1z6w1z12c2fs5fg77cfnv7ami5ivsy3kg3d"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; no tests
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "PREFIX=" %output))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))))       ; no configure script
+       (list
+        #:tests? #f                    ; no tests
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))       ; no configure script
       (inputs
        (list gawk))
       (home-page "https://github.com/cls/libutf")
