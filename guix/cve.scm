@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,16 +37,10 @@
   #:export (json->cve-items
 
             cve-item?
-            cve-item-cve
+            cve-item-id
             cve-item-configurations
             cve-item-published-date
             cve-item-last-modified-date
-
-            cve?
-            cve-id
-            cve-data-type
-            cve-data-format
-            cve-references
 
             cve-reference?
             cve-reference-url
@@ -68,40 +63,23 @@
 ;;; Code:
 
 (define (string->date* str)
-  (string->date str "~Y-~m-~dT~H:~M~z"))
+  (string->date str "~Y-~m-~dT~H:~M:~S"))
 
 (define-json-mapping <cve-item> cve-item cve-item?
   json->cve-item
-  (cve            cve-item-cve "cve" json->cve)   ;<cve>
-  (configurations cve-item-configurations         ;list of sexps
+  (id             cve-item-id "id")       ;string
+  (configurations cve-item-configurations ;list of sexps
                   "configurations" configuration-data->cve-configurations)
   (published-date cve-item-published-date
-                  "publishedDate" string->date*)
+                  "published" string->date*)
   (last-modified-date cve-item-last-modified-date
-                      "lastModifiedDate" string->date*))
-
-(define-json-mapping <cve> cve cve?
-  json->cve
-  (id             cve-id "CVE_data_meta"          ;string
-                  (cut assoc-ref <> "ID"))
-  (data-type      cve-data-type                   ;'CVE
-                  "data_type" string->symbol)
-  (data-format    cve-data-format                 ;'MITRE
-                  "data_format" string->symbol)
-  (references     cve-references                  ;list of <cve-reference>
-                  "references" reference-data->cve-references))
+                      "lastModified" string->date*))
 
 (define-json-mapping <cve-reference> cve-reference cve-reference?
   json->cve-reference
   (url            cve-reference-url)              ;string
   (tags           cve-reference-tags              ;list of strings
                   "tags" vector->list))
-
-(define (reference-data->cve-references alist)
-  (map json->cve-reference
-       ;; Normally "reference_data" is always present but rejected CVEs such
-       ;; as CVE-2020-10020 can lack it.
-       (vector->list (or (assoc-ref alist "reference_data") '#()))))
 
 (define %cpe-package-rx
   ;; For applications: "cpe:2.3:a:VENDOR:PACKAGE:VERSION", or sometimes
@@ -132,15 +110,15 @@ Return three #f values if CPE does not look like an application CPE string."
          (values #f #f #f))))
 
 (define (cpe-match->cve-configuration alist)
-  "Convert ALIST, a \"cpe_match\" alist, into an sexp representing the package
+  "Convert ALIST, a \"cpeMatch\" alist, into an sexp representing the package
 and versions matched.  Return #f if ALIST doesn't correspond to an application
 package."
-  (let ((cpe    (assoc-ref alist "cpe23Uri"))
+  (let ((cpe    (assoc-ref alist "criteria"))
         (starti (assoc-ref alist "versionStartIncluding"))
         (starte (assoc-ref alist "versionStartExcluding"))
         (endi   (assoc-ref alist "versionEndIncluding"))
         (ende   (assoc-ref alist "versionEndExcluding")))
-    ;; Normally "cpe23Uri" is here in each "cpe_match" item, but CVE-2020-0534
+    ;; Normally "criteria" is here in each "cpeMatch" item, but CVE-2020-0534
     ;; has a configuration that lacks it.
     (and cpe
          (let ((vendor package version (cpe->package-identifier cpe)))
@@ -156,7 +134,7 @@ package."
                          (ende   `(< ,ende))
                          (else   version))))))))
 
-(define (configuration-data->cve-configurations alist)
+(define (configuration-data->cve-configurations vector)
   "Given ALIST, a JSON dictionary for the baroque \"configurations\"
 element found in CVEs, return an sexp such as (\"binutils\" (<
 \"2.31\")) that represents matching configurations."
@@ -165,10 +143,13 @@ element found in CVEs, return an sexp such as (\"binutils\" (<
       ("OR" 'or)
       ("AND" 'and)))
 
+  (define (maybe-vector->alist vector)
+    (vector->list (or (and (unspecified? vector) #()) vector #())))
+
   (define (node->configuration node)
     (let ((operator (string->operator (assoc-ref node "operator"))))
       (cond
-       ((assoc-ref node "cpe_match")
+       ((assoc-ref node "cpeMatch")
         =>
         (lambda (matches)
           (let ((matches (vector->list matches)))
@@ -187,28 +168,31 @@ element found in CVEs, return an sexp such as (\"binutils\" (<
        (else
         #f))))
 
-  (let ((nodes (vector->list (assoc-ref alist "nodes"))))
+  (let* ((alist (maybe-vector->alist vector))
+         (nodes (if (null? alist)
+                    '()
+                     (maybe-vector->alist (assoc-ref (car alist) "nodes")))))
     (filter-map node->configuration nodes)))
 
 (define (json->cve-items json)
   "Parse JSON, an input port or a string, and return a list of <cve-item>
 records."
-  (let* ((alist   (json->scm json))
-         (type    (assoc-ref alist "CVE_data_type"))
-         (format  (assoc-ref alist "CVE_data_format"))
-         (version (assoc-ref alist "CVE_data_version")))
-    (unless (equal? type "CVE")
-      (raise (condition (&message
-                         (message "invalid CVE feed")))))
-    (unless (equal? format "MITRE")
-      (raise (formatted-message (G_ "unsupported CVE format: '~a'")
-                                format)))
-    (unless (equal? version "4.0")
-      (raise (formatted-message (G_ "unsupported CVE data version: '~a'")
-                                version)))
+  (let ((alist   (json->scm json)))
+    (match (assoc-ref alist "format")
+      ("NVD_CVE"
+       #t)
+      (format
+       (raise (formatted-message (G_ "unsupported CVE format: '~a'")
+                                 format))))
+    (match (assoc-ref alist "version")
+      ("2.0"
+       #t)
+      (version
+       (raise (formatted-message (G_ "unsupported CVE data version: '~a'")
+                                 version))))
 
-    (map json->cve-item
-         (vector->list (assoc-ref alist "CVE_Items")))))
+    (map (compose json->cve-item (cut assoc-ref <> "cve"))
+         (vector->list (assoc-ref alist "vulnerabilities")))))
 
 (define (version-matches? version sexp)
   "Return true if VERSION, a string, matches SEXP."
@@ -269,7 +253,7 @@ HIDDEN-VENDORS."
 (define (yearly-feed-uri year)
   "Return the URI for the CVE feed for YEAR."
   (string->uri
-   (string-append "https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-"
+   (string-append "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-"
                   (number->string year) ".json.gz")))
 
 (define %current-year-ttl
@@ -352,14 +336,13 @@ matching versions."
   "Return a <vulnerability> corresponding to ITEM, a <cve-item> record;
 return #f if ITEM does not list any configuration or if it does not list
 any \"a\" (application) configuration."
-  (let ((id (cve-id (cve-item-cve item))))
-    (match (cve-item-configurations item)
-      (()                                         ;no configurations
-       #f)
-      ((configs ...)
-       (vulnerability id
-                      (merge-package-lists
-                       (map cve-configuration->package-list configs)))))))
+  (match (cve-item-configurations item)
+    (()                                         ;no configurations
+     #f)
+    ((configs ...)
+     (vulnerability (cve-item-id item)
+                    (merge-package-lists
+                     (map cve-configuration->package-list configs))))))
 
 (define (json->vulnerabilities json)
   "Parse JSON, an input port or a string, and return the list of

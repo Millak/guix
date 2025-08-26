@@ -22,6 +22,8 @@
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-64))
 
+;; Generated from the 2019 database :
+;; jq -M '.vulnerabilities |= map(select(.cve.id | IN("CVE-2019-14811", "CVE-2019-17365", "CVE-2019-1010180", "CVE-2019-1010204", "CVE-2019-18192", "CVE-2019-0001"))) | .totalResults = (.vulnerabilities | length) | .resultsPerPage = (.vulnerabilities | length)'
 (define %sample
   (search-path %load-path "tests/cve-sample.json"))
 
@@ -31,23 +33,19 @@
 (define %expected-vulnerabilities
   ;; What we should get when reading %SAMPLE.
   (list
-   (vulnerability "CVE-2019-0001"
-                  ;; Only the "a" CPE configurations are kept; the "o"
-                  ;; configurations are discarded.
-                  '(("juniper" "junos" (or "18.2" (or "18.21-s3" "18.21-s4")))))
-   (vulnerability "CVE-2019-0005"
-                  '(("juniper" "junos" (or "18.1" "18.11"))))
-   ;; CVE-2019-0005 has no "a" configurations.
-   (vulnerability "CVE-2019-14811"
-                  '(("artifex" "ghostscript" (< "9.28"))))
-   (vulnerability "CVE-2019-17365"
-                  '(("nixos" "nix" (<= "2.3"))))
-   (vulnerability "CVE-2019-1010180"
-                  '(("gnu" "gdb" _)))                   ;any version
    (vulnerability "CVE-2019-1010204"
                   '(("gnu" "binutils" (and (>= "2.21") (<= "2.31.1")))
                     ("gnu" "binutils_gold" (and (>= "1.11") (<= "1.16")))))
-   ;; CVE-2019-18192 has no associated configurations.
+   (vulnerability "CVE-2019-1010180"
+                  '(("gnu" "gdb" (< "9.1"))))
+   (vulnerability "CVE-2019-14811"
+                  '(("artifex" "ghostscript" (< "9.50"))))
+   (vulnerability "CVE-2019-17365"
+                  '(("nixos" "nix" (<= "2.3"))))
+   (vulnerability "CVE-2019-18192"
+                  '(("gnu" "guix" "1.0.1")))
+   ;; Only the "a" CPE configurations are kept; the "o" configurations are discarded.
+   ;; This is why CVE-2019-0001 doesn't appear here.
    ))
 
 
@@ -55,13 +53,12 @@
 
 (test-equal "json->cve-items"
   '("CVE-2019-0001"
-    "CVE-2019-0005"
+    "CVE-2019-1010204"
+    "CVE-2019-1010180"
     "CVE-2019-14811"
     "CVE-2019-17365"
-    "CVE-2019-1010180"
-    "CVE-2019-1010204"
     "CVE-2019-18192")
-  (map (compose cve-id cve-item-cve)
+  (map cve-item-id
        (call-with-input-file %sample json->cve-items)))
 
 (test-equal "cve-item-published-date"
@@ -75,32 +72,32 @@
   (call-with-input-file %sample json->vulnerabilities))
 
 (test-equal "vulnerabilities->lookup-proc"
-  (list (list (third %expected-vulnerabilities))  ;ghostscript
+  (list (list (first %expected-vulnerabilities))  ;binutils
+        '()
+        (list (first %expected-vulnerabilities))
+        '()
+
+        (list (second %expected-vulnerabilities))  ;gdb
+        (list (second %expected-vulnerabilities))
+
+        (list (third %expected-vulnerabilities))  ;ghostscript
         (list (third %expected-vulnerabilities))
         '()
 
-        (list (fifth %expected-vulnerabilities))  ;gdb
-        (list (fifth %expected-vulnerabilities))
-
         (list (fourth %expected-vulnerabilities)) ;nix
-        '()
-
-        (list (sixth %expected-vulnerabilities))  ;binutils
-        '()
-        (list (sixth %expected-vulnerabilities))
         '())
   (let* ((vulns  (call-with-input-file %sample json->vulnerabilities))
          (lookup (vulnerabilities->lookup-proc vulns)))
-    (list (lookup "ghostscript")
-          (lookup "ghostscript" "9.27")
-          (lookup "ghostscript" "9.28")
-          (lookup "gdb")
-          (lookup "gdb" "42.0")
-          (lookup "nix")
-          (lookup "nix" "2.4")
-          (lookup "binutils" "2.31.1")
+    (list (lookup "binutils" "2.31.1")
           (lookup "binutils" "2.10")
           (lookup "binutils_gold" "1.11")
-          (lookup "binutils" "2.32"))))
+          (lookup "binutils" "2.32")
+          (lookup "gdb")
+          (lookup "gdb" "9.0")
+          (lookup "ghostscript")
+          (lookup "ghostscript" "9.27")
+          (lookup "ghostscript" "9.51")
+          (lookup "nix")
+          (lookup "nix" "2.4"))))
 
 (test-end "cve")
