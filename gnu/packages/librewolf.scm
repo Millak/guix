@@ -641,7 +641,7 @@
                   libjpeg-turbo
                   libnotify
                   libpciaccess
-                  libpng-apng-for-librewolf
+                  libpng-apng-next
                   libva
                   libvpx
                   libwebp

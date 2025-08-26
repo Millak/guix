@@ -332,36 +332,35 @@ APNG patch provides APNG support to libpng.")
 
 ;; Temporary, until 76798 merges into core-packages-team, and that merges into
 ;; master.
-(define-public libpng-apng-for-librewolf
-  (hidden-package
-   (package
-     (inherit libpng-apng)
-     (version "1.6.46")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
-                                  version "/libpng-" version ".tar.xz")
-                   (string-append
-                    "ftp://ftp.simplesystems.org/pub/libpng/png/src"
-                    "/libpng16/libpng-" version ".tar.xz")
-                   (string-append
-                    "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
-                    "/libpng16/libpng-" version ".tar.xz")))
-        (sha256
-         (base32
-          "1cbwf20zlm4gcv8rpjivkngrjgl5366w21lr9qmbk2lr0dq8papk"))))
-     (inputs
-      (modify-inputs (package-inputs libpng-apng)
-        (replace "apng"
-          (origin
-            (method url-fetch)
-            (uri
-             (string-append "mirror://sourceforge/libpng-apng/libpng16/"
-                            version "/libpng-" version "-apng.patch.gz"))
-            (sha256
-             (base32
-              "00ykl1bzb79xsjwrq7dl0yz9dz5g3zwj0lry5zam3vs6s3gw5gi9")))))))))
+(define-public libpng-apng-next
+  (package
+    (inherit libpng-apng)
+    (version "1.6.46")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
+                                 version "/libpng-" version ".tar.xz")
+                  (string-append
+                   "ftp://ftp.simplesystems.org/pub/libpng/png/src"
+                   "/libpng16/libpng-" version ".tar.xz")
+                  (string-append
+                   "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
+                   "/libpng16/libpng-" version ".tar.xz")))
+       (sha256
+        (base32
+         "1cbwf20zlm4gcv8rpjivkngrjgl5366w21lr9qmbk2lr0dq8papk"))))
+    (inputs
+     (modify-inputs (package-inputs libpng-apng)
+       (replace "apng"
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "mirror://sourceforge/libpng-apng/libpng16/"
+                           version "/libpng-" version "-apng.patch.gz"))
+           (sha256
+            (base32
+             "00ykl1bzb79xsjwrq7dl0yz9dz5g3zwj0lry5zam3vs6s3gw5gi9"))))))))
 
 (define-public pngcrush
   (package

@@ -1,36 +1,36 @@
-Replace "/usr/lib/mozilla" (the system-wide directory for extensions and
-native manifests) with "$ICECAT_SYSTEM_DIR".
+Upstream-status: https://bugzilla.mozilla.org/show_bug.cgi?id=1986219
 
+diff --git a/toolkit/xre/nsXREDirProvider.cpp b/toolkit/xre/nsXREDirProvider.cpp
+index 9c94cb8808aa..dfee051b302f 100644
 --- a/toolkit/xre/nsXREDirProvider.cpp
 +++ b/toolkit/xre/nsXREDirProvider.cpp
-@@ -296,24 +296,12 @@ nsresult nsXREDirProvider::GetBackgroundTasksProfilesRootDir(
+@@ -276,11 +276,27 @@ nsresult nsXREDirProvider::GetBackgroundTasksProfilesRootDir(
+  *
+  * On OSX this is /Library/Application Support/Mozilla
+  * On Linux this is /usr/{lib,lib64}/mozilla
+- *   (for 32- and 64-bit systems respsectively)
++ *   (for 32- and 64-bit systems respectively)
++ *
++ * The MOZILLA_SYSTEM_DIR environment variable can be used to override
++ * the system directory used.
+  */
  static nsresult GetSystemParentDirectory(nsIFile** aFile) {
-   nsresult rv;
+-  nsresult rv;
++  nsresult rv = NS_ERROR_FAILURE;
    nsCOMPtr<nsIFile> localDir;
--#  if defined(XP_MACOSX)
--  rv = GetOSXFolderType(kOnSystemDisk, kApplicationSupportFolderType,
--                        getter_AddRefs(localDir));
--  if (NS_SUCCEEDED(rv)) {
--    rv = localDir->AppendNative("Mozilla"_ns);
--  }
--#  else
--  constexpr auto dirname =
--#    ifdef HAVE_USR_LIB64_DIR
--      "/usr/lib64/mozilla"_ns
--#    elif defined(__OpenBSD__) || defined(__FreeBSD__)
--      "/usr/local/lib/mozilla"_ns
--#    else
--      "/usr/lib/mozilla"_ns
--#    endif
--      ;
--  rv = NS_NewNativeLocalFile(dirname, false, getter_AddRefs(localDir));
--#  endif
 +
-+  const char* systemParentDir = getenv("ICECAT_SYSTEM_DIR");
-+  if (!systemParentDir || !*systemParentDir) return NS_ERROR_FAILURE;
++  // Honor a the MOZILLA_SYSTEM_DIR environment variable first...
++  const char* systemParentDir = getenv("MOZILLA_SYSTEM_DIR");
++  if (systemParentDir) {
++    rv = NS_NewNativeLocalFile(nsDependentCString(systemParentDir),
++                               getter_AddRefs(localDir));
++  }
++  if (NS_SUCCEEDED(rv)) {
++    localDir.forget(aFile);
++    return rv;
++  }
 +
-+  rv = NS_NewNativeLocalFile(nsDependentCString(systemParentDir), false,
-+                             getter_AddRefs(localDir));
- 
-   if (NS_SUCCEEDED(rv)) {
-     localDir.forget(aFile);
++  // ... falling back to the conventional fixed location otherwise.
+ #  if defined(XP_MACOSX)
+   rv = GetOSXFolderType(kOnSystemDisk, kApplicationSupportFolderType,
+                         getter_AddRefs(localDir));

@@ -1,0 +1,38 @@
+Upstream-status: https://phabricator.services.mozilla.com/D263231
+
+diff --git a/build/moz.configure/init.configure b/build/moz.configure/init.configure
+index 6162d68699dd..193272588caa 100644
+--- a/build/moz.configure/init.configure
++++ b/build/moz.configure/init.configure
+@@ -1351,3 +1351,17 @@ option(
+     help="Object code libraries in DIR",
+ )
+ set_config("libdir", depends("--libdir")(lambda ldir: ldir[0]))
++
++# Support for using platform-specific standard (FHS-like) locations.
++option(
++    "--enable-fhs",
++    default=True,
++    help="Enable the search of standard platform-specific (FHS-like) locations",
++)
++
++@depends("--enable-fhs")
++def use_fhs(value):
++    return bool(value)
++
++set_config("USE_FHS", use_fhs)
++set_define("USE_FHS", use_fhs)
+diff --git a/toolkit/xre/nsXREDirProvider.cpp b/toolkit/xre/nsXREDirProvider.cpp
+index 547cc4c255c4..79133c879be4 100644
+--- a/toolkit/xre/nsXREDirProvider.cpp
++++ b/toolkit/xre/nsXREDirProvider.cpp
+@@ -295,6 +295,9 @@ static nsresult GetSystemParentDirectory(nsIFile** aFile) {
+     localDir.forget(aFile);
+     return rv;
+   }
++#  ifndef USE_FHS
++  return rv;
++#  endif
+ 
+   // ... falling back to the conventional fixed location otherwise.
+ #  if defined(XP_MACOSX)

@@ -41,6 +41,8 @@
   #:use-module ((srfi srfi-1) #:hide (zip))
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:autoload (ice-9 pretty-print) (pretty-print)
+  #:autoload (ice-9 textual-ports) (get-string-all)
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -74,6 +76,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fonts)
@@ -100,7 +103,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
-  #:autoload (json parser) (json->scm))
+  #:use-module (gnu packages time))
 
 (define-public mozjs
   (package
@@ -372,330 +375,14 @@ fractional-second-digits-append-item.js")
     (inputs
      (list icu4c-73 readline zlib))))
 
-
-;;;
-;;; Localization helper procedures.
-;;;
-(define mozilla-115-compare-locales
-  (origin
-    (method hg-fetch)
-    (uri (hg-reference
-          (url "https://hg.mozilla.org/l10n/compare-locales/")
-          (changeset "RELEASE_8_1_0")))
-    (file-name "mozilla-compare-locales")
-    (sha256 (base32 "00bpkaqf2ng1nn9ajyb5mli0jq58q5fm2n3yy90jy0hp4q2gbs50"))))
-
-(define (mozilla-115-locale locale changeset hash-string)
-  (origin
-    (method hg-fetch)
-    (uri (hg-reference
-          (url (string-append "https://hg.mozilla.org/l10n-central/"
-                              locale))
-          (changeset changeset)))
-    (file-name (string-append "mozilla-locale-" locale))
-    (sha256 (base32 hash-string))))
-
-(define-syntax-rule (mozilla-115-locales (hash-string changeset locale) ...)
-  (list (mozilla-115-locale locale changeset hash-string)
-        ...))
-
-(define (update-mozilla-115-locales changesets.json)
-  "Output a new list of Mozilla locales, to update the ALL-MOZILLA-115-LOCALES
-variable defined below.  It requires guile-json to be installed."
-  (match (call-with-input-file changesets.json json->scm)
-    (((lang ("revision" . revision) platforms pin) ...)
-     (let ((data (reverse (map (lambda (rev lang)
-                                 `(,(list->string (make-list 40 #\0))
-                                   ,(string-take rev 12) ,lang))
-                               revision lang))))
-       (format #t "~{~s~%~}" data)
-       data))))
-
-(define-public all-mozilla-115-locales
-  (mozilla-115-locales
-   ;;                      sha256                            changeset    locale
-   ;;---------------------------------------------------------------------------
-   ("152dc3nxbsjhawq8wm040hbnhq96l039j3k8ll4q93qm93msj507" "de9eb6a1e3e0" "ach")
-   ("0rfbzyv87x5d4qspjaiwsvqcf57g0d93daibj4rc4xsq3g2gw45v" "45b72420bf17" "af")
-   ("13lfl3nq0nr3zvh1zddpnyk8x054784yz08nkprmqhzyvfv3i5wq" "babed417b5e8" "an")
-   ("07fjh9wvl9jgvyqbvsd7l4pq895y4sv725fd8fr274s6l4x7pzz0" "7df35a519b47" "ar")
-   ("04zmfr15a3zhalj66ydpcrh3nxk1q7wb2gckfqsq55q72i3hvkcy" "fd0068a8989f" "ast")
-   ("1x2hnsa1nfmysd7w53ly14bp8hk1vbgfj1016wapcshvf1kap3mr" "4df6d5edc74d" "az")
-   ("1synmbnng6ai8gmz8srxdgf3qgadjvymb66inp3g2lww0c98c4qn" "97829729f043" "be")
-   ("1zank8f4145v4fv28y47ssknn55zrpyll3kxhha2h54za4zkn4p1" "4f568ae49cf3" "bg")
-   ("00wdllmdmzg11x6dcj3f2i047y3bgab1qw2zjaa92i36d5nd2hdr" "a634f8559ffd" "bn")
-   ("0b5f50ar7zj2z1jjvhv8841rabx5a2ylcl0rma3qiz5i6r41lgli" "4ca046b16e37" "br")
-   ("1g1qh8b496psq9yknjzi7drzqzhd5g50xl5qiwd6pr61xyqfvnkx" "690960700526" "bs")
-   ("1wd463lfhdybx0nz0dqvhrsi7f9xl5qd7mvshpgqxlj5x1nhamzy" "58714a456fd6" "ca")
-   ("1s9ls2fh9xfgb8q9vay5lkszfhh0k99lrp28m3fi83b5vv8qj8fq" "12760eef74bc" "cak")
-   ("0abwslv88hda2wfsnkyi7si9v16923gf4xfbq3h0a6mpxf1mylhs" "703352c2a9b4" "ca-valencia")
-   ("05pfacr2kk0sxrpw3s15c8rvchkzxgvsy1njp5q72b270sw98i7h" "6a7eef3982fb" "cs")
-   ("0cidwylb4s7n1hdw4yjqj89bl2qsscf3b1vnfl7hsxf68lj2lzaj" "9c30e4ec1dde" "cy")
-   ("10d7mn2qq0nvw3073ga4garwnvpk5xqkgn3dgw1az2g5pncclhfk" "668cf42570ef" "da")
-   ("0nfb3nf47gavafb35mm4ghl82kpylyj0r1vqc47nz151mjj2mnli" "c968a5118cda" "de")
-   ("1qjf12aymz1x281chv7sqyarbz6f8w7nxsli3b4srsar12l5f0lb" "27dd7f4a3f3f" "dsb")
-   ("040165lwplyj0cv9ccagdjwigy527rli3qda6b633bqrpx6310sw" "920e28aa6758" "el")
-   ("1h5zk58rmrqnbfhxyiwcn0385v6r5ayfkblpwqkji80p135n74sa" "b0e55a5a6413" "en-CA")
-   ("1w5q4b1a9ysgc76dg45cr2q55y4djdcrj2qzs0imq61sjrvih2fv" "9aae743f32df" "en-GB")
-   ("0mxsp5ipg36jdpphwrdra877z9vz1ifbhas988awhc3i9byx7zbh" "3c825be76f39" "eo")
-   ("1nxscjmk80wh359lv4cxgh1y85f8qw522dppy292pkqnqnsrfnq1" "ffac56bd3aef" "es-AR")
-   ("02353n524fy5icp2myjn198n511lzb03hcd4a61bgd7f26cpkhy5" "77e209bb2114" "es-CL")
-   ("1863d4zy2745hfw2kgw5z0625znvzkqwlwbvcj8cw6nv3r6dxgdv" "215ced58e499" "es-ES")
-   ("0asrcxvig4i75r4kpkmcfsc1kzjl8cbaz11an5kny2slcy63av7i" "d748a2a91643" "es-MX")
-   ("1p40zmf29mq81blssjh6gs8fih925mia3l1gya9vzgyp5i4dvln6" "66edf9863a04" "et")
-   ("1hr4q01856j8jmjia39586mxfbv5ijkq7i6cyxz1r422gqivv13v" "752b6aa2225e" "eu")
-   ("0d6vgd6anz237ckgc3a30nzdxa98fw33rc1r2wkr4y3yfvd2bidc" "4a57be1cf783" "fa")
-   ("1kjb8k55vkgn7fpzgvayahzx7cbx7vryyv89kynp2lv052smhh01" "e42c0149059c" "ff")
-   ("0d392s3fh1cl491b72cxlj7la6in84mfxbcn862f0sr63iz0q7wn" "0a2a3e96367c" "fi")
-   ("10rvxinl9as9wdd9yrhsskjwsklzxd35j4b1ygr4jlvslcrmdhpn" "119b009eba98" "fr")
-   ("1x0bfp7gaplnwcmfvv8c87znxp9fxsa99nl88j87qxn45h9kz8q6" "475065215d5c" "fur")
-   ("0p20jlm8vxlzixm446wcqjs5sz7m9x7v4zgqczvriwyspad7d8xp" "6909c0c42a2e" "fy-NL")
-   ("1rh8mvlamawzdfis0ah8rgnjk30mzpxhgh1yx8rxppps7l5n2hpj" "2f350c9ba505" "ga-IE")
-   ("1n2dxvv0q77azg2cz4nasq47pbsh1l6fngphy3lzz1wj4x3s8z7g" "3fe4a6bcac31" "gd")
-   ("15x51q3lsr67lklci13cqlxmgjyk8px12qc3qfrfdv2dk68znwmq" "0482da4a3d5b" "gl")
-   ("1zx7a0l781hyi9k6bi0m9ghgzcb116cqy88q7bf9sm0gar85yxwi" "bb255fc733c3" "gn")
-   ("1p6ycyjp7qsv1fk19yca5bwvyg72y3v87fr3wmhq7xzmdz6994fm" "dd3707daa411" "gu-IN")
-   ("02r68v2yhxxdfms9l2yq8pk7rarg1ysv67mbny04gaws6k5fv3an" "c247293030ae" "he")
-   ("116s9qgcwb0j1mzwy5napq5ww9cs5hcj41xiq2k6kz4gjxw4jazl" "e9c1a1fe1b79" "hi-IN")
-   ("1kg7xiw75ks490kiay2gndlc2akkg4bxdx4q7ysaxf6kpgisakxg" "068c00ca7cae" "hr")
-   ("1xjqvqn65nyb0dlchy3bikpf0g3qjba7i5g68jcicz0hcyrfagvd" "5fd424d1061b" "hsb")
-   ("1j81cv599h3iv26yzzdf8m5vkdw9kdhrlls8c6zd3fslpd91yn5q" "0ef89daff942" "hu")
-   ("0wwjyjpqcxvjsw7md6sz2zxncay3wk066qiv4p2vpqv5sw9z1sdh" "771fd65bc781" "hy-AM")
-   ("0pxjvzkkhls3d28c1656y3fc78snhc90f0mj5jx9rhh7l6hg0801" "6cfa8fc01f2a" "ia")
-   ("1xh93qkj7y4ad10sqyldr9hymsbffnq7kya0smvci1nwmnndd8bk" "ae863f3cd230" "id")
-   ("1npyaz5zyk6yr8z8sj2gbd0ahynglxmalw27rcdb57h81n0520y7" "d465499a6600" "is")
-   ("14hhl050vzbrwwppvpyicqfcqazpvyaygnr8hgrz0jgyb30lfvhw" "a8ac50410815" "it")
-   ("1jz9i0x22qig74gwrrrvnwc7s50h1x18sl797lr678xiw4f6p0ar" "13abbdd8abdf" "ja")
-   ("04k53mnskapqv968gphpmzhxbg1m0jxbzf24z9g0lgspnhcgwpx9" "1f388ad7f0e9" "ja-JP-mac")
-   ("1n9ayc6l72fy08zdqpwag54rh6j5aagj7y7976gyvjl1ssz745fs" "ed774dd2eff3" "ka")
-   ("09bw4sk8g7bmx9xxxiy8y9p8zhf3h3gvaddlx86zdk12k44iqmnc" "c9cfab9734b4" "kab")
-   ("0lmwsq72vk424nlrgnq46apdbgivzrmx303rvng8h03wrp9qjz1m" "4797db4a0fcb" "kk")
-   ("0al453bmiq85kkkfaba11iwnx0dy9f3dl9hlz0j38ysgcipwap5l" "f312da458d8b" "km")
-   ("1rjf875nwcqnlbfgk92vpa8msy3vp2xcgfasj7kksr37rxcbwa8m" "a30ac878de56" "kn")
-   ("0v5a1v0a6xziwhspfqpdccl00h0b4j4k4vwmmijld44cdmj208v9" "6f5e9c8eb029" "ko")
-   ("0kx0hz0dp9bdgf0r0m9qsip2ybrc4dwmry3kp488z2pig0asai7x" "dcdf4bf4482b" "lij")
-   ("1iawv3hbl0wab1xzhhihxiqsz2i6icf64ipmjrpm9srlg6kaxgg5" "913770b70ead" "lt")
-   ("15ppml5b0f78ycdswff0yqr27d649fr2rggv5dnxqxxm2bx5hzw6" "6351f7efe4d7" "lv")
-   ("0crbysr0raqh90ayb5rq73d3cddfryfaj4bdbzijk2j2rpdlwv1m" "6acffb2c66ee" "mk")
-   ("0b5dw5a904w5ibd7yz1839a0cv2hmnlv2bz0kpsr6xf52jv20g6a" "942eca4c76b6" "mr")
-   ("0fr83kiq7xmw1kyrjrmm3iirlfcp94dyacdkkj9df6gr5qp6wn7i" "de00ab4bb6fe" "ms")
-   ("011y1yyl97avjawja3gmwwa74kxcvm2g2wn47yv01xqy74wbbss7" "2ce7138cd126" "my")
-   ("0f6ffh76g31df9kfj6azip2qy0b14s287isgm7sxnclch4jwq83s" "5cc51d238790" "nb-NO")
-   ("193nw6l0z7vlcd7flb72bc8h7vd9vjj8xlz5lhf7irmfr2bldj0r" "db205a4fd15a" "ne-NP")
-   ("14qizkrcs1avd78ci4i4hr7v3bz3m51if1jc5wxydkx9n0yb8cgn" "1abc02acab91" "nl")
-   ("1cjglsaf8ynm4wgzpbcf68gj8jhvnzldrnjlni4c4vvl0bfxnxa2" "b4ff1a7885c2" "nn-NO")
-   ("0jpdq7zpqs3gnyzz1xvccvjqbzwga35sj85z52vprm6zcxd8gm0m" "1c7d5471dba9" "oc")
-   ("14apl3vhxkqcy8l5a0ny71f9dkmbb5fakvkpngqv5xgbbl0byfk3" "cf3fd8eb605b" "pa-IN")
-   ("1aglsx0w3xgbn1dhdbzwcqn8sdkp4bncl5bj7nlick56rbkicj9j" "3c9c3c67830a" "pl")
-   ("10hqfd0fjbcbgdsj0jxdfvm9abiya05lw2bpy0cz6h61mgjywqiz" "68bf2b7c6f25" "pt-BR")
-   ("1vvs0kkvnnnsxn1d5fnma55fizzs1bbx5sv5k2w4164k6h7fhxfv" "fae18b48519f" "pt-PT")
-   ("0c8dl12n5fjdd3bjaf8idyaxsf8ppbma132vdw8bk2wqnh4cv69a" "92110fd6e211" "rm")
-   ("0mxxy56kj0k5jhjxjv8v4zz57pha819mz7j803lcilax7w52wgca" "5eeba1f64743" "ro")
-   ("0jrd95n108r4sxdwgy39zjynm5nlzzmiijsfpxxfwj7886wl4faz" "47131134e349" "ru")
-   ("1lwm5jv3hvjp84a70186x2083nhr3mfcl7kpmw5in9amaflfi41b" "a5cd6d3d67ee" "sat")
-   ("1q6pn3iixzcas9blf61bhvwgppbsh0am0wdz6a6p9f9978894d73" "880b7986692a" "sc")
-   ("0xndsph4v725q3xcpmxxjb9vxv19sssqnng82m9215cdsv9klgpb" "bf5f6e362f6f" "sco")
-   ("0l70n8817mbmbc09fsnn2aqjj9k9dhad2gmzgphmiilf9mqm2dpf" "1f705c926a99" "si")
-   ("19bqjazazww08chd1qc08dsnr2521088jq5jd4j3185yb1ypm3nr" "c1bd10d70325" "sk")
-   ("12q1nv6z4bk8yaw3vhl9xs41i7kpx1415mwg635v76fx8h94ycl3" "00eaf8d9e83b" "skr")
-   ("11nmjmy2j249588ahg4mh9lxdqr476jbh28a07qxxibfa76j9vk3" "44be3cbf69b6" "sl")
-   ("1ww35141nixg2s03kfmmq9fk6m3qiz2vg7p5a85shjp7i89pyj1d" "800576ff8ef9" "son")
-   ("1q7nfybwc8mxdwi9fpvfhayq18mykzygkpakr5ngfz2316k8lf5r" "4de8638ac27f" "sq")
-   ("06wr7zx6kvaxsly5f3ci7kb2zaqlwjjbg1vrimp0jcqs4l5x6wpl" "ec560d96370c" "sr")
-   ("01n1ly9lihnznrab3kcby2i93k0qwg99c9fh55xpi90vkyq77gmq" "c5754f9325a1" "sv-SE")
-   ("09kk9bj2139j34md26zysaaf8cqyh5nmf861vxnc2vdsd37nr4x4" "c3fa195a8edf" "szl")
-   ("1vpr88vj9n7pm87dynyqyyiv1v2igd3w0f3a65g8rirknh3wfw44" "755763981e95" "ta")
-   ("19qwvi642fpg7zyhlcj9fgnm0bbkvqby6apr7iijayammg2vnyx3" "3a34078388af" "te")
-   ("1lh3m1d8rblas50g990qwcr2qv2nk5m6isjvi0gr57zhc4l9a4lw" "24c3a61f463c" "tg")
-   ("0sr0wa886a5gwrgn7rmn08sn6qz4p58037wx9gskacclhrzs53aw" "6dad5f8774df" "th")
-   ("19cvf42lmi9996mxlmplpk1b65p1fh4ja36xprs115z2n1iky9y5" "befaa7917b35" "tl")
-   ("04p50pd380hdalizz09qix7camipazkjyyi97f3sl04h6i67vz17" "66c8bc5e9da6" "tr")
-   ("0lqbaxkdvi8hjns8myssmv6bxymh53glf0w2nfpj72zh40rr1n09" "9e86caeded11" "trs")
-   ("13qmsji7gyad0d23ac7lx4181zhm3kb9xym82z786f7k271jq7kl" "bd5e0aad5f0b" "uk")
-   ("0m52xl2vy0paj5kcfk8jy70hhck5bgdg8lb6cvjqm2mhl5sli0ka" "040d506ed663" "ur")
-   ("1n0gdgjwwwd5yd69ylr05hskjxasydnkqw33rncpx7491x3nf4kf" "7e4e5290c700" "uz")
-   ("140lnl9dq82azlw1qic386h4z0xbilcf3jvjy93qid67mvnmwqqm" "b8196f646583" "vi")
-   ("07yc91645aiks3fxzx16kw4kzvksyrj36n9iz59wn9wppzlampx6" "ef98e07b4b9e" "xh")
-   ("1c1sfaincridbdp66bzgwgxgp5gqpvzkf10m9yafm9bgkif18vwy" "f614d8a31562" "zh-CN")
-   ("0s9chi76476gznrxjcn6slhgsznjnaps0h29kck6ijb0x3yx98xi" "ab22459ceb2f" "zh-TW")))
-
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
-
-(define %icecat-115-base-version "115.24.0")
-(define %icecat-115-version (string-append %icecat-115-base-version "-guix1"))
-(define %icecat-115-build-id "20250527000000") ;must be of the form YYYYMMDDhhmmss
-
-(define icecat-115-source
-  (let* ((major-version (first  (string-split %icecat-115-base-version #\.)))
-         (minor-version (second (string-split %icecat-115-base-version #\.)))
-         (sub-version   (third  (string-split %icecat-115-base-version #\.)))
-
-         (upstream-firefox-version (string-append %icecat-115-base-version "esr"))
-         (upstream-firefox-source
-          (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://ftp.mozilla.org/pub/firefox/releases/"
-                  upstream-firefox-version "/source/"
-                  "firefox-" upstream-firefox-version ".source.tar.xz"))
-            (sha256
-             (base32
-              "00229s39xidjzf7afpkyai9jz6ffqqcghn2wniraxyqa2rc5mfc1"))))
-
-         ;; The upstream-icecat-base-version may be older than the
-         ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.24.0")
-         (gnuzilla-commit "b1da0f01591182b43e179451ce2484d0fee88dd8")
-         (gnuzilla-source
-          (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url "git://git.savannah.gnu.org/gnuzilla.git")
-                  (commit gnuzilla-commit)))
-            (file-name (git-file-name "gnuzilla"
-                                      ;;upstream-icecat-base-version
-                                      (string-take gnuzilla-commit 8)))
-            (sha256
-             (base32
-              "1nrswd5g75wq8z997dilh2mxd0ssjrp1kp7v7l6x2gqmfiwa8r7h"))))
-
-         ;; 'search-patch' returns either a valid file name or #f, so wrap it
-         ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
-         (makeicecat-patch
-          (local-file (assume-valid-file-name
-                       (search-patch "icecat-makeicecat.patch")))))
-
-    (origin
-      (method computed-origin-method)
-      (file-name (string-append "icecat-" %icecat-115-version ".tar.xz"))
-      (sha256 #f)
-      (uri
-       (delay
-        (with-imported-modules '((guix build utils))
-          #~(begin
-              (use-modules (guix build utils))
-              (let ((firefox-dir
-                     (string-append "firefox-" #$%icecat-115-base-version))
-                    (icecat-dir
-                     (string-append "icecat-" #$%icecat-115-version)))
-
-                (set-path-environment-variable
-                 "PATH" '("bin")
-                 (list #+python
-                       #+(canonical-package bash)
-                       #+(canonical-package coreutils)
-                       #+(canonical-package findutils)
-                       #+(canonical-package patch)
-                       #+(canonical-package xz)
-                       #+(canonical-package sed)
-                       #+(canonical-package grep)
-                       #+(canonical-package bzip2)
-                       #+(canonical-package gzip)
-                       #+(canonical-package tar)))
-
-                (set-path-environment-variable
-                 "PYTHONPATH"
-                 (list #+(format #f "lib/python~a/site-packages"
-                                 (version-major+minor
-                                  (package-version python))))
-                 '#+(cons python-jsonschema
-                          (map second
-                               (package-transitive-propagated-inputs
-                                python-jsonschema))))
-
-                ;; We copy the gnuzilla source directory because it is
-                ;; read-only in 'gnuzilla-source', and the makeicecat script
-                ;; uses "cp -a" to copy parts of it and assumes that the
-                ;; copies will be writable.
-                (copy-recursively #+gnuzilla-source "/tmp/gnuzilla"
-                                  #:log (%make-void-port "w"))
-
-                (with-directory-excursion "/tmp/gnuzilla"
-                  (make-file-writable "makeicecat")
-                  (invoke "patch" "--force" "--no-backup-if-mismatch"
-                          "-p1" "--input" #+makeicecat-patch)
-                  (patch-shebang "makeicecat")
-                  (substitute* "makeicecat"
-                    (("^readonly FFMAJOR=(.*)" all ffmajor)
-                     (unless (string=? #$major-version
-                                       (string-trim-both ffmajor))
-                       ;; The makeicecat script cannot be expected to work
-                       ;; properly on a different version of Firefox, even if
-                       ;; no errors occur during execution.
-                       (error "makeicecat major version mismatch"))
-                     (string-append "readonly FFMAJOR=" #$major-version "\n"))
-                    (("^readonly FFMINOR=.*")
-                     (string-append "readonly FFMINOR=" #$minor-version "\n"))
-                    (("^readonly FFSUB=.*")
-                     (string-append "readonly FFSUB=" #$sub-version "\n"))
-                    (("^readonly DATADIR=.*")
-                     "readonly DATADIR=/tmp/gnuzilla/data\n")
-                    (("^readonly SOURCEDIR=.*")
-                     (string-append "readonly SOURCEDIR=" icecat-dir "\n"))
-                    (("/bin/sed")
-                     #+(file-append (canonical-package sed) "/bin/sed"))))
-
-                (format #t "Unpacking upstream firefox tarball...~%")
-                (force-output)
-                (invoke "tar" "xf" #+upstream-firefox-source)
-                (rename-file firefox-dir icecat-dir)
-
-                (with-directory-excursion icecat-dir
-                  (format #t "Populating l10n directory...~%")
-                  (force-output)
-                  (mkdir "l10n")
-                  (with-directory-excursion "l10n"
-                    (for-each
-                     (lambda (locale-dir)
-                       (let ((locale
-                              (string-drop (basename locale-dir)
-                                           (+ 32  ; length of hash
-                                              (string-length "-mozilla-locale-")))))
-                         (format #t "  ~a~%" locale)
-                         (force-output)
-                         (copy-recursively locale-dir locale
-                                           #:log (%make-void-port "w"))
-                         (for-each make-file-writable (find-files locale))
-                         (with-directory-excursion locale
-                           (when (file-exists? ".hgtags")
-                             (delete-file ".hgtags"))
-                           (mkdir-p "browser/chrome/browser/preferences")
-                           (call-with-output-file
-                               "browser/chrome/browser/preferences/advanced-scripts.dtd"
-                             (lambda (port) #f)))))
-                     '#+all-mozilla-115-locales)
-                    (copy-recursively #+mozilla-115-compare-locales
-                                      "compare-locales"
-                                      #:log (%make-void-port "w"))
-                    (delete-file "compare-locales/.gitignore")
-                    (delete-file "compare-locales/.hgignore")
-                    (delete-file "compare-locales/.hgtags")))
-
-                (format #t "Running makeicecat script...~%")
-                (force-output)
-                (invoke "bash" "/tmp/gnuzilla/makeicecat")
-
-                (format #t "Packing IceCat source tarball...~%")
-                (force-output)
-                (setenv "XZ_DEFAULTS" (string-join (%xz-parallel-args)))
-                (invoke "tar" "cfa" #$output
-                        ;; Avoid non-determinism in the archive.  We set the
-                        ;; mtime of files in the archive to early 1980 because
-                        ;; the build process fails if the mtime of source
-                        ;; files is pre-1980, due to the creation of zip
-                        ;; archives.
-                        "--mtime=@315619200" ; 1980-01-02 UTC
-                        "--owner=root:0"
-                        "--group=root:0"
-                        "--sort=name"
-                        icecat-dir)))))))))
 
 (define mozilla-compare-locales
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/mozilla/compare-locales")
-          (commit "RELEASE_9_0_4")))
+          (commit "RELEASE_9_0_4")))    ;use the latest release
     (file-name "mozilla-compare-locales")
     (sha256 (base32 "13qn983j0pgs2550fgd5gvnl4lq6ywqjvgbyx850jwg79w8b0ifz"))))
 
@@ -703,25 +390,145 @@ variable defined below.  It requires guile-json to be installed."
   (origin
     (method git-fetch)
     (uri (git-reference
-          (url "https://github.com/mozilla-l10n/firefox-l10n")
-          (commit "fcd0300e8478d1ec4d1c097a073ddb8e1e0351e3")))
+           (url "https://github.com/mozilla-l10n/firefox-l10n")
+           ;; Use the revision specified in the
+           ;; browser/locales/l10n-changesets.json file of the used firefox
+           ;; source (all the languages normally use the same revision).
+          (commit "64046fdc97c1b1886a479dead61e6dc5428ae6e6")))
     (file-name "mozilla-l10n")
-    (sha256 (base32 "1pzw65852ix6a6qb3wwhg5vrkz8337cs6lznk2vj0md5cvf2rrc4"))))
+    (sha256 (base32 "1rvk1m8bjnk9x61663s7bhgax6ig37v9m1d64g89fk1qwsk3djhh"))))
 
+(define (format-locales all-locales-file)
+  "Format a Scheme list of all the locales string found in ALL-LOCALES-FILE.
+In the case of Thunderbird, that file is comm/mail/locales/all-locales, while
+in the case of Firefox, it is browser/locales/all-locales."
+  (pretty-print (string-split
+                 (string-trim-right
+                  (call-with-input-file all-locales-file
+                    get-string-all))
+                 #\newline)))
+
+;;; To regenerate, use the above `format-locales' procedure.
 (define %icecat-locales
-  '("ach" "af" "an" "ar" "ast" "az" "be" "bg" "bn" "br" "bs" "ca" "cak"
-    "ca-valencia" "cs" "cy" "da" "de" "dsb" "el" "en-CA" "en-GB" "eo"
-    "es-AR" "es-CL" "es-ES" "es-MX" "et" "eu" "fa" "ff" "fi" "fr" "fur"
-    "fy-NL" "ga-IE" "gd" "gl" "gn" "gu-IN" "he" "hi-IN" "hr" "hsb" "hu"
-    "hy-AM" "ia" "id" "is" "it" "ja" "ja-JP-mac" "ka" "kab" "kk" "km"
-    "kn" "ko" "lij" "lt" "lv" "mk" "mr" "ms" "my" "nb-NO" "ne-NP" "nl"
-    "nn-NO" "oc" "pa-IN" "pl" "pt-BR" "pt-PT" "rm" "ro" "ru" "sat" "sc"
-    "sco" "si" "sk" "skr" "sl" "son" "sq" "sr" "sv-SE" "szl" "ta" "te"
-    "tg" "th" "tl" "tr" "trs" "uk" "ur" "uz" "vi" "xh" "zh-CN" "zh-TW"))
+  '("ach"
+    "af"
+    "an"
+    "ar"
+    "ast"
+    "az"
+    "be"
+    "bg"
+    "bn"
+    "bo"
+    "br"
+    "brx"
+    "bs"
+    "ca"
+    "ca-valencia"
+    "cak"
+    "ckb"
+    "cs"
+    "cy"
+    "da"
+    "de"
+    "dsb"
+    "el"
+    "en-CA"
+    "en-GB"
+    "eo"
+    "es-AR"
+    "es-CL"
+    "es-ES"
+    "es-MX"
+    "et"
+    "eu"
+    "fa"
+    "ff"
+    "fi"
+    "fr"
+    "fur"
+    "fy-NL"
+    "ga-IE"
+    "gd"
+    "gl"
+    "gn"
+    "gu-IN"
+    "he"
+    "hi-IN"
+    "hr"
+    "hsb"
+    "hu"
+    "hy-AM"
+    "hye"
+    "ia"
+    "id"
+    "is"
+    "it"
+    "ja"
+    "ja-JP-mac"
+    "ka"
+    "kab"
+    "kk"
+    "km"
+    "kn"
+    "ko"
+    "lij"
+    "lo"
+    "lt"
+    "ltg"
+    "lv"
+    "meh"
+    "mk"
+    "ml"
+    "mr"
+    "ms"
+    "my"
+    "nb-NO"
+    "ne-NP"
+    "nl"
+    "nn-NO"
+    "oc"
+    "pa-IN"
+    "pl"
+    "pt-BR"
+    "pt-PT"
+    "rm"
+    "ro"
+    "ru"
+    "sat"
+    "sc"
+    "scn"
+    "sco"
+    "si"
+    "sk"
+    "skr"
+    "sl"
+    "son"
+    "sq"
+    "sr"
+    "sv-SE"
+    "szl"
+    "ta"
+    "te"
+    "tg"
+    "th"
+    "tl"
+    "tr"
+    "trs"
+    "uk"
+    "ur"
+    "uz"
+    "vi"
+    "wo"
+    "xh"
+    "zh-CN"
+    "zh-TW"))
 
-(define %icecat-base-version "128.14.0")
+(define %icecat-base-version (package-version mozjs))
+;;; See <https://product-details.mozilla.org/1.0/firefox_versions.json>
+;;; for the source of truth regarding Firefox releases.
 (define %icecat-version (string-append %icecat-base-version "-gnu1"))
-(define %icecat-build-id "20250819000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20250916000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -732,18 +539,9 @@ variable defined below.  It requires guile-json to be installed."
          (sub-version   (third  (string-split %icecat-base-version #\.)))
 
          (upstream-firefox-version (string-append %icecat-base-version "esr"))
-         (upstream-firefox-source
-          (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://ftp.mozilla.org/pub/firefox/releases/"
-                  upstream-firefox-version "/source/"
-                  "firefox-" upstream-firefox-version ".source.tar.xz"))
-            (sha256
-             (base32
-              "0lwsn1y988naxs9031sbzsh9b0x7c6zmpf89y4pv477l55ifzfck"))))
+         (upstream-firefox-source (package-source mozjs))
 
-         (gnuzilla-commit "ba161be3de71bb556be951ac4dbb81c807f68770")
+         (gnuzilla-commit "c939d76c33294791cce8ce1722bd6747dadbe31f")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -754,7 +552,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0gcpwxjz407lgjg8p3mgaij10xy1p6j3sbij46mi8h18d4q1iagg"))))
+              "03ly055r77fprm53474998hyjhb1a78spyxjs7998npyqzv3fscs"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -764,7 +562,7 @@ variable defined below.  It requires guile-json to be installed."
 
     (origin
       (method computed-origin-method)
-      (file-name (string-append "icecat-" %icecat-version ".tar.xz"))
+      (file-name (string-append "icecat-" %icecat-version ".tar.zst"))
       (sha256 #f)
       (uri
        (delay
@@ -784,6 +582,7 @@ variable defined below.  It requires guile-json to be installed."
                        #+(canonical-package findutils)
                        #+(canonical-package patch)
                        #+(canonical-package xz)
+                       #+(canonical-package zstd)
                        #+(canonical-package sed)
                        #+(canonical-package grep)
                        #+(canonical-package bzip2)
@@ -844,27 +643,23 @@ variable defined below.  It requires guile-json to be installed."
                   (with-directory-excursion "l10n"
                     (for-each
                      (lambda (locale)
-                       (let ((locale-dir
-                              (string-append #+mozilla-l10n "/" locale)))
+                       (let ((locale-dir (string-append #+mozilla-l10n "/"
+                                                        locale)))
                          (format #t "  ~a~%" locale)
                          (force-output)
                          (copy-recursively locale-dir locale
                                            #:log (%make-void-port "w"))
                          (for-each make-file-writable (find-files locale))
                          (with-directory-excursion locale
-                           (when (file-exists? ".hgtags")
-                             (delete-file ".hgtags"))
                            (mkdir-p "browser/chrome/browser/preferences")
-                           (call-with-output-file
-                               "browser/chrome/browser/preferences/advanced-scripts.dtd"
+                           (call-with-output-file "browser/chrome/browser/\
+preferences/advanced-scripts.dtd"
                              (lambda (port) #f)))))
                      '#+%icecat-locales)
                     (copy-recursively #+mozilla-compare-locales
                                       "compare-locales"
                                       #:log (%make-void-port "w"))
-                    (delete-file "compare-locales/.gitignore")
-                    (delete-file "compare-locales/.hgignore")
-                    (delete-file "compare-locales/.hgtags")))
+                    (delete-file "compare-locales/.gitignore")))
 
                 (format #t "Running makeicecat script...~%")
                 (force-output)
@@ -872,7 +667,7 @@ variable defined below.  It requires guile-json to be installed."
 
                 (format #t "Packing IceCat source tarball...~%")
                 (force-output)
-                (setenv "XZ_DEFAULTS" (string-join (%xz-parallel-args)))
+                (setenv "ZSTD_NBTHREADS" (number->string (parallel-job-count)))
                 (invoke "tar" "cfa" #$output
                         ;; Avoid non-determinism in the archive.  We set the
                         ;; mtime of files in the archive to early 1980 because
@@ -909,7 +704,7 @@ variable defined below.  It requires guile-json to be installed."
            libcanberra
            libgnome
            libjpeg-turbo
-           libpng-apng
+           libpng-apng-next
            ;; UNBUNDLE-ME! libogg
            ;; UNBUNDLE-ME! libtheora ; wants theora-1.2, not yet released
            ;; UNBUNDLE-ME! libvorbis
@@ -922,7 +717,7 @@ variable defined below.  It requires guile-json to be installed."
            libffi
            ffmpeg
            libvpx
-           icu4c
+           icu4c-77
            pixman
            pulseaudio
            mesa
@@ -974,6 +769,7 @@ variable defined below.  It requires guile-json to be installed."
 
       #:configure-flags
       #~(list
+         "--disable-fhs"
          "--enable-application=browser"
          "--with-distribution-id=org.gnu"
          "--enable-geckodriver"
@@ -1010,8 +806,6 @@ variable defined below.  It requires guile-json to be installed."
          (string-append "--with-libclang-path="
                         (dirname (search-input-file %build-inputs
                                                     "lib/libclang.so")))
-
-         "--enable-official-branding"
 
          ;; TODO: Add support for wasm sandboxed libraries.
          "--without-wasm-sandboxed-libraries"
@@ -1058,7 +852,9 @@ variable defined below.  It requires guile-json to be installed."
                '(#$(local-file
                     (search-patch "icecat-compare-paths.patch"))
                  #$(local-file
-                    (search-patch "icecat-use-system-wide-dir.patch"))))))
+                    (search-patch "icecat-use-system-wide-dir.patch"))
+                 #$(local-file
+                    (search-patch "icecat-fhs-configure-option.patch"))))))
           (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
             (lambda _
               ;; Remove bundled libraries that we don't use, since they may
@@ -1176,7 +972,9 @@ variable defined below.  It requires guile-json to be installed."
               ;; complain that it's not able to change Cargo.lock.
               ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1726373
               (substitute* "build/RunCbindgen.py"
-                (("args.append\\(\"--frozen\"\\)") "pass"))))
+                (("args.append\\(\"--frozen\"\\)") "pass"))
+              (substitute* "config/makefiles/rust.mk"
+                (("cargo_build_flags \\+= --frozen") ""))))
           (delete 'bootstrap)
           (replace 'configure
             ;; configure does not work followed by both "SHELL=..." and
@@ -1255,7 +1053,28 @@ variable defined below.  It requires guile-json to be installed."
               ;; reason.  Use 'find-files' to avoid having to deal with the
               ;; system/architecture-specific file name.
               (install-file (first (find-files "." "geckodriver"))
-                            (string-append #$output "/bin"))))
+                            (string-append #$output "/bin"))
+              ;; Install a policies.json file as an extra step to ensure
+              ;; IceCat does not call home.  The available policies can be
+              ;; found at <https://mozilla.github.io/policy-templates/>.
+
+              ;; TODO: Disable remote settings feature when it becomes
+              ;; possible to do so (see:
+              ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1988070>).
+              (let ((policies.json (string-append
+                                    #$output
+                                    "/lib/icecat/distribution/policies.json")))
+                (mkdir-p (dirname policies.json))
+                (call-with-output-file policies.json
+                  (lambda (p)
+                    (format p "\
+{
+  \"policies\": {
+    \"DisableFirefoxAccounts\": true,
+    \"DisableTelemetry\": true,
+    \"DisablePocket\": true
+  }
+}~%"))))))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((lib (string-append #$output "/lib"))
@@ -1287,20 +1106,24 @@ variable defined below.  It requires guile-json to be installed."
           (add-after 'wrap-program 'install-desktop-entry
             (lambda _
               ;; Install the '.desktop' file.
-              (let* ((desktop-file "taskcluster/docker/icecat-snap/icecat.desktop")
+              (let* ((desktop-file (string-append "toolkit/mozapps/installer"
+                                                  "/linux/rpm/mozilla.desktop"))
                      (applications (string-append #$output "/share/applications")))
                 (substitute* desktop-file
-                  (("^Exec=icecat")     (string-append "Exec=" #$output "/bin/icecat"))
-                  (("IceCat")           "GNU IceCat")
-                  (("Icon=.*")          "Icon=icecat\n")
-                  (("NewWindow")        "new-window")
-                  (("NewPrivateWindow") "new-private-window")
-                  (("StartupNotify=true")
-                   "StartupNotify=true\nStartupWMClass=Icecat"))
-                (install-file desktop-file applications))))
+                  (("@MOZ_APP_NAME@")
+                   "icecat")
+                  (("^Exec=icecat")
+                   (string-append "Exec=" #$output "/bin/icecat"))
+                  (("@MOZ_APP_DISPLAYNAME@")
+                   "GNU IceCat")
+                  (("@MOZ_APP_REMOTINGNAME@")
+                   "Icecat"))
+                (mkdir-p applications)
+                (copy-file desktop-file
+                           (string-append applications "/icecat.desktop")))))
           (add-after 'install-desktop-entry 'install-icons
             (lambda _
-              (with-directory-excursion "browser/branding/official"
+              (with-directory-excursion "browser/branding/unofficial"
                 (for-each
                  (lambda (file)
                    (let* ((size (string-filter char-numeric? file))
@@ -1309,13 +1132,13 @@ variable defined below.  It requires guile-json to be installed."
                      (mkdir-p icons)
                      (copy-file file (string-append icons "/icecat.png"))))
                  '("default16.png" "default22.png" "default24.png"
-                   "default32.png" "default48.png" "content/icon64.png"
-                   "mozicon128.png" "default256.png"))))))))
+                   "default32.png" "default48.png" "default256.png"
+                   "content/icon64.png" "mozicon128.png" ))))))))
     (native-search-paths
      (list (search-path-specification
-            (variable "ICECAT_SYSTEM_DIR")
-            (separator #f)              ;single entry
-            (files '("lib/icecat")))))
+             (variable "MOZILLA_SYSTEM_DIR")
+             (separator #f)             ;single entry
+             (files '("lib/icecat")))))
     (home-page "https://www.gnu.org/software/gnuzilla/")
     (synopsis "Entirely free browser derived from Mozilla Firefox")
     (description
@@ -1330,57 +1153,117 @@ testing.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
-(define %icedove-build-id "20241119000000") ;must be of the form YYYYMMDDhhmmss
-(define %icedove-version "115.16.3")
+(define %icedove-build-id "20250916000000") ;must be of the form YYYYMMDDhhmmss
+;;; See <https://produt-details.mozilla.org/1.0/thunderbird_versions.json>
+;;; for the source of truth regarding Thunderbird releases.
+(define %icedove-version "140.3.0")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
-;; Avoids the duplication of Icecat's source tarball.
+;; Avoids the duplication of Icecat's source tarball.  Pick the changeset that
+;; matches the most recent tag of the form 'THUNDERBIRD_140_2_0esr_RELEASE'.
 (define thunderbird-comm-source
   (origin
     (method hg-fetch)
     (uri (hg-reference
-          (url "https://hg.mozilla.org/releases/comm-esr115")
-          (changeset "8ab43355c97d91f5adaae732fb8c9f5ca210fe8b")))
+          (url "https://hg.mozilla.org/releases/comm-esr140")
+          (changeset "0a019f4060541a15af8be50c4d923aebe6b9ccb2")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "1fax5sdc087ly62fh2g4yvi7v80vrhn94hpzdr98a4m3psdgglh0"))))
+      "00m2xzb1mvyllg31yrz7kw0m89c28b55cdd486mbk0k6xwv2gm8m"))
+    (patches (search-patches "icedove-observer-fix.patch"))))
 
-(define (comm-source->locales+changeset source)
-  "Given SOURCE, a checkout of the Thunderbird 'comm' component, return the
-list of languages supported as well as the currently used changeset."
-  (match (update-mozilla-115-locales
-          (string-append source "/mail/locales/l10n-changesets.json"))
-    (((_ changeset locale) ...)
-     (values locale (first changeset)))))
-
-;;; Generated with comm-source->locales+changeset.
+;;; To regenerate, see the `format-locales' helper defined above.
 (define %icedove-locales
-  '("af" "ar" "ast" "be" "bg" "br" "ca" "cak" "cs" "cy" "da" "de" "dsb" "el"
-    "en-CA" "en-GB" "es-AR" "es-ES" "es-MX" "et" "eu" "fi" "fr" "fy-NL" "ga-IE"
-    "gd" "gl" "he" "hr" "hsb" "hu" "hy-AM" "id" "is" "it" "ja" "ja-JP-mac" "ka"
-    "kab" "kk" "ko" "lt" "lv" "ms" "nb-NO" "nl" "nn-NO" "pa-IN" "pl" "pt-BR"
-    "pt-PT" "rm" "ro" "ru" "sk" "sl" "sq" "sr" "sv-SE" "th" "tr" "uk" "uz" "vi"
-    "zh-CN" "zh-TW"))
+  '("af"
+    "ar"
+    "ast"
+    "be"
+    "bg"
+    "br"
+    "ca"
+    "cak"
+    "cs"
+    "cy"
+    "da"
+    "de"
+    "dsb"
+    "el"
+    "en-CA"
+    "en-GB"
+    "es-AR"
+    "es-ES"
+    "es-MX"
+    "et"
+    "eu"
+    "fi"
+    "fr"
+    "fy-NL"
+    "ga-IE"
+    "gd"
+    "gl"
+    "he"
+    "hr"
+    "hsb"
+    "hu"
+    "hy-AM"
+    "id"
+    "is"
+    "it"
+    "ja"
+    "ja-JP-mac"
+    "ka"
+    "kab"
+    "kk"
+    "ko"
+    "lt"
+    "lv"
+    "mk"
+    "ms"
+    "nb-NO"
+    "nl"
+    "nn-NO"
+    "pa-IN"
+    "pl"
+    "pt-BR"
+    "pt-PT"
+    "rm"
+    "ro"
+    "ru"
+    "sk"
+    "sl"
+    "sq"
+    "sr"
+    "sv-SE"
+    "th"
+    "tr"
+    "uk"
+    "uz"
+    "vi"
+    "zh-CN"
+    "zh-TW"))
 
 (define thunderbird-comm-l10n
-  (origin
-    (method url-fetch)
-    (uri (string-append
-          "https://ftp.mozilla.org/pub/thunderbird/releases/"
-          %icedove-version
-          "/source/thunderbird-"
-          %icedove-version
-          ".strings_all.tar.zst"))
-    (sha256
-     (base32
-      "1nnvnfhbb7174898i62a9sy1zxc5qw3nhmf9agy1p6jvldn5nb8z"))))
+  ;; The commit to use can be found in the mail/locales/l10n-changesets.json
+  ;; file in Thunderbird's source.
+  (let* ((commit "b6fd3d6c75ba35d91fe131a654df76ca86f35ac5")
+         (revision "0")
+         (version (git-version %icedove-version revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/thunderbird/thunderbird-l10n")
+             (commit commit)))
+      (file-name (git-file-name "thunderbird-l10n" version))
+      (sha256
+       (base32
+        "0n4df6kv70a6mxxsqwc83nhj8vl7acv9bcbf07nkcsjjxh3szvqc")))))
 
 (define icedove-source
   (let ((name (string-append "icedove-" %icedove-version)))
     (origin
       (method computed-origin-method)
-      (file-name (string-append name ".tar.xz"))
+      (file-name (string-append name ".tar.zst"))
       (sha256 #f)
       (uri
        (delay
@@ -1392,32 +1275,27 @@ list of languages supported as well as the currently used changeset."
                (set-path-environment-variable
                 "PATH" '("bin")
                 (list #+(canonical-package tar)
-                      #+(canonical-package xz)
                       #+(canonical-package zstd)))
 
                ;; Extract the base Icecat tarball, renaming its top-level
                ;; directory.
                (invoke "tar" "--transform" (string-append "s,[^/]*," #$name ",")
-                       "-xf" #$icecat-115-source)
+                       "-xf" #$icecat-source)
                (chdir #$name)
 
-               ;; *Replace* the l10n directory with that of Thunderbird.
-               (delete-file-recursively "l10n")
-               (mkdir "l10n")
-               (invoke "tar" "--extract" "--file" #$thunderbird-comm-l10n
-                       "--strip-components=1" "--directory" "l10n/")
+               ;; Merge the Thunderdbird localization data.
+               (copy-recursively #$thunderbird-comm-l10n "l10n")
 
-               ;; Add the Thunderbird-specific "comm" directory..
+               ;; Add the Thunderbird-specific "comm" directory.
                (mkdir "comm")
                (copy-recursively #$thunderbird-comm-source "comm")
+               (for-each make-file-writable (find-files "comm"))
                (delete-file "sourcestamp.txt")
 
                ;; Adjust the application name.
-               (substitute* "comm/mail/confvars.sh"
-                 (("MOZ_APP_NAME=thunderbird")
-                  "MOZ_APP_NAME=icedove")
-                 (("MOZ_UPDATER=1")
-                  "MOZ_UPDATER=0"))
+               (substitute* "comm/mail/moz.configure"
+                 (("\"MOZ_APP_NAME\", \"thunderbird\"")
+                  "\"MOZ_APP_NAME\", \"icedove\""))
 
                ;; Remove branding to comply with Mozilla's trademark policy
                (with-directory-excursion "comm/mail/branding/nightly"
@@ -1445,7 +1323,7 @@ list of languages supported as well as the currently used changeset."
                  (substitute* '("overrides/app-license-name.html")
                    (("Thunderbird") "Icedove")))
                (with-directory-excursion "comm/mail/components/"
-                 (substitute* '("MailGlue.jsm"
+                 (substitute* '("MailGlue.sys.mjs"
                                 "extensions/schemas/addressBook.json"
                                 "extensions/schemas/tabs.json"
                                 "extensions/schemas/cloudFile.json"
@@ -1457,7 +1335,8 @@ list of languages supported as well as the currently used changeset."
                                 "enterprisepolicies/helpers/moz.build"
                                 "enterprisepolicies/schemas/moz.build")
                    (("Thunderbird") "Icedove")))
-               (substitute* '("comm/mailnews/base/prefs/content/accountUtils.js"
+               (substitute* '("devtools/startup/DevToolsStartup.sys.mjs"
+                              "comm/mailnews/base/prefs/content/accountUtils.js"
                               "comm/mail/base/content/customizeToolbar.js"
                               "comm/suite/components/customizeToolbar.js")
                  (("AppConstants.MOZ_APP_NAME (.)= \"thunderbird" _ e)
@@ -1475,6 +1354,8 @@ list of languages supported as well as the currently used changeset."
                   (string-append m ", false);"))
                  (("(pref\\(\"lightweightThemes.update.enabled\").*" _ m)
                   (string-append m ", false);"))
+                 (("(pref\\(\"services.settings.server\").*" _ m)
+                  (string-append m ", \"\");"))
 
                  ;; XXX: The autoDisableScopes is tweaked by the makeicecat
                  ;; script, but it doesn't know about Thunderbird.  This is
@@ -1489,11 +1370,21 @@ list of languages supported as well as the currently used changeset."
                   (string-append anchor
                                  "pref(\"intl.locale.requested\", \"\");\n")))
 
+               ;; Fix more discrepancies caused by the fact that the
+               ;; makeicecat script didn't run on the Thunderbird sources.
+               (substitute* '("Cargo.lock"
+                              "comm/rust/Cargo.lock"
+                              "comm/rust/Cargo.toml"
+                              "gfx/qcms/Cargo.toml"
+                              "toolkit/library/rust/shared/Cargo.toml")
+                 (("IceCatGraphics") "FirefoxGraphics")
+                 (("firefox-on-glean") "icecat-on-glean"))
+
                ;; Step out of the directory and create the tarball.
                (chdir "..")
                (format #t "Packing Icedove source tarball...~%")
                (force-output)
-               (setenv "XZ_DEFAULTS" (string-join (%xz-parallel-args)))
+               (setenv "ZSTD_NBTHREADS" (number->string (parallel-job-count)))
                (invoke "tar" "cfa" #$output
                        "--mtime=@315619200" ;1980-01-02 UTC
                        "--owner=root:0"
@@ -1519,6 +1410,11 @@ list of languages supported as well as the currently used changeset."
                   ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-verify-vendored-rust-dependencies
+            (lambda _
+              (substitute* "comm/python/rocbuild/rocbuild/rust.py"
+                (("result = check_vendored_dependencies\\(topsrcdir)")
+                 "sys.exit(0)"))))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (use-modules (guix build cargo-utils))
@@ -1531,15 +1427,35 @@ ca495991b7852b855"))
                                (string-append "checksum = \"" null-hash "\""))))
                           (find-files "." "Cargo.lock$"))
                 (for-each generate-all-checksums
-                          '("third_party/rust"
-                            "toolkit/library/rust")))))
+                          '("services"
+                            "js"
+                            "third_party/rust"
+                            "dom/media"
+                            "dom/webauthn"
+                            "toolkit"
+                            "gfx"
+                            "storage"
+                            "modules"
+                            "xpcom/rust"
+                            "media"
+                            "mozglue/static/rust"
+                            "netwerk"
+                            "remote"
+                            "intl"
+                            "servo"
+                            "security/manager/ssl"
+                            "build"
+                            ;; Thunderbird-specific.
+                            "comm")))))
           (add-after 'patch-cargo-checksums 'remove-cargo-frozen-flag
             (lambda _
               ;; Remove --frozen flag from cargo invocation, otherwise it'll
               ;; complain that it's not able to change Cargo.lock.
               ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1726373
               (substitute* "build/RunCbindgen.py"
-                (("\"--frozen\",") ""))))
+                (("args.append\\(\"--frozen\"\\)") "pass"))
+              (substitute* "config/makefiles/rust.mk"
+                (("cargo_build_flags \\+= --frozen") ""))))
           ;; Fixes issue where each installation directory generates its own
           ;; profile (see:
           ;; https://trac.torproject.org/projects/tor/ticket/31457).
@@ -1589,8 +1505,6 @@ ca495991b7852b855"))
 
                 (setenv "MOZ_NOSPAM" "1")
                 (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
-                (setenv "PYTHON"
-                        (search-input-file inputs "/bin/python"))
                 (setenv "GUIX_PYTHONPATH"
                         (string-append (getcwd)
                                        "/obj-x86_64-pc-linux-gnu/_virtualenvs/build"))
@@ -1624,6 +1538,7 @@ ca495991b7852b855"))
                       "ac_add_options --enable-optimize\n"
                       "ac_add_options --enable-pulseaudio\n"
                       "ac_add_options --enable-release\n"
+                      "ac_add_options --enable-rust-simd\n"
                       "ac_add_options --enable-strip\n"
                       "ac_add_options --enable-system-ffi\n"
                       "ac_add_options --enable-system-pixman\n"
@@ -1723,16 +1638,15 @@ ca495991b7852b855"))
            cairo
            cups
            dbus-glib
-           ;; Support for FFmpeg 6 was only added in version 112 (see:
-           ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
+           eudev
+           ffmpeg
            freetype
            gdk-pixbuf
            glib
            gpgme
            gtk+
-           gtk+-2
            hunspell
-           icu4c
+           icu4c-77
            libcanberra
            libevent
            libffi
@@ -1740,31 +1654,29 @@ ca495991b7852b855"))
            libjpeg-turbo
            libnotify
            libpng-apng
+           libva
            libvpx
            libxcomposite
            libxft
            libxinerama
            libxscrnsaver
            libxt
-           libva
            mesa
            mit-krb5
            nspr
-           nss
+           nss-rapid
            pango
            pciutils
            pixman
            pulseaudio
            sqlite
            startup-notification
-           eudev
            unzip
            zip
            zlib))
     (native-inputs
-     (list `(,rust "cargo")
-           clang-15
-           llvm-15
+     (list clang-20
+           llvm-20
            m4
            nasm
            node-lts
@@ -1772,7 +1684,8 @@ ca495991b7852b855"))
            pkg-config
            python-wrapper
            rust
-           rust-cbindgen-0.24
+           `(,rust "cargo")
+           rust-cbindgen
            which
            yasm))
     (home-page "https://www.thunderbird.net")
@@ -1833,9 +1746,6 @@ their corresponding VERSION, SOURCE and LOCALES variables."
                         (string-append (getcwd) "/mach_state"))
                 (setenv "MOZCONFIG" (string-append (getcwd) "/.mozconfig"))
                 (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
-                (setenv "GUIX_PYTHONPATH"
-                        (string-append (getcwd)
-                                       "/obj/_virtualenvs/build/lib/python3.11/site-packages"))
                 (setenv "BUILD_BACKENDS" "FasterMake,RecursiveMake")))
             (replace 'build             ;build and install data files
               (lambda* (#:key outputs #:allow-other-keys)
@@ -1844,6 +1754,13 @@ their corresponding VERSION, SOURCE and LOCALES variables."
                     (when (null? files)
                       (error "could not find file in dir" name dir))
                     (car files)))
+
+                ;; Register "tb_common" as a valid site, to please the mach
+                ;; virtualenv machinery (see:
+                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1986420>).
+                (substitute* "python/mach/mach/site.py"
+                  (("\"mach\", \"build\", \"common\"" all)
+                   (string-append all ", \"tb_common\"")))
 
                 (for-each
                  (lambda (l)
@@ -1868,10 +1785,9 @@ their corresponding VERSION, SOURCE and LOCALES variables."
                                               'thunderbird
                                               '#$project))))
                      (format #t "processing locale `~a'...~%" l)
-                     ;; XXX: For some reasons, on version 115, there are some
-                     ;; parsing errors that cause the build system to
-                     ;; return an unclean exit code; use system* to ignore
-                     ;; errors.
+                     ;; TODO: Revert to use 'invoke' here, after
+                     ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1988069>
+                     ;; is fixed.
                      (system* "./mach" "build" (string-append "langpack-" l))
                      (mkdir-p ext-dir)
                      (let ((xpi (find-file "obj" (string-append
@@ -1886,7 +1802,10 @@ their corresponding VERSION, SOURCE and LOCALES variables."
       (native-inputs
        (list m4
              perl
-             python-wrapper
+             python
+             python-aiohttp
+             python-async-timeout
+             python-dateutil
              node-lts
              unzip))
       (home-page "https://www.mozilla.org/")

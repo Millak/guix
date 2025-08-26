@@ -1598,9 +1598,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/icecat-makeicecat.patch			\
   %D%/packages/patches/icecat-avoid-bundled-libraries.patch	\
   %D%/packages/patches/icecat-compare-paths.patch		\
+  %D%/packages/patches/icecat-fhs-configure-option.patch        \
   %D%/packages/patches/icecat-use-system-graphite2+harfbuzz.patch	\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
   %D%/packages/patches/icecat-use-system-wide-dir.patch		\
+  %D%/packages/patches/icedove-observer-fix.patch               \
   %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch	\
   %D%/packages/patches/icedtea-7-hotspot-pointer-comparison.patch	\
   %D%/packages/patches/icu4c-icu-22132-fix-vtimezone.patch	\
