@@ -139,39 +139,37 @@ other applications, i.e., st, uzbl, urxvt and xterm.")
       license:x11))))
 
 (define-public slstatus
-  ;; No release tarballs yet.
-  (let ((commit "84a2f117a32f0796045941260cdc4b69852b41e0")
-        (revision "0"))
-    (package
-      (name "slstatus")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "git://git.suckless.org/slstatus.git")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "063a4fnvsjbc61alnbfdpxy0nwhh9ql9j6s9hkdv12713kv932ds"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:tests? #f                    ;no test suite
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'patch
-                   (lambda* (#:key inputs outputs #:allow-other-keys)
-                     (substitute* "config.mk"
-                       (("/usr/local") #$output)
-                       (("/usr/X11R6") #$(this-package-input "libx11"))
-                       (("CC = cc")
-                        (string-append "CC = " #$(cc-for-target))))))
-                 (delete 'configure))))       ;no configure script
-      (inputs (list libx11))
-      (home-page "https://tools.suckless.org/slstatus/")
-      (synopsis "Status monitor for window managers")
-      (description "SlStatus is a suckless status monitor for window managers
+  (package
+    (name "slstatus")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "git://git.suckless.org/slstatus")
+          (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bxmhvagmlqjyi9ws8i71r0k7fd6fg8286zv2b5zkcjhkayyh41i"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                    ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "config.mk"
+                (("/usr/local") #$output)
+                (("/usr/X11R6") #$(this-package-input "libx11"))
+                (("CC = cc")
+                 (string-append "CC = " #$(cc-for-target))))))
+          (delete 'configure))))       ;no configure script
+    (inputs (list libx11))
+    (home-page "https://tools.suckless.org/slstatus/")
+    (synopsis "Status monitor for window managers")
+    (description "SlStatus is a suckless status monitor for window managers
 that use WM_NAME or stdin to fill the status bar.
 It provides the following features:
 @itemize
@@ -198,7 +196,7 @@ It provides the following features:
 @item Volume percentage
 @item WiFi signal percentage and ESSID
 @end itemize")
-      (license license:isc))))
+    (license license:isc)))
 
 (define-public blind
   (package
