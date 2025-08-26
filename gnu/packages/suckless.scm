@@ -157,18 +157,18 @@ other applications, i.e., st, uzbl, urxvt and xterm.")
           (base32 "063a4fnvsjbc61alnbfdpxy0nwhh9ql9j6s9hkdv12713kv932ds"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ;no test suite
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (substitute* "config.mk"
-                 (("/usr/local") (assoc-ref outputs "out"))
-                 (("/usr/X11R6") (assoc-ref inputs "x11"))
-                 (("CC = cc") (string-append "CC = " ,(cc-for-target))))))
-           (delete 'configure))))       ;no configure script
-      (inputs
-       `(("x11" ,libx11)))
+       (list #:tests? #f                    ;no test suite
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (substitute* "config.mk"
+                       (("/usr/local") #$output)
+                       (("/usr/X11R6") #$(this-package-input "libx11"))
+                       (("CC = cc")
+                        (string-append "CC = " #$(cc-for-target))))))
+                 (delete 'configure))))       ;no configure script
+      (inputs (list libx11))
       (home-page "https://tools.suckless.org/slstatus/")
       (synopsis "Status monitor for window managers")
       (description "SlStatus is a suckless status monitor for window managers
