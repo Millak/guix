@@ -114,7 +114,6 @@ gnu/packages/dictd.scm
 gnu/packages/dictionaries.scm
 gnu/packages/diffoscope.scm
 gnu/packages/digest.scm
-gnu/packages/direct-connect.scm
 gnu/packages/disk.scm
 gnu/packages/display-managers.scm
 gnu/packages/distributed.scm
