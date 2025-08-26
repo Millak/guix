@@ -795,29 +795,31 @@ using different abstraction levels.")
      (list perl python systemc))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda _ (invoke "autoconf")))
-         (add-after 'unpack 'adjust-source
-           (lambda _
-             (substitute* "bin/verilator"
-               (("/bin/echo") "echo"))))
-         (add-before 'check 'disable-gdb-safe-path
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (mkdir-p (string-append (getcwd) "/.config/gdb"))
-             (with-output-to-file (string-append (getcwd) "/.config/gdb/gdbinit")
-               (lambda ()
-                 (display "set auto-load safe-path /"))))))
-       #:test-target "test"))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _ (invoke "autoconf")))
+          (add-after 'unpack 'adjust-source
+            (lambda _
+              (substitute* "bin/verilator"
+                (("/bin/echo") "echo"))))
+          (add-before 'check 'disable-gdb-safe-path
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (mkdir-p (string-append (getcwd) "/.config/gdb"))
+              (with-output-to-file
+                  (string-append (getcwd) "/.config/gdb/gdbinit")
+                (lambda ()
+                  (display "set auto-load safe-path /"))))))
+      #:test-target "test"))
     (home-page "https://www.veripool.org/verilator/")
     (synopsis "Verilog/SystemVerilog simulator")
     (description
-     "Verilator transforms the specified Verilog or SystemVerilog code by reading it,
-performing lint checks, and optionally inserting assertion checks and
-coverage-analysis points.  It outputs single- or multi-threaded @file{.cpp}
-and @file{.h} files.")
+     "Verilator transforms the specified Verilog or SystemVerilog code by
+reading it, performing lint checks, and optionally inserting assertion checks
+and coverage-analysis points.  It outputs single- or multi-threaded
+@file{.cpp} and @file{.h} files.")
     (license license:lgpl3)))
 
 (define-public fftgen
