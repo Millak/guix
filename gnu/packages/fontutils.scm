@@ -12,7 +12,7 @@
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021-2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
