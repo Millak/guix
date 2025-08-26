@@ -850,13 +850,14 @@ environment variable.")
         (base32 "1w2jrscncq1jrg4wnsrr3a00p6h9mvkk3g1qkh1jdw1m747yjsci"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                      ; no tests
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no configure script
     (home-page "https://git.2f30.org/fortify-headers/")
     (synopsis "Standalone fortify-source implementation")
     (description
