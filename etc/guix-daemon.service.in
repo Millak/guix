@@ -24,6 +24,10 @@ BindPaths=@storedir@
 # Disable host file system mount propagation to keep service view of the
 # store read-write after 'gnu-store.mount' makes it read-only system-wide.
 MountFlags=private
+# Mitigate race condition between guix-daemon and 'gnu-store.mount'.
+# Dependent units will only start after daemon binary is started AND THUS
+# the mount point is acquired in a private namespace.
+Type=exec
 
 # Provide the CAP_CHOWN capability so that guix-daemon can create and chown
 # /var/guix/profiles/per-user/$USER and also chown failed build directories
