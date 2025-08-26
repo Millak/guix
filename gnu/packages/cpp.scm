@@ -2421,7 +2421,7 @@ of C++14 components that complements @code{std} and Boost.")
 (define-public poco
   (package
     (name "poco")
-    (version "1.11.1")
+    (version "1.13.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2430,7 +2430,7 @@ of C++14 components that complements @code{std} and Boost.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qkf8vb4qwds6idk9fkw6wjvcdk5k8h77x3gv47l0i4jfl5hwn8b"))))
+                "1b8w3s6j020r356s6j6ijpnvzjdby4qwwndhzhfjc3rm727m085g"))))
     (build-system cmake-build-system)
     (arguments
      (list
