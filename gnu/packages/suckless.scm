@@ -343,14 +343,17 @@ numbers of user-defined menu items efficiently.")
 (define-public slock
   (package
     (name "slock")
-    (version "1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://dl.suckless.org/tools/slock-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0k8fvf9g27yyaqpyhk6apbkq6r4vjwxhff1qb9ignxx2yvxy7qdf"))))
+    (version "1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "git://git.suckless.org/slock/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pzsk13g6irfs7cgsg4h4vv2529nsyrpn04aq5fpvswxh48cp30h"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                      ; no tests
