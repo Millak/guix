@@ -20142,18 +20142,22 @@ in your Org Agenda, and more.")
 (define-public emacs-org-vcard
   (package
     (name "emacs-org-vcard")
-    (version "0.2.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/flexibeast/org-vcard")
+             (url "https://github.com/pinoaffe/org-vcard")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14l3xqahqmnfl3sskqcr33xpcsic8dm9cr9wmbv5la3xv14n10k7"))))
+        (base32 "06w4w3wxsrbv67ssnlpk8sj4jg4qvgc87cyaiin8h9f4az3yivkz"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/flexibeast/org-vcard")
+    (arguments
+     (list #:test-command #~(list "ert-runner" "tests"
+                                  "-l" "tests/org-vcard-tests.el")))
+    (native-inputs (list emacs-ert-runner))
+    (home-page "https://github.com/pinoaffe/org-vcard")
     (synopsis "Org mode support for vCard export and import")
     (description
      "This package exports and imports vCard files from within GNU Emacs' Org
