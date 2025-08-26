@@ -6787,7 +6787,7 @@ palettes.")
     (propagated-inputs
      ;; Youtube-dl is a python package which is imported in the file
      ;; "backend_youtube_dl.py", therefore it needs to be propagated.
-     (list youtube-dl))
+     (list yt-dlp))
     (home-page "https://np1.github.io/pafy/")
     (synopsis "Retrieve YouTube content and metadata")
     (description
