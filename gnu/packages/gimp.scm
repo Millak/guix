@@ -349,7 +349,9 @@ buffers.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.bz2"))
        (sha256
-        (base32 "0vl57w9w31cgz6nbkpqfycsnwi5qym87jw31hvz3320wq7p4ba2h"))))
+        (base32 "0vl57w9w31cgz6nbkpqfycsnwi5qym87jw31hvz3320wq7p4ba2h"))
+       (patches (search-patches "gimp-fix-tiff-load.patch"
+                                "gimp-fix-metadata-editor.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ; 9 MiB of gtk-doc HTML
