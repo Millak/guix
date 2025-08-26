@@ -80,14 +80,14 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20250722")
+    (version "20250822")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "0fw4qzjyikyql09nhjvz8jjvwaszwwrw0pn4qg9mmpww2bs1za4i"))
+       (base32 "0yhnr7xfd8si2jwrk4n6as209py0111kcjf433lzyz464a3k5781"))
       (snippet
        '(begin
           (use-modules (guix build utils))
