@@ -907,7 +907,12 @@ of index files."
             (modules `((ice-9 match)
                        ,@%default-modules))
             (start (nginx-action "-p" run-directory))
-            (stop (nginx-action "-s" "stop"))
+
+            ;; Instead of invoking "nginx -s stop", use
+            ;; 'make-kill-destructor', which waits for the main process to
+            ;; actually terminate.
+            (stop #~(make-kill-destructor))
+
             (actions
               (list
                (shepherd-configuration-action config-file)
