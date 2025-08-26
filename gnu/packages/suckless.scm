@@ -1262,30 +1262,34 @@ a nice format.")
 (define-public svkbd
   (package
     (name "svkbd")
-    (version "0.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://dl.suckless.org/tools/svkbd-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0nhgmr38pk1a8zrcrxd1ygh0m843a3bdchkv8phl508x7vy63hpv"))))
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "git://git.suckless.org/svkbd/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "186q9k6b5fhwnq65ch22fxqs64zyxz0vb7rwdyanx3qpcmb48byf"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f
-           #:make-flags
-           #~(list (string-append "CC=" #$(cc-for-target))
-                   (string-append "PREFIX=" #$output))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (substitute* "config.mk"
-                     (("/usr/local") #$output)
-                     (("/usr/X11R6") #$libx11)
-                     (("/usr/include/freetype2") (string-append #$freetype
-                                                  "/include/freetype2")))))
-               (delete 'configure)))) ;no configure script
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "config.mk"
+                (("/usr/local") #$output)
+                (("/usr/X11R6") #$libx11)
+                (("/usr/include/freetype2")
+                 (string-append #$freetype "/include/freetype2")))))
+          (delete 'configure)))) ;no configure script
     (native-inputs (list pkg-config))
     (inputs (list freetype libx11 libxft libxtst libxinerama))
     (propagated-inputs (list (libc-utf8-locales-for-target)))
