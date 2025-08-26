@@ -1545,17 +1545,17 @@ and high-availability (HA).")
     (license license:gpl2)))                  ;'COPYING' says "version 2" only
 
 ;; Don't forget to update the other postgresql packages when upgrading this one.
-(define-public postgresql-16
+(define-public postgresql-17
   (package
     (name "postgresql")
-    (version "16.11")
+    (version "17.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1b4f2wpv9h6zy8fqkn4gjvwawr7gxr4l1hfiif7pvmq37p10isvd"))
+                "1dg9labqgph2idaypb8khdvbag29pr3h4bqv5w8k7kgc08rk97pg"))
               (patches (search-patches
                         "postgresql-disable-normalize_exec_path.patch"))))
     (build-system gnu-build-system)
@@ -1585,18 +1585,22 @@ and high-availability (HA).")
           (add-after 'build 'build-contrib
             (lambda _
               (invoke "make" "-C" "contrib")))
+          ;; FIXME: Install manpages too.
+          ;; The 'install-mangpages phase in postgresql-16 fails silently here.
           (add-after 'install 'install-contrib
             (lambda _
-              (invoke "make" "-C" "contrib" "install")))
-          (add-after 'install 'install-manuals
-            (lambda _
-              (with-directory-excursion "doc/src/sgml"
-                (invoke "make" "install-man")
-                (invoke "make" "postgres.info")
-                (install-file "postgres.info"
-                              (string-append #$output "/share/info"))))))))
+              (invoke "make" "-C" "contrib" "install"))))))
     (native-inputs
-     (list docbook-xml-4.5 docbook2x libxml2 perl pkg-config texinfo))
+     (list bison
+           docbook-xml-4.5
+           docbook-xsl
+           docbook2x
+           flex
+           libxml2
+           libxslt
+           perl
+           pkg-config
+           texinfo))
     (inputs
      (list icu4c readline `(,util-linux "lib") openssl zlib))
     (home-page "https://www.postgresql.org/")
@@ -1609,6 +1613,37 @@ types, including INTEGER, NUMERIC, BOOLEAN, CHAR, VARCHAR, DATE, INTERVAL, and
 TIMESTAMP.  It also supports storage of binary large objects, including
 pictures, sounds, or video.")
     (license (license:x11-style "file://COPYRIGHT"))))
+
+(define-public postgresql-16
+  (package
+    (inherit postgresql-17)
+    (name "postgresql")
+    (version "16.10")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ftp.postgresql.org/pub/source/v"
+                                  version "/postgresql-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0hib575m9x3z8c71gkcv9jsyq77d3qk7q2zgzvfy6clwrvs8b16y"))
+              (patches (search-patches
+                        "postgresql-disable-normalize_exec_path.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments postgresql-17)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'install-manuals
+              (lambda _
+                (with-directory-excursion "doc/src/sgml"
+                  (invoke "make" "install-man")
+                  (invoke "make" "postgres.info")
+                  (install-file "postgres.info"
+                                (string-append #$output "/share/info")))))))))
+    (native-inputs (modify-inputs (package-native-inputs postgresql-17)
+                     (delete "bison")
+                     (delete "docbook-xsl")
+                     (delete "flex")
+                     (delete "libxslt")))))
 
 (define-public postgresql-15
   (package
