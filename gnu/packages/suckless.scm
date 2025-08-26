@@ -1002,33 +1002,26 @@ as -1, to be used instead of U+FFFD.
         (base32 "0829dqa8vgq0rdcjb04hzaxnbc3mqgn5mzmcibrggzrgw110gv5k"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)          ; no configure script
-         (add-before 'build 'libbsd
-           (lambda _
-             (substitute* "Makefile"
-               (("-lutf") "-lutf -lbsd"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (bin  (string-append out "/bin"))
-                    (man1 (string-append out "/share/man/man1")))
-               (install-file "lchat" bin)
-               (install-file "lchat.1" man1)
-               #t))))))
+     (list
+      #:test-target "test"
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)          ; no configure script
+                   (replace 'install
+                     (lambda _
+                       (let ((bin (string-append #$output "/bin"))
+                             (man (string-append #$output "/share/man/man1")))
+                         (install-file "lchat" bin)
+                         (install-file "lchat.1" man)))))))
     (inputs
      (list grep libbsd libgrapheme libutf ncurses))
     (home-page "https://tools.suckless.org/lchat/")
     (synopsis "Line chat is a frontend for the irc client ii from suckless")
     (description
      "Lchat (line chat) is the little and small brother of cii.
-It is a front end for ii-like chat programs.  It uses @code{tail -f} to get the
-chat output in the background.")
+It is a front end for ii-like chat programs.  It uses @code{tail -f} to get
+the chat output in the background.")
     (license license:isc)))
 
 (define-public snooze
