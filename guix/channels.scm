@@ -72,6 +72,7 @@
             channel-commit
             channel-introduction
             channel-location
+            channel-reference
 
             channel-introduction?
             make-channel-introduction
