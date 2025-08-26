@@ -289,18 +289,18 @@ supported devices, as well as input/output file format support.")
                   "11l8vnf2khqbaqas7cfnq3f8q5w7am6nbkkd5mqj5kpb3ya2avb9"))))
       (outputs '("out" "doc"))
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'build 'build-doc
-             (lambda _
-               (invoke "doxygen")
-               #t))
-           (add-after 'install 'install-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (copy-recursively "doxy/html-api"
-                                 (string-append (assoc-ref outputs "doc")
-                                                "/share/doc/libsigrokdecode"))
-               #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'build-doc
+              (lambda _
+                (invoke "doxygen")))
+            (add-after 'install 'install-doc
+              (lambda _
+                (copy-recursively
+                 "doxy/html-api"
+                 (string-append #$output:doc
+                                "/share/doc/libsigrokdecode")))))))
       (native-inputs
        (list check doxygen graphviz pkg-config automake autoconf libtool))
       ;; libsigrokdecode.pc lists "python" in Requires.private, and "glib" in
