@@ -8960,7 +8960,7 @@ ecosystem, but can naturally be used also by other projects.")
 (define-public python-robotframework
   (package
     (name "python-robotframework")
-    (version "7.2.2")
+    (version "7.3.2")
     (source
      (origin
        (method git-fetch) ; no tests in the PyPI archive
@@ -8969,7 +8969,7 @@ ecosystem, but can naturally be used also by other projects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a34dv5gpaiqbddblfnirp1ja2a1069n9nifasn4g26kcj69fpra"))))
+        (base32 "0azis3dj7lfiwrr5gr1gr78z5m05vvl8n20rw3bz93s05z94h5i7"))))
     (outputs '("out" "doc"))
     (build-system pyproject-build-system)
     (arguments
@@ -9009,6 +9009,7 @@ ecosystem, but can naturally be used also by other projects.")
            python-jsonschema
            python-pygments
            python-rellu
+           python-typing-extensions-next
            python-setuptools
            `(,python "tk")              ;used when building the HTML doc
            python-wheel))
