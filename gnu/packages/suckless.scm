@@ -414,7 +414,7 @@ drawing.")
   (package
     (inherit st)
     (name "xst")
-    (version "0.8.4.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -423,7 +423,7 @@ drawing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q64x7czpbcg0v509qchn5v96zdnx7jmvy0zxhjmkk3d10x5rqlw"))))
+        (base32 "186kqvrn0rksmvz0yhllsrxqsvsxwwcdr417jxs1fk5d9psx35fs"))))
     (home-page "https://github.com/gnotclub/xst")
     (synopsis "Fork of st that uses Xresources")
     (description
