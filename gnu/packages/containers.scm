@@ -530,7 +530,9 @@ Its main purpose is to support the key usage by @code{docker-init}:
     (version "5.6.0")
     (outputs '("out" "docker"))
     (properties
-      `((output-synopsis "docker" "docker alias for podman")))
+     `((output-synopsis "docker" "docker alias for podman")
+       ;; XXX: Adressed already.
+       (lint-hidden-cve . ("CVE-2022-2989"))))
     (source
      (origin
        (method git-fetch)
