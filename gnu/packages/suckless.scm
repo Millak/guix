@@ -987,52 +987,49 @@ as -1, to be used instead of U+FFFD.
 @end itemize\n")
       (license license:expat))))
 
-;; No release tarballs so far.
 (define-public lchat
-  (let ((revision "4")
-        (commit "e3b64e67b9b9d832462382246474ce1e7d92217c"))
-    (package
-      (name "lchat")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/younix/lchat")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1qcjqbgmsskc04j2r6xl3amkwj05n520sq1wv2mqyqncz42qrxm0"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:test-target "test"
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "PREFIX=" %output))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (add-before 'build 'libbsd
-             (lambda _
-               (substitute* "Makefile"
-                 (("-lutf") "-lutf -lbsd"))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out  (assoc-ref outputs "out"))
-                      (bin  (string-append out "/bin"))
-                      (man1 (string-append out "/share/man/man1")))
-                 (install-file "lchat" bin)
-                 (install-file "lchat.1" man1)
-                 #t))))))
-      (inputs
-       (list grep ncurses libutf libbsd))
-      (home-page "https://github.com/younix/lchat")
-      (synopsis "Line chat is a frontend for the irc client ii from suckless")
-      (description
-       "Lchat (line chat) is the little and small brother of cii.
+  (package
+    (name "lchat")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "git://git.suckless.org/lchat/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0829dqa8vgq0rdcjb04hzaxnbc3mqgn5mzmcibrggzrgw110gv5k"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "PREFIX=" %output))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)          ; no configure script
+         (add-before 'build 'libbsd
+           (lambda _
+             (substitute* "Makefile"
+               (("-lutf") "-lutf -lbsd"))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bin  (string-append out "/bin"))
+                    (man1 (string-append out "/share/man/man1")))
+               (install-file "lchat" bin)
+               (install-file "lchat.1" man1)
+               #t))))))
+    (inputs
+     (list grep libbsd libgrapheme libutf ncurses))
+    (home-page "https://tools.suckless.org/lchat/")
+    (synopsis "Line chat is a frontend for the irc client ii from suckless")
+    (description
+     "Lchat (line chat) is the little and small brother of cii.
 It is a front end for ii-like chat programs.  It uses @code{tail -f} to get the
 chat output in the background.")
-      (license license:isc))))
+    (license license:isc)))
 
 (define-public snooze
   (package
