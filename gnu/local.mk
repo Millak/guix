@@ -245,7 +245,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/dictionaries.scm			\
   %D%/packages/diffoscope.scm			\
   %D%/packages/digest.scm			\
-  %D%/packages/direct-connect.scm		\
   %D%/packages/disk.scm			\
   %D%/packages/distributed.scm			\
   %D%/packages/display-managers.scm		\
@@ -1815,7 +1814,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/linux-libre-arm64-mnt-reform-revert-vop2-display-modes.patch	\
   %D%/packages/patches/linux-pam-no-setfsuid.patch		\
   %D%/packages/patches/linux-pam-unix_chkpwd.patch		\
-  %D%/packages/patches/linuxdcpp-openssl-1.1.patch		\
   %D%/packages/patches/lirc-localstatedir.patch			\
   %D%/packages/patches/lirc-reproducible-build.patch		\
   %D%/packages/patches/llvm-3.5-fix-clang-build-with-gcc5.patch	\
