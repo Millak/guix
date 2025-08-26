@@ -924,7 +924,7 @@ to @samp{info \"(guix) Base Services\"} for examples.")
                        #:test-flags #~(list "test_all.py")))
       (native-inputs (list python-pytest python-setuptools python-wheel))
       (propagated-inputs (list python-networkx python-six))
-      (home-page "https://gitlab.com/ohwr/project/hdl-make/")
+      (home-page "https://ohwr.gitlab.io/project/hdl-make/")
       (synopsis "Generate multi-purpose makefiles for HDL projects")
       (description
        "Hdlmake helps manage and share @acronym{HDL, hardware description
