@@ -821,8 +821,8 @@ and @file{.h} files.")
     (license license:lgpl3)))
 
 (define-public fftgen
-  (let ((commit "1d75a992efd0528edea128a903aafdabe133cb08") ;no releases
-        (revision "0"))
+  (let ((commit "3378b77d83a98b06184656a5cb9b54e50dfe4485") ;no releases
+        (revision "1"))
     (package
       (name "fftgen")
       (version (git-version "0" revision commit))
@@ -834,10 +834,10 @@ and @file{.h} files.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0qq874yalzpjdwnxhc5df8a0ifywv29wcncb09945x56xplvkcmd"))))
+                  "1rvln871wjkbbqnv88jnx328xlhn5sgbr8fglk3ajnd9rwgiq3jg"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                              ;no tests
+       `(#:test-target "bench-test"
          #:make-flags '("CFLAGS=-g -O2")          ;default flags lack -O2
          #:phases (modify-phases %standard-phases
                     (delete 'configure)
@@ -846,6 +846,7 @@ and @file{.h} files.")
                         (let ((bin (string-append (assoc-ref outputs "out")
                                                   "/bin")))
                           (install-file "sw/fftgen" bin)))))))
+      (native-inputs (list bc fftw python-minimal verilator which))
       (synopsis "Generic pipelined FFT core generator")
       (description "fftgen produces @acronym{FFT, fast-Fourier transforms}
 hardware designs in Verilog.")
