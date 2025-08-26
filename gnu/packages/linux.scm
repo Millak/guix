@@ -3063,7 +3063,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
            ;; FIXME: For now we cannot reliably run tests on GNU/Hurd:
            ;; <https://bugs.gnu.org/47791>.
            #:tests? (and (not (%current-target-system))
-                         (not (string-suffix? "-gnu" (%current-system))))
+                         (not (system-hurd?)))
 
            #:phases
            #~(modify-phases %standard-phases
