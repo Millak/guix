@@ -838,14 +838,16 @@ environment variable.")
 (define-public fortify-headers
   (package
     (name "fortify-headers")
-    (version "1.1")
+    (version "2.3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://dl.2f30.org/releases/"
-                           "fortify-headers-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "git://git.2f30.org/fortify-headers/")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dhz41jq1azcf7rbvga8w6pnx19l1j9r6jwj8qrlrfnjl9hdi9bb"))))
+        (base32 "1w2jrscncq1jrg4wnsrr3a00p6h9mvkk3g1qkh1jdw1m747yjsci"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -860,8 +862,8 @@ environment variable.")
     (description
      "This is a standalone implementation of fortify source.  It provides
 compile time buffer checks.  It is libc-agnostic and simply overlays the
-system headers by using the @code{#include_next} extension found in GCC.  It was
-initially intended to be used on musl-based Linux distributions.
+system headers by using the @code{#include_next} extension found in GCC.  It
+was initially intended to be used on musl-based Linux distributions.
 
 @itemize
 @item It is portable, works on *BSD, Linux, Solaris and possibly others.
