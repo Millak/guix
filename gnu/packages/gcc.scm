@@ -1285,7 +1285,7 @@ as the 'native-search-paths' field."
                "gfortran" '("fortran")
                %generic-search-paths)))
 
-(define-public gdc-11
+(define-public gdc-11                   ;kept for bootstrapping
   (hidden-package
    (custom-gcc gcc-11 "gdc" '("d")
                %generic-search-paths)))
@@ -1293,8 +1293,18 @@ as the 'native-search-paths' field."
 ;;; Alias tracking the latest GDC version.
 (define-public gdc
   (hidden-package
-   (custom-gcc gcc "gdc" '("d")
-               %generic-search-paths)))
+   (let ((base (custom-gcc gcc
+                           "gdc" '("d")
+                           %generic-search-paths)))
+     (package
+       (inherit base)
+       (native-inputs
+        (modify-inputs (package-native-inputs base)
+          ;; Since GCC 12, GDC is self-hosted, requiring a version of itself
+          ;; to build.
+          ;; XXX: GCC must be prepended as well to avoid an issue with the C++
+          ;; headers ordering.
+          (prepend gcc gdc-11)))))))
 
 (define-public gm2
   (hidden-package
