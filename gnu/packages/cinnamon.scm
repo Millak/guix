@@ -285,4 +285,5 @@ as well as some desktop-wide documents.")
     (synopsis "File browser for Cinnamon")
     (description
      "Nemo is the file manager for the Cinnamon desktop environment.")
+    (properties '((lint-hidden-cpe-vendors . ("nvidia"))))
     (license license:expat)))
