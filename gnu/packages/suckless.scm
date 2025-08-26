@@ -943,10 +943,10 @@ utilities to handle strings according to the Unicode standard.")
 ;; done by the same developer.
 (define-public libutf
   (let ((revision "1")
-        (commit "ff4c60635e1f455b0a0b4200f8183fbd5a88225b"))
+        (commit "ee5074db68f498a5c802dc9f1645f396c219938a"))
     (package
       (name "libutf")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -956,7 +956,7 @@ utilities to handle strings according to the Unicode standard.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1ih5vjavilzggyr1j1z6w1z12c2fs5fg77cfnv7ami5ivsy3kg3d"))))
+           "1112azq05xhssqny4a2kqwiw8zdqhdgf18xwfs6z5p4cq2csh256"))))
       (build-system gnu-build-system)
       (arguments
        (list
