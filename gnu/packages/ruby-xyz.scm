@@ -34,7 +34,7 @@
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2023-2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -8970,7 +8970,15 @@ source projects must be able to link to it.")
                 "0bnjd8b86lrgj5ar1l7pg5if95bv0sxa75mz7x2ikqyz6q8rmjb3"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "vagrant_cloud.gemspec"
+                (("dependency 'rexml', .*")
+                 "dependency 'rexml'\n")))))))
     (native-inputs (list ruby-rspec ruby-webmock))
     (propagated-inputs (list ruby-excon ruby-log4r ruby-rexml))
     (synopsis "Vagrant Cloud API library")
