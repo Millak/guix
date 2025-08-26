@@ -226,7 +226,7 @@ as well as some desktop-wide documents.")
 (define-public nemo
   (package
     (name "nemo")
-    (version "6.0.2")
+    (version "6.4.5")
     (source
      (origin
        (method git-fetch)
@@ -236,7 +236,7 @@ as well as some desktop-wide documents.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1416rcd0ii92r761lwz62rq0fzaliz6vzpf5nlcnpa109fkwa8mx"))))
+        (base32 "0bqii4cxh57knnsl7f76524y88yp37wcrjjyfhdg93aq5q2c55zl"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -271,6 +271,7 @@ as well as some desktop-wide documents.")
            exempi
            gsettings-desktop-schemas
            gtk+
+           json-glib
            libexif
            libgnomekbd
            libgsf
