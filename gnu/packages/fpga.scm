@@ -826,26 +826,28 @@ and @file{.h} files.")
     (package
       (name "fftgen")
       (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/ZipCPU/dblclockfft")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1rvln871wjkbbqnv88jnx328xlhn5sgbr8fglk3ajnd9rwgiq3jg"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ZipCPU/dblclockfft")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1rvln871wjkbbqnv88jnx328xlhn5sgbr8fglk3ajnd9rwgiq3jg"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:test-target "bench-test"
-         #:make-flags '("CFLAGS=-g -O2")          ;default flags lack -O2
-         #:phases (modify-phases %standard-phases
-                    (delete 'configure)
-                    (replace 'install
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        (let ((bin (string-append (assoc-ref outputs "out")
-                                                  "/bin")))
-                          (install-file "sw/fftgen" bin)))))))
+       (list
+        #:test-target "bench-test"
+        #:make-flags #~(list "CFLAGS=-g -O2") ;default flags lack -O2
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (install-file "sw/fftgen"
+                              (string-append #$output "/bin")))))))
       (native-inputs (list bc fftw python-minimal verilator which))
       (synopsis "Generic pipelined FFT core generator")
       (description "fftgen produces @acronym{FFT, fast-Fourier transforms}
