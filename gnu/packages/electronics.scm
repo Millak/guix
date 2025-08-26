@@ -644,28 +644,29 @@ formats.")
   (package
     (name "pulseview")
     (version "0.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://sigrok.org/download/source/pulseview/pulseview-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "1jxbpz1h3m1mgrxw74rnihj8vawgqdpf6c33cqqbyd8v7rxgfhph"))
-              (patches (search-patches "pulseview-qt515-compat.patch"
-                                       "pulseview-glib-2.68.patch"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://sigrok.org/download/source/pulseview/pulseview-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "1jxbpz1h3m1mgrxw74rnihj8vawgqdpf6c33cqqbyd8v7rxgfhph"))
+       (patches (search-patches "pulseview-qt515-compat.patch"
+                                "pulseview-glib-2.68.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;format_time_minutes_test is failing
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'remove-empty-doc-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion (string-append out "/share")
-                 ;; Use RMDIR to never risk silently deleting files.
-                 (rmdir "doc/pulseview")
-                 (rmdir "doc"))))))))
+     (list
+      #:tests? #f ;format_time_minutes_test is failing
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'remove-empty-doc-directory
+            (lambda _
+              (with-directory-excursion (string-append #$output "/share")
+                ;; Use RMDIR to never risk silently deleting files.
+                (rmdir "doc/pulseview")
+                (rmdir "doc")))))))
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
@@ -678,8 +679,8 @@ formats.")
            qtsvg-5))
     (home-page "https://www.sigrok.org/wiki/PulseView")
     (synopsis "Qt based logic analyzer, oscilloscope and MSO GUI for sigrok")
-    (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO GUI
-for sigrok.")
+    (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO
+GUI for sigrok.")
     (license license:gpl3+)))
 
 (define-public python-cocotb
