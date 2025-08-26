@@ -32,29 +32,6 @@
   #:use-module (gnu packages xorg))
 
 
-(define-public lesstif
-  (package
-    (name "lesstif")
-    (version "0.95.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://sourceforge/lesstif/lesstif/" version
-               "/lesstif-" version ".tar.bz2"))
-        (sha256
-          (base32
-            "1qzpxjjf7ri1jzv71mvq5m9g8hfaj5yzwp30rwxlm6n2b24a6jpb"))))
-    (build-system gnu-build-system)
-    (propagated-inputs
-     (list printproto))
-    (inputs
-      (list libxext libxt))
-    (home-page "https://lesstif.sourceforge.net/")
-    (synopsis "Clone of the Motif toolkit for the X window system")
-    (description "Clone of the Motif toolkit for the X window system.")
-    (license license:gpl2+))) ; some files are lgpl2.1+ or x11
-
 (define-public motif
   ;; This commit is from February 2023 and v2.3.8 from 2017.
   (let ((commit "0f556b0873c72ba1152a12fd54c3198ee039e413")
