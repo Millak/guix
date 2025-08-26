@@ -216,39 +216,40 @@ to take care of the OS-specific details when writing software that uses serial p
          (file-name (git-file-name name version))))
       (outputs '("out" "doc"))
       (arguments
-       `(#:tests? #f                      ; tests need USB access
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'change-udev-group
-             (lambda _
-               (substitute* (find-files "contrib" "\\.rules$")
-                 (("plugdev") "dialout"))))
-           (add-after 'build 'build-doc
-             (lambda _
-               (invoke "doxygen")))
-           (add-after 'install 'install-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (copy-recursively "doxy/html-api"
-                                 (string-append (assoc-ref outputs "doc")
-                                                "/share/doc/libsigrok"))))
-           (add-after 'install-doc 'install-udev-rules
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out   (assoc-ref outputs "out"))
-                      (rules (string-append out "/lib/udev/rules.d/")))
-                 (for-each (lambda (file)
-                             (install-file file rules))
-                           (find-files "contrib" "\\.rules$")))))
-           (add-after 'install-udev-rules 'install-fw
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((fx2lafw (assoc-ref inputs "sigrok-firmware-fx2lafw"))
-                      (out (assoc-ref outputs "out"))
-                      (dir-suffix "/share/sigrok-firmware/")
-                      (input-dir (string-append fx2lafw dir-suffix))
-                      (output-dir (string-append out dir-suffix)))
-                 (for-each
-                  (lambda (file)
-                    (install-file file output-dir))
-                  (find-files input-dir "."))))))))
+       (list
+        #:tests? #f                      ; tests need USB access
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'change-udev-group
+              (lambda _
+                (substitute* (find-files "contrib" "\\.rules$")
+                  (("plugdev") "dialout"))))
+            (add-after 'build 'build-doc
+              (lambda _
+                (invoke "doxygen")))
+            (add-after 'install 'install-doc
+              (lambda _
+                (copy-recursively
+                 "doxy/html-api"
+                 (string-append #$output:doc "/share/doc/libsigrok"))))
+            (add-after 'install-doc 'install-udev-rules
+              (lambda _
+                (for-each
+                 (lambda (file)
+                   (install-file
+                    file
+                    (string-append #$output "/lib/udev/rules.d/")))
+                          (find-files "contrib" "\\.rules$"))))
+            (add-after 'install-udev-rules 'install-fw
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((fx2lafw (assoc-ref inputs "sigrok-firmware-fx2lafw"))
+                       (dir-suffix "/share/sigrok-firmware/")
+                       (input-dir (string-append fx2lafw dir-suffix))
+                       (output-dir (string-append #$output dir-suffix)))
+                  (for-each
+                   (lambda (file)
+                     (install-file file output-dir))
+                   (find-files input-dir "."))))))))
       (native-inputs
        (list autoconf automake doxygen graphviz libtool
              sigrok-firmware-fx2lafw pkg-config))
