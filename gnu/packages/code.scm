@@ -1064,7 +1064,8 @@ in a project.")
               "")
              (("\\$\\(PEG_SRCS\\) \\$\\(PEG_HEADS\\): \\$\\(PACKCC\\)")
               "$(PEG_SRCS) $(PEG_HEADS):"))
-           (delete-file-recursively "misc/packcc")))))
+           (delete-file-recursively "misc/packcc")
+           (delete-file "autogen.sh")))))
     (build-system gnu-build-system)
     (arguments
      '(;; Don't use the build-time TMPDIR (/tmp/guix-build-...) at runtime.
