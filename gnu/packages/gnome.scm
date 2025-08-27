@@ -1464,32 +1464,6 @@ for creating UPnP devices and control points, written in C using
     (home-page "https://gitlab.gnome.org/GNOME/gupnp")
     (license license:lgpl2.0+)))
 
-(define-public gupnp-1.4
-  (package
-    (inherit gupnp)
-    (name "gupnp")
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0vz3ifs8mi3zaz8zj8v27zfkf6xg82y39mcgqspa38jdp01gn3sr"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments gupnp)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'meson-compatibility
-            (lambda _
-              (substitute* "subprojects/gssdp-1.2.wrap"
-                (("provides") "provide"))))))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs gupnp)
-       (replace "libsoup" libsoup-minimal-2)
-       (replace "gssdp" gssdp-1.4)))))
-
 (define-public gupnp-dlna
   (package
    (name "gupnp-dlna")
