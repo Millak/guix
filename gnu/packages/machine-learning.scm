@@ -4076,11 +4076,10 @@ devices.")
         (base32 "1x4ad1jhn84fywlk031fmv1kxyiscclmrqn9hhj8gz0mh7z9vcrh"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DGOOGLE_TEST=ON")))
+     (list
+      #:configure-flags #~(list "-DGOOGLE_TEST=ON")))
     (native-inputs
-     `(("googletest" ,googletest)
-       ("python" ,python-wrapper)))
+     (list googletest python-wrapper))
     (home-page "https://github.com/dmlc/dmlc-core")
     (synopsis "Common bricks library for machine learning")
     (description
