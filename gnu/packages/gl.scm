@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017-2019, 2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2019, 2021, 2023-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -22,7 +22,7 @@
 ;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
-;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2024-2025 Alvin Hsu <aurtzy@gmail.com>
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -74,6 +74,7 @@
   #:use-module (guix hg-download)
   #:use-module (gnu packages cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -316,7 +317,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "25.2.3")
+    (version "25.3.6")
     (source
      (origin
        (method url-fetch)
@@ -325,8 +326,7 @@ also known as DXTn or DXTC) for Mesa.")
                   (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
                                  "mesa-" version ".tar.xz")))
        (sha256
-        (base32
-         "1y5lj9zy2hfvx9ji1rvsjapmzap7mpp5i3pf2yfcpmpica2v5mpj"))))
+        (base32 "01pjp30lqlbn09w2vcmf843iwks9nyflncjqv77ffr1vmkz7w8ar"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -339,17 +339,22 @@ also known as DXTn or DXTC) for Mesa.")
            libxxf86vm
            xorgproto))
     (inputs
-     (list elfutils                   ;libelf required for r600 when using llvm
-           expat
-           (force libva-without-mesa)
-           libxml2
-           libxrandr
-           libxvmc
-           llvm-for-mesa
-           vulkan-loader
-           wayland
-           wayland-protocols
-           `(,zstd "lib")))
+     (cons* elfutils                   ;libelf required for r600 when using llvm
+            expat
+            (force libva-without-mesa)
+            libxml2
+            libxrandr
+            libxvmc
+            llvm-for-mesa
+            vulkan-loader
+            wayland
+            wayland-protocols
+            `(,zstd "lib")
+            ;; Rust isn't needed for all architectures.
+            (if (target-x86-64?)
+                ;; NVK dependencies
+                (cargo-inputs 'mesa)
+                '())))
     (native-inputs
      (append
       (list bison
@@ -375,13 +380,12 @@ also known as DXTn or DXTC) for Mesa.")
                 wayland
                 wayland-protocols)
           '())
+      ;; Rust isn't needed for all architectures.
       (if (target-x86-64?)
           ;; NVK dependencies
           (list rust
-                (module-ref (resolve-interface '(gnu packages rust-apps))
-                            'rust-bindgen-cli)
-                (module-ref (resolve-interface '(gnu packages rust-apps))
-                            'rust-cbindgen-0.26))
+                rust-bindgen-cli
+                rust-cbindgen)
           '())))
     (outputs '("out" "bin"))
     (arguments
@@ -450,9 +454,13 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
        #:build-type "release"
 
        #:modules '((ice-9 match)
+                   (ice-9 ftw)
                    (srfi srfi-1)
                    (guix build utils)
+                   ((guix build cargo-build-system) #:prefix cargo:)
                    (guix build meson-build-system))
+      #:imported-modules (append %cargo-build-system-modules
+                                 %meson-build-system-modules)
        #:phases
        #~(modify-phases %standard-phases
          #$@(if (%current-target-system)
@@ -468,6 +476,32 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
                              (search-input-file
                               native-inputs "/bin/cmake")))))
               #~())
+         #$@(if (this-package-native-input "rust")
+                 #~((add-after 'unpack 'prepare-rust-crates
+                      (lambda args
+                        (apply (assoc-ref cargo:%standard-phases
+                                          'prepare-rust-crates)
+                               args)
+                        ;; Use /tmp/rust-crates as the source.
+                        (substitute* (find-files "subprojects" "-rs\\.wrap$")
+                          (("source_url = (.*)" _ url)
+                           (let ((split-url (string-split url #\/)))
+                             (string-append
+                               "source_url = file:///tmp/rust-crates/rust-"
+                               (string-join
+                                 (string-split (list-ref split-url 6) #\_) "-")
+                               "-" (list-ref split-url 7) ".tar.gz\n"))))
+                        ;; "Download" the packages.
+                        ;; once-cell-1.8.0 was yanked by upstream
+                        (delete-file "subprojects/once_cell-1-rs.wrap")
+                        (for-each
+                          (lambda (wrapper)
+                            (invoke "meson" "subprojects" "download"
+                                    (string-drop-right wrapper 5)))
+                          (scandir "subprojects"
+                                   (lambda (file)
+                                     (string-suffix?  "-rs.wrap" file)))))))
+                 #~())
          (add-after 'unpack 'disable-failing-test
            (lambda _
              ;; Disable the intel vulkan (anv_state_pool) tests, as they may
@@ -510,41 +544,6 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
                       (("'lp_test_arit', ") ""))))
                  (_
                   '((display "No tests to disable on this architecture.\n"))))))
-         #$@(if (target-x86-64?)
-                #~((add-after 'unpack 'patch-subproject-sources
-                     (lambda _
-                       ;; Patch each relevant subproject source URL in wrapfiles to
-                       ;; use the store, which avoids an attempt to download them
-                       ;; mid-build.
-                       (for-each
-                        (match-lambda
-                          ((name source)
-                           (let ((wrap-file (string-append
-                                             "subprojects/" name ".wrap"))
-                                 (subproject-dest (string-append
-                                                   "subprojects/" name))
-                                 (overlay-dir (string-append
-                                               "subprojects/packagefiles/" name)))
-                             (mkdir-p subproject-dest)
-                             (invoke "tar" "xf" source "-C" subproject-dest
-                                     "--strip-components=1")
-                             ;; Normally when the patch_directory wrap file property
-                             ;; is specified, meson automatically copies from
-                             ;; packagefiles, but this is not the case here (only
-                             ;; happens when downloading source?) so we manually copy
-                             ;; overlay-dir to subproject-dest.
-                             (when (file-exists? overlay-dir)
-                               (copy-recursively overlay-dir subproject-dest))
-                             (call-with-output-file wrap-file
-                               (lambda (port)
-                                 (format port "[wrap-file]
-directory = ~a
-"
-                                         name))))))
-                        '#+(module-ref (resolve-interface
-                                        '(gnu packages rust-crates))
-                                       'mesa-cargo-inputs)))))
-                #~())
          (add-after 'unpack 'set-home-directory
            ;; Build tries to use a shader cache (non-fatal error).
            (lambda _ (setenv "HOME" "/tmp")))
