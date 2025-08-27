@@ -13780,6 +13780,34 @@ def get_requires_for_build_sdist(config_settings=None):
 @code{importlib.resources} module for Python 2.7, and Python 3.")
     (license license:asl2.0)))
 
+(define-public python-importlib-resources-6
+  (package/inherit python-importlib-resources
+    (version "6.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "importlib_resources" version))
+              (sha256
+               (base32
+                "0ic177y1j3v0zd7fzdg7x2h4c56f7i7xiccfg7is8v04p19v9cnd"))))
+    (native-inputs
+     (list python-jaraco-collections
+           python-jaraco-test
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (arguments
+     (cons*
+      #:test-flags
+      ;; AttributeError: module 'zipp' has no attribute 'CompleteDirs'
+      #~(list "--ignore=importlib_resources/tests/test_contents.py"
+              "--ignore=importlib_resources/tests/test_files.py"
+              "--ignore=importlib_resources/tests/test_open.py"
+              "--ignore=importlib_resources/tests/test_path.py"
+              "--ignore=importlib_resources/tests/test_read.py"
+              "--ignore=importlib_resources/tests/test_resource.py")
+      (package-arguments python-importlib-resources)))))
+
 (define-public python-importlib-metadata
   (package
     (name "python-importlib-metadata")
