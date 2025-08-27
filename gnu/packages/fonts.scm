@@ -2722,6 +2722,30 @@ software vendors in the late 1980s.")
 in the late 1980s.")
     (license license:public-domain)))
 
+(define-public font-apl386
+  ;; Neither releases nor tags
+  (let ((commit "c5bca014b6610ee170985c3ce32a8bb14dbd7b94")
+        (revision "1"))
+    (package
+      (name "font-apl386")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/abrudz/APL386")
+                (commit commit)))
+         (file-name (git-file-name name revision))
+         (sha256
+          (base32 "0z7kpqgfrb053rajnr08n02rdwg5w1aynxj13ys93j0k3xvv5a75"))))
+      (build-system font-build-system)
+      (synopsis "Font suitable for APL programming language")
+      (description
+       "APL386 is an evolution of Adrian Smith's APL385 font with a fun,
+whimsical look, inspired by Comic Sans Serif.")
+      (home-page "https://abrudz.github.io/APL386/")
+      (license license:unlicense))))
+
 (define-public font-bqn386
   ;; Neither releases nor tags
   (let ((commit "4d8b9f668ba76a15ca9cd44d9bfedaf95a4c0d96")
