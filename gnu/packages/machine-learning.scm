@@ -221,7 +221,7 @@ family of functions.")
 (define-public python-faster-whisper
   (package
     (name "python-faster-whisper")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -230,7 +230,7 @@ family of functions.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g9cdvphifn4rqhh7p4z1d3pp6bhcx0jmcahjigvcgry0qsijgfn"))))
+        (base32 "0wmc9aszpnbr60l5v97np0rc3zsz4pldjald7kmnr668rhpakzcj"))))
     (build-system pyproject-build-system)
     ;; XXX: Currently tests requires model download, which we'd rather avoid
     ;; in Guix unless we're sure about the FOSS weights. To test in source :
