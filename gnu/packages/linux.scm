@@ -83,6 +83,7 @@
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12193,6 +12194,36 @@ random programs using differential testing.")
 virtual server table in the Linux kernel.  The Linux Virtual Server can be used
 to build scalable network services based on a cluster of two or more nodes.")
     (license license:gpl2+)))
+
+(define-public ryzenadj
+  (package
+    (name "ryzenadj")
+    (version "0.17.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/flygoat/ryzenadj/archive/refs/tags/"
+                                  "v" version ".tar.gz"))
+                   (sha256
+                    (base32 "0i2x6kbn2ix52vjz1mmh0c0g3w0k4sn0lq68wbsk0pgndzcck2l4"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (delete-file-recursively "win32")
+                 #t))))
+    (build-system cmake-build-system)
+    (inputs (list pciutils))
+    (arguments
+     (list #:tests? #f ; No test suite
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'install 'build
+                          (lambda _
+                            (invoke "cmake" "-DCMAKE_BUILD_TYPE=Release" "."))))))
+    (home-page "https://github.com/flygoat/ryzenadj")
+    (synopsis "Power management tool for AMD Ryzen APUs")
+    (description
+     "@command{ryzenadj} is an utility to adjust power management settings for
+AMD Ryzen mobile processors.  You will need to ensure it can access /dev/mem,
+for instance by using the \"iomem=relaxed\" kernel argument.")
+    (license license:lgpl3)))
 
 (define-public ryzen-smu
   (package
