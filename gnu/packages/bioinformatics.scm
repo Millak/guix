@@ -7646,6 +7646,34 @@ identify the corresponding gene and CDR3 details.  TRUST4 supports both single-e
 and paired-end bulk or single-cell sequencing data with any read length.")
     (license license:gpl3)))
 
+(define-public python-airr
+  (package
+    (name "python-airr")
+    (version "1.5.1")
+    (home-page "https://pypi.org/project/airr/")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "airr" version))
+       (sha256
+        (base32
+         "0jbigfdwa23xv5riw0ljdfq2qwg1b2fav2kfi81zxd1g1jprxy3i"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-pandas
+           python-pyyaml
+           python-yamlordereddictloader))
+    (native-inputs
+     (list python-jsondiff
+           python-setuptools
+           python-wheel))
+    (synopsis "Data Representation Standard library for antibody and TCR sequences")
+    (description "Python-airr provides a library by the AIRR community to for
+describing, reporting, storing, and sharing adaptive immune receptor
+repertoire (AIRR) data, such as sequences of antibodies and T cell
+receptors (TCRs).")
+    (license license:cc-by4.0)))
+
 (define-public diamond
   (package
     (name "diamond")
