@@ -141,13 +141,13 @@ your project into different processes.")
 (define-public python-django
   (package
     (name "python-django")
-    (version "4.2.16")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Django" version))
-              (sha256
-               (base32
-                "1b8xgwg3gjr974j60x3vgcpp85cg5dwhzqdpdbl8qh3cg311c5kg"))))
+    (version "4.2.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django" version))
+       (sha256
+        (base32 "1r7sbhllc6d903di0ydqy737s28m223lgpk69y6xhjb4dsxfmza2"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
