@@ -2722,6 +2722,30 @@ software vendors in the late 1980s.")
 in the late 1980s.")
     (license license:public-domain)))
 
+(define-public font-bqn386
+  ;; Neither releases nor tags
+  (let ((commit "4d8b9f668ba76a15ca9cd44d9bfedaf95a4c0d96")
+        (revision "1"))
+    (package
+      (name "font-bqn386")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/dzaima/BQN386")
+                (commit commit)))
+         (file-name (git-file-name name revision))
+         (sha256
+          (base32 "1l2ycjs85vps7sy5yg19mq1xdnfv4lx3skw921yw1rhx9xdvhrgc"))))
+      (build-system font-build-system)
+      (synopsis "Font suitable for APL and BQN programming languages")
+      (description
+       "BQN386 is an extension of APL386 font.  This font keeps regular APL
+characters mostly intact.")
+      (home-page "https://dzaima.github.io/BQN386/")
+      (license license:unlicense))))
+
 (define-public font-aporetic
   (package
     (name "font-aporetic")
