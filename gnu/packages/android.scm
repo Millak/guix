@@ -1358,7 +1358,23 @@ mounted via FUSE.")
            #:tests? #f                  ; no tests provided upstream
            #:phases
            ;; There is no configure step.
-           #~(modify-phases %standard-phases (delete 'configure))))
+           #~(modify-phases %standard-phases
+              (delete 'configure)
+              (add-before 'build 'patch-calloc-order
+                ;; As of the 1.1.5 release, the calloc argument order is
+                ;; wrong, and GCC 14 recognises this. We correct it here.
+                ;; When updating this package, remove these patches
+                ;; (fixed in master).
+                (lambda _
+                  (substitute* "backed_block.cpp"
+                    (("calloc[(]sizeof[(]struct backed_block_list[)], 1[)]")
+                     "calloc(1, sizeof(struct backed_block_list))"))
+                  (substitute* "simg2simg.cpp"
+                    (("calloc[(]sizeof[(]struct sparse_file[*][)], files[)]")
+                     "calloc(files, sizeof(struct sparse_file*))"))
+                  (substitute* "sparse.cpp"
+                    (("calloc[(]sizeof[(]struct sparse_file[)], 1[)]")
+                     "calloc(1, sizeof(struct sparse_file))")))))))
     (inputs (list zlib))
     (home-page "https://github.com/anestisb/android-simg2img")
     (synopsis "Convert Android sparse images to raw ext4 images")
