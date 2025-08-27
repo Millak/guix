@@ -2992,14 +2992,14 @@ following features:
 (define-public subversion
   (package
     (name "subversion")
-    (version "1.14.3")
+    (version "1.14.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/subversion/"
                                   "subversion-" version ".tar.bz2"))
               (sha256
                (base32
-                "0h54l4p2dlk1rm4zm428hi6ij6xpqxqlqmvkhmz5yhq9392zv7ll"))))
+                "18a4avism0a7b1siikkm6v2snhanlmqqzl4p8hspp2vbfvkjk2p7"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3067,6 +3067,20 @@ reliability as a safe haven for valuable data; the simplicity of its model and
 usage; and its ability to support the needs of a wide variety of users and
 projects, from individuals to large-scale enterprise operations.")
     (license license:asl2.0)))
+
+(define-public subversion/pinned
+  (hidden-package
+   (package
+     (inherit subversion)
+     (name "subversion")
+     (version "1.14.3")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://apache/subversion/"
+                            "subversion-" version ".tar.bz2"))
+        (sha256
+         (base32 "0h54l4p2dlk1rm4zm428hi6ij6xpqxqlqmvkhmz5yhq9392zv7ll")))))))
 
 (define-public rcs
   (package

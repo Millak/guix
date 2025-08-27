@@ -72,7 +72,7 @@
 (define (subversion-package)
   "Return the default Subversion package."
   (let ((distro (resolve-interface '(gnu packages version-control))))
-    (module-ref distro 'subversion)))
+    (module-ref distro 'subversion/pinned)))
 
 (define (svn-fetch-builder svn hash-algo)
   (define guile-json
