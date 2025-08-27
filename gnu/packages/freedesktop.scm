@@ -2414,7 +2414,7 @@ between protocols to provide a unified interface for applications.")
       (inputs (list sqlite))
       (propagated-inputs
        ;; telepathy-logger-0.2.pc refers to all these.
-       (list libxml2 telepathy-glib))
+       (list libxml2-next telepathy-glib))
       (synopsis "Telepathy logger library")
       (home-page "https://telepathy.freedesktop.org/")
       (description

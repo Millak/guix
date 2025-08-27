@@ -57,7 +57,7 @@
                 "1zzdp5bwnszza5q6cjw66hkicay8b49n5pda7cbcgfg4hbbzv2rn"))))
     (build-system gnu-build-system)
     (propagated-inputs
-     (list libxml2))
+     (list libxml2-next))
     (native-inputs
      (list readline pkg-config))
     (home-page "https://augeas.net")

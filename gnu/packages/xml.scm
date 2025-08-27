@@ -1220,7 +1220,7 @@ XSL-T processor.  It also performs any necessary post-processing.")
                 "1shk40mpaqaf05skgyxa7qxgcarjd6i1fadn2sk0b8lakfv96bnq"))))
     (build-system gnu-build-system)
     (propagated-inputs                  ; according to xmlsec1.pc
-     (list libxml2 libxslt))
+     (list libxml2-next libxslt))
     (inputs
      (list gnutls libgcrypt libltdl))
     (native-inputs

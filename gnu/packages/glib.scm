@@ -858,7 +858,7 @@ by GDBus included in Glib.")
                          pkg-config
                          vala))
     (inputs (list check python python-pygobject))
-    (propagated-inputs (list glib libxml2 sqlite))
+    (propagated-inputs (list glib libxml2-next sqlite))
     (arguments
      (list #:tests? #f                  ;one test fails.
            #:imported-modules `((guix build python-build-system)

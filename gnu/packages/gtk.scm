@@ -612,7 +612,7 @@ diagrams.")
            fribidi
            glib
            gtk
-           libxml2
+           libxml2-next
            pango
            pcre2))
     (home-page "https://wiki.gnome.org/Projects/GtkSourceView")

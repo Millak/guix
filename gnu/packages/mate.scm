@@ -303,7 +303,7 @@ desktop and the mate-about program.")
     (propagated-inputs
      ;; both of these are requires.private in mateweather.pc
      (list libsoup-minimal-2
-           libxml2))
+           libxml2-next))
     (home-page "https://mate-desktop.org/")
     (synopsis "MATE library for weather information from the Internet")
     (description

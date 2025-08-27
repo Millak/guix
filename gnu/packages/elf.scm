@@ -242,7 +242,7 @@ object or archive file), @command{eu-strip} (for discarding symbols),
      (list pkg-config texinfo python-sphinx python))
     (propagated-inputs
      (list elfutils ;libabigail.la says -lelf
-           libxml2))           ;in Requires.private of libabigail.pc
+           libxml2-next))           ;in Requires.private of libabigail.pc
     (synopsis "Analyze application binary interfaces (ABIs)")
     (description
      "@dfn{ABIGAIL} stands for the Application Binary Interface Generic

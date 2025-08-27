@@ -771,7 +771,7 @@ the user specifically asks to proxy, so the @dfn{VPN} interface no longer
                                                      "etc/vpnc/vpnc-script")))))
     (native-inputs (list gettext-minimal pkg-config))
     (inputs (list lz4 vpnc-scripts))
-    (propagated-inputs (list libxml2 gnutls zlib))
+    (propagated-inputs (list libxml2-next gnutls zlib))
     (synopsis "Client for Cisco VPN")
     (description
      "OpenConnect is a client for Cisco's AnyConnect SSL VPN, which is
