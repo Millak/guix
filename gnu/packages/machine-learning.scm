@@ -4308,7 +4308,7 @@ methodxs at scale on CPU or GPU.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.5.8")
+    (version "0.5.9")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
@@ -4317,7 +4317,7 @@ methodxs at scale on CPU or GPU.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pdlb6qn9vnvabksiabxmcj30j8ff7526mz1qszrbdl5kh2sl7sm"))))
+        (base32 "0pkniia9lccdbshwl4sh2iria7dny13qk0flkk67msb777sm5bmn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
