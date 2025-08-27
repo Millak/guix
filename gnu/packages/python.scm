@@ -1476,19 +1476,8 @@ data types.")
 ;; Current major version.
 (define-public python python-3)
 
-;; Minimal variants of Python, mostly used to break the cycle between Tk and
+;; Minimal variant of Python, mostly used to break the cycle between Tk and
 ;; Python (Tk -> libxcb -> Python.)
-
-(define-public python2-minimal
-  (package/inherit python-2
-    (name "python2-minimal")
-    (outputs '("out"))
-
-    ;; Keep zlib, which is used by 'pip' (via the 'zipimport' module), which
-    ;; is invoked upon 'make install'.  'pip' also expects 'ctypes' and thus
-    ;; libffi.  Expat is needed for XML support which is expected by a lot
-    ;; of libraries out there.
-    (inputs (list expat libffi zlib))))
 
 (define-public python-minimal
   (package/inherit python
