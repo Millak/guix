@@ -221,22 +221,23 @@ more.")
 ;; r-rigraphlib, which is merely repackaging igraph as a static library for
 ;; use with R packages.
 (define-public igraph-for-r-rigraphlib
-  (package
-    (inherit igraph)
-    (name "igraph")
-    (version "0.10.15")
-    (source
-     (origin
-       (inherit (package-source igraph))
-       (patches '())
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/igraph/igraph")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0z9jqvl65j4z6brrjlfyykba2bs10az6dx6m8g41snlfnx21a82d"))))))
+  (hidden-package
+   (package
+     (inherit igraph)
+     (name "igraph")
+     (version "0.10.15")
+     (source
+      (origin
+        (inherit (package-source igraph))
+        (patches '())
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/igraph/igraph")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "0z9jqvl65j4z6brrjlfyykba2bs10az6dx6m8g41snlfnx21a82d")))))))
 
 (define-public python-igraph
   (package
