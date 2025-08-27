@@ -286,7 +286,7 @@ into other word processors.")
     (native-inputs
      (list cppunit gperf pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
-     (list icu4c liblangtag librevenge libxml2))
+     (list icu4c liblangtag librevenge libxml2-next))
     (inputs
       (list boost))
     (arguments
@@ -372,7 +372,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
     (native-inputs
      (list autoconf automake libtool cppunit pkg-config))
     (propagated-inputs                  ;in Requires field of .pkg
-     (list curl libxml2))
+     (list curl libxml2-next))
     (inputs
      (list boost cyrus-sasl openssl))
     (arguments
@@ -413,7 +413,7 @@ as Alfresco or Nuxeo.")
     (native-inputs
      (list doxygen gperf perl pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
-     (list librevenge libxml2))
+     (list librevenge libxml2-next))
     (inputs
      (list boost))
     (home-page "https://wiki.documentfoundation.org/DLP/Libraries/libabw")
@@ -467,7 +467,7 @@ CorelDRAW documents of all versions.")
     (native-inputs
      (list cppunit doxygen gperf pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
-     (list liblangtag librevenge libxml2 zlib))
+     (list liblangtag librevenge libxml2-next zlib))
     (inputs
      (list boost glm mdds))
     (home-page "https://wiki.documentfoundation.org/DLP/Libraries/libetonyek")
