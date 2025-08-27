@@ -40576,6 +40576,10 @@ permissive OpenSSH secure shell daemon listening on port 2222
 @item @code{qemu} (default: @code{qemu-minimal})
 The QEMU package to use.
 
+@item @code{type} (default: @code{'hurd-qcow2})
+The image type name.  Use @code{'hurd-qcow2} for a 32-bit image or
+@code{'hurd64-qcow2} for a 64-bit image.
+
 @item @code{image} (default: @var{hurd-vm-disk-image})
 The image object representing the disk image of this virtual machine
 (@pxref{System Images}).

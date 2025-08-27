@@ -27,6 +27,7 @@
   #:use-module (gnu system)
   #:use-module (gnu system accounts)
   #:use-module (gnu system file-systems)
+  #:use-module (gnu system hurd)
   #:use-module (gnu system image)
   #:use-module (gnu system images hurd)
   #:use-module ((gnu system shadow) #:select (%base-user-accounts))
@@ -45,6 +46,7 @@
   #:export (%test-libvirt
             %test-qemu-guest-agent
             %test-childhurd
+            %test-childhurd64
             %test-build-vm))
 
 
@@ -277,6 +279,22 @@
                                  (password ""))   ;empty password
                                 %base-user-accounts))))))))
 
+(define %childhurd64-os
+  (simple-operating-system
+   (service dhcpcd-service-type)
+   (service hurd-vm-service-type
+            (hurd-vm-configuration
+              (type 'hurd64-qcow2)
+              (os (operating-system
+                    (inherit %hurd-vm-operating-system)
+                    (kernel %hurd64-default-operating-system-kernel)
+                    (kernel-arguments '("noide")) ;use rumpdisk
+                    (users (cons (user-account
+                                   (name "test")
+                                   (group "users")
+                                   (password "")) ;empty password
+                                 %base-user-accounts))))))))
+
 (define* (run-command-over-ssh command
                                #:key (port 10022) (user "test"))
   "Return a program that runs COMMAND over SSH and prints the result on standard
@@ -307,7 +325,7 @@ output."
 
   (program-file "run-command-over-ssh" run))
 
-(define (run-childhurd-test)
+(define (run-childhurd-test childhurd-os)
   (define (import-module? module)
     ;; This module is optional and depends on Guile-Gcrypt, do skip it.
     (and (guix-module-name? module)
@@ -315,7 +333,7 @@ output."
 
   (define os
     (marionette-operating-system
-     %childhurd-os
+     childhurd-os
      #:imported-modules (source-module-closure
                          '((gnu services herd)
                            (guix combinators)
@@ -454,7 +472,15 @@ output."
    (description
     "Connect to the GNU/Hurd virtual machine service, aka. a childhurd, making
 sure that the childhurd boots and runs its SSH server.")
-   (value (run-childhurd-test))))
+   (value (run-childhurd-test %childhurd-os))))
+
+(define %test-childhurd64
+  (system-test
+   (name "childhurd64")
+   (description
+    "Connect to the 64-bit GNU/Hurd virtual machine service, aka. a childhurd,
+ making sure that the childhurd boots and runs its SSH server.")
+   (value (run-childhurd-test %childhurd64-os))))
 
 
 ;;;

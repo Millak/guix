@@ -61,6 +61,7 @@
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix store)
+  #:use-module (guix ui)
   #:use-module (guix utils)
   #:autoload   (guix self) (make-config.scm)
   #:autoload   (guix platform) (platform-system)
@@ -83,6 +84,7 @@
             hurd-vm-configuration?
             hurd-vm-configuration-os
             hurd-vm-configuration-qemu
+            hurd-vm-configuration-type
             hurd-vm-configuration-image
             hurd-vm-configuration-disk-size
             hurd-vm-configuration-memory-size
@@ -1782,6 +1784,11 @@ preventing password-based authentication as 'root'."
                                      (inherit config)
                                      (authorize-key? #f))))))))
 
+(define (sanitize-hurd-vm-configuration-type value)
+  (unless (memq value '(hurd-qcow2 hurd64-qcow2))
+    (leave (G_ "hurd-vm: '~a' is not a valid type~%") value))
+  value)
+
 (define-record-type* <hurd-vm-configuration>
   hurd-vm-configuration make-hurd-vm-configuration
   hurd-vm-configuration?
@@ -1789,6 +1796,9 @@ preventing password-based authentication as 'root'."
                (default %hurd-vm-operating-system))
   (qemu        hurd-vm-configuration-qemu               ;file-like
                (default qemu-minimal))
+  (type        hurd-vm-configuration-type               ;symbol
+               (default 'hurd-qcow2)
+               (sanitize sanitize-hurd-vm-configuration-type))
   (image       hurd-vm-configuration-image              ;<image>
                (thunked)
                (default (hurd-vm-disk-image this-record)))
@@ -1825,7 +1835,8 @@ is added to the OS specified in CONFIG."
 
   (let* ((os        (transform (hurd-vm-configuration-os config)))
          (disk-size (hurd-vm-configuration-disk-size config))
-         (type      (lookup-image-type-by-name 'hurd-qcow2))
+         (type      (lookup-image-type-by-name
+                     (hurd-vm-configuration-type config)))
          (os->image (image-type-constructor type)))
     (image (inherit (os->image os))
            (size disk-size))))
