@@ -291,63 +291,24 @@ This package tracks the Extended Support Release (ESR) channel.")
   (package
    (inherit nss)
    (name "nss-rapid")
-   (version "3.113")
-   (source (origin
-             (inherit (package-source nss))
-             (uri (let ((version-with-underscores
-                         (string-join (string-split version #\.) "_")))
-                    (string-append
-                     "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
-                     "releases/NSS_" version-with-underscores "_RTM/src/"
-                     "nss-" version ".tar.gz")))
-             (sha256
-              (base32
-               "03qwl3ps3xgc9pkc07qrsa4vd2r57mjwicv3gb483gfk2ashdvxc"))
-             (patches
-              (remove (cut string-suffix? "nss-disable-broken-tests.patch" <>)
-                      (origin-patches (package-source nss))))))
-   (arguments
-    (substitute-keyword-arguments (package-arguments nss)
-      ((#:phases phases)
-       #~(modify-phases #$phases
-           (add-after 'unpack 'neutralize-network-test
-             ;; Test tries to resolve `wrong.host.badssl.com' which fails due
-             ;; to no networking in the build environment.
-             ;; Behavior changed as of 3.110.
-             (lambda _
-               (substitute* "nss/tests/ssl/ssl.sh"
-                 ((" ssl_policy_pkix_ocsp" all)
-                  (string-append "#" all)))))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (if tests?
-                   (begin
-                     ;; Use 127.0.0.1 instead of $HOST.$DOMSUF as HOSTADDR for
-                     ;; testing.  The latter requires a working DNS or /etc/hosts.
-                     (setenv "DOMSUF" "localdomain")
-                     (setenv "USE_IP" "TRUE")
-                     (setenv "IP_ADDRESS" "127.0.0.1")
+   (version "3.115")
+   (source
+    (origin
+      (inherit (package-source nss))
+      (uri (let ((version-with-underscores
+                  (string-join (string-split version #\.) "_")))
+             (string-append
+              "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
+              "releases/NSS_" version-with-underscores "_RTM/src/"
+              "nss-" version ".tar.gz")))
+      (sha256
+       (base32 "1av1g18dkx86zxvpr34j5mx976mgsk002khlb40k4ydx6gxlfamc"))
+      (patches
+       (search-patches "nss-3.56-pkgconfig.patch"
+                       "nss-getcwd-nonnull.patch"
+                       "nss-increase-test-timeout.patch"
+                       "nss-3.115-disable-pkix-ocsp-tests.patch"))))
 
-                     ;; This specific test is looking at performance "now
-                     ;; verify that we can quickly dump a database", and
-                     ;; we're not testing performance here (especially
-                     ;; since we're using faketime), so raise the
-                     ;; threshold
-                     (substitute* "nss/tests/dbtests/dbtests.sh"
-                       ((" -lt 5") " -lt 50"))
-
-                     ;; Since the test suite is very lengthy, run the test
-                     ;; suite once, not thrice as done by default, by
-                     ;; selecting only the 'standard' cycle.
-                     (setenv "NSS_CYCLES" "standard")
-
-                     ;; The "PayPalEE.cert" certificate expires every six months,
-                     ;; leading to test failures:
-                     ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
-                     ;; work around that, set the time to roughly the release date.
-                     (invoke #$(if (target-64bit?) "faketime" "datefudge")
-                            "2025-06-19" "./nss/tests/all.sh"))
-                   (format #t "test suite not run~%"))))))))
    (synopsis "Network Security Services (Rapid Release)")
    (description
     "Network Security Services (@dfn{NSS}) is a set of libraries designed to

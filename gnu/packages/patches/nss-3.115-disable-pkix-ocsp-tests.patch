@@ -1,0 +1,13 @@
+These tests require network.
+
+diff -x .svn -x .git -urN nss-3.113.orig/nss/tests/ssl/ssl.sh nss-3.113/nss/tests/ssl/ssl.sh
+--- nss-3.113.orig/nss/tests/ssl/ssl.sh	2025-08-25 16:49:02.398086665 -0700
++++ nss-3.113/nss/tests/ssl/ssl.sh	2025-08-26 15:46:11.718401605 -0700
+@@ -1600,7 +1600,6 @@
+             if using_sql ; then
+                 ssl_policy_listsuites
+                 ssl_policy_selfserv
+-                ssl_policy_pkix_ocsp
+                 ssl_policy
+             fi
+             ;;
