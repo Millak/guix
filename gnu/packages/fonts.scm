@@ -1559,6 +1559,37 @@ display all Unicode symbols.  This package provides the Serif variant of CJK
 fonts.")
     (license license:silofl1.1)))
 
+(define-public font-google-noto-serif-cjk-static
+  (package
+    (name "font-google-noto-serif-cjk-static")
+    (version "2.003")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/googlefonts/noto-cjk/releases/download/Serif"
+             version "/04_NotoSerifCJKOTC.zip"))
+       (file-name (string-append name "-" version ".zip"))
+       (sha256
+        (base32 "0cca367a7vrpj17bczbwhnlbxsm1j25j6c34xj183s8w97yxhvn7"))))
+    (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (chdir "..")         ;For license.
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "OTC"
+                       (install #:outputs `(("out" . ,#$output))))))))))
+    (home-page "https://www.google.com/get/noto/")
+    (synopsis "Fonts to cover all languages")
+    (description "Google Noto Fonts is a family of fonts designed to support
+all languages with a consistent look and aesthetic.  Its goal is to properly
+display all Unicode symbols.  This package provides the Serif variant of CJK
+fonts.")
+    (license license:silofl1.1)))
+
 (define-public font-google-roboto
   (package
     (name "font-google-roboto")
