@@ -256,7 +256,7 @@
 (define-public gupnp-igd
   (package
     (name "gupnp-igd")
-    (version "1.2.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
@@ -265,7 +265,7 @@
                        (version-major+minor version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1q9bw12ibih3yxpha3gm1dabyqg9gx6yxacbh4kxsgm1i84j0lab"))))
+        (base32 "0x0vfw8jzz7ih43qd5w7qx2gr56hnqra7wk895ni48mb761rg6a0"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -297,7 +297,7 @@
      ;; These libraries are required by the .pc file.
      (list glib
            glib-networking
-           gupnp-1.4))
+           gupnp))
     (synopsis "UPnP IGD for GNOME")
     (description "GUPnP-IGD is a library to handle UPnP IGD port mapping.")
     (home-page "https://gitlab.gnome.org/GNOME/gupnp-igd")
