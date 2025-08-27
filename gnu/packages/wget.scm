@@ -46,6 +46,7 @@
 
 (define-public wget
   (package
+    (replacement wget/fixed)
     (name "wget")
     (version "1.21.4")
     (source
@@ -74,6 +75,17 @@ HTTPS and FTP protocols.  It can resume interrupted downloads, use file name
 wild cards, supports proxies and cookies, and it can convert absolute links
 in downloaded documents to relative links.")
     (license license:gpl3+))) ; some files are under GPLv2+
+
+(define-public wget/fixed
+  (package
+    (inherit wget)
+    (version "1.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/wget/wget-" version ".tar.lz"))
+       (sha256
+        (base32 "07waw3s51zmjqzqq717xyyd353qc1ajcd38lh7y8i85hav3mq8hr"))))))
 
 (define-public wgetpaste
   (package
