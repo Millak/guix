@@ -100,6 +100,34 @@ tasks needed for the ROCM software stack.")
 oclc, ocml, ockl, opencl, hip and hc.")
     (license license:ncsa)))
 
+(define-public rocm-hip-cpu
+  ;; There are no releases or tags.
+  (let ((commit "e112c935057434897bb12d9ab3910380a8bd5f58")
+        (release "0"))
+    (package
+      (name "rocm-hip-cpu")
+      (version "0.1.4142")              ;from CMakeLists.txt
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ROCm/HIP-CPU/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1rbih56kfry7scvww54dwx8ph11ddzc5bf4ww1vs1vmhi3r05gpa"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DBUILD_EXAMPLES=ON")))
+      (home-page "https://github.com/ROCm/HIP-CPU/")
+      (synopsis "An implementation of HIP that works on CPUs")
+      (description "The HIP CPU Runtime is a header-only library that allows
+CPUs to execute unmodified HIP code.  It is generic and does not assume a
+particular CPU vendor or architecture.")
+      (license license:expat))))
+
 (define-public rocm-comgr
   (package
     (name "rocm-comgr")
