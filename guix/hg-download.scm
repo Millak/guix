@@ -57,7 +57,7 @@
 (define (hg-package)
   "Return the default Mercurial package."
   (let ((distro (resolve-interface '(gnu packages version-control))))
-    (module-ref distro 'mercurial)))
+    (module-ref distro 'mercurial/pinned)))
 
 (define (hg-fetch-builder hg hash-algo)
   (define inputs

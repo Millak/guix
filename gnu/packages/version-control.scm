@@ -2725,101 +2725,126 @@ execution of any hook written in any language before every commit.")
 (define-public python-pre-commit
   (deprecated-package "python-pre-commit" pre-commit))
 
+;; XXX: This is a temporary helper to avoid recompiling mercurial/pinned.
+;; If you update mercurial, don't touch it but work around it.
+;; If you update mercurial/pinned, include that in mercurial, and use inheritance
+;; for mercurial/pinned.
+(define mercurial-check-phase
+  #~(lambda* (#:key tests? #:allow-other-keys)
+      (with-directory-excursion "tests"
+        ;; The following tests are known to fail.
+        (for-each delete-file
+                  '(;; XXX: This test calls 'run-tests.py --with-hg=
+                    ;; `which hg`' and fails because there is no hg on
+                    ;; PATH from before (that's why we are building it!)?
+                    "test-hghave.t"
+
+                    ;; This test is missing a debug line
+                    ;; mmapping $TESTTMP/a/.hg/store/00changelog.i (no-pure !)
+                    ;; but the relevant output is correct.
+                    "test-revlog-mmapindex.t"
+
+                    ;; This test creates a shebang spanning multiple
+                    ;; lines which is difficult to substitute.  It
+                    ;; only tests the test runner itself, which gets
+                    ;; thoroughly tested during the check phase anyway.
+                    "test-run-tests.t"
+
+                    ;; These tests fail because the program is not
+                    ;; connected to a TTY in the build container.
+                    "test-nointerrupt.t"
+                    "test-transaction-rollback-on-sigpipe.t"
+
+                    ;; FIXME: This gets killed but does not receive an interrupt.
+                    "test-commandserver.t"
+
+                    ;; These tests get unexpected warnings about using
+                    ;; deprecated functionality in Python, but otherwise
+                    ;; succeed; try enabling for later Mercurial versions.
+                    "test-demandimport.py"
+                    "test-patchbomb-tls.t"
+                    ;; Similarly, this gets a more informative error
+                    ;; message from Python 3.10 than it expects.
+                    "test-http-bad-server.t"
+
+                    ;; Only works when run in a hg-repo, not in an
+                    ;; extracted tarball
+                    "test-doctest.py"
+
+                    ;; TODO: the fqaddr() call fails in the build
+                    ;; container, causing these server tests to fail.
+                    "test-hgwebdir.t"
+                    "test-http-branchmap.t"
+                    "test-pull-bundle.t"
+                    "test-push-http.t"
+                    "test-serve.t"
+                    "test-subrepo-deep-nested-change.t"
+                    "test-subrepo-recursion.t"
+                    ;; FIXME: Investigate why it failed.
+                    "test-convert-darcs.t"))
+        (when tests?
+          (invoke "./run-tests.py"
+                  ;; ‘make check’ does not respect ‘-j’.
+                  (string-append "-j" (number->string
+                                       (parallel-job-count)))
+                  ;; The default time-outs are too low for many systems.
+                  ;; Raise them generously: Guix enforces its own.
+                  "--timeout" "86400"
+                  "--slowtimeout" "86400"
+                  ;; The test suite takes a long time and produces little
+                  ;; output by default.  Prevent timeouts due to silence.
+                  "-v")))))
+
 (define-public mercurial
   (package
     (name "mercurial")
-    (version "6.9.5")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "https://www.mercurial-scm.org/"
-                                 "release/mercurial-" version ".tar.gz"))
-             (patches (search-patches "mercurial-hg-extension-path.patch"))
-             (sha256
-              (base32
-               "1zb5rjqs5z0y900hml0v4wsmv59cdhi50a8kcbjxdp79z7p2mwnk"))))
+    (version "7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.mercurial-scm.org/"
+                           "release/mercurial-" version ".tar.gz"))
+       (patches (search-patches "mercurial-hg-extension-path.patch"))
+       (sha256
+        (base32 "1jz54akdnsp5frlbsr2xg71kbp2919v61gkkx7c7bi1q7k421ng8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* (find-files "tests" "\\.(t|py)$")
-               (("/bin/sh")
-                (which "sh"))
-               (("/usr/bin/env")
-                (which "env")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (with-directory-excursion "tests"
-               ;; The following tests are known to fail.
-               (for-each delete-file
-                         '(;; XXX: This test calls 'run-tests.py --with-hg=
-                           ;; `which hg`' and fails because there is no hg on
-                           ;; PATH from before (that's why we are building it!)?
-                           "test-hghave.t"
-
-                           ;; This test is missing a debug line
-                           ;; mmapping $TESTTMP/a/.hg/store/00changelog.i (no-pure !)
-                           ;; but the relevant output is correct.
-                           "test-revlog-mmapindex.t"
-
-                           ;; This test creates a shebang spanning multiple
-                           ;; lines which is difficult to substitute.  It
-                           ;; only tests the test runner itself, which gets
-                           ;; thoroughly tested during the check phase anyway.
-                           "test-run-tests.t"
-
-                           ;; These tests fail because the program is not
-                           ;; connected to a TTY in the build container.
-                           "test-nointerrupt.t"
-                           "test-transaction-rollback-on-sigpipe.t"
-
-                           ;; FIXME: This gets killed but does not receive an interrupt.
-                           "test-commandserver.t"
-
-                           ;; These tests get unexpected warnings about using
-                           ;; deprecated functionality in Python, but otherwise
-                           ;; succeed; try enabling for later Mercurial versions.
-                           "test-demandimport.py"
-                           "test-patchbomb-tls.t"
-                           ;; Similarly, this gets a more informative error
-                           ;; message from Python 3.10 than it expects.
-                           "test-http-bad-server.t"
-
-                           ;; Only works when run in a hg-repo, not in an
-                           ;; extracted tarball
-                           "test-doctest.py"
-
-                           ;; TODO: the fqaddr() call fails in the build
-                           ;; container, causing these server tests to fail.
-                           "test-hgwebdir.t"
-                           "test-http-branchmap.t"
-                           "test-pull-bundle.t"
-                           "test-push-http.t"
-                           "test-serve.t"
-                           "test-subrepo-deep-nested-change.t"
-                           "test-subrepo-recursion.t"
-                           ;; FIXME: Investigate why it failed.
-                           "test-convert-darcs.t"))
-               (when tests?
-                 (invoke "./run-tests.py"
-                         ;; ‘make check’ does not respect ‘-j’.
-                         (string-append "-j" (number->string
-                                              (parallel-job-count)))
-                         ;; The default time-outs are too low for many systems.
-                         ;; Raise them generously: Guix enforces its own.
-                         "--timeout" "86400"
-                         "--slowtimeout" "86400"
-                         ;; The test suite takes a long time and produces little
-                         ;; output by default.  Prevent timeouts due to silence.
-                         "-v"))))))))
+     (list
+      #:imported-modules `((guix build python-build-system)
+                           ,@%default-gnu-imported-modules)
+      #:modules '((guix build gnu-build-system)
+                  ((guix build python-build-system) #:prefix py:)
+                  (guix build utils))
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "tests" "\\.(t|py)$")
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh"))
+                (("/usr/bin/env")
+                 (search-input-file inputs "bin/env")))))
+          (add-before 'check 'configure-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion "tests"
+                (substitute* "run-tests.py"
+                  ;; XXX: Adapt pip call to build daemon chroot.
+                  (("b\"install\", b\"\\.\"")
+                   "b\"install\", b\"--no-build-isolation\", b\".\"")
+                  ;; XXX: Log the actual PYTHONPATH.
+                  (("\"PYTHONPATH\"")
+                   "\"GUIX_PYTHONPATH\"")))))
+          (add-before 'configure-check 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (delete 'check)
+          (add-after 'install 'check #$mercurial-check-phase))))
     (native-inputs
      (list python-docutils
            ;; The following inputs are only needed to run the tests.
-           python-nose unzip which))
+           python-setuptools-next python-setuptools-scm-next python-wheel unzip which))
     (inputs
      (list python-wrapper))
     ;; Find third-party extensions.
@@ -2834,6 +2859,38 @@ execution of any hook written in any language before every commit.")
 efficiently handles projects of any size and offers an easy and intuitive
 interface.")
     (license license:gpl2+)))
+
+(define-public mercurial/pinned
+  (package
+    (inherit mercurial)
+    (version "6.9.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.mercurial-scm.org/"
+                           "release/mercurial-" version ".tar.gz"))
+       (patches (search-patches "mercurial-hg-extension-path.patch"))
+       (sha256
+        (base32 "1zb5rjqs5z0y900hml0v4wsmv59cdhi50a8kcbjxdp79z7p2mwnk"))))
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" (assoc-ref %outputs "out")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* (find-files "tests" "\\.(t|py)$")
+                (("/bin/sh")
+                 (which "sh"))
+                (("/usr/bin/env")
+                 (which "env")))))
+          (replace 'check #$mercurial-check-phase))))
+    (native-inputs
+     (list python-docutils
+           ;; The following inputs are only needed to run the tests.
+           python-nose unzip which))))
 
 (define-public python-hg-evolve
   (package
