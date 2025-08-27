@@ -1132,30 +1132,6 @@ ACME server (such as Let's Encrypt) implemented as a relatively simple Bash
 script.")
     (license license:expat)))
 
-(define-public go-github-com-certifi-gocertifi
-  (let ((commit "a5e0173ced670013bfb649c7e806bc9529c986ec")
-        (revision "1"))
-    (package
-      (name "go-github-com-certifi-gocertifi")
-      (version (git-version "2018.01.18" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/certifi/gocertifi")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1n9drccl3q1rr8wg3nf60slkf1lgsmz5ahifrglbdrc6har3rryj"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/certifi/gocertifi"))
-      (synopsis "X.509 TLS root certificate bundle for Go")
-      (description "This package is a Go language X.509 TLS root certificate bundle,
-derived from Mozilla's collection.")
-      (home-page "https://certifi.io")
-      (license license:mpl2.0))))
-
 (define-public s2n
   (package
     (name "s2n")
