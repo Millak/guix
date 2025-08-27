@@ -152,7 +152,7 @@
 (define-public dlpack
   (package
     (name "dlpack")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -161,10 +161,10 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "169slm88jin4ddhdwk1qhqzzkhkwk1jrz35i7abhcqkry9wjib4f"))))
+        (base32 "0vlp8gcf7s3snalj6xmvgqxxn96fki6gw9hzph30gmgdbaz730j6"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;No tests.
-    (home-page "https://github.com/dmlc/dlpack")
+    (home-page "https://dmlc.github.io/dlpack/latest/")
     (synopsis "In memory tensor structure")
     (description
      "DLPack is an in-memory tensor structure for sharing tensors among
