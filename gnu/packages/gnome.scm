@@ -5201,6 +5201,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
 ;;; A minimal version of libsoup used to prevent a cycle with Inkscape.
 (define-public libsoup-minimal
   (package
+    (replacement libsoup-minimal/fixed)
     (name "libsoup-minimal")
     (version "3.6.4")
     (source (origin
@@ -5250,7 +5251,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            libpsl
            nghttp2 ;for pkg-config
            `(,nghttp2 "lib")
-           libxml2-next
+           libxml2
            sqlite
            zlib))
     (inputs
@@ -5263,10 +5264,18 @@ and the GLib main loop, to integrate well with GNOME applications.")
     (license license:lgpl2.0+)
     (properties '((upstream-name . "libsoup")))))
 
+(define-public libsoup-minimal/fixed
+  (package
+    (inherit libsoup-minimal)
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs libsoup-minimal)
+       (replace "libxml2" libxml2-next)))))
+
 ;;; An older variant kept to build the 'rest' package.
 (define-public libsoup-minimal-2
   (package
     (inherit libsoup-minimal)
+    (replacement libsoup-minimal-2/fixed)
     (version "2.74.3")
     (source (origin
               (method url-fetch)
@@ -5292,10 +5301,21 @@ and the GLib main loop, to integrate well with GNOME applications.")
                   (("[ \t]*\\['ssl', true, \\[\\]\\],") ""))))))))
     (native-inputs
      (modify-inputs (package-native-inputs libsoup-minimal)
-       (replace "vala" vala-0.52)))))
+       (replace "vala" vala-0.52)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs libsoup-minimal)
+       (replace "libxml2" libxml2)))))
+
+(define-public libsoup-minimal-2/fixed
+  (package
+    (inherit libsoup-minimal-2)
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs libsoup-minimal-2)
+       (replace "libxml2" libxml2-next)))))
 
 (define-public libsoup
   (package/inherit libsoup-minimal
+    (replacement #f)
     (name "libsoup")
     (outputs (cons "doc" (package-outputs libsoup-minimal)))
     (arguments
