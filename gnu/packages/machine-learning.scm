@@ -6593,8 +6593,8 @@ simple speech recognition.")
                  "lib.")))))))))
 
 (define-public nerd-dictation
-  (let* ((commit "0eb44b7fd0927d69c92de5566e5807ed2c2e20b7")
-         (revision "1"))
+  (let* ((commit "03ce043a6d569a5bb9a715be6a8e45d8ba0930fd")
+         (revision "2"))
     (package
       (name "nerd-dictation")
       (version (git-version "0" revision commit))
@@ -6606,7 +6606,7 @@ simple speech recognition.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0frdpswv6w3cwj3c7wd5w8gj3s1hvpdwd48qhfhfxf7imahz9bqf"))))
+          (base32 "0ksnlpy2jcldxamq7bsbcgxgafcmgxkbjccd4fwmmn0y814kkz9k"))))
       (build-system pyproject-build-system)
       (arguments
        (list
