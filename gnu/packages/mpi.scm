@@ -731,57 +731,66 @@ programmable API.")
 (define (make-scorep mpi)
   (package
     (name (string-append "scorep-" (package-name mpi)))
-    (version "3.1")
+    (version "9.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://www.vi-hps.org/upload/packages/scorep/scorep-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "0h45357djna4dn9jyxx0n36fhhms3jrf22988m9agz1aw2jfivs9"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Remove bundled software.
-               '(begin
-                  (for-each delete-file-recursively
-                            '("vendor/opari2" "vendor/cube"))
-                  #t))))
+       (method url-fetch)
+       (uri (string-append
+          "https://perftools.pages.jsc.fz-juelich.de/cicd/scorep/tags/"
+          "scorep-" version "/scorep-" version ".tar.gz"))
+       (sha256
+         (base32
+          "15q93rc8wblbzqgh99rqzyq6fdp88mi6yziww05c6cbgrjs5s2jx"))
+       (modules '((guix build utils)))
+       (snippet
+         ;; Remove bundled software.
+         '(begin
+           (for-each delete-file-recursively
+              '("vendor/otf2" "vendor/opari2"
+                "vendor/cubelib" "vendor/cubew"))))))
     (build-system gnu-build-system)
     (inputs
-     `(("mpi" ,mpi)
-       ("papi" ,papi)
-       ("opari2" ,opari2)
-       ("libunwind" ,libunwind)
-       ("otf2" ,otf2)
-       ("cubelib" ,cube "lib")                    ;for lib, include
-       ("openmpi" ,openmpi)
-       ("zlib" ,zlib)))
+      (list mpi
+            papi
+            opari2
+            libunwind
+            otf2
+            cubelib
+            cubew
+            gotcha
+            libbfd
+            libiberty
+            openmpi
+            zlib))
     (native-inputs
-     (list gfortran
-           flex
-           cube ;for cube-config
-           bison
-           python
-           doxygen
-           which))
+      (list gfortran
+            flex
+            bison
+            python
+            doxygen
+            which))
     (arguments
-     `(#:configure-flags
-       (list "--enable-shared" "--disable-static"
-             (string-append "--with-opari2="
-                            (assoc-ref %build-inputs "opari2"))
-             (string-append "--with-cube="
-                            (assoc-ref %build-inputs "cube")))
-       #:parallel-tests? #f
-       #:make-flags '("V=1")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'licence
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append (assoc-ref outputs "out")
-                                       "/share/doc/scorep")))
-               (install-file "COPYING" doc)
-               #t))))))
+      (list
+       #:configure-flags
+       #~(list "--enable-shared" "--disable-static"
+               "MPI_LIBS=-lmpi" "SHMEM_LIBS=-loshmem"
+               (string-append "--with-cubelib="
+                              #$(this-package-input "cubelib"))
+               (string-append "--with-cubew="
+                              #$(this-package-input "cubew"))
+               (string-append "--with-libbfd="
+                              #$(this-package-input "libbfd"))
+               (string-append "--with-otf2="
+                              #$(this-package-input "otf2"))
+               (string-append "--with-opari2="
+                              #$(this-package-input "opari2")))
+        #:parallel-tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'licence
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((doc (string-append (assoc-ref outputs "out")
+                                          "/share/doc/scorep")))
+                  (install-file "COPYING" doc)))))))
     (home-page "https://www.vi-hps.org/projects/score-p/")
     (synopsis "Performance measurement infrastructure for parallel code")
     (description
