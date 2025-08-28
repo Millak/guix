@@ -1052,6 +1052,98 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
 Noto Sans, Space Mono and Ubuntu families.")
     (license license:silofl1.1)))
 
+(define-public python-pymupdf
+  (package
+    (name "python-pymupdf")
+    (version "1.26.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pymupdf/PyMuPDF")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1h11kd4kd63p0jlhhm0ppb9k8p6l4bp0cdx425xhqa5pw569vs7c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list
+                      ;; barcode functionality is not included in our build
+                      "--ignore=tests/test_barcode.py"
+                      ;; test_codespell tries to run tests based on git
+                      ;; checkout, which is not present
+                      "--ignore=tests/test_codespell.py"
+                      ;; test_font tries to run pip, thus fails
+                      "--ignore=tests/test_font.py"
+                      ;; test_general tries to run pip, thus fails
+                      "--ignore=tests/test_general.py"
+                      ;; test_pixmap tries to run pip, thus fails
+                      "--ignore=tests/test_pixmap.py"
+                      ;; test_pylint tries to run tests based on git checkout,
+                      ;; which is not present
+                      "--ignore=tests/test_pylint.py"
+                      ;; test_2979 in test_tables fails for unknown reasons
+                      "--ignore=tests/test_tables.py"
+                      ;; test_textbox errors at teardown of test_textbox3 for
+                      ;; unknown reasons
+                      "--ignore=tests/test_textbox.py"
+                      ;; tesseract ocr integration appears to not work
+                      "--ignore=tests/test_tesseract.py"
+                      "--ignore=tests/test_textextract.py")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-tests
+                     ;; The test suite wants to run pip to automatically install
+                     ;; packages required for the test suite, so we disable that.
+                     (lambda _
+                       (substitute* "tests/conftest.py"
+                         (("command = f'pip install --upgrade \\{packages\\}'") "command = 'echo noop'"))))
+                   (add-before 'build 'configure-libraries
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (setenv "PYMUPDF_INCLUDES"
+                               (string-join
+                                (list
+                                 (search-input-directory inputs "include/freetype2")
+                                 (search-input-directory inputs "include/mupdf"))
+                                ":"))
+                       (setenv "PYMUPDF_SETUP_MUPDF_BUILD" "")
+                       (setenv "PYMUPDF_MUPDF_LIB"
+                               (format #f "~a/lib"
+                                       #$(this-package-input "mupdf")))
+                       (setenv "PYMUPDF_SETUP_MUPDF_REBUILD" "0")
+                       (setenv "PYMUPDF_SETUP_MUPDF_OVERWRITE_CONFIG" "0,")
+                       (setenv "PYMUPDF_SETUP_IMPLEMENTATIONS" "a")
+                       (setenv "CC" #$(cc-for-target))
+                       (setenv "CXX" #$(cxx-for-target)))))))
+    (inputs (list freetype
+                  gumbo-parser
+                  harfbuzz
+                  jbig2dec
+                  libjpeg-turbo
+                  openjpeg
+                  psutils
+                  tesseract-ocr))
+    (propagated-inputs (list mupdf
+                             python-fonttools
+                             python-pillow
+                             python-pymupdf-fonts))
+    (native-inputs (list python-codespell
+                         python-flake8
+                         python-psutil  ;for tests
+                         python-pylint
+                         python-pytest
+                         python-setuptools
+                         swig-next))
+    (home-page "https://github.com/pymupdf/PyMuPDF")
+    (synopsis "Python bindings for the PDF toolkit and renderer MuPDF")
+    (description "PyMuPDF is a set of Python bindings for MuPDF,
+which is a viewer, renderer, and toolkit for files in @acronym{PDF, Portable
+Document Format}, @acronym{XPS, XML Paper Specification}, @acronym{OpenXPS,
+Open XML Paper Specification}, @acronym{CBZ, Comic Book ZI}P, @acronym{EPUB,
+Electronic Publication} and @acronym{FB2, Fiction Book 2} (e-books) format.")
+    (license license:agpl3)))
+
 (define-public qpdf
   (package
     (name "qpdf")
