@@ -4738,6 +4738,45 @@ in a modular way.")
 high-throughput sequencing of B cell and T cell repertoires.")
     (license license:agpl3)))
 
+(define-public python-changeo
+  (package
+    (name "python-changeo")
+    (version "1.3.4")
+    (home-page "https://github.com/immcantation/changeo")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1230bb7672n6nqkrw2fvrprknchhlvvxb76l1r4g6ybrq0g7l0rb"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-airr
+           python-biopython
+           python-importlib-resources-6
+           python-numpy
+           python-packaging
+           python-pandas
+           python-presto
+           python-pyyaml
+           python-scipy))
+    (native-inputs
+     (list python-airr
+           python-setuptools
+           python-wheel))
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"))
+    (synopsis "Repertoire clonal assignment toolkit")
+    (description "Change-O is a collection of tools for processing the output
+of V(D)J alignment tools, assigning clonal clusters to immunoglobulin (Ig)
+sequences, and reconstructing germline sequences.")
+    (license license:gpl3)))
+
 (define-public python-fastalite
   (package
     (name "python-fastalite")
