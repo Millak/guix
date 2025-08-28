@@ -1,0 +1,252 @@
+Upstream-status: https://github.com/dalanicolai/doc-tools-toc/pull/4
+
+diff --git a/doc-toc.el b/doc-toc.el
+index 8b7057c..64eca03 100644
+--- a/doc-toc.el
++++ b/doc-toc.el
+@@ -216,6 +216,7 @@
+ (defvar pdf-filename)
+ 
+ (declare-function pdf-cache-get-image "pdf-cache")
++(declare-function pdf-view-active-region-text "pdf-view")
+ (declare-function pdf-view-goto-page "pdf-view")
+ (declare-function pdf-view-next-page "pdf-view")
+ (declare-function pdf-view-previous-page "pdf-view")
+@@ -262,39 +263,60 @@ URL`http://handyoutlinerfo.sourceforge.net/'."
+ String (i.e. surround with double quotes)."
+   :type 'file)
+ 
++(defvar doc-toc--ddjvu-program (executable-find "ddjvu"))
++(defvar doc-toc--djvused-program (executable-find "djvused"))
++(defvar doc-toc--djvutxt-program (executable-find "djvutxt"))
++(defvar doc-toc--mutool-program (executable-find "mutool"))
++(defvar doc-toc--pdfoutline-program (executable-find "pdfoutline"))
++(defvar doc-toc--pdftocgen-program (executable-find "pdftocgen"))
++(defvar doc-toc--pdftocio-program (executable-find "pdftocio"))
++(defvar doc-toc--pdftotext-program (executable-find "pdftotext"))
++(defvar doc-toc--pdfxmeta-program (executable-find "pdfxmeta"))
++(defvar doc-toc--tesseract-program (executable-find "tesseract"))
++
++(defun doc-toc--process-to-string (program &rest args)
++  "Return the output of running PROGRAM with ARGS.
++
++Like `shell-command-to-string', but PROGRAM and ARGS are provided as
++separate strings rather than a single space-separated, escaped string."
++  (with-temp-buffer
++         (apply #'call-process
++                program
++                nil
++                (list (current-buffer) nil)
++                nil
++                args)
++         (buffer-string)))
++
+ ;;;; pdf.tocgen
+ ;;;###autoload
+ (defun doc-toc-gen-set-level (level)
+-  "Define the text properties of the heading level.
+-In a pdf-view buffer select a single word in the headline of a
+-certain level. Then run `doc-toc-gen-set-level' to write the text
++  "define the text properties of the heading level.
++in a pdf-view buffer select a single word in the headline of a
++certain level. then run `doc-toc-gen-set-level' to write the text
+ properties to the recipe.toml file that is created in the
+-document's directory. You will be prompted to enter the LEVEL
+-number. The highest level should have number 1, the next level
++document's directory. you will be prompted to enter the level
++number. the highest level should have number 1, the next level
+ number 2 etc."
+-  (interactive "nWhich level you are setting (number): ")
++  (interactive "nwhich level you are setting (number): ")
+   (let* ((page (pdf-view-current-page))
+          (filename (url-filename (url-generic-parse-url buffer-file-name)))
+-         (pdfxmeta-result (shell-command
+-                           (format "pdfxmeta --auto %s --page %s %s \"%s\" >> recipe.toml"
+-                                   level
+-                                   page
+-                                   (shell-quote-argument filename)
+-                                   (car (pdf-view-active-region-text))))))
+-         ;; (pdfxmeta-result (call-process "pdfxmeta" nil "recipe.toml" nil
+-         ;;                                "--auto" (number-to-string level)
+-         ;;                                "--page" (number-to-string page)
+-         ;;                                (shell-quote-argument filename)
+-         ;;                                (concat "\"" (car (pdf-view-active-region-text)) "\""))))
++         (pdfxmeta-result (call-process doc-toc--pdfxmeta-program nil "recipe.toml" nil
++                                        "--auto" (number-to-string level)
++                                        "--page" (number-to-string page)
++                                        (shell-quote-argument filename)
++                                        (concat "\"" (car (pdf-view-active-region-text)) "\""))))
+     (when (eq pdfxmeta-result 1)
+-      (let ((page-text (shell-command-to-string
+-                        (format "mutool draw -F text %s %s"
+-                                (shell-quote-argument filename)
+-                                page
+-                                ))))
++      (let ((page-text (doc-toc--process-to-string
++                        doc-toc--mutool-program
++                        "draw"
++                        "-f"
++                        "text"
++                        filename
++                        page)))
+         (pop-to-buffer "page-text")
+         (insert
+-         "COULD NOT SET HEADING LEVEL. MUPDF EXTRACTED FOLLOWING PAGE TEXT FROM PAGE:\n")
++         "could not set heading level. mupdf extracted following page text from page:\n")
+         (add-text-properties 1 (point) '(face font-lock-warning-face))
+         (let ((beg (point)))
+           (insert "(try to select partial word)\n\n")
+@@ -312,8 +334,11 @@ be used after the headline text properties have been defined with
+ the function `doc-toc-gen-set-level'"
+   (interactive)
+   (let ((filename buffer-file-name)
+-        (toc (shell-command-to-string
+-              (format "pdftocgen %s < recipe.toml" (shell-quote-argument buffer-file-name)))))
++        (toc (doc-toc--process-to-string
++              doc-toc--pdftocgen-program
++              buffer-file-name
++              "-r"
++              "recipe.toml")))
+     (switch-to-buffer "toc")
+     (doc-toc-pdftocgen-mode) ;; required before setting local variable
+     (when (fboundp 'flyspell-mode)
+@@ -328,7 +353,8 @@ named output.pdf and opened in a new buffer. Don't forget to
+ rename this new file."
+   (interactive)
+   (let* ((output-buf (get-buffer-create "*pdftocio-output*")))
+-    (call-process-region (point-min) (point-max) "pdftocio"
++    (call-process-region (point-min) (point-max)
++                         doc-toc--pdftocio-program
+                          nil output-buf nil pdf-filename)
+     (kill-buffer-if-not-modified (find-file pdf-filename))
+     (when (file-exists-p (concat (file-name-base pdf-filename) "_out.pdf"))
+@@ -483,14 +509,19 @@ ARG (\\[universal-argument]) to enter different separators."
+          (default-process-coding-system
+            (cond ((string= ".pdf" ext)'(windows-1252-unix . utf-8-unix))
+                  ((string= ".djvu" ext) '(utf-8-unix . utf-8-unix))))
+-         (shell-command (cond ((string= ".pdf" ext) "pdftotext -f %s -l %s -layout %s -")
+-                              ((string= ".djvu" ext) "djvutxt --page=%s-%s %s")
+-                              (t (error "Buffer-filename does not have pdf or djvu extension"))))
+-         (text (shell-command-to-string
+-                (format shell-command
+-                        startpage
+-                        endpage
+-                        (shell-quote-argument buffer-file-name))))
++         (text (cond ((string= ".pdf" ext)
++                      (doc-toc--process-to-string
++                       doc-toc--pdftotext-program
++                       "-f" startpage
++                       "-l" endpage
++                       "-layout" buffer-file-name
++                       "-"))
++                     ((string= ".djvu" ext)
++                      (doc-toc--process-to-string
++                       doc-toc--djvutxt-program
++                       (format "--page=%s-%s" startpage endpage)
++                        buffer-file-name))
++                     (t (error "Buffer-filename does not have pdf or djvu extension"))))
+          (buffer (get-buffer-create (file-name-sans-extension (buffer-name)))))
+     (switch-to-buffer buffer)
+     (doc-toc-cleanup-mode) ;; required before setting local variable
+@@ -522,7 +553,8 @@ For use in `doc-toc-ocr-languages'."
+   (let ((print-length nil))
+     (message (format "%s" (seq-subseq
+                          (split-string
+-                          (shell-command-to-string "tesseract --list-langs"))
++                          (doc-toc--process-to-string doc-toc--tesseract-program
++                                                      "--list-langs"))
+                          5)))))
+ 
+ ;;;###autoload
+@@ -557,7 +589,8 @@ unprocessed text."
+                               ((string= ".djvu" ext)
+                                ;; new code for djvu3
+                                (let ((outfile (format "/tmp/pageimagep%s" page)))
+-                                 (shell-command (format "ddjvu -page=%s '%s' %s"
++                                 (shell-command (format "%s -page=%s '%s' %s"
++                                                        doc-toc--ddjvu-program
+                                                         page
+                                                         buffer-file-name
+                                                         outfile))
+@@ -569,8 +602,12 @@ unprocessed text."
+               ;;                 (number-to-string page)
+               ;;                 (image-property djvu-doc-image :data))))))
+               (apply #'call-process
+-                     (append (list "tesseract" nil (list buffer nil) nil file)
+-                             args))
++                     doc-toc--tesseract-program
++                     nil
++                     (list buffer nil)
++                     nil
++                     file
++                     args)
+               (setq page (1+ page))))
+           (switch-to-buffer buffer)
+           (doc-toc-cleanup-mode) ;; required before setting local variable
+@@ -587,14 +624,20 @@ unprocessed text."
+   (interactive)
+   (let* ((source-buffer (current-buffer))
+          (ext (url-file-extension (buffer-file-name (current-buffer))))
+-         (shell-command (cond ((string= ".pdf" ext) (if (executable-find "mutool")
+-                                                        "mutool show %s outline"
+-                                                      "mutool command is not found"))
+-                              ((string= ".djvu" ext) "djvused -e 'print-outline' %s")
+-                              (t (error "Buffer-filename does not have pdf or djvu extension"))))
+-         (text (shell-command-to-string
+-                (format shell-command
+-                        (shell-quote-argument buffer-file-name))))
++         
++         (text (cond ((string= ".pdf" ext)
++                      (unless doc-toc--mutool-program
++                        (error "Command mutool is not found"))
++                      (doc-toc--process-to-string doc-toc--mutool-program
++                                                  "show"
++                                                  buffer-file-name
++                                                  "outline"))
++                     ((string= ".djvu" ext)
++                      (doc-toc--process-to-string doc-toc--djvused-program
++                                                  "-e"
++                                                  "print-outline"
++                                                  buffer-file-name))
++                     (t (error "Buffer-filename does not have pdf or djvu extension"))))
+          (buffer (get-buffer-create (concat (file-name-sans-extension (buffer-name)) ".txt"))))
+     (switch-to-buffer buffer)
+     (setq-local doc-buffer source-buffer)
+@@ -628,7 +671,7 @@ Prompt for startpage and endpage and print OCR output to new buffer."
+                                                nil
+                                                (number-to-string page)
+                                                (image-property djvu-doc-image :data))))))
+-              (apply #'call-process "tesseract" nil (list buffer nil) nil
++              (apply #'call-process doc-toc--tesseract-program nil (list buffer nil) nil
+                      file args)
+               (setq page (1+ page))))
+           (switch-to-buffer buffer)))))
+@@ -992,7 +1035,7 @@ to `pdfoutline' shell command."
+ This command uses the shell program `pdfoutline'."
+   (interactive)
+   (save-buffer)
+-  (call-process "pdfoutline" nil "*pdfoutline*" nil
++  (call-process doc-toc--pdfoutline-program nil "*pdfoutline*" nil
+                 (concat (file-name-sans-extension (buffer-name)) ".pdf")
+                 (buffer-name)
+                 (if doc-toc-replace-original-file
+@@ -1009,12 +1052,13 @@ This command uses the shell program `djvused'."
+           (buffer-name)
+           (shell-quote-argument
+            (concat (file-name-sans-extension (buffer-name)) ".djvu"))))
+-  (shell-command-to-string
+-                  (format
+-                   "djvused -s -e \"set-outline '%s'\" %s"
+-                   (buffer-name)
+-                   (shell-quote-argument
+-                    (concat (file-name-sans-extension (buffer-name)) ".djvu")))))
++  (doc-toc--process-to-string
++   doc-toc--djvused-program
++   "-s"
++   "-e"
++   (format "set-outline '%s'"
++           (buffer-name)) ;; TODO: maybe escape?
++   (concat (file-name-sans-extension (buffer-name)) ".djvu")))
+ 
+ 
+ (defun doc-toc--add-to-doc ()

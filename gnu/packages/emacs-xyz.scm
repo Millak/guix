@@ -233,6 +233,7 @@
   #:use-module (gnu packages julia-xyz)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-check)
@@ -7751,6 +7752,54 @@ restore the saved place.")
 with more precise location control.")
       (home-page "https://github.com/fuxialexander/org-pdftools/")
       (license license:gpl3+))))
+
+(define-public emacs-doc-toc
+  (package
+    (name "emacs-doc-toc")
+    (version "1.02")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dalanicolai/doc-tools-toc")
+                    (commit "4a179fbacd7bc9efbd6cfcdc8772d42935e6de29")))
+              (sha256
+               (base32
+                "10w0gybhmx9g7qs5kmg7gsz156kndwzzpfhyb7l0p1cghgqii7l4"))
+              (patches
+                 (search-patches "emacs-doc-toc-shell-commands.patch"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-exec-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "doc-toc.el"
+                ("doc-toc--ddjvu-program" (search-input-file inputs "/bin/ddjvu"))
+                ("doc-toc--djvused-program" (search-input-file inputs "/bin/djvused"))
+                ("doc-toc--djvutxt-program" (search-input-file inputs "/bin/djvutxt"))
+                ("doc-toc--mutool-program" (search-input-file inputs "/bin/mutool"))
+                ("doc-toc--pdftocgen-program" (search-input-file inputs "/bin/pdftocgen"))
+                ("doc-toc--pdftocio-program" (search-input-file inputs "/bin/pdftocio"))
+                ("doc-toc--pdftotext-program" (search-input-file inputs "/bin/pdftotext"))
+                ("doc-toc--pdfxmeta-program" (search-input-file inputs "/bin/pdfxmeta"))
+                ("doc-toc--tesseract-program" (search-input-file inputs "/bin/tesseract"))))))))
+    (inputs
+     (list djvulibre
+           fntsample                    ; for pdfoutline
+           mupdf
+           pdf-tocgen
+           poppler
+           tesseract-ocr))
+    (home-page "https://github.com/dalanicolai/doc-tools-toc")
+    (synopsis "Manage outlines/table of contents of pdf and djvu documents")
+    (description "This package provides a multistep process to infer or
+manually enter an outline for a given pdf or djvu document and to add it to
+said document, or to edit a pre-existing outline.  Outlines can be created
+manually, automatically generated from a textual table of contents, or
+generated from typesetting metadata.")
+    (license license:gpl3+)))
 
 (define-public emacs-sage-shell-mode
   (let ((commit "4291700e981a2105d55fa56382ba25046d3d268d")
