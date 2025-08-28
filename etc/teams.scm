@@ -1067,7 +1067,8 @@ the \"texlive\" importer."
   bootstrap core-packages lxqt science tex)
 
 (define-member (person "Tanguy Le Carrour"
-                       "tanguy@bioneland.org")
+                       "tanguy@bioneland.org"
+                       "tanguybl")
   python home)
 
 (define-member (person "Tobias Geerinckx-Rice"
@@ -1141,7 +1142,8 @@ the \"texlive\" importer."
   home emacs)
 
 (define-member (person "pukkamustard"
-                       "pukkamustard@posteo.net")
+                       "pukkamustard@posteo.net"
+                       "pukkamustard")
   ocaml)
 
 (define-member (person "Josselin Poiret"
