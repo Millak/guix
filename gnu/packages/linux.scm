@@ -1531,21 +1531,22 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public reform-debian-packages
   (package
     (name "reform-debian-packages")
-    (version "2023-07-10-425-g9187116") ;from git describe
+    (version "2023-07-10-443-gd7741e1") ;from git describe
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://source.mnt.re/reform/reform-debian-packages.git")
-             (commit "918711653f0607612214e5a39efccc9273685dcf")))
+             (commit "d7741e1426d53806f7b2d1a3b9e068bdfb9801cd")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sj4za5rirn00v2qzz440m30h3p40g2s7l50g8npk2x3a16fs8ln"))))
+        (base32 "01hjpsac08j1ay5kn4k42dzyvg2cl5rfz32l1yqx243v4x2hw0c9"))))
     (build-system copy-build-system)
     (arguments
      (list
       #:install-plan
       #~'(("linux/patches6.15/" "/patches6.15")
+          ("linux/patches6.16/" "/patches6.16")
           ("linux/" "/dts/amlogic"
            #:include-regexp ("meson.*\\.dts$"))
           ("linux/" "/dts/freescale"
