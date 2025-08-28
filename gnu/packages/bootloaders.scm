@@ -2154,3 +2154,103 @@ the features of iPXE without the hassle of reflashing.")
                                   "-o" (string-append firmware
                                                       "/efi-" name ".rom")))))
                      '#$roms)))))))))))
+
+(define-public refind
+  (package
+    (name "refind")
+    (version "0.14.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/refind/" version
+                                  "/refind-src-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1w682p0j59apjcy26xzzhv70fyd8nqjs47i8cz2qcsx71pl3rngp"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively
+                    "refind/tools_x64/gptsync_x64.efi")))))
+    (build-system gnu-build-system)
+    (outputs '("out" "doc"))
+    (native-inputs
+     (list binutils))
+    (inputs
+     (list gnu-efi))
+    (arguments
+     (list #:tests? #f ; no tests
+           #:make-flags
+           #~(list ;; Make build reproducible.
+                   ;; Also disables secure boot anti-rollback protection.
+                   ;; Otherwise, "objcopy --add-section" would change the
+                   ;; timestamp inside the EFI file.
+                   "OMIT_SBAT=1"
+                   (string-append "AR=" #$(ar-for-target))
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "LD=" #$(ld-for-target))
+                   (string-append "EFIINC=" (assoc-ref %build-inputs "gnu-efi")
+                                  "/include/efi")
+                   (string-append "GNUEFILIB=" (assoc-ref %build-inputs "gnu-efi")
+                                  "/lib")
+                   (string-append "EFILIB=" (assoc-ref %build-inputs "gnu-efi")
+                                  "/lib")
+                   (string-append "EFICRT0=" (assoc-ref %build-inputs "gnu-efi")
+                                  "/lib")
+                   (string-append "OBJCOPY=" (assoc-ref %build-inputs "binutils")
+                                  "/bin/objcopy"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'build 'build-fs
+                 (lambda* (#:key inputs make-flags #:allow-other-keys)
+                   (apply invoke "make" "fs" make-flags)))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out-sbin (string-append #$output "/sbin"))
+                          (out-share
+                           (string-append #$output "/share/refind-"
+                            #$version))
+                          (out-share-refind
+                           (string-append out-share "/refind")))
+                     (mkdir-p out-share)
+                     (copy-recursively "banners"
+                      (string-append out-share "/banners"))
+                     (copy-recursively "fonts"
+                      (string-append out-share "/fonts"))
+                     (for-each (lambda (name)
+                                 (copy-recursively name
+                                                   (string-append
+                                                    out-share-refind "/"
+                                                    name)))
+                               (find-files "." "^drivers_" #:directories? #t))
+                     (copy-recursively "icons"
+                      (string-append out-share-refind "/icons"))
+                     ;(copy-recursively "keys" "/etc/refind.d")
+                     (install-file "mkrlconf" out-sbin)
+                     (install-file "mvrefind" out-sbin)
+                     (install-file "refind-sb-healthcheck" out-sbin)
+                     (install-file "refind-install" out-share)
+                     (install-file "refind-mkdefault" out-sbin)
+                     (install-file "refind.conf-sample" out-share-refind)
+                     (for-each
+                      (lambda (name)
+                       (install-file name
+                        (string-append #$output "/share/man/man8")))
+                      (find-files "docs/man" "[.]8$"))
+                     (for-each (lambda (f)
+                                 (install-file f out-share-refind))
+                               (find-files "refind" "refind.*\\.efi$")))))
+               (add-after 'install 'install-doc
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out-doc
+                           (string-append #$output:doc "/share/doc/refind-"
+                            #$version)))
+                     (copy-recursively "docs/refind"
+                      (string-append out-doc "/refind"))
+                     (copy-recursively "docs/Styles"
+                      (string-append out-doc "/Styles"))))))))
+    (synopsis "rEFInd boot manager")
+    (description "This package provides a boot manager that is an EFI
+program.")
+    (home-page "https://www.rodsbooks.com/refind/")
+    (license license:gpl3+)))
