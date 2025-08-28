@@ -302,30 +302,41 @@ distributions.")
     (license license:asl2.0)))
 
 (define-public fann
-  ;; The last release is >100 commits behind, so we package from git.
-  (let ((commit "d71d54788bee56ba4cf7522801270152da5209d7"))
+  ;; The last release is 14 years old.
+  (let ((commit "1783cbf6239a597c4d29f694e227e22b8d4f4bf6")
+        (revision "2"))
     (package
       (name "fann")
-      (version (string-append "2.2.0-1." (string-take commit 8)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/libfann/fann")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "0ibwpfrjs6q2lijs8slxjgzb2llcl6rk3v2ski4r6215g5jjhg3x"))))
+      (version (git-version "2.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/libfann/fann")
+                (commit commit)))
+         (modules '((guix build utils)))
+         (snippet #~(delete-file-recursively "lib/googletest"))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0jlcxl0czlr3982mak3935mb08i2f368f0jsxca91ppgfd596ldr"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out")))
-                 (with-directory-excursion (string-append (getcwd) "/tests")
-                   (invoke "./fann_tests"))))))))
-      (home-page "http://leenissen.dk/fann/wp/")
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-googletest
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("ADD_SUBDIRECTORY\\( lib/googletest \\)")
+                   ""))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "tests"
+                    (invoke "./fann_tests"))))))))
+      (native-inputs (list googletest))
+      (home-page "https://leenissen.dk/")
       (synopsis "Fast Artificial Neural Network")
       (description
        "FANN is a neural network library, which implements multilayer
