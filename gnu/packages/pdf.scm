@@ -1027,6 +1027,31 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
                    license:silofl1.1    ;resources/fonts/{han,noto,sil,urw}
                    license:asl2.0)))) ; resources/fonts/droid
 
+(define-public python-pymupdf-fonts
+  (package
+    (name "python-pymupdf-fonts")
+    (version "1.0.4")
+    (source
+     (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/pymupdf/pymupdf-fonts")
+            (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32
+        "05yhdlq96fv8hw7kq1qjy3hcnf58bph53b62jlg6976cjzimdabc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ; no tests
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/pymupdf/pymupdf-fonts")
+    (synopsis "Collection of font binaries for use in PyMuPDF")
+    (description "This package contains a collection of fonts for use in
+@code{PyMuPDF}.  It contains fonts from the Cascadia Mono, Fira Mono, FiraGO,
+Noto Sans, Space Mono and Ubuntu families.")
+    (license license:silofl1.1)))
+
 (define-public qpdf
   (package
     (name "qpdf")
