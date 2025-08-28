@@ -93,6 +93,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
@@ -115,6 +116,7 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tcl)
@@ -950,15 +952,20 @@ and based on PDF specification 1.7.")
            gumbo-parser
            harfbuzz
            jbig2dec
+           leptonica
            libjpeg-turbo
            libx11
            libxext
            mujs
            openjpeg
            openssl
+           tesseract-ocr
            zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python-3
+           python-clang-13
+           swig-next))
     (arguments
      (list
       #:tests? #f                       ;no check target
@@ -986,7 +993,23 @@ and based on PDF specification 1.7.")
               (string-append "prefix=" #$output))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure)))) ;no configure script
+          (delete 'configure)           ;no configure script
+          (add-after 'install 'install-python
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (substitute* "Makefile"
+                (("\\(pydir\\)")
+                 (format #f "(prefix)/lib/python~s/site-packages"
+                         #$(version-major+minor
+                            (package-version
+                             (this-package-native-input "python"))))))
+              (apply invoke
+                     "make"
+                     "install-shared-python"
+                     "USE_SYSTEM_LIBS=yes"
+                     "HAVE_LEPTONICA=yes"
+                     "HAVE_TESSERACT=yes"
+                     "VENV_FLAG="
+                     make-flags))))))
     (home-page "https://mupdf.com")
     (synopsis "Lightweight PDF viewer and toolkit")
     (description
