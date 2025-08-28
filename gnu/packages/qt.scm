@@ -779,6 +779,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
               (patches
                (search-patches "qtbase-moc-ignore-gcc-macro.patch"
                                "qtbase-absolute-runpath.patch"
+                               "qtbase-fix-thread-test.patch"
                                "qtbase-qmake-use-libname.patch"
                                "qtbase-qmlimportscanner-qml-import-path.patch"
                                "qtbase-qmake-fix-includedir.patch"))))
@@ -899,16 +900,6 @@ tst_qt_cmake_create.cpp"
                     "dirs.append(\""
                     #$(this-package-input "shared-mime-info") "/share/mime"
                     "\");\n" all)))))
-            #$@(if (target-aarch64?)
-                   ;; backport of 2bce75a6b53cccbf9c813581b64eea87f3ab55fc,
-                   ;; which makes flaky tst_qthread less flaky.
-                   #~((add-after 'patch-more-paths 'patch-aarch64-tests
-                      (lambda _
-                        (invoke
-                         "patch" "-p1" "-i"
-                         #$(local-file
-                            (search-patch "qtbase-fix-thread-test.patch"))))))
-                 #~())
             (delete 'do-not-capture-python) ;move after patch-source-shebangs
             (add-after 'patch-source-shebangs 'do-not-capture-python
               (lambda _
