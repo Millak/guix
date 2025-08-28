@@ -34679,63 +34679,64 @@ GUI and terminal, and requires a nerd font installed on your system.")
       (license license:gpl3+))))
 
 (define-public emacs-all-the-icons
-  (package
-    (name "emacs-all-the-icons")
-    (version "5.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/domtronn/all-the-icons.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (patches
-        (search-patches "emacs-all-the-icons-remove-duplicate-rs.patch"))
-       (sha256
-        (base32 "0lwgvgnqf7vihglm0c5bwsxbl4x7f641289cji5s7jwy2dbsqk7g"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:include '(list "\\.el$" "^data/")
-      #:exclude '(list "^test/")
-      #:tests? #f                      ; XXX: duplicate tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-fonts
-            (lambda _
-              (let ((fonts (string-append #$output "/share/fonts")))
-                (mkdir-p fonts)
-                (with-directory-excursion "fonts"
-                  (install-file "all-the-icons.ttf" fonts)
-                  ;; TODO: Unbundle.
-                  (install-file "file-icons.ttf" fonts)
-                  (install-file "octicons.ttf" fonts)
-                  (install-file "weathericons.ttf" fonts)))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (if tests?
-                  (apply invoke "ert-runner" "-l"
-                         (append (find-files "data" "\\.el")
-                                 '("all-the-icons-faces.el")))
-                  (format #t "test suite not run~%")))))))
-    (native-inputs
-     (list emacs-f emacs-ert-runner))
-    (propagated-inputs
-     (list emacs-f emacs-memoize font-awesome font-google-material-design-icons))
-    (home-page "https://github.com/domtronn/all-the-icons.el")
-    (synopsis "Collect icon fonts and propertize them within Emacs")
-    (description
-     "All-the-icons is a utility package to collect various icon fonts and
+  ;; The latest release was on 3 June 2021.
+  (let ((commit "4778632b29c8c8d2b7cd9ce69535d0be01d846f9")
+        (revision "0"))
+    (package
+      (name "emacs-all-the-icons")
+      (version (git-version "5.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/domtronn/all-the-icons.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1917pig6zqxl1c57q2rj9jn5w61ks2xnvy4jpkjq009ks7wlrs6w"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include '(list "\\.el$" "^data/")
+        #:exclude '(list "^test/")
+        #:tests? #f                      ; XXX: duplicate tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'install-fonts
+              (lambda _
+                (let ((fonts (string-append #$output "/share/fonts")))
+                  (mkdir-p fonts)
+                  (with-directory-excursion "fonts"
+                    (install-file "all-the-icons.ttf" fonts)
+                    ;; TODO: Unbundle.
+                    (install-file "file-icons.ttf" fonts)
+                    (install-file "octicons.ttf" fonts)
+                    (install-file "weathericons.ttf" fonts)))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (if tests?
+                    (apply invoke "ert-runner" "-l"
+                           (append (find-files "data" "\\.el")
+                                   '("all-the-icons-faces.el")))
+                    (format #t "test suite not run~%")))))))
+      (native-inputs
+       (list emacs-f emacs-ert-runner))
+      (propagated-inputs
+       (list emacs-f emacs-memoize font-awesome font-google-material-design-icons))
+      (home-page "https://github.com/domtronn/all-the-icons.el")
+      (synopsis "Collect icon fonts and propertize them within Emacs")
+      (description
+       "All-the-icons is a utility package to collect various icon fonts and
 propertize them within Emacs.  Icon fonts allow you to propertize and format
 icons the same way you would normal text.  This enables things such as better
 scaling of and anti aliasing of the icons.")
-    ;; Package is released under Expat license.  Elisp files are licensed
-    ;; under GPL3+.  Fonts come with various licenses: Expat for
-    ;; "all-the-icons.ttf" and "file-icons.ttf", Apache License 2.0 for
-    ;; "material-design-icons.ttf", and SIL OFL 1.1 for "fontawesome.ttf",
-    ;; "ocitcons.ttf" and "weathericons.ttf".
-    (license
-     (list license:expat license:gpl3+ license:silofl1.1 license:asl2.0))))
+      ;; Package is released under Expat license.  Elisp files are licensed
+      ;; under GPL3+.  Fonts come with various licenses: Expat for
+      ;; "all-the-icons.ttf" and "file-icons.ttf", Apache License 2.0 for
+      ;; "material-design-icons.ttf", and SIL OFL 1.1 for "fontawesome.ttf",
+      ;; "ocitcons.ttf" and "weathericons.ttf".
+      (license
+       (list license:expat license:gpl3+ license:silofl1.1 license:asl2.0)))))
 
 (define-public emacs-all-the-icons-completion
   (package
