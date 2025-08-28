@@ -773,7 +773,7 @@ error reporting, better tracing, profiling, and a debugger.")
 (define-public rr
   (package
     (name "rr")
-    (version "5.8.0")
+    (version "5.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -781,7 +781,7 @@ error reporting, better tracing, profiling, and a debugger.")
                     (commit version)))
               (sha256
                (base32
-                "16w6vvvgww4i2f0jk5zlrr6606fj8kps21fnw0pshyw88l141rqn"))
+                "18bahi9b7pz8s7vq8r52fg4pdnj62ymx4yyqjkiwnxlp06pdgqd3"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -795,6 +795,7 @@ error reporting, better tracing, profiling, and a debugger.")
              (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                             (assoc-ref %build-inputs "capnproto")
                             "/lib,-rpath=" (assoc-ref %build-inputs "zlib")
+                            "/lib,-rpath=" (assoc-ref %build-inputs "zstd")
                             "/lib")
              ,@(if (and (not (%current-target-system))
                         (member (%current-system)
@@ -818,9 +819,14 @@ error reporting, better tracing, profiling, and a debugger.")
                       (setenv "HOME" (getcwd))
                       #t)))))
     (native-inputs
-     (list pkg-config ninja which))
+     (list lldb pkg-config which))
     (inputs
-     (list gdb capnproto python python-pexpect zlib))
+     (list gdb
+           capnproto
+           python
+           python-pexpect
+           zlib
+           `(,zstd "lib")))
 
     ;; List of supported systems according to 'src/preload/raw_syscall.S'.
     (supported-systems '("x86_64-linux" "i686-linux" "aarch64-linux"))
