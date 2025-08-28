@@ -976,16 +976,17 @@ algorithm.")
 (define-public openmm
   (package
     (name "openmm")
-    (version "8.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/openmm/openmm")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "064vv6zaci30pj38z5lwfqscxssm67jqxkz30hcya9vm4ng831d5"))))
+    (version "8.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/openmm/openmm")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pcy1f6r4h6z0b75gx4lcnkf7yr8342w2dch7jml1ycmzpqkxvfx"))))
     (build-system cmake-build-system)
     (arguments
      (list
