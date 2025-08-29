@@ -40,7 +40,7 @@
 
             hurd64-barebones-os
             hurd64-disk-image
-            hurd6-image-type
+            hurd64-image-type
             hurd64-qcow2-image-type
             hurd64-barebones-disk-image
             hurd64-barebones-qcow2-image))
