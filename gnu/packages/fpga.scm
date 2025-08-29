@@ -571,8 +571,8 @@ Simulator Trace} files.")
   ;; XXX: The latest version tag (0.9.2) was placed in 2019, there are latest
   ;; changes supporting Python 3.11 on master branch, see
   ;; <https://github.com/m-labs/migen/issues/259>.
-  (let ((commit "2828df54594673653a641ab551caf6c6b1bfeee5")
-        (revision "0"))
+  (let ((commit "6e3a9e150fb006dabc4b55043d3af18dbfecd7e8")
+        (revision "1"))
     (package
       (name "python-migen")
       (version (git-version "0.9.2" revision commit))
@@ -585,12 +585,11 @@ Simulator Trace} files.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0my2jwrb64n39dfcipiw9s2cbg1r4s6zh4ybf4dwid9hk86fi6hs"))))
+          (base32 "1hibhjnj5b3ka5y4nnqx9zp5w730gfqfa3r5injpa14i4cz6bj1n"))))
       (build-system pyproject-build-system)
       (native-inputs
        (list python-pytest
-             python-setuptools
-             python-wheel))
+             python-setuptools-next))
       (propagated-inputs
        (list python-colorama))
       (home-page "https://m-labs.hk/gateware/migen/")
