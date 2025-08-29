@@ -3893,7 +3893,6 @@ advanced research.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #false                   ;tests are not building now
       #:build-type "Release"
       #:modules '((ice-9 match)
                   (guix build utils)
@@ -3909,6 +3908,7 @@ advanced research.")
 
          "-DTFLITE_ENABLE_GPU=ON"
          "-DTFLITE_ENABLE_RUY=ON"
+         "-DTFLITE_ENABLE_XNNPACK=ON"
 
          ;; TODO: turn on Farmhash
          ;;"-DSYSTEM_FARMHASH=ON"
@@ -3926,11 +3926,6 @@ advanced research.")
          (string-append "-Druy_DIR=" #$(this-package-input "ruy")
                         "/lib/cmake/ruy")
 
-         ;; TODO: The build system attempts to build xnnpack from source.  We
-         ;; would like to use our xnnpack package here, but this requires more
-         ;; work.
-         "-DTFLITE_ENABLE_XNNPACK=OFF"
-
          ;; Don't fetch the sources.  We have these already
          "-Dgemmlowp_POPULATED=TRUE"
          "-Degl_headers_POPULATED=TRUE"
@@ -3942,6 +3937,7 @@ advanced research.")
          "-Dgoogle_benchmark_POPULATED=TRUE"
          "-Dnsync_POPULATED=TRUE"
          "-Dre2_POPULATED=TRUE"
+         "-Dxnnpack_POPULATED=TRUE"
 
          "-DFFT2D_SOURCE_DIR=/tmp/fft2d"
          "-DFARMHASH_SOURCE_DIR=/tmp/farmhash"
@@ -4031,7 +4027,7 @@ advanced research.")
        ("python" ,python)
        ("ruy" ,ruy)
        ("re2" ,re2)
-       ;;("xnnpack" ,xnnpack)     ; TODO: use Guix's copy of xnnpack
+       ("xnnpack" ,xnnpack)
        ("vulkan-headers" ,vulkan-headers)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
