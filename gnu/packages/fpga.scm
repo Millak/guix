@@ -854,7 +854,7 @@ and coverage-analysis points.  It outputs single- or multi-threaded
       (synopsis "Generic pipelined FFT core generator")
       (description "fftgen produces @acronym{FFT, fast-Fourier transforms}
 hardware designs in Verilog.")
-      (home-page "https://zipcpu.com/")
+      (home-page "https://github.com/ZipCPU/zipcpu/")
       (license license:lgpl3+))))
 
 (define-public openfpgaloader
