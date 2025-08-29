@@ -30,6 +30,7 @@
             unprivileged-user-namespace-supported?
             setgroups-supported?
             %namespaces
+            %writable-/tmp
             run-container
             call-with-container
             container-excursion
@@ -386,6 +387,16 @@ if there are no child processes left."
       ;; See <http://www.tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF>.
       (+ 128 (or (status:term-sig status)
                  (status:stop-sig status)))))
+
+(define %writable-/tmp
+  ;; Writable and volatile /tmp.
+  (file-system
+    (device "none")
+    (mount-point "/tmp")
+    (type "tmpfs")
+    (flags '(no-suid no-dev))
+    (options "mode=755,size=10%")
+    (check? #f)))
 
 (define* (call-with-container mounts thunk #:key (namespaces %namespaces)
                               (host-uids 1) (guest-uid 0) (guest-gid 0)

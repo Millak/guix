@@ -40,6 +40,7 @@
   #:autoload   (ice-9 ftw) (scandir)
   #:autoload   (gnu build install) (evaluate-populate-directive)
   #:autoload   (gnu build linux-container) (call-with-container %namespaces
+                                            %writable-/tmp
                                             user-namespace-supported?
                                             unprivileged-user-namespace-supported?
                                             setgroups-supported?)
@@ -771,13 +772,6 @@ added to the container.
 
 Preserve environment variables whose name matches the one of the regexps in
 WHILE-LIST."
-  (define tmpfs
-    (file-system
-      (device "none")
-      (mount-point "/tmp")
-      (type "tmpfs")
-      (check? #f)))
-
   (define (optional-mapping->fs mapping)
     (and (file-exists? (file-system-mapping-source mapping))
          (file-system-mapping->bind-mount mapping)))
@@ -875,9 +869,12 @@ WHILE-LIST."
                       (writable? #f)))
                    reqs)))
             (file-systems (append %container-file-systems
-                                  (list tmpfs        ; RW /tmp
+                                  (list %writable-/tmp
                                         (file-system ; RW /run
-                                          (inherit tmpfs)
+                                          (device "none")
+                                          (type "tmpfs")
+                                          (options "size=10%,mode=700")
+                                          (check? #f)
                                           (mount-point
                                            (string-append "/run/user/"
                                                           (number->string uid))))
