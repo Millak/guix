@@ -7162,7 +7162,7 @@ bases are detected.")
 (define-public trinityrnaseq
   (package
     (name "trinityrnaseq")
-    (version "2.13.2")
+    (version "2.15.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7172,7 +7172,7 @@ bases are detected.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qszrxqbx4q5pavpgm4rkrh1z1v1mf7qx83vv3fnlqdmncnsf1gv"))))
+                "06qvxy6wvvjpn1mkg8m78syyn98xj76569gpl2jbc9q036i56kh8"))))
     (build-system gnu-build-system)
     (arguments
      (list
