@@ -764,7 +764,7 @@ and reusable bus interfaces to be used with @code{cocotb}.")
 (define-public python-edalize
   (package
     (name "python-edalize")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -773,7 +773,7 @@ and reusable bus interfaces to be used with @code{cocotb}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gfysk6wj3mxndyzma604i3y2lkfn1im0bdmzxv5rn4x2nyk68sc"))))
+        (base32 "03mkzkmi96jkrpgcnawixvy832p3b8li8lrirdjhfp9dmp7d5kg5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -782,18 +782,13 @@ and reusable bus interfaces to be used with @code{cocotb}.")
                     ;; XXX: Tests failing with assertion not equal, find out
                     ;; why.
                     (list "not test_gatemate"
-                          "test_gatemate_minimal"
                           "test_vcs_tool_options"
                           "test_vcs_no_tool_options"
                           "test_vcs_minimal"
-                          "test_vivado_edif_netlist"
-                          "test_vivado_edif_netlist_no_link_design"
                           "test_xcelium")
                     " and not "))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools-next))
     (propagated-inputs
      (list python-jinja2))
     (home-page "https://github.com/olofk/edalize/")
