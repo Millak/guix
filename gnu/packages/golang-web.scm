@@ -12896,6 +12896,48 @@ the standard @code{context} package to store request-scoped values.")
      "Package grpc implements an RPC system called @code{gRPC}.")
     (license license:asl2.0)))
 
+(define-public go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
+  (package
+    (name "go-google-golang-org-grpc-cmd-protoc-gen-go-grpc")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc/grpc-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "cmd/protoc-gen-go-grpc"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yn1ir5y0wc91q95ngr3dlz2cyhp0wlb9l30hkw2cr34r38hq19w"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
+      #:unpack-path "google.golang.org/grpc"))
+    (propagated-inputs
+     (list go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/grpc")
+    (synopsis "Generate Go bindings of gRPC's services in protobuf definition files")
+    (description
+     "This packge provides a plugin for the Google protocol buffer compiler to
+generate Go code.")
+    (license license:asl2.0)))
+
 ;; This to satisfy alternative import path, some of the projects still use it
 ;; in go.mod.
 (define-public go-gopkg-in-evanphx-json-patch-v4
@@ -13478,6 +13520,20 @@ go-github-com-tdewolff-minify-v2 source.")))
      "TLSRouter is a TLS proxy that routes connections to backends based on
 the TLS @acronym{SNI, Server Name Indication} of the TLS handshake.  It
 carries no encryption keys and cannot decode the traffic that it proxies.")))
+
+(define-public protoc-gen-go-grpc
+  (package/inherit go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
+    (name "protoc-gen-go-grpc")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-google-golang-org-grpc-cmd-protoc-gen-go-grpc)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)))
+    (native-inputs (package-propagated-inputs
+                    go-google-golang-org-grpc-cmd-protoc-gen-go-grpc))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public swag
   (package/inherit go-github-com-swaggo-swag
