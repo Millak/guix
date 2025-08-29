@@ -64,6 +64,7 @@
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Zacchaeus <eikcaz@zacchae.us>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -146,6 +147,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages mercury)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -1174,28 +1176,38 @@ MIME-encoded email package.")
                      license:public-domain))))) ; mailcap and mime.types
 
 (define-public bogofilter
+;; This is version 1.3.0rc1 from 2025-04-18.
+(let ((revision "0")
+      (commit "e264b66d44fb8a908965b6f1f98497048a0db98b"))
   (package
     (name "bogofilter")
-    (version "1.2.5")
+    (version (git-version "1.2.5" revision commit))
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/bogofilter/bogofilter-stable/"
-                           "bogofilter-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/bogofilter/bogofilter")
+             (commit commit)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1sl9xrnnlk2sn8gmibhn8li09vnansjbxb9l1182qmgz7cvs2j1j"))))
+        (base32 "1xplhq674gpcinj8c4fgivalqzjayiwq3ykplg3cg25f2wxlzq7z"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             (substitute* "src/tests/t.frame"
-               (("GREP=/bin/grep")
-                (string-append "GREP=" (which "grep") "\n")))
-             #t)))))
-    (native-inputs (list flex))
-    (inputs (list bdb))
+      (list
+        #:phases
+        #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "bogofilter")))
+          (add-before 'check 'pre-check
+            (lambda _
+              (substitute* "src/tests/t.frame"
+                (("GREP=/bin/grep")
+                 (string-append "GREP=" (which "grep") "\n"))))))))
+    (native-inputs (list autoconf automake gettext-minimal pkg-config
+                         flex
+                         docbook-xml-4.1.2 docbook-xsl libxml2 perl xmlto))
+    (inputs (list gsl sqlite))
     (home-page "https://bogofilter.sourceforge.io/")
     (synopsis "Mail classifier based on a Bayesian filter")
     (description
@@ -1203,7 +1215,7 @@ MIME-encoded email package.")
  (non-spam) by a statistical analysis of the message's header and
 content (body).  The program is able to learn from the user's classifications
 and corrections.  It is based on a Bayesian filter.")
-    (license license:gpl3+)))
+    (license license:gpl3+))))
 
 (define-public offlineimap3
   ;; No release supporting Python3.11, but the latest commit contains it, see
