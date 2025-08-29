@@ -27494,6 +27494,39 @@ internbombing, excessive input and macro characters.")
 (define-public ecl-safe-read
   (sbcl-package->ecl-package sbcl-safe-read))
 
+(define-public sbcl-salmagundi
+  (let ((commit "aa231f6043111ec5dbeb06feab732efb7d59c959")
+        (revision "0"))
+    (package
+      (name "sbcl-salmagundi")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/s-expressionists/Salmagundi")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1i0hknnd555ih509kvna2xdirfxyy05wr2bp628997rnj8drlsnx"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-trivial-package-locks))
+      (home-page "https://github.com/s-expressionists/Salmagundi")
+      (synopsis "Implementation of Common Lisp hash tables")
+      (description "This library contains code that implements Common Lisp
+hash tables.")
+      (license license:bsd-2))))
+
+(define-public cl-salmagundi
+  (sbcl-package->cl-source-package sbcl-salmagundi))
+
+(define-public ecl-salmagundi
+  (sbcl-package->ecl-package sbcl-salmagundi))
+
+(define-public clasp-salmagundi
+  (sbcl-package->clasp-package sbcl-salmagundi))
+
 (define-public sbcl-salza2
   (package
     (name "sbcl-salza2")
