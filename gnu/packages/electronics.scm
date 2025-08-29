@@ -320,7 +320,7 @@ supported devices, as well as input/output file format support.")
 (define-public m8c
   (package
     (name "m8c")
-    (version "1.7.10")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -329,7 +329,7 @@ supported devices, as well as input/output file format support.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18bx6jf0jbgnd6cfydh4iknh25rrpyc8awma4a1hkia57fyjy2gi"))))
+        (base32 "1x6klsqgy6j2b6cvkk386jmb0nbcpsrr36ji6cfwd3039wx657i8"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -338,9 +338,10 @@ supported devices, as well as input/output file format support.")
       #~(modify-phases %standard-phases
           (delete 'configure))
       #:tests? #f)) ;no tests
-    (native-inputs (list pkg-config))
-    (inputs (list libserialport
-                  sdl2))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libserialport sdl3))
     (home-page "https://github.com/laamaa/m8c")
     (synopsis "Cross-platform M8 tracker headless client")
     (description
