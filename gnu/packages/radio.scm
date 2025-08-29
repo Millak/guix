@@ -973,7 +973,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            qwt
            sdl
            soapysdr
-           spdlog
+           spdlog-1.15
            volk
            zeromq))
     (arguments
