@@ -23,7 +23,7 @@
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
-;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Filip Lajszczak <filip@lajszczak.dev>
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
@@ -44,6 +44,7 @@
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
+;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10838,6 +10839,35 @@ replacement for native @code{net/http} module.")
      "@code{tcplisten} provides customizable TCP net.Listener with various
 performance-related options.")
     (license license:expat)))
+
+(define-public go-github-com-varlink-go-varlink
+  (package
+    (name "go-github-com-varlink-go-varlink")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/varlink/go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bhpi18xrmf5in2m4y6wj2q05rxk9m219knk9dj3bin1aj1dlf56"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/varlink/go"
+      ;; Tests in cmd are broken.
+      #:test-subdirs #~(list "varlink/...")))
+    (home-page "https://github.com/varlink/go")
+    (synopsis "Go implementation of the Varlink IPC protocol")
+    (description
+     "This package provides a Go implementation of the
+@url{https://varlink.org/, Varlink} protocol, a protocol for inter-process
+communication.  Varlink utilizes a plain-text, JSON-based format for messages
+and is designed to be accessible to both humans and machines.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-vektah-gqlparser-v2
   (package
