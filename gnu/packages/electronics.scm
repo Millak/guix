@@ -1139,19 +1139,16 @@ verification flows.")
 (define-public uhdm
   (package
     (name "uhdm")
-    (version "1.84")
+    (version "1.86")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/chipsalliance/UHDM/")
-             (commit (string-append "v" version))
-             ;; avoid submodules, and use guix packages capnproto and
-             ;; googletest instead
-             (recursive? #f)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06i06wfyymhvmpnw79lgb84l9w9cyydvnr7n3bgmgf8a77jbxk2y"))))
+        (base32 "0nsy385frxz5v7i757h1x59xkl21asz3h2fk1nyvx37z8cj0kd3z"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1162,12 +1159,15 @@ verification flows.")
       #:test-target "test"
       #:make-flags
       #~(list
-         "ADDITIONAL_CMAKE_OPTIONS=-DUHDM_USE_HOST_CAPNP=On -DUHDM_USE_HOST_GTEST=On"
-         (string-append "PREFIX="
-                        #$output))))
-    (native-inputs (list cmake-minimal googletest pkg-config python-wrapper
-                         swig))
-    (inputs (list capnproto openssl python-orderedmultidict zlib))
+         (string-append
+          "ADDITIONAL_CMAKE_OPTIONS=-DUHDM_USE_HOST_CAPNP=On"
+          ;; " -DUHDM_WITH_PYTHON=On"      ;FIXME
+          " -DUHDM_USE_HOST_GTEST=On")
+         (string-append "PREFIX=" #$output))))
+    (native-inputs
+     (list cmake-minimal googletest pkg-config python-wrapper swig))
+    (inputs
+     (list capnproto openssl python-orderedmultidict zlib))
     (home-page "https://github.com/chipsalliance/UHDM/")
     (synopsis "Universal Hardware Data Model")
     (description
