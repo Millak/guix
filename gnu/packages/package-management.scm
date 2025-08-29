@@ -132,6 +132,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages version-control)
   #:autoload   (guix build-system channel) (channel-build-system)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -152,6 +153,10 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages selinux)
+  #:use-module (gnu packages elf)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE $GUIX_EXTENSIONS_PATH))
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
@@ -1025,7 +1030,7 @@ features of Stow with some extensions.")
 (define-public rpm
   (package
     (name "rpm")
-    (version "4.18.0")
+    (version "4.20.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.rpm.org/releases/rpm-"
@@ -1033,39 +1038,71 @@ features of Stow with some extensions.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0m250plyananjn0790xmwy6kixmxcdj5iyy2ybnk1aw7f4nia5ra"))))
+                "0kqjc4k679h4s47gx4wxi049yvy9hpjcijvinqx56r43cc97wr2j"))))
     (outputs '("out" "debug"))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("--enable-python"
-                           ;; The RPM database must be writable.
-                           "--localstatedir=/var")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-lua-check
-                    (lambda _
-                      (substitute* "configure"
-                        (("lua >= ?.?")
-                         "lua-5.3 >= 5.3"))))
-                  (add-after 'unpack 'patch-build-system
-                    (lambda _
-                      ;; The build system attempts to create /var in the build
-                      ;; chroot, and fails.
-                      (substitute* "Makefile.in"
-                        ((".*MKDIR_P) \\$\\(DESTDIR)\\$\\(localstatedir.*")
-                         "")))))))
+     (list
+      #:tests? #f                       ; TEST need fhs envirnment.
+      #:configure-flags
+      #~(list
+         ;; TODO: Add rpm-sequoia
+         "-DWITH_SEQUOIA=OFF"
+         #$@(if (this-package-native-input "rpmpgp_legacy")
+                #~("-DWITH_LEGACY_OPENPGP=ON")
+                #~()))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-rpmpgp_legacy
+            (lambda _
+              (copy-recursively
+               #$(this-package-native-input "rpmpgp_legacy")
+               "rpmio/rpmpgp_legacy")))
+          (add-after 'unpack 'fix-install
+            (lambda _
+              (let ((site
+                     (string-append
+                      #$output
+                      "/lib/python"
+                      #$(version-major+minor
+                         (package-version
+                          (this-package-native-input "python")))
+                      "/site-packages")))
+                (substitute* "python/CMakeLists.txt"
+                  (("\\$[{]Python3_SITEARCH[}]")
+                   site)))
+              (substitute* "plugins/CMakeLists.txt"
+                (("\\$[{]dbus-1_DATADIR[}]")
+                 (string-append #$output "/share"))))))))
     (native-inputs
      (list pkg-config
-           python))
+           python
+           gettext-minimal
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/rpm-software-management/rpmpgp_legacy")
+                    (commit "1.1")))
+             (file-name "rpmpgp_legacy")
+             (sha256
+              (base32 "0z29bdjfd5p0ygn2g9w3xjc4fx4ba8rcikk28acjl7xwfgfsa4pd")))))
     (inputs
      (list bzip2
+           readline
            file
            libarchive
            libgcrypt
+           dbus
            lua
            sqlite
            xz
            zlib
-           zstd))
+           elfutils
+           acl
+           audit
+           libselinux
+           libcap
+           `(,zstd "lib")))
     (propagated-inputs
      ;; popt is listed in the 'Requires' of rpm.pc.
      (list popt))
