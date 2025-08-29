@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,11 +86,11 @@
              #f))
     (let ((store (open-connection uri)))
       ;; Make sure we build everything by ourselves.  When we build something,
-      ;; it should take at most 10 minutes.
+      ;; it should take at most 3 minutes.
       (set-build-options store
                          #:use-substitutes? #f
                          #:substitute-urls (%test-substitute-urls)
-                         #:timeout (* 10 60))
+                         #:timeout (* 3 60))
 
       ;; Use the bootstrap Guile when running tests, so we don't end up
       ;; building everything in the temporary test store.
@@ -151,7 +151,7 @@ no external store to talk to."
         (lambda ()
           (when store
             ;; Make sure we don't end up rebuilding the world for those tests.
-            (set-build-options store #:timeout (* 10 60)))
+            (set-build-options store #:timeout (* 3 60)))
           (proc store))
         (lambda ()
           (when store-variable
