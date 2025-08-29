@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Google LLC
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -517,6 +517,7 @@ TARGET in the other system."
           (mount-point "/tmp")
           (device "none")
           (type "tmpfs")
+          (flags '(no-suid no-dev))
           (check? #f))))
 
 ;; File systems for Linux containers differ from %base-file-systems in that
