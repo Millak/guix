@@ -1595,6 +1595,31 @@ Features:
 @end itemize")
     (license license:bsd-2)))
 
+(define-public python-jacobi
+  (package
+    (name "python-jacobi")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jacobi" version))
+       (sha256
+        (base32 "0a08680q6rnl6b1azq0lzd8r08pgnjd9ynwivb1g2vi4ccb4h7y1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-benchmark
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/hdembinski/jacobi")
+    (synopsis "Compute numerical derivatives")
+    (description
+     "This package provides fast numerical derivatives for analytic
+functions with arbitrary round-off error and error propagation.")
+    (license license:expat)))
+
 (define-public python-legendkit
   (package
     (name "python-legendkit")
