@@ -31743,9 +31743,7 @@ in DEFPACKAGE.")
          (sha256
           (base32 "0kbyrkd7a9apyq83bl96jspjggjsswxh93111wrmpvhbnm2vll60"))))
       (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-alexandria
-             sbcl-parachute))
+      (native-inputs (list sbcl-parachute))
       (home-page "https://github.com/yitzchak/trivial-package-locks")
       (synopsis "Standard interface to the various package lock implementations")
       (description
