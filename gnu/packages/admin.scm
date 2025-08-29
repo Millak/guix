@@ -4636,9 +4636,9 @@ everyone's screenshots nowadays.")
 information tool.")
       (license license:expat))))
 
-(define-public fastfetch
+(define-public fastfetch-minimal
   (package
-    (name "fastfetch")
+    (name "fastfetch-minimal")
     (version "2.51.1")
     (source
      (origin
@@ -4658,25 +4658,8 @@ information tool.")
       #:configure-flags #~(list "-DENABLE_SYSTEM_YYJSON=ON"
                                 "-DBUILD_FLASHFETCH=OFF"
                                 "-DBUILD_TESTS=ON"
-                                "-DINSTALL_LICENSE=OFF"
-                                "-DBINARY_LINK_TYPE=dynamic"
-                                "-DENABLE_DIRECTX_HEADERS=OFF"
-                                (string-append "-DCUSTOM_PCI_IDS_PATH="
-                                               #$(this-package-input "hwdata")
-                                               "/share/hwdata/pci.ids")
-                                (string-append "-DCUSTOM_AMDGPU_IDS_PATH="
-                                               #$(this-package-input "libdrm")
-                                               "/share/libdrm/amdgpu.ids"))))
-    (inputs (list dbus
-                  glib
-                  hwdata
-                  imagemagick
-                  libdrm
-                  libxcb
-                  mesa
-                  wayland
-                  yyjson
-                  zlib)) ;for imagemagick and an #ifdef
+                                "-DINSTALL_LICENSE=OFF")))
+    (inputs (list yyjson))
     (native-inputs (list pkg-config python-minimal))
     (home-page "https://github.com/fastfetch-cli/fastfetch")
     (synopsis "Display system information in a stylized manner")
@@ -4685,6 +4668,34 @@ information tool.")
 a stylized way.  Fastfetch displays this information next to a logo of the
 system distribution, akin to many similar tools.")
     (license license:expat)))
+
+(define-public fastfetch
+  (package
+    (inherit fastfetch-minimal)
+    (name "fastfetch")
+    (arguments
+     (substitute-keyword-arguments (package-arguments fastfetch-minimal)
+       ((#:configure-flags flags #~'())
+        #~(append #$flags
+                  (list  "-DBINARY_LINK_TYPE=dynamic"
+                         "-DENABLE_DIRECTX_HEADERS=OFF"
+                         (string-append "-DCUSTOM_PCI_IDS_PATH="
+                                        #$(this-package-input "hwdata")
+                                        "/share/hwdata/pci.ids")
+                         (string-append "-DCUSTOM_AMDGPU_IDS_PATH="
+                                        #$(this-package-input "libdrm")
+                                        "/share/libdrm/amdgpu.ids"))))))
+    (inputs
+     (modify-inputs (package-inputs fastfetch-minimal)
+       (append dbus
+               glib
+               hwdata
+               imagemagick
+               libdrm
+               libxcb
+               mesa
+               wayland
+               zlib))))) ;for imagemagick and an #ifdef
 
 (define-public nnn
   (package
