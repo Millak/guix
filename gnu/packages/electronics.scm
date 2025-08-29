@@ -870,7 +870,7 @@ design.")
 (define-public python-vsg
   (package
     (name "python-vsg")
-    (version "3.33.0")
+    (version "3.34.0")
     (source
      (origin
        (method git-fetch)
@@ -879,7 +879,7 @@ design.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pnhha7dfika5jv1wrdwjkwrqaz22n0fb845wid5sy62gn549hmb"))))
+        (base32 "0sryf1wv4r5maxj4di5rpsmzcxins3gq8aksv7cpw6ywvdk1nj5l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -887,12 +887,7 @@ design.")
       ;; Tests are expensive and may introduce race condition on systems with
       ;; high (more than 16) threads count; limit parallel jobs to 8x.
       #~(list
-         "--numprocesses" (number->string (min 8 (parallel-job-count)))
-         ;; TODO: Remove in 3.34.0.
-         ;; "file" command on "utf-8_encoded.vhd" file fails to detect
-         ;; utf-8 formatting. See:
-         ;; https://github.com/jeremiah-c-leary/vhdl-style-guide/issues/1471
-         "-vv" "-k" "not test_utf_8")
+         "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'pathch-pytest-options
@@ -902,12 +897,10 @@ design.")
                 ((".*--self-contained-html.*") "")
                 ((".*-n.*auto.*") "")))))))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
+     (list python-pytest-cov
            python-pytest-html
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools-next))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/jeremiah-c-leary/vhdl-style-guide/")
