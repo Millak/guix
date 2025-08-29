@@ -81,6 +81,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages unicode)
@@ -710,37 +711,42 @@ a build worked by accident.")
 (define-public osc
   (package
     (name "osc")
-    (version "0.172.0")
+    (version "1.19.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/openSUSE/osc")
-             (commit version)))
+              (url "https://github.com/openSUSE/osc")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sqdnkka3c6b6hwnrmlwrgy7w62cp8raq8mph9pgd2lydzzbvwlp"))))
+        (base32 "09an4c5gjc99a6bfy4ax5yyng14v7b4fknkdzwl0hn89q5990xab"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Tests require a config file.
-      #:tests? #f
+      #:tests? #f                       ; XXX: Fix tests.
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'fix-filename
-            (lambda _
-              (with-directory-excursion (string-append #$output "/bin")
-                ;; osc tool is renamed in spec file, not setup.py.
-                (rename-file "osc-wrapper.py" "osc")))))))
-    (native-inputs (list python-chardet python-setuptools python-wheel))
-    (inputs (list python-m2crypto python-pycurl rpm)) ;for python-rpm
+          (add-before 'check 'check-setup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel
+           diffstat))
+    (inputs
+     (list python-urllib3
+           python-ruamel.yaml
+           python-m2crypto
+           python-pycurl
+           rpm))                        ; for python-rpm
     (home-page "https://github.com/openSUSE/osc")
     (synopsis "Open Build Service command line tool")
-    (description
-     "@command{osc} is a command line interface to the Open Build Service.  It
-allows you to checkout, commit, perform reviews etc.  The vast majority of the
-OBS functionality is available via commands and the rest can be reached via
-direct API calls.")
+    (description "@command{osc} is a command line interface to the Open Build
+Service.  It allows you to checkout, commit, perform reviews etc.  The vast
+majority of the OBS functionality is available via commands and the rest can
+be reached via direct API calls.")
     (license license:gpl2+)))
 
 (define-public compdb
