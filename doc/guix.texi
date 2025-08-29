@@ -37878,9 +37878,13 @@ Owner of the @code{cuirass} process.
 @item @code{group} (default: @code{"cuirass"})
 Owner's group of the @code{cuirass} process.
 
-@item @code{interval} (default: @code{60})
+@item @code{interval} (default: @code{300})
 Number of seconds between the poll of the repositories followed by the
-Cuirass jobs.
+Cuirass jobs, by default.
+
+Note that individual jobset specifications may override this in their
+@code{period} field; the value specified here is only used for
+specifications that use the default @code{period} value, which is zero.
 
 @item @code{ttl} (default: @code{2592000})
 Duration to keep build results' GC roots alive, in seconds.

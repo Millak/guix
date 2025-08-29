@@ -100,7 +100,7 @@
   (group            cuirass-configuration-group ;string
                     (default "cuirass"))
   (interval         cuirass-configuration-interval ;integer (seconds)
-                    (default 60))
+                    (default 300))
   (ttl              cuirass-configuration-ttl ;integer
                     (default 2592000))
   (build-expiry     cuirass-configuration-build-expiry
