@@ -362,11 +362,13 @@ immediately.  Return the exit status of the process in the container."
                      (in-vicinity "/run/user"     ;for shepherd & co.
                                   (number->string uid)))
                     (type "tmpfs")
+                    (options "size=10%,mode=700")
                     (check? #f))
                   (file-system                    ;writable home
                     (device "none")
                     (mount-point home-directory)
                     (type "tmpfs")
+                    (options "mode=700")
                     (check? #f)))
    #:mappings (append network-mappings mappings)
    #:guest-uid uid
