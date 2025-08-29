@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2018-2020, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2020 Eric Bavier <bavier@posteo.net>
 #
 # This file is part of GNU Guix.
@@ -32,7 +32,8 @@ storedir="`guile -c '(use-modules (guix config))(display %storedir)'`"
 localstatedir="`guile -c '(use-modules (guix config))(display %localstatedir)'`"
 NIX_STORE_DIR="$storedir"
 GUIX_DAEMON_SOCKET="$localstatedir/guix/daemon-socket/socket"
-export NIX_STORE_DIR GUIX_DAEMON_SOCKET
+GUIX_BUILD_OPTIONS="--timeout=180"
+export NIX_STORE_DIR GUIX_DAEMON_SOCKET GUIX_BUILD_OPTIONS
 
 if ! guile -c '(use-modules (guix)) (exit (false-if-exception (open-connection)))'
 then

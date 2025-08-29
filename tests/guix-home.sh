@@ -39,7 +39,8 @@ container_supported ()
 localstatedir="$(guile -c '(use-modules (guix config))(display %localstatedir)')"
 NIX_STORE_DIR="$(guile -c '(use-modules (guix config))(display %storedir)')"
 GUIX_DAEMON_SOCKET="$localstatedir/guix/daemon-socket/socket"
-export NIX_STORE_DIR GUIX_DAEMON_SOCKET
+GUIX_BUILD_OPTIONS="--timeout=180" # set an upper limit
+export NIX_STORE_DIR GUIX_DAEMON_SOCKET GUIX_BUILD_OPTIONS
 
 # Run tests only when a "real" daemon is available.
 if ! guile -c '(use-modules (guix)) (exit (false-if-exception (open-connection)))'
