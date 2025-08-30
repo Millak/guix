@@ -519,6 +519,65 @@ transforms.")
 Learning usecases.")
     (license license:asl2.0)))
 
+(define-public python-ml-dtypes
+  (package
+    (name "python-ml-dtypes")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jax-ml/ml_dtypes")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yv90f28c9w34430xjwvn1lzxdylvp1zi6b02cx7crla6qkvrzn5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-eigen-package
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "setup.py"
+                (("third_party/eigen")
+                 (search-input-directory inputs "include/eigen3")))))
+          (add-after 'install 'symlink-lib
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each
+               (lambda (file)
+                 (symlink file
+                          (string-append #$output "/lib/ml_dtypes.so")))
+               (find-files (site-packages inputs outputs) "\\.so$")))))))
+    (inputs (list eigen-for-python-ml-dtypes))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list pybind11
+                         python-absl-py
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/jax-ml/ml_dtypes")
+    (synopsis "NumPy dtype extensions used in machine learning")
+    (description
+     "This package is a stand-alone implementation of several
+NumPy @code{dtype} extensions used in machine learning libraries, including:
+
+@itemize
+@item @code{bfloat16}: an alternative to the standard @code{float16} format
+@item @code{float8_*}: several experimental 8-bit floating point
+  representations including:
+  @itemize
+  @item @code{float8_e4m3b11fnuz}
+  @item @code{float8_e4m3fn}
+  @item @code{float8_e4m3fnuz}
+  @item @code{float8_e5m2}
+  @item @code{float8_e5m2fnuz}
+  @end itemize
+@item @code{int4} and @code{uint4}: low precision integer types.
+@end itemize
+")
+    (license license:asl2.0)))
+
 (define-public ghmm
   ;; The latest release candidate is several years and a couple of fixes have
   ;; been published since.  This is why we download the sources from the SVN
