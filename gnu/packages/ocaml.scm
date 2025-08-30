@@ -5728,7 +5728,6 @@ long and size_t whose sizes depend on the host platform.")
       ("integers" ,ocaml-integers)))
    (inputs
     (list libffi))
-   (properties `((ocaml5.0-variant . ,(delay ocaml5.0-ctypes))))
    (synopsis "Library for binding to C libraries using pure OCaml")
    (description "Ctypes is a library for binding to C libraries using pure
 OCaml.  The primary aim is to make writing C extensions as straightforward as
@@ -5738,33 +5737,6 @@ functions.  You can use these combinators to describe the types of the
 functions that you want to call, then bind directly to those functions -- all
 without writing or generating any C!")
    (license license:expat)))
-
-(define-public ocaml5.0-ctypes
-  ;; Contains fix to support OCaml 5.0
-  ;; (https://github.com/ocamllabs/ocaml-ctypes/pull/709)
-  (let ((commit "52ff621f47dbc1ee5a90c30af0ae0474549946b4")
-        (revision "0"))
-    (package-with-ocaml5.0
-     (package
-       (inherit ocaml-ctypes)
-       (name "ocaml-ctypes")
-       (version (git-version "0.20.1" revision commit))
-       (home-page "https://github.com/ocamllabs/ocaml-ctypes")
-       (arguments
-        (append
-         ;; Some tests fail. Failure seems to be due to OCaml 5.0.
-         `(#:tests? #f)
-         (package-arguments ocaml-ctypes)))
-       (source (origin
-                 (method git-fetch)
-                 (uri (git-reference
-                       (url home-page)
-                       (commit commit)))
-                 (file-name (git-file-name name version))
-                 (sha256
-                  (base32
-                   "0vyiryqchz0mdfhal7bdivqsk5yhvzzckrqv495rlpbdxzklcp7g"))))
-       (properties '())))))
 
 (define-public ocaml-ocb-stubblr
   (package
