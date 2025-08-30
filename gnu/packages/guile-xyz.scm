@@ -1067,10 +1067,11 @@ tables.")
   (package
     (name "guile-fibers")
     (version "1.3.1")
+    (home-page "https://codeberg.org/fibers/fibers")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/wingo/fibers")
+                    (url home-page)
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -1137,7 +1138,6 @@ communication between fibers.
 
 Note that Fibers makes use of some Guile 2.1/2.2-specific features and
 is not available for Guile 2.0.")
-    (home-page "https://github.com/wingo/fibers")
     (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
 
