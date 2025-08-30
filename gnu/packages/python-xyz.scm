@@ -39020,6 +39020,31 @@ expression.")
 standard Python module.")
     (license license:asl2.0)))
 
+(define-public python-unicodeitplus
+  (package
+    (name "python-unicodeitplus")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "unicodeitplus" version))
+       (sha256
+        (base32 "1mssdjih7dqz25lrb2pyjg2yvab0b9c7a5k1llx1yzkkqbqyh74c"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-lark))
+    (home-page "https://github.com/HDembinski/unicodeitplus")
+    (synopsis "Convert simple LaTeX to an Unicode approximation")
+    (description
+     "This package provides a more complete LaTeX to Unicode converter than
+@code{unicodeit} using a parser generated from @acronym{EBNF, Extended
+Backus-Naur Form} with the Lark library.")
+    (license license:bsd-3)))
+
 (define-public python-unidecode
   (package
     (name "python-unidecode")
