@@ -312,7 +312,7 @@ to @code{cabal repl}).")
     (properties '((upstream-name . "git-annex")))
     (arguments
      `(#:configure-flags
-       '("--flags=-Android -Webapp")
+       '("--flags=-Android -Webapp Servant")
        #:haddock? #f
        #:phases
        (modify-phases %standard-phases
