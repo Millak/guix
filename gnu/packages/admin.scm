@@ -217,14 +217,14 @@
 (define-public aide
   (package
     (name "aide")
-    (version "0.19.1")
+    (version "0.19.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/aide/aide/releases/download/v"
                            version "/aide-" version ".tar.gz"))
        (sha256
-        (base32 "0lhbx7ilwzpfl77vi7b6cklhgzk1iwyfp4fvvgvlmmq30igvzy3d"))))
+        (base32 "1i3lbsw1mhsnq54bx48zikdiph1ihxn021ca7kmys4b1yh2jnxi3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-posix-acl"
