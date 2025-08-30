@@ -41,33 +41,3 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml))
 
-(define-public yml2
-  (package
-    (name "yml2")
-    (version "2.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitea.pep.foundation/fdik/yml2")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0fm1x1fv4lwcpbn59s55idzf7x173n59xpz8rlrxalmi6gvsjijr"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: There is no testing framework, only a samples directory.
-      #:tests? #f))
-    (native-inputs (list python-setuptools python-wheel))
-    (propagated-inputs (list python-lxml))
-    (home-page "https://fdik.org/yml/")
-    (synopsis "Use a Domain Specific Language for XML without defining
-a grammar")
-    (description
-     "The YML compiler is a small Python script.  It provides the command line
-front end yml2c.  As default, it compiles your script and outputs to stdout,
-that usually is the terminal.  Your shell provides options to redirect the
-output into a pipe or a file.")
-    (license license:gpl2)))
-
