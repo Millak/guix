@@ -10205,7 +10205,7 @@ Supports S3 and STS.")
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
-    (version "0.2.0")
+    (version "0.2.1")
     (home-page "https://github.com/sourcegraph/jsonrpc2")
     (source
      (origin
@@ -10215,7 +10215,7 @@ Supports S3 and STS.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1id35b4mhif9gy1b70mv0x7xkmpm2p8xydix8six10yjyhvm1wjh"))))
+        (base32 "0nxiq8da4x4sipjkap50cfzjg9b8vqm45w65hbjywwj6q73jl54a"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/sourcegraph/jsonrpc2"))
