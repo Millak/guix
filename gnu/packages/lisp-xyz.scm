@@ -21075,8 +21075,8 @@ Lisp, featuring:
   (sbcl-package->ecl-package sbcl-lparallel))
 
 (define-public sbcl-lquery
-  (let ((revision "1")
-        (commit "8048111c6b83956daa632e7a3ffbd8c9c203bd8d"))
+  (let ((revision "2")
+        (commit "08c9cb6c2b169bf71d4444bc80e87e5b19f8499c"))
     (package
       (name "sbcl-lquery")
       (version (git-version "3.2.1" revision commit))
@@ -21085,10 +21085,10 @@ Lisp, featuring:
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/lquery")
+           (url "https://codeberg.org/shinmera/lquery")
            (commit commit)))
          (sha256
-          (base32 "0520mcpxc2d6fdm8z61arpgd2z38kan7cf06qs373n5r64rakz6w"))
+          (base32 "11l03pwlvv76lxrmvjs3prkrjsgl70wz7vbl1n6rhg9kmyv91a74"))
          (file-name (git-file-name name version))))
       (native-inputs
        (list sbcl-fiveam))
@@ -21102,7 +21102,7 @@ functions.  It uses Plump and CLSS as DOM and selector engines.  The
 main idea behind lQuery is to provide a simple interface for crawling
 and modifying HTML sites, as well as to allow for an alternative
 approach to templating.")
-      (home-page "https://github.com/Shinmera/lquery")
+      (home-page "https://codeberg.org/shinmera/lquery")
       (license license:zlib))))
 
 (define-public cl-lquery
