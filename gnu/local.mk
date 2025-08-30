@@ -2331,7 +2331,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/tcsh-fix-autotest.patch			\
   %D%/packages/patches/teensy-loader-cli-help.patch		\
   %D%/packages/patches/tensorflow-c-api-fix.patch		\
-  %D%/packages/patches/tensorflow-lite-unbundle.patch 		\
   %D%/packages/patches/texinfo-headings-single.patch		\
   %D%/packages/patches/texinfo-5-perl-compat.patch		\
   %D%/packages/patches/telegram-desktop-allow-disable-libtgvoip.patch   \

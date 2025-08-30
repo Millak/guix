@@ -932,7 +932,7 @@ game development and other performance-critical applications.")
   (hidden-package
    (package
      (inherit flatbuffers)
-     ;; needed explicitly by onnxruntime
+     ;; needed explicitly by onnxruntime and tensorflow-lite@2.14.0
      (version "23.5.26")
      (source
       (origin

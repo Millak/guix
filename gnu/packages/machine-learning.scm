@@ -3194,7 +3194,7 @@ Python.")
 (define-public tensorflow-lite
   (package
     (name "tensorflow-lite")
-    (version "2.13.1")
+    (version "2.14.0")
     (source
      (origin
        (method git-fetch)
@@ -3204,8 +3204,7 @@ Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09mfskmpvpbq919wibnw3bnhi1y3hkx3qrzm72gdr0gsivn1yb3w"))
-       (patches (search-patches "tensorflow-lite-unbundle.patch"))))
+         "07f4x4g3kwhfjz7iadhqrv97zmw0blacixvca1gdqkqqi7aipxis"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3226,6 +3225,7 @@ Python.")
          "-DTFLITE_ENABLE_RUY=ON"
          "-DTFLITE_ENABLE_XNNPACK=ON"
 
+         "-DSYSTEM_PTHREADPOOL=ON"
          ;; TODO: turn on Farmhash
          ;;"-DSYSTEM_FARMHASH=ON"
          (string-append "-Dabsl_DIR=" #$(this-package-input "abseil-cpp")
@@ -3241,8 +3241,11 @@ Python.")
                         "/share/cpuinfo")
          (string-append "-Druy_DIR=" #$(this-package-input "ruy")
                         "/lib/cmake/ruy")
+         (string-append "-DML_DTYPES_LIBRARY_DIRS="
+                        #$(this-package-input "python-ml-dtypes") "/lib")
 
          ;; Don't fetch the sources.  We have these already
+         "-Dml_dtypes_POPULATED=ON"
          "-Dgemmlowp_POPULATED=TRUE"
          "-Degl_headers_POPULATED=TRUE"
          "-Dfp16_headers_POPULATED=TRUE"
@@ -3262,22 +3265,28 @@ Python.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
             (lambda _ (chdir "tensorflow/lite")))
+          (add-after 'chdir 'unbundle-gemmlowp
+            (lambda _
+              (call-with-output-file "tools/cmake/modules/gemmlowp.cmake"
+                (lambda (port)
+                  (display "\
+add_library(gemmlowp INTERFACE IMPORTED)
+include_directories(\"${gemmlowp_ROOT}/include/gemmlowp\")" port)))
+              (call-with-output-file "tools/cmake/modules/ml_dtypes.cmake"
+                (lambda (port)
+                  (display "\
+add_library(ml_dtypes INTERFACE IMPORTED)
+find_library(ML_DTYPES_LIBRARIES
+  NAMES ml_dtypes.so
+  PATHS \"${ML_DTYPES_LIBRARY_DIRS}\"
+  NO_DEFAULT_PATH)" port)))))
           (add-after 'chdir 'copy-sources
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; TODO: properly use Guix's pthreaqdpool.  We are not using
-              ;; pthreadpool because we are not enabling xnnpack
-              (substitute* "CMakeLists.txt"
-                (("if\\(NOT DEFINED PTHREADPOOL_SOURCE_DIR\\)")
-                 "if(false)"))
-              (substitute* "CMakeLists.txt"
-                (("if\\(NOT TARGET pthreadpool\\)")
-                 "if(false)"))
-
               ;; Don't fetch source code; we already have everything we need.
               (substitute* '("tools/cmake/modules/fft2d.cmake"
                              "tools/cmake/modules/farmhash.cmake"
                              "tools/cmake/modules/gemmlowp.cmake")
-                (("OverridableFetchContent_Populate.*") ""))
+                (("^ *OverridableFetchContent_Populate.*") ""))
 
               (mkdir-p "/tmp/farmhash")
               (with-directory-excursion "/tmp/farmhash"
@@ -3303,6 +3312,11 @@ Python.")
             (lambda _ (substitute* "kernels/internal/spectrogram.cc"
               (("#include <math.h>")
                "#include <math.h>\n#include <cstdint>\n"))))
+          (add-after 'stdint-fix 'gemmlowp-fix
+            (lambda _
+              (substitute* "kernels/internal/common.h"
+                (("#include \"fixedpoint/fixedpoint\\.h\"")
+                 "#include <fixedpoint/fixedpoint.h>"))))
           (add-after 'build 'build-shared-library
             (lambda* (#:key configure-flags #:allow-other-keys)
               (mkdir-p "c")
@@ -3316,35 +3330,35 @@ Python.")
                       "-j" (number->string (parallel-job-count)))))
 
           (add-after 'install 'install-extra
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (lib (string-append out "/lib"))
-                     (bin (string-append out "/bin")))
-                (install-file "../build/c/libtensorflowlite_c.so" lib)
-                (install-file "../build/tools/benchmark/benchmark_model" bin))))
+            (lambda _
+              (install-file "../build/c/libtensorflowlite_c.so"
+                            (string-append #$output "/lib"))
+              (install-file "../build/tools/benchmark/benchmark_model"
+                            (string-append #$output "/bin"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "ctest" "-L" "plain")))))))
     (inputs
-     `(("abseil-cpp" ,abseil-cpp)
-       ("cpuinfo" ,cpuinfo)
-       ("eigen" ,eigen)
-       ("fp16" ,fp16)
-       ("flatbuffers" ,flatbuffers-23.1)
-       ("gemmlowp" ,gemmlowp)
-       ("mesa-headers" ,mesa-headers)
-       ("neon2sse" ,neon2sse)
-       ("nsync" ,nsync)
-       ("opencl-clhpp" ,opencl-clhpp)
-       ("opencl-headers" ,opencl-headers)
-       ("opencl-icd-loader" ,opencl-icd-loader)
-       ("pthreadpool" ,pthreadpool)
-       ("python" ,python)
-       ("ruy" ,ruy)
-       ("re2" ,re2)
-       ("xnnpack" ,xnnpack)
-       ("vulkan-headers" ,vulkan-headers)))
+     (list abseil-cpp
+           cpuinfo
+           eigen
+           fp16
+           flatbuffers-23.5
+           gemmlowp
+           mesa-headers
+           neon2sse
+           nsync
+           opencl-clhpp
+           opencl-headers
+           opencl-icd-loader
+           pthreadpool
+           python
+           python-ml-dtypes
+           ruy
+           re2
+           xnnpack
+           vulkan-headers))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("googletest" ,googletest)
