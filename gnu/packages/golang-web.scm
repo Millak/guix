@@ -453,7 +453,7 @@ handlers.")
 (define-public go-github-com-alexliesenfeld-health
   (package
     (name "go-github-com-alexliesenfeld-health")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -462,7 +462,7 @@ handlers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fchlvxwidsscskwq07vhxfwcn5wbigbizi51619l8gg09mr158q"))))
+        (base32 "19p0rs1dmvf3cnylyykmmnma2g5x2vy8gasr2rjl28ma58w6l0d3"))))
     (build-system go-build-system)
     (arguments
      (list
