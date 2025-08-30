@@ -2922,7 +2922,7 @@ system is under heavy load.")
 (define-public stress-ng
   (package
     (name "stress-ng")
-    (version "0.18.04")
+    (version "0.19.03")
     (source
      (origin
        (method git-fetch)
@@ -2931,7 +2931,7 @@ system is under heavy load.")
              (commit (string-append "V" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "100w4qkrzpg7jjl4dw0c376xi811qnjmlbffiy43i945f9vl3dc7"))))
+        (base32 "1phrmjvvjn55pyfljfkk604d8q8wn17l416v91hskj98v7b7yhck"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX The test suite seems to cause instability on the VisionFive 2
