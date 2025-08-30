@@ -120,7 +120,7 @@ and replace development dependencies with tree-sitter grammar node modules."
                    ;; provided.
                    ,@(cond
                       ((source-file "src/scanner.c")
-                       => (lambda (file) (list "-xc" "-std=c99" file)))
+                       => (lambda (file) (list "-xc" "-std=c11" file)))
                       ((source-file "src/scanner.cc")
                        => (lambda (file) (list file)))
                       (else '()))
