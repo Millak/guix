@@ -25153,8 +25153,8 @@ for Common Lisp.")
   (sbcl-package->clasp-package sbcl-piping))
 
 (define-public sbcl-plump
-  (let ((commit "0c3e0b57b43b6e0c5794b6a902f1cf5bee2a2927")
-        (revision "3"))
+  (let ((commit "251fbe02e9bcdb5940d881788b880d51f7f35303")
+        (revision "4"))
     (package
       (name "sbcl-plump")
       (version (git-version "2.0.0" revision commit))
@@ -25163,11 +25163,11 @@ for Common Lisp.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/plump")
+           (url "https://codeberg.org/shinmera/plump")
            (commit commit)))
          (file-name (git-file-name "cl-plump" version))
          (sha256
-          (base32 "1fyb66pqvr1iy31ah9638ihs8cax17zkxk0zq14jy7x5l9rq1qlf"))))
+          (base32 "0w2n5wskgqvazb721amfd7smydnj3mxsyzg03xk2k1vaizzxdzvk"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-array-utils sbcl-documentation-utils))
@@ -25179,7 +25179,7 @@ bad closing tag order, unencoded entities, inexistent tag types, self-closing
 tags and so on.  It parses documents to a class representation and offers a
 small set of DOM functions to manipulate it.  It can be extended to parse to
 your own classes.")
-      (home-page "https://shinmera.github.io/plump/")
+      (home-page "https://codeberg.org/shinmera/plump")
       (license license:zlib))))
 
 (define-public cl-plump
