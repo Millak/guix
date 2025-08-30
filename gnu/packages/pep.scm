@@ -71,23 +71,3 @@ that usually is the terminal.  Your shell provides options to redirect the
 output into a pipe or a file.")
     (license license:gpl2)))
 
-(define fdik-libetpan
-  ;; pEp Engine requires libetpan with a set of patches that have not been
-  ;; upstreamed yet.
-  (let ((commit "0b80c39dd1504462ba3a39dc53db7c960c3a63f3") ; 2020-11-27
-        (checksum "0gv3ivaziadybjlf6rfpv1j5z5418243v5cvl4swlxd2njsh7gjk")
-        (revision "6"))
-   (package
-    (inherit libetpan)
-    (name "fdik-libetpan")
-    (version (string-append "1.6-" revision "." (string-take commit 8)))
-    (source
-     (origin
-       (inherit (package-source libetpan))
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitea.pep.foundation/pEp.foundation/libetpan")
-             (commit commit)))
-       (file-name (string-append name "-" version))
-       (sha256 (base32 checksum)))))))
-
