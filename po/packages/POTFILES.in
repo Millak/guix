@@ -296,7 +296,6 @@ gnu/packages/patchutils.scm
 gnu/packages/patool.scm
 gnu/packages/pdf.scm
 gnu/packages/pem.scm
-gnu/packages/pep.scm
 gnu/packages/perl-check.scm
 gnu/packages/perl-maths.scm
 gnu/packages/perl-web.scm
