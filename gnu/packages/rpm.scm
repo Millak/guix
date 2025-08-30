@@ -140,7 +140,7 @@ information on multiple streams, default data and translations).")
 (define-public createrepo-c
   (package
     (name "createrepo-c")
-    (version "0.20.1")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -149,7 +149,7 @@ information on multiple streams, default data and translations).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07d89s6kknf79phzan3d2vy1rq64ih49qk2w51hsmfn73qins9wy"))))
+                "03crsny8z17n1jnzynrcw1rkws2xap7zhaiqnh2nxg3bbzcd8sys"))))
     (build-system cmake-build-system)
     (arguments
      (list
