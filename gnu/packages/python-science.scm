@@ -75,6 +75,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -1594,6 +1595,58 @@ Features:
 @item crop-resistant hashing
 @end itemize")
     (license license:bsd-2)))
+
+(define-public python-iminuit
+  (package
+    (name "python-iminuit")
+    (version "2.31.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "iminuit" version))
+       (sha256
+        (base32 "066y0khk5bv56jv0p5bkkmya3rwijskz9yq9ch3jlgfqzzqh9q6m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "-k" "not test_interactive_pyside6")))
+    (native-inputs
+     (list cmake-minimal
+           pybind11
+           python-annotated-types
+           python-boost-histogram
+           python-ipykernel
+           python-jacobi
+           python-joblib
+           python-pydantic-2
+           python-pytest
+           python-resample
+           python-scikit-build-core
+           python-tabulate))
+    ;; All inputs besides python-numpy are optional but greatly improve
+    ;; the package.
+    ;; FIXME: Numba segfaults Python in some tests.
+    (propagated-inputs
+     (list python-ipywidgets
+           python-matplotlib
+           ;; python-numba
+           ;; python-numba-stats
+           python-numpy
+           python-scipy
+           python-unicodeitplus))
+    (home-page "https://github.com/scikit-hep/iminuit")
+    (synopsis "Python interface for MINUIT2")
+    (description
+     "@code{iminuit} is a Jupyter-friendly Python interface for the @code{Minuit2}
+C++ library maintained by CERN's ROOT team.
+
+Minuit was designed to optimize statistical cost functions, for
+maximum-likelihood and least-squares fits.  It provides the best-fit
+parameters and error estimates from likelihood profile analysis.
+
+Optionally, Iminuit supports SciPy minimizers as alternatives to Minuit's
+MIGRAD algorithm and Numba accelerated functions.")
+    ;; Python interface under MIT Expat, Iminuit C++ library under LGPL v2.1+.
+    (license (list license:expat license:lgpl2.1+))))
 
 (define-public python-jacobi
   (package
