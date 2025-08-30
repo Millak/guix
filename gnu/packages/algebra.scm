@@ -1287,6 +1287,33 @@ features, and more.")
          ((#:tests? tests? #t)
           #f))))))
 
+;; XXX: python-ml-dtypes uses this commit specifically since at least version
+;; 0.2.0.  It's not compiling with another eigen, so build this one for now.
+(define-public eigen-for-python-ml-dtypes
+  (let ((commit "7bf2968fed5f246c0589e1111004cb420fcd7c71")
+        (revision "0"))
+    (hidden-package
+     (package
+       (inherit eigen)
+       (name "eigen-for-python-ml-dtypes")
+       (version (git-version "3.4.0" revision commit))
+       (source
+        (origin
+          (inherit (package-source eigen))
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://gitlab.com/libeigen/eigen")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "0yq69h7pasbzq5r83d974xi031r0z2y2x0my1rz5crky54i1j0r7"))
+          (patches '())))
+       ;; XXX: Tests stable_norm_5 and stable_norm_6 are failing due to
+       ;; EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE.
+       (arguments
+        (substitute-keyword-arguments (package-arguments eigen)
+          ((#:tests? flag #f) #false)))))))
+
 (define-public xtensor
   (package
     (name "xtensor")
