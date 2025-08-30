@@ -2054,6 +2054,53 @@ MGH, geometry, annotation and morphometry files, and provides some limited
 support for DICOM.")
     (license license:expat))) ; and other non-copyleft licenses
 
+(define-public python-numba-stats
+  (package
+    (name "python-numba-stats")
+    (version "1.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "numba_stats" version))
+       (sha256
+        (base32 "1m5gwrc3liqydpix5ckyc7s5ysvgvinbznnkcvk2xjz13lwfy2s8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numba
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/scikit-hep/numba-stats")
+    (synopsis "Accelerated implementations of SciPy probability distributions")
+    (description
+     "This package provides Numba-accelerated implementations of common SciPy
+probability distributions and others used in particle physics.
+
+The supported distributions are:
+
+@itemize
+@item Uniform
+@item (Truncated) Normal
+@item Log-normal
+@item Poisson
+@item Binomial
+@item (Truncated) Exponential
+@item Student's t
+@item Voigtian
+@item Crystal Ball
+@item Generalised double-sided Crystal Ball
+@item Tsallis-Hagedorn, a model for the minimum bias pT distribution
+@item Q-Gaussian
+@item Bernstein density (not normalized to unity)
+@item Cruijff density (not normalized to unity)
+@item CMS-Shape
+@item Generalized Argus
+@end itemize")
+    (license license:expat)))
+
 (define-public python-numdifftools
   (package
     (name "python-numdifftools")
