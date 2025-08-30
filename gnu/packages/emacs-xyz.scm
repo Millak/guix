@@ -148,7 +148,7 @@
 ;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
 ;;; Copyright © 2024-2025 Liam Hupfer <liam@hpfr.net>
-;;; Copyright © 2024-2025 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2024-2025 Alvin Hsu <aurtzy@gmail.com>
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
@@ -2335,6 +2335,32 @@ before interacting with non-free LLMs.")
        "This package provides a collection of tools to be used by
 @acronym{Large Language Models, LLM} clients in Emacs.")
       (license license:gpl3+))))
+
+(define-public emacs-agitjo
+  (package
+    (name "emacs-agitjo")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/halvin/agitjo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wbhi4lbqk0vf0di86a9wljvva3a9vhb2wvsn1s44h53xslhrj0n"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (propagated-inputs (list emacs-magit emacs-markdown-mode emacs-transient))
+    (home-page "https://codeberg.org/halvin/agitjo")
+    (synopsis "Manage Forgejo PRs with AGit-Flow in Emacs")
+    (description
+     "AGitjo is a GNU Emacs package that extends Magit with a new menu for
+AGit-Flow operations, to make them more convenient for users.  The AGit workflow
+enables users to create and edit pull requests using just the @code{git push}
+command.  This package is intended specifically for use with
+Forgejo-based (e.g. Codeberg) repositories.")
+    (license license:gpl3+)))
 
 (define-public emacs-magit
   (package
