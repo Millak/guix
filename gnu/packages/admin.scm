@@ -1255,7 +1255,8 @@ re-executing them as necessary.")
                      '("--with-path-procnet-dev=/proc/net/dev")
                      '())
               #$@(if (target-hurd?)
-                     '("--disable-rcp"
+                     '("--with-path-klog=/dev/klog"
+                       "--disable-rcp"
                        "--disable-rexec"
                        "--disable-rexecd"
                        "--disable-rlogin"
