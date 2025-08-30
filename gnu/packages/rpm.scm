@@ -75,15 +75,16 @@ applying deltarpms, compatible with the original deltarpm packages.")
 (define-public libmodulemd
   (package
     (name "libmodulemd")
-    (version "2.13.0")
+    (version "2.15.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/fedora-modularity/"
-                                  "libmodulemd/releases/download/" version
-                                  "/modulemd-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/fedora-modularity/libmodulemd")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g4wizr2wwl5x77ni5j46nfcax8fbb7nqq5nr7va9sccyigwwwnc"))))
+                "0vvy4ljlcy3mvgv6ybayb7lcmc1561k3pjmfk3m9x22if6z9ap0y"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))            ;2.6 MiB of HTML documentation
     (arguments
@@ -103,8 +104,9 @@ applying deltarpms, compatible with the original deltarpm packages.")
               (substitute* "meson.build"
                 (("glib_docpath = .*")
                  (format #f "glib_docpath = '~a'~%"
-                         (search-input-directory (or native-inputs inputs)
-                                                 "share/gtk-doc/html"))))))
+                         (dirname
+                          (search-input-directory (or native-inputs inputs)
+                                                  "share/doc/glib-2.0")))))))
           (add-after 'install 'move-documentation
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((dst (string-append #$output:doc "/share/gtk-doc")))
