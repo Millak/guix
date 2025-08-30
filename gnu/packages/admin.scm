@@ -575,7 +575,7 @@ interface and is based on GNU Guile.")
                        (if (or (target-arm?)
                                (target-riscv64?))
                            guile-fibers-1.1
-                           guile-fibers))))
+                           guile-fibers-1.3)))) ;pinned version to avoid rebuilds
     (inputs (modify-inputs (package-inputs shepherd-0.9)
               (replace "guile-fibers"
                 (this-package-native-input "guile-fibers"))))))

@@ -1063,7 +1063,7 @@ tables.")
                          (replace "guile-lib" guile2.2-lib)
                          (replace "guile-smc" guile2.2-smc)))))
 
-(define-public guile-fibers
+(define-public guile-fibers-1.3
   (package
     (name "guile-fibers")
     (version "1.3.1")
@@ -1141,7 +1141,20 @@ is not available for Guile 2.0.")
     (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
 
-(define-public guile-fibers-1.3 guile-fibers)
+(define-public guile-fibers-1.4
+  (package
+    (inherit guile-fibers-1.3)
+    (name "guile-fibers")
+    (version "1.4.0")
+    (source
+     (origin (inherit (package-source guile-fibers-1.3))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ryp04w6ghgdfhlv9hkwl00iv6nwnw2hj2pywlxvpp92pyxhkwpi"))
+              (patches '())))))
+
+(define-public guile-fibers guile-fibers-1.4)
 
 (define-public guile-fibers-1.1
   (package
