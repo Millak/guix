@@ -1834,9 +1834,9 @@ compatibility.")
     (license license:expat)))
 
 (define-public gemmlowp
-  (let ((commit "08e4bb339e34017a0835269d4a37c4ea04d15a69")
+  (let ((commit "16e8662c34917be0065110bfcd9cc27d30f52fdf")
         (version "0.1")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "gemmlowp")
       (version (git-version version revision commit))
@@ -1847,7 +1847,7 @@ compatibility.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1q8f3w5slxd8fbn31hpm00y6wyp7gm71rzr27cmcff4b3px4ca6k"))))
+                  "02xmrv921al94nihiqrvi8inlq6qc07j0zll3f9qi8322r31x83v"))))
       (arguments
        `(#:configure-flags
          (list ,@(match (%current-system)
