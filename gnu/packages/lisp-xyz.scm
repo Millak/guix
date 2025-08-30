@@ -12205,8 +12205,8 @@ interfaces as well as a functional and an object oriented interface.")
           `(cons "clsql-cffi" ,asd-systems)))))))
 
 (define-public sbcl-clss
-  (let ((revision "2")
-        (commit "f62b849189c5d1be378f0bd3d403cda8d4fe310b"))
+  (let ((revision "3")
+        (commit "cd5f603e8207ec23c147c5cfda636ef8273a7525"))
     (package
       (name "sbcl-clss")
       (version (git-version "0.3.1" revision commit))
@@ -12215,10 +12215,10 @@ interfaces as well as a functional and an object oriented interface.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/clss")
+           (url "https://codeberg.org/shinmera/clss")
            (commit commit)))
          (sha256
-          (base32 "1033dchpanhcgxl5qfhr80aw9adbp9bvllhzvvy5p9mrfnidd1fv"))
+          (base32 "15wh1zafamxc5z5hni9ni72xg4n24am2xfqv7fwwhfw1sl06bcm2"))
          (file-name (git-file-name name version))))
       (inputs
        (list sbcl-array-utils sbcl-plump))
@@ -12226,7 +12226,7 @@ interfaces as well as a functional and an object oriented interface.")
       (synopsis "DOM tree searching engine based on CSS selectors")
       (description "CLSS is a DOM traversal engine based on CSS
 selectors.  It makes use of the Plump-DOM and is used by lQuery.")
-      (home-page "https://github.com/Shinmera/clss")
+      (home-page "https://codeberg.org/shinmera/clss")
       (license license:zlib))))
 
 (define-public cl-clss
