@@ -8840,7 +8840,7 @@ Protocol,SCTP} as specified in
   (package
     (inherit go-github-com-pion-srtp-v2)
     (name "go-github-com-pion-srtp-v3")
-    (version "3.0.4")
+    (version "3.0.7")
     (source
      (origin
        (method git-fetch)
@@ -8849,7 +8849,7 @@ Protocol,SCTP} as specified in
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03343fsgrawfy9plsl7y5022ygjln3jvsn3im5xl1qwnc68rb1a2"))))
+        (base32 "0l8y01ci5fsx8b6ajn9cvs45hqpz838x0jnyyj1p2z714nw9jh61"))))
     (arguments
      (list
       #:import-path "github.com/pion/srtp/v3"))
