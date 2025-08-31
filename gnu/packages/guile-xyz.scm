@@ -1148,11 +1148,14 @@ is not available for Guile 2.0.")
     (version "1.4.0")
     (source
      (origin (inherit (package-source guile-fibers-1.3))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1ryp04w6ghgdfhlv9hkwl00iv6nwnw2hj2pywlxvpp92pyxhkwpi"))
-              (patches '())))))
+             (file-name (git-file-name name version))
+             (uri (git-reference
+                    (url (package-home-page guile-fibers-1.3))
+                    (commit (string-append "v" version))))
+             (sha256
+              (base32
+               "1ryp04w6ghgdfhlv9hkwl00iv6nwnw2hj2pywlxvpp92pyxhkwpi"))
+             (patches '())))))
 
 (define-public guile-fibers guile-fibers-1.4)
 
