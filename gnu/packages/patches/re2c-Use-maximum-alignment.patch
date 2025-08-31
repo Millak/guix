@@ -1,0 +1,48 @@
+https://github.com/skvadrik/re2c/pull/555
+
+From 44125b74628d17f0a0a6cf9b51dd1f24169cd2d5 Mon Sep 17 00:00:00 2001
+From: Alexey Abramov <levenson@mmer.org>
+Date: Fri, 22 Aug 2025 08:10:08 +0200
+Subject: [PATCH] Use maximum alignment to ensure compatibility across all
+ architectures.
+
+---
+ src/util/allocator.h | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/src/util/allocator.h b/src/util/allocator.h
+index e6c85585b..56daf056f 100644
+--- a/src/util/allocator.h
++++ b/src/util/allocator.h
+@@ -3,6 +3,7 @@
+ 
+ #include <stdint.h>
+ #include <stdlib.h>
++#include <stddef.h>
+ #include <algorithm>
+ #include <vector>
+ 
+@@ -78,11 +79,16 @@ class slab_allocator_t {
+ };
+ 
+ // Use maximum alignment.
++// Use alignment based on pointer size: 32-bit platforms need stronger alignment
++// for 64-bit types (double, long long), while 64-bit platforms are already
++// sufficiently aligned with pointer-sized alignment.
++constexpr size_t ALLOCATOR_ALIGNMENT = (sizeof(void*) == 4) ? alignof(max_align_t) : sizeof(void*);
++
+ // Use different types to prevent accidentally mixing allocators for data with different life spans.
+-using AstAllocator = slab_allocator_t<AllocatorKind::AST, 16 * 4096, sizeof(void*)>;
+-using IrAllocator = slab_allocator_t<AllocatorKind::IR, 16 * 4096, sizeof(void*)>;
+-using DfaAllocator = slab_allocator_t<AllocatorKind::DFA, 16 * 4096, sizeof(void*)>;
+-using OutAllocator = slab_allocator_t<AllocatorKind::OUT, 16 * 4096, sizeof(void*)>;
++using AstAllocator = slab_allocator_t<AllocatorKind::AST, 16 * 4096, ALLOCATOR_ALIGNMENT>;
++using IrAllocator = slab_allocator_t<AllocatorKind::IR, 16 * 4096, ALLOCATOR_ALIGNMENT>;
++using DfaAllocator = slab_allocator_t<AllocatorKind::DFA, 16 * 4096, ALLOCATOR_ALIGNMENT>;
++using OutAllocator = slab_allocator_t<AllocatorKind::OUT, 16 * 4096, ALLOCATOR_ALIGNMENT>;
+ 
+ } // namespace re2c
+ 
+-- 
+2.50.1
+

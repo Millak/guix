@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2020 Sergei Trofimovich <slyfox@inbox.ru>
 ;;; Copyright © 2021 Sergei Trofimovich <slyich@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2025 Alexey Abramov <levenson@mmer.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +21,10 @@
 
 (define-module (gnu packages re2c)
   #:use-module (guix licenses)
+  #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages python)
   #:use-module (guix download)
   #:use-module (guix build-system gnu))
@@ -38,9 +42,19 @@
               (base32
                 "07ysqgdm0h566a8lwnpdgycp93vz7zskzihsgah3bla0ycj2pp69"))))
     (build-system gnu-build-system)
-    (home-page "https://re2c.org/")
+    (arguments
+     (if (target-arm32?)
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-sources
+                     (lambda _
+                       (invoke "patch" "-p1" "--force" "--input"
+                               #$(local-file (search-patch
+                                               "re2c-Use-maximum-alignment.patch")))))))
+         '()))
     (native-inputs
      (list python))             ; for the test driver
+    (home-page "https://re2c.org/")
     (synopsis "Lexer generator for C/C++")
     (description
      "@code{re2c} generates minimalistic hard-coded state machine (as opposed
