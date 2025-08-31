@@ -2910,19 +2910,13 @@ implementation of an MQTT version client class.")
                 "qite/qiteaudio.h")
                (("qiteaudiorecorder.h")
                 "qite/qiteaudiorecorder.h"))))
-         (add-after 'install 'wrap-env
+         (add-after 'install 'wrap-executable
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (name)
-                  (let ((file (string-append out "/bin/" name))
-                        (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                        (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-                    (wrap-program file
-                      `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                      `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("psi-plus")))))
-         (add-after 'wrap-env 'glib-or-gtk-compile-schemas
+               (wrap-program (string-append out "/bin/psi-plus")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))
+         (add-after 'wrap-executable 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
          (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
