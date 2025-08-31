@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.8.1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-07-09 03:18+0000\n"
-"PO-Revision-Date: 2025-07-19 14:08+0000\n"
-"Last-Translator: VnPower <vnpower@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2025-08-26 03:18+0000\n"
+"PO-Revision-Date: 2025-08-26 15:59+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Vietnamese <https://translate.codeberg.org/projects/guix/guix/vi/>\n"
 "Language: vi\n"
 "MIME-Version: 1.0\n"
@@ -579,7 +579,7 @@ msgid ""
 "network interface."
 msgstr ""
 
-#: gnu/services/base.scm:4105
+#: gnu/services/base.scm:4116
 msgid ""
 "Provides necessary infrastructure for logging into the\n"
 "system including @code{greetd} PAM service, @code{pam-mount} module to\n"
@@ -735,43 +735,48 @@ msgid ""
 "setting its password with @command{passwd}."
 msgstr ""
 
-#: gnu/services/desktop.scm:2273
+#: gnu/services/desktop.scm:2272
 msgid "Run the KDE Plasma desktop environment."
 msgstr ""
 
-#: gnu/services/desktop.scm:2330
+#: gnu/services/desktop.scm:2329
 msgid ""
 "Return a service that runs inputattach on a device and\n"
 "dispatches events from it."
 msgstr ""
 
-#: gnu/services/desktop.scm:2361
+#: gnu/services/desktop.scm:2360
 #, fuzzy, scheme-format
 msgid "seatd: '~a' is not a valid group~%"
 msgstr "~a: số không hợp lệ~%"
 
-#: gnu/services/desktop.scm:2403
+#: gnu/services/desktop.scm:2402
 msgid ""
 "Seat management takes care of mediating access\n"
 "to shared devices (graphics, input), without requiring the\n"
 "applications needing access to be root."
 msgstr ""
 
-#: gnu/services/docker.scm:165
+#: gnu/services/docker.scm:170
 msgid "Run containerd container runtime."
 msgstr ""
 
-#: gnu/services/docker.scm:221
+#: gnu/services/docker.scm:226
 msgid ""
 "Provide capability to run Docker application\n"
 "bundles in Docker containers."
 msgstr ""
 
-#: gnu/services/docker.scm:287
+#: gnu/services/docker.scm:292
 msgid "Install the Singularity application bundle tool."
 msgstr ""
 
-#: gnu/services/docker.scm:315
+#: gnu/services/docker.scm:321
+#, scheme-format
+msgid "'oci-container-service-type' is deprecated, use 'oci-service-type' instead~%"
+msgstr ""
+
+#: gnu/services/docker.scm:329
 msgid ""
 "This service allows the management of OCI\n"
 "containers as Shepherd services."
@@ -808,41 +813,45 @@ msgstr ""
 msgid "Run @code{lightdm}, the LightDM graphical login manager."
 msgstr ""
 
-#: gnu/services/linux.scm:190
+#: gnu/services/linux.scm:196
 msgid ""
 "Run @command{earlyoom}, a daemon that quickly responds to\n"
 "@acronym{OOM, out-of-memory} conditions by terminating relevant processes."
 msgstr ""
 
-#: gnu/services/linux.scm:278
+#: gnu/services/linux.scm:284
 msgid "Discard unused blocks from file systems."
 msgstr ""
 
-#: gnu/services/linux.scm:321
+#: gnu/services/linux.scm:327
 msgid "Load kernel modules."
 msgstr ""
 
-#: gnu/services/linux.scm:494
+#: gnu/services/linux.scm:500
 msgid ""
 "Run the file system cache daemon @command{cachefilesd}, which relies on\n"
 "the Linux @code{cachefiles} module."
 msgstr ""
 
-#: gnu/services/linux.scm:544
+#: gnu/services/linux.scm:550
 msgid "Run @command{rasdaemon}, the RAS monitor"
 msgstr ""
 
-#: gnu/services/linux.scm:571
+#: gnu/services/linux.scm:576
 #, scheme-format
 msgid "using -1 for zram priority is deprecated~%"
 msgstr ""
 
-#: gnu/services/linux.scm:572
+#: gnu/services/linux.scm:577
 msgid "Use #f or leave as default instead (@pxref{Linux Services})."
 msgstr ""
 
-#: gnu/services/linux.scm:630
+#: gnu/services/linux.scm:635
 msgid "Creates a zram swap device."
+msgstr ""
+
+#: gnu/services/linux.scm:792
+msgid "Share or expose a file name under a different name."
 msgstr ""
 
 #: gnu/services/monitoring.scm:153
@@ -888,23 +897,23 @@ msgid ""
 "with Zabbix server."
 msgstr ""
 
-#: gnu/services/networking.scm:362
+#: gnu/services/networking.scm:363
 msgid "Add a list of known Facebook hosts to @file{/etc/hosts}"
 msgstr ""
 
-#: gnu/services/networking.scm:449
+#: gnu/services/networking.scm:450
 #, scheme-format
 msgid "'dhcp-client' service now expects a 'dhcp-client-configuration' record~%"
 msgstr ""
 
-#: gnu/services/networking.scm:451
+#: gnu/services/networking.scm:452
 msgid ""
 "The value associated with instances of\n"
 "@code{dhcp-client-service-type} must now be a @code{dhcp-client-configuration}\n"
 "record instead of a package.  Please adjust your configuration accordingly."
 msgstr ""
 
-#: gnu/services/networking.scm:465
+#: gnu/services/networking.scm:466
 msgid ""
 "Run @command{dhcp}, a Dynamic Host Configuration\n"
 "Protocol (DHCP) client, on all the non-loopback network interfaces.\n"
@@ -912,38 +921,38 @@ msgid ""
 "This services is deprecated as ISC's DHCP client reached its end-of-life."
 msgstr ""
 
-#: gnu/services/networking.scm:536
+#: gnu/services/networking.scm:537
 msgid ""
 "Run a DHCP (Dynamic Host Configuration Protocol) daemon.  The\n"
 "daemon is responsible for allocating IP addresses to its client."
 msgstr ""
 
-#: gnu/services/networking.scm:679
+#: gnu/services/networking.scm:680
 msgid "Run the dhcpcd daemon."
 msgstr ""
 
-#: gnu/services/networking.scm:828
+#: gnu/services/networking.scm:829
 msgid ""
 "Run the @command{ntpd}, the Network Time Protocol (NTP)\n"
 "daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon\n"
 "will keep the system clock synchronized with that of the given servers."
 msgstr ""
 
-#: gnu/services/networking.scm:938
+#: gnu/services/networking.scm:939
 msgid ""
 "Run the @command{ntpd}, the Network Time Protocol (NTP)\n"
 "daemon, as implemented by @uref{http://www.openntpd.org, OpenNTPD}.  The\n"
 "daemon will keep the system clock synchronized with that of the given servers."
 msgstr ""
 
-#: gnu/services/networking.scm:1026
+#: gnu/services/networking.scm:1027
 msgid ""
 "Start @command{inetd}, the @dfn{Internet superserver}.  It is responsible\n"
 "for listening on Internet sockets and spawning the corresponding services on\n"
 "demand."
 msgstr ""
 
-#: gnu/services/networking.scm:1148
+#: gnu/services/networking.scm:1149
 msgid ""
 "Run the OpenDHT @command{dhtnode} command that allows\n"
 "participating in the distributed hash table based OpenDHT network.  The\n"
@@ -953,38 +962,38 @@ msgid ""
 "applications in communication.  It is used by Jami, for example."
 msgstr ""
 
-#: gnu/services/networking.scm:1384
+#: gnu/services/networking.scm:1389
 msgid ""
 "Run the @uref{https://torproject.org, Tor} anonymous\n"
 "networking daemon."
 msgstr ""
 
-#: gnu/services/networking.scm:1433
+#: gnu/services/networking.scm:1438
 #, scheme-format
 msgid "the 'iwd?' field is deprecated, please use 'shepherd-requirement' field instead~%"
 msgstr ""
 
-#: gnu/services/networking.scm:1601
+#: gnu/services/networking.scm:1606
 msgid ""
 "Run @uref{https://wiki.gnome.org/Projects/NetworkManager,\n"
 "NetworkManager}, a network management daemon that aims to simplify wired and\n"
 "wireless networking."
 msgstr ""
 
-#: gnu/services/networking.scm:1924
+#: gnu/services/networking.scm:1929
 msgid ""
 "Run @url{https://01.org/connman,Connman},\n"
 "a network connection manager."
 msgstr ""
 
-#: gnu/services/networking.scm:1946
+#: gnu/services/networking.scm:1951
 msgid ""
 "Run @uref{https://wiki.gnome.org/Projects/ModemManager,\n"
 "ModemManager}, a modem management daemon that aims to simplify dialup\n"
 "networking."
 msgstr ""
 
-#: gnu/services/networking.scm:2037
+#: gnu/services/networking.scm:2042
 msgid ""
 "Run @uref{http://www.draisberghof.de/usb_modeswitch/,\n"
 "USB_ModeSwitch}, a mode switching tool for controlling USB devices with\n"
@@ -995,67 +1004,67 @@ msgid ""
 "whatever the thing is supposed to do)."
 msgstr ""
 
-#: gnu/services/networking.scm:2054
+#: gnu/services/networking.scm:2059
 #, scheme-format
 msgid "the 'requirement' field is deprecated, please use 'shepherd-requirement' field instead~%"
 msgstr ""
 
-#: gnu/services/networking.scm:2121
+#: gnu/services/networking.scm:2126
 msgid ""
 "Run the WPA Supplicant daemon, a service that\n"
 "implements authentication, key negotiation and more for wireless networks."
 msgstr ""
 
-#: gnu/services/networking.scm:2353
+#: gnu/services/networking.scm:2358
 msgid ""
 "Run the iNet Wireless Daemon,\n"
 "@url{https://iwd.wiki.kernel.org/,iwd}, a network connection manager."
 msgstr ""
 
-#: gnu/services/networking.scm:2414
+#: gnu/services/networking.scm:2419
 msgid ""
 "Run the @uref{https://w1.fi/hostapd/, hostapd} daemon for Wi-Fi access\n"
 "points and authentication servers."
 msgstr ""
 
-#: gnu/services/networking.scm:2448
+#: gnu/services/networking.scm:2453
 msgid "Run hostapd to simulate WiFi connectivity."
 msgstr ""
 
-#: gnu/services/networking.scm:2506
+#: gnu/services/networking.scm:2511
 msgid ""
 "Run @uref{http://www.openvswitch.org, Open vSwitch}, a multilayer virtual\n"
 "switch designed to enable massive network automation through programmatic\n"
 "extension."
 msgstr ""
 
-#: gnu/services/networking.scm:2553
+#: gnu/services/networking.scm:2558
 msgid "Run @command{iptables-restore}, setting up the specified rules."
 msgstr ""
 
-#: gnu/services/networking.scm:2645
+#: gnu/services/networking.scm:2650
 msgid "Run @command{nft}, setting up the specified ruleset."
 msgstr ""
 
-#: gnu/services/networking.scm:2752
+#: gnu/services/networking.scm:2757
 msgid ""
 "Run @url{https://pagekite.net/,PageKite}, a tunneling solution to make\n"
 "local servers publicly accessible on the web, even behind NATs and firewalls."
 msgstr ""
 
-#: gnu/services/networking.scm:2848
+#: gnu/services/networking.scm:2853
 msgid ""
 "Connect to the Yggdrasil mesh network.\n"
 "See @command{yggdrasil -genconf} for config options."
 msgstr ""
 
-#: gnu/services/networking.scm:2984
+#: gnu/services/networking.scm:2989
 msgid ""
 "Run @command{ipfs daemon}, the reference implementation\n"
 "of the IPFS peer-to-peer storage network."
 msgstr ""
 
-#: gnu/services/networking.scm:3022
+#: gnu/services/networking.scm:3027
 msgid ""
 "Run @uref{https://www.keepalived.org/, Keepalived}\n"
 "routing software."
@@ -1160,7 +1169,7 @@ msgid ""
 "with @command{herd status} and stop with @command{herd stop}."
 msgstr ""
 
-#: gnu/services/shepherd.scm:789
+#: gnu/services/shepherd.scm:792
 msgid ""
 "The Shepherd's @code{system-log} service plays the role of traditional\n"
 "@command{syslogd} program, reading data logged by daemons to @file{/dev/log}\n"
@@ -1755,26 +1764,25 @@ msgstr ""
 #: guix/scripts/show.scm:35 guix/scripts/gc.scm:96 guix/scripts/git.scm:34
 #: guix/scripts/git/authenticate.scm:282 guix/scripts/hash.scm:94
 #: guix/scripts/pull.scm:131 guix/scripts/substitute.scm:256
-#: guix/scripts/system.scm:1083 guix/scripts/system/installer.scm:52
+#: guix/scripts/system.scm:1084 guix/scripts/system/installer.scm:52
 #: guix/scripts/lint.scm:117 guix/scripts/publish.scm:115
 #: guix/scripts/edit.scm:53 guix/scripts/size.scm:246
 #: guix/scripts/graph.scm:537 guix/scripts/challenge.scm:460
-#: guix/scripts/copy.scm:127 guix/scripts/pack.scm:1677
+#: guix/scripts/copy.scm:127 guix/scripts/pack.scm:1679
 #: guix/scripts/weather.scm:384 guix/scripts/describe.scm:97
 #: guix/scripts/processes.scm:301 guix/scripts/deploy.scm:58
 #: guix/scripts/container.scm:35 guix/scripts/container/exec.scm:43
 #: guix/scripts/archive.scm:104 guix/scripts/shell.scm:87
 #: guix/scripts/environment.scm:164 guix/scripts/style.scm:645
 #: guix/scripts/home.scm:157 guix/scripts/time-machine.scm:79
-#: guix/scripts/import.scm:69 guix/scripts/import/cpan.scm:44
-#: guix/scripts/import/cran.scm:49 guix/scripts/import/crate.scm:62
+#: guix/scripts/import.scm:81 guix/scripts/import/cpan.scm:44
+#: guix/scripts/import/cran.scm:49 guix/scripts/import/crate.scm:59
 #: guix/scripts/import/egg.scm:45 guix/scripts/import/gem.scm:50
 #: guix/scripts/import/gnu.scm:50 guix/scripts/import/go.scm:50
 #: guix/scripts/import/hexpm.scm:43 guix/scripts/import/json.scm:52
-#: guix/scripts/import/minetest.scm:46 guix/scripts/import/npm-binary.scm:47
-#: guix/scripts/import/opam.scm:45 guix/scripts/import/pypi.scm:46
-#: guix/scripts/import/texlive.scm:47 guix/scripts/refresh.scm:205
-#: guix/scripts/repl.scm:93
+#: guix/scripts/import/npm-binary.scm:47 guix/scripts/import/opam.scm:45
+#: guix/scripts/import/pypi.scm:46 guix/scripts/import/texlive.scm:47
+#: guix/scripts/refresh.scm:205 guix/scripts/repl.scm:93
 msgid ""
 "\n"
 "  -h, --help             display this help and exit"
@@ -1783,7 +1791,6 @@ msgstr ""
 "  -h, --help             hiển thị trợ giúp này rồi thoát"
 
 #: gnu/system/linux-container.scm:275 guix/scripts.scm:167
-#: guix/scripts/import/minetest.scm:92
 #, scheme-format
 msgid "~A: unrecognized option~%"
 msgstr "~A: tùy chọn không được chấp nhận~%"
@@ -1803,16 +1810,16 @@ msgstr ""
 msgid "or run 'sudo nsenter -a -t ~a' to get a shell into it.~%"
 msgstr ""
 
-#: gnu/system/mapped-devices.scm:140
+#: gnu/system/mapped-devices.scm:146
 msgid "Map a device node using Linux's device mapper."
 msgstr ""
 
-#: gnu/system/mapped-devices.scm:169
+#: gnu/system/mapped-devices.scm:175
 #, scheme-format
 msgid "you may need these modules in the initrd for ~a:~{ ~a~}"
 msgstr ""
 
-#: gnu/system/mapped-devices.scm:174
+#: gnu/system/mapped-devices.scm:180
 #, scheme-format
 msgid ""
 "Try adding them to the\n"
@@ -1830,7 +1837,7 @@ msgid ""
 "option of @command{guix system}.\n"
 msgstr ""
 
-#: gnu/system/mapped-devices.scm:273
+#: gnu/system/mapped-devices.scm:279
 #, scheme-format
 msgid "no LUKS partition with UUID '~a'"
 msgstr ""
@@ -3111,7 +3118,7 @@ msgstr ""
 msgid "~a: unknown system type"
 msgstr "~a: không hiểu thao tác~%"
 
-#: gnu/machine/ssh.scm:137 guix/ui.scm:2316
+#: gnu/machine/ssh.scm:137 guix/ui.scm:2346
 #, scheme-format
 msgid "Did you mean @code{~a}?"
 msgstr ""
@@ -3201,11 +3208,11 @@ msgstr ""
 msgid "Pre-built Guile for bootstrapping purposes."
 msgstr ""
 
-#: gnu/packages/bootstrap.scm:846
+#: gnu/packages/bootstrap.scm:852
 msgid "Bootstrap binaries and headers of the GNU C Library"
 msgstr ""
 
-#: gnu/packages/bootstrap.scm:987
+#: gnu/packages/bootstrap.scm:980
 msgid "Bootstrap binaries of the GNU Compiler Collection"
 msgstr ""
 
@@ -3243,9 +3250,9 @@ msgstr ""
 msgid "invalid argument: ~a~%"
 msgstr "đối số không hợp lệ: ~a~%"
 
-#: guix/scripts.scm:170 guix/scripts/system.scm:1473
+#: guix/scripts.scm:170 guix/scripts/system.scm:1474
 #: guix/scripts/system/edit.scm:42 guix/scripts/home/edit.scm:43
-#: guix/scripts/import.scm:102
+#: guix/scripts/import.scm:116
 #, scheme-format
 msgid "Did you mean @code{~a}?~%"
 msgstr ""
@@ -3608,7 +3615,7 @@ msgid ""
 "      --repair           repair the specified items"
 msgstr ""
 
-#: guix/scripts/build.scm:461 guix/scripts/pack.scm:1667
+#: guix/scripts/build.scm:461 guix/scripts/pack.scm:1669
 #: guix/scripts/environment.scm:105
 msgid ""
 "\n"
@@ -3622,8 +3629,8 @@ msgstr ""
 #: guix/scripts/build.scm:464 guix/scripts/package.scm:478
 #: guix/scripts/install.scm:37 guix/scripts/remove.scm:36
 #: guix/scripts/upgrade.scm:39 guix/scripts/pull.scm:122
-#: guix/scripts/system.scm:1065 guix/scripts/copy.scm:122
-#: guix/scripts/pack.scm:1672 guix/scripts/deploy.scm:71
+#: guix/scripts/system.scm:1066 guix/scripts/copy.scm:122
+#: guix/scripts/pack.scm:1674 guix/scripts/deploy.scm:71
 #: guix/scripts/archive.scm:93 guix/scripts/environment.scm:136
 #: guix/scripts/home.scm:146
 #, fuzzy
@@ -3657,26 +3664,25 @@ msgstr ""
 #: guix/scripts/search.scm:38 guix/scripts/show.scm:37 guix/scripts/gc.scm:98
 #: guix/scripts/git.scm:36 guix/scripts/git/authenticate.scm:284
 #: guix/scripts/hash.scm:96 guix/scripts/pull.scm:133
-#: guix/scripts/substitute.scm:258 guix/scripts/system.scm:1085
+#: guix/scripts/substitute.scm:258 guix/scripts/system.scm:1086
 #: guix/scripts/system/installer.scm:54 guix/scripts/lint.scm:121
 #: guix/scripts/publish.scm:117 guix/scripts/edit.scm:55
 #: guix/scripts/size.scm:248 guix/scripts/graph.scm:539
 #: guix/scripts/challenge.scm:462 guix/scripts/copy.scm:129
-#: guix/scripts/pack.scm:1679 guix/scripts/weather.scm:386
+#: guix/scripts/pack.scm:1681 guix/scripts/weather.scm:386
 #: guix/scripts/describe.scm:99 guix/scripts/processes.scm:303
 #: guix/scripts/deploy.scm:60 guix/scripts/container.scm:37
 #: guix/scripts/container/exec.scm:45 guix/scripts/archive.scm:106
 #: guix/scripts/shell.scm:89 guix/scripts/environment.scm:166
 #: guix/scripts/style.scm:647 guix/scripts/home.scm:159
-#: guix/scripts/time-machine.scm:81 guix/scripts/import.scm:73
+#: guix/scripts/time-machine.scm:81 guix/scripts/import.scm:85
 #: guix/scripts/import/cpan.scm:48 guix/scripts/import/cran.scm:58
-#: guix/scripts/import/crate.scm:64 guix/scripts/import/egg.scm:49
+#: guix/scripts/import/crate.scm:61 guix/scripts/import/egg.scm:49
 #: guix/scripts/import/gem.scm:52 guix/scripts/import/gnu.scm:52
 #: guix/scripts/import/hexpm.scm:45 guix/scripts/import/json.scm:54
-#: guix/scripts/import/minetest.scm:50 guix/scripts/import/npm-binary.scm:51
-#: guix/scripts/import/opam.scm:52 guix/scripts/import/pypi.scm:50
-#: guix/scripts/import/texlive.scm:49 guix/scripts/refresh.scm:207
-#: guix/scripts/repl.scm:95
+#: guix/scripts/import/npm-binary.scm:51 guix/scripts/import/opam.scm:52
+#: guix/scripts/import/pypi.scm:50 guix/scripts/import/texlive.scm:49
+#: guix/scripts/refresh.scm:207 guix/scripts/repl.scm:95
 msgid ""
 "\n"
 "  -V, --version          display version information and exit"
@@ -3891,12 +3897,17 @@ msgstr ""
 msgid "commit ~a not signed by an authorized key: ~a"
 msgstr "“~a” được ký bằng khóa trái phép~%"
 
-#: guix/git-authenticate.scm:369
+#: guix/git-authenticate.scm:261
+#, scheme-format
+msgid "malformed ASCII-armored key in ~a (blob ~a)"
+msgstr ""
+
+#: guix/git-authenticate.scm:376
 #, scheme-format
 msgid "initial commit ~a is signed by '~a' instead of '~a'"
 msgstr ""
 
-#: guix/git-authenticate.scm:438
+#: guix/git-authenticate.scm:445
 #, scheme-format
 msgid "commit ~a is not a descendant of introductory commit ~a"
 msgstr ""
@@ -3922,46 +3933,46 @@ msgstr "~a: không hiểu thao tác~%"
 
 #. TRANSLATORS: 'modify-phases' is a Scheme syntax
 #. and should not be translated.
-#: guix/lint.scm:208
+#: guix/lint.scm:209
 msgid "incorrect call to ‘modify-phases’"
 msgstr ""
 
 #. TRANSLATORS: See ‘modify-phases’ in the manual.
-#: guix/lint.scm:236
+#: guix/lint.scm:237
 #, fuzzy
 #| msgid "invalid hash"
 msgid "invalid phase clause"
 msgstr "giá trị băm sai"
 
-#: guix/lint.scm:283
+#: guix/lint.scm:284
 #, fuzzy
 msgid "name should be longer than a single character"
 msgstr "tóm lược nên ngắn hơn 80 ký tự"
 
-#: guix/lint.scm:288
+#: guix/lint.scm:289
 msgid "name should use hyphens instead of underscores"
 msgstr ""
 
 #. TRANSLATORS: #:tests? and #t are Scheme constants
 #. and must not be translated.
-#: guix/lint.scm:318
+#: guix/lint.scm:319
 msgid "#:tests? must not be explicitly set to #t"
 msgstr ""
 
-#: guix/lint.scm:330
+#: guix/lint.scm:331
 #, scheme-format
 msgid "'~0@*~a' should be set to '~1@*~a' instead of '~2@*~a'"
 msgstr ""
 
-#: guix/lint.scm:394
+#: guix/lint.scm:395
 msgid "description should not be empty"
 msgstr "phần mô tả không thể là rỗng"
 
-#: guix/lint.scm:405
+#: guix/lint.scm:406
 msgid "Texinfo markup in description is invalid"
 msgstr ""
 
-#: guix/lint.scm:430
+#: guix/lint.scm:431
 #, fuzzy, scheme-format
 msgid ""
 "description should not contain ~\n"
@@ -3970,15 +3981,15 @@ msgstr "phần mô tả không thể là rỗng"
 
 #. TRANSLATORS: '@code' is Texinfo markup and must be kept
 #. as is.
-#: guix/lint.scm:443
+#: guix/lint.scm:444
 msgid "use @code or similar ornament instead of quotes"
 msgstr ""
 
-#: guix/lint.scm:464
+#: guix/lint.scm:465
 msgid "description should start with an upper-case letter or digit"
 msgstr "phần mô tả nên bắt đầu bằng một chữ HOA hay chữ số"
 
-#: guix/lint.scm:487
+#: guix/lint.scm:488
 #, scheme-format
 msgid ""
 "sentences in description should be followed ~\n"
@@ -3987,199 +3998,199 @@ msgstr ""
 "các câu trong phần mô tả nên theo sau bởi ~\n"
 "hai dấu cách; có thể phạm luật ~p tại ~{~a~^, ~}"
 
-#: guix/lint.scm:498
+#: guix/lint.scm:499
 msgid "description contains leading whitespace"
 msgstr ""
 
-#: guix/lint.scm:507
+#: guix/lint.scm:508
 msgid "description contains trailing whitespace"
 msgstr ""
 
-#: guix/lint.scm:540
+#: guix/lint.scm:541
 #, fuzzy, scheme-format
 msgid "invalid description: ~s"
 msgstr "Phê duyệt mô tả gói"
 
-#: guix/lint.scm:612
+#: guix/lint.scm:613
 #, fuzzy, scheme-format
 msgid "'~a' should probably be a native input"
 msgstr "pkg-config nên hầu như chắc chắn là đầu vào nguyên bản"
 
-#: guix/lint.scm:627
+#: guix/lint.scm:628
 #, fuzzy, scheme-format
 msgid "'~a' should probably not be an input at all"
 msgstr "pkg-config nên hầu như chắc chắn là đầu vào nguyên bản"
 
-#: guix/lint.scm:642
+#: guix/lint.scm:643
 #, fuzzy, scheme-format
-msgid "'~a' should probably switched for its minimal variant"
+msgid "'~a' should probably be switched for its minimal variant"
 msgstr "pkg-config nên hầu như chắc chắn là đầu vào nguyên bản"
 
-#: guix/lint.scm:653
+#: guix/lint.scm:654
 #, fuzzy, scheme-format
 msgid "label '~a' does not match package name '~a'"
 msgstr "hồ sơ “~a” không tồn tại~%"
 
-#: guix/lint.scm:683
+#: guix/lint.scm:684
 #, scheme-format
 msgid "\"bash-minimal\" should be in 'inputs' when '~a' is used"
 msgstr ""
 
-#: guix/lint.scm:734
+#: guix/lint.scm:735
 msgid "no period allowed at the end of the synopsis"
 msgstr "không có dấu chấm ở cuối phần tóm lược"
 
-#: guix/lint.scm:748
+#: guix/lint.scm:749
 msgid "no article allowed at the beginning of the synopsis"
 msgstr "không có bài viết tại đầu của tóm lược"
 
-#: guix/lint.scm:757
+#: guix/lint.scm:758
 msgid "synopsis should be less than 80 characters long"
 msgstr "tóm lược nên ngắn hơn 80 ký tự"
 
-#: guix/lint.scm:767
+#: guix/lint.scm:768
 msgid "synopsis should start with an upper-case letter or digit"
 msgstr "phần tóm lược nên bắt đầu bằng một chữ HOA hay chữ số"
 
-#: guix/lint.scm:775
+#: guix/lint.scm:776
 msgid "synopsis should not start with the package name"
 msgstr "phần tóm lược không nên bắt đầu bằng tên gói"
 
-#: guix/lint.scm:789
+#: guix/lint.scm:790
 msgid "Texinfo markup in synopsis is invalid"
 msgstr ""
 
-#: guix/lint.scm:797
+#: guix/lint.scm:798
 msgid "synopsis contains trailing whitespace"
 msgstr ""
 
-#: guix/lint.scm:814
+#: guix/lint.scm:815
 msgid "synopsis should not be empty"
 msgstr "tóm lược không thể trống rỗng"
 
-#: guix/lint.scm:824
+#: guix/lint.scm:825
 #, fuzzy, scheme-format
 msgid "invalid synopsis: ~s"
 msgstr "cú pháp không hợp lệ: ~a~%"
 
-#: guix/lint.scm:930
+#: guix/lint.scm:931
 #, scheme-format
 msgid "~a: HTTP GET error for ~a: ~a (~s)~%"
 msgstr ""
 
-#: guix/lint.scm:940
+#: guix/lint.scm:941
 #, fuzzy, scheme-format
 msgid "~a: host lookup failure: ~a~%"
 msgstr "lỗi truy vấn tên máy: ~a~%"
 
-#: guix/lint.scm:945
+#: guix/lint.scm:946
 #, scheme-format
 msgid "~a: TLS certificate error: ~a"
 msgstr ""
 
-#: guix/lint.scm:950
+#: guix/lint.scm:951
 #, fuzzy, scheme-format
 msgid "~a: TLS error in '~a': ~a~%"
 msgstr "lỗi: trong khi tạo thư mục “~a”: ~a~%"
 
-#: guix/lint.scm:961 guix/ui.scm:888 guix/scripts/offload.scm:194
+#: guix/lint.scm:962 guix/ui.scm:918 guix/scripts/offload.scm:194
 #, scheme-format
 msgid "~a: ~a~%"
 msgstr "~a: ~a~%"
 
-#: guix/lint.scm:992
+#: guix/lint.scm:993
 #, scheme-format
 msgid "URI ~a returned suspiciously small file (~a bytes)"
 msgstr ""
 
-#: guix/lint.scm:1001
+#: guix/lint.scm:1002
 #, scheme-format
 msgid "permanent redirect from ~a to ~a"
 msgstr ""
 
-#: guix/lint.scm:1007
+#: guix/lint.scm:1008
 #, scheme-format
 msgid "invalid permanent redirect from ~a"
 msgstr ""
 
-#: guix/lint.scm:1013 guix/lint.scm:1023
+#: guix/lint.scm:1014 guix/lint.scm:1024
 #, scheme-format
 msgid "URI ~a not reachable: ~a (~s)"
 msgstr "URI ~a không thể tiếp cận: ~a (~s)"
 
-#: guix/lint.scm:1029
+#: guix/lint.scm:1030
 #, scheme-format
 msgid "URI ~a domain not found: ~a"
 msgstr "URI ~a không tìm thấy miền: ~a"
 
-#: guix/lint.scm:1035
+#: guix/lint.scm:1036
 #, scheme-format
 msgid "URI ~a unreachable: ~a"
 msgstr "URI ~a không tiếp cận được: ~a"
 
-#: guix/lint.scm:1043
+#: guix/lint.scm:1044
 #, scheme-format
 msgid "TLS certificate error: ~a"
 msgstr ""
 
-#: guix/lint.scm:1070
+#: guix/lint.scm:1071
 msgid "invalid value for home page"
 msgstr "giá trị của trang chủ không hợp lệ"
 
-#: guix/lint.scm:1075
+#: guix/lint.scm:1076
 #, scheme-format
 msgid "invalid home page URL: ~s"
 msgstr "URL trang chủ không hợp lệ: ~s"
 
-#: guix/lint.scm:1112
+#: guix/lint.scm:1113
 msgid "file names of patches should start with the package name"
 msgstr "tên tập tin của các miếng vá nên bắt đầu bằng tên của gói"
 
-#: guix/lint.scm:1132
+#: guix/lint.scm:1133
 #, scheme-format
 msgid "~a: file name is too long, which may break 'make dist'"
 msgstr ""
 
-#: guix/lint.scm:1153
+#: guix/lint.scm:1154
 #, scheme-format
 msgid "~a: empty patch"
 msgstr ""
 
-#: guix/lint.scm:1162
+#: guix/lint.scm:1163
 #, scheme-format
 msgid "~a: patch lacks comment and upstream status"
 msgstr ""
 
-#: guix/lint.scm:1223
+#: guix/lint.scm:1224
 #, fuzzy, scheme-format
 msgid "proposed synopsis: ~s~%"
 msgstr "~a: ~a: tóm lược dự kiến: ~s~%"
 
-#: guix/lint.scm:1237
+#: guix/lint.scm:1238
 #, fuzzy, scheme-format
 msgid "proposed description:~%     \"~a\"~%"
 msgstr "~a: ~a: mô tả dự kiến:~%     \"~a\"~%"
 
-#: guix/lint.scm:1322
+#: guix/lint.scm:1323
 #, fuzzy
 msgid "all the source URIs are unreachable:"
 msgstr "URI ~a không tiếp cận được: ~a"
 
-#: guix/lint.scm:1357
+#: guix/lint.scm:1358
 #, fuzzy
 msgid "the source file name should contain the package name"
 msgstr "tên tập tin của các miếng vá nên bắt đầu bằng tên của gói"
 
-#: guix/lint.scm:1369
+#: guix/lint.scm:1370
 msgid "the source URI should not be an autogenerated tarball"
 msgstr ""
 
-#: guix/lint.scm:1387 guix/lint.scm:1432
+#: guix/lint.scm:1388 guix/lint.scm:1433
 #, scheme-format
 msgid "URL should be '~a'"
 msgstr ""
 
-#: guix/lint.scm:1425
+#: guix/lint.scm:1426
 #, fuzzy, scheme-format
 msgid "while accessing '~a'"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
@@ -4187,74 +4198,79 @@ msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 #. TRANSLATORS: check and #:tests? are a
 #. Scheme symbol and keyword respectively
 #. and should not be translated.
-#: guix/lint.scm:1460
+#: guix/lint.scm:1461
 msgid "the 'check' phase should respect #:tests?"
 msgstr ""
 
-#: guix/lint.scm:1482 guix/lint.scm:1493 guix/lint.scm:1501 guix/lint.scm:1505
+#: guix/lint.scm:1483 guix/lint.scm:1494 guix/lint.scm:1502 guix/lint.scm:1506
 #, fuzzy, scheme-format
 msgid "failed to create ~a derivation: ~a"
 msgstr "gặp lỗi khi tạo gốc GC “~a”: ~a~%"
 
-#: guix/lint.scm:1487
+#: guix/lint.scm:1488
 #, fuzzy, scheme-format
 msgid "failed to create ~a derivation: ~s"
 msgstr "gặp lỗi khi đọc biểu thức ~s: ~s~%"
 
-#: guix/lint.scm:1543
+#: guix/lint.scm:1544
 #, scheme-format
 msgid "propagated inputs ~a and ~a collide"
 msgstr ""
 
-#: guix/lint.scm:1567
+#: guix/lint.scm:1568
 #, fuzzy
 msgid "invalid license field"
 msgstr "thẻ bài liên kết mềm không hợp lệ"
 
-#: guix/lint.scm:1574
+#: guix/lint.scm:1575
 msgid "while retrieving CVE vulnerabilities"
 msgstr ""
 
-#: guix/lint.scm:1577
+#: guix/lint.scm:1578
 #, fuzzy, scheme-format
 msgid "failed to get list of CVE vulnerabilities from '~a': ~a (~a)~%"
 msgstr "tìm thấy chữ ký cho “~a'~% không hợp lệ"
 
-#: guix/lint.scm:1634
+#: guix/lint.scm:1635
 #, scheme-format
 msgid "probably vulnerable to ~a"
 msgstr ""
 
-#: guix/lint.scm:1642
+#: guix/lint.scm:1654
+#, scheme-format
+msgid "'~a' should be set with the '~a' flag"
+msgstr ""
+
+#: guix/lint.scm:1700
 #, fuzzy, scheme-format
 msgid "no updater for ~a"
 msgstr "không có nhật ký dịch cho “~a'~%"
 
-#: guix/lint.scm:1647 guix/lint.scm:1869
+#: guix/lint.scm:1705 guix/lint.scm:1927
 #, scheme-format
 msgid "while retrieving upstream info for '~a'"
 msgstr ""
 
-#: guix/lint.scm:1656
+#: guix/lint.scm:1714
 #, scheme-format
 msgid "can be upgraded to ~a"
 msgstr ""
 
-#: guix/lint.scm:1662
+#: guix/lint.scm:1720
 #, scheme-format
 msgid "updater '~a' failed to find upstream releases"
 msgstr ""
 
-#: guix/lint.scm:1689
+#: guix/lint.scm:1747
 #, fuzzy, scheme-format
 msgid "failed to access Disarchive database at ~a"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 
-#: guix/lint.scm:1710
+#: guix/lint.scm:1768
 msgid "Software Heritage rate limit reached; try again later"
 msgstr ""
 
-#: guix/lint.scm:1714
+#: guix/lint.scm:1772
 #, scheme-format
 msgid "'~a' returned ~a"
 msgstr ""
@@ -4262,183 +4278,187 @@ msgstr ""
 #. TRANSLATORS: "Software Heritage" is a proper noun that
 #. must remain untranslated.  See
 #. <https://www.softwareheritage.org>.
-#: guix/lint.scm:1749
+#: guix/lint.scm:1807
 msgid "scheduled Software Heritage archival"
 msgstr ""
 
-#: guix/lint.scm:1755
+#: guix/lint.scm:1813
 msgid "archival rate limit exceeded; try again later"
 msgstr ""
 
-#: guix/lint.scm:1765
+#: guix/lint.scm:1823
 msgid "source code cannot be archived"
 msgstr ""
 
-#: guix/lint.scm:1828
+#: guix/lint.scm:1886
 msgid "source not archived on Software Heritage and missing from the Disarchive database"
 msgstr ""
 
-#: guix/lint.scm:1838
+#: guix/lint.scm:1896
 #, scheme-format
 msgid "Disarchive entry refers to non-existent SWH directory '~a'"
 msgstr ""
 
-#: guix/lint.scm:1851
+#: guix/lint.scm:1909
 msgid "source is not an origin, it cannot be archived"
 msgstr ""
 
-#: guix/lint.scm:1861
+#: guix/lint.scm:1919
 msgid "while connecting to Software Heritage"
 msgstr ""
 
-#: guix/lint.scm:1878
+#: guix/lint.scm:1936
 #, scheme-format
 msgid "ahead of Stackage LTS version ~a"
 msgstr ""
 
-#: guix/lint.scm:1895
+#: guix/lint.scm:1953
 #, scheme-format
 msgid "tabulation on line ~a, column ~a"
 msgstr ""
 
-#: guix/lint.scm:1907
+#: guix/lint.scm:1965
 #, scheme-format
 msgid "trailing white space on line ~a"
 msgstr ""
 
-#: guix/lint.scm:1921
+#: guix/lint.scm:1979
 #, scheme-format
 msgid "line ~a is way too long (~a characters)"
 msgstr ""
 
-#: guix/lint.scm:1935
+#: guix/lint.scm:1993
 msgid "parentheses feel lonely, move to the previous or next line"
 msgstr ""
 
-#: guix/lint.scm:2013
+#: guix/lint.scm:2071
 msgid "source file not found"
 msgstr ""
 
-#: guix/lint.scm:2025
+#: guix/lint.scm:2083
 #, fuzzy
 msgid "Validate package names"
 msgstr "Phê duyệt phần tóm lược của gói"
 
-#: guix/lint.scm:2029
+#: guix/lint.scm:2087
 msgid "Check if tests are explicitly enabled"
 msgstr ""
 
-#: guix/lint.scm:2033
+#: guix/lint.scm:2091
 msgid "Check that cross-compilers are used when cross-compiling"
 msgstr ""
 
-#: guix/lint.scm:2037
+#: guix/lint.scm:2095
 msgid "Validate package descriptions"
 msgstr "Phê duyệt mô tả gói"
 
-#: guix/lint.scm:2041
+#: guix/lint.scm:2099
 msgid "Identify inputs that should be native inputs"
 msgstr "Đầu vào định danh cái mà có thể là đầu vào tự nhiên"
 
-#: guix/lint.scm:2045
+#: guix/lint.scm:2103
 #, fuzzy
 msgid "Identify inputs that shouldn't be inputs at all"
 msgstr "Đầu vào định danh cái mà có thể là đầu vào tự nhiên"
 
-#: guix/lint.scm:2049
+#: guix/lint.scm:2107
 #, fuzzy
 #| msgid "Identify inputs that should be native inputs"
 msgid "Identify inputs that should use their minimal variant"
 msgstr "Đầu vào định danh cái mà có thể là đầu vào tự nhiên"
 
-#: guix/lint.scm:2053
+#: guix/lint.scm:2111
 #, fuzzy
 #| msgid "Identify inputs that should be native inputs"
 msgid "Identify input labels that do not match package names"
 msgstr "Đầu vào định danh cái mà có thể là đầu vào tự nhiên"
 
-#: guix/lint.scm:2057
-msgid "Make sure 'wrap-program' can finds its interpreter."
+#: guix/lint.scm:2115
+msgid "Make sure 'wrap-program' can find its interpreter."
 msgstr ""
 
 #. TRANSLATORS: <license> is the name of a data type and must not be
 #. translated.
-#: guix/lint.scm:2063
+#: guix/lint.scm:2121
 msgid "Make sure the 'license' field is a <license> or a list thereof"
 msgstr ""
 
-#: guix/lint.scm:2068
+#: guix/lint.scm:2126
 msgid "Make sure tests are only run when requested"
 msgstr ""
 
-#: guix/lint.scm:2072
+#: guix/lint.scm:2130
 msgid "Suggest 'mirror://' URLs"
 msgstr ""
 
-#: guix/lint.scm:2076
+#: guix/lint.scm:2134
 #, fuzzy
 msgid "Validate file names of sources"
 msgstr "Phê duyệt tên tập tin của bản vá"
 
-#: guix/lint.scm:2080
+#: guix/lint.scm:2138
 msgid "Check for autogenerated tarballs"
 msgstr ""
 
-#: guix/lint.scm:2084
+#: guix/lint.scm:2142
+msgid "Check for misplaced flags"
+msgstr ""
+
+#: guix/lint.scm:2146
 msgid "Report failure to compile a package to a derivation"
 msgstr ""
 
-#: guix/lint.scm:2089
+#: guix/lint.scm:2151
 msgid "Report collisions that would occur due to propagated inputs"
 msgstr ""
 
-#: guix/lint.scm:2094
+#: guix/lint.scm:2156
 #, fuzzy
 msgid "Validate file names and availability of patches"
 msgstr "Phê duyệt tên tập tin của bản vá"
 
-#: guix/lint.scm:2098
+#: guix/lint.scm:2160
 #, fuzzy
 msgid "Validate patch headers"
 msgstr "Phê duyệt mô tả gói"
 
-#: guix/lint.scm:2102
+#: guix/lint.scm:2164
 msgid "Look for formatting issues in the source"
 msgstr ""
 
-#: guix/lint.scm:2109
+#: guix/lint.scm:2171
 msgid "Validate package synopses"
 msgstr "Phê duyệt phần tóm lược của gói"
 
-#: guix/lint.scm:2113
+#: guix/lint.scm:2175
 msgid "Validate synopsis & description of GNU packages"
 msgstr "Phê duyệt tóm lược và mô tả gói GNU"
 
-#: guix/lint.scm:2117
+#: guix/lint.scm:2179
 msgid "Validate home-page URLs"
 msgstr "Phê duyệt các URL trang chủ"
 
-#: guix/lint.scm:2121
+#: guix/lint.scm:2183
 msgid "Validate source URLs"
 msgstr "Phê chuẩn các URL"
 
-#: guix/lint.scm:2125
+#: guix/lint.scm:2187
 msgid "Suggest GitHub URLs"
 msgstr ""
 
-#: guix/lint.scm:2129
+#: guix/lint.scm:2191
 msgid "Check the Common Vulnerabilities and Exposures (CVE) database"
 msgstr ""
 
-#: guix/lint.scm:2134
+#: guix/lint.scm:2196
 msgid "Check the package for new upstream releases"
 msgstr ""
 
-#: guix/lint.scm:2138
+#: guix/lint.scm:2200
 msgid "Ensure source code archival on Software Heritage"
 msgstr ""
 
-#: guix/lint.scm:2142
+#: guix/lint.scm:2204
 msgid "Ensure Haskell packages use Stackage LTS versions"
 msgstr ""
 
@@ -5136,12 +5156,14 @@ msgid "invoke the garbage collector"
 msgstr ""
 
 #: guix/scripts/gc.scm:264
-msgid "already ~,2h MiBs available on ~a, nothing to do~%"
+#, scheme-format
+msgid "already ~a available on ~a, nothing to do~%"
 msgstr ""
 
 #: guix/scripts/gc.scm:267
-#, fuzzy
-msgid "freeing ~,2h MiBs~%"
+#, fuzzy, scheme-format
+#| msgid "deleting ~a~%"
+msgid "freeing ~a~%"
 msgstr "đang xóa ~a~%"
 
 #: guix/scripts/gc.scm:307
@@ -5150,8 +5172,8 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "~A: đối số ngoại lai~%"
 
 #: guix/scripts/gc.scm:331 guix/scripts/gc.scm:334
-#, fuzzy
-msgid "freed ~,2h MiBs~%"
+#, fuzzy, scheme-format
+msgid "freed ~a~%"
 msgstr "đang xóa ~a~%"
 
 #: guix/scripts/git.scm:26
@@ -5163,7 +5185,7 @@ msgstr ""
 "Cách dùng: guix LỆNH ĐỐI_SỐ…\n"
 "Chạy LỆNH với các ĐỐI SỐ.\n"
 
-#: guix/scripts/git.scm:29 guix/scripts/system.scm:979
+#: guix/scripts/git.scm:29 guix/scripts/system.scm:980
 #: guix/scripts/container.scm:30 guix/scripts/home.scm:100
 msgid "The valid values for ACTION are:\n"
 msgstr "Các giá trị hợp lệ cho THAO TÁC là:\n"
@@ -5924,66 +5946,66 @@ msgstr ""
 msgid "file system with UUID '~a' not found~%"
 msgstr ""
 
-#: guix/scripts/system.scm:749
+#: guix/scripts/system.scm:750
 #, scheme-format
 msgid "'disk-image' is deprecated: use 'image' instead~%"
 msgstr ""
 
-#: guix/scripts/system.scm:751
+#: guix/scripts/system.scm:752
 #, scheme-format
 msgid "'vm-image' is deprecated: use 'image' instead~%"
 msgstr ""
 
-#: guix/scripts/system.scm:753
+#: guix/scripts/system.scm:754
 #, scheme-format
 msgid "'docker-image' is deprecated: use 'image' instead~%"
 msgstr ""
 
-#: guix/scripts/system.scm:763
+#: guix/scripts/system.scm:764
 #, scheme-format
 msgid "Consider running 'guix pull' before 'reconfigure'.~%"
 msgstr ""
 
-#: guix/scripts/system.scm:764
+#: guix/scripts/system.scm:765
 #, scheme-format
 msgid "Failing to do that may downgrade your system!~%"
 msgstr ""
 
-#: guix/scripts/system.scm:785 guix/scripts/system.scm:898
+#: guix/scripts/system.scm:786 guix/scripts/system.scm:899
 #, fuzzy, scheme-format
 msgid "bootloader successfully installed on '~a'~%"
 msgstr "đã cập nhật ~a thành công được triển khai dưới “~a'~%"
 
-#: guix/scripts/system.scm:891
+#: guix/scripts/system.scm:892
 #, scheme-format
 msgid "activating system...~%"
 msgstr "đang kích hoạt hệ thống…~%"
 
-#: guix/scripts/system.scm:902
+#: guix/scripts/system.scm:903
 msgid ""
 "To complete the upgrade, run 'herd restart SERVICE' to stop,\n"
 "upgrade, and restart each service that was not automatically restarted.\n"
 msgstr ""
 
-#: guix/scripts/system.scm:905
+#: guix/scripts/system.scm:906
 msgid "Run 'herd status' to view the list of services on your system.\n"
 msgstr ""
 
-#: guix/scripts/system.scm:911
+#: guix/scripts/system.scm:912
 #, scheme-format
 msgid "system loaded for fast reboot with 'reboot --kexec'~%"
 msgstr ""
 
-#: guix/scripts/system.scm:915
+#: guix/scripts/system.scm:916
 #, scheme-format
 msgid "initializing operating system under '~a'...~%"
 msgstr "đang khởi tạo hệ điều hành dưới “~a”…~%"
 
-#: guix/scripts/system.scm:965
+#: guix/scripts/system.scm:966
 msgid "The available image types are:\n"
 msgstr ""
 
-#: guix/scripts/system.scm:975
+#: guix/scripts/system.scm:976
 #, fuzzy
 msgid ""
 "Usage: guix system [OPTION ...] ACTION [ARG ...] [FILE]\n"
@@ -5993,86 +6015,86 @@ msgstr ""
 "Cách dùng: guix system [TÙY-CHỌN] THAO-TÁC TẬP-TIN\n"
 "biên dịch hệ điều hành khai báo trong TẬP-TIN tuân theo THAO-TÁC.\n"
 
-#: guix/scripts/system.scm:981
+#: guix/scripts/system.scm:982
 msgid "   search           search for existing service types\n"
 msgstr ""
 
-#: guix/scripts/system.scm:983
+#: guix/scripts/system.scm:984
 #, fuzzy
 msgid "   edit             edit the definition of an existing service type\n"
 msgstr ""
 "\n"
 "      --search-paths     hiển thị các định nghĩa biến môi trường cần thiết"
 
-#: guix/scripts/system.scm:985
+#: guix/scripts/system.scm:986
 #, fuzzy
 msgid "   reconfigure      switch to a new operating system configuration\n"
 msgstr "  - “reconfigure”, chuyển thành cấu hình hệ điều hành mới\n"
 
-#: guix/scripts/system.scm:987
+#: guix/scripts/system.scm:988
 #, fuzzy
 msgid "   roll-back        switch to the previous operating system configuration\n"
 msgstr "  - “reconfigure”, chuyển thành cấu hình hệ điều hành mới\n"
 
-#: guix/scripts/system.scm:989
+#: guix/scripts/system.scm:990
 msgid "   describe         describe the current system\n"
 msgstr ""
 
-#: guix/scripts/system.scm:991
+#: guix/scripts/system.scm:992
 msgid "   list-generations list the system generations\n"
 msgstr ""
 
-#: guix/scripts/system.scm:993
+#: guix/scripts/system.scm:994
 #, fuzzy
 msgid "   switch-generation switch to an existing operating system configuration\n"
 msgstr "  - “reconfigure”, chuyển thành cấu hình hệ điều hành mới\n"
 
-#: guix/scripts/system.scm:995
+#: guix/scripts/system.scm:996
 msgid "   delete-generations delete old system generations\n"
 msgstr ""
 
-#: guix/scripts/system.scm:997
+#: guix/scripts/system.scm:998
 #, fuzzy
 msgid "   build            build the operating system without installing anything\n"
 msgstr "  - “build”, biên dịch hệ điều hành mà không cài gì\n"
 
-#: guix/scripts/system.scm:999
+#: guix/scripts/system.scm:1000
 #, fuzzy
 msgid "   container        build a container that shares the host's store\n"
 msgstr "  - “vm”, biên dịch một ảnh máy ảo kiểu mà có thể chia sẻ trên kho máy\n"
 
-#: guix/scripts/system.scm:1001
+#: guix/scripts/system.scm:1002
 #, fuzzy
 msgid "   vm               build a virtual machine image that shares the host's store\n"
 msgstr "  - “vm”, biên dịch một ảnh máy ảo kiểu mà có thể chia sẻ trên kho máy\n"
 
-#: guix/scripts/system.scm:1003
+#: guix/scripts/system.scm:1004
 #, fuzzy
 msgid "   image            build a Guix System image\n"
 msgstr "  - “vm-image”, biên dịch một ảnh máy ảo đứng tự do\n"
 
-#: guix/scripts/system.scm:1005
+#: guix/scripts/system.scm:1006
 msgid "   docker-image     build a Docker image\n"
 msgstr ""
 
-#: guix/scripts/system.scm:1007
+#: guix/scripts/system.scm:1008
 #, fuzzy
 msgid "   init             initialize a root file system to run GNU\n"
 msgstr "  - “init”, khởi tạo một hệ thống tập tin gốc để chạy GNU.\n"
 
-#: guix/scripts/system.scm:1009
+#: guix/scripts/system.scm:1010
 msgid "   installer        run the graphical installer\n"
 msgstr ""
 
-#: guix/scripts/system.scm:1011
+#: guix/scripts/system.scm:1012
 msgid "   extension-graph  emit the service extension graph in Dot format\n"
 msgstr ""
 
-#: guix/scripts/system.scm:1013
+#: guix/scripts/system.scm:1014
 msgid "   shepherd-graph   emit the graph of shepherd services in Dot format\n"
 msgstr ""
 
-#: guix/scripts/system.scm:1017
+#: guix/scripts/system.scm:1018
 #, fuzzy
 msgid ""
 "\n"
@@ -6081,21 +6103,21 @@ msgstr ""
 "\n"
 "  -d, --derivations      trả về các đường dẫn nguồn gốc của các gói đã cho"
 
-#: guix/scripts/system.scm:1019
+#: guix/scripts/system.scm:1020
 msgid ""
 "\n"
 "  -e, --expression=EXPR  consider the operating-system EXPR evaluates to\n"
 "                         instead of reading FILE, when applicable"
 msgstr ""
 
-#: guix/scripts/system.scm:1022 guix/scripts/home.scm:133
+#: guix/scripts/system.scm:1023 guix/scripts/home.scm:133
 msgid ""
 "\n"
 "      --allow-downgrades for 'reconfigure', allow downgrades to earlier\n"
 "                         channel revisions"
 msgstr ""
 
-#: guix/scripts/system.scm:1025
+#: guix/scripts/system.scm:1026
 msgid ""
 "\n"
 "      --on-error=STRATEGY\n"
@@ -6103,7 +6125,7 @@ msgid ""
 "                         or debug) when an error occurs while reading FILE"
 msgstr ""
 
-#: guix/scripts/system.scm:1029
+#: guix/scripts/system.scm:1030
 #, fuzzy
 msgid ""
 "\n"
@@ -6112,7 +6134,7 @@ msgstr ""
 "\n"
 "      --list-live        liệt kê đường dẫn còn sống"
 
-#: guix/scripts/system.scm:1031
+#: guix/scripts/system.scm:1032
 #, fuzzy
 msgid ""
 "\n"
@@ -6121,7 +6143,7 @@ msgstr ""
 "\n"
 "      --image-size=CỠ    cho “vm-image”, sản sinh ảnh theo CỠ này"
 
-#: guix/scripts/system.scm:1033
+#: guix/scripts/system.scm:1034
 #, fuzzy
 msgid ""
 "\n"
@@ -6130,7 +6152,7 @@ msgstr ""
 "\n"
 "      --image-size=CỠ    cho “vm-image”, sản sinh ảnh theo CỠ này"
 
-#: guix/scripts/system.scm:1035
+#: guix/scripts/system.scm:1036
 #, fuzzy
 msgid ""
 "\n"
@@ -6139,7 +6161,7 @@ msgstr ""
 "\n"
 "      --no-grub          dành cho “init”, đừng cài GRUB"
 
-#: guix/scripts/system.scm:1037
+#: guix/scripts/system.scm:1038
 #, fuzzy
 msgid ""
 "\n"
@@ -6148,7 +6170,7 @@ msgstr ""
 "\n"
 "      --share=SPEC       cho “vm”, chia sẻ hệ thống tập tin chủ tuân theo SPEC"
 
-#: guix/scripts/system.scm:1039
+#: guix/scripts/system.scm:1040
 #, fuzzy
 msgid ""
 "\n"
@@ -6157,7 +6179,7 @@ msgstr ""
 "\n"
 "      --share=SPEC       cho “vm”, chia sẻ hệ thống tập tin chủ tuân theo SPEC"
 
-#: guix/scripts/system.scm:1041
+#: guix/scripts/system.scm:1042
 #, fuzzy
 msgid ""
 "\n"
@@ -6166,19 +6188,19 @@ msgstr ""
 "\n"
 "      --share=SPEC       cho “vm”, chia sẻ hệ thống tập tin chủ tuân theo SPEC"
 
-#: guix/scripts/system.scm:1043
+#: guix/scripts/system.scm:1044
 msgid ""
 "\n"
 "      --label=LABEL      for 'image', label disk image with LABEL"
 msgstr ""
 
-#: guix/scripts/system.scm:1045 guix/scripts/pack.scm:1660
+#: guix/scripts/system.scm:1046 guix/scripts/pack.scm:1662
 msgid ""
 "\n"
 "      --save-provenance  save provenance information"
 msgstr ""
 
-#: guix/scripts/system.scm:1047
+#: guix/scripts/system.scm:1048
 #, fuzzy
 msgid ""
 "\n"
@@ -6188,7 +6210,7 @@ msgstr ""
 "\n"
 "      --share=SPEC       cho “vm”, chia sẻ hệ thống tập tin chủ tuân theo SPEC"
 
-#: guix/scripts/system.scm:1050
+#: guix/scripts/system.scm:1051
 #, fuzzy
 msgid ""
 "\n"
@@ -6198,13 +6220,13 @@ msgstr ""
 "\n"
 "      --expose=SPEC      cho “vm”, phơi bày hệ thống tập tin chủ tuân theo SPEC"
 
-#: guix/scripts/system.scm:1053
+#: guix/scripts/system.scm:1054
 msgid ""
 "\n"
 "  -N, --network          for 'container', allow containers to access the network"
 msgstr ""
 
-#: guix/scripts/system.scm:1055
+#: guix/scripts/system.scm:1056
 #, fuzzy
 msgid ""
 "\n"
@@ -6216,7 +6238,7 @@ msgstr ""
 "  -r, --root=TẬP-TIN     tạo TẬP-TIN một liên kết mềm đến kết quả, và đăng ký nó\n"
 "                         như là bộ gom rác gốc"
 
-#: guix/scripts/system.scm:1059
+#: guix/scripts/system.scm:1060
 msgid ""
 "\n"
 "      --full-boot        for 'vm', make a full boot sequence"
@@ -6224,26 +6246,26 @@ msgstr ""
 "\n"
 "      --full-boot        cho “vm”, tạo một chuỗi mồi đầy đủ"
 
-#: guix/scripts/system.scm:1061
+#: guix/scripts/system.scm:1062
 msgid ""
 "\n"
 "      --no-graphic       for 'vm', use the tty that we are started in for IO"
 msgstr ""
 
-#: guix/scripts/system.scm:1063
+#: guix/scripts/system.scm:1064
 msgid ""
 "\n"
 "      --skip-checks      skip file system and initrd module safety checks"
 msgstr ""
 
-#: guix/scripts/system.scm:1068 guix/scripts/home.scm:148
+#: guix/scripts/system.scm:1069 guix/scripts/home.scm:148
 msgid ""
 "\n"
 "      --graph-backend=BACKEND\n"
 "                         use BACKEND for 'extension-graph' and 'shepherd-graph'"
 msgstr ""
 
-#: guix/scripts/system.scm:1072
+#: guix/scripts/system.scm:1073
 #, fuzzy
 #| msgid ""
 #| "\n"
@@ -6259,13 +6281,13 @@ msgstr ""
 "  -I, --list-installed[=BIỂU-THỨC-CHÍNH-QUY]\n"
 "                         kiệt kê các gói khớp BTCQ đã cài đặt"
 
-#: guix/scripts/system.scm:1229
+#: guix/scripts/system.scm:1230
 msgid ""
 "\n"
 "      --help-docker-format list options specific to the docker image type."
 msgstr ""
 
-#: guix/scripts/system.scm:1233
+#: guix/scripts/system.scm:1234
 #, fuzzy
 msgid ""
 "\n"
@@ -6276,27 +6298,27 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/scripts/system.scm:1259
+#: guix/scripts/system.scm:1260
 #, fuzzy, scheme-format
 msgid "'~a' does not return an operating system or an image~%"
 msgstr "hồ sơ “~a” không tồn tại~%"
 
-#: guix/scripts/system.scm:1283 guix/scripts/home.scm:532
+#: guix/scripts/system.scm:1284 guix/scripts/home.scm:532
 #, scheme-format
 msgid "both file and expression cannot be specified~%"
 msgstr ""
 
-#: guix/scripts/system.scm:1290 guix/scripts/home.scm:539
+#: guix/scripts/system.scm:1291 guix/scripts/home.scm:539
 #, fuzzy, scheme-format
 msgid "no configuration specified~%"
 msgstr "chưa ghi rõ tập tin nhập cấu hình~%"
 
-#: guix/scripts/system.scm:1322
+#: guix/scripts/system.scm:1323
 msgid "image lacks an operating-system"
 msgstr ""
 
-#: guix/scripts/system.scm:1408 guix/scripts/system.scm:1437
-#: guix/scripts/system.scm:1444 guix/scripts/system.scm:1450
+#: guix/scripts/system.scm:1409 guix/scripts/system.scm:1438
+#: guix/scripts/system.scm:1445 guix/scripts/system.scm:1451
 #: guix/scripts/home.scm:601 guix/scripts/home.scm:626
 #: guix/scripts/home.scm:631 guix/scripts/home.scm:637
 #: guix/scripts/home.scm:644 guix/scripts/import/gnu.scm:100
@@ -6305,31 +6327,31 @@ msgstr ""
 msgid "wrong number of arguments~%"
 msgstr "số lượng đối số không đúng~%"
 
-#: guix/scripts/system.scm:1420
+#: guix/scripts/system.scm:1421
 #, scheme-format
 msgid "no system generation, nothing to describe~%"
 msgstr ""
 
-#: guix/scripts/system.scm:1458
+#: guix/scripts/system.scm:1459
 msgid "build and deploy full operating systems"
 msgstr ""
 
-#: guix/scripts/system.scm:1471 guix/scripts/home.scm:667
+#: guix/scripts/system.scm:1472 guix/scripts/home.scm:667
 #, scheme-format
 msgid "~a: unknown action~%"
 msgstr "~a: không hiểu thao tác~%"
 
-#: guix/scripts/system.scm:1490 guix/scripts/home.scm:683
+#: guix/scripts/system.scm:1491 guix/scripts/home.scm:683
 #, scheme-format
 msgid "wrong number of arguments for action '~a'~%"
 msgstr "sai số lượng đối số cho thao tác “~a”~%"
 
-#: guix/scripts/system.scm:1495
+#: guix/scripts/system.scm:1496
 #, fuzzy, scheme-format
 msgid "guix system: missing command name~%"
 msgstr "guix: thiếu tên lệnh~%"
 
-#: guix/scripts/system.scm:1497
+#: guix/scripts/system.scm:1498
 #, fuzzy, scheme-format
 msgid "Try 'guix system --help' for more information.~%"
 msgstr "Chạy lệnh “guix --help” để biết thêm thông tin.~%"
@@ -6372,7 +6394,7 @@ msgstr ""
 msgid "run the graphical installer program"
 msgstr ""
 
-#: guix/scripts/system/search.scm:107 guix/ui.scm:1647 guix/ui.scm:1665
+#: guix/scripts/system/search.scm:107 guix/ui.scm:1677 guix/ui.scm:1695
 msgid "unknown"
 msgstr "không hiểu"
 
@@ -6451,7 +6473,7 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/lint.scm:111 guix/scripts/graph.scm:529
-#: guix/scripts/pack.scm:1649 guix/scripts/style.scm:632
+#: guix/scripts/pack.scm:1651 guix/scripts/style.scm:632
 #: guix/scripts/refresh.scm:160
 #, fuzzy
 msgid ""
@@ -7163,12 +7185,12 @@ msgstr ""
 msgid "use '--to' or '--from'~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:196
+#: guix/scripts/pack.scm:198
 #, scheme-format
 msgid "symlink target is absolute: '~a'~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:198
+#: guix/scripts/pack.scm:200
 msgid ""
 "The target of the symlink must be\n"
 "relative rather than absolute, as it is relative to the profile created.\n"
@@ -7180,86 +7202,86 @@ msgid ""
 "@end example"
 msgstr ""
 
-#: guix/scripts/pack.scm:211
+#: guix/scripts/pack.scm:213
 #, fuzzy, scheme-format
 msgid "~a: invalid symlink specification~%"
 msgstr "thẻ bài liên kết mềm không hợp lệ"
 
-#: guix/scripts/pack.scm:261 guix/scripts/pack.scm:664
-#: guix/scripts/pack.scm:837
+#: guix/scripts/pack.scm:263 guix/scripts/pack.scm:666
+#: guix/scripts/pack.scm:839
 #, scheme-format
 msgid "entry point not supported in the '~a' format~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:660
+#: guix/scripts/pack.scm:662
 #, scheme-format
 msgid "~a is not a valid Debian archive compressor.  Valid compressors are: ~a~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:992
+#: guix/scripts/pack.scm:994
 #, scheme-format
 msgid "entry-point must be provided in the '~a' format~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:996
+#: guix/scripts/pack.scm:998
 #, scheme-format
 msgid "AppImages should be built with the --relocatable flag~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:1004
+#: guix/scripts/pack.scm:1006
 #, scheme-format
 msgid ""
 "~a is not a valid squashfs archive compressor used in\n"
 "generating the AppImage.  Valid compressors are: ~a~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:1431
-msgid "The supported formats for 'guix pack' are:"
-msgstr ""
-
 #: guix/scripts/pack.scm:1433
-msgid ""
-"\n"
-"  tarball       Self-contained tarball, ready to run on another machine"
+msgid "The supported formats for 'guix pack' are:"
 msgstr ""
 
 #: guix/scripts/pack.scm:1435
 msgid ""
 "\n"
-"  squashfs      Squashfs image suitable for Singularity"
+"  tarball       Self-contained tarball, ready to run on another machine"
 msgstr ""
 
 #: guix/scripts/pack.scm:1437
 msgid ""
 "\n"
-"  docker        Tarball ready for 'docker load'"
+"  squashfs      Squashfs image suitable for Singularity"
 msgstr ""
 
 #: guix/scripts/pack.scm:1439
 msgid ""
 "\n"
-"  deb           Debian archive installable via dpkg/apt"
+"  docker        Tarball ready for 'docker load'"
 msgstr ""
 
 #: guix/scripts/pack.scm:1441
 msgid ""
 "\n"
-"  rpm           RPM archive installable via rpm/yum"
+"  deb           Debian archive installable via dpkg/apt"
 msgstr ""
 
 #: guix/scripts/pack.scm:1443
 msgid ""
 "\n"
+"  rpm           RPM archive installable via rpm/yum"
+msgstr ""
+
+#: guix/scripts/pack.scm:1445
+msgid ""
+"\n"
 "  appimage      AppImage self-contained and executable format"
 msgstr ""
 
-#: guix/scripts/pack.scm:1465
+#: guix/scripts/pack.scm:1467
 msgid ""
 "\n"
 "      --help-docker-format  list options specific to the docker format"
 msgstr ""
 
-#: guix/scripts/pack.scm:1469
+#: guix/scripts/pack.scm:1471
 msgid ""
 "\n"
 "      --image-tag=NAME\n"
@@ -7274,13 +7296,13 @@ msgid ""
 "                         Number of image layers"
 msgstr ""
 
-#: guix/scripts/pack.scm:1489
+#: guix/scripts/pack.scm:1491
 msgid ""
 "\n"
 "      --help-deb-format  list options specific to the deb format"
 msgstr ""
 
-#: guix/scripts/pack.scm:1493
+#: guix/scripts/pack.scm:1495
 #, fuzzy
 msgid ""
 "\n"
@@ -7291,7 +7313,7 @@ msgstr ""
 "  -l, --list-generations[=MẪU]\n"
 "                         liệt kê các gói khớp MẪU"
 
-#: guix/scripts/pack.scm:1496
+#: guix/scripts/pack.scm:1498
 #, fuzzy
 msgid ""
 "\n"
@@ -7302,7 +7324,7 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/scripts/pack.scm:1499
+#: guix/scripts/pack.scm:1501
 #, fuzzy
 msgid ""
 "\n"
@@ -7313,13 +7335,13 @@ msgstr ""
 "  -l, --list-generations[=MẪU]\n"
 "                         liệt kê các gói khớp MẪU"
 
-#: guix/scripts/pack.scm:1512
+#: guix/scripts/pack.scm:1514
 msgid ""
 "\n"
 "      --help-rpm-format  list options specific to the RPM format"
 msgstr ""
 
-#: guix/scripts/pack.scm:1516
+#: guix/scripts/pack.scm:1518
 #, fuzzy
 msgid ""
 "\n"
@@ -7330,7 +7352,7 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/scripts/pack.scm:1519
+#: guix/scripts/pack.scm:1521
 #, fuzzy
 msgid ""
 "\n"
@@ -7341,7 +7363,7 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/scripts/pack.scm:1522
+#: guix/scripts/pack.scm:1524
 #, fuzzy
 msgid ""
 "\n"
@@ -7352,7 +7374,7 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/scripts/pack.scm:1525
+#: guix/scripts/pack.scm:1527
 #, fuzzy
 msgid ""
 "\n"
@@ -7363,12 +7385,12 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/scripts/pack.scm:1592
+#: guix/scripts/pack.scm:1594
 #, fuzzy, scheme-format
 msgid "~a: unsupported profile name~%"
 msgstr "kiểu tập tin không được hỗ trợ"
 
-#: guix/scripts/pack.scm:1627
+#: guix/scripts/pack.scm:1629
 #, fuzzy
 msgid ""
 "Usage: guix pack [OPTION]... PACKAGE...\n"
@@ -7377,7 +7399,7 @@ msgstr ""
 "Cách dùng: guix package [TÙY CHỌN]… GÓI…\n"
 "Cài đặt, gỡ bỏ hay cập nhật GÓI trong một giao dịch đơn.\n"
 
-#: guix/scripts/pack.scm:1641
+#: guix/scripts/pack.scm:1643
 #, fuzzy
 msgid ""
 "\n"
@@ -7387,7 +7409,7 @@ msgstr ""
 "  -r, --root=TẬP-TIN     tạo TẬP-TIN một liên kết mềm đến kết quả, và đăng ký nó\n"
 "                         như là bộ gom rác gốc"
 
-#: guix/scripts/pack.scm:1643
+#: guix/scripts/pack.scm:1645
 #, fuzzy
 msgid ""
 "\n"
@@ -7396,7 +7418,7 @@ msgstr ""
 "\n"
 "  -f, --format=FMT       ghi mã băm theo định dạng đã cho"
 
-#: guix/scripts/pack.scm:1645
+#: guix/scripts/pack.scm:1647
 #, fuzzy
 msgid ""
 "\n"
@@ -7405,19 +7427,19 @@ msgstr ""
 "\n"
 "      --list-dead        liệt kê các đường dẫn đã chết"
 
-#: guix/scripts/pack.scm:1647
+#: guix/scripts/pack.scm:1649
 msgid ""
 "\n"
 "  -R, --relocatable      produce relocatable executables"
 msgstr ""
 
-#: guix/scripts/pack.scm:1651
+#: guix/scripts/pack.scm:1653
 msgid ""
 "\n"
 "  -C, --compression=TOOL compress using TOOL--e.g., \"lzip\""
 msgstr ""
 
-#: guix/scripts/pack.scm:1653
+#: guix/scripts/pack.scm:1655
 #, fuzzy
 msgid ""
 "\n"
@@ -7426,13 +7448,13 @@ msgstr ""
 "\n"
 "      --share=SPEC       cho “vm”, chia sẻ hệ thống tập tin chủ tuân theo SPEC"
 
-#: guix/scripts/pack.scm:1655
+#: guix/scripts/pack.scm:1657
 msgid ""
 "\n"
 "  -m, --manifest=FILE    create a pack with the manifest from FILE"
 msgstr ""
 
-#: guix/scripts/pack.scm:1657
+#: guix/scripts/pack.scm:1659
 #, fuzzy
 msgid ""
 "\n"
@@ -7443,20 +7465,20 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/scripts/pack.scm:1662
+#: guix/scripts/pack.scm:1664
 msgid ""
 "\n"
 "      --localstatedir    include /var/guix in the resulting pack"
 msgstr ""
 
-#: guix/scripts/pack.scm:1664
+#: guix/scripts/pack.scm:1666
 msgid ""
 "\n"
 "      --profile-name=NAME\n"
 "                         populate /var/guix/profiles/.../NAME"
 msgstr ""
 
-#: guix/scripts/pack.scm:1670
+#: guix/scripts/pack.scm:1672
 #, fuzzy
 msgid ""
 "\n"
@@ -7465,7 +7487,7 @@ msgstr ""
 "\n"
 "  -d, --derivations      trả về các đường dẫn nguồn gốc của các gói đã cho"
 
-#: guix/scripts/pack.scm:1674
+#: guix/scripts/pack.scm:1676
 #, fuzzy
 msgid ""
 "\n"
@@ -7474,42 +7496,42 @@ msgstr ""
 "\n"
 "      --bootstrap        dùng chương trình mồi Guile để biên dịch hồ sơ"
 
-#: guix/scripts/pack.scm:1691
+#: guix/scripts/pack.scm:1693
 msgid "create application bundles"
 msgstr ""
 
-#: guix/scripts/pack.scm:1734
+#: guix/scripts/pack.scm:1736
 #, scheme-format
 msgid "could not determine provenance of package ~a~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:1743
+#: guix/scripts/pack.scm:1745
 #, scheme-format
 msgid "both a manifest and a package list were given~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:1763
+#: guix/scripts/pack.scm:1765
 #, fuzzy, scheme-format
 #| msgid "profile '~a' does not exist~%"
 msgid "file provided with option ~a does not exist: ~a~%"
 msgstr "hồ sơ “~a” không tồn tại~%"
 
-#: guix/scripts/pack.scm:1842
+#: guix/scripts/pack.scm:1844
 #, fuzzy, scheme-format
 msgid "~a: unknown pack format~%"
 msgstr "~A: không hiểu gói ~%"
 
-#: guix/scripts/pack.scm:1869
+#: guix/scripts/pack.scm:1871
 #, scheme-format
 msgid "no packages specified; building an empty pack~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:1873
+#: guix/scripts/pack.scm:1875
 #, scheme-format
 msgid "Singularity requires you to provide a shell~%"
 msgstr ""
 
-#: guix/scripts/pack.scm:1874
+#: guix/scripts/pack.scm:1876
 msgid "Add @code{bash} or @code{bash-minimal} to your package list."
 msgstr ""
 
@@ -7960,12 +7982,12 @@ msgstr ""
 msgid "'-x' specified but no command given~%"
 msgstr ""
 
-#: guix/gexp.scm:470
+#: guix/gexp.scm:471
 #, scheme-format
 msgid "resolving '~a' relative to current directory~%"
 msgstr ""
 
-#: guix/gexp.scm:906
+#: guix/gexp.scm:907
 #, scheme-format
 msgid "importing module~{ ~a~} from the host~%"
 msgid_plural "importing modules~{ ~a~} from the host~%"
@@ -7976,39 +7998,39 @@ msgstr[0] ""
 msgid "failed to download '~a': ~a (~a)~%"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 
-#: guix/gnu-maintenance.scm:912
+#: guix/gnu-maintenance.scm:910
 msgid "Updating to a specific version is not yet implemented for SourceForge."
 msgstr ""
 
-#: guix/gnu-maintenance.scm:916
+#: guix/gnu-maintenance.scm:914
 msgid "Updating to a partial version is not yet implemented for SourceForge."
 msgstr ""
 
-#: guix/gnu-maintenance.scm:1070
+#: guix/gnu-maintenance.scm:1068
 msgid "Updater for GNU packages"
 msgstr ""
 
-#: guix/gnu-maintenance.scm:1083
+#: guix/gnu-maintenance.scm:1081
 msgid "Updater for GNU packages only available via FTP"
 msgstr ""
 
-#: guix/gnu-maintenance.scm:1094
+#: guix/gnu-maintenance.scm:1092
 msgid "Updater for packages hosted on savannah.gnu.org"
 msgstr ""
 
-#: guix/gnu-maintenance.scm:1101
+#: guix/gnu-maintenance.scm:1099
 msgid "Updater for packages hosted on sourceforge.net"
 msgstr ""
 
-#: guix/gnu-maintenance.scm:1108
+#: guix/gnu-maintenance.scm:1106
 msgid "Updater for X.org packages"
 msgstr ""
 
-#: guix/gnu-maintenance.scm:1115
+#: guix/gnu-maintenance.scm:1113
 msgid "Updater for packages hosted on kernel.org"
 msgstr ""
 
-#: guix/gnu-maintenance.scm:1122
+#: guix/gnu-maintenance.scm:1120
 msgid "Updater that crawls HTML pages."
 msgstr ""
 
@@ -8108,29 +8130,29 @@ msgstr ""
 msgid "~a: invalid toolchain replacement specification"
 msgstr ""
 
-#: guix/transformations.scm:588
+#: guix/transformations.scm:599
 #, fuzzy
 msgid "failed to determine which compiler is used"
 msgstr "gặp lỗi khi biên dịch hồ sơ trống rỗng~%"
 
-#: guix/transformations.scm:594
+#: guix/transformations.scm:605
 #, fuzzy, scheme-format
 msgid "failed to determine whether ~a supports ~a"
 msgstr "gặp lỗi khi biên dịch hồ sơ trống rỗng~%"
 
-#: guix/transformations.scm:605
+#: guix/transformations.scm:616
 #, scheme-format
 msgid "compiler ~a does not support micro-architecture ~a"
 msgstr ""
 
-#: guix/transformations.scm:611
+#: guix/transformations.scm:622
 #, scheme-format
 msgid ""
 "Compiler ~a does not support\n"
 "micro-architectures of ~a."
 msgstr ""
 
-#: guix/transformations.scm:616
+#: guix/transformations.scm:627
 #, scheme-format
 msgid ""
 "Compiler ~a supports the following ~a\n"
@@ -8141,64 +8163,64 @@ msgid ""
 "@end quotation"
 msgstr ""
 
-#: guix/transformations.scm:674
+#: guix/transformations.scm:685
 #, fuzzy, scheme-format
 #| msgid "~a: ~a~%"
 msgid "tuning ~a for CPU ~a~%"
 msgstr "~a: ~a~%"
 
-#: guix/transformations.scm:773
+#: guix/transformations.scm:784
 #, fuzzy, scheme-format
 msgid "~a: invalid package configure flag specification"
 msgstr "~a: bộ kiểm tra không hợp lệ~%"
 
-#: guix/transformations.scm:854
+#: guix/transformations.scm:865
 #, fuzzy, scheme-format
 msgid "~a: invalid package patch specification"
 msgstr "~a: bộ kiểm tra không hợp lệ~%"
 
-#: guix/transformations.scm:901
+#: guix/transformations.scm:912
 #, fuzzy, scheme-format
 #| msgid "could not find bootstrap binary '~a' for system '~a'"
 msgid "could not find version ~a of '~a' upstream~%"
 msgstr "không thể tìm thấy phần nhị phân mồi “~a” cho hệ thống “~a”"
 
-#: guix/transformations.scm:904
+#: guix/transformations.scm:915
 #, scheme-format
 msgid "could not determine latest upstream release of '~a'~%"
 msgstr ""
 
-#: guix/transformations.scm:910
+#: guix/transformations.scm:921
 #, fuzzy, scheme-format
 msgid "~a is already the latest version of '~a'~%"
 msgstr "gặp lỗi khi định giá biểu thức “~a”: ~s~%"
 
-#: guix/transformations.scm:916
+#: guix/transformations.scm:927
 #, scheme-format
 msgid "using ~a ~a, which is older than the packaged version (~a)~%"
 msgstr ""
 
-#: guix/transformations.scm:926
+#: guix/transformations.scm:937
 #, scheme-format
 msgid "cannot authenticate source of '~a', version ~a~%"
 msgstr ""
 
-#: guix/transformations.scm:969
+#: guix/transformations.scm:980
 #, fuzzy, scheme-format
 msgid "~a: invalid upstream version specification"
 msgstr "thẻ bài liên kết mềm không hợp lệ"
 
-#: guix/transformations.scm:1063
+#: guix/transformations.scm:1074
 #, scheme-format
 msgid "building for ~a instead of ~a, so tuning cannot be guessed~%"
 msgstr ""
 
-#: guix/transformations.scm:1093
+#: guix/transformations.scm:1104
 #, fuzzy, scheme-format
 msgid "Available package transformation options:~%"
 msgstr "Phê duyệt mô tả gói"
 
-#: guix/transformations.scm:1099
+#: guix/transformations.scm:1110
 #, fuzzy
 msgid ""
 "\n"
@@ -8209,35 +8231,35 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/transformations.scm:1102
+#: guix/transformations.scm:1113
 msgid ""
 "\n"
 "      --with-input=PACKAGE=REPLACEMENT\n"
 "                         replace dependency PACKAGE by REPLACEMENT"
 msgstr ""
 
-#: guix/transformations.scm:1105
+#: guix/transformations.scm:1116
 msgid ""
 "\n"
 "      --with-graft=PACKAGE=REPLACEMENT\n"
 "                         graft REPLACEMENT on packages that refer to PACKAGE"
 msgstr ""
 
-#: guix/transformations.scm:1108
+#: guix/transformations.scm:1119
 msgid ""
 "\n"
 "      --with-branch=PACKAGE=BRANCH\n"
 "                         build PACKAGE from the latest commit of BRANCH"
 msgstr ""
 
-#: guix/transformations.scm:1111
+#: guix/transformations.scm:1122
 msgid ""
 "\n"
 "      --with-commit=PACKAGE=COMMIT\n"
 "                         build PACKAGE from COMMIT"
 msgstr ""
 
-#: guix/transformations.scm:1114
+#: guix/transformations.scm:1125
 #, fuzzy
 msgid ""
 "\n"
@@ -8248,7 +8270,7 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/transformations.scm:1117
+#: guix/transformations.scm:1128
 #, fuzzy
 msgid ""
 "\n"
@@ -8259,13 +8281,13 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/transformations.scm:1120
+#: guix/transformations.scm:1131
 msgid ""
 "\n"
 "      --tune[=CPU]       tune relevant packages for CPU--e.g., \"skylake\""
 msgstr ""
 
-#: guix/transformations.scm:1122
+#: guix/transformations.scm:1133
 #, fuzzy
 msgid ""
 "\n"
@@ -8276,7 +8298,7 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/transformations.scm:1125
+#: guix/transformations.scm:1136
 #, fuzzy
 msgid ""
 "\n"
@@ -8287,7 +8309,7 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/transformations.scm:1128
+#: guix/transformations.scm:1139
 #, fuzzy
 msgid ""
 "\n"
@@ -8298,21 +8320,21 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/transformations.scm:1131
+#: guix/transformations.scm:1142
 msgid ""
 "\n"
 "      --with-c-toolchain=PACKAGE=TOOLCHAIN\n"
 "                         build PACKAGE and its dependents with TOOLCHAIN"
 msgstr ""
 
-#: guix/transformations.scm:1134
+#: guix/transformations.scm:1145
 msgid ""
 "\n"
 "      --with-debug-info=PACKAGE\n"
 "                         build PACKAGE and preserve its debug info"
 msgstr ""
 
-#: guix/transformations.scm:1137
+#: guix/transformations.scm:1148
 #, fuzzy
 msgid ""
 "\n"
@@ -8323,13 +8345,13 @@ msgstr ""
 "      --with-source=MÃ_NGUỒN\n"
 "                         dùng mã nguồn khi biên dịch gói tương ứng"
 
-#: guix/transformations.scm:1143
+#: guix/transformations.scm:1154
 msgid ""
 "\n"
 "      --help-transform   list package transformation options not shown here"
 msgstr ""
 
-#: guix/transformations.scm:1192
+#: guix/transformations.scm:1203
 #, scheme-format
 msgid "transformation '~a' had no effect on ~a~%"
 msgstr ""
@@ -8395,29 +8417,29 @@ msgstr "~a: ~a: không có trường phiên bản “version” trong nguồn; b
 msgid "~a: could not locate source file"
 msgstr "~a: không thể xác định tập tin nguồn"
 
-#: guix/ui.scm:165
+#: guix/ui.scm:167
 #, scheme-format
 msgid "error: ~a: unbound variable"
 msgstr ""
 
-#: guix/ui.scm:270
+#: guix/ui.scm:272
 msgid "entering debugger; type ',bt' for a backtrace\n"
 msgstr ""
 
-#: guix/ui.scm:341
+#: guix/ui.scm:343
 msgid "hint: "
 msgstr "gợi ý: "
 
-#: guix/ui.scm:367
+#: guix/ui.scm:369
 msgid "Did you forget a @code{use-modules} form?"
 msgstr ""
 
-#: guix/ui.scm:369
+#: guix/ui.scm:371
 #, scheme-format
 msgid "Did you forget @code{(use-modules ~a)}?"
 msgstr ""
 
-#: guix/ui.scm:379
+#: guix/ui.scm:381
 #, scheme-format
 msgid ""
 "File @file{~a} should probably start with:\n"
@@ -8427,58 +8449,58 @@ msgid ""
 "@end example"
 msgstr ""
 
-#: guix/ui.scm:393
+#: guix/ui.scm:395
 #, scheme-format
 msgid "module name ~a does not match file name '~a'~%"
 msgstr ""
 
-#: guix/ui.scm:397
+#: guix/ui.scm:399
 #, scheme-format
 msgid "~a: file is empty~%"
 msgstr ""
 
-#: guix/ui.scm:408 guix/ui.scm:459 guix/ui.scm:467 guix/ui.scm:471
+#: guix/ui.scm:410 guix/ui.scm:461 guix/ui.scm:469 guix/ui.scm:473
 #, fuzzy, scheme-format
 msgid "failed to load '~a': ~a~%"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 
-#: guix/ui.scm:417
+#: guix/ui.scm:419
 #, scheme-format
 msgid "~amissing closing parenthesis~%"
 msgstr ""
 
-#: guix/ui.scm:419
+#: guix/ui.scm:421
 #, fuzzy, scheme-format
 msgid "read error while loading '~a': ~a~%"
 msgstr "lỗi: trong khi tạo thư mục “~a”: ~a~%"
 
-#: guix/ui.scm:423
+#: guix/ui.scm:425
 #, fuzzy, scheme-format
 msgid "~s: ~a~%"
 msgstr "~a: ~a~%"
 
-#: guix/ui.scm:431 guix/ui.scm:462 guix/ui.scm:845 guix/ui.scm:895
-#: guix/ui.scm:951
+#: guix/ui.scm:433 guix/ui.scm:464 guix/ui.scm:875 guix/ui.scm:925
+#: guix/ui.scm:981
 #, scheme-format
 msgid "~a~%"
 msgstr "~a~%"
 
-#: guix/ui.scm:439 guix/ui.scm:960
+#: guix/ui.scm:441 guix/ui.scm:990
 #, scheme-format
 msgid "exception thrown: ~s~%"
 msgstr ""
 
-#: guix/ui.scm:443 guix/ui.scm:481
+#: guix/ui.scm:445 guix/ui.scm:483
 #, fuzzy, scheme-format
 msgid "failed to load '~a':~%"
 msgstr "gặp lỗi khi cài đặt miền địa phương: ~a~%"
 
-#: guix/ui.scm:478
+#: guix/ui.scm:480
 #, fuzzy, scheme-format
 msgid "failed to load '~a': exception thrown: ~s~%"
 msgstr "gặp lỗi khi đọc biểu thức ~s: ~s~%"
 
-#: guix/ui.scm:528
+#: guix/ui.scm:530
 msgid ""
 "Consider installing the @code{glibc-locales} package\n"
 "and defining @code{GUIX_LOCPATH}, along these lines:\n"
@@ -8494,15 +8516,15 @@ msgstr ""
 #. TRANSLATORS: Translate "(C)" to the copyright symbol
 #. (C-in-a-circle), if this symbol is available in the user's
 #. locale.  Otherwise, do not translate "(C)"; leave it as-is.  */
-#: guix/ui.scm:570
+#: guix/ui.scm:572
 msgid "(C)"
 msgstr ""
 
-#: guix/ui.scm:571
+#: guix/ui.scm:573
 msgid "the Guix authors\n"
 msgstr ""
 
-#: guix/ui.scm:572
+#: guix/ui.scm:574
 #, fuzzy
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
@@ -8518,7 +8540,7 @@ msgstr ""
 #. package.  Please add another line saying "Report translation bugs to
 #. ...\n" with the address for translation bugs (typically your translation
 #. team's web or email address).
-#: guix/ui.scm:584
+#: guix/ui.scm:586
 #, scheme-format
 msgid ""
 "\n"
@@ -8528,7 +8550,7 @@ msgstr ""
 "Hãy thông báo lỗi cho ~a.\n"
 "Thông báo lỗi dịch cho: <http://translationproject.org/team/vi.html>."
 
-#: guix/ui.scm:586
+#: guix/ui.scm:588
 #, scheme-format
 msgid ""
 "\n"
@@ -8537,7 +8559,7 @@ msgstr ""
 "\n"
 "~a trang chủ: <~a>"
 
-#: guix/ui.scm:588
+#: guix/ui.scm:590
 #, fuzzy, scheme-format
 msgid ""
 "\n"
@@ -8548,167 +8570,167 @@ msgstr ""
 
 #. TRANSLATORS: Change the "/en" bit of this URL appropriately if
 #. the web site is translated in your language.
-#: guix/ui.scm:592
+#: guix/ui.scm:594
 msgid "https://guix.gnu.org/en/help/"
-msgstr "https://guix.gnu.org/vi/help/"
+msgstr "https://guix.gnu.org/en/help/"
 
-#: guix/ui.scm:649
+#: guix/ui.scm:651
 #, fuzzy, scheme-format
 msgid "'~a' is not a valid regular expression: ~a~%"
 msgstr "chữ ký không phải là một biểu thức s hợp lệ: ~s~%"
 
-#: guix/ui.scm:655
+#: guix/ui.scm:657
 #, scheme-format
 msgid "~a: invalid number~%"
 msgstr "~a: số không hợp lệ~%"
 
-#: guix/ui.scm:673
+#: guix/ui.scm:675 guix/ui.scm:707
 #, scheme-format
 msgid "invalid number: ~a~%"
 msgstr "số không hợp lệ: ~a~%"
 
-#: guix/ui.scm:696
+#: guix/ui.scm:698
 #, scheme-format
 msgid "unknown unit: ~a~%"
 msgstr "không hiểu đơn vị: ~a~%"
 
-#: guix/ui.scm:711
+#: guix/ui.scm:741
 #, scheme-format
 msgid ""
 "You cannot have two different versions\n"
 "or variants of @code{~a} in the same profile."
 msgstr ""
 
-#: guix/ui.scm:714
+#: guix/ui.scm:744
 #, scheme-format
 msgid ""
 "Try upgrading both @code{~a} and @code{~a},\n"
 "or remove one of them from the profile."
 msgstr ""
 
-#: guix/ui.scm:745
+#: guix/ui.scm:775
 #, scheme-format
 msgid "~a:~a:~a: package `~a' has an invalid input: ~s~%"
 msgstr "~a:~a:~a: gói “~a” có đầu vào không hợp lệ: ~s~%"
 
-#: guix/ui.scm:751
+#: guix/ui.scm:781
 #, scheme-format
 msgid ""
 "~a: dependency cycle detected:\n"
 "  ~a~{ -> ~a~}~%"
 msgstr ""
 
-#: guix/ui.scm:761
+#: guix/ui.scm:791
 #, scheme-format
 msgid "~a: ~a: build system `~a' does not support cross builds~%"
 msgstr "~a: ~a: hệ thống dịch “~a” không hỗ trợ dịch chéo~%"
 
-#: guix/ui.scm:768
+#: guix/ui.scm:798
 #, fuzzy, scheme-format
 msgid "~a: ~a: does not support target `~a'~%"
 msgstr "gói “~a” không có nguồn~%"
 
-#: guix/ui.scm:776
+#: guix/ui.scm:806
 #, fuzzy, scheme-format
 #| msgid "~a: ~a: build system `~a' does not support cross builds~%"
 msgid "the `~a' build system: does not support target `~a'~%"
 msgstr "~a: ~a: hệ thống dịch “~a” không hỗ trợ dịch chéo~%"
 
-#: guix/ui.scm:781
+#: guix/ui.scm:811
 #, fuzzy, scheme-format
 msgid "~s: invalid G-expression input~%"
 msgstr "chữ ký không phải là một biểu thức s hợp lệ: ~s~%"
 
-#: guix/ui.scm:784
+#: guix/ui.scm:814
 #, scheme-format
 msgid "profile '~a' does not exist~%"
 msgstr "hồ sơ “~a” không tồn tại~%"
 
-#: guix/ui.scm:787
+#: guix/ui.scm:817
 #, scheme-format
 msgid "generation ~a of profile '~a' does not exist~%"
 msgstr "thế hệ “~a” của hồ sơ “~a” không tồn tại~%"
 
-#: guix/ui.scm:792
+#: guix/ui.scm:822
 #, scheme-format
 msgid "package '~a~@[@~a~]~@[:~a~]' not found in profile~%"
 msgstr ""
 
-#: guix/ui.scm:804
+#: guix/ui.scm:834
 #, scheme-format
 msgid "   ... propagated from ~a@~a~%"
 msgstr ""
 
-#: guix/ui.scm:814
+#: guix/ui.scm:844
 #, scheme-format
 msgid "profile contains conflicting entries for ~a~a~%"
 msgstr ""
 
-#: guix/ui.scm:817
+#: guix/ui.scm:847
 #, scheme-format
 msgid "  first entry: ~a@~a~a ~a~%"
 msgstr ""
 
-#: guix/ui.scm:823
+#: guix/ui.scm:853
 #, scheme-format
 msgid "  second entry: ~a@~a~a ~a~%"
 msgstr ""
 
-#: guix/ui.scm:835
+#: guix/ui.scm:865
 #, scheme-format
 msgid "corrupt input while restoring '~a' from ~s~%"
 msgstr ""
 
-#: guix/ui.scm:837
+#: guix/ui.scm:867
 #, fuzzy, scheme-format
 msgid "corrupt input while restoring archive from ~s~%"
 msgstr "tập hợp tập tin trong kho lưu bị hỏng"
 
-#: guix/ui.scm:840
+#: guix/ui.scm:870
 #, scheme-format
 msgid "failed to connect to `~a': ~a~%"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 
-#: guix/ui.scm:848
+#: guix/ui.scm:878
 #, scheme-format
 msgid "reference to invalid output '~a' of derivation '~a'~%"
 msgstr "tham chiếu đến đầu ra không hợp lệ “~a” của dẫn suất “~a”~%"
 
-#: guix/ui.scm:852
+#: guix/ui.scm:882
 #, scheme-format
 msgid "file '~a' could not be found in these directories:~{ ~a~}~%"
 msgstr ""
 
-#: guix/ui.scm:857
+#: guix/ui.scm:887
 #, scheme-format
 msgid "program exited~@[ with non-zero exit status ~a~]~@[ terminated by signal ~a~]~@[ stopped by signal ~a~]: ~s~%"
 msgstr ""
 
-#: guix/ui.scm:937
+#: guix/ui.scm:967
 #, scheme-format
 msgid "failed to read expression ~s: ~s~%"
 msgstr "gặp lỗi khi đọc biểu thức ~s: ~s~%"
 
-#: guix/ui.scm:945
+#: guix/ui.scm:975
 #, fuzzy, scheme-format
 msgid "failed to evaluate expression '~a':~%"
 msgstr "gặp lỗi khi định giá biểu thức “~a”: ~s~%"
 
-#: guix/ui.scm:948
+#: guix/ui.scm:978
 #, fuzzy, scheme-format
 msgid "syntax error: ~a~%"
 msgstr "~a: lỗi: ~a~%"
 
-#: guix/ui.scm:984
+#: guix/ui.scm:1014
 #, scheme-format
 msgid "expression ~s does not evaluate to a package~%"
 msgstr "biểu thức “~s” không được định giá cho gói~%"
 
-#: guix/ui.scm:1011
+#: guix/ui.scm:1041
 msgid "at least ~,1h MB needed but only ~,1h MB available in ~a~%"
 msgstr ""
 
-#: guix/ui.scm:1121
+#: guix/ui.scm:1151
 #, fuzzy, scheme-format
 #| msgid "~:[The following derivation would be built:~%~{   ~a~%~}~;~]"
 #| msgid_plural "~:[The following derivations would be built:~%~{   ~a~%~}~;~]"
@@ -8719,12 +8741,12 @@ msgstr[0] "~:[Nguồn sau đây nên được được biên dịch:~%~{   ~a~%~
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
 #. abbreviation.
-#: guix/ui.scm:1134
+#: guix/ui.scm:1164
 #, fuzzy
 msgid "~:[~,1h MB would be downloaded:~%~;~]"
 msgstr "~:[Tập tin sau đây nên được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1143
+#: guix/ui.scm:1173
 #, fuzzy, scheme-format
 #| msgid "~:[The following file would be downloaded:~%~{   ~a~%~}~;~]"
 #| msgid_plural "~:[The following files would be downloaded:~%~{   ~a~%~}~;~]"
@@ -8732,13 +8754,13 @@ msgid "~:[The following file would be downloaded:~%~;~]"
 msgid_plural "~:[The following files would be downloaded:~%~;~]"
 msgstr[0] "~:[Tập tin sau đây nên được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1151
+#: guix/ui.scm:1181
 #, fuzzy, scheme-format
 msgid "~:[The following graft would be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts would be made:~%~{   ~a~%~}~;~]"
 msgstr[0] "~:[Tập tin sau đây nên được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1156
+#: guix/ui.scm:1186
 #, fuzzy, scheme-format
 msgid "~:[The following profile hook would be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks would be built:~%~{   ~a~%~}~;~]"
@@ -8746,18 +8768,18 @@ msgstr[0] "~:[Nguồn sau đây nên được được biên dịch:~%~{   ~a~%~
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
-#: guix/ui.scm:1168
+#: guix/ui.scm:1198
 #, fuzzy
 msgid "~:[~,1h MB would be downloaded~%~;~]"
 msgstr "~:[Tập tin sau đây nên được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1172
+#: guix/ui.scm:1202
 #, fuzzy
 msgid "~:[~h item would be downloaded~%~;~]"
 msgid_plural "~:[~h items would be downloaded~%~;~]"
 msgstr[0] "~:[Tập tin sau đây nên được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1181
+#: guix/ui.scm:1211
 #, fuzzy, scheme-format
 #| msgid "~:[The following derivation will be built:~%~{   ~a~%~}~;~]"
 #| msgid_plural "~:[The following derivations will be built:~%~{   ~a~%~}~;~]"
@@ -8768,12 +8790,12 @@ msgstr[0] "~:[Nguồn sau đây sẽ được biên dịch:~%~{   ~a~%~}~;~]"
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
 #. abbreviation.
-#: guix/ui.scm:1194
+#: guix/ui.scm:1224
 #, fuzzy
 msgid "~:[~,1h MB will be downloaded:~%~;~]"
 msgstr "~:[Những tập tin sau đây sẽ được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1203
+#: guix/ui.scm:1233
 #, fuzzy, scheme-format
 #| msgid "~:[The following file will be downloaded:~%~{   ~a~%~}~;~]"
 #| msgid_plural "~:[The following files will be downloaded:~%~{   ~a~%~}~;~]"
@@ -8781,13 +8803,13 @@ msgid "~:[The following file will be downloaded:~%~;~]"
 msgid_plural "~:[The following files will be downloaded:~%~;~]"
 msgstr[0] "~:[Những tập tin sau đây sẽ được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1211
+#: guix/ui.scm:1241
 #, fuzzy, scheme-format
 msgid "~:[The following graft will be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts will be made:~%~{   ~a~%~}~;~]"
 msgstr[0] "~:[Những tập tin sau đây sẽ được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1216
+#: guix/ui.scm:1246
 #, fuzzy, scheme-format
 msgid "~:[The following profile hook will be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks will be built:~%~{   ~a~%~}~;~]"
@@ -8795,113 +8817,113 @@ msgstr[0] "~:[Nguồn sau đây sẽ được biên dịch:~%~{   ~a~%~}~;~]"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
-#: guix/ui.scm:1228
+#: guix/ui.scm:1258
 #, fuzzy
 msgid "~:[~,1h MB will be downloaded~%~;~]"
 msgstr "~:[Những tập tin sau đây sẽ được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1232
+#: guix/ui.scm:1262
 #, fuzzy
 msgid "~:[~h item will be downloaded~%~;~]"
 msgid_plural "~:[~h items will be downloaded~%~;~]"
 msgstr[0] "~:[Những tập tin sau đây sẽ được tải về:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1351
+#: guix/ui.scm:1381
 msgid "(dependencies or package changed)"
 msgstr ""
 
-#: guix/ui.scm:1370
+#: guix/ui.scm:1400
 #, scheme-format
 msgid "The following package would be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be removed:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây sẽ nên bị gỡ bỏ:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1375
+#: guix/ui.scm:1405
 #, scheme-format
 msgid "The following package will be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be removed:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây sẽ bị gỡ bỏ:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1388
+#: guix/ui.scm:1418
 #, fuzzy, scheme-format
 msgid "The following package would be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be downgraded:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây nên được nâng cấp:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1393
+#: guix/ui.scm:1423
 #, fuzzy, scheme-format
 msgid "The following package will be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be downgraded:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây sẽ được nâng cấp:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1406
+#: guix/ui.scm:1436
 #, scheme-format
 msgid "The following package would be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be upgraded:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây nên được nâng cấp:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1411
+#: guix/ui.scm:1441
 #, scheme-format
 msgid "The following package will be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be upgraded:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây sẽ được nâng cấp:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1422
+#: guix/ui.scm:1452
 #, scheme-format
 msgid "The following package would be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be installed:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây nên được cài đặt:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1427
+#: guix/ui.scm:1457
 #, scheme-format
 msgid "The following package will be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be installed:~%~{~a~%~}~%"
 msgstr[0] "Gói sau đây sẽ được cài đặt:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1531
+#: guix/ui.scm:1561
 #, fuzzy, scheme-format
 #| msgid "~a: invalid number~%"
 msgid "~a: invalid Texinfo markup~%"
 msgstr "~a: số không hợp lệ~%"
 
-#: guix/ui.scm:1590
+#: guix/ui.scm:1620
 msgid "executable programs and scripts"
 msgstr ""
 
-#: guix/ui.scm:1591
+#: guix/ui.scm:1621
 msgid "debug information"
 msgstr ""
 
-#: guix/ui.scm:1592
+#: guix/ui.scm:1622
 msgid "documentation"
 msgstr "tài liệu"
 
-#: guix/ui.scm:1593
+#: guix/ui.scm:1623
 msgid "shared libraries"
 msgstr ""
 
-#: guix/ui.scm:1594
+#: guix/ui.scm:1624
 msgid "static libraries"
 msgstr ""
 
-#: guix/ui.scm:1595
+#: guix/ui.scm:1625
 msgid "everything else"
 msgstr ""
 
-#: guix/ui.scm:1609
+#: guix/ui.scm:1639
 msgid "[description missing]"
 msgstr ""
 
-#: guix/ui.scm:1631
+#: guix/ui.scm:1661
 msgid "everything"
 msgstr "mọi thứ"
 
-#: guix/ui.scm:2015
+#: guix/ui.scm:2045
 #, scheme-format
 msgid "invalid syntax: ~a~%"
 msgstr "cú pháp không hợp lệ: ~a~%"
 
-#: guix/ui.scm:2024
+#: guix/ui.scm:2054
 #, scheme-format
 msgid "Generation ~a\t~a"
 msgstr "Tạo ~a\t~a"
@@ -8911,7 +8933,7 @@ msgstr "Tạo ~a\t~a"
 #. usual way of presenting dates in your locale.
 #. See https://www.gnu.org/software/guile/manual/html_node/SRFI_002d19-Date-to-string.html
 #. for details.
-#: guix/ui.scm:2036
+#: guix/ui.scm:2066
 #, scheme-format
 msgid "~b ~d ~Y ~T"
 msgstr ""
@@ -8919,37 +8941,37 @@ msgstr ""
 #. TRANSLATORS: The word "current" here is an adjective for
 #. "Generation", as in "current generation".  Use the appropriate
 #. gender where applicable.
-#: guix/ui.scm:2042
+#: guix/ui.scm:2072
 #, scheme-format
 msgid "~a\t(current)~%"
 msgstr "~a\t(hiện tại)~%"
 
-#: guix/ui.scm:2076
+#: guix/ui.scm:2106
 #, fuzzy, scheme-format
 msgid "cannot lock profile ~a: ~a~%"
 msgstr "không thể truy cập “~a”: ~a~%"
 
-#: guix/ui.scm:2078
+#: guix/ui.scm:2108
 #, fuzzy, scheme-format
 msgid "profile ~a is locked by another process~%"
 msgstr "hồ sơ “~a” không tồn tại~%"
 
-#: guix/ui.scm:2107
+#: guix/ui.scm:2137
 #, fuzzy, scheme-format
 msgid "switched from generation ~a to ~a~%"
 msgstr "chuyển từ thế hệ ~a sang ~a~%"
 
-#: guix/ui.scm:2123
+#: guix/ui.scm:2153
 #, scheme-format
 msgid "deleting ~a~%"
 msgstr "đang xóa ~a~%"
 
-#: guix/ui.scm:2154
+#: guix/ui.scm:2184
 #, scheme-format
 msgid "Try `guix --help' for more information.~%"
 msgstr "Chạy lệnh “guix --help” để biết thêm thông tin.~%"
 
-#: guix/ui.scm:2262
+#: guix/ui.scm:2292
 #, fuzzy
 #| msgid ""
 #| "Usage: guix COMMAND ARGS...\n"
@@ -8961,7 +8983,7 @@ msgstr ""
 "Cách dùng: guix LỆNH ĐỐI_SỐ…\n"
 "Chạy LỆNH với các ĐỐI SỐ.\n"
 
-#: guix/ui.scm:2265
+#: guix/ui.scm:2295
 #, fuzzy
 #| msgid ""
 #| "\n"
@@ -8973,7 +8995,7 @@ msgstr ""
 "\n"
 "  -h, --help             hiển thị trợ giúp này rồi thoát"
 
-#: guix/ui.scm:2267
+#: guix/ui.scm:2297
 #, fuzzy
 #| msgid ""
 #| "\n"
@@ -8985,21 +9007,21 @@ msgstr ""
 "\n"
 "  -V, --version          hiển thị thông tin phiên bản rồi thoát"
 
-#: guix/ui.scm:2272
+#: guix/ui.scm:2302
 msgid "COMMAND must be one of the sub-commands listed below:\n"
 msgstr "LỆNH phải là một trong số những câu lệnh con được liệt kê dưới đây:\n"
 
-#: guix/ui.scm:2314
+#: guix/ui.scm:2344
 #, scheme-format
 msgid "guix: ~a: command not found~%"
 msgstr "guix: ~a: không tìm thấy lệnh~%"
 
-#: guix/ui.scm:2353
+#: guix/ui.scm:2383
 #, scheme-format
 msgid "guix: missing command name~%"
 msgstr "guix: thiếu tên lệnh~%"
 
-#: guix/ui.scm:2361
+#: guix/ui.scm:2391
 #, scheme-format
 msgid "guix: unrecognized option '~a'~%"
 msgstr "guix: tùy chọn không được thừa nhận “~a”~%"
@@ -9432,50 +9454,50 @@ msgstr "gặp lỗi khi đăng ký “~a” dưới ~a~%"
 msgid "failed to connect over SSH to daemon at '~a', socket ~a"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 
-#: guix/ssh.scm:481
+#: guix/ssh.scm:482
 #, fuzzy
 msgid "sending ~a store item (~h MiB) to '~a'...~%"
 msgid_plural "sending ~a store items (~h MiB) to '~a'...~%"
 msgstr[0] "tìm bản phát hành mới nhất ~a GNU…"
 
-#: guix/ssh.scm:577
+#: guix/ssh.scm:578
 msgid "unknown error while sending files over SSH"
 msgstr ""
 
-#: guix/ssh.scm:622
+#: guix/ssh.scm:623
 #, fuzzy, scheme-format
 msgid "failed to connect to '~A' on remote host '~A': ~a"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 
-#: guix/ssh.scm:625
+#: guix/ssh.scm:626
 #, scheme-format
 msgid "no such item on remote host '~A':~{ ~a~}"
 msgid_plural "no such items on remote host '~A':~{ ~a~}"
 msgstr[0] ""
 
-#: guix/ssh.scm:630
+#: guix/ssh.scm:631
 #, scheme-format
 msgid "protocol error on remote host '~A': ~a"
 msgstr ""
 
-#: guix/ssh.scm:633
+#: guix/ssh.scm:634
 #, fuzzy, scheme-format
 msgid "failed to retrieve store items from '~a'"
 msgstr "tìm thấy chữ ký cho “~a'~% không hợp lệ"
 
-#: guix/ssh.scm:646
+#: guix/ssh.scm:647
 #, fuzzy, scheme-format
 msgid "retrieving ~a store item from '~a'...~%"
 msgid_plural "retrieving ~a store items from '~a'...~%"
 msgstr[0] "tìm bản phát hành mới nhất ~a GNU…"
 
-#: guix/ssh.scm:676
+#: guix/ssh.scm:677
 #, fuzzy, scheme-format
 #| msgid "failed to install GRUB on device '~a'~%"
 msgid "failed to start Guile on remote host '~A'"
 msgstr "gặp lỗi khi cài đặt GRUB trên thiết bị “~a'~%"
 
-#: guix/ssh.scm:677
+#: guix/ssh.scm:678
 #, scheme-format
 msgid ""
 "Make sure @command{guile} can be found in\n"
@@ -9483,7 +9505,7 @@ msgid ""
 "check."
 msgstr ""
 
-#: guix/ssh.scm:684
+#: guix/ssh.scm:685
 #, scheme-format
 msgid "exception occurred on remote host '~A': ~s"
 msgstr ""
@@ -9717,11 +9739,11 @@ msgstr ""
 msgid "s-expression does not denote a public key~%"
 msgstr "biểu thức “~s” không được định giá cho gói~%"
 
-#: guix/scripts/archive.scm:367
+#: guix/scripts/archive.scm:368
 msgid "manipulate, export, and import normalized archives (nars)"
 msgstr ""
 
-#: guix/scripts/archive.scm:414
+#: guix/scripts/archive.scm:415
 #, scheme-format
 msgid "either '--export' or '--import' must be specified~%"
 msgstr ""
@@ -10605,7 +10627,13 @@ msgstr ""
 msgid "run commands from a different revision"
 msgstr ""
 
-#: guix/scripts/import.scm:63
+#: guix/scripts/import.scm:54 guix/scripts/import/crate.scm:82
+#, fuzzy, scheme-format
+#| msgid "profile '~a' does not exist~%"
+msgid "file '~a' does not exist~%"
+msgstr "hồ sơ “~a” không tồn tại~%"
+
+#: guix/scripts/import.scm:75
 #, fuzzy
 msgid ""
 "Usage: guix import IMPORTER ARGS ...\n"
@@ -10614,44 +10642,44 @@ msgstr ""
 "Cách dùng: guix LỆNH ĐỐI_SỐ…\n"
 "Chạy LỆNH với các ĐỐI SỐ.\n"
 
-#: guix/scripts/import.scm:66
+#: guix/scripts/import.scm:78
 #, fuzzy
 msgid "IMPORTER must be one of the importers listed below:\n"
 msgstr "LỆNH phải là một trong số những câu lệnh con được liệt kê dưới đây:\n"
 
-#: guix/scripts/import.scm:71
+#: guix/scripts/import.scm:83
 #, fuzzy
 msgid ""
 "\n"
-"  -i, --insert           insert packages into file alphabetically"
+"  -i, --insert=FILE      insert packages into FILE alphabetically"
 msgstr ""
 "\n"
 "  -r, --recursive        tính mã băm trên TẬP-TIN một cách đệ quy"
 
-#: guix/scripts/import.scm:98
+#: guix/scripts/import.scm:112
 #, fuzzy, scheme-format
 msgid "'~a' import failed~%"
 msgstr "~a: gặp lỗi khi tải về~%"
 
-#: guix/scripts/import.scm:100
+#: guix/scripts/import.scm:114
 #, fuzzy, scheme-format
 msgid "~a: invalid importer~%"
 msgstr "~a: số không hợp lệ~%"
 
-#: guix/scripts/import.scm:107
+#: guix/scripts/import.scm:121
 msgid "import a package definition from an external repository"
 msgstr ""
 
-#: guix/scripts/import.scm:112
+#: guix/scripts/import.scm:137
 #, fuzzy, scheme-format
 msgid "guix import: missing importer name~%"
 msgstr "guix: thiếu tên lệnh~%"
 
-#: guix/import/utils.scm:335
+#: guix/import/utils.scm:339
 msgid "This package lacks a description.  Run \"info '(guix) Synopses and Descriptions'\" for more information."
 msgstr ""
 
-#: guix/import/utils.scm:419
+#: guix/import/utils.scm:423
 msgid "This package lacks a synopsis.  Run \"info '(guix) Synopses and Descriptions'\" for more information."
 msgstr ""
 
@@ -10680,7 +10708,7 @@ msgstr ""
 "\n"
 "  -r, --recursive        tính mã băm trên TẬP-TIN một cách đệ quy"
 
-#: guix/scripts/import/cpan.scm:97 guix/scripts/import/crate.scm:125
+#: guix/scripts/import/cpan.scm:97 guix/scripts/import/crate.scm:139
 #: guix/scripts/import/egg.scm:100 guix/scripts/import/elpa.scm:121
 #: guix/scripts/import/gem.scm:106 guix/scripts/import/hexpm.scm:99
 #: guix/scripts/import/opam.scm:107 guix/scripts/import/pypi.scm:101
@@ -10689,32 +10717,30 @@ msgid "failed to download meta-data for package '~a'~%"
 msgstr "gặp lỗi khi tải về cập nhật mới nhất của mã nguồn, đang thoát\n"
 
 #: guix/scripts/import/cpan.scm:101 guix/scripts/import/cran.scm:135
-#: guix/scripts/import/crate.scm:132 guix/scripts/import/egg.scm:106
+#: guix/scripts/import/crate.scm:146 guix/scripts/import/egg.scm:106
 #: guix/scripts/import/elpa.scm:131 guix/scripts/import/gem.scm:110
 #: guix/scripts/import/go.scm:122 guix/scripts/import/hackage.scm:158
 #: guix/scripts/import/hexpm.scm:103 guix/scripts/import/json.scm:97
-#: guix/scripts/import/minetest.scm:115 guix/scripts/import/npm-binary.scm:119
-#: guix/scripts/import/opam.scm:111 guix/scripts/import/pypi.scm:105
-#: guix/scripts/import/stackage.scm:130 guix/scripts/import/texlive.scm:101
+#: guix/scripts/import/npm-binary.scm:119 guix/scripts/import/opam.scm:111
+#: guix/scripts/import/pypi.scm:105 guix/scripts/import/stackage.scm:130
+#: guix/scripts/import/texlive.scm:101
 #, fuzzy, scheme-format
 msgid "too few arguments~%"
 msgstr "số lượng đối số không đúng~%"
 
 #: guix/scripts/import/cpan.scm:103 guix/scripts/import/cran.scm:137
-#: guix/scripts/import/crate.scm:134 guix/scripts/import/egg.scm:108
+#: guix/scripts/import/crate.scm:148 guix/scripts/import/egg.scm:108
 #: guix/scripts/import/elpa.scm:133 guix/scripts/import/gem.scm:112
 #: guix/scripts/import/go.scm:124 guix/scripts/import/hackage.scm:149
 #: guix/scripts/import/hackage.scm:160 guix/scripts/import/hexpm.scm:105
-#: guix/scripts/import/json.scm:99 guix/scripts/import/minetest.scm:117
-#: guix/scripts/import/npm-binary.scm:121 guix/scripts/import/opam.scm:113
-#: guix/scripts/import/pypi.scm:107 guix/scripts/import/stackage.scm:132
-#: guix/scripts/import/texlive.scm:103
+#: guix/scripts/import/json.scm:99 guix/scripts/import/npm-binary.scm:121
+#: guix/scripts/import/opam.scm:113 guix/scripts/import/pypi.scm:107
+#: guix/scripts/import/stackage.scm:132 guix/scripts/import/texlive.scm:103
 #, fuzzy, scheme-format
 msgid "too many arguments~%"
 msgstr "các đối số sai"
 
-#: guix/import/cpan.scm:336 guix/import/elpa.scm:436
-#: guix/import/minetest.scm:498 guix/import/opam.scm:425
+#: guix/import/cpan.scm:336 guix/import/elpa.scm:436 guix/import/opam.scm:425
 #: guix/import/stackage.scm:151
 #, scheme-format
 msgid "~a updater doesn't support updating to a specific version, sorry."
@@ -10741,9 +10767,8 @@ msgid ""
 "  -a, --archive=ARCHIVE  specify the archive repository"
 msgstr ""
 
-#: guix/scripts/import/cran.scm:51 guix/scripts/import/crate.scm:49
-#: guix/scripts/import/egg.scm:47 guix/scripts/import/hexpm.scm:48
-#: guix/scripts/import/minetest.scm:48 guix/scripts/import/npm-binary.scm:49
+#: guix/scripts/import/cran.scm:51 guix/scripts/import/egg.scm:47
+#: guix/scripts/import/hexpm.scm:48 guix/scripts/import/npm-binary.scm:49
 #: guix/scripts/import/opam.scm:47 guix/scripts/import/pypi.scm:48
 #, fuzzy
 msgid ""
@@ -10805,66 +10830,32 @@ msgstr ""
 msgid "Updater for Bioconductor packages"
 msgstr ""
 
-#: guix/scripts/import/crate.scm:47
+#: guix/scripts/import/crate.scm:50
 msgid ""
 "Usage: guix import crate PACKAGE-NAME\n"
 "Import and convert the crates.io package for PACKAGE-NAME.\n"
 msgstr ""
 
-#: guix/scripts/import/crate.scm:51
-#, fuzzy
-msgid ""
-"\n"
-"      --recursive-dev-dependencies\n"
-"                         include dev-dependencies recursively"
-msgstr ""
-"\n"
-"      --with-source=MÃ_NGUỒN\n"
-"                         dùng mã nguồn khi biên dịch gói tương ứng"
-
-#: guix/scripts/import/crate.scm:55
+#: guix/scripts/import/crate.scm:52
 msgid ""
 "\n"
 "      --allow-yanked     allow importing yanked crates if no alternative\n"
 "                         satisfying the version requirement is found"
 msgstr ""
 
-#: guix/scripts/import/crate.scm:58
+#: guix/scripts/import/crate.scm:56
 msgid ""
 "\n"
-"      --mark-missing     comment out the desired dependency if no\n"
-"                         sufficient package exists for it"
+"  -f, --lockfile=FILE    import dependencies from FILE, a 'Cargo.lock' file"
 msgstr ""
 
-#: guix/import/crate.scm:384
-#, fuzzy, scheme-format
-#| msgid "~a: note: using ~a but ~a is available upstream~%"
-msgid "~A: version ~a is no longer yanked~%"
-msgstr "~a: ghi chú: dùng ~a nhưng ~a thì sẵn có trên thượng nguồn~%"
-
-#: guix/import/crate.scm:392
-#, scheme-format
-msgid "~A: using existing version ~a, which was yanked~%"
-msgstr ""
-
-#: guix/import/crate.scm:397
-#, fuzzy, scheme-format
-#| msgid "~A: package not found for version ~a~%"
-msgid "~A: no version found for requirement ~a~%"
-msgstr "~A: không tìm thấy phiên bản ~a của gói~%"
-
-#: guix/import/crate.scm:399
-#, scheme-format
-msgid "~A: imported version ~a was yanked~%"
-msgstr ""
-
-#: guix/import/crate.scm:409
+#: guix/import/crate.scm:251
 #, fuzzy, scheme-format
 #| msgid "guix: ~a: command not found~%"
 msgid "~A: version ~a not found~%"
 msgstr "guix: ~a: không tìm thấy lệnh~%"
 
-#: guix/import/crate.scm:528
+#: guix/import/crate.scm:435
 msgid "Updater for crates.io packages"
 msgstr ""
 
@@ -11252,104 +11243,6 @@ msgstr "chữ ký không hợp lệ cho “~a'~%"
 msgid "failed to access '~a': ~a~%"
 msgstr "gặp lỗi khi kết nối đến “~a”: ~a~%"
 
-#: guix/scripts/import/minetest.scm:44
-msgid ""
-"Usage: guix import minetest AUTHOR/NAME\n"
-"Import and convert the Minetest mod NAME by AUTHOR from ContentDB.\n"
-msgstr ""
-
-#: guix/scripts/import/minetest.scm:52
-msgid ""
-"\n"
-"      --sort=KEY         when choosing between multiple implementations,\n"
-"                         choose the one with the highest value for KEY\n"
-"                         (one of \"score\" (standard) or \"downloads\")"
-msgstr ""
-
-#: guix/scripts/import/minetest.scm:62
-#, fuzzy, scheme-format
-msgid "~a: not a valid key to sort by~%"
-msgstr "~a: số không hợp lệ~%"
-
-#: guix/import/minetest.scm:174
-#, scheme-format
-msgid "In ~a: author names must consist of at least a single character.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:178
-#, scheme-format
-msgid "In ~a: mod names must consist of at least a single character.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:183
-#, scheme-format
-msgid "In ~a: author names and mod names may not contain forward slashes.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:187
-#, scheme-format
-msgid "mod names may not be empty.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:188
-#, scheme-format
-msgid "The name of the author is missing in ~a.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:209
-#, scheme-format
-msgid "~a is ambiguous, presuming ~a (other options include: ~a)~%"
-msgstr ""
-
-#: guix/import/minetest.scm:214
-#, scheme-format
-msgid "No mods with name ~a were found.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:276
-#, scheme-format
-msgid "The package search API doesn't exist anymore.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:419
-#, scheme-format
-msgid "The dependency ~a of ~a has multiple different implementations ~a.~%"
-msgstr ""
-
-#: guix/import/minetest.scm:426
-#, scheme-format
-msgid "The implementation with the highest score will be chosen!~%"
-msgstr ""
-
-#: guix/import/minetest.scm:429
-#, scheme-format
-msgid "The implementation that has been downloaded the most will be chosen!~%"
-msgstr ""
-
-#: guix/import/minetest.scm:433
-#, scheme-format
-msgid "The dependency ~a of ~a does not have any implementation.  It will be ignored!~%"
-msgstr ""
-
-#: guix/import/minetest.scm:448
-#, scheme-format
-msgid "no package metadata for ~a on ContentDB~%"
-msgstr ""
-
-#: guix/import/minetest.scm:451
-#, scheme-format
-msgid "no dependency information for ~a on ContentDB~%"
-msgstr ""
-
-#: guix/import/minetest.scm:454
-#, scheme-format
-msgid "no release of ~a on ContentDB~%"
-msgstr ""
-
-#: guix/import/minetest.scm:517
-msgid "Updater for Minetest packages on ContentDB"
-msgstr ""
-
 #: guix/scripts/import/npm-binary.scm:44
 msgid ""
 "Usage: guix import npm-binary PACKAGE-NAME [VERSION]\n"
@@ -11398,41 +11291,41 @@ msgid ""
 "Import and convert the PyPI package for PACKAGE-NAME.\n"
 msgstr ""
 
-#: guix/import/pypi.scm:256
+#: guix/import/pypi.scm:262
 msgid "Could not extract requirement name in spec:"
 msgstr ""
 
-#: guix/import/pypi.scm:312
+#: guix/import/pypi.scm:338
 #, scheme-format
 msgid "parse-requires.txt reached an unexpected condition on line ~a~%"
 msgstr ""
 
-#: guix/import/pypi.scm:378
+#: guix/import/pypi.scm:404
 #, fuzzy, scheme-format
 msgid "Failed to extract file: ~a from wheel.~%"
 msgstr "gặp lỗi khi đăng ký “~a” dưới ~a~%"
 
-#: guix/import/pypi.scm:397
+#: guix/import/pypi.scm:423
 #, scheme-format
 msgid "Cannot guess requirements from pyproject.toml file, because it does not exist.~%"
 msgstr ""
 
-#: guix/import/pypi.scm:421
+#: guix/import/pypi.scm:447
 #, scheme-format
 msgid "Cannot guess requirements from source archive: no requires.txt file found.~%"
 msgstr ""
 
-#: guix/import/pypi.scm:439
+#: guix/import/pypi.scm:465
 #, scheme-format
 msgid "Unsupported archive format; cannot determine package dependencies from source archive: ~a~%"
 msgstr ""
 
-#: guix/import/pypi.scm:520
+#: guix/import/pypi.scm:546
 #, scheme-format
 msgid "project name ~a does not appear verbatim in the PyPI URI~%"
 msgstr ""
 
-#: guix/import/pypi.scm:523
+#: guix/import/pypi.scm:549
 #, scheme-format
 msgid ""
 "The PyPI URI is: @url{~a}.  You should review the\n"
@@ -11440,12 +11333,12 @@ msgid ""
 "a substring of the PyPI URI that identifies the package."
 msgstr ""
 
-#: guix/import/pypi.scm:630
+#: guix/import/pypi.scm:656
 #, scheme-format
 msgid "no source release for pypi package ~a ~a~%"
 msgstr ""
 
-#: guix/import/pypi.scm:638
+#: guix/import/pypi.scm:664
 #, scheme-format
 msgid ""
 "This indicates that the\n"
@@ -11454,7 +11347,7 @@ msgid ""
 "@uref{~a}."
 msgstr ""
 
-#: guix/import/pypi.scm:685
+#: guix/import/pypi.scm:711
 msgid "Updater for PyPI packages"
 msgstr ""
 
@@ -12147,6 +12040,34 @@ msgstr ""
 msgid "socket-activated with %1% socket"
 msgid_plural "socket-activated with %1% sockets"
 msgstr[0] ""
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "      --recursive-dev-dependencies\n"
+#~ "                         include dev-dependencies recursively"
+#~ msgstr ""
+#~ "\n"
+#~ "      --with-source=MÃ_NGUỒN\n"
+#~ "                         dùng mã nguồn khi biên dịch gói tương ứng"
+
+#, fuzzy, scheme-format
+#~| msgid "~a: note: using ~a but ~a is available upstream~%"
+#~ msgid "~A: version ~a is no longer yanked~%"
+#~ msgstr "~a: ghi chú: dùng ~a nhưng ~a thì sẵn có trên thượng nguồn~%"
+
+#, fuzzy, scheme-format
+#~| msgid "~A: package not found for version ~a~%"
+#~ msgid "~A: no version found for requirement ~a~%"
+#~ msgstr "~A: không tìm thấy phiên bản ~a của gói~%"
+
+#, fuzzy
+#~ msgid "freeing ~,2h MiBs~%"
+#~ msgstr "đang xóa ~a~%"
+
+#, fuzzy, scheme-format
+#~ msgid "~a: not a valid key to sort by~%"
+#~ msgstr "~a: số không hợp lệ~%"
 
 #, fuzzy, scheme-format
 #~ msgid "Interface with name '~a' not found~%"

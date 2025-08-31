@@ -70,7 +70,7 @@
 
 (define %cookbook-languages
   ;; Available translations for the 'guix-cookbook' text domain.
-  '("de" "en" "es" "fr" "it" "ko" "pt_BR" "ru" "sk" "sv"))
+  '("de" "en" "es" "fr" "it" "ko" "pt_BR" "ru" "sk" "sv" "zh_CN"))
 
 (define %languages
   ;; Available translations for the document being built.
