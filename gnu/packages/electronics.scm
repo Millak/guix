@@ -31,6 +31,7 @@
 (define-module (gnu packages electronics)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
@@ -144,6 +145,50 @@ are implemented as a core Linux kernel module providing common functionality and
 individual low-level driver modules.")
     (home-page "https://www.comedi.org/")
     (license license:lgpl2.1)))
+
+(define-public json-for-vhdl
+  ;; No tagged releases.
+  (let ((commit "0dc9e317440263cd4941f157f5e5668baa858ec2")
+        (revision "0"))
+    (package
+      (name "json-for-vhdl")
+      (version (git-version "20220905" revision commit)) ;last revision
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Paebbels/JSON-for-VHDL/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1062g2c3dpsb67zhqrn1j04p7jl28g4mcxd6nhrqqfffjsvxkpw9"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("src" "share/json-for-vhdl"
+             #:include ("vhdl")))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The examples/Encodings_VUnit test requires vhdl builtins.
+            (add-after 'unpack 'fix-check
+              (lambda _
+                (substitute* "tests/VUnit/run.py"
+                  (("from_argv\\(\\)")
+                   "from_argv()\nvu.add_vhdl_builtins()"))))
+            (add-after 'install 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "python3" "tests/VUnit/run.py" "-v")))))))
+      (native-inputs
+       (list nvc python-minimal python-vunit))
+      (home-page "https://github.com/Paebbels/JSON-for-VHDL/")
+      (synopsis "Parse and query JSON data structures in VHDL")
+      (description
+       "The JSON-for-VHDL library provides a parser to query JSON data
+structures from external files on disk.  It provides a context to be
+used in the declarative section of design units.")
+      (license license:asl2.0))))
 
 (define librnd
   (package
