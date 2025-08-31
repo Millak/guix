@@ -5321,6 +5321,83 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
+(define-public python-torchaudio
+  (package
+    (name "python-torchaudio")
+    (version %python-pytorch-version)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytorch/audio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0snrn6bhc7hcfzs5y4h61dl4dmwxymkf46dygjq6c09nc1jvmxj8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Those packages require additional inputs.
+         "--ignore=\
+test/torchaudio_unittest/prototype/hifi_gan/hifi_gan_cpu_test.py"
+         "--ignore=\
+test/torchaudio_unittest/prototype/hifi_gan/hifi_gan_gpu_test.py"
+         "--ignore=test/torchaudio_unittest/kaldi_io_test.py"
+         "--ignore=test/torchaudio_unittest/test_load_save_torchcodec.py"
+         "--ignore-glob=test/torchaudio_unittest/backend/dispatcher/ffmpeg"
+         ;; XXX: We don't really want to run those tests.
+         "--ignore-glob=test/torchaudio_unittest/example"
+         ;; XXX: Integration tests require additional data / models.
+         "--ignore-glob=test/integration_tests"
+         ;; XXX: Those tests are very costly.
+         "--ignore-glob=test/torchaudio_unittest/functional"
+         "--ignore-glob=test/torchaudio_unittest/models"
+         "--ignore=test/torchaudio_unittest/models/models_test.py"
+         "--ignore=test/torchaudio_unittest/transforms/autograd_cpu_test.py"
+         "-k" (string-append "not test_torchscript_fails"  ; requires BUILD_SOX=1
+                             ;; XXX: Unmatching harmless warning message.
+                             " and not test_unknown_subtype_warning"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (setenv "BUILD_SOX" "0")
+              (setenv "USE_FFMPEG" "0")
+              (substitute* "tools/setup_helpers/extension.py"
+                (("^( *)\"-DCMAKE_VERBOSE_MAKEFILE=ON\"," all blank)
+                 (string-append
+                  blank "f\"-DCMAKE_INSTALL_RPATH="
+                  (site-packages inputs
+                                 `(("out" .
+                                    ,(assoc-ref inputs "python-pytorch"))))
+                  "/torch/lib;"
+                  (site-packages inputs outputs) "/torchaudio/lib\",\n"
+                  blank "\"-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON\",\n"
+                  all))))))))
+    (native-inputs
+     (list cmake
+           ninja
+           oneapi-dnnl
+           python-expecttest
+           python-parameterized
+           python-pytest
+           python-scipy
+           python-setuptools
+           python-wheel
+           sox))
+    (inputs (package-inputs python-pytorch))
+    (propagated-inputs (list python-soundfile python-pytorch))
+    (home-page "https://pytorch.org/audio")
+    (synopsis
+     "Data manipulation and transformation for audio signal processing")
+    (description
+     "This package provides a machine learning library of popular datasets,
+model architectures, and common transformations to apply @code{python-pytorch}
+in the audio domain.")
+    (license license:bsd-2)))
+
 ;; This package variant includes the dependencies requiring at least AVX2 or
 ;; AVX-512.
 (define-public python-pytorch-avx
