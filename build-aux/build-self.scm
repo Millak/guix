@@ -135,55 +135,6 @@
                        #+(and xz (file-append xz "/bin/xz")))))))
 
 
-;;;
-;;; 'gexp->script'.
-;;;
-;;; This is our own variant of 'gexp->script' with an extra #:module-path
-;;; parameter, which was unavailable in (guix gexp) until commit
-;;; 1ae16033f34cebe802023922436883867010850f (March 2018.)
-;;;
-
-(define (load-path-expression modules path)
-  "Return as a monadic value a gexp that sets '%load-path' and
-'%load-compiled-path' to point to MODULES, a list of module names.  MODULES
-are searched for in PATH."
-  (mlet %store-monad ((modules  (imported-modules modules
-                                                  #:module-path path))
-                      (compiled (compiled-modules modules
-                                                  #:module-path path)))
-    (return (gexp (eval-when (expand load eval)
-                    (set! %load-path
-                      (cons (ungexp modules) %load-path))
-                    (set! %load-compiled-path
-                      (cons (ungexp compiled)
-                            %load-compiled-path)))))))
-
-(define* (gexp->script name exp
-                       #:key (guile (default-guile))
-                       (module-path %load-path))
-  "Return an executable script NAME that runs EXP using GUILE, with EXP's
-imported modules in its search path."
-  (mlet %store-monad ((set-load-path
-                       (load-path-expression (gexp-modules exp)
-                                             module-path)))
-    (gexp->derivation name
-                      (gexp
-                       (call-with-output-file (ungexp output)
-                         (lambda (port)
-                           ;; Note: that makes a long shebang.  When the store
-                           ;; is /gnu/store, that fits within the 128-byte
-                           ;; limit imposed by Linux, but that may go beyond
-                           ;; when running tests.
-                           (format port
-                                   "#!~a/bin/guile --no-auto-compile~%!#~%"
-                                   (ungexp guile))
-
-                           (write '(ungexp set-load-path) port)
-                           (write '(ungexp exp) port)
-                           (chmod port #o555))))
-                      #:module-path module-path)))
-
-
 (define (date-version-string)
   "Return the current date and hour in UTC timezone, for use as a poor
 person's version identifier."
