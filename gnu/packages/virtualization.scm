@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
@@ -196,19 +196,18 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "9.1.3")
+    (version "10.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "12dc3fpv6c6qvw89amjjbb6dgc2f1c1alfgn2nab7a8kxnh7f2j8"))
+        (base32 "0ldyh3qia7zwv0xq6f67cp567i6ma1hb11gsqaz3x9qcnm4p6lg0"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-bios-tables-test.patch"
-                                "qemu-disable-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"
-                                "qemu-glibc-2.41.patch"))
+                                "qemu-fix-test-virtio-version.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
