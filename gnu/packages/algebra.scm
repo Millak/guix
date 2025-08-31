@@ -781,6 +781,34 @@ that can use fixed or floating data types and can easily be incorporated into
 a C program.")
     (license license:bsd-3)))
 
+(define-public kissfft
+  (package
+    (name "kissfft")
+    (version "131.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mborgerding/kissfft")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 "1yfws5bn4kh62yk6hdyp9h9775l6iz7wsfisbn58jap6b56s8j5s")))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list googletest
+           pkg-config
+           python-numpy-2
+           python-wrapper))
+    (inputs
+     (list fftw
+           libpng))
+    (home-page "https://github.com/mborgerding/kissfft")
+    (synopsis "Simple @acronym{FFT, Fast Fourier Transform} library")
+    (description
+     "Kiss FFT is a mixed-radix Fast Fourier Transform based up on the
+principle, 'Keep It Simple, Stupid.'")
+    (license license:bsd-3)))
+
 (define-public fftw
   (package
     (name "fftw")
