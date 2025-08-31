@@ -3015,7 +3015,7 @@ environment variable is set and output is to tty.")
 (define-public lr
   (package
     (name "lr")
-    (version "1.6")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -3024,14 +3024,14 @@ environment variable is set and output is to tty.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qixmvxikyz02348xc0a718m9b1pzcazvf36rjbdk6ayn66g9hsd"))))
+        (base32 "05k971vf6080igfila8iav5d4j7sgh301123yng9lvsmr8frf8mf"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; There are no tests.
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" %output))
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list #:tests? #f ; There are no tests.
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" %output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
     (synopsis "Tool to generate customized file listings")
     (description
      "lr is a tool for generating file listings, which includes the best
