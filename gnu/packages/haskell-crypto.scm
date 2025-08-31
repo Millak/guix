@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 rsiddharth <s@ricketyspace.net>
 ;;; Copyright © 2017, 2019, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,7 @@
   #:use-module (gnu packages tls)
   #:use-module (guix build-system haskell)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
@@ -899,18 +901,20 @@ regular) Diffie Hellman key exchanges, and many extensions.")
 (define-public ghc-hsopenssl
   (package
     (name "ghc-hsopenssl")
-    (version "0.11.7.5")
+    (version "0.11.7.9")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "HsOpenSSL" version))
        (sha256
-        (base32 "0y0l5nb0jsc8lm12w66a2n7nwcrgjxy1q2xdy8a788695az5xy71"))))
+        (base32 "0z3nyqlcgqw4ncn90gs6bznyj3lrqpjv83nzs4854knm15x6cbsa"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "HsOpenSSL")))
-    (inputs (list ghc-network openssl))
     (arguments
-     `(#:extra-directories ("openssl")))
+     (list #:extra-directories (list "openssl")
+           #:configure-flags
+           #~(list "--ghc-options=-optc=-Wno-incompatible-pointer-types")))
+    (inputs (list ghc-network openssl))
     (home-page "https://github.com/haskell-cryptography/HsOpenSSL")
     (synopsis "Partial OpenSSL binding for Haskell")
     (description
