@@ -2958,7 +2958,7 @@ implementation of an MQTT version client class.")
            libxcb
            libxscrnsaver
            zlib))
-    (home-page "https://psi-plus.com/")
+    (home-page "https://psi-im.com/")
     (synopsis "Qt-based XMPP Client")
     (description
      "Psi+ is a spin-off of Psi XMPP client.  It is a powerful XMPP client
