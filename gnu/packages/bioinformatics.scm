@@ -8439,45 +8439,6 @@ variety of diversity measures including those that make use of phylogenetic
 similarity of community members.")
    (license license:gpl3+)))
 
-(define-public fast5
-  (package
-    (name "fast5")
-    (version "0.6.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mateidavid/fast5")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dsq3x1662ck1bcmcmqhblnhmypfppgysblgj2xr4lr6fl4si4pk"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;There are no tests.
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-system-hdf5
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (setenv "HDF5_INCLUDE_DIR"
-                      (string-append #$(this-package-input "hdf5") "/include"))
-              (setenv "HDF5_LIB_DIR"
-                      (string-append #$(this-package-input "hdf5") "/lib"))))
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "python"))))))
-    (inputs (list hdf5-1.10))
-    (propagated-inputs
-     (list python-dateutil))
-    (native-inputs
-     (list python-cython python-setuptools python-wheel))
-    (home-page "https://github.com/mateidavid/fast5")
-    (synopsis "Library for accessing Oxford Nanopore sequencing data")
-    (description "This package provides a lightweight C++ library for accessing
-Oxford Nanopore Technologies sequencing data.")
-    (license license:expat)))
-
 (define-public fasttree
   (package
    (name "fasttree")
