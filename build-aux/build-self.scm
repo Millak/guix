@@ -22,6 +22,7 @@
   #:use-module (guix ui)
   #:use-module (guix config)
   #:use-module (guix modules)
+  #:use-module ((guix self) #:select (make-config.scm))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-34)
@@ -45,96 +46,6 @@
 ;;;
 ;;; Code:
 
-
-;;;
-;;; Generating (guix config).
-;;;
-;;; This is copied from (guix self) because we cannot assume (guix self) is
-;;; available at this point.
-;;;
-
-(define %persona-variables
-  ;; (guix config) variables that define Guix's persona.
-  '(%guix-package-name
-    %guix-version
-    %guix-bug-report-address
-    %guix-home-page-url))
-
-(define %config-variables
-  ;; (guix config) variables corresponding to Guix configuration.
-  (letrec-syntax ((variables (syntax-rules ()
-                               ((_)
-                                '())
-                               ((_ variable rest ...)
-                                (cons `(variable . ,variable)
-                                      (variables rest ...))))))
-    (variables %localstatedir %storedir %sysconfdir %system)))
-
-(define* (make-config.scm #:key gzip xz bzip2
-                          (package-name "GNU Guix")
-                          (package-version "0")
-                          (bug-report-address "bug-guix@gnu.org")
-                          (home-page-url "https://guix.gnu.org"))
-
-  ;; Hack so that Geiser is not confused.
-  (define defmod 'define-module)
-
-  (scheme-file "config.scm"
-               #~(begin
-                   (#$defmod (guix config)
-                     #:export (%guix-package-name
-                               %guix-version
-                               %guix-bug-report-address
-                               %guix-home-page-url
-                               %store-directory
-                               %state-directory
-                               %store-database-directory
-                               %config-directory
-                               %libz
-                               %gzip
-                               %bzip2
-                               %xz))
-
-                   ;; XXX: Work around <http://bugs.gnu.org/15602>.
-                   (eval-when (expand load eval)
-                     #$@(map (match-lambda
-                               ((name . value)
-                                #~(define-public #$name #$value)))
-                             %config-variables)
-
-                     (define %store-directory
-                       (or (and=> (getenv "NIX_STORE_DIR") canonicalize-path)
-                           %storedir))
-
-                     (define %state-directory
-                       ;; This must match `NIX_STATE_DIR' as defined in
-                       ;; `nix/local.mk'.
-                       (or (getenv "GUIX_STATE_DIRECTORY")
-                           (string-append %localstatedir "/guix")))
-
-                     (define %store-database-directory
-                       (or (getenv "GUIX_DATABASE_DIRECTORY")
-                           (string-append %state-directory "/db")))
-
-                     (define %config-directory
-                       ;; This must match `GUIX_CONFIGURATION_DIRECTORY' as
-                       ;; defined in `nix/local.mk'.
-                       (or (getenv "GUIX_CONFIGURATION_DIRECTORY")
-                           (string-append %sysconfdir "/guix")))
-
-                     (define %guix-package-name #$package-name)
-                     (define %guix-version #$package-version)
-                     (define %guix-bug-report-address #$bug-report-address)
-                     (define %guix-home-page-url #$home-page-url)
-
-                     (define %gzip
-                       #+(and gzip (file-append gzip "/bin/gzip")))
-                     (define %bzip2
-                       #+(and bzip2 (file-append bzip2 "/bin/bzip2")))
-                     (define %xz
-                       #+(and xz (file-append xz "/bin/xz")))))))
-
-
 (define (date-version-string)
   "Return the current date and hour in UTC timezone, for use as a poor
 person's version identifier."
