@@ -575,5 +575,4 @@ gnu/packages/fluidplug.scm
 gnu/packages/oyacc.scm
 gnu/packages/wxwidgets.scm
 gnu/packages/xfig.scm
-gnu/packages/xnee.scm
 gnu/packages/xorg.scm

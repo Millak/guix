@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016 Alex Kost <alezost@gmail.com>
@@ -174,6 +174,39 @@
   #:use-module (ice-9 match))
 
 ;; packages outside the x.org system proper
+
+(define-public xnee
+  (package
+    (name "xnee")
+    (version "3.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/xnee/xnee-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "04n2lac0vgpv8zsn7nmb50hf3qb56pmj90dmwnivg09gyrf1x92j"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("CFLAGS=-O2 -g -fcommon")
+       #:make-flags '("LIBSEMA=-lpthread")))
+    (inputs
+     (list gtk+-2
+           libx11
+           libxext
+           libxi
+           libxtst
+           xorgproto))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://www.gnu.org/software/xnee/")
+    (synopsis "Record, replay and distribute user actions under X11")
+    (description
+     "GNU Xnee is a program that can record, replay and distribute user
+actions in X11.  It can be used to automate user interactions for testing or
+demonstration purposes.")
+    (license license:gpl3+)))
 
 (define-public xtitle
   (package
