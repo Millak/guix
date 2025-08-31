@@ -3381,24 +3381,20 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
 (define-public usbutils
   (package
     (name "usbutils")
-    (version "017")
+    (version "018")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://kernel.org/linux/utils/usb/usbutils/"
-                          "usbutils-" version ".tar.xz"))
-      (sha256
-       (base32 "0nz008kshcajc9asxr4j5dh4wgq72z52lws4ga6y60wirzymz8m6"))))
-    (build-system gnu-build-system)
+       (method url-fetch)
+       (uri (string-append "mirror://kernel.org/linux/utils/usb/usbutils/"
+                           "usbutils-" version ".tar.xz"))
+       (sha256
+        (base32 "14xd7j9fl3pm0z4dhqj3mf9paqk431kq4vi602f5hiw5nmcqpxl3"))))
+    (build-system meson-build-system)
     (outputs (list "out" "python"))
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'bootstrap 'patch-bootstrap-scripts
-            (lambda _
-              (substitute* "usbhid-dump/bootstrap"
-                (("/bin/sh") (which "sh")))))
           (add-after 'install 'separate-python-output
             ;; Separating one Python script shaves more than 106 MiB from :out.
             (lambda _
@@ -3407,17 +3403,21 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
                                 (new (string-append #$output:python "/" file)))
                             (mkdir-p (dirname new))
                             (rename-file old new)))
-                        (list "bin/lsusb.py")))))))
-    (inputs
-     (list eudev libusb python))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
+                        (list "bin/lsusb.py"))))
+          (add-after 'install 'install-usbreset
+            (lambda _
+              (install-file "usbreset"
+                            (string-append #$output "/bin")))))))
+    (native-inputs (list pkg-config))
+    (inputs (list eudev libusb python))
     (home-page "http://www.linux-usb.org/")
     (synopsis
      "Tools for working with USB devices")
     (description
-     "Collection of tools to query what type of USB devices are connected to the
-system, including @command{lsusb}.")
+     "Collection of tools to query what type of USB devices are connected to
+the system, including @command{lsusb}.  The experimental @command{usbreset}
+command included in the package, but be aware that it may not work for all
+devices.")
     (license license:gpl2+)))
 
 (define-public usbip-utils
