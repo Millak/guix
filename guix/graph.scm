@@ -26,6 +26,7 @@
   #:autoload   (guix i18n) (G_)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-19) ;; date->string
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
@@ -258,6 +259,75 @@ NODE1 to NODE2 of the given TYPE.  Return #f when there is no path."
 
 
 ;;;
+;;; SBOM CycloneDX JSON export.
+;;;
+;;; Schema: https://cyclonedx.org/docs/1.6/json/#metadata_tools_oneOf_i0_components_items_version
+;;;
+
+
+(define (emit-cyclonedx-prologue name port)
+  (format port "{
+  \"bomFormat\": \"CycloneDX\",
+  \"specVersion\": \"1.6\",
+  \"metadata\": {
+    \"timestamp\": \"~a\",
+    \"tools\": {
+      \"components\": [
+        {
+          \"type\": \"operating-system\",
+          \"name\": \"guix\"
+        },
+        {
+          \"type\": \"application\",
+          \"name\": \"guix-graph\"
+        }
+      ]
+    }
+  },
+  \"components\": [
+"
+          (date->string (current-date 0) "~5Z"))) ;; UTC time, iso date-time
+
+(define (emit-cyclonedx-epilogue port)
+  ;; the safety of each tool built on Guix depends on Guix
+  (display "\n    {
+      \"type\": \"operating-system\",
+      \"name\": \"guix\"
+    }
+  ]\n}\n" port))
+
+(define (emit-cyclonedx-node id label port)
+  (match (if (string-contains label "@")
+             (string-split label #\@)
+             (list label "N/A"))
+    ((name version)
+     (format port "\n    {
+      \"type\": \"application\",
+      \"name\": \"~a\",
+      \"version\": \"~a\"
+    },"
+             name version))
+    (else ;; more than one @
+     (format port "\n    {
+      \"type\": \"application\",
+      \"name\": \"~a\",
+    },"
+             label))))
+
+(define (emit-cyclonedx-edge id1 id2 port)
+  ;; Left empty: does not include edges at the moment.  Adding them as
+  ;; dependencies would require <graph-backend> to include a separator between
+  ;; nodes and edges.
+  "")
+
+(define %cyclonedx-backend
+  (graph-backend "cyclonedx-json"
+                 "Generate an SBOM in CycloneDX JSON format for use with dependencytrack."
+                 emit-cyclonedx-prologue emit-cyclonedx-epilogue
+                 emit-cyclonedx-node emit-cyclonedx-edge))
+
+
+;;;
 ;;; d3js export.
 ;;;
 
@@ -375,7 +445,8 @@ nodeArray.push(nodes[\"~a\"]);~%"
   (list %graphviz-backend
         %d3js-backend
         %cypher-backend
-        %graphml-backend))
+        %graphml-backend
+        %cyclonedx-backend))
 
 (define (lookup-backend name)
   "Return the graph backend called NAME.  Raise an error if it is not found."
