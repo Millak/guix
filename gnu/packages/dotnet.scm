@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 unmush <unmush@hashbang.sh>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
