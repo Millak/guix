@@ -3430,6 +3430,22 @@ learning models.  This package provides the \"lite\" variant for mobile
 devices.")
     (license license:asl2.0)))
 
+(define-public python-tflite-runtime
+  (package
+    (inherit tensorflow-lite)
+    (name "python-tflite-runtime")
+    (source #f)
+    (build-system trivial-build-system)
+    (outputs (list "out"))
+    (arguments
+     (list
+      #:builder
+      #~(begin
+          (mkdir #$output)
+          (symlink (string-append #$tensorflow-lite:python "/lib")
+                   (string-append #$output "/lib")))))
+    (native-inputs '())))
+
 (define-public dmlc-core
   (package
     (name "dmlc-core")
