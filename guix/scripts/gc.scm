@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2013, 2015-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2013, 2015-2020, 2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
@@ -297,7 +297,6 @@ is deprecated; use '-D'~%"))
 
   (with-error-handling
     (let* ((opts  (parse-options))
-           (store (open-connection))
            (paths (filter-map (match-lambda
                                (('argument . arg) arg)
                                (_ #f))
@@ -307,39 +306,44 @@ is deprecated; use '-D'~%"))
           (leave (G_ "extraneous arguments: ~{~a ~}~%") paths)))
 
       (define (list-relatives relatives)
-        (for-each (compose (lambda (path)
-                             (for-each (cut simple-format #t "~a~%" <>)
-                                       (relatives store path)))
-                           store-directory
-                           symlink-target)
-                  paths))
+        (with-store store
+          (for-each (compose (lambda (path)
+                               (for-each (cut simple-format #t "~a~%" <>)
+                                         (relatives store path)))
+                             store-directory
+                             symlink-target)
+                    paths)))
 
       (case (assoc-ref opts 'action)
         ((collect-garbage)
          (assert-no-extra-arguments)
          (let ((min-freed  (assoc-ref opts 'min-freed))
                (free-space (assoc-ref opts 'free-space)))
-           (match (assq 'delete-generations opts)
-             (#f #t)
-             ((_ . pattern)
-              (delete-generations store pattern)))
-           (cond
-            (free-space
-             (ensure-free-space store free-space))
-            (min-freed
-             (let-values (((paths freed) (collect-garbage store min-freed)))
-              (info (G_ "freed ~a~%") (number->size freed))))
-            (else
-             (let-values (((paths freed) (collect-garbage store)))
-              (info (G_ "freed ~a~%") (number->size freed)))))))
+           (with-store store
+             (match (assq 'delete-generations opts)
+               (#f #t)
+               ((_ . pattern)
+                (delete-generations store pattern)))
+             (cond
+              (free-space
+               (ensure-free-space store free-space))
+              (min-freed
+               (let-values (((paths freed) (collect-garbage store min-freed)))
+                 (info (G_ "freed ~a~%") (number->size freed))))
+              (else
+               (let-values (((paths freed) (collect-garbage store)))
+                 (info (G_ "freed ~a~%") (number->size freed))))))))
         ((list-roots)
          (assert-no-extra-arguments)
          (list-roots))
         ((list-busy)
+         ;; Note: This is invoked by 'guix-daemon' so it must not open a
+         ;; connection to the daemon.
          (assert-no-extra-arguments)
          (list-busy))
         ((delete)
-         (delete-paths store (map direct-store-path paths)))
+         (with-store store
+           (delete-paths store (map direct-store-path paths))))
         ((list-references)
          (list-relatives references))
         ((list-requisites)
@@ -351,22 +355,28 @@ is deprecated; use '-D'~%"))
          (list-relatives valid-derivers))
         ((optimize)
          (assert-no-extra-arguments)
-         (optimize-store store))
+         (with-store store
+           (optimize-store store)))
         ((verify)
          (assert-no-extra-arguments)
          (let ((options (assoc-ref opts 'verify-options)))
            (exit
-            (verify-store store
-                          #:check-contents? (memq 'contents options)
-                          #:repair? (memq 'repair options)))))
+            (with-store store
+              (verify-store store
+                            #:check-contents? (memq 'contents options)
+                            #:repair? (memq 'repair options))))))
         ((list-failures)
-         (for-each (cut simple-format #t "~a~%" <>)
-                   (query-failed-paths store)))
+         (with-store store
+           (for-each (cut simple-format #t "~a~%" <>)
+                     (query-failed-paths store))))
         ((clear-failures)
-         (clear-failed-paths store (map direct-store-path paths)))
+         (with-store store
+           (clear-failed-paths store (map direct-store-path paths))))
         ((list-dead)
          (for-each (cut simple-format #t "~a~%" <>)
-                   (dead-paths store)))
+                   (with-store store
+                     (dead-paths store))))
         ((list-live)
          (for-each (cut simple-format #t "~a~%" <>)
-                   (live-paths store)))))))
+                   (with-store store
+                     (live-paths store))))))))
