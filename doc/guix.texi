@@ -43479,7 +43479,7 @@ is a string representing the user to deploy the configuration under and
 the value is a home-environment configuration.
 
 @lisp
-(use-modules (gnu home))
+(use-modules (gnu services guix))
 
 (define my-home
   (home-environment
