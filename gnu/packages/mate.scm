@@ -627,6 +627,38 @@ Interactive Weather Information Network (IWIN).
 mate-volume-control, a MATE volume control application and applet.")
     (license (list license:gpl2+ license:lgpl2.0+ license:fdl1.1+))))
 
+(define-public mate-notification-daemon
+  (package
+    (name "mate-notification-daemon")
+    (version "1.28.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           "mate-notification-daemon-"
+                           version
+                           ".tar.xz"))
+       (sha256
+        (base32 "04zlmli3kv80h7fpf0xlxm0hkf238gj5hib4qb6bjxczzyqyq370"))))
+    (build-system glib-or-gtk-build-system)
+    (native-inputs (list pkg-config gettext-minimal libxml2))
+    (inputs (list gtk+
+                  dbus-glib
+                  libwnck
+                  libnotify
+                  libcanberra
+                  mate-desktop
+                  mate-panel
+                  hicolor-icon-theme))
+    (home-page "https://mate-desktop.org/")
+    (synopsis "Notification daemon for MATE")
+    (description
+     "This MATE Desktop component is meant to run on the background and
+deliver notifications to the user.")
+    (license license:gpl2+)))
+
 (define-public mate-panel
   (package
     (name "mate-panel")
