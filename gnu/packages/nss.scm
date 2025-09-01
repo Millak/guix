@@ -100,15 +100,10 @@ platform-neutral API for system level and libc-like functions.  It is used
 in the Mozilla clients.")
     (license license:mpl2.0)))
 
-;; nss should track ESRs, but currently doesn't.  3.102.1 is the current ESR.
-
 (define-public nss
   (package
     (name "nss")
-    ;; IMPORTANT: Also update and test the nss-certs package, which duplicates
-    ;; version and source to avoid a top-level variable reference & module
-    ;; cycle.
-    (version "3.101.4")
+    (version "3.101.4")                 ;update to latest ESR release
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
