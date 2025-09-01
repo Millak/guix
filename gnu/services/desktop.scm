@@ -2247,7 +2247,8 @@ rules."
   (let ((plasma-plasma (plasma-package config)))
     (map (lambda (name)
            ((package-direct-input-selector name) plasma-plasma))
-         '("plasma-desktop"
+         '("packagekit"          ;for discover
+           "plasma-desktop"
            "plasma-workspace"
            "kactivitymanagerd"
            "plasma-disks"
