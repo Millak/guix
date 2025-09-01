@@ -2507,32 +2507,6 @@ support, watch support (like @command{top}) and a tree view.")
         (base32 "0jdbxmn5h5nlr4bifx85gny309djv5djs9q78fa1d7sj0wdw2sys"))))
     (inputs (cargo-inputs 'rust-cbindgen-0.26))))
 
-(define-public rust-cbindgen-0.24
-  (package
-    (inherit rust-cbindgen-0.26)
-    (name "rust-cbindgen")
-    (version "0.24.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cbindgen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "13g1k2zljdp326b0cv1nhyh7jsacd364fh0cr2g828hiyfm2z4jb"))))))
-
-(define-public rust-cbindgen-0.23
-  (package
-    (inherit rust-cbindgen-0.24)
-    (name "rust-cbindgen")
-    (version "0.23.0")
-    (source (origin
-             (method url-fetch)
-             (uri (crate-uri "cbindgen" version))
-             (file-name (string-append name "-" version ".tar.gz"))
-             (sha256
-              (base32
-               "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
-
 (define-public rust-cbindgen rust-cbindgen-0.27)
 
 (define-public rust-bindgen-cli
