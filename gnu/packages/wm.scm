@@ -2657,7 +2657,7 @@ Wlroots based compositors.")
 (define-public waybar-cpu-histogram
   (package
     (name "waybar-cpu-histogram")
-    (version "0.4.2")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -2665,15 +2665,11 @@ Wlroots based compositors.")
              (url "https://git.sr.ht/~plattfot/waybar-cpu-histogram")
              (commit (string-append version))))
        (sha256
-        (base32
-         "001pyf1jdmf2478plnggd7dkfi688qwi89db2jwfp4zza3640na6"))
+        (base32 "1b8g2046hn3w84ymnhdlq6rc2928qy986zsv4ygwip4rj3g4jngl"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list jsoncpp
-           fmt))
+    (native-inputs (list pkg-config))
+    (inputs (list jsoncpp fmt))
     (synopsis "CPU histogram for waybar")
     (description
      "Custom module for waybar to show CPU usage as a histogram.  A compact way
