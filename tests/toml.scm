@@ -54,6 +54,12 @@ bare-key = \"value\"
 'key2' = \"value\"
 'quoted \"value\"' = \"value\""))
 
+(test-equal "parse-toml: Quoted keys with escapes"
+  '(("key \\ with \n escapes" . "value")
+    ("key" ("with \t escapes" ("and \n dots" . "value"))))
+  (parse-toml "\"key \\\\ with \\n escapes\" = \"value\"
+key.\"with \\t escapes\".\"and \\n dots\" = \"value\""))
+
 (test-equal "parse-toml: No key"
   #f
   (parse-toml "= \"no key name\""))

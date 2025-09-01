@@ -361,6 +361,21 @@ the list KEY. For instance a KEY (a b) would retrieve alist[a][b]."
                (string->number minute)) 60))
          (#f #f)))))
 
+  (define (eval-string value)
+    "Turn a list of string tokens into an actual, flat string value by
+evaluating escape codes."
+    (apply string-append
+           (map (match-lambda
+                 (('escaped "\"") "\"")
+                 (('escaped "\\") "\\")
+                 (('escaped "b") "\b")
+                 (('escaped "t") "\t")
+                 (('escaped "n") "\n")
+                 (('escaped (? (lambda (x) (>= (string-length x) 4)) u))
+                  (list->string (list (integer->char (string->number u 16)))))
+                 ((? string? s) s))
+                (keyword-flatten '(escaped) value))))
+
   (define (eval-value value)
     "Evaluate right-hand-side of 'keyval token (i.e., a value)."
     (match value
@@ -395,17 +410,7 @@ the list KEY. For instance a KEY (a b) would retrieve alist[a][b]."
       (('local-time rest ...)
        (eval-date rest))
       (('string str ...)
-       (apply string-append
-              (map (match-lambda
-                    (('escaped "\"") "\"")
-                    (('escaped "\\") "\\")
-                    (('escaped "b") "\b")
-                    (('escaped "t") "\t")
-                    (('escaped "n") "\n")
-                    (('escaped (? (lambda (x) (>= (string-length x) 4)) u))
-                     (list->string (list (integer->char (string->number u 16)))))
-                    ((? string? s) s))
-                   (keyword-flatten '(escaped) str))))
+       (eval-string str))
       ('string "")
       (('array tails ...)
        (map eval-value (keyword-flatten '(boolean integer float string array
@@ -427,7 +432,8 @@ the list KEY. For instance a KEY (a b) would retrieve alist[a][b]."
      (map
       (match-lambda
         (('simple-key 'quoted-key) "")
-        (('simple-key ('quoted-key k)) k)
+        ;; Quoted keys are just ordinary strings and can contain escape codes.
+        (('simple-key ('quoted-key rest ...)) (eval-string rest))
         (('simple-key (? string? k)) k)
         (other (raise-exception `(invalid-simple-key ,other))))
       (keyword-flatten '(simple-key) keys)))
