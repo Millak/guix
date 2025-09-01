@@ -97,6 +97,7 @@
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages shells)
@@ -2182,6 +2183,49 @@ the parsing.")
 associated input devices using the built-in accelerometer; handy for convertible
 touchscreen devices.")
     (license license:expat)))
+
+(define-public rusty
+  (let ((commit "ce6892169b4c4d8b924eaf4323db4564f722064c")
+        (revision "0"))
+    (package
+      (name "rusty")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/PLC-lang/rusty")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0m0g4xpwb43bh5vzlx9vp69rnhsry6bz8yn0xsvmsa9iwak4sgm5"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:cargo-install-paths
+        ''("compiler/plc_driver")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-cc
+              ;; Tests assume `cc' is avaliable in PATH, but Guix does not
+              ;; provide that with the `gcc' or `clang' packages.
+              (lambda _
+                (substitute* '("tests/integration/build_description_tests.rs"
+                               "compiler/plc_driver/src/cli.rs"
+                               "xtask/src/task.rs" "xtask/src/main.rs")
+                  (("([=\"])cc(\")" _ prefix suffix)
+                   (string-append prefix #$(cc-for-target) suffix))))))))
+      (inputs (cons* libffi lld-14 llvm-14
+                     (cargo-inputs 'rusty)))
+      (native-inputs (list lld-wrapper))
+      (home-page "https://plc-lang.github.io/rusty/")
+      (synopsis "IEC 61131-3 structured text compiler")
+      (description
+       "RuSTy is a IEC 61131-3 @acronym{ST, Structured Text} compiler written in
+Rust.  It compiles ST down to native machine code, targeting most
+@code{llvm}-supported targets.")
+      (license (list license:lgpl3 license:gpl3)))))
 
 (define-public rust-swc
   (package
