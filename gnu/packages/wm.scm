@@ -1941,6 +1941,10 @@ limited size and a few external dependencies.  It is configurable via
    (build-system cargo-build-system)
    (arguments
     (list #:install-source? #f
+          #:modules
+          '((ice-9 match)
+            (guix build utils)
+            (guix build cargo-build-system))
           #:phases
           #~(modify-phases %standard-phases
               (add-after 'unpack 'use-guix-vendored-dependencies
@@ -1977,9 +1981,31 @@ limited size and a few external dependencies.  It is configurable via
                    (in-vicinity #$output "share/wayland-sessions"))
                   (install-file
                    "resources/niri-portals.conf"
-                   (in-vicinity #$output "share/xdg-desktop-portal")))))))
+                   (in-vicinity #$output "share/xdg-desktop-portal"))))
+              (add-after 'install 'install-completions
+                (lambda* (#:key native-inputs #:allow-other-keys)
+                  (for-each
+                   (match-lambda
+                     ((shell . path)
+                      (mkdir-p (in-vicinity #$output (dirname path)))
+                      (let ((binary
+                             (if #$(%current-target-system)
+                                 (search-input-file native-inputs "bin/nir")
+                                 (in-vicinity #$output "bin/niri"))))
+                        (with-output-to-file (in-vicinity #$output path)
+                          (lambda _
+                            (invoke binary "completions" shell))))))
+                   '(("bash"    . "share/bash-completion/completions/niri")
+                     ("elvish"  . "share/elvish/lib/niri")
+                     ("fish"    . "share/fish/vendor_completions.d/niri.fish")
+                     ("nushell" . "share/nushell/vendor/autoload/niri")
+                     ("zsh"     . "share/zsh/site-functions/_niri"))))))))
    (native-inputs
-    (list pkg-config))
+    (append
+     (if (%current-target-system)
+         (list this-package)
+         '())
+     (list pkg-config)))
    (inputs
     (cons* clang
            dbus
