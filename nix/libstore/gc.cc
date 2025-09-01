@@ -318,7 +318,8 @@ static void findRoots(StoreAPI & store, const Path & path, unsigned char type, R
     catch (SysError & e) {
         /* We only ignore permanent failures. */
         if (e.errNo == EACCES || e.errNo == ENOENT || e.errNo == ENOTDIR)
-            printMsg(lvlInfo, format("cannot read potential root `%1%'") % path);
+            printMsg(lvlInfo, format("cannot read potential root '%1%': %2%")
+		     % path % strerror(e.errNo));
         else
             throw;
     }
