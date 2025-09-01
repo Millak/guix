@@ -1928,7 +1928,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public niri
   (package
    (name "niri")
-   (version "25.05.1")
+   (version "25.08")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -1937,7 +1937,7 @@ limited size and a few external dependencies.  It is configurable via
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0l0nj2zfmdyr058yc84579jxj6m4lilgcy63dna6bp6mv7xl569h"))))
+               "09nsxd211mly8r1ys2lq6ia4jxgb980h1axrbgw748r0knfbbj7n"))))
    (build-system cargo-build-system)
    (arguments
     (list #:install-source? #f
@@ -1962,6 +1962,7 @@ limited size and a few external dependencies.  It is configurable via
                   (setenv "NIRI_BUILD_VERSION_STRING"
                           #$(package-version this-package))
                   ;; For tests.
+                  (setenv "RAYON_NUM_THREADS" "1")
                   (setenv "XDG_RUNTIME_DIR" "/tmp")))
               (add-after 'install 'install-extras
                 (lambda* (#:key inputs #:allow-other-keys)

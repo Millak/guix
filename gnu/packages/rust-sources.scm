@@ -202,6 +202,25 @@ UTF-32 support.")
        (description "This package provides Rust bindings for PipeWire.")
        (license license:expat)))))
 
+(define-public rust-pipewire-0.8.0.93138d0
+  (let ((commit "93138d01b23628521b29b5604bbebe991cba4c65"))
+    (hidden-package
+     (package
+       (inherit rust-pipewire-0.8.0.fd3d8f7)
+       (name "rust-pipewire")
+       (version (git-version "0.8.0" "0" commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://gitlab.freedesktop.org/pipewire/pipewire-rs.git")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "0zgqklzmyk893n82zq8d0is57npvy9lsfpqb83h1bbx9c42fl35p"))))
+       (inputs (cargo-inputs 'rust-pipewire-0.8.0.93138d0))))))
+
 (define-public rust-pubgrub-0.3.0.b70cf70
   (let ((commit "b70cf707aa43f21b32f3a61b8a0889b15032d5c4")
         (revision "0"))
@@ -471,6 +490,25 @@ will need, in a generic fashion.
 It supports the @code{wayland}, @code{wayland-protocols}, and some external
 extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
        (license license:expat)))))
+
+(define-public rust-smithay-0.7.0.20d2dac
+  (let ((commit "20d2dacd71394b5f96f6ace0a70a6f20dc62c0c6"))
+    (hidden-package
+     (package
+       (inherit rust-smithay-0.6.0.ede2707)
+       (name "rust-smithay")
+       (version (git-version "0.7.0" "0" commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/Smithay/smithay")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "0h1q1jgyg76axr8h95nv8sg29l15iqnyfr5qfl5rk2wc7iw04avl"))))
+       (inputs (cargo-inputs 'rust-smithay-0.7.0.20d2dac))))))
 
 (define inspired-github-color-scheme-for-rust-syntect-5
   (let ((version "1.3.0"))
