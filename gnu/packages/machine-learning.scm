@@ -1840,43 +1840,46 @@ compatibility.")
     (package
       (name "gemmlowp")
       (version (git-version version revision commit))
-      (home-page "https://github.com/google/gemmlowp")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference (url home-page) (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "02xmrv921al94nihiqrvi8inlq6qc07j0zll3f9qi8322r31x83v"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/google/gemmlowp")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02xmrv921al94nihiqrvi8inlq6qc07j0zll3f9qi8322r31x83v"))))
       (arguments
-       `(#:configure-flags
-         (list ,@(match (%current-system)
-                   ((or "x86_64-linux" "i686-linux")
-                    '("-DCMAKE_CXX_FLAGS=-msse2"))
-                   (_ '()))
-               "-DBUILD_SHARED_LIBS=ON")
-         #:phases
-         (modify-phases %standard-phases
-           ;; This directory contains the CMakeLists.txt.
-           (add-after 'unpack 'chdir
-             (lambda _ (chdir "contrib") #t))
-           ;; There is no install target
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (lib (string-append out "/lib/"))
-                      (inc (string-append out "/include/")))
-                 (install-file "../build/libeight_bit_int_gemm.so" lib)
-                 (for-each (lambda (dir)
-                             (let ((target
-                                    (string-append inc "/gemmlowp/" dir)))
-                               (for-each (lambda (h)
-                                           (install-file h target))
-                                         (find-files (string-append "../" dir)
-                                                     "\\.h$"))))
-                           '("meta" "profiling" "public" "fixedpoint"
-                             "eight_bit_int_gemm" "internal"))))))))
+       (list
+        #:configure-flags
+        #~(list #$@(match (%current-system)
+                     ((or "x86_64-linux" "i686-linux")
+                      '("-DCMAKE_CXX_FLAGS=-msse2"))
+                     (_ '()))
+                "-DBUILD_SHARED_LIBS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; This directory contains the CMakeLists.txt.
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "contrib")))
+            ;; There is no install target
+            (replace 'install
+              (lambda _
+                (let ((lib (string-append #$output "/lib/")))
+                  (install-file "../build/libeight_bit_int_gemm.so" lib)
+                  (for-each
+                   (lambda (dir)
+                     (let ((target (string-append #$output
+                                                  "/include/gemmlowp/" dir)))
+                       (for-each (lambda (h)
+                                   (install-file h target))
+                                 (find-files (string-append "../" dir)
+                                             "\\.h$"))))
+                   '("meta" "profiling" "public" "fixedpoint"
+                     "eight_bit_int_gemm" "internal"))))))))
       (build-system cmake-build-system)
+      (home-page "https://github.com/google/gemmlowp")
       (synopsis "Small self-contained low-precision GEMM library")
       (description
        "This is a small self-contained low-precision @dfn{general matrix
