@@ -1299,8 +1299,10 @@ WEBLATE_REPO = https://codeberg.org/guix/translations
 # Shallow clone the Git repository behind Weblate and copy files from it if
 # they contain at least one translation, and they are well-formed (Scheme
 # format only), warn otherwise.  Copied files are converted to a canonical
-# form.
-download-po:
+# form.  Note: The files will be minified to reduce file size, except the
+# guix domain, because they are comparatively small and it would need more
+# comprehensive PO file parsing abilities for plural forms.
+download-po: guix/build/po.go
 	dir=$$(mktemp -d); \
 	git clone --depth 1 "$(WEBLATE_REPO)" "$$dir/translations" && \
 	for domain in po/doc po/guix po/packages; do \
@@ -1313,8 +1315,15 @@ download-po:
 	        target="$$domain/$$target"; \
 	        msgfmt -c "$$po"; \
 	        if msgfmt -c "$$po" && [ "$$translated" != "0" ] && ([ "$$domain" != "po/doc" ] || [ "$$translated" -gt $$(($$total/10)) ] || [ -f $$target ]); then \
-	            msgconv --no-wrap -o "$$po".tmp "$$po"; \
-	            mv "$$po".tmp "$$target"; \
+	            if [ "$$domain" != "po/guix" ]; then \
+	              $(GUILE) -L "$(top_builddir)" -L "$(top_srcdir)" \
+	                --no-auto-compile \
+	                -s "$(top_srcdir)"/build-aux/keep-only-translated.scm \
+	                "$$po" > "$$po".tmp; \
+	            else ln -s "$$po" "$$po".tmp; fi; \
+	            msgconv --no-wrap -o "$$po".tmp2 "$$po".tmp; \
+	            rm "$$po".tmp; \
+	            mv "$$po".tmp2 "$$target"; \
 	            echo "copied $$target."; \
 	        else \
 	            echo "WARN: $$target ($$translated translated messages ($$((translated/total*100))%)) was not added/updated."; \
