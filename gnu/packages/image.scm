@@ -1380,7 +1380,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
 (define-public ggg
   (package
     (name "ggg")
-    (version "0.3.13")
+    (version "0.4.16")
     (source
      (origin
        (method git-fetch)
@@ -1389,7 +1389,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l0pbnp2jqi25s5hcqh2dhbdhcig4zyjx2cxwijbb5nn5shrp1wj"))))
+        (base32 "0igdnjw2i9b7qy66x05v70r1vsd043ydpvgic3hdra3dpx6f8ppf"))))
     (arguments
      `(#:source-directory "src"
        #:phases (modify-phases %standard-phases
@@ -1399,8 +1399,6 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                                                 "/bin"))
                             (share (string-append (assoc-ref outputs "out")
                                                   "/share")))
-                        (mkdir-p (string-append share "/scripts"))
-                        (mkdir-p (string-append share "/resources"))
                         (install-file "resources/help.txt"
                                       (string-append share
                                                      "/resources"))
@@ -1408,12 +1406,12 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                                           (string-append share
                                            "/resources/svg-paths"))
                         (install-file "scripts/ggg" bin)
-                        (install-file "scripts/log.sh"
+                        (install-file "scripts/log.bash"
                                       (string-append share "/scripts/"))
                         (chmod (string-append bin "/ggg") #o755)))))))
     (build-system guile-build-system)
     (native-inputs (list guile-3.0))
-    (inputs (list guile-3.0 bash-minimal))
+    (inputs (list guile-3.0 bash-minimal imagemagick))
     (synopsis
      "GGG is a SVG image generator for project and web badges")
     (description
