@@ -40,6 +40,34 @@
 (channel-news
  (version 0)
 
+ (entry (commit "1618ca7aa2ee8b6519ee9fd0b965e15eca2bfe45")
+        (title
+         (en "New @command{guix-daemon} privilege escalation vulnerability
+fixed"))
+        (body
+         (en "A new vulnerability was identified and fixed in the build
+daemon, @command{guix-daemon} (CVE ID assignment pending).  Everyone is
+strongly advised to upgrade @command{guix-daemon}.  Guix System users can do
+this with commands along these lines:
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+If you are using Guix on another distro, run @command{info \"(guix) Upgrading
+Guix\"} or visit
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Upgrading-Guix.html} to
+learn how to upgrade Guix.
+
+This vulnerability lies in the @code{builtin:download} derivation builder:
+anyone with access to the daemon can craft a @code{content-addressed-mirrors}
+Scheme procedure that the daemon will execute as a build user (or as the
+daemon user, when running @command{guix-daemon} unprivileged).  An attacker
+could use this to gain build user privileges and thereafter compromise builds
+performed on the system.  See @uref{https://codeberg.org/guix/guix/pulls/2419}
+for more information.")))
+
  (entry (commit "3e45fc0f37d027516ac3d112ca7768d698eeac74")
         (title
          (en "All Rust applications repackaged")
