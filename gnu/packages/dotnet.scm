@@ -2,6 +2,7 @@
 ;;; Copyright © 2024 unmush <unmush@hashbang.sh>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2025 nomike <nomike@nomike.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
