@@ -847,6 +847,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
     (native-inputs
      (list
       intltool
+      libdisplay-info
       `(,glib "bin")               ; for glib-compile-resources
       pkg-config
       python-wrapper))             ; for generate-authors.py
