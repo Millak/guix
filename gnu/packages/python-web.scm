@@ -5061,6 +5061,28 @@ sanitizer Rust crate.")
      "This package provides an implementation of Noise Protocol Framework.")
     (license license:expat)))
 
+(define-public python-webrtcvad-wheels
+  (package
+    (name "python-webrtcvad-wheels")
+    (version "2.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/daanzu/py-webrtcvad-wheels")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sqgg8jmg2j14f4h96h0rs42kr460v65lhanps6lhdvj5zp81cbh"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-psutil python-pytest python-setuptools-next))
+    (home-page "https://github.com/daanzu/py-webrtcvad-wheels")
+    (synopsis "Python interface to the WebRTC Voice Activity Detector (VAD)")
+    (description
+     "This package provides a Python interface to the Google
+@url{https://webrtc.org/, WebRTC} @acronym{VAD, Voice Activity Detector}.")
+    (license license:expat)))
+
 (define-public python-websocket-client
   (package
     (name "python-websocket-client")
