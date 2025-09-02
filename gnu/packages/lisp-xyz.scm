@@ -27777,8 +27777,8 @@ C Library.")
   (sbcl-package->ecl-package sbcl-sdl2))
 
 (define-public sbcl-sdl2-image
-  (let ((commit "9c05c806286b66a5d9861ef829cfe68c4f3da077")
-        (revision "1"))
+  (let ((commit "3963be863e1df371b2c3f17f1bc59bc572c5954b")
+        (revision "2"))
     (package
       (name "sbcl-sdl2-image")
       (version (git-version "1.0" revision commit))
@@ -27790,7 +27790,7 @@ C Library.")
                (commit commit)))
          (file-name (git-file-name "cl-sdl2-image" version))
          (sha256
-          (base32 "1nr7mdl125q32m15m8rdlza5kwi7m0birh1cq846pyy6zl1sjms7"))))
+          (base32 "1jzrz3ppr5nbh0w6cvbbpv5x6gdq71a6v2qanvnjvcjs0zwf97iq"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        (list #:phases
