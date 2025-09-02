@@ -19846,6 +19846,33 @@ distributable command line applications in an expressive way.")
            go-github-com-xrash-smetrics
            go-gopkg-in-yaml-v3))))
 
+(define-public go-github-com-urfave-cli-v3
+  (package
+    (inherit go-github-com-urfave-cli-v2)
+    (name "go-github-com-urfave-cli-v3")
+    (version "3.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/urfave/cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g8vk5wpx2vnb600ppkjh9j8aql0jgdgp5rrk06h92j7sx17fnfc"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    ;; Submodules with their own go.mod files and packaged separately:
+                    ;;
+                    ;; - github.com/urfave/cli/docs/v3
+                    (delete-file-recursively "docs")))))
+    (arguments
+     (list
+      #:import-path "github.com/urfave/cli/v3"
+      #:test-flags
+      #~(list "-vet=off")))
+    (propagated-inputs '())))
+
 (define-public go-github-com-valyala-bytebufferpool
   (package
     (name "go-github-com-valyala-bytebufferpool")
