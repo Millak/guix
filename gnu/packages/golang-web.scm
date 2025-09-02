@@ -4402,6 +4402,37 @@ parameters.")
      "This package provides packet processing capabilities for Go.")
     (license license:bsd-3)))
 
+(define-public go-github-com-google-nftables
+  (package
+    (name "go-github-com-google-nftables")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/nftables")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14ckjnfw35p5za4mad789yiciigj0ak3qfg4kdmz67ncw697205c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/nftables"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-vishvananda-netlink))
+    (propagated-inputs
+     (list go-github-com-mdlayher-netlink
+           go-github-com-vishvananda-netns
+           go-golang-org-x-sys))
+    (home-page "https://github.com/google/nftables")
+    (synopsis "Go module for interacting with Linux nftables")
+    (description
+     "This package provides a library to manipulates Linux nftables (the
+iptables successor).  It does not rely on libnftnl wrappers.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-safehtml
   (package
     (name "go-github-com-google-safehtml")
