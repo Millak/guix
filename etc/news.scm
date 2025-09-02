@@ -42,7 +42,8 @@
 
  (entry (commit "6e57701013a69a20df6983f5e05aa3598073282f")
         (title
-         (en "Linux-libre 6.16 now available"))
+         (en "Linux-libre 6.16 now available")
+         (de "Linux-libre 6.16 jetzt verfügbar"))
         (body
          (en "The Linux-libre 6.16 kernel series is now available in GNU Guix.
 This kernel series was added to Guix without a custom kernel configuration for
@@ -51,7 +52,16 @@ the armhf-linux system (32-bit ARM with floating point support, also called
 still available.
 
 Soon, linux-libre 6.16 will be made the default linux-libre package because 6.15
-is no longer supported upstream.")))
+is no longer supported upstream.")
+         (de "Die Kernel-Versionsreihe 6.16 von Linux-libre ist ab jetzt in
+GNU Guix verfügbar.  Diese Kernel-Versionsreihe wurde zu Guix ohne eine
+angepasste Kernel-Konfiguration für das armhf-linux-System hinzugefügt (d.h.
+32-Bit-ARM mit Gleitkommaunterstützung, auch bekannt als „armv7+“), weil sich
+zu wenige Menschen dafür interessieren.  Die generischen
+armhf-Linuxkernelpakete bleiben verfügbar.
+
+Bald wird Linux-libre 6.16 zum vorgegebenen Linux-libre-Paket, weil 6.15 vom
+Anbieter nicht mehr unterstützt wird.")))
 
  (entry (commit "1618ca7aa2ee8b6519ee9fd0b965e15eca2bfe45")
         (title
