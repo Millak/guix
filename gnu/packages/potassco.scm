@@ -508,6 +508,45 @@ Python code.")))
 as a theory to clingo from Python code.  It also supports running clingo-dl
 directly from the python command line.")))
 
+(define-public python-clingcon
+  (package
+    (inherit clingcon)
+    (name "python-clingcon")
+    (version (package-version clingcon))
+    (arguments
+     (cons*
+      #:configure-flags
+      #~(list "-DPYCLINGCON_ENABLE=pip"
+              (string-append "-DCMAKE_MODULE_PATH="
+                             #$(this-package-native-input "python-scikit-build")
+                             "/lib/cmake/modules"))
+      #:imported-modules  `(,@%cmake-build-system-modules
+                            (guix build python-build-system))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      (substitute-keyword-arguments (package-arguments clingcon)
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'install 'install-distinfo
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                 (with-directory-excursion (python:site-packages inputs outputs)
+                   (let ((dir (string-append "clingcon-" #$version ".dist-info")))
+                     (mkdir-p dir)
+                     (call-with-output-file (string-append dir "/METADATA")
+                       (lambda (port)
+                         (format port "Metadata-Version: 1.1~%")
+                         (format port "Name: clingcon~%")
+                         (format port "Version: ~a~%" #$version))))))))))))
+    (inputs (modify-inputs (package-inputs clingcon)
+              (prepend python-wrapper)))
+    (propagated-inputs (list python-clingo python-cffi))
+    (native-inputs (modify-inputs (package-native-inputs clingcon)
+                     (prepend python-scikit-build)))
+    (synopsis "Python bindings for clingcon")
+    (description "This package allows users to add the clingcon propagator
+as a theory to clingo from Python code.")))
+
 (define-public python-clingox
   (package
     (name "python-clingox")
