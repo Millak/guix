@@ -45,52 +45,57 @@ identifier.  When LFS? is true, configure Git to also fetch Large File
 Storage (LFS) files; it assumes that the @code{git-lfs} extension is available
 in the environment.  When RECURSIVE? is true, all the sub-modules of URL are
 fetched, recursively.  Return #t on success, #f otherwise."
+  (cond
+   ((string-prefix? "-" commit)
+    ;; invalid commit specifier that could potentially be interpreted as an
+    ;; option
+    #f)
+   (else
+    ;; Disable TLS certificate verification.  The hash of the checkout is known
+    ;; in advance anyway.
+    (setenv "GIT_SSL_NO_VERIFY" "true")
 
-  ;; Disable TLS certificate verification.  The hash of the checkout is known
-  ;; in advance anyway.
-  (setenv "GIT_SSL_NO_VERIFY" "true")
+    (mkdir-p directory)
 
-  (mkdir-p directory)
+    (guard (c ((invoke-error? c)
+               (format (current-error-port)
+                       "git-fetch: '~a~{ ~a~}' failed with exit code ~a~%"
+                       (invoke-error-program c)
+                       (invoke-error-arguments c)
+                       (or (invoke-error-exit-status c) ;XXX: not quite accurate
+                           (invoke-error-stop-signal c)
+                           (invoke-error-term-signal c)))
+               (delete-file-recursively directory)
+               #f))
+      (with-directory-excursion directory
+        (invoke git-command "init" "--initial-branch=main")
+        (invoke git-command "remote" "add" "--" "origin" url)
 
-  (guard (c ((invoke-error? c)
-             (format (current-error-port)
-                     "git-fetch: '~a~{ ~a~}' failed with exit code ~a~%"
-                     (invoke-error-program c)
-                     (invoke-error-arguments c)
-                     (or (invoke-error-exit-status c) ;XXX: not quite accurate
-                         (invoke-error-stop-signal c)
-                         (invoke-error-term-signal c)))
-             (delete-file-recursively directory)
-             #f))
-    (with-directory-excursion directory
-      (invoke git-command "init" "--initial-branch=main")
-      (invoke git-command "remote" "add" "origin" url)
+        (when lfs?
+          (setenv "HOME" "/tmp")
+          (invoke git-command "lfs" "install"))
 
-      (when lfs?
-        (setenv "HOME" "/tmp")
-        (invoke git-command "lfs" "install"))
+        (if (zero? (system* git-command "fetch" "--depth" "1" "--" "origin" commit))
+            (invoke git-command "checkout" "FETCH_HEAD")
+            (begin
+              (setvbuf (current-output-port) 'line)
+              (format #t "Failed to do a shallow fetch; retrying a full fetch...~%")
+              (invoke git-command "fetch" "--" "origin")
+              (invoke git-command "checkout" commit "--")))
+        (when recursive?
+          ;; Now is the time to fetch sub-modules.
+          (invoke git-command "submodule" "update" "--init" "--recursive")
 
-      (if (zero? (system* git-command "fetch" "--depth" "1" "origin" commit))
-          (invoke git-command "checkout" "FETCH_HEAD")
-          (begin
-            (setvbuf (current-output-port) 'line)
-            (format #t "Failed to do a shallow fetch; retrying a full fetch...~%")
-            (invoke git-command "fetch" "origin")
-            (invoke git-command "checkout" commit)))
-      (when recursive?
-        ;; Now is the time to fetch sub-modules.
-        (invoke git-command "submodule" "update" "--init" "--recursive")
+          ;; In sub-modules, '.git' is a flat file, not a directory,
+          ;; so we can use 'find-files' here.
+          (for-each delete-file-recursively
+                    (find-files directory "^\\.git$")))
 
-        ;; In sub-modules, '.git' is a flat file, not a directory,
-        ;; so we can use 'find-files' here.
-        (for-each delete-file-recursively
-                  (find-files directory "^\\.git$")))
-
-      ;; The contents of '.git' vary as a function of the current
-      ;; status of the Git repo.  Since we want a fixed output, this
-      ;; directory needs to be taken out.
-      (delete-file-recursively ".git")
-      #t)))
+        ;; The contents of '.git' vary as a function of the current
+        ;; status of the Git repo.  Since we want a fixed output, this
+        ;; directory needs to be taken out.
+        (delete-file-recursively ".git")
+        #t)))))
 
 
 (define* (git-fetch-with-fallback url commit directory
