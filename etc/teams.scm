@@ -1089,7 +1089,7 @@ the \"texlive\" importer."
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il"
                        "efraim")
-  embedded bootstrap rust)
+  embedded bootstrap release rust)
 
 (define-member (person "jgart"
                        "jgart@dismail.de"
@@ -1280,7 +1280,7 @@ the \"texlive\" importer."
 (define-member (person "Noé Lopez"
                        "noelopez@free.fr"
                        "Baleine")
-  gnome)
+  gnome release)
 
 (define-member (person "Ashvith Shetty"
                        "ashvithshetty0010@zohomail.in")
@@ -1314,6 +1314,11 @@ the \"texlive\" importer."
                        "goodoldpaul@autistici.org"
                        "fishinthecalculator")
   audio)
+
+(define-member (person "Rodion Goritskov"
+                       "rodion@goritskov.com"
+                       "rodion-goritskov")
+  release)
 
 
 (define (find-team name)
