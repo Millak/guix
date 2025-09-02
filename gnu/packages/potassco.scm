@@ -750,7 +750,7 @@ as logic programs.")
 (define-public python-clinguin
   (package
    (name "python-clinguin")
-   (version "2.1.1")
+   (version "2.7.1")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -759,7 +759,7 @@ as logic programs.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0wfgrs8h5i5mmd5sbzca2xw57f3d3ni75775wjkaq6sg0zm9sqjs"))
+              "1px0bzbydqqaa7w9b9s90c6sxla8dfa6sp00qqpd9q00zry1fnix"))
             (modules '((guix build utils)))
             (snippet
              #~(begin
@@ -769,7 +769,9 @@ as logic programs.")
                    ;; a package named tk
                    (("tk") "")
                    ;; XXX: python-clingo-dl installs clingodl instead…
-                   (("clingo-dl") "clingodl"))))))
+                   (("clingo-dl") "clingodl")
+                   (("clingexplaid>=1.3.4")
+                    "clingexplaid>=1.3.3"))))))
    (build-system pyproject-build-system)
    (native-inputs
     (list python-setuptools
@@ -777,6 +779,7 @@ as logic programs.")
    (propagated-inputs
     (list python-clingo
           python-clingo-dl
+          python-clingcon
           python-clorm
           python-clingexplaid
           python-clingraph
