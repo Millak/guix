@@ -27731,8 +27731,8 @@ atlases.")
   (sbcl-package->ecl-package sbcl-sdf))
 
 (define-public sbcl-sdl2
-  (let ((commit "80410b514570ca06894675d4a2a5fc93287ea7b6")
-        (revision "2"))
+  (let ((commit "8c78e68cc5c1477dcd4c81a707e35912c2529536")
+        (revision "3"))
     (package
       (name "sbcl-sdl2")
       (version (git-version "0.0.0" revision commit))
@@ -27744,7 +27744,7 @@ atlases.")
                (commit commit)))
          (file-name (git-file-name "cl-sdl2" version))
          (sha256
-          (base32 "0sjy4k04k0hdhwpr57ns16ag3za0kz4laclbk17i91ql7qdjw9z2"))))
+          (base32 "0ix2nsg2ghmkcfdhwlvgylfijg0nzbadgfch5dgyakmxmiv3rs4k"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:asd-systems '("sdl2" "sdl2/examples")
