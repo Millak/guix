@@ -4029,6 +4029,7 @@ to handle."
      config-file-name
      "[general]\n"
      "source_profile = " (if source-profile? "true" "false") "\n"
+     "runfile = /run/greetd/runfiles/greetd-" terminal-vt ".run\n"
      "[terminal]\n"
      "vt = " terminal-vt "\n"
      "switch = " (if terminal-switch "true" "false") "\n"
@@ -4046,6 +4047,14 @@ to handle."
   (list (file-system
           (device "none")
           (mount-point "/run/greetd/pam_mount")
+          (type "tmpfs")
+          (check? #f)
+          (flags '(no-suid no-dev no-exec))
+          (options "mode=0755")
+          (create-mount-point? #t))
+        (file-system
+          (device "none")
+          (mount-point "/run/greetd/runfiles")
           (type "tmpfs")
           (check? #f)
           (flags '(no-suid no-dev no-exec))
