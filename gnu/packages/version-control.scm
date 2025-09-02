@@ -2839,8 +2839,16 @@ execution of any hook written in any language before every commit.")
                    "\"GUIX_PYTHONPATH\"")))))
           (add-before 'configure-check 'add-install-to-pythonpath
             (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'install 'wrap
+            (assoc-ref py:%standard-phases 'wrap))
           (delete 'check)
-          (add-after 'install 'check #$mercurial-check-phase))))
+          (add-after 'wrap 'check #$mercurial-check-phase)
+          (add-after 'check 'python-sanity-check
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ((assoc-ref py:%standard-phases 'sanity-check)
+               #:inputs `(("sanity-check.py" . ,#$(default-sanity-check.py))
+                          ,@inputs)
+               #:outputs outputs))))))
     (native-inputs
      (list python-docutils
            ;; The following inputs are only needed to run the tests.
