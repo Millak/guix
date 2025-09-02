@@ -24989,8 +24989,8 @@ table.")
   (sbcl-package->clasp-package sbcl-periodic-table))
 
 (define-public sbcl-periods
-  (let ((commit "60383dcef88a1ac11f82804ae7a33c361dcd2949")
-        (revision "2"))
+  (let ((commit "1494b8f6887c3ce33d0bf094fd7ec7b77d38c998")
+        (revision "3"))
     (package
       (name "sbcl-periods")
       (version (git-version "0.0.2" revision commit))
@@ -25000,14 +25000,13 @@ table.")
          (uri (git-reference
                (url "https://github.com/jwiegley/periods")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-periods" version))
          (sha256
-          (base32
-           "1ym2j4an9ig2hl210jg91gpf7xfnp6mlhkw3n9kkdnwiji3ipqlk"))))
+          (base32 "1m958891rl3sin6h6pgfjdh6ay1s7kfxbxpqvlnzk9rqid0hcs15"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("local-time" ,sbcl-local-time)
-         ("series" ,sbcl-series)))
+       (list sbcl-local-time
+             sbcl-series))
       (arguments
        '(#:asd-systems '("periods"
                          "periods-series")))
