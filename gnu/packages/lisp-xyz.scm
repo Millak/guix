@@ -27845,8 +27845,8 @@ games.")
   (sbcl-package->ecl-package sbcl-sdl2kit))
 
 (define-public sbcl-sdl2-mixer
-  (let ((commit "fdcc7ee7935dd01fd338e22690451db2cf126156")
-        (revision "1"))
+  (let ((commit "580d63402938e073705ab1905b6f9a4b9a48d175")
+        (revision "2"))
     (package
       (name "sbcl-sdl2-mixer")
       (version (git-version "1.0" revision commit))
@@ -27858,7 +27858,7 @@ games.")
                (commit commit)))
          (file-name (git-file-name "cl-sdl2-mixer" version))
          (sha256
-          (base32 "0g6ywb3gqr0rif4z6kkz6m8vyv8nrr5wr1w9sc6d3zypbbnqgbp6"))))
+          (base32 "0d33pmyrcni90qfj0d4hxf97may1bv7i9z4a6rj02dw254n9r9lh"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        (list #:phases
@@ -27866,8 +27866,13 @@ games.")
                  (add-after 'unpack 'fix-paths
                    (lambda* (#:key inputs #:allow-other-keys)
                      (substitute* "src/library.lisp"
-                       (("libSDL2_mixer-2.0.so.0")
-                        (search-input-file inputs "/lib/libSDL2_mixer-2.0.so.0"))))))))
+                       (("\"libSDL2_mixer-2.0.so.0\" \"libSDL2_mixer\"")
+                        (string-append
+                         "\""
+                         (search-input-file inputs "/lib/libSDL2_mixer-2.0.so.0")
+                         "\" \""
+                         (search-input-file inputs "/lib/libSDL2_mixer.so")
+                         "\""))))))))
       (inputs
        (list sbcl-alexandria
              sbcl-cl-autowrap
