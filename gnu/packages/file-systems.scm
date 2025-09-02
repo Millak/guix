@@ -2453,15 +2453,17 @@ filtering and ordering functionality.
                 "06cl7srxaqpzv7gcd17cl78qhrpqhdvpfcj4pr73fr5hhackrf52"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ;No tests
-       #:configure-flags '("-DQT5=true" "-DCMAKE_BUILD_TYPE=RELEASE")))
+     (list
+      #:tests? #f                       ;No tests
+      #:configure-flags #~(list "-DQT5=true" "-DCMAKE_BUILD_TYPE=RELEASE")))
     (inputs (list xdg-utils libpwquality libgcrypt libsecret qtbase-5))
     (native-inputs (list pkg-config))
     (home-page "https://mhogomchungu.github.io/sirikali/")
-    (synopsis "GUI front end to sshfs, ecryptfs, cryfs, gocryptfs, securefs, fscrypt and encfs")
-    (description "@dfn{SiriKali} is a Qt/C++ GUI application that manages
-+ecryptfs, cryfs, encfs, gocryptfs, fscrypt and securefs
-+based encrypted folders.")
+    (synopsis "GUI front end to file system encryption utilities")
+    (description
+     "SiriKali is a Qt/C++ GUI application for managing encrypted folders.  It
+supports various backends, including eCryptfs, CryFS, EncFS, gocryptfs, fscrypt,
+securefs, SSHFS, and Cryptomator.")
     (license license:gpl3+)))
 
 (define-public watcher
