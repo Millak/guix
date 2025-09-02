@@ -7442,8 +7442,8 @@ as possible).")
   (sbcl-package->ecl-package sbcl-cl-json-pointer))
 
 (define-public sbcl-cl-ledger
-  (let ((commit "08e0be41795e804cd36142e51756ad0b1caa377b")
-        (revision "1"))
+  (let ((commit "b0174f5634e389fb022ae72cc527a13b719655bd")
+        (revision "2"))
     (package
       (name "sbcl-cl-ledger")
       (version (git-version "4.0.0" revision commit))
@@ -7453,26 +7453,24 @@ as possible).")
          (uri (git-reference
                (url "https://github.com/ledger/cl-ledger")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-ledger" version))
          (sha256
-          (base32
-           "1via0qf6wjcyxnfbmfxjvms0ik9j8rqbifgpmnhrzvkhrq9pv8h1"))))
+          (base32 "02zg53j8d7lpyafif9kplp6clchz4id429j0dc5w80wvcwfal123"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("cambl" ,sbcl-cambl)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("local-time" ,sbcl-local-time)
-         ("periods" ,sbcl-periods)))
+       (list sbcl-cambl
+             sbcl-cl-ppcre
+             sbcl-local-time
+             sbcl-periods))
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-system-definition
-             (lambda _
-               (substitute* "cl-ledger.asd"
-                 (("  :build-operation program-op") "")
-                 (("  :build-pathname \"cl-ledger\"") "")
-                 (("  :entry-point \"ledger::main\"") ""))
-               #t)))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-system-definition
+                   (lambda _
+                     (substitute* "cl-ledger.asd"
+                       (("  :build-operation program-op") "")
+                       (("  :build-pathname \"cl-ledger\"") "")
+                       (("  :entry-point \"ledger::main\"") "")))))))
       (synopsis "Common Lisp port of the Ledger accounting system")
       (description
        "CL-Ledger is a Common Lisp port of the Ledger double-entry accounting
