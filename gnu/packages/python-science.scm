@@ -3464,6 +3464,37 @@ Snakemake and its storage plugins.")
 SLURM jobs (meant for internal use by python-snakemake-executor-plugin-slurm).")
     (license license:expat)))
 
+(define-public python-snakemake-executor-plugin-slurm
+  (package
+    (name "python-snakemake-executor-plugin-slurm")
+    (version "1.7.0")
+    (home-page "https://github.com/snakemake/snakemake-executor-plugin-slurm/")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x7ghrkvmxqbcjl69hxp5axa1av3s0mdc0i9xjg8qjnd3hgd82r3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python3" "tests/tests.py")))))))
+    (native-inputs (list python-pandas
+                         python-poetry-core
+                         python-pytest
+                         python-snakemake-executor-plugin-slurm-jobstep
+                         snakemake))
+    (synopsis "Snakemake executor plugin: slurm")
+    (description "A Snakemake executor plugin for running SLURM jobs.")
+    (license license:expat)))
+
 (define-public python-sparse
   (package
     (name "python-sparse")
