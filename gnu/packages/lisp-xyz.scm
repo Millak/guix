@@ -4548,8 +4548,8 @@ execution mechanism for Common Lisp.")))
   (sbcl-package->ecl-package sbcl-async-process))
 
 (define-public sbcl-cl-autowrap
-  (let ((revision "2")
-        (commit "a5d71ebd7c21b87f449db1e16ab815750d7c0ea4"))
+  (let ((revision "3")
+        (commit "4bba9e37b59cd191dea150a89aef7245a40b1c9d"))
     ;; no tagged branches
     (package
       (name "sbcl-cl-autowrap")
@@ -4562,17 +4562,25 @@ execution mechanism for Common Lisp.")))
                (commit commit)))
          (file-name (git-file-name "cl-autowrap" version))
          (sha256
-          (base32 "0795c817m1c41cz3ywzzg83z4pgkxdg6si553pay9mdgjvmrwmaw"))))
+          (base32 "1sfvhyrwm9dhxi0y42xp7mx8mvs6lmq3bzxdx34frxni5srcgly0"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:asd-systems '("cl-plus-c" "cl-autowrap")))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("cl-json" ,sbcl-cl-json)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("defpackage-plus" ,sbcl-defpackage-plus)
-         ("trivial-features" ,sbcl-trivial-features)))
+       (list libffi
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-cl-json
+             sbcl-cl-ppcre
+             sbcl-defpackage-plus
+             sbcl-trivial-features))
+      (arguments
+       (list #:asd-systems ''("cl-autowrap" "cl-plus-c" "cl-autowrap/libffi")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "autowrap-libffi/library.lisp"
+                       (("libffi.so")
+                        (search-input-file inputs "lib/libffi.so"))))))))
       (home-page "https://github.com/rpav/cl-autowrap")
       (synopsis "FFI wrapper generator for Common Lisp")
       (description "This is a c2ffi-based wrapper generator for Common Lisp.")
