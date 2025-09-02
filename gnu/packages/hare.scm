@@ -39,10 +39,13 @@
 
 (define* (target->hare-arch #:optional (target (or (%current-target-system)
                                                    (%current-system))))
-  (cond ((target-x86-64? target) "x86_64")
-        ((target-aarch64? target) "aarch64")
-        ((target-riscv64? target) "riscv64")
-        (else (error "unsupported hare target" target))))
+  ;; Only error on supported systems, so we don't break guix pull.
+  (if (member (%current-system) hare-supported-systems)
+      (cond ((target-x86-64? target) "x86_64")
+            ((target-aarch64? target) "aarch64")
+            ((target-riscv64? target) "riscv64")
+            (else (error "unsupported hare target" target)))
+      ""))
 
 (define (cross-target? target) ; only has to work for supported arches
   (and target (not (if (%current-target-system)
