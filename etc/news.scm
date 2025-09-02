@@ -89,7 +89,7 @@ Jeder, der Zugriff auf den Daemon hat, kann eine Scheme-Prozedur
 @code{content-addressed-mirrors} anfertigen, die der Daemon als
 Erstellungsbenutzer ausführen wird (oder als der Daemon-Benutzer, wenn
 @command{guix-daemon} unprivilegiert ausgeführt wird).  Ein Angreifer kann das
-ausnutzen, um sich die Berechtigungen eines Erstellungsbenutzers anzueignen und
+ausnutzen, um sich die Berechtigungen eines Erstellungsbenutzers anzueignen, und
 kann von da an auf dem System durchgeführte Erstellungen kompromittieren.  Siehe
 @uref{https://codeberg.org/guix/guix/pulls/2419} für mehr Informationen.")))
 
