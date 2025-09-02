@@ -28,6 +28,7 @@
   #:autoload   (guix config) (%git)
   #:use-module (ice-9 match)
   #:use-module (ice-9 sandbox)
+  #:use-module (web uri)
   #:export (guix-perform-download
             ;; exported so that eval-in-sandbox can find this
             syntax-noop))
@@ -106,6 +107,19 @@ result of canonicalization."
   (call-with-port (open file (logior O_NOFOLLOW O_RDONLY))
     proc))
 
+(define (assert-non-local-urls url)
+  "Exit if URL (or any element of URL if it is a list) is either not a valid
+URL or is a URL for a local file."
+  (for-each (lambda (url)
+              (let ((scheme (and=> (string->uri url) uri-scheme)))
+                (unless scheme
+                  (leave (G_ "URL ~S can't be decoded~%") url))
+                (when (eq? scheme 'file)
+                  (leave (G_ "URL ~S is for a local file~%") url))))
+            (if (list? url)
+                url
+                (list url))))
+
 (define* (perform-download drv output
                            #:key print-build-trace?)
   "Perform the download described by DRV, a fixed-output derivation, to
@@ -132,6 +146,10 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
+      ;; Disallow access to local files, e.g. "/tmp/foo", "file:///tmp/foo",
+      ;; etc, since in the case of the rootless daemon we can access sensitive
+      ;; files like /etc/guix/signing-key.sec.
+      (assert-non-local-urls url)
       ;; We're invoked by the daemon, which gives us write access to OUTPUT.
       (when (parameterize ((%download-methods
                             (and download-methods
@@ -191,6 +209,10 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
+      ;; Disallow access to local files, e.g. "/tmp/foo", "file:///tmp/foo",
+      ;; etc, since in the case of the rootless daemon we can access sensitive
+      ;; files like /etc/guix/signing-key.sec.
+      (assert-non-local-urls url)
       ;; Commands such as 'git submodule' expect Coreutils and sed (among
       ;; others) to be in $PATH.  The 'git' package in Guix should address it
       ;; with wrappers but packages on other distros such as Debian may rely
