@@ -49,6 +49,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system linux-module)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -2451,12 +2452,14 @@ filtering and ordering functionality.
               (sha256
                (base32
                 "06cl7srxaqpzv7gcd17cl78qhrpqhdvpfcj4pr73fr5hhackrf52"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       #:tests? #f                       ;No tests
-      #:configure-flags #~(list "-DQT5=true" "-DCMAKE_BUILD_TYPE=RELEASE")))
-    (inputs (list xdg-utils libpwquality libgcrypt libsecret qtbase-5))
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DBUILD_WITH_QT6=true"
+                                "-DCMAKE_BUILD_TYPE=RELEASE")))
+    (inputs (list xdg-utils libpwquality libgcrypt libsecret qtwayland))
     (native-inputs (list pkg-config))
     (home-page "https://mhogomchungu.github.io/sirikali/")
     (synopsis "GUI front end to file system encryption utilities")
