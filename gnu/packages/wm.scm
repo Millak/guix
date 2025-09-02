@@ -1990,7 +1990,7 @@ limited size and a few external dependencies.  It is configurable via
                       (mkdir-p (in-vicinity #$output (dirname path)))
                       (let ((binary
                              (if #$(%current-target-system)
-                                 (search-input-file native-inputs "bin/nir")
+                                 (search-input-file native-inputs "bin/niri")
                                  (in-vicinity #$output "bin/niri"))))
                         (with-output-to-file (in-vicinity #$output path)
                           (lambda _
