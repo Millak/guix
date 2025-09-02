@@ -3034,8 +3034,8 @@ Lisp.")
   (sbcl-package->ecl-package sbcl-calm))
 
 (define-public sbcl-cambl
-  (let ((commit "7016d1a98215f82605d1c158e7a16504ca1f4636")
-        (revision "1"))
+  (let ((commit "c21b8afe8869401d618efc9f0ef406a28d89c3b7")
+        (revision "2"))
     (package
       (name "sbcl-cambl")
       (version (git-version "4.0.0" revision commit))
@@ -3045,17 +3045,17 @@ Lisp.")
          (uri (git-reference
                (url "https://github.com/jwiegley/cambl")
                (commit commit)))
-         (file-name (git-file-name "cambl" version))
+         (file-name (git-file-name "cl-cambl" version))
          (sha256
-          (base32 "103mry04j2k9vznsxm7wcvccgxkil92cdrv52miwcmxl8daa4jiz"))))
+          (base32 "1jp0i0pwdvzg689wx2rhm2ajm4w8b55rw6q6jas3498myy2gif4d"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-xlunit))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-containers" ,sbcl-cl-containers)
-         ("local-time" ,sbcl-local-time)
-         ("periods" ,sbcl-periods)))
+       (list sbcl-alexandria
+             sbcl-cl-containers
+             sbcl-local-time
+             sbcl-periods))
       (synopsis "Commoditized amounts and balances for Common Lisp")
       (description
        "CAMBL is a Common Lisp library providing a convenient facility for
