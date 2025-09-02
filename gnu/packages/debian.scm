@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023, 2024 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -99,7 +99,7 @@ contains the archive keys used for that.")
 (define-public debian-ports-archive-keyring
   (package
     (name "debian-ports-archive-keyring")
-    (version "2024.01.05")
+    (version "2025.04.05")
     (source
       (origin
         (method url-fetch)
@@ -108,7 +108,7 @@ contains the archive keys used for that.")
                             "/debian-ports-archive-keyring_" version ".tar.xz"))
         (sha256
          (base32
-          "010yaxc6ngq4ygh7mjyz2bk3w8ialxzya1bqwc7knavaixz9gfpp"))))
+          "0chh1jvz3qb1zv7k5j2p5adc8yip25vbhdmk1q6djzlpgd02420h"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f              ; No test suite.
