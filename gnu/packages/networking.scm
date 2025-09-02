@@ -183,6 +183,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rpc)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
@@ -2984,6 +2985,100 @@ files as command-line parameters and it downloads them and exits.  NZBGet also
 contains a Web interface.  Its server can be controlled through remote
 procedure calls (RPCs).")
     (license license:gpl2+)))
+
+(define-public opensnitch-daemon
+  (package
+    (name "opensnitch-daemon")
+    (version "1.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/evilsocket/opensnitch")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r36khc8jfijh3385453az10d442kb6mg4ji44qv7kf0k34pn12w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/evilsocket/opensnitch/daemon"
+      #:unpack-path "github.com/evilsocket/opensnitch"
+      #:test-flags
+      #~(list "-vet=off" ;; Go@1.24 forces vet, but tests are not ready yet.
+              ;; client_test.go:58: error copying default config file: exit
+              ;; status 1
+              "-skip" "TestClientDefaultConfig")
+      #:test-subdirs
+      ;; Some tests require root access, run only portion of them.
+      #~(list "conman"
+              "firewall/config"
+              "netlink"
+              "procmon"
+              "rule"
+              "tasks"
+              "tasks/nodemonitor"
+              "tasks/pidmonitor")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-default-config-path
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\.go$")
+                  (("/etc/opensnitchd")
+                   (string-append #$output "/etc/opensnitchd"))))))
+          (add-before 'build 'build-ui-proto
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path
+                                                       "/proto")
+                (invoke "make" "../daemon/ui/protocol/ui.pb.go"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PRIVILEGED_TESTS" "0")
+              (setenv "NETLINK_TESTS" "0")))
+          (add-after 'install 'rename-binary
+            (lambda _
+              (with-directory-excursion (string-append #$output)
+                (mkdir "sbin")
+                (rename-file "bin/daemon" "sbin/opensnitchd")
+                (delete-file-recursively "bin"))))
+          (add-after 'install 'install-default-config
+            (lambda* (#:key import-path #:allow-other-keys)
+              (let ((dest (string-append #$output "/etc/opensnitchd")))
+                (mkdir-p dest)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (for-each (lambda (name)
+                              (install-file name dest))
+                            '("default-config.json"
+                              "network_aliases.json"
+                              "system-fw.json")))))))))
+    (native-inputs
+     (list go-github-com-fsnotify-fsnotify
+           go-github-com-cilium-ebpf
+           go-github-com-google-gopacket
+           go-github-com-google-nftables
+           go-github-com-varlink-go-varlink
+           go-github-com-vishvananda-netlink
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           protobuf protoc-gen-go pkg-config
+           protoc-gen-go-grpc))
+    (inputs
+     (list libnetfilter-queue
+           libnfnetlink
+           libvarlink))
+    (home-page "https://github.com/evilsocket/opensnitch")
+    (synopsis "Interactive application firewall daemon")
+    (description
+     "This package provides a daemon that snitches on programs making outbound
+connections.  OpenSnitch is an application-level firewall that gives you
+granular control over outbound network connections on your system.  It
+monitors application activity and prompts you to allow or deny connections on
+a per-application basis whenever a new outbound connection is attempted.")
+    (license license:gpl3+)))
 
 (define-public openvswitch
   (package
