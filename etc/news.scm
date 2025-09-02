@@ -40,6 +40,19 @@
 (channel-news
  (version 0)
 
+ (entry (commit "6e57701013a69a20df6983f5e05aa3598073282f")
+        (title
+         (en "Linux-libre 6.16 now available"))
+        (body
+         (en "The Linux-libre 6.16 kernel series is now available in GNU Guix.
+This kernel series was added to Guix without a custom kernel configuration for
+the armhf-linux system (32-bit ARM with floating point support, also called
+'armv7+'), due to lack of interest.  The generic armhf-linux kernel packages are
+still available.
+
+Soon, linux-libre 6.16 will be made the default linux-libre package because 6.15
+is no longer supported upstream.")))
+
  (entry (commit "1618ca7aa2ee8b6519ee9fd0b965e15eca2bfe45")
         (title
          (en "New @command{guix-daemon} privilege escalation vulnerability
