@@ -625,7 +625,7 @@ are already predefined, but more can be added as logic programs.")
 (define-public python-clorm
   (package
     (name "python-clorm")
-    (version "1.5.0")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -634,7 +634,7 @@ are already predefined, but more can be added as logic programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wbxniq60ph7bdaypcaahym7jxmlnm2zhrfmrgrk441i1iaida24"))))
+                "03a7kcyilpvvd6i6njh67vy3zhb3yzi55fhgnffg15j3zflww6fy"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
