@@ -27,6 +27,7 @@
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2025 Tomás Ortín Fernández <quanrong@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +81,10 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-vcs)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -130,6 +135,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -2472,6 +2478,59 @@ It is mainly meant for programmers who develop portable programs or libraries in
 but could potentially work for end-users of those programs.  It also has a translator
 from R7RS, which allows most R7RS code to run on R6RS implementations.")
     (license license:gpl3+)))
+
+(define-public asdf-vm
+  (package
+    (name "asdf-vm")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/asdf-vm/asdf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09p4d41l3f0dzm4bdvb45lxzsvlh3b99rgbdv8rk6jj84hr7w5q4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/asdf-vm/asdf/cmd/asdf"
+      #:unpack-path "github.com/asdf-vm/asdf"
+      #:embed-files
+      #~(list "bash_autocomplete"
+              "powershell_autocomplete.ps1"
+              "zsh_autocomplete")
+      #:test-subdirs ;Test only those subdirs that don't include integration tests
+      #~(list "../../internal/cli/set"
+              "../../internal/completions"
+              "../../internal/config"
+              "../../internal/data"
+              "../../internal/exec"
+              "../../internal/execute"
+              "../../internal/hook"
+              "../../internal/paths"
+              "../../internal/toolversions")))
+    (native-inputs
+     (list go-github-com-go-git-go-git-v5
+           go-github-com-otiai10-copy
+           go-github-com-rogpeppe-go-internal
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli-v3
+           go-golang-org-x-sys
+           go-gopkg-in-ini-v1
+           go-honnef-co-go-tools
+           go-mvdan-cc-gofumpt))
+    (home-page "https://asdf-vm.com")
+    (synopsis "Multi language extendible version manager")
+    (description
+     "ASDF is a version manager for programming language runtimes and tools.
+Versions can be defined and managed on a per-project basis.  It features a
+plugin system that allows it to be extended to support further languages.  It
+currently supports a many popular runtimes, such as Ruby, Node.js, Elixir, and
+Erlang.")
+    (license license:expat)))
 
 (define-public modules
   (package
