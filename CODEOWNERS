@@ -292,6 +292,9 @@ tests/cran\.scm                                    @guix/r
 gnu/packages/chez\.scm                             @guix/racket
 gnu/packages/racket\.scm                           @guix/racket
 
+NEWS                                               @guix/release
+etc/manifests/release\.scm                         @guix/release
+
 gnu/packages/diffoscope\.scm                       @guix/reproduciblebuilds
 
 gnu/packages/ruby\.scm                             @guix/ruby

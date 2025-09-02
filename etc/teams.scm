@@ -896,6 +896,15 @@ importer."
         #:scope (list "gnu/packages/chez.scm"
                       "gnu/packages/racket.scm")))
 
+(define-team release
+  (team 'release
+        #:name "Release team"
+        #:description
+        "The current release team.  Members are expected to change with each
+release."
+        #:scope (list "NEWS"
+                      "etc/manifests/release.scm")))
+
 (define-team reproduciblebuilds
   (team 'reproduciblebuilds
         #:name "Reproducible Builds team"
