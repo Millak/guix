@@ -2442,7 +2442,7 @@ filtering and ordering functionality.
 (define-public sirikali
   (package
     (name "sirikali")
-    (version "1.6.0")
+    (version "1.8.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2450,15 +2450,13 @@ filtering and ordering functionality.
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "06cl7srxaqpzv7gcd17cl78qhrpqhdvpfcj4pr73fr5hhackrf52"))))
+               (base32 "0z144ki7664aclnv3p0bpjlzknlsgldl85v76hs2bhnk1jjlgf5y"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:tests? #f                       ;No tests
       #:qtbase qtbase
-      #:configure-flags #~(list "-DBUILD_WITH_QT6=true"
-                                "-DCMAKE_BUILD_TYPE=RELEASE")))
+      #:configure-flags #~(list "-DBUILD_WITH_QT6=true")))
     (inputs (list xdg-utils libpwquality libgcrypt libsecret qtwayland))
     (native-inputs (list pkg-config))
     (home-page "https://mhogomchungu.github.io/sirikali/")
