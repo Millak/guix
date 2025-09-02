@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -860,9 +860,13 @@ failing when GUIX is too old and lacks the 'guix repl' command."
 ;;;
 
 (define %inferior-cache-directory
-  ;; Directory for cached inferiors (GC roots).
-  (make-parameter (string-append (cache-directory #:ensure? #f)
-                                 "/inferiors")))
+  ;; Directory for cached inferiors (GC roots).  It must be world-readable so
+  ;; the daemon can traverse it.
+  (make-parameter (string-append %profile-directory "/inferiors")))
+
+(define %legacy-inferior-cache-directory
+  ;; Former directory for cached inferiors, by default under $HOME/.cache.
+  (string-append (cache-directory #:ensure? #f) "/inferiors"))
 
 (define* (channel-full-commit channel #:key (verify-certificate? #t))
   "Return the commit designated by CHANNEL as quickly as possible.  If
@@ -949,6 +953,14 @@ X.509 host certificate; otherwise, warn about the problem and keep going."
                                       cache-entries
                                       #:entry-expiration
                                       (file-expiration-time ttl))
+
+  ;; Clean the legacy cache directory as well.  Remove this call once at least
+  ;; one year has passed.
+  (maybe-remove-expired-cache-entries %legacy-inferior-cache-directory
+                                      cache-entries
+                                      #:entry-expiration
+                                      (file-expiration-time ttl))
+
 
   (if (file-exists? cached)
       cached

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -327,10 +327,13 @@ echo ~a >> ~a
 ;;;
 
 (define %profile-cache-directory
-  ;; Directory where profiles created by 'guix shell' alone (without extra
-  ;; options) are cached.
-  (make-parameter (string-append (cache-directory #:ensure? #f)
-                                 "/profiles")))
+  ;; Directory where profiles (GC roots) created by 'guix shell' are cached.
+  ;; It must be world-readable so the daemon can traverse it.
+  (make-parameter (string-append %profile-directory "/profiles")))
+
+(define %legacy-cache-directory
+  ;; Former cache directory, by default under $HOME/.cache.
+  (string-append (cache-directory #:ensure? #f) "/profiles"))
 
 (define (profile-cache-primary-key)
   "Return the \"primary key\" used when computing keys for the profile cache.
@@ -591,6 +594,13 @@ to make sure your shell does not clobber environment variables."))) )
                (lambda _
                  (maybe-remove-expired-cache-entries
                   (%profile-cache-directory)
+                  cache-entries
+                  #:entry-expiration entry-expiration)
+
+                 ;; Clean the legacy cache directory as well.  Remove this
+                 ;; call once at least one year has passed.
+                 (maybe-remove-expired-cache-entries
+                  %legacy-cache-directory
                   cache-entries
                   #:entry-expiration entry-expiration)))
 

@@ -793,11 +793,24 @@ WHILE-LIST."
 
   (define (nesting-mappings)
     ;; Files shared with the host when enabling nesting.
+
+    ;; Make sure these two directories exist so they can be shared.
+    (mkdir-p (string-append %profile-directory "/profiles"))
+    (mkdir-p (string-append %profile-directory "/inferiors"))
+
     (cons* (file-system-mapping
             (source (%store-prefix))
             (target source))
            (file-system-mapping
-            (source (cache-directory))
+            (source (cache-directory))           ;~/.cache/guix/checkouts etc.
+            (target source)
+            (writable? #t))
+           (file-system-mapping                  ;'guix shell' cached GC roots
+            (source (string-append %profile-directory "/profiles"))
+            (target source)
+            (writable? #t))
+           (file-system-mapping           ;'guix time-machine' cached GC roots
+            (source (string-append %profile-directory "/inferiors"))
             (target source)
             (writable? #t))
            (let ((uri (string->uri (%daemon-socket-uri))))
