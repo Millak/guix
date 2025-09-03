@@ -27637,6 +27637,20 @@ Examples are:
 @end enumerate")
     (license license:bsd-3)))
 
+(define-public python-funcy-1.14
+  (package/inherit python-funcy
+    (name "python-funcy")
+    (version "1.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Suor/funcy")
+              (commit version)))
+       (sha256
+        (base32 "1chgi60z3c97m9l23vf5cpyp0nidkqlpxc55q5k5pz41ms3d0440"))
+       (file-name (git-file-name name version))))))
+
 (define-public python-isoweek
   (package
     (name "python-isoweek")
