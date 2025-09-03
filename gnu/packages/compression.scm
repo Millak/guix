@@ -1040,14 +1040,14 @@ decompression of some loosely related file formats used by Microsoft.")
 (define-public lz4
   (package
     (name "lz4")
-    (version "1.9.3")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference (url "https://github.com/lz4/lz4")
                            (commit (string-append "v" version))))
        (sha256
-        (base32 "1w02kazh1fps3sji2sn89fz862j1199c5ajrqcgl1bnlxj09kcbz"))
+        (base32 "12sfwid95zhk2r2ijpwwknc5a2xlll2s9xhf0s21ca2jkygvblgx"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (outputs (list "out" "static"))
