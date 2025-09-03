@@ -1156,7 +1156,18 @@ is not available for Guile 2.0.")
               (base32
                "1ryp04w6ghgdfhlv9hkwl00iv6nwnw2hj2pywlxvpp92pyxhkwpi"))
              (patches '())))
-    (arguments '())))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'configure 'fix-cross-compilation
+                 (lambda _
+                   ;; Fix cross-compilation by removing use of ./env in the
+                   ;; .scm.go target; see
+                   ;; <https://codeberg.org/fibers/fibers/pulls/132>.  Remove
+                   ;; when 1.4.1 is out.
+                   (substitute* "Makefile"
+                     (("\\$\\(top_builddir\\)/env")
+                      "")))))))))
 
 (define-public guile-fibers guile-fibers-1.4)
 
