@@ -43,6 +43,7 @@
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
+;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -273,6 +274,39 @@ API service accounts for Go.")
 corresponds to the highest supported version of the gitea API, but
 backwards-compatibility is mostly given.")
     (license license:expat)))
+
+(define-public go-connectrpc-com-connect
+  (package
+    (name "go-connectrpc-com-connect")
+    (version "1.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/connectrpc/connect-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a6rzp57srhyf66jri62gfsj4ndpfxgb9ln15qdpfwv0xvcffz63"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "connectrpc.com/connect"
+      ;; Needs additional dependencies..
+      #:tests? #f))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-net
+           go-google-golang-org-protobuf))
+    (home-page "https://connectrpc.com/connect")
+    (synopsis "@acronym{RPC, Remote procedure call} framework built on
+Protocol Buffers")
+    (description
+     "Package @code{connect} is a slim RPC framework built on Protocol Buffers
+and @code{net/http}.  In addition to supporting its own protocol, Connect
+handlers and clients are wire-compatible with gRPC and gRPC-Web, including
+streaming.")
+    (license license:asl2.0)))
 
 (define-public go-git-sr-ht-adnano-go-gemini
   (package
