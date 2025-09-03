@@ -3080,6 +3080,56 @@ monitors application activity and prompts you to allow or deny connections on
 a per-application basis whenever a new outbound connection is attempted.")
     (license license:gpl3+)))
 
+(define-public opensnitch-ui
+  (package
+    (inherit opensnitch-daemon)
+    (name "opensnitch-ui")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; TODO: Fix virustotal test (upstream)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "ui")
+              (substitute* "setup.py"
+                (("/usr")
+                 #$output))))
+          (add-after 'install 'install-rc
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Debian does the following after install
+              (with-directory-excursion "i18n"
+                (invoke "make"))
+              (invoke "pyrcc5" "-o" "opensnitch/resources_rc.py"
+                      "opensnitch/res/resources.qrc")
+              ;; resources_rc.py is not installed automatically.
+              (install-file "opensnitch/resources_rc.py"
+                            (string-append (site-packages inputs outputs) "/opensnitch"))
+              (substitute* "tests/test_nodes.py"
+                (("from opensnitch import ui_pb2")
+                 "from opensnitch.proto import ui_pb2"))
+              (for-each (lambda (name)
+                          (substitute* name
+                            (("^import ui_pb2")
+                             "from . import ui_pb2")))
+                        (find-files "opensnitch/proto" "ui_pb2_grpc.py")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel
+           qttools-5))
+    (inputs
+     (list python-grpcio-tools
+           python-notify2
+           python-pyasn1
+           python-pyinotify
+           python-pyqt
+           python-protobuf
+           python-requests
+           python-slugify
+           qtwayland-5))
+    (synopsis "UI for @code{opensnitch}")))
+
 (define-public openvswitch
   (package
     (name "openvswitch")
