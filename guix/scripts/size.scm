@@ -67,7 +67,7 @@ if ITEM is not in the store."
              ;; The nar size is an approximation, but a good one.
              (return (substitutable-nar-size info)))
             (()
-             (leave (G_ "no available substitute information for '~a'~%")
+             (leave (G_ "no local build or substitute available for '~a'~%")
                     item)))))))
 
 (define profile-closure<?
