@@ -981,7 +981,7 @@ new Date();"))
                     `(,@(if parallel-build?
                             (list (string-append "JOBS="
                                                  (number->string (parallel-job-count))))
-                            '())
+                            '("JOBS=1"))
                       ,@make-flags))))
          (add-after 'unpack 'patch-jni-libs
            ;; Hardcode dynamically loaded libraries.
@@ -1340,6 +1340,8 @@ new Date();"))
     (outputs '("out" "jdk" "doc"))
     (arguments
      (list
+      ;; Prevent a java.util.ConcurrentModificationException.
+      #:parallel-build? #f
       #:modules `((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 match)
@@ -1438,7 +1440,7 @@ new Date();"))
                      `(,@(if parallel-build?
                              (list (string-append "JOBS="
                                                   (number->string (parallel-job-count))))
-                             '())
+                             '("JOBS=1"))
                        ,@make-flags))))
           ;; jdk 11 does not build jre by default any more; so explicitly build
           ;; it (see:
@@ -1449,7 +1451,7 @@ new Date();"))
                      `(,@(if parallel-build?
                              (list (string-append "JOBS="
                                                   (number->string (parallel-job-count))))
-                             '())
+                             '("JOBS=1"))
                        ,@make-flags))))
           (replace 'install
             (lambda _
@@ -1665,6 +1667,8 @@ new Date();"))
       (patches (search-patches "openjdk-10-setsignalhandler.patch"))))
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk11)
+      ;; Re-enable parallel build.
+      ((#:parallel-build? _ #t) #t)
       ((#:phases phases)
        #~(modify-phases #$phases
            #$@(if (target-aarch64?)
