@@ -747,14 +747,14 @@ archiving.  Lzip is a clean implementation of the LZMA algorithm.")
 (define-public lziprecover
   (package
     (name "lziprecover")
-    (version "1.23")
+    (version "1.25")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/lzip/lziprecover/"
                                   "lziprecover-" version ".tar.gz"))
               (sha256
                (base32
-                "0wmmyi03fv2lflsir5ldrsv04q57k3hmlqajzb1m3p86gwbh967j"))))
+                "0icbzw7kmp4rn711sh3f0w3sxlxly6q6dc8d7pp6dqhag2f2yfag"))))
     (build-system gnu-build-system)
     (arguments
      ;; The configure script doesn't recognise the --build or --host
@@ -762,6 +762,7 @@ archiving.  Lzip is a clean implementation of the LZMA algorithm.")
      `(,@(if (%current-target-system)
              `(#:make-flags (list ,(string-append "CXX=" (cxx-for-target))))
              '())))
+    (native-inputs (list lzip))
     (home-page "https://www.nongnu.org/lzip/lziprecover.html")
     (synopsis "Recover and decompress data from damaged lzip files")
     (description
