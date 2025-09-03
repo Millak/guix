@@ -5762,7 +5762,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
 (define-public jq
   (package
     (name "jq")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
@@ -5770,7 +5770,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
                            "/releases/download/jq-" version
                            "/jq-" version ".tar.gz"))
        (sha256
-        (base32 "171i5dnw15gx4ah3xv05vhlq8b5pr7zbzhjhzyan36hxz5vib0ci"))
+        (base32 "1c3yhg537p0ilc4c57vz7sggp57n1ahyp432j3ai3jyf55qlxrib"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled onigurama.
