@@ -8,7 +8,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
@@ -92,7 +92,10 @@
   #:use-module (gnu packages xml)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:autoload (ice-9 pretty-print) (pretty-print)
   #:use-module (ice-9 regex)
+  #:autoload (ice-9 textual-ports) (get-string-all)
+  #:use-module (srfi srfi-26)
 
   #:export (make-ergodox-firmware
             make-qmk-firmware))
@@ -721,6 +724,18 @@ coreboot.")
                    ;; cpl with a linking exception.
                    license:cpl1.0))))
 
+(define (format-qemu-firmware-config-options config-file)
+  "Format a Scheme list of all the configuration options found in CONFIG-FILE,
+configuration file such as \"roms/config.seabios-256k\", as found in the QEMU
+source."
+  (pretty-print (map (cut string-drop <> 7) ;strip CONFIG_ prefix
+                     (filter (cut string-prefix? "CONFIG_" <>)
+                             (string-split
+                              (string-trim-right
+                               (call-with-input-file config-file
+                                 get-string-all))
+                              #\newline)))))
+
 (define-public seabios-qemu
   (package/inherit seabios
     (name "seabios-qemu")
@@ -751,68 +766,133 @@ coreboot.")
             (replace 'build
               (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
                 ;; Note: These BIOS configurations are taken from QEMUs roms/
-                ;; directory.
-                (let ((biosen
-                       '( ;; The standard BIOS using default options.
-                         ("bios-256k" . ("QEMU=y" "ROM_SIZE=256" "ATA_DMA=n"))
-                         ;; A minimal BIOS for old QEMU machine types.
-                         ("bios-128k"
-                          . ("QEMU=y" "ROM_SIZE=128" "ATA_DMA=n" "BOOTSPLASH=n"
-                             "XEN=n" "USB_OHCI=n" "USB_XHCI=n" "USB_UAS=n"
-                             "SDCARD=n" "TCGBIOS=n" "MPT_SCSI=n" "ESP_SCSI=n"
-                             "MEGASAS=n" "PVSCSI=n" "NVME=n" "USE_SMM=n"
-                             "VGAHOOKS=n" "HOST_BIOS_GEOMETRY=n" "ACPI_PARSE=n"))
-                         ;; Minimal BIOS for the "microvm" machine type.
-                         ("bios-microvm"
-                          . ("QEMU=y" "ROM_SIZE=128" "XEN=n" "BOOTSPLASH=n"
-                             "ATA=n" "AHCI=n" "SDCARD=n" "PVSCSI=n" "ESP_SCSI=n"
-                             "LSI_SCSI=n" "MEGASAS=n" "MPT_SCSI=n" "FLOPPY=n"
-                             "FLASH_FLOPPY=n" "NVME=n" "PS2PORT=n" "USB=n"
-                             "LPT=n" "RTC_TIMER=n" "USE_SMM=n" "PMTIMER=n"
-                             "TCGBIOS=n" "HARDWARE_IRQ=n" "ACPI_PARSE=y"))))
-                      (vgabiosen
-                       '(("ati"    . ("VGA_ATI=y" "VGA_PCI=y"))
-                         ("bochs-display" . ("DISPLAY_BOCHS=y" "VGA_PCI=y"))
-                         ("cirrus" . ("VGA_CIRRUS=y" "VGA_PCI=y"))
-                         ("stdvga" . ("VGA_BOCHS=y" "VGA_PCI=y"))
-                         ("virtio" . ("VGA_BOCHS=y" "VGA_BOCHS_VIRTIO=y"
-                                      "VGA_PCI=y"))
-                         ("vmware" . ("VGA_BOCHS=y" "VGA_BOCHS_VMWARE=y"
-                                      "VGA_PCI=y"))
-                         ("qxl"    . ("VGA_BOCHS=y" "VGA_BOCHS_QXL=y"
-                                      "VGA_PCI=y"))
-                         ("isavga" . ("VGA_BOCHS=y" "VGA_PCI=n"))
-                         ("ramfb"  . ("VGA_RAMFB=y" "VGA_PCI=n")))))
-                  (mkdir "out")
-                  (n-par-for-each
-                   (parallel-job-count)
-                   (match-lambda
-                     ((target . config)
-                      (let* ((dot-config (string-append (getcwd) "/" target
-                                                        "/.config"))
-                             (flags (append
-                                     make-flags
-                                     (list (string-append "KCONFIG_CONFIG="
-                                                          dot-config)
-                                           (string-append "OUT=" target "/")))))
-                        (mkdir target)
-                        (call-with-output-file dot-config
-                          (lambda (port)
-                            (for-each (lambda (entry)
-                                        (format port "CONFIG_~a~%" entry))
-                                      config)))
-                        (apply invoke "make" "oldnoconfig" flags)
-                        (apply invoke "make" flags)
-                        (link (string-append target "/"
-                                             (if (string-prefix? "vgabios" target)
-                                                 "vgabios.bin" "bios.bin"))
-                              (string-append "out/" target ".bin")))))
-                   (append biosen
-                           (map (lambda (pair)
-                                  `(,(string-append "vgabios-" (car pair))
-                                    .
-                                    ,(cons "BUILD_VGABIOS=y" (cdr pair))))
-                                vgabiosen))))))
+                ;; directory.  To extract the config options, you can use the
+                ;; `format-qemu-firmware-config-options' helper procedure
+                ;; defined above.
+                (define bioses
+                  '( ;; The standard BIOS using default options.
+                    ("bios-256k" . ("QEMU=y" "ROM_SIZE=256" "ATA_DMA=n"))
+                    ;; A minimal BIOS for old QEMU machine types.
+                    ("bios-128k"
+                     . ("QEMU=y"
+                        "ROM_SIZE=128"
+                        "ATA_DMA=n"
+                        "XEN=n"
+                        "ATA_PIO32=n"
+                        "AHCI=n"
+                        "SDCARD=n"
+                        "VIRTIO_BLK=n"
+                        "VIRTIO_SCSI=n"
+                        "PVSCSI=n"
+                        "ESP_SCSI=n"
+                        "LSI_SCSI=n"
+                        "MEGASAS=n"
+                        "MPT_SCSI=n"
+                        "NVME=n"
+                        "USE_SMM=n"
+                        "VGAHOOKS=n"
+                        "HOST_BIOS_GEOMETRY=n"
+                        "USB=n"
+                        "PMTIMER=n"
+                        "PCIBIOS=n"
+                        "DISABLE_A20=n"
+                        "WRITABLE_UPPERMEMORY=n"
+                        "TCGBIOS=n"
+                        "ACPI=n"
+                        "ACPI_PARSE=n"
+                        "DEBUG_SERIAL=n"
+                        "DEBUG_SERIAL_MMIO=n"))
+                    ;; Minimal BIOS for the "microvm" machine type.
+                    ("bios-microvm"
+                     . ("QEMU=y"
+                        "QEMU_HARDWARE=y"
+                        "PERMIT_UNALIGNED_PCIROM=y"
+                        "ROM_SIZE=128"
+                        "XEN=n"
+                        "BOOTSPLASH=n"
+                        "ATA=n"
+                        "AHCI=n"
+                        "SDCARD=n"
+                        "PVSCSI=n"
+                        "ESP_SCSI=n"
+                        "LSI_SCSI=n"
+                        "MEGASAS=n"
+                        "MPT_SCSI=n"
+                        "FLOPPY=n"
+                        "FLASH_FLOPPY=n"
+                        "NVME=n"
+                        "PS2PORT=n"
+                        "USB=n"
+                        "LPT=n"
+                        "RTC_TIMER=n"
+                        "USE_SMM=n"
+                        "PMTIMER=n"
+                        "TCGBIOS=n"
+                        "HARDWARE_IRQ=n"
+                        "ACPI_PARSE=y"))
+                    ("vgabios-ati"
+                     . ("QEMU=y"
+                        "BUILD_VGABIOS=y"
+                        "VGA_ATI=y"
+                        "VGA_PCI=y"))
+                    ("vgabios-bochs-display"
+                     . ("BUILD_VGABIOS=y"
+                        "DISPLAY_BOCHS=y"
+                        "VGA_PCI=y"))
+                    ("vgabios-cirrus" .
+                     ("BUILD_VGABIOS=y" "VGA_CIRRUS=y" "VGA_PCI=y"))
+                    ("vgabios-isavga" .
+                     ("BUILD_VGABIOS=y" "VGA_BOCHS=y" "VGA_PCI=n"))
+                    ("vgabios-qxl"
+                     . ("BUILD_VGABIOS=y"
+                        "VGA_BOCHS=y"
+                        "VGA_PCI=y"
+                        "OVERRIDE_PCI_ID=y"
+                        "VGA_VID=0x1b36"
+                        "VGA_DID=0x0100"))
+                    ("vgabios-ramfb" .
+                     ("BUILD_VGABIOS=y" "VGA_RAMFB=y" "VGA_PCI=n"))
+                    ("vgabios-stdvga" .
+                     ("BUILD_VGABIOS=y" "VGA_BOCHS=y" "VGA_PCI=y"))
+                    ("vgabios-virtio"
+                     . ("BUILD_VGABIOS=y"
+                        "VGA_BOCHS=y"
+                        "VGA_PCI=y"
+                        "OVERRIDE_PCI_ID=y"
+                        "VGA_VID=0x1af4"
+                        "VGA_DID=0x1050"))
+                    ("vgabios-vmware"
+                     . ("BUILD_VGABIOS=y"
+                        "VGA_BOCHS=y"
+                        "VGA_PCI=y"
+                        "OVERRIDE_PCI_ID=y"
+                        "VGA_VID=0x15ad"
+                        "VGA_DID=0x0405"))))
+                (mkdir "out")
+                (n-par-for-each
+                 (parallel-job-count)
+                 (match-lambda
+                   ((target . config)
+                    (let* ((dot-config (string-append (getcwd) "/" target
+                                                      "/.config"))
+                           (flags (append
+                                   make-flags
+                                   (list (string-append "KCONFIG_CONFIG="
+                                                        dot-config)
+                                         (string-append "OUT=" target "/")))))
+                      (mkdir target)
+                      (call-with-output-file dot-config
+                        (lambda (port)
+                          (for-each (lambda (entry)
+                                      (format port "CONFIG_~a~%" entry))
+                                    config)))
+                      (apply invoke "make" "oldnoconfig" flags)
+                      (apply invoke "make" flags)
+                      (link (string-append target "/"
+                                           (if (string-prefix? "vgabios" target)
+                                               "vgabios.bin" "bios.bin"))
+                            (string-append "out/" target ".bin")))))
+                 bioses)))
             (replace 'install
               (lambda _
                 (let ((firmware (string-append #$output "/share/qemu")))
