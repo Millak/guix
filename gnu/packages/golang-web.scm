@@ -287,13 +287,21 @@ backwards-compatibility is mostly given.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a6rzp57srhyf66jri62gfsj4ndpfxgb9ln15qdpfwv0xvcffz63"))))
+        (base32 "0a6rzp57srhyf66jri62gfsj4ndpfxgb9ln15qdpfwv0xvcffz63"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - connectrpc.com/connect/internal/conformance
+            (delete-file-recursively "internal/conformance")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "connectrpc.com/connect"
-      ;; Needs additional dependencies..
-      #:tests? #f))
+      ;; TODO: Generate with protoc-gen-go, protoc-gen-connect-go, and buf.
+      ;; See: <https://github.com/connectrpc/connect-go/blob/v1.18.1/Makefile#L80>.
+      #:test-flags #~(list "-short" "-skip" "TestVersion|TestGenerate")))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-golang-org-x-net
