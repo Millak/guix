@@ -492,8 +492,8 @@ utilities used to process FCODE, OpenFirmware's byte code, consisting of:
                   "i686-linux-gnu")
                  (else (string-append arch "-linux-gnu"))))
         ;; 1.1 was released in May 2013.
-        (commit "af97fd7af5e7c18f591a7b987291d3db4ffb28b5")
-        (revision "1"))
+        (commit "c3a19c1e54977a53027d6232050e1e3e39a98a1b")
+        (revision "2"))
   (package
     (name name)
     (version (git-version "1.1" revision commit))
@@ -505,7 +505,7 @@ utilities used to process FCODE, OpenFirmware's byte code, consisting of:
               (file-name (git-file-name "openbios" version))
               (sha256
                (base32
-                "1xp1b6xgx40i0j3a5y3id0d1p8vdvapai8szganxg3zrvj53fh0n"))
+                "00a6lpbmknvy5qr8q3y2gd0mmv1lywmhch2fgssyhq7nczb6f34r"))
               (patches (search-patches "openbios-aarch64-riscv64-support.patch"))))
     (build-system gnu-build-system)
     (arguments
