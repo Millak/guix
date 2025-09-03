@@ -1939,9 +1939,9 @@ order to add a suitable bootloader menu entry.")
   ;;
   ;; TODO: Bump this timestamp at each modifications of the package (not only
   ;; for updates) by running: date +%s.
-  (let ((timestamp "1733491642")
-        (commit "24db39fb2983ca83ab5c6ee37cb57a4f7f6f94e6")
-        (revision "3"))
+  (let ((timestamp "1756877872")
+        (commit "969ce2c559a6841a949a1b73a3967b1889e0c999")
+        (revision "4"))
     (package
       (name "ipxe")
       (version (git-version "1.21.1" revision commit))
@@ -1953,7 +1953,7 @@ order to add a suitable bootloader menu entry.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0b2h4bsdgnyjna6piwfqqn985vqfjmbz80jh0n7hrnncp2v53qj6"))))
+                  "0ijgc9w0az2zb5w5zlzfxjqizhx8fxc2rgq47wgbpka0ssindlvb"))))
       (build-system gnu-build-system)
       (arguments
        (list
