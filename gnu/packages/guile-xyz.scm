@@ -1155,7 +1155,8 @@ is not available for Guile 2.0.")
              (sha256
               (base32
                "1ryp04w6ghgdfhlv9hkwl00iv6nwnw2hj2pywlxvpp92pyxhkwpi"))
-             (patches '())))))
+             (patches '())))
+    (arguments '())))
 
 (define-public guile-fibers guile-fibers-1.4)
 
