@@ -458,12 +458,12 @@ drawing.")
       (arguments
        (substitute-keyword-arguments (package-arguments st)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'remove-calls-to-git
-               (lambda _
-                 (substitute* "Makefile"
-                   (("git submodule init") "")
-                   (("git submodule update") ""))))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'remove-calls-to-git
+                (lambda _
+                  (substitute* "Makefile"
+                    (("git submodule init") "")
+                    (("git submodule update") ""))))))))
       (inputs (modify-inputs (package-inputs st)
                 (prepend libxext harfbuzz)))
       (home-page "https://github.com/LukeSmithxyz/st")
