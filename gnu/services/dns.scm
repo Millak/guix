@@ -1147,7 +1147,7 @@ log.")
   (let ((config-file (unbound-config-file config)))
     (list (shepherd-service
             (documentation "Unbound daemon.")
-            (provision '(unbound dns))
+            (provision '(unbound))
             ;; unbound may be bound to a particular IP address, hence
             ;; only start it after the networking service has started.
             (requirement '(user-processes networking))
