@@ -640,7 +640,7 @@ OpenSSL library.")
 (define-public python-ed25519
   (package
     (name "python-ed25519")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -649,7 +649,7 @@ OpenSSL library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ksl73nc47ic31dknvlmm72cpxfxvia0j5f6asw4gzppwp2v1yrs"))))
+        (base32 "0adxfm12wygh2gdsn83xmp1sw7w96ni7mr7v3z3y6q0mvh9n5x0p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
