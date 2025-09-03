@@ -219,20 +219,6 @@ internal RPC protocols and file formats.")
                   #~(modify-phases #$phases
                       (delete 'set-c++-standard)))))))
 
-;; The 3.5 series are the last versions that do not require C++ 11.
-(define-public protobuf-3.5
-  (package
-    (inherit protobuf-3.6)
-   (version "3.5.1")
-   (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/google/protobuf/releases/"
-                                  "download/v" version "/protobuf-cpp-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "14j0427ykjzrd9a66c2mpk0sjcccjlsx6q8ww6hzwb6sha3vm3f2"))))))
-
 ;; XXX Remove this old version when no other packages depend on it.
 (define-public protobuf-2
   (package (inherit protobuf)
