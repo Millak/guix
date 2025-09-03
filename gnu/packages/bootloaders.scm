@@ -210,13 +210,13 @@
                    (substitute* "Makefile.in"
                      (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
                       "grub_cmd_date grub_cmd_sleep"))))
-               #$@(if (target-ppc64le?)
-                      #~((add-before 'check 'skip-tests
-                           (lambda _
-                             (substitute* "Makefile.in"
-                               ((" grub_cmd_date ") " ")
-                               ((" pseries_test ") " ")))))
-                      #~())
+               (add-before 'check 'skip-tests
+                 (lambda _
+                   (substitute* "Makefile.in"
+                     ;; The grub_cmd_date sometimes fail (see:
+                     ;; <https://savannah.gnu.org/bugs/index.php?67471>).
+                     ((" grub_cmd_date ") " ")
+                     ((" pseries_test ") " "))))
                (add-before 'check 'disable-pixel-perfect-test
                  (lambda _
                    ;; This test compares many screenshots rendered with an older
