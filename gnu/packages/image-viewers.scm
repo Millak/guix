@@ -56,6 +56,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -1341,3 +1342,30 @@ doesn't, it should support the Sixel protocol.")
     (home-page "https://wolf.nereid.pl/posts/image-viewer/")
     ;; Author tried to make it BSD-3--but it uses a GPL library (poppler)
     (license license:gpl2+)))
+
+(define-public lsix
+  (package
+    (name "lsix")
+    (version "1.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hackerb9/lsix")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w4wgnkvvirpgxy00jlpw7p1pcflnwy3rwk5zwh4pkk3igpcdi4s"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("lsix" "bin/"))))
+    (propagated-inputs (list imagemagick))
+    (home-page "https://github.com/hackerb9/lsix")
+    (synopsis "Show image thumbnails in the terminal")
+    (description
+     "@command{lsix} lists the images in a directory by displaying their thumbnails.
+Images are displayed in sixel graphics.  @command{lsix} automatically detects
+terminal features and adapts the output to offer the highest quality possible.
+It can usually display non-bitmap graphics, including PDF.  Your terminal should
+be sixel capable, like @command{xterm -ti vt340}.")
+    (license license:gpl3+)))
