@@ -1315,6 +1315,11 @@ the \"texlive\" importer."
                        "fishinthecalculator")
   audio)
 
+(define-member (person "Saku Laesvuori"
+                       "saku@laesvuori.fi"
+                       "slaesvuo")
+  haskell)
+
 (define-member (person "Rodion Goritskov"
                        "rodion@goritskov.com"
                        "rodion-goritskov")
