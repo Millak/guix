@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,9 +31,13 @@
 
 (define-module (guix scripts style)
   #:autoload   (gnu packages) (specification->package fold-packages)
+  #:autoload   (guix import utils) (default-git-error
+                                    generate-git-source
+                                    git-repository-url?)
   #:use-module (guix combinators)
   #:use-module (guix scripts)
   #:use-module ((guix scripts build) #:select (%standard-build-options))
+  #:use-module (guix download)
   #:use-module (guix ui)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -42,11 +47,13 @@
   #:use-module (ice-9 control)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:export (guix-style))
 
 
@@ -559,6 +566,62 @@ are put in alphabetical order."
 
 
 ;;;
+;;; url-fetch->git-fetch
+;;;
+
+(define (transform-to-git-fetch location origin home-page version)
+  "Transform an origin using url-fetch to use git-fetch if appropriate.
+Return the new origin S-expression or #f if transformation isn't applicable."
+  (match origin
+    (('origin
+       ('method 'url-fetch)
+       ('uri uri-expr)
+       ('sha256 ('base32 _))
+       rest ...)
+     (let ((rest (filter (match-lambda
+                           (('patches . _) #t)
+                           (('modules . _) #t)
+                           (('snippet . _) #t)
+                           (_ #f))
+                         rest)))
+       `(,@(generate-git-source home-page version
+                                (default-git-error home-page location))
+         ,@rest)))
+    (_ #f)))
+
+(define* (url-fetch->git-fetch package
+                               #:key
+                               (policy 'safe)
+                               (edit-expression edit-expression))
+  "Transform PACKAGE's source from url-fetch to git-fetch when appropriate."
+  (define (transform-source location str)
+    (let* ((origin-exp (call-with-input-string str read-with-comments))
+           (home-page (package-home-page package))
+           (new-origin (transform-to-git-fetch location
+                                               origin-exp
+                                               home-page
+                                               (package-version package))))
+      (if new-origin
+          (begin
+            (info location (G_ "transforming source from url-fetch to git-fetch~%"))
+            (object->string* new-origin (location-column location)))
+          str)))
+
+  ;; Check if this package uses url-fetch and has a git repository home-page
+  (and-let* ((source (package-source package))
+             (home-page (package-home-page package))
+             (location                  ; source might be inherited
+              (and=> (and (origin? source)
+                          (eq? url-fetch (origin-method source))
+                          (git-repository-url? home-page)
+                          (package-field-location package 'source))
+                     absolute-location)))
+    (edit-expression
+     (location->source-properties location)
+     (cut transform-source location <>))))
+
+
+;;;
 ;;; Options.
 ;;;
 
@@ -587,6 +650,7 @@ are put in alphabetical order."
                                 ("inputs" simplify-package-inputs)
                                 ("arguments" gexpify-package-arguments)
                                 ("format" format-package-definition)
+                                ("git-source" url-fetch->git-fetch)
                                 (_ (leave (G_ "~a: unknown styling~%")
                                           arg)))
                               result)))
@@ -615,7 +679,8 @@ are put in alphabetical order."
   (display (G_ "Available styling rules:\n"))
   (display (G_ "- format: Format the given package definition(s)\n"))
   (display (G_ "- inputs: Rewrite package inputs to the “new style”\n"))
-  (display (G_ "- arguments: Rewrite package arguments to G-expressions\n")))
+  (display (G_ "- arguments: Rewrite package arguments to G-expressions\n"))
+  (display (G_ "- git-source: Rewrite source fetch method to Git.\n")))
 
 (define (show-help)
   (display (G_ "Usage: guix style [OPTION]... [PACKAGE]...

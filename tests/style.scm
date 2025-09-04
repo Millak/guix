@@ -17,55 +17,75 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (tests-style)
+  #:use-module ((gcrypt hash) #:select (port-sha256))
   #:use-module (guix packages)
   #:use-module (guix scripts style)
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module ((guix build utils) #:select (substitute*))
   #:use-module (guix gexp)                        ;for the reader extension
   #:use-module (guix diagnostics)
+  #:use-module (guix git)
+  #:use-module (guix tests)
+  #:use-module (guix tests git)
+  #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages multiprecision)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 pretty-print))
+  #:use-module (ice-9 pretty-print)
+  #:use-module (ice-9 vlist))
 
-(define (call-with-test-package inputs proc)
-  (call-with-temporary-directory
-   (lambda (directory)
-     (call-with-output-file (string-append directory "/my-packages.scm")
-       (lambda (port)
-         (pretty-print
-          `(begin
-             (define-module (my-packages)
-               #:use-module (guix)
-               #:use-module (guix licenses)
-               #:use-module (gnu packages acl)
-               #:use-module (gnu packages base)
-               #:use-module (gnu packages multiprecision)
-               #:use-module (srfi srfi-1))
+(define* (call-with-test-package inputs proc #:optional suffix)
+  (let ((module-name (if suffix
+                         (string-append "my-packages-" suffix)
+                         "my-packages"))
+        (name (if suffix
+                  (string-append "my-coreutils-" suffix)
+                  "my-coreutils")))
+    (call-with-temporary-directory
+     (lambda (directory)
+       (call-with-output-file (string-append directory "/" module-name ".scm")
+         (lambda (port)
+           (pretty-print
+            `(begin
+               (define-module (,(string->symbol module-name))
+                 #:use-module (guix)
+                 #:use-module (guix git-download) ; for -S git-source
+                 #:use-module ((gnu packages) #:select (search-patches))
+                 #:use-module (guix licenses)
+                 #:use-module (gnu packages acl)
+                 #:use-module (gnu packages base)
+                 #:use-module (gnu packages multiprecision)
+                 #:use-module (srfi srfi-1))
 
-             (define base
-               (package
-                 (inherit coreutils)
-                 (inputs '())
-                 (native-inputs '())
-                 (propagated-inputs '())))
+               (define base
+                 (package
+                   (inherit coreutils)
+                   (inputs '())
+                   (native-inputs '())
+                   (propagated-inputs '())))
 
-             (define (sdl-union . lst)
-               (package
-                 (inherit base)
-                 (name "sdl-union")))
+               (define (sdl-union . lst)
+                 (package
+                   (inherit base)
+                   (name "sdl-union")))
 
-             (define-public my-coreutils
-               (package
-                 (inherit base)
-                 ,@inputs
-                 (name "my-coreutils"))))
-          port)))
+               (define-public ,(string->symbol name)
+                 (package
+                   (inherit base)
+                   (name ,name)
+                   ,@inputs
+                   ;; XXX: The field below was added so that the 'inputs'
+                   ;; field doesn't come last; if it did, 'read-package-field'
+                   ;; in the tests below would read the three closing parens
+                   ;; for each test.
+                   (properties '()))))
+            port)))
 
-     (proc directory))))
+       (proc directory)))))
 
 (define test-directory
   ;; Directory where the package definition lives.
@@ -545,6 +565,144 @@
 
       (load file)
       (read-package-field (@ (my-packages) my-coreutils) 'arguments 5))))
+
+;;;
+;;; url-fetch->git-fetch transformation
+;;;
+
+(test-equal "url-fetch->git-fetch, basic transformation"
+  `(origin
+     (method git-fetch)
+     (uri (git-reference (url "https://github.com/foo/bar")
+                         (commit version)))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "0j8vhvfj1d3jvbrd4kh20m50knmwj19xk0l3s78z1xxayp3c5zkk")))
+  (call-with-test-package
+      '((home-page "@substitute-me@")
+        (version "1.0")
+        (source
+         (origin
+           (method url-fetch)
+           (uri (string-append "https://example.com/foo-" version ".tar.gz"))
+           (sha256
+            (base32 "0000000000000000000000000000000000000000000000000000")))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages-0.scm"))
+
+      (parameterize ((test-directory directory))
+        (with-temporary-git-repository repository
+            `((add "README" "Initial commit")
+              (commit "First commit")
+              (tag "1.0" "Initial release"))
+          (mock ((guix import utils) git-repository-url? (const #t))
+                (substitute* file
+                  (("@substitute-me@")
+                   (string-append "file://" repository)))
+                ;; XXX: Calling guix-style is necessary to use mock.
+                (guix-style "-L" directory "-S" "git-source" "my-coreutils-0")
+                (substitute* file
+                  (((string-append "file://" repository))
+                   "https://github.com/foo/bar"))
+
+                (load file)
+                (and=> (false-if-exception
+                        (read-package-field (@ (my-packages-0) my-coreutils-0) 'source 8))
+                       (cut call-with-input-string <> read))))))
+    "0"))
+
+(test-assert "url-fetch->git-fetch, preserved field"
+  (call-with-test-package
+      '((home-page "@substitute-me@")
+        (version "1.0")
+        (source
+         (origin
+           (method url-fetch)
+           (uri "https://example.com/foo.tar.gz")
+           (sha256
+            (base32 "0000000000000000000000000000000000000000000000000000"))
+           (patches (search-patches "foo.patch")))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages-1.scm"))
+      (call-with-output-file (string-append directory "/foo.patch")
+        (const #t))
+
+      (parameterize ((test-directory directory)
+                     (%patch-path (list directory))
+                     (%package-module-path (list directory "")))
+        (with-temporary-git-repository repository
+            `((add "README" "Initial commit")
+              (commit "First commit")
+              (tag "1.0" "Initial release"))
+          (mock ((guix import utils) git-repository-url? (const #t))
+                (mock ((gnu packages) specification->package
+                       (lambda (spec)
+                         (car
+                          (vhash-fold* cons '() spec
+                                       (fold-packages
+                                        (lambda (p r)
+                                          (vhash-cons (package-name p) p r))
+                                        vlist-null)))))
+                      (substitute* file
+                        (("@substitute-me@")
+                         (string-append "file://" repository)))
+                      ;; XXX: Calling guix-style is necessary to use mock.
+                      (guix-style "-L" directory "-S" "git-source" "my-coreutils-1")
+                      (substitute* file
+                        (((string-append "file://" repository))
+                         "https://github.com/foo/bar"))
+                      (load file)
+                      (and=> (read-package-field
+                              (@ (my-packages-1) my-coreutils-1) 'source 8)
+                             (cut string-contains <> "patches")))))))
+    "1"))
+
+(test-assert "url-fetch->git-fetch, non-git home-page unchanged"
+  (call-with-test-package
+      '((home-page "https://www.example.com")
+        (source
+         (origin
+           (method url-fetch)
+           (uri "https://example.com/foo.tar.gz")
+           (sha256
+            (base32 "0000000000000000000000000000000000000000000000000000")))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+      (define before-hash
+        (call-with-input-file file port-sha256))
+
+      (system* "guix" "style" "-L" directory "-S" "git-source"
+               "my-coreutils")
+
+      ;; File should be unchanged
+      (equal? (call-with-input-file file port-sha256) before-hash))))
+
+(test-assert "url-fetch->git-fetch, already git-fetch unchanged"
+  (call-with-test-package
+      '((home-page "https://github.com/foo/bar")
+        (source
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                  (url "https://github.com/foo/bar")
+                  (commit version)))
+           (file-name (git-file-name name version))
+           (sha256
+            (base32 "0000000000000000000000000000000000000000000000000000")))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+      (define before-hash
+        (call-with-input-file file port-sha256))
+
+      (system* "guix" "style" "-L" directory "-S" "git-source"
+               "my-coreutils")
+
+      ;; File should be unchanged
+      (equal? (call-with-input-file file port-sha256) before-hash))))
 
 (test-end)
 
