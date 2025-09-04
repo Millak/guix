@@ -9029,7 +9029,7 @@ elements to achieve a simple goal in the most complex way possible.")
 (define-public the-powder-toy
   (package
     (name "the-powder-toy")
-    (version "98.2.365")
+    (version "99.3.384")
     (source
      (origin
        (method git-fetch)
@@ -9038,7 +9038,7 @@ elements to achieve a simple goal in the most complex way possible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06l39w3ggrzn8799dqll606by4f88kjr60r879w8j26csx1py76g"))
+        (base32 "0l067j0bbzvr0i2prxrgb0af4xdpl648x741jgnyp4bjzdbm61x7"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "meson.build"
@@ -9090,7 +9090,8 @@ elements to achieve a simple goal in the most complex way possible.")
              curl
              fftwf
              jsoncpp
-             libpng)
+             libpng
+             python-wrapper)
        (if (supported-package? luajit)
            (list luajit)
            (list lua-5.2))
