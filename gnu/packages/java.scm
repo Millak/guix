@@ -10046,7 +10046,7 @@ to create those artifacts.")
                                   "archive/exam-reactor-" version ".tar.gz"))
               (sha256
                (base32
-                "08mzw8nkah3rj3vznlplnawspxhp61zgvb44ifqa1rni1cvbms2g"))))
+                "1b0f89gawxyl0pkqx9sicp6n58pirkzhjw41y749bwrkb6h99i26"))))
     (arguments
      `(#:jar-name "java-ops4j-pax-exam-core.jar"
        #:source-dir "core/pax-exam/src/main/java"
