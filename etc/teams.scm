@@ -1283,8 +1283,9 @@ the \"texlive\" importer."
   gnome release)
 
 (define-member (person "Ashvith Shetty"
-                       "ashvithshetty0010@zohomail.in")
-  go javascript)
+                       "ashvithshetty0010@zohomail.in"
+                       "Ashvith")
+  games go javascript sysadmin xfce)
 
 (define-member (person "Trevor Richards"
                        "trev@trevdev.ca")
