@@ -10048,19 +10048,19 @@ to create those artifacts.")
                (base32
                 "1b0f89gawxyl0pkqx9sicp6n58pirkzhjw41y749bwrkb6h99i26"))))
     (arguments
-     `(#:jar-name "java-ops4j-pax-exam-core.jar"
-       #:source-dir "core/pax-exam/src/main/java"
-       #:test-dir "core/pax-exam/src/test"))
+     (list #:jar-name "java-ops4j-pax-exam-core.jar"
+           #:source-dir "core/pax-exam/src/main/java"
+           #:test-dir "core/pax-exam/src/test"))
     (inputs
-     `(("slf4j" ,java-slf4j-api)
-       ("lang" ,java-ops4j-base-lang)
-       ("io" ,java-ops4j-base-io)
-       ("util-property" ,java-ops4j-base-util-property)
-       ("util-store" ,java-ops4j-base-store)
-       ("java-osgi-core" ,java-osgi-core)))
+     (list java-slf4j-api
+           java-ops4j-base-lang
+           java-ops4j-base-io
+           java-ops4j-base-util-property
+           java-ops4j-base-store
+           java-osgi-core))
     (native-inputs
-     `(("junit" ,java-junit)
-       ("hamcrest" ,java-hamcrest-core)))
+     (list java-junit
+           java-hamcrest-core))
     (build-system ant-build-system)
     (home-page "https://ops4j1.jira.com/wiki/spaces/PAXEXAM4/overview")
     (synopsis "In-Container Testing for OSGi, Java EE and CDI")
