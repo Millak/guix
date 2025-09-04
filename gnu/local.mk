@@ -1124,7 +1124,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/containerd-fix-includes.patch            \
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coq-autosubst-1.8-remove-deprecated-files.patch		\
-  %D%/packages/patches/corectrl-polkit-install-dir.patch	\
+  %D%/packages/patches/corectrl-locate-polkit-with-pkg-config.patch	\
   %D%/packages/patches/corefx-mono-5.4.0-patches.patch		\
   %D%/packages/patches/corefx-mono-pre-5.8.0-patches.patch	\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
