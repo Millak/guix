@@ -564,16 +564,6 @@ strong randomness, and more.  It is implemented using the foreign function
 interface (FFI) of Guile.")
     (license license:gpl3+)))
 
-(define-public guile2.0-gcrypt
-  (package (inherit guile-gcrypt)
-    (name "guile2.0-gcrypt")
-    (native-inputs
-     (modify-inputs (package-native-inputs guile-gcrypt)
-       (replace "guile" guile-2.0)))
-    (inputs
-     (modify-inputs (package-inputs guile-gcrypt)
-       (replace "guile" guile-2.0)))))
-
 (define-public guile2.2-gcrypt
   (package
     (inherit guile-gcrypt)
