@@ -15198,7 +15198,6 @@ are many packages, though, for which it lacks a method to determine
 whether a new upstream release is available.  However, the mechanism is
 extensible, so feel free to get in touch with us to add a new method!
 
-
 If for some reason you don't want to update to the latest version, you
 can update to a specific version by appending an equal sign and the
 desired version number to the package specification.  Note that not all
@@ -15206,8 +15205,6 @@ updaters support this; an error is reported when an updater cannot
 refresh to the specified version.
 
 @example
-$ guix refresh trytond-party
-gnu/packages/guile.scm:392:2: guile would be upgraded from 3.0.3 to 3.0.5
 $ guix refresh -u guile=3.0.4
 @dots{}
 gnu/packages/guile.scm:392:2: guile: updating from version 3.0.3 to version 3.0.4...
