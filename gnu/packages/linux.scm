@@ -3745,7 +3745,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
 (define-public strace
   (package
     (name "strace")
-    (version "6.15")
+    (version "6.16")
     (source
      (origin
        (method git-fetch)
@@ -3754,7 +3754,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a4xq7lji9iazrjdm0anqg2xgkypl3a9pjcm9j71s9q84ggjgwqm"))
+        (base32 "0p405lf76vksa3ldlq8fjjz5760q2rgr0dvms6bdp3dvc72kr82i"))
        (patches (search-patches "strace-readlink-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
