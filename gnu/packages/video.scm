@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen@protonmail.com>
-;;; Copyright © 2020, 2021, 2023, 2024 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021, 2023, 2024, 2025 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -4320,7 +4320,7 @@ to OBS Studio.")
 (define-public obs-looking-glass
   (package
     (name "obs-looking-glass")
-    (version "B6")
+    (version "B7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://looking-glass.io/artifact/" version
@@ -4328,7 +4328,7 @@ to OBS Studio.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))))
+                "11crsvy783ig7kzmr2cr68wv9zsjkcbp1akcs28rc6yc1ik0dr89"))))
     (build-system cmake-build-system)
     (arguments
      (list
