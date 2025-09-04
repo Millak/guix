@@ -1413,6 +1413,8 @@ be built as a stand-alone REPL interpreter.")
                            version "-source.tar.bz2"))
        (sha256
         (base32 "1bm9hvsrg21mzqhcayiyghz0nkfp43ks840p0bg3bxlma22kwq57"))
+       ;; TODO: Remove this patch when upgrading to SBCL > 2.5.8.
+       (patches (search-patches "sbcl-fix-arm64-shared-lib.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
