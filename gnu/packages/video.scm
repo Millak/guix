@@ -4392,7 +4392,7 @@ your host privately.")
 (define-public kvmfr-linux-module
   (package
     (name "kvmfr-linux-module")
-    (version "B6")
+    (version "B7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://looking-glass.io/artifact/" version
@@ -4400,8 +4400,7 @@ your host privately.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))
-              (patches (search-patches "kvmfr-linux-module-fix-build.patch"))))
+                "11crsvy783ig7kzmr2cr68wv9zsjkcbp1akcs28rc6yc1ik0dr89"))))
     (build-system linux-module-build-system)
     (inputs (list bash-minimal))
     (arguments
