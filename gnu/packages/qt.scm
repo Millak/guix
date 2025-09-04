@@ -2756,6 +2756,31 @@ provides a high-level interface for creating 3D content for user interfaces.  It
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
+(define-public qtquick3dphysics
+  (package
+    (name "qtquick3dphysics")
+    (version "6.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "12yc0lswcmyaw19yyxzy73j95ncgqw8mlx8svhrwsllgcf2n9z47"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'prepare-for-tests
+                          (lambda _
+                            (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (inputs (list qtbase qtdeclarative qtquick3d qtshadertools))
+    (synopsis "Physics engine integration for Qt Quick 3D")
+    (description "Qt Quick 3D Physics provides a high-level API for physics
+simulation.  It supports simulating interactive rigid bodies as well as static
+meshes and non-colliding bodies used for detecting overlaps.  Every simulated
+body can have its own physical properties like mass, density and friction.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtquickcontrols-5
   (package
     (inherit qtsvg-5)
