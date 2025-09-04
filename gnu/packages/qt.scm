@@ -2431,13 +2431,13 @@ OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
 (define-public qtwebview
   (package
     (name "qtwebview")
-    (version "6.8.2")
+    (version "6.9.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0hyhpr3ai77pwdc69q73r1wkibdn2vn6v1pqkc8minck24kkdd46"))))
+                "1w8z3d7w7z2xjfb5l15gb37v9w6pa7d71jalkrqda8l2wr5d3ksc"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
