@@ -761,13 +761,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qtbase")
-    (version "6.8.2")
+    (version "6.8.3")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "01gy1p8zvxq8771x6iqkrc7s3kzdddgf1i7xj656w7j1dp746801"))
+                "100bkvs320s9gim4j7l6wkrl1abz1mwbmwwrscir1fq1as81n02n"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -1003,6 +1003,10 @@ tst_qt_cmake_create.cpp"
 
                        ;; The 'tst_qsqlthread' test sometimes fails.
                        "tst_qsqlthread"
+
+                       ;; The 'tst_qthread' test is also flaky, despite the
+                       ;; patch applied that promised to fix it.
+                       "tst_qthread"
 
                        ;; The 'tst_qsystemsemaphore' test sometimes fails.
                        "tst_qsystemsemaphore"
