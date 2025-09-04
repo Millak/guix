@@ -3020,7 +3020,7 @@ runs a command whenever it detects modifications.")
 (define-public rbw
   (package
     (name "rbw")
-    (version "1.13.2")
+    (version "1.14.1")
     (outputs '("out" "scripts"))
     (source
      (origin
@@ -3028,7 +3028,7 @@ runs a command whenever it detects modifications.")
        (uri (crate-uri "rbw" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1plwv71iwdcdprknsn32x7wzlg1hnikq3wqbym4yiwpk5kf6anmm"))))
+        (base32 "1d4pxj3jjrgbvldpxsbq05h13cx1bc6yxhhwxa0rp58bkj6qh3ah"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
