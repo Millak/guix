@@ -794,6 +794,42 @@ object."
     (name old-name)
     (properties `((superseded . ,p)))))
 
+(define* (field-value-location port field
+                               #:optional (file (port-filename port)))
+  "Return the source location of the value of FIELD as read from PORT, or #f
+if FIELD could not be found."
+  (define (field-value lst field)
+    (syntax-case lst ()
+      (()
+       #f)
+      (((binding value) rest ...)
+       (eq? (syntax->datum #'binding) field)
+       #'value)
+      ((_ rest ...)
+       (field-value #'(rest ...) field))))
+
+  (define (extract inits)
+    (and=> (field-value inits field)
+           (lambda (value)
+             (let ((loc (and=> (syntax-source value)
+                               source-properties->location)))
+               (and loc
+                    ;; Preserve the original file name, which
+                    ;; may be a relative file name.
+                    (set-field loc (location-file) file))))))
+
+  ;; Use 'read-syntax', not 'read', to get location info on all the tokens,
+  ;; including symbols.  Abuse 'syntax-case' for pattern matching on syntax
+  ;; objects.
+  (syntax-case (read-syntax port) ()
+    ((head inits ...)
+     (eq? (syntax->datum #'head) 'package)
+     (extract #'(inits ...)))
+    ((head _ inits ...)
+     (eq? (syntax->datum #'head) 'package/inherit)
+     (extract #'(inits ...)))
+    (x #f)))
+
 (define (package-field-location package field)
   "Return the source code location of the definition of FIELD for PACKAGE, or
 #f if it could not be determined."
@@ -807,22 +843,7 @@ object."
             (call-with-input-file file-found
               (lambda (port)
                 (go-to-location port line column)
-                (match (read port)
-                  ((or ('package inits ...)
-                       ('package/inherit _ inits ...))
-                   (let ((field (assoc field inits)))
-                     (match field
-                       ((_ value)
-                        (let ((loc (and=> (source-properties value)
-                                          source-properties->location)))
-                          (and loc
-                               ;; Preserve the original file name, which may be a
-                               ;; relative file name.
-                               (set-field loc (location-file) file))))
-                       (_
-                        #f))))
-                  (_
-                   #f)))))
+                (field-value-location port field file))))
           (lambda _
             #f)))
        (#f

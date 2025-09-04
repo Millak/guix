@@ -292,6 +292,9 @@
          (member (read-at (package-field-location %bootstrap-guile 'version))
                  (let ((version (package-version %bootstrap-guile)))
                    (list version `(version ,version))))
+         (member (read-at (package-field-location coreutils
+                                                  'build-system))
+                 '(build-system gnu-build-system))
          (not (package-field-location %bootstrap-guile 'does-not-exist)))))
 
 ;; Make sure we don't change the file name to an absolute file name.
