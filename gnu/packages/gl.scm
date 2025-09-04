@@ -410,6 +410,7 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
          "-Dgles2=enabled"
          "-Dgbm=enabled"
          "-Dshared-glapi=enabled"
+         "--wrap-mode=nodownload"       ; XXX: disable
 
          #$@(cond
              ((target-x86-32?)
