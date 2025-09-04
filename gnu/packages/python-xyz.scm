@@ -27651,6 +27651,44 @@ Examples are:
         (base32 "1chgi60z3c97m9l23vf5cpyp0nidkqlpxc55q5k5pz41ms3d0440"))
        (file-name (git-file-name name version))))))
 
+(define-public python-sqltrie
+  (package
+    (name "python-sqltrie")
+    (version "0.11.2")
+    (home-page "https://github.com/iterative/sqltrie/")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sqltrie" version))
+       (sha256
+        (base32 "1ninmia5ka1nnv4gxqacvbmkfxwc7dilw141rxxk9zmbnf4p1x2d"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-attrs
+           python-orjson
+           python-pygtrie))
+    (native-inputs
+     (list python-mypy
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-mock
+           python-pytest-sugar
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      ;; <https://github.com/pyinstaller/pyinstaller> is not packaged yet in
+      ;; Guix.
+      #~(list "--ignore=src/sqltrie/__pyinstaller")))
+    (synopsis "SQL-based prefix tree for Python")
+    (description
+     "Sqltrie is a SQL-based prefix tree inspired by pygtrie and
+python-diskcache.")
+    (license license:asl2.0)))
+
 (define-public python-isoweek
   (package
     (name "python-isoweek")
