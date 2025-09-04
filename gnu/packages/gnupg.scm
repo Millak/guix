@@ -562,7 +562,7 @@ GNU Libgcrypt crytographic library.  It provides modules for cryptographic
 hash functions, message authentication codes (MAC), public-key cryptography,
 strong randomness, and more.  It is implemented using the foreign function
 interface (FFI) of Guile.")
-    (license license:gpl3+)))
+    (license license:lgpl3+)))
 
 (define-public guile2.2-gcrypt
   (package
