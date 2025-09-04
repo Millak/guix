@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -2711,6 +2711,50 @@ the Qt community.")
     (description "Qt provides support for application scripting with ECMAScript.
 The following guides and references cover aspects of programming with
 ECMAScript and Qt.")))
+
+(define-public qtquick3d
+  (package
+    (name "qtquick3d")
+    (version "6.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "002888xfnkxmvn8413fllidl3mm2fcwc4gbzdnbvpjlysaq9f3ig"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'check)          ;moved after install phase
+               (add-after 'install 'check
+                 (assoc-ref %standard-phases 'check))
+               (add-before 'check 'prepare-for-tests
+                 (lambda _
+                   (setenv "QT_QPA_PLATFORM" "offscreen")
+                   (setenv "QT_PLUGIN_PATH"
+                           (string-append #$output "/lib/qt6/plugins:"
+                                          (getenv "QT_PLUGIN_PATH")))
+                   (setenv "QML_IMPORT_PATH"
+                           (string-append #$output "/lib/qt6/qml:"
+                                          (getenv "QML_IMPORT_PATH"))))))))
+    (inputs (list qtbase qtdeclarative qtshadertools))
+    (synopsis "Qt module and API for defining 3D content in Qt Quick")
+    (description "Qt Quick 3D is a module within the Qt framework that
+provides a high-level interface for creating 3D content for user interfaces.  Its key features include:
+@itemize
+@item Spatial (3D) scene graph
+@item Mixing 2D and 3D Qt Quick content
+@item Physically based rendering (PBR) materials
+@item Punctual and image based lighting
+@item Custom material and effect system
+@item GLTF (Graphics Library Transmission Format) 2.0 model import
+@item Animation support
+@item 3D input handling and picking
+@item 3D particle system
+@end itemize")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
 
 (define-public qtquickcontrols-5
   (package
