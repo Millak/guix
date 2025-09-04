@@ -515,6 +515,13 @@ This package provides the runtime.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
+          (add-after 'unpack 'patch-for-tiling-window-managers
+            (lambda _
+              ;; On tiling window managers like Niri the focus lost event will
+              ;; always close the window, even when focus has not actually
+              ;; been lost.
+              (substitute* "src/main/java/axoloti/ObjectSearchFrame.java"
+                (("formWindowLostFocus\\(evt\\)") "return"))))
           (replace 'build
             (lambda* (#:key inputs #:allow-other-keys)
               (setenv "JAVA_HOME"
