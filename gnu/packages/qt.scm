@@ -70,6 +70,7 @@
   #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
@@ -6351,7 +6352,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "15.0.1")
+    (version "17.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6364,10 +6365,7 @@ including @i{fix-its} for automatic refactoring.")
                            delete-file-recursively
                            ;; Remove bundled libraries, where supported.
                            ;; TODO: package and unbundle litehtml
-                           '("src/libs/3rdparty/yaml-cpp"
-                             ;; Marketplace recommends nonfree extensions;
-                             ;; remove it.
-                             "src/plugins/marketplace"))
+                           '("src/libs/3rdparty/yaml-cpp"))
                           ;; qt-creator installation attempts to install the
                           ;; yaml-cpp LICENSE file, but we removed the bundled
                           ;; yaml-cpp, so create an empty file to allow it to
@@ -6375,14 +6373,10 @@ including @i{fix-its} for automatic refactoring.")
                           (mkdir-p "src/libs/3rdparty/yaml-cpp")
                           (call-with-output-file "src/libs/3rdparty/yaml-cpp/LICENSE"
                             (lambda (port)
-                              (const #t)))
-                          (substitute* "src/plugins/CMakeLists.txt"
-                            (("add_subdirectory\\(marketplace).*") ""))
-                          (substitute* "src/plugins/plugins.qbs"
-                            ((".*marketplace/marketplace.qbs.*") ""))))
+                              (const #t)))))
               (sha256
                (base32
-                "04sprj9m5zq5m5sc6wjm4ilhz6qfrawnxa2vl8618riadgbsxr7j"))))
+                "1w4jh49v2qax6wxc2d415znkgwfkib08agj205v53ldfp4j7yr1v"))))
     (outputs '("out" "debug"))
     (build-system qt-build-system)
     (arguments
@@ -6392,6 +6386,7 @@ including @i{fix-its} for automatic refactoring.")
       #~(list "-DWITH_DOCS=ON"
               "-DBUILD_DEVELOPER_DOCS=ON"
               "-DCMAKE_VERBOSE_MAKEFILE=ON"
+              "-DCLANGTOOLING_LINK_CLANG_DYLIB=ON"
               "-DWITH_TESTS=ON"
               ;; Extend the RUNPATH with lib/qtcreator, which contains
               ;; multiple shared objects.
@@ -6399,6 +6394,14 @@ including @i{fix-its} for automatic refactoring.")
                              #$output "/lib/qtcreator"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-yaml-cpp-duplicate-alias-error
+            (lambda _
+              ;; The CMake module attempts to create the 'yaml-cpp' alias, but
+              ;; it already exists in the yaml-cpp native config file (see:
+              ;; https://bugreports.qt.io/browse/QTCREATORBUG-33457).
+              (substitute* "cmake/Findyaml-cpp.cmake"
+                (("add_library\\(yaml-cpp ALIAS yaml-cpp::yaml-cpp)")
+                 ""))))
           (add-after 'unpack 'patch-perfparser
             ;; XXX: The 'patch-perfparser' phase is also used by the 'hotspot'
             ;; package; keep its copy in sync (paying attention to the
@@ -6493,16 +6496,22 @@ including @i{fix-its} for automatic refactoring.")
      (append
       (list bash-minimal
             coreutils-minimal
-            clang
+            clang-20
             clazy
             d-demangler
             elfutils
             gdb
             kcachegrind
+            libarchive
+            libsecret
             libxkbcommon
-            llvm
+            llvm-20
             qt5compat
+            qtcharts
             qtdeclarative
+            qtquick3d
+            qtquick3dphysics
+            qtserialport
             qtshadertools
             qtsvg
             yaml-cpp
