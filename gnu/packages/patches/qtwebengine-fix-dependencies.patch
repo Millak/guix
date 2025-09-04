@@ -1,0 +1,25 @@
+From 224ec4e3a9f6ed91afe36837b5ea6ec1f5098d55 Mon Sep 17 00:00:00 2001
+From: Moss Heim <moss.heim@qt.io>
+Date: Mon, 08 Sep 2025 15:12:59 +0200
+Subject: [PATCH] Fix deps for components/autofill/core/browser
+
+We were missing two generated header dependencies.
+
+Pick-to: 130-based
+Fixes: QTBUG-139959
+Change-Id: Ie6d78a1d6f097443f238d78e29885cc76587f85b
+---
+
+diff --git a/src/3rdparty/chromium/components/autofill/core/browser/BUILD.gn b/src/3rdparty/chromium/components/autofill/core/browser/BUILD.gn
+index 67dcc95..e0739db 100644
+--- a/src/3rdparty/chromium/components/autofill/core/browser/BUILD.gn
++++ b/src/3rdparty/chromium/components/autofill/core/browser/BUILD.gn
+@@ -948,6 +948,8 @@
+     public_deps = [
+       "//components/autofill/core/browser/proto",
+       "//components/autofill/core/common",
++      "//components/resources:components_scaled_resources",
++      "//components/strings:components_strings",
+       "//components/autofill/core/common/mojom:mojo_types",
+       "//third_party/abseil-cpp:absl",
+       "//ui/base",

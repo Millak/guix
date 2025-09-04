@@ -3315,6 +3315,9 @@ using the Enchant spell-checking library.")
     (license license:gpl2+)))
 
 (define remove-third-party-files
+  ;; Unlike a simpler option like `delete-all-but', this preserves the various
+  ;; .gn, .gyp, etc. build files, which must be there even when the a bundled
+  ;; library is not used.
   #~(begin
       (define preserved-club
         ;; Prefix exceptions with ./ for comparison with ftw.
@@ -3704,16 +3707,14 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.8.2")
+    (version "6.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "00j8wlz6fbg4ivkc6w7dbc67835hv7w74sfrshdb75y12rzri5gz"))
-       (patches
-        (search-patches "qtwebengine-fix-system-libvpx.patch"))
+         "1aq35nkgbvhlsmglnjizbkavr7kb0ymf5n3kkllrpqy2mf90gjwr"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -3732,7 +3733,6 @@ and binaries removed, and adds modular support for using system libraries.")
                   '("base/third_party/double_conversion"
                     "base/third_party/cityhash"
                     "base/third_party/cityhash_v103"
-                    "base/third_party/dynamic_annotations"
                     "base/third_party/icu"
                     "base/third_party/nspr"
                     "base/third_party/superfasthash"
@@ -3770,6 +3770,7 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/cld_3"
                     "third_party/closure_compiler"
                     "third_party/cpuinfo" ;BSD-2
+                    "third_party/crabbyavif" ;ASL2.0
                     "third_party/crashpad"
                     "third_party/crashpad/crashpad/third_party/lss"
                     "third_party/crashpad/crashpad/third_party/zlib"
@@ -3798,17 +3799,24 @@ additional_readme_paths.json"
                     "third_party/devtools-frontend/src/front_end/third_party/\
 puppeteer/package/lib/esm/third_party/mitt"
                     "third_party/devtools-frontend/src/front_end/third_party/\
+puppeteer/package/lib/esm/third_party/parsel-js" ;Expat
+                    "third_party/devtools-frontend/src/front_end/third_party/\
 puppeteer/package/lib/esm/third_party/rxjs"
                     "third_party/devtools-frontend/src/front_end/third_party/\
 vscode.web-custom-data"
                     "third_party/devtools-frontend/src/front_end/third_party/puppeteer-replay"
                     "third_party/devtools-frontend/src/third_party/pyjson5"
+                    "third_party/devtools-frontend/src/front_end/third_party/\
+third-party-web"                        ;Expat
                     "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
-                    "third_party/devtools-frontend/src/third_party/typescript"
+                    "third_party/devtools-frontend/src/front_end/third_party/\
+web-vitals"                             ;ASL2.0
+                    "third_party/devtools-frontend/src/scripts/build/typescript"
                     "third_party/devtools-frontend/src/third_party/i18n"
                     "third_party/distributed_point_functions"
                     "third_party/dom_distiller_js"
                     "third_party/emoji-segmenter"
+                    "third_party/fast_float" ;Expat (or ASL2.0 or Boost)
                     "third_party/fdlibm"
                     "third_party/ffmpeg/libavcodec/avcodec.h"
                     "third_party/ffmpeg/libavcodec/packet.h"
@@ -3821,6 +3829,7 @@ vscode.web-custom-data"
                     "third_party/ffmpeg/libavutil/opt.h"
                     "third_party/fft2d"
                     "third_party/flatbuffers"
+                    "third_party/fp16"  ;Expat
                     "third_party/freetype"
                     "third_party/gemmlowp" ;ASL2.0
                     "third_party/google_input_tools" ;ASL2.0
@@ -3853,7 +3862,6 @@ vscode.web-custom-data"
                     "third_party/libsecret" ;LGPL2.1+
                     "third_party/libsrtp"
                     "third_party/libsync"
-                    "third_party/libudev"
                     "third_party/liburlpattern"
                     "third_party/libvpx"
                     "third_party/libwebm"
@@ -3890,7 +3898,6 @@ vscode.web-custom-data"
                     "third_party/flac"
                     "third_party/pdfium"
                     "third_party/pdfium/third_party/agg23"
-                    "third_party/pdfium/third_party/base"
                     "third_party/pdfium/third_party/bigint"
                     "third_party/pdfium/third_party/freetype"
                     "third_party/pdfium/third_party/lcms"
@@ -3899,15 +3906,18 @@ vscode.web-custom-data"
                     "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
                     "third_party/perfetto"
                     "third_party/perfetto/protos/third_party/chromium"
+                    "third_party/perfetto/protos/third_party/simpleperf" ;ASL2.0
                     "third_party/pffft"
                     "third_party/ply"
                     "third_party/polymer"
                     "third_party/private_membership" ;ASL2.0
                     "third_party/private-join-and-compute" ;ASL2.0
                     "third_party/protobuf"
+                    "third_party/protobuf-javascript" ;BSD-3
                     "third_party/pthreadpool" ;BSD-2
                     "third_party/pyjson5"
                     "third_party/qcms" ;Expat
+                    "third_party/rapidhash/rapidhash.h" ;BSD-2
                     "third_party/re2"
                     "third_party/rnnoise"
                     "third_party/ruy" ;ASL2.0
@@ -3930,16 +3940,17 @@ vscode.web-custom-data"
                     "third_party/swiftshader/third_party/SPIRV-Tools" ;ASL2.0
                     "third_party/tensorflow-text" ;ASL2.0
                     "third_party/tflite" ;ASL2.0
+                    "third_party/tflite_support" ;ASL2.0
                     "third_party/ukey2" ;ASL2.0
                     "third_party/usb_ids"
                     "third_party/utf" ;Expat
-                    "third_party/vulkan-deps/glslang"
-                    "third_party/vulkan-deps/spirv-headers"
-                    "third_party/vulkan-deps/spirv-tools"
-                    "third_party/vulkan-deps/vulkan-headers"
-                    "third_party/vulkan-deps/vulkan-loader"
-                    "third_party/vulkan-deps/vulkan-tools"
-                    "third_party/vulkan-deps/vulkan-validation-layers"
+                    "third_party/glslang"
+                    "third_party/spirv-headers"
+                    "third_party/spirv-tools"
+                    "third_party/vulkan-headers"
+                    "third_party/vulkan-loader"
+                    "third_party/vulkan-tools"
+                    "third_party/vulkan-validation-layers"
                     "third_party/vulkan_memory_allocator"
                     "third_party/webgpu-cts"
                     "third_party/webrtc"
@@ -3966,7 +3977,8 @@ vscode.web-custom-data"
                     "v8/src/third_party/valgrind"
                     "v8/third_party/inspector_protocol"
                     "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64"
-                    "v8/third_party/v8/builtins")))
+                    "v8/third_party/v8/builtins"
+                    "v8/third_party/v8/codegen/fp16-inl.h"))) ;Expat
 
              (with-directory-excursion "src/3rdparty"
                (with-directory-excursion "chromium"
@@ -3975,9 +3987,13 @@ vscode.web-custom-data"
                  #$remove-third-party-files
 
                  ;; Use relative header locations instead of hard coded ones.
-                 (substitute*
-                     "base/third_party/dynamic_annotations/dynamic_annotations.c"
-                   (("base/third_party/valgrind") "valgrind"))
+                 (substitute* '("v8/BUILD.gn"
+                                "v8/src/codegen/ia32/cpu-ia32.cc"
+                                "v8/src/codegen/x64/cpu-x64.cc")
+                   ((".*\"src/third_party/valgrind/valgrind.h\",.*")
+                    "")
+                   (("#include \"src/third_party/valgrind/valgrind.h\"")
+                    ""))
                  (substitute* "third_party/breakpad/breakpad/src/common/\
 linux/libcurl_wrapper.h"
                    (("third_party/curl") "curl"))
@@ -4002,7 +4018,8 @@ linux/libcurl_wrapper.h"
                     "enable_widevine=false"
                     ;; Link pulseaudio directly instead of using dlopen.
                     "link_pulseaudio=true")
-                  "\n"))))))))
+                  "\n"))))))
+       (patches (search-patches "qtwebengine-fix-dependencies.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4113,7 +4130,7 @@ linux/libcurl_wrapper.h"
        (replace "node" node-lts)
        ;; Try with a newer gperf after 6.8.2.
        (replace "gperf" gperf-3.1)
-       (append clang-18
+       (append clang-20
                lld-as-ld-wrapper-18
                python-wrapper
                python-beautifulsoup4
@@ -4121,10 +4138,10 @@ linux/libcurl_wrapper.h"
     (inputs
      (modify-inputs (package-inputs qtwebengine-5)
        (replace "ffmpeg" ffmpeg)
-       (replace "icu4c" icu4c-75)
+       (replace "icu4c" icu4c)
        (replace "re2" re2-next)
        (replace "qtmultimedia" qtmultimedia)
-       (append fp16 fxdiv libxkbfile xkeyboard-config)))
+       (append fxdiv libxkbfile xkeyboard-config)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs qtwebengine-5)
        (replace "qtbase" qtbase)

@@ -2210,7 +2210,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtbase-qmake-use-libname.patch		\
   %D%/packages/patches/qtbase-5-use-TZDIR.patch			\
   %D%/packages/patches/qtscript-disable-tests.patch		\
-  %D%/packages/patches/qtwebengine-fix-system-libvpx.patch	\
   %D%/packages/patches/quagga-reproducible-build.patch          \
   %D%/packages/patches/quickswitch-fix-dmenu-check.patch	\
   %D%/packages/patches/quilt-grep-compat.patch 			\
@@ -2218,6 +2217,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
   %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
   %D%/packages/patches/qtwayland-update-wayland-xml.patch	\
+  %D%/packages/patches/qtwebengine-fix-dependencies.patch       \
   %D%/packages/patches/qtwebsockets-6.9-fix-tst_QWebSocket.patch\
   %D%/packages/patches/rabbitmq-defaults.patch		\
   %D%/packages/patches/ragel-char-signedness.patch		\
