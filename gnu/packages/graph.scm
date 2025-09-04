@@ -12,6 +12,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2025 Mark Walker <mark.damon.walker@gmail.com>
+;;; Copyright © 2025 Tiago de Paula Peixoto <tiago@skewed.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -818,7 +819,7 @@ transformed into common image formats for display or printing.")
 (define-public python-graph-tool
   (package
     (name "python-graph-tool")
-    (version "2.59")
+    (version "2.98")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -826,7 +827,7 @@ transformed into common image formats for display or printing.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1bmck5fcihj9lr5kd8x624bdi9xhfc13pl4mwzv74jr5lz07kr6d"))))
+                "09y5djq70y73anfmx50xalvg1s6pqvh5zrzf94vh8pvzjf5r9wgf"))))
     (build-system gnu-build-system)
     (arguments
      (list
