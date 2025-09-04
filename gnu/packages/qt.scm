@@ -2117,7 +2117,7 @@ Vulkan, OpenGL and other main graphic APIs.")
            vulkan-headers))
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-6
            glib
            libxkbcommon
            libxrandr
