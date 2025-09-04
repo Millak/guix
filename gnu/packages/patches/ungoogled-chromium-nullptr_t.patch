@@ -1,0 +1,44 @@
+Maybe not needed with libc++.  With libstdc++ we get these errors:
+
+../../third_party/perfetto/src/trace_processor/dataframe/impl/types.h:142:36: error: unknown type name 'nullptr_t'; did you mean 'std::nullptr_t'?
+  142 |   using DataPointer = std::variant<nullptr_t,
+      |                                    ^~~~~~~~~
+      |                                    std::nullptr_t
+/gnu/store/jb4szkjkmlqdc92nnhxvm9ypq6hvk9vw-gcc-14.3.0/include/c++/x86_64-unknown-linux-gnu/bits/c++config.h:314:29: note: 'std::nullptr_t' declared here
+  314 |   typedef decltype(nullptr)     nullptr_t;
+      |                                 ^
+In file included from ../../third_party/perfetto/src/trace_processor/trace_processor_storage.cc:20:
+In file included from ../../third_party/perfetto/src/trace_processor/trace_processor_storage_impl.h:23:
+In file included from ../../third_party/perfetto/src/trace_processor/importers/common/trace_file_tracker.h:23:
+In file included from ../../third_party/perfetto/src/trace_processor/storage/trace_storage.h:46:
+In file included from gen/third_party/perfetto/src/trace_processor/tables/android_tables_py.h:25:
+../../third_party/perfetto/src/trace_processor/dataframe/typed_cursor.h:50:64: error: unknown type name 'nullptr_t'; did you mean 'std::nullptr_t'?
+   50 |     static const Type kNull = base::variant_index<FilterValue, nullptr_t>();
+      |                                                                ^~~~~~~~~
+      |                                                                std::nullptr_t
+/gnu/store/jb4szkjkmlqdc92nnhxvm9ypq6hvk9vw-gcc-14.3.0/include/c++/x86_64-unknown-linux-gnu/bits/c++config.h:314:29: note: 'std::nullptr_t' declared here
+  314 |   typedef decltype(nullptr)     nullptr_t;
+      |                                 ^
+
+--- a/third_party/perfetto/src/trace_processor/dataframe/impl/types.h
++++ b/third_party/perfetto/src/trace_processor/dataframe/impl/types.h
+@@ -139,7 +139,7 @@
+   using Double = FlexVector<double>;
+   using String = FlexVector<StringPool::Id>;
+ 
+-  using DataPointer = std::variant<nullptr_t,
++  using DataPointer = std::variant<std::nullptr_t,
+                                    const uint32_t*,
+                                    const int32_t*,
+                                    const int64_t*,
+--- a/third_party/perfetto/src/trace_processor/dataframe/typed_cursor.h
++++ b/third_party/perfetto/src/trace_processor/dataframe/typed_cursor.h
+@@ -47,7 +47,7 @@
+     static const Type kInt64 = base::variant_index<FilterValue, int64_t>();
+     static const Type kDouble = base::variant_index<FilterValue, double>();
+     static const Type kString = base::variant_index<FilterValue, const char*>();
+-    static const Type kNull = base::variant_index<FilterValue, nullptr_t>();
++    static const Type kNull = base::variant_index<FilterValue, std::nullptr_t>();
+     int64_t GetInt64Value(uint32_t col) const {
+       return base::unchecked_get<int64_t>(filter_values_[col]);
+     }

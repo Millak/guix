@@ -2385,9 +2385,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/uftrace-fix-tests.patch			\
   %D%/packages/patches/ultrastar-deluxe-no-freesans.patch		\
   %D%/packages/patches/ungoogled-chromium-extension-search-path.patch	\
-  %D%/packages/patches/ungoogled-chromium-ffmpeg-compat.patch	\
+  %D%/packages/patches/ungoogled-chromium-nullptr_t.patch       \
   %D%/packages/patches/ungoogled-chromium-RUNPATH.patch		\
-  %D%/packages/patches/ungoogled-chromium-system-ffmpeg.patch	\
   %D%/packages/patches/ungoogled-chromium-system-nspr.patch	\
   %D%/packages/patches/unknown-horizons-python-3.8-distro.patch	\
   %D%/packages/patches/unknown-horizons-python-3.9.patch	\

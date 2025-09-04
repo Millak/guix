@@ -6,7 +6,7 @@ https://salsa.debian.org/chromium-team/chromium/-/blob/master/debian/patches/sys
 diff --git a/base/BUILD.gn b/base/BUILD.gn
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -184,6 +184,12 @@ buildflag_header("ios_cronet_buildflags") {
+@@ -159,6 +159,12 @@
    flags = [ "CRONET_BUILD=$is_cronet_build" ]
  }
  
@@ -16,18 +16,18 @@ diff --git a/base/BUILD.gn b/base/BUILD.gn
 +  ]
 +}
 +
+ use_epoll = is_linux || is_chromeos || is_android
+ 
  # Base and everything it depends on should be a static library rather than
- # a source set. Base is more of a "library" in the classic sense in that many
- # small parts of it are used in many different contexts. This combined with a
-@@ -838,8 +844,6 @@ mixed_component("base") {
-     "third_party/cityhash_v103/src/city_v103.cc",
-     "third_party/cityhash_v103/src/city_v103.h",
-     "third_party/icu/icu_utf.h",
+@@ -809,8 +815,6 @@
+     "task/updateable_sequenced_task_runner.h",
+     "test/scoped_logging_settings.h",
+     "test/spin_wait.h",
 -    "third_party/nspr/prtime.cc",
 -    "third_party/nspr/prtime.h",
-     "third_party/superfasthash/superfasthash.c",
      "thread_annotations.h",
      "threading/hang_watcher.cc",
+     "threading/hang_watcher.h",
 diff --git a/base/time/pr_time_unittest.cc b/base/time/pr_time_unittest.cc
 --- a/base/time/pr_time_unittest.cc
 +++ b/base/time/pr_time_unittest.cc
@@ -43,12 +43,12 @@ diff --git a/base/time/pr_time_unittest.cc b/base/time/pr_time_unittest.cc
 diff --git a/base/time/time.cc b/base/time/time.cc
 --- a/base/time/time.cc
 +++ b/base/time/time.cc
-@@ -21,7 +21,7 @@
- #include <utility>
- 
+@@ -15,7 +15,7 @@
+ #include "base/check.h"
+ #include "base/format_macros.h"
  #include "base/strings/stringprintf.h"
 -#include "base/third_party/nspr/prtime.h"
 +#include <nspr/prtime.h>
  #include "base/time/time_override.h"
  #include "build/build_config.h"
- #include "third_party/abseil-cpp/absl/types/optional.h"
+ 

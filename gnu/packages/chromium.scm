@@ -3,6 +3,8 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Andre Batista <nandre@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,7 +48,6 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -62,7 +63,8 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages regex)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages valgrind)
@@ -76,15 +78,10 @@
 (define %preserved-third-party-files
   '("base/third_party/cityhash" ;Expat
     "base/third_party/double_conversion" ;BSD-3
-    "base/third_party/dynamic_annotations" ;BSD-2
     "base/third_party/icu" ;Unicode, X11-style
     "base/third_party/superfasthash" ;BSD-3
     "base/third_party/symbolize" ;BSD-3
-    "base/third_party/xdg_mime" ;LGPL2.0+ or Academic 2.0
     "base/third_party/xdg_user_dirs" ;Expat
-    "chrome/third_party/mozilla_security_manager" ;MPL-1.1/GPL2+/LGPL2.1+
-    "courgette/third_party/bsdiff" ;BSD-2, BSD protection license
-    "courgette/third_party/divsufsort" ;Expat
     "net/third_party/mozilla_security_manager" ;MPL-1.1/GPL2+/LGPL2.1+
     "net/third_party/nss" ;MPL-2.0
     "net/third_party/quiche" ;BSD-3
@@ -94,8 +91,8 @@
     "third_party/angle/src/common/third_party/xxhash" ;BSD-2
     "third_party/angle/src/third_party/ceval" ;Expat
     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
-    "third_party/angle/src/third_party/systeminfo" ;BSD-2
     "third_party/angle/src/third_party/volk" ;Expat
+    "third_party/anonymous_tokens" ;ASL2.0
     "third_party/apple_apsl" ;APSL2.0
     "third_party/axe-core" ;MPL2.0
     "third_party/bidimapper" ;ASL2.0
@@ -122,8 +119,17 @@
     "third_party/ced" ;BSD-3
     "third_party/cld_3" ;ASL2.0
     "third_party/closure_compiler" ;ASL2.0
+    "third_party/compiler-rt" ;ASL2.0
+    "third_party/compiler-rt/src/lib" ;ASL2.0
+    "third_party/compiler-rt/src/lib/builtins" ;ASL2.0
     "third_party/content_analysis_sdk" ;BSD-3
     "third_party/cpuinfo" ;BSD-2
+    "third_party/crabbyavif" ;ASL2.0
+    "third_party/crabbyavif/src/sys/dav1d-sys" ;ASL2.0
+    "third_party/crabbyavif/src/sys/aom-sys" ;ASL2.0
+    "third_party/crabbyavif/src/sys/libgav1-sys" ;ASL2.0
+    "third_party/crabbyavif/src/sys/libyuv-sys" ;ASL2.0
+    "third_party/crabbyavif/src/sys/ndk-sys" ;ASL2.0
     "third_party/crashpad" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/lss" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/zlib/zlib_crashpad.h" ;Zlib
@@ -135,9 +141,12 @@
     "third_party/dawn/third_party/khronos" ;ASL2.0
     "third_party/dawn/third_party/gn/webgpu-cts" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
+    "third_party/devtools-frontend/src/front_end"
+    "third_party/devtools-frontend/src/front_end/third_party"
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party\
 /additional_readme_paths.json" ;no explicit license; trivial
+    "third_party/devtools-frontend/src/front_end/third_party/json5" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/axe-core" ;MPL2.0
     "third_party/devtools-frontend/src/front_end/third_party/chromium" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/codemirror" ;Expat
@@ -146,25 +155,34 @@
     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/lighthouse" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/lit" ;BSD-3
-    "third_party/devtools-frontend/src/front_end/third_party/lodash-isequal" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/marked" ;Expat, BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer" ;ASL2.0
+    "third_party/devtools-frontend/src/front_end/third_party/puppeteer/package/lib/esm/third_party"
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer\
 /package/lib/esm/third_party/mitt" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party/puppeteer/third_party/mitt" ; Expat
+    "third_party/devtools-frontend/src/front_end/third_party/puppeteer/third_party/parsel" ; Expat
+    "third_party/devtools-frontend/src/front_end/third_party/puppeteer/third_party/rxjs" ; ASL2.0
+    "third_party/devtools-frontend/src/front_end/third_party/puppeteer-replay" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party\
 /vscode.web-custom-data" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party/third-party-web" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/wasmparser" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
-    "third_party/devtools-frontend/src/third_party/typescript" ;ASL2.0
-    "third_party/distributed_point_functions" ;ASL2.0
+
     "third_party/dom_distiller_js" ;BSD-3
+    "third_party/dragonbox" ;ASL2.0, Boost1.0
+    "third_party/d3" ;Non-copyleft
     "third_party/eigen3" ;MPL2.0
     "third_party/emoji-segmenter" ;ASL2.0
     "third_party/farmhash" ;Expat
+    "third_party/fast_float" ;ASL2.0, Boost1.0, Expat
     "third_party/fdlibm" ;non-copyleft
+    "third_party/ffmpeg" ; LGPL2.1+, GPL2.0+, Expat and BSD
     "third_party/fft2d" ;non-copyleft
     "third_party/flatbuffers" ;ASL2.0
+    "third_party/fp16" ;Expat
     "third_party/fusejs" ;ASL2.0
     "third_party/gemmlowp" ;ASL2.0
     "third_party/google_input_tools" ;ASL2.0
@@ -174,27 +192,29 @@
     "third_party/harfbuzz-ng" ;Expat
     "third_party/highway" ;ASL2.0
     "third_party/hunspell" ;MPL1.1/GPL2+/LGPL2.1+
-    "third_party/iccjpeg" ;IJG
+    "third_party/ink" ;ASL2.0
+    "third_party/ink_stroke_modeler" ;ASL2.0
     "third_party/inspector_protocol" ;BSD-3
     "third_party/ipcz" ;BSD-3
     "third_party/jinja2" ;BSD-3
-    "third_party/jstemplate" ;ASL2.0
+    "third_party/jsoncpp" ; Public domain, Expat
     "third_party/khronos" ;Expat, SGI
+    "third_party/lens_server_proto" ;Non-copyleft
     "third_party/leveldatabase" ;BSD-3
-    "third_party/libavif" ;BSD-2
     "third_party/libaddressinput" ;ASL2.0
     "third_party/libaom" ;BSD-2 or "Alliance for Open Media Patent License 1.0"
     "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
     "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
+    "third_party/libdrm" ; Expat
     "third_party/libgav1" ;ASL2.0
     "third_party/libjingle_xmpp" ;BSD-3
     "third_party/libphonenumber" ;ASL2.0
     "third_party/libsecret" ;LGPL2.1+
     "third_party/libsrtp" ;BSD-3
     "third_party/libsync" ;ASL2.0
-    "third_party/libudev" ;LGPL2.1+
+    "third_party/libtess2" ;SGIFreeB2.0
     "third_party/liburlpattern" ;Expat
     "third_party/libva_protected_content" ;Expat
 
@@ -206,14 +226,17 @@
     "third_party/libxml/chromium" ;BSD-3
     "third_party/libyuv" ;BSD-3
     "third_party/libzip" ;BSD-3
+    "third_party/lit" ;BSD-3
+    "third_party/lit/v3_0" ;BSD-3
     "third_party/lottie" ;Expat
     "third_party/lss" ;BSD-3
+    "third_party/lzma_sdk" ;public domain
     "third_party/mako" ;Expat
     "third_party/markupsafe" ;BSD-3
     "third_party/material_color_utilities" ;ASL2.0
-    "third_party/mesa_headers" ;Expat, SGI
     "third_party/metrics_proto" ;BSD-3
     "third_party/minigbm" ;BSD-3
+    "third_party/ml_dtypes" ;ASL2.0
     "third_party/modp_b64" ;BSD-3
     "third_party/nasm" ;BSD-2
     "third_party/nearby" ;ASL2.0
@@ -222,14 +245,11 @@
     "third_party/one_euro_filter" ;BSD-3
     "third_party/openscreen" ;BSD-3
     "third_party/openscreen/src/third_party/tinycbor" ;Expat
-    "third_party/openscreen/src/third_party/mozilla" ;MPL1.1/GPL2+/LGPL2.1+, BSD-3
     "third_party/ots" ;BSD-3
     "third_party/pdfium" ;BSD-3
     "third_party/pdfium/third_party/agg23" ;Expat
-    "third_party/pdfium/third_party/base" ;BSD-3
     "third_party/pdfium/third_party/bigint" ;Public domain, BSD-3
     "third_party/pdfium/third_party/libtiff" ;non-copyleft
-    "third_party/pdfium/third_party/skia_shared" ;BSD-3
     "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
     "third_party/perfetto" ;ASL2.0
     "third_party/perfetto/protos/third_party/chromium" ;BSD-3
@@ -239,15 +259,23 @@
     "third_party/private_membership" ;ASL2.0
     "third_party/private-join-and-compute" ;ASL2.0
     "third_party/protobuf" ;BSD-3
+    "third_party/protobuf/third_party/utf8_range" ; Expat
     "third_party/pthreadpool" ;BSD-2
+    "third_party/puffin" ;Non-copyleft
     "third_party/pyjson5" ;ASL2.0
-    "third_party/qcms" ;Expat
+    "third_party/rapidhash" ;BSD-2
+    "third_party/readability" ;ASL2.0
+    "third_party/re2" ;Non-copyleft
     "third_party/rnnoise" ;BSD-3
+    "third_party/rust" ; Expat
     "third_party/ruy" ;ASL2.0
     "third_party/s2cellid" ;ASL2.0
+    "third_party/search_engines_data" ;BSD-3
     "third_party/securemessage" ;ASL2.0
     "third_party/selenium-atoms" ;ASL2.0
     "third_party/shell-encryption" ;ASL2.0
+    "third_party/simdutf" ;Non-copyleft
+    "third_party/simplejson" ; Non-copyleft
     "third_party/skia" ;BSD-3
     "third_party/skia/third_party/vulkanmemoryallocator" ;BSD-3, Expat
     "third_party/smhasher" ;Expat, public domain
@@ -257,6 +285,8 @@
     "third_party/snappy" ;BSD-3
 
     "third_party/speech-dispatcher" ;GPL2+
+    "third_party/spirv-headers" ;ASL2.0
+    "third_party/spirv-tools" ;ASL2.0
     "third_party/sqlite" ;Public domain
     "third_party/swiftshader" ;ASL2.0
     "third_party/swiftshader/third_party/astc-encoder" ;ASL2.0
@@ -267,17 +297,34 @@
     "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
     "third_party/swiftshader/third_party/SPIRV-Tools" ;ASL2.0
     "third_party/tensorflow-text" ;ASL2.0
+    "third_party/tensorflow_models" ;ASL2.0
     "third_party/tflite" ;ASL2.0
-    "third_party/tflite/src/third_party/eigen3" ;MPL2.0
     "third_party/tflite/src/third_party/fft2d" ;ASL2.0
+    "third_party/tflite/src/third_party/xla" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/xla" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/xla/tsl/framework" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/xla/tsl/lib/random" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/xla/tsl/platform" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/xla/tsl/protobuf" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/xla/tsl/util" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/third_party/tsl" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/third_party/tsl/tsl" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/third_party/tsl/tsl/platform" ;ASL2.0
+    "third_party/tflite/src/third_party/xla/third_party/tsl/tsl/profiler" ;ASL2.0
     "third_party/ukey2" ;ASL2.0
+    "third_party/ungoogled-chromium" ;BSD-3
     "third_party/usb_ids" ;BSD-3
     "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
+    "third_party/vulkan-headers" ;ASL2.0
+    "third_party/vulkan-loader" ;ASL2.0
     "third_party/vulkan_memory_allocator" ;Expat
+    "third_party/vulkan-tools" ;ASL2.0
+    "third_party/vulkan-validation-layers" ;ASL2.0
+    "third_party/vulkan-utility-libraries" ;ASL2.0
+    "third_party/wasm_tts_engine" ; ASL2.0, Non-copyleft
     "third_party/wayland" ;BSD-3, Expat
     "third_party/wayland-protocols" ;Expat
-    "third_party/web-animations-js" ;ASL2.0
     "third_party/webdriver" ;ASL2.0
     "third_party/webgpu-cts" ;BSD-3
     "third_party/webrtc" ;BSD-3
@@ -286,9 +333,7 @@
     "third_party/webrtc/modules/third_party/fft" ;Non-copyleft
     "third_party/webrtc/modules/third_party/g711" ;Public domain
     "third_party/webrtc/modules/third_party/g722" ;Public domain
-    "third_party/webrtc/rtc_base/third_party/base64" ;Non-copyleft
     "third_party/webrtc/rtc_base/third_party/sigslot" ;Public domain
-    "third_party/widevine/cdm/widevine_cdm_version.h" ;BSD-3
     "third_party/widevine/cdm/widevine_cdm_common.h" ;BSD-3
     "third_party/woff2" ;ASL2.0
     "third_party/wuffs" ;ASL2.0
@@ -303,14 +348,18 @@
     "third_party/x11proto/keysymdef.h" ;X11
 
     "third_party/zlib/google" ;BSD-3
+    "third_party/zstd" ;BSD
     "third_party/zxcvbn-cpp" ;Expat
     "url/third_party/mozilla" ;BSD-3, MPL1.1/GPL2+/LGPL2.1+
-    "v8/src/third_party/siphash" ;Public domain
-    "v8/src/third_party/utf8-decoder" ;Expat
-    "v8/src/third_party/valgrind" ;BSD-4
     "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64" ;LGPL2.1+
     "v8/third_party/inspector_protocol" ;BSD-3
-    "v8/third_party/v8/builtins")) ;PSFL
+    "v8/third_party/rapidhash-v8" ;BSD-2
+    "v8/third_party/siphash" ;CC0 1.0
+    "v8/third_party/utf8-decoder" ;Non-copyleft
+    "v8/third_party/valgrind" ;BSD
+    "v8/third_party/v8/builtins" ;PSFL2.0
+    "v8/third_party/v8/codegen" ;Expat
+    ))
 
 (define %blacklisted-files
   ;; 'third_party/blink/perf_tests/resources/svg/HarveyRayner.svg' carries a
@@ -318,20 +367,19 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "112.0.5615.165")
+(define %chromium-version "139.0.7258.154")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/110.0.5481.177-1")
-(define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
+(define %debian-revision (string-append "debian/" %ungoogled-revision))
 
 (define %ungoogled-origin
   (origin
     (method git-fetch)
-    (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
+    (uri (git-reference (url "https://github.com/ungoogled-software/ungoogled-chromium")
                         (commit %ungoogled-revision)))
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1q2870z4k2hkn3jh24xc0xiadd1sxc4apn1jz740yzlwsi6jmcgw"))))
+      "12z1qqwqkxd34xwkfc6hc873rsj545zg4rkdsvr4nk4w9898fsqq"))))
 
 (define %debian-origin
   (origin
@@ -344,7 +392,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "02cvdrr3s3v7v107284n8w9zpdmdl42rgjjvqjdjxb1gyk546kvg"))))
+      "0zs7z0kk5ni01qgc85lwr045pmgn5sghp15scp7x79i8i8a5rfcq"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -357,49 +405,36 @@
 
 (define %debian-patches
   (map debian-patch
-       '("fixes/clang-and-gcc11.patch"
-         "system/zlib.patch"
-         "system/openjpeg.patch")))
-
-(define (arch-patch revision name hash)
-  (origin
-    (method url-fetch)
-    (uri (string-append "https://raw.githubusercontent.com/archlinux"
-                        "/svntogit-packages/" revision "/trunk/" name))
-    (sha256 (base32 hash))))
-
-(define %reverse-patches
-  (list
-   ;; These patches revert changes that require an unreleased ffmpeg.
-   (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m102.patch"
-               "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh")
-   (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m106.patch"
-               "0li10cvxnppmmmsc7w77b1s7z02s5bzd39zsal9x768708fx64jc")))
-
-(define %arch-patches
-  (list
-   (arch-patch %arch-revision "disable-GlobalMediaControlsCastStartStop.patch"
-               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")))
+       '("bookworm/clang19.patch"
+	 "bookworm/foreach.patch"
+	 "disable/node-version-ck.patch"
+	 "fixes/rust-clanglib.patch"
+	 "system/openjpeg.patch"
+	 ;; adler2 is not part of our rust toolchain, check on next version.
+	 "trixie/adler1.patch"
+	 "trixie/libxml-parseerr.patch")))
 
 (define %guix-patches
   (list (local-file
-         (assume-valid-file-name
-          (search-patch "ungoogled-chromium-extension-search-path.patch")))
+	 (assume-valid-file-name
+          (search-patch
+           "ungoogled-chromium-extension-search-path.patch")))
+	(local-file
+	 (assume-valid-file-name
+          (search-patch
+	   "ungoogled-chromium-nullptr_t.patch")))
         (local-file
-         (assume-valid-file-name
-          (search-patch "ungoogled-chromium-RUNPATH.patch")))
+	 (assume-valid-file-name
+          (search-patch
+           "ungoogled-chromium-RUNPATH.patch")))
         (local-file
-         (assume-valid-file-name
-          (search-patch "ungoogled-chromium-ffmpeg-compat.patch")))
-        (local-file
-         (assume-valid-file-name
-          (search-patch "ungoogled-chromium-system-ffmpeg.patch")))
-        (local-file
-         (assume-valid-file-name
-          (search-patch "ungoogled-chromium-system-nspr.patch")))))
+	 (assume-valid-file-name
+          (search-patch
+           "ungoogled-chromium-system-nspr.patch")))))
 
 (define %patches
-  (append %debian-patches %arch-patches %guix-patches))
+  (append %debian-patches
+          %guix-patches))
 
 ;; This is a source 'snippet' that does the following:
 ;; *) Applies various patches for unbundling purposes and libstdc++ compatibility.
@@ -423,12 +458,6 @@
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
                     '#+%patches)
-
-          ;; These patches are "reversed", i.e. their changes should be undone.
-          (for-each (lambda (patch)
-                      (invoke "patch" "-Rp1" "-F3" "--force" "--input"
-                              patch "--no-backup-if-mismatch"))
-                    '#+%reverse-patches)
 
           (with-directory-excursion #+%ungoogled-origin
             (format #t "Ungooglifying...~%")
@@ -463,9 +492,9 @@
             (("#if defined\\(OFFICIAL_BUILD\\)")
              "#if 0"))
           (invoke "python" "build/linux/unbundle/replace_gn_files.py"
-                  "--system-libraries" "ffmpeg" "flac" "fontconfig" "freetype"
-                  "harfbuzz-ng" "icu" "jsoncpp" "libdrm" "libevent" "libjpeg"
-                  "libpng" "libwebp" "libxml" "libxslt" "openh264" "opus" "re2"
+                  "--system-libraries" "flac" "fontconfig" "freetype"
+                  "harfbuzz-ng" "icu" "libjpeg"
+                  "libpng" "libwebp" "libxml" "libxslt" "openh264" "opus"
                   "zlib")))))
 
 (define opus+custom
@@ -480,6 +509,9 @@
         `(cons "--enable-custom-modes"
                ,flags))))))
 
+(define lld-as-ld-wrapper-19
+  (make-lld-wrapper lld-19 #:lld-as-ld? #t))
+
 (define-public ungoogled-chromium
   (package
     (name "ungoogled-chromium")
@@ -489,10 +521,10 @@
               (method url-fetch)
               (uri (string-append "https://commondatastorage.googleapis.com"
                                   "/chromium-browser-official/chromium-"
-                                  %chromium-version ".tar.xz"))
+                                  %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "1zbrgkzcb211y1mvi9g35421dnp5bskkczwnpygzja7lm7z6530n"))
+                "0bgnay6g2qbl6jxzr7kzl4nf0k2a27k0h7nhcj1if9plm611jzn9"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -513,7 +545,9 @@
               ;; a developer build.
               "is_official_build=true"
               "clang_use_chrome_plugins=false"
-              "use_custom_libcxx=false"
+              "use_custom_libcxx=false" ; support for this is deprecated and to be removed.
+              "optimize_webui=false"
+              "safe_browsing_use_unrar=false"
               "chrome_pgo_phase=0"
               "use_sysroot=false"
               "goma_dir=\"\""
@@ -529,6 +563,10 @@
               "enable_reporting=false"
               "enable_service_discovery=false"
               "enable_vr=false"
+              "enable_enterprise_companion=false"
+              "enable_glic=false"
+              "enable_iterator_debugging=false"
+              "enable_hangout_services_extension=false"
               "enable_widevine=false"
               ;; Disable type-checking for the Web UI to avoid a Java dependency.
               "enable_js_type_check=false"
@@ -540,6 +578,19 @@
               ;; Don't bother building Dawn tests.
               "build_dawn_tests=false"
 
+              "angle_has_histograms=false"
+              "angle_build_tests=false"
+              "build_angle_perftests=false"
+
+              "clang_warning_suppression_file=\"\""
+
+              "use_qt5=false"
+              "use_qt6=false"
+              "is_cfi=false"
+
+              "symbol_level=0"
+              "v8_enable_backtrace=false"
+
               ;; Define a custom toolchain that simply looks up CC, AR and
               ;; friends from the environment.
               "custom_toolchain=\"//build/toolchain/linux/unbundle:default\""
@@ -550,11 +601,29 @@
                                                                   "/bin/clang")))
                              "\"")
 
+              (string-append "clang_version="
+			     #$(version-major (package-version clang-19)))
+
+              (string-append "rust_sysroot_absolute=\""
+                             (dirname (dirname (search-input-file %build-inputs
+                                                                  "/bin/rustc")))
+                             "\"")
+              (string-append "rust_bindgen_root=\""
+                             (dirname (dirname (search-input-file %build-inputs
+                                                                  "/bin/bindgen")))
+                             "\"")
+
+              (string-append "rustc_version=\"rustc "
+			     #$(package-version rust)
+			     ;; These are 'don't care', but chromium's build parses
+			     ;; the whole string as if returned from 'rustc --version'
+			     ;; invokation and fails if it's just the version number.
+			     " (f6e511eec 2024-10-15) (built from a source tarball)\"")
+
               ;; Prefer system libraries.
               "use_system_freetype=true"
               "use_system_harfbuzz=true"
               "use_system_lcms2=true"
-              "use_system_libdrm=true"
               "use_system_libffi=true"
               "use_system_libjpeg=true"
               "use_system_libopenjpeg2=true"
@@ -566,67 +635,36 @@
               "link_pulseaudio=true"
               "icu_use_data_file=false"
 
-              ;; FIXME: Using system protobuf with "is_official_build" causes an
-              ;; invalid opcode and "protoc-gen-plugin: Plugin killed by signal 4".
-              ;;"perfetto_use_system_protobuf=true"
-
               ;; VA-API acceleration is currently only supported on x86_64-linux.
               #$@(if (string-prefix? "x86_64" (or (%current-target-system)
                                                   (%current-system)))
                      '("use_vaapi=true")
                      '())
 
-              "media_use_ffmpeg=true"
-              "media_use_libvpx=true"
-              "media_use_openh264=true"
-
               ;; Do not artificially restrict formats supported by system ffmpeg.
               "proprietary_codecs=true"
               "ffmpeg_branding=\"Chrome\""
 
-              ;; WebRTC stuff.
-              "rtc_use_h264=true"
-              "rtc_use_pipewire=true"
-              "rtc_link_pipewire=true"
-              ;; Don't use bundled sources.
-              "rtc_build_json=false"
-              (string-append "rtc_jsoncpp_root=\""
-                             (search-input-directory %build-inputs
-                                                     "include/json")
-                             "\"")
-              "rtc_build_libevent=false"
-              ;; XXX: Use the bundled libvpx for WebRTC because unbundling
-              ;; currently fails (see above), and the versions must match.
-              "rtc_build_libvpx=true"
-              "rtc_build_opus=false"
-              "rtc_build_libsrtp=true"  ;FIXME: fails to find headers
-              "rtc_build_ssl=true")     ;XXX: requires BoringSSL
+              "rtc_use_pipewire=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-stuff
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (let* ((libopenjp2 (search-input-file inputs "lib/libopenjp2.so"))
-                     (openjpeg (dirname (dirname libopenjp2))))
+                     (openjpeg (dirname (dirname libopenjp2)))
+                     (compiler-rt-path (dirname
+					(dirname
+					 (search-input-file (or native-inputs inputs)
+							    "/bin/hwasan_symbolize")))))
+		;; This works on top of debian's 'rust-clanglib.patch'.
+		(substitute* "build/config/clang/BUILD.gn"
+		  (("\\$clang_base_path/lib/clang/\\$clang_version")
+		   compiler-rt-path))
+
                 (substitute* "third_party/pdfium/BUILD.gn"
                   ;; This include path is added by Debians openjpeg patch.
                   (("/usr/include/openjpeg-")
                    (string-append openjpeg "/include/openjpeg-")))
-
-                ;; Adjust minizip header inclusions.
-                (substitute* (find-files "third_party/tflite_support\
-/src/tensorflow_lite_support/metadata/cc")
-                  (("third_party/zlib/contrib/minizip/")
-                   "minizip/"))
-
-                (substitute*
-                    '("base/process/launch_posix.cc"
-                      "base/third_party/dynamic_annotations/dynamic_annotations.c"
-                      "sandbox/linux/seccomp-bpf/sandbox_bpf.cc"
-                      "sandbox/linux/services/credentials.cc"
-                      "sandbox/linux/services/namespace_utils.cc"
-                      "sandbox/linux/services/syscall_wrappers.cc"
-                      "sandbox/linux/syscall_broker/broker_host.cc")
-                  (("include \"base/third_party/valgrind/") "include \"valgrind/"))
 
                 (substitute*
                     (append
@@ -647,10 +685,6 @@
                    "#include \"opus/opus_types.h\"")
                   (("\"third_party/opus/src/include/([a-z_-]+\\.h)\"" _ header)
                    (string-append "<opus/" header ">")))
-
-                (substitute* "third_party/webrtc/rtc_base/strings/json.h"
-                  (("#include \"third_party/jsoncpp/")
-                   "#include \"json/"))
 
                 ;; Many files try to include ICU headers from "third_party/icu/...".
                 ;; Remove the "third_party/" prefix to use system headers instead.
@@ -673,22 +707,20 @@
                   (("include \"third_party/curl")
                    "include \"curl"))
 
-                (substitute* '("components/viz/common/gpu/vulkan_context_provider.h"
-                               "components/viz/common/resources/resource_format_utils.h"
-                               "gpu/config/gpu_util.cc")
-                  (("third_party/vulkan_headers/include/") ""))
+                ;; Unknown flags as of clang-19, can be removed when building with
+		;; newer clang.
+                (substitute* "build/config/compiler/BUILD.gn"
+                  (("-gsimple-template-names") ""))
 
-                (substitute* "third_party/skia/include/private/gpu/vk/SkiaVulkan.h"
-                  (("include/third_party/vulkan/") "")))))
+                ;; Clang libs are not under bindgen root directory.
+                (substitute* "build/rust/rust_bindgen_generator.gni"
+                  (("(_libclang_path = )rust_bindgen_root" _ libclang)
+                   (string-append libclang "clang_base_path"))))))
           (add-after 'patch-stuff 'add-absolute-references
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((cups-config (search-input-file inputs "/bin/cups-config"))
                     (libnssckbi.so (search-input-file inputs
                                                       "/lib/nss/libnssckbi.so"))
-                    (libudev.so.1 (search-input-file inputs "/lib/libudev.so.1"))
-                    (libvulkan.so.1 (search-input-file inputs
-                                                       "/lib/libvulkan.so.1"))
-                    (icd.d (search-input-directory inputs "share/vulkan/icd.d"))
                     (gtk-libs '("libgio-2.0.so.0"
                                 "libgdk_pixbuf-2.0.so.0"
                                 "libgdk-3.so.0"
@@ -702,19 +734,17 @@
                   (("cups_config =.*")
                    (string-append "cups_config = '" cups-config "'\n")))
                 (substitute* "crypto/nss_util.cc"
-                  (("libnssckbi\\.so") libnssckbi.so))
-                (substitute* "device/udev_linux/udev1_loader.cc"
-                  (("libudev\\.so\\.1") libudev.so.1))
-
-                (substitute* "content/gpu/gpu_sandbox_hook_linux.cc"
-                  (("/usr/share/vulkan/icd\\.d") icd.d))
-
-                ;; Add the libvulkan directory to dawn built-in search paths.
-                (substitute* "third_party/dawn/src/dawn/native/Instance.cpp"
-                  (("^([[:blank:]]+)mRuntimeSearchPaths\\.push_back\\(\"\"\\);"
-                    all indent)
-                   (string-append indent "mRuntimeSearchPaths.push_back(\""
-                                  (dirname libvulkan.so.1) "/\");\n" all))))))
+                  (("libnssckbi\\.so") libnssckbi.so)))))
+          (add-after 'add-absolute-references 'adjust-CPLUS_INCLUDE_PATH
+            ;; The libcxx include/c++/v1 directory is not exposed via
+            ;; CPLUS_INCLUDE_PATH by default, causing errors like
+            ;; "fatal error: 'format' file not found".
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       (search-input-directory inputs
+                                               "/include/c++/v1")
+                       ":" (getenv "CPLUS_INCLUDE_PATH")))))
           (add-before 'configure 'prepare-build-environment
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (let ((node (search-input-file (or native-inputs inputs)
@@ -722,6 +752,22 @@
                 ;; Define the GN toolchain.
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
                 (setenv "CC" "clang") (setenv "CXX" "clang++")
+
+                (setenv "CXXFLAGS"
+                        (string-append " -Wno-conversion"
+                                       " -Wno-unused-function"
+                                       " -Wno-unused-variable"
+                                       " -Wno-unused-private-field"
+                                       " -Wno-deprecated-declarations"
+                                       " -Wno-unknown-pragmas"
+                                       " -fno-delete-null-pointer-checks"
+                                       " -stdlib=libc++"))
+                (setenv "LDFLAGS"
+                        (string-append " -stdlib=libc++"
+                                       " -Wl,--stats"))
+                (setenv "CLANG_MVERS" #$(version-major
+					 (package-version clang-19)))
+                (setenv "RUSTC_BOOTSTRAP" "1")
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
                 (setenv "PYTHONDONTWRITEBYTECODE" "1")
@@ -797,7 +843,6 @@
                      (gtk (dirname (dirname
                                     (search-input-file inputs "lib/libgtk-3.so"))))
                      (mesa (dirname (search-input-file inputs "lib/libGL.so")))
-                     (vulkan (dirname (search-input-file inputs "lib/libvulkan.so")))
                      (xdg-utils (dirname (search-input-file inputs "bin/xdg-open"))))
 
                 (substitute* '("chrome/app/resources/manpage.1.in"
@@ -838,7 +883,7 @@
                     ;; Provide libGL and libvulkan without patching all references.
                     ;; XXX: How to add on RUNPATH instead of this hack?
                     `("LD_LIBRARY_PATH" ":" prefix
-                      (,(string-append mesa ":" vulkan)))
+                      (,mesa))
                     ;; Ensure xdg-open et al. is found.
                     `("PATH" ":" prefix (,xdg-utils))))
 
@@ -853,10 +898,13 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang-15
+           clang-19
+           clang-runtime-19
+           clang-toolchain-19
            gn
            gperf
-           lld-as-ld-wrapper-15
+           lld-as-ld-wrapper-19
+           llvm-19
            ninja
            node-lts
            pkg-config
@@ -865,6 +913,9 @@
            python-html5lib
            python-pyyaml
            python-wrapper
+           rust
+           rust-bindgen-cli
+           rust-cbindgen
            wayland))
     (inputs
      (list alsa-lib
@@ -875,7 +926,6 @@
            dbus
            expat
            flac
-           ffmpeg-4
            fontconfig
            fp16
            freetype
@@ -885,9 +935,8 @@
            gtk+
            harfbuzz
            icu4c
-           jsoncpp
            lcms
-           libevent
+           libcxx
            libffi
            libjpeg-turbo
            libpng
@@ -919,14 +968,11 @@
            pciutils
            pipewire
            pulseaudio
-           qtbase-5
-           re2
+           qtbase
            snappy
            speech-dispatcher
            eudev
            valgrind/pinned
-           vulkan-headers
-           vulkan-loader
            wayland
            xdg-utils))
     (native-search-paths
@@ -942,7 +988,7 @@
                   (max-silent-time . 7200)
                   (cpe-name . "chrome")))
 
-    (home-page "https://github.com/Eloston/ungoogled-chromium")
+    (home-page "https://ungoogled-software.github.io/")
     (description
      "Ungoogled-Chromium is the Chromium web browser, with some functionality
 disabled in order to protect the users privacy.  This package also includes

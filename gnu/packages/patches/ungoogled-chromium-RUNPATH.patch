@@ -4,7 +4,7 @@ search path (and the 'validate-runpath' phase can do its work).
 diff --git a/build/config/gcc/BUILD.gn b/build/config/gcc/BUILD.gn
 --- a/build/config/gcc/BUILD.gn
 +++ b/build/config/gcc/BUILD.gn
-@@ -99,7 +99,14 @@ config("executable_config") {
+@@ -101,7 +101,14 @@
      ]
    }
  

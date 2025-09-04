@@ -3,22 +3,22 @@ Look for extensions in $CHROMIUM_EXTENSION_DIRECTORY instead of
 
 --- a/chrome/common/chrome_paths.cc
 +++ b/chrome/common/chrome_paths.cc
-@@ -4,6 +4,7 @@
+@@ -6,6 +6,7 @@
  
- #include "chrome/common/chrome_paths.h"
+ #include <optional>
  
 +#include "base/environment.h"
+ #include "base/files/file_path.h"
  #include "base/files/file_util.h"
- #include "base/logging.h"
- #include "base/native_library.h"
-@@ -511,7 +512,13 @@
+ #include "base/no_destructor.h"
+@@ -522,7 +523,13 @@
  #endif
- #if defined(OS_LINUX) || defined(OS_CHROMEOS)
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
      case chrome::DIR_STANDALONE_EXTERNAL_EXTENSIONS: {
 -      cur = base::FilePath(kFilepathSinglePrefExtensions);
 +      std::unique_ptr<base::Environment> environment(base::Environment::Create());
-+      std::string extension_dir;
-+      if (environment->GetVar("CHROMIUM_EXTENSION_DIRECTORY", &extension_dir)) {
++      if (environment->GetVar("CHROMIUM_EXTENSION_DIRECTORY")) {
++        auto extension_dir = environment->GetVar("CHROMIUM_EXTENSION_DIRECTORY").value();
 +        cur = base::FilePath(extension_dir);
 +      } else {
 +        cur = base::FilePath(kFilepathSinglePrefExtensions);
