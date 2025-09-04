@@ -5818,7 +5818,8 @@ feedback.")
              python-pytest
              python-psutil
              python-requests-mock
-             python-scikit-learn))
+             python-scikit-learn
+             python-setuptools-next))
       (home-page "https://lightning.ai/")
       (synopsis "Deep learning framework to train, deploy, and ship AI products")
       (description
