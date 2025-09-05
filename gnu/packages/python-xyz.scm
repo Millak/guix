@@ -24746,15 +24746,13 @@ pytest-fixtures-style dependency injection.")
        (sha256
         (base32
          "1vpy4rsvm3hhawvbg9rbw4j36ck8qylkhm8cjy0q6imvinkd2als"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "./test.py")))))))
-    (propagated-inputs (list python-dateutil python-six))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-dateutil
+           python-six))
     (home-page "https://github.com/py-bson/bson")
     (synopsis "BSON (Binary JSON) codec for Python")
     (description "@code{bson} is a Python library implementing a BSON (Binary
