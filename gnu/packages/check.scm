@@ -1557,36 +1557,6 @@ better plugin api, being easier for users to configure, and simplifying internal
 interfaces and processes.")
     (license license:bsd-2)))
 
-(define-public python-unittest2
-  (package
-    (name "python-unittest2")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "unittest2" version))
-       (patches
-        (search-patches "python-unittest2-python3-compat.patch"
-                        "python-unittest2-remove-argparse.patch"))
-       (sha256
-        (base32
-         "0y855kmx7a8rnf81d3lh5lyxai1908xjp0laf4glwa4c8472m212"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (zero? (system* "python" "-m" "unittest2" "discover" "--verbose")))))))
-    (propagated-inputs
-     (list python-six python-traceback2))
-    (home-page "https://pypi.org/project/unittest2/")
-    (synopsis "Python unit testing library")
-    (description
-     "Unittest2 is a replacement for the unittest module in the Python
-standard library.")
-    (license license:psfl)))
-
 (define-public python-pytest
   (package
     (name "python-pytest")
