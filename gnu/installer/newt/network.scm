@@ -112,30 +112,35 @@ network devices were found. Do you want to continue anyway?"))
              full-value
              (+ value 1)))))))
 
+(define (url-alive? url)
+  (false-if-exception
+   (begin
+     (http-request url)
+     #t)))
+
+(define (common-urls-alive? urls)
+  (dynamic-wind
+    (lambda ()
+      (sigaction SIGALRM
+        (lambda _ #f))
+      (alarm 3))
+    (lambda ()
+      (any url-alive?
+           urls))
+    (lambda ()
+      (alarm 0))))
+
 (define (wait-service-online)
   "Display a newt scale until connman detects an Internet access. Do
 FULL-VALUE tentatives, spaced by 1 second."
-  (define (url-alive? url)
-    (false-if-exception
-     (begin
-       (http-request url)
-       #t)))
-
-  (define (ci-available?)
-    (dynamic-wind
-      (lambda ()
-        (sigaction SIGALRM
-          (lambda _ #f))
-        (alarm 3))
-      (lambda ()
-        (or (url-alive? "https://bordeaux.guix.gnu.org")
-            (url-alive? "https://ci.guix.gnu.org")))
-      (lambda ()
-        (alarm 0))))
-
   (define (online?)
     (or (and (connman-online?)
-             (ci-available?))
+             (common-urls-alive?
+              (list
+               "https://bordeaux.guix.gnu.org"
+               "https://ci.guix.gnu.org"
+               "https://guix.gnu.org"
+               "https://gnu.org")))
         (file-exists? "/tmp/installer-assume-online")))
 
   (let* ((full-value 5))
