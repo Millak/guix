@@ -3,8 +3,8 @@
 ;; for a "bare bones" setup, with no X11 display server.
 
 (use-modules (gnu))
-(use-service-modules networking ssh)
-(use-package-modules screen ssh)
+(use-service-modules cuirass networking ssh databases)
+(use-package-modules databases screen ssh)
 
 (operating-system
   (host-name "komputilo")
@@ -48,8 +48,14 @@
   ;; Add services to the baseline: a DHCP client and an SSH
   ;; server.  You may wish to add an NTP service here.
   (services (append (list (service dhcpcd-service-type)
+                          (service cuirass-service-type
+                                   (cuirass-configuration
+                                     (specifications #~(list))))
+                          (service postgresql-service-type
+                                   (postgresql-configuration
+                                     (postgresql postgresql-14)))
                           (service openssh-service-type
                                    (openssh-configuration
-                                    (openssh openssh-sans-x)
-                                    (port-number 2222))))
+                                     (openssh openssh-sans-x)
+                                     (port-number 2222))))
                     %base-services)))

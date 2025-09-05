@@ -37863,15 +37863,27 @@ Note that individual jobset specifications may override this in their
 @code{period} field; the value specified here is only used for
 specifications that use the default @code{period} value, which is zero.
 
+@item @code{parallel-evaluations} (default: @code{#f})
+Maximum number of jobset evaluations that may run concurrently.  If
+@code{#f}, that number is determined based on a number of CPU cores,
+with an upper bound of 8.
+
 @item @code{ttl} (default: @code{2592000})
 Duration to keep build results' GC roots alive, in seconds.
+
+@item @code{evaluation-ttl} (default: 24 months)
+Number of seconds after which an evaluation may be deleted from the
+database.
 
 @item @code{build-expiry} (default: 4 months)
 Duration in seconds after which pending builds are canceled.  This helps
 ensure that the backlog does not grow indefinitely.
 
 @item @code{threads} (default: @code{#f})
-Number of kernel threads to use for Cuirass. The default value should be appropriate for most cases.
+@itemx @code{web-threads} (default: @code{#f})
+Number of kernel threads to use for Cuirass (main process) and for the
+web interface (the @command{cuirass web} program).  The default value
+should be appropriate for most cases.
 
 @item @code{parameters} (default: @code{#f})
 Read parameters from the given @var{parameters} file.  The supported

@@ -101,11 +101,17 @@
                     (default "cuirass"))
   (interval         cuirass-configuration-interval ;integer (seconds)
                     (default 300))
-  (ttl              cuirass-configuration-ttl ;integer
+  (parallel-evaluations cuirass-configuration-parallel-evaluations
+                        (default #f))             ;integer | #f
+  (ttl              cuirass-configuration-ttl     ;integer
                     (default 2592000))
+  (evaluation-ttl   cuirass-configuration-evaluation-ttl
+                    (default (* 24 30 24 3600)))  ;integer (seconds)
   (build-expiry     cuirass-configuration-build-expiry
                     (default (* 4 30 24 3600)))   ;integer(seconds)
   (threads          cuirass-configuration-threads ;integer
+                    (default #f))
+  (web-threads      cuirass-configuration-web-threads ;integer | #f
                     (default #f))
   (parameters       cuirass-configuration-parameters ;string
                     (default #f))
@@ -145,9 +151,12 @@
         (user             (cuirass-configuration-user config))
         (group            (cuirass-configuration-group config))
         (interval         (cuirass-configuration-interval config))
+        (parallel-evaluations (cuirass-configuration-parallel-evaluations config))
         (ttl              (cuirass-configuration-ttl config))
+        (evaluation-ttl   (cuirass-configuration-evaluation-ttl config))
         (build-expiry     (cuirass-configuration-build-expiry config))
         (threads          (cuirass-configuration-threads config))
+        (web-threads      (cuirass-configuration-web-threads config))
         (parameters       (cuirass-configuration-parameters config))
         (remote-server    (cuirass-configuration-remote-server config))
         (database         (cuirass-configuration-database config))
@@ -173,10 +182,21 @@
                         "--specifications" #$config-file
                         "--database" #$database
                         "--interval" #$(number->string interval)
+                        #$@(if parallel-evaluations
+                               (list (string-append
+                                      "--parallel-evaluations="
+                                      (number->string evaluation-ttl)))
+                               '())
                         #$@(if ttl
                                (list (string-append
                                       "--ttl="
                                       (number->string ttl)
+                                                 "s"))
+                               '())
+                        #$@(if evaluation-ttl
+                               (list (string-append
+                                      "--evaluation-ttl="
+                                      (number->string evaluation-ttl)
                                                  "s"))
                                '())
                         #$@(if build-expiry
@@ -232,6 +252,10 @@
                         "--database" #$database
                         "--listen" #$host
                         "--port" #$(number->string port)
+                        #$@(if web-threads
+                               (list #~(string-append "--threads="
+                                                      #$web-threads))
+                               '())
                         #$@(if parameters
                                (list #~(string-append "--parameters="
                                                       #$parameters))
