@@ -1484,7 +1484,10 @@ project's documentation} for more information."
                   ,(file-union "network-manager-configuration-directory"
                                extra-configuration-files)
                   "/etc/NetworkManager/conf.d"))
-               '()))))
+               '())
+        ;; Ensure "/etc/ipsec.secrets" exists, which is required by the
+        ;; nm-l2tp plugin.
+        (mkdir-p "/etc/ipsec.secrets"))))
 
 (define (vpn-plugin-directory plugins)
   "Return a directory containing PLUGINS, the NM VPN plugins."
