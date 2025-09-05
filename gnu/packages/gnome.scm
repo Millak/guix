@@ -9005,24 +9005,6 @@ the available networks and allows users to easily switch between them.")
 library.")
     (license license:lgpl2.1+)))
 
-;; This is needed by tascam-gtk
-(define-public libxml++-3
-  (package
-    (inherit libxml++)
-    (name "libxml++")
-    (version "3.2.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/libxmlplusplus/libxmlplusplus")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07f6l9ka63dnc85npxq5g7bn1ja7lad0w2wixqdlyabdvc4l2hp5"))))
-    (propagated-inputs (modify-inputs (package-propagated-inputs libxml++)
-                         (append glibmm-2.66)))))
-
 ;; This is the last release providing the 2.6 API, hence the name.
 (define-public libxml++-2
   (package
