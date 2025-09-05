@@ -10002,6 +10002,9 @@ Markdown input files, and more.  Pelican uses Jinja2 for templating
 and is very extensible.")
     (license license:agpl3+)))
 
+;; XXX: Potential abandonware, no updates or fixes since 2019, consider to
+;; find a replacement and re-allocate, see:
+;; <https://codeberg.org/guix/guix/issues/1200>.
 (define-public mallard-ducktype
   (package
     (name "mallard-ducktype")
@@ -10018,7 +10021,7 @@ and is very extensible.")
        (sha256
         (base32
          "1jk9bfz7g04ip78s03b0xak6d54rj4h9zpgadkziy1ji216g6y4c"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -10026,6 +10029,7 @@ and is very extensible.")
            (lambda _
              (with-directory-excursion "tests"
                (invoke "sh" "runtests")))))))
+    (native-inputs (list python-setuptools))
     (home-page "http://projectmallard.org")
     (synopsis "Convert Ducktype to Mallard documentation markup")
     (description
