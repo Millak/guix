@@ -4,7 +4,6 @@
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018 Mark Meyer <mark@ofosos.org>
 ;;; Copyright © 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
@@ -1938,48 +1937,6 @@ standard with complete implementation of all ONNX operators, and
 supports all ONNX releases (1.2+) with both future and backwards
 compatibility.")
     (license license:expat)))
-
-(define-public rxcpp
-  (package
-    (name "rxcpp")
-    (version "4.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ReactiveX/RxCpp")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "1blyjjw6szd74pckdc15ham9i48xf0vwwz5nhl9vyjfq8z7w3piy"))
-       (file-name (git-file-name name version))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-werror
-           (lambda _
-             (substitute* (find-files ".")
-               (("-Werror") ""))
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "ctest"))))))
-    (native-inputs
-     (list catch-framework))
-    (home-page "https://reactivex.io/")
-    (synopsis "Reactive Extensions for C++")
-    (description
-     "The Reactive Extensions for C++ (RxCpp) is a library of algorithms for
-values-distributed-in-time.  ReactiveX is a library for composing asynchronous
-and event-based programs by using observable sequences.
-
-It extends the observer pattern to support sequences of data and/or events and
-adds operators that allow you to compose sequences together declaratively while
-abstracting away concerns about things like low-level threading,
-synchronization, thread-safety, concurrent data structures, and non-blocking
-I/O.")
-    (license license:asl2.0)))
-
 
 (define-public gemmlowp
   (let ((commit "08e4bb339e34017a0835269d4a37c4ea04d15a69")
