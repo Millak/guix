@@ -417,6 +417,17 @@
                      get-string-all)
                    a))))
 
+;; https://codeberg.org/guix/guix/issues/1104
+(test-equal "build outputs aren't writable"
+  #o555
+  (let ((drv (build-expression->derivation %store "writable-output"
+                                           `(begin
+                                              ,(random-text)
+                                              (mkdir %output)
+                                              (chmod %output #o755)))))
+    (build-derivations %store (list drv))
+    (stat:perms (stat (derivation->output-path drv "out")))))
+
 (unless (unprivileged-user-namespace-supported?)
   (test-skip 1))
 (test-equal "isolated environment"

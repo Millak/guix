@@ -3139,10 +3139,14 @@ void DerivationGoal::registerOutputs()
               replaceValidPath(path, actualPath);
             else
 		if (buildMode != bmCheck) {
-		    if (S_ISDIR(st.st_mode))
+		    if (S_ISDIR(st.st_mode)) {
+                        if (lstat(actualPath.c_str(), &st) == -1)
+                            throw SysError(format("getting canonicalized permissions of directory `%1%'") % actualPath);
 			/* Change mode on the directory to allow for
 			   rename(2).  */
-			chmod(actualPath.c_str(), st.st_mode | 0700);
+			if (chmod(actualPath.c_str(), st.st_mode | 0700) == -1)
+                            throw SysError(format("making `%1%' writable for move from chroot to store") % actualPath);
+                    }
 		    if (rename(actualPath.c_str(), path.c_str()) == -1)
 			throw SysError(format("moving build output `%1%' from the chroot to the store") % path);
 		    if (S_ISDIR(st.st_mode) && chmod(path.c_str(), st.st_mode) == -1)
