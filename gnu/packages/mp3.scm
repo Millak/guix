@@ -632,17 +632,17 @@ compression format (.mpc files).")
 (define-public eyed3
   (package
     (name "eyed3")
-    (version "0.9.8")
+    (version "0.9.8a5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eyed3" version))
        (sha256
-        (base32 "00wqmy7x8g25h75ajc9vcd3nxny7a3k17h8qnpbvb9fmv13yz5m2"))))
+        (base32 "0n3lbb3mm103zbid5mz958ibd2x0hiwmc9if8hbzck6x4gc4w34w"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))    ; the required test data contains copyrighted material
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-deprecation python-filetype))
     (synopsis "MP3 tag ID3 metadata editor")
     (description "eyeD3 is a Python tool for working with audio files,
