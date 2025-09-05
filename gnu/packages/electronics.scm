@@ -2426,27 +2426,31 @@ and coverage-analysis points.  It outputs single- or multi-threaded
     (license license:lgpl3)))
 
 (define-public xoscope
+  (let ((revision "0.0.0")
+        (commit "d97b9b186a4137582ae27fce1da73f51c06f852e"))
   (package
     (name "xoscope")
-    (version "2.3")
+    (version (git-version "2.3" revision commit))
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/xoscope/xoscope/"
-                                  version "/xoscope-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.code.sf.net/p/xoscope/code")
+                     (commit commit)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a5ycfc1qdmibvagc82r2mhv2i99m6pndy5i6ixas3j2297g6pgq"))))
+                "1jaz14pb8lx1y34f979v507dmkrq3wdczi0hkqzb64zg76cdkwya"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list m4 pkg-config))
+     (list m4 pkg-config automake libtool autoconf))
     (inputs
      (list alsa-lib comedilib fftw gtk+ gtkdatabox))
     (synopsis "Digital oscilloscope")
     (description "Xoscope is a digital oscilloscope that can acquire signals
 from ALSA, ESD, and COMEDI sources.  This package currently does not include
-support for ESD sources.")
+support for ESD or COMEDI sources.")
     (home-page "https://xoscope.sourceforge.net/")
-    (license license:gpl2+)))
+    (license license:gpl2+))))
 
 (define-public yosys
   (package
