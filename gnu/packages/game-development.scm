@@ -504,47 +504,6 @@ sounds are not much more than some metadata (description and filename) and raw
 PCM data.")
     (license license:gpl2)))
 
-(define-public gzochi
-  (package
-    (name "gzochi")
-    (version "0.13")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/gzochi/gzochi-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1vcvf04qqzs3q8kaild2x7qvkwc6bwzfsisb78147b8z747j7hj0"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'no-Werror
-                    (lambda _
-                      ;; Don't abort builds due to things like GLib
-                      ;; deprecation warnings.
-                      (substitute* (find-files "." "^Makefile\\.in$")
-                        (("-Werror") ""))
-                      #t)))))
-    (native-inputs (list pkg-config))
-    (inputs (list bdb
-                  glib
-                  gmp
-                  guile-3.0
-                  libmicrohttpd
-                  ncurses
-                  sdl
-                  zlib))
-    (home-page "https://www.nongnu.org/gzochi/")
-    (synopsis "Scalable middleware for multiplayer games")
-    (description
-     "gzochi is a framework for developing massively multiplayer online games.
-A server container provides services to deployed games, which are written in
-Guile Scheme, that abstract and simplify some of the most challenging and
-error-prone aspects of online game development: Concurrency, data persistence,
-and network communications.  A very thin client library can be embedded to
-provide connectivity for client applications written in any language.")
-    (license license:gpl3+)))
-
 (define-public nml
   (package
     (name "nml")
