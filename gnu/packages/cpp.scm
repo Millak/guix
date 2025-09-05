@@ -3209,20 +3209,6 @@ validation.")
     (home-page "https://github.com/simdjson/simdjson")
     (license license:asl2.0)))
 
-(define-public simdjson-0.6
-  (package
-    (inherit simdjson)
-    (version "0.6.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/simdjson/simdjson")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name (package-name simdjson) version))
-              (sha256
-               (base32
-                "038i9nmk85vpxvs546w6cyci0ppdrrp5wnlv1kffxw29x71a3g5l"))))))
-
 (define-public bloomberg-bde-tools
   (package
     (name "bloomberg-bde-tools")
