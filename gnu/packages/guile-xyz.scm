@@ -2,7 +2,7 @@
 ;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
+;;; Copyright © 2016, 2025 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Erik Edrosa <erik.edrosa@gmail.com>
 ;;; Copyright © 2016, 2019-2021, 2023 Eraim Flashner <efraim@flashner.co.il>
@@ -16,7 +16,7 @@
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018, 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018–2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
@@ -2698,74 +2698,70 @@ above command-line parameters.")
               (replace "guile" guile-2.2)))))
 
 (define-public guile-hall
-  ;; There are many unreleased bug fixes; use the latest commit for now.
-  (let ((commit "7558ba906d4281a5b825e3c1c87f2810312414b6")
-        (revision "1"))
-    (package
-      (name "guile-hall")
-      (version (git-version "0.4.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.com/a-sassmannshausen/guile-hall")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0sqm6nyzc37p0xgjj21m9dar2iqik9gfwlcacp2v6y10lh2f1yps"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:modules `(((guix build guile-build-system)
-                     #:select
-                     (target-guile-effective-version))
-                    ,@%default-gnu-modules)
-        #:phases
-        (with-imported-modules `((guix build guile-build-system)
-                                 ,@%default-gnu-imported-modules)
-          #~(modify-phases %standard-phases
-              (add-after 'install 'hall-wrap-binaries
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let* ((version (target-guile-effective-version))
-                         (site-ccache (string-append "/lib/guile/"
-                                                     version "/site-ccache"))
-                         (site (string-append "/share/guile/site/" version))
-                         (dep-path
-                          (lambda (env path)
-                            (list env ":" 'prefix
-                                  (cons (string-append #$output path)
-                                        (map (lambda (input)
-                                               (string-append
-                                                (assoc-ref inputs input)
-                                                path))
-                                             (list "guile-config"
-                                                   "guile-lib"))))))
-                         (bin (string-append (ungexp output) "/bin/")))
-                    (wrap-program (string-append bin "hall")
-                      (dep-path "GUILE_LOAD_PATH" site)
-                      (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)))))))))
-      (native-inputs
-       (list autoconf
-             automake
-             gettext-minimal
-             guile-3.0
-             pkg-config
-             texinfo))
-      (inputs
-       (list bash-minimal
-             guile-3.0
-             guile-config
-             guile-lib))
-      (propagated-inputs
-       (list guile-config))
-      (synopsis "Guile project tooling")
-      (description
-       "Hall is a command-line application and a set of Guile libraries that
+  (package
+    (name "guile-hall")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/a-sassmannshausen/guile-hall")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11v7gmldz4i59q64xhz5l958dw57gn7y24ccivw2qv5sf0djad54"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules `(((guix build guile-build-system)
+                   #:select
+                   (target-guile-effective-version))
+                  ,@%default-gnu-modules)
+      #:phases
+      (with-imported-modules `((guix build guile-build-system)
+                               ,@%default-gnu-imported-modules)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'hall-wrap-binaries
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((version (target-guile-effective-version))
+                       (site-ccache (string-append "/lib/guile/"
+                                                   version "/site-ccache"))
+                       (site (string-append "/share/guile/site/" version))
+                       (dep-path
+                        (lambda (env path)
+                          (list env ":" 'prefix
+                                (cons (string-append #$output path)
+                                      (map (lambda (input)
+                                             (string-append
+                                              (assoc-ref inputs input)
+                                              path))
+                                           (list "guile-config"
+                                                 "guile-lib"))))))
+                       (bin (string-append (ungexp output) "/bin/")))
+                  (wrap-program (string-append bin "hall")
+                    (dep-path "GUILE_LOAD_PATH" site)
+                    (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal
+           guile-3.0
+           pkg-config
+           texinfo))
+    (inputs
+     (list bash-minimal
+           guile-3.0
+           guile-config
+           guile-lib
+           guix))
+    (synopsis "Guile project tooling")
+    (description
+     "Hall is a command-line application and a set of Guile libraries that
 allow you to quickly create and publish Guile projects.  It allows you to
 transparently support the GNU build system, manage a project hierarchy &
 provides tight coupling to Guix.")
-      (home-page "https://gitlab.com/a-sassmannshausen/guile-hall")
-      (license license:gpl3+))))
+    (home-page "https://gitlab.com/a-sassmannshausen/guile-hall")
+    (license license:gpl3+)))
 
 (define-public guile-ics
   (package
