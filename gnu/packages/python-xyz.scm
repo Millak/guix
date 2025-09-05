@@ -20748,11 +20748,22 @@ code.")
        (sha256
         (base32
          "1zqqjlgmhgkpzg9ss5ki8wamxl83xn51fs6gn2a8cxsx9vkbvcvj"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'drop-unittest2
+            ;; See: <https://github.com/briancurtin/deprecation/issues/54>.
+            (lambda _
+              (substitute* "tests/test_deprecation.py"
+                (("import unittest2")
+                 "import unittest as unittest2")))))))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-packaging))
-    (native-inputs
-     (list python-unittest2))
     (home-page "https://deprecation.readthedocs.io/")
     (synopsis "Python library to handle automated deprecations")
     (description
