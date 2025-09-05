@@ -396,7 +396,6 @@ gnu/packages/gxmessage.scm
 gnu/packages/hardware.scm
 gnu/packages/haskell-apps.scm
 gnu/packages/hunspell.scm
-gnu/packages/hyperledger.scm
 gnu/packages/icu4c.scm
 gnu/packages/idris.scm
 gnu/packages/idutils.scm
