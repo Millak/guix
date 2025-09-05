@@ -429,12 +429,12 @@ code quality.")
   (package
     (name "python-coveralls")
     (version "4.0.1")
-    (home-page "https://github.com/coveralls-clients/coveralls-python")
     (source
      (origin
-       ;; The PyPI release lacks tests, so we pull from git instead.
-       (method git-fetch)
-       (uri (git-reference (url home-page) (commit version)))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/coveralls-clients/coveralls-python")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1411h7rwxgp9ag26bmlpy7g7sdh39f56dc1mrd1n74bjsgvwzj6l"))))
@@ -446,10 +446,17 @@ code quality.")
                           ;; XXX: Unable to find coverage package.
                           "--ignore=tests/api/reporter_test.py"
                           "--ignore=tests/integration_test.py")))
-    (propagated-inputs
-     (list python-coverage python-docopt python-pyyaml python-requests))
     (native-inputs
-     (list poetry python-mock python-pytest python-responses))
+     (list python-poetry-core
+           python-mock
+           python-pytest
+           python-responses))
+    (propagated-inputs
+     (list python-coverage
+           python-docopt
+           python-pyyaml
+           python-requests))
+    (home-page "https://github.com/coveralls-clients/coveralls-python")
     (synopsis "Show coverage stats online via coveralls.io")
     (description
      "Coveralls.io is a service for publishing code coverage statistics online.
