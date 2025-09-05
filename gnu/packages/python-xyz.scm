@@ -6937,30 +6937,33 @@ code introspection, and logging.")
 
 (define-public python-pbr
   (package
-    (inherit python-pbr-minimal)
     (name "python-pbr")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pbr" version))
+       (sha256
+        (base32 "0mvy1z1dyl28w0brns1vdhc98hzbn5b3fsw1xj41amdqs88wpjry"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ;; Most tests seem to use the Internet.
+    ;; Message from upstream:
+    ;;
+    ;; DO NOT add any other dependencies as PBR is meant to be minimalist to
+    ;; avoid problems with bootstrapping build environments.
+    ;;
+    ;; See: <https://opendev.org/openstack/pbr/src/tag/7.0.1/requirements.txt>.
     (propagated-inputs
-      (list git-minimal/pinned)) ;; pbr actually uses the "git" binary.
-    (native-inputs
-      `(("python-fixtures" ,python-fixtures-bootstrap)
-        ;; discover, coverage, hacking, subunit
-        ("python-mock" ,python-mock)
-        ("python-six" ,python-six)
-        ("python-sphinx" ,python-sphinx)
-        ("python-testrepository" ,python-testrepository-bootstrap)
-        ("python-testresources" ,python-testresources-bootstrap)
-        ("python-testscenarios" ,python-testscenarios-bootstrap)
-        ("python-testtools" ,python-testtools-bootstrap)
-        ("python-virtualenv" ,python-virtualenv)))
+     (list python-setuptools))
+    (home-page "https://docs.openstack.org/pbr/latest/")
     (synopsis "Enhance the default behavior of Python’s setuptools")
     (description
-      "Python Build Reasonableness (PBR) is a library that injects some useful
+     "Python Build Reasonableness (PBR) is a library that injects some useful
 and sensible default behaviors into your setuptools run.  It will set
 versions, process requirements files and generate AUTHORS and ChangeLog file
-from git information.
-")))
+from git information.")
+    (license license:asl2.0)))
 
 (define-public python-pbr-next
   (hidden-package
