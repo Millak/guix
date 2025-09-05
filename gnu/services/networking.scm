@@ -3003,15 +3003,17 @@ of the IPFS peer-to-peer storage network.")))
   (keepalived  keepalived-configuration-keepalived  ;file-like
                (default keepalived))
   (config-file keepalived-configuration-config-file ;file-like
-               (default #f)))
+               (default #f))
+  (shepherd-requirement keepalived-configuration-shepherd-requirement
+                        (default '(networking user-processes))))
 
 (define (keepalived-shepherd-service config)
   (match-record config <keepalived-configuration>
-    (keepalived config-file)
+    (keepalived config-file shepherd-requirement)
     (list (shepherd-service
            (provision '(keepalived))
            (documentation "Run keepalived.")
-           (requirement '(loopback))
+           (requirement shepherd-requirement)
            (start #~(make-forkexec-constructor
                      (list (string-append #$keepalived "/sbin/keepalived")
                            "--dont-fork" "--log-console" "--log-detail"
