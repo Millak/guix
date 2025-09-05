@@ -21,6 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages gobby)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -115,22 +116,17 @@ documents in one session.  Obby is used by the Gobby collaborative editor.")
     (native-inputs
      (list pkg-config intltool itstool))
     (inputs
-     `(("gnutls" ,gnutls)
-       ("gsasl" ,gsasl)
-       ("gtkmm" ,gtkmm-3)
-       ("gtksourceview" ,gtksourceview-3)
-       ("libinfinity" ,libinfinity)
-       ("libxml++-2" ,libxml++-2)))
+     (list gnutls gsasl gtkmm-3 gtksourceview-3 libinfinity libxml++-2))
     (arguments
-     ;; Required by libsigc++.
-     `(#:configure-flags '("CXXFLAGS=-std=c++11")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'move-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion (assoc-ref outputs "out")
-               (rename-file "bin/gobby-0.5" "bin/gobby"))
-             #t)))))
+     (list
+      ;; Required by libsigc++.
+      #:configure-flags #~(list "CXXFLAGS=-std=c++11")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-executable
+            (lambda _
+              (with-directory-excursion #$output
+                (rename-file "bin/gobby-0.5" "bin/gobby")))))))
     (home-page "https://gobby.github.io/")
     (synopsis "Collaborative editor")
     (description
