@@ -24,7 +24,7 @@
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2022, 2024 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022, 2024, 2025 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022, 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
@@ -2269,7 +2269,7 @@ Machine Protocol.")
 (define-public looking-glass-client
   (package
     (name "looking-glass-client")
-    (version "B6")
+    (version "B7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://looking-glass.io/artifact/" version
@@ -2277,7 +2277,7 @@ Machine Protocol.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))))
+                "11crsvy783ig7kzmr2cr68wv9zsjkcbp1akcs28rc6yc1ik0dr89"))))
     (build-system cmake-build-system)
     (inputs (list bash-minimal
                   font-dejavu
