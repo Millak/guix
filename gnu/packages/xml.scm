@@ -327,7 +327,7 @@ to output XPath results with a null delimiter.")))
               (patches
                 (append (search-patches "python-libxml2-utf8.patch")
                         (origin-patches (package-source libxml2))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (outputs '("out"))
     (arguments
      (list
@@ -345,6 +345,7 @@ to output XPath results with a null delimiter.")))
                   ;; provide the absolute directory name.
                   (("/opt/include")
                    (dirname libxml2-headers)))))))))
+    (native-inputs (list python-setuptools))
     (inputs (list libxml2))
     (synopsis "Python bindings for the libxml2 library")))
 
