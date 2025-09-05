@@ -155,11 +155,15 @@ FULL-VALUE tentatives, spaced by 1 second."
            full-value
            (+ value 1))))
     (unless (online?)
-      (run-error-page
-       (G_ "The selected network does not provide access to the \
-Internet and the Guix substitute server, please try again.")
-       (G_ "Connection error"))
-      (abort-to-prompt 'installer-step 'abort))))
+      (case (choice-window
+             (G_ "Internet access")
+             (G_ "Continue")
+             (G_ "Try again?")
+             (G_ "
+The selected network does not seem to provide access to the \
+Internet. The install process requires Internet access. \
+Do you want to continue anyway?"))
+        ((2) (abort-to-prompt 'installer-step 'abort))))))
 
 (define (run-network-page)
   "Run a page to allow the user to configure connman so that it can access the
