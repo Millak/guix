@@ -130,6 +130,14 @@
 
 (define (cuirass-shepherd-service config)
   "Return a <shepherd-service> for the Cuirass service with CONFIG."
+  (define (endpoint name)
+    #~(endpoint (make-socket-address AF_UNIX
+                                     #$(in-vicinity "/var/run/cuirass" name))
+                #:name #$name
+                #:socket-owner #$(cuirass-configuration-user config)
+                #:socket-group #$(cuirass-configuration-group config)
+                #:socket-directory-permissions #o700))
+
   (let ((cuirass          (cuirass-configuration-cuirass config))
         (cache-directory  (cuirass-configuration-cache-directory config))
         (web-log-file     (cuirass-configuration-web-log-file config))
@@ -158,7 +166,7 @@
         (requirement '(user-processes
                        guix-daemon
                        postgres postgres-roles networking))
-        (start #~(make-forkexec-constructor
+        (start #~(make-systemd-constructor
                   (list (string-append #$cuirass "/bin/cuirass")
                         "register"
                         "--cache-directory" #$cache-directory
@@ -191,16 +199,21 @@
                         #$@(if fallback? '("--fallback") '())
                         #$@extra-options)
 
+                  ;; Unix-domain sockets that trigger socket activation.
+                  (list #$(endpoint "bridge")
+                        #$(endpoint "remote-builds"))
+
                   #:environment-variables
                   (list "LC_ALL=C.UTF-8"        ;for proper file name decoding
                         "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
+                        "COLUMNS=200"             ;for backtraces
                         (string-append "GIT_EXEC_PATH=" #$git
                                        "/libexec/git-core"))
 
                   #:user #$user
                   #:group #$group
                   #:log-file #$main-log-file))
-        (stop #~(make-kill-destructor))
+        (stop #~(make-systemd-destructor))
         (actions (list (shepherd-configuration-action config-file))))
       ,(shepherd-service
         (documentation "Run Cuirass web interface.")
