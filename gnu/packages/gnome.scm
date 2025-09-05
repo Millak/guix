@@ -9028,7 +9028,7 @@ library.")
   (package
     (inherit libxml++)
     (name "libxml++")
-    (version "2.42.2")
+    (version "2.42.3")
     (source
      (origin
        (method git-fetch)
@@ -9037,7 +9037,7 @@ library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05slsbhc25z7kwlc28ydl3dfyp7rgbmz1fxj9z6gcvpg3hkghj2m"))))
+        (base32 "0a0q25q275ysfr2ly66nbizkkwxnylsydzy5a8ay0c9cdskd3sc9"))))
     (propagated-inputs (modify-inputs (package-propagated-inputs libxml++)
                          (append glibmm-2.66)))))
 
