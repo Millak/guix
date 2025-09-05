@@ -2062,8 +2062,8 @@ complete studio.")
 
 (define-public tascam-gtk
   ;; This commit represents the latest version at the time of this writing.
-  (let ((commit "69fb86f31efcdb27c7854d2a190457aab42b337a")
-        (revision "0"))
+  (let ((commit "6419a3be8fd9678ebcfd79812bfbcc55b44fc3a6")
+        (revision "1"))
     (package
       (name "tascam-gtk")
       (version (git-version "0.4" revision commit))
@@ -2075,12 +2075,12 @@ complete studio.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "05fbs5s24nwr6b10jgjhsfi7aj6y65kcickmygl7g84xvsnykdb0"))))
+                  "1gsnac7x3djvbwf807vz58zrqf09sdr01kfdvp1pdf6j3zsxz0bb"))))
       (build-system gnu-build-system)
       (inputs
-       (list liblo gtkmm-3 alsa-lib libxml++-3))
+       (list liblo gtkmm-3 alsa-lib libxml++))
       (native-inputs
-       (list `(,glib "bin") pkg-config))
+       (list autoconf automake `(,glib "bin") pkg-config))
       (home-page "https://github.com/onkelDead/tascam-gtk")
       (synopsis "GTK+ based application to control Tascam US-16x08 DSP mixer")
       (description "This is a mixer application to control the Tascam US-16x08
