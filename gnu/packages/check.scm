@@ -2656,19 +2656,22 @@ to make testing async code easier.")
 (define-public python-codecov
   (package
     (name "python-codecov")
-    (version "2.0.15")
+    (version "2.1.13")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "codecov" version))
         (sha256
          (base32
-          "1217c0vqf7ii65635gvl27a5pfhv0r7zhrpdp9cx640hg73bgn4f"))))
-    (build-system python-build-system)
+          "131av6sdzxf3qqqb85fm3mcd771mrrv9n6lmp52szbiwcf2vcqi3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI, tests in git are broken
     (native-inputs
-     (list python-unittest2))
+     (list python-setuptools))
     (propagated-inputs
-     (list python-coverage python-requests))
+     (list python-coverage
+           python-requests))
     (home-page "https://github.com/codecov/codecov-python")
     (synopsis "Upload code coverage reports to @code{codecov.io}")
     (description
