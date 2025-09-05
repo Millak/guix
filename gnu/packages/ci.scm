@@ -70,122 +70,113 @@
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR)))
 
 (define-public cuirass
-  (let ((commit "6b499a74999fc05e19e349e2c8ca8e7f417147f5")
-        (revision "12"))
-    (package
-      (name "cuirass")
-      (version (git-version "1.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/guix/guix-cuirass.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1m6nq371402fkd2rrmxrzqj5r3q6xliyvq4blkyj7zvpn5gbypxa"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:modules `((guix build utils)
-                         (guix build gnu-build-system)
-                         (ice-9 match)
-                         (ice-9 rdelim)
-                         (ice-9 popen)
-                         (srfi srfi-1))
-             #:configure-flags #~'("--localstatedir=/var" ;for /var/log/cuirass
-                                   "--sysconfdir=/etc") ;for /etc/cuirass/forge-tokens
-             ;; XXX: HTTP tests fail on aarch64 due to Fibers errors, disable them
-             ;; on that architecture for now.
-             #:tests? (let ((s (or (%current-target-system)
-                                   (%current-system))))
-                        (not (string-prefix? "aarch64" s)))
-             #:parallel-tests? #f
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-before 'bootstrap 'fix-version-gen
-                   (lambda _
-                     (patch-shebang "build-aux/git-version-gen")
+  (package
+    (name "cuirass")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.guix.gnu.org/cuirass.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "15jrl0rx6i5ibiw7svrdgcy13v8iwi5z30jp49gfxrapp6m6lsrw"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:modules `((guix build utils)
+                       (guix build gnu-build-system)
+                       (ice-9 match)
+                       (ice-9 rdelim)
+                       (ice-9 popen)
+                       (srfi srfi-1))
+           #:configure-flags #~'("--localstatedir=/var" ;for /var/log/cuirass
+                                 "--sysconfdir=/etc") ;for /etc/cuirass/forge-tokens
+           ;; XXX: HTTP tests fail on aarch64 due to Fibers errors, disable them
+           ;; on that architecture for now.
+           #:tests? (let ((s (or (%current-target-system)
+                                 (%current-system))))
+                      (not (string-prefix? "aarch64" s)))
+           #:parallel-tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   ;; Wrap the 'cuirass' command to refer to the right modules.
+                   ;; Do so by collecting the subset of INPUTS that provides Guile
+                   ;; modules.  This includes direct inputs as well as their
+                   ;; propagated inputs--e.g., 'guix' propagates 'guile-zstd'.
+                   (define (sub-directory suffix)
+                     (match-lambda
+                       ((label . directory)
+                        (let ((directory (string-append directory suffix)))
+                          (and (directory-exists? directory)
+                               directory)))))
 
-                     (call-with-output-file ".tarball-version"
-                       (lambda (port)
-                         (display #$(package-version this-package) port)))))
-                 (add-after 'install 'wrap-program
-                   (lambda* (#:key inputs outputs #:allow-other-keys)
-                     ;; Wrap the 'cuirass' command to refer to the right modules.
-                     ;; Do so by collecting the subset of INPUTS that provides Guile
-                     ;; modules.  This includes direct inputs as well as their
-                     ;; propagated inputs--e.g., 'guix' propagates 'guile-zstd'.
-                     (define (sub-directory suffix)
-                       (match-lambda
-                         ((label . directory)
-                          (let ((directory (string-append directory suffix)))
-                            (and (directory-exists? directory)
-                                 directory)))))
+                   (let* ((out (assoc-ref outputs "out"))
+                          (effective
+                           (read-line
+                            (open-pipe* OPEN_READ (which "guile") "-c"
+                                        "(display (effective-version))")))
+                          (mods (filter-map (sub-directory
+                                             (string-append
+                                              "/share/guile/site/"
+                                              effective))
+                                            inputs))
+                          (objs (filter-map (sub-directory
+                                             (string-append
+                                              "/lib/guile/" effective
+                                              "/site-ccache"))
+                                            inputs)))
+                     (wrap-program (string-append out "/bin/cuirass")
+                       `("PATH" ":" prefix
+                         (,(string-append out "/bin")))
+                       `("GUILE_LOAD_PATH" ":" prefix
+                         ,mods)
+                       `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                         ,objs))))))))
+    (inputs
+     (list bash-minimal
+           guile-3.0-latest
+           guile-avahi
+           guile-fibers
+           guile-gcrypt
+           guile-json-4
+           guile-simple-zmq
+           guile-squee
+           guile-git
+           guile-zlib
+           guile-mastodon
+           guile-gnutls
+           mailutils
+           ;; FIXME: this is propagated by "guile-git", but it needs to be among
+           ;; the inputs to add it to GUILE_LOAD_PATH.
+           guile-bytestructures
 
-                     (let* ((out (assoc-ref outputs "out"))
-                            (effective
-                             (read-line
-                              (open-pipe* OPEN_READ (which "guile") "-c"
-                                          "(display (effective-version))")))
-                            (mods (filter-map (sub-directory
-                                               (string-append
-                                                "/share/guile/site/"
-                                                effective))
-                                              inputs))
-                            (objs (filter-map (sub-directory
-                                               (string-append
-                                                "/lib/guile/" effective
-                                                "/site-ccache"))
-                                              inputs)))
-                       (wrap-program (string-append out "/bin/cuirass")
-                         `("PATH" ":" prefix
-                           (,(string-append out "/bin")))
-                         `("GUILE_LOAD_PATH" ":" prefix
-                           ,mods)
-                         `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                           ,objs))))))))
-      (inputs
-       (list bash-minimal
-             guile-3.0-latest
-             guile-avahi
-             guile-fibers
-             guile-gcrypt
-             guile-json-4
-             guile-simple-zmq
-             guile-squee
-             guile-git
-             guile-zlib
-             guile-mastodon
-             guile-gnutls
-             mailutils
-             ;; FIXME: this is propagated by "guile-git", but it needs to be among
-             ;; the inputs to add it to GUILE_LOAD_PATH.
-             guile-bytestructures
-
-             guix))
-      (native-inputs
-       (list autoconf-2.71
-             automake
-             pkg-config
-             texinfo
-             ephemeralpg
-             esbuild))
-      (native-search-paths
-       ;; For HTTPS access, Cuirass itself honors these variables, with the
-       ;; same semantics as Git and OpenSSL (respectively).
-       (list (search-path-specification
-              (variable "GIT_SSL_CAINFO")
-              (file-type 'regular)
-              (separator #f)                      ;single entry
-              (files '("etc/ssl/certs/ca-certificates.crt")))
-             $SSL_CERT_DIR))
-      (synopsis "Continuous integration system")
-      (description
-       "Cuirass is a continuous integration tool using GNU Guix.  It is
+           guix))
+    (native-inputs
+     (list autoconf-2.71
+           automake
+           pkg-config
+           texinfo
+           ephemeralpg
+           esbuild))
+    (native-search-paths
+     ;; For HTTPS access, Cuirass itself honors these variables, with the
+     ;; same semantics as Git and OpenSSL (respectively).
+     (list (search-path-specification
+             (variable "GIT_SSL_CAINFO")
+             (file-type 'regular)
+             (separator #f)                      ;single entry
+             (files '("etc/ssl/certs/ca-certificates.crt")))
+           $SSL_CERT_DIR))
+    (synopsis "Continuous integration system")
+    (description
+     "Cuirass is a continuous integration tool using GNU Guix.  It is
 intended as a replacement for Hydra.")
-      (home-page "https://guix.gnu.org/cuirass/")
-      (license l:gpl3+))))
+    (home-page "https://guix.gnu.org/cuirass/")
+    (license l:gpl3+)))
 
 (define-public laminar
   (package
