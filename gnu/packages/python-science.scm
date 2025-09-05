@@ -5775,6 +5775,37 @@ well as key metadata and SIRENE database containing data on all French
 compagnies.")
     (license license:expat)))
 
+(define-public python-dvc-objects
+  (package
+    (name "python-dvc-objects")
+    (version "5.1.1")
+    (home-page "https://github.com/iterative/dvc-objects")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dvc_objects" version))
+       (sha256
+        (base32 "1amx5z8k2v2hbsajg0dcd5dxmmlv9bnbchpas95s8sj86cm8yc4y"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-fsspec
+                             python-funcy-1.14))
+    (native-inputs
+     (list python-mypy
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-mock
+           python-pytest-sugar
+           python-reflink
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (synopsis "Filesystem and object-db level abstractions for DVC")
+    (description "Dvc objects provides a filesystem and object-db level
+abstractions to use in dvc and dvc-data.")
+    (license license:asl2.0)))
+
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
