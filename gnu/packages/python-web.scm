@@ -5175,16 +5175,19 @@ APIs.")
     (version "0.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "beren" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/teffalump/beren")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1v3mdwfqsyza892zvs124ym9w1bkng1j56b7l4dwfjir3723xcgf"))))
-    (build-system python-build-system)
+        (base32 "19nnvbjx2wypslqklqi0j9fiwypk1a5qwfw1jcabjw03awm1yyrx"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; The test tries to open a connection to a remote server.
      `(#:tests? #f))
-    (propagated-inputs
-     (list python-apiron))
+    (native-inputs (list python-setuptools-next))
+    (propagated-inputs (list python-apiron))
     (home-page "https://github.com/teffalump/beren")
     (synopsis "REST client for Orthanc DICOM servers")
     (description
