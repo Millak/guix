@@ -82,6 +82,7 @@
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1070,6 +1071,70 @@ tools in a live programming environment.")
 and locate windows on all your workspaces, using an interactive dmenu
 prompt.")
       (license license:wtfpl2))))
+
+(define-public quicktile
+  ;; Latest release, 0.4.0, is 5 years old and does not use pyproject.toml yet.
+  (let ((commit "2c499beedf31d5906e86c482f70129d94e429350")
+        (revision "0"))
+    (package
+      (name "quicktile")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ssokolow/quicktile")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08kwilln32kx2cdg1sg7ffb214fkhacchx8jd64pyjbshmradgxr"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "HOME" "/tmp")
+                  (mkdir-p "/tmp/.config")
+                  ;; First run creates /tmp/.config/quicktile.cfg.
+                  (invoke "xvfb-run"
+                          "-a"
+                          "./quicktile.sh")
+                  ;; test_functional.py moves windows around and thus needs
+                  ;; access to an X server.
+                  (invoke "xvfb-run"
+                          "-a"
+                          "python3"
+                          "-m"
+                          "pytest"
+                          "-vv"
+                          "tests")))))))
+      (native-inputs
+       (list openbox ;necessary for test_functional.py
+             python-pluggy
+             python-pytest
+             python-pytest-cov
+             python-setuptools
+             xvfb-run))
+      (inputs
+       (list gtk+
+             libwnck
+             python-xlib
+             python-pygobject
+             python-dbus-python))
+      ;; The actual home page https://ssokolow.com/quicktile/
+      ;; gives an SSL error.
+      (home-page "https://github.com/ssokolow/quicktile")
+      (synopsis "window-tiling hotkeys to any X11 desktop")
+      (description
+       "QuickTile is a simple utility, inspired by
+@url{https://github.com/dozius/winsplit-revolution, WinSplit Revolution} for
+Windows, which adds window-tiling keybindings to existing X11 window manager.
+It may be used as a standalone alternative to the keyboard related features of
+the Compiz Grid plugin.")
+      (license license:gpl2+))))
 
 (define-public i3lock-color
   (package
