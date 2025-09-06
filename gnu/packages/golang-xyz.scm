@@ -1635,6 +1635,34 @@ commands.")
      "This package implements optimal parameters for data-types.")
     (license license:expat)))
 
+(define-public go-github-com-antlr4-go-antlr-v4
+  (package
+    (name "go-github-com-antlr4-go-antlr-v4")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/antlr4-go/antlr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m5q00fvz28dgvv3ws924p6gamxm6gzqfm12f5ryhljifg22xq3d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/antlr4-go/antlr/v4"))
+    (propagated-inputs
+     (list go-golang-org-x-exp))
+    (home-page "https://github.com/antlr4-go/antlr")
+    (synopsis "ANTLR4 Go Runtime Module")
+    (description
+     "This package implements the Go version of the
+@url{https://github.com/antlr/antlr4, ANTLR 4} runtime - ANother Tool for
+Language Recognition, a parser generator that uses a LL algorithm for
+parsing.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-apex-logs
   (package
     (name "go-github-com-apex-logs")
