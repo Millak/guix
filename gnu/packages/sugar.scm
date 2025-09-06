@@ -1386,19 +1386,20 @@ surround the turtle before it runs off the screen.")
   (package
     (name "sugar-typing-turtle-activity")
     (version "32")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/sugarlabs/typing-turtle-activity")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0shadv9wgddjvl97kvsqb8iw1wmmfw5lzcqk78hd70pzvh4c1hmd"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sugarlabs/typing-turtle-activity")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0shadv9wgddjvl97kvsqb8iw1wmmfw5lzcqk78hd70pzvh4c1hmd"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-target "check"
+      #:test-flags
+      #~(list "check")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-reference-to-executables
@@ -1411,20 +1412,22 @@ surround the turtle before it runs off the screen.")
               (substitute* "activity/activity.info"
                 (("exec = sugar-activity3")
                  (string-append "exec = "
-                                (search-input-file inputs "/bin/sugar-activity3"))))))
+                                (search-input-file inputs
+                                                   "/bin/sugar-activity3"))))))
+          (delete 'build)
           (replace 'install
             (lambda _
               (invoke "python" "setup.py" "install"
                       (string-append "--prefix=" #$output)))))))
     (native-inputs
-     (list gettext-minimal sugar-toolkit-gtk3))
-    (inputs
-     (list setxkbmap))
+     (list gettext-minimal sugar-toolkit-gtk3 python-setuptools-next))
+    (inputs (list setxkbmap))
     (home-page "https://help.sugarlabs.org/en/typing_turtle.html")
     (synopsis "Learn typing")
-    (description "Need some help typing?  In this activity for the Sugar
-environment you will learn the best way to hold your hands in order for you to
-become a faster typist.")
+    (description
+     "Need some help typing?  In this activity for the Sugar environment you
+will learn the best way to hold your hands in order for you to become a faster
+typist.")
     (license license:gpl3+)))
 
 (define-public sugar-write-activity
