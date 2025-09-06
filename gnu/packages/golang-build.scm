@@ -60,6 +60,47 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-ebitengine-purego
+  (package
+    (name "go-github-com-ebitengine-purego")
+    (version "0.8.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ebitengine/purego")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sy5cn56wxwv1qpl6vg5160hlk004m5wdlf18rfnj63573f5kivh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ebitengine/purego"
+      ;; TODO: This failed test should be proper checked.
+      ;; ld:
+      ;; /tmp/guix-build-go-github-com-ebitengine-purego-0.8.4.drv-0/ccguQKNs.o:
+      ;; relocation R_X86_64_32 against `.bss' can not be used when making a
+      ;; shared object; recompile with -fPIC ld: failed to set dynamic section
+      ;; sizes: bad value collect2: error: ld returned 1 exit status
+      #:test-flags #~(list "-skip" "TestNestedDlopenCall")))
+    (home-page "https://github.com/ebitengine/purego")
+    (synopsis "Library for calling C functions from Go without Cgo")
+    (description
+     "This package provides a library for calling C functions from Go without
+Cgo.
+
+Featues:
+@itemize
+@item build for other platforms easily without a C compiler
+@item efficiently cache entirely Go builds
+@item using Cgo generates a C wrapper function for each C function called
+@item load symbols at runtime and use it as a plugin system
+@item call into other languages that are compiled into shared objects
+@item works even with @code{CGO_ENABLED=1} so incremental porting is possible
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-goccmack-gocc
   (package
     (name "go-github-com-goccmack-gocc")
