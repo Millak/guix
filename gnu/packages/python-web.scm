@@ -9606,18 +9606,23 @@ over IMAP:
 (define-public python-giturlparse
   (package
     (name "python-giturlparse")
-    (version "0.10.0")
+    (version "0.12.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "giturlparse" version))
-        (sha256
-         (base32 "0dxk7sqy8ibaqdl6jzxd0ac1p7shzp4p9f3lhkd7qw9h3llsp595"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nephila/giturlparse")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fdbxp176p17sn5xc1418mz2vk00hlcsd5qmi2fdcfphqal6raan"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools-next))
     (home-page "https://github.com/nephila/giturlparse")
     (synopsis "Git URL parsing module")
-    (description "This package provides a git URL parsing module which supports
-parsing and rewriting of remote git URLs from various hosting providers.")
+    (description
+     "This package provides a git URL parsing module which supports parsing
+and rewriting of remote git URLs from various hosting providers.")
     (license license:asl2.0)))
 
 (define-public python-hstspreload
