@@ -1697,6 +1697,7 @@ menu specification.")
                    mate-icon-theme
                    mate-power-manager
                    mate-menus
+                   mate-notification-daemon
                    mate-panel
                    mate-control-center
                    mate-media
