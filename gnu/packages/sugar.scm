@@ -913,19 +913,20 @@ looking for why an activity or Sugar is not working properly.")
   (package
     (name "sugar-maze-activity")
     (version "32")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/sugarlabs/maze-activity")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0506mwxy3agyxlilb5v3pn29pg45lzaxm8rhj9azm58irs3wdmnq"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sugarlabs/maze-activity")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0506mwxy3agyxlilb5v3pn29pg45lzaxm8rhj9azm58irs3wdmnq"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-target "check"
+      #:test-flags
+      #~(list "check")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-launcher
@@ -933,18 +934,18 @@ looking for why an activity or Sugar is not working properly.")
               (substitute* "activity/activity.info"
                 (("exec = sugar-activity3")
                  (string-append "exec = "
-                                (search-input-file inputs "/bin/sugar-activity3"))))))
+                                (search-input-file inputs
+                                                   "/bin/sugar-activity3"))))))
+          (delete 'build)
           (replace 'install
             (lambda _
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "install"
                       (string-append "--prefix=" #$output)))))))
+    (native-inputs (list python-setuptools-next))
     ;; All these libraries are accessed via gobject introspection.
-    (propagated-inputs
-     (list gtk+
-           telepathy-glib))
-    (inputs
-     (list sugar-toolkit-gtk3 gettext-minimal))
+    (propagated-inputs (list gtk+ telepathy-glib))
+    (inputs (list sugar-toolkit-gtk3 gettext-minimal))
     (home-page "https://github.com/sugarlabs/maze-activity")
     (synopsis "Simple maze game for the Sugar learning environment")
     (description "Try to make your way through an increasingly difficult path,
