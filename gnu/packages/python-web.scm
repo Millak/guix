@@ -9631,16 +9631,18 @@ and rewriting of remote git URLs from various hosting providers.")
     (version "2020.10.20")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hstspreload" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sethmlarson/hstspreload")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1qah80p2xlib1rhivvdj9v5y3girxrj7dwp1mnh8mwaj5wy32y8a"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/sethmlarson/hstspreload")
-    (synopsis
-     "Chromium HSTS Preload list as a Python package")
+        (base32 "03fs4m3sy4vwmk1g4q5xakckkfbc8np7cijhpzrakkk0z0cc6h8w"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; tests require external resources.
+    (native-inputs (list python-setuptools-next))
+    (home-page "https://github.com/sethmlarson/hstspreload")
+    (synopsis "Chromium HSTS Preload list as a Python package")
     (description
      "@code{python-hstspreload} contains Chromium HSTS Preload list
 as a Python package.")
