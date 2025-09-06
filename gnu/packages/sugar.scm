@@ -1073,17 +1073,19 @@ Journal entries that have been ‘starred’.")
   (package
     (name "sugar-read-activity")
     (version "124")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.sugarlabs.org/sources/sucrose/fructose/"
-                                  "Read/Read-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1hla80vclprqzahr8yfnin09spv4mab7il6a00ilz4anyahrzgzy"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://download.sugarlabs.org/sources/sucrose/fructose/"
+             "Read/Read-" version ".tar.bz2"))
+       (sha256
+        (base32 "1hla80vclprqzahr8yfnin09spv4mab7il6a00ilz4anyahrzgzy"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-target "check"
+      #:test-flags
+      #~(list "check")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-launcher
@@ -1091,27 +1093,29 @@ Journal entries that have been ‘starred’.")
               (substitute* "activity/activity.info"
                 (("exec = sugar-activity3")
                  (string-append "exec = "
-                                (search-input-file inputs "/bin/sugar-activity3"))))))
+                                (search-input-file inputs
+                                                   "/bin/sugar-activity3"))))))
+          (delete 'build)
           (replace 'install
             (lambda _
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "install"
                       (string-append "--prefix=" #$output)))))))
+    (native-inputs (list python-setuptools-next))
     ;; All these libraries are accessed via gobject introspection.
     (propagated-inputs
      (list evince
            gtk+
            sugar-toolkit-gtk3
            webkitgtk-for-gtk3))
-    (inputs
-     (list gettext-minimal))
+    (inputs (list gettext-minimal))
     (home-page "https://help.sugarlabs.org/read.html")
     (synopsis "Read PDF and TXT files in the Sugar learning environment")
-    (description "The Read activity allows the laptop to act as a book
-reader.  It has a simple interface, and will view many kinds of text and
-image-based book-like materials.  It will have particular strengths in
-handheld mode, with extremely low power consumption and simple navigation
-controls.")
+    (description
+     "The Read activity allows the laptop to act as a book reader.  It has a
+simple interface, and will view many kinds of text and image-based book-like
+materials.  It will have particular strengths in handheld mode, with extremely
+low power consumption and simple navigation controls.")
     (license license:gpl2+)))
 
 (define-public sugar-river-crossing-activity
