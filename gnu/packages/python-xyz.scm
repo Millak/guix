@@ -33589,24 +33589,17 @@ dictionaries.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0agq171cz7y10cknjypwrvsvikja3w9d28hlr3kw5k2sdvfqnpam"))))
-    (build-system python-build-system)
+        (base32 "0agq171cz7y10cknjypwrvsvikja3w9d28hlr3kw5k2sdvfqnpam"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-home-directory
-           (lambda _
-             ;; Tests fail with "Permission denied: '/homeless-shelter'".
-             (setenv "HOME" "/tmp"))))
-       ;; Tests fail with "Uncaught Python exception: python: undefined
-       ;; symbol: objc_getClass".
-       #:tests? #f))
-    (propagated-inputs
-     (list python-pyqt))
+     (list
+      #:test-flags
+      #~(list "--ignore-glob=pyzo/yoton/tests/*"     ; XXX: yoton is outdated.
+              "--ignore=pyzo/codeeditor/_test.py"))) ; XXX: cannot import qt.
+    (native-inputs (list python-pytest python-setuptools-next))
+    (propagated-inputs (list python-pyqt))
     (home-page "https://pyzo.org")
-    (synopsis
-     "Python IDE for scientific computing")
+    (synopsis "Python IDE for scientific computing")
     (description
      "Pyzo is a Python IDE focused on interactivity and introspection,
 which makes it very suitable for scientific computing.  Its practical
