@@ -23305,6 +23305,29 @@ configuration as YAML.")
 operation.")
     (license license:asl2.0)))
 
+(define-public go-sigs-k8s-io-structured-merge-diff-v6
+  (package
+    (inherit go-sigs-k8s-io-structured-merge-diff-v4)
+    (name "go-sigs-k8s-io-structured-merge-diff-v6")
+    (version "6.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes-sigs/structured-merge-diff")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n7fx6l108ad7wmpx03zb7vzrzxwzs8fyhz0xxdr1vggsq5kdfn5"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-sigs-k8s-io-structured-merge-diff-v4)
+       ((#:import-path _) "sigs.k8s.io/structured-merge-diff/v6")))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-json-iterator-go
+           go-go-yaml-in-yaml-v2))))
+
 (define-public go-sigs-k8s-io-yaml
   (package
     (name "go-sigs-k8s-io-yaml")
