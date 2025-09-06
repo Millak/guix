@@ -629,19 +629,19 @@ or classmates.")
     (package
       (name "sugar-classify-cats-activity")
       (version (git-version "2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/classify-cats")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "101drh1dqgr9qsz3r1fzkcn5h6z720zskaqnz2aixzp2ybvh17wk"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/classify-cats")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "101drh1dqgr9qsz3r1fzkcn5h6z720zskaqnz2aixzp2ybvh17wk"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -649,7 +649,9 @@ or classmates.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
@@ -662,8 +664,7 @@ or classmates.")
              gtk+
              python-pygobject
              sugar-toolkit-gtk3))
-      (native-inputs
-       (list gettext-minimal))
+      (native-inputs (list gettext-minimal python-setuptools-next))
       (home-page "https://github.com/sugarlabs/classify-cats")
       (synopsis "Classify cats based on various criteria")
       (description "This is a Sugar activity where players classify cats based
