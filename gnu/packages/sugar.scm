@@ -459,19 +459,19 @@ a Tetris-like game.")
   (package
     (name "sugar-browse-activity")
     (version "208")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/sugarlabs/browse-activity")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lxwkwz7bz8vd0jgsgvlwdm6gkrmzcmwlyqvp12j2jk5mpr4fp44"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sugarlabs/browse-activity")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lxwkwz7bz8vd0jgsgvlwdm6gkrmzcmwlyqvp12j2jk5mpr4fp44"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-target "check"
+      #:test-flags #~(list "check")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-reference-to-gschema-compiler
@@ -484,7 +484,9 @@ a Tetris-like game.")
               (substitute* "activity/activity.info"
                 (("exec = sugar-activity3")
                  (string-append "exec = "
-                                (search-input-file inputs "/bin/sugar-activity3"))))))
+                                (search-input-file inputs
+                                                   "/bin/sugar-activity3"))))))
+          (delete 'build)
           (replace 'install
             (lambda _
               (setenv "HOME" "/tmp")
@@ -501,14 +503,12 @@ a Tetris-like game.")
            sugar-toolkit-gtk3
            telepathy-glib
            webkitgtk-for-gtk3))
-    (inputs
-     (list (list glib "bin")))
-    (native-inputs
-     (list gettext-minimal))
+    (inputs (list (list glib "bin")))
+    (native-inputs (list gettext-minimal python-setuptools-next))
     (home-page "https://help.sugarlabs.org/browse.html")
     (synopsis "Sugar activity to browse the internet")
     (description "Browse is a web browser activity for the Sugar desktop.")
-    (license (list license:cc0       ;metadata
+    (license (list license:cc0 ;metadata
                    license:lgpl2.0+
                    license:gpl2+
                    license:gpl3+))))
