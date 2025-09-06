@@ -29042,23 +29042,23 @@ jmerle/competitive-companion.")
     (version "11.5.1")
     ;; Source distributions are not uploaded to PyPI.
     ;; https://pypi.org/project/online-judge-tools/11.5.1/#files
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/online-judge-tools/oj")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zkzmmjgjb6lyrzq1ip54cpnp7al9a7mcyjyi5vx58bvnx3q0c6m"))
-              (patches (search-patches "online-judge-tools.patch"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/online-judge-tools/oj")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zkzmmjgjb6lyrzq1ip54cpnp7al9a7mcyjyi5vx58bvnx3q0c6m"))
+       (patches (search-patches "online-judge-tools.patch"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        ;; These tests require network connections
-                        (add-after 'unpack 'remove-failing-test
-                          (lambda _
-                            (delete-file "tests/command_version.py") #t)))))
+     (list
+      #:test-flags
+      ;; These tests require network connections
+      #~(list "--ignore=tests/command_version.py")))
+    (native-inputs (list python-pytest python-setuptools-next))
     (inputs (list time))
     (propagated-inputs (list python-online-judge-api-client python-colorama
                              python-requests))
