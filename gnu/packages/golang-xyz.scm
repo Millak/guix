@@ -15283,6 +15283,30 @@ varints.")
 @url{https://firebirdsql.org/, Firebird} RDBMS.")
     (license license:expat)))
 
+(define-public go-github-com-natefinch-atomic
+  (package
+    (name "go-github-com-natefinch-atomic")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/natefinch/atomic")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y1hr9smjfwp3zgn8s9njp84x9m42x3a7f1h2q7qyd0i5hf9bcvx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/natefinch/atomic"))
+    (home-page "https://github.com/natefinch/atomic")
+    (synopsis "Atomic file writing in Golang")
+    (description
+     "This package provides functions to atomically change files, by writing
+first to a temp file, and then overwriting the target file in an atomic way.")
+    (license license:expat)))
+
 (define-public go-github-com-nathan-osman-go-sunrise
   (package
     (name "go-github-com-nathan-osman-go-sunrise")
