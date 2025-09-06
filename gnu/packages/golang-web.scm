@@ -438,6 +438,73 @@ Signature headers are to be set (but not both).
 It's an alternative fork of @url{https://github.com/go-fed/httpsig}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-a-h-templ
+  (package
+    (name "go-github-com-a-h-templ")
+    (version "0.3.943")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/a-h/templ")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dqcdva7z53lhfv6ldjixwp4a363sr2cv5qm8rz2w7n8ba60m37f"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/a-h/templ/docs
+            ;; - github.com/a-h/templ/runtime/fuzzing
+            (delete-file-recursively "docs")
+            (delete-file-recursively "runtime/fuzzing")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/a-h/templ"
+      #:unpack-path "github.com/a-h/templ"
+      ;; TODO: Find out how to enable complete test suit, which might need
+      ;; gopls and other extra commands available in the PATH.
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "Test/css-1.css"
+                             "Test/js-1.js"
+                             "TestFormatting"
+                             "TestIsAvailable/existing_commands_return_true")
+                       "|"))
+      #:test-subdirs #~(list "internal/...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-a-h-parse
+           go-github-com-andybalholm-brotli
+           go-github-com-cenkalti-backoff-v4
+           go-github-com-cli-browser
+           go-github-com-fatih-color
+           go-github-com-fsnotify-fsnotify
+           go-github-com-google-go-cmp
+           go-github-com-natefinch-atomic
+           go-github-com-rs-cors
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-tools))
+    (home-page "https://templ.guide/")
+    (synopsis "Language for writing HTML user interfaces in Golang")
+    (description
+     "This package implements a functionality to create components that render
+fragments of HTML and compose them to create screens, pages, documents, or
+apps.")
+    (license license:expat)))
+
 (define-public go-github-com-aki237-nscjar
   (package
     (name "go-github-com-aki237-nscjar")
@@ -13610,6 +13677,22 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
        ((#:import-path _ "github.com/swaggo/swag")
         "github.com/swaggo/swag/cmd/swag")))
     (native-inputs (package-propagated-inputs go-github-com-swaggo-swag))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public templ
+  (package/inherit go-github-com-a-h-templ
+    (name "templ")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-a-h-templ)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/a-h/templ")
+        "github.com/a-h/templ/cmd/templ")))
+    (native-inputs
+     (append (package-native-inputs go-github-com-a-h-templ)
+             (package-propagated-inputs go-github-com-a-h-templ)))
     (propagated-inputs '())
     (inputs '())))
 
