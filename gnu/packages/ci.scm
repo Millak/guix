@@ -101,6 +101,20 @@
            #:parallel-tests? #f
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'build 'install-minified-javascript
+                 (lambda _
+                   ;; Work around guix/cuirass#34.  Remove when 1.3.1 is out.
+                   (define files
+                     '("src/static/js/choices.min.js"
+                       "src/static/js/d3.v6.min.js"
+                       "src/static/js/list.min.js"))
+                   (apply invoke "make" files)
+                   (for-each (lambda (file)
+                               (install-file
+                                file
+                                (in-vicinity #$output
+                                             "share/cuirass/static/js")))
+                             files)))
                (add-after 'install 'wrap-program
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    ;; Wrap the 'cuirass' command to refer to the right modules.
