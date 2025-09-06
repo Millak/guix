@@ -10549,13 +10549,15 @@ real-life projects with legacy data and diverse storage providers.")
     (version "0.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mwparserfromhell" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/earwig/mwparserfromhell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0zh9zaqbac18s7mivqk8am9xw97lfkgcj9hhxj0d4208pkqpkmqs"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-pytest-runner))
+        (base32 "1h8xih37mw7lkxsdrkgp9lwl25zr3ldsx5hh0rd5g2sgfrf3yyyg"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools-next))
     (home-page "https://github.com/earwig/mwparserfromhell")
     (synopsis "Python parser for MediaWiki wikicode")
     (description
