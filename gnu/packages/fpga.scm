@@ -768,7 +768,7 @@ using different abstraction levels.")
 (define-public verilator
   (package
     (name "verilator")
-    (version "5.034")
+    (version "5.040")
     (source
      (origin
        (method git-fetch)
@@ -777,18 +777,18 @@ using different abstraction levels.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14alpa2z4fqbbsyx67dz50nqcvfis8pha84545h28xmglrzm13yn"))))
+        (base32 "0xw2w7fikli3jffwd819rx8bwbh3zsymhrn3zbq34glklff07rsb"))))
     (native-inputs
      (list autoconf
            automake
            bison
-           flex
-           help2man
-           gettext-minimal
-           python
-           ;; And a couple of extras for the test suite:
            cmake-minimal
+           flex
            gdb/pinned
+           gettext-minimal
+           help2man
+           python-distro
+           python-minimal
            which))
     (inputs
      (list perl python systemc))
@@ -803,6 +803,9 @@ using different abstraction levels.")
             (lambda _
               (substitute* "bin/verilator"
                 (("/bin/echo") "echo"))))
+          (add-before 'check 'set-SYSTEMC_ROOT
+            (lambda _
+              (setenv "SYSTEMC_ROOT" #$(this-package-input systemc))))
           (add-before 'check 'disable-gdb-safe-path
             (lambda _
               (setenv "HOME" (getcwd))
