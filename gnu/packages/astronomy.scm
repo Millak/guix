@@ -600,21 +600,7 @@ accurately in real time at any rate desired.")
     (license license:gpl2+)))
 
 (define-public celestia-gtk
-  (package/inherit celestia
-    (name "celestia-gtk")
-    (inputs
-     (modify-inputs (package-inputs celestia)
-       (replace "freeglut" gtk+-2)
-       (prepend cairo gtkglext libxmu libtheora pango-1.42)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments celestia)
-       ((#:configure-flags flags '())
-        #~(append #$flags
-                  (list "--enable-cairo"
-                        "--enable-theora"
-                        "--without-glut"
-                        "--with-gtk")))))
-    (synopsis "Real-time 3D visualization of space (using GTK+)")))
+  (deprecated-package "celestia-gtk" celestia))
 
 (define-public cfitsio
   (package
