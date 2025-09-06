@@ -1436,19 +1436,20 @@ typist.")
     (package
       (name "sugar-write-activity")
       (version (git-version "101" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/write-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0lw34hf31fyfvqilzlmcz3c7zki0iqkn1zp2sv3dih016gwqg5pw"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/write-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0lw34hf31fyfvqilzlmcz3c7zki0iqkn1zp2sv3dih016gwqg5pw"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags
+        #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -1456,12 +1457,15 @@ typist.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
+      (native-inputs (list python-setuptools-next))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list abiword
@@ -1469,12 +1473,11 @@ typist.")
              gtk+
              libgsf
              telepathy-glib))
-      (inputs
-       (list sugar-toolkit-gtk3
-             gettext-minimal))
+      (inputs (list sugar-toolkit-gtk3 gettext-minimal))
       (home-page "https://help.sugarlabs.org/write.html")
       (synopsis "Word processor for Sugar desktop")
-      (description "Write is a word processor activity for the Sugar desktop.
-Write embeds the AbiWord word processor, and can be used to write and edit
-text documents.")
+      (description
+       "Write is a word processor activity for the Sugar desktop. Write embeds
+the AbiWord word processor, and can be used to write and edit text
+documents.")
       (license license:gpl2+))))
