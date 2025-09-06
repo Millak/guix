@@ -745,19 +745,19 @@ the Journal.")
     (package
       (name "sugar-help-activity")
       (version (git-version "20" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/help-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0awjbqyc9f74dx0d7fgjk42vfsygxr8jhwqiv4hpggqcawc02xv8"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/help-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0awjbqyc9f74dx0d7fgjk42vfsygxr8jhwqiv4hpggqcawc02xv8"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'use-newer-webkit
@@ -770,22 +770,23 @@ the Journal.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
             (replace 'build
-              (lambda _ (invoke "make" "html")))
+              (lambda _
+                (invoke "make" "html")))
             (replace 'install
               (lambda _
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
       (native-inputs
-       (list sugar-toolkit-gtk3
-             python-sphinx))
-      (propagated-inputs
-       (list webkitgtk-for-gtk3))
+       (list sugar-toolkit-gtk3 python-sphinx python-setuptools-next))
+      (propagated-inputs (list webkitgtk-for-gtk3))
       (home-page "https://github.com/sugarlabs/help-activity")
       (synopsis "Sugar activity for accessing documentation and manuals")
-      (description "This is an activity for the Sugar environment which aims
-to provide users with easy access to documentation and manuals.")
+      (description
+       "This is an activity for the Sugar environment which aims to provide
+users with easy access to documentation and manuals.")
       (license license:gpl3+))))
 
 (define-public sugar-jukebox-activity
