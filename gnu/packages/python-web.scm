@@ -10557,7 +10557,7 @@ real-life projects with legacy data and diverse storage providers.")
 (define-public python-mwparserfromhell
   (package
     (name "python-mwparserfromhell")
-    (version "0.6.3")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -10566,7 +10566,7 @@ real-life projects with legacy data and diverse storage providers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h8xih37mw7lkxsdrkgp9lwl25zr3ldsx5hh0rd5g2sgfrf3yyyg"))))
+        (base32 "083ir0nccm14431mmn243862gq731ww98fwpd95zm1yccvpzdy68"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools-next))
     (home-page "https://github.com/earwig/mwparserfromhell")
