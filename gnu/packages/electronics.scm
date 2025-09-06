@@ -56,6 +56,7 @@
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fpga)
   #:use-module (gnu packages gawk)
@@ -370,7 +371,7 @@ supported devices, as well as input/output file format support.")
 (define-public m8c
   (package
     (name "m8c")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -379,19 +380,17 @@ supported devices, as well as input/output file format support.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x6klsqgy6j2b6cvkk386jmb0nbcpsrr36ji6cfwd3039wx657i8"))))
-    (build-system gnu-build-system)
+        (base32 "1vv0m4ry23nns5a47m2n9k6i3wly2jjc5n1j3l7sh1m480ga3d42"))))
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:make-flags #~(list (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))
-      #:tests? #f)) ;no tests
+      #:tests? #f                       ;no tests
+      #:configure-flags
+      #~(list "-DUSE_LIBSERIALPORT=ON")))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libserialport sdl3))
+     (list libdecor libserialport sdl3))
     (home-page "https://github.com/laamaa/m8c")
     (synopsis "Cross-platform M8 tracker headless client")
     (description
