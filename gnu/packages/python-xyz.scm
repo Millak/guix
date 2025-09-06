@@ -24208,18 +24208,24 @@ as well.")
   (package
     (name "ptpython")
     (version "3.0.20")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "ptpython" version))
-              (sha256
-               (base32
-                "1mjfyr5gwrs1qbizh6nki0nv6hahmg8mhhqxi1qc6pfa4znlrzga"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonathanslenders/ptpython")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qbj7d4qkzl8l05kpmm19953lmqk379i17ab8g3sfnmfpsy3ji5m"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ;there are no tests
+     (list
+      ;; XXX: There is a tests/run_tests.py file but all it does is a
+      ;; sanity check.
+      #:tests? #f))
+    (native-inputs (list python-setuptools-next))
     (propagated-inputs
-     (list python-appdirs python-black python-jedi python-prompt-toolkit
-           python-pygments))
+     (list python-appdirs python-jedi python-prompt-toolkit python-pygments))
     (home-page "https://github.com/jonathanslenders/ptpython")
     (synopsis "Python Read-Eval-Print-Loop with nice IDE-like features")
     (description
