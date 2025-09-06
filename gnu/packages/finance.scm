@@ -1904,10 +1904,7 @@ wallet.")
            help2man
            libtool
            pkg-config))
-    (inputs
-     (list curl
-           libxml++-2
-           opensp))
+    (inputs (list curl libxml++ opensp))
     (home-page "http://libofx.sourceforge.net/")
     (synopsis "Library supporting the Open Financial Exchange format")
     (description
