@@ -10673,11 +10673,15 @@ standard library and supported by default in Quart.")
     (version "1.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ajsonrpc" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pavlov99/ajsonrpc")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "17x1a4r4l428mhwn53abki9gzdzq3halyr4lj48fw3dzy0caq6vr"))))
-    (build-system python-build-system)
+        (base32 "0c7jxfkv5q2m95j54dn650gcvdbpag2qcki7phvmrwsgb36w09kd"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-quart
            python-sanic
