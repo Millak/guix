@@ -18016,31 +18016,33 @@ structures.")
       (source
        (origin
          (method git-fetch)
-         (uri (git-reference (url home-page)
-                             (commit commit)))
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1dmr85plx8zr6s14ym3r32g6crwxghkval5a24ah90ijx4dbn5q5"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       `(#:use-setuptools? #f           ; no setup.py
-         #:tests? #f                    ; no test suite
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (share (string-append out "/share")))
-                 (mkdir-p share)
-                 (substitute* "wfetch/wfetch.py"
-                   (("os.sep, 'opt', 'wfetch'") (string-append "'" share "'")))
-                 ; The documentation expects the executable to be named
-                 ; 'wfetch', not 'wfetch.py'.
-                 (rename-file "wfetch/wfetch.py" "wfetch/wfetch")
-                 (install-file "wfetch/wfetch" bin)
-                 (copy-recursively "wfetch/icons" share)))))))
+       (list
+        #:tests? #f ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin"))
+                      (share (string-append #$output "/share")))
+                  (mkdir-p share)
+                  (substitute* "wfetch/wfetch.py"
+                    (("os.sep, 'opt', 'wfetch'")
+                     (string-append "'" share "'")))
+                  ;; The documentation expects the executable to be named
+                  ;; 'wfetch', not 'wfetch.py'.
+                  (rename-file "wfetch/wfetch.py" "wfetch/wfetch")
+                  (install-file "wfetch/wfetch" bin)
+                  (copy-recursively "wfetch/icons" share)))))))
+      (native-inputs (list python-setuptools-next))
       (inputs (list python-pyowm python-fire python-termcolor python-requests))
       (synopsis "Command-line tool to display weather info")
       (description
@@ -18051,7 +18053,8 @@ To use it, you must first run:
 
 @example
 export WEATHER_CLI_API=@var{your OpenWeatherMap API key}
-@end example\n")
+@end example
+")
       (license license:gpl3+))))
 
 (define-public python-get-version
