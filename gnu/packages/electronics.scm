@@ -408,62 +408,6 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:public-domain
                    license:zlib))))
 
-(define-public minipro
-  ;; When built from a Git repo, minipro expects GIT_DATE to be set to the
-  ;; value of `git show -s --format=%ci'.  When updating the package, run this
-  ;; in a checkout and put the value here.
-  (let* ((date "2025-04-13 21:54:38 -0700"))
-    (package
-      (name "minipro")
-      (version "0.7.3")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.com/DavidGriffith/minipro.git")
-               (commit version)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1525rn5h73xism16vmivd3cz93g8w76h24f0yvbpc35ydc3fkqf7"))))
-      (native-inputs (list pkg-config which))
-      (inputs (list libusb zlib))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:tests? #f ; no test suite
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure) ; No ./configure script
-            (add-before 'build 'fix-makefile
-              (lambda _
-                ;; Fix some git related variables that minipro expects
-                (substitute* "Makefile"
-                  (("GIT_BRANCH = .*")
-                   (string-append "GIT_BRANCH = \"master\"\n"))
-                  (("GIT_HASH = .*")
-                   (string-append "GIT_HASH = \"" #$version "\"\n"))
-                  (("GIT_DATE = .*")
-                   (string-append "GIT_DATE = \"" #$date "\"\n"))))))
-        #:make-flags
-        #~(list (string-append "VERSION=" #$version)
-                (string-append "PREFIX=" #$output)
-                (string-append "UDEV_DIR=" #$output "/lib/udev")
-                (string-append "COMPLETIONS_DIR=" #$output
-                               "/share/bash-completion/completions"))))
-      (synopsis "Controls the TL866xx series of chip programmers")
-      (description
-       "minipro is designed to program or read the contents of
-chips supported by the TL866xx series of programmers.  This includes many
-microcontrollers, ROMs, EEPROMs and PLDs.
-
-To use this program without root privileges you must install the necessary udev
-rules.  This can be done by extending @code{udev-service-type} in your
-@code{operating-system} configuration with this package.  E.g.:
-@code{(udev-rules-service 'minipro minipro #:groups '(\"plugdev\")}.
-Additionally your user must be member of the @code{plugdev} group.")
-      (home-page "https://gitlab.com/DavidGriffith/minipro")
-      (license license:gpl3+))))
-
 (define-public openboardview
   (package
     (name "openboardview")
