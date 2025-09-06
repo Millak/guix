@@ -36841,25 +36841,27 @@ key-value pairs from a @code{.env} file and set them as environment variables.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1vq96b7n16d932nyfhnzwdwxff0zrqanidmwr4cxj2p67ad9y3w7"))))
-      (build-system python-build-system)
+          (base32 "1vq96b7n16d932nyfhnzwdwxff0zrqanidmwr4cxj2p67ad9y3w7"))))
+      (build-system pyproject-build-system)
       (arguments
-       `(#:tests? #f                    ; no tests
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((bindir (string-append (assoc-ref outputs "out") "/bin"))
-                      (binary (string-append bindir "/date2name")))
-                 (mkdir-p bindir)
-                 (copy-file "date2name/__init__.py" binary)
-                 (chmod binary #o555)))))))
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (let* ((bindir (string-append #$output "/bin"))
+                       (binary (string-append bindir "/date2name")))
+                  (mkdir-p bindir)
+                  (copy-file "date2name/__init__.py" binary)
+                  (chmod binary #o555)))))))
+      (native-inputs (list python-setuptools-next))
       (synopsis "Handling time-stamps and date-stamps in file names")
-      (description "By default, date2name gets the modification time of matching
-files and directories and adds a datestamp in standard ISO 8601+ format
-YYYY-MM-DD at the beginning of the file or directory name.")
+      (description
+       "By default, date2name gets the modification time of matching files and
+directories and adds a datestamp in standard ISO 8601+ format YYYY-MM-DD at
+the beginning of the file or directory name.")
       (home-page "https://github.com/novoid/date2name")
       (license license:gpl3+))))
 
