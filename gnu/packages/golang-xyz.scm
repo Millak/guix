@@ -21988,6 +21988,33 @@ APIs may be unstable
 @end itemize")
     (license license:expat)))
 
+(define-public go-go-yaml-in-yaml-v2
+  (package
+    (name "go-go-yaml-in-yaml-v2")
+    (version "2.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yaml/go-yaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w0psni3i34l2lmdaiqgij2a8h7yy82d14fr18cb7kgmsxci2bx0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.yaml.in/yaml/v2"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/yaml/go-yaml")
+    (synopsis "YAML Support for the Go Language")
+    (description
+     "This packages is fork of @url{https://github.com/go-yaml/yaml,
+gopkg.in/yaml.v2} maintained by @url{https://github.com/yaml/, YAML
+organization}.")
+    (license license:asl2.0)))
+
 (define-public go-go4-org
   ;; No release or version tag, Golang pseudo version:
   ;; 0.0.0-20230225012048-214862532bf5.
