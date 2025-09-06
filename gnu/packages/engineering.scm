@@ -2812,7 +2812,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
 (define-public manifold
   (package
     (name "manifold")
-    (version "3.1.1")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -2821,7 +2821,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vipfy68crvik3760jjmsqnyci6rabb26iiw22p2qpb3cj6r683l"))))
+        (base32 "0fy78axwhlk3gpxhmac4gbyvsadky1kzqbh4cv5snahzmi4bixvp"))))
     (build-system cmake-build-system)
     (inputs (list tbb clipper2 assimp python-nanobind googletest))
     (arguments
