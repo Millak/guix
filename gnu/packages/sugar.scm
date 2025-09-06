@@ -1124,19 +1124,20 @@ low power consumption and simple navigation controls.")
     (package
       (name "sugar-river-crossing-activity")
       (version (git-version "1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/river-crossing-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0h7c3i288vwz249figw3jwyylwhlh9qlgjhlbs902ldpmib0k237"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/river-crossing-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0h7c3i288vwz249figw3jwyylwhlh9qlgjhlbs902ldpmib0k237"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags
+        #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -1144,7 +1145,8 @@ low power consumption and simple navigation controls.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
             (add-after 'unpack 'inject-load-path
               (lambda _
                 (substitute* "activity.py"
@@ -1158,24 +1160,23 @@ for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
         sys.path.insert(1, directory)
 import pygame
 ")))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
+      (native-inputs (list python-setuptools-next))
       ;; These libraries are accessed via gobject introspection.
-      (propagated-inputs
-       (list gtk+))
-      (inputs
-       (list python-pygame
-             sugar-toolkit-gtk3
-             gettext-minimal))
+      (propagated-inputs (list gtk+))
+      (inputs (list python-pygame sugar-toolkit-gtk3 gettext-minimal))
       (home-page "https://github.com/sugarlabs/river-crossing-activity")
       (synopsis "Puzzle game for Sugar desktop")
-      (description "A farmer is to ferry across a river a goat, a cabbage, and
-a wolf.  The boat allows the farmer to carry only one of the three at a time.
-Without supervision, the goat will gobble the cabbage whereas the wolf will
-not hesitate to feast on the goat.")
+      (description
+       "A farmer is to ferry across a river a goat, a cabbage, and a wolf.
+The boat allows the farmer to carry only one of the three at a time. Without
+supervision, the goat will gobble the cabbage whereas the wolf will not
+hesitate to feast on the goat.")
       (license license:gpl3+))))
 
 (define-public sugar-terminal-activity
