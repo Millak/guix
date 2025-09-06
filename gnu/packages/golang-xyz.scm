@@ -9275,6 +9275,31 @@ according @@url{https://rfc-editor.org/rfc/rfc8785.html, RFC 8785}.")
      "This package can generate ASCII line graphs in Golang.")
     (license license:bsd-3)))
 
+(define-public go-github-com-h2non-filetype
+  (package
+    (name "go-github-com-h2non-filetype")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/h2non/filetype")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05xad4dfimlccg3hy0fpcns4fl7yj17dbpdf6ijwbp6k4ryzy9cm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/h2non/filetype"))
+    (home-page "https://github.com/h2non/filetype")
+    (synopsis "Infer binary file types based on the magic numbers header signature")
+    (description
+     "This package implements a functionality to infer file and MIME type
+checking the @url{https://en.wikipedia.org/wiki/Magic_number_(programming)
+,magic numbers} signature.")
+    (license license:expat)))
+
 (define-public go-github-com-h2non-parth
   (package
     (name "go-github-com-h2non-parth")
