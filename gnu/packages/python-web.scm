@@ -9987,11 +9987,12 @@ SOCKS5(h), HTTP tunnel).")
        (method url-fetch)
        (uri (pypi-uri "azure-storage-nspkg" version))
        (sha256
-        (base32
-         "049qcmgshz7dj9yaqma0fwcgbxwddgwyfcw4gmv45xfmaa3bwfvg"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-azure-nspkg))
+        (base32 "049qcmgshz7dj9yaqma0fwcgbxwddgwyfcw4gmv45xfmaa3bwfvg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive
+    (native-inputs (list python-setuptools-next))
+    (propagated-inputs (list python-azure-nspkg))
     (home-page "https://github.com/Azure/azure-storage-python")
     (synopsis "Microsoft Azure Storage Namespace package")
     (description
