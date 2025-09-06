@@ -9879,6 +9879,39 @@ information or even the peer of a VETH interface.")
      "Package jsonschema provides json-schema compilation and validation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sebest-xff
+  (package
+    (name "go-github-com-sebest-xff")
+    (version "0.0.0-20210106013422-671bd2870b3a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sebest/xff")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06is8vvgxsis4sdr1d1n7p5g16x3rrw86qwkiwgamm5vnjkrvcdp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sebest/xff"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/sebest/xff")
+    (synopsis "X-Forwarded-For middleware fo Golang")
+    (description
+     "Package @@code{xff} is a @code{net/http} middleware/handler to parse
+@url{http://tools.ietf.org/html/rfc7239, Forwarded HTTP Extension} in
+Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
