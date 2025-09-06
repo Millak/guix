@@ -1564,9 +1564,6 @@ misuse of libraries outside of the store.")))
   (make-lld-wrapper lld))
 
 ;;; A LLD wrapper that can be used as a (near) drop-in replacement to GNU ld.
-(define-public lld-as-ld-wrapper-15
-  (make-lld-wrapper lld-15 #:lld-as-ld? #t))
-
 (define-public lld-as-ld-wrapper-18
   (make-lld-wrapper lld-18 #:lld-as-ld? #t))
 
