@@ -5450,24 +5450,32 @@ protocol, both client and server for Python asyncio module.
     (license license:asl2.0)))
 
 (define-public python-mohawk
-  (package
-    (name "python-mohawk")
-    (version "1.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mohawk" version))
-              (sha256
-               (base32
-                "08wppsv65yd0gdxy5zwq37yp6jmxakfz4a2yx5wwq2d222my786j"))))
-    (build-system python-build-system)
-    (native-inputs (list python-mock  python-nose))
-    (propagated-inputs (list python-six))
-    (home-page "https://github.com/kumar303/mohawk")
-    (synopsis "Library for Hawk HTTP authorization")
-    (description
-     "Mohawk is an alternate Python implementation of the Hawk HTTP
+  (let ((commit "b7899166880e890f01cf2531b5686094ba08df8f")
+        (revision "0"))
+    (package
+      (name "python-mohawk")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/kumar303/mohawk")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00y9fimcj851rk2770wqk61fac9pnxfnzca4fvsci57zw18i50m6"))
+         (patches
+          (search-patches "python-mohawk-pytest.patch"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:test-flags #~(list "mohawk/tests.py")))
+      (native-inputs (list python-pytest python-setuptools-next))
+      (home-page "https://github.com/kumar303/mohawk")
+      (synopsis "Library for Hawk HTTP authorization")
+      (description
+       "Mohawk is an alternate Python implementation of the Hawk HTTP
 authorization scheme.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public python-msal
   (package
