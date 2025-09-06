@@ -1974,7 +1974,7 @@ OpenJDK.")
   (package
     (inherit openjdk21)
     (name "jbr")
-    (version "21.0.3b509.11")
+    (version "21.0.11b1163.116")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1983,15 +1983,23 @@ OpenJDK.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "03xkghbp0b1czc2ags9n8ilprf9sy4bhsma0wf8xfapqn6d2sfyd"))
-              (patches (search-patches "openjdk-21-fix-rpath.patch"
-                                       "jbr-17-xcursor-no-dynamic.patch"))))
+                "02s5lkkd0fv8nwb579d30z1fyfdvzl89mf5z5ajsnylwkdrby7f5"))
+              (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (inputs
      `(("wayland" ,wayland)
        ("libxkbcommon" ,libxkbcommon) ; for wayland
        ,@(package-inputs openjdk21)))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk21)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'do-not-disable-new-dtags
+              (lambda _
+                ;; JBR backports the switch to DT_RPATH, but Guix validates
+                ;; DT_RUNPATH (as in the openjdk22 workaround).
+                (substitute* "make/autoconf/flags-cflags.m4"
+                  ((" -Wl,--disable-new-dtags")
+                   ""))))))
        ((#:configure-flags configure-flags)
         #~(append #$configure-flags
                   (list "--with-jvm-features=shenandoahgc"
