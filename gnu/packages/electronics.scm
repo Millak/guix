@@ -973,7 +973,7 @@ to enforce it.")
 (define-public qucsator-rf
   (package
     (name "qucsator-rf")
-    (version "1.0.6")                   ;required by qucs-s, keep in sync
+    (version "1.0.7")                   ;required by qucs-s, keep in sync
     (source
      (origin
        (method git-fetch)
@@ -983,7 +983,7 @@ to enforce it.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fx0kzj6hn0094jnvn6b1zqwjnkmd79xdr0zdyz5lmsyixlmxmvk"))))
+         "1qyih418r0jcrpk1ja4p7v9v5iqvri8iszg7s3vaf1d2agwblzb4"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1033,16 +1033,17 @@ input and outputs an XML dataset.")
 (define-public qucs-s
   (package
     (name "qucs-s")
-    (version "25.1.2")                  ;update qucsator-rf accordingly
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/ra3xdh/qucs_s")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "07wrpqgbj77rmh1yxy233lk1y4ys1x0721b3jsldp058dcgf24zv"))))
+    (version "25.2.0")                  ;update qucsator-rf accordingly
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ra3xdh/qucs_s")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0328irynm8vy4xjdip5286fd8nag1zdp0p6rcbhdhp4fca6wp5ak"))))
     (build-system qt-build-system)
     (arguments
      (list
