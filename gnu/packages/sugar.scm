@@ -845,36 +845,44 @@ and @file{.pls}.")
     (package
       (name "sugar-log-activity")
       (version (git-version "42" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/log-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0pacd677gfhyym153x5grwimk8wgm4c9k0a463pq6fdrhm1g5wpc"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/log-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pacd677gfhyym153x5grwimk8wgm4c9k0a463pq6fdrhm1g5wpc"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags
+        #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-locations
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "logcollect.py"
                   (("'/sbin/ifconfig'")
-                   (string-append "'" (search-input-file inputs "/bin/ifconfig") "'"))
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/ifconfig")
+                                  "'"))
                   (("'/sbin/route")
-                   (string-append "'" (search-input-file inputs "/bin/route")))
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/route")))
                   (("'/bin/df")
-                   (string-append "'" (search-input-file inputs "/bin/df")))
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/df")))
                   (("'/bin/ps")
-                   (string-append "'" (search-input-file inputs "/bin/ps")))
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/ps")))
                   (("'/usr/bin/free")
-                   (string-append "'" (search-input-file inputs "/bin/free")))
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/free")))
                   (("'/usr/bin/top")
-                   (string-append "'" (search-input-file inputs "/bin/top")))
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/top")))
                   (("'/usr/share/sugar/activities")
                    "'/run/current-system/profile/share/sugar/activities"))))
             (add-after 'unpack 'patch-launcher
@@ -882,23 +890,22 @@ and @file{.pls}.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
       ;; All these libraries are accessed via gobject introspection.
-      (propagated-inputs
-       (list gtk+
-             sugar-toolkit-gtk3))
-      (inputs
-       (list coreutils net-tools procps))
-      (native-inputs
-       (list gettext-minimal))
+      (propagated-inputs (list gtk+ sugar-toolkit-gtk3))
+      (inputs (list coreutils net-tools procps))
+      (native-inputs (list gettext-minimal python-setuptools-next))
       (home-page "https://help.sugarlabs.org/log.html")
       (synopsis "Log activity for the Sugar learning environment")
-      (description "Log is part of the Sugar desktop.  Log is used when
+      (description
+       "Log is part of the Sugar desktop.  Log is used when
 looking for why an activity or Sugar is not working properly.")
       (license license:gpl2+))))
 
