@@ -147,7 +147,7 @@ formal verification.  This is the Yosyshq fork of ABC.")
 (define-public apycula
   (package
     (name "apycula")
-    (version "0.23")
+    (version "0.24")
     ;; The pypi tar.gz file includes the necessary .pickle files, not available
     ;; in the home-page repository.
     (source
@@ -155,7 +155,7 @@ formal verification.  This is the Yosyshq fork of ABC.")
        (method url-fetch)
        (uri (pypi-uri "apycula" version))
        (sha256
-        (base32 "1kk9hi8zhdp1am5vj716lwlmrs31lxrwhdbbc4qsad470dcjqs57"))))
+        (base32 "1mlasq8lf90jcdwp4sk5a834bbmnnfxk2gswwcw83ypg75lli1gw"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;requires Gowin EDA tools
     (inputs (list python-crc))
