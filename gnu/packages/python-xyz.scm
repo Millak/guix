@@ -31567,17 +31567,21 @@ repository is provided via Python API and as a compressed JSON file.")
     ;; This is a command-line tool, so no "python-" prefix.
     (name "jube")
     (version "2.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://apps.fz-juelich.de/jsc/jube/jube2/download.php?version="
-                    version))
-              (sha256
-               (base32
-                "0r5d2gdqa0f4c468q3k25ycw1k2g76gg8fyiln4ni98fvfsbx3il"))
-              (file-name (string-append "jube-" version ".tar.gz"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pyyaml)) ; pyyaml is needed for tests
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://apps.fz-juelich.de/jsc/jube/jube2/download.php?version="
+             version))
+       (sha256
+        (base32 "0r5d2gdqa0f4c468q3k25ycw1k2g76gg8fyiln4ni98fvfsbx3il"))
+       (file-name (string-append "jube-" version ".tar.gz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f))                     ; No tests.
+    (propagated-inputs (list python-pyyaml))
+    (native-inputs (list python-setuptools-next))
     (home-page "https://apps.fz-juelich.de/jsc/jube/jube2/docu/index.html")
     (synopsis "Benchmarking environment")
     (description
