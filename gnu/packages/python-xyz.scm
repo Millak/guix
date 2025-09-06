@@ -2141,21 +2141,20 @@ decorators, including variants of the Python standard library's
 (define-public python-colorcet
   (package
     (name "python-colorcet")
-    (version "3.1.0")
+    (version "3.1.1a1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "colorcet" version))
        (sha256
-        (base32 "1sx4m5xbz1k8bm8cr2f3x21dip167k7c1nv35npqla52h76v6899"))))
+        (base32 "1h15wdgha1cpj5a9p2dy9d8qdqnl5j1a0ylc7wilcfhvnfzcgp08"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-nbval
                          python-packaging
                          python-pytest
-                         python-pytest-cov
                          python-pytest-mpl
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools-next
+                         python-setuptools-scm))
     (home-page "https://colorcet.holoviz.org/")
     (synopsis "Collection of perceptually uniform colormaps")
     (description "Colorcet is a collection of perceptually accurate 256-color
