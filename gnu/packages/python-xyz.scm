@@ -17809,18 +17809,20 @@ tasks, sockets, files, locks, and queues.")
 (define-public python-tables
   (package
     (name "python-tables")
-    (version "3.10.1")
+    (version "3.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tables" version))
        (sha256
         (base32
-         "1kr6y4qivqy462gva4bqym3x4alhxijfqjplxax3gh5r6k3pm82a"))
+         "0469jrkmp0qv8cmlqkizm3b8imyc97mk9pfn66ldpyl6f4m82i15"))
        (snippet '(begin
                    (use-modules (guix build utils))
+                   ;; TODO: Unbundle.
+                   ;; (delete-file-recursively "hdf5-blosc")
                    (delete-file-recursively "c-blosc")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -17839,25 +17841,48 @@ tasks, sockets, files, locks, and queues.")
                                 "\""
                                 (search-input-file inputs "/lib/libblosc2.so")
                                 "\",\n" m)))))
-          (add-before 'build 'set-LD_LIBRARY_PATH
+          (add-before 'build 'pre-build
             (lambda _
-              ;; The setup.py build system makes use of ctypes.CDLL, which
-              ;; uses dlopen, which looks up library names from standard
-              ;; locations or LD_LIBRARY_PATH.
-              (setenv "LD_LIBRARY_PATH" (getenv "LIBRARY_PATH"))))
+              (invoke "make" "distclean")       ;Regenerate C code with Cython
+              (setenv "BLOSC2_DIR" #$(this-package-input "cblosc2"))
+              (setenv "BLOSC_DIR" #$(this-package-input "c-blosc"))
+              (setenv "BZIP2_DIR" #$(this-package-input "bzip2"))
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))
+              (setenv "LZO_DIR" #$(this-package-input "lzo"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "python" "setup.py" "check")))))))
+                (with-directory-excursion "/tmp"
+                  ;; Performing only a light (yet comprehensive) subset of the
+                  ;; test suite.  If you want a more complete test, try
+                  ;; passing the --heavy flag to this script (or set the
+                  ;; 'heavy' parameter in case you are using tables.test()
+                  ;; call).  The whole suite will take more than 4 hours to
+                  ;; complete on a relatively modern CPU and around 512 MB of
+                  ;; main memory.
+                  (invoke "python" "-m" "tables.tests.test_all"))))))))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-pytest
+           python-setuptools-next
+           python-sphinx))
+    (inputs
+     (list bzip2
+           c-blosc
+           c-blosc2
+           hdf5
+           lzo))
     (propagated-inputs
      (list python-blosc2
-           python-numpy
            python-numexpr
+           python-numpy
            python-packaging
            python-py-cpuinfo
            python-typing-extensions))
-    (native-inputs (list pkg-config python-cython))
-    (inputs (list c-blosc c-blosc2 hdf5-1.10 bzip2 lzo zlib))
     (home-page "https://www.pytables.org/")
     (synopsis "Hierarchical datasets for Python")
     (description "PyTables is a package for managing hierarchical datasets and
