@@ -795,19 +795,19 @@ users with easy access to documentation and manuals.")
     (package
       (name "sugar-jukebox-activity")
       (version (git-version "36" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/jukebox-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1c8g4h52jnwzk5vlkrkm8j0p5dbrjqd8hv3bdz5rp39w9in3skzk"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/jukebox-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c8g4h52jnwzk5vlkrkm8j0p5dbrjqd8hv3bdz5rp39w9in3skzk"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -815,25 +815,28 @@ users with easy access to documentation and manuals.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
+      (native-inputs (list python-setuptools-next))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list gtk+
              gstreamer
              gst-plugins-base
              sugar-toolkit-gtk3))
-      (inputs
-       (list gettext-minimal))
+      (inputs (list gettext-minimal))
       (home-page "https://help.sugarlabs.org/jukebox.html")
       (synopsis "Media player for the Sugar learning environment")
-      (description "Jukebox is the media player to play different kinds of
-audio and video files including online streams.  It also supports playlists
-like @file{.m3u} and @file{.pls}.")
+      (description
+       "Jukebox is the media player to play different kinds of audio and video
+files including online streams.  It also supports playlists like @file{.m3u}
+and @file{.pls}.")
       (license license:gpl2+))))
 
 (define-public sugar-log-activity
