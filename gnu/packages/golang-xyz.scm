@@ -7070,6 +7070,31 @@ in a consistent state and never represent an in-progress write.")
     ;; <...>
     (license license:bsd-3)))
 
+(define-public go-github-com-facebookgo-flagenv
+  (package
+    (name "go-github-com-facebookgo-flagenv")
+    (version "0.0.0-20160425205200-fcd59fca7456")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/facebookarchive/flagenv")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c7fw4y4gmdrn66dx7la637lx0hvs1w27x9j12wdx037n51r078g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f   ;Tests require dated code <github.com/facebookgo/ensure>
+      #:import-path "github.com/facebookgo/flagenv"))
+    (home-page "https://github.com/facebookgo/flagenv")
+    (synopsis "Populate flags from environment variables")
+    (description
+     "Package flagenv provides the ability to populate flags from environment
+variables.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-facette-natsort
   (package
     (name "go-github-com-facette-natsort")
