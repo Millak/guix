@@ -1230,19 +1230,20 @@ a Command-Line Interface (CLI) to the system.")
     (package
       (name "sugar-turtleart-activity")
       (version (git-version "202" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/turtleart-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "11agqyahjhxb7bakzix63lazcbin0jfiypqx0sm2i85bsl30fp7y"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/turtleart-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11agqyahjhxb7bakzix63lazcbin0jfiypqx0sm2i85bsl30fp7y"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags
+        #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -1250,7 +1251,8 @@ a Command-Line Interface (CLI) to the system.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
             (add-after 'unpack 'patch-locations
               (lambda _
                 (substitute* "setup.py"
@@ -1266,11 +1268,13 @@ a Command-Line Interface (CLI) to the system.")
                                "pysamples/speak.py"
                                "TurtleArt/tacollaboration.py")
                   (("'espeak")
-                   (string-append "'" (search-input-file inputs "/bin/espeak"))))
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/espeak"))))
                 (substitute* '("pysamples/csound.py"
                                "plugins/turtle_blocks_extras/turtle_blocks_extras.py")
                   (("'csound '")
-                   (string-append "'" (search-input-file inputs "/bin/csound")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/csound")
                                   " '")))
                 (substitute* '("plugins/turtle_blocks_extras/turtle_blocks_extras.py"
                                "pysamples/speak.py"
@@ -1281,12 +1285,15 @@ a Command-Line Interface (CLI) to the system.")
                 (substitute* "pysamples/sinewave.py"
                   (("'speaker-test")
                    (string-append "'"
-                                  (search-input-file inputs "/bin/speaker-test"))))))
+                                  (search-input-file inputs
+                                                     "/bin/speaker-test"))))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
+      (native-inputs (list python-setuptools-next))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list gstreamer
@@ -1302,12 +1309,13 @@ a Command-Line Interface (CLI) to the system.")
              sugar-toolkit-gtk3))
       (home-page "https://help.sugarlabs.org/en/turtleart.html")
       (synopsis "Block-based Logo programming environment")
-      (description "Turtle Art, also known as Turtle Blocks, is an activity
-with a Logo-inspired graphical “turtle” that draws colorful art based on
+      (description
+       "Turtle Art, also known as Turtle Blocks, is an activity with a
+Logo-inspired graphical “turtle” that draws colorful art based on
 snap-together visual programming elements.  Its “low floor” provides an easy
-entry point for beginners.  It also has “high ceiling” programming, graphics,
-mathematics, and Computer Science features which will challenge the more
-adventurous student.")
+entry point for beginners.  It also has “high ceiling” programming,
+graphics,mathematics, and Computer Science features which will challenge the
+more adventurous student.")
       (license license:expat))))
 
 (define-public sugar-turtlepond-activity
