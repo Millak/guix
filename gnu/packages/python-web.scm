@@ -11576,50 +11576,54 @@ Grid5000 resources interactively using the embedded shell.")
   (package
     (name "python-enoslib")
     (version "8.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.inria.fr/discovery/enoslib")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               "0vs6b0bnlv95mzv0rjbxqwrhzkgjkn91gqipgwdf7y4ffpz8nybg")))
-    (build-system python-build-system)
-    (native-inputs (list python-wheel python-pytest python-ddt
-                         python-freezegun))
-    (propagated-inputs (list ansible
-                             python-cryptography
-                             python-grid5000
-                             python-jsonschema
-                             python-netaddr
-                             python-packaging
-                             python-requests
-                             python-rich
-                             python-sshtunnel
-                             python-pytz))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.inria.fr/discovery/enoslib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 "0vs6b0bnlv95mzv0rjbxqwrhzkgjkn91gqipgwdf7y4ffpz8nybg")))
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        ;; Otherwise Ansible fails to create its config directory.
-                        (setenv "HOME" "/tmp")
-                        ;; Ignoring the tests requiring an extra dependency (iotlabcli)
-                        (invoke "pytest" "enoslib/tests/unit"
-                                "--ignore"
-                                "enoslib/tests/unit/infra/test_utils.py"
-                                "--ignore-glob"
-                                "enoslib/tests/unit/infra/enos_iotlab/*"))))
-                  ;; Disable the sanity check, which fails with the following error:
-                  ;;
-                  ;; ContextualVersionConflict(rich 12.4.1
-                  ;; (/gnu/store/...-python-rich-12.4.1/lib/python3.9/site-packages),
-                  ;; Requirement.parse('rich[jupyter]~=12.0.0'), {'enoslib'})
-                  ;;
-                  ;; The optional jupyter dependency of rich isn't critical for
-                  ;; EnOSlib to work
-                  (delete 'sanity-check))))
-
+     (list
+      #:test-flags
+      #~(list "enoslib/tests/unit"
+              "--ignore" "enoslib/tests/unit/infra/test_utils.py"
+              "--ignore-glob" "enoslib/tests/unit/infra/enos_iotlab/*")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Otherwise Ansible fails to create its config directory.
+                (setenv "HOME" "/tmp"))))
+          ;; Disable the sanity check, which fails with the following error:
+          ;;
+          ;; ContextualVersionConflict(rich 12.4.1
+          ;; (/gnu/store/...-python-rich-12.4.1/lib/python3.9/site-packages),
+          ;; Requirement.parse('rich[jupyter]~=12.0.0'), {'enoslib'})
+          ;;
+          ;; The optional jupyter dependency of rich isn't critical for
+          ;; EnOSlib to work
+          (delete 'sanity-check))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-ddt
+           python-freezegun
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list ansible
+           python-cryptography
+           python-grid5000
+           python-jsonschema
+           python-netaddr
+           python-packaging
+           python-requests
+           python-rich
+           python-sshtunnel
+           python-pytz))
     (home-page "https://discovery.gitlabpages.inria.fr/enoslib/index.html")
     (synopsis "Deploy distributed testbeds on a variety of platforms")
     (description
