@@ -1185,19 +1185,20 @@ hesitate to feast on the goat.")
     (package
       (name "sugar-terminal-activity")
       (version (git-version "47" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/terminal-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "11p7rrnlaw374h3qravhp915vdblvn07i2mnrzn7mhapkwvkg4h5"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/terminal-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11p7rrnlaw374h3qravhp915vdblvn07i2mnrzn7mhapkwvkg4h5"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags
+        #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -1205,19 +1206,18 @@ hesitate to feast on the goat.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
+      (native-inputs (list python-setuptools-next))
       ;; All these libraries are accessed via gobject introspection.
-      (propagated-inputs
-       (list gtk+
-             vte/gtk+-3
-             sugar-toolkit-gtk3))
-      (inputs
-       (list gettext-minimal))
+      (propagated-inputs (list gtk+ vte/gtk+-3 sugar-toolkit-gtk3))
+      (inputs (list gettext-minimal))
       (home-page "https://help.sugarlabs.org/terminal.html")
       (synopsis "Terminal activity for the Sugar learning environment")
       (description "Terminal is a full-screen text mode program that provides
