@@ -9628,7 +9628,7 @@ and rewriting of remote git URLs from various hosting providers.")
 (define-public python-hstspreload
   (package
     (name "python-hstspreload")
-    (version "2020.10.20")
+    (version "2025.1.1")
     (source
      (origin
        (method git-fetch)
@@ -9637,7 +9637,7 @@ and rewriting of remote git URLs from various hosting providers.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03fs4m3sy4vwmk1g4q5xakckkfbc8np7cijhpzrakkk0z0cc6h8w"))))
+        (base32 "02mdzhgdz3sprgc26qb084zy639h2zw2yc8d2vm1r18ap9k51ayq"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; tests require external resources.
     (native-inputs (list python-setuptools-next))
