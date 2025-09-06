@@ -2585,12 +2585,12 @@ other HTTP libraries.")
        (method url-fetch)
        (uri (pypi-uri "httpie" version))
        (sha256
-        (base32
-         "140w4mr0w7scpf4j5qm4h475vbwrgxzkdwyygwcmql1r1cgngywb"))))
-    (build-system python-build-system)
+        (base32 "140w4mr0w7scpf4j5qm4h475vbwrgxzkdwyygwcmql1r1cgngywb"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run them.
      '(#:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-charset-normalizer
            python-colorama
@@ -2611,7 +2611,7 @@ syntax highlighting, wget-like downloads, plugins, and more.  It consists of
 a single http command designed for painless debugging and interaction with
 HTTP servers, RESTful APIs, and web services.")
     ;; This was fixed in 1.0.3.
-    (properties `((lint-hidden-cve . ("CVE-2019-10751"))))
+    (properties `((lint-hidden-cve "CVE-2019-10751")))
     (license license:bsd-3)))
 
 (define-public python-parfive
