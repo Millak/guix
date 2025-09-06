@@ -1019,19 +1019,19 @@ life with forces (think gravity, Newton!), friction (scrrrrape), and inertia
     (package
       (name "sugar-portfolio-activity")
       (version (git-version "52" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/portfolio-activity")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zaab7ara40imkd85hilslc4rqyjsgkzrcngsrw99dryl9n4mx1p"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/portfolio-activity")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zaab7ara40imkd85hilslc4rqyjsgkzrcngsrw99dryl9n4mx1p"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:tests? #false ;there are none
+        #:tests? #f ;there are none
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -1039,12 +1039,15 @@ life with forces (think gravity, Newton!), friction (scrrrrape), and inertia
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
+      (native-inputs (list python-setuptools-next))
       ;; All these libraries are accessed via gobject introspection.
       (propagated-inputs
        (list cairo
@@ -1059,8 +1062,7 @@ life with forces (think gravity, Newton!), friction (scrrrrape), and inertia
              sugar-datastore
              sugar-toolkit-gtk3
              telepathy-glib))
-      (inputs
-       (list gettext-minimal))
+      (inputs (list gettext-minimal))
       (home-page "https://github.com/sugarlabs/portfolio-activity")
       (synopsis "Portfolio for the Sugar Journal")
       (description "The Portfolio activity creates a slide show from Sugar
