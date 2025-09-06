@@ -608,7 +608,8 @@ void LocalStore::removeUnusedLinks(const GCState & state)
 
 	/* Drop links for files smaller than 'deduplicationMinSize', even if
 	   they have more than one hard link.  */
-        if (st.st_nlink != 1 && st.st_size >= deduplicationMinSize) {
+        if (st.st_nlink != 1
+	    && ((unsigned long long) st.st_size) >= deduplicationMinSize) {
             actualSize += st.st_size;
             unsharedSize += (st.st_nlink - 1) * st.st_size;
             continue;
