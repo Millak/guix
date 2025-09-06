@@ -751,6 +751,32 @@ Application Record Encoding} https://baremessages.org/ message format for
 Golang.")
     (license license:asl2.0)))
 
+(define-public go-github-com-a-h-parse
+  (package
+    (name "go-github-com-a-h-parse")
+    (version "0.0.0-20250122154542-74294addb73e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/a-h/parse")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1warii2f9mrp5m2da9pn4chzd4y3fjlc3547va8xljfh09bvray4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/a-h/parse"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/a-h/parse")
+    (synopsis "Parsing tools for Golang")
+    (description
+     "This package provides a set of parsing tools for Go inspired by
+@url{https://github.com/sprache/Sprache/, Sprache}.")
+    (license license:expat)))
+
 (define-public go-github-com-a8m-envsubst
   (package
     (name "go-github-com-a8m-envsubst")
