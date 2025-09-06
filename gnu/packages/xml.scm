@@ -271,6 +271,12 @@ project (but it is usable outside of the Gnome platform).")
                      (append pkg-config
                              python-minimal)))))
 
+(define-public libxml2-next-for-grafting
+  (package
+    (inherit libxml2)
+    (replacement libxml2-next)
+    (properties '((hidden? . #t)))))
+
 (define-public libxml2-xpath0
   (package/inherit libxml2
     (name "libxml2-xpath0")
