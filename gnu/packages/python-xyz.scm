@@ -39563,18 +39563,18 @@ window managers.")
   (package
     (name "i3-autotiling")
     (version "1.9.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/nwg-piotr/autotiling")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ag3zz4r3cwpj769m2aw3l8yj93phsydzfz02dig5z81cc025rck"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nwg-piotr/autotiling")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ag3zz4r3cwpj769m2aw3l8yj93phsydzfz02dig5z81cc025rck"))))
+    (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-wheel))
+    (native-inputs (list python-setuptools-next))
     (propagated-inputs (list python-i3ipc))
     (home-page "https://github.com/nwg-piotr/autotiling")
     (synopsis "Automatically tile windows in i3 and Sway")
