@@ -441,7 +441,7 @@ services.")
                                                      "/share/gtk-doc/html"))))
     (native-inputs (list docbook-xml-4.1.2 gobject-introspection gtk-doc/stable
                          pkg-config))
-    (propagated-inputs (list glib libsoup-minimal-2 libxml2-next))
+    (propagated-inputs (list glib libsoup-minimal-2 libxml2-next-for-grafting))
     (synopsis "Glib library for feeds")
     (description "LibGRSS is a Glib abstraction to handle feeds in RSS, Atom,
 and other formats.")
@@ -1246,7 +1246,7 @@ Library reference documentation.")
      ;; These inputs are required by the pkg-config file.
      (list glib
            libsoup
-           libxml2-next))
+           libxml2-next-for-grafting))
     (synopsis "WebDav server implementation using libsoup")
     (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
 but it is generic enough to be reused in other projects,
@@ -1456,7 +1456,7 @@ a debugging tool, @command{gssdp-device-sniffer}.")
            gsettings-desktop-schemas    ;for ‘org.gnome.system.proxy’.
            gssdp
            libsoup
-           libxml2-next))
+           libxml2-next-for-grafting))
     (synopsis "PnP API for GNOME")
     (description "This package provides GUPnP, an object-oriented framework
 for creating UPnP devices and control points, written in C using
@@ -2041,7 +2041,7 @@ and system administrators.")
       (inputs
        (list graphene
              gtk+
-             libxml2-next
+             libxml2-next-for-grafting
              libxslt
              poppler
              python-minimal
@@ -2091,7 +2091,7 @@ formats like PNG, SVG, PDF and EPS.")
        ("json-glib" ,json-glib)
        ("liboauth" ,liboauth)
        ("libsoup" ,libsoup-minimal-2)
-       ("libxml2" ,libxml2-next)))
+       ("libxml2" ,libxml2-next-for-grafting)))
     (home-page "https://wiki.gnome.org/Projects/libgdata")
     (synopsis "Library for accessing online service APIs")
     (description
@@ -3623,7 +3623,7 @@ XML/CSS rendering engine.")
            zlib))
     (propagated-inputs
      (list glib
-           libxml2-next))
+           libxml2-next-for-grafting))
     (synopsis "G Structured File Library")
     (description "Libgsf aims to provide an efficient extensible I/O abstraction
 for dealing with different structured file formats.")
@@ -4231,7 +4231,7 @@ ported to GTK+.")
     (inputs
      (list python)) ;; needed for the optional libglade-convert program
     (propagated-inputs
-     (list gtk+-2 libxml2-next)) ; required by libglade-2.0.pc
+     (list gtk+-2 libxml2-next-for-grafting)) ; required by libglade-2.0.pc
     (native-inputs
      (list pkg-config))
     (home-page "https://developer.gnome.org/libglade")
@@ -4268,7 +4268,7 @@ widgets built in the loading process.")
                ;; Therefore we must do it.
                (zero? (system (format #f "~a/bin/Xvfb ~a &" xorg-server disp)))))))))
     ;; Mentioned as Required by the .pc file
-    (propagated-inputs (list libxml2-next))
+    (propagated-inputs (list libxml2-next-for-grafting))
     (inputs
      (list popt pangox-compat libgnome libgnomecanvas libglade))
     (native-inputs
@@ -4951,7 +4951,7 @@ GLib and GObject, and integrates JSON with GLib data types.")
        ("libtool" ,libtool)))
     (propagated-inputs
      ;; Required by libxklavier.pc.
-     (list glib libxml2-next))
+     (list glib libxml2-next-for-grafting))
     (inputs
      (list iso-codes/pinned libxi libxkbfile xkbcomp xkeyboard-config))
     (home-page "https://www.freedesktop.org/wiki/Software/LibXklavier/")
@@ -5095,7 +5095,7 @@ libxml to ease remote use of the RESTful API.")
     (inherit rest)
     (propagated-inputs
      (modify-inputs (package-propagated-inputs rest)
-       (replace "libxml2" libxml2-next)))))
+       (replace "libxml2" libxml2-next-for-grafting)))))
 
 (define-public rest-next
   (package
@@ -6056,7 +6056,7 @@ service via the system message bus.")
      (list gtk+
            gdk-pixbuf
            json-glib
-           libxml2-next
+           libxml2-next-for-grafting
            libsoup
            geocode-glib))
     (inputs
@@ -6175,7 +6175,7 @@ settings, themes, mouse settings, and startup of other daemons.")
     (list intltool
           `(,glib "bin") gobject-introspection pkg-config))
    (propagated-inputs
-    (list glib gmime libarchive libgcrypt libxml2-next))
+    (list glib gmime libarchive libgcrypt libxml2-next-for-grafting))
    (inputs
     (list libsoup))
    (home-page "https://projects.gnome.org/totem")
@@ -8159,7 +8159,7 @@ to display dialog boxes from the commandline and shell scripts.")
            libxext
            libxfixes
            libxkbcommon
-           libxml2-next
+           libxml2-next-for-grafting
            libxrandr
            mesa
            pango
@@ -8985,7 +8985,7 @@ the available networks and allows users to easily switch between them.")
         (base32 "07h11vl0rv8b0w31as5xiirpx17lprkx7fimphy3f5mkwhz8njba"))))
     (build-system gnu-build-system)
     (propagated-inputs
-     (list libxml2-next))                    ;required by .pc file
+     (list libxml2-next-for-grafting))  ;required by .pc file
     (native-inputs
      (list autoconf
            automake
@@ -13940,7 +13940,7 @@ developed with the aim of being used with the Librem 5 phone.")
            sqlite
            vala))
     (propagated-inputs
-     (list libxml2-next))                    ; required by libgda-5.0.pc
+     (list libxml2-next-for-grafting))  ; required by libgda-5.0.pc
     (home-page "https://gitlab.gnome.org/GNOME/libgda")
     (synopsis "Uniform data access")
     (description
