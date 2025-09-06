@@ -7630,16 +7630,16 @@ underlies Mozilla Persona.")
 (define-public python-pyfxa
   (package
     (name "python-pyfxa")
-    (version "0.6.0")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mozilla/PyFxA")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mozilla/PyFxA")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ag07qiqrmlhgyzfib2x7kzzgccj4lfs9q7jfc8f1g55783457bm"))))
+        (base32 "11iaw50x5ic9cqp3jwkvhk8mz00dhg8xhl1kkx45zrb8nnrfw2vs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7647,15 +7647,16 @@ underlies Mozilla Persona.")
       #:test-flags #~(list "--ignore=fxa/tests/test_core.py")))
     (propagated-inputs
      (list python-cryptography
+           python-pyjwt
+           python-parameterized
            python-hawkauthlib
-           python-pybrowserid
            python-requests))
     (native-inputs
      (list python-grequests
+           python-hatchling
            python-mock
            python-pytest
-           python-responses
-           python-setuptools-next))
+           python-responses))
     (home-page "https://github.com/mozilla/PyFxA")
     (synopsis "Firefox Accounts client library for Python")
     (description
