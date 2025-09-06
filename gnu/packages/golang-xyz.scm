@@ -15440,6 +15440,38 @@ through it's psuedoterminal.")
 list of sentences.")
     (license license:expat)))
 
+(define-public go-github-com-nicksnyder-go-i18n-v2
+  (package
+    (name "go-github-com-nicksnyder-go-i18n-v2")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nicksnyder/go-i18n")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14v4v06j30rsn2y8lss7j5qyfbr7wir7yzpjd8wqh279aq489d2j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/nicksnyder/go-i18n/v2"
+      ;; One test fails with error: open active.en.toml: permission denied.
+      #:test-flags #~(list "-skip" "TestMain/extract")))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/nicksnyder/go-i18n")
+    (synopsis "Internationalization and localization for Golang")
+    (description
+     "This package provides support for implementing internationalization and
+localization of Go code, covering pluralized strings for all 200+ languages in
+@acronym{CLDR, Unicode Common Locale Data Repository}.")
+    (license license:expat)))
+
 (define-public go-github-com-nightlyone-lockfile
   (package
     (name "go-github-com-nightlyone-lockfile")
