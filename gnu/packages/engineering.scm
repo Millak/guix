@@ -2711,31 +2711,32 @@ simulation.")
 (define-public cutter
   (package
     (name "cutter")
-    (version "2.3.4")
+    (version "2.4.1")                   ;keep in sync with rizin
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rizinorg/cutter")
              (commit (string-append "v" version))
+             ;; Needed for src/translations.
              (recursive? #t)))
        (modules '((guix build utils)))
        (snippet #~(delete-file-recursively "rizin"))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d10g1wpw8p8hcxvw5q7ymfdxyrp4xqs6a49lf3gdgnmcpb248ad"))))
+        (base32 "090gfg90k0fn3jiyssdigjgb7xn473hxfm7gpl1rwn3kl6fv7lvw"))))
     (build-system qt-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DCUTTER_USE_BUNDLED_RIZIN=OFF")
+      #:configure-flags
+      #~(list "-DCUTTER_USE_BUNDLED_RIZIN=OFF"
+              "-DCUTTER_ENABLE_PYTHON_BINDINGS=ON"
+              "-DCUTTER_QT=5")
       #:tests? #f)) ;no tests
-    (native-inputs (list pkgconf))
-    (inputs (list libzip
-                  openssl
-                  qtsvg-5
-                  qttools-5
-                  rizin
-                  zlib))
+    (native-inputs
+     (list pkgconf))
+    (inputs
+     (list graphviz libzip openssl qtsvg-5 qttools-5 rizin zlib))
     (home-page "https://cutter.re")
     (synopsis "Software reverse engineering platform")
     (description
@@ -5189,15 +5190,16 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.7.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/rizinorg/rizin/releases/download/v"
-                    version "/rizin-src-v" version ".tar.xz"))
-              (sha256
-               (base32
-                "008jcfbp836g2sya4aqkbkfir6h1xhq0pq53p8w3r16wwl88j4gp"))))
+    (version "0.8.1")                   ;keep in sync with cutter
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/rizinorg/rizin/releases/download/v"
+             version "/rizin-src-v" version ".tar.xz"))
+       (sha256
+        (base32
+         "1hjf180q4ba0cs5ys7vwy5xs1k6195kransj8fn3dp6p4mjiwazg"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -5231,7 +5233,7 @@ form, numpad.
                 (("subdir\\('integration'\\)") ""))
               ;;; Skip failing tests.
               (substitute* "test/unit/meson.build"
-                (("'bin_mach0',\n") "")))))))
+                (("'tokens',\n") "")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list capstone
