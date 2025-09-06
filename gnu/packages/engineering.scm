@@ -3073,8 +3073,8 @@ ontinuous-time and discret-time expressions.")
     (license license:lgpl2.1+)))
 
 (define-public openscad
-  (let ((commit "6a8ab04bfd8bbe5cafab3efb74d2b46cb33fafe7")
-        (version "2025.07.25")
+  (let ((commit "5d6e37dd177d9d9329234cb5d3c0491ab0f23dcd")
+        (version "2025.09.02")
         (revision "0"))
     (package
       (name "openscad")
@@ -3090,7 +3090,7 @@ ontinuous-time and discret-time expressions.")
                ;; deleted in the patch-source build phase.
                (recursive? #t)))
          (sha256
-          (base32 "0qvvi4qjadk2p5v2ca95hkkw0zi9vmzyac8hcxr14ijnk0f1ybd0"))
+          (base32 "1cga32b65wbap59nmw37f75ys3gj9bk09nqzq7949x9kqlal13mx"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
