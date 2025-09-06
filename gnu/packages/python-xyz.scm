@@ -22257,19 +22257,26 @@ the same purpose: to provide Python bindings for libmagic.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0rdgwwmmp8mdxc84bxq6k9a7v7z2qgc3df47djzs2b84gw81dglx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'hide-wrapping
-                 (lambda _
-                   (substitute* "S3/MultiPart.py"
-                     (("sys\\.argv\\[0\\]") "\"s3cmd\""))
-                   (substitute* "s3cmd"
-                     (("optparser\\.get_prog_name\\(\\)") "\"s3cmd\"")))))))
-    (inputs
-     (list python-dateutil
-           python-magic))
+     (list
+      #:tests? #f                       ; XXX: Tests require network access.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hide-wrapping
+            (lambda _
+              (substitute* "S3/MultiPart.py"
+                (("sys\\.argv\\[0\\]")
+                 "\"s3cmd\""))
+              (substitute* "s3cmd"
+                (("optparser\\.get_prog_name\\(\\)")
+                 "\"s3cmd\""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "run-tests.py")))))))
+    (native-inputs (list python-setuptools-next))
+    (inputs (list python-dateutil python-magic))
     (home-page "https://s3tools.org/s3cmd")
     (synopsis "Command line tool for S3-compatible storage services")
     (description
