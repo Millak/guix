@@ -7453,21 +7453,21 @@ users, gradebooks, and more.")
   (package
     (name "python-google")
     (version "3.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "google" version))
-              (sha256
-               (base32
-                "1gncv3l11za0mpxvmpaf5n5j3jzp282rz62yml4ha4z55q930d8l"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; There are no tests.
-    (propagated-inputs
-     (list python-beautifulsoup4))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google" version))
+       (sha256
+        (base32 "1gncv3l11za0mpxvmpaf5n5j3jzp282rz62yml4ha4z55q930d8l"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;There are no tests.
+    (native-inputs (list python-setuptools-next))
+    (propagated-inputs (list python-beautifulsoup4))
     (home-page "https://breakingcode.wordpress.com/")
     (synopsis "Python bindings to the Google search engine")
-    (description "This package provides Python bindings for using the
-Google search engine.  Its module is called @code{googlesearch}.")
+    (description
+     "This package provides Python bindings for using the Google search
+engine.  Its module is called @code{googlesearch}.")
     (license license:bsd-3)))
 
 (define-public python-google-api-client
