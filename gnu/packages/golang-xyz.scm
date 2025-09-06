@@ -22015,6 +22015,24 @@ gopkg.in/yaml.v2} maintained by @url{https://github.com/yaml/, YAML
 organization}.")
     (license license:asl2.0)))
 
+(define-public go-go-yaml-in-yaml-v3
+  (package
+    (inherit go-go-yaml-in-yaml-v2)
+    (name "go-go-yaml-in-yaml-v3")
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yaml/go-yaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03hdf855gm8bh8wnhxibin8y626ahaij6v5ivkmic2z86f48ah9n"))))
+    (arguments
+     (list
+      #:import-path "go.yaml.in/yaml/v3"))))
+
 (define-public go-go4-org
   ;; No release or version tag, Golang pseudo version:
   ;; 0.0.0-20230225012048-214862532bf5.
