@@ -1324,19 +1324,20 @@ more adventurous student.")
     (package
       (name "sugar-turtlepond-activity")
       (version (git-version "10" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/turtlepond")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0j7jzbwi2aph312f5dazmwgxqzh458b4yzz8mvrdxpr91ksxd4h4"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sugarlabs/turtlepond")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0j7jzbwi2aph312f5dazmwgxqzh458b4yzz8mvrdxpr91ksxd4h4"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-target "check"
+        #:test-flags
+        #~(list "check")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-launcher
@@ -1344,7 +1345,8 @@ more adventurous student.")
                 (substitute* "activity/activity.info"
                   (("exec = sugar-activity3")
                    (string-append "exec = "
-                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+                                  (search-input-file inputs
+                                                     "/bin/sugar-activity3"))))))
             #;
             (add-after 'unpack 'inject-load-path
               (lambda _
@@ -1359,6 +1361,7 @@ for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
         sys.path.insert(1, directory)
 import logging
 ")))))
+            (delete 'build)
             (replace 'install
               (lambda _
                 (setenv "HOME" "/tmp")
@@ -1372,8 +1375,7 @@ import logging
              gtk+
              python-pygobject
              sugar-toolkit-gtk3))
-      (native-inputs
-       (list gettext-minimal))
+      (native-inputs (list gettext-minimal python-setuptools-next))
       (home-page "https://github.com/sugarlabs/turtlepond")
       (synopsis "Turtle-based strategy game")
       (description "Turtle in a Pond is a strategy game.  The goal is to
