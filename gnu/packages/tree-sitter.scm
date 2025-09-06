@@ -727,6 +727,14 @@ which will be used as a snippet in origin."
    "0.23.0-1"
    #:repository-url "https://github.com/6cdh/tree-sitter-scheme"))
 
+(define-public tree-sitter-starlark
+  (tree-sitter-grammar
+   "starlark" "Starlark"
+   "1qlvk67fqd49138nxl81l4gx833271mns36g3lm884sdmw3225w8"
+   "1.3.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-starlark"
+   #:inputs (list tree-sitter-python)))
+
 (define-public tree-sitter-sway
   (let ((commit "f9e53e922496dd47208a141fa7ac315625a1874f")
         (revision "0"))
