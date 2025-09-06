@@ -37799,20 +37799,22 @@ and has plugins for many other formats.")
     (name "nbss-upload")
     (version "0.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "nbss-upload" version))
-        (sha256
-          (base32 "0jhyfm7w2ssknmh9789fmpnf79xr7sxbdcjwak6hfha6qparvk38"))))
-    (build-system python-build-system)
-    (propagated-inputs
-      (list python-requests))
-    (arguments
-     `(#:tests? #f)) ;no tests
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/notebook-sharing-space/nbss-upload")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cxj4zqcxzi3c5kw649jxmdpnbyrkrwx4licxdg6zc317v8gxw54"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools-next))
+    (propagated-inputs (list python-requests))
     (home-page "https://github.com/notebook-sharing-space/nbss-upload")
     (synopsis "Upload notebooks to a notebooksharing.space instance")
     (description
-"Upload notebooks as @code{.ipynb}, @code{.rmd}, and @code{.html} to a
+     "Upload notebooks as @code{.ipynb}, @code{.rmd}, and @code{.html} to a
 notebooksharing.space instance.")
     (license license:bsd-3)))
 
