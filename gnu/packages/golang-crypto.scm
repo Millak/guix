@@ -2535,7 +2535,18 @@ support the streaming mode required by Go's standard Hash interface.")
       (build-system go-build-system)
       (arguments
        (list
-        #:import-path "github.com/veraison/go-cose"))
+        #:import-path "github.com/veraison/go-cose"
+        #:test-flags
+        ;; Some tests are not compatible with cbor@2.9.0.
+        ;; See: <https://github.com/veraison/go-cose/pull/218>.
+        #~(list "-skip" (string-join
+                         (list "TestProtectedHeader_UnmarshalCBOR/duplicated_key"
+                               "TestUnprotectedHeader_UnmarshalCBOR/duplicated_key"
+                               "TestKey_UnmarshalCBOR/duplicated_param"
+                               "TestKey_UnmarshalCBOR/duplicated_kty"
+                               "TestConformance/sign1-verify-negative-0002"
+                               "TestConformance/sign1-verify-negative-0003")
+                         "|"))))
       (propagated-inputs
        (list go-github-com-fxamacker-cbor-v2))
       (home-page "https://github.com/veraison/go-cose")
