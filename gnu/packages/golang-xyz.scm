@@ -23798,18 +23798,23 @@ tool."))))
 tools."))))
 
 (define-public go-tengo
-  (package
-    (inherit go-github-com-d5-tengo-v2)
+  (package/inherit go-github-com-d5-tengo-v2
     (name "tengo")
     (arguments
-     (list
-      #:import-path "github.com/d5/tengo/cmd/tengo"
-      #:unpack-path "github.com/d5/tengo"
-      #:install-source? #f))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-d5-tengo-v2)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path "github.com/d5/tengo/v2")
+        "github.com/d5/tengo/v2/cmd/tengo")
+       ((#:unpack-path _ "") "github.com/d5/tengo/v2")))
+    (native-inputs (package-propagated-inputs go-github-com-d5-tengo-v2))
+    (propagated-inputs '())
+    (inputs '())
     (description
-     (string-append (package-description go-github-com-d5-tengo-v2)
-                    "\nThis package provides an command line interface (CLI)
-tool."))))
+     (string-append
+      (package-description go-github-com-d5-tengo-v2)
+      "\nThis package provides a command line interface (CLI) tool."))))
 
 (define-public go-gronx-tasker
   (package/inherit go-github-com-adhocore-gronx
