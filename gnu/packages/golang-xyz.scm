@@ -22958,6 +22958,32 @@ machine readable.  It is modeled after the Go standard library's @code{io} and
            go-github-com-mattn-go-colorable
            go-golang-org-x-term))))
 
+(define-public go-gopkg-in-inf-v0
+  (package
+    (name "go-gopkg-in-inf-v0")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-inf/inf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00k5iqjcp371fllqxncv7jkf80hn1zww92zm78cclbcn4ybigkng"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/inf.v0"
+      ;; Tests are not copatiblw with Go 1.24+.
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/go-inf/inf")
+    (synopsis "Infinite precision decimal arithmetic in Golang")
+    (description
+     "This package (type @code{inf.Dec}) implements a \"infinite-precision\"
+decimal arithmetic.")
+    (license license:expat)))
+
 (define-public go-gopkg-in-ini-v1
   (package
     (name "go-gopkg-in-ini-v1")
