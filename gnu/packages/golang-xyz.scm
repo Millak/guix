@@ -15382,6 +15382,31 @@ multibase} (self identifying base encodings) in Go.")
 varints.")
     (license license:expat)))
 
+(define-public go-github-com-mxk-go-flowrate
+  (package
+    (name "go-github-com-mxk-go-flowrate")
+    (version "0.0.0-20140419014527-cca7078d478f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mxk/go-flowrate")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zqs39923ja0yypdmiqk6x8pgmfs3ms5x5sl1dqv9z6zyx2xy541"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/mxk/go-flowrate"))
+    (home-page "https://github.com/mxk/go-flowrate")
+    (synopsis "Limiting and monitoring data flow rate in Golang")
+    (description
+     "This package provides the tools for monitoring and limiting the flow
+rate of an arbitrary data stream.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-nakagami-firebirdsql
   (package
     (name "go-github-com-nakagami-firebirdsql")
