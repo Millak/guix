@@ -1173,7 +1173,7 @@ is not available for Guile 2.0.")
 
 (define-public guile-fibers-1.1
   (package
-    (inherit guile-fibers)
+    (inherit guile-fibers-1.3)
     (version "1.1.1")
     (source (origin
               (method git-fetch)
@@ -1195,11 +1195,11 @@ is not available for Guile 2.0.")
            gettext-minimal))
     (arguments
      (if (%current-target-system)
-         (substitute-keyword-arguments (package-arguments guile-fibers)
+         (substitute-keyword-arguments (package-arguments guile-fibers-1.3)
            ((#:phases phases)
             #~(modify-phases #$phases
                 (delete 'apply-cross-build-fix-patch))))
-         (package-arguments guile-fibers)))
+         (package-arguments guile-fibers-1.3)))
     (inputs
      (list guile-3.0))                            ;for libguile-3.0.so
     (supported-systems
