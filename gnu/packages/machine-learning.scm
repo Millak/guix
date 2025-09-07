@@ -1457,7 +1457,7 @@ storing tensors safely.")
   (package
     (inherit sentencepiece)
     (name "python-sentencepiece")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -1465,7 +1465,8 @@ storing tensors safely.")
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "python"))))))
-    (native-inputs (list pkg-config protobuf))
+    (native-inputs
+     (list pkg-config protobuf python-pytest python-setuptools-next))
     (propagated-inputs (list sentencepiece))
     (synopsis "SentencePiece python wrapper")
     (description "This package provides a Python wrapper for the SentencePiece
