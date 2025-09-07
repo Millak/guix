@@ -23868,6 +23868,61 @@ prints the Go version used to build that executable.")
 unmarshaling functions based on @code{encoding/json} @code{Unmarshal()}.")
     (license license:asl2.0)))
 
+(define-public go-sigs-k8s-io-kustomize-cmd-config
+  (package
+    (name "go-sigs-k8s-io-kustomize-cmd-config")
+    (version "0.20.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes-sigs/kustomize")
+              (commit (go-version->git-ref version
+                                           #:subdir "cmd/config"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12n8ij4gisah5mvxcgq263iic61gjpxdj3ml03826zckzn7wlv46"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "cmd")
+            (delete-all-but "cmd" "config")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "sigs.k8s.io/kustomize/cmd/config"
+      #:unpack-path "sigs.k8s.io/kustomize"
+      ;; Full test suite requires Docker in the PATH.
+      #:test-subdirs #~(list "internal/commands"
+                             "runner/...")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-errors-errors
+           go-github-com-spf13-cobra
+           go-gopkg-in-inf-v0
+           go-sigs-k8s-io-kustomize-kyaml))
+    (home-page "https://sigs.k8s.io/kustomize")
+    (synopsis "Kubernetes config filters")
+    (description
+     "This package implements a functionality to expose Kubernetes config
+filters directly as CLI commands for the purposes of development of the
+@code{kyaml} package and as a reference implementation for using the
+libraries.")
+    (license license:asl2.0)))
+
 (define-public go-sigs-k8s-io-kustomize-kyaml
   (package
     (name "go-sigs-k8s-io-kustomize-kyaml")
