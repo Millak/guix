@@ -23913,8 +23913,7 @@ tool."))))
       #:unpack-path "github.com/client9/misspell"))))
 
 (define-public gops
-  (package
-    (inherit go-github-com-google-gops)
+  (package/inherit go-github-com-google-gops
     (name "gops")
     (arguments
      (substitute-keyword-arguments
