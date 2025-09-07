@@ -23860,19 +23860,23 @@ tool."))))
 tools."))))
 
 (define-public go-tomlv
-  (package
-    (inherit go-github-com-burntsushi-toml)
+  (package/inherit go-github-com-burntsushi-toml
     (name "go-tomlv")
     (arguments
-     (list
-      #:install-source? #f
-      #:tests? #f ; no tests.
-      #:import-path "github.com/BurntSushi/toml/cmd/tomlv"
-      #:unpack-path "github.com/BurntSushi/toml"))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-burntsushi-toml)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path "github.com/BurntSushi/toml")
+        "github.com/BurntSushi/toml/cmd/tomlv")
+       ((#:unpack-path _ "") "github.com/BurntSushi/toml")))
+    (native-inputs (package-propagated-inputs go-github-com-burntsushi-toml))
+    (propagated-inputs '())
+    (inputs '())
     (description
-     (string-append (package-description go-github-com-burntsushi-toml)
-                    "  This package provides an command line interface (CLI)
-tool."))))
+     (string-append
+      (package-description go-github-com-burntsushi-toml)
+      "\nThis package provides a command line interface (CLI) tool."))))
 
 (define-public go-ulid
   (package/inherit go-github-com-oklog-ulid-v2
