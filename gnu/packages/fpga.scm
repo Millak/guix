@@ -813,11 +813,11 @@ using different abstraction levels.")
            gdb/pinned
            gettext-minimal
            help2man
+           perl
            python-distro
-           python-minimal
-           which))
+           python-minimal))
     (inputs
-     (list perl python systemc))
+     (list numactl systemc))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -829,9 +829,14 @@ using different abstraction levels.")
             (lambda _
               (substitute* "bin/verilator"
                 (("/bin/echo") "echo"))))
-          (add-before 'check 'set-SYSTEMC_ROOT
+          (add-before 'configure 'set-SYSTEMC
             (lambda _
-              (setenv "SYSTEMC_ROOT" #$(this-package-input systemc))))
+              (setenv "SYSTEMC_LIBDIR"
+                      (string-append
+                       #$(this-package-input "systemc") "/lib"))
+              (setenv "SYSTEMC_INCLUDE"
+                      (string-append
+                       #$(this-package-input "systemc") "/include"))))
           (add-before 'check 'disable-gdb-safe-path
             (lambda _
               (setenv "HOME" (getcwd))
