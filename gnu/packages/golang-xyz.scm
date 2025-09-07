@@ -116,7 +116,13 @@
 ;;;
 ;;; Nomad Golang modules (libraries) are welcome here.
 ;;;
-;;; Please: Try to add new module packages in alphabetic order.
+;;; There are two sections her: Libraries - for any source only Golang
+;;; libraries which are meant to be imported by other packages; Executables -
+;;; should contain inherited packages where commands need to be built.
+;;;
+;;; Please: Try to add new module packages in alphabetic order and avoid stand
+;;; alone final executables which are not inherited from sources presented in
+;;; this module.
 ;;;
 ;;; Code:
 
@@ -23447,7 +23453,7 @@ helpful utility functions, and makes testing fairly easy.")
      "Package @samp{zstd} is a collection of extensions to Go's standard
 library.")
     (license license:expat)))
-
+
 ;;;
 ;;; Executables:
 ;;;
