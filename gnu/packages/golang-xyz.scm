@@ -4655,6 +4655,61 @@ dependencies and a simple API.")
 packages.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-errdefs-pkg
+  (package
+    (name "go-github-com-containerd-errdefs-pkg")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/errdefs")
+              (commit (go-version->git-ref version
+                                           #:subdir "pkg"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0afaljkkd388f6igr3f2vjnd14yr8h20fcfzglw8j5q1q7a1cvik"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "pkg")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/containerd/errdefs/pkg"
+      #:unpack-path "github.com/containerd/errdefs"))
+    (propagated-inputs
+     (list go-github-com-containerd-errdefs
+           go-github-com-containerd-typeurl-v2
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/containerd/errdefs")
+    (synopsis "Addintional error handling modules for containerd")
+    (description
+     "This package provides an additinal Golang modules for error handling in
+containerd projects.
+
+@itemize
+@item errgrpc - provides utility functions for translating errors to and from
+a gRPC context
+@item errhttp - provides utility functions for translating errors to and from
+a HTTP context
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-fifo
   (package
     (name "go-github-com-containerd-fifo")
