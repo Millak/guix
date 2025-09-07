@@ -4624,6 +4624,37 @@ dependencies and a simple API.")
      "This package provides a transport-agnostic, filesystem metadata manifest system.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-errdefs
+  (package
+    (name "go-github-com-containerd-errdefs")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/errdefs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0afaljkkd388f6igr3f2vjnd14yr8h20fcfzglw8j5q1q7a1cvik"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containerd/errdefs/pkg
+            (delete-file-recursively "pkg")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/errdefs"))
+    (home-page "https://github.com/containerd/errdefs")
+    (synopsis "Common definition and library of errors used by containerd")
+    (description
+     "Package errdefs defines the common errors used throughout containerd
+packages.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-fifo
   (package
     (name "go-github-com-containerd-fifo")
