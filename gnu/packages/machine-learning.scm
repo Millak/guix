@@ -6326,23 +6326,25 @@ algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
 (define-public python-visdom
   (package
     (name "python-visdom")
-    (version "0.1.8.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "visdom" version))
-              (sha256
-               (base32
-                "09kiczx2i5asqsv214fz7sx8wlyldgbqvxwrd0alhjn24cvx4fn7"))))
-    (build-system python-build-system)
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "visdom" version))
+       (sha256
+        (base32 "0x05faxh45bh1zz8afjhzjy49jrqv4dkhaw1ainhajl1r39i3ac4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;tests require launching the server
+    (native-inputs
+     (list python-setuptools-next))
     (propagated-inputs
      (list python-jsonpatch
+           python-networkx
            python-numpy
            python-pillow
-           python-pyzmq
            python-requests
            python-scipy
            python-six
-           python-torchfile
            python-tornado
            python-websocket-client))
     (home-page "https://github.com/fossasia/visdom")
