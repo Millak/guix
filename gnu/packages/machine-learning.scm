@@ -5899,24 +5899,37 @@ and common image transformations for computer vision.")
     (license license:bsd-3)))
 
 (define-public python-torchfile
-  (package
-    (name "python-torchfile")
-    (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "torchfile" version))
-              (sha256
-               (base32
-                "0vhklj6krl9r0kdynb4kcpwp8y1ihl2zw96byallay3k9c9zwgd5"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ;there are no tests
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/bshillingford/python-torchfile")
-    (synopsis "Torch7 binary serialized file parser")
-    (description "This package enables you to deserialize Lua torch-serialized objects from
-Python.")
-    (license license:bsd-3)))
+  ;; Latest release is nine years old.
+  (let ((commit "fbd434a5b5562c88b91a95e6476e11dbb7735436")
+        (revision "0"))
+    (package
+      (name "python-torchfile")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/bshillingford/python-torchfile/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1f03ks5n3i3cdh16wx5ysxsxh0ai9vpf0k5pdx759vf31f4niz36"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "python3" "tests.py")))))))
+      (propagated-inputs
+       (list python-numpy python-setuptools-next))
+      (home-page "https://github.com/bshillingford/python-torchfile")
+      (synopsis "Torch7 binary serialized file parser")
+      (description "This package enables you to deserialize Lua
+torch-serialized objects from Python.")
+      (license license:bsd-3))))
 
 (define-public python-geomloss
   (package
