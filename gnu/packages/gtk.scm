@@ -1355,7 +1355,7 @@ application suites.")
            librest
            libtiff
            python
-           tracker))                    ;for filechooser search support
+           tinysparql))                 ;for filechooser search support
     (propagated-inputs
      ;; Following dependencies are referenced in .pc files.
      (list cairo
