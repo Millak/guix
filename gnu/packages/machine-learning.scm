@@ -4158,11 +4158,11 @@ in a fast and accurate way.")
        (sha256
         (base32
          "1k8szlpm19rcwcxdny9qdm3gmaqq8akb4xlvrzyz8c2d679aak6l"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-ipython python-numpy python-pandas python-scipy))
     (native-inputs
-     (list python-nose))
+     (list python-nose python-setuptools-next))
     (home-page "https://github.com/interpretable-ml/iml")
     (synopsis "Interpretable Machine Learning (iML) package")
     (description "Interpretable ML (iML) is a set of data type objects,
