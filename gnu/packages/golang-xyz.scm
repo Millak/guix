@@ -7189,7 +7189,7 @@ quoting, commenting, and escaping.")
 (define-public go-github-com-fxamacker-cbor-v2
   (package
     (name "go-github-com-fxamacker-cbor-v2")
-    (version "2.7.0")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -7198,7 +7198,7 @@ quoting, commenting, and escaping.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "039lk7n5155gy2sh55i1darcvxhv9fim2xmnvmx0xi9ihnrnczln"))))
+        (base32 "0mvlgjh59s0hqdhz5j0nf8p9mlp6hwkrd8i8bkyvq2hilgplm1pw"))))
     (build-system go-build-system)
     (arguments
      (list
