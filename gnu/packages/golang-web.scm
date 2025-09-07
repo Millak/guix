@@ -12951,6 +12951,30 @@ the standard @code{context} package to store request-scoped values.")
      "Package grpc implements an RPC system called @code{gRPC}.")
     (license license:asl2.0)))
 
+;; This to satisfy alternative import path, some of the projects still use it
+;; in go.mod.
+(define-public go-gopkg-in-evanphx-json-patch-v4
+  (package/inherit go-github-com-evanphx-json-patch
+    (name "go-gopkg-in-evanphx-json-patch-v4")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-evanphx-json-patch)
+       ((#:import-path "github.com/evanphx/json-patch")
+        "gopkg.in/evanphx/json-patch.v4")
+       ((#:unpack-path "github.com/evanphx/json-patch")
+        "gopkg.in/evanphx/json-patch.v4")
+       ((#:phases _ '%standard-phases)
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-v5-module
+              (lambda* (#:key import-path #:allow-other-keys)
+                (delete-file-recursively
+                 (string-append "src/" import-path "/v5"))))
+            (add-before 'build 'adjust-import-path
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (substitute* (find-files "." "\\.go$")
+                    (("github.com/evanphx/json-patch") import-path)))))))))))
+
 (define-public go-gopkg-in-go-jose-go-jose-v2
   (package
     (inherit go-github-com-go-jose-go-jose-v3)
