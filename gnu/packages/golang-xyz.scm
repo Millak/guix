@@ -14513,6 +14513,29 @@ parsing.")
      "This directory contains documents about Docker Image Specification v1.X.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-spdystream
+  (package
+    (name "go-github-com-moby-spdystream")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/spdystream")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p5pwwspmp24ff900656fyvrgdz8xxl6y0dk9fqgcaaaylmw0v9g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/spdystream"))
+    (home-page "https://github.com/moby/spdystream")
+    (synopsis "Multiplexed streams for Golang")
+    (description
+     "This package provides a multiplexed stream library using spdy.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-capability
   (package
     (name "go-github-com-moby-sys-capability")
