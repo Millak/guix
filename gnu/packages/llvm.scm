@@ -68,6 +68,7 @@
   #:use-module (gnu packages bootstrap)           ;glibc-dynamic-linker
   #:use-module (gnu packages check)               ;python-lit
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -1842,6 +1843,25 @@ LLVM."))))
        (sha256
         (base32 "0cf31hixzq5bzkxv91rvadlhrpxzy934134scv4frj85bxbpl19y"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pystr (lambda (s) (string-append "'" s "'"))))
+                (substitute* "wllvm/compilers.py"
+                  (("'objcopy'")
+                   (pystr (search-input-file inputs "/bin/objcopy"))))
+                (substitute* "wllvm/extraction.py"
+                  (("'objdump'")
+                   (pystr (search-input-file inputs "/bin/objdump")))
+                  (("'ar'")
+                   (pystr (search-input-file inputs "/bin/ar"))))
+                (substitute* "wllvm/filetype.py"
+                  (("'file'")
+                   (pystr (search-input-file inputs "/bin/file"))))))))))
+    (inputs (list binutils file))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/SRI-CSL/whole-program-llvm")
     (synopsis "Whole Program LLVM")
