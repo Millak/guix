@@ -2228,7 +2228,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
 (define-public rofi
   (package
     (name "rofi")
-    (version "1.7.8")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/davatorium/rofi/"
@@ -2236,17 +2236,8 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "0pk5a38rhci6mm0p9zjrmb7ixczhbdwqirw840h682rf9660mn9a"))
-              (snippet
-               #~(begin
-                   ;; Delete pre-generated files.
-                   (for-each delete-file
-                             (list "lexer/theme-lexer.c"
-                                   "lexer/theme-parser.c"
-                                   "lexer/theme-parser.h"
-                                   "resources/resources.c"
-                                   "resources/resources.h"))))))
-    (build-system gnu-build-system)
+                "13cd39973aahijhcgayq6345snw08sqjk8yf6la9mvw9y4kywmba"))))
+    (build-system meson-build-system)
     (native-inputs
      (list bison
            check
@@ -2259,6 +2250,8 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
            libxcb
            libxkbcommon
            startup-notification
+           wayland
+           wayland-protocols
            xcb-util
            xcb-util-cursor
            xcb-util-keysyms
@@ -2289,28 +2282,7 @@ by name.")
     (license license:expat)))
 
 (define-public rofi-wayland
-  (let ((base rofi))
-    (package
-      (inherit rofi)
-      (name "rofi-wayland")
-      (version "1.7.8+wayland1")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://github.com/lbonn/rofi"
-                                    "/releases/download/" version
-                                    "/rofi-" version ".tar.xz"))
-                (sha256
-                 (base32
-                  "0wr6qdyd9wkgqaa4vq8czz4fd2shngbw83b2ll284ahm3mwhq2da"))))
-      (build-system meson-build-system)
-      (inputs
-       (modify-inputs (package-inputs base)
-         (append wayland wayland-protocols)))
-      (description
-       "Rofi is a minimalist application launcher.  It memorizes which
-applications you regularly use and also allows you to search for an
-application by name.  This package, @code{rofi-wayland}, provides additional
-wayland support."))))
+  (deprecated-package "rofi-wayland" rofi))
 
 (define-public rofi-calc
   (package
