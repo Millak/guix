@@ -23888,8 +23888,7 @@ tool."))))
 tool."))))
 
 (define-public gofumpt
-  (package
-    (inherit go-mvdan-cc-gofumpt)
+  (package/inherit go-mvdan-cc-gofumpt
     (name "gofumpt")
     (arguments
      (substitute-keyword-arguments
