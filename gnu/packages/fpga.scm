@@ -129,7 +129,7 @@ formal verification.")
   (package
     (inherit abc)
     (name "abc-yosyshq")
-    (version "0.56")
+    (version "0.57")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -138,7 +138,7 @@ formal verification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wy42qd0dl58icw3nklgns5zrr1inj8br40vwcpwiz1pkfg3gl0j"))))
+                "191hsznsmsjn8100n50qsh3ng8wgrnyfhr7qcnb8yskiwqp37pjh"))))
     (home-page "https://github.com/YosysHQ/abc/")
     (description "ABC is a program for sequential logic synthesis and
 formal verification.  This is the Yosyshq fork of ABC.")
@@ -221,7 +221,7 @@ For synthesis, the compiler generates netlists in the desired format.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.56")
+    (version "0.57")
     (source
      (origin
        (method git-fetch)
@@ -229,7 +229,7 @@ For synthesis, the compiler generates netlists in the desired format.")
              (url "https://github.com/YosysHQ/yosys")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1q74hm1z0m08r9amz982a9ylcwz2mbg3hqarprwj775wkrbv81h7"))
+        (base32 "0bix5zlv9zp9fxqpn9l9bdw65xrgih5w0csq1xkkhm2c7p3vqjbb"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
