@@ -1310,7 +1310,11 @@ application suites.")
               ;; Move HTML documentation to output 'doc'.
               (rename-file
                (string-append #$output "/share/doc")
-               (string-append #$output:doc "/share/doc")))))))
+               (string-append #$output:doc "/share/doc"))))
+          ;; Introspection test requires installed libraries
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check)))))
     (native-inputs
      (list docbook-xml-4.3
            docbook-xsl
