@@ -31,7 +31,7 @@
 (define-public clifm
   (package
     (name "clifm")
-    (version "1.24")
+    (version "1.26")
     (source
      (origin
        (method git-fetch)
@@ -40,7 +40,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q3irzpxxkbcd4pk0n3p8rl0vi489m9np74n40946djs6f662324"))))
+        (base32 "0mdh24qjx4cghghrl6sbp49a6kv8birxa5vxrsmj8ddnya2j1n3q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list (string-append "CC="
