@@ -1685,9 +1685,6 @@ menu specification.")
                    glib-networking
                    gvfs
                    hicolor-icon-theme
-                   libmatekbd
-                   libmateweather
-                   libmatemixer
                    marco
                    mate-session-manager
                    mate-settings-daemon
