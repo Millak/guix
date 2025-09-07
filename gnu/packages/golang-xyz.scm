@@ -14250,6 +14250,30 @@ the current user without cgo.  This library does that, enabling
 cross-compilation.")
     (license license:expat)))
 
+(define-public go-github-com-mitchellh-go-ps
+  (package
+    (name "go-github-com-mitchellh-go-ps")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mitchellh/go-ps")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ipcbz66x7q8xczi7cyfq06y7n7v0syvkp730vn9jrn7s8f5ag0z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mitchellh/go-ps"))
+    (home-page "https://github.com/mitchellh/go-ps")
+    (synopsis "Process List Library for Golang")
+    (description
+     "This package provides an API for finding and listing processes in a
+platform-agnostic way.")
+    (license license:expat)))
+
 (define-public go-github-com-mitchellh-go-wordwrap
   (package
     (name "go-github-com-mitchellh-go-wordwrap")
