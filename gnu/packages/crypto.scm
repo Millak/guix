@@ -1127,7 +1127,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
 (define-public libsecp256k1
   (package
     (name "libsecp256k1")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1136,7 +1136,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v9xa9vbr18c4kxflp718h5cilkgpwrfyrl65pjxzj6g598qs954"))
+                "1d0cnd2s607j642h64821mpklfvvzy70mkyl2dlsm5s9lgvndn2p"))
               (modules '((guix build utils)))
               (snippet
                ;; These files are pre-generated, the build system is able to
