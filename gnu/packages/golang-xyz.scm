@@ -23902,15 +23902,19 @@ tool."))))
     (inputs '())))
 
 (define-public misspell
-  (package
-    (inherit go-github-com-client9-misspell)
+  (package/inherit go-github-com-client9-misspell
     (name "misspell")
     (arguments
-     (list
-      #:install-source? #t
-      #:tests? #f
-      #:import-path "github.com/client9/misspell/cmd/misspell"
-      #:unpack-path "github.com/client9/misspell"))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-client9-misspell)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path "github.com/client9/misspell")
+        "github.com/client9/misspell/cmd/misspell")
+       ((#:unpack-path _ "") "github.com/client9/misspell")))
+    (native-inputs (package-propagated-inputs go-github-com-client9-misspell))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public gops
   (package/inherit go-github-com-google-gops
