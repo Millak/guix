@@ -78,6 +78,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages julia)
@@ -1759,16 +1760,16 @@ JSON for post-processing
 (define-public miller
   (package
     (name "miller")
-    (version "6.13.0")
+    (version "6.15.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/johnkerl/miller")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/johnkerl/miller")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w8ibmywsr9jsmmqrcvc0j7fx5vkdbwamizn4vim9xys807kmjsj"))))
+        (base32 "00k4gxlbdpnmy9r0qyfa72p7f29qbzzvxniilira3yj85k5rmrxg"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1788,17 +1789,15 @@ JSON for post-processing
            go-github-com-johnkerl-lumin
            go-github-com-kballard-go-shellquote
            go-github-com-klauspost-compress
+           go-github-com-kshedden-statmodel
            go-github-com-lestrrat-go-strftime
            go-github-com-mattn-go-isatty
-           ;; Optional, not packed in Guix
-           ;; go-github-com-nine-lives-later-go-windows-terminal-sequences
            go-github-com-pkg-profile
            go-github-com-stretchr-testify
            go-golang-org-x-sys
            go-golang-org-x-term
            go-golang-org-x-text
            python-wrapper
-           python-mkdocs-material
            ruby))
     (home-page "https://miller.readthedocs.io/")
     (synopsis "Text-formatted data processing tool")
