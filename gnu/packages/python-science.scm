@@ -5806,6 +5806,64 @@ compagnies.")
 abstractions to use in dvc and dvc-data.")
     (license license:asl2.0)))
 
+(define-public python-dvc-data
+  (package
+    (name "python-dvc-data")
+    (version "3.16.12")
+    (home-page "https://github.com/iterative/dvc-data")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dvc_data" version))
+              (sha256
+               (base32
+                "156iwdn7v5jhwbpwz92n28qiasgcbmcqv9vxg8xbvdfxzlzw0b7r"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-attrs
+           python-dictdiffer
+           python-diskcache
+           python-dvc-objects
+           python-fsspec
+           python-funcy-1.14
+           python-orjson
+           python-pygtrie
+           python-sqltrie
+           python-tqdm))
+    (native-inputs
+     (list python-click
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-mock
+           ;; python-pytest-servers is not packaged in Guix yet
+           python-setuptools
+           python-setuptools-scm
+           python-typer
+           python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      ;; TODO: package python-pytest-server with its transitive dependencies
+      #~(list "--ignore=tests/hashfile/test_db.py"
+              "--ignore=tests/hashfile/test_db_index.py"
+              "--ignore=tests/hashfile/test_obj.py"
+              "--ignore=tests/index/test_build.py"
+              "--ignore=tests/index/test_checkout.py"
+              "--ignore=tests/index/test_fs.py"
+              "--ignore=tests/index/test_index.py"
+              "--ignore=tests/index/test_storage.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              ;; setuptools cannot handle both license and license-files
+              (substitute* "pyproject.toml"
+                (("^license = .*") "license = {text = \"Apache-2.0\"}\n")
+                (("^license-files = .*") "")))))))
+    (synopsis "DVC's data management subsystem")
+    (description "Dvc data is DVC's data management subsystem.")
+    (license license:asl2.0)))
+
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
