@@ -1609,20 +1609,19 @@ of a Unix terminal to HTML code.")
 (define-public vale
   (package
     (name "vale")
-    (version "3.11.2")
+    (version "3.12.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/errata-ai/vale")
-             (commit (string-append "v" version))))
+              (url "https://github.com/errata-ai/vale")
+              (commit (string-append "v" version))))
        (sha256
-        (base32 "04xgya706ljnbb7kh3kip0p9z67hpw55p7vfa0bl1nnd0is4q07g"))
+        (base32 "1w6216ap8sds6279h39ksjv27hakzahjmzlvbnsl67lwvldbqvcg"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:embed-files #~(list ".*\\.gob")
       #:import-path "github.com/errata-ai/vale/cmd/vale"
