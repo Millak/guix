@@ -254,6 +254,45 @@ in typed Go slices.  Only one chunk of the Dstream is held in memory at one
 time.")
     (license license:bsd-3)))
 
+(define-public go-github-com-kshedden-statmodel
+  (package
+    (name "go-github-com-kshedden-statmodel")
+    (version "0.0.0-20210519035403-ee97d3e48df1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kshedden/statmodel")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v1p0gzkjakci7wbp6x9b4zgnh1qs1lpr6dfb663w868q9hx95vy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/kshedden/statmodel"
+      #:test-flags #~(list "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "duration/examples")
+                (delete-file-recursively "glm/examples")))))))
+    (propagated-inputs
+     (list go-github-com-kshedden-dstream
+           go-gonum-org-v1-gonum))
+    (home-page "https://github.com/kshedden/statmodel")
+    (synopsis "Statistical modeling in Golang")
+    (description
+     "This package implements a functionality for fitting statistical model.
+Additional Go packages include @code{glm} for Generalized Liner Models and
+@code{duration} for survival analysis.  All models can be fit with maximum (or
+quasi-maximum) likelihood estimation, with optional L1 (Lasso) or L2 (ridge)
+penalization.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-montanaflynn-stats
   (package
     (name "go-github-com-montanaflynn-stats")
