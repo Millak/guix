@@ -52541,25 +52541,35 @@ to them.
 
 @item @code{keybindings} (default: @code{%sway-default-keybindings})
 This field describes keybindings for the @emph{default} mode.  The value
-is an association list: keys are symbols and values are either strings
-or G-expressions.
+is an association list in which keys are symbols.  Values can either be:
+@itemize
+@item
+strings or G-expressions,
+@item
+a cons-cell of a string or G-expression and a list of options.  Options
+must be a string starting with ``input-device='' or strings among
+``no-warn'', ``whole-window'', ``border'', ``exclude-titlebar'',
+``release'', ``locked'', ``to-code'', ``inhibited'' and ``no-repeat''.
+@end itemize
 
 The following snippet launches the terminal when pressing @kbd{$mod+t}
 and @kbd{$mod+Shift+t} (assuming that a variable @code{$term} is
 defined):
 @lisp
 `(($mod+t . ,#~(string-append "exec " #$foot "/bin/foot"))
-  ($mod+Shift+t . "exec $term"))
+  ($mod+Shift+t . "exec $term")
+  ($mod+q "exec $term" . ("to-code"))) ;; passes the --to-code option.
 @end lisp
 
 @item @code{gestures} (default: @code{%sway-default-gestures})
-Similar to the previous field, but for finger-gestures.
+Similar to the previous field, but for finger-gestures.  Options must
+start with ``input-device='' or be among ``exact'' and ``no-warn''.
 
 The following snippet allows to navigate through workspaces by swiping
 right and left with three fingers:
 @lisp
 '((swipe:3:right . "workspace next_on_output")
-  (swipe:3:left  . "workspace prev_on_output"))
+  (swipe:3:left    "workspace prev_on_output" . ("exact")))
 @end lisp
 
 @item @code{packages} (default: @code{%sway-default-packages})
@@ -52805,7 +52815,8 @@ an executable file:
 
 @item @code{mouse-bindings} (default: @code{'()})
 This field accepts an associative list.  Keys are integers describing
-mouse events.  Values can either be strings or G-expressions.
+mouse events.  Values are similar to that of key-bindings (except that
+``to-code'' is not a valid option for mouse-bindings).
 
 The module @code{(gnu home services sway)} exports constants
 @code{%ev-code-mouse-left}, @code{%ev-code-mouse-right} and
@@ -52841,9 +52852,9 @@ snippet defines the resize mode of the default Sway configuration:
 Name of the mode.  This field accepts strings.
 
 @item  @code{keybindings} (default: @code{'()})
-This field describes keybindings.  The value is an association list:
-keys are symbols and values are either strings or G-expressions, as
-above.
+This field describes keybindings.  The value is an association list.  As
+above, keys are symbols and values are either strings, G-expressions or
+cons-cells.
 
 @item @code{mouse-bindings} (default: @code{'()})
 Ditto, but keys are mouse events (integers).  Constants
