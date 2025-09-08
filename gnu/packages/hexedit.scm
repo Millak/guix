@@ -101,19 +101,20 @@ the file and search through it.")
 (define-public fq
   (package
     (name "fq")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/wader/fq")
-             (commit (string-append "v" version))))
+              (url "https://github.com/wader/fq")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c90z44z5i62xzx6h4xwk8lzkx0gb1cgs25rb5rrcmc7diwm697z"))))
+        (base32 "0adi7d028f3nblvclq8qfnnzp7b52gc8x8zjb1j93x4alj0sw1gc"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:import-path "github.com/wader/fq"))
     (native-inputs
      (list go-github-com-burntsushi-toml
