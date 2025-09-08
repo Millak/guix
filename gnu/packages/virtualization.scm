@@ -1629,14 +1629,14 @@ It started as a side project of LXC but can be used by any run-time.")
 (define-public libvirt
   (package
     (name "libvirt")
-    (version "11.0.0")
+    (version "11.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/libvirt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0vl0lgzw3x4fkghhw7nfxk8fxj3bbn9f17y0hg7miba283zpd881"))
+        (base32 "08r4sxchhh639a8h346795971zz615j86v9z9vxf5q9q0pbbjqrb"))
        (patches (search-patches "libvirt-add-install-prefix.patch"
                                 "libvirt-respect-modules-path.patch"))))
     (build-system meson-build-system)
@@ -1793,14 +1793,14 @@ three libraries:
 (define-public python-libvirt
   (package
     (name "python-libvirt")
-    (version "11.0.0")
+    (version "11.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/python/libvirt-python-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1y26104zgylz0v9d6xc0bm6m13is94shn9dlhjycaf347jjjbs6f"))))
+        (base32 "08xcnzmahmb72rv9cw8dxwnjmrdgmm5j4bbxpwsnhll9qsgdiak9"))))
     (build-system pyproject-build-system)
     (inputs
      (list libvirt))
