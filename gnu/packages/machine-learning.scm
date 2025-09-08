@@ -2452,18 +2452,24 @@ Neighbor Embedding (t-SNE), a popular dimensionality-reduction algorithm for
 visualizing high-dimensional data sets.")
     (license license:bsd-3)))
 
+;; XXX: Potentially it is an abandonware, no releases or any updates since
+;; 2021, consider to remove when become incompatible with propagated inputs.
 (define-public python-scikit-rebate
   (package
     (name "python-scikit-rebate")
     (version "0.62")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "skrebate" version))
-              (sha256
-               (base32
-                "0n55ghvnv7rxqa5agq6a4892ad0ghha165b0g4ghwr9gqm6ss3dj"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;no tests on PyPI and no tags in repo
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "skrebate" version))
+       (sha256
+        (base32 "0n55ghvnv7rxqa5agq6a4892ad0ghha165b0g4ghwr9gqm6ss3dj"))))
+    (build-system pyproject-build-system)
+    ;; There are no tests on PyPI, tests in git repo require an old release of
+    ;; python-scikit-learn
+    (arguments '(#:tests? #f))
+    (native-inputs
+     (list python-setuptools-next))
     (propagated-inputs
      (list python-numpy python-scipy python-scikit-learn python-joblib))
     (home-page "https://epistasislab.github.io/scikit-rebate/")
