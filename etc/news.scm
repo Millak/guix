@@ -40,6 +40,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "61081db5d11dca328c8b2c8d1d5d4ef9ba662059")
+        (title
+         (en "Linux-libre updated to 6.16"))
+        (body
+         (en "The default linux-libre package has been updated to the 6.16
+release series.  The 6.15 kernel series will be removed soon because it is no
+longer supported upstream.")))
+
  (entry (commit "6e57701013a69a20df6983f5e05aa3598073282f")
         (title
          (en "Linux-libre 6.16 now available")
