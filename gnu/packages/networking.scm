@@ -5225,21 +5225,24 @@ recording packets that are dropped by the kernel.  It provides the commands
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/openrdap/rdap")
-             (commit (string-append "v" version))))
+              (url "https://github.com/openrdap/rdap")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1w3kwxh3hvkp5x1m6i4ijydmpfpibgf9jkviqrvpcadh335989hn"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
+      #:import-path "github.com/openrdap/rdap/cmd/rdap"
       #:unpack-path "github.com/openrdap/rdap"
-      #:import-path "github.com/openrdap/rdap/cmd/rdap"))
-    (propagated-inputs (list go-golang-org-x-crypto
-                             go-github-com-mitchellh-go-homedir
-                             go-github-com-jarcoal-httpmock
-                             go-github-com-davecgh-go-spew
-                             go-github-com-alecthomas-kingpin-v2))
+      #:test-subdirs #~(list "../../...")))     ;test whole libary, starting from import-path
+    (native-inputs
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-davecgh-go-spew
+           go-github-com-jarcoal-httpmock
+           go-github-com-mitchellh-go-homedir
+           go-golang-org-x-crypto))
     (home-page "https://www.openrdap.org/")
     (synopsis "Command line RDAP client")
     (description
