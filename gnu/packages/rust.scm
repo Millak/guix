@@ -11,7 +11,7 @@
 ;;; Copyright © 2020, 2021 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
-;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
@@ -1373,7 +1373,8 @@ safety and thread safety guarantees.")
 
 (define-public rust-1.86
   (let ((base-rust
-         (rust-bootstrapped-package rust-1.85 "1.86.0"
+         (rust-bootstrapped-package
+          rust-1.85 "1.86.0"
           "107d3vbmwhn4b71gzr1kv31jwwyld7dxj9yj8jh00ygndll2fah2")))
     (package
       (inherit base-rust)
@@ -1446,6 +1447,11 @@ safety and thread safety guarantees.")
           `(modify-phases ,phases
              (replace 'build
                ;; Just building stage 1 no longer builds cargo.
+
+               ;; TODO: Try reverting to use "./x.py install rustc std cargo"
+               ;; when Rust 1.91 comes out, which should no longer rebuild
+               ;; things unnecessarily. If this works, the 'post-install'
+               ;; phase carried from earlier should no longer be necessary.
                (lambda* (#:key parallel-build? #:allow-other-keys)
                  (let ((job-spec (string-append
                                    "-j" (if parallel-build?
@@ -1457,7 +1463,8 @@ safety and thread safety guarantees.")
 
 (define-public rust-1.88
   (let ((base-rust
-         (rust-bootstrapped-package rust-1.87 "1.88.0"
+         (rust-bootstrapped-package
+          rust-1.87 "1.88.0"
           "1gngrxjfqiyybyamzn8s4rfbhk7jss1vrmnijg8y72l46i2595rs")))
     (package
       (inherit base-rust)
@@ -1622,69 +1629,20 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.85))
+  (let ((base-rust rust-1.90))
     (package
       (inherit base-rust)
       (properties (append
                     (alist-delete 'hidden? (package-properties base-rust))
                     ;; Keep in sync with the llvm used to build rust.
-                    (clang-compiler-cpu-architectures "19")))
+                    (clang-compiler-cpu-architectures "21")))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
-      (source
-       (origin
-         (inherit (package-source base-rust))
-         (snippet
-          '(begin
-             (for-each delete-file-recursively
-                       '("src/llvm-project"
-                         "vendor/jemalloc-sys-0.3.2/jemalloc"
-                         "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
-                         "vendor/openssl-src-111.17.0+1.1.1m/openssl"
-                         "vendor/openssl-src-111.28.2+1.1.1w/openssl"
-                         "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
-                         "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"
-                         ;; These are referenced by the cargo output
-                         ;; so we unbundle them.
-                         "vendor/curl-sys-0.4.52+curl-7.81.0/curl"
-                         "vendor/curl-sys-0.4.74+curl-8.9.0/curl"
-                         "vendor/curl-sys-0.4.78+curl-8.11.0/curl"
-                         "vendor/libffi-sys-2.3.0/libffi"
-                         "vendor/libz-sys-1.1.3/src/zlib"
-                         "vendor/libz-sys-1.1.20/src/zlib"))
-             ;; Use the packaged nghttp2
-             (for-each
-              (lambda (ver)
-                (let ((vendored-dir (format #f "vendor/libnghttp2-sys-~a/nghttp2" ver))
-                      (build-rs (format #f "vendor/libnghttp2-sys-~a/build.rs" ver)))
-                  (delete-file-recursively vendored-dir)
-                  (delete-file build-rs)
-                  (with-output-to-file build-rs
-                    (lambda _
-                      (format #t "fn main() {~@
-                         println!(\"cargo:rustc-link-lib=nghttp2\");~@
-                         }~%")))))
-              '("0.1.10+1.61.0"
-                "0.1.7+1.45.0"))
-             ;; Remove vendored dynamically linked libraries.
-             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
-             ;; Also remove the bundled (mostly Windows) libraries.
-             (for-each delete-file
-                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
-             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
-             (for-each
-              (lambda (ver)
-                (let ((f (format #f "vendor/tempfile-~a/Cargo.toml" ver)))
-                  (substitute* f
-                    (("features = \\[\"fs\"" all)
-                     (string-append all ", \"use-libc\"")))))
-              '("3.3.0"
-                "3.4.0"
-                "3.10.1"
-                "3.14.0"))))))
       (arguments
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
-           (package-arguments base-rust))
+                                  (package-arguments base-rust))
+         ((#:modules modules)
+          (cons '(srfi srfi-26) modules))
          ((#:phases phases)
           `(modify-phases ,phases
              (add-after 'unpack 'relax-gdb-auto-load-safe-path
@@ -1733,15 +1691,24 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                         '("fn case")))
                    (substitute* "git_shallow.rs"
                      ,@(make-ignore-test-list
-                        '("fn gitoxide_clones_git_dependency_with_shallow_protocol_and_git2_is_used_for_followup_fetches"
-                          "fn gitoxide_clones_registry_with_shallow_protocol_and_aborts_and_updates_again"
+                        '("fn gitoxide_clones_registry_with_shallow_protocol_and_aborts_and_updates_again"
                           "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_fetch_maintains_shallowness"
                           "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_with_git2_fetch"
                           "fn gitoxide_clones_registry_without_shallow_protocol_and_follow_up_fetch_uses_shallowness"
-                          "fn gitoxide_shallow_clone_followed_by_non_shallow_update"
                           "fn gitoxide_clones_shallow_two_revs_same_deps"
+                          "fn gitoxide_fetch_complete_index_then_shallow"
+                          "fn gitoxide_fetch_shallow_dep_branch_and_rev"
+                          "fn gitoxide_fetch_shallow_dep_branch_to_rev"
+                          "fn gitoxide_fetch_shallow_dep_then_git2_fetch_complete"
+                          "fn gitoxide_fetch_shallow_dep_then_gitoxide_fetch_complete"
+                          "fn gitoxide_fetch_shallow_dep_two_revs"
+                          "fn gitoxide_fetch_shallow_index_then_abort_and_update"
+                          "fn gitoxide_fetch_shallow_index_then_git2_fetch_complete"
+                          "fn gitoxide_fetch_shallow_index_then_preserve_shallow"
                           "fn gitoxide_git_dependencies_switch_from_branch_to_rev"
-                          "fn shallow_deps_work_with_revisions_and_branches_mixed_on_same_dependency")))
+                          "fn gitoxide_shallow_clone_followed_by_non_shallow_update"
+                          "fn shallow_deps_work_with_revisions_and_branches_mixed_on_same_dependency"
+                          "fn gitoxide_clones_git_dependency_with_shallow_protocol_and_git2_is_used_for_followup_fetches")))
                    (substitute* "install.rs"
                      ,@(make-ignore-test-list
                         '("fn failed_install_retains_temp_directory")))
@@ -1867,7 +1834,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                      ;; The three tests which are known to fail upstream on QEMU
                      ;; emulation on aarch64 and riscv64 also fail on x86_64 in
                      ;; Guix's build system.  Skip them on all builds.
-                     (substitute* "sys/pal/unix/process/process_common/tests.rs"
+                     (substitute* "sys/process/unix/common/tests.rs"
                        ;; We can't use make-ignore-test-list because we will get
                        ;; build errors due to the double [ignore] block.
                        (("target_arch = \"arm\"" arm)
@@ -1900,9 +1867,33 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                (lambda* (#:key inputs #:allow-other-keys)
                  (mkdir-p "src/llvm-project/compiler-rt")
                  (copy-recursively
-                   (string-append (assoc-ref inputs "clang-source")
-                                  "/compiler-rt")
-                   "src/llvm-project/compiler-rt")))
+                  (string-append (assoc-ref inputs "clang-source")
+                                 "/compiler-rt")
+                  "src/llvm-project/compiler-rt")))
+             (add-after 'unpack 'unpack-libunwind
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (mkdir-p "src/llvm-project/libunwind")
+                 (copy-recursively
+                  (string-append (assoc-ref inputs "clang-source")
+                                 "/libunwind")
+                  "src/llvm-project/libunwind")))
+             (replace 'patch-cargo-checksums
+               (lambda _
+                 (substitute*
+                     (append '("Cargo.lock"
+                               "src/bootstrap/Cargo.lock")
+                             (find-files "compiler" "Cargo.lock")
+                             (find-files "library" "Cargo.lock")
+                             (find-files "src/doc" "Cargo.lock")
+                             (remove
+                              ;; Don't mess with the lock files in the Cargo
+                              ;; testsuite; it messes up the tests.
+                              (cut string-contains <>
+                                   "cargo/tests/testsuite")
+                              (find-files "src/tools" "Cargo.lock")))
+                   (("(checksum = )\".*\"" all name)
+                    (string-append name "\"" ,%cargo-reference-hash "\"")))
+                 (generate-all-checksums "vendor")))
              (add-after 'configure 'enable-profiling
                (lambda _
                  (substitute* "config.toml"
@@ -2014,12 +2005,9 @@ exec -a \"$0\" \"~a\" \"$@\""
                                               "/lib/rustlib/src/rust/library")
                                (string-append bin "/.rust-analyzer-real"))))
                    (chmod (string-append bin "/rust-analyzer") #o755))))))))
-      (inputs
-       (modify-inputs (package-inputs base-rust)
-                      (prepend curl libffi `(,nghttp2 "lib") zlib)))
       (native-inputs (cons*
                       ;; Keep in sync with the llvm used to build rust.
-                      `("clang-source" ,(package-source clang-runtime-19))
+                      `("clang-source" ,(package-source clang-runtime-21))
                       ;; Add test inputs.
                       `("gdb" ,gdb/pinned)
                       `("procps" ,procps)
