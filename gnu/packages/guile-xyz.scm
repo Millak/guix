@@ -6099,20 +6099,20 @@ not provide a way to change the headers on its own.")
     (license license:gpl3+)))
 
 (define-public guile-lens
-  (let ((commit "14b15d07255f9d3f55d40a3b750d13c9ee3a154f")
-        (revision "0"))
+  (let ((commit "722dcf79fc472ca5fdd60a2519105be85c803589")
+        (revision "1"))
     (package
       (name "guile-lens")
       (version (git-version "0.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://gitlab.com/a-sassmannshausen/guile-lens.git")
-                      (commit commit)))
+                       (url "https://gitlab.com/a-sassmannshausen/guile-lens.git")
+                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0w8jzqyla56yrgj7acsgd4nspyir6zgp3vgxid4xmwhg9wmf1ida"))))
+                  "1ysbcsnybs0xkap5cspmn6z0s9rj9x9qhmlkcwr5hmajl4f45hj9"))))
       (build-system gnu-build-system)
       (arguments
        '(#:phases
@@ -6120,10 +6120,6 @@ not provide a way to change the headers on its own.")
            (add-after 'unpack 'run-hall
              (lambda _
                (setenv "HOME" "/tmp")   ; for ~/.hall
-               ;; Patch hall.scm.
-               (substitute* "hall.scm"
-                 (("\\(copyright '\\(2018\\)\\)")
-                  "(email \"alex@pompo.co\") (copyright (2018))"))
                ;; Invoke hall.
                (invoke "hall" "build-system" "-x"))))))
       (native-inputs
