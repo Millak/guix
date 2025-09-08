@@ -4934,16 +4934,16 @@ daemon.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.9.5")
+    (version "1.9.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/slackhq/nebula")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/slackhq/nebula")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1slknnrdnf5a2ask11ql3gwnnl6c5359bp8rd712aq30lxa2d4r0"))
+                "0mcyakwr0r5lw6qgzib54v73a1j6ccaxrz3jf6dsh8daqwp5nmcj"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
