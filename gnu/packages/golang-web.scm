@@ -13054,17 +13054,17 @@ docs}.")
 (define-public go-k8s-io-kube-openapi
   (package
     (name "go-k8s-io-kube-openapi")
-    (version "0.0.0-20250318190949-c8a335a9a2ff")
+    (version "0.0.0-20250905212525-66792eed8611")
     ;; XXX: Unbundle third_party in pkg.
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/kubernetes/kube-openapi")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/kubernetes/kube-openapi")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02l2rp1fgraincay5xj9ar3l5v60svq07i6b2hamn74i3xkm3lis"))
+        (base32 "1979alrrlym968jxdcxc1lpm3b13bnkyayg042gk6xn0kb97mqma"))
        ;; XXX: test/integration contains submodule with it's own go.mod.
        (modules '((guix build utils)))
        (snippet
@@ -13081,15 +13081,16 @@ docs}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
-      #:import-path "k8s.io/kube-openapi"))
+      #:import-path "k8s.io/kube-openapi"
+      ;; Tests are not copatible with Go 1.24+.
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
-     (list go-github-com-getkin-kin-openapi
-           go-sigs-k8s-io-randfill
-           go-github-com-onsi-ginkgo-v2
+     (list go-github-com-onsi-ginkgo-v2
            go-github-com-onsi-gomega
-           go-github-com-stretchr-testify))
+           go-github-com-stretchr-testify
+           ;; go-golang-org-x-tools-go-packages-packagestest
+           go-sigs-k8s-io-yaml))
     (propagated-inputs
      (list go-github-com-emicklei-go-restful-v3
            go-github-com-go-openapi-jsonreference
@@ -13100,14 +13101,17 @@ docs}.")
            go-github-com-munnerz-goautoneg
            go-github-com-nytimes-gziphandler
            go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-go-yaml-in-yaml-v2
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-tools
            go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3
            go-k8s-io-gengo-v2
            go-k8s-io-klog-v2
            go-k8s-io-utils
            go-sigs-k8s-io-json
-           go-sigs-k8s-io-structured-merge-diff-v4))
+           go-sigs-k8s-io-randfill
+           go-sigs-k8s-io-structured-merge-diff-v6))
     (home-page "https://github.com/kubernetes/kube-openapi")
     (synopsis "Kubernetes OpenAPI spec generation & serving")
     (description
