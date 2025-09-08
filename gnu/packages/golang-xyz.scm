@@ -8691,24 +8691,24 @@ the resource usage and performance characteristics of running containers.")
 (define-public go-github-com-google-gnostic-models
   (package
     (name "go-github-com-google-gnostic-models")
-    (version "0.6.9")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/google/gnostic-models")
-             (commit (string-append "v" version))))
+              (url "https://github.com/google/gnostic-models")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z170sw1dlspxwbgpzffry5xm8mmcq7kpkrn0zkjzwdnmjhmmdqx"))))
+        (base32 "1xnqzkb25m3q425ld386mb5d34p0wfqnsjy7b5ss2r1mqbr38k6i"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/google/gnostic-models"
-      #:skip-build? #t))
+      #:skip-build? #t
+      #:import-path "github.com/google/gnostic-models"))
     (propagated-inputs
-     (list go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3))
+     (list go-go-yaml-in-yaml-v3
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/google/gnostic-models")
     (synopsis "Protocol Buffer models for Gnostic")
     (description
