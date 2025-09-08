@@ -13542,17 +13542,17 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tomnomnom/gron")
-             (commit (string-append "v" version))))
+              (url "https://github.com/tomnomnom/gron")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
-      #:import-path "github.com/tomnomnom/gron"))
+      #:import-path "github.com/tomnomnom/gron"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-fatih-color
            go-github-com-mattn-go-colorable
