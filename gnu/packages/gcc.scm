@@ -523,8 +523,7 @@ Go.  It also includes runtime support libraries for these languages.")
                                "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
                                (getenv "CPLUS_INCLUDE_PATH")))))))))))
     (supported-systems (fold delete %supported-systems
-                             '("riscv64-linux" "powerpc64le-linux"
-                               "x86_64-gnu")))
+                             '("riscv64-linux" "x86_64-gnu")))
     (inputs
      (modify-inputs (package-inputs gcc-base)
        (prepend isl-0.11 cloog)))))
