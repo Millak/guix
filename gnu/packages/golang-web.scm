@@ -13508,38 +13508,6 @@ go-github-com-tdewolff-minify-v2 source.")))
 the TLS @acronym{SNI, Server Name Indication} of the TLS handshake.  It
 carries no encryption keys and cannot decode the traffic that it proxies.")))
 
-(define-public gron
-  (package
-    (name "gron")
-    (version "0.7.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/tomnomnom/gron")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      #:import-path "github.com/tomnomnom/gron"
-      #:test-flags #~(list "-vet=off")))
-    (native-inputs
-     (list go-github-com-fatih-color
-           go-github-com-mattn-go-colorable
-           go-github-com-nwidger-jsoncolor
-           go-github-com-pkg-errors))
-    (home-page "https://github.com/tomnomnom/gron")
-    (synopsis "Transform JSON to make it easier to grep")
-    (description
-     "This package transforms JSON into discrete assignments to make it easier
-to use line-based tools such as grep to search for what you want and see the
-absolute \"path\" to it.")
-    (license license:expat)))
-
 (define-public swag
   (package/inherit go-github-com-swaggo-swag
     (name "swag")

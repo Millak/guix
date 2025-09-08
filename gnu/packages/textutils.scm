@@ -13,18 +13,20 @@
 ;;; Copyright © 2017,2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Meiyo Peng <meiyo.peng@gmail.com>
 ;;; Copyright © 2019 Yoshinori Arai <kumagusu08@gmail.com>
 ;;; Copyright © 2019 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
+;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 M <matf@disr.it>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
@@ -1433,6 +1435,38 @@ formats (e.g. Bibtex, RIS, etc.) using a common XML intermediate.")
     (description
      "GoAWK is a POSIX-compatible version of AWK that also has a CSV mode for
 reading and writing CSV and TSV files.")
+    (license license:expat)))
+
+(define-public gron
+  (package
+    (name "gron")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tomnomnom/gron")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/tomnomnom/gron"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-colorable
+           go-github-com-nwidger-jsoncolor
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/tomnomnom/gron")
+    (synopsis "Transform JSON to make it easier to grep")
+    (description
+     "This package transforms JSON into discrete assignments to make it easier
+to use line-based tools such as grep to search for what you want and see the
+absolute \"path\" to it.")
     (license license:expat)))
 
 (define-public opencc
