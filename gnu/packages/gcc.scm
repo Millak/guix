@@ -494,17 +494,19 @@ Go.  It also includes runtime support libraries for these languages.")
      (let ((parent (package
                      (inherit gcc-base)
                      (version (package-version this-package)))))
-       (substitute-keyword-arguments (package-arguments parent)
-         ((#:modules modules %default-gnu-modules)
-          `((srfi srfi-1)
-            ,@modules))
-         ((#:configure-flags flags '())
-          `(cons "CXX=g++ -std=c++03" ,flags))
-         ;; For native builds of some GCC versions the C++ include path needs to
-         ;; be adjusted so it does not interfere with GCC's own build processes.
-         ((#:phases phases)
-          (if (%current-target-system)
-              phases
+       (if (%current-target-system)
+           (substitute-keyword-arguments (package-arguments parent)
+            ((#:configure-flags flags '())
+             `(cons "CXX=g++ -std=c++03" ,flags)))
+           (substitute-keyword-arguments (package-arguments parent)
+             ((#:modules modules %default-gnu-modules)
+              `((srfi srfi-1)
+                ,@modules))
+             ((#:configure-flags flags '())
+              `(cons "CXX=g++ -std=c++03" ,flags))
+             ;; For native builds of some GCC versions the C++ include path needs to
+             ;; be adjusted so it does not interfere with GCC's own build processes.
+             ((#:phases phases)
               `(modify-phases ,phases
                  (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
                    (lambda* (#:key inputs #:allow-other-keys)
