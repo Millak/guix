@@ -15368,7 +15368,7 @@ NSQ protocol @url{https://nsq.io/}.")
 (define-public go-github-com-nwidger-jsoncolor
   (package
     (name "go-github-com-nwidger-jsoncolor")
-    (version "0.3.0")
+    (version "0.3.2")
     (home-page "https://github.com/nwidger/jsoncolor")
     (source
      (origin
@@ -15378,7 +15378,7 @@ NSQ protocol @url{https://nsq.io/}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13rd146pnj7qm70r1333gyd1f61x40nafxlpvdxlci9h7mx8c5p8"))))
+        (base32 "0rxb6r40c9jjbvzwfnwc3la53acnizkdsgca8p512s4by180zg49"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/nwidger/jsoncolor"))
