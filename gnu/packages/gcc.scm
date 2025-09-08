@@ -598,8 +598,7 @@ Go.  It also includes runtime support libraries for these languages.")
      (modify-inputs (package-inputs gcc-base)
        (prepend isl-0.11 cloog)))
     (supported-systems (fold delete %supported-systems
-                             '("riscv64-linux" "powerpc64le-linux"
-                               "x86_64-gnu")))))
+                             '("riscv64-linux" "x86_64-gnu")))))
 
 (define gcc-canadian-cross-objdump-snippet
   ;; Fix 'libcc1/configure' error when cross-compiling GCC.  Without that,
