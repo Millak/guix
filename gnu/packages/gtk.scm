@@ -1140,7 +1140,10 @@ application suites.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0flsnh3f0l9v3y2hmnxz1h15nw1l12ixmiwcpiy1ywplrlgq4j00"))))
+                "0flsnh3f0l9v3y2hmnxz1h15nw1l12ixmiwcpiy1ywplrlgq4j00"))
+              (patches (search-patches
+                        "gtk3-respect-GUIX_GTK3_PATH.patch"
+                        "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments gtk+)
        ((#:phases phases)
