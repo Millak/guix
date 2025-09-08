@@ -23321,6 +23321,61 @@ dependencies.")
 XML, Apple Binary, OpenStep, and GNUStep) from/to arbitrary Go types.")
     (license license:giftware)))
 
+(define-public go-k8s-io-apimachinery
+  (package
+    (name "go-k8s-io-apimachinery")
+    (version "0.34.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/apimachinery")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mdmw951k9a2v817c0xxlazvz2500lw80mh53xjwspss0yx9b8fb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "k8s.io/apimachinery"
+      ;; TODO: Check why some tests fails in other subdirectories.
+      #:test-subdirs #~(list "pkg/test/...")))
+    (native-inputs
+     (list go-github-com-armon-go-socks5
+           go-github-com-stretchr-testify
+           go-golang-org-x-time))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-fxamacker-cbor-v2
+           go-github-com-gogo-protobuf
+           go-github-com-google-gnostic-models
+           go-github-com-google-go-cmp
+           go-github-com-google-uuid
+           go-github-com-moby-spdystream
+           go-github-com-mxk-go-flowrate
+           go-github-com-pmezard-go-difflib
+           go-github-com-spf13-pflag
+           go-golang-org-x-net
+           go-gopkg-in-evanphx-json-patch-v4
+           go-gopkg-in-inf-v0
+           go-k8s-io-klog-v2
+           go-k8s-io-kube-openapi
+           go-k8s-io-utils
+           go-sigs-k8s-io-json
+           go-sigs-k8s-io-randfill
+           go-sigs-k8s-io-structured-merge-diff-v6
+           go-sigs-k8s-io-yaml))
+    (home-page "https://k8s.io/apimachinery")
+    (synopsis "Kubernetes and Kubernetes-like API utilities")
+    (description
+     "This package provides scheme, typing, encoding, decoding, and conversion
+functions for Kubernetes and Kubernetes-like API objects.  It is a shared
+dependency for servers and clients to work with Kubernetes API infrastructure
+without direct type dependencies. Its first consumers are
+@code{k8s.io/kubernetes}, @code{k8s.io/client-go}, and
+@code{k8s.io/apiserver}.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-gengo-v2
   (package
     (name "go-k8s-io-gengo-v2")
