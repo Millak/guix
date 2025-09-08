@@ -26,7 +26,8 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages golang-build))
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-compression))
 
 ;;; Commentary:
 ;;;
@@ -215,6 +216,43 @@ and GCC’s decimal extension.")
 flow into higher precision types from the @code{math.big} library.")
     ;; It's in README, see <https://github.com/JohnCGriffin/overflow/pull/5>.
     (license license:expat)))
+
+(define-public go-github-com-kshedden-dstream
+  (package
+    (name "go-github-com-kshedden-dstream")
+    (version "0.0.0-20190512025041-c4c410631beb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kshedden/dstream")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y9h5izl6s74kh7wlikagfl0mvsgmhn9m5fch3zpchjnx9m8307l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/kshedden/dstream"))
+    (propagated-inputs
+     (list go-github-com-golang-snappy
+           go-gonum-org-v1-gonum))
+    (home-page "https://github.com/kshedden/dstream")
+    (synopsis "Process data streams in Golang")
+    (description
+     "Dstream is a package for manipulating streams of typed, multivariate
+data in Go.  A Dstream is a dataframe-like container that holds a rectangular
+array of data in which the columns are variables and the rows are cases or
+observations.
+
+Dstream is designed to handle large datasets, where it is not possible to load
+all data for all variables into memory at once.  To achieve this, Dstream
+utilizes a chunked, column-based storage format.  A chunk contains the data
+for a contiguous block of rows.  The data are stored by variable (column-wise)
+in typed Go slices.  Only one chunk of the Dstream is held in memory at one
+time.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-montanaflynn-stats
   (package
