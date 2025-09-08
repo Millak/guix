@@ -682,8 +682,7 @@ Go.  It also includes runtime support libraries for these languages.")
        (prepend ;; GCC5 needs <isl/band.h> which is removed in later versions.
                 isl-0.18)))
     (supported-systems (fold delete %supported-systems
-                             '("riscv64-linux" "powerpc64le-linux"
-                               "x86_64-gnu")))))
+                             '("riscv64-linux" "x86_64-gnu")))))
 
 (define-public gcc-6
   (package
