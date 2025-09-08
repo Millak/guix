@@ -614,22 +614,37 @@ Python program.")
       (license license:bsd-2))))
 
 (define-public python-myhdl
-  (package
-    (name "python-myhdl")
-    (version "0.11.51")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "myhdl" version))
-        (sha256
+  (let ((commit "7dc29c242cd33cb835c336a81ffc3a461eaa92f4")
+        (revision "0"))
+    (package
+      (name "python-myhdl")
+      (version (git-version "0.11" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/myhdl/myhdl/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
           (base32
-            "0b360smk2m60vhxdi837hz75m0pnms477wkn9gh6m4v3nih1v4cx"))))
-    (build-system python-build-system)
-    (home-page "http://www.myhdl.org/")
-    (synopsis "Python as a Hardware Description Language")
-    (description "This package provides a library to turn Python into
+           "1b91yvr0ksrw3bx61i7914caf8pyks9c242kwmj4l12zjd06mp56"))))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "make" "iverilog" "core")))))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list iverilog python-setuptools-next python-pytest))
+      (home-page "http://www.myhdl.org/")
+      (synopsis "Python as a Hardware Description Language")
+      (description "This package provides a library to turn Python into
 a hardware description and verification language.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public python-vunit
   (package
