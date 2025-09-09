@@ -40,7 +40,7 @@
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2022-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
@@ -359,7 +359,7 @@ source code editors and IDEs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mrtazz/checkmake")
+             (url "https://github.com/checkmake/checkmake")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -388,7 +388,7 @@ source code editors and IDEs.")
            go-github-com-olekukonko-tablewriter-0.0.5
            go-github-com-stretchr-testify
            go-md2man))
-    (home-page "https://github.com/mrtazz/checkmake")
+    (home-page "https://github.com/checkmake/checkmake")
     (synopsis "Linter and analyzer for @file{Makefile}")
     (description
      "@samp{checkmake} is an experimental tool for linting and checking
