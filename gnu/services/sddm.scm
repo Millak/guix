@@ -235,6 +235,9 @@ Relogin="              (if (sddm-configuration-relogin? config)
       (arguments (list "sha512" "shadow" "try_first_pass")))))
    (session
     (list
+     (pam-entry
+      (control "required")
+      (module "pam_env.so"))     ;load /etc/environment in new sessions
      ;; lfs has a required pam_limits.so
      ;; should be factored out into system-session
      (pam-entry
