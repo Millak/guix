@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015-2019, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2019, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -4128,8 +4128,6 @@ linux/libcurl_wrapper.h"
      (modify-inputs (package-native-inputs qtwebengine-5)
        (delete "python2" "python2-six")
        (replace "node" node-lts)
-       ;; Try with a newer gperf after 6.8.2.
-       (replace "gperf" gperf-3.1)
        (append clang-20
                lld-as-ld-wrapper-18
                python-wrapper
