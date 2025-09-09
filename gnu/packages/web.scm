@@ -142,6 +142,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
@@ -177,6 +178,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages node-xyz)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openldap)
@@ -247,6 +249,114 @@
   #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:select (delete-duplicates)))
+
+(define-public anubis-ai-firewall
+  (package
+    ;; Name clashes with "anubis" in (gnu packages mail).
+    (name "anubis-ai-firewall")
+    (version "1.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/TecharoHQ/anubis")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (patches
+        (search-patches "anubis-use-the-browser-native-web-crypto-api.patch"))
+       (sha256
+        (base32 "1vaj78727ndzsxydhdgwr9w0p9ykg73nkrbbiijh5l7lvabh3ric"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Enable some of them
+      #:tests? #f
+      ;; TODO: some JS work is required as app.js could not be found
+      #:install-source? #f
+      #:embed-files #~(list ".version"
+                            ".*\\.tmpl"
+                            ".*\\.js"
+                            ".*\\.jsx"
+                            ".*\\.mjs"
+                            ".*\\.sh"
+                            ".*\\.css"
+                            "nodes"
+                            "text"
+                            "children")
+      #:import-path "github.com/TecharoHQ/anubis/cmd/anubis"
+      #:unpack-path "github.com/TecharoHQ/anubis"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-usr-bin-env-shebangs
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* (find-files "." "\\.sh$")
+                  (("#!/usr/bin/env bash")
+                   (string-append "#!" (which "bash")))))))
+          (add-after 'patch-usr-bin-env-shebangs 'generate-code
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (for-each make-file-writable
+                          (find-files "." "(_templ\\.go|_string\\.go)$"))
+                (invoke "templ" "generate")
+                (with-directory-excursion "internal/dnsbl"
+                  (invoke "stringer" "-type=DroneBLResponse")))))
+          (add-after 'generate-code 'make-assets
+            (lambda* (#:key inputs unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* "xess/xess.go"
+                  (("if anubis.Version != \"devel\" \\{")
+                   "if false {"))
+                ;; Let esbuild resolve 'preact' and 'preact/hooks'.
+                (setenv "NODE_PATH"
+                        (string-append (assoc-ref inputs "node-preact")
+                                       "/lib/node_modules"))
+                (invoke "./web/build.sh")
+                (invoke "./lib/challenge/preact/build.sh")))))))
+    (native-inputs
+     (list brotli
+           esbuild
+           go-github-com-a-h-templ
+           go-github-com-cespare-xxhash-v2
+           go-github-com-facebookgo-flagenv
+           go-github-com-gaissmai-bart
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-google-cel-go
+           go-github-com-google-uuid
+           go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
+           go-github-com-grpc-ecosystem-go-grpc-middleware-v2
+           go-github-com-joho-godotenv
+           go-github-com-lum8rjack-go-ja4h
+           go-github-com-nicksnyder-go-i18n-v2
+           go-github-com-prometheus-client-golang
+           go-github-com-redis-go-redis-v9
+           go-github-com-sebest-xff
+           go-github-com-shirou-gopsutil-v4
+           go-github-com-techarohq-thoth-proto
+           go-go-etcd-io-bbolt
+           go-golang-org-x-net
+           go-golang-org-x-text
+           go-google-golang-org-grpc
+           go-gopkg-in-yaml-v3
+           go-k8s-io-apimachinery
+           go-sigs-k8s-io-yaml
+           go-tools
+           gzip
+           node-preact
+           templ
+           zstd))
+    (home-page "https://github.com/TecharoHQ/anubis")
+    (synopsis "Weighs the soul of incoming HTTP requests to stop AI crawlers")
+    (description
+     "Anubis is a Web AI Firewall Utility that weighs the soul of your
+connection using one or more challenges in order to protect upstream resources
+from scraper bots.
+
+This program is designed to help protect the small internet from the endless
+storm of requests that flood in from AI companies. Anubis is as lightweight as
+possible to ensure that everyone can afford to protect the communities closest
+to them.")
+    (license license:expat)))
 
 (define-public qhttp
   (package

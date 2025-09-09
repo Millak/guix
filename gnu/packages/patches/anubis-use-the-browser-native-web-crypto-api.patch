@@ -1,0 +1,60 @@
+From c29172faf8b57450317f6d29ac9ff4c5dfe69d77 Mon Sep 17 00:00:00 2001
+From: Sharlatan Hellseher <sharlatanus@gmail.com>
+Date: Tue, 18 Aug 2026 19:26:53 +0100
+Subject: [PATCH] chore: Use the browser-native Web Crypto API.
+
+Use the browser-native Web Crypto API instead of @aws-crypto/sha256-js.
+
+* lib/challenge/preact/js/app.jsx (useEffect): Switch to browser native hasher.
+* web/js/worker/sha256-purejs.mjs (calculateSHA256): Likewise.
+---
+ lib/challenge/preact/js/app.jsx |  7 +++----
+ web/js/worker/sha256-purejs.mjs | 10 ++++------
+ 2 files changed, 7 insertions(+), 10 deletions(-)
+
+diff --git a/lib/challenge/preact/js/app.jsx b/lib/challenge/preact/js/app.jsx
+index f1321b8..96352b0 100644
+--- a/lib/challenge/preact/js/app.jsx
++++ b/lib/challenge/preact/js/app.jsx
+@@ -1,7 +1,6 @@
+ import { render, h, Fragment } from 'preact';
+ import { useState, useEffect } from 'preact/hooks';
+ import { g, j, u, x } from "./xeact.js";
+-import { Sha256 } from '@aws-crypto/sha256-js';
+ 
+ /** @jsx h */
+ /** @jsxFrag Fragment */
+@@ -24,9 +23,9 @@ const App = () => {
+ 
+   useEffect(() => {
+     setImageURL(state.pensive_url);
+-    const hash = new Sha256('');
+-    hash.update(state.challenge);
+-    setChallenge(toHexString(hash.digestSync()));
++    crypto.subtle
++      .digest("SHA-256", new TextEncoder().encode(state.challenge))
++      .then((buf) => setChallenge(toHexString(new Uint8Array(buf))));
+   }, [state]);
+ 
+   useEffect(() => {
+diff --git a/web/js/worker/sha256-purejs.mjs b/web/js/worker/sha256-purejs.mjs
+index 3211b44..08072c6 100644
+--- a/web/js/worker/sha256-purejs.mjs
++++ b/web/js/worker/sha256-purejs.mjs
+@@ -1,9 +1,7 @@
+-import { Sha256 } from '@aws-crypto/sha256-js';
+-
+-const calculateSHA256 = (text) => {
+-  const hash = new Sha256();
+-  hash.update(text);
+-  return hash.digest();
++const calculateSHA256 = async (text) => {
++  return new Uint8Array(
++    await crypto.subtle.digest("SHA-256",
++                                new TextEncoder().encode(text)));
+ };
+ 
+ function toHexString(arr) {
+-- 
+2.54.0
+
