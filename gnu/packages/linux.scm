@@ -4442,7 +4442,7 @@ minimizing cache miss rates for irq handlers.")
 (define-public bolt
   (package
     (name "bolt")
-    (version "0.9.8")
+    (version "0.9.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4451,7 +4451,7 @@ minimizing cache miss rates for irq handlers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i9nyvx3qcf4m607qmpklpl9xqzsh423k8y3fr6c5n0k4ajy4cxh"))))
+                "1vw4vzyhkpm73snnfciy7x88ja72cv5isc27k91jvmy2350b29yx"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags '(list "--localstatedir=/var")
