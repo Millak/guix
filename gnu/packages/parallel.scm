@@ -339,10 +339,10 @@ minimal slurm package BASE-SLURM."
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
 
-(define-public slurm-minimal-23.02
+(define-public slurm-minimal-23.11
   (package
    (inherit slurm-minimal)
-   (version "23.02.6")
+   (version "23.11.11")
     (source (origin
              (inherit (package-source slurm))
              (method url-fetch)
@@ -353,16 +353,16 @@ minimal slurm package BASE-SLURM."
               (search-patches "slurm-23-salloc-fallback-shell.patch"))
              (sha256
               (base32
-               "08rz3r1rlnb3pmfdnbh542gm44ja0fdy8rkj4vm4lclc48cvqp2a"))))))
+               "0pg4liysbppfgynwsj3i1lzr60rnybnvzja37x6xgyjvxgf165sa"))))))
 
-(define-public slurm-23.02 (make-slurm slurm-minimal-23.02))
+(define-public slurm-23.11 (make-slurm slurm-minimal-23.11))
 
 (define-public slurm-minimal-22.05
   (package
-    (inherit slurm-minimal-23.02)
+    (inherit slurm-minimal-23.11)
     (version "22.05.1")
     (source (origin
-              (inherit (package-source slurm-minimal-23.02))
+              (inherit (package-source slurm-minimal-23.11))
               (method url-fetch)
               (uri (string-append
                     "https://download.schedmd.com/slurm/slurm-"
