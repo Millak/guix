@@ -5854,7 +5854,7 @@ of the InventorXt GUI component toolkit.")
     (arguments
      (list #:tests? #f ;There are no tests.
            #:qtbase qtbase))
-    (native-inputs (list gcc-14 pkg-config))
+    (native-inputs (list gcc-15 pkg-config))
     (inputs
      (list bash-minimal
            hyprutils
