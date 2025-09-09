@@ -45,18 +45,6 @@ the hash function is perfect means that no collisions can exist and that
 look-ups can be made by single string comparisons.")
     (license gpl3+)))
 
-(define-public gperf-3.1
-  (package
-    (inherit gperf)
-    (version "3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/gperf/gperf-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1qispg6i508rq8pkajh26cznwimbnj06wq9sd85vg95v8nwld1aq"))))))
-
 (define-public gperf-3.0
   ;; This older version would use 'unsigned int' in its generated lookup
   ;; functions whereas 3.1 uses 'size_t', which causes breakage such as
