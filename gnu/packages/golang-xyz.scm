@@ -18090,6 +18090,33 @@ sensors).")
       ;; 2. PlatformInformation() returns empty:
       #:test-flags #~(list "-skip" "TestUsers|TestPlatformInformation")))))
 
+(define-public go-github-com-shirou-gopsutil-v4
+  (package
+    (inherit go-github-com-shirou-gopsutil-v3)
+    (name "go-github-com-shirou-gopsutil-v4")
+    (version "4.25.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/shirou/gopsutil")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q9125fpz4cw6mmxx7qa74qf3xq5x0nrraspfmwhlhdpabjag9lp"))))
+    (arguments
+     (list
+      #:import-path "github.com/shirou/gopsutil/v4"
+      ;; Three tests fail:
+      ;; [1] error open /var/run/utmp: no such file or directory
+      ;; [2] PlatformInformation() returns empty
+      ;; [3] Could not get temperature
+      #:test-flags #~(list "-skip" (string-join
+                                    (list "TestUsers"               ;1
+                                          "TestPlatformInformation" ;2
+                                          "TestTemperatures")       ;3
+                                    "|"))))))
+
 (define-public go-github-com-shurcool-sanitized-anchor-name
   (package
     (name "go-github-com-shurcool-sanitized-anchor-name")
