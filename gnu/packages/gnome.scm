@@ -5021,7 +5021,6 @@ files.")
 
 (define-public rest
   (package
-    (replacement rest/fixed)
     (name "rest")
     (version "0.8.1")
     (source (origin
@@ -5041,7 +5040,7 @@ files.")
      (list `(,glib "bin") gobject-introspection pkg-config))
     (propagated-inputs
      ;; rest-0.7.pc refers to all these.
-     (list glib libsoup-minimal-2 libxml2))
+     (list glib libsoup-minimal-2 libxml2-next-for-grafting))
     (home-page "https://www.gtk.org/")
     (synopsis "RESTful web api query library")
     (description
@@ -5049,13 +5048,6 @@ files.")
 claim to be \"RESTful\".  It includes convenience wrappers for libsoup and
 libxml to ease remote use of the RESTful API.")
     (license license:lgpl2.1+)))
-
-(define-public rest/fixed
-  (package
-    (inherit rest)
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs rest)
-       (replace "libxml2" libxml2-next-for-grafting)))))
 
 (define-public rest-next
   (package
