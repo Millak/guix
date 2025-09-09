@@ -248,33 +248,29 @@ constraints on the signature into account.
 This Guix package is built to use the nettle cryptographic library.")
     (license license:lgpl2.0+)))
 
-;; There hasn't been a release cut since the tools were split from the library
-;; so we use the 0.1.0 number from tools/Cargo.toml and the tag from the library.
 (define-public sequoia-wot-tools
   (package
     (name "sequoia-wot-tools")
-    (version "0.1.0")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://gitlab.com/sequoia-pgp/sequoia-wot")
-              (commit "sequoia-wot/v0.13.2")))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vvq2izz2088x9jvii1xj14z4hls948wn18wb53fpahyhx8kkbvx"))))
+        (base32 "03wa4l582hx0qq28pkhrf0pagckyx6df01pb4chyngadk49q1xn7"))))
     (build-system cargo-build-system)
     (arguments
      (list
        #:features '(list "sequoia-openpgp/crypto-nettle")
+       #:cargo-package-crates ''("tools")
        #:cargo-test-flags '(list "--" "--skip=gpg_trust_roots")
        #:install-source? #f
+       #:cargo-install-paths ''("tools")
        #:phases
        #~(modify-phases %standard-phases
-           (add-after 'unpack 'chdir
-             (lambda _
-               (delete-file "Cargo.lock")
-               (chdir "tools")))
            (add-after 'install 'install-more
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out   (assoc-ref outputs "out"))
