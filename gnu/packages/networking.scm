@@ -5010,7 +5010,7 @@ layers.")
 (define-public netdiscover
   (package
    (name "netdiscover")
-   (version "0.20")
+   (version "0.21")
    (source
     (origin
       (method git-fetch)
@@ -5018,7 +5018,7 @@ layers.")
             (url "https://github.com/netdiscover-scanner/netdiscover")
             (commit version)))
       (sha256
-       (base32 "0k0wdrp2phc38lq2fillfj5myjnq2czwx65s4vg8y5har0d7syr3"))
+       (base32 "0c5av6x2wm7gmhh5wc5961ff3l6kzpx95aj076qwn7v6v28psvpj"))
       (file-name (string-append "netdiscover-" version))))
    (arguments
     `(#:tests? #f))                     ; no tests
