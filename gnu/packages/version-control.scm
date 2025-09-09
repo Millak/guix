@@ -3133,20 +3133,6 @@ usage; and its ability to support the needs of a wide variety of users and
 projects, from individuals to large-scale enterprise operations.")
     (license license:asl2.0)))
 
-(define-public subversion/pinned
-  (hidden-package
-   (package
-     (inherit subversion)
-     (name "subversion")
-     (version "1.14.3")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://apache/subversion/"
-                            "subversion-" version ".tar.bz2"))
-        (sha256
-         (base32 "0h54l4p2dlk1rm4zm428hi6ij6xpqxqlqmvkhmz5yhq9392zv7ll")))))))
-
 (define-public rcs
   (package
     (name "rcs")
