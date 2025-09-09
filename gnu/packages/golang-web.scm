@@ -6623,6 +6623,30 @@ intends to be compatible with Avahi.")
 Block Storage for container, cloud and virtualisation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-lum8rjack-go-ja4h
+  (package
+    (name "go-github-com-lum8rjack-go-ja4h")
+    (version "0.0.0-20250828030157-fa5266d50650")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lum8rjack/go-ja4h")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "079qh3lj6a8jr90g170lc36b878hqfyi94azqs8fl0wnj2fzzcs3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lum8rjack/go-ja4h"))
+    (home-page "https://github.com/lum8rjack/go-ja4h")
+    (synopsis "JA4H Fingerprint in Golang")
+    (description
+     "This Package provides an implementation of the
+@url{https://github.com/FoxIO-LLC/ja4, JA4HTTP (JA4H) hashing algorithm}.")
+    (license license:expat)))
+
 (define-public go-github-com-macronut-go-tproxy
   (package
     (name "go-github-com-macronut-go-tproxy")
