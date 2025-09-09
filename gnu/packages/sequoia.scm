@@ -192,14 +192,14 @@ gpg-agent, openpgp-card and softkeys keystore backends.")
 (define-public sequoia-sqv
   (package
     (name "sequoia-sqv")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-sqv" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0nizac02bwl5cdmcvn3vjjxdhcy431mnsijyswnq101p764dlkl2"))))
+          (base32 "0q2ylgzpnx290mwp8626j14b5z318074ag5dj99282vj4qfmf949"))))
     (build-system cargo-build-system)
     (inputs
      (cons* nettle openssl (cargo-inputs 'sequoia-sqv)))
