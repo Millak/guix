@@ -413,28 +413,6 @@ minimal slurm package BASE-SLURM."
 
 (define-public slurm-20.11 (make-slurm slurm-minimal-20.11))
 
-(define-public slurm-minimal-20.02
-  (package
-    (inherit slurm-minimal-20.11)
-    (version "20.02.6-1")
-    (source (origin
-              (inherit (package-source slurm-minimal-20.11))
-              (method url-fetch)
-              (uri (string-append
-                    "https://download.schedmd.com/slurm/slurm-"
-                    version ".tar.bz2"))
-              (patches '())                       ;drop 'salloc' patch
-              (sha256
-               (base32
-                "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments slurm-minimal-20.11)
-       ((#:configure-flags flags ''())
-        #~(append '("CFLAGS=-O2 -g -fcommon" "LDFLAGS=-fcommon")
-                  #$flags))))))
-
-(define-public slurm-20.02 (make-slurm slurm-minimal-20.02))
-
 (define-public slurm-drmaa
   (package
     (name "slurm-drmaa")
