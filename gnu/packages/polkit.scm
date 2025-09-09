@@ -79,7 +79,7 @@
      (list
       #:tests? #f)) ;; No tests yet.
     (native-inputs
-     (list gcc-14
+     (list gcc-15
            pkg-config))
     (inputs
      (list hyprutils
