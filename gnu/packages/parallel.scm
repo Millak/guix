@@ -374,28 +374,6 @@ minimal slurm package BASE-SLURM."
 
 (define-public slurm-22.05 (make-slurm slurm-minimal-22.05))
 
-(define-public slurm-minimal-21.08
-  (package
-    (inherit slurm-minimal-22.05)
-    (version "21.08.8")
-    (source (origin
-              (inherit (package-source slurm-minimal-22.05))
-              (method url-fetch)
-              (uri (string-append
-                    "https://download.schedmd.com/slurm/slurm-"
-                    version ".tar.bz2"))
-              (patches '())                       ;drop 'salloc' patch
-              (sha256
-               (base32
-                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))))
-
-    ;; This and older versions of slurm have PMIx support but they seem to
-    ;; require an older version of openpmix.  Disable PMIx support.
-    (inputs (modify-inputs (package-inputs slurm-minimal-22.05)
-              (delete "openpmix")))))
-
-(define-public slurm-21.08 (make-slurm slurm-minimal-21.08))
-
 (define-public slurm-drmaa
   (package
     (name "slurm-drmaa")
