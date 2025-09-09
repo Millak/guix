@@ -6054,7 +6054,7 @@ dm-thin, dm-cache and dm-era device-mapper targets.")
 (define-public watchdogd
   (package
     (name "watchdogd")
-    (version "3.5")
+    (version "4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6063,7 +6063,7 @@ dm-thin, dm-cache and dm-era device-mapper targets.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05f7igavzimfgbh39fflbkmpya12r854n03dkyimwashcqwchx8f"))))
+                "112mdhqykl78qk8l7nx7h19nnd58v0axj6ws8s47n9a64b867li4"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list libconfuse libite libuev))
