@@ -1212,19 +1212,20 @@ similar to unit tests.")
 (define-public gotestsum
   (package
     (name "gotestsum")
-    (version "1.12.2")
+    (version "1.12.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gotestyourself/gotestsum")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gotestyourself/gotestsum")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02q251j5kf2874vnvmbfc0ncnwssq459s8mf9f50cymqkpqbx0lp"))))
+        (base32 "1pj2d2rjab1zdzrc88ksf2v09fk9is9hg4rn6grcyaq76b8l3jcg"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:import-path "gotest.tools/gotestsum"
       #:test-flags
       #~(list "-skip"
@@ -1252,11 +1253,11 @@ similar to unit tests.")
            go-golang-org-x-term
            go-golang-org-x-tools
            go-gotest-tools-v3))
-    (synopsis "Go test runner with output optimized for humans")
-    (description "This package provides a @code{go test} runner with output
-optimized for humans, JUnit XML for CI integration, and a summary of the
-test results.")
     (home-page "https://github.com/gotestyourself/gotestsum")
+    (synopsis "Go test runner with output optimized for humans")
+    (description
+     "This package provides a @code{go test} runner with output optimized for
+humans, JUnit XML for CI integration, and a summary of the test results.")
     (license license:asl2.0)))
 
 (define-public greatest
