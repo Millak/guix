@@ -289,6 +289,32 @@ for Golang projects via modular Makefiles and GitHub Actions.")
 in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-bsm-ginkgo-v2
+  (package
+    (name "go-github-com-bsm-ginkgo-v2")
+    (version "2.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bsm/ginkgo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01k1j1bwdq23hs9zzbz9kdljvr6hzym53mqxh2gy0bz4lggcd6qs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bsm/ginkgo/v2"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/bsm/ginkgo")
+    (synopsis "Straight copy of Ginkgo library")
+    (description
+     "This package is a straight copy of the excellent
+@url{http://onsi.github.io/ginkgo/, Ginkgo} library, stripped to the bare core
+to be free of third-party dependencies.")
+    (license license:expat)))
+
 (define-public go-github-com-caarlos0-testfs
   (package
     (name "go-github-com-caarlos0-testfs")
