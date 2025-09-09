@@ -60,6 +60,34 @@
 ;;;
 ;;; Code:
 
+(define-public go-cel-dev-expr
+  (package
+    (name "go-cel-dev-expr")
+    (version "0.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/cel-spec")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fzy5njwzg48h1mqbfhczyq6hxmbq3yzdivkjh1x8ipj19v4hvfl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cel.dev/expr"))
+    (propagated-inputs
+     (list go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cel.dev/")
+    (synopsis "Common Expression Language")
+    (description
+     "The Common Expression Language (CEL) implements common semantics for
+expression evaluation, enabling different applications to more easily
+interoperate.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ebitengine-purego
   (package
     (name "go-github-com-ebitengine-purego")
