@@ -4044,7 +4044,7 @@ compositors, though.")
                      (("wl-copy" cmd)
                       (search-input-file
                        inputs (string-append "bin/" cmd)))))))))
-    (native-inputs (list gcc-14 hyprwayland-scanner pkg-config))
+    (native-inputs (list gcc-15 hyprwayland-scanner pkg-config))
     (inputs
      (list cairo
            hyprutils
