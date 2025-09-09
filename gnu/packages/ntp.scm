@@ -190,7 +190,14 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
             (lambda _
               (substitute* "tests/libntp/Makefile.in"
                 (("test-decodenetnum\\$\\(EXEEXT\\) ")
-                 "")))))))
+                 ""))))
+          (add-after 'unpack 'update-leap-file-source
+            ;; Follow the text redirect from the IETF.
+            (lambda _
+              (substitute* '("scripts/update-leap/invoke-update-leap.texi"
+                             "scripts/update-leap/update-leap.in")
+                (("https://www.ietf.org/timezones/data/leap-seconds.list")
+                 "https://data.iana.org/time-zones/data/leap-seconds.list")))))))
     (build-system gnu-build-system)
     (synopsis "Real time clock synchronization system")
     (description "NTP is a system designed to synchronize the clocks of
