@@ -717,7 +717,8 @@ of programming tools as well as libraries with equivalent functionality.")
       #:modules '((guix build cmake-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))
-      #:tests? (not (target-x86-32?))
+      #:tests? (not (or (%current-target-system)
+                        (target-x86-32?)))
       #:configure-flags
       #~(list
          ;; These options are required for cross-compiling LLVM according
