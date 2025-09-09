@@ -175,17 +175,28 @@ generating bitstreams with Gowin FPGAs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/steveicarus/iverilog")
-             (commit
-              (string-append "v" (string-replace-substring version "." "_")))))
+              (url "https://github.com/steveicarus/iverilog")
+              (commit
+               (string-append "v" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1cm3ksxyyp8ihs0as5c2nk3a0y2db8dmrrw0f9an3sl255smxn17"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags #~(list (string-append "PREFIX=" #$output))
-      #:bootstrap-scripts #~(list "autoconf.sh")))
+      #:bootstrap-scripts #~(list "autoconf.sh")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'ensure-native-baked-CC/CXX
+                     (lambda _
+                       ;; The compilers used to build are retained in
+                       ;; bin/iverilog-vpi, which is a Makefile
+                       ;; script. Normalize these to just 'gcc' and 'g++' to
+                       ;; avoid having these set to cross compilers.
+                       (substitute* "Makefile.in"
+                         (("s;@IVCC@;\\$\\(CC);")
+                          "s;@IVCC@;gcc;")
+                         (("s;@IVCXX@;\\$\\(CXX);")
+                          "s;@IVCXX@;g++;")))))))
     (native-inputs (list autoconf bison flex gperf))
     (inputs (list zlib))
     (home-page "https://steveicarus.github.io/iverilog/")
