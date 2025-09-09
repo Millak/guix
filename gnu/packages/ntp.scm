@@ -39,6 +39,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages nettle)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -167,7 +168,9 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                    (rename-file "sntp/libevent:build-aux"
                                 "sntp/libevent/build-aux")))))
     (native-inputs (list which pkg-config))
-    (inputs (cons* openssl libevent
+    (inputs (cons* libevent
+                   openssl
+                   perl
                    ;; Build with POSIX capabilities support on GNU/Linux.  This allows
                    ;; 'ntpd' to run as non-root (when invoked with '-u'.)
                    (if (target-linux?)
