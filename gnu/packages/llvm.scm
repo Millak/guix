@@ -621,7 +621,8 @@ output), and Binutils.")
       (outputs '("out" "opt-viewer"))
       (arguments
        (list
-        #:tests? (not (target-x86-32?))
+        #:tests? (not (or (%current-target-system)
+                          (target-x86-32?)))
         #:configure-flags
         #~(list
            ;; These options are required for cross-compiling LLVM according
