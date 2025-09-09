@@ -18072,7 +18072,7 @@ sensors).")
   (package
     (inherit go-github-com-shirou-gopsutil)
     (name "go-github-com-shirou-gopsutil-v3")
-    (version "3.24.2")
+    (version "3.24.5")
     (source
      (origin
        (method git-fetch)
@@ -18081,19 +18081,14 @@ sensors).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xlfcx6giqaxdah2m02q2i8ynwlzar953wr8wqx1j3004xdgaivd"))))
+        (base32 "1r561fs7q2m0m03k8yrx3dpldjik3vbfjyfz0lz90zz0xvbavkxm"))))
     (arguments
      (list
-      #:import-path "github.com/shirou/gopsutil"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'remove-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file-recursively
-               ;; host_test.go tries to access files such as
-               ;; /var/run/utmp that do not exist in the build
-               ;; environment.
-               (string-append "src/" import-path "/host/host_test.go")))))))))
+      #:import-path "github.com/shirou/gopsutil/v3"
+      ;; Two tests fail:
+      ;; 1. error open /var/run/utmp: no such file or directory
+      ;; 2. PlatformInformation() returns empty:
+      #:test-flags #~(list "-skip" "TestUsers|TestPlatformInformation")))))
 
 (define-public go-github-com-shurcool-sanitized-anchor-name
   (package
