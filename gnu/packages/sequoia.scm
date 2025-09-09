@@ -42,14 +42,14 @@
 (define-public sequoia-chameleon-gnupg
   (package
     (name "sequoia-chameleon-gnupg")
-    (version "0.12.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-chameleon-gnupg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ydb6wbyznr9p734p4jh896arcc45wi0b4isfjs6znwa40j3s66c"))))
+        (base32 "1qpanr7ydsr79adbn4bxwgqmhhq4wn7y90lw42a0g6p71x2cg73h"))))
     (build-system cargo-build-system)
     (arguments
      (list
