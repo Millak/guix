@@ -2904,7 +2904,7 @@ graphics card on Optimus laptops.")
 (define-public bin-graph
   (package
     (name "bin-graph")
-    (version "1.0.2")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2913,7 +2913,7 @@ graphics card on Optimus laptops.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18m71kn7f4mn7k8hxx8mr1zl35a9ri06a3p1y2mncbgr8nn3pgb0"))))
+        (base32 "1msr4fj1nh6hf5h6j5pimfrgd37xy4xbik3iml9gd3b1fdkxsdv7"))))
     (arguments
      (list #:tests? #f                ; no tests
            #:make-flags
