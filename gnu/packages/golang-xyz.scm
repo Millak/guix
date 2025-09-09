@@ -17524,6 +17524,58 @@ watches memory utilization and forces Go GC in accordance with a user-defined
 policy.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-redis-go-redis-v9
+  (package
+    (name "go-github-com-redis-go-redis-v9")
+    (version "9.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/redis/go-redis")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19scv5fbwacrbpv329w2a48z1w5wmxi7ax93bp1p398k4yqx6izf"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/redis/go-redis/extra/rediscensus/v9
+            ;; - github.com/redis/go-redis/extra/rediscmd/v9
+            ;; - github.com/redis/go-redis/extra/redisotel/v9
+            ;; - github.com/redis/go-redis/extra/redisprometheus/v9
+            ;; - github.com/redis/go-redis/internal/customvet
+            (delete-file-recursively "extra")
+            (delete-file-recursively "internal/customvet")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/redis/go-redis/v9"
+      #:test-flags
+      ;; Tests requir running Redis server.
+      #~(list "-skip" "Example|TestGinkgoSuite")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/example")))))))
+    (native-inputs
+     (list go-github-com-bsm-ginkgo-v2
+           go-github-com-bsm-gomega))
+    (propagated-inputs
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-dgryski-go-rendezvous))
+    (home-page "https://github.com/redis/go-redis")
+    (synopsis "Redis client for Golang")
+    (description
+     "go-redis is the official Redis client library for the Go programming
+language.  It offers a straightforward interface for interacting with Redis
+servers.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-reiver-go-porterstemmer
   ;; The latest commit contain test fixtures.
   (let ((commit "ab0f922907ea0321367a5776bd7a6c35d505d53b")
