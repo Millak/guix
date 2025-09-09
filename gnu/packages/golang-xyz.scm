@@ -9001,6 +9001,67 @@ This package contains a series of small enhancements and additions.")
 the resource usage and performance characteristics of running containers.")
       (license license:asl2.0))))
 
+(define-public go-github-com-google-cel-go
+  (package
+    (name "go-github-com-google-cel-go")
+    (version "0.26.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/cel-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hrdr9fzac0p7jrlbchz2qvdikr1szq5rg4sdsld7n849mmz8ypf"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/cel-go/codelab
+            ;; - github.com/google/cel-go/conformance
+            ;; - github.com/google/cel-go/policy
+            ;; - github.com/google/cel-go/repl/appengine
+            ;; - github.com/google/cel-go/repl
+            ;; - github.com/google/cel-go/tools
+            (for-each delete-file-recursively
+                      (list "codelab"
+                            "conformance"
+                            "policy"
+                            "repl/appengine"
+                            "repl"
+                            "tools"
+                            "vendor"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/cel-go"
+      #:test-flags #~(list "-skip" "TestStringFormat")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-cel-dev-expr
+           go-github-com-antlr4-go-antlr-v4
+           go-github-com-stoewer-go-strcase
+           go-golang-org-x-text
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/google/cel-go")
+    (synopsis "Common Expression Language")
+    (description
+     "The Common Expression Language (CEL) is a non-Turing complete language
+designed for simplicity, speed, safety, and portability.  CEL's C-like
+@url{https://github.com/google/cel-spec, syntax} looks nearly identical to
+equivalent expressions in C++, Go, Java, and TypeScript.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-gnostic-models
   (package
     (name "go-github-com-google-gnostic-models")
