@@ -452,24 +452,6 @@ minimal slurm package BASE-SLURM."
 
 (define-public slurm-19.05 (make-slurm slurm-minimal-19.05))
 
-;; Same as Debian 10
-(define-public slurm-minimal-18.08
-  (package
-    (inherit slurm-minimal-19.05)
-    (version "18.08.9")
-    (source
-      (origin
-        (inherit (package-source slurm-minimal-20.02))
-        (uri (string-append
-               "https://download.schedmd.com/slurm/slurm-"
-               version ".tar.bz2"))
-        (patches '())                             ;drop 'salloc' patch
-        (sha256
-         (base32
-          "1bgrpz75m7l4xhirsd0fvnkzlkrl8v2qpmjcz60barc5qm2kn457"))))))
-
-(define-public slurm-18.08 (make-slurm slurm-minimal-18.08))
-
 (define-public slurm-drmaa
   (package
     (name "slurm-drmaa")
