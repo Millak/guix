@@ -3999,7 +3999,7 @@ GPU-accelerated screen locking utility.")
               "0j3hbqfx40cjxkvaiqzfij8pgblg2hyv9lbbjjh4iahciwgh7623"))))
    (build-system cmake-build-system)
    (arguments '(#:tests? #f)) ;; no test
-   (native-inputs (list gcc-14 pkg-config))
+   (native-inputs (list gcc-15 pkg-config))
    (inputs
     (list cairo
           file
