@@ -47,7 +47,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages gl)
-  #:use-module (gnu packages golang))
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages protobuf))
 
 ;;; Commentary:
 ;;;
@@ -62,6 +63,54 @@
 ;;;
 ;;; Code:
 
+(define-public go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go
+  (package
+    (name "go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go")
+    (version "0.14.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bufbuild/protovalidate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vqbs3d42f03xli0k427s4i237gbx8262dvs3jsb7x00pqxwg5gd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/bufbuild/protovalidate"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            ;; See: <https://github.com/bufbuild/protovalidate-go/issues/250>.
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (mkdir "build")
+                (invoke "protoc"
+                        "-Iproto/protovalidate"
+                        "--go_out=build"
+                        "--go_opt=default_api_level=API_HYBRID"
+                        "buf/validate/validate.proto"))))
+          (replace 'install
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let ((output-src (string-append #$output "/src")))
+                  (mkdir-p output-src)
+                  (copy-recursively "build" output-src))))))))
+    (native-inputs
+     (list protobuf
+           protoc-gen-go))
+    (home-page "https://pkg.go.dev/buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go")
+    (synopsis "Semantic validation library for Protobuf")
+    (description
+     "Protovalidate is the semantic validation library for Protobuf.  It
+provides standard annotations to validate common rules on messages and fields,
+as well as the ability to use CEL to write custom rules.  It's the next
+generation of protoc-gen-validate.")
+    (license license:asl2.0)))
+
 (define-public go-cel-dev-expr
   (package
     (name "go-cel-dev-expr")
