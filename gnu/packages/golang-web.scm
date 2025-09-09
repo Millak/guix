@@ -20624,6 +20624,36 @@ an interface to implement any other minifier.")
      "This package contains several lexers and parsers written in Go.")
     (license license:expat)))
 
+(define-public go-github-com-techarohq-thoth-proto
+  (package
+    (name "go-github-com-techarohq-thoth-proto")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/TecharoHQ/thoth-proto")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1acwg613q6v8k12wks77749k72xcx110py4jrr5rh0glqy6c64kd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/TecharoHQ/thoth-proto"))
+    (propagated-inputs
+     (list go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go
+           go-google-golang-org-protobuf
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/TecharoHQ/thoth-proto")
+    (synopsis "Reputation database for Anubis")
+    (description
+     "This package provides Thoth (from Greek: Θώθ) witch feeds information to
+@url{https://github.com/TecharoHQ/anubis, Anubis} so that it can make better
+decisions about which traffic is innocuous and which traffic is suspicious.")
+    (license license:expat)))
+
 (define-public go-github-com-tetratelabs-wabin
   (package
     (name "go-github-com-tetratelabs-wabin")
