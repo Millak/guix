@@ -3532,7 +3532,7 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
 (define-public clipman
   (package
     (name "clipman")
-    (version "1.6.2")
+    (version "1.6.4")
     (source
      (origin
        (method git-fetch)
@@ -3541,7 +3541,7 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "033l2hy46r2zjy8dllcmkjxidhnqac9kfh4wkq9hfvim9imp5a4m"))))
+        (base32 "05hsv0v69pn79adx8lz9fzb19qr27finiq7xb4ag4b8m4pibprcj"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3555,8 +3555,8 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
                 (("\"wl-copy\"")
                  (string-append "\"" (which "wl-copy") "\""))))))))
     (inputs
-     (list go-github-com-kballard-go-shellquote
-           go-gopkg-in-alecthomas-kingpin-v2
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-kballard-go-shellquote
            libnotify
            wl-clipboard))
     (synopsis "Basic clipboard manager with support for persisting copy buffers")
