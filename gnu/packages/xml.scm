@@ -271,10 +271,39 @@ project (but it is usable outside of the Gnome platform).")
                      (append pkg-config
                              python-minimal)))))
 
+(define-public libxml2-next/fixed
+  (package
+    (inherit libxml2)
+    (properties '((hidden? . #t)))
+    (name "libxml2")
+    (version "2.14.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libxml2/"
+                                  (version-major+minor version)"/libxml2-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0jylv2kkyzih710blg24al7b43iaqg6xsfn52qy865knagrhdl03"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libxml2-next)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'symlink-hardcoded-lib-for-grafts
+              (lambda _
+                (let ((lib (string-append #$output "/lib/libxml2.so")))
+                  ;; XXX: When grafting, we need to reproduce the file paths to
+                  ;; the libraries too.
+                  (symlink (string-append lib ".16")
+                           (string-append lib ".2")))))))))
+    (native-inputs (modify-inputs (package-native-inputs libxml2)
+                     (append pkg-config
+                             python-minimal)))))
+
 (define-public libxml2-next-for-grafting
   (package
     (inherit libxml2)
-    (replacement libxml2-next)
+    (replacement libxml2-next/fixed)
     (properties '((hidden? . #t)))))
 
 (define-public libxml2-xpath0
