@@ -463,7 +463,7 @@ configure network interfaces in Linux containers.")
 (define-public gvisor-tap-vsock
   (package
     (name "gvisor-tap-vsock")
-    (version "0.8.6")
+    (version "0.8.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -472,7 +472,7 @@ configure network interfaces in Linux containers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18pwpw3dap42mpv5a1ciq6fh0y8ya5ix7r38bi8i1xc7dxcy3jdj"))))
+                "1p9vypphssvqfcm3y2nc7b9v0wcc2smkrqq8k60vskaiza89974k"))))
     (build-system gnu-build-system)
     (arguments
      (list
