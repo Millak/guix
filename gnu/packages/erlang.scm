@@ -11,6 +11,7 @@
 ;;; Copyright © 2023 wrobell <wrobell@riseup.net>
 ;;; Copyright © 2023 Tim Johann <t1m@phrogstar.de>
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -735,6 +736,23 @@ of locations (git, hg, etc).")
     (description "This plugin provides support for handling non-OTP
 applications as a dependent libraries.")
     (license license:expat)))
+
+(define-public rebar3-ex-doc
+  (package
+    (name "rebar3-ex-doc")
+    (version "0.2.30")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "rebar3_ex_doc" version))
+       (sha256
+        (base32 "0n415nq3dia63q9sywmkzm53j13pciw9ss3nd3bgbxr95r93ii3b"))))
+    (build-system rebar-build-system)
+    (synopsis "Rebar3 plugin for generating docs with ex_doc")
+    (description "This plugin provides support for generating docs with
+@code{ex_doc}.")
+    (home-page "https://hexdocs.pm/rebar3_ex_doc/")
+    (license license:asl2.0)))
 
 (define-public rebar3-git-vsn
   (package
