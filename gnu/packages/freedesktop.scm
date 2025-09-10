@@ -1621,6 +1621,23 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
     (home-page "https://wayland.freedesktop.org")
     (license license:expat)))
 
+;; TODO: Remove this package when wayland-protocols >= 1.45.
+;; This package is currently only used by hyprland.
+;; It will be removed on the next mesa-updates merge.
+(define-public wayland-protocols-next
+  (package/inherit wayland-protocols
+    (name "wayland-protocols")
+    (version "1.45")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/wayland/wayland-protocols")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d2fv41vq75pvgkd3ykjypnp8zv0afv71p36cd91h19lbmwaia8h"))))))
+
 (define-public wayland-protocols-1.42
   (package
     (inherit wayland-protocols)
