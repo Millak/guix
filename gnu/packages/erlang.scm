@@ -309,6 +309,23 @@ Mozilla's canonical set.")
 printing extending the io:format syntax to add colours.")
     (license license:expat)))
 
+(define-public erlang-katana-code
+  (package
+    (name "erlang-katana-code")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "katana_code" version))
+       (sha256
+        (base32 "0fhbkgs81ym7g6gnkvchls3r49bvgzg0rdfa60iciawxblxwdvsq"))))
+    (build-system rebar-build-system)
+    (synopsis "Functions useful for processing Erlang code.")
+    (description
+     "This package provides functions useful for processing Erlang code.")
+    (home-page "https://hexdocs.pm/katana_code/")
+    (license license:asl2.0)))
+
 (define-public erlang-zipper
   (package
     (name "erlang-zipper")
