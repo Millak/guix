@@ -976,7 +976,7 @@ building block for other projects.")
 (define-public chathistorysync
   (package
     (name "chathistorysync")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -985,7 +985,7 @@ building block for other projects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03dxr178wnicggx0k95wvyzgyk4s4g0adbi2z0md517a5qd1lh23"))))
+        (base32 "00l4nba7bdv53g85qc07x32fkyc4n6lzag9xkkk58f61ljja5ill"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~emersion/chathistorysync"
@@ -1006,12 +1006,10 @@ building block for other projects.")
                        (install-file
                         "chathistorysync.1"
                         (string-append out "/share/man/man1")))))))))
-    (inputs
-     (list go-golang-org-x-sys
-           go-golang-org-x-term
-           go-golang-org-x-crypto
-           go-gopkg-in-irc-v3))
-    (native-inputs (list scdoc))
+    (native-inputs
+     (list go-golang-org-x-term
+           go-gopkg-in-irc-v3
+           scdoc))
     (home-page "https://git.sr.ht/~emersion/chathistorysync")
     (synopsis "Synchronization tool for IRC chat history")
     (description
