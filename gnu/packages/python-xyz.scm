@@ -11026,6 +11026,18 @@ readable format.")
     ;; GPL2.0 only, with linking exception.
     (license license:gpl2)))
 
+(define-public python-pygit2-1.18
+  (package/inherit python-pygit2
+    (name "python-pygit2")
+    (version "1.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pygit2" version))
+       (sha256
+        (base32 "0m8g8s72c0xwwayykpj1hf8c1wldhmg1sj8kgxdp2rf9c837xa7c"))))
+    (propagated-inputs (list python-cffi libgit2-1.9))))
+
 (define-public python-patiencediff
   (package
     (name "python-patiencediff")
