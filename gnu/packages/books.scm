@@ -42,7 +42,7 @@
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "4.0.0")
+    (version "5.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1n1ci224g09d105dgy8zpr8k4xg76d639p2ic90726b75sr0sm4w"))
+                "1vln9fvd2ajb55alm0bq3hgkaakfmrvws0f9sshywffclpnj7lnj"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))))
     (build-system gnu-build-system)
@@ -76,10 +76,12 @@
                   texlive-csquotes
                   texlive-fancyvrb
                   texlive-fontspec
+                  texlive-framed
                   texlive-glossaries
                   texlive-glossaries-english
                   texlive-glossaries-extra
                   texlive-koma-script
+                  texlive-libkpathsea
                   texlive-lilyglyphs
                   texlive-lineno
                   texlive-minted
