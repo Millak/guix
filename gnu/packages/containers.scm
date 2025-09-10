@@ -50,8 +50,10 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
@@ -392,7 +394,8 @@ Layer-4 sockets.")
 (define-public cni-plugins
   (package
     (name "cni-plugins")
-    (version "1.7.1")
+    (version "1.8.0")
+    ;; TODO: Unvendor.
     (source
      (origin
        (method git-fetch)
@@ -400,7 +403,7 @@ Layer-4 sockets.")
              (url "https://github.com/containernetworking/plugins")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "04acfjkc3z2yf85z0v1mlgj0fqy032dsklzik2g1cnz6ncw6jl2b"))
+        (base32 "0bwczkf4kbrx47sa6mnp5kyn65dbg52qnlfyjyydrwshal8rz3gw"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
@@ -428,8 +431,28 @@ Layer-4 sockets.")
                       (copy-recursively
                        "src/github.com/containernetworking/plugins/bin"
                        (string-append (assoc-ref outputs "out") "/bin")))))))
+    ;; XXX: Prepare for unvendor.
     (native-inputs
-     (list util-linux))
+     (list ;; go-github-com-alexflint-go-filemutex
+           ;; go-github-com-buger-jsonparser
+           ;; go-github-com-containernetworking-cni
+           ;; go-github-com-coreos-go-iptables
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-godbus-dbus-v5
+           go-github-com-insomniacslk-dhcp
+           ;; o-github-com-mattn-go-shellwords
+           ;; go-github-com-microsoft-hcsshim
+           ;; go-github-com-networkplumbing-go-nft
+           go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega
+           go-github-com-opencontainers-selinux
+           go-github-com-pkg-errors
+           go-github-com-safchain-ethtool
+           go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
+           go-golang-org-x-sys
+           ;; go-sigs-k8s-io-knftables
+           util-linux))
     (home-page "https://github.com/containernetworking/plugins")
     (synopsis "Container Network Interface (CNI) network plugins")
     (description
