@@ -838,6 +838,24 @@ applications as a dependent libraries.")
 a git checkout.")
     (license license:expat)))
 
+(define-public rebar3-hank
+  (package
+    (name "rebar3-hank")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "rebar3_hank" version))
+       (sha256
+        (base32 "1mkhl725q8arzj7lm0j204z1ghxpy6b936ysnbfifc8wy5a0s6vn"))))
+    (build-system rebar-build-system)
+    (inputs (list erlang-katana-code))
+    (synopsis "Rebar3 plugin for dead code cleaning")
+    (description
+     "This package provides a rebar3 plugin for dead code cleaning.")
+    (home-page "https://hexdocs.pm/rebar3_hank/")
+    (license license:expat)))
+
 (define-public rebar3-proper
   (package
     (name "rebar3-proper")
