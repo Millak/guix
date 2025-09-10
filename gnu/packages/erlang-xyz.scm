@@ -278,6 +278,24 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/p1_pgsql")
     (license license:asl2.0)))
 
+(define-public erlang-ranch
+  (package
+    (name "erlang-ranch")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ranch" version))
+       (sha256
+        (base32 "1rzqykpqfiwagmym523yzzxk5bmxsfl9x9cp8652300cg2hrj2zs"))))
+    (build-system rebar-build-system)
+    (synopsis "Socket acceptor pool for TCP protocols.")
+    (description "Ranch aims to provide everything you need to accept TCP
+connections with a small code base and low latency while being easy to use
+directly as an application or to embed into your own.")
+    (home-page "https://hex.pm/packages/ranch")
+    (license license:isc)))
+
 (define-public erlang-sqlite3
   (package
     (name "erlang-sqlite3")
