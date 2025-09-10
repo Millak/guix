@@ -1377,9 +1377,11 @@ list of languages supported as well as the currently used changeset."
                        "-xf" #$icecat-115-source)
                (chdir #$name)
 
-               ;; Merge the Thunderdbird localization data.
+               ;; *Replace* the l10n directory with that of Thunderbird.
+               (delete-file-recursively "l10n")
+               (mkdir "l10n")
                (invoke "tar" "--extract" "--file" #$thunderbird-comm-l10n
-                       "--directory" "l10n/")
+                       "--strip-components=1" "--directory" "l10n/")
 
                ;; Add the Thunderbird-specific "comm" directory..
                (mkdir "comm")
