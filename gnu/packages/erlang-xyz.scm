@@ -73,6 +73,29 @@ module to convert and send cover data to Coveralls.")
     (home-page "https://hex.pm/packages/coveralls")
     (license license:bsd-2)))
 
+(define-public erlang-cowboy
+  (package
+    (name "erlang-cowboy")
+    (version "2.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "cowboy" version))
+       (sha256
+        (base32 "052nvhnskkgikgzqcz84bhh9bsmz3nqwg4hr9ijms0lm16kx6977"))))
+    (build-system rebar-build-system)
+    (propagated-inputs (list erlang-cowlib erlang-ranch))
+    (synopsis "Small, fast, modern HTTP server")
+    (description "Cowboy aims to provide a complete HTTP stack in a small code
+base.  It is optimized for low latency and low memory usage, in part because it
+uses binary strings.
+
+Cowboy provides routing capabilities, selectively dispatching requests to
+handlers written in Erlang.  Because it uses Ranch for managing connections,
+Cowboy can easily be embedded in any other application.")
+    (home-page "https://hex.pm/packages/cowboy")
+    (license license:isc)))
+
 (define-public erlang-cowlib
   (package
     (name "erlang-cowlib")
