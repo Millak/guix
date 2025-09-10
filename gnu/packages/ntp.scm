@@ -204,8 +204,11 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                              "scripts/update-leap/update-leap.in")
                 (("https://www.ietf.org/timezones/data/leap-seconds.list")
                  "https://data.iana.org/time-zones/data/leap-seconds.list"))))
-          (add-after 'install 'wrap-scripts
+          (add-after 'install 'adjust-scripts
             (lambda _
+              (substitute* (string-append #$output "/bin/calc_tickadj")
+                (("/etc/ntp/drift")
+                 "/var/run/ntpd/ntp.drift"))
               (wrap-script (string-append #$output "/bin/update-leap")
                 `("PERL5LIB" ":" prefix
                   (,(getenv "PERL5LIB")))))))))
