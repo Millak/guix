@@ -1277,7 +1277,12 @@ by CONFIG through RUNTIME-CLI."
     (define environment-variables
       #~(append
          (list #$@host-environment)
-         (list #$@(oci-runtime-state-runtime-environment runtime-state))))
+         ;; In case this specific container is not run through the user
+         ;; provisioned by the oci-service-type, its environment is different
+         ;; from the globally provisioned one and must be recomputed.
+         (list #$@(if (maybe-value-set? user)
+                      (oci-runtime-system-environment runtime user)
+                      (oci-runtime-state-runtime-environment runtime-state)))))
     (define invocation
       (oci-container-run-invocation
        (oci-container-configuration->oci-container-invocation

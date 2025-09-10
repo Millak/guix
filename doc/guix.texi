@@ -44867,7 +44867,7 @@ is @code{#f}, the service has to be started manually with @command{herd start}.
 Whether to have Shepherd restart the service when it stops, for instance when
 the underlying process dies.
 
-@item @code{shepherd-actions} (default: @code{'()}) (type: list-of-symbols)
+@item @code{shepherd-actions} (default: @code{'()}) (type: list-of-shepherd-actions)
 This is a list of @code{shepherd-action} records defining actions supported
 by the service.
 
