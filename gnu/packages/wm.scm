@@ -367,7 +367,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.50.1")
+    (version "0.51.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -384,7 +384,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                               "subprojects"))))
               (sha256
                (base32
-                "0mn97wlzc5ccywbq87ka7a27jajkdkgypkfzkcan014viph80wif"))))
+                "1dvzqk78a6x33lklhkypwz3mqzlq98g4k7zi6s5nya119zggq0kg"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
@@ -437,7 +437,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            re2-next
            udis86
            wayland
-           wayland-protocols
+           wayland-protocols-next
            xcb-util-errors
            xcb-util-wm
            xorg-server-xwayland))
