@@ -3986,10 +3986,10 @@ to handle."
      "user = " default-session-user "\n"
      "command = " default-session-command "\n"
      (if (and initial-session-user initial-session-command)
-         (string-append
-          "[initial_session]\n"
-          "user = " initial-session-user "\n"
-          "command = " initial-session-command "\n")
+         #~(string-append
+            "[initial_session]\n"
+            "user = " #$initial-session-user "\n"
+            "command = " #$initial-session-command "\n")
          ""))))
 
 (define %greetd-file-systems
