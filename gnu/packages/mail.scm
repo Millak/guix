@@ -5215,7 +5215,7 @@ remote SMTP server.")
 (define-public aerc
   (package
     (name "aerc")
-    (version "0.20.1")
+    (version "0.21.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5224,7 +5224,7 @@ remote SMTP server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04412inhzj8vwybafqz6nw8wrsyf51zjv0881aacr6zc9bfcq510"))))
+                "10pkgh8rk1michv0qva4l4mi0pnxgx0s8r273gh5xl41ic0cq5ah"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rjarry/aerc"
@@ -5290,7 +5290,6 @@ remote SMTP server.")
      (list go-git-sr-ht-rjarry-go-opt-v2
            go-git-sr-ht-rockorager-go-jmap
            go-git-sr-ht-rockorager-vaxis
-           go-github-com-protonmail-go-crypto
            go-github-com-arran4-golang-ical
            go-github-com-danwakefield-fnmatch
            go-github-com-emersion-go-imap
@@ -5302,13 +5301,14 @@ remote SMTP server.")
            go-github-com-emersion-go-pgpmail
            go-github-com-emersion-go-sasl
            go-github-com-emersion-go-smtp
+           ;; go-github-com-fsnotify-fsevents ;macOS FS notifications for Go
            go-github-com-fsnotify-fsnotify
-           go-github-com-gatherstars-com-jwz
            go-github-com-go-ini-ini
            go-github-com-lithammer-fuzzysearch
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-runewidth
            go-github-com-pkg-errors
+           go-github-com-protonmail-go-crypto
            go-github-com-riywo-loginshell
            go-github-com-stretchr-testify
            go-github-com-syndtr-goleveldb
