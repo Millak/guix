@@ -402,7 +402,7 @@ asynchronously via cURL in C++.")
 (define-public curlie
   (package
     (name "curlie")
-    (version "1.7.2")
+    (version "1.8.2")
     (source
      (origin
        (method git-fetch)
@@ -412,12 +412,12 @@ asynchronously via cURL in C++.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "04gwd9sqpykappnzyw9icgn5253cx1vwpr2h1fg7sgkyq3fjmsv0"))))
+         "0jfqx7lfia7s1w438i5ngqvlhi2il04wi0p2fcw4b1iq5474hnh6"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/rs/curlie"))
+     (list #:install-source? #f
+           #:import-path "github.com/rs/curlie"))
     (inputs (list curl
-                  go-golang-org-x-crypto
                   go-golang-org-x-sys
                   go-golang-org-x-term))
     (home-page "https://curlie.io")
