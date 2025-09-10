@@ -29211,12 +29211,24 @@ compatible with @code{asyncio}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/miracle2k/python-glob2")
-             (commit (string-append "v" version))))
+              (url "https://github.com/miracle2k/python-glob2")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "160nh2ay9lw2hi0rixpzb2k87r6ql56k0j2cm87lqz8xc8zbw919"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests-for-pytest8
+            ;; See: <https://github.com/miracle2k/python-glob2/issues/30>.
+            (lambda _
+              (substitute* "test.py"
+                (("setup\\(") "setup_method(")
+                (("teardown\\(") "teardown_method("))
+              (rename-file "test.py" "glob2_test.py"))))))
+    (native-inputs (list python-pytest python-setuptools-next))
     (home-page "https://github.com/miracle2k/python-glob2/")
     (synopsis "Extended Version of the python buildin glob module")
     (description "This is an extended version of the Python
