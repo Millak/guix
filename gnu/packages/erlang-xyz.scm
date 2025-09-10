@@ -73,6 +73,30 @@ module to convert and send cover data to Coveralls.")
     (home-page "https://hex.pm/packages/coveralls")
     (license license:bsd-2)))
 
+(define-public erlang-cowlib
+  (package
+    (name "erlang-cowlib")
+    (version "2.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "cowlib" version))
+       (sha256
+        (base32 "0ckmhmz62nijmp1h62w252wzv7syja0l4amlzk4ffksblrwwh02g"))))
+    (build-system rebar-build-system)
+    (arguments
+     ;; FIXME: tests fail with
+     ;; src/cow_base64url.erl:{27,14}:
+     ;; can't find include lib "proper/include/proper.hrl"
+     (list #:tests? #f))
+    (native-inputs
+     (list erlang-proper))
+    (synopsis "Manipulate Web protocols")
+    (description "This package provides @code{erlang-cowlib}, a support library
+for manipulating Web protocols.")
+    (home-page "https://hex.pm/packages/cowlib")
+    (license license:isc)))
+
 (define-public erlang-luerl
   (package
     (name "erlang-luerl")
