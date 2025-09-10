@@ -64,7 +64,7 @@
 (define-public hyprpolkitagent
   (package
     (name "hyprpolkitagent")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method git-fetch)
@@ -73,7 +73,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zqiskgn57zcrljpyk0py24izf77yngnj7586mb51rb1b4yd4n9b"))))
+        (base32 "021r0gjy2xip0jwsv0k823k156gsa7s3rylwai53ymxd53m51p6z"))))
     (build-system cmake-build-system)
     (arguments
      (list
