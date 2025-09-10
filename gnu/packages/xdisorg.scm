@@ -432,7 +432,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
 (define-public cliphist
   (package
     (name "cliphist")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -441,7 +441,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cbhrw9vk8c0in9yyhlp0k9rldgjwbcj00d7vqh69p3igznhdgsk"))))
+        (base32 "0lhfq67bsmlajxlkz0dhj5hym7w376vqjk05yccd42fqd1nr32dl"))))
     (build-system go-build-system)
     (arguments
      (list
