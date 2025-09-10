@@ -13407,6 +13407,46 @@ Icewind Dale and Planescape: Torment.  It sports a cleaner design, greater
 extensibility and several innovations.")
     (license license:gpl2+)))
 
+(define-public zeta
+  (package
+    (name "zeta")
+    (version "1.1.4")
+    (home-page "https://zeta.asie.pl/")
+    (synopsis "ZZT and Super ZZT emulator")
+    (description
+     "An emulator implementing enough of @acronym{DOS, Disk Operating System}
+to run ZZT and Super ZZT on modern systems.")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asiekierka/zeta")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h7wnxn6rrlqbzgsbhhlx4lpb5apdr3bbxvp74y3axidkgs62bzf"))))
+    (license (list license:expat))
+
+    (build-system gnu-build-system)
+    (inputs
+     (list
+      libdecor
+      libpng
+      sdl3))
+    (native-inputs
+     (list
+      autoconf
+      automake
+      pkg-config
+      python
+      python-pillow))
+    (arguments
+     '(#:configure-flags
+       '("--with-frontend=sdl3"
+         ;; Upstream requests c11, but the source uses strdup() /
+         ;; strcasecmp(), which aren't in C11.
+         "CFLAGS=-std=gnu11")))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
