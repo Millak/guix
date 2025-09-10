@@ -55,6 +55,24 @@ return formatted data instead of performing direct IO write.")
     (home-page "https://hexdocs.pm/binpp/")
     (license license:wtfpl2)))
 
+(define-public erlang-coveralls
+  (package
+    (name "erlang-coveralls")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "coveralls" version))
+       (sha256
+        (base32 "18q4c8bcrpa48mvwpwdh51ma84zfxhcmd70qh2956jy6m05dnm6d"))))
+    (build-system rebar-build-system)
+    (propagated-inputs (list erlang-jsx))
+    (synopsis "Coveralls for Erlang")
+    (description "This package provides @code{erlang-coveralls}, an Erlang
+module to convert and send cover data to Coveralls.")
+    (home-page "https://hex.pm/packages/coveralls")
+    (license license:bsd-2)))
+
 (define-public erlang-luerl
   (package
     (name "erlang-luerl")
