@@ -204,6 +204,16 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                              "scripts/update-leap/update-leap.in")
                 (("https://www.ietf.org/timezones/data/leap-seconds.list")
                  "https://data.iana.org/time-zones/data/leap-seconds.list"))))
+          (add-after 'unpack 'use-absolute-path-in-files
+            (lambda _
+              (substitute* "scripts/lib/NTP/Util.pm"
+                (("(ntpq_path = ')ntpq(';)" _ first last)
+                 (string-append first #$output "/bin/ntpq" last))
+                (("(sntp_path = ')sntp(';)" _ first last)
+                 (string-append first #$output "/bin/sntp" last)))
+              (substitute* "scripts/calc_tickadj/calc_tickadj.in"
+                (("`tickadj`")
+                 (string-append "`" #$output "/bin/tickadj`")))))
           (add-after 'install 'adjust-scripts
             (lambda _
               (substitute* (string-append #$output "/bin/calc_tickadj")
