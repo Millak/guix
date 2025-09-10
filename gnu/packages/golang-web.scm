@@ -2701,7 +2701,7 @@ used to build IMAP clients and servers.")
 (define-public go-github-com-emersion-go-maildir
   (package
     (name "go-github-com-emersion-go-maildir")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2710,7 +2710,7 @@ used to build IMAP clients and servers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wa7spn3qa7ipmg29vrimw7phyybyaagdalrjklcazjb6rplvwpl"))))
+        (base32 "12zsfrn5dgrav3ihhddn3pwg88r63i18pjrl6y4rxam3g8l7rj5i"))))
     (build-system go-build-system)
     (arguments
      (list
