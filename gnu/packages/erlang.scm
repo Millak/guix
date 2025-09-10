@@ -198,6 +198,25 @@ built-in support for concurrency, distribution and fault tolerance.")
     (license (list license:asl2.0 license:bsd-2 license:bsd-3 license:expat
                    license:lgpl2.0+ license:tcl/tk license:zlib))))
 
+(define-public erlfmt
+  (package
+    (name "erlfmt")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "erlfmt" version))
+       (sha256
+        (base32 "07wchl0mg27lmxryhhkv13g8yx8wf6hw5f6a33r2d7nsynk7v67v"))))
+    (build-system rebar-build-system)
+    (native-inputs
+     (list erlang-getopt))
+    (synopsis "Opinionated Erlang code formatter")
+    (description "This package provides @code{erlfmt}, an opinionated Erlang
+code formatter.")
+    (home-page "https://hexdocs.pm/erlfmt/")
+    (license license:asl2.0)))
+
 (define-public emacs-erlang
   (package
     (name "emacs-erlang")
