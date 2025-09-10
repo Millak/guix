@@ -1052,7 +1052,7 @@ to aid in debugging.")
 (define-public delve
   (package
     (name "delve")
-    (version "1.25.1")
+    (version "1.25.2")
     (source
      (origin
        (method git-fetch)
@@ -1062,7 +1062,7 @@ to aid in debugging.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rfpgh9ijb0lcyrfscxb3k1552wwhqj0jxv5zfyrsfm1n6j8dc93"))
+         "1b6vp6m4vjx4wfs1djhpizvz40s563jwld9lgjq82svaiilrmlqa"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
