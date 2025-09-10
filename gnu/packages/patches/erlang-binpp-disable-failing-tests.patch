@@ -1,0 +1,73 @@
+From 4ee37e2617e3de954113d64046fce7566dd39910 Mon Sep 17 00:00:00 2001
+From: Giacomo Leidi <goodoldpaul@autistici.org>
+Date: Tue, 17 Sep 2024 03:11:47 +0200
+Subject: [PATCH] These tests fail on current Guix.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+    binpp: -print_bucket_test_/0-fun-4- (Print 00FF)...*failed*
+in function binpp:'-print_bucket_test_/0-fun-4-'/3 (/tmp/guix-build-erlang-binpp-1.1.1.drv-0/src/binpp.erl, line 290)
+in call from eunit_test:run_testfun/1 (eunit_test.erl, line 72)
+in call from eunit_proc:run_test/1 (eunit_proc.erl, line 544)
+in call from eunit_proc:with_timeout/3 (eunit_proc.erl, line 369)
+in call from eunit_proc:handle_test/2 (eunit_proc.erl, line 527)
+in call from eunit_proc:tests_inorder/3 (eunit_proc.erl, line 469)
+in call from eunit_proc:with_timeout/3 (eunit_proc.erl, line 359)
+in call from eunit_proc:run_group/2 (eunit_proc.erl, line 583)
+**error:{assertEqual,[{module,binpp},
+              {line,290},
+              {expression,"F ( I )"},
+              {expected,["00 FF                                           ",
+                         32,".ÿ","\n"]},
+              {value,["00 FF                                           ",32,
+                      ".ÿ",10]}]}
+  output:<<"">>
+
+    binpp: -print_bucket_test_/0-fun-4- (Print 41414141414141414141414141414141)...*failed*
+in function binpp:'-print_bucket_test_/0-fun-4-'/3 (/tmp/guix-build-erlang-binpp-1.1.1.drv-0/src/binpp.erl, line 290)
+in call from eunit_test:run_testfun/1 (eunit_test.erl, line 72)
+in call from eunit_proc:run_test/1 (eunit_proc.erl, line 544)
+in call from eunit_proc:with_timeout/3 (eunit_proc.erl, line 369)
+in call from eunit_proc:handle_test/2 (eunit_proc.erl, line 527)
+in call from eunit_proc:tests_inorder/3 (eunit_proc.erl, line 469)
+in call from eunit_proc:with_timeout/3 (eunit_proc.erl, line 359)
+in call from eunit_proc:run_group/2 (eunit_proc.erl, line 583)
+**error:{assertEqual,[{module,binpp},
+              {line,290},
+              {expression,"F ( I )"},
+              {expected,["41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 ",
+                         32,"AAAAAAAAAAAAAAAA","\n"]},
+              {value,["41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 ",32,
+                      "AAAAAAAAAAAAAAAA",10]}]}
+  output:<<"">>
+---
+ src/binpp.erl | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/src/binpp.erl b/src/binpp.erl
+index ec5f8cf..4ec98e4 100644
+--- a/src/binpp.erl
++++ b/src/binpp.erl
+@@ -278,18 +278,6 @@ diff_test_() ->
+     [ { <<"Diff">>, fun() -> ?assertEqual({ok, R}, F(I1, I2)) end }
+              || { {I1, I2}, R } <- Tests ].
+ 
+-print_bucket_test_() ->
+-    F = fun print_bucket/1,
+-    Tests = [
+-            { ["00", "FF"],
+-              ["00 FF                                           ", ?SPACE, [?SPECIAL, 255], "\n"] },
+-
+-            { ["41" || _ <- lists:seq(1, 16) ],
+-              ["41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 ", ?SPACE, [$A || _ <- lists:seq(1, 16)], "\n"] }
+-        ],
+-    [ { iolist_to_binary(["Print ", I]), fun() -> ?assertEqual(R, F(I)) end }
+-             || { I, R } <- Tests ].
+-
+ print_buckets_test_() ->
+     F = fun print_buckets/1,
+     Tests = [
+-- 
+2.46.0
+

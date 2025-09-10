@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,28 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public erlang-binpp
+  (package
+    (name "erlang-binpp")
+    (version "1.1.1")
+    (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jtendo/binpp")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dv7mg0j6q4vs4bcp14df3q1y3if58dskca98wmnsrbwkibkn6vp"))
+         (patches (search-patches "erlang-binpp-disable-failing-tests.patch"))))
+    (build-system rebar-build-system)
+    (synopsis "Erlang Binary Pretty Printer")
+    (description "@code{Binpp} will use @code{io:format} to output the formatted
+binary by default.  However there are options making @code{pprint} functions
+return formatted data instead of performing direct IO write.")
+    (home-page "https://hexdocs.pm/binpp/")
+    (license license:wtfpl2)))
 
 (define-public erlang-luerl
   (package
