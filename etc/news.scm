@@ -27,6 +27,7 @@
 ;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;; Copyright © 2024 Sebastian Dümcke <code@sam-d.com>
+;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;; Copyright © 2025 Rivulet Cedar <rivulet_cedar@yeah.net>
@@ -43,14 +44,18 @@
  (entry (commit "61081db5d11dca328c8b2c8d1d5d4ef9ba662059")
         (title
          (en "Linux-libre updated to 6.16")
-         (de "Linux-libre wird auf 6.16 aktualisiert"))
+         (de "Linux-libre wird auf 6.16 aktualisiert")
+         (pt "Linux-libre atualizado para 6.16"))
         (body
          (en "The default linux-libre package has been updated to the 6.16
 release series.  The 6.15 kernel series will be removed soon because it is no
 longer supported upstream.")
          (de "Das standardmäßig verwendete @code{linux-libre}-Paket wurde auf
 die Versionsreihe 6.16 aktualisiert.  Die Kernel-Reihe 6.15 wird bald entfernt
-werden, weil sie von dessen Anbieter nicht mehr unterstützt wird.")))
+werden, weil sie von dessen Anbieter nicht mehr unterstützt wird.")
+         (pt "O pacote @code{linux-libre} padrão foi atualizado para a série de
+lançamentos 6.16.  A série de kernels 6.15 será removida em breve porque não é
+mais suportada pelo fornecedor.")))
 
  (entry (commit "6e57701013a69a20df6983f5e05aa3598073282f")
         (title
