@@ -309,6 +309,23 @@ Mozilla's canonical set.")
 printing extending the io:format syntax to add colours.")
     (license license:expat)))
 
+(define-public erlang-zipper
+  (package
+    (name "erlang-zipper")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "zipper" version))
+       (sha256
+        (base32 "0dbmxy5f86pmc85b1maassygnnf7n2bxapnbc2cc1wryx0xchi26"))))
+    (build-system rebar-build-system)
+    (synopsis "Generic Zipper implementation for Erlang")
+    (description "This package provides a generic Zipper implementation
+for Erlang.")
+    (home-page "https://hexdocs.pm/zipper/")
+    (license license:asl2.0)))
+
 (define-public erlang-yamerl
   (let ((commit "a24f448c0a8084f70b751dc38621047e56fb53cc")
         (revision "0"))
