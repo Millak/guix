@@ -11540,16 +11540,16 @@ https://openid.net/developers/how-connect-works/}.")
 (define-public go-gitlab-com-gitlab-org-api-client-go
   (package
     (name "go-gitlab-com-gitlab-org-api-client-go")
-    (version "0.123.0")
+    (version "0.130.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/gitlab-org/api/client-go.git")
-             (commit (string-append "v" version))))
+              (url "https://gitlab.com/gitlab-org/api/client-go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xrqyqvmaslfr9cj91519qi5f2sd3l2mvipxgjf13vd3v4fchacn"))))
+        (base32 "06bnaja7b0q2wgznqg9rz7kdx5wq70hmdn9ymf2546svwibmz4vk"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -11559,18 +11559,27 @@ https://openid.net/developers/how-connect-works/}.")
               (string-join
                ;; Tests requir network access.
                (list "TestGetMergeRequest"
+                     "TestPagination_Scan2"
+                     "TestPagination_Scan2_Error"
+                     "TestPagination_ScanAndCollect"
+                     "TestPagination_Scan_Error"
+                     "TestPagination_Scan_KeysetBased"
+                     "TestPagination_Scan_OffsetBased"
                      "TestRepositoryFilesService_CreateFile"
                      "TestRepositoryFilesService_DeleteFile"
                      "TestRepositoryFilesService_GetFile"
                      "TestRepositoryFilesService_GetFileBlame"
                      "TestRepositoryFilesService_GetFileMetaData"
                      "TestRepositoryFilesService_GetRawFile"
+                     "TestRepositoryFilesService_GetRawFileMetaData"
                      "TestRepositoryFilesService_UpdateFile"
                      "TestRepositorySubmodulesService_UpdateSubmodule"
+                     "TestTagsService_GetTagSignature"
                      "TestUpdateRepositoryEnvironmentsEscapesURL")
                "|"))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-mock))
     (propagated-inputs
      (list go-github-com-google-go-querystring
            go-github-com-hashicorp-go-cleanhttp
