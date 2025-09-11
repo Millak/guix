@@ -24550,6 +24550,63 @@ browser).")
 (define-public clasp-open-with
   (sbcl-package->clasp-package sbcl-open-with))
 
+(define-public sbcl-openapi-generator
+  (let ((commit "7c3842a6ed36ba2796dcd35fd1d65d488eecf749")
+        (revision "0"))
+    (package
+      (name "sbcl-openapi-generator")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/kilianmh/openapi-generator.git")
+               (commit commit)))
+         (file-name (git-file-name name commit))
+         (sha256
+          (base32 "0cv0p4lv6kb7kv8fnnbrhrdqk2n79pl6ddlh0jz0a0n44f96vm0h"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:asd-systems ''("openapi-generator")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; This file makes a remote call at compile time
+            (add-after 'unpack 'ignore-collections
+              (lambda _
+                (substitute* "openapi-generator.asd"
+                  (("\\(:file \"collection") "#+nil(:file \"collection")))))))
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-cl-str
+             sbcl-cl-hash-util
+             sbcl-cl-semver
+             sbcl-pathname-utils
+             sbcl-json-mop
+             sbcl-yason
+             sbcl-jzon
+             sbcl-cl-project
+             sbcl-listopia
+             sbcl-alexandria
+             sbcl-serapeum
+             sbcl-quri
+             sbcl-dexador
+             sbcl-cl-json-pointer
+             sbcl-moptilities
+             sbcl-parse-float
+             sbcl-cl-yaml))
+      (home-page "https://gitlab.com/lockie/trivial-adjust-simple-array")
+      (synopsis "OpenAPI client system generator")
+      (description "OpenAPI client system generator.")
+      (license license:agpl3+))))
+
+(define-public ecl-openapi-generator
+  (sbcl-package->ecl-package sbcl-openapi-generator))
+
+(define-public cl-openapi-generator
+  (sbcl-package->cl-source-package sbcl-openapi-generator))
+
 (define-public sbcl-opticl
   (let ((commit "f6fc4dc5fa61ae3f2527b77e4bda99001ba37dcb")
         (revision "1"))
