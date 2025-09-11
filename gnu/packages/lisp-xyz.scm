@@ -5085,6 +5085,38 @@ This library is no longer supported by its author.")
 (define-public ecl-cl-colors
   (sbcl-package->ecl-package sbcl-cl-colors))
 
+(define-public sbcl-cl-colors-ng
+  (package
+    (name "sbcl-cl-colors-ng")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/cage/cl-colors-ng.git")
+             (commit "310e6495e2658d33a7500455fd461074748ef805")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0lnrawzygxzb9yp1bsjwwlyyp0axms5f5rv0aa4nlhxh5syv5fg8"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-clunit2))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cl-ppcre
+           sbcl-parse-number))
+    (synopsis "Simple color library for Common Lisp")
+    (description "Simple color library for Common Lisp.")
+    (license license:boost1.0)
+    (home-page "https://codeberg.org/cage/cl-colors-ng.git")))
+
+(define-public ecl-cl-colors-ng
+  (sbcl-package->ecl-package sbcl-cl-colors-ng))
+
+(define-public cl-colors-ng
+  (sbcl-package->cl-source-package sbcl-cl-colors-ng))
+
 (define-public sbcl-cl-colors2
   (package
     (name "sbcl-cl-colors2")
