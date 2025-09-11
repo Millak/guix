@@ -29957,10 +29957,11 @@ dynamically.")
   (sbcl-package->ecl-package sbcl-sxql-composer))
 
 (define-public sbcl-sycamore
-  (let ((commit "fd2820fec165ad514493426dea209728f64e6d18"))
+  (let ((commit "0b50f6a69dd86818bdb4b833116dda9bc873d6f4")
+        (revision "1"))
     (package
       (name "sbcl-sycamore")
-      (version "0.0.20120604")
+      (version (git-version "0.0.20250808" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -29969,7 +29970,7 @@ dynamically.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00bv1aj89q5vldmq92zp2364jq312zjq2mbd3iyz1s2b4widzhl7"))))
+          (base32 "1h5va9kbywr6n56k1397y0j3bpgn59h43fjq3sycq2hnl6lb4wi6"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-cl-ppcre))
