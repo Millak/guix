@@ -251,20 +251,19 @@ editor.")
 (define-public gore
   (package
     (name "gore")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/x-motemen/gore")
-             (commit (string-append "v" version))))
+              (url "https://github.com/x-motemen/gore")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d8ayzni43j1y02g9j2sx1rhml8j1ikbbzmcki2lyi4j0ix5ys7f"))))
+        (base32 "1x67npdwmrpa11xg93756bfbc2mxrbf04pk8dk4i8hx67wr95z0h"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23                      ;required by motemen-go-quickfix
       #:import-path "github.com/x-motemen/gore"
       #:install-source? #f
       #:test-flags
@@ -275,9 +274,11 @@ editor.")
                        (list "TestAction_ArgumentRequired"
                              "TestAction_Clear"
                              "TestAction_CommandNotFound"
+                             "TestAction_Doc"
                              "TestAction_Help"
                              "TestAction_Import"
                              "TestAction_Quit"
+                             "TestAction_Type"
                              "TestSessionEval_AutoImport"
                              "TestSessionEval_CompileError"
                              "TestSessionEval_Const"
@@ -285,6 +286,7 @@ editor.")
                              "TestSessionEval_Declarations"
                              "TestSessionEval_Func"
                              "TestSessionEval_Gomod"
+                             "TestSessionEval_Gomod_AutoImport"
                              "TestSessionEval_Gomod_CompleteImport"
                              "TestSessionEval_Gomod_DeepDir"
                              "TestSessionEval_Gomod_Outside"
@@ -296,6 +298,7 @@ editor.")
                              "TestSessionEval_Struct"
                              "TestSessionEval_TokenError"
                              "TestSessionEval_import"
+                             "TestSession_ExtraFiles"
                              "TestSession_IncludePackage"
                              "TestSession_completeWord")
                        "|"))
