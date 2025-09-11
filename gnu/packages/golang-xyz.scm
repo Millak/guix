@@ -15188,6 +15188,33 @@ through it's psuedoterminal.")
 list of sentences.")
     (license license:expat)))
 
+(define-public go-github-com-nightlyone-lockfile
+  (package
+    (name "go-github-com-nightlyone-lockfile")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nightlyone/lockfile")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "092r6gv27khplc3srg2ai7214hnvpms6klnsl66x49mspq10b7l5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nightlyone/lockfile"))
+    (home-page "https://github.com/nightlyone/lockfile")
+    (synopsis " Handle locking via pid files ")
+    (description
+     "Package lockfile handles pid file based locking.  While a
+@code{sync.Mutex} helps against concurrency issues within a single process,
+this package is designed to help against concurrency issues between
+cooperating processes or serializing multiple invocations of the same
+process.")
+    (license license:expat)))
+
 (define-public go-github-com-niklasfasching-go-org
   (package
     (name "go-github-com-niklasfasching-go-org")
