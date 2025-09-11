@@ -1142,6 +1142,39 @@ Node @code{nock} library, it has features like:
      "This package provides a library to generate unified diffs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-hexops-valast
+  (package
+    (name "go-github-com-hexops-valast")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hexops/valast")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pn08if4zz7gm0g4l9wsg1psqkbqa9i0g5wnba7jr2c23253xplf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;cycles with go-github-com-hexops-autogold
+      #:import-path "github.com/hexops/valast"))
+    (propagated-inputs
+     (list go-golang-org-x-tools
+           go-mvdan-cc-gofumpt))
+    (home-page "https://github.com/hexops/valast")
+    (synopsis "Convert Go values to their AST")
+    (description
+     "This package implements a functionality to converts Go values at runtime
+into their @@code{go/ast} equivalent,which may be used in debugging and
+testing, as a more comprehensive and configurable version of the @code{fmt}
+package's @code{%+v} and @code{%#v} formatting directives. It is similar to
+e.g. @code{repr} in Python.")
+    ;; Dual license.
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public go-github-com-hydrogen18-memlistener
   (package
     (name "go-github-com-hydrogen18-memlistener")
