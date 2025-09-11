@@ -3360,16 +3360,16 @@ glamorous default themes.")
 (define-public go-github-com-charmbracelet-lipgloss
   (package
     (name "go-github-com-charmbracelet-lipgloss")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/charmbracelet/lipgloss")
-             (commit (string-append "v" version))))
+              (url "https://github.com/charmbracelet/lipgloss")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d1aqzsjy0mcliydbfbg223xxpf9646frbj35ac4fisdy3w3n142"))))
+        (base32 "1iww4y37qsyzswsg0p8ws7wb2jl6i2z2n0kwayvfwwh73qjh8zmr"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3383,6 +3383,7 @@ glamorous default themes.")
     (propagated-inputs
      (list go-github-com-aymanbagabas-go-udiff
            go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-cellbuf
            go-github-com-charmbracelet-x-exp-golden
            go-github-com-muesli-termenv
            go-github-com-rivo-uniseg))
