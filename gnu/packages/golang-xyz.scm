@@ -3466,6 +3466,49 @@ glamorous default themes.")
 ECMA-48} specs.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-cellbuf
+  (package
+    (name "go-github-com-charmbracelet-x-cellbuf")
+    (version "0.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/x")
+              (commit (go-version->git-ref version
+                                           #:subdir "cellbuf"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hx2dcxr40vs73xmhx0yhhafhjhns064zl9i5wskdyp47nl3z81w"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "cellbuf")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/cellbuf"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-colorprofile
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-term
+           go-github-com-mattn-go-runewidth
+           go-github-com-rivo-uniseg))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Terminal cell buffer functionality")
+    (description
+     "Package cellbuf provides terminal cell buffer functionality.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-exp-golden
   (package
     (name "go-github-com-charmbracelet-x-exp-golden")
