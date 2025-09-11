@@ -5667,17 +5667,18 @@ supports url redirection and retries, and also gzip and deflate decoding.")
 (define-public python-urllib3-next
   (package
     (inherit python-urllib3)
-    (version "2.3.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urllib3" version))
        (sha256
         (base32
-         "0k90y2bbmw87b9wx7lf0ps0wjpjbnk3h61byrrwid1ph7jdl9igq"))))
+         "0q17z6zlpyjv9ax5c3d30qwp9fwhz2sc4gbb7yyd86g4qwrpgi1z"))))
     (native-inputs
-     (list python-hatchling
-           python-hatch-vcs))))
+     (list python-hatch-vcs
+           python-hatchling
+           python-setuptools-scm))))
 
 (define-public python-urllib3-1.25
   (package
