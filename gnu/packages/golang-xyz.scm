@@ -9379,7 +9379,7 @@ sequences.")
 (define-public go-github-com-hashicorp-go-hclog
   (package
     (name "go-github-com-hashicorp-go-hclog")
-    (version "1.6.2")
+    (version "1.6.3")
     (source
      (origin
        (method git-fetch)
@@ -9388,7 +9388,7 @@ sequences.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lvr4ga95a0xb62vgq1hy558x3r65hn2d0h7bf0a88lsfsrcik0n"))))
+        (base32 "0nh70591hcxjvxdfkq2is437rvnrnf37mdgpl31qj47fdffclsjs"))))
     (build-system go-build-system)
     (arguments
      (list
