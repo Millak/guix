@@ -15755,7 +15755,7 @@ fine-grained log control, extensibility, and scalability.")
 (define-public go-github-com-olekukonko-tablewriter
   (package
     (name "go-github-com-olekukonko-tablewriter")
-    (version "1.0.7")
+    (version "1.0.9")
     (source
      (origin
        (method git-fetch)
@@ -15764,12 +15764,14 @@ fine-grained log control, extensibility, and scalability.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ycpp98j8xzgfq87f9vqzh8mncai142l1r32qrz3m47sx88pk69s"))))
+        (base32 "13qkanznaq2wadb24rskf0p76wkd84qbxd5lavysnq57ip4pm0fd"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/olekukonko/tablewriter"))
+      #:import-path "github.com/olekukonko/tablewriter"
+      ;; XXX: wrap_test.go:38:12: non-constant format string in call to
+      ;; (*testing.common).Errorf
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-olekukonko-ts)) ; for CLI <cmd/csv2table>
     (propagated-inputs
