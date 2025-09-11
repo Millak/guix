@@ -1139,7 +1139,7 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
   (package
     (inherit go-github-com-alecthomas-chroma)
     (name "go-github-com-alecthomas-chroma-v2")
-    (version "2.14.0")
+    (version "2.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1148,30 +1148,23 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qgr4gywjks869sc85wb8nby612b8wvsa1dwpsbanjsljq7wq7mp"))))
+        (base32 "05w4hnfcxqdlsz7mkc0m3jbp1aj67wzyhq5jh8ldfgnyjnlafia3"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/alecthomas/chroma/v2/cmd/chroma
+            ;; - github.com/alecthomas/chroma/v2/cmd/chromad
+            (delete-file-recursively "cmd")))))
     (arguments
      (list
-      #:import-path "github.com/alecthomas/chroma/v2"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-testdata-and-cmd-files
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file-recursively
-                          (list "lexers/testdata/python2/test_complex_file1.actual"
-                                ;; Executable is packed as separate package.
-                                "cmd")))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
-    (propagated-inputs
-     (list go-github-com-dlclark-regexp2))
+      #:import-path "github.com/alecthomas/chroma/v2"))
     (native-inputs
      (list go-github-com-alecthomas-assert-v2
-           go-github-com-alecthomas-repr))))
+           go-github-com-alecthomas-repr))
+    (propagated-inputs
+     (list go-github-com-dlclark-regexp2))))
 
 (define-public go-github-com-alecthomas-colour
   (package
