@@ -12990,6 +12990,43 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
 (define-public ecl-common-lisp-jupyter
   (sbcl-package->ecl-package sbcl-common-lisp-jupyter))
 
+(define-public sbcl-commondoc-markdown
+  (let ((commit "7abd28806bec33f291b982684d143edddb5cc32a")
+        (revision "0"))
+    (package
+      (name "sbcl-commondoc-markdown")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/40ants/commondoc-markdown")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12n8yx8jhz8713r63gmrymplm1mfczm7q7a343d13wl6gng1gjs1"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-hamcrest))
+      (inputs
+       (list sbcl-3bmd
+             sbcl-cl-str
+             sbcl-common-doc
+             sbcl-common-html
+             sbcl-ironclad
+             sbcl-plump))
+      (home-page "https://github.com/40ants/commondoc-markdown")
+      (synopsis "Converts Markdown text into CommonDoc nodes and vice versa")
+      (description "Converts Markdown text into CommonDoc nodes and vice
+versa.")
+      (license license:unlicense))))
+
+(define-public ecl-commondoc-markdown
+  (sbcl-package->ecl-package sbcl-commondoc-markdown))
+
+(define-public cl-commondoc-markdown
+  (sbcl-package->cl-source-package sbcl-commondoc-markdown))
+
 (define-public sbcl-compatible-metaclasses
   (package
     (name "sbcl-compatible-metaclasses")
