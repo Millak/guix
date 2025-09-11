@@ -6744,6 +6744,42 @@ Common Lisp based on the hash array-mapped trie data structure.")
 (define-public ecl-cl-hamt
   (sbcl-package->ecl-package sbcl-cl-hamt))
 
+(define-public sbcl-cl-hash-util
+  (let ((commit "7f88cb7579b2af8c21022554f46dddd6ce6a5fc2")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-hash-util")
+      (version (git-version "0.1.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/orthecreedence/cl-hash-util")
+               (commit commit)))
+         (file-name (git-file-name name commit))
+         (sha256
+          (base32 "1xab7v2mav241rs8w68qmg485g4f75nrac3hjcnm0cb19ickbs1m"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:asd-systems ''("cl-hash-util")))
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list))
+      (home-page "https://github.com/orthecreedence/cl-hash-util")
+      (synopsis "Small hash utility library for Common Lisp")
+      (description "Very basic library for dealing with CL's hash tables.  The
+idea was spawned through working with enough JSON APIs and config files, causing
+a lot of headaches in the process.")
+      (license license:expat))))
+
+(define-public ecl-cl-hash-util
+  (sbcl-package->ecl-package sbcl-cl-hash-util))
+
+(define-public cl-hash-util
+  (sbcl-package->cl-source-package sbcl-cl-hash-util))
+
 (define-public sbcl-cl-heap
   (package
     (name "sbcl-cl-heap")
