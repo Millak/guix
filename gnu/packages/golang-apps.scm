@@ -144,7 +144,7 @@ definitions in Go programs.")
 (define-public gomacro
   (package
     (name "gomacro")
-    (version "0.0.0-20240506194242-2ff796e3da10")
+    (version "0.0.0-20250712144029-20095acfbf18")
     (source
      (origin
        (method git-fetch)
@@ -153,7 +153,7 @@ definitions in Go programs.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17v3vlq5s5mxplzvs5d414shd2mqkfj3jwxzfgq6cnr9hgr4b9kc"))))
+        (base32 "1w7gcrympnxwrscmhwahx3anm2yp1ali8xqh1s23q93gyznzcpj5"))))
     (build-system go-build-system)
     (arguments
      (list
