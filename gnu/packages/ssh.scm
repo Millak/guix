@@ -2,7 +2,7 @@
 ;;; Copyright © 2012-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2018-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2018-2022, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
@@ -175,6 +175,13 @@ file names.
                       (lambda _
                         (substitute* "tests/unittests/CMakeLists.txt"
                           (("torture_config_match_localnetwork") "")))))
+                 #~())
+          #$@(if (target-ppc32?)
+                 #~((add-after 'unpack 'skip-torture-test
+                      ;; This test times out after 1500 seconds.
+                      (lambda _
+                        (substitute* "tests/unittests/CMakeLists.txt"
+                          (("torture_threads_pki_rsa") "")))))
                  #~()))))
     (native-inputs (list cmocka))
     (inputs (list bash-minimal mit-krb5 openssl zlib))
