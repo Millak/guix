@@ -21229,6 +21229,65 @@ and mix text with expressions.")
 (define-public ecl-log4cl
   (sbcl-package->ecl-package sbcl-log4cl))
 
+(define-public sbcl-log4cl-extras
+  (let ((commit "7df9566cfecf6ed418ea85c2aa2f886dfb6f12af")
+        (revision "0"))
+    (package
+      (name "sbcl-log4cl-extras")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/40ants/log4cl-extras")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17p8y884163j0gab0idra297kivzdgagl2im0gkmdhgrh0dw3b53"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The package is explicitly not included to avoid pulling in a
+            ;; dependency, but the tests are included. We ignore the test to
+            ;; truly ignore the module.
+            (add-after 'unpack 'do-not-test-ignored-secrets-system
+              (lambda _
+                (substitute* "log4cl-extras-test.asd"
+                  (("\"log4cl-extras-test/secrets")
+                   "#+nil\"log4cl-extras-test/secrets")))))))
+      (native-inputs
+       (list sbcl-hamcrest
+             sbcl-40ants-asdf-system))
+      (inputs
+       (list sbcl-with-output-to-stream
+             sbcl-pythonic-string-reader
+             sbcl-log4cl
+             sbcl-cl-strings
+             sbcl-jonathan
+             sbcl-40ants-doc))
+      (home-page "https://github.com/40ants/log4cl-extras")
+      (synopsis "Addons to LOG4CL: JSON appender, context fields, cross-finger
+appender, etc.")
+      (description
+       "This library extends LOG4CL system in a few ways:
+
+* It helps with configuration of multiple appenders and layouts.
+* Has a facility to catch context fields and to log them.
+* Has a macro to log unhandled errors.
+* Adds a layout to write messages as JSON, which is useful for production as
+makes easier to parse and process such logs.
+* Uses the appenders which are not disabled in case of some error which again,
+should be useful for production.")
+      (license license:bsd-0))))
+
+(define-public ecl-log4cl-extras
+  (sbcl-package->ecl-package sbcl-log4cl-extras))
+
+(define-public cl-log4cl-extras
+  (sbcl-package->cl-source-package sbcl-log4cl-extras))
+
 (define-public sbcl-lorem-ipsum
   (let ((commit "04a1839a03b53c954e799b9cf570ac915b032ce8")
         (revision "0"))
