@@ -19961,7 +19961,7 @@ Go.")
 (define-public go-github-com-vburenin-ifacemaker
   (package
     (name "go-github-com-vburenin-ifacemaker")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -19970,7 +19970,7 @@ Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00031373i4xqrsaf7yv93czfmcf5qzn94mmqwamyjd6gpq37p1hl"))))
+        (base32 "00i3kxyk9mp3ph2kq8qv2572w9czcizgv41j9ayasi0z9x0zk131"))))
     (build-system go-build-system)
     (arguments
      (list
