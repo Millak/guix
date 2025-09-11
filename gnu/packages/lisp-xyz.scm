@@ -19646,7 +19646,7 @@ defined.")
 (define-public sbcl-jzon
   (package
     (name "sbcl-jzon")
-    (version "1.1.0")
+    (version "1.1.4")
     (source
      (origin
        (method git-fetch)
@@ -19655,7 +19655,7 @@ defined.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-jzon" version))
        (sha256
-        (base32 "0rbardn1dfizpyyy1c127zzk1fnq4pslz75xa7ldpfjsi5jc5fmr"))))
+        (base32 "0z7xpylyk8rakz449rxqpz4hazn91ap2dnf0689iigdvvl3yqz3g"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("com.inuoe.jzon")
