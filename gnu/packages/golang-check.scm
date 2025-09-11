@@ -1120,6 +1120,38 @@ Node @code{nock} library, it has features like:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-hexops-autogold-v2
+  (package
+    (name "go-github-com-hexops-autogold-v2")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hexops/autogold")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15ih02l1c9z55ixrl39v0g3fv38nwl578bdjnygl14rbh5dqac0y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hexops/autogold/v2"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-hexops-gotextdiff
+           go-github-com-hexops-valast
+           go-github-com-nightlyone-lockfile
+           go-golang-org-x-tools))
+    (home-page "https://github.com/hexops/autogold")
+    (synopsis "Automatically update Go tests")
+    (description
+     "Package autogold makes @code{go test -update} automatically update Go
+tests (golden files and Go values in e.g. @code{foo_test.go}).")
+    ;; Dual license.
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public go-github-com-hexops-gotextdiff
   (package
     (name "go-github-com-hexops-gotextdiff")
