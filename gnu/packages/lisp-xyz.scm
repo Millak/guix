@@ -15320,7 +15320,7 @@ in which case it returns the appropriate closure.")
 
 (define-public sbcl-envy
   (let ((commit "26a7faadc981f2a047daa36f715a44faec5dd00c")
-	(revision "2"))
+        (revision "2"))
     (package
       (name "sbcl-envy")
       (version (git-version "0.1" revision commit))
@@ -19930,7 +19930,7 @@ performance and simplicity in mind.")
 
 (define-public sbcl-lambda-fiddle
   (let ((commit "d16bba55acf6065b412f64ab8fdff679a4a32b1e") ;; no tagged branch
-	(revision "1"))
+        (revision "1"))
     (package
       (name "sbcl-lambda-fiddle")
       (version (git-version "1.0.0" revision commit))
@@ -20755,7 +20755,7 @@ syntax such that is accepts Org files as Lisp source code files.")
 
 (define-public sbcl-livesupport
   (let ((commit "71e6e412df9f3759ad8378fabb203913d82e228a")
-	(revision "1"))
+        (revision "1"))
     (package
       (name "sbcl-livesupport")
       (version (git-version "0.0.0" revision commit))
@@ -22344,7 +22344,7 @@ extensions to Common Lisp.  It contains:
 
 (define-public sbcl-mito
   (let ((commit "47ba4865ca4bb2894b53703a49a299e973f8eb86")
-	(revision "3"))
+        (revision "3"))
     (package
       (name "sbcl-mito")
       (version (git-version "0.1" revision commit))
@@ -25945,7 +25945,7 @@ an array-based heap.")
        (list sbcl-prove))
       (arguments
        '(#:asd-systems '("proc-parse-test"
-			 "proc-parse")))
+                         "proc-parse")))
       (synopsis "Procedural vector parser")
       (description
        "This is a string/octets parser library for Common Lisp with speed and
