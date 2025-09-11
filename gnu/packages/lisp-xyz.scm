@@ -29808,6 +29808,33 @@ without the latter being aware of it.")
 (define-public ecl-stealth-mixin
   (sbcl-package->ecl-package sbcl-stealth-mixin))
 
+(define-public sbcl-stem
+  (let ((commit "901e859bdc2b8cc5d8e91dbaca8909e6db05fa84")
+        (revision "0"))
+    (package
+      (name "sbcl-stem")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hanshuebner/stem")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a2kr09c3qcwg16n8rm15qgy5p9l6z4m72jray0846hqbnji77mp"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/hanshuebner/stem")
+      (synopsis "Porter Stemming Algorithm")
+      (description "Porter Stemming Algorithm.")
+      (license license:llgpl))))
+
+(define-public ecl-stem
+  (sbcl-package->ecl-package sbcl-stem))
+
+(define-public cl-stem
+  (sbcl-package->cl-source-package sbcl-stem))
+
 (define-public sbcl-stmx
   ;; No release for years and recent commits contain fixes for recent SBCL
   ;; versions.
