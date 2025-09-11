@@ -25200,8 +25200,8 @@ your own classes.")
   (sbcl-package->clasp-package sbcl-plump))
 
 (define-public sbcl-plump-sexp
-  (let ((commit "bbcf75e9ecda8fe7603098ab8c15828407bb4f08")
-        (revision "0"))
+  (let ((commit "a40f66dbc7bf9d5957b1f85b184ce6798519ab96")
+        (revision "1"))
     (package
       (name "sbcl-plump-sexp")
       (version (git-version "0.1.0" revision commit))
@@ -25210,12 +25210,12 @@ your own classes.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/plump-sexp")
+           (url "https://codeberg.org/shinmera/plump-sexp")
            (commit commit)))
          (file-name (git-file-name "cl-plump-sexp" version))
          (sha256
           (base32
-           "0zm9h0assjb8766z2v6l1k1s60y90y6f8smrl1dczwqlvc8xyln5"))))
+           "0iyz4xn7sk6pxx9avc2ajcy9268zdfr3xyvi16hgpajwcbqi5sjq"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-plump))
@@ -25223,7 +25223,7 @@ your own classes.")
       (description
        "The Plump-SEXP library is a backend for Plump which can convert
 between S-expressions and the Plump DOM.")
-      (home-page "https://github.com/Shinmera/plump-sexp")
+      (home-page "https://codeberg.org/shinmera/plump-sexp")
       (license license:zlib))))
 
 (define-public cl-plump-sexp
