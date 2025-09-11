@@ -17425,6 +17425,36 @@ the CDR-8 standard.")
 (define-public ecl-generic-comparability
   (sbcl-package->ecl-package sbcl-generic-comparability))
 
+(define-public sbcl-geneva
+  (let ((commit "126d330aec6c3b1cba212387888c738bf7196dec")
+        (revision "0"))
+    (package
+      (name "sbcl-geneva")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eugeneia/geneva")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pw18xkbndqssx6iix8a8zcw8bgjh88jxxxrklkgkghk04bmqxw3"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-split-sequence
+             sbcl-named-readtables))
+      (home-page "https://github.com/eugeneia/geneva")
+      (synopsis "Portable document preparation system")
+      (description "Portable document preparation system.")
+      (license license:agpl1))))
+
+(define-public ecl-geneva
+  (sbcl-package->ecl-package sbcl-geneva))
+
+(define-public cl-geneva
+  (sbcl-package->cl-source-package sbcl-geneva))
+
 (define-public sbcl-genhash
   (let ((commit "220ae1af8361dbd2005177f2ee11072b6a33934f")
         (revision "1"))
