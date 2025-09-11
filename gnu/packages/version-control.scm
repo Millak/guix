@@ -1027,16 +1027,16 @@ the date of the most recent commit that modified them
 (define-public git-spice
   (package
     (name "git-spice")
-    (version "0.11.0")
+    (version "0.15.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/abhinav/git-spice")
-             (commit (string-append "v" version))))
+              (url "https://github.com/abhinav/git-spice")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fgdi0gmax808aazmzl75wny2klfcz5gbs8v82zhifgiza01xzqy"))))
+        (base32 "1cymx784rrdrbhsfacdl30pgimzxfwkjr93cjkh2v37r8dv5145y"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1050,32 +1050,11 @@ the date of the most recent commit that modified them
                ;; XXX: Tests failing with various reasons: requiring
                ;; networking config or write access, or outbound access, check
                ;; if some of them may be fixed.
-               (list "TestAuthenticationFlow_PAT/pat"
-                     "TestDeviceFlowAuthenticator"
-                     "TestScript/auth_detect_forge"
-                     "TestScript/auth_explicit_forge"
-                     "TestScript/auth_insecure_storage"
-                     "TestScript/auth_prompt_forge"
-                     "TestScript/branch_create_below_with_downstack_history"
-                     "TestScript/branch_create_no_verify"
-                     "TestScript/branch_onto_two_stacks_with_downstack_history"
-                     "TestScript/branch_restack_conflict_no_edit"
-                     "TestScript/branch_split_reassign_submitted"
-                     "TestScript/branch_submit_.*"
-                     "TestScript/commit_amend_no_verify"
-                     "TestScript/commit_create_no_verify"
-                     "TestScript/commit_split_no_verify"
-                     "TestScript/downstack_submit"
-                     "TestScript/issue369_branch_submit_pr_template_cache_.*"
-                     "TestScript/issue398_repo_sync_many_merged"
-                     "TestScript/repo_sync_.*"
-                     "TestScript/stack_edit_inserted_at_bottom_with_.*"
-                     "TestScript/stack_submit"
-                     "TestScript/stack_submit_.*"
-                     "TestScript/submit_update_only"
-                     "TestScript/upstack_submit_main"
+               (list "TestScript"
+                     "TestSelectAuthenticator/oauth_public"
                      "TestSelectAuthenticator/oauth"
-                     "TestSelectAuthenticator/oauth_public")
+                     "TestAuthenticationFlow_PAT/pat"
+                     "TestDeviceFlowAuthenticator")
                "|"))
       #:phases
       #~(modify-phases %standard-phases
@@ -1110,7 +1089,6 @@ the date of the most recent commit that modified them
            go-github-com-charmbracelet-bubbles
            go-github-com-charmbracelet-bubbletea
            go-github-com-charmbracelet-lipgloss
-           go-github-com-charmbracelet-log
            go-github-com-cli-browser
            go-github-com-creack-pty
            go-github-com-dustin-go-humanize
@@ -1125,6 +1103,7 @@ the date of the most recent commit that modified them
            go-gitlab-com-gitlab-org-api-client-go
            go-go-abhg-dev-io-ioutil
            go-go-abhg-dev-komplete
+           go-go-abhg-dev-log-silog
            go-go-abhg-dev-testing-stub
            go-go-uber-org-mock
            go-golang-org-x-oauth2
