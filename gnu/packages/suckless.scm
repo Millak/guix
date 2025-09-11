@@ -267,7 +267,7 @@ a custom raw video format with a simple container.")
                  (string-append apps "/dwm.desktop")
                  #:name "dwm"
                  #:generic-name #$synopsis
-                 #:exec (string-append #$output "/bin/dwm %U")
+                 #:exec (string-append #$output "/bin/dwm")
                  #:comment
                  `(("en" ,#$synopsis)
                    (#f ,#$synopsis)))))))))
