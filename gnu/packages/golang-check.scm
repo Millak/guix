@@ -2942,7 +2942,7 @@ advanced Go linter.")
 (define-public go-pgregory-net-rapid
   (package
     (name "go-pgregory-net-rapid")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2951,19 +2951,11 @@ advanced Go linter.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1alyhcbdq6113sfymx7xxmxpcbgvkaipsn15cgjrcqrx8ks1hm5i"))))
+        (base32 "0jifhk3kz071m1qgc3jsswmy3512fsx2nqi157xq3r0vqf2jsgqr"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "pgregory.net/rapid"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                ;; Remove test file failing on go-1.21, see
-                ;; <https://github.com/flyingmutant/rapid/issues/68>.
-                (delete-file "strings_example_test.go")))))))
+      #:import-path "pgregory.net/rapid"))
     (home-page "https://pgregory.net/rapid/")
     (synopsis "Go property-based testing library")
     (description
