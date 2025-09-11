@@ -183,16 +183,16 @@ interacting with Acme windows of the Plan 9 text editor.")
 (define-public go-ariga-io-atlas
   (package
     (name "go-ariga-io-atlas")
-    (version "0.35.0")
+    (version "0.36.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ariga/atlas")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ariga/atlas")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09lh0j5w85xm0rli4cqifn5qkwdb1vnmwfdf5kymsf2w4qz3f82i"))
+        (base32 "1x3rchcm3c0ixpgx8wvz71a9mbb4flqcsjrkqhj4aa24wik5p5h2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -209,8 +209,23 @@ interacting with Acme windows of the Plan 9 text editor.")
       #:import-path "ariga.io/atlas"
       #:test-flags
       #~(list "-skip" (string-join
-                       (list "TestValidate"
-                             "TestDriver_LockAcquired")
+                       ;; Tests requiring atlas-cli in PATH.
+                       (list "TestAtlasMigrate_Apply"
+                             "TestAtlasMigrate_ApplyBroken"
+                             "TestAtlasMigrate_ApplyWithRemote"
+                             "TestAtlasMigrate_Lint"
+                             "TestAtlasMigrate_LintWithLogin"
+                             "TestAtlasMigrate_Push"
+                             "TestAtlasSchema_Apply"
+                             "TestAtlasSchema_Lint"
+                             "TestDriver_LockAcquired"
+                             "TestMaintainOriginalWorkingDir"
+                             "TestMigrateHash"
+                             "TestMigrateRebase"
+                             "TestMigrate_Diff"
+                             "TestMigrate_Status"
+                             "TestNewClient"
+                             "TestValidate")
                        "|"))
       #:phases
       #~(modify-phases %standard-phases
@@ -220,10 +235,11 @@ interacting with Acme windows of the Plan 9 text editor.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-data-dog-go-sqlmock
+           go-github-com-mattn-go-sqlite3
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-bmatcuk-doublestar
-           go-github-com-data-dog-go-sqlmock
            go-github-com-go-openapi-inflect
            go-github-com-hashicorp-hcl-v2
            go-github-com-zclconf-go-cty
