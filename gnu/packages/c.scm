@@ -1920,3 +1920,51 @@ JSON Patch and JSON Merge Patch.
 @code{.c} file.
 @end itemize")
     (license license:expat)))
+
+(define-public kefir
+  (package
+    (name "kefir")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~jprotopopov/kefir")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "01jclalg2mz68rcfn287kjd13inbhkgh2kslb54sjyqx3hypq4vb"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list m4))
+    (arguments
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-install
+            (lambda _
+              (substitute* "Makefile.mk"
+                (("^EXTRA_LDFLAGS=.*$")
+                 (string-append "EXTRA_LDFLAGS=-Wl,-rpath,"
+                                #$output
+                                "/lib\n")))
+              (substitute* "install.mk"
+                (("^prefix=.*$")
+                 (string-append "prefix=" #$output
+                                "\n"))))))))
+    (home-page "https://kefir.protopopov.lv/")
+    (synopsis "C17/C23 programming language compiler")
+    (description "Kefir is an independent compiler for the C17/C23 programming
+language, developed by Jevgenij Protopopov.  Kefir has been validated with a
+test suite of 80 software projects, among which are GNU core- and binutils,
+Curl, Nginx, OpenSSL, Perl, Postgresql, Tcl and many others.   The compiler
+targets x86_64 architecture and System-V AMD64 ABI, supporting Linux, FreeBSD,
+NetBSD an OpenBSD.")
+    (license license:gpl3)))
