@@ -81,7 +81,7 @@ translators for Pygments lexers and styles.")
 (define-public go-fxlint
   (package
     (name "go-fxlint")
-    (version "0.0.0-20241011173146-861011200d8a")
+    (version "0.0.0-20250513223611-0a30575829d4")
     (source
      (origin
        (method git-fetch)
@@ -91,7 +91,7 @@ translators for Pygments lexers and styles.")
                                            #:subdir "tools"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y9zavn5dmb5v2g2krc1apznp1fwc2zb70hlgxw4xcz2ifdwx7wz"))))
+        (base32 "058pnalgm23in7ijz1zakmn5appss5la9v0yzrh8psi8d1rzidsj"))))
     (build-system go-build-system)
     (arguments
      (list
