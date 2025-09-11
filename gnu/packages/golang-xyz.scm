@@ -3234,6 +3234,37 @@ well-suited for simple and complex terminal applications, either inline,
 full-window, or a mix of both.")
     (license license:asl2.0)))
 
+(define-public go-github-com-charmbracelet-colorprofile
+  (package
+    (name "go-github-com-charmbracelet-colorprofile")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/colorprofile")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r2qhiq110hjk55y4l4bkcrmkksbr8ah4s8qp9rd96vjy6bmbr2a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/colorprofile"))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-term
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-xo-terminfo
+           go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/colorprofile")
+    (synopsis "Magical terminal color handling")
+    (description
+     "Package colorprofile provides a way to downsample ANSI escape sequence
+colors and styles automatically based on output, environment variables, and
+Terminfo databases.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-glamour
   (package
     (name "go-github-com-charmbracelet-glamour")
