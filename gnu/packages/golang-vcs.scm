@@ -459,7 +459,7 @@ interact with GitLab in a simple and uniform way.")
 (define-public git-sync
   (package
     (name "git-sync")
-    (version "4.4.2")
+    (version "4.4.3")
     (source
      (origin
        (method git-fetch)
@@ -468,7 +468,7 @@ interact with GitLab in a simple and uniform way.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wp142i5yv9bwrq743wgd6kvmnl270wwmc8ysll3mglqwh3jyjlb"))
+        (base32 "1faif57081yajmh0lfi2l8j9imkq1zv2nlccg84izi520rwjd6f6"))
        (modules '((guix build utils)))
        (snippet
         '(begin
