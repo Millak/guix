@@ -21527,6 +21527,37 @@ about the machine, process, etc.")
 (define-public ecl-machine-state
   (sbcl-package->ecl-package sbcl-machine-state))
 
+(define-public sbcl-macro-html
+  (let ((commit "c769b5db9da6dd61365a21fc61ba07ea0f5f1963")
+        (revision "0"))
+    (package
+      (name "sbcl-macro-html")
+      (version (git-version "1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eugeneia/macro-html")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05gzgijz8r3dw3ilz7d5i0g0mbcyv9k8w2dgvw7n478njp1gfj4b"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-named-readtables))
+      (home-page "https://github.com/eugeneia/macro-html")
+      (synopsis "HTML generation library")
+      (description "Aims to be fast, modular, cachable and concise.  It does so
+by defining each tag as a macro which expands to code printing the respective
+HTML source.  Also employs a DSL for element attributes.")
+      (license license:agpl1))))
+
+(define-public ecl-macro-html
+  (sbcl-package->ecl-package sbcl-macro-html))
+
+(define-public cl-macro-html
+  (sbcl-package->cl-source-package sbcl-macro-html))
+
 (define-public sbcl-magic-ed
   (let ((commit "30bb27832d4e3e362578e7320934638f9889a8c4")
         (revision "1"))
