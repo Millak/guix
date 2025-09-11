@@ -23901,12 +23901,19 @@ Jsonnet C++implementation.")
   (package/inherit go-github-com-vburenin-ifacemaker
     (name "go-ifacemaker")
     (arguments
-     (list #:install-source? #f
-           #:tests? #f
-           #:import-path "github.com/vburenin/ifacemaker"))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-vburenin-ifacemaker)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)))
+    (native-inputs
+     (package-propagated-inputs go-github-com-vburenin-ifacemaker))
+    (propagated-inputs '())
+    (inputs '())
     (description
-     (string-append (package-description go-github-com-vburenin-ifacemaker)
-                    "  This package provides a command line interface (CLI) tool."))))
+     (string-append
+      (package-description go-github-com-vburenin-ifacemaker)
+      "\nThis package provides a command line interface (CLI) tool."))))
 
 (define-public go-md2man
   (package/inherit go-github-com-go-md2man
