@@ -11417,7 +11417,7 @@ It is to used for inputs in other packages.")
 (define-public go-github-com-zitadel-oidc-v3
   (package
     (name "go-github-com-zitadel-oidc-v3")
-    (version "3.39.1")
+    (version "3.43.0")
     (source
      (origin
        (method git-fetch)
@@ -11426,14 +11426,14 @@ It is to used for inputs in other packages.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vwqr8p75zxyghcjlm5n2d52amgpqagjwnmba9zhvcnd3cqpdjpb"))))
+        (base32 "01cpck1qy91r74q86qkw3dh62zrzwdpqlbzwrxzsv0gpqz5pixc9"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/zitadel/oidc/v3"
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Tests requring Internet access.
                        (list "TestDiscover/spotify"
                              "TestIntrospect"
@@ -11459,6 +11459,7 @@ It is to used for inputs in other packages.")
            go-github-com-zitadel-logging
            go-github-com-zitadel-schema
            go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-trace
            go-golang-org-x-oauth2
            go-golang-org-x-text))
     (home-page "https://github.com/zitadel/oidc")
