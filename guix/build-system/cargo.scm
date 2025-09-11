@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
@@ -44,6 +44,7 @@
   #:export (%cargo-build-system-modules
             %cargo-utils-modules
             cargo-build-system
+            cargo-guile-json
             %crate-base-url
             crate-url
             crate-url?
@@ -117,6 +118,10 @@ unavailable."
   (let ((module (resolve-interface '(gnu packages rust))))
     (module-ref module 'make-rust-sysroot)))
 
+(define (cargo-guile-json)
+  "Return the default guile-json package, resolved lazily."
+  (@* (gnu packages guile) guile-json-4))
+
 (define* (cargo-triplet #:optional
                         (target (or (%current-target-system)
                                     (%current-system))))
@@ -132,7 +137,6 @@ unavailable."
 (define %cargo-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build cargo-build-system)
-    (guix build json)
     ,@%cargo-utils-modules))
 
 (define* (cargo-build name inputs
@@ -156,12 +160,14 @@ unavailable."
                       (search-paths '())
                       (system (%current-system))
                       (guile #f)
+                      (guile-json (cargo-guile-json))
                       (imported-modules %cargo-build-system-modules)
                       (modules '((guix build cargo-build-system)
                                  (guix build utils))))
   "Build SOURCE using CARGO, and with INPUTS."
 
   (define builder
+   (with-extensions (list guile-json)
     (with-imported-modules imported-modules
       #~(begin
           (use-modules #$@(sexp->gexp modules))
@@ -190,7 +196,7 @@ unavailable."
                        #:inputs #$(input-tuples->gexp inputs)
                        #:search-paths '#$(sexp->gexp
                                           (map search-path-specification->sexp
-                                               search-paths))))))
+                                               search-paths)))))))
 
   (gexp->derivation name builder
                     #:system system
@@ -222,12 +228,14 @@ unavailable."
                             (native-search-paths '())
                             (system (%current-system))
                             (guile #f)
+                            (guile-json (default-guile-json))
                             (imported-modules %cargo-build-system-modules)
                             (modules '((guix build cargo-build-system)
                                        (guix build utils))))
   "Cross-build SOURCE using CARGO, and with INPUTS."
 
   (define builder
+   (with-extensions (list guile-json)
     (with-imported-modules imported-modules
       #~(begin
           (use-modules #$@(sexp->gexp modules))
@@ -263,7 +271,7 @@ unavailable."
                                                search-paths))
                        #:native-search-paths '#$(sexp->gexp
                                           (map search-path-specification->sexp
-                                               native-search-paths))))))
+                                               native-search-paths)))))))
 
   (gexp->derivation name builder
                     #:system system

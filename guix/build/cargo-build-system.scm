@@ -25,7 +25,6 @@
 
 (define-module (guix build cargo-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build json)
   #:use-module ((guix build utils) #:hide (delete))
   #:use-module (ice-9 binary-ports)
   #:use-module (ice-9 popen)
@@ -38,6 +37,7 @@
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (json)
   #:export (%standard-phases
             cargo-build))
 
@@ -50,7 +50,7 @@
 (define (manifest-targets)
   "Extract all targets from the Cargo.toml manifest"
   (let* ((port (open-input-pipe "cargo read-manifest"))
-         (data (read-json port))
+         (data (json->scm port))
          (targets (or (assoc-ref data "targets") '())))
     (close-port port)
     targets))
