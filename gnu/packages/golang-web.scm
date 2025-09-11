@@ -10873,7 +10873,7 @@ implementation as closely while remaining idiomatic and easy to use.")
 (define-public go-github-com-vishvananda-netlink
   (package
     (name "go-github-com-vishvananda-netlink")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -10882,7 +10882,7 @@ implementation as closely while remaining idiomatic and easy to use.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ckwb1ml7i2ccdd7kzc04s839naf4arlxav2ip5kf4rm4xhba9g7"))))
+        (base32 "0zc18p7mfcfjrpiwgyka8153lfyqrrlqnw7x1zzsfjf961m2cgw3"))))
     (build-system go-build-system)
     (arguments
      (list
