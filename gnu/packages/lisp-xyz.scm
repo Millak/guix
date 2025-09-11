@@ -33698,6 +33698,38 @@ or system names.")
 (define-public ecl-wild-package-inferred-system
   (sbcl-package->ecl-package sbcl-wild-package-inferred-system))
 
+(define-public sbcl-with-output-to-stream
+  (let ((commit "e94eec464d745e606cc84ea90027c26f93d032a3")
+        (revision "0"))
+    (package
+      (name "sbcl-with-output-to-stream")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Hexstream/with-output-to-stream")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1cz96hrhf0csn0i8h7cvy54sb80d4w5ljkhpd5k7kr07p9555lqz"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (home-page "https://github.com/Hexstream/with-output-to-stream")
+      (synopsis "Output to a stream according to the semantics of
+FORMAT's stream argument")
+      (description "Provides a simple way of directing output to a stream
+according to the concise and intuitive semantics of FORMAT's stream
+argument.")
+      (license license:unlicense))))
+
+(define-public ecl-with-output-to-stream
+  (sbcl-package->ecl-package sbcl-with-output-to-stream))
+
+(define-public cl-with-output-to-stream
+  (sbcl-package->cl-source-package sbcl-with-output-to-stream))
+
 (define-public sbcl-with-user-abort
   (let ((commit "60693b4a1354faf17107ad6003b0b870cca37081")
         (revision "0"))
