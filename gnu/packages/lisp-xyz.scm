@@ -30656,6 +30656,37 @@ emacs-slime.")
 (define-public ecl-terrable
   (sbcl-package->ecl-package sbcl-terrable))
 
+(define-public sbcl-texp
+  (let ((commit "3b5241441fec0151ace50b532043b2a407b4190d")
+        (revision "0"))
+    (package
+      (name "sbcl-texp")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eugeneia/texp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1sbll7jwmzd86hg0zva8r7db2565nnliasv2x6rkrm9xl97q0kg5"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-named-readtables))
+      (home-page "https://github.com/eugeneia/texp")
+      (synopsis "Domain specific language for producing TeX documents with
+Common Lisp")
+      (description "Domain specific language for producing TeX documents with
+Common Lisp.")
+      (license license:agpl1))))
+
+(define-public ecl-texp
+  (sbcl-package->ecl-package sbcl-texp))
+
+(define-public cl-texp
+  (sbcl-package->cl-source-package sbcl-texp))
+
 (define-public sbcl-the-cost-of-nothing
   (let ((commit "f364029fbbf37ae5786f2f9ddf6185dd204a7185")
         (revision "0"))
