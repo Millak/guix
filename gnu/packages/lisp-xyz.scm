@@ -16399,6 +16399,35 @@ directly.")
 (define-public ecl-file-select
   (sbcl-package->ecl-package sbcl-file-select))
 
+(define-public sbcl-file-types
+  (let ((commit "6f5676b2781f617b6009ae4ce001496ea43b6fac")
+        (revision "0"))
+    (package
+      (name "sbcl-file-types")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eugeneia/file-types")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09l67gzjwx7kx237grm709dsj9rkmmm8s3ya6irmcw8nh587inbs"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/eugeneia/file-types")
+      (synopsis "Simple scheme to classify file types in a hierarchical
+fashion")
+      (description "Simple scheme to classify file types in a hierarchical
+fashion.")
+      (license license:agpl1))))
+
+(define-public ecl-file-types
+  (sbcl-package->ecl-package sbcl-file-types))
+
+(define-public cl-file-types
+  (sbcl-package->cl-source-package sbcl-file-types))
+
 (define-public sbcl-filesystem-utils
   (let ((commit "a07e8b61b89d4b46408fb9294d9b8130e8c8a02e")
         (revision "2"))
