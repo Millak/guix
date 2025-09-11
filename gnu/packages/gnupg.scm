@@ -1102,7 +1102,8 @@ however, pgpdump produces more detailed and easier to understand output.")
                 "1k1kvxffyb4nm83yp3mnx9bfmcciwb7vfw8c3xscnh85yxdzma16"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:make-flags '("CFLAGS=-Wno-implicit-function-declaration")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
