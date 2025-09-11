@@ -15628,6 +15628,32 @@ sacrificing much in the way of power.")
 (define-public ecl-external-program
   (sbcl-package->ecl-package sbcl-external-program))
 
+(define-public sbcl-f-underscore
+  (package
+    (name "sbcl-f-underscore")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.common-lisp.net/bpm/f-underscore")
+             (commit "7988171194cd259e12469dd7c30000be6ef1b31a")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0mqvb2rxa08y07lj6smp8gf1ig32802fxq7mw5a283f2nkrinnb5"))))
+    (build-system asdf-build-system/sbcl)
+    (synopsis "Lambda shorthand macros")
+    (description "Convenient macros for common lambda patterns.")
+    (license license:public-domain)
+    (home-page "https://gitlab.common-lisp.net/bpm/f-underscore")))
+
+(define-public ecl-f-underscore
+  (sbcl-package->ecl-package sbcl-f-underscore))
+
+(define-public cl-f-underscore
+  (sbcl-package->cl-source-package sbcl-f-underscore))
+
 (define-public sbcl-f2cl
   (let ((commit "a3dabbe429ff2fe6039a60c2546d287b4157f546")
         (revision "1"))
