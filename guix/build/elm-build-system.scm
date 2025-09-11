@@ -19,7 +19,6 @@
 (define-module (guix build elm-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
-  #:use-module (guix build json)
   #:use-module (guix build union)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 rdelim)
@@ -27,6 +26,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 vlist)
+  #:use-module (json)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-71)
@@ -130,8 +130,7 @@ GUIX_ELM_PKG_VERSION to the name and version, respectively, of the Elm package
 being built, as defined in its \"elm.json\" file."
   (let* ((elm-version (getenv "GUIX_ELM_VERSION"))
          (elm-home (getenv "ELM_HOME"))
-         (info (match (call-with-input-file "elm.json" read-json)
-                 (('@ . alist) alist)))
+         (info (call-with-input-file "elm.json" json->scm))
          (name (assoc-ref info "name"))
          (version (assoc-ref info "version"))
          (rel-dir (string-append elm-version "/packages/" name "/" version))
@@ -181,12 +180,11 @@ versions from the internet."
                           (with-directory-excursion org
                             (map (lambda (repo)
                                    (cons (string-append org "/" repo)
-                                         (directory-list repo)))
+                                         (list->vector (directory-list repo))))
                                  (directory-list "."))))
                         (directory-list ".")))))
     (call-with-output-file registry-file
-      (lambda (out)
-        (write-json `(@ ,@registry-alist) out)))
+      (cut scm->json registry-alist <>))
     (patch-json-string-escapes registry-file)
     (setenv "GUIX_ELM_OFFLINE_REGISTRY_FILE" registry-file)))
 
@@ -194,9 +192,8 @@ versions from the internet."
   "Return a vhash mapping Elm \"package\" names to lists of available version
 strings."
   (alist->vhash
-   (match (call-with-input-file (getenv "GUIX_ELM_OFFLINE_REGISTRY_FILE")
-            read-json)
-     (('@ . alist) alist))))
+   (call-with-input-file (getenv "GUIX_ELM_OFFLINE_REGISTRY_FILE")
+     json->scm)))
 
 (define (find-indirect-dependencies registry-vhash root-pkg root-version)
   "Return the recursive dependencies of ROOT-PKG, an Elm \"package\" name, at
@@ -210,13 +207,11 @@ conjunction with the ELM_HOME environment variable to find dependencies."
                      "/packages")
     (define (get-dependencies pkg version acc)
       (let* ((elm-json-alist
-              (match (call-with-input-file
-                         (string-append pkg "/" version "/elm.json")
-                       read-json)
-                (('@ . alist) alist)))
+              (call-with-input-file
+                  (string-append pkg "/" version "/elm.json")
+                json->scm))
              (deps-alist
-              (match (assoc-ref elm-json-alist "dependencies")
-                (('@ . alist) alist)))
+              (assoc-ref elm-json-alist "dependencies"))
              (deps-names
               (filter-map (match-lambda
                             ((name . range)
@@ -231,7 +226,7 @@ conjunction with the ELM_HOME environment variable to find dependencies."
       (if (vhash-assoc pkg acc)
           acc
           (match (vhash-assoc pkg registry-vhash)
-            ((_ version . _)
+            ((_ . #(version))
              ;; in the rare case that multiple versions are present,
              ;; just picking an arbitrary one seems to work well enough for now
              (get-dependencies pkg version (vhash-cons pkg version acc))))))
@@ -249,37 +244,34 @@ versions."
           (match-lambda
             ((name . _)
              (cons name (match (vhash-assoc name registry-vhash)
-                          ((_ version) ;; no dot
+                          ((_ . #(version)) ;; no dot
                            version))))))
          (rewrite-direct/indirect
           (match-lambda
             ;; a little checking to avoid confusing misuse with "package"
             ;; project dependencies, which have a different shape
             (((and key (or "direct" "indirect"))
-              '@ . alist)
-             `(,key @ ,@(map rewrite-dep-version alist)))))
+              . alist)
+             `(,key ,@(map rewrite-dep-version alist)))))
          (rewrite-json-section
           (match-lambda
             (((and key (or "dependencies" "test-dependencies"))
-              '@ . alist)
-             `(,key @ ,@(map rewrite-direct/indirect alist)))
+              . alist)
+             `(,key ,@(map rewrite-direct/indirect alist)))
             ((k . v)
              (cons k v))))
          (rewrite-elm-json
-          (match-lambda
-            (('@ . alist)
-             `(@ ,@(map rewrite-json-section alist))))))
+          (cut map rewrite-json-section <>)))
     (with-atomic-file-replacement "elm.json"
       (lambda (in out)
-        (write-json (rewrite-elm-json (read-json in))
-                    out)))
+        (scm->json (rewrite-elm-json (json->scm in))
+                   out)))
     (patch-json-string-escapes "elm.json")))
 
 (define* (configure #:key native-inputs inputs #:allow-other-keys)
   "Generate a trivial Elm \"application\" with a direct dependency on the Elm
 \"package\" currently being built."
-  (let* ((info (match (call-with-input-file "elm.json" read-json)
-                 (('@ . alist) alist)))
+  (let* ((info (call-with-input-file "elm.json" json->scm))
          (name (getenv "GUIX_ELM_PKG_NAME"))
          (version (getenv "GUIX_ELM_PKG_VERSION"))
          (elm-home (getenv "ELM_HOME"))
@@ -289,31 +281,31 @@ versions."
     (with-directory-excursion app-dir
       (call-with-output-file "elm.json"
         (lambda (out)
-          (write-json
-           `(@ ("type" . "application")
-               ("source-directories" "src") ;; intentionally no dot
-               ("elm-version" . ,(getenv "GUIX_ELM_VERSION"))
-               ("dependencies"
-                @ ("direct"
-                   @ ,@(map (lambda (pkg)
-                              (match (vhash-assoc pkg registry-vhash)
-                                ((_ pkg-version . _)
-                                 (cons pkg
-                                       (if (equal? pkg name)
-                                           version
-                                           pkg-version)))))
-                            (if (member name %essential-elm-packages)
-                                %essential-elm-packages
-                                (cons name %essential-elm-packages))))
-                  ("indirect"
-                   @ ,@(if (member name %essential-elm-packages)
-                           '()
-                           (find-indirect-dependencies registry-vhash
-                                                       name
-                                                       version))))
-               ("test-dependencies"
-                @ ("direct" @)
-                  ("indirect" @)))
+          (scm->json
+           `(("type" . "application")
+             ("source-directories" . #("src")) ;; intentionally no dot
+             ("elm-version" . ,(getenv "GUIX_ELM_VERSION"))
+             ("dependencies"
+              ("direct"
+               ,@(map (lambda (pkg)
+                        (match (vhash-assoc pkg registry-vhash)
+                          ((_ . #(pkg-version))
+                           (cons pkg
+                                 (if (equal? pkg name)
+                                     version
+                                     pkg-version)))))
+                      (if (member name %essential-elm-packages)
+                          %essential-elm-packages
+                          (cons name %essential-elm-packages))))
+              ("indirect"
+               ,@(if (member name %essential-elm-packages)
+                     '()
+                     (find-indirect-dependencies registry-vhash
+                                                 name
+                                                 version))))
+             ("test-dependencies"
+              ("direct")
+              ("indirect")))
            out)))
       (patch-json-string-escapes  "elm.json")
       (with-output-to-file "src/Main.elm"

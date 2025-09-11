@@ -86,7 +86,6 @@ given VERSION with sha256 checksum HASH."
 (define %elm-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build elm-build-system)
-    (guix build json)
     (guix build union)
     ,@%default-gnu-imported-modules))
 
@@ -94,7 +93,6 @@ given VERSION with sha256 checksum HASH."
   ;; Modules in scope in the build-side environment.
   '((guix build elm-build-system)
     (guix build utils)
-    (guix build json)
     (guix build union)))
 
 ;; Lazily resolve bindings to avoid circular dependencies.
@@ -106,6 +104,10 @@ given VERSION with sha256 checksum HASH."
 
 (define (default-elm-json)
   (@* (gnu packages elm) elm-json))
+
+(define (default-guile-json)
+  "Return the default guile-json package, resolved lazily."
+  (@* (gnu packages guile) guile-json-4))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
@@ -168,23 +170,25 @@ given VERSION with sha256 checksum HASH."
                     (search-paths '())
                     (system (%current-system))
                     (guile #f)
+                    (guile-json (default-guile-json))
                     (imported-modules %elm-build-system-modules)
                     (modules %elm-default-modules))
   "Build SOURCE using ELM."
   (define builder
-    (with-imported-modules imported-modules
-      #~(begin
-          (use-modules #$@(sexp->gexp modules))
-          (elm-build #:name #$name
-                     #:source #+source
-                     #:system #$system
-                     #:tests? #$tests?
-                     #:phases #$phases
-                     #:outputs #$(outputs->gexp outputs)
-                     #:search-paths '#$(sexp->gexp
-                                        (map search-path-specification->sexp
-                                             search-paths))
-                     #:inputs #$(input-tuples->gexp inputs)))))
+    (with-extensions (list guile-json)
+      (with-imported-modules imported-modules
+        #~(begin
+            (use-modules #$@(sexp->gexp modules))
+            (elm-build #:name #$name
+                       #:source #+source
+                       #:system #$system
+                       #:tests? #$tests?
+                       #:phases #$phases
+                       #:outputs #$(outputs->gexp outputs)
+                       #:search-paths '#$(sexp->gexp
+                                          (map search-path-specification->sexp
+                                               search-paths))
+                       #:inputs #$(input-tuples->gexp inputs))))))
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
     (gexp->derivation name builder
