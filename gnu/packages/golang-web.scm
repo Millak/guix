@@ -5154,6 +5154,35 @@ dhcpv6 and dhcpv4
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-ipfs-go-cid
+  (package
+    (name "go-github-com-ipfs-go-cid")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-cid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gfd5dg0shj2daraai2kkf8sg24jp5cr6dsv857wp4q1ni612a23"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-cid"))
+    (propagated-inputs
+     (list go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-varint))
+    (home-page "https://github.com/ipfs/go-cid")
+    (synopsis "Content ID v1 implemented in Go")
+    (description
+     "Implementation in Go of the @url{https://github.com/ipld/cid, CID spec}.
+It is used in @code{go-ipfs} and related packages to refer to a typed hunk of
+data.")
+    (license license:expat)))
+
 (define-public go-github-com-jackpal-gateway
   (package
     (name "go-github-com-jackpal-gateway")
