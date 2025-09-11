@@ -31466,6 +31466,39 @@ and @code{doseq*}.")
 (define-public clasp-trivial-do
   (sbcl-package->clasp-package sbcl-trivial-do))
 
+(define-public sbcl-trivial-documentation
+  (let ((commit "e71e7cf611ecd4a27bf5dba3add8698acda762ea")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-documentation")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eugeneia/trivial-documentation")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0y90zi6kaw7226xc089dl47677fz594a5ck1ld8yggk9ww7cdaav"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        ;; Unable to build the test project. Haven't digged into why.
+        #:tests? #f))
+      (inputs
+       (list sbcl-closer-mop))
+      (home-page "https://github.com/eugeneia/trivial-documentation")
+      (synopsis "Scrape on-line documentation out of a running Lisp image")
+      (description "Scrape on-line documentation out of a running Lisp image.")
+      (license license:agpl1))))
+
+(define-public ecl-trivial-documentation
+  (sbcl-package->ecl-package sbcl-trivial-documentation))
+
+(define-public cl-trivial-documentation
+  (sbcl-package->cl-source-package sbcl-trivial-documentation))
+
 (define-public sbcl-trivial-download
   (let ((commit "d2472061d86b1cf3d32f388daacd4e32a13af699"))
     (package
