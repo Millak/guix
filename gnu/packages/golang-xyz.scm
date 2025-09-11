@@ -23832,14 +23832,19 @@ library.")
                     "\nThis package provides a command line interface (CLI) tool."))))
 
 (define-public go-hclogvet
-  (package
-    (inherit go-github-com-hashicorp-go-hclog)
+  (package/inherit go-github-com-hashicorp-go-hclog
     (name "go-hclogvet")
     (arguments
-     (list
-      #:import-path "github.com/hashicorp/go-hclog/hclogvet"
-      #:unpack-path "github.com/hashicorp/go-hclog"
-      #:install-source? #f))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-hashicorp-go-hclog)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/hashicorp/go-hclog/hclogvet")
+        ((#:unpack-path _ "") "github.com/hashicorp/go-hclog")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-hashicorp-go-hclog))
+    (propagated-inputs '())
+    (inputs '())
     (description
      "@code{hclogvet} is a @code{go vet} tool for checking that the
 Trace/Debug/Info/Warn/Error methods on @code{hclog.Logger} are used
