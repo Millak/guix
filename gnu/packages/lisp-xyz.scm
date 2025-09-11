@@ -28780,6 +28780,31 @@ standard library.")
 (define-public cl-shlex
   (sbcl-package->cl-source-package sbcl-shlex))
 
+(define-public sbcl-sijo-doctest
+  (package
+    (name "sbcl-sijo-doctest")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~simendsjo/sijo-doctest")
+             (commit "265106a7cb75571f05abe2bcf747c6f8e9d5282d")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0zwsh80d019rddxzqbxwjl0dqrpplk27gbskc1fz8yi6aris7wzq"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-lisp-unit2))
+    (synopsis "Doctests for Lisp")
+    (description "Doctests for Lisp.")
+    (license license:gpl2)
+    (home-page "https://git.sr.ht/~simendsjo/sijo-doctest")))
+
+(define-public cl-sijo-doctest
+  (sbcl-package->cl-source-package sbcl-sijo-doctest))
+
 (define-public sbcl-simple-date-time
   (let ((commit "d6992afddedf67a8172a0120a1deac32afcaa2e8")
         (revision "1"))
