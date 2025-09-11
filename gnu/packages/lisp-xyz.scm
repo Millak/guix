@@ -20111,8 +20111,8 @@ LASS files.")
      (list #:tests? #f))))
 
 (define-public sbcl-legit
-  (let ((commit "9c677b9b798803d37ab6f5e0e0705441872f7230")
-        (revision "3"))
+  (let ((commit "877147a3b4b17dff49a4ca21a30e067b7750aee8")
+        (revision "4"))
     (package
       (name "sbcl-legit")
       (version (git-version "1.0.0" revision commit))
@@ -20120,11 +20120,11 @@ LASS files.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/legit")
+               (url "https://codeberg.org/shinmera/legit")
                (commit commit)))
          (file-name (git-file-name "cl-legit" version))
          (sha256
-          (base32 "0jy021ywrbnkgbgb63ip6j7kr40m4wz2pz1v5ybn6xkkn6dyprsz"))))
+          (base32 "06cvplibn21nm9l4k3j4rik549wrcbscjfrz00l0gmxh68qsqy31"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
@@ -20141,7 +20141,7 @@ LASS files.")
              sbcl-documentation-utils
              sbcl-lambda-fiddle
              sbcl-simple-inferiors))
-      (home-page "https://shinmera.github.io/legit/")
+      (home-page "https://codeberg.org/shinmera/legit")
       (synopsis "Interface to the git binary")
       (description
        "This is an interface to the @code{git} binary to make controlling it
