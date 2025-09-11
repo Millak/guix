@@ -3545,6 +3545,31 @@ tests,which can contain control codes and escape sequences.  @code{golden}
 package provides an API for comparing Golden files.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-exp-slice
+  (package
+    (name "go-github-com-charmbracelet-x-exp-slice")
+    (version "0.0.0-20250910184208-1e3a578dd00d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/x")
+             (commit (go-version->git-ref version
+                                          #:subdir "exp/slice"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jbyg0ar8cz5f1lfnsqrzsbl51c74xf27v065nwcw78b26i7mg2g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/exp/slice"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Utility functions for working with slices in Glang")
+    (description
+     "Package slice provides utility functions for working with slices in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-input
   (package
     (name "go-github-com-charmbracelet-x-input")
