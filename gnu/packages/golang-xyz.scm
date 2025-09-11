@@ -1216,7 +1216,7 @@ be stripped.")
 (define-public go-github-com-alecthomas-kong
   (package
     (name "go-github-com-alecthomas-kong")
-    (version "1.5.1")
+    (version "1.12.1")
     (source
      (origin
        (method git-fetch)
@@ -1225,12 +1225,10 @@ be stripped.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b9yns6rgmxjb40rlm6v2pybi25my0760vvp6666vx5da7yg4dg9"))))
+        (base32 "0rx1vab7azz9f8xm044dlvx24dqggh25fjq1sxx4mizgvr28yjgq"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; One test failed when set to go-1.18 o lower, see
-      ;; <https://github.com/alecthomas/kong/issues/437>
       #:import-path "github.com/alecthomas/kong"))
     (native-inputs
      (list go-github-com-alecthomas-assert-v2))
