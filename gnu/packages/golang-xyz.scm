@@ -3394,24 +3394,38 @@ glamorous default themes.")
 (define-public go-github-com-charmbracelet-x-ansi
   (package
     (name "go-github-com-charmbracelet-x-ansi")
-    (version "0.6.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/charmbracelet/x")
-             (commit (go-version->git-ref version
-                                          #:subdir "ansi"))))
+              (url "https://github.com/charmbracelet/x")
+              (commit (go-version->git-ref version
+                                           #:subdir "ansi"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y76a1zqj2ccyqibh4xk47hyw8grwrf5j3qm2j0pzd2yn592dny5"))))
+        (base32 "083zj3yqb48li8w389iabi1b1zklbw7cwam2grvvglcqrrsj3bsf"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "ansi")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/charmbracelet/x/ansi"
       #:unpack-path "github.com/charmbracelet/x"))
     (propagated-inputs
-     (list go-github-com-lucasb-eyer-go-colorful
+     (list go-github-com-bits-and-blooms-bitset
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-mattn-go-runewidth
            go-github-com-rivo-uniseg))
     (home-page "https://github.com/charmbracelet/x")
     (synopsis "ANSI escape sequence parser and definitions")
