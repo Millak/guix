@@ -1469,16 +1469,16 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    (version "35")
+    (version "37")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gokcehan/lf")
-             (commit (string-append "r" version))))
+              (url "https://github.com/gokcehan/lf")
+              (commit (string-append "r" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19hk78j1cdnpjg5gjilm797vzzlppfard1qas9vxjhx289n8i76i"))))
+        (base32 "0m2h0dnxbfqsnafy9bwvis35k0197zn768r764zs53qg9f3fdc93"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1491,8 +1491,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
            go-github-com-mattn-go-runewidth
            go-github-com-xuanwo-go-locale
            go-golang-org-x-sys
-           go-golang-org-x-term
-           go-golang-org-x-text))
+           go-golang-org-x-term))
     (home-page "https://github.com/gokcehan/lf")
     (synopsis "Console file browser similar to Ranger")
     (description
