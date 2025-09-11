@@ -985,9 +985,9 @@ hydrology and waste deposition.")
     (arguments
      (substitute-keyword-arguments (package-arguments ogs-serial)
        ((#:configure-flags flags)
-        `(cons* "-DOGS_USE_PETSC=ON" "-DCMAKE_C_COMPILER=mpicc"
-                "-DCMAKE_CXX_COMPILER=mpic++"
-                ,flags))))
+        #~(cons* "-DOGS_USE_PETSC=ON" "-DCMAKE_C_COMPILER=mpicc"
+                 "-DCMAKE_CXX_COMPILER=mpic++"
+                 #$flags))))
     (synopsis "OpenGeoSys with PETSc (parallel processing) support")))
 
 (define-public proj
