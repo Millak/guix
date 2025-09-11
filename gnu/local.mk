@@ -239,7 +239,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/dezyne.scm			\
   %D%/packages/decker.scm			\
   %D%/packages/dhall.scm			\
-  %D%/packages/dictd.scm			\
   %D%/packages/dotnet.scm			\
   %D%/packages/dictionaries.scm			\
   %D%/packages/diffoscope.scm			\

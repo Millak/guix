@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2022 ROCKTAKEY <rocktakey@gmail.com>
-;;; Copyright © 2022 Runciter <runciter@whispers-vpn.org>
+;;; Copyright © 2022, 2024 Runciter <runciter@whispers-vpn.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
@@ -45,11 +45,11 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
-  #:use-module (gnu packages dictd)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fribidi)
@@ -126,6 +126,85 @@ regardless of format, thanks to its modular structure.  New modules may be
 written in C, Guile or Python.  Dico also includes a command-line client,
 which may be used to query remote dictionary databases.")
     (license license:gpl3+)))
+
+(define-public libmaa
+  (package
+    (name "libmaa")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/dict/libmaa/"
+                           "libmaa-"
+                           version
+                           "/libmaa-"
+                           version
+                           ".tar.gz"))
+       (sha256
+        (base32 "1idi4c30pi79g5qfl7rr9s17krbjbg93bi8f2qrbsdlh78ga19ar"))))
+    (native-inputs (list libtool))
+    (arguments
+     (list
+      ;; Change -Werror to -Wno-error, reproduce other default flags
+      ;; Do not error out on warnings related to snprintf function
+      #:make-flags #~'("CFLAGS=-DHAVE_CONFIG_H  -Wall -Wno-error -g -O2 $(VERCFLAGS) -I. -I${srcdir}")
+      #:test-target "test"))
+    (build-system gnu-build-system)
+    (synopsis "Low-level data structures used by the dictd program")
+    (description
+     "The libmaa library provides many low-level
+data structures which are helpful for writing compilers, including hash
+tables, sets, lists, debugging support, and memory management.  Although
+libmaa was designed and implemented as a foundation for the Khepara
+transformation system, the data structures are generally applicable to a
+wide range of programming problems.
+
+The memory management routines are especially helpful for improving the
+performance of memory-intensive applications.")
+    (home-page "https://sourceforge.net/projects/dict/")
+    (license license:gpl2+)))
+
+(define-public dictd
+  (package
+    (name "dictd")
+    (version "1.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/dict/dictd/"
+                           "dictd-"
+                           version
+                           "/dictd-"
+                           version
+                           ".tar.gz"))
+       (sha256
+        (base32 "0w8i7w3xs53kj5v72xf1zq24kz4qa6fcg1lmibs279wgnggjj88r"))))
+    (inputs (list libmaa zlib))
+    (native-inputs (list libtool bison flex))
+    (arguments
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-configure
+            (lambda _
+              ;; workaround for missing yylex in yywrap lex check
+              (substitute* "configure"
+                (("yywrap [(]void[)];")
+                 "yywrap (void); int yylex () { return 0; }")))))))
+    (build-system gnu-build-system)
+    (synopsis "@command{dict}, @command{dictd} and @command{dictfmt} programs")
+    (description
+     "The DICT Interchange Format (DICF) is a human-readable
+ format for the interchange of dictionary databases for the use with
+DICT protocol client/server software.
+
+This package provides a client @command{dict} and a server program
+@command{dictd} for the DICT protocol, as well as a utility
+@command{dictfmt} to convert various dictionary formats into
+dictionaries that can be served by @command{dictd} or Dico.")
+    (home-page "https://sourceforge.net/projects/dict/")
+    (license license:gpl2+)))
 
 (define-public vera
   (package
