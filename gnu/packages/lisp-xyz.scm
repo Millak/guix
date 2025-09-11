@@ -12869,6 +12869,45 @@ or cl-launch for portable processing of command-line arguments.")
 (define-public clasp-command-line-arguments
   (sbcl-package->clasp-package sbcl-command-line-arguments))
 
+(define-public sbcl-common-doc
+  (let ((commit "bcde4cfee3d34482d9830c8f9ea45454c73cf5aa")
+        (revision "0"))
+    (package
+      (name "sbcl-common-doc")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/CommonDoc/common-doc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bzc4w37cq5mbkd15vxziks6nq58yad04mki4nwy5w6pza7z0faa"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-anaphora
+             sbcl-cl-ppcre
+             sbcl-closer-mop
+             sbcl-local-time
+             sbcl-quri
+             sbcl-split-sequence
+             sbcl-trivial-shell
+             sbcl-trivial-types))
+      (home-page "https://github.com/CommonDoc/common-doc")
+      (synopsis "Framework for representing and manipulating documents")
+      (description "Framework for representing and manipulating documents.")
+      (license license:expat))))
+
+(define-public ecl-common-doc
+  (sbcl-package->ecl-package sbcl-common-doc))
+
+(define-public cl-common-doc
+  (sbcl-package->cl-source-package sbcl-common-doc))
+
 (define-public sbcl-common-lisp-jupyter
   (let ((commit "3555a009f6d8734751bda1feadc8a09e7b0099b6")
         (revision "0"))
