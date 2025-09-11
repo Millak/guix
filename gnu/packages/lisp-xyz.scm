@@ -14283,8 +14283,8 @@ manner.")
   (sbcl-package->ecl-package sbcl-depot))
 
 (define-public sbcl-dexador
-  (let ((commit "051cbb784ea3015cef9731eb5a624f3122de84b5")
-        (revision "2"))
+  (let ((commit "d7ac217819e9156abe10cd28ba7a2d548be03cad")
+        (revision "3"))
     (package
       (name "sbcl-dexador")
       (build-system asdf-build-system/sbcl)
@@ -14298,7 +14298,7 @@ manner.")
                (commit commit)))
          (file-name (git-file-name "cl-dexador" version))
          (sha256
-          (base32 "1sggpi43la8dai102fmkzysh7760hvk6q68f0pkbb9187vz8nd3y"))))
+          (base32 "19y95k821665vcy7gbxhh4rqwk7fh4brv1sgkaykncpw2l2lll5r"))))
       (inputs
        (list sbcl-alexandria
              sbcl-babel
