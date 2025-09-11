@@ -1349,7 +1349,7 @@ of one or more RISC-V harts.")
 (define-public incus
   (package
     (name "incus")
-    (version "6.14.0")
+    (version "6.15.0")
     (source
      (origin
        (method git-fetch)
@@ -1358,7 +1358,7 @@ of one or more RISC-V harts.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x0ggs7plc570805x16r5jy7bb9z1qdn0124yi9rv0wwx6l50bd7"))))
+        (base32 "1j6lfx4jw6ngb2d3d48qz8q51w8x1j5vyjyhssppwd83ydkh060y"))))
     (build-system go-build-system)
     (arguments
      (list
