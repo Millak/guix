@@ -14794,6 +14794,46 @@ for more information.")
 (define-public ecl-documentation-utils-extensions
   (sbcl-package->ecl-package sbcl-documentation-utils-extensions))
 
+(define-public sbcl-docs-config
+  (let ((commit "9f8f253b1e1cb451c91f3ec9ab700e99461f0fe8")
+        (revision "0"))
+    (package
+      (name "sbcl-docs-config")
+      (version (git-version "0.8.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/40ants/docs-builder")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1w1fx5b193s5zifnp22sha8s4vqa15p3kg8fwl60yv90gk4wvwwm"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        ;; We only build docs-config as sbcl-40ants-doc requires this project,
+        ;; and the other systems here requires sbcl-40ants-doc
+        #:asd-systems ''("docs-config")))
+      (inputs
+       (list sbcl-file-types
+             sbcl-geneva
+             sbcl-log4cl
+             sbcl-macro-html
+             sbcl-maxpc
+             sbcl-texp
+             sbcl-trivial-documentation))
+      (home-page "https://github.com/40ants/docs-builder")
+      (synopsis "Generic documentation builder for Common Lisp projects")
+      (description "Generic documentation builder for Common Lisp projects.")
+      (license license:unlicense))))
+
+(define-public ecl-docs-config
+  (sbcl-package->ecl-package sbcl-docs-config))
+
+(define-public cl-docs-config
+  (sbcl-package->cl-source-package sbcl-docs-config))
+
 (define-public sbcl-doplus
   (package
     (name "sbcl-doplus")
