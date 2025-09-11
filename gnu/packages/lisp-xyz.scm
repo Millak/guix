@@ -529,11 +529,11 @@ offers them both in non-modifying and modifying versions where applicable.")
   (sbcl-package->clasp-package sbcl-3d-vectors))
 
 (define-public sbcl-40ants-asdf-system
-  (let ((commit "492bc9b09c100593ceec8375899addcbffa573cc")
-        (revision "0"))
+  (let ((commit "91ed8a4430552f58563d84182b97b25e9e1e8dbe")
+        (revision "1"))
     (package
       (name "sbcl-40ants-asdf-system")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.3.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -541,7 +541,7 @@ offers them both in non-modifying and modifying versions where applicable.")
                 (url "https://github.com/40ants/40ants-asdf-system")
                 (commit commit)))
          (sha256
-          (base32 "151zfyz7c4xrd4mnyzd5nsla1p70q4iixgm9mlnbm799mr1aprwp"))
+          (base32 "0wi575m0s0a9fvp1wy5ga760f71la16z1633qk6s2f87rwcjs8kw"))
          (file-name (git-file-name "cl-40ants-asdf-system" version))))
       (build-system asdf-build-system/sbcl)
       (native-inputs (list sbcl-rove))
