@@ -15372,7 +15372,7 @@ process.")
 (define-public go-github-com-niklasfasching-go-org
   (package
     (name "go-github-com-niklasfasching-go-org")
-    (version "1.7.0")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -15381,12 +15381,16 @@ process.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "100ay19a7my2m1za1ih0wvqxf5mq77byas1f23mx69qsbp391w04"))))
+        (base32 "154c7vx5fmww1wf5hvmijw8a0sn1inm6j54vl9qdybd427xmrhjm"))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list ".*\\.xml")
-      #:import-path "github.com/niklasfasching/go-org"))
+      #:import-path "github.com/niklasfasching/go-org"
+      ;; PublicDir hashes do not match for testdata/public/about.html:
+      ;; 'ce7dde7ff21d19e562c00553cfae3b2d' ->
+      ;; 'ac8849c0b32ce36c5cf0843bceb3a167'
+      #:test-flags #~(list "-skip" "TestBlorg")))
     (propagated-inputs
      (list go-golang-org-x-net
            go-github-com-pmezard-go-difflib
