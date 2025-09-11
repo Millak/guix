@@ -30472,6 +30472,39 @@ determine the cost of certain actions on a given platform and implementation.")
 (define-public clasp-the-cost-of-nothing
   (sbcl-package->clasp-package sbcl-the-cost-of-nothing))
 
+(define-public sbcl-tmpdir
+  (let ((commit "e1981284b969e04a48a3e7f3b98a50435e853eb6")
+        (revision "0"))
+    (package
+      (name "sbcl-tmpdir")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/moderninterpreters/tmpdir")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11yshmg2wyd75ywwfybklm131d5rdw246pg35a6ksndiq3w5n4k8"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam
+             sbcl-osicat
+             sbcl-cl-fad))
+      (inputs
+       (list sbcl-cl-fad))
+      (home-page "https://github.com/moderninterpreters/tmpdir")
+      (synopsis "Simple library to create temporary directories")
+      (description "Simple library to create temporary directories.")
+      (license license:expat))))
+
+(define-public ecl-tmpdir
+  (sbcl-package->ecl-package sbcl-tmpdir))
+
+(define-public cl-tmpdir
+  (sbcl-package->cl-source-package sbcl-tmpdir))
+
 (define-public sbcl-tooter
   (let ((commit "6d66a55a87f45cfa940b826ec990a3f5fa9b9630")
         (revision "7"))
