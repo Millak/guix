@@ -92,6 +92,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages engineering)
@@ -334,6 +335,82 @@ match all code that has the same syntactical structure.  You can use @code{$}
 and upper case letters as a wildcard, e.g. @code{$MATCH}, to match any single
 AST node.  Think of it as regular expression dot @code{.}, except it is not
 textual.")
+    (license license:expat)))
+
+(define-public atuin
+  (package
+    (name "atuin")
+    (version "18.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atuinsh/atuin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zi7ar999ycvig9c9crylab540xdgr0h6v99q9j8ypk9i1fviyiz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-test-flags
+      '(list "--no-default-features" "--"
+             ;; These tests requiere a Postgresql database connection.
+             "--skip=sync"
+             "--skip=change_password"
+             "--skip=multi_user_test"
+             "--skip=registration")
+      ;; Remove experimental daemon mode.
+      #:cargo-build-flags
+      '(list "--no-default-features")
+      #:cargo-install-paths ''("crates/atuin")
+      #:features
+      '(list "client"
+             "sync"
+             "server"
+             "clipboard"
+             "check-update")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          ;; The 'check phase doesn't honor #:features
+          (replace 'check
+            (lambda* (#:key features cargo-test-flags #:allow-other-keys
+                      #:rest args)
+              (apply (assoc-ref %standard-phases 'check)
+                     (append
+                       args
+                       (list #:cargo-test-flags
+                             (append (list "--features"
+                                           (string-join features))
+                                     cargo-test-flags))))))
+          ;; The 'install phase can't pass '--no-default-features'
+          (replace 'install
+            (lambda* (#:key cargo-install-paths features #:allow-other-keys)
+              (mkdir-p #$output)
+              (setenv "CARGO_TARGET_DIR" "./target")
+              (for-each
+                (lambda (path)
+                  (invoke "cargo" "install" "--offline" "--no-track"
+                          "--path" path "--root" #$output
+                          "--no-default-features"
+                          "--features" (string-join features)))
+                (if (null? cargo-install-paths)
+                    '(".")
+                    cargo-install-paths)))))))
+    (inputs (cons* sqlite
+                   (cargo-inputs 'atuin)))
+    (home-page "https://atuin.sh")
+    (synopsis "Shell history tool")
+    (description "Atuin replaces your existing shell history with a SQLite
+database, and records additional context for your commands.  With this context,
+Atuin gives you faster and better search of your shell history.
+
+Additionally, Atuin (optionally) syncs your shell history between all of your
+machines, fully end-to-end encrypted.")
     (license license:expat)))
 
 (define-public bat
