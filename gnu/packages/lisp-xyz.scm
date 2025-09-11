@@ -30447,8 +30447,8 @@ determine the cost of certain actions on a given platform and implementation.")
   (sbcl-package->clasp-package sbcl-the-cost-of-nothing))
 
 (define-public sbcl-tooter
-  (let ((commit "4583049c708b3f18d49d84aabfb19ec79210fda3")
-        (revision "6"))
+  (let ((commit "6d66a55a87f45cfa940b826ec990a3f5fa9b9630")
+        (revision "7"))
     (package
       (name "sbcl-tooter")
       (version (git-version "1.0.0" revision commit))
@@ -30456,11 +30456,11 @@ determine the cost of certain actions on a given platform and implementation.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/tooter")
+               (url "https://codeberg.org/shinmera/tooter")
                (commit commit)))
          (file-name (git-file-name "cl-tooter" version))
          (sha256
-          (base32 "1z9f8idvr2idn18xkw7ymxyglgc0lfhdhnq6xpbdmk5v8c1245iq"))))
+          (base32 "1i0hx0i6jgwf9c69m9wmlrv7hzq5n0k43r573jmsldbaxvnm4189"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -30472,7 +30472,7 @@ determine the cost of certain actions on a given platform and implementation.")
       (description
        "This is a Common Lisp library implementing the full v1 REST API
 protocol for Mastodon.")
-      (home-page "https://shinmera.github.io/tooter/")
+      (home-page "https://codeberg.org/shinmera/tooter")
       (license license:zlib))))
 
 (define-public cl-tooter
