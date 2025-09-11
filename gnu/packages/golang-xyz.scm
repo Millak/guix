@@ -23840,41 +23840,6 @@ library.")
       #:import-path "github.com/klauspost/asmfmt/cmd/asmfmt"
       #:unpack-path "github.com/klauspost/asmfmt"))))
 
-(define-public go-chroma
-  (package
-    (name "go-chroma")
-    (version "2.20.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/alecthomas/chroma")
-              (commit (string-append "v" version ))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05w4hnfcxqdlsz7mkc0m3jbp1aj67wzyhq5jh8ldfgnyjnlafia3"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      #:embed-files #~(list ".*\\.xml")
-      #:import-path "github.com/alecthomas/chroma/cmd/chroma"
-      #:unpack-path "github.com/alecthomas/chroma"))
-    (native-inputs
-     (list go-github-com-alecthomas-chroma-v2
-           go-github-com-alecthomas-kong
-           go-github-com-mattn-go-colorable
-           go-github-com-mattn-go-isatty))
-    (home-page "https://github.com/alecthomas/chroma")
-    (synopsis "General purpose syntax highlighter")
-    (description
-     "This package implements syntax highlighter for a long list of
-programming languages.  It takes source code and other structured text and
-converts it into syntax highlighted HTML, ANSI-coloured text, etc.  Chroma is
-based heavily on @url{http://pygments.org/, Pygments}, and includes
-translators for Pygments lexers and styles.")
-    (license license:expat)))
-
 (define-public go-csv2table
   (package/inherit go-github-com-olekukonko-tablewriter
     (name "go-csv2table")
