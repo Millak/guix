@@ -21404,6 +21404,35 @@ word on a list of words, if none is found, look for a similar word.")
 @url{https://github.com/alecthomas/kong, Kong CLI parser}.")
     (license license:bsd-3)))
 
+(define-public go-go-abhg-dev-log-silog
+  (package
+    (name "go-go-abhg-dev-log-silog")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/abhinav/silog-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1287i6qqg7hp8g49mbbr4n0l67v5b3dqz263ynpqjzrz1yck5q3v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.abhg.dev/log/silog"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-lipgloss
+           go-github-com-muesli-termenv))
+    (home-page "https://go.abhg.dev/log/silog")
+    (synopsis "Colorful log/slog handler for CLI applications ")
+    (description
+     "Package silog provides a @code{slog.Handler} implementation that
+produces human-readable, logfmt-style output.")
+    (license license:bsd-3)))
+
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
