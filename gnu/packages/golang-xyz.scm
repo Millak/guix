@@ -3594,17 +3594,17 @@ package provides an API for comparing Golden files.")
 (define-public go-github-com-charmbracelet-x-input
   (package
     (name "go-github-com-charmbracelet-x-input")
-    (version "0.3.0")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/charmbracelet/x")
-             (commit (go-version->git-ref version
-                                          #:subdir "input"))))
+              (url "https://github.com/charmbracelet/x")
+              (commit (go-version->git-ref version
+                                           #:subdir "input"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v7yrpq6ffa2qdqlrdgl7wm5jvm9wlh2iwyhd4x6hqkq90gwllyr"))
+        (base32 "0yp3hx5b4z61yfbgphabhz16v8alfwd7nwyq40bzls4hcg91hqw5"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "ansi")))))
@@ -3615,8 +3615,8 @@ package provides an API for comparing Golden files.")
       #:unpack-path "github.com/charmbracelet/x"))
     (propagated-inputs
      (list go-github-com-charmbracelet-x-ansi
-           go-github-com-erikgeiser-coninput
            go-github-com-muesli-cancelreader
+           go-github-com-rivo-uniseg
            go-github-com-xo-terminfo
            go-golang-org-x-sys))
     (home-page "https://github.com/charmbracelet/x")
