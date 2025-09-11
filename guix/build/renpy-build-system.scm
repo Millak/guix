@@ -19,10 +19,10 @@
 (define-module (guix build renpy-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module ((guix build python-build-system) #:prefix python:)
-  #:use-module (guix build json)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
+  #:use-module (json)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
@@ -43,7 +43,7 @@
   (let* ((out (assoc-ref outputs output))
          (json-dump (call-with-input-file (string-append game
                                                          "/renpy-build.json")
-                      read-json))
+                      json->scm))
          (build (assoc-ref json-dump "build"))
          (executable-name (assoc-ref build "executable_name"))
          (directory-name (assoc-ref build "directory_name")))
@@ -67,7 +67,7 @@
   (let* ((out (assoc-ref outputs output))
          (json-dump (call-with-input-file (string-append game
                                                          "/renpy-build.json")
-                      read-json))
+                      json->scm))
          (build (assoc-ref json-dump "build"))
          (directory-name (assoc-ref build "directory_name"))
          (executable-name (assoc-ref build "executable_name")))

@@ -37,10 +37,13 @@
   "Return the default Ren'py package, resolved lazily."
   (@* (gnu packages game-development) renpy))
 
+(define (default-guile-json)
+  "Return the default Guile JSON package, resolved lazily."
+  (@* (gnu packages guile) guile-json-4))
+
 (define %renpy-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build renpy-build-system)
-    (guix build json)
     (guix build python-build-system)
     ,@%default-gnu-imported-modules))
 
@@ -81,26 +84,29 @@
                       (search-paths '())
                       (system (%current-system))
                       (guile #f)
+                      (guile-json (default-guile-json))
                       (imported-modules %renpy-build-system-modules)
                       (modules '((guix build renpy-build-system)
                                  (guix build utils))))
   "Build SOURCE using RENPY, and with INPUTS."
   (define builder
-    (with-imported-modules imported-modules
-      #~(begin
-          (use-modules #$@(sexp->gexp modules))
-          (renpy-build #:name #$name
-                       #:source #+source
-                       #:configure-flags #$configure-flags
-                       #:system #$system
-                       #:phases #$phases
-                       #:outputs #$(outputs->gexp outputs)
-                       #:output #$output
-                       #:game #$game
-                       #:search-paths '#$(sexp->gexp
-                                          (map search-path-specification->sexp
-                                               search-paths))
-                       #:inputs #$(input-tuples->gexp inputs)))))
+    (with-extensions (list guile-json)
+      (with-imported-modules imported-modules
+        #~(begin
+            (use-modules #$@(sexp->gexp modules))
+            (renpy-build #:name #$name
+                         #:source #+source
+                         #:configure-flags #$configure-flags
+                         #:system #$system
+                         #:phases #$phases
+                         #:outputs #$(outputs->gexp outputs)
+                         #:output #$output
+                         #:game #$game
+                         #:search-paths
+                         '#$(sexp->gexp
+                             (map search-path-specification->sexp
+                                  search-paths))
+                         #:inputs #$(input-tuples->gexp inputs))))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
