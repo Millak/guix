@@ -12908,6 +12908,40 @@ or cl-launch for portable processing of command-line arguments.")
 (define-public cl-common-doc
   (sbcl-package->cl-source-package sbcl-common-doc))
 
+(define-public sbcl-common-html
+  (let ((commit "96987bd9db21639ed55d1b7d72196f9bc58243fd")
+        (revision "0"))
+    (package
+      (name "sbcl-common-html")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/CommonDoc/common-html")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1i11w4l95nybz5ibnaxrnrkfhch2s9wynqrg6kx6sl6y47khq1xz"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-anaphora
+             sbcl-common-doc
+             sbcl-plump))
+      (home-page "https://github.com/CommonDoc/common-html")
+      (synopsis "HTML parser/emitter for CommonDoc")
+      (description "HTML parser/emitter for CommonDoc.")
+      (license license:expat))))
+
+(define-public ecl-common-html
+  (sbcl-package->ecl-package sbcl-common-html))
+
+(define-public cl-common-html
+  (sbcl-package->cl-source-package sbcl-common-html))
+
 (define-public sbcl-common-lisp-jupyter
   (let ((commit "3555a009f6d8734751bda1feadc8a09e7b0099b6")
         (revision "0"))
