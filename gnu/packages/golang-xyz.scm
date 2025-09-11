@@ -3261,32 +3261,53 @@ Terminfo databases.")
 (define-public go-github-com-charmbracelet-glamour
   (package
     (name "go-github-com-charmbracelet-glamour")
-    (version "0.8.0")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/charmbracelet/glamour")
-             (commit (string-append "v" version))))
+              (url "https://github.com/charmbracelet/glamour")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "112clivb9nsxlaqvypwcidmk4dkszg7vglb4apia43rdqqj82s6k"))))
+        (base32 "1b8r13n6ia92m6s297br86s82jxzhfb8snildm4mcgx3sb4mg9l6"))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list ".*\\.xml")
-      #:import-path "github.com/charmbracelet/glamour"))
+      #:import-path "github.com/charmbracelet/glamour"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Some tests fail with comparing terminal escape
+                       ;; sequence.
+                       (list "TestRenderHelpers"
+                             "TestRenderer/code_block"
+                             "TestRenderer/table_align"
+                             "TestRenderer/table_truncate"
+                             "TestRendererIssues/107"
+                             "TestRendererIssues/257"
+                             "TestRendererIssues/316"
+                             "TestRendererIssues/46_2"
+                             "TestRendererIssues/48"
+                             "TestRendererIssues/79"
+                             "TestTermRenderer"
+                             "TestTermRendererWriter"
+                             "TestWithChromaFormatterCustom"
+                             "TestWithChromaFormatterDefault")
+                       "|"))))
     (propagated-inputs
      (list go-github-com-alecthomas-chroma-v2
            go-github-com-charmbracelet-lipgloss
            go-github-com-charmbracelet-x-ansi
            go-github-com-charmbracelet-x-exp-golden
+           go-github-com-charmbracelet-x-exp-slice
            go-github-com-microcosm-cc-bluemonday
            go-github-com-muesli-reflow
            go-github-com-muesli-termenv
            go-github-com-yuin-goldmark
            go-github-com-yuin-goldmark-emoji
-           go-golang-org-x-term))
+           go-golang-org-x-term
+           go-golang-org-x-text))
     (home-page "https://github.com/charmbracelet/glamour/")
     (synopsis "Write handsome command-line tools with glamour")
     (description
