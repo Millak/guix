@@ -23863,18 +23863,35 @@ library.")
 
 (define-public go-fxlint
   (package
-    (inherit go-go-uber-org-fx-tools)
     (name "go-fxlint")
+    (version "0.0.0-20241011173146-861011200d8a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uber-go/fx")
+              (commit (go-version->git-ref version
+                                           #:subdir "tools"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y9zavn5dmb5v2g2krc1apznp1fwc2zb70hlgxw4xcz2ifdwx7wz"))))
+    (build-system go-build-system)
     (arguments
      (list
       #:tests? #f
       #:install-source? #f
       #:import-path "go.uber.org/fx/tools/cmd/fxlint"
       #:unpack-path "go.uber.org/fx"))
+    (native-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://go.uber.org/fx")
+    (synopsis "Verify FX events")
     (description
-     (string-append (package-description go-go-uber-org-fx-tools)
-                    "  This package provides a command line interface (CLI)
-linter that verifies correct usage of Fx."))))
+     "This Package implements a Go analysis pass that verifies that an
+@code{fxevent.Logger} implementation handles all known fxevent types.  As a
+special case for no-op or fake fxevent.Loggers, it ignores implementations
+that handle none of the event types.")
+    (license license:expat)))
 
 (define-public go-hclogvet
   (package
