@@ -322,7 +322,6 @@
     "third_party/vulkan-tools" ;ASL2.0
     "third_party/vulkan-validation-layers" ;ASL2.0
     "third_party/vulkan-utility-libraries" ;ASL2.0
-    "third_party/wasm_tts_engine" ; ASL2.0, Non-copyleft
     "third_party/wayland" ;BSD-3, Expat
     "third_party/wayland-protocols" ;Expat
     "third_party/webdriver" ;ASL2.0
@@ -367,7 +366,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "139.0.7258.154")
+(define %chromium-version "140.0.7339.127")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -379,7 +378,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "12z1qqwqkxd34xwkfc6hc873rsj545zg4rkdsvr4nk4w9898fsqq"))))
+      "1dvwa4gln3yg35bawapjmkmmgvwxnzgln0k1fb6amnal29vjw4ws"))))
 
 (define %debian-origin
   (origin
@@ -392,7 +391,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "0zs7z0kk5ni01qgc85lwr045pmgn5sghp15scp7x79i8i8a5rfcq"))))
+      "0nb844l24a9mpjzb2x6hna09yi0fhyzn3m8khj94fv6jv9js796a"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -412,7 +411,10 @@
 	 "system/openjpeg.patch"
 	 ;; adler2 is not part of our rust toolchain, check on next version.
 	 "trixie/adler1.patch"
-	 "trixie/libxml-parseerr.patch")))
+         "trixie/libxml-parseerr.patch"
+         ;; Remove after rust is past
+         ;; <https://github.com/rust-lang/rust/pull/141061>.
+         "trixie/rust-no-alloc-shim.patch")))
 
 (define %guix-patches
   (list (local-file
@@ -422,7 +424,7 @@
 	(local-file
 	 (assume-valid-file-name
           (search-patch
-	   "ungoogled-chromium-nullptr_t.patch")))
+	   "ungoogled-chromium-unbundle-icu-target.patch")))
         (local-file
 	 (assume-valid-file-name
           (search-patch
@@ -524,7 +526,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "0bgnay6g2qbl6jxzr7kzl4nf0k2a27k0h7nhcj1if9plm611jzn9"))
+                "0z6siz1k0z1ns0iy1rwclx4mmjgi1ch5gd0vp3jq1dqvh5zx3802"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -623,6 +625,7 @@
               ;; Prefer system libraries.
               "use_system_freetype=true"
               "use_system_harfbuzz=true"
+              "use_system_icu=true"
               "use_system_lcms2=true"
               "use_system_libffi=true"
               "use_system_libjpeg=true"
