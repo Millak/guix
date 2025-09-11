@@ -33133,6 +33133,37 @@ shader functions, written with @code{Shadow}.")
 (define-public cl-umbra
   (sbcl-package->cl-source-package sbcl-umbra))
 
+(define-public sbcl-universal-tween-engine
+  (let ((commit "a86d3c61ce6161d88996b055a292bb42469344ef")
+        (revision "0"))
+    (package
+      (name "sbcl-universal-tween-engine")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bohonghuang/cl-universal-tween-engine")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12bn21rslsmyp9y0y9s2hxivbzh7aajdbfvm3506k9x3yzlzvx7r"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-alexandria))
+      (home-page "https://github.com/bohonghuang/cl-universal-tween-engine")
+      (synopsis "Common Lisp port of Universal Tween Engine")
+      (description "Common Lisp port of Universal Tween Engine.")
+      (license license:asl2.0))))
+
+(define-public ecl-universal-tween-engine
+  (sbcl-package->ecl-package sbcl-universal-tween-engine))
+
+(define-public cl-universal-tween-engine
+  (sbcl-package->cl-source-package sbcl-universal-tween-engine))
+
 (define-public sbcl-unix-opts
   (let ((commit "0e61f34b2ecf62288437810d4abb31e572048b04")
         (revision "1"))
