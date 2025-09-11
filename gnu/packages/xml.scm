@@ -37,6 +37,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -192,15 +193,16 @@ hierarchical form with variable field lengths.")
 (define-public libxml2
   (package
     (name "libxml2")
-    (version "2.9.14")
+    (version "2.14.6")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/libxml2/"
-                                 (version-major+minor version)"/libxml2-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "1vnzk33wfms348lgz9pvkq9li7jm44pvm73lbr3w1khwgljlmmv0"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libxml2/"
+                                  (version-major+minor version)"/libxml2-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0fi0jysncjpvhvp29qcx3bydndapwphgkx7ial5kzf7ymyh5ir3w"))
+              (patches (search-patches "python-libxml2-utf8.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "static" "doc"))
     (arguments
@@ -218,6 +220,13 @@ hierarchical form with variable field lengths.")
                                       (string-append "/bin/" file)) "."))
                                   '("config.guess" "config.sub")))))
                  #~())
+          (add-before 'configure 'configure-python
+            (lambda _
+              (substitute* "python/setup.py.in"
+                ;; The build system ignores C_INCLUDE_PATH & co, so
+                ;; provide the absolute directory name.
+                (("/opt/include")
+                 (string-append #$output "/include/libxml2")))))
           (add-after 'install 'use-other-outputs
             (lambda _
               (let ((doc (string-append #$output:doc "/share/"))
@@ -245,7 +254,7 @@ hierarchical form with variable field lengths.")
     (native-inputs (append (if (target-loongarch64?)
                                (list config)
                                '())
-                           (list perl)))
+                           (list perl pkg-config python-minimal)))
     (native-search-paths
      (list $SGML_CATALOG_FILES $XML_CATALOG_FILES))
     (search-paths native-search-paths)
@@ -253,58 +262,6 @@ hierarchical form with variable field lengths.")
      "Libxml2 is the XML C parser and toolkit developed for the Gnome
 project (but it is usable outside of the Gnome platform).")
     (license license:x11)))
-
-(define-public libxml2-next
-  (package
-    (inherit libxml2)
-    (name "libxml2")
-    (version "2.14.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/libxml2/"
-                                  (version-major+minor version)"/libxml2-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0jylv2kkyzih710blg24al7b43iaqg6xsfn52qy865knagrhdl03"))))
-    (native-inputs (modify-inputs (package-native-inputs libxml2)
-                     (append pkg-config
-                             python-minimal)))))
-
-(define-public libxml2-next/fixed
-  (package
-    (inherit libxml2)
-    (properties '((hidden? . #t)))
-    (name "libxml2")
-    (version "2.14.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/libxml2/"
-                                  (version-major+minor version)"/libxml2-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0jylv2kkyzih710blg24al7b43iaqg6xsfn52qy865knagrhdl03"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments libxml2-next)
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (add-after 'install 'symlink-hardcoded-lib-for-grafts
-              (lambda _
-                (let ((lib (string-append #$output "/lib/libxml2.so")))
-                  ;; XXX: When grafting, we need to reproduce the file paths to
-                  ;; the libraries too.
-                  (symlink (string-append lib ".16")
-                           (string-append lib ".2")))))))))
-    (native-inputs (modify-inputs (package-native-inputs libxml2)
-                     (append pkg-config
-                             python-minimal)))))
-
-(define-public libxml2-next-for-grafting
-  (package
-    (inherit libxml2)
-    (replacement libxml2-next/fixed)
-    (properties '((hidden? . #t)))))
 
 (define-public libxml2-xpath0
   (package/inherit libxml2
@@ -320,34 +277,7 @@ provides an @code{--xpath0} option to @command{xmllint} that enables it
 to output XPath results with a null delimiter.")))
 
 (define-public python-libxml2
-  (package/inherit libxml2
-    (name "python-libxml2")
-    (source (origin
-              (inherit (package-source libxml2))
-              (patches
-                (append (search-patches "python-libxml2-utf8.patch")
-                        (origin-patches (package-source libxml2))))))
-    (build-system pyproject-build-system)
-    (outputs '("out"))
-    (arguments
-     (list
-      ;; XXX: Tests are specified in 'Makefile.am', but not in 'setup.py'.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'configure
-            (lambda* (#:key inputs #:allow-other-keys)
-              (chdir "python")
-              (let ((libxml2-headers (search-input-directory
-                                      inputs "include/libxml2")))
-                (substitute* "setup.py"
-                  ;; The build system ignores C_INCLUDE_PATH & co, so
-                  ;; provide the absolute directory name.
-                  (("/opt/include")
-                   (dirname libxml2-headers)))))))))
-    (native-inputs (list python-setuptools))
-    (inputs (list libxml2))
-    (synopsis "Python bindings for the libxml2 library")))
+  (deprecated-package "python-libxml2" libxml2))
 
 (define-public libxlsxwriter
   (package
@@ -1256,7 +1186,7 @@ XSL-T processor.  It also performs any necessary post-processing.")
                 "1shk40mpaqaf05skgyxa7qxgcarjd6i1fadn2sk0b8lakfv96bnq"))))
     (build-system gnu-build-system)
     (propagated-inputs                  ; according to xmlsec1.pc
-     (list libxml2-next libxslt))
+     (list libxml2 libxslt))
     (inputs
      (list gnutls libgcrypt libltdl))
     (native-inputs

@@ -357,7 +357,6 @@ also known as DXTn or DXTC) for Mesa.")
             glslang
             libclc
             pkg-config
-            python-libxml2              ;for OpenGL ES 1.1 and 2.0 support
             python-mako
             python-ply
             python-pyyaml

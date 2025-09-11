@@ -816,7 +816,7 @@ the OpenCV-Python library.")
            libpng
            (librsvg-for-system)
            libtiff
-           libxml2-next
+           libxml2
            libwebp
            matio
            openexr

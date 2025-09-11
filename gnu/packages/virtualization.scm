@@ -1775,7 +1775,7 @@ to integrate other virtualization mechanisms if needed.")
            `(,glib "bin") vala))
     (propagated-inputs
      ;; ‘Required:’ by the installed .pc files.
-     (list glib libvirt libxml2-next gobject-introspection))
+     (list glib libvirt libxml2 gobject-introspection))
     (home-page "https://libvirt.org")
     (synopsis "GLib wrapper around libvirt")
     (description "libvirt-glib wraps the libvirt library to provide a
@@ -1901,8 +1901,8 @@ virtualization library.")
            libosinfo
            libvirt
            libvirt-glib
+           libxml2
            python-minimal
-           python-libxml2
            python-libvirt
            python-pycairo
            python-pygobject

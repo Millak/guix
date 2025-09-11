@@ -770,7 +770,7 @@ The intltool collection can be used to do these things:
                "1jl7gsr7aclb9nvqazr039m86y7f7ivfhl2pixcrbfqjkb97r6kb"))))
     (build-system gnu-build-system)
     (inputs
-     (list bash-minimal libxml2 python-libxml2 python))
+     (list bash-minimal libxml2 python))
     (arguments
      (list
       #:phases
@@ -858,7 +858,7 @@ by GDBus included in Glib.")
                          pkg-config
                          vala))
     (inputs (list check python python-pygobject))
-    (propagated-inputs (list glib libxml2-next sqlite))
+    (propagated-inputs (list glib libxml2 sqlite))
     (arguments
      (list #:tests? #f                  ;one test fails.
            #:imported-modules `((guix build python-build-system)

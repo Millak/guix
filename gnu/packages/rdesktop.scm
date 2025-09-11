@@ -252,8 +252,7 @@ of parts of the Windows API.")
                   linux-pam
                   openssl
                   pixman
-                  python
-                  python-libxml2))
+                  python))
     (native-inputs
      (append
        (list bison
