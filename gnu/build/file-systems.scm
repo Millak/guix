@@ -337,6 +337,39 @@ negative, defaulting to 0.~%") p)
   (logior prio-flag delayed-flag))
 
 
+;;;
+;;; Linux swap, after hibernation.
+;;;
+
+;; Linux swap space header is rewritten with a swsusp_header on
+;; hibernate, which takes the HIBERNATE_SIG signature, which is this
+;; string; see function mark_swapfiles in kernel/power/swap.c.  In the
+;; linux kernel the comparison is always done on 10 bytes, which
+;; include the trailing zero in the case of HIBERNATE_SIG while not
+;; including it for %linux-swap-magic.
+(define %linux-swsuspend-magic
+  (string->utf8 "S1SUSPEND\0"))
+
+;; The kernel structure swsusp_header is duplicated from the swap header, in
+;; kernel/power/swap.c.
+(define (linux-swsuspend-superblock? sblock)
+  "Return #t when SBLOCK is a linux-swap superblock we can resume from."
+  (and (= (bytevector-length sblock) %page-size)
+       (bytevector=? (sub-bytevector sblock (- %page-size 10) 10)
+                     %linux-swsuspend-magic)))
+
+;; If we want to resume through UUID and/or LABEL from swap partitions, we
+;; need to fetch UUID/LABEL from partitions with such magics.
+(define (read-linux-swsuspend-superblock device)
+  "Return the raw contents of DEVICE's linux-swsuspend superblock as a
+bytevector, or #f if DEVICE does not contain an linux-swap file system with an
+hibernation image from which we can resume."
+  (read-superblock device 0 %page-size linux-swsuspend-superblock?))
+
+;; Label and UUID information are otherwise left untouched, therefore, swap
+;; functions are reused.
+
+
 
 ;;;
 ;;; Bcachefs file systems.
@@ -1052,6 +1085,8 @@ partition field reader that returned a value."
                                 ext2-superblock-volume-name)
         (partition-field-reader read-linux-swap-superblock
                                 linux-swap-superblock-volume-name)
+        (partition-field-reader read-linux-swsuspend-superblock
+                                linux-swap-superblock-volume-name)
         (partition-field-reader read-bcachefs-superblock
                                 bcachefs-superblock-volume-name)
         (partition-field-reader read-btrfs-superblock
@@ -1075,6 +1110,8 @@ partition field reader that returned a value."
         (partition-field-reader read-ext2-superblock
                                 ext2-superblock-uuid)
         (partition-field-reader read-linux-swap-superblock
+                                linux-swap-superblock-uuid)
+        (partition-field-reader read-linux-swsuspend-superblock
                                 linux-swap-superblock-uuid)
         (partition-field-reader read-bcachefs-superblock
                                 bcachefs-superblock-external-uuid)
