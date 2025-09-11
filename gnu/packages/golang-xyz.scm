@@ -21322,6 +21322,36 @@ distance.  Takes a string value input from the user.  Looks for an identical
 word on a list of words, if none is found, look for a similar word.")
       (license license:expat))))
 
+(define-public go-go-abhg-dev-container-ring
+  ;; The latest verion 0.3.0 was released in 2023, use the latest commit.
+  (let ((commit "5feb657d1370c86f039188acc39afdc16172de0e")
+        (revision "0"))
+    (package
+      (name "go-go-abhg-dev-container-ring")
+      (version (git-version "0.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/abhinav/ring-go")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fcqxrf7jzf0682fhw6ly10m3b1sm2b7pnmcmbxg7zn7kjw91353"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "go.abhg.dev/container/ring"))
+      (native-inputs
+       (list go-github-com-stretchr-testify))
+      (propagated-inputs
+       (list go-pgregory-net-rapid))
+      (home-page "https://go.abhg.dev/container/ring")
+      (synopsis "FIFO queue backed by a ring buffer.")
+      (description
+       "Package ring implements a FIFO queue backed by a ring buffer.")
+      (license license:expat))))
+
 (define-public go-go-abhg-dev-io-ioutil
   (package
     (name "go-go-abhg-dev-io-ioutil")
