@@ -1204,75 +1204,55 @@ time.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/tools")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/tools")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1lbb4y1c5b4719pdhfcb90sdzagzsb2lw5hx8gizsba3cj0r0f25"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; gopls versions are tagged separately, and it is a
-           ;; separate Guix package.
-           (delete-file-recursively "gopls")))))
+           ;; Submodules with their own go.mod files and packaged separately:
+           ;;
+           ;; - golang.org/x/tools/cmd/auth
+           ;; - golang.org/x/tools/gopls
+           (delete-file-recursively "gopls")
+           (delete-file-recursively "cmd/auth")))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "golang.org/x/tools"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v"
-                          ;; TODO: They contain final project executable builds,
-                          ;; would be packed separately.
-                          ;; - cmd
-                          ;; - godoc
-
-                          ;; FIXME: Figure out why they are failing:
-                          ;; "./go/analysis/..."
-                          ;; "./go/callgraph/..."
-                          ;; "./go/packages/..."
-                          ;; "./go/ssa/..."
-                          ;; "./internal/..."
-                          ;; "./present/..."
-                          ;; "./refactor/eg/..."
-
-                          "./blog/..."  ;
-                          "./container/..."
-                          "./copyright/..."
-                          "./cover/..."
-                          "./go/ast/..."
-                          "./go/buildutil/..."
-                          "./go/cfg/..."
-                          "./go/expect/..."
-                          "./go/gccgoexportdata/..."
-                          "./go/gcexportdata/..."
-                          "./go/internal/..."
-                          "./go/loader/..."
-                          "./go/types/..."
-                          "./imports/..."
-                          "./playground/..."
-                          "./refactor/importgraph/..."
-                          "./refactor/rename/..."
-                          "./refactor/satisfy/..."
-                          "./txtar/..."
-                          "-skip"
-                          (string-join
-                           (list
-                            ;; The GenericPaths test fails with "invalid
-                            ;; memory address or nil pointer dereference".
-                            "TestGenericPaths"
-                            ;; The ordering and paths tests fails because they
-                            ;; can't find test packages (perhaps because we do
-                            ;; not support Go modules).
-                            "TestOrdering" "TestPaths")
-                           "|")))))))))
+      #:test-subdirs
+      #~(list "./blog/..."
+              "./container/..."
+              "./copyright/..."
+              "./cover/..."
+              "./go/ast/..."
+              "./go/buildutil/..."
+              "./go/cfg/..."
+              "./go/gccgoexportdata/..."
+              "./go/gcexportdata/..."
+              "./go/internal/..."
+              "./go/loader/..."
+              "./go/types/..."
+              "./imports/..."
+              "./playground/..."
+              "./refactor/importgraph/..."
+              "./refactor/rename/..."
+              "./refactor/satisfy/..."
+              "./txtar/...")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list
+                        ;; The GenericPaths test fails with "invalid memory
+                        ;; address or nil pointer dereference".
+                        "TestGenericPaths"
+                        ;; The ordering and paths tests fails because they
+                        ;; can't find test packages (perhaps because we do not
+                        ;; support Go modules).
+                        "TestOrdering" "TestPaths")
+                       "|"))))
     (native-inputs
      (list gccgo-14
            go-github-com-google-go-cmp))
