@@ -1408,6 +1408,8 @@ high quality, anti-aliased and subpixel rendered text on a display.")
     ;; Making the documentation requires latex, but t1lib is also an input
     ;; for building texlive.
     `(#:tests? #f ; no test target
+      #:configure-flags
+      '("CFLAGS=-g -O2 -Wno-error=implicit-int")
       #:make-flags
       '("without_doc")))
    (synopsis "Library for generating bitmaps from Type 1 fonts")
