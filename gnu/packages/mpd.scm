@@ -121,7 +121,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.23.17")
+    (version "0.24.5")
     (source (origin
               (method url-fetch)
               (uri
@@ -130,7 +130,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1wnzhr9ip38xm946zc269yxii28bhhd9yamqinq46mv927l4yvx8"))))
+                "04qa2rc7a96qyim6cm1zh7ilrqx4n0gb7prmiy6q53cwr6jwppv9"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -163,7 +163,6 @@ interfacing MPD in the C, C++ & Objective C languages.")
              (list ao
                    alsa-lib
                    avahi
-                   boost
                    chromaprint
                    curl
                    dbus
