@@ -291,6 +291,26 @@ Erlang.")
     (home-page "https://hexdocs.pm/meck/")
     (license license:asl2.0)))
 
+(define-public erlang-metrics
+  (package
+    (name "erlang-metrics")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "metrics" version))
+       (sha256
+        (base32 "0jviygsq88x6hymrhrg1zwg1wp71ccmpk6my2xyykgf3r0w1j1mf"))))
+    (build-system rebar-build-system)
+    (native-inputs
+     (list erlang-exometer-core))
+    (synopsis "Generic interface to metrics systems in Erlang")
+    (description
+     "This package provides a generic interface to different metrics systems in
+Erlang.")
+    (home-page "https://hex.pm/packages/metrics")
+    (license license:bsd-2)))
+
 (define-public erlang-mimerl
   (package
     (name "erlang-mimerl")
