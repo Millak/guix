@@ -250,6 +250,33 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/jiffy")
     (license license:expat)))
 
+(define-public erlang-hackney
+  (package
+    (name "erlang-hackney")
+    (version "1.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "hackney" version))
+       (sha256
+        (base32 "1m5issgyf7kiardfkknbh6g2lvsdlyggby0z45kj9x6ibzbvy2bj"))))
+    (build-system rebar-build-system)
+    (native-inputs
+     (list erlang-cowboy erlang-jsone rebar3-ex-doc))
+    (propagated-inputs
+     (list erlang-certifi
+           erlang-idna
+           erlang-metrics-1.0
+           erlang-mimerl
+           erlang-parse-trans
+           erlang-ssl-verify-fun
+           erlang-unicode-util-compat))
+    (synopsis "Simple HTTP client")
+    (description "This package provides @code{erlang-hackney}, a simple HTTP
+client.")
+    (home-page "https://hexdocs.pm/hackney/")
+    (license license:asl2.0)))
+
 (define-public erlang-hut
   (package
     (name "erlang-hut")
