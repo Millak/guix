@@ -30853,17 +30853,31 @@ is not tail recursive.")
       ;; TODO: Build the tar program with 'build-program' when the
       ;; 'asdf-release-ops' library is added to Guix.
       (arguments
-       '(#:asd-systems '("tar"
+       (list
+        #:asd-systems ''("tar"
                          "tar/common-extract"
                          "tar/create"
                          "tar/docs"
                          "tar/extract"
-                         "tar/simple-extract")))
+                         "tar/simple-extract")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-to-compile-on-newer-40ants-doc
+              (lambda _
+                (substitute* "src/docs.lisp"
+                  ((":package-symbol \\(find-package :tar\\)")
+                   ":package :tar")
+                  ((":package-symbol \\(find-package :tar-simple-extract\\)")
+                   ":package :tar-simple-extract")
+                  ((":package-symbol \\(find-package :tar-extract\\)")
+                   ":package :tar-extract")
+                  ((":package-symbol \\(find-package :tar-create\\)")
+                   ":package :tar-create")))))))
       (native-inputs
-       (list sbcl-parachute))
+       (list sbcl-parachute
+             sbcl-40ants-doc))
       (inputs
-       (list sbcl-40ants-doc
-             sbcl-alexandria
+       (list sbcl-alexandria
              sbcl-babel
              sbcl-local-time
              sbcl-osicat
