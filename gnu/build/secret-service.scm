@@ -164,31 +164,32 @@ Return the list of files installed on success, and #f otherwise."
   (define (wait-for-client address)
     ;; Wait for a connection on ADDRESS.  Note: virtio-serial ports are safer
     ;; than TCP connections but they are (presumably) unsupported on GNU/Hurd.
-    (let ((sock (socket AF_INET (logior SOCK_CLOEXEC SOCK_STREAM) 0)))
+    (let ((sock (socket AF_INET
+                        (logior SOCK_CLOEXEC SOCK_NONBLOCK SOCK_STREAM)
+                        0)))
       (bind sock address)
       (listen sock 1)
       (log "waiting for secrets on ~a...~%"
            (socket-address->string address))
 
-      (match (select (list sock) '() '() 60)
-        (((_) () ())
-         (match (accept sock)
-           ((client . address)
-            (log "client connection from ~a~%"
-                 (inet-ntop (sockaddr:fam address)
-                            (sockaddr:addr address)))
+      (if (wait-for-readable-fd sock 60)
+          (match (accept sock (logior SOCK_CLOEXEC SOCK_NONBLOCK))
+            ((client . address)
+             (log "client connection from ~a~%"
+                  (inet-ntop (sockaddr:fam address)
+                             (sockaddr:addr address)))
 
-            ;; Send a "hello" message.  This allows the client running on the
-            ;; host to know that it's now actually connected to server running
-            ;; in the guest.
-            (write '(secret-service-server (version 0)) client)
-            (force-output client)
+             ;; Send a "hello" message.  This allows the client running on the
+             ;; host to know that it's now actually connected to server running
+             ;; in the guest.
+             (write '(secret-service-server (version 0)) client)
+             (force-output client)
+             (close-port sock)
+             client))
+          (begin
+            (log "did not receive any secrets; time out~%")
             (close-port sock)
-            client)))
-        ((() () ())
-         (log "did not receive any secrets; time out~%")
-         (close-port sock)
-         #f))))
+            #f))))
 
   (define (read-secrets port)
     ;; Read secret files from PORT and install them.
