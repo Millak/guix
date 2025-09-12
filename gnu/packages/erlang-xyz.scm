@@ -96,6 +96,24 @@ Cowboy can easily be embedded in any other application.")
     (home-page "https://hex.pm/packages/cowboy")
     (license license:isc)))
 
+(define-public erlang-cowboy-telemetry
+  (package
+    (name "erlang-cowboy-telemetry")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "cowboy_telemetry" version))
+       (sha256
+        (base32 "1pn90is3k9dq64wbijvzkqb6ldfqvwiqi7ymc8dx6ra5xv0vm63x"))))
+    (build-system rebar-build-system)
+    (propagated-inputs (list erlang-cowboy erlang-telemetry))
+    (synopsis "Telemetry instrumentation for Cowboy")
+    (description "This package provides @code{erlang-cowboy-telemetry}, a
+library implementing Telemetry instrumentation for Cowboy.")
+    (home-page "https://github.com/beam-telemetry/cowboy_telemetry")
+    (license license:asl2.0)))
+
 (define-public erlang-cowlib
   (package
     (name "erlang-cowlib")
