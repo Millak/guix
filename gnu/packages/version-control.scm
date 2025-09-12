@@ -1122,7 +1122,7 @@ provides an integration with GitHub and GitLab.")
 (define-public got
   (package
     (name "got")
-    (version "0.117")
+    (version "0.118.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -1131,7 +1131,7 @@ provides an integration with GitHub and GitLab.")
                 version ".tar.gz"))
               (sha256
                (base32
-                "0hf16g18z3nfn2rqpgj1wmyxalwfbvj4fgkmfjj9nx7mypbgylwd"))))
+                "0l56kfq5r9nb4046n63cv1agwjgdggzi31q76p2sjvyy3rwkihbp"))))
     (inputs
      (list libevent
            `(,util-linux "lib")
