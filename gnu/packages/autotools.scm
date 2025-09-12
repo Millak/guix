@@ -462,7 +462,16 @@ Makefile, simplifying the entire process for the developer.")
                       ;; make: Nothing to be done for 'all'.
                       "t/remake-aclocal-version-mismatch.sh")
                   (("^#!.*" all)
-                   (string-append all "exit 77;\n")))))))))))
+                   (string-append all "exit 77;\n")))))
+            #$@(if (%current-target-system)
+                   #~((add-before 'check 'cross-skip-tests
+                        (lambda _
+                          ;; These tests try to execute a cross-built program
+                          (substitute* '("t/dist-vs-built-sources.sh"
+                                         "t/subobj-objname-clash.sh")
+                            (("^#!.*" all)
+                             (string-append all "exit 77;\n"))))))
+                   #~())))))))
 
 (define-public libtool
   (package
