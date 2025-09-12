@@ -212,6 +212,25 @@ Erlang and Elixir.")
     (home-page "https://hex.pm/packages/jiffy")
     (license license:expat)))
 
+(define-public erlang-hut
+  (package
+    (name "erlang-hut")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "hut" version))
+       (sha256
+        (base32 "00xvdqyycljks3dh79jz4rjmdwcp7ky6158dywva765fkd5p1y3s"))))
+    (build-system rebar-build-system)
+    (synopsis
+     "Helper logging library for Erlang")
+    (description
+     "This package provides an helper library for making Erlang libraries
+logging framework agnostic.")
+    (home-page "https://hex.pm/packages/hut")
+    (license license:expat)))
+
 (define-public erlang-pkix
   (package
     (name "erlang-pkix")
