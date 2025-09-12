@@ -1319,6 +1319,49 @@ Go programming language.")
 Go source code (including go.mod and go.work files) as test expectations.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-tools-go-packages-packagestest
+  (package
+    (name "go-golang-org-x-tools-go-packages-packagestest")
+    (version "0.1.1-deprecated")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://go.googlesource.com/tools")
+              (commit (go-version->git-ref version
+                                           #:subdir "go/packages/packagestest"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sjvngpahkb5x573i855fjlb1fdmr6n269nmb5xxnbabjb27mnvg"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "go" "packages")
+            (delete-all-but "go/packages" "packagestest")
+            (delete-all-but "." "go")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/tools/go/packages/packagestest"
+      #:unpack-path "golang.org/x/tools"))
+    (propagated-inputs
+     (list go-golang-org-x-tools
+           go-golang-org-x-tools-go-expect))
+    (home-page "https://golang.org/x/tools")
+    (synopsis "Temporary testing projects for Golang")
+    (description
+     "Package packagestest creates temporary projects on disk for testing go
+tools on.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-vuln
   (package
     (name "go-golang-org-x-vuln")
