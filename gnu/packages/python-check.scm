@@ -3925,24 +3925,23 @@ control and kept as reference.
 (define-public python-testfixtures
   (package
     (name "python-testfixtures")
-    (version "6.17.1")
+    (version "9.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "testfixtures" version))
        (sha256
-        (base32 "1nlv2hz20czjp4a811ichl5kwg99rh84l0mw9wq4rk3idzfs1hsy"))))
-    (build-system python-build-system)
+        (base32 "10hlw2y1rjzmfm87dlisbiwf0zyjbnj0q471799j69wlagrrqzji"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))          ; PyTest-Django fails to build in master
     (native-inputs
-     (list python-pytest python-pytest-cov
-           ;;("python-pytest-django" ,python-pytest-django)
-           python-twine python-wheel))
-    (synopsis "Tests components for Python")
-    (description "Testfixtures is a collection of helpers and mock objects that
-are useful when writing automated tests in Python.")
+     (list python-setuptools))
     (home-page "https://testfixtures.readthedocs.io/en/latest/")
+    (synopsis "Tests components for Python")
+    (description
+     "Testfixtures is a collection of helpers and mock objects that are useful
+when writing automated tests in Python.")
     (license license:expat)))
 
 (define-public python-time-machine
