@@ -761,6 +761,30 @@ Sorensen distance, plus some bonuses.  All distance computations are
 implemented in pure Python, and most of them are also implemented in C.")
     (license license:gpl2+)))
 
+(define-public python-fastnumbers
+  (package
+    (name "python-fastnumbers")
+    (version "5.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastnumbers" version))
+       (sha256
+        (base32 "0jzsylarbckivx762rxmc9syn7a6hqq3xhp5xnpfsln0rlhs0gqq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-numpy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://github.com/SethMMorton/fastnumbers")
+    (synopsis "Super-fast and clean conversions to numbers")
+    (description
+     "This package provides provides drop-in replacements for the Python
+built-in @code{int} and @code{float} that are on par or faster with the Python
+equivalents.")
+    (license license:expat)))
+
 (define-public python-flake8-class-newline
   (package
     (name "python-flake8-class-newline")
