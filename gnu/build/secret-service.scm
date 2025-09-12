@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -18,8 +18,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu build secret-service)
+  #:autoload   (fibers io-wakeup) (wait-until-port-readable-operation)
+  #:autoload   (fibers operations) (perform-operation
+                                    choice-operation
+                                    wrap-operation)
+  #:autoload   (fibers timers) (sleep-operation)
   #:use-module (guix build utils)
-
   #:use-module (srfi srfi-26)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 binary-ports)
@@ -32,6 +36,9 @@
 ;;; Commentary:
 ;;;
 ;;; Utility procedures for copying secrets into a VM.
+;;;
+;;; Note: This code runs within the 'shepherd' process, hence the use of
+;;; Fibers.
 ;;;
 ;;; Code:
 
@@ -47,51 +54,15 @@
          ;; to syslog.
          #'(format (current-output-port) fmt args ...))))))
 
-(define-syntax with-modules
-  (syntax-rules ()
-    "Dynamically load the given MODULEs at run time, making the chosen
-bindings available within the lexical scope of BODY."
-    ((_ ((module #:select (bindings ...)) rest ...) body ...)
-     (let* ((iface (resolve-interface 'module))
-            (bindings (module-ref iface 'bindings))
-            ...)
-       (with-modules (rest ...) body ...)))
-    ((_ () body ...)
-     (begin body ...))))
-
 (define (wait-for-readable-fd port timeout)
   "Wait until PORT has data available for reading or TIMEOUT has expired.
 Return #t in the former case and #f in the latter case."
-  (match (resolve-module '(fibers) #f #:ensure #f) ;using Fibers?
-    (#f
-     (log "blocking on socket...~%")
-     (match (select (list port) '() '() timeout)
-       (((_) () ()) #t)
-       ((() () ())  #f)))
-    (fibers
-     ;; We're running on the Shepherd 0.9+ with Fibers.  Arrange to make a
-     ;; non-blocking wait so that other fibers can be scheduled in while we
-     ;; wait for PORT.
-     (with-modules (((fibers) #:select (spawn-fiber sleep))
-                    ((fibers channels)
-                     #:select (make-channel put-message get-message)))
-       ;; Make PORT non-blocking.
-       (let ((flags (fcntl port F_GETFL)))
-         (fcntl port F_SETFL (logior O_NONBLOCK flags)))
-
-       (let ((channel (make-channel)))
-         (spawn-fiber
-          (lambda ()
-            (sleep timeout)                       ;suspends the fiber
-            (put-message channel 'timeout)))
-         (spawn-fiber
-          (lambda ()
-            (lookahead-u8 port)                   ;suspends the fiber
-            (put-message channel 'readable)))
-         (log "suspending fiber on socket...~%")
-         (match (get-message channel)
-           ('readable #t)
-           ('timeout  #f)))))))
+  (perform-operation
+   (choice-operation
+    (wrap-operation (wait-until-port-readable-operation port)
+                    (const #t))
+    (wrap-operation (sleep-operation timeout)
+                    (const #f)))))
 
 (define (socket-address->string address)
   "Return a human-readable representation of ADDRESS, an object as returned by
@@ -135,10 +106,10 @@ HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return #f on failure."
 
   (log "sending secrets to ~a~%" (socket-address->string address))
 
-  (let ((sock (socket AF_INET (logior SOCK_CLOEXEC SOCK_STREAM) 0))
-        (sleep (if (resolve-module '(fibers) #f)
-                   (module-ref (resolve-interface '(fibers)) 'sleep)
-                   sleep)))
+  (let ((sock (socket AF_INET
+                      (logior SOCK_CLOEXEC SOCK_NONBLOCK SOCK_STREAM)
+                      0))
+        (sleep (module-ref (resolve-interface '(fibers)) 'sleep)))
     ;; Connect to QEMU on the forwarded port.  The 'connect' call succeeds as
     ;; soon as QEMU is ready, even if there's no server listening on the
     ;; forward port inside the guest.
