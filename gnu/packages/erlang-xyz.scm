@@ -120,6 +120,25 @@ for manipulating Web protocols.")
     (home-page "https://hex.pm/packages/cowlib")
     (license license:isc)))
 
+(define-public erlang-erlang-color
+  (package
+    (name "erlang-erlang-color")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "erlang_color" version))
+       (sha256
+        (base32 "04vczpwp105nmx2s6c2lp3rh4dy2zy4l1md73w2ycv98v7gw6sbs"))))
+    (build-system rebar-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;some required rebar plugins
+    (synopsis "ANSI colors for your Erlang")
+    (description "This library implements ANSI colors for your Erlang.")
+    (home-page "https://hex.pm/packages/erlang_color")
+    (license license:expat)))
+
 (define-public erlang-luerl
   (package
     (name "erlang-luerl")
