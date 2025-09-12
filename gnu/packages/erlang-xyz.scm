@@ -470,6 +470,29 @@ Erlang-based systems.")
     (home-page "https://github.com/uwiger/setup")
     (license license:asl2.0)))
 
+(define-public erlang-shards
+  (package
+    (name "erlang-shards")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "shards" version))
+       (sha256
+        (base32 "1nlfx82x9wpqlhyc5j22xjxdpl1kyhdx71mzbyhwss36mrfh96hn"))))
+    (build-system rebar-build-system)
+    (native-inputs
+     (list erlang-covertool rebar3-ex-doc rebar3-proper))
+    (arguments
+     (list
+      ;; FIXME: Tests depend on rebar3-hex, which is not packaged yet.
+      #:tests? #f))
+    (synopsis "Partitioned or sharded ETS tables")
+    (description
+     "Erlang/Elixir library for partitioned or sharded ETS tables.")
+    (home-page "https://hexdocs.pm/shards/")
+    (license license:expat)))
+
 (define-public erlang-sqlite3
   (package
     (name "erlang-sqlite3")
