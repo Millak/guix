@@ -249,6 +249,28 @@ logging framework agnostic.")
     (home-page "https://hex.pm/packages/hut")
     (license license:expat)))
 
+(define-public erlang-meck
+  (package
+    (name "erlang-meck")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "meck" version))
+       (sha256
+        (base32 "10iq8csyr7x1w371c54255rqxvjznxgk7c4zxc5kar17wp7rn2k8"))))
+    (build-system rebar-build-system)
+    (arguments
+     (list
+      ;; FIXME: Tests depend on elixir-unite which is not
+      ;; yet packaged.
+      #:tests? #f))
+    (synopsis "Mocking framework for Erlang")
+    (description "This package provides @code{meck}, a mocking framework for
+Erlang.")
+    (home-page "https://hexdocs.pm/meck/")
+    (license license:asl2.0)))
+
 (define-public erlang-mimerl
   (package
     (name "erlang-mimerl")
