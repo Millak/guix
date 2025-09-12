@@ -24922,36 +24922,22 @@ implementation of your Python package and its public API surface.")
 (define-public python-natsort
   (package
     (name "python-natsort")
-    (version "7.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "natsort" version))
-              (sha256
-               (base32
-                "00y49bfsi7rrsd1s42gc2w95a6arl9ipdsx2493hr0v54fj07ih0"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-test-hypothesis-deadlines
-           (lambda _
-             (substitute* "tests/test_utils.py"
-               (("from hypothesis import given")
-                "from hypothesis import given, settings")
-               (("( +)@given" all spaces)
-                (string-append spaces "@settings(deadline=None)\n" all)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v")))))))
+    (version "8.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "natsort" version))
+       (sha256
+        (base32 "10d53q50zn2s8iiszv01nr9r4imimc2dvplkl4ymj1sm1r52qca5"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list glibc-utf8-locales ;; Tests want en_US.UTF-8
-           python-hypothesis
-           python-pytest-cov
+           python-pytest
            python-pytest-mock
-           python-pytest))
-    (propagated-inputs ; TODO: Add python-fastnumbers.
-     (list python-pyicu))
+           python-setuptools))
+    (propagated-inputs
+     (list python-fastnumbers
+           python-pyicu))
     (home-page "https://github.com/SethMMorton/natsort")
     (synopsis "Natural sorting for python and shell")
     (description
