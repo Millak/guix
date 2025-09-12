@@ -312,6 +312,33 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
+(define-public python-annexremote
+  (package
+    (name "python-annexremote")
+    (version "1.6.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Lykos153/AnnexRemote")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fhd712z143mvsidlwhnq951cvkbfcpybbim3fiyn6r3l1r46a25"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools-next
+           python-setuptools-scm))
+    (home-page "https://github.com/Lykos153/AnnexRemote")
+    (synopsis "Helper module to easily develop git-annex special remotes")
+    (description
+     "This package provides a helper module to develop special remotes for
+git-annex.  AnnexRemote implements the line-based external special remote
+protocol of git-annex, while leaving the behavior of the remote up to the
+user.")
+    (license license:gpl3)))
+
 (define-public python-apprise
   (package
     (name "python-apprise")
