@@ -5248,7 +5248,7 @@ by the Xorg server.")
 (define-public xorg-server
   (package
     (name "xorg-server")
-    (version "21.1.15")
+    (version "21.1.18")
     (source
      (origin
        (method url-fetch)
@@ -5256,7 +5256,7 @@ by the Xorg server.")
                            "/xserver/xorg-server-" version ".tar.xz"))
        (sha256
         (base32
-         "12g0g9ksswzx1kgn23gvrpa570fnpkdkmw1dfqjjg4422a884744"))
+         "0lk3268gzpll547zvaa64rdhs4z89d7w567lbd55swl71n9x2y68"))
        (patches
         (list
          ;; See:
@@ -5374,7 +5374,16 @@ draggable titlebars and borders.")
 (define-public xorg-server-for-tests
   (hidden-package
    (package
-     (inherit xorg-server))))
+     (inherit xorg-server)
+     (version "21.1.15")
+     (source
+      (origin
+        (inherit (package-source xorg-server))
+        (uri (string-append "https://xorg.freedesktop.org/archive/individual"
+                            "/xserver/xorg-server-" version ".tar.xz"))
+        (sha256
+         (base32
+          "12g0g9ksswzx1kgn23gvrpa570fnpkdkmw1dfqjjg4422a884744")))))))
 
 ;;; XXX: Not really at home, but unless we break the inheritance between
 ;;; tigervnc-server and xorg-server, it must live here to avoid cyclic module
@@ -7142,9 +7151,8 @@ the server and cleaning up before returning the exit status of the command.")
     (license (list license:x11          ; the script
                    license:gpl2+))))    ; the man page
 
-;; This package is intended to be used when building qtbase.
-;; Note: It's currently marked as "hidden" to avoid having two non-eq?
-;; packages with the same name and version.
+;; This package is intended to be used when building qtbase, like
+;; xorg-server-for-tests.
 (define-public xvfb-run-for-tests
   (hidden-package
    (package
