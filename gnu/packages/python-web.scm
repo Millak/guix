@@ -6036,24 +6036,29 @@ file.")
 (define-public python-webtest
   (package
     (name "python-webtest")
-    (version "2.0.35")
+    (version "3.0.6")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "WebTest" version))
+       (uri (pypi-uri "webtest" version))
        (sha256
-        (base32 "11xhgdj251zkvz5w30fvspii08ki2vrpr1im9sph1wmlnasnihda"))))
-    (build-system python-build-system)
+        (base32 "0jwl8i9xvm5xim1h2jrwfbqac1g3fpiazfdwfp2md3s4899gsmj2"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests require python-pyquery, which creates a circular dependency.
      `(#:tests? #f))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-waitress python-webob python-six python-beautifulsoup4))
+     (list python-beautifulsoup4
+           python-waitress
+           python-webob))
     (home-page "https://docs.pylonsproject.org/projects/webtest/")
     (synopsis "Helper to test WSGI applications")
-    (description "Webtest allows you to test your Python web applications
-without starting an HTTP server.  It supports anything that supports the
-minimum of WSGI.")
+    (description
+     "Webtest allows you to test your Python web applications without
+starting an HTTP server.  It supports anything that supports the minimum of
+WSGI.")
     (license license:expat)))
 
 (define-public python-flask
