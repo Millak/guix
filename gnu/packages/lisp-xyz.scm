@@ -3507,6 +3507,42 @@ package.")
 (define-public ecl-cffi-c-ref
   (sbcl-package->ecl-package sbcl-cffi-c-ref))
 
+(define-public sbcl-cffi-object
+  (package
+    (name "sbcl-cffi-object")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bohonghuang/cffi-object")
+             (commit "b9e4f8f7eed44cfa5319fd086f282efbcf3ed705")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mvxqaq800803mhhra28kjzvkcg7b9jfnlw7662qnps99b0m8y2p"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute
+           sbcl-cffi-ops))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cffi
+           sbcl-trivial-garbage))
+    (home-page "https://github.com/bohonghuang/cffi-object")
+    (synopsis "Enables fast and convenient interoperation with foreign
+objects")
+    (description "Enables fast and convenient interoperation with foreign
+objects.")
+    (license license:asl2.0)))
+
+;; Error detected:
+;; Unknown CFFI type :OBJECT
+#;(define-public ecl-cffi-object
+  (sbcl-package->ecl-package sbcl-cffi-object))
+
+(define-public cl-cffi-object
+  (sbcl-package->cl-source-package sbcl-cffi-object))
+
 (define-public sbcl-cffi-ops
   (package
     (name "sbcl-cffi-ops")
