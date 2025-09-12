@@ -160,24 +160,34 @@ mirror_directory (const char *source, const char *target,
 		  int (* firmlink) (const char *, const struct dirent *,
 				    const char *))
 {
-  DIR *stream = opendir (source);
+  int dir_fd = open (source, O_DIRECTORY | O_RDONLY | O_CLOEXEC);
+  DIR *stream = fdopendir (dir_fd);
 
   for (struct dirent *entry = readdir (stream);
        entry != NULL;
        entry = readdir (stream))
     {
-      /* XXX: Some file systems may not report a useful 'd_type'.  Ignore them
-	 for now.  */
-      assert (entry->d_type != DT_UNKNOWN);
-
       if (strcmp (entry->d_name, ".") == 0
 	  || strcmp (entry->d_name, "..") == 0)
 	continue;
 
+      int is_link = 0;
+      if (entry->d_type == DT_UNKNOWN)
+        {
+          struct stat statbuf;
+          if (fstatat (dir_fd, entry->d_name, &statbuf,
+                       AT_SYMLINK_NOFOLLOW) < 0)
+            assert_perror (errno);
+          if ((statbuf.st_mode & S_IFMT) == S_IFLNK)
+            is_link = 1;
+        }
+      else if (entry->d_type == DT_LNK)
+        is_link = 1;
+
       char *abs_source = concat (source, entry->d_name);
       char *new_entry = concat (target, entry->d_name);
 
-      if (entry->d_type == DT_LNK)
+      if (is_link)
 	{
 	  char target[PATH_MAX];
 
