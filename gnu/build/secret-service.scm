@@ -156,10 +156,12 @@ HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return #f on failure."
       (unless (= ENOENT (system-error-errno args))
         (apply throw args)))))
 
-(define (secret-service-receive-secrets address)
+(define* (secret-service-receive-secrets address
+                                         #:key (timeout 60))
   "Listen to ADDRESS, an address returned by 'make-socket-address', and wait
 for a secret service client to send secrets.  Write them to the file system.
-Return the list of files installed on success, and #f otherwise."
+Return the list of files installed on success, and #f if TIMEOUT seconds
+passed without receiving any files or if some other failure occurred."
 
   (define (wait-for-client address)
     ;; Wait for a connection on ADDRESS.  Note: virtio-serial ports are safer
@@ -172,7 +174,7 @@ Return the list of files installed on success, and #f otherwise."
       (log "waiting for secrets on ~a...~%"
            (socket-address->string address))
 
-      (if (wait-for-readable-fd sock 60)
+      (if (wait-for-readable-fd sock timeout)
           (match (accept sock (logior SOCK_CLOEXEC SOCK_NONBLOCK))
             ((client . address)
              (log "client connection from ~a~%"
