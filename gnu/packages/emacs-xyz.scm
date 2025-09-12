@@ -15407,6 +15407,46 @@ backends.  It supports url.el which is shipped with Emacs and the curl command
 line program.")
       (license license:gpl3+))))
 
+(define-public emacs-http-post-simple
+  (let ((commit "f53697fca278c741051aeb668b00466b5e0fd3fe")
+        (revision "0"))
+    (package
+      (name "emacs-http-post-simple")
+      ;; Upstream does not provide a version number. The package is very old,
+      ;; feature-complete and not likely to be updated. So, we assume a
+      ;; version of 1.0.0.
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/http-post-simple")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0krdbvvvzn323vx554yw7947nddl3icfjk4wf5kfx7fim5v3mdn6"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-obsolete-functions
+              (lambda _
+                ;; Replace obsolete functions from 'cl.
+                (substitute* "http-post-simple.el"
+                  (("\\(require 'url\\)")
+                   "(require 'cl-lib)\n(require 'cl-macs)\n(require 'url)")
+                  (("\\(destructuring-bind")
+                   "(cl-destructuring-bind")
+                  (("\\(values")
+                   "(cl-values")))))))
+      (home-page "https://github.com/emacsorphanage/http-post-simple")
+      (synopsis "HTTP POST requests using the url library")
+      (description "@code{emacs-http-post-simple} provides a simple HTTP POST
+requests library that uses the url library.")
+      (license license:gpl2+))))
+
 (define-public emacs-ruby-electric
   (let ((revision "0")
         (commit "c53376da891713e0c49f01aad2ff64d4fbb0b812"))
