@@ -21,6 +21,7 @@
 # Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
 # Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
+# Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 #
 # This file is part of GNU Guix.
 #
@@ -1312,7 +1313,7 @@ download-po:
 	        target="$$domain/$$target"; \
 	        msgfmt -c "$$po"; \
 	        if msgfmt -c "$$po" && [ "$$translated" != "0" ] && ([ "$$domain" != "po/doc" ] || [ "$$translated" -gt $$(($$total/10)) ] || [ -f $$target ]); then \
-	            msgfilter --no-wrap -i "$$po" cat > "$$po".tmp; \
+	            msgconv --no-wrap -o "$$po".tmp "$$po"; \
 	            mv "$$po".tmp "$$target"; \
 	            echo "copied $$target."; \
 	        else \
