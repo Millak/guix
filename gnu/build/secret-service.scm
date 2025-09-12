@@ -190,23 +190,6 @@ Return the list of files installed on success, and #f otherwise."
          (close-port sock)
          #f))))
 
-  ;; TODO: Remove when (@ (guix build utils) dump-port) has a 'size'
-  ;; parameter.
-  (define (dump in out size)
-    ;; Copy SIZE bytes from IN to OUT.
-    (define buf-size 65536)
-    (define buf (make-bytevector buf-size))
-
-    (let loop ((left size))
-      (if (<= left 0)
-          0
-          (let ((read (get-bytevector-n! in buf 0 (min left buf-size))))
-            (if (eof-object? read)
-                left
-                (begin
-                  (put-bytevector out buf 0 read)
-                  (loop (- left read))))))))
-
   (define (read-secrets port)
     ;; Read secret files from PORT and install them.
     (match (false-if-exception (read port))
@@ -224,7 +207,7 @@ Return the list of files installed on success, and #f otherwise."
 
                    (call-with-output-file file
                      (lambda (output)
-                       (dump port output size)
+                       (dump-port port output size)
                        (chmod file mode))))
                  files sizes modes)
        (log "received ~a secret files~%" (length files))
