@@ -3674,6 +3674,8 @@ progresses the level, or you may regenerate tiles as the world changes.")
                (add-after 'install 'install-api-files
                  ;; For generating bindings.
                  (lambda _
+                   (install-file (string-append #$source "/src/rcamera.h")
+                                 (string-append #$output "/include"))
                    (copy-recursively
                     (string-append #$source "/parser/output")
                     (string-append #$output "/share/raylib")))))))
