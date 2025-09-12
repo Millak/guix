@@ -52,7 +52,7 @@
     (description "@code{Binpp} will use @code{io:format} to output the formatted
 binary by default.  However there are options making @code{pprint} functions
 return formatted data instead of performing direct IO write.")
-    (home-page "https://hexdocs.pm/binpp/")
+    (home-page "https://github.com/jtendo/binpp")
     (license license:wtfpl2)))
 
 (define-public erlang-coveralls
@@ -356,6 +356,23 @@ connections with a small code base and low latency while being easy to use
 directly as an application or to embed into your own.")
     (home-page "https://hex.pm/packages/ranch")
     (license license:isc)))
+
+(define-public erlang-setup
+  (package
+    (name "erlang-setup")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "setup" version))
+       (sha256
+        (base32 "1d3x8mhsp03ppahny1yj2i910qqvgqixx3knw7283jijgpabpfpp"))))
+    (build-system rebar-build-system)
+    (synopsis "Generic setup application for Erlang-based systems")
+    (description "This package implements a generic setup application for
+Erlang-based systems.")
+    (home-page "https://github.com/uwiger/setup")
+    (license license:asl2.0)))
 
 (define-public erlang-sqlite3
   (package
