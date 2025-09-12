@@ -1421,6 +1421,8 @@ tools on.")
       ;; go: modules disabled by GO111MODULE=off
       #:test-flags #~(list "-skip" "TestVet|TestGoModTidy|Test58509")
       #:test-subdirs #~(list "internal/..." "scan/..." ".")))
+    (native-inputs
+     (list go-golang-org-x-tools-go-packages-packagestest))
     (propagated-inputs
      (list go-github-com-google-go-cmdtest
            go-github-com-google-go-cmp
