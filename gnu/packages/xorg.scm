@@ -7076,14 +7076,14 @@ box, and a calendar.  It uses GTK+, and will match your desktop theme.")
 (define-public xvfb-run
   (package
     (name "xvfb-run")
-    (version "21.1.7-1")
+    (version "21.1.18-2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://debian/pool/main/x/xorg-server/"
                            "xorg-server_" version ".diff.gz"))
        (sha256
-        (base32 "1073m4gzn8yv9kn70fbyq8a2xckgz0wljjr2w7i2bsrg767h29gd"))))
+        (base32 "1775i47yyvpzg5gb3cdyc260bzr802i15vdlw0qnrl030li53yj2"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7092,11 +7092,11 @@ box, and a calendar.  It uses GTK+, and will match your desktop theme.")
           (replace 'unpack
             ;; Apply the source patch to an empty directory.
             (lambda* (#:key inputs #:allow-other-keys)
-              (let*  ((diff.gz (basename #$source))
+              (let*  ((diff.gz (basename #$(package-source this-package)))
                       (diff (substring diff.gz 0 (string-rindex diff.gz #\.))))
                 (mkdir "source")
                 (chdir "source")
-                (copy-file #$source diff.gz)
+                (copy-file #$(package-source this-package) diff.gz)
                 (invoke "gunzip" diff.gz)
                 (invoke "patch" "-Np1" "-i" diff)
                 (chdir "debian/local"))))
@@ -7157,6 +7157,14 @@ the server and cleaning up before returning the exit status of the command.")
   (hidden-package
    (package
      (inherit xvfb-run)
+     (version "21.1.7-1")
+     (source
+      (origin
+        (inherit (package-source xvfb-run))
+        (uri (string-append "mirror://debian/pool/main/x/xorg-server/"
+                            "xorg-server_" version ".diff.gz"))
+        (sha256
+         (base32 "1073m4gzn8yv9kn70fbyq8a2xckgz0wljjr2w7i2bsrg767h29gd"))))
      (inputs
       (modify-inputs (package-inputs xvfb-run)
         (replace "xorg-server" xorg-server-for-tests))))))
