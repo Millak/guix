@@ -634,8 +634,9 @@ language.")
   (package
     (name "go-golang-org-x-exp")
     ;; Note: Beware, the updater gets this wrong.  Take the latest version
-    ;; string from <https://pkg.go.dev/golang.org/x/exp?tab=versions>.
-    (version "0.0.0-20250531010427-b6e5de432a8b")
+    ;; string from <https://pkg.go.dev/golang.org/x/exp?tab=versions>, or try
+    ;; "guix import go golang.org/x/exp".
+    (version "0.0.0-20250911091902-df9299821621")
     (source
      (origin
        (method git-fetch)
@@ -644,7 +645,7 @@ language.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vszjiblb7i79dp9x1zvfpjidnmkzsaq6ij2jfh63hv9ph7yz3hf"))
+        (base32 "0jmpq16f2d8i3bnwxa78j384vi5gynfajh34m2nh3vhji3d35777"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -667,25 +668,14 @@ language.")
       #~(list "-skip"
               (string-join
                (list
-                ;; Disable failing tests: error running `go mod init`:
-                ;; go: modules disabled by GO111MODULE=off.
+                ;; gorelease_test.go:310: error running `go mod init`: go:
+                ;; modules disabled by GO111MODULE=off; see 'go help modules'
                 "TestRelease_gitRepo_uncommittedChanges"
-                "TestFailure"
-                ;; Delete: want nil discarded elements, got
-                ;; 0xc000012858, 0xc000012860
-                "TestDeleteClearTail"
-                ;; DeleteFunc: want nil discarded elements, got
-                ;; 0xc000012910, 0xc000012918
-                "TestDeleteFuncClearTail"
-                ;; Compact: want nil discarded elements, got
-                ;; 0xc000012b30, 0xc000012b38
-                "TestCompactClearTail"
-                ;; CompactFunc: want nil discarded elements, got
-                ;; 0xc000012be8, 0xc000012bf0
-                "TestCompactFuncClearTail"
-                ;; Replace: want nil discarded element, got
-                ;; 0xc000013058
-                "TestReplaceClearTail")
+                ;; constraints_test.go:104:
+                ;; /gnu/store/vr0097qq0kl1ansn6iv5smysjh9v7ycd-go-1.24.3/lib/go/bin/go
+                ;; mod tidy: exit status 1 go: modules disabled by
+                ;; GO111MODULE=off; see 'go help modules'
+                "TestFailure")
                "|"))
       #:phases
       #~(modify-phases %standard-phases
@@ -693,6 +683,8 @@ language.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "slog/benchmarks")))))))
+    (native-inputs
+     (list go-golang-org-x-tools-go-packages-packagestest))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-golang-org-x-mod
