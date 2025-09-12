@@ -5367,7 +5367,8 @@ communicates with the user via graphical controls such as buttons and
 draggable titlebars and borders.")
     (license license:x11)))
 
-;; This package is intended to be used when building GTK+.
+;; This package is intended to be used when building GTK+ qtbase (via
+;; xvfb-run-for-tests).
 ;; Note: It's currently marked as "hidden" to avoid having two non-eq?
 ;; packages with the same name and version.
 (define-public xorg-server-for-tests
@@ -7140,6 +7141,17 @@ an existing user-specified one, writes a cookie to it, and then starts the
 the server and cleaning up before returning the exit status of the command.")
     (license (list license:x11          ; the script
                    license:gpl2+))))    ; the man page
+
+;; This package is intended to be used when building qtbase.
+;; Note: It's currently marked as "hidden" to avoid having two non-eq?
+;; packages with the same name and version.
+(define-public xvfb-run-for-tests
+  (hidden-package
+   (package
+     (inherit xvfb-run)
+     (inputs
+      (modify-inputs (package-inputs xvfb-run)
+        (replace "xorg-server" xorg-server-for-tests))))))
 
 (define-public xwayland-run
   (package

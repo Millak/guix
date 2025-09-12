@@ -1191,7 +1191,7 @@ tst_qt_cmake_create.cpp"
        (prepend ninja                   ;CMake Generator, also used for tests
                 tzdata-for-tests
                 wayland-protocols
-                xvfb-run)))
+                xvfb-run-for-tests)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs qtbase-5)
        ;; Required by Qt6GuiDependencies.cmake.
