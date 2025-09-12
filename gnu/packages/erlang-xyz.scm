@@ -365,6 +365,29 @@ Erlang.")
     (home-page "https://hex.pm/packages/mimerl")
     (license license:expat)))
 
+(define-public erlang-mochiweb
+  (package
+    (name "erlang-mochiweb")
+    (version "3.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mochi/mochiweb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0npsgdz2jfg633zv5q5q7y3qzz58wva0y6k9calswybq0mx6243v"))
+       (patches
+        (search-patches
+         "erlang-mochiweb-disable-known-to-fail-tests.patch"))))
+    (build-system rebar-build-system)
+    (synopsis "MochiMedia Web Server")
+    (description "This package provides @code{MochiMedia}, an Erlang Web
+Server.")
+    (home-page "https://github.com/mochi/mochiweb")
+    (license license:expat)))
+
 (define-public erlang-pkix
   (package
     (name "erlang-pkix")

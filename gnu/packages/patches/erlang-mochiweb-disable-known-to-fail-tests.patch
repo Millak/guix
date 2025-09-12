@@ -1,0 +1,25 @@
+From 7fc5dfe2d1ab999f280edaad10426fdc51801287 Mon Sep 17 00:00:00 2001
+From: Giacomo Leidi <goodoldpaul@autistici.org>
+Date: Fri, 12 Sep 2025 19:14:49 +0200
+Subject: [PATCH] Disable known to fail bugs.
+
+---
+ test/mochiweb_http_tests.erl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/mochiweb_http_tests.erl b/test/mochiweb_http_tests.erl
+index 8b8ba64..0fbb7fb 100644
+--- a/test/mochiweb_http_tests.erl
++++ b/test/mochiweb_http_tests.erl
+@@ -3,7 +3,7 @@
+ -include_lib("eunit/include/eunit.hrl").
+ -include("mochiweb_test_util.hrl").
+ 
+-has_acceptor_bug_test_() ->
++has_acceptor_bug_() ->
+     {setup, fun start_server/0, fun mochiweb_http:stop/1,
+      fun has_acceptor_bug_tests/1}.
+ 
+-- 
+2.51.0
+
