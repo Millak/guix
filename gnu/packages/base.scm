@@ -526,8 +526,6 @@ used to apply commands with arbitrarily long arguments.")
                                    "tests/split/fail.sh"
                                    ;; These tests error
                                    "tests/dd/nocache.sh"
-                                   ;; These tests can intermitently fail on btrfs
-                                   "tests/cp/reflink-auto.sh"
                                    ;; These tests fail
                                    "tests/cp/sparse.sh"
                                    "tests/cp/special-f.sh"
@@ -573,6 +571,10 @@ used to apply commands with arbitrarily long arguments.")
                                (("(^| )main *\\(.*" all)
                                 (string-append all "{\n  exit (77);//"))))
                            '())
+                     ;; These tests can fail on btrfs.
+                     (substitute* "tests/cp/reflink-auto.sh"
+                       (("^#!.*" all)
+                        (string-append all "exit 77;\n")))
                      (substitute* "Makefile.in"
                        ;; fails on filesystems where inotify cannot be used,
                        ;; more info in #47935
