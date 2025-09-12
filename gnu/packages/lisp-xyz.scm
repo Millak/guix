@@ -11641,6 +11641,72 @@ and lean bindings to C libraries.")
 (define-public ecl-claw
   (sbcl-package->ecl-package sbcl-claw))
 
+(define-public sbcl-claw-raylib
+  (package
+    (name "sbcl-claw-raylib")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              ;; The prebuild branch of the original repository is reset when
+              ;; there are changes. We use a fork which maintains a stable
+              ;; reference to the prebuild commit.
+              (url "https://github.com/simendsjo/claw-raylib")
+              (commit "prebuild-raylib-5.5-and-raygui-4.0")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19xaxcinw4lxsp4snaa2azcxz9hwii729gfpcv2vdw7qlzc9cg9g"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+      #:asd-systems
+      ''("claw-raylib"
+         "claw-raylib/examples")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* "library.lisp"
+                (("libraylib\\.so")
+                 (string-append #$(this-package-input "raylib") "/lib/libraylib.so"))
+                (("libraygui\\.so")
+                 (string-append #$(this-package-input "raygui") "/lib/libraygui.so")))))
+          (add-before 'build 'build-libraries
+            (lambda _
+              ;; Converted from the "Compile the adapters" in the README
+              (let ((lib (string-append #$output "/share/common-lisp/sbcl/claw-raylib/lib")))
+                (invoke #$(cc-for-target) "-O3" "-fPIC" "-shared"
+                        "-o" (string-append lib "/libraylib-adapter.so")
+                        (string-append lib "/libraylib-adapter.x86_64-pc-linux-gnu.c"))
+                (invoke #$(cc-for-target) "-O3" "-fPIC" "-shared"
+                        "-o" (string-append lib "/librlgl-adapter.so")
+                        (string-append lib "/librlgl-adapter.x86_64-pc-linux-gnu.c"))
+                (invoke #$(cc-for-target) "-O3" "-fPIC" "-shared"
+                        "-o" (string-append lib "/libraygui-adapter.so")
+                        (string-append lib "/libraygui-adapter.x86_64-pc-linux-gnu.c"))))))))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-global-vars
+           sbcl-cffi
+           sbcl-cffi-ops
+           sbcl-cffi-object
+           raylib
+           raygui))
+    (home-page "https://github.com/bohonghuang/claw-raylib")
+    (synopsis "Fully auto-generated Common Lisp bindings to Raylib and Raygui")
+    (description "Fully auto-generated Common Lisp bindings to Raylib and
+Raygui.")
+    (license license:asl2.0)))
+
+;; This does not work yet
+#;(define-public ecl-claw-raylib
+  (sbcl-package->ecl-package sbcl-claw-raylib))
+
+;; This does not work yet
+#;(define-public cl-claw-raylib
+  (sbcl-package->cl-source-package sbcl-claw-raylib))
+
 (define-public sbcl-claw-support
   (package
     (name "sbcl-claw-support")
