@@ -478,6 +478,26 @@ libraries can then hook into those events and run custom handlers.")
     (home-page "https://hexdocs.pm/telemetry/")
     (license license:asl2.0)))
 
+(define-public erlang-telemetry-poller
+  (package
+    (name "erlang-telemetry-poller")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "telemetry_poller" version))
+       (sha256
+        (base32 "04ajnflsj9xg8sv2012npazsjvj3fjcxp5sqyx84lm18f7nqpwai"))))
+    (build-system rebar-build-system)
+    (propagated-inputs (list erlang-telemetry))
+    (synopsis
+     "Periodically collect measurements and dispatch them as Telemetry events")
+    (description
+     "This package provides a library to periodically collect measurements and
+dispatch them as Telemetry events.")
+    (home-page "https://hexdocs.pm/telemetry_poller/")
+    (license license:asl2.0)))
+
 (define-public erlang-cache-tab
   (package
     (name "erlang-cache-tab")
