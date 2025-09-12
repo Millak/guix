@@ -37,6 +37,7 @@
 ;;; Copyright © 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2025 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3684,6 +3685,56 @@ progresses the level, or you may regenerate tiles as the world changes.")
   abstract away platform and graphics details, allowing you to focus on
   writing your game.")
     (home-page "https://www.raylib.com/")
+    (license license:zlib)))
+
+(define-public raygui
+  (package
+    (name "raygui")
+    (version "4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/raysan5/raygui/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13s606dxnypg6n2pbn13d2d407pxkb7bxqbk5swlfvrcjs2w5afn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (add-after 'unpack 'use-raygui-header
+            (lambda _
+              (rename-file "src/raygui.h" "src/raygui.c")))
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (invoke #$(cc-for-target)
+                      "-o" "libraygui.so"
+                      "src/raygui.c"
+                      "-DRAYGUI_IMPLEMENTATION"
+                      "-shared" "-fpic"
+                      "-lraylib"
+                      "-lGL" "-lm" "-lpthread" "-ldl" "-lrt" "-lX11")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (let ((src (string-append #$source "/src"))
+                    (inc (string-append #$output "/include"))
+                    (lib (string-append #$output "/lib")))
+                (install-file (string-append src "/raygui.h") inc)
+                (install-file "libraygui.so" lib)))))))
+    (inputs (list mesa raylib))
+    (synopsis "Simple and easy-to-use immediate-mode gui library")
+    (description "Originally inspired by Unity IMGUI (immediate mode GUI API).
+
+Designed as an auxiliary module for raylib to create simple GUI interfaces using
+raylib graphic style (simple colors, plain rectangular shapes, wide borders...)
+but it can be adapted to other engines/frameworks.")
+    (home-page "https://www.raylib.com")
     (license license:zlib)))
 
 (define-public tic80
