@@ -2311,6 +2311,33 @@ for Common Lisp.")
 ;; (define-public ecl-bknr-datastore
 ;;   (sbcl-package->ecl-package sbcl-bknr-datastore))
 
+(define-public sbcl-black-tie
+  (let ((commit "26381ca1b1d6846cfa2ad662da37302d30e24a97")
+        (revision "0"))
+    (package
+      (name "sbcl-black-tie")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/aerique/black-tie")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a1zczxp4wkqs4cmwc4rnsgwwc2h4zqmg58cjykfzz4jh31fa43a"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://codeberg.org/aerique/black-tie")
+      (synopsis "Noise library")
+      (description "Noise library.")
+      (license license:bsd-3))))
+
+(define-public ecl-black-tie
+  (sbcl-package->ecl-package sbcl-black-tie))
+
+(define-public cl-black-tie
+  (sbcl-package->cl-source-package sbcl-black-tie))
+
 (define-public sbcl-blackbird
   (let ((commit "d361f81c1411dec07f6c2dcb11c78f7aea9aaca8")
         (revision "1"))
