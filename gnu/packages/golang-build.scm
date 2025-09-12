@@ -1279,6 +1279,46 @@ Go programming language.")
      (native-inputs '())
      (propagated-inputs '()))))
 
+(define-public go-golang-org-x-tools-go-expect
+  (package
+    (name "go-golang-org-x-tools-go-expect")
+    (version "0.1.1-deprecated")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://go.googlesource.com/tools")
+              (commit (go-version->git-ref version
+                                           #:subdir "go/expect"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sjvngpahkb5x573i855fjlb1fdmr6n269nmb5xxnbabjb27mnvg"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "go" "expect")
+            (delete-all-but "." "go")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/tools/go/expect"
+      #:unpack-path "golang.org/x/tools"))
+    (propagated-inputs (list go-golang-org-x-mod))
+    (home-page "https://golang.org/x/tools")
+    (synopsis "Interpreting structured comments in Golang")
+    (description
+     "Package expect provides support for interpreting structured comments in
+Go source code (including go.mod and go.work files) as test expectations.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-vuln
   (package
     (name "go-golang-org-x-vuln")
