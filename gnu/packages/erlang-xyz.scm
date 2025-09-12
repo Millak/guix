@@ -157,6 +157,26 @@ for manipulating Web protocols.")
     (home-page "https://hex.pm/packages/erlang_color")
     (license license:expat)))
 
+(define-public erlang-exometer-core
+  (package
+    (name "erlang-exometer-core")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "exometer_core" version))
+       (sha256
+        (base32 "191kjqqbvz0jjijfhkbs73lnsmlrr2yinw30pkby0fx363l378xf"))))
+    (build-system rebar-build-system)
+    (native-inputs
+     (list erlang-meck))
+    (propagated-inputs (list erlang-hut erlang-parse-trans erlang-setup))
+    (synopsis "Code instrumentation and metrics collection")
+    (description "This package provides @code{erlang-exometer-core}, a library
+for code instrumentation and metrics collection.")
+    (home-page "https://hexdocs.pm/exometer_core/")
+    (license license:mpl2.0)))
+
 (define-public erlang-luerl
   (package
     (name "erlang-luerl")
