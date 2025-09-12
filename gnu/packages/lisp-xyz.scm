@@ -3507,6 +3507,38 @@ package.")
 (define-public ecl-cffi-c-ref
   (sbcl-package->ecl-package sbcl-cffi-c-ref))
 
+(define-public sbcl-cffi-ops
+  (package
+    (name "sbcl-cffi-ops")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bohonghuang/cffi-ops")
+             (commit "79a36a643c10459e3ea6a7a22dfa7f9b62233e61")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hi3svwfb7m1wq892wlrsgj52jkh3x6msnimax28221baj6g64gg"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cffi
+           sbcl-arrow-macros
+           sbcl-trivial-macroexpand-all))
+    (home-page "https://github.com/bohonghuang/cffi-ops")
+    (synopsis "Helps writing concise CFFI-related code")
+    (description "Helps writing concise CFFI-related code.")
+    (license license:asl2.0)))
+
+(define-public ecl-cffi-ops
+  (sbcl-package->ecl-package sbcl-cffi-ops))
+
+(define-public cl-cffi-ops
+  (sbcl-package->cl-source-package sbcl-cffi-ops))
+
 (define-public sbcl-chanl
   (let ((commit "56e90a126c78b39bb621a01585e8d3b985238e8c")
         (revision "1"))
