@@ -9528,6 +9528,8 @@ previous commands.")
                (url "https://github.com/vseloved/cl-redis")
                (commit commit)))
          (file-name (git-file-name "cl-redis" version))
+         ;; https://github.com/vseloved/cl-redis/pull/42
+         (patches (search-patches "sbcl-cl-redis-replace-sbcl-specific-calls.patch"))
          (sha256
           (base32 "1jb82zpiwx7ri86z0xqdynr3m40jnlzinyc0b47lvpbqs7cydrrg"))))
       (build-system asdf-build-system/sbcl)
