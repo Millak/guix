@@ -9699,15 +9699,15 @@ of a system that deprecates the old ip_queue/libipq mechanism.")
 (define-public conntrack-tools
   (package
     (name "conntrack-tools")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://netfilter.org/projects/"
                            "conntrack-tools/files/"
-                           "conntrack-tools-" version ".tar.bz2"))
+                           "conntrack-tools-" version ".tar.xz"))
        (sha256
-        (base32 "0pabq97rpci3z1bdc54cyhc3b9w86m4nnlbzsp7905p8az7yp789"))))
+        (base32 "1mnynl5a63j25arapwvkjbm3a2cqm3aaklwfwwclhmpnqps7fxh6"))))
     (build-system gnu-build-system)
     (native-inputs (list bison flex pkg-config))
     (inputs (list libtirpc
