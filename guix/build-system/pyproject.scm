@@ -34,7 +34,8 @@
             default-python
             default-sanity-check.py
             pyproject-build
-            pyproject-build-system))
+            pyproject-build-system
+            pyproject-guile-json))
 
 ;; Commentary:
 ;;
@@ -46,7 +47,6 @@
 (define %pyproject-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build pyproject-build-system)
-    (guix build json)
     (guix build toml)
     ,@%python-build-system-modules))
 
@@ -58,6 +58,10 @@
   ;; out setuptools if a different version is required.
   ;; Using python-toolchain here might cause dependency cycles.
   (@* (gnu packages python) python-sans-pip-wrapper))
+
+(define (pyproject-guile-json)
+  "Return the default guile-json package, resolved lazily."
+  (@* (gnu packages guile) guile-json-4))
 
 ;; TODO: On the next iteration of python-team, migrate the sanity-check to
 ;; importlib_metadata instead of setuptools.
@@ -95,7 +99,7 @@
 (define* (pyproject-build name inputs
                           #:key source
                           (tests? #t)
-                          (configure-flags ''(@))
+                          (configure-flags ''())
                           (backend-path #f)
                           (build-backend #f)
                           (test-backend #f)
@@ -105,6 +109,7 @@
                           (search-paths '())
                           (system (%current-system))
                           (guile #f)
+                          (guile-json (pyproject-guile-json))
                           (imported-modules %pyproject-build-system-modules)
                           (modules '((guix build pyproject-build-system)
                                      (guix build utils)))
@@ -112,29 +117,30 @@
                           disallowed-references)
   "Build SOURCE using PYTHON, and with INPUTS."
   (define build
-    (with-imported-modules imported-modules
-      #~(begin
-          (use-modules #$@(sexp->gexp modules))
+    (with-extensions (list guile-json)
+      (with-imported-modules imported-modules
+        #~(begin
+            (use-modules #$@(sexp->gexp modules))
 
-          #$(with-build-variables inputs outputs
-              #~(pyproject-build
-                 #:name #$name
-                 #:source #+source
-                 #:configure-flags #$configure-flags
-                 #:system #$system
-                 #:backend-path #$backend-path
-                 #:build-backend #$build-backend
-                 #:test-backend #$test-backend
-                 #:test-flags #$test-flags
-                 #:tests? #$tests?
-                 #:phases #$(if (pair? phases)
-                                (sexp->gexp phases)
-                                phases)
-                 #:outputs %outputs
-                 #:search-paths '#$(sexp->gexp
-                                    (map search-path-specification->sexp
-                                         search-paths))
-                 #:inputs %build-inputs)))))
+            #$(with-build-variables inputs outputs
+                #~(pyproject-build
+                   #:name #$name
+                   #:source #+source
+                   #:configure-flags #$configure-flags
+                   #:system #$system
+                   #:backend-path #$backend-path
+                   #:build-backend #$build-backend
+                   #:test-backend #$test-backend
+                   #:test-flags #$test-flags
+                   #:tests? #$tests?
+                   #:phases #$(if (pair? phases)
+                                  (sexp->gexp phases)
+                                  phases)
+                   #:outputs %outputs
+                   #:search-paths '#$(sexp->gexp
+                                      (map search-path-specification->sexp
+                                           search-paths))
+                   #:inputs %build-inputs))))))
 
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))

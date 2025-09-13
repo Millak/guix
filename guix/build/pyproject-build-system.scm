@@ -19,14 +19,14 @@
 
 (define-module (guix build pyproject-build-system)
   #:use-module ((guix build python-build-system) #:prefix python:)
-  #:use-module ((guix build utils) #:hide (delete))
-  #:use-module (guix build json)
+  #:use-module (guix build utils)
   #:use-module (guix build toml)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 format)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
+  #:use-module (json)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -104,14 +104,13 @@
          (auto-backend-path (recursive-assoc-ref
                              pyproject.toml
                              '("build-system" "backend-path")))
-         (use-backend-path (call-with-output-string
-                             (cut write-json
-                                  (or backend-path auto-backend-path '()) <>)))
+         (use-backend-path (scm->json-string
+                            (list->vector
+                             (or backend-path auto-backend-path '()))))
          ;; There is no easy way to get data from Guile into Python via
          ;; s-expressions, but we have JSON serialization already, which Python
          ;; also supports out-of-the-box.
-         (config-settings (call-with-output-string
-                            (cut write-json configure-flags <>)))
+         (config-settings (scm->json-string configure-flags))
          ;; python-setuptools’ default backend supports setup.py *and*
          ;; pyproject.toml. Allow overriding this automatic detection via
          ;; build-backend.
