@@ -483,6 +483,23 @@ any case.")
     (home-page "https://hexdocs.pm/recase/")
     (license license:expat)))
 
+(define-public elixir-sizeable
+  (package
+    (name "elixir-sizeable")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "sizeable" version))
+       (sha256
+        (base32 "0qhpc1h5iks04mcb2ypp7pkjhh9skq586l6a02s7g9zvdn759asb"))))
+    (build-system mix-build-system)
+    (synopsis "Make file sizes human-readable")
+    (description "This package provides an Elixir library to make file sizes
+human-readable.")
+    (home-page "https://hexdocs.pm/sizeable/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
