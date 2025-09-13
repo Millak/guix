@@ -746,7 +746,7 @@ verification.")
 (define-public python-cocotb
   (package
     (name "python-cocotb")
-    (version "2.0.0b1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -755,7 +755,7 @@ verification.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14aas4vw9cb9krnvw21vfmwqivvc2cwzi9rvmvap6xcw9f2dsyy9"))))
+        (base32 "0b9wc14df11wkwa20wkij4iip07841qsr0yir9g7dww069rj36q6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -765,8 +765,7 @@ verification.")
      (list iverilog
            nvc
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools-next))
     (propagated-inputs
      (list python-find-libpython))
     (home-page "https://github.com/cocotb/cocotb")
