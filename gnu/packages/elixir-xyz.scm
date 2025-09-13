@@ -364,6 +364,23 @@ desired coding style.")
     (home-page "https://hexdocs.pm/credo/")
     (license license:expat)))
 
+(define-public elixir-decorator
+  (package
+    (name "elixir-decorator")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "decorator" version))
+       (sha256
+        (base32 "0zsrasbf6z3g7xs1s8gk5g7rf49ng1dskphqfif8gnl3j3fww1qa"))))
+    (build-system mix-build-system)
+    (synopsis "Function decorators for Elixir")
+    (description "This package provides @code{elixir-decorator}, a library
+implementing function decorators for Elixir.")
+    (home-page "https://hexdocs.pm/decorator/")
+    (license license:expat)))
+
 (define-public elixir-erlex
   (package
     (name "elixir-erlex")
