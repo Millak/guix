@@ -125,7 +125,7 @@ interactive languages.")
 (define-public haxe
   (package
     (name "haxe")
-    (version "4.3.4")
+    (version "4.3.7")
     (source
      (origin
        (method git-fetch)
@@ -134,7 +134,7 @@ interactive languages.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1svbxf5g6j7vvqhyjlv1ha9yjh42c94jxvn7xhqbb0smyk64vibm"))))
+        (base32 "1w008l6112xr0nk5jjgi8mz1ifz6vxln1qbac1czp0kl5n976fqm"))))
     (build-system dune-build-system)
     (arguments
      (list #:phases
@@ -160,6 +160,7 @@ interactive languages.")
                ;; install process.
                (replace 'build
                  (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                   (setenv "CC" #$(cc-for-target))
                    (invoke "make" "-j" (if parallel-build?
                                            (number->string (parallel-job-count))
                                            "1"))))
