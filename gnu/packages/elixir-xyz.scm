@@ -410,6 +410,23 @@ library to track ownership of resources across processes.")
     (home-page "https://hexdocs.pm/nimble_ownership/")
     (license license:asl2.0)))
 
+(define-public elixir-pathex
+  (package
+    (name "elixir-pathex")
+    (version "2.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "pathex" version))
+       (sha256
+        (base32 "1sabkkng5w6fq1v4vysy13vh2rh0sfjzfw3hfy3sism2bx5qx7qm"))))
+    (build-system mix-build-system)
+    (synopsis "Functional lenses for nested structures")
+    (description "This library implements functional lenses for nested
+structures in Elixir.")
+    (home-page "https://hexdocs.pm/pathex/")
+    (license license:bsd-2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
