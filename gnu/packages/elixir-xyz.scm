@@ -427,6 +427,24 @@ structures in Elixir.")
     (home-page "https://hexdocs.pm/pathex/")
     (license license:bsd-2)))
 
+(define-public elixir-process-tree
+  (package
+    (name "elixir-process-tree")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "process_tree" version))
+       (sha256
+        (base32 "04z76m5vpbmhl4apsszy93g2a3iw02kg2dvhvbp1ld8l0nzydvk8"))))
+    (build-system mix-build-system)
+    (synopsis "Avoid global state in Elixir applications")
+    (description
+     "This package provides a module for avoiding global state in Elixir
+applications.")
+    (home-page "https://hexdocs.pm/process_tree/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
