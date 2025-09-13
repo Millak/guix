@@ -420,6 +420,25 @@ Universally Unique Lexicographically Sortable Identifier (ULID).")
     (home-page "https://hexdocs.pm/ex_ulid/")
     (license license:asl2.0)))
 
+(define-public elixir-expo
+  (package
+    (name "elixir-expo")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "expo" version))
+       (sha256
+        (base32 "0q692ycwn0f5kif55vxhx2bq1swyraypf89n671l9yq08wzzkbgv"))))
+    (build-system mix-build-system)
+    (synopsis
+     "Low-level Gettext file handling")
+    (description
+     "This package implements low-level Gettext file handling (.po/.pot/.mo file
+writer and parser).")
+    (home-page "https://hexdocs.pm/expo/")
+    (license license:asl2.0)))
+
 (define-public elixir-dialyxir
   (package
     (name "elixir-dialyxir")
