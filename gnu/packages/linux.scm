@@ -3271,7 +3271,7 @@ Linux-Libre, as an Info manual.  To consult it, run @samp{info linux}.")))
 (define-public powercap
   (package
     (name "powercap")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3280,7 +3280,7 @@ Linux-Libre, as an Info manual.  To consult it, run @samp{info linux}.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vs84fmhdc3w1541vp0f5ydvdsbg0amjdv2g2f8xdvaw01nakxsn"))))
+        (base32 "087almlx34nzjbv8a40kxlmgy8691z2zlzkfyca8a2b7l0b2kqlp"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
