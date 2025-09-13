@@ -38970,7 +38970,7 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
 (define-public emacs-fj
   (package
     (name "emacs-fj")
-    (version "0.22")
+    (version "0.25")
     (source
      (origin
        (method git-fetch)
@@ -38979,9 +38979,9 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a7s2z5jpf1zff23wlh8rrdy3hbrhg7p8ybraay9wy4qm00dzbbm"))))
+        (base32 "0jwr4kj6vkkijkjdngmw7l6c929rcxy3b86mfcjk8ahxf0xhcav5"))))
     (build-system emacs-build-system)
-    (arguments (list #:tests? #f)) ; no tests
+    (arguments (list #:tests? #f))      ;depends on exemplify-ert
     (propagated-inputs (list emacs-fedi emacs-magit emacs-tp))
     (home-page "https://codeberg.org/martianh/fj.el")
     (synopsis "Client for Forgejo instances")
