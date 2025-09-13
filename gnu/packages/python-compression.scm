@@ -1073,10 +1073,8 @@ provided.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: This is ugly. TODO python-team:
-      ;; Migrate pyproject to (json) instead of (guix build json).
       #:configure-flags
-      #~`(@ . (("--build-option" . "--dynamic-link-zstd")))))
+      #~'(("--build-option" . "--dynamic-link-zstd"))))
     (inputs (list `(,zstd "lib")))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/Rogdham/pyzstd")
