@@ -464,6 +464,25 @@ shorter tests.")
     (home-page "https://hexdocs.pm/prove/")
     (license license:expat)))
 
+(define-public elixir-recase
+  (package
+    (name "elixir-recase")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "recase" version))
+       (sha256
+        (base32 "072hnq686lhwiwlbcz8hxid0aj0rlvvacdrhfb8qi28jpng599zg"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (synopsis "Convert strings to any case you need")
+    (description "@code{Recase} helps you to convert a string from any case to
+any case.")
+    (home-page "https://hexdocs.pm/recase/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
