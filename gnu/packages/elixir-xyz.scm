@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <phfrohring@deeplinks.com>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,6 +150,25 @@ performance is comparable to jiffy, which is implemented in C as a NIF.")
 https://github.com/synrc/fs.")
     (home-page "https://hexdocs.pm/file_system/")
     (license license:wtfpl2)))
+
+(define-public elixir-accessible
+  (package
+    (name "elixir-accessible")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "accessible" version))
+       (sha256
+        (base32 "15pjj1gwc8y18di224yn5g02kxvlardld24a16wzg0mb2431p88k"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (synopsis "Dead-simple Access behaviour for custom structs")
+    (description "This package-provides @code{elixir-accessible}, a library
+providing @code{Access} behaviour for custom structs.")
+    (home-page "https://hexdocs.pm/accessible/")
+    (license license:expat)))
 
 (define-public elixir-bunt
   (package
