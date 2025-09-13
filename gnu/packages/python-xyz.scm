@@ -5910,11 +5910,12 @@ help formatter.")
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
+      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'build 'build-python-module
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install)))
+            (assoc-ref py:%standard-phases 'install))))
       #:install-source? #false))
     (inputs
      (cons maturin (cargo-inputs 'python-orjson)))
