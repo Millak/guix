@@ -12,6 +12,7 @@
 ;;; Copyright © 2025 Lukas Gradl <lgradl@posteo.net>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -321,7 +322,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
 (define-public cups-minimal
   (package
     (name "cups-minimal")
-    (version "2.4.9")
+    (version "2.4.14")
     (source
      (origin
        (method git-fetch)
@@ -331,8 +332,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
        ;; Avoid NAME confusion: these are the complete CUPS sources.
        (file-name (git-file-name "cups" version))
        (sha256
-        (base32 "08wjd1flyaslhnwvxl39403qi3g675rk532ysiyk6cda4r8ks1g1"))
-       (patches (search-patches "cups-minimal-Address-PPD-injection-issues.patch"))))
+        (base32 "1dk5salizxy1qm19gw93ffdd34hsn1cd4s57nwl7nfhwwirkiri2"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
