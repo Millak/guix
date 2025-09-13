@@ -22070,6 +22070,7 @@ members = [
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
+      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-source
             (lambda _
@@ -22088,13 +22089,13 @@ members = [
           ;; We are not the only ones who cannot load libcst.native
           ;; during the 'check phase
           ;; https://github.com/Instagram/LibCST/issues/1176
-          ;(add-after 'wrap 'python-check
-          ;  (lambda args
-          ;    (apply (assoc-ref py:%standard-phases 'check)
-          ;           #:test-flags '()
-          ;           args)))
+          ;; (add-after 'wrap 'python-check
+          ;;  (lambda args
+          ;;    (apply (assoc-ref py:%standard-phases 'check)
+          ;;           #:test-flags '()
+          ;;           args)))
           (replace 'install
-            (assoc-ref py:%standard-phases 'install)))))
+            (assoc-ref py:%standard-phases 'install))))))
     (native-inputs
      (list python-minimal-wrapper
            python-hypothesmith
