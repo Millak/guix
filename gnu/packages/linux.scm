@@ -7919,7 +7919,7 @@ interfaces as the original NBFC, although the implementation differs.")
 (define-public thinkfan
   (package
     (name "thinkfan")
-    (version "1.3.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -7928,7 +7928,7 @@ interfaces as the original NBFC, although the implementation differs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07l7cxbsyvy7awa1zk0zxng60749idvsx3535iginhkqxfzij4b9"))))
+        (base32 "1jdjqdbv0m7yf9g4rxs7nq1ldh2b81a7qx4vcf9lzw7jwlydd822"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -7960,7 +7960,9 @@ interfaces as the original NBFC, although the implementation differs.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libatasmart yaml-cpp))
+     `(("libatasmart" ,libatasmart)
+       ("lm-sensors" ,lm-sensors "lib")
+       ("yaml-cpp" ,yaml-cpp)))
     (home-page "https://github.com/vmatare/thinkfan")
     (synopsis "Simple fan control program")
     (description
