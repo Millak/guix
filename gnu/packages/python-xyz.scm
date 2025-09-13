@@ -9962,11 +9962,12 @@ errors when data is invalid.")
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
+      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'build 'build-python-module
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install)))
+            (assoc-ref py:%standard-phases 'install))))
       #:install-source? #false))
     (native-inputs
      (list maturin python-typing-extensions python-wrapper))
