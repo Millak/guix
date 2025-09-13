@@ -401,6 +401,25 @@ things like Dialyzer errors and Observer.")
     (home-page "https://hexdocs.pm/erlex/")
     (license license:asl2.0)))
 
+(define-public elixir-ex-ulid
+  (package
+    (name "elixir-ex-ulid")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_ulid" version))
+       (sha256
+        (base32 "0q08y8xw2q4dr1w6g3rcyjlgib2w2wz26znycfan7i7bg93zvgm2"))))
+    (build-system mix-build-system)
+    (synopsis
+     "Provides an ULID implementation in Elixir")
+    (description
+     "This package provides @code{elixir-ex-ulid} an implementation of
+Universally Unique Lexicographically Sortable Identifier (ULID).")
+    (home-page "https://hexdocs.pm/ex_ulid/")
+    (license license:asl2.0)))
+
 (define-public elixir-dialyxir
   (package
     (name "elixir-dialyxir")
