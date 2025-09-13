@@ -445,6 +445,25 @@ applications.")
     (home-page "https://hexdocs.pm/process_tree/")
     (license license:expat)))
 
+(define-public elixir-prove
+  (package
+    (name "elixir-prove")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "prove" version))
+       (sha256
+        (base32 "1hkw70cbq82jjyyqdiaspi5a9v4m7z625h9z9hym0p1ziml25k2r"))))
+    (build-system mix-build-system)
+    (synopsis
+     "Provides the macros @code{prove} and @code{batch}")
+    (description
+     "This package provides the macros @code{prove} and @code{batch} to write
+shorter tests.")
+    (home-page "https://hexdocs.pm/prove/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
