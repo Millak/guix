@@ -549,6 +549,7 @@ scene to produce an image that looks much like a tone-mapped image.")
           #~'("-DBUILD_FOR_SSE=OFF" "-DBUILD_FOR_SSE2=OFF"))
       #:tests? #f ; There are no tests to run.
       #:phases
+      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-egg
             (lambda _
@@ -564,7 +565,7 @@ scene to produce an image that looks much like a tone-mapped image.")
                               (,(getenv "GUIX_PYTHONPATH")
                                ,(py:site-packages inputs outputs)))))
                         (list "bin/lensfun-update-data"
-                              "bin/lensfun-add-adapter")))))))
+                              "bin/lensfun-add-adapter"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
