@@ -369,6 +369,25 @@ literals, variables, or parametrically defined matchers.")
     (home-page "https://hexdocs.pm/machete/")
     (license license:expat)))
 
+(define-public elixir-nimble-ownership
+  (package
+    (name "elixir-nimble-ownership")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "nimble_ownership" version))
+       (sha256
+        (base32 "0bdj7fvkddh8mllicqb92caxqiwcnvws3r7kycczar2l09hy899q"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-castore elixir-excoveralls))
+    (synopsis "Track ownership of resources across processes")
+    (description "This package provides @code{nimble_ownership}, an Elixir
+library to track ownership of resources across processes.")
+    (home-page "https://hexdocs.pm/nimble_ownership/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
