@@ -284,6 +284,23 @@ an up-to-date CA certificate store file for Elixir applications.")
     (home-page "https://hexdocs.pm/castore/")
     (license license:asl2.0)))
 
+(define-public elixir-calendar-interval
+  (package
+    (name "elixir-calendar-interval")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "calendar_interval" version))
+       (sha256
+        (base32 "1c57ig10dpg6xz9i6lll51nxk0g8qphqfab2iyihh676100mwgf1"))))
+    (build-system mix-build-system)
+    (synopsis "Work with calendar intervals")
+    (description
+     "This package provides functions for working with calendar intervals.")
+    (home-page "https://hexdocs.pm/calendar_interval/")
+    (license license:asl2.0)))
+
 (define-public elixir-excoveralls
   (package
     (name "elixir-excoveralls")
