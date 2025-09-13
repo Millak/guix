@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sou Bunnbu (宋文武) <iyzsong@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Alexey Abramov <levenson@mmer.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,7 +114,14 @@
      ;; The use of "freetype-config" is deprecated, but other packages still
      ;; depend on it.
      (list
-      #:configure-flags #~(list "--enable-freetype-config")
+      #:configure-flags #~(list "--enable-freetype-config"
+                                ;; armhf-linux: Disable SLP vectorization.
+                                ;; gcc-14 optimization bug that breaks
+                                ;; ghostscript PostScript font handling (fixed
+                                ;; in gcc-15). See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=119155
+                                #$@(if (target-arm32?)
+                                       (list "CFLAGS=-g -O2 -fno-tree-slp-vectorize")
+                                       '()))
       #:disallowed-references (list pkg-config)
       #:phases
       #~(modify-phases %standard-phases
