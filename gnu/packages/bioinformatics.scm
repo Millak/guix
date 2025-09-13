@@ -25444,6 +25444,7 @@ CSIv1, CSIv2 and FAI files.")
         ((guix build pyproject-build-system) #:prefix py:)
         (guix build utils))
       #:phases
+      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'install 'prepare-python-module
             (lambda _
@@ -25499,7 +25500,7 @@ exclude =
               (when tests?
                 (invoke "pytest" "-vv" "tests"
                         ;; These tests need access to the internet
-                        "-k" "not test_enrichr and not test_prerank")))))))
+                        "-k" "not test_enrichr and not test_prerank"))))))))
     (inputs
      (cons python-wrapper (cargo-inputs 'python-gseapy)))
     (native-inputs
