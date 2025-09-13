@@ -1877,15 +1877,17 @@ specified image or color, easing the process of theme creation.")
               (patches (search-patches "maturin-no-cross-compile.patch"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:modules ((guix build cargo-build-system)
+     (list
+      #:modules '((guix build cargo-build-system)
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-       #:imported-modules ((guix build cargo-build-system)
+      #:imported-modules `((guix build cargo-build-system)
                            (guix build cargo-utils)
+                           (guix build json)
                            ,@%pyproject-build-system-modules)
-       #:install-source? #f
-       #:cargo-test-flags
-       '("--"
+      #:install-source? #f
+      #:cargo-test-flags
+      ''("--"
          ;; Not all files are included.
          "--skip=build_options::test::test_find_bridge_bin"
          "--skip=build_options::test::test_find_bridge_cffi"
@@ -1897,56 +1899,54 @@ specified image or color, easing the process of theme creation.")
          "--skip=metadata::test::test_merge_metadata_from_pyproject_toml"
          "--skip=metadata::test::test_merge_metadata_from_pyproject_toml_with_customized_python_source_dir"
          "--skip=pyproject_toml::tests::test_warn_missing_maturin_version")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-python-module
-           (lambda _
-             ;; Match the features from the cargo-build-system and Cargo.toml.
-             (setenv "MATURIN_SETUP_ARGS" "--features=default")
-             ((assoc-ref py:%standard-phases 'build))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-python-module
+            (lambda _
+              ;; Match the features from the cargo-build-system and Cargo.toml.
+              (setenv "MATURIN_SETUP_ARGS" "--features=default")
+              ((assoc-ref py:%standard-phases 'build))))
 
-         ;; We can't use the pyproject install phase because maturin is a
-         ;; binary, not a python script.
-         (add-after 'install 'install-python-module
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (wheel (car (find-files "dist" "\\.whl$")))
-                   (site-dir (py:site-packages inputs outputs))
-                   (pyversion
+          ;; We can't use the pyproject install phase because maturin is a
+          ;; binary, not a python script.
+          (add-after 'install 'install-python-module
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((wheel (car (find-files "dist" "\\.whl$")))
+                    (site-dir (py:site-packages inputs outputs))
+                    (pyversion
                      (string-append "python"
                                     (py:python-version
-                                      (assoc-ref inputs "python-wrapper")))))
-               (invoke "python" "-m" "zipfile" "-e" wheel site-dir)
-               (mkdir-p (string-append out "/bin"))
-               (for-each delete-file
-                         (find-files (string-append out "/lib/" pyversion)
-                                     "^maturin$")))))
-         (add-after 'install 'install-completions
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (maturin (string-append out "/bin/maturin")))
-               ;; TODO? fig, powershell
-               (mkdir-p (string-append out "/etc/bash_completion.d"))
-               (with-output-to-file
-                 (string-append out "/etc/bash_completion.d/maturin")
-                 (lambda _ (invoke maturin "completions" "bash")))
-               (mkdir-p (string-append share "/fish/vendor_completions.d"))
-               (with-output-to-file
-                 (string-append share "/fish/vendor_completions.d/maturin.fish")
-                 (lambda _ (invoke maturin "completions" "fish")))
-               (mkdir-p (string-append share "/zsh/site-functions"))
-               (with-output-to-file
-                 (string-append share "/zsh/site-functions/_maturin")
-                 (lambda _ (invoke maturin "completions" "zsh")))
-               (mkdir-p (string-append share "/elvish/lib"))
-               (with-output-to-file
-                 (string-append share "/elvish/lib/maturin")
-                 (lambda _ (invoke maturin "completions" "elvish")))
-               (mkdir-p (string-append share "/nushell/vendor/autoload"))
-               (with-output-to-file
-                 (string-append share "/nushell/vendor/autoload/maturin")
-                 (lambda _ (invoke maturin "completions" "nushell")))))))))
+                                     (assoc-ref inputs "python-wrapper")))))
+                (invoke "python" "-m" "zipfile" "-e" wheel site-dir)
+                (mkdir-p (string-append #$output "/bin"))
+                (for-each delete-file
+                          (find-files (string-append #$output "/lib/" pyversion)
+                                      "^maturin$")))))
+          (add-after 'install 'install-completions
+            (lambda _
+              (let ((share (string-append #$output "/share"))
+                    (maturin (string-append #$output "/bin/maturin")))
+                ;; TODO? fig, powershell
+                (mkdir-p (string-append #$output "/etc/bash_completion.d"))
+                (with-output-to-file
+                    (string-append #$output "/etc/bash_completion.d/maturin")
+                  (lambda _ (invoke maturin "completions" "bash")))
+                (mkdir-p (string-append share "/fish/vendor_completions.d"))
+                (with-output-to-file
+                    (string-append share "/fish/vendor_completions.d/maturin.fish")
+                  (lambda _ (invoke maturin "completions" "fish")))
+                (mkdir-p (string-append share "/zsh/site-functions"))
+                (with-output-to-file
+                    (string-append share "/zsh/site-functions/_maturin")
+                  (lambda _ (invoke maturin "completions" "zsh")))
+                (mkdir-p (string-append share "/elvish/lib"))
+                (with-output-to-file
+                    (string-append share "/elvish/lib/maturin")
+                  (lambda _ (invoke maturin "completions" "elvish")))
+                (mkdir-p (string-append share "/nushell/vendor/autoload"))
+                (with-output-to-file
+                    (string-append share "/nushell/vendor/autoload/maturin")
+                  (lambda _ (invoke maturin "completions" "nushell")))))))))
     (propagated-inputs
      (list python-tomli))
     (inputs (cons bzip2 (cargo-inputs 'maturin)))
