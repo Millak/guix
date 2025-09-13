@@ -439,6 +439,22 @@ writer and parser).")
     (home-page "https://hexdocs.pm/expo/")
     (license license:asl2.0)))
 
+(define-public elixir-faker
+  (package
+    (name "elixir-faker")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "faker" version))
+       (sha256
+        (base32 "15qpx2rvapffjq8zsk720nnm3rhn91y33jcyx642g3npb0wxigdz"))))
+    (build-system mix-build-system)
+    (synopsis "Generate fake data")
+    (description "Faker is a pure Elixir library for generating fake data.")
+    (home-page "https://hexdocs.pm/faker/")
+    (license license:expat)))
+
 (define-public elixir-dialyxir
   (package
     (name "elixir-dialyxir")
