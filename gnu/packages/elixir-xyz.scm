@@ -170,6 +170,23 @@ providing @code{Access} behaviour for custom structs.")
     (home-page "https://hexdocs.pm/accessible/")
     (license license:expat)))
 
+(define-public elixir-arrows
+  (package
+    (name "elixir-arrows")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "arrows" version))
+       (sha256
+        (base32 "17gv9xlf6kysa678b421gsvbrlfymvk03mk6rqmphygxyal1ppn3"))))
+    (build-system mix-build-system)
+    (synopsis "Handful of (mostly) arrow macros for Elixir")
+    (description "This package provides @code{elixir-arrows}, a library
+implementing a handful of (mostly) arrow macros.")
+    (home-page "https://hexdocs.pm/arrows/")
+    (license license:asl2.0)))
+
 (define-public elixir-bunt
   (package
     (name "elixir-bunt")
