@@ -206,6 +206,26 @@ that writes and updates tests for you.")
     (home-page "https://hexdocs.pm/assert_value/")
     (license license:expat)))
 
+(define-public elixir-brex-result
+  (package
+    (name "elixir-brex-result")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "brex_result" version))
+       (sha256
+        (base32 "1y243rg5kc4fhq62hr45agdy2m1afx2zhv65bpspwwj83k3sl8f2"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (synopsis
+     "Handle common return values")
+    (description
+     "This package provides tools to handle common return values in Elixir.")
+    (home-page "https://hexdocs.pm/brex_result/")
+    (license license:expat)))
+
 (define-public elixir-bunt
   (package
     (name "elixir-bunt")
