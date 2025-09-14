@@ -171,6 +171,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
         ((guix build gnu-build-system) #:prefix gnu:)
         (guix build utils))
       #:phases
+      (with-extensions (list (cargo-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-guix-vendored-dependencies
             (lambda _
@@ -301,8 +302,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                  "    set -e fish_function_path\n"
                  "end\n")
                 port)
-               (close-port port))
-             #t)))))
+               (close-port port))))))))
     (synopsis "The friendly interactive shell")
     (description
      "Fish (friendly interactive shell) is a shell focused on interactive use,
