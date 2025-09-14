@@ -1,0 +1,241 @@
+Taken from https://github.com/wolfcw/libfaketime/pull/487
+Rebased onto v0.9.10
+
+From 86e067a01a7882d2140adcf085509e5d72ac3daa Mon Sep 17 00:00:00 2001
+From: Helge Deller <deller@gmx.de>
+Date: Sun, 12 Jan 2025 22:23:16 +0000
+Subject: [PATCH 1/4] Interpose clock_gettime64
+
+Since debian generally added 64-bit time support on 32-bit
+arches, now glibc sometimes calls the clock_gettime64 syscall
+(and library wrapper).  This function was missing, and is added here.
+
+Patch originally supplied here
+  https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1064555
+---
+ src/libfaketime.c | 24 ++++++++++++++++++++++++
+ test/Makefile     |  2 +-
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/src/libfaketime.c b/src/libfaketime.c
+index e632395..b9d3d8d 100644
+--- a/src/libfaketime.c
++++ b/src/libfaketime.c
+@@ -159,6 +159,13 @@ struct utimbuf {
+ #include <sys/random.h>
+ #endif
+ 
++/* __timespec64 is needed for clock_gettime64 on 32-bit architectures */
++struct __timespec64
++{
++  uint64_t tv_sec;         /* Seconds */
++  uint64_t tv_nsec;        /* Nanoseconds */
++};
++
+ /*
+  * Per thread variable, which we turn on inside real_* calls to avoid modifying
+  * time multiple times of for the whole process to prevent faking time
+@@ -193,6 +200,7 @@ static time_t       (*real_time)            (time_t *);
+ static int          (*real_ftime)           (struct timeb *);
+ static int          (*real_gettimeofday)    (struct timeval *, void *);
+ static int          (*real_clock_gettime)   (clockid_t clk_id, struct timespec *tp);
++static int          (*real_clock_gettime64) (clockid_t clk_id, struct __timespec64 *tp);
+ static int          (*real_timespec_get)    (struct timespec *ts, int base);
+ #ifdef FAKE_INTERNAL_CALLS
+ static int          (*real___ftime)           (struct timeb *);
+@@ -2319,6 +2327,17 @@ int clock_gettime(clockid_t clk_id, struct timespec *tp)
+   return result;
+ }
+ 
++/* this is used by 32-bit architectures only */
++int __clock_gettime64(clockid_t clk_id, struct __timespec64 *tp64)
++{
++  struct timespec tp;
++  int result;
++
++  result = clock_gettime(clk_id, &tp);
++  tp64->tv_sec = tp.tv_sec;
++  tp64->tv_nsec = tp.tv_nsec;
++  return result;
++}
+ 
+ #ifdef MACOS_DYLD_INTERPOSE
+ int macos_timespec_get(struct timespec *ts, int base)
+@@ -2652,6 +2671,11 @@ static void ftpl_init(void)
+   {
+     real_clock_gettime  =   dlsym(RTLD_NEXT, "clock_gettime");
+   }
++  real_clock_gettime64 =    dlsym(RTLD_NEXT, "clock_gettime64");
++  if (NULL == real_clock_gettime64)
++  {
++    real_clock_gettime64 =  dlsym(RTLD_NEXT, "__clock_gettime64");
++  }
+ #ifdef FAKE_TIMERS
+ #if defined(__sun)
+     real_timer_gettime_233 =  dlsym(RTLD_NEXT, "timer_gettime");
+diff --git a/test/Makefile b/test/Makefile
+index 1b2a4aa..093d639 100644
+--- a/test/Makefile
++++ b/test/Makefile
+@@ -1,6 +1,6 @@
+ CC = gcc
+ 
+-CFLAGS += -std=gnu99 -Wall -DFAKE_STAT -Werror -Wextra $(FAKETIME_COMPILE_CFLAGS)
++CFLAGS += -std=gnu99 -Wall -DFAKE_STAT -Werror -Wextra $(FAKETIME_COMPILE_CFLAGS) -U_FILE_OFFSET_BITS -U_TIME_BITS
+ LDFLAGS += -lrt -lpthread
+ 
+ SRC = timetest.c
+-- 
+2.51.0
+
+From 1e2626e62e7f3fa3266fbdb93b69bc08a649feaa Mon Sep 17 00:00:00 2001
+From: Ian Jackson <ijackson@chiark.greenend.org.uk>
+Date: Fri, 17 Jan 2025 12:05:09 +0000
+Subject: [PATCH 2/4] Fix interposition of clock_gettime64
+
+timespec.tv_nsec is 32-bit, even though timeval.tv_usec is
+64-bit (weirdly).  This doesn't matter very much in practice because
+ * on little endian architectures (which is all our 32-bit release
+   arches) writing to a too big integer ends up writing the
+   desired value in the desired location, and
+ * it doesn't affect the overall struct size on any of our actual
+   architectures (which align the uint64_t to 8 so must make the
+   whole struct 16 not 12), so the write overflow is harmless.
+
+> #include <time.h>
+> #include <sys/time.h>
+> #include <stdio.h>
+> struct timeval tv;
+> struct timespec ts;
+> int main(void) {
+>    printf("time_t %lld\n", (unsigned long long) sizeof(time_t));
+>    printf("timeval %lld %lld %lld\n",
+>           (unsigned long long) sizeof(tv),
+>           (unsigned long long) sizeof(tv.tv_sec),
+>           (unsigned long long) sizeof(tv.tv_usec)
+>           );
+>    printf("timespec %lld %lld %lld\n",
+>           (unsigned long long) sizeof(ts),
+>           (unsigned long long) sizeof(ts.tv_sec),
+>           (unsigned long long) sizeof(ts.tv_nsec)
+>           );
+> }
+> (sid_armhf-dchroot)iwj@amdahl:~/Faketime/test$ gcc t.c
+> (sid_armhf-dchroot)iwj@amdahl:~/Faketime/test$ ./a.out
+> time_t 8
+> timeval 16 8 8
+> timespec 16 8 4
+> (sid_armhf-dchroot)iwj@amdahl:~/Faketime/test$
+---
+ src/libfaketime.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/libfaketime.c b/src/libfaketime.c
+index b9d3d8d..6d9ec1c 100644
+--- a/src/libfaketime.c
++++ b/src/libfaketime.c
+@@ -163,7 +163,7 @@ struct utimbuf {
+ struct __timespec64
+ {
+   uint64_t tv_sec;         /* Seconds */
+-  uint64_t tv_nsec;        /* Nanoseconds */
++  uint32_t tv_nsec;        /* this is 32-bit, apparently! */
+ };
+ 
+ /*
+-- 
+2.51.0
+
+From a2d1dce073b7ffe50009584c89d0b7b061066d53 Mon Sep 17 00:00:00 2001
+From: Ian Jackson <ijackson@chiark.greenend.org.uk>
+Date: Fri, 17 Jan 2025 09:03:21 +0000
+Subject: [PATCH 3/4] Interpose __time64
+
+---
+ src/libfaketime.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/src/libfaketime.c b/src/libfaketime.c
+index 6d9ec1c..f3706a3 100644
+--- a/src/libfaketime.c
++++ b/src/libfaketime.c
+@@ -2339,6 +2339,27 @@ int __clock_gettime64(clockid_t clk_id, struct __timespec64 *tp64)
+   return result;
+ }
+ 
++/* this is used by 32-bit architectures only */
++uint64_t __time64(uint64_t *write_out)
++{
++  struct timespec tp;
++  uint64_t output;
++  int error;
++
++  error = clock_gettime(CLOCK_REALTIME, &tp);
++  if (error == -1)
++  {
++    return (uint64_t)error;
++  }
++  output = tp.tv_sec;
++
++  if (write_out)
++  {
++    *write_out = output;
++  }
++  return output;
++}
++
+ #ifdef MACOS_DYLD_INTERPOSE
+ int macos_timespec_get(struct timespec *ts, int base)
+ #else
+-- 
+2.51.0
+
+From dfc04d2e0b11903a9db1e0b9d435b4c58c4b27ef Mon Sep 17 00:00:00 2001
+From: Ian Jackson <ijackson@chiark.greenend.org.uk>
+Date: Fri, 17 Jan 2025 12:08:23 +0000
+Subject: [PATCH 4/4] Interpose gettimeofday64
+
+---
+ src/libfaketime.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/src/libfaketime.c b/src/libfaketime.c
+index f3706a3..0270f93 100644
+--- a/src/libfaketime.c
++++ b/src/libfaketime.c
+@@ -166,6 +166,13 @@ struct __timespec64
+   uint32_t tv_nsec;        /* this is 32-bit, apparently! */
+ };
+ 
++/* __timespec64 is needed for clock_gettime64 on 32-bit architectures */
++struct __timeval64
++{
++  uint64_t tv_sec;         /* Seconds */
++  uint64_t tv_usec;        /* this is 64-bit, apparently! */
++};
++
+ /*
+  * Per thread variable, which we turn on inside real_* calls to avoid modifying
+  * time multiple times of for the whole process to prevent faking time
+@@ -2339,6 +2346,18 @@ int __clock_gettime64(clockid_t clk_id, struct __timespec64 *tp64)
+   return result;
+ }
+ 
++/* this is used by 32-bit architectures only */
++int __gettimeofday64(struct __timeval64 *tv64, void *tz)
++{
++  struct timeval tv;
++  int result;
++
++  result = gettimeofday(&tv, tz);
++  tv64->tv_sec = tv.tv_sec;
++  tv64->tv_usec = tv.tv_usec;
++  return result;
++}
++
+ /* this is used by 32-bit architectures only */
+ uint64_t __time64(uint64_t *write_out)
+ {
+-- 
+2.51.0
+

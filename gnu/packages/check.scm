@@ -3721,28 +3721,11 @@ portable to just about any platform.")
 
           #$@(if (target-64bit?)
                  #~()
-                 #~((add-after 'unpack 'switch-libc-call
+                 #~((add-after 'unpack 'apply-32bit-patch
                       (lambda _
-                        (substitute* "src/libfaketime.c"
-                          (("#define _GNU_SOURCE")
-                           ;; Make sure to use the 64-bit 'struct timespec' in
-                           ;; replacement functions.
-                           (string-append "#define _GNU_SOURCE\n"
-                                          "#define _FILE_OFFSET_BITS 64\n"
-                                          "#define _TIME_BITS 64\n"))
-                          (("\"__clock_gettime\"")
-                           ;; Replace '__clock_gettime64' rather than
-                           ;; '__clock_gettime64' since this is what
-                           ;; newly-built applications use.
-                           "\"__clock_gettime64\""))
-
-                        ;; XXX: Turn off 'pthread_cond_timedwait' etc.: tests
-                        ;; related to this are failing and this feature is
-                        ;; probably not useful for the purposes of running
-                        ;; code at a fixed date.
-                        (substitute* "src/Makefile"
-                          (("-DFAKE_PTHREAD")
-                           ""))))))
+                        (let ((patch #$(local-file
+                                  (search-patch "libfaketime-32bit.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i" patch))))))
 
           (replace 'configure
             (lambda* (#:key outputs #:allow-other-keys)
@@ -3762,13 +3745,7 @@ portable to just about any platform.")
           (add-before 'check 'pre-check
             (lambda _
               (substitute* "test/functests/test_exclude_mono.sh"
-                (("/bin/bash") (which "bash")))
-              #$@(if (target-64bit?)
-                     #~()
-                     ;; XXX: This test uses Perl to call 'clock_gettime' and
-                     ;; fails for unclear reasons on i686-linux.
-                     #~((delete-file
-                         "test/functests/test_exclude_mono.sh"))))))))
+                (("/bin/bash") (which "bash"))))))))
     (native-inputs (list perl))                   ;for tests
     (inputs (list coreutils-minimal))
     (synopsis "Fake the system time for single applications")
