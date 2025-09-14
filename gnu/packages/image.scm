@@ -2667,6 +2667,7 @@ Format) file format decoder and encoder.")
   (package
     (name "libjxl")
     (version "0.11.1")
+    (outputs (list "out" "pixbuf-loader"))
     (source
      (origin
        (method git-fetch)
@@ -2688,35 +2689,63 @@ Format) file format decoder and encoder.")
                        "libpng" "zlib"))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+       #:configure-flags
        (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
              "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
              "-DJPEGXL_FORCE_SYSTEM_LCMS2=true"
              "-DJPEGXL_FORCE_SYSTEM_HWY=true"
-             "-DJPEGXL_BUNDLE_LIBPNG=false")
-       ,@(cond
-           ((target-riscv64?)
-            '(#:phases
-              (modify-phases %standard-phases
-                (add-after 'unpack 'fix-atomic
-                  (lambda _
-                    (substitute* "lib/jxl/enc_xyb.cc"
-                      (("#include \"lib/jxl/enc_xyb.h\"" a)
-                       (string-append a "\n#include <atomic>"))))))))
-           ((target-x86-32?)
-            '(#:phases
-              (modify-phases %standard-phases
-                (add-after 'unpack 'loosen-test-parameter
-                  (lambda _
-                    ;; This test fails likely due to a floating point
-                    ;; rounding difference.
-                    (substitute* "lib/jxl/color_management_test.cc"
-                      (("8\\.7e-4") "8.7e-3")))))))
-           (#t '()))))
+             "-DJPEGXL_BUNDLE_LIBPNG=false"
+             "-DJPEGXL_ENABLE_PLUGINS=true")
+       #:phases
+       (modify-phases %standard-phases
+         ,@(cond
+             ((target-riscv64?)
+              (add-after 'unpack 'fix-atomic
+                (lambda _
+                  (substitute* "lib/jxl/enc_xyb.cc"
+                    (("#include \"lib/jxl/enc_xyb.h\"" a)
+                     (string-append a "\n#include <atomic>"))))))
+             ((target-x86-32?)
+              (add-after 'unpack 'loosen-test-parameter
+                (lambda _
+                  ;; This test fails likely due to a floating point
+                  ;; rounding difference.
+                  (substitute* "lib/jxl/color_management_test.cc"
+                    (("8\\.7e-4") "8.7e-3")))))
+             (#t '()))
+         (add-after 'install 'split
+           (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out            (assoc-ref outputs "out"))
+                     (out:pixbuf     (assoc-ref outputs "pixbuf-loader"))
+                     (thumbnailer    (string-append
+                                      out
+                                      "/share/thumbnailers/jxl.thumbnailer"))
+                     (thumbnailer*   (string-append
+                                      out:pixbuf
+                                      "/share/thumbnailers/jxl.thumbnailer"))
+                     (pixbuf-loader  (string-append
+                                      out
+                                      "/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
+                                      "libpixbufloader-jxl.so"))
+                     (pixbuf-loader* (string-append
+                                      out:pixbuf
+                                      "/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
+                                      "libpixbufloader-jxl.so")))
+
+                (for-each (lambda (old new)
+                            (install-file old (dirname new))
+                            (delete-file old)
+                            (chmod new #o555))
+                          (list thumbnailer pixbuf-loader)
+                          (list thumbnailer* pixbuf-loader*))))))))
     (native-inputs
      (list asciidoc doxygen googletest pkg-config python))
     (inputs
      (list freeglut
+           gdk-pixbuf
            gflags
            giflib
            imath
@@ -2734,6 +2763,8 @@ Format) file format decoder and encoder.")
     (synopsis "JPEG XL image format reference implementation")
     (description "This package contains a reference implementation of JPEG XL
 (encoder and decoder).")
+    (properties
+     `((output-synopsis "pixbuf-loader" "gdk-pixbuf loader for the JXL format")))
     (license license:bsd-3)))
 
 (define-public libjxl-0.10
