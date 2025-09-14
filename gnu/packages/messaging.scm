@@ -2962,8 +2962,8 @@ implementation of an MQTT version client class.")
     (home-page "https://psi-im.com/")
     (synopsis "Qt-based XMPP Client")
     (description
-     "Psi+ is a spin-off of Psi XMPP client.  It is a powerful XMPP client
-designed for experienced users.")
+     "Psi+ is a powerful XMPP client designed for experienced users.
+It's a spin-off of the Psi XMPP client.")
     (license license:gpl2+)))
 
 (define-deprecated-package psi
