@@ -1115,8 +1115,21 @@ on memory usage on GNU/Linux systems.")
         (base32 "058y4a4mvx9m179dyr4wi8mlm6i4ybywshadaj4cvfn9fv0r0nkx"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
+    (arguments
+      (list
+        #:configure-flags
+        #~(list "--enable-sensors")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-dlopen
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "linux/LibSensors.c"
+                  (("dlopen\\(\"libsensors\\.so")
+                   (string-append "dlopen(\""
+                                  (search-input-file
+                                    inputs "/lib/libsensors.so")))))))))
     (inputs
-     (list ncurses))
+     (list ncurses (list lm-sensors "lib")))
     (native-inputs
      (list autoconf automake python-minimal-wrapper))     ; for scripts/MakeHeader.py
     (home-page "https://htop.dev")
