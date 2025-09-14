@@ -1145,7 +1145,7 @@ is not available for Guile 2.0.")
   (package
     (inherit guile-fibers-1.3)
     (name "guile-fibers")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin (inherit (package-source guile-fibers-1.3))
              (file-name (git-file-name name version))
@@ -1154,20 +1154,9 @@ is not available for Guile 2.0.")
                     (commit (string-append "v" version))))
              (sha256
               (base32
-               "1ryp04w6ghgdfhlv9hkwl00iv6nwnw2hj2pywlxvpp92pyxhkwpi"))
+               "15ynxr3pfjscd6mz641zagv6i84jh9y65i5dnbb3j3q72j6bbvnb"))
              (patches '())))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'configure 'fix-cross-compilation
-                 (lambda _
-                   ;; Fix cross-compilation by removing use of ./env in the
-                   ;; .scm.go target; see
-                   ;; <https://codeberg.org/fibers/fibers/pulls/132>.  Remove
-                   ;; when 1.4.1 is out.
-                   (substitute* "Makefile"
-                     (("\\$\\(top_builddir\\)/env")
-                      "")))))))))
+    (arguments '())))
 
 (define-public guile-fibers guile-fibers-1.4)
 
