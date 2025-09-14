@@ -4627,13 +4627,13 @@ itself.")
 (define-public python-pyqtwebengine-6
   (package
     (inherit python-pyqtwebengine)
-    (version "6.8.0")
+    (version "6.9.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PyQt6_WebEngine" version))
+       (uri (pypi-uri "pyqt6_webengine" version))
        (sha256
-        (base32 "1wiz5wn84wpb23lm8sphrw56df0ljyp5b3xiqa11i95n4ak5w134"))
+        (base32 "09dah4cv3jgw86ar4irwah03pg70jwi8br1mcphbh1nspgikgrba"))
        (modules '((guix build utils)))
        (snippet
         ;; Fix missing include for QVariant.
