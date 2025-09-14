@@ -2431,7 +2431,7 @@ Open Container Initiative specification.")
 (define-public umoci
   (package
     (name "umoci")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2440,7 +2440,7 @@ Open Container Initiative specification.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10pxiqk4194nbnvlvfvlbk31wp8k35in3g694y20f9261nn0qx6n"))
+        (base32 "0446xw8jrxgf2vgi30vlihak6z9srzbkzvm4v47nm0c87fijmigs"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
