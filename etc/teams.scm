@@ -601,8 +601,7 @@ already exists.  Lookup team IDs among CURRENT-TEAMS."
   (team 'electronics
         #:name "Electronics team"
         #:description "Electronics and hardware related packages."
-        #:scope (list "gnu/packages/fpga.scm"
-                      "gnu/packages/electronics.scm"
+        #:scope (list "gnu/packages/electronics.scm"
                       "gnu/packages/libftdi.scm"
                       "gnu/packages/engineering.scm")))
 

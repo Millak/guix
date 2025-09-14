@@ -163,7 +163,6 @@ gnu/packages/fontutils.scm
 gnu/packages/forth.scm
 gnu/packages/fortran-check.scm
 gnu/packages/fortran-xyz.scm
-gnu/packages/fpga.scm
 gnu/packages/freedesktop.scm
 gnu/packages/freeipmi.scm
 gnu/packages/fribidi.scm
