@@ -1070,31 +1070,6 @@ GtkSourceView-based text editors and IDEs.")
     (home-page "https://wiki.gnome.org/Projects/Tepl")
     (license license:lgpl2.1+)))
 
-(define-public krb5-auth-dialog
-  (package
-    (name "krb5-auth-dialog")
-    (version "3.26.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://gnome/sources/" name "/"
-                       (version-major+minor version) "/"
-                       name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1w91gsvmifqhiam3xqf88i5rk2w6qadjalmbvvamjdc37j0vdc6x"))))
-    (build-system glib-or-gtk-build-system)
-    (native-inputs
-     (list intltool itstool libxml2 pkg-config python-wrapper))
-    (inputs
-     (list glib gtk+ libnotify mit-krb5 network-manager))
-    (synopsis "Popup dialogs for Kerberos 5")
-    (description "krb5-auth-dialog is a simple dialog that monitors Kerberos
-tickets, and pops up a dialog when they are about to expire.")
-    (home-page "https://gitlab.gnome.org/GNOME/krb5-auth-dialog")
-    (license license:gpl2+)))
-
 (define-public notification-daemon
   (package
     (name "notification-daemon")
