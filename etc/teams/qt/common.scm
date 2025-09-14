@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,15 +32,18 @@ unspecified.  If NEGATE-VERSION-TEST? is true, select all the Qt packages
            (let ((uri (and=> (package-source package)
                              (lambda (x)
                                (and (origin? x)
-                                    (origin-uri x))))))
-             (if (and uri
-                      (string? uri)
-                      (string-prefix? "mirror://qt/" uri)
-                      (if major-version
-                          ((if negate-version-test? not identity)
-                           (string=? major-version (version-major
-                                                    (package-version package))))
-                          #t))
+                                    (origin-uri x)))))
+                 (name (package-name package)))
+             (if (or (string-prefix? "python-pyqt" name)
+                     (and uri
+                          (string? uri)
+                          (string-prefix? "mirror://qt/" uri)
+                          (if major-version
+                              ((if negate-version-test? not identity)
+                               (string=? major-version
+                                         (version-major
+                                          (package-version package))))
+                              #t)))
                  (cons package lst)
                  lst)))
          '()))))
