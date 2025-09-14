@@ -2839,7 +2839,7 @@ implementation of an MQTT version client class.")
 (define-public psi-plus
   (package
     (name "psi-plus")
-    (version "1.5.1484")
+    (version "1.5.2115")
     (source
      (origin
        (method git-fetch)
@@ -2853,7 +2853,7 @@ implementation of an MQTT version client class.")
         `(begin
            (delete-file-recursively "3rdparty")))
        (sha256
-        (base32 "1jsm39nzzbqkp3zc0xqx7jid6p4q1ra28xad38wjr2l1jb8qjn24"))))
+        (base32 "14za9rh7nszv5px5a2w43ysi9977zws8a5mxsh7wc8ksr693faz2"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -2939,6 +2939,7 @@ implementation of an MQTT version client class.")
            libgcrypt
            libgpg-error
            libidn
+           libomemo-c
            libotr
            libsignal-protocol-c
            tidy-html
