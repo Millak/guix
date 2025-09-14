@@ -286,14 +286,14 @@ unmounted."
 (define %page-size 4096)
 
 (define (linux-swap-superblock? sblock)
-  "Return #t when SBLOCK is an linux-swap superblock."
+  "Return #t when SBLOCK is a linux-swap superblock."
   (and (= (bytevector-length sblock) %page-size)
        (bytevector=? (sub-bytevector sblock (- %page-size 10) 10)
                      %linux-swap-magic)))
 
 (define (read-linux-swap-superblock device)
   "Return the raw contents of DEVICE's linux-swap superblock as a bytevector, or #f
-if DEVICE does not contain an linux-swap file system."
+if DEVICE does not contain a linux-swap file system."
   (read-superblock device 0 %page-size linux-swap-superblock?))
 
 ;; See 'union swap_header' in 'include/linux/swap.h'.
@@ -382,7 +382,7 @@ hibernation image from which we can resume."
   (identifier-syntax (endianness little)))
 
 (define (bcachefs-superblock? sblock)
-  "Return #t when SBLOCK is an bcachefs superblock."
+  "Return #t when SBLOCK is a bcachefs superblock."
   (bytevector=? (sub-bytevector sblock 24 16)
                 #vu8(#xc6 #x85 #x73 #xf6 #x4e #x1a #x45 #xca
                      #x82 #x65 #xf5 #x7f #x48 #xba #x6d #x81)))
