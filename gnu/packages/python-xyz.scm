@@ -167,6 +167,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2025 Matthias Riße <matrss@0px.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
