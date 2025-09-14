@@ -5336,16 +5336,16 @@ features:
 (define-public hydroxide
   (package
     (name "hydroxide")
-    (version "0.2.29")
+    (version "0.2.30")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/emersion/hydroxide")
-             (commit (string-append "v" version))))
+              (url "https://github.com/emersion/hydroxide")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11gbikrgm7nf0zjav64202wsnr9pvrmslm2rzg9d9rbvwdqcq1jl"))))
+        (base32 "12mfly2nnl1zrwjnnwigmi2kkn0aw8jvhfpcbsyqg4xnhj8gqd1y"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -5353,15 +5353,16 @@ features:
       #:import-path "github.com/emersion/hydroxide/cmd/hydroxide"
       #:unpack-path "github.com/emersion/hydroxide"))
     (native-inputs
-     (list go-github-com-protonmail-go-crypto
-           go-github-com-boltdb-bolt
-           go-github-com-emersion-go-bcrypt
+     (list go-github-com-emersion-go-bcrypt
            go-github-com-emersion-go-imap
            go-github-com-emersion-go-mbox
            go-github-com-emersion-go-message
+           go-github-com-emersion-go-sasl
            go-github-com-emersion-go-smtp
            go-github-com-emersion-go-vcard
            go-github-com-emersion-go-webdav
+           go-github-com-protonmail-go-crypto
+           go-go-etcd-io-bbolt
            go-golang-org-x-crypto
            go-golang-org-x-term))
     (home-page "https://github.com/emersion/hydroxide")
