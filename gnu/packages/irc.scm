@@ -653,7 +653,7 @@ all RFC 2812 commands, and customized color scheme definitions.")
 (define-public kvirc
   (package
     (name "kvirc")
-    (version "5.2.6")
+    (version "5.2.8")
     (source
      (origin
        (method git-fetch)
@@ -662,7 +662,7 @@ all RFC 2812 commands, and customized color scheme definitions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i3gkjv8l7w3smz6dv1734ja91y281bmfr5sajyzcclyc7yq7w24"))))
+        (base32 "0rrf50pha0f2h17icyrxps5ld7lm4r8mzvczyywwa15ki64kr7np"))))
     (build-system qt-build-system)
     (arguments
      (list
