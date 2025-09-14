@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015-2019, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2019, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -4305,7 +4305,7 @@ Python.")
 (define-public python-sip
   (package
     (name "python-sip")
-    (version "6.10.0")
+    (version "6.12.0")
     (source
      (origin
        (method url-fetch)
@@ -4315,7 +4315,7 @@ Python.")
                                  "/sip-" version ".tar.gz")))
        (sha256
         (base32
-         "176jylhzs2ci2r9f3l75k9dpwhp1dn0qv2cy9phdp62cgmlia1gs"))
+         "1il938crjap0f05773mk70fjp91b1fbn76hi64r4j5akz2afsg08"))
        (modules '((guix build utils)))
        (snippet
         ;; Relax setuptools dependency
@@ -4326,9 +4326,9 @@ Python.")
     (arguments
      (list #:tests? #f))        ; No test system found.
     (native-inputs
-     (list python-setuptools python-setuptools-scm-next python-wheel))
+     (list python-setuptools-next python-setuptools-scm-next python-wheel))
     (propagated-inputs
-     (list python-packaging python-setuptools))
+     (list python-packaging python-setuptools-next python-tomli))
     (home-page "https://www.riverbankcomputing.com/software/sip/intro")
     (synopsis "Python binding creator for C and C++ libraries")
     (description
