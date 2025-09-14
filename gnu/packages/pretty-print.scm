@@ -300,50 +300,6 @@ a fast alternative to @code{IOStreams}.")
        (sha256
         (base32 "0p8f82ijqa57sk72hjf0qviv1wwinmns0p87wiv2v8fvisnqnxr3"))))))
 
-(define-public fmt-6
-  (package
-    (inherit fmt-8)
-    (version "6.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
-                           version "/fmt-" version ".zip"))
-       (sha256
-        (base32 "1s1hxaby5byb07rgmrk4a0q11fxhz7b42khch7sp2qx974y0yrb3"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:tests? #f                      ; TODO: posix-mock-test segfaults
-       #:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON"
-         "-DCMAKE_CXX_COMPILER=clang++"
-         "-DCMAKE_CXX_FLAGS=-stdlib=libc++"
-         "-DCMAKE_EXE_LINKER_FLAGS=-lc++abi")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gcc (assoc-ref inputs "gcc")))
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-join
-                        (cons (search-input-directory inputs "/include/c++/v1")
-                              ;; Hide GCC's C++ headers so that they do not interfere with
-                              ;; the Clang headers.
-                              (delete (string-append gcc "/include/c++")
-                                      (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                    #\:)))
-                        ":"))
-               (format #true
-                       "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                       (getenv "CPLUS_INCLUDE_PATH"))))))))
-    (properties `((hidden? . #true)))
-    (native-inputs
-     (list unzip))
-    (inputs
-     `(("libcxx" ,libcxx+libcxxabi-6)
-       ("libcxxabi" ,libcxxabi-6)
-       ("clang" ,clang-6)))))
-
 ;; Note: Updating fmt causes some 1000s of rebuilds, so let's have a pinned
 ;; version. When changing also update the pinned version of spdlog.
 (define-public fmt fmt-9)
