@@ -1495,7 +1495,7 @@ agent.")
 (define-public kitsas
   (package
     (name "kitsas")
-    (version "5.7")
+    (version "5.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1504,7 +1504,7 @@ agent.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fapl6y18jq279yyhvzdbbiks863w6q15b883w35py1xak1ladnm"))))
+                "0hx8fad8pyma6gq60ziiqd5mbflwzjn0115lsdvf72sz86jryl70"))))
     (build-system qt-build-system)
     (inputs (list libzip qtsvg qtwebengine qt5compat))
     (arguments
