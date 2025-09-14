@@ -887,7 +887,7 @@ eye-candy, customizable, and reasonably lightweight.")
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (inputs (list fcft libxkbcommon-1.8 wayland wayland-protocols))
+    (inputs (list fcft libxkbcommon wayland wayland-protocols))
     (synopsis "Wayland-native terminal emulator")
     (description
      "@command{foot} is a terminal emulator for systems using the Wayland

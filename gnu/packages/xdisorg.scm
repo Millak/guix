@@ -633,14 +633,16 @@ avoiding password prompts when X11 forwarding has already been setup.")
 (define-public libxkbcommon
   (package
     (name "libxkbcommon")
-    (version "1.6.0")
+    (version "1.11.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
-                                  version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/xkbcommon/libxkbcommon")
+                     (commit (string-append "xkbcommon-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0awwz5pg9x5bj0d7dpg4a7bd4gl6k55mlpxwb12534fkrpn19p0f"))))
+                "1swa6rf63c0wi0qq5r661g63yk2iwa9l66148078xkrwcf05sp91"))))
     (outputs '("out" "doc"))
     (build-system meson-build-system)
     (inputs
@@ -652,12 +654,19 @@ avoiding password prompts when X11 forwarding has already been setup.")
            xkeyboard-config))
     (native-inputs
      (append
-       (list bison doxygen pkg-config python
-             ;; wayland-scanner is required at build time.
-             wayland)
-       (if (%current-target-system)
-         (list pkg-config-for-build)
-         '())))
+      (list bison
+            doxygen
+            pkg-config
+            python
+            ;; wayland-scanner is required at build time.
+            wayland
+            ;; Xvfb for tests.
+            xorg-server-for-tests
+            ;; xkbcomp for tests.
+            xkbcomp)
+      (if (%current-target-system)
+          (list pkg-config-for-build)
+          '())))
     (arguments
      (list
       #:configure-flags
@@ -666,7 +675,8 @@ avoiding password prompts when X11 forwarding has already been setup.")
                               %build-inputs "share/X11/xkb"))
               (string-append "-Dx-locale-root="
                              (search-input-directory
-                              %build-inputs "share/X11/locale")))
+                              %build-inputs "share/X11/locale"))
+              "-Denable-docs=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'move-doc
@@ -694,41 +704,6 @@ X11 (yet).")
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))
     (properties '((cpe-name . "xkbcommon")))))
-
-(define-public libxkbcommon-1.5
-  (package
-    (inherit libxkbcommon)
-    (version "1.5.0")
-    (source (origin
-              (inherit (package-source libxkbcommon))
-              (method url-fetch)
-              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "05z08rpa464x8myjxddhix7jp9jcmakd7xrybx4hz8dwpg2123sn"))))))
-
-(define-public libxkbcommon-1.8
-  (package
-    (inherit libxkbcommon)
-    (version "1.8.1")
-    (source (origin
-              (inherit (package-source libxkbcommon))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/xkbcommon/libxkbcommon")
-                    (commit (string-append "xkbcommon-" version))))
-              (file-name (git-file-name (package-name libxkbcommon) version))
-              (sha256
-               (base32
-                "0fz6mf99lyp7x6g6v33210hhpykbg32fjmckyvxfpd805cza0xrj"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments libxkbcommon)
-       ((#:configure-flags flags #~(list))
-        #~(cons "-Denable-docs=true" #$flags))))
-    (native-inputs (modify-inputs (package-native-inputs libxkbcommon)
-                     (append xorg-server  ;; Xvfb for tests
-                             xkbcomp)))))   ;; xkbcomp for tests
 
 (define-public libfakekey
   (package
