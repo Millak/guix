@@ -9376,7 +9376,7 @@ changes.")
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
-    (version "1.7.0")
+    (version "1.10.3")
     (source
      (origin
        (method git-fetch)
@@ -9385,7 +9385,7 @@ changes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gh1d99l5xc9hvwa4j40pfq3y9vfyq52mnrz6bf1kw2r2zr2gbcc"))))
+        (base32 "1f2iar9agj3rhlr0iiyj44yc4i8jfqv8ssjj9adlwn3jg8m115y2"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/PuerkitoBio/goquery"))
