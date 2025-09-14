@@ -1256,7 +1256,7 @@ OpenDocument presentations (*.odp).")
 (define-public cobib
   (package
     (name "cobib")
-    (version "5.3.0")
+    (version "5.4.0")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -1265,49 +1265,80 @@ OpenDocument presentations (*.odp).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13mzwb1rmpz05bn5qr7mwqmj0grxxm1z7b56c8wvyrgm6lsx0a98"))))
+        (base32 "0amyfacm97av9srpwxvif16hcg8w9psdl4v70syihbwchyrbcsg9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 302 passed, 43 skipped, 403 deselected
       #:test-flags
-      #~(list "-k" (string-join
-                    ;; Tests trying to access api.zotero.org.
-                    (list "not test_fetch"
-                          "test_fetch_custom_user_id"
-                          "test_cache"
-                          "test_event_pre_zotero_import"
-                          "test_event_post_zotero_import"
-                          ;; Tests requiring Git history or failing with
-                          ;; various assertion errors.
-                          "test_absolute_path"
-                          "test_cmdline"
-                          "test_command"
-                          "test_command_context"
-                          "test_command_edit"
-                          "test_command_edit_no_changes"
-                          "test_command_fields"
-                          "test_command_inline"
-                          "test_command_skip"
-                          "test_configured_label_default"
-                          "test_disambiguate_label"
-                          "test_event_post_redo_command"
-                          "test_event_post_undo_command"
-                          "test_event_pre_git_commit"
-                          "test_event_pre_redo_command"
-                          "test_event_pre_undo_command"
-                          "test_lint_auto_format"
-                          "test_overwrite_label"
-                          "test_skipping_redone_commits"
-                          "test_skipping_undone_commits"
-                          "test_stringify"
-                          ;; Tests might be broken as trying to compare $HOME
-                          ;; and "~/".
-                          "test_base_cmd_insufficient_git"
-                          "test_warn_insufficient_config"
-                          "test_event_pre_init_command"
-                          "test_field_cmdline_switch")
-                    " and not ")
-              "tests")
+      #~(list
+         "-k" (string-join
+               ;; Tests trying to access api.zotero.org.
+               (list "not test_cache"
+                     "test_command"
+                     "test_event_post_zotero_import"
+                     "test_event_pre_zotero_import"
+                     "test_fetch"
+                     "test_fetch_custom_user_id"
+                     ;; XXX: Various tests fail which require git history.
+                     "test_cmdline"
+                     "test_command"
+                     "test_event_post_redo_command"
+                     "test_event_post_undo_command"
+                     "test_event_pre_redo_command"
+                     "test_event_pre_undo_command"
+                     "test_skipping_redone_commits"
+                     "test_skipping_undone_commits"
+                     "test_overwrite_label"
+                     "test_configured_label_default"
+                     "test_disambiguate_label"
+                     "test_command_yes"
+                     "test_command_edit"
+                     "test_command_edit_no_changes"
+                     "test_command_skip"
+                     "test_command_fields"
+                     "test_command_context"
+                     "test_command_inline"
+                     "test_event_pre_git_commit"
+                     "test_warn_insufficient_config"
+                     "test_event_pre_init_command"
+                     "test_lint_auto_format"
+                     "test_field_cmdline_switch"
+                     "test_command_resume"
+                     "test_command_resume_graceful"
+                     "test_stringify"
+                     "test_handling_of_missing_schema"
+                     "test_main"
+                     "test_config_theme"
+                     "test_config_syntax"
+                     "test_config_user_tags"
+                     "test_log"
+                     "test_help"
+                     "test_empty_database"
+                     "test_prompt_action"
+                     "test_prompt_ask"
+                     "test_catch_invalid_command"
+                     "test_jump"
+                     "test_jump_missing"
+                     "test_jump_out_of_view"
+                     "test_sort"
+                     "test_sort_twice"
+                     "test_filter"
+                     "test_preset"
+                     "test_delete"
+                     "test_note_edit"
+                     "test_note_reset"
+                     "test_note_unsaved_quit"
+                     "test_note_unsaved_open_another"
+                     "test_search"
+                     "test_empty_results"
+                     "test_expand_all"
+                     "test_motion"
+                     "test_select"
+                     "test_open"
+                     "test_absolute_path")
+               " and not ")
+         "tests")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -1322,20 +1353,18 @@ OpenDocument presentations (*.odp).")
            python-pytest
            python-pytest-asyncio
            python-pytest-textual-snapshot
-           python-setuptools
-           python-wheel))
+           python-setuptools-next))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bibtexparser
            python-lxml
-           python-mdit-py-plugins
            python-pylatexenc
            python-requests
            python-requests-oauthlib
            python-rich
            python-ruamel.yaml
            python-text-unidecode
-           python-textual-1
+           python-textual
            python-typing-extensions))
     (home-page "https://gitlab.com/cobib/cobib")
     (synopsis "Terminal-based bibliography management tool")
