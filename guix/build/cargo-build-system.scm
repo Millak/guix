@@ -37,6 +37,7 @@
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-43)
   #:use-module (json)
   #:export (%standard-phases
             cargo-build))
@@ -49,9 +50,12 @@
 
 (define (manifest-targets)
   "Extract all targets from the Cargo.toml manifest"
-  (let* ((port (open-input-pipe "cargo read-manifest"))
+  (let* ((command (string-join (list "cargo" "metadata" "--no-deps"
+                                      "--format-version" "1")))
+         (port (open-input-pipe command))
          (data (json->scm port))
-         (targets (or (assoc-ref data "targets") '())))
+         (packages (vector-ref (assoc-ref data "packages") 0))
+         (targets (or (assoc-ref packages "targets") '())))
     (close-port port)
     targets))
 
@@ -59,8 +63,8 @@
   "Check if the current cargo project declares any binary targets."
   (let* ((bin? (lambda (kind) (string=? kind "bin")))
          (get-kinds (lambda (dep) (assoc-ref dep "kind")))
-         (bin-dep? (lambda (dep) (find bin? (get-kinds dep)))))
-    (find bin-dep? (manifest-targets))))
+         (bin-dep? (lambda (dep) (vector-any bin? (get-kinds dep)))))
+    (vector-any bin-dep? (manifest-targets))))
 
 (define (cargo-package? dir)
   "Check if directory DIR contains a single package, or a Cargo workspace with
