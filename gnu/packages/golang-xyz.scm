@@ -153,9 +153,10 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
       #:import-path "9fans.net/go"
+      #:test-flags
+      #~(list "-vet=off")    ;Go@1.24 forces vet, but tests are not ready yet.
       #:test-subdirs #~(list "acme/..."
                              ;; "cmd/..." ; missing packages
                              ;;
@@ -519,16 +520,17 @@ file along with an index.html file.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/darccio/mergo")
-             (commit (string-append "v" version))))
+              (url "https://github.com/darccio/mergo")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1q61904rd858ac19vsmmhz69b1hvn0y9rjfb9d2gc4abg64dva57"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "dario.cat/mergo"))
+      #:import-path "dario.cat/mergo"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs
      (list go-gopkg-in-yaml-v3))
     (home-page "https://github.com/darccio/mergo")
@@ -638,16 +640,17 @@ commands.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~rockorager/tcell-term")
-             (commit (string-append "v" version))))
+              (url "https://git.sr.ht/~rockorager/tcell-term")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1z64yzr2l5j5r5rqi89jk4madn3ak8hw95lva5ra7gnlyhh2vs05"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "git.sr.ht/~rockorager/tcell-term"))
+      #:import-path "git.sr.ht/~rockorager/tcell-term"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -669,16 +672,17 @@ Go library.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~rockorager/vaxis")
-             (commit (string-append "v" version))))
+              (url "https://git.sr.ht/~rockorager/vaxis")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "09n2vafkb4mfxq4fiwf7ir3557q0h91n0s7imhh0789fj19g9j30"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "git.sr.ht/~rockorager/vaxis"))
+      #:import-path "git.sr.ht/~rockorager/vaxis"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -786,16 +790,17 @@ Golang.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/a8m/envsubst")
-             (commit (string-append "v" version))))
+              (url "https://github.com/a8m/envsubst")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0pkvza3dr3bs2r8y8gfbckijcpl4w3llxd7zy8hw45zznynb273q"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/a8m/envsubst"))
+      #:import-path "github.com/a8m/envsubst"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/a8m/envsubst")
     (synopsis "Environment variables substitution for Go")
     (description
@@ -1132,8 +1137,8 @@ prompts on terminals supporting ANSI escape sequences.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/alecthomas/chroma")
-             (commit (string-append "v" version))))
+              (url "https://github.com/alecthomas/chroma")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0hjzb61m5lzx95xss82wil9s8f9hbw1zb3jj73ljfwkq5lqk76zq"))
@@ -1144,8 +1149,9 @@ prompts on terminals supporting ANSI escape sequences.")
     ;; TODO: Build cmd/chroma and cmd/chromad commands.
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/alecthomas/chroma"))
+      #:import-path "github.com/alecthomas/chroma"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs
      (list go-github-com-alecthomas-kong
            go-github-com-alecthomas-kong-hcl
@@ -1547,16 +1553,17 @@ environment and runtime configuration.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/AndreasBriese/bbloom")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/AndreasBriese/bbloom")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "021c0pl7r4pc9yslqhbjg9wr6dm03lnzf94a0b9c0hmg0bhhkln9"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/AndreasBriese/bbloom"))
+      #:import-path "github.com/AndreasBriese/bbloom"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/AndreasBriese/bbloom")
     (synopsis "Bitset Bloom filter for Golang")
     (description
@@ -1909,16 +1916,17 @@ cluster segmentation algorithm.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/arbovm/levenshtein")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/arbovm/levenshtein")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0nmx2iip8xpnbmy6gvqpc9ikizr33dr40xgv746h0b0by8n7rv7y"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/arbovm/levenshtein"))
+      #:import-path "github.com/arbovm/levenshtein"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/arbovm/levenshtein")
     (synopsis "Levenshtein Distance in Golang")
     (description
@@ -2063,8 +2071,9 @@ for Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/asaskevich/govalidator"
+      #:test-flags
+      #~(list "-vet=off")   ;Go@1.24 forces vet, but tests are not ready yet.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-failing-tests
@@ -2619,18 +2628,18 @@ based on murmurhash.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/bmatcuk/doublestar")
-             (commit (string-append "v" version))))
+              (url "https://github.com/bmatcuk/doublestar")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0bk5bixl6rqa8znxghyp6zndbccx9kdyrymjahgyp6qsrp7rk144"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      ;; This test fails with Go 1.16.
-      #:test-flags #~(list "-skip" "TestMatch")
-      #:import-path "github.com/bmatcuk/doublestar"))
+      #:import-path "github.com/bmatcuk/doublestar"
+      #:test-flags
+      #~(list "-vet=off" ;Go@1.24 forces vet, but tests are not ready yet.
+              "-skip" "TestMatch")))
     (home-page "https://github.com/bmatcuk/doublestar/")
     (synopsis "Path pattern matching and globbing supporting doublestar")
     (description
@@ -2673,8 +2682,9 @@ matching and globbing with support for \"doublestar\" patterns.")
         (base32 "0jskh3dp9xmh1bf1a7dh5ykv0pk2v4pxh5bynsl33cmw61dkd6s0"))))
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/bmatcuk/doublestar/v4"))))
+      #:import-path "github.com/bmatcuk/doublestar/v4"
+      #:test-flags
+      #~(list "-vet=off"))))) ;Go@1.24 forces vet, but tests are not ready yet.
 
 (define-public go-github-com-bmizerany-perks-quantile
   (package
@@ -2923,16 +2933,17 @@ strings into words like a POSIX or Windows shell would.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/BurntSushi/toml")
-             (commit (string-append "v" version))))
+              (url "https://github.com/BurntSushi/toml")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "075ay86gn99wlz26x7hp40s4lpc9r026pd2r0ap0pcrvb88inzy1"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/BurntSushi/toml"))
+      #:import-path "github.com/BurntSushi/toml"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/BurntSushi/toml")
     (synopsis "Toml parser and encoder for Go")
     (description
@@ -5488,16 +5499,17 @@ gist (https://gist.github.com/kballard/272720).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dave/jennifer")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dave/jennifer")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1a0zg8cdnhyqfgrz7jbgpnnz75g5ps1c8cnmbxvfldmy973ziaml"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/dave/jennifer"))
+      #:import-path "github.com/dave/jennifer"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/dave/jennifer")
     (synopsis "Code generator for Go")
     (description "This package provides functionality to generate Go code.")
@@ -7028,16 +7040,17 @@ protoc-generated code to validate such constraints.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ergochat/readline")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ergochat/readline")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "16zyk1dzwix5l9iph61img6qn5kryq3kb03dk2lwmrwyr1xdsip3"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/ergochat/readline"))
+      #:import-path "github.com/ergochat/readline"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs (list go-golang-org-x-text go-golang-org-x-sys))
     (home-page "https://github.com/ergochat/readline")
     (synopsis "Readline implementation in pure Go")
@@ -7177,8 +7190,8 @@ cases (e.g. snake_case, camelCase, kebab-case, etc).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/expr-lang/expr")
-             (commit (string-append "v" version))))
+              (url "https://github.com/expr-lang/expr")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0kcpgycdy9fm4g2i4mhp6hprzkg75r0lfrvc0gbwd2wiir460222"))
@@ -7194,8 +7207,9 @@ cases (e.g. snake_case, camelCase, kebab-case, etc).")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/expr-lang/expr"))
+      #:import-path "github.com/expr-lang/expr"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://expr-lang.org/")
     (synopsis "Expression language and expression evaluation for Go")
     (description
@@ -7815,16 +7829,17 @@ also favors portability, and includes support for all POSIX systems.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gdey/errors")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/gdey/errors")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0mg33xckg5i529jnv6jxvmp36innz0xl5gbkmnww9paak5yvfjb3"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/gdey/errors"))
+      #:import-path "github.com/gdey/errors"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/gdey/errors")
     (synopsis "Augmentation of std @code{errors} library")
     (description
@@ -7863,16 +7878,17 @@ library in go standard library.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ghemawat/stream")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/ghemawat/stream")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0i0cjvhn2zfnvm9dc9nd9yyq27nmv8j2s7sa0lvcdvv2mbcdvvq8"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/ghemawat/stream"))
+      #:import-path "github.com/ghemawat/stream"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/ghemawat/stream")
     (synopsis "UNIX pipe-like chained filters")
     (description
@@ -8048,10 +8064,11 @@ to build @code{delve} - debugger for the Go programming language.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/go-errors/errors"
-      ;; Stack trace does not contain source line: 'a: b(5)'.
-      #:test-flags #~(list "-skip" "TestStackFormat")))
+      #:test-flags
+      #~(list "-vet=off" ;Go@1.24 forces vet, but tests are not ready yet.
+              ;; Stack trace does not contain source line: 'a: b(5)'.
+              "-skip" "TestStackFormat")))
     (home-page "https://github.com/go-errors/errors")
     (synopsis "Errors with stacktraces for Golang")
     (description
@@ -8395,8 +8412,8 @@ professionally translated
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-spatial/proj")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-spatial/proj")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0sdjms403rr1smm63p21k95m1dfis06i52y1962jnxidcywzm6i5"))
@@ -8406,8 +8423,9 @@ professionally translated
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/go-spatial/proj"))
+      #:import-path "github.com/go-spatial/proj"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/go-spatial/proj")
@@ -8613,8 +8631,8 @@ native Go structure.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gobwas/glob")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gobwas/glob")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -8622,8 +8640,9 @@ native Go structure.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/gobwas/glob"))
+      #:import-path "github.com/gobwas/glob"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/gobwas/glob")
     (synopsis "Go globbing library")
     (description
@@ -8837,16 +8856,17 @@ execution.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gogs/chardet")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/gogs/chardet")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "12j8q5wc9m4n51v2j2m40nahqdl9bh3hzpdp26clzq91kc2amiz0"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/gogs/chardet"))
+      #:import-path "github.com/gogs/chardet"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/gogs/chardet")
     (synopsis "Character set detection for Go")
     (description
@@ -9440,16 +9460,17 @@ provides a buffered io.Writer that is flushed at a timed interval.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/goverter/patherr")
-             (commit (string-append "v" version))))
+              (url "https://github.com/goverter/patherr")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1zjcyva959ir23rgk2rvc7ivlyan9dh2rqw7hl03h6xq935zznjq"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/goverter/patherr"))
+      #:import-path "github.com/goverter/patherr"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/goverter/patherr")
     (synopsis "Implementation for Goverter's wrapErrorsUsing")
     (description
@@ -9853,16 +9874,17 @@ their component bytes.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/hashicorp/go-version")
-             (commit (string-append "v" version))))
+              (url "https://github.com/hashicorp/go-version")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "04kb102igwnp03rcjjlg7w2lb2dbr7h0w751w72v6imid51kyrsj"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/hashicorp/go-version"))
+      #:import-path "github.com/hashicorp/go-version"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/hashicorp/go-version")
     (synopsis "Parsing and verifying versions for Golang")
     (description
@@ -12059,16 +12081,17 @@ using reflink operations on compatible filesystems such as btrfs and xfs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/karrick/godirwalk")
-             (commit (string-append "v" version))))
+              (url "https://github.com/karrick/godirwalk")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0jyvai5vpmx86l71hg9j6lxc2b4v32ajvcmjlz40zimfb9ip11q9"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/karrick/godirwalk"))
+      #:import-path "github.com/karrick/godirwalk"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     ;; To build all examples as a test scenario.
     (native-inputs
      (list go-github-com-karrick-golf
@@ -12953,16 +12976,17 @@ structure.  It's a stable fork of https://github.com/mndrix/ps.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/layeh/gopher-luar")
-             (commit (string-append "v" version))))
+              (url "https://github.com/layeh/gopher-luar")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0zfafqy2jwjmrr0gl3h2ivn0iixb0bvslcwcly9bcmc5yxq35m89"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "layeh.com/gopher-luar"))
+      #:import-path "layeh.com/gopher-luar"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs (list go-github-com-yuin-gopher-lua))
     (home-page "https://github.com/layeh/gopher-luar")
     (synopsis "Simplifies data passing to and from gopher-lua")
@@ -13013,8 +13037,8 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/leonelquinteros/gotext"))
+      #:import-path "github.com/leonelquinteros/gotext"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-golang-org-x-tools))
     (home-page "https://github.com/leonelquinteros/gotext")
@@ -13652,16 +13676,17 @@ generation.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/magiconair/properties")
-             (commit (string-append "v" version))))
+              (url "https://github.com/magiconair/properties")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1cmbh9y51lbn2q2i2jzjfd14spwclg88hfsj4k1kkj1xc2bkwqdj"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/magiconair/properties"))
+      #:import-path "github.com/magiconair/properties"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/magiconair/properties")
     (synopsis "Java properties scanner for Go")
     (description "Java properties scanner for Go")
@@ -13675,16 +13700,17 @@ generation.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/makenowjust/heredoc")
-             (commit (string-append "v" version))))
+              (url "https://github.com/makenowjust/heredoc")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "18f21zm8n2wlnkz1ylw8rcxmqxyv2rlz8749yfqggm2m0m2884pj"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/MakeNowJust/heredoc"))
+      #:import-path "github.com/MakeNowJust/heredoc"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/MakeNowJust/heredoc")
     (synopsis "Here-documents with indent")
     (description
@@ -13753,16 +13779,17 @@ implementing features like:
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Masterminds/goutils")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Masterminds/goutils")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "09m4mbcdlv9ng3xcrmjlxi0niavby52y9nl2jhjnbx1xxpjw0jrh"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/Masterminds/goutils"))
+      #:import-path "github.com/Masterminds/goutils"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/Masterminds/goutils/")
     (synopsis "Utility functions to manipulate strings")
     (description
@@ -15190,16 +15217,17 @@ values pointed to.  Unexported field values are not copied.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/motemen/go-quickfix")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/motemen/go-quickfix")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0j14k6kfzvfn8v21gf2ssaypicrwb4pvh7yzfa5m1jcc9581j2ad"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23                      ;minimum required version
-      #:import-path "github.com/motemen/go-quickfix"))
+      #:import-path "github.com/motemen/go-quickfix"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs (list go-golang-org-x-tools))
     (home-page "https://github.com/motemen/go-quickfix")
     (synopsis "Go ASTs fixing library")
@@ -15393,16 +15421,17 @@ Authentication Modules, PAM} application API.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/muesli/cancelreader")
-             (commit (string-append "v" version))))
+              (url "https://github.com/muesli/cancelreader")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0157mgpk0z45xizrgrz73swhky0d8nyk6fhwb089n1290k7yjhxq"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/muesli/cancelreader"))
+      #:import-path "github.com/muesli/cancelreader"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/muesli/cancelreader")
@@ -16229,8 +16258,8 @@ which produce colorized output using github.com/fatih/color.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nxadm/tail")
-             (commit (string-append "v" version))))
+              (url "https://github.com/nxadm/tail")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0s8lawq661g8qqf7c1cip5l60cm2138b125jgmv9h548ji9g5yqx"))
@@ -16240,8 +16269,9 @@ which produce colorized output using github.com/fatih/color.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/nxadm/tail"))
+      #:import-path "github.com/nxadm/tail"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs
      (list go-github-com-fsnotify-fsnotify
            go-gopkg-in-tomb-v1))
@@ -17003,16 +17033,17 @@ composable way such that accurate error can be reasoned about.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/orisano/pixelmatch")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/orisano/pixelmatch")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1lplxfif5mfqnd0jjph2vd25c3bpr3idfs2axh8z0ib0zdkwca32"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/orisano/pixelmatch"))
+      #:import-path "github.com/orisano/pixelmatch"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/orisano/pixelmatch")
     (synopsis "Pixelmatch port to Go")
     (description
@@ -17181,8 +17212,8 @@ processes.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pborman/getopt")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pborman/getopt")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sa66n392hzqbahn47grbjyaasvpklnn4s1wkzs1kdwrfdd62kfa"))
@@ -17196,8 +17227,9 @@ processes.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pborman/getopt"))
+      #:import-path "github.com/pborman/getopt"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/pborman/getopt")
     (synopsis "Getopt style option parsing for Go")
     (description
@@ -17262,16 +17294,17 @@ package (which is based off an earlier version of this package).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pelletier/go-toml")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pelletier/go-toml")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1wypjrr1axkrkzp4n5gvams94f2sd7dq1pdpd2i35sgpdz6r2m6g"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pelletier/go-toml"))
+      #:import-path "github.com/pelletier/go-toml"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs
      (list go-github-com-burntsushi-toml
            go-github-com-davecgh-go-spew
@@ -17588,20 +17621,21 @@ alternative fork of https://github.com/pkg/errors project.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/logging/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/logging/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "13c8pkn6nyhayjax77bcysmv9fsyb63gllk2ns880b3hgdcl2l1a"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pion/logging"))
+      #:import-path "github.com/pion/logging"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/pion/logging/")
     (synopsis "Logging library for Golang projects")
     (description
-"This package provides a logging library used by @url{https://github.com/pion,
+     "This package provides a logging library used by @url{https://github.com/pion,
 Pion}.")
     (license license:expat)))
 
@@ -17613,16 +17647,17 @@ Pion}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pkg/diff")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/pkg/diff")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1iwaa6g3mbbi1k6rw7fn85sg6lm6rlnjz07yb91hq1kll6494s18"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pkg/diff"))
+      #:import-path "github.com/pkg/diff"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/pkg/diff/")
     (synopsis "Create and print diffs")
     (description
@@ -17728,16 +17763,17 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/polydawn/refmt/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/polydawn/refmt/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1v4av75nlgvps5q2h3q6w3cmry0gg316l82zmj6sph9bp2c87621"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/polydawn/refmt"))
+      #:import-path "github.com/polydawn/refmt"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs
      (list go-github-com-go-yaml-yaml
            go-github-com-smartystreets-goconvey
@@ -19276,16 +19312,17 @@ GNU/Linux, this is a proxy for the @command{xdg-open} command.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/smacker/go-tree-sitter")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/smacker/go-tree-sitter")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "15c7w5dv7zvhvgrf71fp5l74mjkiniqgz2cbv024pmkcwsvv48yj"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/smacker/go-tree-sitter"))
+      #:import-path "github.com/smacker/go-tree-sitter"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs (list go-github-com-stretchr-testify))
     (home-page "https://github.com/smacker/go-tree-sitter")
     (synopsis "Golang bindings for tree-sitter")
@@ -19553,16 +19590,17 @@ a few advantages over using the standard log library alone.
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/spf13/pflag")
-             (commit (string-append "v" version))))
+              (url "https://github.com/spf13/pflag")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0ckdaa5q3afhgx5hi45czxn2pcc5fd0sz4axh4hqxyvgsjfjvmg0"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/spf13/pflag"))
+      #:import-path "github.com/spf13/pflag"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/spf13/pflag")
     (synopsis "Replacement for Go's @code{flag} package")
     (description
@@ -21025,16 +21063,17 @@ datastore connectivity and testing (viant/dsc, viant/dsunit).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/viant/xunsafe")
-             (commit (string-append "v" version))))
+              (url "https://github.com/viant/xunsafe")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0q9zqz6p8spf7nq9r75yv9zizxf80mg0i6w0y9a0qxcgpnji0a3z"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/viant/xunsafe"))
+      #:import-path "github.com/viant/xunsafe"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -21138,16 +21177,17 @@ weighted moving averages}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/vmihailenco/msgpack")
-             (commit (string-append "v" version))))
+              (url "https://github.com/vmihailenco/msgpack")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "08jdq8wh6i1f2avl46l5ndfrvhfl4l276hz4y1xq6agwbwrvycdy"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/vmihailenco/msgpack/v4"))
+      #:import-path "github.com/vmihailenco/msgpack/v4"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (native-inputs
      (list go-gopkg-in-check-v1))
     (propagated-inputs
@@ -21298,16 +21338,17 @@ Redis.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/warpfork/go-fsx")
-             (commit (string-append "v" version))))
+              (url "https://github.com/warpfork/go-fsx")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1yhh42vp12hnkhlfimcab4a2df2apprnlg3ll75yr2pd0b001p5b"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/warpfork/go-fsx"))
+      #:import-path "github.com/warpfork/go-fsx"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/warpfork/go-fsx")
     (synopsis "Extended filesystem interface for Golang")
     (description
@@ -24713,16 +24754,17 @@ It allows one to safely call Unveil / Pledge on non-OpenBSD operating systems.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/arp242/jfmt")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/arp242/jfmt")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1nc3n3lf0ixzpk85sadp2w4yg9v39pdb2z0i1rpxksdayax009wa"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "zgo.at/jfmt"))
+      #:import-path "zgo.at/jfmt"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (propagated-inputs
      (list go-zgo-at-termtext
            go-zgo-at-zli
@@ -24796,16 +24838,17 @@ terminals.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/arp242/zli")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/arp242/zli")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "120nlnxhzdmk1lh7cfgajkl85n8mfd00cn5csyislris9q2n2rxb"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "zgo.at/zli"))
+      #:import-path "zgo.at/zli"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/arp242/zli")
     (synopsis "Go library for writing command line interface programs")
     (description
