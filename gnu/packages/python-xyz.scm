@@ -31342,24 +31342,6 @@ their state.  When the scheduler is restarted, it will then run all the jobs it
 should have run while it was offline.")
     (license license:expat)))
 
-(define-public python-pylzma
-  (package
-    (name "python-pylzma")
-    (version "0.5.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pylzma" version))
-        (sha256
-          (base32
-            "074anvhyjgsv2iby2ql1ixfvjgmhnvcwjbdz8gk70xzkzcm1fx5q"))))
-    (build-system python-build-system)
-    (home-page "https://www.joachim-bauch.de/projects/pylzma/")
-    (synopsis "Python bindings for the LZMA library by Igor Pavlov")
-    (description "This package provides Python bindings for the LZMA library
-by Igor Pavlov.")
-    (license license:lgpl2.1+)))
-
 (define-public python-ifaddr
   (package
     (name "python-ifaddr")
