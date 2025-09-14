@@ -1080,9 +1080,6 @@ Library.")
        (replace "clang" clang-6)
        (replace "llvm" llvm-6)))))
 
-(define-public clang-toolchain-6
-  (make-clang-toolchain clang-6 libomp-6))
-
 (define-public llvm-3.8
   (package (inherit llvm-6)
     (name "llvm")
