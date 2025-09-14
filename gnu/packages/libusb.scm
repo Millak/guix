@@ -374,55 +374,6 @@ wrapper for accessing libusb-1.0.")
      "PyUSB aims to be an easy to use Python module to access USB devices.")
     (license license:bsd-3)))
 
-(define-public python-capablerobot-usbhub
-  (package
-    (name "python-capablerobot-usbhub")
-    (version "0.5.0")
-    (source
-     (origin
-       ;; PyPI tarball fails to build.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/CapableRobot/CapableRobot_USBHub_Driver")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1nfd12612z9a9hby5dxg7lfqw5jcv3wcyqqagbg5izragni646mc"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f ; No tests provided.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-poetry-core
-           (lambda _
-             ;; Patch to use the core poetry API.
-             (substitute* "pyproject.toml"
-               (("poetry.masonry.api")
-                "poetry.core.masonry.api"))))
-         (add-after 'install 'install-udev-rules
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/lib/udev/rules.d"))
-               (copy-file "50-capablerobot-usbhub.rules"
-                          (string-append out
-                                         "/lib/udev/rules.d/"
-                                         "50-capablerobot-usbhub.rules"))))))))
-    (native-inputs
-     (list python-poetry-core))
-    (propagated-inputs
-     (list python-click-7 python-construct python-pyusb python-pyyaml-5))
-    (home-page
-     "https://github.com/CapableRobot/CapableRobot_USBHub_Driver")
-    (synopsis
-     "Host side driver for the Capable Robot Programmable USB Hub")
-    (description
-     "This package provides access to the internal state of the Capable Robot
-USB Hub, allowing you to monitor and control the Hub from an upstream
-computer.  It also creates a transparent CircuitPython Bridge, allowing
-unmodified CircuitPython code to run on the host computer and interact with
-I2C and SPI devices attached to the USB Hub.")
-    (license license:expat)))
-
 (define-public ideviceinstaller
   (package
     (name "ideviceinstaller")
