@@ -544,6 +544,32 @@ compatible.")
      "This package provides a minor mode emulating Helix keybindings.")
     (license license:gpl3+)))
 
+(define-public emacs-openssl-cipher
+  ;; Latest tagged release is from 2015-01-11.  Use a more recent commit
+  ;; instead.
+  (let ((commit "5e48a60e426d493ebb85566b304cf5c7bd3bfb61")
+        (revision "0"))
+    (package
+      (name "emacs-openssl-cipher")
+      (version (git-version "0.8.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/mhayashi1120/Emacs-openssl-cipher")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ik1gyhyp77b34n2lh9ns28lx3fbfky0vp6q8136vm1vw2rf153q"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list openssl))
+      (home-page "https://github.com/mhayashi1120/Emacs-openssl-cipher")
+      (synopsis "Cipher utilities using OpenSSL")
+      (description "This package provides a library to encrypt/decrypt a string
+or file with @code{openssl} command.")
+      (license license:gpl3+))))
+
 (define-public emacs-sops
   (package
     (name "emacs-sops")
