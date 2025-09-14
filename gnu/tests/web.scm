@@ -54,7 +54,6 @@
             %test-varnish
             %test-php-fpm
             %test-hpcguix-web
-            %test-tailon
             %test-anonip
             %test-patchwork
             %test-agate))
@@ -478,76 +477,6 @@ HTTP-PORT, along with php-fpm."
    (name "hpcguix-web")
    (description "Connect to a running hpcguix-web server.")
    (value (run-hpcguix-web-server-test name %hpcguix-web-os))))
-
-
-(define %tailon-os
-  ;; Operating system under test.
-  (simple-operating-system
-   (service dhcpcd-service-type)
-   (service tailon-service-type
-            (tailon-configuration
-             (config-file
-              (tailon-configuration-file
-               (bind "0.0.0.0:8080")))))))
-
-(define* (run-tailon-test #:optional (http-port 8081))
-  "Run tests in %TAILON-OS, which has tailon running and listening on
-HTTP-PORT."
-  (define os
-    (marionette-operating-system
-     %tailon-os
-     #:imported-modules '((gnu services herd)
-                          (guix combinators))))
-
-  (define vm
-    (virtual-machine
-     (operating-system os)
-     (port-forwardings `((,http-port . 8080)))))
-
-  (define test
-    (with-imported-modules '((gnu build marionette))
-      #~(begin
-          (use-modules (srfi srfi-11) (srfi srfi-64)
-                       (ice-9 match)
-                       (gnu build marionette)
-                       (web uri)
-                       (web client)
-                       (web response))
-
-          (define marionette
-            ;; Forward the guest's HTTP-PORT, where tailon is listening, to
-            ;; port 8080 in the host.
-            (make-marionette (list #$vm)))
-
-          (test-runner-current (system-test-runner #$output))
-          (test-begin "tailon")
-
-          (test-assert "service running"
-            (wait-for-tcp-port 8080 marionette))
-
-          (test-equal "http-get"
-            200
-            (#$retry-on-error
-             (lambda ()
-               (let-values (((response text)
-                             (http-get #$(format
-                                          #f
-                                          "http://localhost:~A/"
-                                          http-port)
-                                       #:decode-body? #t)))
-                 (response-code response)))
-             #:times 10
-             #:delay 5))
-
-          (test-end))))
-
-  (gexp->derivation "tailon-test" test))
-
-(define %test-tailon
-  (system-test
-   (name "tailon")
-   (description "Connect to a running Tailon server.")
-   (value (run-tailon-test))))
 
 
 ;;;
