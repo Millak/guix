@@ -612,6 +612,33 @@ supported algorithm is chosen to ensure interoperability with
 @code{openssl}.")
     (license license:gpl3+)))
 
+(define-public emacs-elchacha
+  (package
+    (name "emacs-elchacha")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/KeyWeeUsr/elchacha")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ghh2gs36h4hnfi49y8f9bl002vjvrg239v5zgfp0mqfyr70lnqc"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "eldev" "--use-emacsloadpath" "-dtTC" "test")))
+    (native-inputs
+     (list
+      emacs-eldev
+      emacs-undercover))
+    (home-page "https://github.com/KeyWeeUsr/elchacha")
+    (synopsis "ChaCha20 implementation as per RFC7539")
+    (description "An implementation of the ChaCha20 encryption algorithm in
+Emacs Lisp.")
+    (license license:gpl3)))
+
 (define-public emacs-sops
   (package
     (name "emacs-sops")
