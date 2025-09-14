@@ -3507,3 +3507,28 @@ meshes for these stages, as well as algorithms to reduce the mesh complexity
 and storage overhead.")
     (home-page "https://github.com/zeux/meshoptimizer")
     (license license:expat)))
+
+(define-public vhacd
+  (package
+    (name "vhacd")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kmammou/v-hacd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v462m6yyhrfpaa5bph1rma6c0yhnkadmggs5l3jxi746z2238qs"))))
+    (build-system copy-build-system)
+    (arguments
+      (list
+        #:install-plan
+        #~`(("include/VHACD.h" "include/"))))
+    (synopsis "Approximate convex decomposition")
+    (description
+     "This is a headers-only library that allows approximate convex decomposition
+of a 3D surface.")
+    (home-page "https://github.com/kmammou/v-hacd")
+    (license license:bsd-3)))
