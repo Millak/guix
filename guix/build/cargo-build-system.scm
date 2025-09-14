@@ -48,10 +48,13 @@
 ;;
 ;; Code:
 
-(define (manifest-targets)
+(define* (manifest-targets #:optional features)
   "Extract all targets from the Cargo.toml manifest"
-  (let* ((command (string-join (list "cargo" "metadata" "--no-deps"
-                                      "--format-version" "1")))
+  (let* ((command (string-join (cons* "cargo" "metadata" "--no-deps"
+                                      "--format-version" "1"
+                                      (if (or (not features) (null? features))
+                                          '()
+                                          (cons* "--features" features)))))
          (port (open-input-pipe command))
          (data (json->scm port))
          (packages (vector-ref (assoc-ref data "packages") 0))
@@ -59,12 +62,12 @@
     (close-port port)
     targets))
 
-(define (has-executable-target?)
+(define (has-executable-target? features)
   "Check if the current cargo project declares any binary targets."
   (let* ((bin? (lambda (kind) (string=? kind "bin")))
          (get-kinds (lambda (dep) (assoc-ref dep "kind")))
          (bin-dep? (lambda (dep) (vector-any bin? (get-kinds dep)))))
-    (vector-any bin-dep? (manifest-targets))))
+    (vector-any bin-dep? (manifest-targets features))))
 
 (define (cargo-package? dir)
   "Check if directory DIR contains a single package, or a Cargo workspace with
@@ -431,7 +434,7 @@ directory = '" vendor-dir "'") port)
         ;; NOTE: Cargo workspace installation support:
         ;; #:skip-build? #f + #:cargo-install-paths.
         (and (null? cargo-install-paths)
-             (not (has-executable-target?)))
+             (not (has-executable-target? features)))
         (for-each
          (lambda (path)
            (invoke "cargo" "install" "--offline" "--no-track"
