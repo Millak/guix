@@ -1062,24 +1062,6 @@ Library.")
                    #:legacy-build-shared-libs? #t
                    #:patches '("clang-6.0-libc-search-path.patch")))
 
-(define-public libomp-6
-  (package
-    (inherit libomp-12)
-    (version (package-version llvm-6))
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://releases.llvm.org/"
-                                  version  "/openmp-" version
-                                  ".src.tar.xz"))
-              (sha256
-               (base32
-                "0nhwfba9c351r16zgyjyfwdayr98nairky3c2f0b2lc360mwmbv6"))
-              (file-name (string-append "libomp-" version ".tar.xz"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs libomp-12)
-       (replace "clang" clang-6)
-       (replace "llvm" llvm-6)))))
-
 (define-public llvm-3.8
   (package (inherit llvm-6)
     (name "llvm")
