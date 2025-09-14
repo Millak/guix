@@ -1022,6 +1022,36 @@ of Unicode.
 @end itemize\n")
     (license license:silofl1.1)))
 
+(define-public font-cns11643-kai
+  (package
+    (inherit font-cns11643-sung)
+    (name "font-cns11643-kai")
+    (version "20250718")
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://web.archive.org/web/20250914051659if_/"
+                           "https://cns11643.gov.tw/opendata/Fonts_Kai.zip"))
+       (file-name (string-append name "-" version))
+       (sha256
+        (base32
+         "10xylq0p8qhi8rlq62rhnfskfy6kdlh4ay8v7sp28xxl2291ll1j"))))
+    (synopsis "CJK TrueType fonts, TW-Kai")
+    (description
+     "@code{CNS 11643} character set (Chinese National Standard, or Chinese
+Standard Interchange Code) is the standard character set of the Republic of
+China (Taiwan) for Chinese Characters and other Unicode symbols.  Contained
+are three variant of TrueType fonts in Regular script (Kai):
+
+@itemize
+@item @code{TW-Kai-98_1.ttf}: CJK characters in the Basic Multilingual Plane
+of Unicode.
+@item @code{TW-Kai-Ext-B-98_1.ttf}: CJK characters in the CJK Unified
+Ideographs Extension B of Unicode.
+@item @code{TW-Kai-Plus-98_1.ttf}: CJK characters in the Plane 15 (Private Use)
+of Unicode.
+@end itemize\n")))
+
 (define-public font-cns11643
   ;; Since upstream doesn't provide any version numbers, the date of the last
   ;; edit is used, taken from https://data.gov.tw/dataset/5961
