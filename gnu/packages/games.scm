@@ -11459,7 +11459,7 @@ and bring the war to your enemy.")
 (define-public harmonist
   (package
     (name "harmonist")
-    (version "0.5.1")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -11468,7 +11468,7 @@ and bring the war to your enemy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gn9zmnjw1f4xbdk281cmxh7swxc16i663q8pzn5s135gdg6qgdm"))))
+        (base32 "03322qgy5n48cxmm57m3v4i35gbr31jvk1dvc9ah4wf4480xp0fi"))))
     (build-system go-build-system)
     (arguments
      (list
