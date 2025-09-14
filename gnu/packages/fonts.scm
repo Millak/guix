@@ -34,7 +34,7 @@
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2020, 2024 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2020, 2024, 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020-2022, 2025 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2020 Tim Van den Langenbergh <tmt_vdl@gmx.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -988,6 +988,38 @@ Source Han Sans that replaces its proportional Latin glyphs with fixed-width
 Japanese kana and kanji, making the font suitable for use in programming,
 terminal applications, and user interfaces that involve both Latin and Japanese
 text.")
+    (license license:silofl1.1)))
+
+(define-public font-cns11643-sung
+  (package
+    (name "font-cns11643-sung")
+    (version "20250718") ; see https://www.cns11643.gov.tw/opendata/release.txt
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://web.archive.org/web/20250914051659if_/"
+                           "https://cns11643.gov.tw/opendata/Fonts_Sung.zip"))
+       (file-name (string-append name "-" version))
+       (sha256
+        (base32
+         "0b570p5jnw4bqhapalascrx8z1ybgf1c9xj691f5g48pq1jxrhqb"))))
+    (build-system font-build-system)
+    (home-page "https://www.cns11643.gov.tw")
+    (synopsis "CJK TrueType fonts, TW-Sung")
+    (description
+     "@code{CNS 11643} character set (Chinese National Standard, or Chinese
+Standard Interchange Code) is the standard character set of the Republic of
+China (Taiwan) for Chinese Characters and other Unicode symbols.  Contained
+are three variant of TrueType fonts in Sung/Ming script:
+
+@itemize
+@item @code{TW-Sung-98_1.ttf}: CJK characters in the Basic Multilingual Plane
+of Unicode.
+@item @code{TW-Sung-Ext-B-98_1.ttf}: CJK characters in the CJK Unified
+Ideographs Extension B of Unicode.
+@item @code{TW-Sung-Plus-98_1.ttf}: CJK characters in the Plane 15 (Private Use)
+of Unicode.
+@end itemize\n")
     (license license:silofl1.1)))
 
 (define-public font-cns11643
