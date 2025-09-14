@@ -6707,7 +6707,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
 (define-public go-github-com-emersion-go-webdav
   (package
     (name "go-github-com-emersion-go-webdav")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -6716,18 +6716,11 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ay0x3c1frkj4z3j17s42yvf1hgmg8223qmsyr41yxwz88zsvjlj"))))
+        (base32 "0lqll59rvdlj0s014fjdn8brb9j9h59fmly744yfz6wxwdcp23g4"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/emersion/go-webdav"
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:import-path "github.com/emersion/go-webdav"))
     (propagated-inputs
      (list go-github-com-emersion-go-ical
            go-github-com-emersion-go-vcard))
