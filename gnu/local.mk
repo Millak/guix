@@ -1093,7 +1093,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-3.5-libc-search-path.patch		\
   %D%/packages/patches/clang-3.5-libsanitizer-ustat-fix.patch	\
   %D%/packages/patches/clang-3.8-libc-search-path.patch		\
-  %D%/packages/patches/clang-6.0-libc-search-path.patch		\
   %D%/packages/patches/clang-11.0-libc-search-path.patch	\
   %D%/packages/patches/clang-12.0-libc-search-path.patch	\
   %D%/packages/patches/clang-13.0-libc-search-path.patch	\
