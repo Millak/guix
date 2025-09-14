@@ -1652,39 +1652,6 @@ use with Clang, targeting C++11, C++14 and above.")
     (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
     (license license:expat)))
 
-;; Libcxx files specifically used by PySide2.
-(define-public libcxx-6
-  (package
-    (inherit libcxx)
-    (version (package-version llvm-6))
-    (source
-     (origin
-       (method url-fetch)
-       (uri (llvm-uri "libcxx" version))
-       (sha256
-        (base32
-         "0rzw4qvxp6qx4l4h9amrq02gp7hbg8lw4m0sy3k60f50234gnm3n"))))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((gcc (assoc-ref inputs  "gcc")))
-                ;; Hide GCC's C++ headers so that they do not interfere with
-                ;; the ones we are attempting to build.
-                (setenv "CPLUS_INCLUDE_PATH"
-                        (string-join (delete (string-append gcc "/include/c++")
-                                             (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                           #\:))
-                                     ":"))
-                (format #t
-                        "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                        (getenv "CPLUS_INCLUDE_PATH"))
-                #t))))))
-    (native-inputs
-     (list clang-6 llvm-6))))
-
 ;; WARNING: This package is a dependency of mesa.
 (define-public libclc
   (package
