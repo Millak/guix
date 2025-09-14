@@ -53599,38 +53599,6 @@ runs.")
 Tensorflow graphs.")
     (license license:gpl3)))
 
-(define-public r-tensorflow
-  (package
-    (name "r-tensorflow")
-    (version "2.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "tensorflow" version))
-       (sha256
-        (base32
-         "113ikbg2k56zigxwgxy242vxpikxkfkv150wn21zyfn9885wgbzm"))))
-    (properties `((upstream-name . "tensorflow")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-config
-           r-lifecycle
-           r-processx
-           r-reticulate
-           r-rstudioapi
-           r-tfautograph
-           r-tfruns
-           r-yaml))
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/rstudio/tensorflow")
-    (synopsis "R interface to TensorFlow")
-    (description
-     "R interface to TensorFlow a library for numerical computation using data
-flow graphs.  Nodes in the graph represent mathematical operations, while the
-graph edges represent the multidimensional data arrays (tensors) communicated
-between them.")
-    (license license:asl2.0)))
-
 (define-public r-zzlite
   (package
     (name "r-zzlite")
