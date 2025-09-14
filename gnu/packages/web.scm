@@ -385,16 +385,16 @@ one.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.2.9")
+    (version "2.2.12")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/miniflux/v2")
-             (commit version)))
+              (url "https://github.com/miniflux/v2")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mfynlwbmzfgh24pv3bz7i0mprxbajx417v8hxjaalyvhxm917x6"))))
+        (base32 "0nz12an801r9d2da8p6fic9qy4524y7cprfpimw13ac5c4iqvr0d"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -417,8 +417,7 @@ one.")
                 (rename-file (string-append bindir "v2")
                              (string-append bindir "miniflux"))))))))
     (inputs
-     (list go-github-com-abadojack-whatlanggo
-           go-github-com-andybalholm-brotli
+     (list go-github-com-andybalholm-brotli
            go-github-com-coreos-go-oidc-v3
            go-github-com-go-webauthn-webauthn
            go-github-com-gorilla-mux
@@ -426,13 +425,11 @@ one.")
            go-github-com-prometheus-client-golang
            go-github-com-puerkitobio-goquery
            go-github-com-tdewolff-minify-v2
-           go-github-com-yuin-goldmark
            go-golang-org-x-crypto
            go-golang-org-x-image
            go-golang-org-x-net
            go-golang-org-x-oauth2
-           go-golang-org-x-term
-           go-golang-org-x-text))
+           go-golang-org-x-term))
     (home-page "https://miniflux.app/")
     (synopsis "Minimalist and opinionated feed reader")
     (description
