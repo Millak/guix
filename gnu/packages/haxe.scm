@@ -197,7 +197,7 @@ includes the compiler and library manager.")
 (define-public hashlink
   (package
     (name "hashlink")
-    (version "1.14")
+    (version "1.15")
     (source
      (origin
        (method git-fetch)
@@ -206,7 +206,7 @@ includes the compiler and library manager.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "163kj2fww8a1hp93aklla181sp84hrsl8dy5rwrv79057bmkjz5d"))
+        (base32 "1c6cpbijzprssy382vyz6mim6m2q3k3mw8pj3q2c2sv76xygwnlx"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -239,7 +239,13 @@ includes the compiler and library manager.")
                       (string-append #$(this-package-input "minimp3") "/include"))
                      (("include/mikktspace ")
                       (string-append #$(this-package-input "mikktspace") "/include "))
+                     (("include/meshoptimizer ")
+                      (string-append #$(this-package-input "meshoptimizer") "/include "))
+                     (("-I include/vhacd")
+                      (string-append "-I " #$(this-package-input "vhacd") "/include"))
                      (("include/mikktspace/mikktspace.o") "")
+                     (("include/meshoptimizer/.*.o ") "")
+                     (("include/meshoptimizer/vcacheanalyzer.o") "")
                      (("-lpng") "-lpng -lmikktspace"))))
                (replace 'configure
                  (lambda* _
@@ -258,12 +264,14 @@ includes the compiler and library manager.")
                   libuv
                   libvorbis
                   mbedtls-lts
+                  meshoptimizer
                   mikktspace
                   minimp3
                   openal
                   pcre2
                   sdl2
                   sqlite
+                  vhacd
                   zlib))
     (native-inputs (list pkg-config))
     (home-page "https://hashlink.haxe.org/")
