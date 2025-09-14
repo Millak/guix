@@ -3435,6 +3435,45 @@ until time is up.")
 for editing Racket's Scribble documentation syntax in Emacs.")
       (license license:gpl3+))))
 
+(define-public emacs-elkee
+  (package
+    (name "emacs-elkee")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/KeyWeeUsr/elkee")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nfgd3zp9pypwj3sxks3w5dc9wfzv9abz6g70wh557p8v88nria9"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      ;; Tests fail because they assume the presence of specific host packages
+      ;; and Emacs configure flags.
+      #:tests? #f
+      #:test-command #~(list "eldev" "--use-emacsloadpath" "-dtTC" "test")))
+    (native-inputs
+     (list
+      emacs-eldev
+      emacs-undercover))
+    (propagated-inputs
+     (list
+      emacs-elchacha
+      emacs-kaesar))
+    (home-page "https://github.com/KeyWeeUsr/elkee")
+    (synopsis "Emacs-native KeePass client")
+    (description
+     "This package provides an Emacs-native KeePass client to open, read, and
+modify @acronym{KDBX, Keepass DataBase @acronym{XML, eXtensible Markup
+Language}} files.  It supports password-only and keyfile authentication,
+allows entry lookup using regular-expression selectors (group, title,
+username, URL), and can return results either as a flat list or grouped by
+entry.")
+    (license license:gpl3)))
+
 (define-public emacs-shroud
   (package
     (name "emacs-shroud")
