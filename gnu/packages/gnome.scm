@@ -3660,7 +3660,14 @@ for dealing with different structured file formats.")
                          "--build=" #$(nix-system->gnu-triplet
                                        (%current-system)))
                         (string-append
-                         "--host=" #$(%current-target-system)))
+                         "--host=" #$(%current-target-system))
+                        ;; This is needed when cross-compiling for some
+                        ;; architectures as autoconf and rust disagree about
+                        ;; the target triplet.
+                        (string-append "RUST_TARGET="
+                                       #$(platform-rust-target
+                                          (lookup-platform-by-target
+                                           (%current-target-system)))))
                      #~("--enable-vala")))
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
