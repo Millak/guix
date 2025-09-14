@@ -114,50 +114,6 @@ Code generation is not required to read or write data files nor to use or
 implement RPC protocols.")
     (license license:asl2.0)))
 
-(define-public avro-cpp-1.9-for-irods
-  (package
-    (inherit avro-cpp)
-    (properties `((hidden? . #true)))
-    (version "1.9.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://apache/avro/avro-" version
-                    "/avro-src-" version ".tar.gz"))
-              (sha256
-               (base32 "0i3fpm7r72yw397qc8yw9ybzk2mxjkv0yk5hnn00ylc1wbd0np73"))))
-    (arguments
-     `(#:configure-flags
-       '("-DCMAKE_CXX_COMPILER=clang++"
-         "-DCMAKE_CXX_FLAGS=-stdlib=libc++"
-         "-DCMAKE_EXE_LINKER_FLAGS=-lc++abi -lz")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "lang/c++")))
-         (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gcc (assoc-ref inputs  "gcc")))
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-join
-                        (cons* (search-input-directory inputs "include/c++/v1")
-                               ;; Hide GCC's C++ headers so that they do not interfere with
-                               ;; the Clang headers.
-                               (delete (string-append gcc "/include/c++")
-                                       (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                     #\:)))
-                        ":"))
-               (format #true
-                       "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                       (getenv "CPLUS_INCLUDE_PATH"))))))))
-    (inputs
-     `(("boost" ,boost-for-irods)
-       ("clang" ,clang-toolchain-6)
-       ("libcxx+libcxxabi" ,libcxx+libcxxabi-6)
-       ("libcxxabi" ,libcxxabi-6)
-       ("snappy" ,snappy-with-clang6)
-       ("zlib" ,zlib)))))
-
 (define-public cereal
   (package
     (name "cereal")
