@@ -1461,53 +1461,6 @@ for most inputs, but the resulting compressed files are anywhere from 20% to
     (license license:asl2.0)
     (properties '((cpe-vendor . "google")))))
 
-;; We need this for irods.
-(define-public snappy-with-clang6
-  (package
-    (inherit snappy)
-    (name "snappy-with-clang")
-    ;; XXX 1.1.9 fails to build with clang with
-    ;; error: invalid output constraint '=@ccz' in asm
-    (version "1.1.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/google/snappy")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1j0kslq2dvxgkcxl1gakhvsa731yrcvcaipcp5k8k7ayicvkv9jv"))))
-    (arguments
-     `(#:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON"
-         "-DCMAKE_CXX_COMPILER=clang++"
-         "-DCMAKE_CXX_FLAGS=-stdlib=libc++"
-         "-DCMAKE_EXE_LINKER_FLAGS=-lc++abi")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (let ((gcc (assoc-ref (or native-inputs inputs) "gcc")))
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-join
-                        (cons* (search-input-directory inputs
-                                                       "/include/c++/v1")
-                               ;; Hide GCC's C++ headers so that they do not interfere with
-                               ;; the Clang headers.
-                               (delete (string-append gcc "/include/c++")
-                                       (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                     #\:)))
-                        ":"))
-               (format #true
-                       "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                       (getenv "CPLUS_INCLUDE_PATH"))))))))
-    (properties `((hidden? . #true)))
-    (native-inputs
-     `(("clang" ,clang-toolchain-6)))
-    (inputs
-     (list libcxx+libcxxabi-6 libcxxabi-6))))
-
 (define-public p7zip
   (package
     (name "p7zip")
