@@ -59,14 +59,14 @@
 (define-public akonadi
   (package
     (name "akonadi")
-    (version "24.12.1")
+    (version "24.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/akonadi-" version ".tar.xz"))
               (sha256
                (base32
-                "183158qrd19hk7jphhgd3wcm3vzyd117nqs3kzsqq7mabqzvj0z9"))
+                "1j0p1hmn0i81ipw3j0jvbax0c2admq89s9xhf5fycy75a20dxr71"))
               (patches (search-patches "akonadi-paths.patch"
                                        "akonadi-timestamps.patch"
                                        "akonadi-not-relocatable.patch"))))
