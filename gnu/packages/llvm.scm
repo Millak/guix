@@ -1747,38 +1747,6 @@ use with Clang, targeting C++11, C++14 and above.")
 standard C++ library.")
     (license license:expat)))
 
-(define-public libcxx+libcxxabi-6
-  (package
-    (inherit libcxx-6)
-    (name "libcxx+libcxxabi")
-    (version (package-version libcxx-6))
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "-DLIBCXX_CXX_ABI=libcxxabi"
-              (string-append "-DLIBCXX_CXX_ABI_INCLUDE_PATHS="
-                             #$(this-package-native-input "libcxxabi")
-                             "/include"))
-      #:phases
-      #~(modify-phases (@ (guix build cmake-build-system) %standard-phases)
-          (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((gcc (assoc-ref inputs  "gcc")))
-                ;; Hide GCC's C++ headers so that they do not interfere with
-                ;; the ones we are attempting to build.
-                (setenv "CPLUS_INCLUDE_PATH"
-                        (string-join
-                         (delete (string-append gcc "/include/c++")
-                                 (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                               #\:))
-                         ":"))
-                (format
-                 #true
-                 "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                 (getenv "CPLUS_INCLUDE_PATH"))))))))
-    (native-inputs
-     (list clang-6 llvm-6 libcxxabi-6))))
-
 ;; WARNING: This package is a dependency of mesa.
 (define-public libclc
   (package
