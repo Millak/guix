@@ -376,7 +376,7 @@ Browser.")
 		    (search-patch
 		     "torbrowsers-add-store-to-rdd-allowlist.patch"))
                  #$(local-file
-                    (search-patch "icecat-use-system-wide-dir.patch"))))))
+                    (search-patch "torbrowser-use-system-wide-dir.patch"))))))
           (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
             (lambda _
               ;; Remove bundled libraries that we don't use, since they may
