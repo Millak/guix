@@ -25708,9 +25708,10 @@ Features:
                          (add-after 'unpack 'patch-Makefile
                            (lambda _
                              (substitute* "Makefile"
-                               (("-Q") "")
-                               (("-L [^.]*") "")
-                               (("deps/") "")
+                               (("-Q ") "")
+                               (("-L deps/.*") "")
+                               (("-l deps/.*") "")
+                               ((" compile") "")
                                ((" deps") "")))))))
     (propagated-inputs
      (list emacs-evil))
