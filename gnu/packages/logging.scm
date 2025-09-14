@@ -200,51 +200,6 @@ flexible.  It is created as an alternative to existing large libraries and
 provides some unique features such as CSV log format and wide string support.")
     (license license:expat)))
 
-;; This is the legacy version of the tailon package.  The new version, written
-;; in Go in available here: https://github.com/gvalkov/tailon.
-(define-public tailon
-  (package
-    (name "tailon")
-    (version "1.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri name version))
-       (sha256
-        (base32
-         "0xkmrivzilsc9wqr8ms67v7399gxnh7pv5687k4rdpdgz4309fwc"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-tox python-wheel))
-    (inputs
-     (list python-pyyaml-5 python-sockjs-tornado python-tornado-http-auth
-           python-tornado python-deepmerge))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-commands.py
-           (lambda args
-             (substitute* "tailon/commands.py"
-               (("self\\.first_in_path\\('grep'\\)")
-                (string-append"'" (which "grep") "'"))
-               (("self\\.first_in_path\\('gawk', 'awk'\\)")
-                (string-append"'" (which "gawk") "'"))
-               (("self\\.first_in_path\\('gsed', 'sed'\\)")
-                (string-append"'" (which "sed") "'"))
-               (("self\\.first_in_path\\('gtail', 'tail'\\)")
-                (string-append"'" (which "tail") "'")))))
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ((",<5.0.0") "")))))))
-    (home-page "https://tailon.readthedocs.io/")
-    (synopsis
-     "Webapp for looking at and searching through log files")
-    (description
-     "Tailon provides a web interface around the tail, grep, awk and sed
-commands, displaying the results via a web interface.")
-    (license license:bsd-3)))
-
 (define-public multitail
   (package
     (name "multitail")
