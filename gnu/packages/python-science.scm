@@ -7,7 +7,7 @@
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2022 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2019, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
@@ -5687,18 +5687,20 @@ compagnies.")
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
-    (version "0.13.3")
+    (version "0.13.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqtgraph" version))
        (sha256
-        (base32 "1kiazyc8mqyx0479qdcvdclzq0g1hpp93dyq8444w1f72628s42q"))))
+        (base32 "1qyr461hcvhgy02slfkgrbip2xwa8zz6dvmi1476v6f66lclzy34"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; This test fails.  It suggests to disable assert rewriting in Pytest,
-     ;; but it still doesn't pass.
-     (list #:test-flags #~'("-k" "not test_reload")
+     (list #:test-flags
+           ;; The test_reload test fails.  It suggests to disable assert
+           ;; rewriting in Pytest, but it still doesn't pass.
+           #~(list "-k" "not test_reload"
+                   "-n" (number->string (parallel-job-count)))
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'set-qpa
