@@ -22190,23 +22190,6 @@ customization required.")
 for Python inspired by modern web development.")
     (license license:expat)))
 
-;; For cobib@5.3.0; there is a condition in requirements: textual>=1.0,<2.0.
-(define-public python-textual-1
-  (hidden-package
-   (package
-     (inherit python-textual)
-     (name "python-textual")
-     (version "1.0.0")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/Textualize/textual")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "14s45p82ajak115lrkc6vwf5v1w7721sfmipykb7vx9a947594yy")))))))
-
 (define-public python-magic
   (package
     (name "python-magic")
