@@ -593,7 +593,7 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
 (define-public openfpgaloader
   (package
     (name "openfpgaloader")
-    (version "0.13.1")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -602,7 +602,7 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p5qvr0bq27rp7f20ysjml7zy4bbwjx3s4yd5qjsg4b01mw4hbiq"))))
+                "00xr4dzd1mlc1k4rivh9ibmdlx6yizb016laad10dkhjqfz1ixhq"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
