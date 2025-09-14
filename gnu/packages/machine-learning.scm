@@ -699,9 +699,6 @@ training, HMM clustering, HMM mixtures.")
 Performance is achieved by using the LLVM JIT compiler.")
     (license license:gpl3+)))
 
-(define-public guile-aiscm-next
-  (deprecated-package "guile-aiscm-next" guile-aiscm))
-
 (define-public llama-cpp
   (let ((tag "b6101"))
     (package
