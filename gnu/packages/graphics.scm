@@ -3481,3 +3481,29 @@ It features cut-and-paste for irregular regions or polygons.")
 interchange system supporting transcoding to a large number of GPU texture
 formats.")
     (license (list license:asl2.0 license:bsd-3 license:expat))))
+
+(define-public meshoptimizer
+  (package
+    (name "meshoptimizer")
+    (version "0.25")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zeux/meshoptimizer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j1iwys6p5ymj287q0l0rix2bs18b4mi7dwpj97dw06yp5gnmkb9"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
+    (synopsis "Mesh optimization library for faster rendering")
+    (description
+     "When a GPU renders triangle meshes, various stages of the GPU pipeline
+have to process vertex and index data.  The efficiency of these stages depends
+on the data you feed them; this library provides algorithms to help optimize
+meshes for these stages, as well as algorithms to reduce the mesh complexity
+and storage overhead.")
+    (home-page "https://github.com/zeux/meshoptimizer")
+    (license license:expat)))
