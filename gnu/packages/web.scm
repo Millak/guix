@@ -5799,7 +5799,7 @@ you'd expect.")
 (define-public yq
   (package
     (name "yq")
-    (version "4.45.4")
+    (version "4.47.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5808,7 +5808,7 @@ you'd expect.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1adrbxqsmpsvz2jfjkvarvnvblj5zdznr3sxpakv85vvs3njdjx9"))))
+                "04724qywadxvgcdq5h35b9mqkyngkyad5aq5dk4g84aycarskpc4"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -5829,6 +5829,7 @@ you'd expect.")
            go-github-com-dimchansky-utfbom
            go-github-com-elliotchance-orderedmap
            go-github-com-fatih-color
+           go-github-com-go-ini-ini
            go-github-com-goccy-go-json
            go-github-com-goccy-go-yaml
            go-github-com-jinzhu-copier
@@ -5838,10 +5839,10 @@ you'd expect.")
            go-github-com-spf13-cobra
            go-github-com-spf13-pflag
            go-github-com-yuin-gopher-lua
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-net
            go-golang-org-x-text
-           go-gopkg-in-op-go-logging-v1
-           go-gopkg-in-yaml-v3))
+           go-gopkg-in-op-go-logging-v1))
     (home-page "https://mikefarah.gitbook.io/yq/")
     (synopsis
      "Command-line YAML, JSON, XML, CSV, TOML and properties processor")
