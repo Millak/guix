@@ -218,7 +218,6 @@ gnu/packages/inferno.scm
 gnu/packages/inklingreader.scm
 gnu/packages/installers.scm
 gnu/packages/instrumentation.scm
-gnu/packages/irods.scm
 gnu/packages/jami.scm
 gnu/packages/java-maths.scm
 gnu/packages/java.scm
