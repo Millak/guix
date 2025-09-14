@@ -1110,8 +1110,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-runtime-12-remove-crypt-interceptors.patch \
   %D%/packages/patches/clang-runtime-13-glibc-2.36-compat.patch	\
   %D%/packages/patches/clang-runtime-14-glibc-2.36-compat.patch	\
-  %D%/packages/patches/clang-runtime-9-glibc-2.36-compat.patch		\
-  %D%/packages/patches/clang-runtime-9-libsanitizer-mode-field.patch	\
   %D%/packages/patches/clang-runtime-3.7-fix-build-with-python3.patch	\
   %D%/packages/patches/clang-runtime-3.9-libsanitizer-mode-field.patch	\
   %D%/packages/patches/clang-runtime-3.8-libsanitizer-mode-field.patch	\

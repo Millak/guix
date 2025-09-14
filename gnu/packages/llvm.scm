@@ -1049,13 +1049,6 @@ Library.")
            `(("config" ,config))
            '())))))
 
-(define-public clang-runtime-6
-  (clang-runtime-from-llvm
-   llvm-6
-   "1fcr3jn24yr8lh36nc0c4ikli4744i2q9m1ik67p1jymwwaixkgl"
-   '("clang-runtime-9-libsanitizer-mode-field.patch"
-     "clang-runtime-9-glibc-2.36-compat.patch")))
-
 (define-public llvm-3.8
   (package (inherit llvm-6)
     (name "llvm")
