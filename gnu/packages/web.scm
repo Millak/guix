@@ -5796,15 +5796,15 @@ you'd expect.")
     (properties `((lint-hidden-cve . ("CVE-2023-50246"
                                       "CVE-2023-50268"))))))
 
-(define-public go-github-com-mikefarah-yq-v4
+(define-public yq
   (package
-    (name "go-github-com-mikefarah-yq-v4")
+    (name "yq")
     (version "4.45.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/mikefarah/yq")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/mikefarah/yq")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -5812,7 +5812,7 @@ you'd expect.")
     (build-system go-build-system)
     (arguments
      (list
-      #:skip-build? #t
+      #:install-source? #f
       #:import-path "github.com/mikefarah/yq/v4"
       #:phases
       #~(modify-phases %standard-phases
@@ -5822,7 +5822,7 @@ you'd expect.")
               (with-directory-excursion (string-append "src/" import-path)
                 (for-each make-file-writable
                           (find-files "./pkg/yqlib/doc" "\\.md"))))))))
-    (propagated-inputs
+    (native-inputs
      (list go-github-com-a8m-envsubst
            go-github-com-alecthomas-participle-v2
            go-github-com-alecthomas-repr
@@ -5850,20 +5850,6 @@ you'd expect.")
 processor.  It uses @code{jq}-like syntax but works with YAML files as well as
 JSON, XML, properties, CSV and TSV.")
     (license license:expat)))
-
-(define-public yq
-  (package
-    (inherit go-github-com-mikefarah-yq-v4)
-    (name "yq")
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-mikefarah-yq-v4)
-       ((#:install-source? _ #t) #f)
-       ((#:skip-build? _ #t) #f)
-       ((#:tests? _ #t) #f)
-       ((#:import-path _) "github.com/mikefarah/yq")))
-    (propagated-inputs '())
-    (inputs (package-propagated-inputs go-github-com-mikefarah-yq-v4))))
 
 (define-public go-github-com-itchyny-gojq
   (package
