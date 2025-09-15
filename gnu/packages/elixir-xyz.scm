@@ -594,6 +594,25 @@ library to track ownership of resources across processes.")
     (home-page "https://hexdocs.pm/nimble_ownership/")
     (license license:asl2.0)))
 
+(define-public elixir-owl
+  (package
+    (name "elixir-owl")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "owl" version))
+       (sha256
+        (base32 "0xbl5wykss5na8l31vf4kr0vz4qmsszqzdkwyncdp91prq8rvgsr"))))
+    (build-system mix-build-system)
+    (native-inputs (list elixir-excoveralls))
+    (propagated-inputs (list elixir-ucwidth))
+    (synopsis "Toolkit for writing command-line user interfaces")
+    (description
+     "This package provides a toolkit for writing command-line user interfaces.")
+    (home-page "https://hexdocs.pm/owl/")
+    (license license:asl2.0)))
+
 (define-public elixir-pathex
   (package
     (name "elixir-pathex")
