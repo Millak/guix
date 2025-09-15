@@ -818,6 +818,22 @@ functional way.")
     (home-page "https://hexdocs.pm/traverse/")
     (license license:asl2.0)))
 
+(define-public elixir-verbs
+  (package
+    (name "elixir-verbs")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "verbs" version))
+       (sha256
+        (base32 "19nbkwrphns1yjk0rca1zq6v43m878r7750ppf4av3kcf58328hr"))))
+    (build-system mix-build-system)
+    (synopsis "Conjugates English verbs")
+    (description "This package provides a library to conjugate English verbs.")
+    (home-page "https://hexdocs.pm/verbs/")
+    (license license:expat)))
+
 (define-public elixir-zest
   (package
     (name "elixir-zest")
