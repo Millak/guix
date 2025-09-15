@@ -781,6 +781,26 @@ Telemetry events.")
     (home-page "https://hexdocs.pm/telemetry_metrics/")
     (license license:asl2.0)))
 
+(define-public elixir-thousand-island
+  (package
+    (name "elixir-thousand-island")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "thousand_island" version))
+       (sha256
+        (base32 "1hdnbxv4015y3hc9aq6zgs6n4y092rkax1kjp24qb0fjwm08cji0"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-jason))
+    (propagated-inputs (list elixir-machete erlang-telemetry))
+    (synopsis "Pure Elixir socket server")
+    (description
+     "This package provides a simple and modern Elixir socket server.")
+    (home-page "https://hexdocs.pm/thousand_island/")
+    (license license:expat)))
+
 (define-public elixir-text-diff
   (package
     (name "elixir-text-diff")
