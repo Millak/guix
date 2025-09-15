@@ -662,14 +662,14 @@ deliver notifications to the user.")
 (define-public mate-panel
   (package
     (name "mate-panel")
-    (version "1.28.2")
+    (version "1.28.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/" (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0cxsmp92cpvlvqfjxzc0bmzg0v4hpccxzz84894ih9xa6zl472k7"))))
+        (base32 "0x48jqm2axzxp2hc7mh3znds7nqwaw59b2ghnsbw2ajc66q9xw02"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -721,6 +721,14 @@ deliver notifications to the user.")
            pango
            tzdata
            wayland))
+    (native-search-paths
+     (list
+      (search-path-specification
+        (variable "MATE_PANEL_APPLETS_DIR")
+        (files '("share/mate-panel/applets")))
+      (search-path-specification
+        (variable "MATE_PANEL_EXTRA_MODULES")
+        (files '("lib/mate-panel/modules")))))
     (home-page "https://mate-desktop.org/")
     (synopsis "Panel for MATE")
     (description
