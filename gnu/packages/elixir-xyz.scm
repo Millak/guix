@@ -818,6 +818,27 @@ functional way.")
     (home-page "https://hexdocs.pm/traverse/")
     (license license:asl2.0)))
 
+(define-public elixir-tzdata
+  (package
+    (name "elixir-tzdata")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "tzdata" version))
+       (sha256
+        (base32 "0a0crg70vpxc0bqdnhw7jdjv3prfj6aywls2x7a2jk86b9bqbjnl"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; FIXME: Tests fail with:
+     ;;  Application hackney exited: exited in: :hackney_app.start(:normal, [])
+     (list #:tests? #f))
+    (propagated-inputs (list erlang-hackney))
+    (synopsis "Parser and library for the tz database")
+    (description "Tzdata is a parser and library for the tz database.")
+    (home-page "https://hexdocs.pm/tzdata/")
+    (license license:expat)))
+
 (define-public elixir-ucwidth
   (package
     (name "elixir-ucwidth")
