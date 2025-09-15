@@ -26049,14 +26049,19 @@ instead of servers and network commands.")
 (define-public python-constantly
   (package
     (name "python-constantly")
-    (version "15.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "constantly" version))
-              (sha256
-               (base32
-                "0dgwdla5kfpqz83hfril716inm41hgn9skxskvi77605jbmp4qsq"))))
-    (build-system python-build-system)
+    (version "23.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "constantly" version))
+       (sha256
+        (base32 "1gbw3izhn1gx1rgc61jbfr4dr535fxhynifp7jrhpb726c5bg4ma"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;cycles with python-twisted
+    (native-inputs
+     (list python-setuptools
+           python-versioneer))
     (home-page "https://github.com/twisted/constantly")
     (synopsis "Symbolic constants in Python")
     (description "Constantly is a Python library that provides symbolic
