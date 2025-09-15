@@ -1356,35 +1356,36 @@ repositories.")
         (base32 "1q8gkx7djrfdl8fykppsqkxiadsq47v0xhj612nxlrvjz8n77ygn"))))
     (build-system meson-build-system)
     (arguments
-     `(#:imported-modules (,@%meson-build-system-modules
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
                            ,@%cargo-build-system-modules)
-       #:modules (((guix build cargo-build-system) #:prefix cargo:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
                   (guix build meson-build-system)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-for-build
-           (lambda _
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false")
-               (("update_desktop_database: true")
-                "update_desktop_database: false"))
-             (delete-file "Cargo.lock")))
-         ;; The meson 'configure phase changes to a different directory and
-         ;; we need it created before unpacking the crates.
-         (add-after 'configure 'prepare-cargo-build-system
-           (lambda args
-             (for-each
-              (lambda (phase)
-                (format #t "Running cargo phase: ~a~%" phase)
-                (apply (assoc-ref cargo:%standard-phases phase)
-                       #:vendor-dir "vendor"
-                       args))
-              '(unpack-rust-crates
-                configure
-                check-for-pregenerated-files
-                patch-cargo-checksums)))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-for-build
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))
+              (delete-file "Cargo.lock")))
+          ;; The meson 'configure phase changes to a different directory and
+          ;; we need it created before unpacking the crates.
+          (add-after 'configure 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:vendor-dir "vendor"
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
     (native-inputs (list clang pkg-config rust `(,rust "cargo")))
     (inputs (cons* glib gtk libadwaita pipewire (cargo-inputs 'helvum)))
     (home-page "https://gitlab.freedesktop.org/pipewire/helvum")
