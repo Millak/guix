@@ -3448,25 +3448,18 @@ retried.")
 (define-public python-pyhamcrest
   (package
     (name "python-pyhamcrest")
-    (version "2.0.3")
-    (source (origin
-              (method git-fetch)        ;no tests in PyPI archive
-              (uri (git-reference
-                    (url "https://github.com/hamcrest/PyHamcrest")
-                    (commit (string-append "V" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0j0fpd7vw700l6gx29gz9j28d22ajkz6sngfzp4c8an4ibd2fw85"))))
-    (native-inputs                      ;all native inputs are for tests
-     (list python-pytest-cov python-mock python-pytest python-hypothesis))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "pytest" "-vv"))))))
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyhamcrest" version))
+       (sha256
+        (base32 "175xfp4zgjmsxac79z39in77pjg7yck1kbr25kkvf31xjb0bxb66"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest-bootstrap))
     (home-page "https://hamcrest.org/")
     (synopsis "Hamcrest matchers for Python")
     (description "PyHamcrest is a framework for writing matcher objects,
