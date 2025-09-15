@@ -11,6 +11,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
+;;; Copyright © 2025 Felipe Silva <git@felipeqq2.rocks>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -752,6 +753,13 @@ which will be used as a snippet in origin."
    "1.5.0"
    #:repository-url "https://github.com/tlaplus-community/tree-sitter-tlaplus"
    #:commit "1.5.0"))
+
+(define-public tree-sitter-toml
+  (tree-sitter-grammar
+   "toml" "TOML"
+   "1j9fgy1hlsq6xqqnpjl65a2mmydlx91p8ss36k7vyf7284d6bm4v"
+   "0.7.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-toml"))
 
 (define-public tree-sitter-typescript
   (tree-sitter-grammar
