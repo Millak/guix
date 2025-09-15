@@ -719,6 +719,24 @@ parser for Elixir.")
     (home-page "https://hexdocs.pm/spitfire/")
     (license license:expat)))
 
+(define-public elixir-text-diff
+  (package
+    (name "elixir-text-diff")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "text_diff" version))
+       (sha256
+        (base32 "1myvc8rym843amsygb21j1jf0xzq6pj85akdgcslk3ikmgnamzyi"))))
+    (build-system mix-build-system)
+    (synopsis "Returns a formatted diff between two strings")
+    (description
+     "This package provides @code{TextDiff}, an Elixir library that returns a
+formatted diff between two strings.")
+    (home-page "https://hexdocs.pm/text_diff/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
