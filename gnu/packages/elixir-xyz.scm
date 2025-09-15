@@ -741,6 +741,25 @@ parser for Elixir.")
     (home-page "https://hexdocs.pm/spitfire/")
     (license license:expat)))
 
+(define-public elixir-stream-data
+  (package
+    (name "elixir-stream-data")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "stream_data" version))
+       (sha256
+        (base32 "1vd9i4zvg4nwk0bf17yss4r4pcd58f4zdva38qqj0sa6wdp58p7b"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (synopsis "Data generation and property-based testing for Elixir")
+    (description "@code{StreamData} is an Elixir library for data generation and
+property-based testing.")
+    (home-page "https://hexdocs.pm/stream_data/")
+    (license license:asl2.0)))
+
 (define-public elixir-text-diff
   (package
     (name "elixir-text-diff")
