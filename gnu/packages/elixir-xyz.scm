@@ -531,6 +531,27 @@ literals, variables, or parametrically defined matchers.")
     (home-page "https://hexdocs.pm/machete/")
     (license license:expat)))
 
+(define-public elixir-mox
+  (package
+    (name "elixir-mox")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "mox" version))
+       (sha256
+        (base32 "16h84745x12h7zrw305mzi93q092pvblr55gxrz4mqlyqqy2pff7"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-castore
+           elixir-excoveralls))
+    (propagated-inputs (list elixir-nimble-ownership))
+    (synopsis "Mocks and explicit contracts")
+    (description "This package provides @code{mox}, a library to mock and
+explicit contracts for Elixir.")
+    (home-page "https://hexdocs.pm/mox/")
+    (license license:asl2.0)))
+
 (define-public elixir-nimble-options
   (package
     (name "elixir-nimble-options")
