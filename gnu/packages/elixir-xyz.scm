@@ -24,6 +24,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages erlang-xyz)
   #:use-module (gnu packages)
   #:use-module (guix build mix-build-system)
   #:use-module (guix build utils)
@@ -758,6 +759,26 @@ parser for Elixir.")
     (description "@code{StreamData} is an Elixir library for data generation and
 property-based testing.")
     (home-page "https://hexdocs.pm/stream_data/")
+    (license license:asl2.0)))
+
+(define-public elixir-telemetry-metrics
+  (package
+    (name "elixir-telemetry-metrics")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "telemetry_metrics" version))
+       (sha256
+        (base32 "0ryfr1mwam89vpssisb6yc0n9ilffz8j6rlavfvasw6yvy6rxdz7"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list erlang-telemetry))
+    (synopsis
+     "Common interface for defining metrics based on Telemetry events")
+    (description
+     "This package provides a common interface for defining metrics based on
+Telemetry events.")
+    (home-page "https://hexdocs.pm/telemetry_metrics/")
     (license license:asl2.0)))
 
 (define-public elixir-text-diff
