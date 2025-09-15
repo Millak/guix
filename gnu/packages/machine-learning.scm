@@ -1886,46 +1886,6 @@ at most 8 bits.  To avoid overflow, results are internally accumulated on more
 than 8 bits, and at the end only some significant 8 bits are kept.")
       (license license:asl2.0))))
 
-(define-public gemmlowp-for-tensorflow
-  ;; The commit hash is taken from "tensorflow/workspace.bzl".
-  (let ((commit "38ebac7b059e84692f53e5938f97a9943c120d98")
-        (revision "2"))
-    (package
-      (inherit gemmlowp)
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://mirror.bazel.build/"
-                                    "github.com/google/gemmlowp/archive/"
-                                    commit ".zip"))
-                (file-name (string-append "gemmlowp-" version ".zip"))
-                (sha256
-                 (base32
-                  "0n56s2g8hrssm4w8qj1v58gfm56a04n9v992ixkmvk6zjiralzxq"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments gemmlowp)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (replace 'install
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (lib (string-append out "/lib/"))
-                        (inc (string-append out "/include/")))
-                   (install-file "../build/libeight_bit_int_gemm.so" lib)
-                   (for-each (lambda (dir)
-                               ;; Note: Install headers straight into
-                               ;; $includedir instead of $includedir/gemmlowp.
-                               (let ((target (string-append inc "/" dir)))
-                                 (for-each (lambda (h)
-                                             (install-file h target))
-                                           (find-files (string-append "../" dir)
-                                                       "\\.h$"))))
-                             '("meta" "profiling" "public" "fixedpoint"
-                               "eight_bit_int_gemm" "internal")))))))))
-      (native-inputs
-       (list unzip))
-      (properties '((hidden? . #t))))))
-
 (define-public dlib
   (package
     (name "dlib")
