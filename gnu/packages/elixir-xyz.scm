@@ -365,6 +365,27 @@ desired coding style.")
     (home-page "https://hexdocs.pm/credo/")
     (license license:expat)))
 
+(define-public elixir-decimal
+  (package
+    (name "elixir-decimal")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "decimal" version))
+       (sha256
+        (base32 "1b5ffcvvzmzi7gpkahn36z5wyqc3wlli7rrhrz1lgjr9rdan7mm4"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-stream-data))
+    (synopsis "Arbitrary precision decimal arithmetic")
+    (description "This package provides @code{elixir-decimal}, a library that
+represents values internally using three integers: a sign, a coefficient, and an
+exponent.  In this way, numbers of any size and with any number of decimal
+places can be represented exactly.")
+    (home-page "https://hexdocs.pm/decimal/")
+    (license license:asl2.0)))
+
 (define-public elixir-decorator
   (package
     (name "elixir-decorator")
