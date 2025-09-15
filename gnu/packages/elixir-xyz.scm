@@ -834,6 +834,24 @@ functional way.")
     (home-page "https://hexdocs.pm/zest/")
     (license license:asl2.0)))
 
+(define-public elixir-zstream
+  (package
+    (name "elixir-zstream")
+    (version "0.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "zstream" version))
+       (sha256
+        (base32 "0kb3il3z52v4cdbsd8785qxx8qsnfm2d1hb9rcfdmz0cy3h3mi28"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (synopsis "Streaming zip file writer and reader")
+    (description "This package provides a streaming zip file writer and reader.")
+    (home-page "https://hexdocs.pm/zstream/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
