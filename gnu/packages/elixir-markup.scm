@@ -45,6 +45,24 @@ Earmark and @code{EarmarkParser} tests.")
     (home-page "https://hexdocs.pm/earmark_ast_dsl/")
     (license license:asl2.0)))
 
+(define-public elixir-earmark-parser
+  (package
+    (name "elixir-earmark-parser")
+    (version "1.4.44")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "earmark_parser" version))
+       (sha256
+        (base32 "0l1758nwqf39yg2mgx3d9zfgz2f9i44h7xqmj9csa0a75dssqy27"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-earmark-ast-dsl elixir-excoveralls elixir-floki))
+    (synopsis "AST parser and generator for Markdown")
+    (description "This package providesAST parser and generator for Markdown.")
+    (home-page "https://hexdocs.pm/earmark_parser/")
+    (license license:asl2.0)))
+
 (define-public elixir-easyhtml
   (package
     (name "elixir-easyhtml")
