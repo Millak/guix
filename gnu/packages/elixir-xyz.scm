@@ -532,6 +532,23 @@ literals, variables, or parametrically defined matchers.")
     (home-page "https://hexdocs.pm/machete/")
     (license license:expat)))
 
+(define-public elixir-mime
+  (package
+    (name "elixir-mime")
+    (version "2.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "mime" version))
+       (sha256
+        (base32 "1k8cx1qwgwshc3gx4hg2w9r9cvgb8pj6rdy5zwin1qcy7671hwb1"))))
+    (build-system mix-build-system)
+    (synopsis "MIME types module")
+    (description "This package provides @code{elixir-mime}, a MIME type module
+for Elixir.")
+    (home-page "https://hexdocs.pm/mime/")
+    (license license:asl2.0)))
+
 (define-public elixir-mox
   (package
     (name "elixir-mox")
