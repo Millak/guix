@@ -4237,7 +4237,9 @@ widgets built in the loading process.")
                 "1kbgqh7bw0fdx4f1a1aqwpff7gp5mwhbaz60c6c98bc4djng5dgs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'start-xserver
            (lambda* (#:key inputs #:allow-other-keys)
