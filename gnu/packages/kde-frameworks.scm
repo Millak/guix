@@ -3134,7 +3134,7 @@ maintaining an index of the contents of your files.")
 (define-public plasma-activities
   (package
     (name "plasma-activities")
-    (version "6.3.4")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -3142,7 +3142,7 @@ maintaining an index of the contents of your files.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "01fxs3rp1qycy3b4pg7dz4i3naa6id7s69dilrfr234g8cc5f2k7"))))
+                "0a1rj0i6kbg0a003zr55sjgas0f3wnvjq6rv7879rc4g0q529nrk"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
