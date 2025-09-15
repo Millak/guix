@@ -47,7 +47,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2022, 2025 Remco van 't Veer <remco@remworks.net>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -5516,84 +5516,87 @@ includes LV2 plugins and a JACK standalone client.")
     (license license:bsd-2)))
 
 (define-public musescore
-  (package
-    (name "musescore")
-    (version "4.5.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/musescore/MuseScore")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (patches (search-patches "musescore-fix-build.patch"))
-       (sha256
-        (base32 "12lwv0gxd49dily2hwmadbw6c59h11sfm5751dpfnzzjvj3rydpn"))
-       (modules '((guix build utils)))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:qtbase qtbase                   ;Qt 6
-      #:configure-flags
-      #~(list
-         "-DMUSE_APP_BUILD_MODE=release"
-         ;; Disable the build and usage of the `/bin/crashpad_handler` utility -
-         ;; it does automatic crash reporting and is distributed as a
-         ;; pre-compiled binary in the source-tree of MuseScore:
-         ;;  https://github.com/musescore/MuseScore/issues/15571
-         ;; Renamed from MUE_BUILD_CRASHPAD_CLIENT, MUE_BUILD_DIAGNOSTICS_MODULE
-         ;; https://github.com/musescore/MuseScore/commit/6f269e8b072cca36cb76eb016cb60c1c1c2b9906
-         "-DMUSE_MODULE_DIAGNOSTICS_CRASHPAD_CLIENT=OFF"
+  (let ((commit "6ebc98e021ba9d677fffa31255f8a53e60753724")
+        (revision "0"))
+    (package
+      (name "musescore")
+      (version (git-version "4.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/musescore/MuseScore")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09a9wdfvjimapghygpbdpyr1y5zznnagbmxz9ahmslph5lflrhza"))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:qtbase qtbase                 ;for qt 6
+        #:configure-flags
+        #~(list
+           "-DMUSE_APP_BUILD_MODE=release"
+           ;; Disable the build and usage of the `/bin/crashpad_handler` utility -
+           ;; it does automatic crash reporting and is distributed as a
+           ;; pre-compiled binary in the source-tree of MuseScore:
+           ;;  https://github.com/musescore/MuseScore/issues/15571
+           ;; Renamed from MUE_BUILD_CRASHPAD_CLIENT, MUE_BUILD_DIAGNOSTICS_MODULE
+           ;; https://github.com/musescore/MuseScore/commit/6f269e8b072cca36cb76eb016cb60c1c1c2b9906
+           "-DMUSE_MODULE_DIAGNOSTICS_CRASHPAD_CLIENT=OFF"
 ;;; These five lines asks that Guix' versions of system libraries are used.
-         "-DMUE_COMPILE_USE_SYSTEM_FREETYPE=ON"
-         "-DMUE_COMPILE_USE_SYSTEM_HARFBUZZ=ON"
-         "-DMUE_COMPILE_USE_SYSTEM_TINYXML=ON"
-         "-DMUE_COMPILE_USE_SYSTEM_OPUSENC=ON" ; Implies -DMUE_COMPILE_USE_SYSTEM_OPUS=ON
-         "-DMUE_COMPILE_USE_SYSTEM_FLAC=ON"
-         ;; Disable download of soundfont during build.
-         "-DDOWNLOAD_SOUNDFONT=OFF"
-         ;; Don't bundle Qt QML files, relevant really only for Darwin.
-         "-DMUE_COMPILE_INSTALL_QTQML_FILES=OFF")
-      ;; There are tests, but no simple target to run.  The command used to
-      ;; run them is:
-      ;;
-      ;;   make debug && sudo make installdebug && cd \
-      ;;   build.debug/mtest && make && ctest
-      ;;
-      ;; Basically, it requires to start a whole new build process.
-      ;; So we simply skip them.
-      #:tests? #f))
-    (native-inputs (list git-minimal pkg-config qttools))
-    (inputs
-     (list alsa-lib
-           flac
-           freetype
-           `(,gtk+ "bin")               ;for gtk-update-icon-cache
-           harfbuzz
-           jack-1
-           lame
-           libogg
-           libopusenc
-           libsndfile
-           libvorbis
-           portaudio
-           portmidi
-           pulseaudio
-           python
-           qt5compat
-           qtbase
-           qtdeclarative
-           qtnetworkauth
-           qtscxml
-           qtshadertools
-           qtsvg
-           qtwayland
-           tinyxml2))
-    (propagated-inputs
-     (list `(,alsa-plugins "pulseaudio"))) ;for libasound_module_conf_pulse.so
-    (synopsis "Music composition and notation software")
-    (description
-     "MuseScore is a music score typesetter.  Its main purpose is the creation
+           "-DMUE_COMPILE_USE_SYSTEM_FREETYPE=ON"
+           "-DMUE_COMPILE_USE_SYSTEM_HARFBUZZ=ON"
+           "-DMUE_COMPILE_USE_SYSTEM_TINYXML=ON"
+           "-DMUE_COMPILE_USE_SYSTEM_OPUSENC=ON" ; Implies -DMUE_COMPILE_USE_SYSTEM_OPUS=ON
+           "-DMUE_COMPILE_USE_SYSTEM_FLAC=ON"
+           ;; Disable download of soundfont during build.
+           "-DDOWNLOAD_SOUNDFONT=OFF"
+           ;; Don't bundle Qt QML files, relevant really only for Darwin.
+           "-DMUE_COMPILE_INSTALL_QTQML_FILES=OFF")
+        ;; There are tests, but no simple target to run.  The command used to
+        ;; run them is:
+        ;;
+        ;;   make debug && sudo make installdebug && cd \
+        ;;   build.debug/mtest && make && ctest
+        ;;
+        ;; Basically, it requires to start a whole new build process.
+        ;; So we simply skip them.
+        #:tests? #f))
+      (native-inputs
+       (list git-minimal
+             `(,gtk+ "bin")             ;for gtk-update-icon-cache
+             pkg-config
+             qttools))
+      (inputs
+       (list alsa-lib
+             flac
+             freetype
+             harfbuzz
+             jack-1
+             lame
+             libogg
+             libopusenc
+             libsndfile
+             libvorbis
+             portaudio
+             portmidi
+             pulseaudio
+             python
+             qt5compat
+             qtbase
+             qtdeclarative
+             qtnetworkauth
+             qtscxml
+             qtshadertools
+             qtsvg
+             qtwayland
+             tinyxml2))
+      (propagated-inputs
+       (list `(,alsa-plugins "pulseaudio"))) ;for libasound_module_conf_pulse.so
+      (synopsis "Music composition and notation software")
+      (description
+       "MuseScore is a music score typesetter.  Its main purpose is the creation
 of high-quality engraved musical scores in a WYSIWYG environment.
 
 It supports unlimited staves, linked parts and part extraction, tablature,
@@ -5604,8 +5607,8 @@ appearance and layout are provided.
 
 MuseScore can also play back scores through the built-in sequencer and SoundFont
 sample library.")
-    (home-page "https://musescore.org")
-    (license license:gpl3)))
+      (home-page "https://musescore.org")
+      (license license:gpl3))))
 
 (define-public muse-sequencer
   (package
