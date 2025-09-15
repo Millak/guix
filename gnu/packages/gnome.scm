@@ -10555,6 +10555,7 @@ specified duration and save it as a GIF encoded animated image file.")
                   (guix build meson-build-system)
                   (guix build utils))
       #:phases
+      (with-extensions (list (cargo-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-for-build
             (lambda _
@@ -10581,7 +10582,7 @@ specified duration and save it as a GIF encoded animated image file.")
                '(unpack-rust-crates
                  configure
                  check-for-pregenerated-files
-                 patch-cargo-checksums)))))))
+                 patch-cargo-checksums))))))))
     (native-inputs
      (append
       (list gettext-minimal
