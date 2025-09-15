@@ -61,6 +61,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
+;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1598,7 +1599,7 @@ the interpreter."))))
 (define-public micropython
   (package
     (name "micropython")
-    (version "1.19")
+    (version "1.26.1")
     (source
       (origin
         (method url-fetch)
@@ -1606,7 +1607,7 @@ the interpreter."))))
                             "releases/download/v" version
                             "/micropython-" version ".tar.xz"))
         (sha256
-         (base32 "090bbls5vnicynjyjqqd5zqwx8d6zxp7wlnrxgh0b4s8cyf5i8zj"))
+         (base32 "165c8g60f5zf82gw2d94snyjmcgn999jn4i8ngyc0wk2vwa6bghj"))
       (modules '((guix build utils)))
       (snippet
        '(begin
