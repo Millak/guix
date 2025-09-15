@@ -4489,45 +4489,51 @@ module provides support functions to the automatically generated code.")
          (base32
           "0lkwap0va0kq9j9x540cc5fink2w8ppxiiji395pp8mlxd1mg97x"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests.
+      #:configure-flags
+      #~`(("--verbose" . "") ; Print commands run.
+          ("--confirm-license" . "")
+          ("--jobs" . ,(number->string (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; When building python-pyqtwebengine, <qprinter.h> can not be
+          ;; included.  Here we substitute the full path to the header in the
+          ;; store.
+          (add-after 'unpack 'substitute-source
+            (lambda* (#:key inputs  #:allow-other-keys)
+              (let* ((version #$(package-version this-package))
+                     (qt-version (string-take version 1))
+                     (qtprinter.h (string-append "include/qt"
+                                                 qt-version
+                                                 "/QtPrintSupport"
+                                                 "/qprinter.h")))
+                (substitute* '("sip/QtPrintSupport/qprinter.sip"
+                               "sip/QtPrintSupport/qpyprintsupport_qlist.sip")
+                  (("<qprinter.h>")
+                   (format #f "~s"
+                           (search-input-file inputs qtprinter.h))))))))))
     (native-inputs
      (list qtbase-5 ; for qmake
            python-pyqt-builder))
     (propagated-inputs
      (list python-sip python-pyqt5-sip))
     (inputs
-     `(("python" ,python-wrapper)
-       ("qtbase" ,qtbase-5)
-       ("qtconnectivity-5" ,qtconnectivity-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtlocation" ,qtlocation-5)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtsensors" ,qtsensors-5)
-       ("qtserialport" ,qtserialport-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("qttools-5" ,qttools-5)
-       ("qtwebchannel-5" ,qtwebchannel-5)
-       ("qtwebsockets-5" ,qtwebsockets-5)
-       ("qtx11extras" ,qtx11extras)
-       ("qtxmlpatterns" ,qtxmlpatterns-5)))
-    (arguments
-      (list
-       #:tests? #f ; No tests.
-       #:configure-flags
-       #~`(@ ("--verbose" . "") ; Print commands run.
-             ("--confirm-license" . "")
-             ("--jobs" . ,(number->string (parallel-job-count))))
-       #:phases
-       #~(modify-phases %standard-phases
-         ;; When building python-pyqtwebengine, <qprinter.h> can not be
-         ;; included.  Here we substitute the full path to the header in the
-         ;; store.
-         (add-after 'unpack 'substitute-source
-           (lambda* (#:key inputs  #:allow-other-keys)
-             (let* ((qtbase (assoc-ref inputs "qtbase"))
-                    (qtprinter.h (string-append "\"" qtbase "/include/qt5/QtPrintSupport/qprinter.h\"")))
-               (substitute* (list "sip/QtPrintSupport/qprinter.sip"
-                                  "sip/QtPrintSupport/qpyprintsupport_qlist.sip")
-                 (("<qprinter.h>") qtprinter.h))))))))
+     (list python-wrapper
+           qtbase-5
+           qtconnectivity-5
+           qtdeclarative-5
+           qtlocation-5
+           qtmultimedia-5
+           qtsensors-5
+           qtserialport-5
+           qtsvg-5
+           qttools-5
+           qtwebchannel-5
+           qtwebsockets-5
+           qtx11extras
+           qtxmlpatterns-5))
     (home-page "https://www.riverbankcomputing.com/software/pyqt/intro")
     (synopsis "Python bindings for Qt")
     (description
@@ -4559,26 +4565,7 @@ contain over 620 classes.")
                   qtwebchannel
                   qtwebsockets))
     (propagated-inputs (list python-sip python-pyqt6-sip))
-    (native-inputs (list python-pyqt-builder qtbase)) ;qtbase is required for qmake.
-    (arguments
-     (list
-      #:tests? #f ;No tests.
-      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
-                              ("--confirm-license" . "")
-                              ("--jobs" unquote
-                               (number->string (parallel-job-count))))
-      #:phases #~(modify-phases %standard-phases
-                   ;; When building python-pyqtwebengine, <qprinter.h> cannot be
-                   ;; included.  Here we substitute the full path to the header in the
-                   ;; store.
-                   (add-after 'unpack 'substitute-source
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (let* ((qprinter.h (search-input-file inputs
-                                           "/include/qt6/QtPrintSupport/qprinter.h")))
-                         (substitute* (list "sip/QtPrintSupport/qprinter.sip"
-                                       "sip/QtPrintSupport/qpyprintsupport_qlist.sip")
-                           (("qprinter.h")
-                            qprinter.h))))))))))
+    (native-inputs (list python-pyqt-builder qtbase)))) ;qtbase is required for qmake.
 
 (define-public python-pyqt5-sip
   (package
