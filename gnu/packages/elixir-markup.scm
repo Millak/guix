@@ -90,3 +90,21 @@ item A @code{String.Chars} implementation to convert them to text
      "Floki is a simple HTML parser that enables search for nodes using CSS selectors.")
     (home-page "https://hexdocs.pm/floki/")
     (license license:expat)))
+
+(define-public elixir-makeup-erlang
+  (package
+    (name "elixir-makeup-erlang")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "makeup_erlang" version))
+       (sha256
+        (base32 "09rpmb9iw49syp62s7pny4ycwijffkkk6y9698z8kmb8ydzgycxg"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-makeup))
+    (synopsis "Erlang lexer for the Makeup syntax highlighter")
+    (description "This package provides @code{elixir-makeup-erlang}, a library
+implementing an Erlang lexer for the Makeup syntax highlighter.")
+    (home-page "https://hexdocs.pm/makeup_erlang/")
+    (license license:bsd-2)))
