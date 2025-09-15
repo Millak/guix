@@ -589,31 +589,6 @@ it a convenient format to store user input files.")
          (base32
           "070xg4i52z3yv5b9bw5k95qskw0daivh0njka87mzj0d3zf1qsyy")))))))
 
-;; Tensorflow does not build with jsoncpp 1.8.x.  It is built with commit
-;; 4356d9bba191e1e16ce7a92073cbf3e63564e973, which lies between version 1.7.2
-;; and 1.7.3.
-(define-public jsoncpp-for-tensorflow
-  (package (inherit jsoncpp)
-    (name "jsoncpp")
-    (version "1.7.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/open-source-parsers/jsoncpp")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1180ln8blrb0mwzpcf78k49hlki6di65q77rsvglf83kfcyh4d7z"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:tests? #f
-           #:configure-flags
-           #~'("-DBUILD_SHARED_LIBS:BOOL=YES"
-               #$@(if (%current-target-system)
-                      #~("-DJSONCPP_WITH_POST_BUILD_UNITTEST=OFF")
-                      #~()))))))
-
 (define-public json.sh
   (let ((commit "0d5e5c77365f63809bf6e77ef44a1f34b0e05840") ;no releases
         (revision "1"))
