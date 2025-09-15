@@ -48,8 +48,15 @@
   (and (ignore "\"") (* str-chr) (ignore "\"")
        (? (and (ignore (* whitespace)) content))))
 
+(define (final-character-escapes? str last-index)
+  "Check if STR ends in an incomplete escape sequence, that is ends in an uneven
+number of backslashes.  LAST-INDEX is the index of its last character."
+  (and (>= last-index 0)
+       (eqv? (string-ref str last-index) #\\)
+       (not (final-character-escapes? str (- last-index 1)))))
+
 (define (interpret-newline-escape str)
-  "Replace '\\n' sequences in STR with a newline character."
+  "Replace unescaped '\\n' sequences in STR with a newline character."
   (let loop ((str str)
              (result '()))
     (match (string-contains str "\\n")
@@ -57,7 +64,10 @@
       (index
        (let ((prefix (string-take str index)))
          (loop (string-drop str (+ 2 index))
-               (append (list "\n" prefix) result)))))))
+               ;; Only add a newline when the backslash is not escaped itself.
+               (if (final-character-escapes? str (- index 1))
+                   (cons (string-take str (+ 2 index)) result)
+                   (append (list "\n" prefix) result))))))))
 
 (define (parse-tree->assoc parse-tree)
   "Converts a po PARSE-TREE to an association list, where the key is the msgid
