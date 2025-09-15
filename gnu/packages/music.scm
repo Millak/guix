@@ -674,7 +674,7 @@ you create custom user interfaces for your MIDI hardware.")
 (define-public qmmp
   (package
     (name "qmmp")
-    (version "2.1.9")
+    (version "2.2.8")
     (source
      (origin
        (method url-fetch)
@@ -682,7 +682,7 @@ you create custom user interfaces for your MIDI hardware.")
                            (version-major+minor version) "/"
                            "qmmp-" version ".tar.bz2"))
        (sha256
-        (base32 "0drskhf1lgnzmm6b51fvy25m551lbjikg7jw5dnll7ajicvpm7xm"))))
+        (base32 "12lkpdyxh6sq1lhjnzvcd8z6jw75vyc82bwyv8vyp654cfh9f2kk"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
