@@ -26128,41 +26128,6 @@ instead of servers and network commands.")
      as parsing the command line for options, and iterating over input files.")
     (license license:gpl2+)))
 
-(define-public python-ttystatus
-  (package
-    (name "python-ttystatus")
-    (version "0.38")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "http://git.liw.fi/ttystatus")
-             ;; There are no tags after ttystatus-0.36.
-             (commit "e9fc573326c5d1348f5fe56263b4f7a8c32f58c9")))
-       (sha256
-        (base32 "0v49q839nrwdm19c83wfmj6n2kw80xslwq9k0n5509r2h7wzjiqj"))
-       (file-name (git-file-name name version))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-coverage-test-runner))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; check phase needs to be run before the build phase. If not,
-         ;; coverage-test-runner looks for tests for the built source files,
-         ;; and fails.
-         (delete 'check)
-         (add-before 'build 'check
-           (lambda _ (invoke "make" "check"))))))
-    (home-page "https://liw.fi/ttystatus/")
-    (synopsis "Python library for progress reporting and
-     status updates on terminals")
-    (description "@code{ttystatus} is a Python library for showing progress
-     reporting and status updates on terminals, for command line programs.
-     Output is automatically adapted to the width of the terminal: truncated
-     if it does not fit, and resized if the terminal size changes.")
-    (license license:gpl3+)))
-
 (define-public python-astroid
   (package
     (name "python-astroid")
