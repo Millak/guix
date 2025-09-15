@@ -1943,14 +1943,14 @@ on top of Baloo.")
 (define-public plasma5support
   (package
     (name "plasma5support")
-    (version "6.3.4")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "115x8ij1v8igac07kzbykxplmrr2g0x5n8s4j5mrn93w3v87clns"))))
+                "1wxap1lsf80vjxxwdrsv1fldc2br1vfxnhmsl464k1nyfxfhg8my"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
 
