@@ -533,6 +533,24 @@ writer and parser).")
     (home-page "https://hexdocs.pm/dialyxir/")
     (license license:asl2.0)))
 
+(define-public elixir-geo
+  (package
+    (name "elixir-geo")
+    (version "4.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "geo" version))
+       (sha256
+        (base32 "0d19k98bwnpk3fyhd2zicjyix5chph8zpcbknl0zgacc76rv5v8r"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-jason))
+    (synopsis "Encodes and decodes WKB, WKT, and GeoJSON formats")
+    (description "This package provides @code{elixir-geo}, a library to encode
+and decode WKB, WKT, and @code{GeoJSON} formats.")
+    (home-page "https://hexdocs.pm/geo/")
+    (license license:expat)))
+
 (define-public elixir-git-diff
   (package
     (name "elixir-git-diff")
