@@ -1213,7 +1213,7 @@ Python.")
                           ;; Then run 'CTest' with -V so we get more
                           ;; details upon failure.
                           (invoke "ctest" "-V" dash-j))))))))
-    (home-page "https://eigen.tuxfamily.org")
+    (home-page "https://eigen.tuxfamily.org/index.php?title=Main_Page")
     (synopsis "C++ template library for linear algebra")
     (description
      "Eigen is a C++ template library for linear algebra: matrices, vectors,
