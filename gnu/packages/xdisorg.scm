@@ -464,7 +464,7 @@ and preserve leading and trailing whitespace.")
 (define-public copyq
   (package
     (name "copyq")
-    (version "10.0.0")
+    (version "11.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -473,7 +473,7 @@ and preserve leading and trailing whitespace.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ppr0ijggs9km2m32rnlpn7h346a2iv2xmf2k6ky1n8alwkxczcl"))))
+                "04z36jk55dw7rpdr51h6i0645nwnvba0q0q4qxjlnpwyr9ibrpzy"))))
     (build-system qt-build-system)
     (arguments
      (list
