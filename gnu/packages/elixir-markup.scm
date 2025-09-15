@@ -91,6 +91,24 @@ item A @code{String.Chars} implementation to convert them to text
     (home-page "https://hexdocs.pm/floki/")
     (license license:expat)))
 
+(define-public elixir-makeup-c
+  (package
+    (name "elixir-makeup-c")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "makeup_c" version))
+       (sha256
+        (base32 "0s98gwsvi88mxf3wjsi05l7dgkw4gzbihzlsq5ad68i86x2wzsc9"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-makeup))
+    (synopsis "C lexer for the Makeup syntax highlighter")
+    (description "This package provides @code{elixir-makeup-c}, a library
+implementing a C lexer for the Makeup syntax highlighter.")
+    (home-page "https://hexdocs.pm/makeup_c/")
+    (license license:bsd-2)))
+
 (define-public elixir-makeup-erlang
   (package
     (name "elixir-makeup-erlang")
