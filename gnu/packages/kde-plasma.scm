@@ -2376,14 +2376,14 @@ integration of Qt applications when running on a KDE Plasma workspace.")
 (define-public plasma-nano
   (package
     (name "plasma-nano")
-    (version "6.3.4")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
                                   version "/plasma-nano-" version ".tar.xz"))
               (sha256
                (base32
-                "086sw3xipkbx1z5zjfsqgzxqb5y9qf9v4pbc6ayr3svgms64ishq"))))
+                "17pki8i7hh1hhh8nlm1yzbfg97a4j8mpn193xfqc25zcyb87gxpd"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules pkg-config qttools))
     (inputs (list qtbase
