@@ -46442,8 +46442,7 @@ user need to enter a passphrase or use the REPL, this happens using the
 intended keyboard layout.
 
 When @var{qemu-networking?} is true, set up networking with the standard QEMU
-parameters.  When @var{virtio?} is true, load additional modules so that the
-initrd can be used as a QEMU guest with para-virtualized I/O drivers.
+parameters.
 
 When @var{volatile-root?} is true, the root file system is writable but any changes
 to it are lost.
