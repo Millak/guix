@@ -683,6 +683,25 @@ human-readable.")
     (home-page "https://hexdocs.pm/sizeable/")
     (license license:expat)))
 
+(define-public elixir-sourceror
+  (package
+    (name "elixir-sourceror")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "sourceror" version))
+       (sha256
+        (base32 "1wdkqiszn0483g2wfp85s15mz08xzhic9zbfisfrqmh45v4xznr9"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (synopsis "Utilities to work with Elixir source code")
+    (description "This package provides @code{elixir-sourceror}, a library
+implementing utilities to work with Elixir source code.")
+    (home-page "https://hexdocs.pm/sourceror/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
