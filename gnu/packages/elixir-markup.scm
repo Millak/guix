@@ -45,6 +45,32 @@ Earmark and @code{EarmarkParser} tests.")
     (home-page "https://hexdocs.pm/earmark_ast_dsl/")
     (license license:asl2.0)))
 
+(define-public elixir-easyhtml
+  (package
+    (name "elixir-easyhtml")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "easyhtml" version))
+       (sha256
+        (base32 "01jxhj3hpivf5c0x7d11c8xrx3d0ln6wsa78lc58g90j2vwkdadn"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-floki))
+    (synopsis "Tiny wrapper around Floki")
+    (description "@code{EasyHTML} makes working with HTML easy.  It is a tiny
+wrapper around Floki that adds conveniences:
+
+@itemize
+@item An @code{Inspect} implementation to pretty-print HTML snippets
+@item An @code{Access} implementation to search them
+@item An @code{Enumerable} implementation to traverse them
+item A @code{String.Chars} implementation to convert them to text
+@end itemize
+")
+    (home-page "https://hexdocs.pm/easyhtml/")
+    (license license:asl2.0)))
+
 (define-public elixir-floki
   (package
     (name "elixir-floki")
