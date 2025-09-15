@@ -702,6 +702,23 @@ implementing utilities to work with Elixir source code.")
     (home-page "https://hexdocs.pm/sourceror/")
     (license license:asl2.0)))
 
+(define-public elixir-spitfire
+  (package
+    (name "elixir-spitfire")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "spitfire" version))
+       (sha256
+        (base32 "06yr860zhzxmzmljdpjq4c4n81951axl2kc1w6r430x3ai8dgvkf"))))
+    (build-system mix-build-system)
+    (synopsis "Error resilient parser for Elixir")
+    (description "This package provides @code{spitfire}, an error resilient
+parser for Elixir.")
+    (home-page "https://hexdocs.pm/spitfire/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
