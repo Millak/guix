@@ -289,33 +289,34 @@ Random Cage Fighting Birds, Cool Music etc.")
         (base32 "0gh64wvrk5pn0fhmpvj1j99d5g7f7697rk96zbkc8l72yjr819z5"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:modules (((guix build cargo-build-system) #:prefix cargo:)
+     (list
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
                   (guix build utils)
                   (guix build cmake-build-system))
-       #:imported-modules ((guix build cmake-build-system)
+      #:imported-modules `((guix build cmake-build-system)
                            ,@%cargo-build-system-modules)
-       #:out-of-source? #f              ;For the tests.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-cargo-build-system
-           (lambda args
-             (for-each
-              (lambda (phase)
-                (format #t "Running cargo phase: ~a~%" phase)
-                (apply (assoc-ref cargo:%standard-phases phase)
-                       ;; Keep the vendor-dir outside of cmake's directories.
-                       #:vendor-dir "../guix-vendor"
-                       #:cargo-target ,(cargo-triplet)
-                       args))
-              '(unpack-rust-crates
-                configure
-                check-for-pregenerated-files
-                patch-cargo-checksums))))
-         (add-after 'unpack 'work-around-genkeystroke
-           (lambda _
-             ;; Remove this phase when we can find ncurses with cmake.
-             (substitute* "tests/CMakeLists.txt"
-               (("CURSES_FOUND") "FALSE")))))))
+      #:out-of-source? #f              ;For the tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        ;; Keep the vendor-dir outside of cmake's directories.
+                        #:vendor-dir "../guix-vendor"
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'unpack 'work-around-genkeystroke
+            (lambda _
+              ;; Remove this phase when we can find ncurses with cmake.
+              (substitute* "tests/CMakeLists.txt"
+                (("CURSES_FOUND") "FALSE")))))))
     (native-inputs
      (append
       (list rust `(,rust "cargo") )
