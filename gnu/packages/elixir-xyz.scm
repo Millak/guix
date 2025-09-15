@@ -666,6 +666,28 @@ any case.")
     (home-page "https://hexdocs.pm/recase/")
     (license license:expat)))
 
+(define-public elixir-rewrite
+  (package
+    (name "elixir-rewrite")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "rewrite" version))
+       (sha256
+        (base32 "1m1r7mq14xvxmnlihx7scn599ljrlpnbzdz8nd3hm3ajwfqr92vz"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (propagated-inputs (list elixir-glob-ex elixir-sourceror elixir-text-diff))
+    (synopsis
+     "Rewrite sources in an Elixir project")
+    (description
+     "This package implements an API for rewriting sources in an Elixir project
+powered by sourceror.")
+    (home-page "https://hexdocs.pm/rewrite/")
+    (license license:expat)))
+
 (define-public elixir-sizeable
   (package
     (name "elixir-sizeable")
