@@ -493,6 +493,24 @@ writer and parser).")
     (home-page "https://hexdocs.pm/git_diff/")
     (license license:expat)))
 
+(define-public elixir-glob-ex
+  (package
+    (name "elixir-glob-ex")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "glob_ex" version))
+       (sha256
+        (base32 "1r2xa8h10d1ynrcdbwbq8fg34k4qd5kl2svnc5g19qsn60v2j9rl"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-prove))
+    (synopsis "Library for glob expressions")
+    (description "This package provides a library for glob expressions.")
+    (home-page "https://hexdocs.pm/glob_ex/")
+    (license license:expat)))
+
 (define-public elixir-machete
   (package
     (name "elixir-machete")
