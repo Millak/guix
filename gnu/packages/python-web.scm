@@ -4478,21 +4478,26 @@ support for the @code{noload} operations used by @code{zodb}.")
 (define-public python-zope-event
   (package
     (name "python-zope-event")
-    (version "4.4")
+    (version "6.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "zope.event" version))
+       (uri (pypi-uri "zope_event" version))
        (sha256
-        (base32
-         "1ksbc726av9xacml6jhcfyn828hlhb9xlddpx6fcvnlvmpmpvhk9"))))
-    (build-system python-build-system)
+        (base32 "14nzj3wd203z68glpskmvinxxhfq6chjf70li5x8npvwzaacifhf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "src/zope/event/tests.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://pypi.org/project/zope.event/")
     (synopsis "Event publishing system for Python")
-    (description "Zope.event provides an event publishing API, intended for
-use by applications which are unaware of any subscribers to their events.  It
-is a simple event-dispatching system on which more sophisticated event
-dispatching systems can be built.")
+    (description
+     "Zope.event provides an event publishing API, intended for use by
+applications which are unaware of any subscribers to their events.  It is a
+simple event-dispatching system on which more sophisticated event dispatching
+systems can be built.")
     (license license:zpl2.1)))
 
 (define-public python-zope-interface
