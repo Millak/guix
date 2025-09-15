@@ -24,6 +24,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
@@ -62,7 +63,8 @@
                                   "calligra-" version ".tar.xz"))
               (sha256
                (base32
-                "0pyri2ypzva4b4rnl2p3xp0ph5xcn181msj86l5xq6sg7zkza0fl"))))
+                "0pyri2ypzva4b4rnl2p3xp0ph5xcn181msj86l5xq6sg7zkza0fl"))
+              (patches (search-patches "calligra-qt-6.9.patch"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase

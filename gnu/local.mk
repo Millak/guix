@@ -1072,6 +1072,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/calibre-remove-test-sqlite.patch		\
   %D%/packages/patches/calibre-remove-test-unrar.patch		\
   %D%/packages/patches/calibre-remove-test-import-modules.patch	\
+  %D%/packages/patches/calligra-qt-6.9.patch                    \
   %D%/packages/patches/calls-disable-application-test.patch	\
   %D%/packages/patches/calls-disable-sip-test.patch		\
   %D%/packages/patches/camlboot-dynamically-allocate-stack-signal.patch	\
