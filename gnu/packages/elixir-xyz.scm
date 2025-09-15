@@ -818,6 +818,22 @@ functional way.")
     (home-page "https://hexdocs.pm/traverse/")
     (license license:asl2.0)))
 
+(define-public elixir-zest
+  (package
+    (name "elixir-zest")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "zest" version))
+       (sha256
+        (base32 "0jlpldb94wm1v2kavvsy5h7w5mvjmxnkssl48mp2iphmysnddqpb"))))
+    (build-system mix-build-system)
+    (synopsis "Fresh approach to testing in Elixir")
+    (description "This package provides a fresh approach to testing.")
+    (home-page "https://hexdocs.pm/zest/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
