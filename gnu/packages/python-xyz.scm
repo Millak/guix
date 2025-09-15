@@ -6092,19 +6092,21 @@ Prefix) - Encode and decode data structures.")
 (define-public python-pyicu
   (package
     (name "python-pyicu")
-    (version "2.14")
+    (version "2.15.2")
     (source
      (origin
       (method url-fetch)
-      (uri (pypi-uri "PyICU" version))
+      (uri (pypi-uri "pyicu" version))
       (sha256
-       (base32
-        "0ci1l21b79xka80lf0bgmahfskqa8mw6k714fzalwmawpn9fpixc"))))
-    (build-system python-build-system)
+       (base32 "13srrv5lczr0s74hx2kffwdhfg6flpvi2qpj75lfqz7ivzp7f7jn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list pkg-config
+           python-pytest
+           python-setuptools
+           python-six))
     (inputs
      (list icu4c))
-    (native-inputs
-     (list python-pytest python-six))
     (home-page "https://gitlab.pyicu.org/main/pyicu")
     (synopsis "Python extension wrapping the ICU C++ API")
     (description
