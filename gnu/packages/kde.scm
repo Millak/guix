@@ -1622,7 +1622,7 @@ different notification systems.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
@@ -1631,7 +1631,7 @@ different notification systems.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "05xbxcxg9byj3rilmqig8281rjjd59w2wk3qw4v1z8irhn8fpl28"))))
+         "07rmkm8gmfx1hs5n5rql2q9f539hdwv1l8wgjcmd2m5793f0nd4a"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -1670,6 +1670,7 @@ different notification systems.")
            kio
            kirigami
            kirigami-addons
+           kitemmodels
            knotifications
            kpackage
            kpeople
