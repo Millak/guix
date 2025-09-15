@@ -2626,14 +2626,14 @@ adding, modifying and removing contacts.")
 (define-public plasma-vault
   (package
     (name "plasma-vault")
-    (version "6.3.4")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qkcz3lpfncqzzsj93m0pq2rjc18w12yw233rznkk5cww1sayxyy"))))
+                "1balrgv5q3ac1xq3pazrbnc99l6ibhiijzawripxwhwl5qaf5bh6"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list kio
