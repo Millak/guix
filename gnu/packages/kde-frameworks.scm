@@ -12,7 +12,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5264,7 +5264,7 @@ need.")
 (define-public ktextaddons
   (package
     (name "ktextaddons")
-    (version "1.5.4")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
@@ -5272,7 +5272,7 @@ need.")
              "mirror://kde/stable/" name "/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "083v4x5f46h609g8zar6x22mp1ps85ikzbr08qbfj9abx010df34"))))
+         "1p7c461mnvsq7jz77x412k1kwmr9phr306dd9skbv5rgll2nb16r"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -5297,8 +5297,10 @@ need.")
            ki18n
            kio
            ksyntaxhighlighting
+           ktextwidgets
            kxmlgui
            qtkeychain-qt6
+           qtmultimedia
            sonnet))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Various text handling addons")
