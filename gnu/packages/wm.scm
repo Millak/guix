@@ -4515,7 +4515,7 @@ and xmonad.")
 (define-public wf-config
   (package
     (name "wf-config")
-    (version "0.8.0")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4523,7 +4523,7 @@ and xmonad.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256 (base32
-                       "07x6dapv2xyg0cn44dd2faw5gpk7mwfpbkpld9kyiaa9d44362z1"))))
+                       "0ziiqdh9pgzmhqc566qc0lq2hsy9ihn8hvg503kr4bkn57msvhar"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list glm libxml2 wlroots-0.17 libevdev))
