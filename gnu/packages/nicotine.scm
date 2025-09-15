@@ -2,6 +2,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2022 Fatima Toothpaste <fatimatoothpaste@disroot.org>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
+;;; Copyright © 2025 Felipe Silva <git@felipeqq2.rocks>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,8 @@
           (add-after 'install 'wrap-program
             (lambda _
               (wrap-program (string-append #$output "/bin/nicotine")
+                `("GUIX_GDK_PIXBUF_MODULE_FILES" ":" suffix
+                  (,(getenv "GUIX_GDK_PIXBUF_MODULE_FILES")))
                 `("GI_TYPELIB_PATH" ":" prefix
                   (,(getenv "GI_TYPELIB_PATH"))))))
           (add-after 'wrap-program 'glib-or-gtk-wrap
