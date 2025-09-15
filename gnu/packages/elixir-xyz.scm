@@ -818,6 +818,28 @@ functional way.")
     (home-page "https://hexdocs.pm/traverse/")
     (license license:asl2.0)))
 
+(define-public elixir-ucwidth
+  (package
+    (name "elixir-ucwidth")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ucwidth" version))
+       (sha256
+        (base32 "1gsmfcbrdfa00czm8870pr3kc34wvnisyg7c5gxi3swfidwx3vy1"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; Tests depend on elixir-quixir which is not packaged yet.
+     (list #:tests? #f))
+    (synopsis
+     "Port of ucwidth from C to Elixir")
+    (description
+     "This package provides a port of ucwidth from C to Elixir, for determining the
+width (full-width or half-width) of an Unicode character.")
+    (home-page "https://hexdocs.pm/ucwidth/")
+    (license license:expat)))
+
 (define-public elixir-verbs
   (package
     (name "elixir-verbs")
