@@ -1058,43 +1058,6 @@ Eclipse and NetBeans.  Completion information is typically specified in an XML
 file, but can even be dynamic.")
     (license license:bsd-3)))
 
-;; We use the sources from git instead of the tarball from pypi, because the
-;; latter does not include the Cython source file from which bycython.cpp is
-;; generated.
-(define-public python-editdistance
-  (let ((commit "3ea84a7dd3258c76aa3be851ef3d50e59c886846")
-        (revision "1"))
-    (package
-      (name "python-editdistance")
-      (version (string-append "0.3.1-" revision "." (string-take commit 7)))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/aflc/editdistance")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1l43svsv12crvzphrgi6x435z6xg8m086c64armp8wzb4l8ccm7g"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'build-cython-code
-             (lambda _
-               (with-directory-excursion "editdistance"
-                 (delete-file "bycython.cpp")
-                 (invoke "cython" "--cplus" "bycython.pyx")))))))
-      (native-inputs
-       (list python-cython))
-      (home-page "https://www.github.com/aflc/editdistance")
-      (synopsis "Fast implementation of the edit distance (Levenshtein distance)")
-      (description
-       "This library simply implements Levenshtein distance algorithm with C++
-and Cython.")
-      (license license:expat))))
-
 (define-public txt2tags
   (package
     (name "txt2tags")
