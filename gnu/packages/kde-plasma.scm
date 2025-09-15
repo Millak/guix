@@ -1148,7 +1148,7 @@ call it if it is not associated to a terminal.")
 (define-public ksystemstats
   (package
     (name "ksystemstats")
-    (version "6.3.4")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1156,7 +1156,7 @@ call it if it is not associated to a terminal.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "15akx389ia5fv66i65ipmhx4ki3n0rn9r1hsqca12fnhf29nl000"))))
+                "08qkynr7p3b1s7n49n7wf8kkr3xms9s54wsx4pa2lx172l1h6r79"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
