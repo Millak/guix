@@ -1052,41 +1052,34 @@ Ideographs Extension B of Unicode.
 of Unicode.
 @end itemize\n")))
 
+;; In past, TW-Kai and TW-Sung are distributed in same zip archive.  But now
+;; they are already separated in font-cns11643-kai and font-cns11643-sung.
+;; This package exists as a backward-compatible definition.
 (define-public font-cns11643
-  ;; Since upstream doesn't provide any version numbers, the date of the last
-  ;; edit is used, taken from https://data.gov.tw/dataset/5961
-  ;; XXX: The source is also updated in-place, so it may be desirable to mirror
-  ;; it elsewhere to avoid suddenly losing the current source file.
   (package
+    (inherit font-cns11643-sung)
     (name "font-cns11643")
-    (version "98.1.20180605")
-    (source (origin
-              (method url-fetch)
-              (uri "http://www.cns11643.gov.tw/AIDB/Open_Data.zip")
-              (sha256
-               (base32
-                "000a9whrjr1cd4pjc23pbl60zwkq3wcb5g61p9qi7fn3hwkp0kyw"))))
-    (build-system font-build-system)
-    (home-page "http://www.cns11643.gov.tw/AIDB/welcome.do")
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build union))
+      #:builder
+      #~(begin
+          (use-modules (ice-9 match)
+                       (guix build union))
+          (match %build-inputs
+            (((names . directories) ...)
+             (union-build #$output directories))))))
+    (inputs (list font-cns11643-kai font-cns11643-sung))
     (synopsis "CJK TrueType fonts, TW-Kai and TW-Sung")
     (description
      "@code{CNS 11643} character set (Chinese National Standard, or Chinese
 Standard Interchange Code) is the standard character set of the Republic of
-China (Taiwan) for Chinese Characters and other Unicode symbols.  Contained
-are six TrueType fonts based on two script styles, Regular script (Kai), and
-Sung/Ming script, each with three variants:
+China (Taiwan) for Chinese Characters and other Unicode symbols.
 
-@itemize
-@item @code{CNS 11643} (@code{TW-Kai} and @code{TW-Sung}): Tens of thousands
-of CJK characters from frequency tables published by the Taiwanese
-Ministry of Education.  ISO 10646 and Unicode compatible encoding.
-@item @code{Big-5 Plus}: Several thousand frequently used CJK characters
-encoded in the user defined area of the Big-5 code.
-@item @code{Big-5 Extended}: A Big-5 character set based on the
-@code{Big-5 Plus} and @code{CNS 11643} character sets.
-@end itemize\n")
-    (license (license:non-copyleft
-              "http://data.gov.tw/license")))) ; CC-BY 4.0 compatible
+This package is an amalgamation of @code{font-cns11643-sung} and
+@code{font-cns11643-kai}.")))
 
 (define-public font-cns11643-swjz
   (package
