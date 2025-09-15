@@ -799,6 +799,25 @@ formatted diff between two strings.")
     (home-page "https://hexdocs.pm/text_diff/")
     (license license:expat)))
 
+(define-public elixir-traverse
+  (package
+    (name "elixir-traverse")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "traverse" version))
+       (sha256
+        (base32 "0w8ww017nlfgqm0n73n0s72nk97xys4ayxh4sz93dbscjydfry8c"))))
+    (build-system mix-build-system)
+    (synopsis
+     "Walk arbitrary Elixir Datastructures in a functional way")
+    (description
+     "Traverse is a toolset to walk arbitrary Elixir Datastructures in a
+functional way.")
+    (home-page "https://hexdocs.pm/traverse/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
