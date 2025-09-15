@@ -588,6 +588,32 @@ and decode WKB, WKT, and @code{GeoJSON} formats.")
     (home-page "https://hexdocs.pm/glob_ex/")
     (license license:expat)))
 
+(define-public elixir-igniter
+  (package
+    (name "elixir-igniter")
+    (version "0.6.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "igniter" version))
+       (sha256
+        (base32 "1m17dg9yydr5mv65nphcc6c2bcrgcyi62xpikq3j3jmf4vb6k4xd"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; FIXME: Tests depend on elixir-eflame, which is not yet packaged.
+     (list #:tests? #f))
+    (propagated-inputs
+     (list elixir-glob-ex
+           elixir-jason
+           elixir-rewrite
+           elixir-sourceror
+           elixir-spitfire))
+    (synopsis "Code generation and project patching framework")
+    (description
+     "This package provides a code generation and project patching framework.")
+    (home-page "https://hexdocs.pm/igniter/")
+    (license license:expat)))
+
 (define-public elixir-machete
   (package
     (name "elixir-machete")
