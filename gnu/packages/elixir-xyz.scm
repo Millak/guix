@@ -25,6 +25,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages base)
   #:use-module (gnu packages erlang-xyz)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages)
   #:use-module (guix build mix-build-system)
   #:use-module (guix build utils)
@@ -550,6 +551,30 @@ writer and parser).")
 and decode WKB, WKT, and @code{GeoJSON} formats.")
     (home-page "https://hexdocs.pm/geo/")
     (license license:expat)))
+
+(define-public elixir-gettext
+  (package
+    (name "elixir-gettext")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "gettext" version))
+       (sha256
+        (base32 "0x5azw61grknqmn6v7dh1ly8daa1xmxhc1jnsx7lm2an0xj9d0fc"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-castore
+           elixir-excoveralls
+           elixir-jason))
+    (inputs
+     (list gnu-gettext))
+    (propagated-inputs (list elixir-expo))
+    (synopsis "Internationalization and localization through gettext")
+    (description "This package implements internationalization and localization
+through gettext.")
+    (home-page "https://hexdocs.pm/gettext/")
+    (license license:asl2.0)))
 
 (define-public elixir-git-diff
   (package
