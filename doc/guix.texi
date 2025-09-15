@@ -15237,6 +15237,14 @@ gnu/packages/qt.scm:2070:13: qtquickcontrols2 would be upgraded from 5.15.8 to 5
 @dots{}
 @end example
 
+@example
+$ guix refresh -s module:kde-plasma --target-version=6.3.6
+[@dots{}] plasma-systemmonitor would be upgraded from 6.3.4 to 6.3.6
+[@dots{}] plasma-workspace-wallpapers would be upgraded from 6.3.4 to 6.3.6
+[@dots{}] plasma-browser-integration would be upgraded from 6.3.4 to 6.3.6
+@dots{}
+@end example
+
 @cindex partial target version, guix refresh
 The @option{--target-version} option accepts partial version prefixes,
 which can be useful to update to the latest major or major-minor
