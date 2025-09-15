@@ -9128,7 +9128,7 @@ ecosystem, but can naturally be used also by other projects.")
            python-jsonschema
            python-pygments
            python-rellu
-           python-typing-extensions-next
+           python-typing-extensions
            python-setuptools
            `(,python "tk")              ;used when building the HTML doc
            python-wheel))

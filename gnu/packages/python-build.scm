@@ -237,19 +237,7 @@ Included are implementations of:
 @end enumerate\n")
     (license license:psfl)))
 
-(define-public python-typing-extensions-next
-  (package
-    (inherit python-typing-extensions)
-    (version "4.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "typing_extensions" version))
-       (sha256
-        (base32 "0rhlhs28jndgp9fghdhidn6g7xiwx8vvihxbxhlgl4ncfg8lishc"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-typing-extensions)
-       (replace "python-flit-core" python-flit-core-next)))))
+(define-public python-typing-extensions-next python-typing-extensions)
 
 
 ;;;
