@@ -22370,42 +22370,42 @@ development version of CPython that are not available in older releases.")
 (define-public python-future
   (package
     (name "python-future")
-    (version "0.18.2")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "future" version))
        (sha256
-        (base32
-         "0zakvfj87gy6mn1nba06sdha63rn4njm7bhh0wzyrxhcny8avgmi"))))
-    (build-system python-build-system)
-    ;; Many tests connect to the network or are otherwise flawed.
-    ;; https://github.com/PythonCharmers/python-future/issues/210
+        (base32 "01bvq2a5vgxffq8555rvwhxw161m9y54z2j5w7d1x1h7jcq6hadx"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'sanity-check
-           (let ((sanity-check (assoc-ref %standard-phases 'sanity-check)))
-             (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-               (let* ((files (find-files (site-packages inputs outputs)
-                                         "top_level\\.txt"))
-                      (backups (map (lambda (f) (string-append f ".bak"))
-                                    files)))
-                 (for-each copy-file files backups)
-                 (substitute* files
-                   ;; Nobody be usin' winreg on Guix
-                   ;; Also, don't force users to have tkinter when they don't
-                   ;; need it
-                   (("(winreg|tkinter)") ""))
-                 (apply sanity-check args)
-                 (for-each rename-file backups files))))))))
+     (list
+      #:test-flags
+      ;; Self tests failed.
+      #~(list "--ignore=tests/test_future/test_futurize.py"
+              "-k" (string-join
+                    ;; Self tests failed.
+                    (list "not test_division"
+                          "test_functions_unchanged"
+                          "test_mixed_annotations"
+                          "test_multiple_param_annotations"
+                          "test_print"
+                          "test_range_slice"
+                          ;; Network access is required.
+                          "test_ftp"
+                          "test_main"
+                          "test_moves_urllib_request_http"
+                          "test_urllib_request_http")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://python-future.org")
     (synopsis "Single-source support for Python 3 and 2")
     (description
-     "@code{python-future} is the missing compatibility layer between Python 2 and
-Python 3.  It allows you to use a single, clean Python 3.x-compatible codebase
-to support both Python 2 and Python 3 with minimal overhead.")
+     "@code{python-future} is the missing compatibility layer between Python 2
+and Python 3.  It allows you to use a single, clean Python 3.x-compatible
+codebase to support both Python 2 and Python 3 with minimal overhead.")
     (license license:expat)))
 
 (define-public python-cysignals
