@@ -297,6 +297,7 @@ Random Cage Fighting Birds, Cool Music etc.")
                            ,@%cargo-build-system-modules)
       #:out-of-source? #f              ;For the tests.
       #:phases
+      (with-extensions (list (cargo-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-cargo-build-system
             (lambda args
@@ -316,7 +317,7 @@ Random Cage Fighting Birds, Cool Music etc.")
             (lambda _
               ;; Remove this phase when we can find ncurses with cmake.
               (substitute* "tests/CMakeLists.txt"
-                (("CURSES_FOUND") "FALSE")))))))
+                (("CURSES_FOUND") "FALSE"))))))))
     (native-inputs
      (append
       (list rust `(,rust "cargo") )
