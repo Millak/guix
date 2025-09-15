@@ -29798,7 +29798,7 @@ distance (Ukkonen).")
 (define-public python-identify
   (package
     (name "python-identify")
-    (version "2.5.36")
+    (version "2.6.14")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -29808,18 +29808,12 @@ distance (Ukkonen).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1il0d1zh31jx36m0lvhpiykx95i95dcfrgrfbz2x6la884zsmvq8"))))
+        (base32 "1fbl7wvhky4rlv37p0531xnl037lq58d8wsxgyylj371bfz3m3wp"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases #~(modify-phases %standard-phases
-                   ;; system-error "utime" "~A" ("No such file or directory")
-                   (delete 'ensure-no-mtimes-pre-1980))))
     (native-inputs
-     (list python-coverage python-pytest python-setuptools
-           python-ukkonen python-wheel))
-    (propagated-inputs
-     (list python-editdistance))
+     (list python-pytest
+           python-setuptools
+           python-ukkonen))
     (home-page "https://github.com/chriskuehl/identify")
     (synopsis "File identification library for Python")
     (description
