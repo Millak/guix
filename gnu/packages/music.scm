@@ -5523,8 +5523,8 @@ includes LV2 plugins and a JACK standalone client.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/musescore/MuseScore")
-             (commit (string-append "v" version))))
+              (url "https://github.com/musescore/MuseScore")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (patches (search-patches "musescore-fix-build.patch"))
        (sha256
@@ -5532,10 +5532,11 @@ includes LV2 plugins and a JACK standalone client.")
        (modules '((guix build utils)))))
     (build-system qt-build-system)
     (arguments
-     `(;; In order for qt-build-system to build against qt-base 6 and not 5.
-       #:qtbase ,qtbase
-       #:configure-flags
-       `("-DMUSE_APP_BUILD_MODE=release"
+     (list
+      #:qtbase qtbase                   ;Qt 6
+      #:configure-flags
+      #~(list
+         "-DMUSE_APP_BUILD_MODE=release"
          ;; Disable the build and usage of the `/bin/crashpad_handler` utility -
          ;; it does automatic crash reporting and is distributed as a
          ;; pre-compiled binary in the source-tree of MuseScore:
@@ -5543,27 +5544,26 @@ includes LV2 plugins and a JACK standalone client.")
          ;; Renamed from MUE_BUILD_CRASHPAD_CLIENT, MUE_BUILD_DIAGNOSTICS_MODULE
          ;; https://github.com/musescore/MuseScore/commit/6f269e8b072cca36cb76eb016cb60c1c1c2b9906
          "-DMUSE_MODULE_DIAGNOSTICS_CRASHPAD_CLIENT=OFF"
-         ;;; These five lines asks that Guix' versions of system libraries are used.
+;;; These five lines asks that Guix' versions of system libraries are used.
          "-DMUE_COMPILE_USE_SYSTEM_FREETYPE=ON"
          "-DMUE_COMPILE_USE_SYSTEM_HARFBUZZ=ON"
          "-DMUE_COMPILE_USE_SYSTEM_TINYXML=ON"
-         "-DMUE_COMPILE_USE_SYSTEM_OPUSENC=ON" ; Ipmlies -DMUE_COMPILE_USE_SYSTEM_OPUS=ON
+         "-DMUE_COMPILE_USE_SYSTEM_OPUSENC=ON" ; Implies -DMUE_COMPILE_USE_SYSTEM_OPUS=ON
          "-DMUE_COMPILE_USE_SYSTEM_FLAC=ON"
          ;; Disable download of soundfont during build.
          "-DDOWNLOAD_SOUNDFONT=OFF"
          ;; Don't bundle Qt QML files, relevant really only for Darwin.
          "-DMUE_COMPILE_INSTALL_QTQML_FILES=OFF")
-       ;; There are tests, but no simple target to run.  The command used to
-       ;; run them is:
-       ;;
-       ;;   make debug && sudo make installdebug && cd \
-       ;;   build.debug/mtest && make && ctest
-       ;;
-       ;; Basically, it requires to start a whole new build process.
-       ;; So we simply skip them.
-       #:tests? #f))
-    (native-inputs
-     (list git-minimal pkg-config qttools))
+      ;; There are tests, but no simple target to run.  The command used to
+      ;; run them is:
+      ;;
+      ;;   make debug && sudo make installdebug && cd \
+      ;;   build.debug/mtest && make && ctest
+      ;;
+      ;; Basically, it requires to start a whole new build process.
+      ;; So we simply skip them.
+      #:tests? #f))
+    (native-inputs (list git-minimal pkg-config qttools))
     (inputs
      (list alsa-lib
            flac
