@@ -1533,7 +1533,7 @@ KDE Frameworks components.")
 (define-public kwin
   (package
     (name "kwin")
-    (version "6.3.4")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1542,7 +1542,7 @@ KDE Frameworks components.")
               (patches (search-patches "kwin-unwrap-executable-name-for-dot-desktop-search.patch"))
               (sha256
                (base32
-                "19a54h4grbl81zvpmqarzwakn0bmn73w5di0svdlhcjxrkn62jp7"))))
+                "04nf7xql7qgq96jwbzf1p6ajyb024jp98ahd90giv3ym0rgj1wi7"))))
     (build-system qt-build-system)
     (arguments
      (list
