@@ -1031,6 +1031,25 @@ width (full-width or half-width) of an Unicode character.")
     (home-page "https://hexdocs.pm/ucwidth/")
     (license license:expat)))
 
+(define-public elixir-untangle
+  (package
+    (name "elixir-untangle")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "untangle" version))
+       (sha256
+        (base32 "0p81bzvsbnzdkqjq441xslcryxhpmrl4pqda2h323ivs47ij1wa7"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-decorator))
+    (synopsis "Logging and inspecting with code location information")
+    (description "Untangle provides alternatives for @code{IO.inspect} and the
+macros in Elixir's @code{Logger} to output code location information.  It also
+provides a polyfill for @code{dbg} which was introduced in Elixir 1.14.")
+    (home-page "https://hexdocs.pm/untangle/")
+    (license license:asl2.0)))
+
 (define-public elixir-verbs
   (package
     (name "elixir-verbs")
