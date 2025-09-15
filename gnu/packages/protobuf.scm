@@ -626,33 +626,6 @@ language-neutral, platform-neutral extensible mechanism for serializing
 structured data.")
     (license license:expat)))
 
-;; For tensorflow.
-(define-public python-protobuf-3.6
-  (package
-    (inherit python-protobuf)
-    (name "python-protobuf")
-    (version (package-version protobuf-3.6) )
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "protobuf" version))
-       (sha256
-        (base32
-         "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             (substitute* '("google/protobuf/internal/containers.py"
-                            "google/protobuf/internal/well_known_types.py")
-               (("collections.Mutable")
-                "collections.abc.Mutable")))))))
-    (inputs (list python-six))
-    (native-inputs
-     (list python-setuptools-for-tensorflow))))
-
 (define-public python-proto-plus
   (package
     (name "python-proto-plus")
