@@ -588,6 +588,26 @@ and decode WKB, WKT, and @code{GeoJSON} formats.")
     (home-page "https://hexdocs.pm/glob_ex/")
     (license license:expat)))
 
+(define-public elixir-json-serde
+  (package
+    (name "elixir-json-serde")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "json_serde" version))
+       (sha256
+        (base32 "08irad6l6v6rblxmzh5vcv087q1xim0rhzjl6x9ypz3fq7xcsyha"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-brex-result elixir-decimal elixir-jason))
+    (synopsis
+     "Serializes and deserializes nested datastructures")
+    (description
+     "@code{JsonSerde} serializes and deserializes nested Elixir datastructures,
+including custom structs.")
+    (home-page "https://hexdocs.pm/json_serde/")
+    (license license:asl2.0)))
+
 (define-public elixir-igniter
   (package
     (name "elixir-igniter")
