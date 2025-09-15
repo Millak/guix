@@ -5806,10 +5806,13 @@ PostreSQL, SQLite, ODBC and MySQL.")
        (sha256
         (base32 "11fzwcahc1bc8npxbif0448v9cwyf7k04167i7fcspmfw7a0hj0d"))))
     (build-system gnu-build-system)
+    (inputs (list unixodbc))
     (arguments
      ;; NOTE: (Sharlatan-20210110213908+0000) some tests require DB connection,
      ;; disabled for now.
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:configure-flags
+       (list (string-append "--with-unixodbc=" (assoc-ref %build-inputs "unixodbc")))))
     (home-page "https://www.freetds.org/")
     (synopsis "Client libraries for MS SQL and Sybase servers")
     (description
