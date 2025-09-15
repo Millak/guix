@@ -63,6 +63,31 @@ Earmark and @code{EarmarkParser} tests.")
     (home-page "https://hexdocs.pm/earmark_parser/")
     (license license:asl2.0)))
 
+(define-public elixir-earmark
+  (package
+    (name "elixir-earmark")
+    (version "1.4.47")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "earmark" version))
+       (sha256
+        (base32 "1y4qqq3bxim9b9jrpbdxpagsjs5whlig4zva6hxmznf2lazbx5iy"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-earmark-ast-dsl
+           elixir-excoveralls
+           elixir-floki
+           elixir-traverse))
+    (synopsis
+     "Elixir Markdown converter")
+    (description
+     "Earmark is a pure-Elixir Markdown converter.  It is intended to be used as a
+library (just call Earmark.as_html), but can also be used as a command-line tool
+(run mix escript.build first).  Output generation is pluggable.")
+    (home-page "https://hexdocs.pm/earmark/")
+    (license license:asl2.0)))
+
 (define-public elixir-easyhtml
   (package
     (name "elixir-easyhtml")
