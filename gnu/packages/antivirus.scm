@@ -83,6 +83,7 @@
                   (guix build cmake-build-system)
                   (guix build utils))
       #:phases
+      (with-extensions (list (cargo-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-cargo-build-system
             (lambda args
@@ -111,7 +112,7 @@
                 (substitute* "unit_tests/CMakeLists.txt"
                   (("clamd_test\\.py" test)
                    (string-append
-                    test " -k \"not test_clamd_08_VirusEvent\"")))))))))
+                    test " -k \"not test_clamd_08_VirusEvent\""))))))))))
     (native-inputs
      (append
       (list pkg-config
