@@ -474,6 +474,25 @@ writer and parser).")
     (home-page "https://hexdocs.pm/dialyxir/")
     (license license:asl2.0)))
 
+(define-public elixir-git-diff
+  (package
+    (name "elixir-git-diff")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "git_diff" version))
+       (sha256
+        (base32 "0prs08cf2dlswrhhkrja557dgs5jarhjkz86ldhfk4bc2cy5c1cy"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (synopsis "Simple parser for output from @command{git diff}")
+    (description
+     "This package provides a simple parser for output from @command{git diff}.")
+    (home-page "https://hexdocs.pm/git_diff/")
+    (license license:expat)))
+
 (define-public elixir-machete
   (package
     (name "elixir-machete")
