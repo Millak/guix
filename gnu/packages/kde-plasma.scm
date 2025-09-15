@@ -1811,7 +1811,7 @@ on top of Baloo.")
 (define-public oxygen-sounds
   (package
     (name "oxygen-sounds")
-    (version "6.3.4")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1819,7 +1819,7 @@ on top of Baloo.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0r90hrwib31wfv0mj42vf19c13642vb79m152rgps590i89yrkj9"))))
+                "1bb8ckgvxrcgnfi9argr1phf53mbl2n6yrnmybwq0zl0kbc14rb4"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))
     (native-inputs (list extra-cmake-modules))
