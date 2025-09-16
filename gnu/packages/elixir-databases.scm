@@ -94,6 +94,24 @@ configuration-driven @code{Ecto} schema extensibility.")
     (home-page "https://hexdocs.pm/exto/")
     (license license:asl2.0)))
 
+(define-public elixir-postgrex
+  (package
+    (name "elixir-postgrex")
+    (version "0.19.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "postgrex" version))
+       (sha256
+        (base32 "1y58v3jsya98462r43mv29wwgf3vv8dz9jn63q4iwf4gl62pib4b"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-db-connection elixir-decimal elixir-jason
+                             elixir-table))
+    (synopsis "PostgreSQL driver for Elixir")
+    (description "This library provides a @code{PostgreSQL} driver for Elixir.")
+    (home-page "https://hexdocs.pm/postgrex/")
+    (license license:asl2.0)))
+
 (define-public elixir-table
   (package
     (name "elixir-table")
