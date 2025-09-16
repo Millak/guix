@@ -522,19 +522,22 @@ Directory Specification.")
 (define-public xdg-utils
   (package
     (name "xdg-utils")
-    (version "1.1.3")
+    (version "1.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://portland.freedesktop.org/download/xdg-utils-"
-             version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.freedesktop.org/xdg/xdg-utils.git/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1nai806smz3zcb2l5iny4x7li0fak0rzmjg6vlyhdqm8z25b166p"))))
+         "0hnb523hiz8wy6gffapys6vw7h1xq50li0s31mvyv4v5nmp2bhg7"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list docbook-xsl docbook-xml-4.1.2
+     (list docbook-xsl
+           docbook-xml-4.1.2
+           docbook-xml-4.3
            libxslt xmlto w3m-for-tests))
     (inputs
      (list bash-minimal                 ;for 'wrap-program'
@@ -554,27 +557,27 @@ Directory Specification.")
                   ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
-        (add-after 'unpack 'patch-hardcoded-paths
-          (lambda* (#:key inputs #:allow-other-keys)
-            (substitute* "scripts/xdg-mime.in"
-              (("/usr/bin/file")
-               (search-input-file inputs "bin/file")))
-            (substitute* "scripts/xdg-open.in"
-              (("/usr/bin/printf")
-               (search-input-file inputs "bin/printf")))))
-        (add-after 'install 'wrap-executables
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let* ((dependencies '("awk" "grep" "hostname" "ls" "mimeopen"
-                                   "sed" "xprop" "xset"))
-                   (pkgs (map (lambda (cmd)
-                                (search-input-file inputs
-                                                   (string-append "bin/" cmd)))
-                              dependencies))
-                   (bindirs (map dirname pkgs)))
-              (with-directory-excursion (string-append #$output "/bin")
-                (for-each (cute wrap-program <>
-                                `("PATH" ":" prefix ,bindirs))
-                          (find-files ".")))))))))
+          (add-after 'unpack 'patch-hardcoded-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "scripts/xdg-mime.in"
+                (("/usr/bin/file")
+                 (search-input-file inputs "bin/file")))
+              (substitute* "scripts/xdg-open.in"
+                (("/usr/bin/printf")
+                 (search-input-file inputs "bin/printf")))))
+          (add-after 'install 'wrap-executables
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((dependencies '("awk" "grep" "hostname" "ls" "mimeopen"
+                                     "sed" "xprop" "xset"))
+                     (pkgs (map (lambda (cmd)
+                                  (search-input-file inputs
+                                                     (string-append "bin/" cmd)))
+                                dependencies))
+                     (bindirs (map dirname pkgs)))
+                (with-directory-excursion (string-append #$output "/bin")
+                  (for-each (cute wrap-program <>
+                                  `("PATH" ":" prefix ,bindirs))
+                            (find-files ".")))))))))
     (home-page "https://www.freedesktop.org/wiki/Software/xdg-utils/")
     (synopsis "Freedesktop.org scripts for desktop integration")
     (description "The xdg-utils package is a set of simple scripts that
