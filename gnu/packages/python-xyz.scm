@@ -32439,30 +32439,20 @@ memoization.")
 (define-public python-k5test
   (package
     (name "python-k5test")
-    (version "0.10.3")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "k5test" version))
        (sha256
-        (base32
-         "07sp9hc6nkbgzywvr2ivcik03wibs6gmxm1k33l1b8v3mnyfx7cw"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six
-           ;; `which`, `kadmin.local` binaries called inside library
-           which mit-krb5))
-    (native-inputs (list mit-krb5))
+        (base32 "0c7g9gk3vfgh1wbl4s1v15v283srsixkhgak7lxskxh2cqg4jlp1"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'apply-upstream-fixes
-           (lambda* _
-             (substitute* "k5test/realm.py"
-               ;; Upstream commit f6b302d94dbdce37a1b81cc3faeeac4dc637b0e9.
-               (("'kadmin_local'") "'kadmin.local'")
-               ;; Upstream commit 3aef84515cf3d1a171c66856c898d0a5cbbd03ea.
-               (("\\.stop_daemon") "._stop_daemon")))))))
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list mit-krb5))
     (home-page "https://github.com/pythongssapi/k5test")
     (synopsis "Library for setting up self-contained Kerberos 5 environments")
     (description
