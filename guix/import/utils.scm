@@ -78,6 +78,7 @@
             git-origin
             git->origin
             default-git-error
+            generate-git-source
 
             package-names->package-inputs
             maybe-inputs
@@ -237,6 +238,24 @@ LOCATION."
      #f)
     (_
      #f)))
+
+(define (generate-git-source repository version error-procedure)
+  "Try to download a given VERSION from a REPOSITORY url twice.  Call
+ERROR-PROCEDURE if both attempts fail."
+  (catch 'git-error
+    (lambda ()
+      (git->origin repository
+                   (peekable-lambda (version)
+                     (string-append "v" version))
+                   version))
+    (lambda (key . args)
+      ;; If tag fails, try with plain version string.
+      (catch 'git-error
+        (lambda ()
+          (git->origin repository
+                       (peekable-lambda (version) version)
+                       version))
+        error-procedure))))
 
 (define %spdx-license-identifiers
   ;; https://spdx.org/licenses/

@@ -26,8 +26,10 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix build-system)
+  #:use-module (guix tests git)
   #:use-module (gnu packages)
   #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 match))
 
 (test-begin "import-utils")
@@ -301,5 +303,45 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
   #f
   (let ((home-page "https://github.com/user/repo"))
     ((default-git-error home-page) '(some-other-error "message"))))
+
+;;;
+;;; generate-git-source
+;;;
+
+(define (test-generate-git-source git-version version)
+  "Helper to test generate-git-source. Creates a temporary git repository with
+GIT-VERSION tag, attempts to generate source for VERSION, and returns two
+values: the git-source commit S-expression, and a boolean indicating if the
+error procedure has been called."
+  (with-temporary-git-repository directory
+      `((add "README" "Initial commit")
+        (commit "First commit")
+        (tag ,git-version ,version))
+    (mock ((guix import utils) git-repository-url? (const #t))
+          (let* ((error-called? #f)
+                 (error-proc (lambda args
+                               (set! error-called? #t)
+                               #f)))
+            (match (generate-git-source directory version error-proc)
+              (`(origin
+                  (method git-fetch)
+                  (uri (git-reference (url ,url)
+                                      (commit ,commit-sexp)))
+                  . ,rest)
+               (values commit-sexp error-called?))
+              (_
+               (values #f error-called?)))))))
+
+(test-equal "generate-git-source: version with 'v' prefix tag"
+  '(string-append "v" version)
+  (test-generate-git-source "v1.0.0" "1.0.0"))
+
+(test-equal "generate-git-source: version without 'v' prefix tag"
+  'version
+  (test-generate-git-source "1.0.0" "1.0.0"))
+
+(test-assert "generate-git-source: calls error-procedure when tag not found"
+  (let ((sexp error-called? (test-generate-git-source "1.0.0" "2.0.0")))
+    error-called?))
 
 (test-end "import-utils")
