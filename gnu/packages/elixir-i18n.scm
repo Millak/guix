@@ -47,3 +47,23 @@
 @code{Macro}, @code{Math}, and @code{String} helpers for @code{ex_cldr}.")
     (home-page "https://hexdocs.pm/cldr_utils/")
     (license license:asl2.0)))
+
+(define-public elixir-digital-token
+  (package
+    (name "elixir-digital-token")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "digital_token" version))
+       (sha256
+        (base32 "1rp9r5jb0db52f969jmgv5sp8k0vd98dnqwrgca0fyzsqalgbmlf"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-cldr-utils elixir-jason))
+    (synopsis
+     "ISO 24165 Digital Tokens")
+    (description
+     "Elixir integration for ISO 24165 Digital Tokens (crypto currencies) through the
+DTIF registry data.")
+    (home-page "https://hexdocs.pm/digital_token/")
+    (license license:asl2.0)))
