@@ -919,7 +919,7 @@ release."
                       "guix/build-system/ruby.scm"
                       "guix/import/gem.scm"
                       "guix/scripts/import/gem.scm"
-                      "tests/gem.scm")))
+                      "tests/import/gem.scm")))
 
 (define-team rust
   (team 'rust

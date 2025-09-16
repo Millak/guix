@@ -301,7 +301,7 @@ guix/build/ruby-build-system\.scm                  @guix/ruby
 guix/build-system/ruby\.scm                        @guix/ruby
 guix/import/gem\.scm                               @guix/ruby
 guix/scripts/import/gem\.scm                       @guix/ruby
-tests/gem\.scm                                     @guix/ruby
+tests/import/gem\.scm                              @guix/ruby
 
 gnu/packages/(crates|rust)(-.+|)\.scm$             @guix/rust
 gnu/packages/sequoia\.scm                          @guix/rust
