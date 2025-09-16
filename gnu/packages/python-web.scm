@@ -5655,17 +5655,20 @@ addon for removing tracking fields from URLs.")
 (define-public python-urllib3
   (package
     (name "python-urllib3")
-    (version "2.2.1")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urllib3" version))
        (sha256
         (base32
-         "06fg8jj64lgxr2jrizzrsdvaf1avpg5qmhvnswhfbf8sqrv0hmyh"))))
+         "0q17z6zlpyjv9ax5c3d30qwp9fwhz2sc4gbb7yyd86g4qwrpgi1z"))))
     (build-system pyproject-build-system)
     (arguments `(#:tests? #f))
-    (native-inputs (list python-hatchling))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-setuptools-scm))
     (propagated-inputs
      (append
       ;; These 5 inputs are used to build urrlib3[secure]
