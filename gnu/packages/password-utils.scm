@@ -673,9 +673,10 @@ convert SSH @code{ed25519} keys to @code{age} keys.")
         (base32 "00k38n5vlxl73m11pp1v50fqf702lv86hzwgj0qca6qxqz4i3jjl"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--docdir=" (assoc-ref %outputs "out")
-                            "/share/doc/" ,name "-" ,version))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--docdir=" #$output "/share/doc/"
+                             #$name "-" #$version))))
     (inputs
      (list argon2 ncurses openssl))
     (native-inputs
