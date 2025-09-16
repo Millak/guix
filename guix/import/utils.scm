@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,9 @@
 
             url-fetch
             guix-hash-url
+
+            peekable-lambda
+            peek-body
 
             package-names->package-inputs
             maybe-inputs
@@ -164,6 +168,14 @@ thrown."
 (define (guix-hash-url filename)
   "Return the hash of FILENAME in nix-base32 format."
   (bytevector->nix-base32-string (file-sha256 filename)))
+
+(define-syntax-rule (peekable-lambda args this-body)
+  (lambda args
+    #((body . this-body))
+    this-body))
+
+(define (peek-body proc)
+  (procedure-property proc 'body))
 
 (define %spdx-license-identifiers
   ;; https://spdx.org/licenses/

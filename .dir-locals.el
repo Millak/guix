@@ -119,6 +119,7 @@
    (eval . (put 'call-with-port 'scheme-indent-function 1))
    (eval . (put 'guard 'scheme-indent-function 1))
    (eval . (put 'lambda* 'scheme-indent-function 1))
+   (eval . (put 'peekable-lambda 'scheme-indent-function 1))
    (eval . (put 'substitute* 'scheme-indent-function 1))
    (eval . (put 'match-record 'scheme-indent-function 3))
    (eval . (put 'match-record-lambda 'scheme-indent-function 2))
