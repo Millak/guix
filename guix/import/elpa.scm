@@ -44,10 +44,8 @@
   #:use-module (guix import utils)
   #:use-module (guix http-client)
   #:use-module (guix git)
-  #:use-module (guix hash)
   #:use-module (guix store)
   #:use-module ((guix utils) #:select (downstream-package-name))
-  #:use-module (guix base32)
   #:use-module (guix upstream)
   #:use-module (guix packages)
   #:use-module (guix memoization)
@@ -370,8 +368,7 @@ type '<elpa-package>'."
                         (sha256
                          (base32
                           ,(if tarball
-                               (bytevector->nix-base32-string
-                                (file-hash* tarball #:recursive? #false))
+                               (guix-hash-url tarball)
                                "failed to download package")))))))
       (build-system emacs-build-system)
       ,@(maybe-inputs 'propagated-inputs dependencies)
