@@ -32465,23 +32465,26 @@ tests.")
 (define-public python-gssapi
   (package
     (name "python-gssapi")
-    (version "1.8.2")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gssapi" version))
        (sha256
-        (base32
-         "16n86nr19s95czvc1a9mdhs1kiq77qkcjp2c1rk5h4f93h10m3mp"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-decorator python-six))
+        (base32 "0qvpsx5kq746gixa7phxikkxmir3wy5dj94phg93mvhbq86mwjgi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "--pyargs" "gssapi")))
+    (native-inputs
+     (list python-cython
+           python-k5test
+           python-parameterized
+           python-pytest
+           python-setuptools))
     (inputs
      (list mit-krb5))
-    ;; for tests
-    (native-inputs
-     (list python-parameterized python-k5test python-nose
-           python-cython))
+    (propagated-inputs
+     (list python-decorator))
     (home-page "https://github.com/pythongssapi/python-gssapi")
     (synopsis "Python GSSAPI Wrapper")
     (description
