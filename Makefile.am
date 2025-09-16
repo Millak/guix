@@ -570,12 +570,12 @@ SCM_TESTS =					\
   tests/import/egg.scm				\
   tests/import/elm.scm				\
   tests/import/gem.scm				\
+  tests/import/git.scm				\
   tests/import/hackage.scm			\
   tests/import/pypi.scm				\
   tests/home-import.scm				\
   tests/home-services.scm			\
   tests/http-client.scm				\
-  tests/import-git.scm				\
   tests/import-github.scm			\
   tests/import-utils.scm			\
   tests/inferior.scm				\
