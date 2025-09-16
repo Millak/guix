@@ -94,6 +94,26 @@ configuration-driven @code{Ecto} schema extensibility.")
     (home-page "https://hexdocs.pm/exto/")
     (license license:asl2.0)))
 
+(define-public elixir-myxql
+  (package
+    (name "elixir-myxql")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "myxql" version))
+       (sha256
+        (base32 "0x6p8hn2lx7lplim4w10l1vq2d7rwkqg972ias3hzkdkdyrcxh0y"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list erlang-binpp))
+    (propagated-inputs (list elixir-db-connection elixir-decimal elixir-geo elixir-jason
+                        elixir-table))
+    (synopsis "MySQL 5.5+ driver for Elixir")
+    (description "This library provides a @code{MySQL} 5.5+ driver for Elixir.")
+    (home-page "https://hexdocs.pm/myxql/")
+    (license license:asl2.0)))
+
 (define-public elixir-postgrex
   (package
     (name "elixir-postgrex")
