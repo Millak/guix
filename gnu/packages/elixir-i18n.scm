@@ -67,3 +67,29 @@
 DTIF registry data.")
     (home-page "https://hexdocs.pm/digital_token/")
     (license license:asl2.0)))
+
+(define-public elixir-ex-cldr-minimal
+  (package
+    (name "elixir-ex-cldr-minimal")
+    (version "2.43.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr" version))
+       (sha256
+        (base32 "0ai765853c2zjmrwni9j0753c8fv9431na93gpvnc488pnkkfl89"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-stream-data))
+    (propagated-inputs
+     (list elixir-cldr-utils elixir-decimal elixir-gettext elixir-jason
+           elixir-nimble-parsec))
+    (synopsis
+     "Common Locale Data Repository (CLDR) functions for Elixir")
+    (description
+     "Common Locale Data Repository (CLDR) functions for Elixir to localize and format
+numbers, dates, lists, messages, languages, territories and units with support
+for over 700 locales for internationalized (i18n) and localized (L10N)
+applications.")
+    (home-page "https://hexdocs.pm/ex_cldr/")
+    (license license:asl2.0)))
