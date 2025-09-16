@@ -151,6 +151,24 @@ configuration-driven @code{Ecto} schema extensibility.")
     (home-page "https://hexdocs.pm/exto/")
     (license license:asl2.0)))
 
+(define-public elixir-geo-postgis
+  (package
+    (name "elixir-geo-postgis")
+    (version "3.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "geo_postgis" version))
+       (sha256
+        (base32 "102j81g58wb8skdpa5vggp2kcwdva8qf0nyxkpzbfd8dc0y843f2"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ecto elixir-geo elixir-jason elixir-poison
+                             elixir-postgrex))
+    (synopsis "PostGIS extension for Postgrex.")
+    (description "@code{PostGIS} extension for Postgrex.")
+    (home-page "https://hexdocs.pm/geo_postgis/")
+    (license license:expat)))
+
 (define-public elixir-myxql
   (package
     (name "elixir-myxql")
