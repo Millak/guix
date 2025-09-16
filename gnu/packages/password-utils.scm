@@ -506,18 +506,18 @@ platforms.")
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       ;; FIXME: skip failing test suite (requires write access to /tmp),
-       ;; patching path does not help somehow.
-       `(#:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'bootstrap
-             (lambda _
-               (invoke "aclocal")
-               (invoke "autoheader")
-               (invoke "automake" "--add-missing")
-               (invoke "autoconf")
-               #t)))))
+       (list
+        ;; FIXME: skip failing test suite (requires write access to /tmp),
+        ;; patching path does not help somehow.
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                (invoke "aclocal")
+                (invoke "autoheader")
+                (invoke "automake" "--add-missing")
+                (invoke "autoconf"))))))
       (native-inputs
        (list autoconf automake))
       (inputs
