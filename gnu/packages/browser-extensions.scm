@@ -263,7 +263,7 @@ fill and submit login forms if a matching password entry is found.")
 (define keepassxc-browser
   (package
     (name "keepassxc-browser")
-    (version "1.9.9.1")
+    (version "1.9.9.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -273,7 +273,7 @@ fill and submit login forms if a matching password entry is found.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12m7j7gz5gdhlv3paj9mmv9nb94cf80lridipmbdvk9shr43d0ag"))
+                "1chw1y1332zn69s7kf5mkljc1bp2xfvl3zzvafnalv3zj2jsa5cs"))
 	      ;;  Default 'manifest.json' targets chromium based browsers and
 	      ;;  depends on background.service_worker support.
 	      ;;  See: <https://bugzilla.mozilla.org/show_bug.cgi?id=1573659>
