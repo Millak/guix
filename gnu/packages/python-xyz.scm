@@ -31244,17 +31244,25 @@ functions that aim to reduce boilerplate when working with data.")
 (define-public python-annoy
   (package
     (name "python-annoy")
-    (version "1.15.1")
+    (version "1.17.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "annoy" version))
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/spotify/annoy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1rxn6snn0r32r07g45hdjhh8aa1xzx6fjrm8g62d8vzp46z7rzrp"))))
-    (build-system python-build-system)
+        (base32 "1zmdp1dws3i35a0psb10k6rkh3iaiq8s9ybxibvfjihbapidd4d0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Requires python-h5py
+     (list #:test-flags #~(list "--ignore=test/accuracy_test.py")))
     (native-inputs
-     (list python-nose))
+     (list ;; python-h5py
+           python-numpy
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/spotify/annoy/")
     (synopsis "Approximate nearest neighbors library")
     (description
