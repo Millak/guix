@@ -3785,7 +3785,7 @@ minimum contrast levels, and more.")
 (define-public rabbitmqadmin
   (package
     (name "rabbitmqadmin")
-    (version "2.3.0")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3794,10 +3794,11 @@ minimum contrast levels, and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17x28ph4bgdkv66jv4b2nqwixbmi3j2ld4m842jqp808f0nwj7r7"))))
+        (base32 "04czi8s6nflvp1n2p1fl2wk6jqi0gsi7j52m4dnr6hvzf1mcn91n"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:tests? #f         ;Tests require local instance of RabbitMQ broker.
+     (list #:rust rust-1.88
+           #:tests? #f         ;Tests require local instance of RabbitMQ broker.
            #:install-source? #f))
     (inputs (cons* mimalloc openssl (cargo-inputs 'rabbitmqadmin)))
     (home-page "https://www.rabbitmq.com/docs/management-cli")
