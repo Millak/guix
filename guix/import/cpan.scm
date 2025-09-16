@@ -30,15 +30,13 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (json)
-  #:use-module (gcrypt hash)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (guix store)
   #:use-module (guix utils)
-  #:use-module (guix base32)
   #:use-module ((guix download) #:select (download-to-store url-fetch))
   #:use-module ((guix import utils)
-                #:select (factorize-uri recursive-import))
+                #:select (factorize-uri guix-hash-url recursive-import))
   #:use-module (guix import json)
   #:use-module (guix packages)
   #:use-module (guix upstream)
@@ -293,12 +291,12 @@ in RELEASE, a <cpan-release> record."
            `(package
               (name ,(cpan-name->downstream-name name))
               (version ,version)
-              (source (origin
-                        (method url-fetch)
-                        (uri (string-append ,@(factorize-uri source-url version)))
-                        (sha256
-                          (base32
-                            ,(bytevector->nix-base32-string (file-sha256 tarball))))))
+              (source
+               (origin
+                 (method url-fetch)
+                 (uri (string-append ,@(factorize-uri source-url version)))
+                 (sha256
+                  (base32 ,(guix-hash-url tarball)))))
               (build-system perl-build-system)
               ,@(maybe-inputs 'native-inputs
                               (filter (upstream-input-type-predicate 'native)
