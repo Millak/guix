@@ -150,6 +150,26 @@ configuration-driven @code{Ecto} schema extensibility.")
     (home-page "https://hexdocs.pm/myxql/")
     (license license:asl2.0)))
 
+(define-public elixir-needle-ulid
+  (package
+    (name "elixir-needle-ulid")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "needle_ulid" version))
+       (sha256
+        (base32 "14ryrgsabj08v1a0wyad21aizyy8kcr0n1l1z6ks6fvv4v2hskfm"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ecto elixir-ecto-sql elixir-ex-ulid))
+    (synopsis
+     "Provides an ULID datatype for @code{Ecto} and related helpers")
+    (description
+     "This package provides @code{elixir-needle-ulid}, a library implementing an
+ULID datatype for @code{Ecto} (using @code{ex_ulid}) and related helpers.")
+    (home-page "https://hexdocs.pm/needle_ulid/")
+    (license license:expat)))
+
 (define-public elixir-postgrex
   (package
     (name "elixir-postgrex")
