@@ -7689,23 +7689,22 @@ and paired-end bulk or single-cell sequencing data with any read length.")
   (package
     (name "python-airr")
     (version "1.5.1")
-    (home-page "https://pypi.org/project/airr/")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "airr" version))
        (sha256
-        (base32
-         "0jbigfdwa23xv5riw0ljdfq2qwg1b2fav2kfi81zxd1g1jprxy3i"))))
+        (base32 "0jbigfdwa23xv5riw0ljdfq2qwg1b2fav2kfi81zxd1g1jprxy3i"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-jsondiff
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-pandas
            python-pyyaml
            python-yamlordereddictloader))
-    (native-inputs
-     (list python-jsondiff
-           python-setuptools
-           python-wheel))
+    (home-page "http://docs.airr-community.org")
     (synopsis "Data Representation Standard library for antibody and TCR sequences")
     (description "Python-airr provides a library by the AIRR community to for
 describing, reporting, storing, and sharing adaptive immune receptor
