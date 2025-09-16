@@ -88,6 +88,34 @@ Repository (CLDR).")
     (home-page "https://hexdocs.pm/ex_cldr_currencies/")
     (license license:asl2.0)))
 
+(define-public elixir-ex-cldr-lists
+  (package
+    (name "elixir-ex-cldr-lists")
+    (version "2.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr_lists" version))
+       (sha256
+        (base32 "1qmdnk8am9dy6k4z93svq7lz288cwmi8aswsn4c3zjqca421q5h0"))))
+    (build-system mix-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'override-mix-env
+            (lambda _
+              (symlink (string-append (getcwd) "/config/release.exs")
+                       "config/prod.exs"))))))
+    (propagated-inputs (list elixir-ex-cldr-numbers elixir-ex-doc elixir-jason))
+    (synopsis
+     "List formatting functions for @code{ex_cldr}.")
+    (description
+     "List formatting functions for the Common Locale Data Repository (CLDR) package
+@code{ex_cldr}.")
+    (home-page "https://hexdocs.pm/ex_cldr_lists/")
+    (license license:asl2.0)))
+
 (define-public elixir-ex-cldr-minimal
   (package
     (name "elixir-ex-cldr-minimal")
