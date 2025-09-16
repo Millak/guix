@@ -9997,14 +9997,14 @@ and integrated feature-set for programming Python effectively.")
 (define-public python-black
   (package
     (name "python-black")
-    (version "24.10.0")
+    (version "25.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "black" version))
        (sha256
         (base32
-         "0xa8vkgbvmkdh4vsk967xh81i6g47fcqf5vngdkvrqxgjx6acvl4"))))
+         "0ri6xhcrm39c7q5si4wvx1fkq98mvbl4larmj4rxfai2s5f6sj9k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10021,16 +10021,14 @@ and integrated feature-set for programming Python effectively.")
                 (string-append
                  "#!" (search-input-file inputs "/bin/python3")))))))))
     (propagated-inputs
-     (list python-click
+     (list python-aiohttp
+           python-click
            python-mypy-extensions
            python-packaging
            python-pathspec
-           python-platformdirs
-           python-tomli
-           python-typing-extensions))
+           python-platformdirs))
     (native-inputs
      (list python-pytest
-           python-pytest-aiohttp
            python-pytest-xdist
            python-hatch-fancy-pypi-readme
            python-hatch-vcs
