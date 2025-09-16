@@ -1032,30 +1032,31 @@ from the @code{password-store} package.  Files are encrypted with the
          "0rrs3iazq80dn0wbl20xkh270428jd8l99m5gd7hl93s4r4sc82p"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       (let* ((out      (assoc-ref %outputs "out"))
-              (bashcomp (string-append out "/etc/bash_completion.d")))
-         (list (string-append "PREFIX=" %output)
-               (string-append "BASHCOMPDIR=" bashcomp)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'build 'patch-oath-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "otp.bash"
-               (("^OATH=.*$")
-                (string-append
-                 "OATH="
-                 (assoc-ref inputs "oath-toolkit")
-                 "/bin/oathtool\n"))
-               ;; courtesy: https://github.com/tadfisher/pass-otp/pull/172
-               (("&counter=[$]counter" all)
-                (format #f "~s" all))))))
-       #:test-target "test"))
-    (inputs
-     (list oath-toolkit))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append
+               "BASHCOMPDIR="
+               (string-append #$output "/etc/bash_completion.d")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'build 'patch-oath-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "otp.bash"
+                (("^OATH=.*$")
+                 (string-append
+                  "OATH="
+                  (assoc-ref inputs "oath-toolkit")
+                  "/bin/oathtool\n"))
+                ;; courtesy: https://github.com/tadfisher/pass-otp/pull/172
+                (("&counter=[$]counter" all)
+                 (format #f "~s" all))))))
+      #:test-target "test"))
     (native-inputs
      (list password-store expect git gnupg which))
+    (inputs
+     (list oath-toolkit))
     (home-page "https://github.com/tadfisher/pass-otp")
     (synopsis "Pass extension for managing one-time-password (OTP) tokens")
     (description
