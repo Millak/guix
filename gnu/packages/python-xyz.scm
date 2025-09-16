@@ -33691,17 +33691,17 @@ Open Sound Control 1.0} specification.")
 (define-public python-voluptuous
   (package
     (name "python-voluptuous")
-    (version "0.11.7")
+    (version "0.15.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "voluptuous" version))
-        (sha256
-          (base32
-            "0mplkcpb5d8wjf8vk195fys4y6a3wbibiyf708imw33lphfk9g1a"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "voluptuous" version))
+       (sha256
+        (base32 "1akr0adq9can0ibravqzl4aaf20rgv47g9gk596hn8ykqhrapz3g"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nose))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/alecthomas/voluptuous")
     (synopsis "Python data validation library")
     (description
