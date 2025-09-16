@@ -24,8 +24,6 @@
   #:use-module (guix import utils)
   #:use-module (guix i18n)
   #:use-module (guix store)
-  #:use-module (gcrypt hash)
-  #:use-module (guix base32)
   #:use-module (guix upstream)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -87,14 +85,13 @@ download policy (see 'download-tarball' for details.)"
        `(package
           (name ,name)
           (version ,(upstream-source-version release))
-          (source (origin
-                    (method url-fetch)
-                    (uri (string-append ,url-base version
-                                        ,(string-append ".tar." archive-type)))
-                    (sha256
-                     (base32
-                      ,(bytevector->nix-base32-string
-                        (file-sha256 tarball))))))
+          (source
+           (origin
+             (method url-fetch)
+             (uri (string-append ,url-base version
+                                 ,(string-append ".tar." archive-type)))
+             (sha256
+              (base32 (guix-hash-url tarball)))))
           (build-system gnu-build-system)
           (synopsis ,(gnu-package-doc-summary package))
           (description ,(beautify-description
