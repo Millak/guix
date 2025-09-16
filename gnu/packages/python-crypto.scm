@@ -340,59 +340,21 @@ production use.  Include this module and use its backends at your own risk.")
     (arguments
      (list
       #:install-source? #f
+      #:imported-modules `(,@%pyproject-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules `((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'build-python-module
-            (lambda _
-              ;; We don't use maturin.
-              (delete-file "pyproject.toml")
-              (call-with-output-file "pyproject.toml"
-                (lambda (port)
-                  (format port "\
-[build-system]
-build-backend = 'setuptools.build_meta'
-requires = ['setuptools']
-")))
-              (call-with-output-file "setup.cfg"
-                (lambda (port)
-                  (format port "\
-
-[metadata]
-name = blake3
-version = ~a
-
-[options]
-packages = find:
-
-[options.packages.find]
-exclude =
-  src*
-  c_impl*
-  tests*
-  Cargo.toml
-" #$version)))
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (add-after 'build 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (add-after 'install-python-module 'install-python-library
-            (lambda _
-              (let ((site (string-append #$output "/lib/python"
-                                         #$(version-major+minor
-                                            (package-version python))
-                                         "/site-packages")))
-                (mkdir-p site)
-                (copy-file "target/release/libblake3.so"
-                           (string-append site "/blake3.so"))))))))
-    (inputs (cargo-inputs 'python-blake3))
+            (assoc-ref py:%standard-phases 'install)))))
     (native-inputs
      (list python-wrapper
-           python-pypa-build
-           python-wheel))
+           maturin))
+    (inputs (cargo-inputs 'python-blake3))
     (home-page "https://github.com/oconnor663/blake3-py")
     (synopsis "Python bindings for the Rust blake3 crate")
     (description "This package provides Python bindings for the Rust crate of
