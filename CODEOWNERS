@@ -172,7 +172,7 @@ guix/build-system/go\.scm                          @guix/go
 guix/build/go-build-system\.scm                    @guix/go
 guix/import/go\.scm                                @guix/go
 guix/scripts/import/go\.scm                        @guix/go
-tests/go\.scm                                      @guix/go
+tests/import/go\.scm                               @guix/go
 
 gnu/packages/dhall\.scm                            @guix/haskell
 gnu/packages/haskell(-.+|)\.scm$                   @guix/haskell

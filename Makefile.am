@@ -635,9 +635,9 @@ SCM_TESTS =					\
   tests/workers.scm
 
 if HAVE_GUILE_LIB
-SCM_TESTS += tests/go.scm
+SCM_TESTS += tests/import/go.scm
 else
-EXTRA_DIST += tests/go.scm
+EXTRA_DIST += tests/import/go.scm
 endif
 
 if BUILD_DAEMON_OFFLOAD

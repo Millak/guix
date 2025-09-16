@@ -668,7 +668,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
                       "guix/build/go-build-system.scm"
                       "guix/import/go.scm"
                       "guix/scripts/import/go.scm"
-                      "tests/go.scm")))
+                      "tests/import/go.scm")))
 
 (define-team haskell
   (team 'haskell
