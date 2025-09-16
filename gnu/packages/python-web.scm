@@ -6574,16 +6574,11 @@ S3.")
               ;; Tests require networking.
               "--ignore" "tests/integration")))
     (native-inputs
-     (list python-docutils
-           python-mock
-           python-nose
-           python-pytest
+     (list python-pytest
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-botocore
-           python-urllib3))
+     (list python-botocore))
     (home-page "https://github.com/boto/s3transfer")
     (synopsis "Amazon S3 Transfer Manager")
     (description
