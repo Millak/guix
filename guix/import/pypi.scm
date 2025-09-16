@@ -40,13 +40,12 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-71)
-  #:autoload   (gcrypt hash) (port-sha256)
   #:autoload   (guix base16) (base16-string->bytevector)
   #:autoload   (guix base32) (bytevector->nix-base32-string)
   #:autoload   (guix derivations) (built-derivations
                                    derivation->output-path)
   #:autoload   (guix gexp) (lower-object)
-  #:autoload   (guix http-client) (http-fetch)
+  #:use-module ((guix download) #:select (download-to-store))
   #:use-module (guix utils)
   #:use-module (guix memoization)
   #:use-module (guix monads)
@@ -599,6 +598,9 @@ VERSION."
                             distribution-url))
          (sha256 (and=> (source-release pypi-package version)
                         distribution-sha256))
+         (sha256 (or (and=> sha256 bytevector->nix-base32-string)
+                     (guix-hash-url (with-store store
+                                      (download-to-store store source-url)))))
          (source (pypi-package->upstream-source pypi-package version)))
     (values
      `(package
@@ -616,13 +618,8 @@ VERSION."
                  ,@(if (string-suffix? ".zip" source-url)
                        '(".zip")
                        '())))
-           (sha256 (base32
-                    ,(and=> (or sha256
-                                (let* ((port (http-fetch source-url))
-                                       (hash (port-sha256 port)))
-                                  (close-port port)
-                                  hash))
-                            bytevector->nix-base32-string)))))
+           (sha256
+            (base32 ,sha256))))
         ,@(maybe-upstream-name name)
         (build-system pyproject-build-system)
         ,@(maybe-inputs (upstream-source-propagated-inputs source)
