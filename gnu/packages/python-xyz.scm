@@ -28443,32 +28443,37 @@ syntax validity, but for weirdnesses like key repetition and cosmetic problems
 such as lines length, trailing spaces, indentation, etc.")
     (license license:gpl3+)))
 
+;; XXX: Deprecated, the <https://github.com/Phynix/yamlloader> project provide
+;; an improved version of this library with unit tests, performance
+;; improvements (by providing access to the C implementation of PyYAML) and is
+;; more actively developed.
 (define-public python-yamlordereddictloader
   (package
     (name "python-yamlordereddictloader")
     (version "0.4.2")
-    (home-page "https://github.com/fmenabe/python-yamlordereddictloader")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url home-page)
+              (url "https://github.com/fmenabe/python-yamlordereddictloader")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1rwvasdmfq7lbd2bm7vmx759fv535cp5ndyhf845fqd86mr7a94c"))))
+        (base32 "1rwvasdmfq7lbd2bm7vmx759fv535cp5ndyhf845fqd86mr7a94c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-pyyaml))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+    (home-page "https://github.com/fmenabe/python-yamlordereddictloader")
     (synopsis "Loader and a dumper for PyYAML")
-    (description "yamlordereddictloader is a python package that provides a
-loader and a dumper for PyYAML allowing to keep items order when loading a
-file (by putting them in OrderedDict objects) and to manage OrderedDict
-objects when dumping to a file.")
+    (description
+     "yamlordereddictloader is a Python package that provides a loader and a
+dumper for PyYAML allowing to keep items order when loading a file (by putting
+them in OrderedDict objects) and to manage OrderedDict objects when dumping to
+a file.")
     (license license:expat)))
 
 (define-public python-yapf
