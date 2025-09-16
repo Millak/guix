@@ -164,6 +164,68 @@ Data Repository (CLDR).")
     (home-page "https://hexdocs.pm/ex_cldr_numbers/")
     (license license:asl2.0)))
 
+(define-public elixir-ex-cldr-territories
+  (package
+    (name "elixir-ex-cldr-territories")
+    (version "2.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr_territories" version))
+       (sha256
+        (base32 "0gyka7fyfcl959x20xzilzf7pzifj9r1j7hh33a80dm2b7h0mv4k"))))
+    (build-system mix-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'override-mix-env
+            (lambda _
+              (symlink (string-append (getcwd) "/config/release.exs")
+                       "config/prod.exs"))))))
+    (propagated-inputs (list elixir-ex-cldr elixir-jason))
+    (synopsis
+     "Terrritory formatting functions")
+    (description
+     "Terrritory formatting functions for the Common Locale Data Repository (CLDR)
+package @code{ex_cldr}.")
+    (home-page "https://hexdocs.pm/ex_cldr_territories/")
+    (license license:expat)))
+
+(define-public elixir-ex-cldr-units
+  (package
+    (name "elixir-ex-cldr-units")
+    (version "3.19.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr_units" version))
+       (sha256
+        (base32 "1y7i5gwa1d5p11dgyv9il9ii4yhjf79c4l0gwpcmkh8ybip3n0k3"))))
+    (build-system mix-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'override-mix-env
+            (lambda _
+              (symlink (string-append (getcwd) "/config/release.exs")
+                       "config/prod.exs"))))))
+    (propagated-inputs
+     (list elixir-cldr-utils
+           elixir-decimal
+           elixir-ex-cldr-lists
+           elixir-ex-cldr-numbers
+           elixir-ex-doc
+           elixir-jason))
+    (synopsis
+     "Unit formatting (volume, area, length), conversion and arithmetic")
+    (description
+     "Unit formatting (volume, area, length), conversion and arithmetic functions
+based upon the Common Locale Data Repository (CLDR).")
+    (home-page "https://hexdocs.pm/ex_cldr_units/")
+    (license license:asl2.0)))
+
 (define-public elixir-ex-cldr
   (package
     (inherit elixir-ex-cldr-minimal)
