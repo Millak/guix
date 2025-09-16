@@ -803,48 +803,46 @@ command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
   (package
     (name "assword")
     (version "0.11")
-    (source (origin
-              (method url-fetch)
-              (uri (list
-                    (string-append
-                     "http://http.debian.net/debian/pool/main/a/assword/"
-                     "assword_" version ".orig.tar.gz")))
-              (sha256
-               (base32
-                "03gkb6kvsghznbcw5l7nmrc6mn3ixkjd5jcs96ni4zs9l47jf7yp"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list
+             (string-append
+              "http://http.debian.net/debian/pool/main/a/assword/"
+              "assword_" version ".orig.tar.gz")))
+       (sha256
+        (base32
+         "03gkb6kvsghznbcw5l7nmrc6mn3ixkjd5jcs96ni4zs9l47jf7yp"))))
     (arguments
-     `(;; irritatingly, tests do run but not there are two problems:
-       ;;  - "import gtk" fails for unknown reasons here despite it the
-       ;;    program working (indeed, I've found I have to do a logout and log
-       ;;    back in in after an install order for some mumbo jumbo environment
-       ;;    variable mess to work with pygtk and assword... what's up with
-       ;;    that?)
-       ;;  - even when the tests fail, they don't return a nonzero status,
-       ;;    so I'm not sure how to programmatically get that information
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-assword
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog            (string-append
-                                     (assoc-ref outputs "out")
-                                     "/bin/assword"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))))
-         (add-after 'install 'manpage
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "assword.1")
-             (install-file
-              "assword.1"
-              (string-append (assoc-ref outputs "out") "/share/man/man1")))))))
+     (list
+      ;; irritatingly, tests do run but not there are two problems:
+      ;;  - "import gtk" fails for unknown reasons here despite it the
+      ;;    program working (indeed, I've found I have to do a logout and log
+      ;;    back in in after an install order for some mumbo jumbo environment
+      ;;    variable mess to work with pygtk and assword... what's up with
+      ;;    that?)
+      ;;  - even when the tests fail, they don't return a nonzero status,
+      ;;    so I'm not sure how to programmatically get that information
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-assword
+            (lambda _
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append #$output "/bin/assword")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))))
+          (add-after 'install 'manpage
+            (lambda _
+              (invoke "make" "assword.1")
+              (install-file "assword.1"
+                            (string-append #$output "/share/man/man1")))))))
     (build-system python-build-system)
-    (native-inputs
-     (list txt2man))
     (inputs
      (list bash-minimal gtk+ python-xdo python-gpg python-pygobject))
     (propagated-inputs
      (list xclip))
+    (native-inputs
+     (list txt2man))
     (home-page "https://finestructure.net/assword/")
     (synopsis "Password manager")
     (description "assword is a simple password manager using GPG-wrapped
