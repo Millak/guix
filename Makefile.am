@@ -570,6 +570,7 @@ SCM_TESTS =					\
   tests/import/elpa.scm				\
   tests/import/gem.scm				\
   tests/import/git.scm				\
+  tests/import/github.scm			\
   tests/import/hackage.scm			\
   tests/import/hexpm.scm			\
   tests/import/opam.scm				\
@@ -578,7 +579,6 @@ SCM_TESTS =					\
   tests/home-import.scm				\
   tests/home-services.scm			\
   tests/http-client.scm				\
-  tests/import-github.scm			\
   tests/import-utils.scm			\
   tests/inferior.scm				\
   tests/ipfs.scm				\
