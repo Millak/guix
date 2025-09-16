@@ -25939,8 +25939,8 @@ an array-based heap.")
          (file-name (git-file-name "proc-parse" version))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("babel" ,sbcl-babel)))
+       (list sbcl-alexandria
+             sbcl-babel))
       (native-inputs
        (list sbcl-prove))
       (arguments
