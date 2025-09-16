@@ -316,13 +316,13 @@ the hash of the Cabal file."
      `(package
         (name ,(hackage-name->package-name name))
         (version ,version)
-        (source (origin
-                  (method url-fetch)
-                  (uri (hackage-uri ,name version))
-                  (sha256
-                   (base32
-                    ,(if tarball
-                         (bytevector->nix-base32-string (file-sha256 tarball))
+        (source
+         (origin
+           (method url-fetch)
+           (uri (hackage-uri ,name version))
+           (sha256
+            (base32 ,(if tarball
+                         (guix-hash-url tarball)
                          "failed to download tar archive")))))
         (build-system haskell-build-system)
         (properties '((upstream-name . ,name)))
