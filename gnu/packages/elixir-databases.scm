@@ -53,3 +53,23 @@ handling transaction, prepare/execute, cursors and client process
 describe/encode/decode.")
     (home-page "https://hexdocs.pm/db_connection/")
     (license license:asl2.0)))
+
+(define-public elixir-ecto
+  (package
+    (name "elixir-ecto")
+    (version "3.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ecto" version))
+       (sha256
+        (base32 "0ghb9a4mgiak6103vks6w013sa7kg8dhirxpwxbgy4q56y8r57b6"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-decimal elixir-jason erlang-telemetry))
+    (synopsis
+     "Toolkit for data mapping and language integrated query for Elixir")
+    (description
+     "This package provides a toolkit for data mapping and language integrated query
+for Elixir.")
+    (home-page "https://hexdocs.pm/ecto/")
+    (license license:asl2.0)))
