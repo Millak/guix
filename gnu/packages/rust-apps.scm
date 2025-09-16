@@ -620,14 +620,16 @@ through tools like `gdb`.")
 (define-public codeberg-cli
   (package
     (name "codeberg-cli")
-    (version "0.4.11")
+    (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (crate-uri "codeberg-cli" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/Aviac/codeberg-cli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1l0pi9va2jdja3qxzxii0jf0hjph4f0rn04dcb6j2qpbmdmg8jr0"))))
+        (base32 "18va0d0aw4yb5ccl16zndjprnmpz3cqkrfsq4ba4jvf786zgwfkr"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -673,7 +675,7 @@ through tools like `gdb`.")
            '())
       (list pkg-config)))
     (inputs
-     (cons* libgit2-1.8 libssh2 openssl zlib (cargo-inputs 'codeberg-cli)))
+     (cons* libgit2-1.9 libssh2 openssl zlib (cargo-inputs 'codeberg-cli)))
     (home-page "https://codeberg.org/Aviac/codeberg-cli")
     (synopsis "CLI Tool for codeberg similar to gh and glab")
     (description
