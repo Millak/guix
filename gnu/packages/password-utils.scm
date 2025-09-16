@@ -589,37 +589,41 @@ client, supporting @acronym{TOTP, Time-based one time passwords} and
   (package
     (name "shroud")
     (version "0.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://files.dthompson.us/shroud/shroud-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1l2shrhvcwfzkar9qiwb75nhcqmx25iz55lzmz0c187nbjhqzi9p"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://files.dthompson.us/shroud/shroud-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1l2shrhvcwfzkar9qiwb75nhcqmx25iz55lzmz0c187nbjhqzi9p"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 popen)
+                  (ice-9 rdelim))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-shroud
+            (lambda _
+              (let* ((effective
+                      (read-line
+                       (open-pipe*
+                        OPEN_READ
+                        (string-append #$(this-package-input "guile")
+                                       "/bin/guile")
+                        "-c" "(display (effective-version))")))
+                     (ccachedir (string-append #$output
+                                               "/lib/guile/" effective
+                                               "/site-ccache")))
+                (wrap-program (string-append #$output "/bin/shroud")
+                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,ccachedir)))))))))
+    (inputs
+     (list bash-minimal guile-2.2 gnupg xclip))
     (native-inputs
      (list pkg-config))
-    (arguments
-     `(#:modules ((guix build gnu-build-system)
-                    (guix build utils)
-                    (ice-9 popen)
-                    (ice-9 rdelim))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-shroud
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (guile (assoc-ref inputs "guile"))
-                    (effective (read-line
-                                (open-pipe* OPEN_READ
-                                            (string-append guile "/bin/guile")
-                                            "-c" "(display (effective-version))")))
-                    (ccachedir (string-append out
-                                             "/lib/guile/" effective "/site-ccache"))
-                    (prog      (string-append out "/bin/shroud")))
-               (wrap-program prog
-                 `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,ccachedir)))))))))
-    (inputs (list bash-minimal guile-2.2 gnupg xclip))
     (synopsis "GnuPG-based secret manager")
     (description "Shroud is a simple secret manager with a command line
 interface.  The password database is stored as a Scheme s-expression and
