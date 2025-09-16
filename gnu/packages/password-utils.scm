@@ -969,45 +969,44 @@ through the pass command.")
         (base32 "1ap2i08zjvacd2rllrsx9bw3zz5i99bk0i5yxrssvn6w60bwjqdl"))))
     (build-system copy-build-system)
     (arguments
-     '(#:modules
-       ((guix build copy-build-system)
-        (guix build utils)
-        (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'rename-script
-           (lambda _
-             (rename-file "src/password-store.sh"
-                          "src/passage")))
-         (add-after 'install 'wrap-script
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (script (string-append out "/bin/passage")))
-               (substitute* script
-                 ;; Avoid ugly ‘.passage-real’ in --help output and elsewhere.
-                 (("^(PROGRAM=).*" _ program=)
-                  (string-append program= (basename script) "\n")))
-               (wrap-program script
-                 `("PATH" ":" prefix
-                   ,(map dirname
-                         (map (cut search-input-file inputs <>)
-                              (list "bin/age"
-                                    "bin/age-keygen"
-                                    "bin/cat"
-                                    "bin/getopt"
-                                    "bin/git"
-                                    "bin/pkill"
-                                    "bin/qrencode"
-                                    "bin/sed"
-                                    "bin/tree")))))))))
-       #:install-plan
-       '(("src/passage" "/bin/")
-         ("src/completion/pass.bash-completion"
-          "/etc/bash-completion.d/passage")
-         ("src/completion/pass.fish-completion"
-          "/share/fish/vendor_completions.d/passage")
-         ("src/completion/pass.zsh-completion"
-          "/share/zsh/site-functions/_passage"))))
+     (list
+      #:modules '((guix build copy-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'rename-script
+            (lambda _
+              (rename-file "src/password-store.sh"
+                           "src/passage")))
+          (add-after 'install 'wrap-script
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((script (string-append #$output "/bin/passage")))
+                (substitute* script
+                  ;; Avoid ugly ‘.passage-real’ in --help output and elsewhere.
+                  (("^(PROGRAM=).*" _ program=)
+                   (string-append program= (basename script) "\n")))
+                (wrap-program script
+                  `("PATH" ":" prefix
+                    ,(map dirname
+                          (map (cut search-input-file inputs <>)
+                               (list "bin/age"
+                                     "bin/age-keygen"
+                                     "bin/cat"
+                                     "bin/getopt"
+                                     "bin/git"
+                                     "bin/pkill"
+                                     "bin/qrencode"
+                                     "bin/sed"
+                                     "bin/tree")))))))))
+      #:install-plan
+      #~'(("src/passage" "/bin/")
+          ("src/completion/pass.bash-completion"
+           "/etc/bash-completion.d/passage")
+          ("src/completion/pass.fish-completion"
+           "/share/fish/vendor_completions.d/passage")
+          ("src/completion/pass.zsh-completion"
+           "/share/zsh/site-functions/_passage"))))
     (inputs
      (list age coreutils-minimal git-minimal
            procps qrencode sed tree util-linux))
