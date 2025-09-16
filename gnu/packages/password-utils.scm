@@ -1909,12 +1909,14 @@ try every password contained in a file.")
       (inputs
        (list libxcrypt openssl))
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure))
-         #:make-flags (list "CC=gcc"
-                            (string-append "PREFIX=" (assoc-ref %outputs "out")))
-         #:tests? #f))  ;no tests
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:tests? #f))  ;no tests
       (synopsis "Generate (pseudo-)random passwords and hashes")
       (description
        "Makepasswd is a program that generates pseudo-random passwords of a
