@@ -932,7 +932,7 @@ release."
                       "guix/import/crate.scm"
                       "guix/import/crate/cargo-lock.scm"
                       "guix/scripts/import/crate.scm"
-                      "tests/crate.scm")))
+                      "tests/import/crate.scm")))
 
 (define-team science
   (team 'science

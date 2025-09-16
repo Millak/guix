@@ -311,7 +311,7 @@ guix/build-system/cargo\.scm                       @guix/rust
 guix/import/crate\.scm                             @guix/rust
 guix/import/crate/cargo-lock\.scm                  @guix/rust
 guix/scripts/import/crate\.scm                     @guix/rust
-tests/crate\.scm                                   @guix/rust
+tests/import/crate\.scm                            @guix/rust
 
 gnu/packages/fortran(-.+|)\.scm$                   @guix/science
 gnu/packages/algebra\.scm                          @guix/science
