@@ -150,3 +150,24 @@ implements unified access to tabular data.")
 provides an Elixir implementation of the MS TDS protocol.")
     (home-page "https://hexdocs.pm/tds/")
     (license license:asl2.0)))
+
+(define-public elixir-uniq
+  (package
+    (name "elixir-uniq")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "uniq" version))
+       (sha256
+        (base32 "05mrzx7g8q5c4jg38pxqcw1x3bysw0i5n4j7d42v6m3hcx6w69k4"))))
+    (build-system mix-build-system)
+    (native-inputs (list elixir-stream-data))
+    (propagated-inputs (list elixir-ecto))
+    (synopsis
+     "Provides UUID generation, parsing, and formatting")
+    (description
+     "This package provides UUID generation, parsing, and formatting.  Supports RFC
+4122, and the v6 draft extension.")
+    (home-page "https://hexdocs.pm/uniq/")
+    (license license:asl2.0)))
