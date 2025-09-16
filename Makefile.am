@@ -569,8 +569,8 @@ SCM_TESTS =					\
   tests/grafts.scm				\
   tests/graph.scm				\
   tests/gremlin.scm				\
-  tests/hackage.scm				\
   tests/hexpm.scm				\
+  tests/import/hackage.scm			\
   tests/import/pypi.scm				\
   tests/home-import.scm				\
   tests/home-services.scm			\
