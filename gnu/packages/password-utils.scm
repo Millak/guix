@@ -465,28 +465,30 @@ in an encrypted database, which is locked with a master key or key file.")
         (base32 "064y78sqr8h9mq922spi4r13ga0a1j09mfh4kc4pn7j697nl6b5y"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DNO_GTEST=YES")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-gtest
+            (lambda _
+              (chmod "CMakeLists.txt" #o644)
+              (let ((cmake-port (open-file "CMakeLists.txt" "a")))
+                (display "find_package(GTest)
+add_subdirectory(src/test)\n" cmake-port)
+                (close cmake-port)))))))
     (native-inputs
      (list gettext-minimal googletest perl zip))
-    (inputs (list curl
-                  file
-                  `(,util-linux "lib")
-                  libxt
-                  libxtst
-                  openssl
-                  qrencode
-                  wxwidgets
-                  xerces-c))
-    (arguments '(#:configure-flags (list "-DNO_GTEST=YES")
-                 #:phases (modify-phases %standard-phases
-                            (add-after 'unpack 'add-gtest
-                              (lambda* (#:key inputs #:allow-other-keys)
-                                (chmod "CMakeLists.txt" #o644)
-                                (let ((cmake-port (open-file "CMakeLists.txt"
-                                                             "a")))
-                                  (display "find_package(GTest)
-add_subdirectory(src/test)\n" cmake-port)
-                                  (close cmake-port)
-                                  #t))))))
+    (inputs
+     (list curl
+           file
+           `(,util-linux "lib")
+           libxt
+           libxtst
+           openssl
+           qrencode
+           wxwidgets
+           xerces-c))
     (synopsis "Password safe with automatic input and key generation")
     (description "pwsafe is a password manager originally designed by Bruce
 Schneier.  It offers a simple UI to manage passwords for different services.
