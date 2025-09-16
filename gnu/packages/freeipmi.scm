@@ -32,14 +32,14 @@
 (define-public freeipmi
   (package
     (name "freeipmi")
-    (version "1.6.15")
+    (version "1.6.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/freeipmi/freeipmi-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1bwc5gz3985fly84ap1yq8jkddkf6s5px2dinmswxx9r8qsrr4nn"))))
+               "078i0ilsv4czzr2j0nwjafgqkrxc62cmf8rn9ady905nksxzdkjv"))))
     (build-system gnu-build-system)
     (arguments
      (append
