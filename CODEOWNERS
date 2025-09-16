@@ -140,7 +140,7 @@ guix/build/emacs-utils\.scm                        @guix/emacs
 guix/build-system/emacs\.scm                       @guix/emacs
 guix/import/elpa\.scm                              @guix/emacs
 guix/scripts/import/elpa\.scm                      @guix/emacs
-tests/elpa\.scm                                    @guix/emacs
+tests/import/elpa\.scm                             @guix/emacs
 
 gnu/packages/bootloaders\.scm                      @guix/embedded
 gnu/packages/firmware\.scm                         @guix/embedded

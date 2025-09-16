@@ -620,7 +620,7 @@ ecosystem."
                       "guix/build-system/emacs.scm"
                       "guix/import/elpa.scm"
                       "guix/scripts/import/elpa.scm"
-                      "tests/elpa.scm")))
+                      "tests/import/elpa.scm")))
 
 (define-team embedded
   (team 'embedded
