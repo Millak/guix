@@ -571,6 +571,7 @@ SCM_TESTS =					\
   tests/gremlin.scm				\
   tests/hackage.scm				\
   tests/hexpm.scm				\
+  tests/import/pypi.scm				\
   tests/home-import.scm				\
   tests/home-services.scm			\
   tests/http-client.scm				\
@@ -597,7 +598,6 @@ SCM_TESTS =					\
   tests/processes.scm				\
   tests/profiles.scm				\
   tests/publish.scm				\
-  tests/pypi.scm				\
   tests/read-print.scm				\
   tests/records.scm				\
   tests/rpm.scm					\

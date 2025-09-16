@@ -273,7 +273,7 @@ guix/build/python-build-system\.scm                @guix/python
 guix/build-system/python\.scm                      @guix/python
 guix/import/pypi\.scm                              @guix/python
 guix/scripts/import/pypi\.scm                      @guix/python
-tests/pypi\.scm                                    @guix/python
+tests/import/pypi\.scm                             @guix/python
 
 gnu/packages/qt\.scm                               @guix/qt
 guix/build-system/qt\.scm                          @guix/qt

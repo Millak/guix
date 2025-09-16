@@ -858,7 +858,7 @@ importer, and the ocaml-build-system."
               "guix/build-system/python.scm"
               "guix/import/pypi.scm"
               "guix/scripts/import/pypi.scm"
-              "tests/pypi.scm")))
+              "tests/import/pypi.scm")))
 
 (define-team qt
   (team 'qt
