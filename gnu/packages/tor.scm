@@ -301,7 +301,7 @@ networks.")
            python-setuptools
            python-stem
            python-unidecode
-           python-urllib3-next
+           python-urllib3
            python-waitress
            python-werkzeug
            tor))

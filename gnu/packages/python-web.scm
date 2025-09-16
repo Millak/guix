@@ -5331,7 +5331,7 @@ python-requests.")
            python-waitress))
     (propagated-inputs
      (list python-requests
-           python-urllib3-next))
+           python-urllib3))
     (home-page "https://gitlab.com/thelabnyc/requests-unixsocket2")
     (synopsis "Talk HTTP via a UNIX domain socket")
     (description
@@ -5708,21 +5708,7 @@ can reuse the same socket connection for multiple requests, it can POST files,
 supports url redirection and retries, and also gzip and deflate decoding.")
     (license license:expat)))
 
-(define-public python-urllib3-next
-  (package
-    (inherit python-urllib3)
-    (version "2.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "urllib3" version))
-       (sha256
-        (base32
-         "0q17z6zlpyjv9ax5c3d30qwp9fwhz2sc4gbb7yyd86g4qwrpgi1z"))))
-    (native-inputs
-     (list python-hatch-vcs
-           python-hatchling
-           python-setuptools-scm))))
+(define-public python-urllib3-next python-urllib3)
 
 (define-public python-urllib3-1.25
   (package
