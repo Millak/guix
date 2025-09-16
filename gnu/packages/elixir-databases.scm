@@ -110,6 +110,27 @@ for Elixir.")
     (home-page "https://hexdocs.pm/ecto/")
     (license license:asl2.0)))
 
+(define-public elixir-ex-machina
+  (package
+    (name "elixir-ex-machina")
+    (version "2.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_machina" version))
+       (sha256
+        (base32 "0abpg9i08w0iglc0qcl5b3g91jw22s3mvyn4nvxc3hf0cjf1mzkr"))))
+    (build-system mix-build-system)
+    (native-inputs (list elixir-excoveralls))
+    (propagated-inputs (list elixir-ecto elixir-ecto-sql))
+    (synopsis
+     "Factory library")
+    (description
+     "This package provides a factory library by the creators of @code{FactoryBot}
+(@code{FactoryGirl}).")
+    (home-page "https://hexdocs.pm/ex_machina/")
+    (license license:expat)))
+
 (define-public elixir-exto
   (package
     (name "elixir-exto")
