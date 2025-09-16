@@ -73,3 +73,23 @@ describe/encode/decode.")
 for Elixir.")
     (home-page "https://hexdocs.pm/ecto/")
     (license license:asl2.0)))
+
+(define-public elixir-exto
+  (package
+    (name "elixir-exto")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "exto" version))
+       (sha256
+        (base32 "1mkzxj37dqb966fhqg528wrlfx9ifgxis87np4fqc30rqabgsyj4"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-accessible elixir-ecto))
+    (native-inputs
+     (list elixir-decimal))
+    (synopsis "Extend ecto schema definitions in config")
+    (description "@code{Exto} is an Elixir library providing
+configuration-driven @code{Ecto} schema extensibility.")
+    (home-page "https://hexdocs.pm/exto/")
+    (license license:asl2.0)))
