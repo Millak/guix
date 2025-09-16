@@ -839,7 +839,7 @@ importer, and the ocaml-build-system."
               "guix/build-system/dune.scm"
               "guix/import/opam.scm"
               "guix/scripts/import/opam.scm"
-              "tests/opam.scm")))
+              "tests/import/opam.scm")))
 
 (define-team python
   (team 'python

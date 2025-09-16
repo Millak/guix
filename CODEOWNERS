@@ -260,7 +260,7 @@ guix/build-system/ocaml\.scm                       @guix/ocaml
 guix/build-system/dune\.scm                        @guix/ocaml
 guix/import/opam\.scm                              @guix/ocaml
 guix/scripts/import/opam\.scm                      @guix/ocaml
-tests/opam\.scm                                    @guix/ocaml
+tests/import/opam\.scm                             @guix/ocaml
 
 gnu/packages/django\.scm                           @guix/python
 gnu/packages/jupyter\.scm                          @guix/python
