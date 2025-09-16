@@ -39,11 +39,7 @@
   #:use-module (guix http-client)
   #:use-module (guix memoization)
   #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
-  #:autoload   (guix base32) (bytevector->nix-base32-string
-                              nix-base32-string->bytevector)
-  #:autoload   (guix build utils) (mkdir-p)
   #:autoload   (guix ui) (warning)
-  #:autoload   (gcrypt hash) (hash-algorithm sha256)
   #:autoload   (git structs) (git-error-message)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
