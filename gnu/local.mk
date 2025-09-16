@@ -261,6 +261,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/electronics.scm			\
   %D%/packages/elf.scm				\
   %D%/packages/elixir.scm			\
+  %D%/packages/elixir-databases.scm		\
   %D%/packages/elixir-markup.scm		\
   %D%/packages/elixir-xyz.scm			\
   %D%/packages/elm.scm				\
