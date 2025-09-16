@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019-2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019-2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019, 2021, 2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
@@ -67,15 +67,18 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages docker)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -89,6 +92,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
@@ -5148,3 +5152,63 @@ unused.")
     (description
      "This package provides match data structures and types in test code.")
     (license license:bsd-2)))
+
+(define-public ruff
+  (package
+    (name "ruff")
+    (version "0.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astral-sh/ruff")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1svf9kgzbl20wbz77kzbhxaisb5cz3i28hycmkgsinn6jaj44b3l"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-install-paths ''("crates/ruff")
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-guix-vendored-dependencies
+            (lambda _
+              (substitute* '("Cargo.toml" "fuzz/Cargo.toml")
+                (("git = \"[^\"]+\", ")
+                 "")
+                (("rev = \"[^\"]+\"")
+                 "version = \"*\""))))
+          (add-after 'patch-generated-file-shebangs 'adjust-shebangs-for-tests
+            (lambda _
+              ;; Because of the Guix shebangs patching phases, the
+              ;; path_new_exe003_py_expects test fails to match its expected
+              ;; FHS shebang. Adjust it.
+              (substitute* "crates/ruff_linter/resources/test/fixtures\
+/flake8_executable/EXE003.py"
+                (("#!/gnu/.*bash")
+                 "#!/usr/bin/bash"))))
+          (add-before 'build 'override-jemalloc
+            (lambda* (#:key inputs #:allow-other-keys) ;Copied from uv
+              (let ((jemalloc (assoc-ref inputs "jemalloc")))
+                ;; This flag is needed when not using the bundled jemalloc.
+                ;; https://github.com/tikv/jemallocator/issues/19
+                (setenv
+                 "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+                (setenv "JEMALLOC_OVERRIDE"
+                        (string-append jemalloc "/lib/libjemalloc.so"))))))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (cons* jemalloc
+            `(,zstd "lib")
+            (cargo-inputs 'ruff)))
+    (home-page "https://docs.astral.sh/ruff")
+    (synopsis "Extremely fast Python linter and code formatter")
+    (description "Ruff aims to be orders of magnitude faster than alternative
+tools while integrating more functionality behind a single, common interface.
+Ruff can be used to replace Flake8 (plus dozens of plugins), Black, isort,
+pydocstyle, pyupgrade, autoflake, and more, all while executing tens or
+hundreds of times faster than any individual tool.")
+    (license license:expat)))
