@@ -5218,13 +5218,13 @@ APIs.")
 (define-public python-requests
   (package
     (name "python-requests")
-    (version "2.31.0")
+    (version "2.32.5")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "1qfidaynsrci4wymrw3srz8v1zy7xxpcna8sxpm91mwqixsmlb4l"))))
+               "1kypqz701x9s7j4shm1pdnzy4pzx9lmvhwgan0yqa071asn0pfnv"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -5241,11 +5241,9 @@ APIs.")
            python-idna
            python-urllib3))
     (native-inputs
-     (list python-pip
-           python-pytest
+     (list python-pytest
            python-pytest-mock
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://requests.readthedocs.io/")
     (synopsis "Python HTTP library")
     (description
