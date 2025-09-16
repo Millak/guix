@@ -856,78 +856,78 @@ any X11 window.")
   (package
     (name "password-store")
     (version "1.7.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "git://git.zx2c4.com/password-store")
-                    (commit version)))
-              (sha256
-               (base32
-                "17zp9pnb3i9sd2zn9qanngmsywrb7y495ngcqs6313pv3gb83v53"))
-              (patches (search-patches "password-store-tree-compat.patch"))
-              (file-name (git-file-name name version))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "git://git.zx2c4.com/password-store")
+              (commit version)))
+       (sha256
+        (base32
+         "17zp9pnb3i9sd2zn9qanngmsywrb7y495ngcqs6313pv3gb83v53"))
+       (patches (search-patches "password-store-tree-compat.patch"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (add-before 'install 'patch-system-extension-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (extension-dir (string-append out "/lib/password-store/extensions")))
-               (substitute* "src/password-store.sh"
-                 (("^SYSTEM_EXTENSION_DIR=.*$")
-                  ;; lead with whitespace to prevent 'make install' from
-                  ;; overwriting it again
-                  (string-append " SYSTEM_EXTENSION_DIR=\""
-                                 "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
-                                 extension-dir
-                                 "}\"\n"))))))
-         (add-before 'install 'patch-program-name
-           ;; Use pass not .pass-real in tmpdir and cmd_usage
-           (lambda _
-             (substitute* "src/password-store.sh"
-               (("^PROGRAM=.*$")
-                "PROGRAM=\"pass\"\n"))))
-         (add-before 'install 'patch-passmenu-path
-           ;; FIXME Wayland support requires ydotool and dmenu-wl packages
-           ;; We are ignoring part of the script that gets executed if
-           ;; WAYLAND_DISPLAY env variable is set, leaving dmenu-wl and ydotool
-           ;; commands as is.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "contrib/dmenu/passmenu"
-               (("dmenu=dmenu\n")
-                (string-append "dmenu="
-                               (search-input-file inputs "/bin/dmenu")
-                               "\n"))
-               (("xdotool=\"xdotool")
-                (string-append "xdotool=\""
-                               (search-input-file inputs "/bin/xdotool"))))))
-         (add-after 'install 'install-passmenu
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "contrib/dmenu/passmenu" bin))))
-         (add-after 'install 'wrap-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (requisites '("getopt" "git" "gpg" "qrencode" "sed"
-                                  "tail" "tree" "which" "wl-copy" "xclip"))
-                    (path (map (lambda (pkg)
-                                 (dirname (search-input-file
-                                           inputs (string-append "/bin/" pkg))))
-                               requisites)))
-               (wrap-program (string-append out "/bin/pass")
-                 `("PATH" ":" prefix (,(string-join path ":"))))))))
-       #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output)
-                          "WITH_ALLCOMP=yes"
-                          (string-append "BASHCOMPDIR="
-                                         %output "/etc/bash_completion.d"))
-       ;; Parallel tests may cause a race condition leading to a
-       ;; timeout in some circumstances.
-       #:parallel-tests? #f
-       #:test-target "test"))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              "WITH_ALLCOMP=yes"
+              (string-append "BASHCOMPDIR=" #$output "/etc/bash_completion.d"))
+      ;; Parallel tests may cause a race condition leading to a
+      ;; timeout in some circumstances.
+      #:parallel-tests? #f
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (add-before 'install 'patch-system-extension-dir
+            (lambda _
+              (substitute* "src/password-store.sh"
+                (("^SYSTEM_EXTENSION_DIR=.*$")
+                 ;; lead with whitespace to prevent 'make install' from
+                 ;; overwriting it again
+                 (string-append
+                  " SYSTEM_EXTENSION_DIR=\""
+                  "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
+                  (string-append #$output "/lib/password-store/extensions")
+                  "}\"\n")))))
+          (add-before 'install 'patch-program-name
+            ;; Use pass not .pass-real in tmpdir and cmd_usage
+            (lambda _
+              (substitute* "src/password-store.sh"
+                (("^PROGRAM=.*$")
+                 "PROGRAM=\"pass\"\n"))))
+          (add-before 'install 'patch-passmenu-path
+            ;; FIXME Wayland support requires ydotool and dmenu-wl packages
+            ;; We are ignoring part of the script that gets executed if
+            ;; WAYLAND_DISPLAY env variable is set, leaving dmenu-wl and ydotool
+            ;; commands as is.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "contrib/dmenu/passmenu"
+                (("dmenu=dmenu\n")
+                 (string-append
+                  "dmenu=" (search-input-file inputs "/bin/dmenu") "\n"))
+                (("xdotool=\"xdotool")
+                 (string-append
+                  "xdotool=\"" (search-input-file inputs "/bin/xdotool"))))))
+          (add-after 'install 'install-passmenu
+            (lambda _
+              (install-file
+               "contrib/dmenu/passmenu" (string-append #$output "/bin"))))
+          (add-after 'install 'wrap-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((requisites '("getopt" "git" "gpg" "qrencode" "sed"
+                                   "tail" "tree" "which" "wl-copy" "xclip"))
+                     (path
+                      (map (lambda (pkg)
+                             (dirname (search-input-file
+                                       inputs (string-append "/bin/" pkg))))
+                           requisites)))
+                (wrap-program (string-append #$output "/bin/pass")
+                  `("PATH" ":" prefix (,(string-join path ":"))))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "PASSWORD_STORE_SYSTEM_EXTENSION_DIR")
@@ -937,12 +937,12 @@ any X11 window.")
      (list bash-minimal
            coreutils
            dmenu
-           util-linux
            git
            gnupg
            qrencode
            sed
            tree
+           util-linux
            which
            wl-clipboard
            xclip
