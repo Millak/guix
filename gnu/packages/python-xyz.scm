@@ -26501,8 +26501,8 @@ point is the point of maximum curvature.")
                 ((".*--cov.*") "")))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-pytest-asyncio
+           python-setuptools))
     (propagated-inputs
      (list python-loguru
            python-typing-extensions))
