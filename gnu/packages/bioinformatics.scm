@@ -4742,18 +4742,19 @@ high-throughput sequencing of B cell and T cell repertoires.")
   (package
     (name "python-changeo")
     (version "1.3.4")
-    (home-page "https://github.com/immcantation/changeo")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url home-page)
-              (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "changeo" version))
        (sha256
-        (base32
-         "1230bb7672n6nqkrw2fvrprknchhlvvxb76l1r4g6ybrq0g7l0rb"))))
+        (base32 "0jm4chddpl929a8daicp9mv14nwzf2hajpjfhzckg6x8cpgc1087"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-airr
            python-biopython
@@ -4764,13 +4765,7 @@ high-throughput sequencing of B cell and T cell repertoires.")
            python-presto
            python-pyyaml
            python-scipy))
-    (native-inputs
-     (list python-airr
-           python-setuptools
-           python-wheel))
-    (arguments
-     (list
-      #:build-backend "setuptools.build_meta"))
+    (home-page "http://changeo.readthedocs.io")
     (synopsis "Repertoire clonal assignment toolkit")
     (description "Change-O is a collection of tools for processing the output
 of V(D)J alignment tools, assigning clonal clusters to immunoglobulin (Ig)
