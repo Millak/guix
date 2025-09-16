@@ -54,6 +54,42 @@ describe/encode/decode.")
     (home-page "https://hexdocs.pm/db_connection/")
     (license license:asl2.0)))
 
+(define-public elixir-ecto-sql
+  (package
+    (name "elixir-ecto-sql")
+    (version "3.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elixir-ecto/ecto_sql.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i5jhjv8xqwl887kq7jp880ywpp16glllcfd7y7kpb6h6jc62hnd"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-db-connection
+           elixir-ecto
+           elixir-myxql
+           elixir-postgrex
+           elixir-tds))
+    (synopsis "SQL-based adapters for Ecto and database migrations")
+    (description "@code{Ecto SQL} provides building blocks for writing SQL
+adapters for Ecto.  It features:
+
+@itemize
+@item The @code{Ecto.Adapters.SQL} module as an entry point for all SQL-based
+adapters
+@item Default implementations for Postgres (@code{Ecto.Adapters.Postgres}),
+MySQL (@code{Ecto.Adapters.MyXQL}), and MSSQL (@code{Ecto.Adapters.Tds})
+@item A test sandbox (@code{Ecto.Adapters.SQL.Sandbox}) that concurrently runs
+database tests inside transactions
+@item Support for database migrations via Mix tasks
+@end itemize")
+    (home-page "https://hexdocs.pm/ecto_sql/")
+    (license license:asl2.0)))
+
 (define-public elixir-ecto
   (package
     (name "elixir-ecto")
