@@ -369,7 +369,7 @@ guix/build/texlive-build-system\.scm               @guix/tex
 guix/build-system/texlive\.scm                     @guix/tex
 guix/import/texlive\.scm                           @guix/tex
 guix/scripts/import/texlive\.scm                   @guix/tex
-tests/texlive\.scm                                 @guix/tex
+tests/import/texlive\.scm                          @guix/tex
 
 etc/news\.scm                                      @guix/translations
 po/                                                @guix/translations

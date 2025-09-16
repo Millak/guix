@@ -577,6 +577,7 @@ SCM_TESTS =					\
   tests/import/opam.scm				\
   tests/import/print.scm			\
   tests/import/pypi.scm				\
+  tests/import/texlive.scm			\
   tests/home-import.scm				\
   tests/home-services.scm			\
   tests/http-client.scm				\
@@ -624,7 +625,6 @@ SCM_TESTS =					\
   tests/syscalls.scm				\
   tests/system.scm				\
   tests/style.scm				\
-  tests/texlive.scm				\
   tests/toml.scm				\
   tests/transformations.scm			\
   tests/ui.scm					\

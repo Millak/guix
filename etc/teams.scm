@@ -1016,7 +1016,7 @@ the \"texlive\" importer."
                       "guix/build-system/texlive.scm"
                       "guix/import/texlive.scm"
                       "guix/scripts/import/texlive.scm"
-                      "tests/texlive.scm")))
+                      "tests/import/texlive.scm")))
 
 (define-team translations
   (team 'translations
