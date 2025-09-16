@@ -631,9 +631,8 @@ VERSION."
         (description ,(and=> (non-empty-string-or-false
                               (project-info-summary info))
                              beautify-description))
-        (license ,(license->symbol
-                   (string->license
-                    (project-info-license info)))))
+        (license ,(find-license (project-info-license info)
+                                (project-info-classifiers info))))
      (map upstream-input-name (upstream-source-inputs source)))))
 
 (define pypi->guix-package
@@ -685,6 +684,17 @@ source.  To build it from source, refer to the upstream repository at
     ((or "Apache License, Version 2.0" "Apache 2.0") license:asl2.0)
     ("MPL 2.0" license:mpl2.0)
     (_ #f)))
+
+(define (find-license license classifiers)
+  (license->symbol
+   (string->license
+    (if (and license (string? license) (not (string= license "")))
+        license
+        (let* ((license-prefix "License :: OSI Approved :: ")
+               (license (find (cut string-prefix? license-prefix <>)
+                              classifiers)))
+          (and license (not (null? license))
+               (string-drop license (string-length license-prefix))))))))
 
 (define pypi-package?
   (url-predicate
