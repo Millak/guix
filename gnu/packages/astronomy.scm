@@ -2456,7 +2456,7 @@ astronomical images, especially when there is no WCS information available.")
            python-fsspec
            python-gwcs
            python-pillow
-           python-requests-next
+           python-requests
            python-roman-datamodels
            python-s3fs
            python-s3path
@@ -3895,7 +3895,7 @@ code to be greatly simplified.")
            python-photutils
            python-pypdf2
            python-regions
-           python-requests-next
+           python-requests
            python-scikit-image
            python-scikit-learn
            python-scipy
@@ -8836,7 +8836,7 @@ SunPy.")
            python-parfive
            python-pyerfa
            python-reproject
-           python-requests-next
+           python-requests
            python-scikit-image
            python-scipy
            ;; python-spiceypy ; Not packed yet in Guix, long journey.
@@ -8868,7 +8868,7 @@ to the SolarSoft data analysis environment.")
             python-mpl-animators
             python-parfive
             python-pyerfa
-            python-requests-next)))))
+            python-requests)))))
 
 (define-public python-sunpy-soar
   (package

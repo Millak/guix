@@ -5283,20 +5283,7 @@ APIs.")
 than Python’s urllib2 library.")
     (license license:asl2.0)))
 
-(define-public python-requests-next
-  (package
-    (inherit python-requests)
-    (name "python-requests")
-    (version "2.32.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "requests" version))
-       (sha256
-        (base32 "0q5742pnibwy74169kacin3dmqg9jzmzk7qab5aq5caffcbm8djm"))))
-     (native-inputs
-      (modify-inputs (package-native-inputs python-requests)
-        (prepend nss-certs-for-test)))))
+(define-public python-requests-next python-requests)
 
 (define-public python-requests-kerberos
   (package
@@ -5343,7 +5330,7 @@ python-requests.")
            python-pytest
            python-waitress))
     (propagated-inputs
-     (list python-requests-next
+     (list python-requests
            python-urllib3-next))
     (home-page "https://gitlab.com/thelabnyc/requests-unixsocket2")
     (synopsis "Talk HTTP via a UNIX domain socket")

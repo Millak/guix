@@ -3203,7 +3203,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
                   python-certifi
                   python-mutagen
                   python-pycryptodomex
-                  python-requests-next ; TODO Remove this special package
+                  python-requests ; TODO Remove this special package
                   python-urllib3
                   python-websockets))
     (native-inputs
@@ -3373,7 +3373,7 @@ Both command-line and GTK2 interface are available.")
            python-wcwidth
            python-websockets
            python-urllib3
-           python-requests-next
+           python-requests
            python-pycryptodomex
            python-mutagen
            python-brotli
