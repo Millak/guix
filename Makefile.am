@@ -574,6 +574,7 @@ SCM_TESTS =					\
   tests/import/hackage.scm			\
   tests/import/hexpm.scm			\
   tests/import/luanti.scm			\
+  tests/import/npm-binary.scm			\
   tests/import/opam.scm				\
   tests/import/print.scm			\
   tests/import/pypi.scm				\
@@ -590,7 +591,6 @@ SCM_TESTS =					\
   tests/modules.scm				\
   tests/monads.scm				\
   tests/nar.scm				\
-  tests/npm-binary.scm				\
   tests/networking.scm				\
   tests/openpgp.scm				\
   tests/packages.scm				\
