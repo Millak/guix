@@ -3189,18 +3189,23 @@ both of which are installed automatically if you install this library.")
 (define-public python-flask-cors
   (package
     (name "python-flask-cors")
-    (version "3.0.10")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Flask-Cors" version))
-              (sha256
-               (base32
-                "1pl16615fn1pc5n0vdrqlxm45mqsdjjxqv3gfkrs111v7wwkj25n"))))
-    (build-system python-build-system)
+    (version "6.0.1")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/CoryDolphin/flask-cors")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01w77vfbzw994dpz6aw4vzy75nrykk6jgilc3qm2d543vjizjaf9"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-flask python-nose python-packaging))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-six))
+     (list python-flask
+           python-werkzeug))
     (home-page "https://flask-cors.readthedocs.io/en/latest/")
     (synopsis "Handle Cross-Origin Resource Sharing with Flask")
     (description
