@@ -1595,30 +1595,29 @@ is the community-enhanced, \"jumbo\" version of John the Ripper.")
   (package
     (name "fpm2")
     (version "0.79")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://als.regnet.cz/fpm2/download/fpm2-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "19sdy1lygfhkg5nxi2w9a4d9kwvw24nxp0ix0p0lz91qpvk9qpnm"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://als.regnet.cz/fpm2/download/fpm2-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32
+         "19sdy1lygfhkg5nxi2w9a4d9kwvw24nxp0ix0p0lz91qpvk9qpnm"))))
     (build-system gnu-build-system)
-    (inputs `(("gtk2" ,gtk+-2)
-              ("gnupg" ,gnupg)
-              ("libxml2" ,libxml2)))
-    (native-inputs (list pkg-config intltool))
     (arguments
-     `(#:configure-flags '("CFLAGS=-O2 -g -fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'pre-configure
-           ;; The file po/POTFILES.in ends up missing for some reason in
-           ;; both nix and guix builds. Adding the file with contents
-           ;; found during troubleshooting.
-           (lambda _
-             (call-with-output-file "po/POTFILES.in"
-               (lambda (port)
-                 (format port "data/fpm2.desktop.in
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-O2 -g -fcommon")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'pre-configure
+            ;; The file po/POTFILES.in ends up missing for some reason in
+            ;; both nix and guix builds. Adding the file with contents
+            ;; found during troubleshooting.
+            (lambda _
+              (call-with-output-file "po/POTFILES.in"
+                (lambda (port)
+                  (format port "data/fpm2.desktop.in
 data/fpm2.desktop.in.in
 fpm2.glade
 src/callbacks.c
@@ -1627,8 +1626,11 @@ src/fpm_file.c
 src/interface.c
 src/support.c
 fpm2.glade
-")))
-             #t)))))
+"))))))))
+    (inputs
+     (list gtk+-2 gnupg libxml2))
+    (native-inputs
+     (list pkg-config intltool))
     (synopsis "Manage, generate and store passwords encrypted")
     (description "FPM2 is GTK2 port from Figaro's Password Manager
 originally developed by John Conneely, with some new enhancements.
