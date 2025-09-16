@@ -417,8 +417,8 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
      (list gcc-15
            hyprwayland-scanner
            (module-ref (resolve-interface
-                  '(gnu packages commencement))
-                 'ld-wrapper)
+                        '(gnu packages commencement))
+                       'ld-wrapper)
            pkg-config))
     (inputs
      (list aquamarine
