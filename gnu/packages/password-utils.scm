@@ -1808,22 +1808,25 @@ names.")
     (name "hydra")
     (version "9.5")
     (home-page "https://github.com/vanhauser-thc/thc-hydra")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0pg4alaznygngdzn4k6p540g059w7mpiakchsp0526f1b9s33lw1"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pg4alaznygngdzn4k6p540g059w7mpiakchsp0526f1b9s33lw1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;no test suite
-       #:make-flags (list (string-append "CC="
-                                         ,(cc-for-target)))))
-    (native-inputs (list pkg-config))
-    (inputs (list freerdp gtk+ openssl zlib))
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f)) ;no test suite
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list freerdp gtk+ openssl zlib))
     (synopsis "Gain access to a remote system by trying logins and passwords")
     (description
      "This package provides a tool to demonstrate how easy it is to gain
