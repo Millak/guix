@@ -93,3 +93,20 @@ for Elixir.")
 configuration-driven @code{Ecto} schema extensibility.")
     (home-page "https://hexdocs.pm/exto/")
     (license license:asl2.0)))
+
+(define-public elixir-table
+  (package
+    (name "elixir-table")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "table" version))
+       (sha256
+        (base32 "0aah0rkq6ikl1w359n65rmhk0p0npwj0fr35grf321pqzrzbr6by"))))
+    (build-system mix-build-system)
+    (synopsis "Unified access to tabular data")
+    (description "This package provides @code{elixir-table}, a library that
+implements unified access to tabular data.")
+    (home-page "https://hexdocs.pm/table/")
+    (license license:asl2.0)))
