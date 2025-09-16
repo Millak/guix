@@ -74,6 +74,7 @@
             peekable-lambda
             peek-body
 
+            git-repository-url?
             download-git-repository
             git-origin
             git->origin
@@ -186,6 +187,19 @@ thrown."
 
 (define (peek-body proc)
   (procedure-property proc 'body))
+
+(define (git-repository-url? url)
+  "Guess if the URL looks like a Git repository."
+  (or (string-prefix? "https://github.com/" url) ; Most common.
+      (string-prefix? "https://cgit." url)
+      (string-prefix? "https://git." url)
+      (string-prefix? "https://gitlab." url)
+      (string-prefix? "https://codeberg.org/" url)
+      (string-prefix? "https://git.sr.ht/" url)
+      (string-prefix? "https://bitbucket.org/" url)
+      (string-prefix? "https://framagit.org/" url)
+      ;; Fallback.
+      (string-suffix? ".git" url)))
 
 (define (download-git-repository url ref)
   "Fetch the given REF from the Git repository at URL.  Return three values :
