@@ -171,3 +171,22 @@ provides an Elixir implementation of the MS TDS protocol.")
 4122, and the v6 draft extension.")
     (home-page "https://hexdocs.pm/uniq/")
     (license license:asl2.0)))
+
+(define-public elixir-uuidv7
+  (package
+    (name "elixir-uuidv7")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "uuidv7" version))
+       (sha256
+        (base32 "1g2c8imkk7pgcvc5ns2v1b0zils3ai1yym4s3a5psvs511qk7k8f"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ecto))
+    (synopsis "UUID v7 implementation and @code{Ecto.Type} for Elixir")
+    (description
+     "This package provides a UUID v7 implementation and @code{Ecto.Type}
+for Elixir.")
+    (home-page "https://hexdocs.pm/uuidv7/")
+    (license license:expat)))
