@@ -883,7 +883,7 @@ and the r-build-system."
                       "guix/build-system/r.scm"
                       "guix/import/cran.scm"
                       "guix/scripts/import/cran.scm"
-                      "tests/cran.scm")))
+                      "tests/import/cran.scm")))
 
 (define-team racket
   (team 'racket

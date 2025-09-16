@@ -286,7 +286,7 @@ guix/build/r-build-system\.scm                     @guix/r
 guix/build-system/r\.scm                           @guix/r
 guix/import/cran\.scm                              @guix/r
 guix/scripts/import/cran\.scm                      @guix/r
-tests/cran\.scm                                    @guix/r
+tests/import/cran\.scm                             @guix/r
 
 gnu/packages/chez\.scm                             @guix/racket
 gnu/packages/racket\.scm                           @guix/racket
