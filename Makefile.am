@@ -573,6 +573,7 @@ SCM_TESTS =					\
   tests/import/github.scm			\
   tests/import/hackage.scm			\
   tests/import/hexpm.scm			\
+  tests/import/luanti.scm			\
   tests/import/opam.scm				\
   tests/import/print.scm			\
   tests/import/pypi.scm				\
@@ -583,7 +584,6 @@ SCM_TESTS =					\
   tests/inferior.scm				\
   tests/ipfs.scm				\
   tests/lint.scm				\
-  tests/luanti.scm				\
   tests/machine/hetzner.scm                     \
   tests/machine/hetzner/http.scm                 \
   tests/modules.scm				\
