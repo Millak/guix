@@ -1133,20 +1133,22 @@ defaults for 80% of the use cases.")
 (define-public forgejo-cli
   (package
     (name "forgejo-cli")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (crate-uri "forgejo-cli" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/Cyborus/forgejo-cli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0a3f10317fv0qmwnv53vzs5dilax0xqhix3idrgjz4rcvjs42d25"))))
+        (base32 "0ad69r3fakiqlr9hxc2l020qdzicqb68v0sjhbwiisknbknd38zh"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f))
     (native-inputs (list pkg-config))
     (inputs
-     (cons* libgit2-1.8
+     (cons* libgit2-1.9
             libssh2
             oniguruma
             openssl
