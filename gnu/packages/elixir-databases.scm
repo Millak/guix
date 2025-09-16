@@ -228,6 +228,33 @@ ULID datatype for @code{Ecto} (using @code{ex_ulid}) and related helpers.")
     (home-page "https://hexdocs.pm/needle_ulid/")
     (license license:expat)))
 
+(define-public elixir-needle
+  (package
+    (name "elixir-needle")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "needle" version))
+       (sha256
+        (base32 "0gf1bniwf650xrczvimmw1drg6cjqz21539nlhqw4la4m91jl7h4"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ecto-sql elixir-exto elixir-needle-ulid
+                             erlang-telemetry))
+    (synopsis
+     "Universal foreign keys, virtual schemas, and shared data mixins")
+    (description
+     "When using a relational DB (such an @code{Ecto} schema with a Postgres
+table), usually a foreign key field has to be pre-defined with a reference
+pointing to a specific field in a specific table.
+
+Besides regular schemas with universal foreign keys (@code{Pointable}),
+@code{Needle} provides @code{Virtual} for schemas that don’t have any fields on
+their own, and @code{Mixin} for storing common fields that can be re-used by
+multiple @code{Pointable}s or @code{Virtual}s.")
+    (home-page "https://hexdocs.pm/needle/")
+    (license license:asl2.0)))
+
 (define-public elixir-postgrex
   (package
     (name "elixir-postgrex")
