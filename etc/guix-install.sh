@@ -293,6 +293,9 @@ chk_sys_arch()
         ppc64le | powerpc64le)
             local arch=powerpc64le
             ;;
+        riscv64)
+            local arch=riscv64
+            ;;
         *)
             die "Unsupported CPU type: ${arch}"
     esac
