@@ -579,10 +579,10 @@ SCM_TESTS =					\
   tests/import/print.scm			\
   tests/import/pypi.scm				\
   tests/import/texlive.scm			\
+  tests/import/utils.scm			\
   tests/home-import.scm				\
   tests/home-services.scm			\
   tests/http-client.scm				\
-  tests/import-utils.scm			\
   tests/inferior.scm				\
   tests/ipfs.scm				\
   tests/lint.scm				\
