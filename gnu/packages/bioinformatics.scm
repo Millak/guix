@@ -4757,7 +4757,7 @@ high-throughput sequencing of B cell and T cell repertoires.")
     (propagated-inputs
      (list python-airr
            python-biopython
-           python-importlib-resources-6
+           python-importlib-resources
            python-numpy
            python-packaging
            python-pandas
