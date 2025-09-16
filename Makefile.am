@@ -562,7 +562,6 @@ SCM_TESTS =					\
   tests/grafts.scm				\
   tests/graph.scm				\
   tests/gremlin.scm				\
-  tests/hexpm.scm				\
   tests/import/cpan.scm				\
   tests/import/cran.scm				\
   tests/import/crate.scm			\
@@ -572,6 +571,7 @@ SCM_TESTS =					\
   tests/import/gem.scm				\
   tests/import/git.scm				\
   tests/import/hackage.scm			\
+  tests/import/hexpm.scm			\
   tests/import/opam.scm				\
   tests/import/pypi.scm				\
   tests/home-import.scm				\
