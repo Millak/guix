@@ -1733,34 +1733,34 @@ password cracking.")
      (list perl))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no tests
-       #:make-flags (list "CC=gcc"
-                          ;; Upstream bug(?): "make all" seems to remove the
-                          ;; Perl scripts from the source.
-                          "native")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (invoke "7z" "x" source)
-             (chdir (string-append "hashcat-utils-" ,version "/src"))
-             #t))
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p out)
-               (for-each
-                (lambda (file)
-                  (copy-file file (string-append out "/"
-                                                 (basename file ".bin"))))
-                (find-files "." "\\.bin$"))
-               (for-each
-                (lambda (file)
-                  (copy-file file (string-append out "/"
-                                                 (basename file ".pl"))))
-                (find-files "../bin" "\\.pl$"))
-               #t))))))
+     (list
+      #:tests? #f                      ;no tests
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              ;; Upstream bug(?): "make all" seems to remove the
+              ;; Perl scripts from the source.
+              "native")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "7z" "x" source)
+              (chdir (string-append #$name "-" #$version "/src"))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((out (string-append #$output "/bin")))
+                (mkdir-p out)
+                (for-each
+                 (lambda (file)
+                   (copy-file file (string-append out "/"
+                                                  (basename file ".bin"))))
+                 (find-files "." "\\.bin$"))
+                (for-each
+                 (lambda (file)
+                   (copy-file file (string-append out "/"
+                                                  (basename file ".pl"))))
+                 (find-files "../bin" "\\.pl$"))))))))
     (home-page "https://github.com/hashcat/hashcat-utils/")
     (synopsis "Small utilities that are useful in advanced password cracking")
     (description "Hashcat-utils are a set of small utilities that are useful
