@@ -42,6 +42,7 @@
 ;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1469,26 +1470,27 @@ program.")
          "0nih6wxbpnasngdkbyh9df8wrm4b5inca8mshkqpmraqqmckzrk3"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-pass-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((password-store (assoc-ref inputs "password-store"))
-                    (pass (string-append password-store "/bin/pass")))
-               (substitute* '("passgithelper.py"
-                              "test_passgithelper.py")
-                 (("'pass'") (string-append "'" pass "'"))))))
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd)))))))
-    (inputs
-     (list python-pyxdg password-store))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-pass-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((password-store (assoc-ref inputs "password-store"))
+                     (pass (string-append password-store "/bin/pass")))
+                (substitute* '("passgithelper.py"
+                               "test_passgithelper.py")
+                  (("'pass'") (string-append "'" pass "'"))))))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list python-pytest
            python-pytest-cov
            python-pytest-mock
            python-setuptools
            python-wheel))
+    (inputs
+     (list password-store python-pyxdg))
     (home-page "https://github.com/languitar/pass-git-helper")
     (synopsis "Git credential helper interfacing with pass")
     (description "pass-git-helper is a git credential helper which
