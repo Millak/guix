@@ -546,7 +546,6 @@ SCM_TESTS =					\
   tests/challenge.scm				\
   tests/channels.scm				\
   tests/combinators.scm			\
-  tests/composer.scm				\
   tests/containers.scm				\
   tests/cpio.scm				\
   tests/cve.scm				\
@@ -562,6 +561,7 @@ SCM_TESTS =					\
   tests/grafts.scm				\
   tests/graph.scm				\
   tests/gremlin.scm				\
+  tests/import/composer.scm			\
   tests/import/cpan.scm				\
   tests/import/cran.scm				\
   tests/import/crate.scm			\
