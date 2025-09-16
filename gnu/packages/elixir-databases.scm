@@ -128,3 +128,25 @@ configuration-driven @code{Ecto} schema extensibility.")
 implements unified access to tabular data.")
     (home-page "https://hexdocs.pm/table/")
     (license license:asl2.0)))
+
+(define-public elixir-tds
+  (package
+    (name "elixir-tds")
+    (version "2.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "tds" version))
+       (sha256
+        (base32 "1wk20rk1fjh16swlkiyl3fs91lj4w4dk77l5z77vp12mvpsm1qsj"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-db-connection elixir-decimal elixir-jason
+           elixir-table))
+    (synopsis
+     "Elixir implementation of the MS TDS protocol")
+    (description
+     "This package implements a Microsoft SQL Server client.  More generally it
+provides an Elixir implementation of the MS TDS protocol.")
+    (home-page "https://hexdocs.pm/tds/")
+    (license license:asl2.0)))
