@@ -114,6 +114,28 @@ applications.")
     (home-page "https://hexdocs.pm/ex_cldr/")
     (license license:asl2.0)))
 
+(define-public elixir-ex-cldr-numbers
+  (package
+    (name "elixir-ex-cldr-numbers")
+    (version "2.35.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr_numbers" version))
+       (sha256
+        (base32 "1pan719k511ya67s7vldz3djry5m6vsb4vynkfggwznyly0zrdbd"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-decimal elixir-digital-token elixir-ex-cldr
+           elixir-ex-cldr-currencies elixir-jason))
+    (synopsis
+     "Number and currency localization and formatting")
+    (description
+     "Number and currency localization and formatting functions for the Common Locale
+Data Repository (CLDR).")
+    (home-page "https://hexdocs.pm/ex_cldr_numbers/")
+    (license license:asl2.0)))
+
 (define-public elixir-ex-cldr
   (package
     (inherit elixir-ex-cldr-minimal)
