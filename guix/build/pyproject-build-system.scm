@@ -350,7 +350,8 @@ and return write it to PATH/NAME."
 # Auto-generated entry point script.
 import sys
 from ~a import ~a
-sys.exit(~a())~%" interpreter module function function)))
+if __name__ == '__main__':
+    sys.exit(~a())~%" interpreter module function function)))
       (chmod file-path #o755)))
 
   (let* ((site-dir (site-packages inputs outputs))
