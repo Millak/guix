@@ -1742,6 +1742,25 @@ PixInsight}.  It implements
 1.0 specification}.")
     (license license:gpl3+)))
 
+(define-public libxisf-for-tenmon
+  ;; This is an exact commit required for tenmon git submodule.
+  (let ((commit "556bb22d2675ee6072c6224fef3da0fb5d93db41")
+        (revision "0"))
+    (hidden-package
+     (package
+       (inherit libxisf)
+       (name "libxisf")
+       (version (git-version "0.2.13" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://gitea.nouspiro.space/nou/libXISF")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "037dijy0ql1mwm8nddwawlf3ms6w30kxdlkrjjprfsss80ssn30k"))))))))
+
 (define-public missfits
   (package
     (name "missfits")
@@ -10483,6 +10502,80 @@ expansions) are calculated from input timing models.")
 to address some shortcomings in that code for high precision pulsar timing.
 See related paper
 @url{https://ui.adsabs.harvard.edu/abs/2006MNRAS.369..655H/abstract}.")
+    (license license:gpl3+)))
+
+(define-public tenmon
+  (package
+    (name "tenmon")
+    (version "20250915")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitea.nouspiro.space/nou/tenmon")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ay95kdsmv4xli25l7khga4ldwy4irrfc15649s3mgqcd5gl3pfw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no test target
+      #:configure-flags
+      #~(list "-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; libxisf is expected to be found as git submodule, link it before
+          ;; build.
+          (add-after 'unpack 'link-libxisf
+            (lambda _
+              (rmdir "libXISF")
+              (symlink #+(package-source (this-package-native-input "libxisf"))
+                       (string-append (getcwd) "/libXISF")))))))
+    (native-inputs
+     (list git-minimal/pinned
+           libxisf-for-tenmon
+           pkg-config ))
+    (inputs
+     (list cfitsio
+           glu
+           gsl
+           libexif
+           libraw
+           qtbase
+           qtcharts
+           qtdeclarative
+           wcslib
+           zstd
+           (list zstd "lib")))
+    (home-page "https://nouspiro.space/?page_id=206")
+    (synopsis "FITS and XISF image viewer, converter and indexer")
+    (description
+     "FITS/XISF image viewer with multithreaded image loading.  It is intended
+primarily for viewing astro photos and images with support of following
+formats:
+
+@itemize
+@item FITS 8, 16 bit integer and 32 bit float
+@item XISF 8, 16 bit integer and 32 bit float
+@item RAW CR2, DNG, NEF
+@item JPEG, PNG, BMP, GIF, PBM, PGM, PPM and SVG images
+@end itemize
+
+Features:
+@itemize
+@item using same stretch function as PixInsight
+@item OpenGL accelerated drawing
+@item index and search FITS XISF header data
+@item quick mark images and then copy/move marked files
+@item convert FITS <-> XISF
+@item convert FITS/XISF -> JPEG/PNG
+@item image statistics mean, media, min, max
+@item support for WCS
+@item thumbnails
+@item convert CFA images to colour - debayer
+@item color space aware
+@end itemize")
     (license license:gpl3+)))
 
 (define-public unsio
