@@ -10252,7 +10252,7 @@ interface to this kernel feature.")
 (define-public mbpfan
   (package
     (name "mbpfan")
-    (version "2.2.1")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -10261,21 +10261,20 @@ interface to this kernel feature.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gc9ypxi55vxs77nx8ihhh9zk7fr9v0m0zfm76q7x0bi6jz11mbr"))))
+        (base32 "146sshsjafi26n741jvi9mdbazwf74jlacxfwkky4fhbq98idlhp"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; tests ask to be run as root
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "DESTDIR=" out)
-                            ,(string-append "CC=" (cc-for-target))))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda _
-             (substitute* "Makefile"
-               (("/usr") ""))
-             #t))
-         (delete 'configure))))         ; there's no configure phase
+     (list #:tests? #f                      ; tests ask to be run as root
+           #:make-flags
+           #~(list (string-append "DESTDIR=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr") ""))))
+               (delete 'configure))))         ; there's no configure phase
     (home-page "https://github.com/dgraziotin/mbpfan")
     (synopsis "Control fan speed on Macbooks")
     (description
