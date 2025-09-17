@@ -448,7 +448,7 @@ dump Intel Firmware Descriptor data of an image file.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://review.coreboot.org/p/coreboot")
+                    (url "https://review.coreboot.org/coreboot")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
@@ -458,19 +458,20 @@ dump Intel Firmware Descriptor data of an image file.")
     (inputs
      (list pciutils zlib))
     (arguments
-     `(#:make-flags
-       (list "CC=gcc"
-             "INSTALL=install"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-        (add-after 'unpack 'chdir
-          (lambda _
-            (chdir "util/intelmetool")
-            #t))
-        (delete 'configure)
-        (delete 'check))))
-    (home-page "https://github.com/zamaudio/intelmetool")
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "INSTALL=install"
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "util/intelmetool")))
+          (delete 'configure) ;no configure script
+          (delete 'check))))
+    (home-page
+     "https://github.com/coreboot/coreboot/tree/main/util/intelmetool/")
     (synopsis "Intel Management Engine tools")
     (description "This package provides tools for working with Intel
 Management Engine (ME).  You need to @code{sudo rmmod mei_me} and
