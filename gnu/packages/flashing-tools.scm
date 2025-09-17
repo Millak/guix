@@ -338,11 +338,13 @@ for possible workarounds.")
             "1ndyzg1zlgg20dd8js9kfqm5kq19k005vddkvf65qj20w0pcyahn"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)) ; no configure
-         #:make-flags (list (string-append "PREFIX=" %output))
-         #:tests? #f)) ; no tests
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)) ; no configure
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output))
+        #:tests? #f)) ; no tests
       (native-inputs
        (list pkg-config))
       (inputs
