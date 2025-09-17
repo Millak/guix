@@ -64,7 +64,7 @@
 (define-public falkon
   (package
     (name "falkon")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
@@ -72,7 +72,7 @@
                            "/src/falkon-" version ".tar.xz"))
        (sha256
         (base32
-         "1hhljgv5c0na4851r9klwzwgifygmq9xkrii7c8hvd7bnwc0jmwd"))))
+         "1049wwm46cd2dd96f9gwlnpz3sdrk8fs12fsp6qk0apmgzq3lf7x"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
