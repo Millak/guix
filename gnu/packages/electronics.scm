@@ -722,113 +722,110 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:zlib))))
 
 (define-public nextpnr
-  ;; Necessary for compatibility with latest apycula.
-  (let ((commit "9715a1d56580d0652b4a90d58eb4096ba537e3ce")
-        (revision "0"))
-    (package
-      (name "nextpnr")
-      (version "0.9")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/YosysHQ/nextpnr/")
-                (commit commit)
-                ;; XXX: Fetch some bundled libraries such as QtPropertyBrowser,
-                ;; json11 and python-console, which have custom modifications or
-                ;; no longer have their original upstream.
-                (recursive? #t)))
-         (file-name (git-file-name name version))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (srfi srfi-26)))
-         (snippet
-          '(begin
-             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-             (define (delete-all-but directory . preserve)
-               (with-directory-excursion directory
-                 (let* ((pred (negate (cut member <>
-                                           (cons* "." ".." preserve))))
-                        (items (scandir "." pred)))
-                   (for-each (cut delete-file-recursively <>) items))))
-             (delete-all-but "3rdparty"
-                             ;; The following sources have all been patched, so
-                             ;; cannot easily be unbundled.
-                             "QtPropertyBrowser"
-                             "json11"
-                             "python-console"
-                             "oourafft")))
-         (patches (search-patches "nextpnr-gtest.patch"
-                                  "nextpnr-imgui.patch"))
-         (sha256
-          (base32 "1wrlk0f4y29znd1zgl531lw4s0rfm5w8kx4hlwwdaj7b9vv3v65f"))))
-      (build-system qt-build-system)
-      (arguments
-       (list
-        #:cmake cmake                     ;CMake 3.25 or higher is required.
-        #:configure-flags
-        ;; TODO: enable more architectures?
-        #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
-                "-DBUILD_GUI=ON"
-                "-DUSE_OPENMP=ON"
-                "-DBUILD_TESTS=ON"
-                "-DHIMBAECHEL_UARCH=ng-ultra;gowin"
-                "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
-                "-DHIMBAECHEL_SPLIT=ON"
-                "-DHIMBAECHEL_PRJBEYOND_DB=/tmp/prjbeyond-db"
-                (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
-                (string-append "-DICESTORM_INSTALL_PREFIX="
-                               #$(this-package-input "icestorm"))
-                (string-append "-DTRELLIS_INSTALL_PREFIX="
-                               #$(this-package-input "prjtrellis"))
-                "-DUSE_IPO=OFF")
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; Required by himbaechel architecture, ng-ultra support.
-            (add-after 'unpack 'get-prjbeyond-db
-              (lambda _
-                (copy-recursively
-                 #$(origin
-                     (method git-fetch)
-                     (uri (git-reference
-                            (url "https://github.com/yosyshq-GmbH/prjbeyond-db/")
-                            ;; We take latest commit, as indicated in nextpnr’s
-                            ;; README.md file
-                            (commit "06d3b424dd0e52d678087c891c022544238fb9e3")))
-                     (sha256
-                      (base32
-                       "17dd3cgms2fy6xvz7magdmvv92km4cqh2kz9dyjrvz5y8caqav4y")))
-                 "/tmp/prjbeyond-db")))
-            (add-after 'unpack 'unbundle-sanitizers-cmake
-              (lambda _
-                (substitute* "CMakeLists.txt"
-                  ;; Use the system sanitizers-cmake module.  This is made
-                  ;; necessary 'sanitizers-cmake' installing a FindPackage
-                  ;; module but no CMake config file.
-                  (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
-                   (string-append
-                    #$(this-package-native-input "sanitizers-cmake")
-                    "/share/sanitizers-cmake/cmake"))))))))
-      (native-inputs
-       (list googletest
-             sanitizers-cmake))
-      (inputs
-       (list apycula
-             boost
-             corrosion
-             eigen
-             icestorm
-             prjtrellis
-             pybind11
-             python
-             qtbase-5
-             qtwayland-5
-             qtimgui
-             yosys))
-      (synopsis "Place-and-Route tool for FPGAs")
-      (description "Nextpnr is a portable FPGA place and route tool.")
-      (home-page "https://github.com/YosysHQ/nextpnr/")
-      (license license:isc))))
+  (package
+    (name "nextpnr")
+    (version "0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/YosysHQ/nextpnr/")
+              (commit (string-append "nextpnr-" version))
+              ;; XXX: Fetch some bundled libraries such as QtPropertyBrowser,
+              ;; json11 and python-console, which have custom modifications or
+              ;; no longer have their original upstream.
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        '(begin
+           ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+           (define (delete-all-but directory . preserve)
+             (with-directory-excursion directory
+               (let* ((pred (negate (cut member <>
+                                         (cons* "." ".." preserve))))
+                      (items (scandir "." pred)))
+                 (for-each (cut delete-file-recursively <>) items))))
+           (delete-all-but "3rdparty"
+                           ;; The following sources have all been patched, so
+                           ;; cannot easily be unbundled.
+                           "QtPropertyBrowser"
+                           "json11"
+                           "python-console"
+                           "oourafft")))
+       (patches (search-patches "nextpnr-gtest.patch"
+                                "nextpnr-imgui.patch"))
+       (sha256
+        (base32 "1wrlk0f4y29znd1zgl531lw4s0rfm5w8kx4hlwwdaj7b9vv3v65f"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:cmake cmake                     ;CMake 3.25 or higher is required.
+      #:configure-flags
+      ;; TODO: enable more architectures?
+      #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
+              "-DBUILD_GUI=ON"
+              "-DUSE_OPENMP=ON"
+              "-DBUILD_TESTS=ON"
+              "-DHIMBAECHEL_UARCH=ng-ultra;gowin"
+              "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
+              "-DHIMBAECHEL_SPLIT=ON"
+              "-DHIMBAECHEL_PRJBEYOND_DB=/tmp/prjbeyond-db"
+              (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
+              (string-append "-DICESTORM_INSTALL_PREFIX="
+                             #$(this-package-input "icestorm"))
+              (string-append "-DTRELLIS_INSTALL_PREFIX="
+                             #$(this-package-input "prjtrellis"))
+              "-DUSE_IPO=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Required by himbaechel architecture, ng-ultra support.
+          (add-after 'unpack 'get-prjbeyond-db
+            (lambda _
+              (copy-recursively
+               #$(origin
+                   (method git-fetch)
+                   (uri (git-reference
+                          (url "https://github.com/yosyshq-GmbH/prjbeyond-db/")
+                          ;; We take latest commit, as indicated in nextpnr’s
+                          ;; README.md file
+                          (commit "06d3b424dd0e52d678087c891c022544238fb9e3")))
+                   (sha256
+                    (base32
+                     "17dd3cgms2fy6xvz7magdmvv92km4cqh2kz9dyjrvz5y8caqav4y")))
+               "/tmp/prjbeyond-db")))
+          (add-after 'unpack 'unbundle-sanitizers-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; Use the system sanitizers-cmake module.  This is made
+                ;; necessary 'sanitizers-cmake' installing a FindPackage
+                ;; module but no CMake config file.
+                (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
+                 (string-append
+                  #$(this-package-native-input "sanitizers-cmake")
+                  "/share/sanitizers-cmake/cmake"))))))))
+    (native-inputs
+     (list googletest
+           sanitizers-cmake))
+    (inputs
+     (list apycula
+           boost
+           corrosion
+           eigen
+           icestorm
+           prjtrellis
+           pybind11
+           python
+           qtbase-5
+           qtwayland-5
+           qtimgui
+           yosys))
+    (synopsis "Place-and-Route tool for FPGAs")
+    (description "Nextpnr is a portable FPGA place and route tool.")
+    (home-page "https://github.com/YosysHQ/nextpnr/")
+    (license license:isc)))
 
 (define-public nextpnr-ice40
   (deprecated-package "nextpnr-ice40" nextpnr))
