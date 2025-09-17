@@ -1158,52 +1158,6 @@ formats.")
 GUI for sigrok.")
     (license license:gpl3+)))
 
-(define-public openfpgaloader
-  (package
-    (name "openfpgaloader")
-    (version "0.13.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/trabucayre/openfpgaloader")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1p5qvr0bq27rp7f20ysjml7zy4bbwjx3s4yd5qjsg4b01mw4hbiq"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs (list eudev
-                  hidapi
-                  libftdi
-                  libgpiod
-                  libusb
-                  zlib))
-    (arguments
-     (list #:tests? #f                  ;no test suite
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-rules
-                 (lambda _
-                   (install-file
-                    "../source/99-openfpgaloader.rules"
-                    (string-append #$output "/lib/udev/rules.d/")))))))
-    (synopsis "Utility for programming FPGA")
-    (description "This package provides a program to transfer a bitstream
-to an FPGA.  To use @code{openfpgaloader} without root privileges it is
-necessary to install the necessary udev rules.  This can be done by extending
-@code{udev-service-type} in the @code{operating-system} configuration file with
-this package, as in:
-@lisp
-(udev-rules-service 'openfpgaloader openfpgaloader #:groups '(\"plugdev\")
-@end lisp
-Additionally, the @samp{plugdev} group should be registered in the
-@code{supplementary-groups} field of your @code{user-account} declaration. Refer
-to @samp{info \"(guix) Base Services\"} for examples.")
-    (home-page "https://trabucayre.github.io/openFPGALoader/")
-    (license license:asl2.0)))
-
 (define-public osvvm
   (package
     (name "osvvm")
