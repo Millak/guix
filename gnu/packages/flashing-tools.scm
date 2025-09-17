@@ -84,7 +84,7 @@
 (define-public flashrom
   (package
     (name "flashrom")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -92,7 +92,7 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "14v2bd46wyz46bvsxr3zx2wacqbqzi4w4pk50giar7nldq3lp4qz"))))
+                "08s4r7abcyk849zk840l3szgdmaxj0bx1281wy0zrdgrgncb77cb"))))
     (build-system meson-build-system)
     (inputs (list bash-minimal dmidecode pciutils libusb libftdi libjaylink))
     (native-inputs (list cmocka pkg-config))
