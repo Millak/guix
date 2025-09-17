@@ -31,7 +31,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
-;;; Copyright © 2017-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018 Sohom Bhattacharjee <soham.bhattacharjee15@gmail.com>
 ;;; Copyright © 2018, 2019 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -17732,8 +17732,8 @@ indentation guides in Emacs:
   ;; https://github.com/jorgenschaefer/elpy/issues/1824
   ;; https://github.com/jorgenschaefer/elpy/pull/1951
   ;; https://github.com/jorgenschaefer/elpy/issues/1940.
-  (let ((commit "7ff8ffa918411887d165764f7a5a12bc46646e73")
-        (revision "2"))
+  (let ((commit "0b381f55969438ab2ccc2d1a1614045fcf7c9545")
+        (revision "3"))
     (package
       (name "emacs-elpy")
       (version (git-version "1.35.0" revision commit))
@@ -17745,8 +17745,7 @@ indentation guides in Emacs:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0lh8w5a1abxaa7lf1c4yzgr0sh9szcwdnwd8w2004hv6mrcmyqc6"))
-                (patches (search-patches "emacs-elpy-dup-test-name.patch"))))
+                  "0398zwzq5c33fi8icyy2x50q7rs819i5xkpmhbfm1s34m6prv46a"))))
       (build-system emacs-build-system)
       (arguments
        `(#:include (cons* "^elpy/[^/]+\\.py$" "^snippets\\/" %default-include)
