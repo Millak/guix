@@ -129,6 +129,7 @@ gnu/system/examples/desktop\.tmpl                  @guix/documentation
 gnu/packages/electronics\.scm                      @guix/electronics
 gnu/packages/libftdi\.scm                          @guix/electronics
 gnu/packages/engineering\.scm                      @guix/electronics
+gnu/packages/flashing-tools\.scm                   @guix/electronics
 
 gnu/packages/aux-files/emacs/guix-emacs\.el        @guix/emacs
 gnu/packages/aux-files/emacs/comp-integrity\.el    @guix/emacs
