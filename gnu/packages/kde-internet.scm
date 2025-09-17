@@ -490,14 +490,14 @@ protocol, supporting end-to-end encryption.  Its features include:
 (define-public ruqola
   (package
     (name "ruqola")
-    (version "2.4.1")
+    (version "2.5.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/ruqola/ruqola-"
+              (uri (string-append "mirror://kde//stable/ruqola/ruqola-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0w05ww6dn1xfmz67i3avkzdlcrb575hjad2lnm2cxd0jds0b1bg5"))))
+                "18brrxwn5dh5xj20znmg3v2044m3bw2jyv8abfwa45qk32qjyzi9"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
