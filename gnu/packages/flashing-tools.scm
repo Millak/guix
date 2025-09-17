@@ -410,7 +410,7 @@ referred to as the \"Odin 3 protocol\".")
 (define-public ifdtool
   (package
     (name "ifdtool")
-    (version "4.9")
+    (version "25.09")
     (source
      (origin
        (method git-fetch)
@@ -420,7 +420,7 @@ referred to as the \"Odin 3 protocol\".")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jidj29jh6p65d17k304wlzhxvp4p3c2namgcdwg2sxq8jfr0zlm"))))
+         "1a1n64dwr5fzdnaj45bjci85ap5yra5gwz4x056zn6481xwvbsmv"))))
     (build-system gnu-build-system)
     (arguments
      (list
