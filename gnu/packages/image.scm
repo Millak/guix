@@ -2703,18 +2703,18 @@ Format) file format decoder and encoder.")
        (modify-phases %standard-phases
          ,@(cond
              ((target-riscv64?)
-              (add-after 'unpack 'fix-atomic
-                (lambda _
-                  (substitute* "lib/jxl/enc_xyb.cc"
-                    (("#include \"lib/jxl/enc_xyb.h\"" a)
-                     (string-append a "\n#include <atomic>"))))))
+              '((add-after 'unpack 'fix-atomic
+                  (lambda _
+                    (substitute* "lib/jxl/enc_xyb.cc"
+                      (("#include \"lib/jxl/enc_xyb.h\"" a)
+                       (string-append a "\n#include <atomic>")))))))
              ((target-x86-32?)
-              (add-after 'unpack 'loosen-test-parameter
-                (lambda _
-                  ;; This test fails likely due to a floating point
-                  ;; rounding difference.
-                  (substitute* "lib/jxl/color_management_test.cc"
-                    (("8\\.7e-4") "8.7e-3")))))
+              '((add-after 'unpack 'loosen-test-parameter
+                  (lambda _
+                    ;; This test fails likely due to a floating point
+                    ;; rounding difference.
+                    (substitute* "lib/jxl/color_management_test.cc"
+                      (("8\\.7e-4") "8.7e-3"))))))
              (#t '()))
          (add-after 'install 'split
            (lambda* (#:key outputs #:allow-other-keys)
