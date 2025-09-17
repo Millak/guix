@@ -1256,7 +1256,7 @@ the \"texlive\" importer."
 
 (define-member (person "Sughosha"
                        "sughosha@disroot.org")
-  kde)
+  audio kde)
 
 (define-member (person "Jelle Licht"
                        "jlicht@fsfe.org"
