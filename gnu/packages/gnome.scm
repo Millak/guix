@@ -7859,7 +7859,8 @@ configuration program to choose applications starting on login.")
            xorg-server-for-tests))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
-     (list cairo gobject-introspection mozjs))
+     ;; Check the version of mozjs required in meson.build.
+     (list cairo gobject-introspection mozjs-128))
     (inputs
      (list gtk+ readline))
     (synopsis "Javascript bindings for GNOME")
