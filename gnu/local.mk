@@ -1864,8 +1864,14 @@ dist_patch_DATA =						\
   %D%/packages/patches/lua51-pkgconfig.patch                    \
   %D%/packages/patches/luajit-add-riscv64-support.patch         \
   %D%/packages/patches/lua-liblua-so.patch                      \
+  %D%/packages/patches/luajit-search-paths.patch		\
+  %D%/packages/patches/lua-5.1-search-paths.patch		\
+  %D%/packages/patches/lua-5.2-search-paths.patch		\
+  %D%/packages/patches/lua-5.3-search-paths.patch		\
   %D%/packages/patches/lua-5.4-pkgconfig.patch			\
   %D%/packages/patches/lua-5.4-liblua-so.patch			\
+  %D%/packages/patches/lua-5.4-search-paths.patch		\
+  %D%/packages/patches/lua-5.x-search-path-helpers.patch	\
   %D%/packages/patches/luanti-paths.patch			\
   %D%/packages/patches/lugaru-fix-sound.patch			\
   %D%/packages/patches/luit-posix.patch				\

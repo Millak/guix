@@ -1,0 +1,38 @@
+Change Lua to use GUIX_LUA_PATH and GUIX_LUA_CPATH to construct the default
+LUA_PATH and LUA_CPATH, instead of using hard-coded paths that Guix doesn't
+populate.
+
+These paths don't use Lua's usual '?' path wildcard, and thus are compatible
+with Guix's search-paths mechanism.
+
+This patch uses functions defined in lua-5.x-search-path-helpers.patch.
+
+--- a/src/loadlib.c
++++ b/src/loadlib.c
+@@ -764,13 +772,24 @@
+ }
+ 
+
++#include "./guixpaths.c"
++
++
+ LUAMOD_API int luaopen_package (lua_State *L) {
+   createclibstable(L);
+   luaL_newlib(L, pk_funcs);  /* create 'package' table */
+   createsearcherstable(L);
++
+   /* set paths */
++  /* Calculate default LUA_PATH and LUA_CPATH values from their
++     corresponding GUIX_ environment variables */
++  const char* default_path = guix_path(L); // push default_path
++  const char* default_cpath = guix_cpath(L); // push default_cpath
++  lua_pushvalue(L, -3); // copy the old head of the stack back to the top
+-  setpath(L, "path", LUA_PATH_VAR, LUA_PATH_DEFAULT);
+-  setpath(L, "cpath", LUA_CPATH_VAR, LUA_CPATH_DEFAULT);
++  setpath(L, "path", LUA_PATH_VAR, default_path);
++  setpath(L, "cpath", LUA_CPATH_VAR, default_cpath);
++  lua_pop(L, 3); // pop our three working values back off the stack
++
+   /* store config information */
+   lua_pushliteral(L, LUA_DIRSEP "\n" LUA_PATH_SEP "\n" LUA_PATH_MARK "\n"
+                      LUA_EXEC_DIR "\n" LUA_IGMARK "\n");

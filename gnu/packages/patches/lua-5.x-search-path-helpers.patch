@@ -1,0 +1,62 @@
+Define two helper functions that are used in other Lua patches.
+
+The functions construct default values for LUA_PATH and LUA_CPATH (using '?'s
+as wildcards) from GUIX_LUA_PATH and GUIX_LUA_CPATH, respectively.
+
+--- /dev/null
++++ b/src/guixpaths.c
+@@ -0,0 +1,54 @@
++const char* guix_path (lua_State* L) {
++  luaL_Buffer buf;
++  luaL_buffinit(L, &buf);
++
++  const char* next;
++  const char* source = getenv("GUIX_LUA_PATH");
++  if (source != NULL) {
++    while ((next = strstr(source, ";")) != NULL) {
++      luaL_addlstring(&buf, source, next - source);  /* push prefix */
++      luaL_addstring(&buf, "/?.lua;");
++      luaL_addlstring(&buf, source, next - source);  /* push prefix */
++      luaL_addstring(&buf, "/?/init.lua;");
++      source = next + 1;  /* continue after the semicolon */
++    }
++    if (*source != '\0') {
++      luaL_addstring(&buf, source);
++      luaL_addstring(&buf, "/?.lua;");
++      luaL_addstring(&buf, source);
++      luaL_addstring(&buf, "/?/init.lua;");
++    }
++  }
++
++  /* Then add the local directory last */
++  luaL_addstring(&buf, "./?.lua;" "./?/init.lua");
++  luaL_pushresult(&buf);
++  return lua_tostring(L, -1);
++}
++
++
++const char* guix_cpath (lua_State* L) {
++  luaL_Buffer buf;
++  luaL_buffinit(L, &buf);
++
++  const char* next;
++  const char* source = getenv("GUIX_LUA_CPATH");
++  if (source != NULL) {
++    while ((next = strstr(source, ";")) != NULL) {
++      luaL_addlstring(&buf, source, next - source);  /* push prefix */
++      luaL_addstring(&buf, "/?.so;");
++      source = next + 1;  /* continue after the semicolon */
++    }
++    if (*source != '\0') {
++      luaL_addstring(&buf, source);
++      luaL_addstring(&buf, "/?.so;");
++    }
++  }
++
++  /* Then add the local directory last */
++  luaL_addstring(&buf, "./?.so");
++
++  luaL_pushresult(&buf);
++  return lua_tostring(L, -1);
++}
++
