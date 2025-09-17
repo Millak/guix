@@ -17793,10 +17793,6 @@ indentation guides in Emacs:
                  (substitute* "elpy-company-backend-test.el"
                    (("elpy-company-backend-should-find-.*-prefix-string.*" all)
                     (string-append all "  :expected-result :failed\n")))
-                 (substitute* "elpy-shell-get-or-create-process-test.el"
-                   (("elpy-shell-get-or-create-process-should-add-project-root\
--to-path.*" all)
-                    (string-append all "  :expected-result :failed\n")))
                  (substitute* "elpy-format-code-test.el"
                    (("elpy-should-format-code-with-default-formatter.*" all)
                     (string-append all "  :expected-result :failed\n"))))))
