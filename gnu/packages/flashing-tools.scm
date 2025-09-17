@@ -240,7 +240,7 @@ firmware from it.")
 (define-public teensy-loader-cli
   (package
     (name "teensy-loader-cli")
-    (version "2.2")
+    (version "2.3")
     (source
      (origin
        (method git-fetch)
@@ -248,7 +248,7 @@ firmware from it.")
              (url "https://github.com/PaulStoffregen/teensy_loader_cli")
              (commit version)))
        (sha256
-        (base32 "12n8ifz4gph1anhwd8if3j1kw0wc3yxf48abbyxl8071l9vj3m0b"))
+        (base32 "0kqjmbmns3ansmrs6pbpsqk0g4d82hxknpng6lp7375zccsq52im"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
