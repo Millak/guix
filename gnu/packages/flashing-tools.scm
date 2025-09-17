@@ -321,8 +321,8 @@ for possible workarounds.")
                                %supported-systems))))
 
 (define-public rkflashtool
-  (let ((commit "8966c4e277de8148290554aaaa4146a3a84a3c53")
-        (revision "1"))
+  (let ((commit "6022dd724e8247ff7a0825b0eda6a07c446aacdd")
+        (revision "2"))
     (package
       (name "rkflashtool")
       (version (git-version "5.2" revision commit))
@@ -332,10 +332,10 @@ for possible workarounds.")
           (uri (git-reference
                 (url "https://github.com/linux-rockchip/rkflashtool")
                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "1ndyzg1zlgg20dd8js9kfqm5kq19k005vddkvf65qj20w0pcyahn"))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0s4zir2s0c3igplj42lq7bq0f0416nf9hrprbxzm87c9mvsdhyvv"))))
       (build-system gnu-build-system)
       (arguments
        (list
