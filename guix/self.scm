@@ -318,7 +318,14 @@ DOMAIN, a gettext domain."
           (define (translate-tmp-texi po source output)
             "Translate Texinfo file SOURCE using messages from PO, and write
 the result to OUTPUT."
-            #t)
+            (invoke #+(file-append po4a-minimal "/bin/po4a")
+              "--no-update"
+              "--variable" (string-append "localized=" output)
+              "--variable" (string-append "master=" source)
+              "--variable" (string-append "po=" po)
+              "--variable" (string-append "pot=" (string-append (tmpnam) ".pot"))
+              "--destdir=."
+              #+(file-append documentation-po "/po4a.cfg")))
 
           (define (canonicalize-whitespace str)
             ;; Change whitespace (newlines, etc.) in STR to #\space.
