@@ -141,42 +141,6 @@ mile of distributed computing to connect devices, mobile applications and
 browsers to backend services.")
     (license license:asl2.0)))
 
-;; Some packages require this older version.
-(define-public grpc-1.16.1
-  (package
-    (inherit grpc)
-    (version "1.16.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/grpc/grpc")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "grpc" version))
-              (sha256
-               (base32
-                "1jimqz3115f9pli5w6ik9wi7mjc7ix6y7yrq4a1ab9fc3dalj7p2"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments grpc)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            ;; Note: This would be nicer as a snippet, but that creates a tarball
-            ;; instead of a checkout and breaks assumptions made by the builder.
-            (add-after 'unpack 'rename-gettid
-              (lambda _
-                ;; Rename custom gettid() syscall wrapper to avoid conflict
-                ;; with gettid() from glibc 2.30.
-                (substitute* '("src/core/lib/gpr/log_linux.cc"
-                               "src/core/lib/gpr/log_posix.cc"
-                               "src/core/lib/iomgr/ev_epollex_linux.cc")
-                  (("gettid\\(")
-                   "sys_gettid("))))))))
-    (inputs
-     (modify-inputs (package-inputs grpc)
-       (replace "abseil-cpp" abseil-cpp-20200923.3)))
-    (native-inputs
-     (modify-inputs (package-native-inputs grpc)
-       (replace "protobuf" protobuf-3.6)))))
-
 (define-public python-grpc-stubs
   (package
     (name "python-grpc-stubs")

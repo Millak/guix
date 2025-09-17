@@ -2042,9 +2042,8 @@ point and then, after each tween step, plugging back the result.")
     (license license:expat)))
 
 (define-public abseil-cpp-20200923.3
-  ;; "guix refresh -l" shows no dependents of this package, but by input
-  ;; rewriting, grpc-1.16.1 depends on it;
-  ;; in turn this is an input to hyperledger-iroha and tensorflow.
+  ;; This is not needed anymore except as a base of inheritance for
+  ;; abseil-cpp-20220623.
   (package
     (name "abseil-cpp")
     (version "20200923.3")
